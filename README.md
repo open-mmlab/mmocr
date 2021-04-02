@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="resources/mmocr-logo.jpg" width="500px"/>
+  <img src="resources/mmocr-logo.png" width="500px"/>
 </div>
 
 ## Introduction
