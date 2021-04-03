@@ -1,7 +1,8 @@
 # Getting Started
+[toc]
 
 This page provides basic tutorials on the usage of MMOCR.
-For the installation instructions, please see [INSTALL.md](INSTALL.md).
+For the installation instructions, please see [install.md](install.md).
 
 ## Inference with Pretrained Models
 

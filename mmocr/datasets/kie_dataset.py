@@ -105,7 +105,7 @@ class KIEDataset(CustomDataset):
         with open(annname, 'r') as fid:
             for line in fid.readlines():
                 line = line.strip().split(',')
-                boxes.append(list(map(int, line[:8])))
+                boxes.append([int(x) for x in list(map(float, line[:8]))])
                 edge, text = self._split_edge(line)
                 chars.append(text)
                 text = self.convert_text(text)

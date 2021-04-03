@@ -1,6 +1,6 @@
 # Datasets Preparation
 This page lists the datasets which are commonly used in text detection, text recognition and key information extraction, and their download links.
-
+[toc]
 ## Text Detection
 **The structure of the text detection dataset directory is organized as follows.**
 ```
@@ -180,3 +180,16 @@ This page lists the datasets which are commonly used in text detection, text rec
 
   ln -s /path/to/SynthAdd SynthAdd
   ```
+
+## Key Information Extraction
+**The structure of the key information extraction dataset directory is organized as follows.**
+```
+└── wildreceipt
+  ├── anno_files
+  ├── class_list.txt
+  ├── dict.txt
+  ├── image_files
+  ├── test.txt
+  └── train.txt
+```
+- Download [wildreceipt.tar](https://download.openmmlab.com/mmocr/data/wildreceipt.tar)

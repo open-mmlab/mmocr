@@ -1,5 +1,5 @@
 # Contributing to mmocr
-
+[toc]
 All kinds of contributions are welcome, including but not limited to the following.
 
 - Fixes (typo, bugs)
@@ -58,13 +58,15 @@ git push origin develop
 ```
 
 #### <span id = "step2.2">Step 2.2: creating a feature branch</span>
-- Creating an issue on [github](https://github.com/open-mmlab/mmocr)
-- The title of the issue should be one of the following formats: `[feature]: xxx`, `[fix]: xxx`, `[Enhance]: xxx`, `[Refactor]: xxx`.
+##### Creating an issue on [github](https://github.com/open-mmlab/mmocr)
+- The title of the issue should be one of the following formats: `[Feature]: xxx`, `[Fix]: xxx`, `[Enhance]: xxx`, `[Refactor]: xxx`.
+- More details can be written in comments.
 
-- ```
-  git checkout -b feature/iss_<index> develop
-  # index is the issue number above
-  ```
+##### Create branch
+```
+git checkout -b feature/iss_<index> develop
+# index is the issue number above
+```
 Till now, your fork has three branches as follows:
 
 ![](res/git-workflow-feature.png)
@@ -80,13 +82,13 @@ pytest tests
 ```
 and fix all failures before every git commit.
 ```
-git commit -m "fix #<issue_index>: <commit_message>" --no-verify
+git commit -m "fix #<issue_index>: <commit_message>"
 ```
 **Note:**
 - <issue_index> is the [issue](#step2.2) number.
-- <commit_message> should be the same with the title of [issue](#step2.2).
 
 #### Step 2.4: prepare to PR
+- Be sure to link your pull request to the related issue, refering to [link](https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue)
 
 
 ##### Merge official repo updates to your fork

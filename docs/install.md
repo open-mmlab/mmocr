@@ -1,5 +1,5 @@
 # Installation
-
+[toc]
 ## Prerequisites
 
 - Linux (Windows is not officially supported)
@@ -160,63 +160,69 @@ If your folder structure is different, you may need to change the corresponding 
 The `mmocr` folder is organized as follows:
 ```
 mmocr
+.
 ├── configs
-│   ├── _base_
-│   ├── textdet
-│   └── textrecog
-├── data
-│   ├── icdar2015
-│   ├── icdar2017
-│   └── synthtext
+│   ├── _base_
+│   ├── kie
+│   ├── textdet
+│   └── textrecog
 ├── demo
-│   ├── demo_text_det.jpg
-│   ├── demo_text_recog.jpg
-│   ├── image_demo.py
-│   └── webcam_demo.py
+│   ├── demo_text_det.jpg
+│   ├── demo_text_recog.jpg
+│   ├── image_demo.py
+│   └── webcam_demo.py
 ├── docs
-│   ├── CHANGELOG.md
-│   ├── CODE_OF_CONDUCT.md
-│   ├── conf.py
-│   ├── CONTRIBUTING.md
-│   ├── GETTING_STARTED.md
-│   ├── index.rst
-│   ├── INSTALL.md
-│   ├── make.bat
-│   ├── Makefile
-│   ├── MODEL_ZOO.md
-│   ├── requirements.txt
-│   ├── res
-│   └── TECHNICAL_DETAILS.md
+│   ├── api.rst
+│   ├── changelog.md
+│   ├── code_of_conduct.md
+│   ├── conf.py
+│   ├── contributing.md
+│   ├── datasets.md
+│   ├── getting_started.md
+│   ├── index.rst
+│   ├── install.md
+│   ├── make.bat
+│   ├── Makefile
+│   ├── merge_docs.sh
+│   ├── requirements.txt
+│   ├── res
+│   ├── stats.py
+│   └── technical_details.md
+├── LICENSE
 ├── mmocr
-│   ├── core
-│   ├── datasets
-│   ├── __init__.py
-│   ├── models
-│   ├── utils
-│   └── version.py
+│   ├── apis
+│   ├── core
+│   ├── datasets
+│   ├── __init__.py
+│   ├── models
+│   ├── utils
+│   └── version.py
 ├── README.md
 ├── requirements
-│   ├── build.txt
-│   ├── optional.txt
-│   ├── runtime.txt
-│   └── tests.txt
+│   ├── build.txt
+│   ├── docs.txt
+│   ├── optional.txt
+│   ├── readthedocs.txt
+│   ├── runtime.txt
+│   └── tests.txt
 ├── requirements.txt
 ├── resources
-│   ├── illustration.jpg
-│   └── mmocr-logo.jpg
+│   ├── illustration.jpg
+│   └── mmocr-logo.png
 ├── setup.cfg
 ├── setup.py
 ├── tests
-│   ├── data
-│   ├── test_dataset
-│   ├── test_metrics
-│   ├── test_models
-│   ├── test_tools
-│   └── test_utils
+│   ├── data
+│   ├── test_dataset
+│   ├── test_metrics
+│   ├── test_models
+│   ├── test_tools
+│   └── test_utils
+├── tmp.txt
 └── tools
-    ├── data_converter
-    ├── dist_train.sh
+    ├── data
     ├── dist_test.sh
+    ├── dist_train.sh
     ├── ocr_test_imgs.py
     ├── ocr_test_imgs.sh
     ├── publish_model.py
