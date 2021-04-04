@@ -14,13 +14,13 @@ All kinds of contributions are welcome, including but not limited to the followi
     - [Step 2: Develop a new feature](#step-2-develop-a-new-feature)
       - [Step 2.1: Keep your fork up to date](#step-21-keep-your-fork-up-to-date)
       - [<span id = "step2.2">Step 2.2: Create a feature branch</span>](#step-22-create-a-feature-branch)
-        - [Creating an issue on github](#creating-an-issue-on-github)
+        - [Create an issue on github](#create-an-issue-on-github)
         - [Create branch](#create-branch)
       - [Step 2.3: Develop and test <your_new_feature>](#step-23-develop-and-test-your_new_feature)
       - [Step 2.4: Prepare to Pull Request](#step-24-prepare-to-pull-request)
         - [Merge official repo updates to your fork](#merge-official-repo-updates-to-your-fork)
         - [Push <your_new_feature> branch to your remote forked repo,](#push-your_new_feature-branch-to-your-remote-forked-repo)
-      - [Step 2.5: Send Pull Request](#step-25-send-pull-request)
+      - [Step 2.5: Create a Pull Request](#step-25-create-a-pull-request)
       - [Step 2.6: Review code](#step-26-review-code)
       - [Step 2.7: Revise <your_new_feature>  (optional)](#step-27-revise-your_new_feature--optional)
       - [Step 2.8: Delete <your_new_feature> branch if your PR is accepted.](#step-28-delete-your_new_feature-branch-if-your-pr-is-accepted)
@@ -87,8 +87,8 @@ git push origin develop
 
 <a id="markdown-span-id--step22step-22-create-a-feature-branchspan" name="span-id--step22step-22-create-a-feature-branchspan"></a>
 #### <span id = "step2.2">Step 2.2: Create a feature branch</span>
-<a id="markdown-creating-an-issue-on-githubhttpsgithubcomopen-mmlabmmocr" name="creating-an-issue-on-githubhttpsgithubcomopen-mmlabmmocr"></a>
-##### Creating an issue on [github](https://github.com/open-mmlab/mmocr)
+<a id="markdown-create-an-issue-on-githubhttpsgithubcomopen-mmlabmmocr" name="create-an-issue-on-githubhttpsgithubcomopen-mmlabmmocr"></a>
+##### Create an issue on [github](https://github.com/open-mmlab/mmocr)
 - The title of the issue should be one of the following formats: `[Feature]: xxx`, `[Fix]: xxx`, `[Enhance]: xxx`, `[Refactor]: xxx`.
 - More details can be written in comments.
 
@@ -148,8 +148,8 @@ git rebase develop
 git checkout <your_new_feature>
 git push origin <your_new_feature>
 ```
-<a id="markdown-step-25-send-pull-request" name="step-25-send-pull-request"></a>
-#### Step 2.5: Send Pull Request
+<a id="markdown-step-25-create-a-pull-request" name="step-25-create-a-pull-request"></a>
+#### Step 2.5: Create a Pull Request
 
 Go to the page for your fork on GitHub, select your new feature branch, and click the pull request button to integrate your feature branch into the upstream remote’s develop branch.
 
