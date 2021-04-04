@@ -1,13 +1,42 @@
+<a id="markdown-getting-started" name="getting-started"></a>
 # Getting Started
-[toc]
 
 This page provides basic tutorials on the usage of MMOCR.
 For the installation instructions, please see [install.md](install.md).
+<!-- TOC -->
 
+- [Getting Started](#getting-started)
+  - [Inference with Pretrained Models](#inference-with-pretrained-models)
+    - [Test a Single Image](#test-a-single-image)
+    - [Test Multiple Images](#test-multiple-images)
+    - [Test a Dataset](#test-a-dataset)
+      - [Test with Single/Multiple GPUs](#test-with-singlemultiple-gpus)
+        - [Optional Arguments](#optional-arguments)
+      - [Test with Slurm](#test-with-slurm)
+        - [Optional Arguments](#optional-arguments-1)
+  - [Train a Model](#train-a-model)
+    - [Train with Single/Multiple GPUs](#train-with-singlemultiple-gpus)
+      - [Train with Toy Dataset.](#train-with-toy-dataset)
+    - [Train with Slurm](#train-with-slurm)
+    - [Launch Multiple Jobs on a Single Machine](#launch-multiple-jobs-on-a-single-machine)
+  - [Useful Tools](#useful-tools)
+    - [Publish a Model](#publish-a-model)
+  - [Customized Settings](#customized-settings)
+    - [Flexible Dataset](#flexible-dataset)
+      - [Encoder-Decoder-Based Text Recognition Task](#encoder-decoder-based-text-recognition-task)
+        - [Optional Arguments:](#optional-arguments-2)
+      - [Segmentation-Based Text Recognition Task](#segmentation-based-text-recognition-task)
+      - [Text Detection Task](#text-detection-task)
+    - [COCO-like Dataset](#coco-like-dataset)
+
+<!-- /TOC -->
+
+<a id="markdown-inference-with-pretrained-models" name="inference-with-pretrained-models"></a>
 ## Inference with Pretrained Models
 
 We provide testing scripts to evaluate a full dataset, as well as some task-specific image demos.
 
+<a id="markdown-test-a-single-image" name="test-a-single-image"></a>
 ### Test a Single Image
 
 You can use the following command to test a single image with one GPU.
@@ -24,6 +53,7 @@ python demo/image_demo.py demo/demo_text_det.jpg configs/xxx.py xxx.pth demo/dem
 
 The predicted result will be saved as `demo/demo_text_det_pred.jpg`.
 
+<a id="markdown-test-multiple-images" name="test-multiple-images"></a>
 ### Test Multiple Images
 
 ```shell
@@ -35,10 +65,12 @@ sh tools/ocr_test_imgs.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${IMG_ROOT_PATH} ${I
 ```
 It will save both the prediction results and visualized images to `${RESULTS_DIR}`
 
+<a id="markdown-test-a-dataset" name="test-a-dataset"></a>
 ### Test a Dataset
 
 MMOCR implements **distributed** testing with `MMDistributedDataParallel`. (Please refer to [datasets.md](datasets.md) to prepare your datasets)
 
+<a id="markdown-test-with-singlemultiple-gpus" name="test-with-singlemultiple-gpus"></a>
 #### Test with Single/Multiple GPUs
 
 You can use the following command to test a dataset with single/multiple GPUs.
@@ -51,10 +83,12 @@ For example,
 ```shell
 ./tools/dist_test.sh configs/example_config.py work_dirs/example_exp/example_model_20200202.pth 1 --eval hmean-iou
 ```
+<a id="markdown-optional-arguments" name="optional-arguments"></a>
 ##### Optional Arguments
 
 - `--eval`: Specify the evaluation metric. For text detection, the metric should be either 'hmean-ic13' or 'hmean-iou'. For text recognition, the metric should be 'acc'.
 
+<a id="markdown-test-with-slurm" name="test-with-slurm"></a>
 #### Test with Slurm
 
 If you run MMOCR on a cluster managed with [Slurm](https://slurm.schedmd.com/), you can use the script `slurm_test.sh`.
@@ -71,11 +105,13 @@ GPUS=8 ./tools/slurm_test.sh dev test_job configs/example_config.py work_dirs/ex
 You can check [slurm_test.sh](https://github.com/open-mmlab/mmocr/blob/master/tools/slurm_test.sh) for full arguments and environment variables.
 
 
+<a id="markdown-optional-arguments-1" name="optional-arguments-1"></a>
 ##### Optional Arguments
 
 - `--eval`: Specify the evaluation metric. For text detection, the metric should be either 'hmean-ic13' or 'hmean-iou'. For text recognition, the metric should be 'acc'.
 
 
+<a id="markdown-train-a-model" name="train-a-model"></a>
 ## Train a Model
 
 MMOCR implements **distributed** training with `MMDistributedDataParallel`. (Please refer to [datasets.md](datasets.md) to prepare your datasets)
@@ -88,6 +124,7 @@ evaluation = dict(interval=1, by_epoch=True)  # This evaluates the model per epo
 ```
 
 
+<a id="markdown-train-with-singlemultiple-gpus" name="train-with-singlemultiple-gpus"></a>
 ### Train with Single/Multiple GPUs
 
 ```shell
@@ -98,6 +135,7 @@ Optional Arguments:
 
 - `--no-validate` (**not suggested**): By default, the codebase will perform evaluation at every k-th iteration during training. To disable this behavior, use `--no-validate`.
 
+<a id="markdown-train-with-toy-dataset" name="train-with-toy-dataset"></a>
 #### Train with Toy Dataset.
 We provide a toy dataset under `tests/data`, and you can train a toy model directly, before the academic dataset is prepared.
 
@@ -111,6 +149,7 @@ And train a text recognition task with `sar` method and toy dataset,
 ./tools/dist_train.sh configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py work_dirs/sar 1
 ```
 
+<a id="markdown-train-with-slurm" name="train-with-slurm"></a>
 ### Train with Slurm
 
 If you run MMOCR on a cluster managed with [Slurm](https://slurm.schedmd.com/), you can use the script `slurm_train.sh`.
@@ -127,6 +166,7 @@ GPUS=8 ./tools/slurm_train.sh dev psenet-ic15 configs/textdet/psenet/psenet_r50_
 
 You can check [slurm_train.sh](https://github.com/open-mmlab/mmocr/blob/master/tools/slurm_train.sh) for full arguments and environment variables.
 
+<a id="markdown-launch-multiple-jobs-on-a-single-machine" name="launch-multiple-jobs-on-a-single-machine"></a>
 ### Launch Multiple Jobs on a Single Machine
 
 If you launch multiple jobs on a single machine, e.g., 2 jobs of 4-GPU training on a machine with 8 GPUs,
@@ -159,10 +199,12 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 GPUS=4 ./tools/slurm_train.sh ${PARTITION} ${JOB_NA
 ```
 
 
+<a id="markdown-useful-tools" name="useful-tools"></a>
 ## Useful Tools
 
 We provide numerous useful tools under `mmocr/tools` directory.
 
+<a id="markdown-publish-a-model" name="publish-a-model"></a>
 ### Publish a Model
 
 Before you upload a model to AWS, you may want to
@@ -181,8 +223,10 @@ python tools/publish_model.py work_dirs/psenet/latest.pth psenet_r50_fpnf_sbn_1x
 
 The final output filename will be `psenet_r50_fpnf_sbn_1x_20190801-{hash id}.pth`.
 
+<a id="markdown-customized-settings" name="customized-settings"></a>
 ## Customized Settings
 
+<a id="markdown-flexible-dataset" name="flexible-dataset"></a>
 ### Flexible Dataset
 To support the tasks of `text detection`, `text recognition` and `key information extraction`, we have designed a new type of dataset which consists of `loader` and `parser` to load and parse different types of annotation files.
 - **loader**: Load the annotation file. There are two types of loader, `HardDiskLoader` and `LmdbLoader`
@@ -194,6 +238,7 @@ To support the tasks of `text detection`, `text recognition` and `key informatio
 
 Here we show some examples of using different combination of `loader` and `parser`.
 
+<a id="markdown-encoder-decoder-based-text-recognition-task" name="encoder-decoder-based-text-recognition-task"></a>
 #### Encoder-Decoder-Based Text Recognition Task
 ```python
 dataset_type = 'OCRDataset'
@@ -217,6 +262,7 @@ train = dict(
 You can check the content of the annotation file in `tests/data/ocr_toy_dataset/label.txt`.
 The combination of `HardDiskLoader` and `LineStrParser` will return a dict for each file by calling `__getitem__`: `{'filename': '1223731.jpg', 'text': 'GRAND'}`.
 
+<a id="markdown-optional-arguments" name="optional-arguments"></a>
 ##### Optional Arguments:
 
 - `repeat`: The number of repeated lines in the annotation files. For example, if there are `10` lines in the annotation file, setting `repeat=10` will generate a corresponding annotation file with size `100`.
@@ -246,6 +292,7 @@ train = dict(
     test_mode=False)
 ```
 
+<a id="markdown-segmentation-based-text-recognition-task" name="segmentation-based-text-recognition-task"></a>
 #### Segmentation-Based Text Recognition Task
 ```python
 prefix = 'tests/data/ocr_char_ann_toy_dataset/'
@@ -268,6 +315,7 @@ The combination of `HardDiskLoader` and `LineJsonParser` will return a dict for 
 {"file_name": "resort_88_101_1.png", "annotations": [{"char_text": "F", "char_box": [11.0, 0.0, 22.0, 0.0, 12.0, 12.0, 0.0, 12.0]}, {"char_text": "r", "char_box": [23.0, 2.0, 31.0, 1.0, 24.0, 11.0, 16.0, 11.0]}, {"char_text": "o", "char_box": [33.0, 2.0, 43.0, 2.0, 36.0, 12.0, 25.0, 12.0]}, {"char_text": "m", "char_box": [46.0, 2.0, 61.0, 2.0, 53.0, 12.0, 39.0, 12.0]}, {"char_text": ":", "char_box": [61.0, 2.0, 69.0, 2.0, 63.0, 12.0, 55.0, 12.0]}], "text": "From:"}
 ```
 
+<a id="markdown-text-detection-task" name="text-detection-task"></a>
 #### Text Detection Task
 ```python
 dataset_type = 'TextDetDataset'
@@ -294,6 +342,7 @@ The combination of `HardDiskLoader` and `LineJsonParser` will return a dict for 
 ```
 
 
+<a id="markdown-coco-like-dataset" name="coco-like-dataset"></a>
 ### COCO-like Dataset
 For text detection, you can also use an annotation file in a COCO format that is defined in [mmdet](https://github.com/open-mmlab/mmdetection/blob/master/mmdet/datasets/coco.py):
 ```python
