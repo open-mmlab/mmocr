@@ -1,7 +1,12 @@
-_base_ = [
-    '../../_base_/schedules/schedule_sgd_600e.py',
-    '../../_base_/default_runtime.py'
-]
+_base_ = ['../../_base_/default_runtime.py']
+
+# optimizer
+optimizer = dict(type='Adam', lr=1e-4)
+optimizer_config = dict(grad_clip=None)
+# learning policy
+lr_config = dict(policy='step', step=[200, 400])
+total_epochs = 600
+
 model = dict(
     type='PSENet',
     pretrained='torchvision://resnet50',

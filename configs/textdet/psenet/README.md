@@ -19,7 +19,7 @@
 
 |Method | Backbone|Extra Data | Training set | Test set | #epochs | Test size|Recall|Precision|Hmean|Download|
 |:------:| :------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|:------:|
-|[PSENet-4s](/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py) |ResNet50 |-|CTW1500 Train|CTW1500 Test|600|1280|0.771|0.793|0.782|[model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_ctw1500-ac38d587.pth) \| [config](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)|
+|[PSENet-4s](/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py) |ResNet50 |-|CTW1500 Train|CTW1500 Test|600|1280|0.728|0.849|0.784|[model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_ctw1500_20210401-216fed50.pth) &#124; [config](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_ctw1500_20210401.py) &#124; [log](https://download.openmmlab.com/mmocr/textdet/psenet/20210401_215421.log.json)|
 
 ### ICDAR2015
 
