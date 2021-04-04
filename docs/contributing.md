@@ -121,7 +121,7 @@ git commit -m "fix #<issue_index>: <commit_message>"
 
 <a id="markdown-step-24-prepare-to-pr" name="step-24-prepare-to-pr"></a>
 #### Step 2.4: prepare to PR
-- Be sure to link your pull request to the related issue, refering to [link](https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue)
+- Make sure to link your pull request to the related issue. Please refer to the [instructon](https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue)
 
 
 <a id="markdown-merge-official-repo-updates-to-your-fork" name="merge-official-repo-updates-to-your-fork"></a>
