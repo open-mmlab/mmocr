@@ -26,7 +26,7 @@ test_pipeline = [
 ]
 
 dataset_type = 'KIEDataset'
-data_root = 'data/wildreceipt/'
+data_root = 'data/wildreceipt'
 
 loader = dict(
     type='HardDiskLoader',
@@ -37,19 +37,19 @@ loader = dict(
 
 train = dict(
     type=dataset_type,
-    ann_file=data_root + 'train.txt',
+    ann_file=f'{data_root}/train.txt',
     pipeline=train_pipeline,
     img_prefix=data_root,
     loader=loader,
-    dict_file=data_root + 'dict.txt',
+    dict_file=f'{data_root}/dict.txt',
     test_mode=False)
 test = dict(
     type=dataset_type,
-    ann_file=data_root + 'test.txt',
+    ann_file=f'{data_root}/test.txt',
     pipeline=test_pipeline,
     img_prefix=data_root,
     loader=loader,
-    dict_file=data_root + 'dict.txt',
+    dict_file=f'{data_root}/dict.txt',
     test_mode=True)
 
 data = dict(
@@ -70,7 +70,7 @@ model = dict(
     visual_modality=False,
     train_cfg=None,
     test_cfg=None,
-    class_list=data_root + 'class_list.txt')
+    class_list=f'{data_root}/class_list.txt')
 
 optimizer = dict(type='Adam', weight_decay=0.0001)
 optimizer_config = dict(grad_clip=None)
