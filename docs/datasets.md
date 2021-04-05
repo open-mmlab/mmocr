@@ -92,10 +92,12 @@ This page lists the datasets which are commonly used in text detection, text rec
 │   │   ├── image
 │   ├── Synth90k
 │   │   ├── shuffle_labels.txt
+│   │   ├── label.lmdb
 │   │   ├── mnt
 │   ├── SynthText
 │   │   ├── shuffle_labels.txt
 │   │   ├── instances_train.txt
+│   │   ├── label.lmdb
 │   │   ├── synthtext
 │   ├── SynthAdd
 │   │   ├── label.txt
@@ -113,9 +115,9 @@ This page lists the datasets which are commonly used in text detection, text rec
 | ct80       |   | - |-|[test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)||
 | svt        |   | [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset) | -                                                                                                    | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)                  |      |
 | svtp        |   | - | -                                                                                                    | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)                  |      |
-| Synth90k   |   | [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)                               | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Synth90k/shuffle_labels.txt)  | -  |      |
-| SynthText  |   | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)                          | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) |    -  |      |
-| SynthAdd   |   |       [SynthText_Add.zip](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/SynthText_Add.zip)                                                                            |   [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)|- |      |
+| Synth90k   |   | [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)                               | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Synth90k/shuffle_labels.txt) \| [label.lmdb](https://download.openmmlab.com/mmocr/data/mixture/Synth90k/label.lmdb)  | -  |      |
+| SynthText  |   | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)                          | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.lmdb](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.lmdb) |    -  |      |
+| SynthAdd   |   |       [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x)                                                                           |   [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)|- |      |
 
 - For `icdar_2013`:
   - Step1: Download `Challenge2_Test_Task3_Images.zip` and `Challenge2_Training_Task3_Images_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads)
@@ -173,7 +175,7 @@ This page lists the datasets which are commonly used in text detection, text rec
   ln -s /path/to/SynthText SynthText
   ```
 - For `SynthAdd`:
-  - Step1: Download `SynthText_Add.zip` from [SynthText_Add.zip](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/SynthText_Add.zip)
+  - Step1: Download `SynthText_Add.zip` from [SynthAdd](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg) (code:627x))
   - Step2: Download [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)
   - Step3:
   ```bash

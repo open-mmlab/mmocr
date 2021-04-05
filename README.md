@@ -48,7 +48,7 @@ v1.0 was released on 07/04/2021.
 
 ## Benchmark and Model Zoo
 
-Please refer to [MODEL_ZOO.md](MODEL_ZOO.md) for more details.
+Please refer to [modelzoo.md](modelzoo.md) for more details.
 
 ## Installation
 

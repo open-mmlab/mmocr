@@ -72,9 +72,11 @@ class TFDecoder(BaseDecoder):
         return output
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
-        valid_ratios = [
-            img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-        ]
+        valid_ratios = None
+        if img_metas is not None:
+            valid_ratios = [
+                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+            ]
         n, c, h, w = out_enc.size()
         src_mask = None
         if valid_ratios is not None:
@@ -91,9 +93,11 @@ class TFDecoder(BaseDecoder):
         return outputs
 
     def forward_test(self, feat, out_enc, img_metas):
-        valid_ratios = [
-            img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-        ]
+        valid_ratios = None
+        if img_metas is not None:
+            valid_ratios = [
+                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+            ]
         n, c, h, w = out_enc.size()
         src_mask = None
         if valid_ratios is not None:

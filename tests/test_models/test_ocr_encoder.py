@@ -38,9 +38,10 @@ def test_transformer_encoder():
     tf_encoder.init_weights()
     tf_encoder.train()
 
-    feat = torch.randn(1, 512, 4, 40)
+    feat = torch.randn(1, 512, 1, 25)
     out_enc = tf_encoder(feat)
-    assert out_enc.shape == torch.Size([1, 160, 512])
+    print('hello', out_enc.size())
+    assert out_enc.shape == torch.Size([1, 512, 1, 25])
 
 
 def test_base_encoder():

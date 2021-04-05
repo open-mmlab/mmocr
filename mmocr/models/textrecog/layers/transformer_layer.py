@@ -138,7 +138,6 @@ class MultiHeadAttention(nn.Module):
         self.proj_drop = nn.Dropout(dropout)
 
     def forward(self, q, k, v, mask=None):
-        assert mask.dim() in [2, 3, 4]
         batch_size, len_q, _ = q.size()
         _, len_k, _ = k.size()
 

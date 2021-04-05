@@ -30,9 +30,11 @@ class TFEncoder(BaseEncoder):
         self.layer_norm = nn.LayerNorm(d_model)
 
     def forward(self, feat, img_metas=None):
-        valid_ratios = [
-            img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-        ]
+        valid_ratios = [1.0 for _ in range(feat.size(0))]
+        if img_metas is not None:
+            valid_ratios = [
+                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+            ]
         n, c, h, w = feat.size()
         mask = feat.new_zeros((n, h, w))
         for i, valid_ratio in enumerate(valid_ratios):

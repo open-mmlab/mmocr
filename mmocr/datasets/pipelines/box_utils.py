@@ -1,6 +1,8 @@
-import mmocr.utils as utils
 import numpy as np
 from shapely.geometry import LineString, Point, Polygon
+
+import mmocr.utils as utils
+
 
 def sort_vertex(points_x, points_y):
     """Sort box vertices in clockwise order from left-top first.

@@ -100,7 +100,7 @@ def test_transformer_decoder():
     decoder.init_weights()
     decoder.train()
 
-    out_enc = torch.rand(1, 128, 512)
+    out_enc = torch.rand(1, 512, 1, 25)
     tgt_dict = {'padded_targets': torch.LongTensor([[1, 1, 1, 1, 36]])}
     img_metas = [{'valid_ratio': 1.0}]
     tgt_dict['padded_targets'] = tgt_dict['padded_targets']
