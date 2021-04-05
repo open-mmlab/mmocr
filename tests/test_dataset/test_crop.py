@@ -3,9 +3,8 @@ import math
 import numpy as np
 import pytest
 
-from mmocr.datasets.pipelines.box_utils import convert_canonical
-from mmocr.datasets.pipelines.crop import (box_jitter, crop_img, sort_vertex,
-                                           warp_img)
+from mmocr.datasets.pipelines.box_utils import convert_canonical, sort_vertex
+from mmocr.datasets.pipelines.crop import box_jitter, crop_img, warp_img
 
 
 def test_order_vertex():
