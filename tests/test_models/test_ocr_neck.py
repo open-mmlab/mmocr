@@ -20,7 +20,8 @@ def test_char_attn():
 
 def test_feat_generator():
     in_feat = torch.rand(1, 128, 32, 32)
-    feat_generator = FeatGenerator(in_channels=128, out_channels=128)
+    feat_generator = FeatGenerator(
+        in_channels=128, out_channels=128, deformable=False)
 
     attn_map, feat_map = feat_generator(in_feat)
     assert attn_map.shape == torch.Size([1, 1, 32, 32])
@@ -34,7 +35,7 @@ def test_cafcn_neck():
     in_s4 = torch.rand(1, 512, 16, 16)
     in_s5 = torch.rand(1, 512, 16, 16)
 
-    cafcn_neck = CAFCNNeck()
+    cafcn_neck = CAFCNNeck(deformable=False)
     cafcn_neck.init_weights()
     cafcn_neck.train()
 
