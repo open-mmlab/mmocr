@@ -1,11 +1,16 @@
-# Baseline of segmentation based text recognition method.
+# SegOCR Simple Baseline.
 
 ## Introduction
 
-A Baseline Method for Segmentation based Text Recognition.
-
 [ALGORITHM]
-
+```bibtex
+@unpublished{key,
+  title={SegOCR Simple Baseline.},
+  author={},
+  note={Unpublished Manuscript},
+  year={2021}
+}
+```
 ## Dataset
 
 ### Train Dataset
