@@ -98,7 +98,7 @@ e. Clone the mmocr repository into it. The mmdetection repo is separate from the
 
 ```shell
 cd ..
-git clone git@gitlab.sz.sensetime.com:kuangzhh/mmocr.git
+git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
 ```
 
@@ -142,7 +142,7 @@ export PYTHONPATH=$(pwd):$PYTHONPATH
 
 # install mmocr
 cd ..
-git clone git@gitlab.sz.sensetime.com:kuangzhh/mmocr.git
+git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr # code/mmocr
 
 pip install -r requirements.txt
@@ -233,7 +233,6 @@ mmocr
 │   ├── test_models
 │   ├── test_tools
 │   └── test_utils
-├── tmp.txt
 └── tools
     ├── data
     ├── dist_test.sh
@@ -248,5 +247,3 @@ mmocr
     ├── test.py
     └── train.py
 ```
-
-The icdar2017 official annotations can be converted into the coco format that mmocr supports using `code/mmocr/tools/data_converter/icdar_converter.py`.
