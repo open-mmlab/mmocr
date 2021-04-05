@@ -1,9 +1,12 @@
+import math
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 from mmocr.models.builder import DECODERS
-from mmocr.models.textrecog.layers import (DecoderLayer, PositionalEncoding,
+from mmocr.models.textrecog.layers import (PositionalEncoding,
+                                           TransformerDecoderLayer,
                                            get_pad_mask, get_subsequent_mask)
 from .base_decoder import BaseDecoder
 
@@ -41,7 +44,8 @@ class TFDecoder(BaseDecoder):
         self.dropout = nn.Dropout(p=dropout)
 
         self.layer_stack = nn.ModuleList([
-            DecoderLayer(d_model, d_inner, n_head, d_k, d_v, dropout=dropout)
+            TransformerDecoderLayer(
+                d_model, d_inner, n_head, d_k, d_v, dropout=dropout)
             for _ in range(n_layers)
         ])
         self.layer_norm = nn.LayerNorm(d_model, eps=1e-6)
@@ -61,21 +65,47 @@ class TFDecoder(BaseDecoder):
             output = dec_layer(
                 output,
                 src,
-                slf_attn_mask=trg_mask,
+                self_attn_mask=trg_mask,
                 dec_enc_attn_mask=src_mask)
         output = self.layer_norm(output)
 
         return output
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
+        valid_ratios = [
+            img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+        ]
+        n, c, h, w = out_enc.size()
+        src_mask = None
+        if valid_ratios is not None:
+            src_mask = out_enc.new_zeros((n, h, w))
+            for i, valid_ratio in enumerate(valid_ratios):
+                valid_width = min(w, math.ceil(w * valid_ratio))
+                src_mask[i, :, :valid_width] = 1
+            src_mask = src_mask.view(n, h * w)
+        out_enc = out_enc.view(n, c, h * w).permute(0, 2, 1)
+        out_enc = out_enc.contiguous()
         targets = targets_dict['padded_targets'].to(out_enc.device)
-        attn_output = self._attention(targets, out_enc, src_mask=None)
+        attn_output = self._attention(targets, out_enc, src_mask=src_mask)
         outputs = self.classifier(attn_output)
         return outputs
 
     def forward_test(self, feat, out_enc, img_metas):
-        bsz = out_enc.size(0)
-        init_target_seq = torch.full((bsz, self.max_seq_len + 1),
+        valid_ratios = [
+            img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+        ]
+        n, c, h, w = out_enc.size()
+        src_mask = None
+        if valid_ratios is not None:
+            src_mask = out_enc.new_zeros((n, h, w))
+            for i, valid_ratio in enumerate(valid_ratios):
+                valid_width = min(w, math.ceil(w * valid_ratio))
+                src_mask[i, :, :valid_width] = 1
+            src_mask = src_mask.view(n, h * w)
+        out_enc = out_enc.view(n, c, h * w).permute(0, 2, 1)
+        out_enc = out_enc.contiguous()
+
+        init_target_seq = torch.full((n, self.max_seq_len + 1),
                                      self.padding_idx,
                                      device=out_enc.device,
                                      dtype=torch.long)
@@ -85,7 +115,7 @@ class TFDecoder(BaseDecoder):
         outputs = []
         for step in range(0, self.max_seq_len):
             decoder_output = self._attention(
-                init_target_seq, out_enc, src_mask=None)
+                init_target_seq, out_enc, src_mask=src_mask)
             # bsz * seq_len * 512
             step_result = F.softmax(
                 self.classifier(decoder_output[:, step, :]), dim=-1)
