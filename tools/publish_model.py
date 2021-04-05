@@ -21,7 +21,7 @@ def process_checkpoint(in_file, out_file):
     # if it is necessary to remove some sensitive data in checkpoint['meta'],
     # add the code here.
     if 'meta' in checkpoint:
-        checkpoint['meta'] = ''
+        checkpoint['meta'] = {'CLASSES': 0}
     torch.save(checkpoint, out_file)
     sha = subprocess.check_output(['sha256sum', out_file]).decode()
     final_file = out_file.rstrip('.pth') + '-{}.pth'.format(sha[:8])
