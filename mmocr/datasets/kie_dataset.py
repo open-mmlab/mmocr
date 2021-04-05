@@ -171,7 +171,7 @@ class KIEDataset(BaseDataset):
         }
 
     def list_to_numpy(self, ann_infos):
-        """Convert list to np.ndarray."""
+        """Convert bboxes, relations, texts and labels to ndarray."""
         boxes, text_inds = ann_infos['boxes'], ann_infos['text_inds']
         boxes = np.array(boxes, np.int32)
         relations, bboxes = self.compute_relation(boxes)
@@ -188,7 +188,7 @@ class KIEDataset(BaseDataset):
                     edges = (edges & labels == 1).astype(np.int32)
                 np.fill_diagonal(edges, -1)
                 labels = np.concatenate([labels, edges], -1)
-        padded_text_inds = self.pad_text_ind(text_inds)
+        padded_text_inds = self.pad_text_indices(text_inds)
 
         return dict(
             bboxes=bboxes,
@@ -196,7 +196,7 @@ class KIEDataset(BaseDataset):
             texts=padded_text_inds,
             labels=labels)
 
-    def pad_text_ind(self, text_inds):
+    def pad_text_indices(self, text_inds):
         """Pad text index to same length."""
         max_len = max([len(text_ind) for text_ind in text_inds])
         padded_text_inds = -np.ones((len(text_inds), max_len), np.int32)
