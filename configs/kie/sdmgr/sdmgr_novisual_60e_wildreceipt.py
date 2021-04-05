@@ -1,5 +1,3 @@
-dataset_type = 'KIEDataset'
-data_root = 'data/wildreceipt'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 max_scale, min_scale = 1024, 512
@@ -27,33 +25,35 @@ test_pipeline = [
     dict(type='Collect', keys=['img', 'relations', 'texts', 'gt_bboxes'])
 ]
 
-vocab_file = 'dict.txt'
-class_file = 'class_list.txt'
+dataset_type = 'KIEDataset'
+data_root = 'data/wildreceipt/'
+
+loader = dict(
+    type='HardDiskLoader',
+    repeat=1,
+    parser=dict(
+        type='LineJsonParser',
+        keys=['file_name', 'height', 'width', 'annotations']))
+
+train = dict(
+    type=dataset_type,
+    ann_file=data_root + 'train.txt',
+    pipeline=train_pipeline,
+    img_prefix=data_root,
+    loader=loader,
+    dict_file=data_root + 'dict.txt',
+    test_mode=False)
+test = dict(
+    type=dataset_type,
+    ann_file=data_root + 'test.txt',
+    pipeline=test_pipeline,
+    img_prefix=data_root,
+    loader=loader,
+    dict_file=data_root + 'dict.txt',
+    test_mode=True)
 
 data = dict(
-    samples_per_gpu=4,
-    workers_per_gpu=0,
-    train=dict(
-        type=dataset_type,
-        ann_file='train.txt',
-        pipeline=train_pipeline,
-        data_root=data_root,
-        vocab_file=vocab_file,
-        class_file=class_file),
-    val=dict(
-        type=dataset_type,
-        ann_file='test.txt',
-        pipeline=test_pipeline,
-        data_root=data_root,
-        vocab_file=vocab_file,
-        class_file=class_file),
-    test=dict(
-        type=dataset_type,
-        ann_file='test.txt',
-        pipeline=test_pipeline,
-        data_root=data_root,
-        vocab_file=vocab_file,
-        class_file=class_file))
+    samples_per_gpu=4, workers_per_gpu=0, train=train, val=test, test=test)
 
 evaluation = dict(
     interval=1,
@@ -69,7 +69,8 @@ model = dict(
         type='SDMGRHead', visual_dim=16, num_chars=92, num_classes=26),
     visual_modality=False,
     train_cfg=None,
-    test_cfg=None)
+    test_cfg=None,
+    class_list=data_root + 'class_list.txt')
 
 optimizer = dict(type='Adam', weight_decay=0.0001)
 optimizer_config = dict(grad_clip=None)
@@ -82,16 +83,7 @@ lr_config = dict(
 total_epochs = 60
 
 checkpoint_config = dict(interval=1)
-log_config = dict(
-    interval=50,
-    hooks=[
-        dict(type='TextLoggerHook'),
-        # dict(
-        #     type='PaviLoggerHook',
-        #     add_last_ckpt=True,
-        #     interval=5,
-        #     init_kwargs=dict(project='kie')),
-    ])
+log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None

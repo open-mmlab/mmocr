@@ -1,9 +1,13 @@
+import warnings
+
+import mmcv
 from torch import nn
 from torch.nn import functional as F
 
 from mmdet.core import bbox2roi
 from mmdet.models.builder import DETECTORS, build_roi_extractor
 from mmdet.models.detectors import SingleStageDetector
+from mmocr.core import imshow_edge_node
 
 
 @DETECTORS.register_module()
@@ -13,6 +17,9 @@ class SDMGR(SingleStageDetector):
 
     Args:
         visual_modality (bool): Whether use the visual modality.
+        class_list (None | str): Mapping file of class index to
+            class name. If None, class index will be shown in
+            `show_results`, else class name.
     """
 
     def __init__(self,
@@ -26,7 +33,8 @@ class SDMGR(SingleStageDetector):
                  visual_modality=False,
                  train_cfg=None,
                  test_cfg=None,
-                 pretrained=None):
+                 pretrained=None,
+                 class_list=None):
         super().__init__(backbone, neck, bbox_head, train_cfg, test_cfg,
                          pretrained)
         self.visual_modality = visual_modality
@@ -38,6 +46,7 @@ class SDMGR(SingleStageDetector):
             self.maxpool = nn.MaxPool2d(extractor['roi_layer']['output_size'])
         else:
             self.extractor = None
+        self.class_list = class_list
 
     def forward_train(self, img, img_metas, relations, texts, gt_bboxes,
                       gt_labels):
@@ -85,3 +94,61 @@ class SDMGR(SingleStageDetector):
             feats = self.maxpool(self.extractor([x], bbox2roi(gt_bboxes)))
             return feats.view(feats.size(0), -1)
         return None
+
+    def show_result(self,
+                    img,
+                    result,
+                    boxes,
+                    win_name='',
+                    show=False,
+                    wait_time=0,
+                    out_file=None,
+                    **kwargs):
+        """Draw `result` on `img`.
+
+        Args:
+            img (str or tensor): The image to be displayed.
+            result (dict): The results to draw on `img`.
+            boxes (list): Bbox of img.
+            win_name (str): The window name.
+            wait_time (int): Value of waitKey param.
+                Default: 0.
+            show (bool): Whether to show the image.
+                Default: False.
+            out_file (str or None): The output filename.
+                Default: None.
+
+        Returns:
+            img (tensor): Only if not `show` or `out_file`.
+        """
+        img = mmcv.imread(img)
+        img = img.copy()
+
+        idx_to_cls = {}
+        if self.class_list is not None:
+            with open(self.class_list, 'r') as fr:
+                for line in fr:
+                    line = line.strip().split()
+                    class_idx, class_label = line
+                    idx_to_cls[class_idx] = class_label
+
+        # if out_file specified, do not show image in window
+        if out_file is not None:
+            show = False
+
+        img = imshow_edge_node(
+            img,
+            result,
+            boxes,
+            idx_to_cls=idx_to_cls,
+            show=show,
+            win_name=win_name,
+            wait_time=wait_time,
+            out_file=out_file)
+
+        if not (show or out_file):
+            warnings.warn('show==False and out_file is not specified, only '
+                          'result image will be returned')
+            return img
+
+        return img
