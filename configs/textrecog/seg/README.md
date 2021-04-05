@@ -3,6 +3,7 @@
 ## Introduction
 
 [ALGORITHM]
+
 ```bibtex
 @unpublished{key,
   title={SegOCR Simple Baseline.},
@@ -11,6 +12,7 @@
   year={2021}
 }
 ```
+
 ## Dataset
 
 ### Train Dataset
@@ -30,10 +32,10 @@
 
 ## Results and Models
 
-|Backbone|Neck|Head|||Regular Text|||Irregular Text|download
-| :-------------: | :-----: | :-----: | :------: | :-----: | :----: | :-----: | :-----: | :-----: | :-----: |
-|||||IIIT5K|SVT|IC13||CT80|
-|R31-1/16|FPNOCR|1x||90.9|81.8|90.7||80.9|[model](https://download.openmmlab.com/mmocr/textrecog/seg/seg_r31_1by16_fpnocr_academic-0c50e163.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/seg/20210325_112835.log.json) |
+| Backbone |  Neck  | Head |     |        | Regular Text |      |     | Irregular Text |                                                                                           download                                                                                           |
+| :------: | :----: | :--: | :-: | :----: | :----------: | :--: | :-: | :------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|          |        |      |     | IIIT5K |     SVT      | IC13 |     |      CT80      |
+| R31-1/16 | FPNOCR |  1x  |     |  90.9  |     81.8     | 90.7 |     |      80.9      | [model](https://download.openmmlab.com/mmocr/textrecog/seg/seg_r31_1by16_fpnocr_academic-0c50e163.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/seg/20210325_112835.log.json) |
 
 **Notes:**
 
