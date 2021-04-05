@@ -4,7 +4,7 @@
 
 [ALGORITHM]
 
-```latex
+```bibtex
 @article{shi2016end,
   title={An end-to-end trainable neural network for image-based sequence recognition and its application to scene text recognition},
   author={Shi, Baoguang and Bai, Xiang and Yao, Cong},
@@ -31,7 +31,7 @@
 
 ## Results and models
 
-| methods |        | Regular Text |      |     |      | Irregular Text |      |                          download                           |
-| :-----: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :---------------------------------------------------------: |
+| methods |        | Regular Text |      |     |      | Irregular Text |      |       download       |
+| :-----: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :------------------: |
 | methods | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |
-|  CRNN   |  80.5  |     81.5     | 86.5 |     |  -   |       -        |  -   | [config](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic_dataset.py) [log]() [model](https) |
+|  CRNN   |  80.5  |     81.5     | 86.5 |     |  -   |       -        |  -   | [model]() \| [log]() |

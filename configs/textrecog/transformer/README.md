@@ -1,5 +1,7 @@
 ## Introduction
 
+[ALGORITHM]
+
 ### Train Dataset
 
 |  trainset  | instance_num | repeat_num | note  |
@@ -24,7 +26,7 @@
 
 ## Results and models
 
-|   methods   |        | Regular Text |      |     |      | Irregular Text |      | download |
-| :---------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :------: |
+|   methods   |        | Regular Text |      |     |      | Irregular Text |      |       download       |
+| :---------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :------------------: |
 |             | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |
-| Transformer |  93.3  |     85.8     | 91.3 |     | 73.2 |      76.6      | 87.8 |          |
+| Transformer |  93.3  |     85.8     | 91.3 |     | 73.2 |      76.6      | 87.8 | [model]() \| [log]() |
