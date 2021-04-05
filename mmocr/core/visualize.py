@@ -4,6 +4,7 @@ import warnings
 import cv2
 import mmcv
 import numpy as np
+import torch
 from matplotlib import pyplot as plt
 
 import mmocr.utils as utils
@@ -367,3 +368,52 @@ def imshow_text_label(img,
         mmcv.imwrite(img, out_file)
 
     return img
+
+
+def imshow_edge_node(img,
+                     result,
+                     boxes,
+                     idx_to_cls={},
+                     show=False,
+                     win_name='',
+                     wait_time=-1,
+                     out_file=None):
+
+    img = mmcv.imread(img)
+    h, w = img.shape[:2]
+
+    pred_img = np.ones((h, w * 2, 3), dtype=np.uint8) * 255
+    max_value, max_idx = torch.max(result['nodes'].detach().cpu(), -1)
+    node_pred_label = max_idx.numpy().tolist()
+    node_pred_score = max_value.numpy().tolist()
+
+    for i, box in enumerate(boxes):
+        new_box = [[box[0], box[1]], [box[2], box[1]], [box[2], box[3]],
+                   [box[0], box[3]]]
+        Pts = np.array([new_box], np.int32)
+        cv2.polylines(
+            img, [Pts.reshape((-1, 1, 2))],
+            True,
+            color=(255, 255, 0),
+            thickness=1)
+        x_min = int(min([point[0] for point in new_box]))
+        y_min = int(min([point[1] for point in new_box]))
+
+        pred_label = str(node_pred_label[i])
+        if pred_label in idx_to_cls:
+            pred_label = idx_to_cls[pred_label]
+        pred_score = '{:.2f}'.format(node_pred_score[i])
+        text = pred_label + '(' + pred_score + ')'
+        cv2.putText(pred_img, text, (x_min * 2, y_min),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+
+    vis_img = np.ones((h, w * 3, 3), dtype=np.uint8) * 255
+    vis_img[:, :w] = img
+    vis_img[:, w:] = pred_img
+
+    if show:
+        mmcv.imshow(vis_img, win_name, wait_time)
+    if out_file is not None:
+        mmcv.imwrite(vis_img, out_file)
+
+    return vis_img
