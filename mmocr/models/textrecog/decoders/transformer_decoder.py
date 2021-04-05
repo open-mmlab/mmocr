@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from mmocr.models.builder import DECODERS
-from mmocr.models.textrecog.layers import (PositionalEncoding,
+from mmocr.models.textrecog import (PositionalEncoding,
                                            TransformerDecoderLayer,
                                            get_pad_mask, get_subsequent_mask)
 from .base_decoder import BaseDecoder
