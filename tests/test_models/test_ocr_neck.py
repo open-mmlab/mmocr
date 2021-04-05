@@ -18,7 +18,6 @@ def test_char_attn():
     assert out_feat_map.shape == torch.Size([1, 128, 32, 32])
 
 
-@pytest.mark.skip(reason='TODO: re-enable after CI support pytorch>1.4')
 def test_feat_generator():
     in_feat = torch.rand(1, 128, 32, 32)
     feat_generator = FeatGenerator(in_channels=128, out_channels=128)
@@ -28,7 +27,6 @@ def test_feat_generator():
     assert feat_map.shape == torch.Size([1, 128, 32, 32])
 
 
-@pytest.mark.skip(reason='TODO: re-enable after CI support pytorch>1.4')
 def test_cafcn_neck():
     in_s1 = torch.rand(1, 64, 64, 64)
     in_s2 = torch.rand(1, 128, 32, 32)

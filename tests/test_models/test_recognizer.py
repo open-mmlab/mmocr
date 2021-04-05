@@ -81,7 +81,6 @@ def test_base_recognizer():
     tmp_dir.cleanup()
 
 
-@pytest.mark.skip(reason='TODO: re-enable after CI support pytorch>1.4')
 def test_seg_recognizer():
     tmp_dir = tempfile.TemporaryDirectory()
     # create dummy data
