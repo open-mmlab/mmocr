@@ -15,6 +15,20 @@
 }
 ```
 
+[BACKBONE]
+
+```bibtex
+@inproceedings{li2019show,
+  title={Show, attend and read: A simple and strong baseline for irregular text recognition},
+  author={Li, Hui and Wang, Peng and Shen, Chunhua and Zhang, Guyu},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={33},
+  number={01},
+  pages={8610--8617},
+  year={2019}
+}
+```
+
 ## Dataset
 
 ### Train Dataset
