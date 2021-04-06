@@ -81,7 +81,6 @@ def test_base_recognizer():
     tmp_dir.cleanup()
 
 
-@pytest.mark.skip(reason='TODO: re-enable after CI support pytorch>1.4')
 def test_seg_recognizer():
     tmp_dir = tempfile.TemporaryDirectory()
     # create dummy data
@@ -92,10 +91,20 @@ def test_seg_recognizer():
         type='SegConvertor', dict_file=dict_file, with_unknown=False)
 
     preprocessor = None
-    backbone = dict(type='ResNet31OCR')
-    neck = dict(type='FPNOCR')
-    head = dict(type='SegHead')
-    loss = dict(type='SegLoss')
+    backbone = dict(
+        type='ResNet31OCR',
+        layers=[1, 2, 5, 3],
+        channels=[32, 64, 128, 256, 512, 512],
+        out_indices=[0, 1, 2, 3],
+        stage4_pool_cfg=dict(kernel_size=2, stride=2),
+        last_stage_pool=True)
+    neck = dict(
+        type='FPNOCR', in_channels=[128, 256, 512, 512], out_channels=256)
+    head = dict(
+        type='SegHead',
+        in_channels=256,
+        upsample_param=dict(scale_factor=2.0, mode='nearest'))
+    loss = dict(type='SegLoss', seg_downsample_ratio=1.0)
 
     with pytest.raises(AssertionError):
         SegRecognizer(backbone=None)
@@ -123,16 +132,17 @@ def test_seg_recognizer():
 
     # test extract feat
     feats = recognizer.extract_feat(imgs)
-    assert len(feats) == 5
-    assert feats[0].shape == torch.Size([1, 64, 32, 128])
-    assert feats[1].shape == torch.Size([1, 128, 16, 64])
-    assert feats[2].shape == torch.Size([1, 256, 8, 32])
-    assert feats[3].shape == torch.Size([1, 512, 8, 32])
-    assert feats[4].shape == torch.Size([1, 512, 8, 32])
+    assert len(feats) == 4
+
+    assert feats[0].shape == torch.Size([1, 128, 32, 128])
+    assert feats[1].shape == torch.Size([1, 256, 16, 64])
+    assert feats[2].shape == torch.Size([1, 512, 8, 32])
+    assert feats[3].shape == torch.Size([1, 512, 4, 16])
 
     attn_tgt = np.zeros((64, 256), dtype=np.float32)
     segm_tgt = np.zeros((64, 256), dtype=np.float32)
-    gt_kernels = BitmapMasks([attn_tgt, segm_tgt], 64, 256)
+    mask = np.zeros((64, 256), dtype=np.float32)
+    gt_kernels = BitmapMasks([attn_tgt, segm_tgt, mask], 64, 256)
 
     # test forward train
     img_metas = [{'text': 'hello', 'valid_ratio': 1.0}]

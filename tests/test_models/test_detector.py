@@ -261,7 +261,7 @@ def test_psenet(cfg_file):
     detector.show_result(img, results)
 
 
-@pytest.mark.skip(reason='TODO: re-enable after CI support pytorch>1.4')
+@pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
 @pytest.mark.parametrize('cfg_file', [
     'textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py',
     'textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py'
