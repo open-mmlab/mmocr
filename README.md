@@ -11,7 +11,7 @@
 
 MMOCR is an open-source toolbox based on PyTorch and mmdetection for text detection, text recognition, and the corresponding downstream tasks including key information extraction. It is part of the open-mmlab project developed by [Multimedia Laboratory, CUHK](http://mmlab.ie.cuhk.edu.hk/).
 
-The master branch works with **PyTorch 1.5**.
+The master branch works with **PyTorch 1.5+**.
 
 Documentation: https://mmocr.readthedocs.io/en/latest/.
 
