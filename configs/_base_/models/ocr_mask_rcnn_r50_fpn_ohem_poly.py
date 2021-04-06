@@ -37,7 +37,7 @@ model = dict(
         type='StandardRoIHead',
         bbox_roi_extractor=dict(
             type='SingleRoIExtractor',
-            roi_layer=dict(type='RoIAlign', out_size=7, sample_num=0),
+            roi_layer=dict(type='RoIAlign', output_size=7, sample_num=0),
             out_channels=256,
             featmap_strides=[4, 8, 16, 32]),
         bbox_head=dict(
@@ -56,7 +56,7 @@ model = dict(
             loss_bbox=dict(type='L1Loss', loss_weight=1.0)),
         mask_roi_extractor=dict(
             type='SingleRoIExtractor',
-            roi_layer=dict(type='RoIAlign', out_size=14, sample_num=0),
+            roi_layer=dict(type='RoIAlign', output_size=14, sample_num=0),
             out_channels=256,
             featmap_strides=[4, 8, 16, 32]),
         mask_head=dict(

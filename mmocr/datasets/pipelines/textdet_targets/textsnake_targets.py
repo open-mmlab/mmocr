@@ -344,7 +344,7 @@ class TextSnakeTargets(BaseTextDetTargets):
             text_instance = [[poly[0][i], poly[0][i + 1]]
                              for i in range(0, len(poly[0]), 2)]
             polygon_points = np.array(
-                text_instance, dtype=np.int).reshape(-1, 2)
+                text_instance, dtype=np.int32).reshape(-1, 2)
 
             _, _, top_line, bot_line = self.reorder_poly_edge(polygon_points)
             resampled_top_line, resampled_bot_line = self.resample_sidelines(
@@ -407,7 +407,8 @@ class TextSnakeTargets(BaseTextDetTargets):
             assert len(poly) == 1
             text_instance = [[poly[0][i], poly[0][i + 1]]
                              for i in range(0, len(poly[0]), 2)]
-            polygon = np.array(text_instance, dtype=np.int).reshape((1, -1, 2))
+            polygon = np.array(
+                text_instance, dtype=np.int32).reshape((1, -1, 2))
             cv2.fillPoly(text_region_mask, polygon, 1)
 
         return text_region_mask

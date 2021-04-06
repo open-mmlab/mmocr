@@ -111,7 +111,7 @@ class BaseTextDetTargets:
         text_kernel = np.zeros((h, w), dtype=np.float32)
 
         for text_ind, poly in enumerate(text_polys):
-            instance = poly[0].reshape(-1, 2).astype(np.int)
+            instance = poly[0].reshape(-1, 2).astype(np.int32)
             area = plg.Polygon(instance).area()
             peri = cv2.arcLength(instance, True)
             distance = min(
@@ -157,7 +157,8 @@ class BaseTextDetTargets:
         mask = np.ones(mask_size, dtype=np.uint8)
 
         for poly in polygons_ignore:
-            instance = poly[0].reshape(-1, 2).astype(np.int).reshape(1, -1, 2)
+            instance = poly[0].reshape(-1,
+                                       2).astype(np.int32).reshape(1, -1, 2)
             cv2.fillPoly(mask, instance, 0)
 
         return mask
