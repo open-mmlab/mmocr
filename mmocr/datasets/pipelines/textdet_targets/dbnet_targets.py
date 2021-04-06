@@ -136,8 +136,9 @@ class DBNetTargets(BaseTextDetTargets):
         assert polygon.shape[1] == 2
 
         polygon_shape = Polygon(polygon)
-        distance = polygon_shape.area * \
-            (1 - np.power(self.shrink_ratio, 2)) / polygon_shape.length
+        distance = (
+            polygon_shape.area * (1 - np.power(self.shrink_ratio, 2)) /
+            polygon_shape.length)
         subject = [tuple(p) for p in polygon]
         padding = pyclipper.PyclipperOffset()
         padding.AddPath(subject, pyclipper.JT_ROUND,

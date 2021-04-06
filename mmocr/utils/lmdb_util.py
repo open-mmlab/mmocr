@@ -6,9 +6,9 @@ from pathlib import Path
 import lmdb
 
 
-def lmdb_converter(imglist, output, batch_size=1000, coding='utf-8'):
-    # read imglist
-    with open(imglist) as f:
+def lmdb_converter(img_list, output, batch_size=1000, coding='utf-8'):
+    # read img_list
+    with open(img_list) as f:
         lines = f.readlines()
 
     # create lmdb database

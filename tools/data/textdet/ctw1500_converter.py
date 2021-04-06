@@ -1,6 +1,5 @@
 import argparse
 import glob
-import os
 import os.path as osp
 import xml.etree.ElementTree as ET
 from functools import partial
@@ -8,56 +7,9 @@ from functools import partial
 import mmcv
 import numpy as np
 from shapely.geometry import Polygon
+from tools.data.utils.common import convert_annotations, is_not_png
 
-
-def check_ignore_orientation(img_file):
-    """Check if the image has orientation information.
-
-    If yes, ignore it by converting the image format to png, otherwise return
-    the original filename.
-
-    Args:
-        img_file(str): The image path
-
-    Returns:
-        The converted image filename with proper postfix
-    """
-    assert isinstance(img_file, str)
-    assert img_file
-
-    # read imgs with ignoring orientations
-    img = mmcv.imread(img_file, 'unchanged')
-    # read imgs with orientations as dataloader does when training and testing
-    img_color = mmcv.imread(img_file, 'color')
-    # make sure imgs have no orientations info, or annotation gt is wrong.
-    if img.shape[:2] == img_color.shape[:2]:
-        return img_file
-    else:
-        target_file = osp.splitext(img_file)[0] + '.png'
-        # read img with ignoring orientation information
-        img = mmcv.imread(img_file, 'unchanged')
-        mmcv.imwrite(img, target_file)
-        os.remove(img_file)
-        print(
-            f'{img_file} has orientation info. Ingore it by converting to png')
-        return target_file
-
-
-def is_not_png(img_file):
-    """Check img_file is not png image.
-
-    Args:
-        img_file(str): The input image file name
-
-    Returns:
-        The bool flag indicating whether it is not png
-    """
-    assert isinstance(img_file, str)
-    assert img_file
-
-    suffix = osp.splitext(img_file)[1]
-
-    return (suffix not in ['.PNG', '.png'])
+from mmocr.utils import drop_orientation
 
 
 def collect_files(img_dir, gt_dir, split):
@@ -79,14 +31,13 @@ def collect_files(img_dir, gt_dir, split):
     # note that we handle png and jpg only. Pls convert others such as gif to
     # jpg or png offline
     suffixes = ['.png', '.PNG', '.jpg', '.JPG', '.jpeg', '.JPEG']
-    # suffixes = ['.png']
 
     imgs_list = []
     for suffix in suffixes:
         imgs_list.extend(glob.glob(osp.join(img_dir, '*' + suffix)))
 
     imgs_list = [
-        check_ignore_orientation(f) if is_not_png(f) else f for f in imgs_list
+        drop_orientation(f) if is_not_png(f) else f for f in imgs_list
     ]
 
     files = []
@@ -152,8 +103,8 @@ def load_txt_info(gt_file, img_info):
         iscrowd = 0
         area = polygon.area
         # convert to COCO style XYWH format
-        minx, miny, maxx, maxy = polygon.bounds
-        bbox = [minx, miny, maxx - minx, maxy - miny]
+        min_x, min_y, max_x, max_y = polygon.bounds
+        bbox = [min_x, min_y, max_x - min_x, max_y - min_y]
 
         anno = dict(
             iscrowd=iscrowd,
@@ -243,52 +194,6 @@ def load_img_info(files, split):
         raise NotImplementedError
 
     return img_info
-
-
-def convert_annotations(image_infos, out_json_name):
-    """Convert the annotation into coco style.
-
-    Args:
-        image_infos(list): The list of image information dicts
-        out_json_name(str): The output json filename
-
-    Returns:
-        out_json(dict): The coco style dict
-    """
-    assert isinstance(image_infos, list)
-    assert isinstance(out_json_name, str)
-    assert out_json_name
-
-    out_json = dict()
-    img_id = 0
-    ann_id = 0
-    out_json['images'] = []
-    out_json['categories'] = []
-    out_json['annotations'] = []
-    for image_info in image_infos:
-        image_info['id'] = img_id
-        anno_infos = image_info.pop('anno_info')
-        out_json['images'].append(image_info)
-        for anno_info in anno_infos:
-            anno_info['image_id'] = img_id
-            anno_info['id'] = ann_id
-            out_json['annotations'].append(anno_info)
-            ann_id += 1
-            # if image_info['file_name'].find('png'):
-            #    img = mmcv.imread('data/ctw1500/imgs/'+
-            #        image_info['file_name'], 'color')
-            #    show_img_boundary(img, anno_info['segmentation'] )
-        img_id += 1
-        print(img_id)
-    cat = dict(id=1, name='text')
-    out_json['categories'].append(cat)
-
-    if len(out_json['annotations']) == 0:
-        out_json.pop('annotations')
-
-    mmcv.dump(out_json, out_json_name)
-
-    return out_json
 
 
 def parse_args():

@@ -30,28 +30,25 @@ class BaseTextDetTargets:
         """
         # suppose a triangle with three edge abc with c=point_1 point_2
         # a^2
-        square_distance_1 = np.square(xs - point_1[0]) + np.square(ys -
-                                                                   point_1[1])
+        a_square = np.square(xs - point_1[0]) + np.square(ys - point_1[1])
         # b^2
-        square_distance_2 = np.square(xs - point_2[0]) + np.square(ys -
-                                                                   point_2[1])
+        b_square = np.square(xs - point_2[0]) + np.square(ys - point_2[1])
         # c^2
-        square_distance = np.square(point_1[0] -
-                                    point_2[0]) + np.square(point_1[1] -
-                                                            point_2[1])
-        # cosC=(c^2-a^2-b^2)/2(ab)
-        cosin = (square_distance - square_distance_1 - square_distance_2) / \
-            (np.finfo(np.float32).eps +
-                2 * np.sqrt(square_distance_1 * square_distance_2))
+        c_square = np.square(point_1[0] - point_2[0]) + np.square(point_1[1] -
+                                                                  point_2[1])
+        # -cosC=(c^2-a^2-b^2)/2(ab)
+        neg_cos_c = (
+            (c_square - a_square - b_square) /
+            (np.finfo(np.float32).eps + 2 * np.sqrt(a_square * b_square)))
         # sinC^2=1-cosC^2
-        square_sin = 1 - np.square(cosin)
+        square_sin = 1 - np.square(neg_cos_c)
         square_sin = np.nan_to_num(square_sin)
         # distance=a*b*sinC/c=a*h/c=2*area/c
-        result = np.sqrt(square_distance_1 * square_distance_2 * square_sin /
-                         (np.finfo(np.float32).eps + square_distance))
-        # set result to minimum edge if C>pi/2
-        result[cosin < 0] = np.sqrt(
-            np.fmin(square_distance_1, square_distance_2))[cosin < 0]
+        result = np.sqrt(a_square * b_square * square_sin /
+                         (np.finfo(np.float32).eps + c_square))
+        # set result to minimum edge if C<pi/2
+        result[neg_cos_c < 0] = np.sqrt(np.fmin(a_square,
+                                                b_square))[neg_cos_c < 0]
         return result
 
     def polygon_area(self, polygon):

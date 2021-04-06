@@ -143,10 +143,10 @@ class EastRandomCrop:
         scale = min(scale_w, scale_h)
         h = int(crop_h * scale)
         w = int(crop_w * scale)
-        padimg = np.zeros(
+        padded_img = np.zeros(
             (self.target_size[1], self.target_size[0], img.shape[2]),
             img.dtype)
-        padimg[:h, :w] = cv2.resize(
+        padded_img[:h, :w] = cv2.resize(
             img[crop_y:crop_y + crop_h, crop_x:crop_x + crop_w], (w, h))
 
         # for bboxes
@@ -172,8 +172,8 @@ class EastRandomCrop:
             if key == 'gt_masks':
                 results['gt_labels'] = polys_label
 
-        results['img'] = padimg
-        results['img_shape'] = padimg.shape
+        results['img'] = padded_img
+        results['img_shape'] = padded_img.shape
 
         return results
 
@@ -229,12 +229,12 @@ class EastRandomCrop:
         for points in polys:
             points = np.round(
                 points, decimals=0).astype(np.int32).reshape(-1, 2)
-            minx = np.min(points[:, 0])
-            maxx = np.max(points[:, 0])
-            w_array[minx:maxx] = 1
-            miny = np.min(points[:, 1])
-            maxy = np.max(points[:, 1])
-            h_array[miny:maxy] = 1
+            min_x = np.min(points[:, 0])
+            max_x = np.max(points[:, 0])
+            w_array[min_x:max_x] = 1
+            min_y = np.min(points[:, 1])
+            max_y = np.max(points[:, 1])
+            h_array[min_y:max_y] = 1
         # ensure the cropped area not across a text
         h_axis = np.where(h_array == 0)[0]
         w_axis = np.where(w_array == 0)[0]
@@ -255,8 +255,8 @@ class EastRandomCrop:
             else:
                 ymin, ymax = self.random_select(h_axis, h)
 
-            if xmax - xmin < self.min_crop_side_ratio * w or \
-                    ymax - ymin < self.min_crop_side_ratio * h:
+            if (xmax - xmin < self.min_crop_side_ratio * w
+                    or ymax - ymin < self.min_crop_side_ratio * h):
                 # area too small
                 continue
             num_poly_in_rect = 0

@@ -25,6 +25,9 @@ def model_inference(model, img):
     data = test_pipeline(data)
     data = collate([data], samples_per_gpu=1)
 
+    # process img_metas
+    data['img_metas'] = data['img_metas'][0].data
+
     if next(model.parameters()).is_cuda:
         # scatter to specified GPU
         data = scatter(data, [device])[0]

@@ -28,8 +28,7 @@ class OCRSegDataset(OCRDataset):
         assert utils.is_type_list(annotations, dict)
         assert 'char_box' in annotations[0]
         assert 'char_text' in annotations[0]
-        assert len(annotations[0]['char_box']) == 4 or \
-            len(annotations[0]['char_box']) == 8
+        assert len(annotations[0]['char_box']) in [4, 8]
 
         chars, char_rects, char_quads = [], [], []
         for ann in annotations:
@@ -75,7 +74,7 @@ class OCRSegDataset(OCRDataset):
             index (int): Index of data.
 
         Returns:
-            dict: Training data and annotation after pipeline with new keys \
+            dict: Training data and annotation after pipeline with new keys
                 introduced by pipeline.
         """
         img_ann_info = self.data_infos[index]

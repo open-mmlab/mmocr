@@ -135,8 +135,8 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         out_dec = self.decoder(
             feat, out_enc, None, img_metas, train_mode=False)
 
-        label_indexes, label_scores = \
-            self.label_convertor.tensor2idx(out_dec, img_metas)
+        label_indexes, label_scores = self.label_convertor.tensor2idx(
+            out_dec, img_metas)
         label_strings = self.label_convertor.idx2str(label_indexes)
 
         # flatten batch results

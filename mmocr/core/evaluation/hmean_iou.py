@@ -80,9 +80,9 @@ def eval_hmean_iou(pred_boxes,
 
             for gt_id in range(gt_num):
                 for pred_id in range(pred_num):
-                    if gt_hit[gt_id] != 0 or pred_hit[
-                            pred_id] != 0 or gt_id in gt_ignored_index \
-                            or pred_id in pred_ignored_index:
+                    if (gt_hit[gt_id] != 0 or pred_hit[pred_id] != 0
+                            or gt_id in gt_ignored_index
+                            or pred_id in pred_ignored_index):
                         continue
                     if iou_mat[gt_id, pred_id] > iou_thr:
                         gt_hit[gt_id] = 1

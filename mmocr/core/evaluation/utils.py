@@ -29,24 +29,23 @@ def ignore_pred(pred_boxes, gt_ignored_index, gt_polys, precision_thr):
     pred_points = []
     pred_ignored_index = []
 
-    gt_dont_care_num = len(gt_ignored_index)
+    gt_ignored_num = len(gt_ignored_index)
     # get detection polygons
     for box_id, box in enumerate(pred_boxes):
         poly = points2polygon(box)
         pred_polys.append(poly)
         pred_points.append(box)
 
-        if gt_dont_care_num < 1:
+        if gt_ignored_num < 1:
             continue
 
         # ignore the current detection box
         # if its overlap with any ignored gt > precision_thr
-        for dont_care_box_id in gt_ignored_index:
-            dont_care_box = gt_polys[dont_care_box_id]
-            inter_area, _ = poly_intersection(poly, dont_care_box)
+        for ignored_box_id in gt_ignored_index:
+            ignored_box = gt_polys[ignored_box_id]
+            inter_area, _ = poly_intersection(poly, ignored_box)
             area = poly.area()
-            precision = 0 if area == 0 \
-                else inter_area / area
+            precision = 0 if area == 0 else inter_area / area
             if precision > precision_thr:
                 pred_ignored_index.append(box_id)
                 break
@@ -216,10 +215,10 @@ def one2one_match_ic13(gt_id, det_id, recall_mat, precision_mat, recall_thr,
     Args:
         gt_id (int): The ground truth id index.
         det_id (int): The detection result id index.
-        recall_mat (ndarray): gt_numxdet_num matrix with element (i,j) being
-            the recall ratio of gt i to det j.
-        precision_mat (ndarray): gt_numxdet_num matrix with element (i,j) being
-            the precision ratio of gt i to det j.
+        recall_mat (ndarray): `gt_num x det_num` matrix with element (i,j)
+            being the recall ratio of gt i to det j.
+        precision_mat (ndarray): `gt_num x det_num` matrix with element (i,j)
+            being the precision ratio of gt i to det j.
         recall_thr (float): The recall threshold.
         precision_thr (float): The precision threshold.
     Returns:
@@ -258,21 +257,21 @@ def one2one_match_ic13(gt_id, det_id, recall_mat, precision_mat, recall_thr,
 
 def one2many_match_ic13(gt_id, recall_mat, precision_mat, recall_thr,
                         precision_thr, gt_match_flag, det_match_flag,
-                        det_dont_care_index):
+                        det_ignored_index):
     """One-to-Many match gt and detections with icdar2013 standards.
 
     Args:
         gt_id (int): gt index.
-        recall_mat (ndarray): gt_numxdet_num matrix with element (i,j) being
-            the recall ratio of gt i to det j.
-        precision_mat (ndarray): gt_numxdet_num matrix with element (i,j) being
-            the precision ratio of gt i to det j.
+        recall_mat (ndarray): `gt_num x det_num` matrix with element (i,j)
+            being the recall ratio of gt i to det j.
+        precision_mat (ndarray): `gt_num x det_num` matrix with element (i,j)
+            being the precision ratio of gt i to det j.
         recall_thr (float): The recall threshold.
         precision_thr (float): The precision threshold.
         gt_match_flag (ndarray): An array indicates each gt matched already.
         det_match_flag (ndarray): An array indicates each box has been
             matched already or not.
-        det_dont_care_index (list): A list indicates each detection box can be
+        det_ignored_index (list): A list indicates each detection box can be
             ignored or not.
 
     Returns:
@@ -287,13 +286,13 @@ def one2many_match_ic13(gt_id, recall_mat, precision_mat, recall_thr,
 
     assert isinstance(gt_match_flag, list)
     assert isinstance(det_match_flag, list)
-    assert isinstance(det_dont_care_index, list)
+    assert isinstance(det_ignored_index, list)
 
     many_sum = 0.
     det_ids = []
     for det_id in range(recall_mat.shape[1]):
         if gt_match_flag[gt_id] == 0 and det_match_flag[
-                det_id] == 0 and det_id not in det_dont_care_index:
+                det_id] == 0 and det_id not in det_ignored_index:
             if precision_mat[gt_id, det_id] >= precision_thr:
                 many_sum += recall_mat[gt_id, det_id]
                 det_ids.append(det_id)
@@ -304,22 +303,22 @@ def one2many_match_ic13(gt_id, recall_mat, precision_mat, recall_thr,
 
 def many2one_match_ic13(det_id, recall_mat, precision_mat, recall_thr,
                         precision_thr, gt_match_flag, det_match_flag,
-                        gt_dont_care_index):
+                        gt_ignored_index):
     """Many-to-One match gt and detections with icdar2013 standards.
 
     Args:
         det_id (int): Detection index.
-        recall_mat (ndarray): gt_numxdet_num matrix with element (i,j) being
-            the recall ratio of gt i to det j.
-        precision_mat (ndarray): gt_numxdet_num matrix with element (i,j) being
-            the precision ratio of gt i to det j.
+        recall_mat (ndarray): `gt_num x det_num` matrix with element (i,j)
+            being the recall ratio of gt i to det j.
+        precision_mat (ndarray): `gt_num x det_num` matrix with element (i,j)
+            being the precision ratio of gt i to det j.
         recall_thr (float): The recall threshold.
         precision_thr (float): The precision threshold.
         gt_match_flag (ndarray): An array indicates each gt has been matched
             already.
         det_match_flag (ndarray): An array indicates each detection box has
             been matched already or not.
-        gt_dont_care_index (list): A list indicates each gt box can be ignored
+        gt_ignored_index (list): A list indicates each gt box can be ignored
             or not.
 
     Returns:
@@ -334,12 +333,12 @@ def many2one_match_ic13(det_id, recall_mat, precision_mat, recall_thr,
 
     assert isinstance(gt_match_flag, list)
     assert isinstance(det_match_flag, list)
-    assert isinstance(gt_dont_care_index, list)
+    assert isinstance(gt_ignored_index, list)
     many_sum = 0.
     gt_ids = []
     for gt_id in range(recall_mat.shape[0]):
         if gt_match_flag[gt_id] == 0 and det_match_flag[
-                det_id] == 0 and gt_id not in gt_dont_care_index:
+                det_id] == 0 and gt_id not in gt_ignored_index:
             if recall_mat[gt_id, det_id] >= recall_thr:
                 many_sum += precision_mat[gt_id, det_id]
                 gt_ids.append(gt_id)

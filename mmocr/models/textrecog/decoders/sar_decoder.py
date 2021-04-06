@@ -152,12 +152,15 @@ class ParallelSARDecoder(BaseDecoder):
         return y
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
-        assert utils.is_type_list(img_metas, dict)
-        assert len(img_metas) == feat.size(0)
+        if img_metas is not None:
+            assert utils.is_type_list(img_metas, dict)
+            assert len(img_metas) == feat.size(0)
 
-        valid_ratios = [
-            img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-        ] if self.mask else None
+        valid_ratios = None
+        if img_metas is not None:
+            valid_ratios = [
+                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+            ] if self.mask else None
 
         targets = targets_dict['padded_targets'].to(feat.device)
         tgt_embedding = self.embedding(targets)
@@ -173,12 +176,15 @@ class ParallelSARDecoder(BaseDecoder):
         return out_dec[:, 1:, :]  # bsz * seq_len * num_classes
 
     def forward_test(self, feat, out_enc, img_metas):
-        assert utils.is_type_list(img_metas, dict)
-        assert len(img_metas) == feat.size(0)
+        if img_metas is not None:
+            assert utils.is_type_list(img_metas, dict)
+            assert len(img_metas) == feat.size(0)
 
-        valid_ratios = [
-            img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-        ] if self.mask else None
+        valid_ratios = None
+        if img_metas is not None:
+            valid_ratios = [
+                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+            ] if self.mask else None
 
         seq_len = self.max_seq_len
 
@@ -348,12 +354,15 @@ class SequentialSARDecoder(BaseDecoder):
         return y, hx1, hx1, hx2, hx2
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas=None):
-        assert utils.is_type_list(img_metas, dict)
-        assert len(img_metas) == feat.size(0)
+        if img_metas is not None:
+            assert utils.is_type_list(img_metas, dict)
+            assert len(img_metas) == feat.size(0)
 
-        valid_ratios = [
-            img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-        ] if self.mask else None
+        valid_ratios = None
+        if img_metas is not None:
+            valid_ratios = [
+                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+            ] if self.mask else None
 
         if self.train_mode:
             targets = targets_dict['padded_targets'].to(feat.device)
@@ -401,7 +410,8 @@ class SequentialSARDecoder(BaseDecoder):
         return outputs
 
     def forward_test(self, feat, out_enc, img_metas):
-        assert utils.is_type_list(img_metas, dict)
-        assert len(img_metas) == feat.size(0)
+        if img_metas is not None:
+            assert utils.is_type_list(img_metas, dict)
+            assert len(img_metas) == feat.size(0)
 
         return self.forward_train(feat, out_enc, None, img_metas)

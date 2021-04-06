@@ -89,7 +89,7 @@ class BaseDataset(Dataset):
             index (int): Index of data.
 
         Returns:
-            dict: Training data and annotation after pipeline with new keys \
+            dict: Training data and annotation after pipeline with new keys
                 introduced by pipeline.
         """
         img_info = self.data_infos[index]
@@ -104,7 +104,7 @@ class BaseDataset(Dataset):
             idx (int): Index of data.
 
         Returns:
-            dict: Testing data after pipeline with new keys introduced by \
+            dict: Testing data after pipeline with new keys introduced by
                 pipeline.
         """
         return self.prepare_train_img(img_info)

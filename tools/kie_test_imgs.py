@@ -69,9 +69,10 @@ def parse_args():
 
 def main():
     args = parse_args()
-    assert args.show or args.show_dir, \
-        ('Please specify at least one operation (show the results'
-         ' / save the results) with the argument "--show" or "--show-dir".')
+    assert args.show or args.show_dir, ('Please specify at least one '
+                                        'operation (show the results / save )'
+                                        'the results with the argument '
+                                        '"--show" or "--show-dir".')
 
     cfg = Config.fromfile(args.config)
     # import modules from string list.

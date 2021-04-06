@@ -21,9 +21,9 @@ class IcdarDataset(CocoDataset):
                  proposal_file=None,
                  test_mode=False,
                  filter_empty_gt=True,
-                 select_firstk=-1):
+                 select_first_k=-1):
         # select first k images for fast debugging.
-        self.select_firstk = select_firstk
+        self.select_first_k = select_first_k
 
         super().__init__(ann_file, pipeline, classes, data_root, img_prefix,
                          seg_prefix, proposal_file, test_mode, filter_empty_gt)
@@ -50,7 +50,7 @@ class IcdarDataset(CocoDataset):
             info['filename'] = info['file_name']
             data_infos.append(info)
             count = count + 1
-            if count > self.select_firstk and self.select_firstk > 0:
+            if count > self.select_first_k and self.select_first_k > 0:
                 break
         return data_infos
 

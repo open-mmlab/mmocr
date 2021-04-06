@@ -8,8 +8,9 @@ import mmcv
 import numpy as np
 import scipy.io as scio
 from shapely.geometry import Polygon
-from tools.data_converter.common import (check_ignore_orientation,
-                                         convert_annotations, is_not_png)
+from tools.data_converter.common import convert_annotations, is_not_png
+
+from mmocr.utils import drop_orientation
 
 
 def collect_files(img_dir, gt_dir, split):
@@ -38,7 +39,7 @@ def collect_files(img_dir, gt_dir, split):
         imgs_list.extend(glob.glob(osp.join(img_dir, '*' + suffix)))
 
     imgs_list = [
-        check_ignore_orientation(f) if is_not_png(f) else f for f in imgs_list
+        drop_orientation(f) if is_not_png(f) else f for f in imgs_list
     ]
 
     files = []
@@ -166,8 +167,8 @@ def load_mat_info(img_info, gt_file, split):
 
         area = polygon.area
         # convert to COCO style XYWH format
-        minx, miny, maxx, maxy = polygon.bounds
-        bbox = [minx, miny, maxx - minx, maxy - miny]
+        min_x, min_y, max_x, max_y = polygon.bounds
+        bbox = [min_x, min_y, max_x - min_x, max_y - min_y]
 
         anno = dict(
             iscrowd=iscrowd,
@@ -211,8 +212,8 @@ def load_png_info(gt_file, img_info):
 
         area = polygon.area
         # convert to COCO style XYWH format
-        minx, miny, maxx, maxy = polygon.bounds
-        bbox = [minx, miny, maxx - minx, maxy - miny]
+        min_x, min_y, max_x, max_y = polygon.bounds
+        bbox = [min_x, min_y, max_x - min_x, max_y - min_y]
 
         anno = dict(
             iscrowd=iscrowd,
@@ -241,11 +242,11 @@ def load_img_info(files, split):
     assert isinstance(split, str)
 
     img_file, gt_file = files
-    # read imgs with ignoring oritations
+    # read imgs with ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
-    # read imgs with oritations as dataloader does when training and testing
+    # read imgs with orientations as dataloader does when training and testing
     img_color = mmcv.imread(img_file, 'color')
-    # make sure imgs have no oritation info, or annotation gt is wrong.
+    # make sure imgs have no orientation info, or annotation gt is wrong.
     assert img.shape[0:2] == img_color.shape[0:2]
 
     split_name = osp.basename(osp.dirname(img_file))

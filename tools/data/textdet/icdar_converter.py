@@ -6,8 +6,9 @@ from functools import partial
 import mmcv
 import numpy as np
 from shapely.geometry import Polygon
-from tools.data.utils.common import (check_ignore_orientation,
-                                     convert_annotations, is_not_png)
+from tools.data.utils.common import convert_annotations, is_not_png
+
+from mmocr.utils import drop_orientation
 
 
 def collect_files(img_dir, gt_dir):
@@ -33,7 +34,7 @@ def collect_files(img_dir, gt_dir):
         imgs_list.extend(glob.glob(osp.join(img_dir, '*' + suffix)))
 
     imgs_list = [
-        check_ignore_orientation(f) if is_not_png(f) else f for f in imgs_list
+        drop_orientation(f) if is_not_png(f) else f for f in imgs_list
     ]
 
     files = []
@@ -124,8 +125,8 @@ def load_img_info(files, dataset):
 
         area = polygon.area
         # convert to COCO style XYWH format
-        minx, miny, maxx, maxy = polygon.bounds
-        bbox = [minx, miny, maxx - minx, maxy - miny]
+        min_x, min_y, max_x, max_y = polygon.bounds
+        bbox = [min_x, min_y, max_x - min_x, max_y - min_y]
 
         anno = dict(
             iscrowd=iscrowd,

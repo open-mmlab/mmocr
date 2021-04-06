@@ -130,9 +130,9 @@ def eval_hmean_ic13(det_boxes,
             # match one gt to one pred box.
             for gt_id in range(gt_num):
                 for pred_id in range(pred_num):
-                    if gt_hit[gt_id] != 0 or pred_hit[
-                            pred_id] != 0 or gt_id in gt_ignored_index \
-                            or pred_id in pred_ignored_index:
+                    if (gt_hit[gt_id] != 0 or pred_hit[pred_id] != 0
+                            or gt_id in gt_ignored_index
+                            or pred_id in pred_ignored_index):
                         continue
                     match = eval_utils.one2one_match_ic13(
                         gt_id, pred_id, recall_mat, precision_mat, recall_thr,

@@ -58,7 +58,7 @@ class TextDetDataset(BaseDataset):
             index (int): Index of data.
 
         Returns:
-            dict: Training data and annotation after pipeline with new keys \
+            dict: Training data and annotation after pipeline with new keys
                 introduced by pipeline.
         """
         img_ann_info = self.data_infos[index]

@@ -1,10 +1,10 @@
-from .single_stage_text_detector import SingleStageTextDetector  # isort:skip
-from .text_detector_mixin import TextDetectorMixin  # isort:skip
-from .dbnet import DBNet  # isort:skip
-from .ocr_mask_rcnn import OCRMaskRCNN  # isort:skip
-from .panet import PANet  # isort:skip
-from .psenet import PSENet  # isort:skip
-from .textsnake import TextSnake  # isort:skip
+from .dbnet import DBNet
+from .ocr_mask_rcnn import OCRMaskRCNN
+from .panet import PANet
+from .psenet import PSENet
+from .single_stage_text_detector import SingleStageTextDetector
+from .text_detector_mixin import TextDetectorMixin
+from .textsnake import TextSnake
 
 __all__ = [
     'TextDetectorMixin', 'SingleStageTextDetector', 'OCRMaskRCNN', 'DBNet',

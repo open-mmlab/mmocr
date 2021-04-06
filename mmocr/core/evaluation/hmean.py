@@ -48,7 +48,7 @@ def get_gt_masks(ann_infos):
             infos of one image, containing following keys:
             masks, masks_ignore.
     Returns:
-        gt_masks (list[list[list[int]]]): Ground thruth masks.
+        gt_masks (list[list[list[int]]]): Ground truth masks.
         gt_masks_ignore (list[list[list[int]]]): Ignored masks.
     """
     assert utils.is_type_list(ann_infos, dict)

@@ -44,8 +44,9 @@ class RandomCropInstances:
         # target size is bigger than origin size
         t_h = t_h if t_h < h else h
         t_w = t_w if t_w < w else w
-        if img_gt is not None and np.random.random_sample() < \
-                self.positive_sample_ratio and np.max(img_gt) > 0:
+        if (img_gt is not None
+                and np.random.random_sample() < self.positive_sample_ratio
+                and np.max(img_gt) > 0):
 
             # make sure to crop the positive region
 

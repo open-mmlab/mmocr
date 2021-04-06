@@ -72,12 +72,15 @@ class SAREncoder(BaseEncoder):
                 uniform_init(m)
 
     def forward(self, feat, img_metas=None):
-        assert utils.is_type_list(img_metas, dict)
-        assert len(img_metas) == feat.size(0)
+        if img_metas is not None:
+            assert utils.is_type_list(img_metas, dict)
+            assert len(img_metas) == feat.size(0)
 
-        valid_ratios = [
-            img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-        ] if self.mask else None
+        valid_ratios = None
+        if img_metas is not None:
+            valid_ratios = [
+                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+            ] if self.mask else None
 
         h_feat = feat.size(2)
         feat_v = F.max_pool2d(

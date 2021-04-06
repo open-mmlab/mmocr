@@ -44,9 +44,8 @@ class ResizeOCR:
         assert utils.is_none_or_type(min_width, (int, tuple))
         assert utils.is_none_or_type(max_width, (int, tuple))
         if not keep_aspect_ratio:
-            assert max_width is not None, \
-                '"max_width" must assigned ' + \
-                'if "keep_aspect_ratio" is False'
+            assert max_width is not None, ('"max_width" must assigned '
+                                           'if "keep_aspect_ratio" is False')
         assert isinstance(img_pad_value, int)
         if isinstance(height, tuple):
             assert isinstance(min_width, tuple)

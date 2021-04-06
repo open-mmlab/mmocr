@@ -65,8 +65,8 @@ def main():
     if hasattr(model, 'module'):
         model = model.module
     if model.cfg.data.test['type'] == 'ConcatDataset':
-        model.cfg.data.test.pipeline = \
-            model.cfg.data.test['datasets'][0].pipeline
+        model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
+            0].pipeline
 
     # Start Inference
     out_vis_dir = osp.join(args.out_dir, 'out_vis_dir')
@@ -120,8 +120,8 @@ def main():
         # eval
         eval_results = eval_ocr_metric(pred_labels, gt_labels)
         logger.info('\n' + '-' * 100)
-        info = 'eval on testset with img_root_path ' + \
-            f'{args.img_root_path} and img_list {args.img_list}\n'
+        info = ('eval on testset with img_root_path '
+                f'{args.img_root_path} and img_list {args.img_list}\n')
         logger.info(info)
         logger.info(eval_results)
 

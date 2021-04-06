@@ -57,7 +57,7 @@ def pan_decode(preds,
     text_score = preds[0].astype(np.float32)
     text = preds[0] > min_text_confidence
     kernel = (preds[1] > min_kernel_confidence) * text
-    embeddings = preds[2:].transpose((1, 2, 0))  # hxwx4
+    embeddings = preds[2:].transpose((1, 2, 0))  # (h, w, 4)
 
     region_num, labels = cv2.connectedComponents(
         kernel.astype(np.uint8), connectivity=4)

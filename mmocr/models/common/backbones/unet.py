@@ -212,12 +212,13 @@ class DeconvModule(nn.Module):
                  scale_factor=2):
         super().__init__()
 
-        assert (kernel_size - scale_factor >= 0) and\
-               (kernel_size - scale_factor) % 2 == 0,\
-               f'kernel_size should be greater than or equal to scale_factor '\
-               f'and (kernel_size - scale_factor) should be even numbers, '\
-               f'while the kernel size is {kernel_size} and scale_factor is '\
-               f'{scale_factor}.'
+        assert (
+            kernel_size - scale_factor >= 0
+            and (kernel_size - scale_factor) % 2 == 0), (
+                f'kernel_size should be greater than or equal to scale_factor '
+                f'and (kernel_size - scale_factor) should be even numbers, '
+                f'while the kernel size is {kernel_size} and scale_factor is '
+                f'{scale_factor}.')
 
         stride = scale_factor
         padding = (kernel_size - scale_factor) // 2
@@ -394,36 +395,36 @@ class UNet(nn.Module):
         super().__init__()
         assert dcn is None, 'Not implemented yet.'
         assert plugins is None, 'Not implemented yet.'
-        assert len(strides) == num_stages, \
-            'The length of strides should be equal to num_stages, '\
-            f'while the strides is {strides}, the length of '\
-            f'strides is {len(strides)}, and the num_stages is '\
-            f'{num_stages}.'
-        assert len(enc_num_convs) == num_stages, \
-            'The length of enc_num_convs should be equal to num_stages, '\
-            f'while the enc_num_convs is {enc_num_convs}, the length of '\
-            f'enc_num_convs is {len(enc_num_convs)}, and the num_stages is '\
-            f'{num_stages}.'
-        assert len(dec_num_convs) == (num_stages-1), \
-            'The length of dec_num_convs should be equal to (num_stages-1), '\
-            f'while the dec_num_convs is {dec_num_convs}, the length of '\
-            f'dec_num_convs is {len(dec_num_convs)}, and the num_stages is '\
-            f'{num_stages}.'
-        assert len(downsamples) == (num_stages-1), \
-            'The length of downsamples should be equal to (num_stages-1), '\
-            f'while the downsamples is {downsamples}, the length of '\
-            f'downsamples is {len(downsamples)}, and the num_stages is '\
-            f'{num_stages}.'
-        assert len(enc_dilations) == num_stages, \
-            'The length of enc_dilations should be equal to num_stages, '\
-            f'while the enc_dilations is {enc_dilations}, the length of '\
-            f'enc_dilations is {len(enc_dilations)}, and the num_stages is '\
-            f'{num_stages}.'
-        assert len(dec_dilations) == (num_stages-1), \
-            'The length of dec_dilations should be equal to (num_stages-1), '\
-            f'while the dec_dilations is {dec_dilations}, the length of '\
-            f'dec_dilations is {len(dec_dilations)}, and the num_stages is '\
-            f'{num_stages}.'
+        assert len(strides) == num_stages, (
+            'The length of strides should be equal to num_stages, '
+            f'while the strides is {strides}, the length of '
+            f'strides is {len(strides)}, and the num_stages is '
+            f'{num_stages}.')
+        assert len(enc_num_convs) == num_stages, (
+            'The length of enc_num_convs should be equal to num_stages, '
+            f'while the enc_num_convs is {enc_num_convs}, the length of '
+            f'enc_num_convs is {len(enc_num_convs)}, and the num_stages is '
+            f'{num_stages}.')
+        assert len(dec_num_convs) == (num_stages - 1), (
+            'The length of dec_num_convs should be equal to (num_stages-1), '
+            f'while the dec_num_convs is {dec_num_convs}, the length of '
+            f'dec_num_convs is {len(dec_num_convs)}, and the num_stages is '
+            f'{num_stages}.')
+        assert len(downsamples) == (num_stages - 1), (
+            'The length of downsamples should be equal to (num_stages-1), '
+            f'while the downsamples is {downsamples}, the length of '
+            f'downsamples is {len(downsamples)}, and the num_stages is '
+            f'{num_stages}.')
+        assert len(enc_dilations) == num_stages, (
+            'The length of enc_dilations should be equal to num_stages, '
+            f'while the enc_dilations is {enc_dilations}, the length of '
+            f'enc_dilations is {len(enc_dilations)}, and the num_stages is '
+            f'{num_stages}.')
+        assert len(dec_dilations) == (num_stages - 1), (
+            'The length of dec_dilations should be equal to (num_stages-1), '
+            f'while the dec_dilations is {dec_dilations}, the length of '
+            f'dec_dilations is {len(dec_dilations)}, and the num_stages is '
+            f'{num_stages}.')
         self.num_stages = num_stages
         self.strides = strides
         self.downsamples = downsamples
@@ -501,12 +502,12 @@ class UNet(nn.Module):
         for i in range(1, self.num_stages):
             if self.strides[i] == 2 or self.downsamples[i - 1]:
                 whole_downsample_rate *= 2
-        assert (h % whole_downsample_rate == 0) \
-            and (w % whole_downsample_rate == 0),\
-            f'The input image size {(h, w)} should be divisible by the whole '\
-            f'downsample rate {whole_downsample_rate}, when num_stages is '\
-            f'{self.num_stages}, strides is {self.strides}, and downsamples '\
-            f'is {self.downsamples}.'
+        assert (
+            h % whole_downsample_rate == 0 and w % whole_downsample_rate == 0
+        ), (f'The input image size {(h, w)} should be divisible by the whole '
+            f'downsample rate {whole_downsample_rate}, when num_stages is '
+            f'{self.num_stages}, strides is {self.strides}, and downsamples '
+            f'is {self.downsamples}.')
 
     def init_weights(self, pretrained=None):
         """Initialize the weights in backbone.

@@ -42,35 +42,35 @@ def save_2darray(mat, file_name):
             fw.write(row_str + '\n')
 
 
-def save_bboxes_quadrangels(bboxes_with_scores,
-                            qudrangels_with_scores,
+def save_bboxes_quadrangles(bboxes_with_scores,
+                            quadrangles_with_scores,
                             img_name,
                             out_bbox_txt_dir,
-                            out_quadrangel_txt_dir,
+                            out_quadrangle_txt_dir,
                             score_thr=0.3,
                             save_score=True):
-    """Save results of detected bounding boxes and quadrangels to txt file.
+    """Save results of detected bounding boxes and quadrangles to txt file.
 
     Args:
         bboxes_with_scores (ndarray): Detected bboxes of shape (n,5).
-        qudrangels_with_scores (ndarray): Detected quadrangels of shape (n,9).
+        quadrangles_with_scores (ndarray): Detected quadrangles of shape (n,9).
         img_name (str): Image file name.
         out_bbox_txt_dir (str): Dir of txt files to save detected bboxes
                                 results.
-        out_quadrangel_txt_dir (str): Dir of txt files to save
-                                quadrangel results.
+        out_quadrangle_txt_dir (str): Dir of txt files to save
+                                quadrangle results.
         score_thr (float, optional): Score threshold for bboxes.
         save_score (bool, optional): Whether to save score at each line end
         to search best threshold when evaluating.
     """
     assert bboxes_with_scores.ndim == 2
     assert bboxes_with_scores.shape[1] == 5 or bboxes_with_scores.shape[1] == 9
-    assert qudrangels_with_scores.ndim == 2
-    assert qudrangels_with_scores.shape[1] == 9
-    assert bboxes_with_scores.shape[0] >= qudrangels_with_scores.shape[0]
+    assert quadrangles_with_scores.ndim == 2
+    assert quadrangles_with_scores.shape[1] == 9
+    assert bboxes_with_scores.shape[0] >= quadrangles_with_scores.shape[0]
     assert isinstance(img_name, str)
     assert isinstance(out_bbox_txt_dir, str)
-    assert isinstance(out_quadrangel_txt_dir, str)
+    assert isinstance(out_quadrangle_txt_dir, str)
     assert isinstance(score_thr, float)
     assert score_thr >= 0 and score_thr < 1
 
@@ -87,25 +87,25 @@ def save_bboxes_quadrangels(bboxes_with_scores,
     elif initial_valid_bboxes.shape[1] == 8:
         valid_bboxes = initial_valid_bboxes
 
-    valid_quadrangels, valid_quadrangel_scores = filter_result(
-        qudrangels_with_scores[:, :-1], qudrangels_with_scores[:, -1],
+    valid_quadrangles, valid_quadrangle_scores = filter_result(
+        quadrangles_with_scores[:, :-1], quadrangles_with_scores[:, -1],
         score_thr)
 
     # gen target file path
     bbox_txt_file = gen_target_path(out_bbox_txt_dir, img_name, '.txt')
-    quadrangel_txt_file = gen_target_path(out_quadrangel_txt_dir, img_name,
+    quadrangle_txt_file = gen_target_path(out_quadrangle_txt_dir, img_name,
                                           '.txt')
 
     # save txt
     if save_score:
         valid_bboxes = np.concatenate(
             (valid_bboxes, valid_bbox_scores.reshape(-1, 1)), axis=1)
-        valid_quadrangels = np.concatenate(
-            (valid_quadrangels, valid_quadrangel_scores.reshape(-1, 1)),
+        valid_quadrangles = np.concatenate(
+            (valid_quadrangles, valid_quadrangle_scores.reshape(-1, 1)),
             axis=1)
 
     save_2darray(valid_bboxes, bbox_txt_file)
-    save_2darray(valid_quadrangels, quadrangel_txt_file)
+    save_2darray(valid_quadrangles, quadrangle_txt_file)
 
 
 def main():
@@ -134,8 +134,8 @@ def main():
     if hasattr(model, 'module'):
         model = model.module
     if model.cfg.data.test['type'] == 'ConcatDataset':
-        model.cfg.data.test.pipeline = \
-            model.cfg.data.test['datasets'][0].pipeline
+        model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
+            0].pipeline
 
     # Start Inference
     out_vis_dir = osp.join(args.out_dir, 'out_vis_dir')

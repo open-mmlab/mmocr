@@ -97,7 +97,7 @@ def test_icdar_dataset():
     dataset = IcdarDataset(ann_file=fake_json_file, pipeline=[])
     assert dataset.CLASSES == ('text')
     assert dataset.img_ids == [0, 1]
-    assert dataset.select_firstk == -1
+    assert dataset.select_first_k == -1
 
     # test _parse_ann_info
     ann = dataset.get_ann_info(0)

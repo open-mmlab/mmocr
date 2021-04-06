@@ -84,19 +84,19 @@ data = dict(
         type=dataset_type,
         ann_file=data_root + '/instances_training.json',
         # for debugging top k imgs
-        # select_firstk=200,
+        # select_first_k=200,
         img_prefix=data_root + '/imgs',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
         ann_file=data_root + '/instances_test.json',
         img_prefix=data_root + '/imgs',
-        # select_firstk=100,
+        # select_first_k=100,
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
         ann_file=data_root + '/instances_test.json',
         img_prefix=data_root + '/imgs',
-        # select_firstk=100,
+        # select_first_k=100,
         pipeline=test_pipeline))
 evaluation = dict(interval=10, metric='hmean-iou')

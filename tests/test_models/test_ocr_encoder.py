@@ -23,8 +23,6 @@ def test_sar_encoder():
     encoder.train()
 
     feat = torch.randn(1, 512, 4, 40)
-    with pytest.raises(AssertionError):
-        encoder(feat)
     img_metas = [{'valid_ratio': 1.0}]
     with pytest.raises(AssertionError):
         encoder(feat, img_metas * 2)

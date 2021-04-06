@@ -31,12 +31,12 @@ def test_model_inference():
     else:
         print(f'Using existing checkpoint {checkpoint_file}')
 
-    device = 'cuda:0'
+    device = 'cpu'
     model = init_detector(
         config_file, checkpoint=checkpoint_file, device=device)
     if model.cfg.data.test['type'] == 'ConcatDataset':
-        model.cfg.data.test.pipeline = \
-            model.cfg.data.test['datasets'][0].pipeline
+        model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
+            0].pipeline
 
     img = os.path.join(project_dir, '../demo/demo_text_recog.jpg')
 

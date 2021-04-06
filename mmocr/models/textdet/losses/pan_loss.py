@@ -23,8 +23,8 @@ class PANLoss(nn.Module):
     def __init__(self,
                  alpha=0.5,
                  beta=0.25,
-                 delta_aggr=0.5,
-                 delta_discr=3,
+                 delta_aggregation=0.5,
+                 delta_discrimination=3,
                  ohem_ratio=3,
                  reduction='mean',
                  speedup_bbox_thr=-1):
@@ -33,20 +33,19 @@ class PANLoss(nn.Module):
         Args:
             alpha (float): The kernel loss coef.
             beta (float): The aggregation and discriminative loss coef.
-            delta_aggr (float): The constant for aggregation loss.
-            delta_discr (float): The constant for discriminative loss.
+            delta_aggregation (float): The constant for aggregation loss.
+            delta_discrimination (float): The constant for discriminative loss.
             ohem_ratio (float): The negative/positive ratio in ohem.
             reduction (str): The way to reduce the loss.
             speedup_bbox_thr (int):  Speed up if speedup_bbox_thr >0
                 and <bbox num.
         """
         super().__init__()
-        assert reduction in ['mean',
-                             'sum'], " reduction must in ['mean','sum']"
+        assert reduction in ['mean', 'sum'], "reduction must in ['mean','sum']"
         self.alpha = alpha
         self.beta = beta
-        self.delta_aggr = delta_aggr
-        self.delta_discr = delta_discr
+        self.delta_aggregation = delta_aggregation
+        self.delta_discrimination = delta_discrimination
         self.ohem_ratio = ohem_ratio
         self.reduction = reduction
         self.speedup_bbox_thr = speedup_bbox_thr
@@ -120,9 +119,8 @@ class PANLoss(nn.Module):
             gt[key] = [item.rescale(downsample_ratio) for item in gt[key]]
             gt[key] = self.bitmasks2tensor(gt[key], feature_sz[2:])
             gt[key] = [item.to(preds.device) for item in gt[key]]
-        loss_aggrs, loss_discrs = self.aggr_discr_loss(gt['gt_kernels'][0],
-                                                       gt['gt_kernels'][1],
-                                                       inst_embed)
+        loss_aggrs, loss_discrs = self.aggregation_discrimination_loss(
+            gt['gt_kernels'][0], gt['gt_kernels'][1], inst_embed)
         # compute text loss
         sampled_mask = self.ohem_batch(pred_texts.detach(),
                                        gt['gt_kernels'][0], gt['gt_mask'][0])
@@ -152,18 +150,19 @@ class PANLoss(nn.Module):
         results.update(
             loss_text=losses[0],
             loss_kernel=losses[1],
-            loss_aggr=losses[2],
-            loss_discr=losses[3])
+            loss_aggregation=losses[2],
+            loss_discrimination=losses[3])
         return results
 
-    def aggr_discr_loss(self, gt_texts, gt_kernels, inst_embeds):
+    def aggregation_discrimination_loss(self, gt_texts, gt_kernels,
+                                        inst_embeds):
         """Compute the aggregation and discrimnative losses.
 
         Args:
             gt_texts (tensor): The ground truth text mask of size Nx1xHxW.
             gt_kernels (tensor): The ground truth text kernel mask of
                 size Nx1xHxW.
-            inst_embeds(tensor): The text instance emebdding tensor
+            inst_embeds(tensor): The text instance embedding tensor
                 of size Nx4xHxW.
 
         Returns:
@@ -205,9 +204,9 @@ class PANLoss(nn.Module):
                 kernel_avgs.append(avg)
 
                 embed_i = embed[:, text == i]  # 0.6ms
-                # ||F(p) - G(K_i)|| - delta_aggr, shape: nums
+                # ||F(p) - G(K_i)|| - delta_aggregation, shape: nums
                 distance = (embed_i - avg.reshape(4, 1)).norm(  # 0.5ms
-                    2, dim=0) - self.delta_aggr
+                    2, dim=0) - self.delta_aggregation
                 # compute D(p,K_i) in Eq (2)
                 hinge = torch.max(
                     distance,
@@ -227,8 +226,9 @@ class PANLoss(nn.Module):
 
             loss_discr_img = 0
             for avg_i, avg_j in itertools.combinations(kernel_avgs, 2):
-                # delta_discr - ||G(K_i) - G(K_j)||
-                distance_ij = self.delta_discr - (avg_i - avg_j).norm(2)
+                # delta_discrimination - ||G(K_i) - G(K_j)||
+                distance_ij = self.delta_discrimination - (avg_i -
+                                                           avg_j).norm(2)
                 # D(K_i,K_j)
                 D_ij = torch.max(
                     distance_ij,

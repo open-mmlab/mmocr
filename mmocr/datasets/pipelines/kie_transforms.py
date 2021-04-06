@@ -20,7 +20,7 @@ class KIEFormatBundle(DefaultFormatBundle):
     - gt_bboxes_ignore: (1) to tensor, (2) to DataContainer
     - gt_labels: (1) to tensor, (2) to DataContainer
     - gt_masks: (1) to tensor, (2) to DataContainer (cpu_only=True)
-    - gt_semantic_seg: (1) unsqueeze dim-0 (2) to tensor, \
+    - gt_semantic_seg: (1) unsqueeze dim-0 (2) to tensor,
                        (3) to DataContainer (stack=True)
     - relations: (1) scale, (2) to tensor, (3) to DataContainer
     - texts: (1) to tensor, (2) to DataContainer
@@ -33,7 +33,7 @@ class KIEFormatBundle(DefaultFormatBundle):
             results (dict): Result dict contains the data to convert.
 
         Returns:
-            dict: The result dict contains the data that is formatted with \
+            dict: The result dict contains the data that is formatted with
                 default bundle.
         """
         super().__call__(results)

@@ -21,8 +21,10 @@ def test_line_str_parser():
 
     # test get_item
     parser = LineStrParser(keys, keys_idx, separator)
-    assert parser.get_item(data_ret, 0) == \
-        {'filename': 'sample1.jpg', 'text': 'hello'}
+    assert parser.get_item(data_ret, 0) == {
+        'filename': 'sample1.jpg',
+        'text': 'hello'
+    }
 
     with pytest.raises(Exception):
         parser = LineStrParser(['filename', 'text', 'ignore'], [0, 1, 2],
@@ -51,8 +53,10 @@ def test_line_dict_parser():
 
     # test get_item
     parser = LineJsonParser(keys)
-    assert parser.get_item(data_ret, 0) == \
-        {'filename': 'sample1.jpg', 'text': 'hello'}
+    assert parser.get_item(data_ret, 0) == {
+        'filename': 'sample1.jpg',
+        'text': 'hello'
+    }
 
     with pytest.raises(Exception):
         parser = LineJsonParser(['img_name', 'text'])

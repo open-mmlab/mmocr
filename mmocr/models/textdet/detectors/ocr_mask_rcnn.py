@@ -1,6 +1,7 @@
 from mmdet.models.builder import DETECTORS
 from mmdet.models.detectors import MaskRCNN
-from . import TextDetectorMixin
+from mmocr.models.textdet.detectors.text_detector_mixin import \
+    TextDetectorMixin
 
 
 @DETECTORS.register_module()

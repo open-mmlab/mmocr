@@ -90,8 +90,8 @@ class TextSnakeTargets(BaseTextDetTargets):
             theta_sum = np.array(theta_sum)
             head_start, tail_start = np.argsort(theta_sum)[::-1][0:2]
 
-            if abs(head_start - tail_start) < 2 \
-                    or abs(head_start - tail_start) > 12:
+            if (abs(head_start - tail_start) < 2
+                    or abs(head_start - tail_start) > 12):
                 tail_start = (head_start + len(points) // 2) % len(points)
             head_end = (head_start + 1) % len(points)
             tail_end = (tail_start + 1) % len(points)

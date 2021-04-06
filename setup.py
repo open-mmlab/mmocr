@@ -148,7 +148,7 @@ if __name__ == '__main__':
         version=get_version(),
         description='Text Detection, OCR, and NLP Toolbox',
         long_description=readme(),
-        keywords='Text Detection, OCR, NLP',
+        keywords='Text Detection, OCR, KIE, NLP',
         url='https://github.com/jeffreykuang/mmocr',
         packages=find_packages(exclude=('configs', 'tools', 'demo')),
         package_data={'mmocr.ops': ['*/*.so']},

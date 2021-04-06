@@ -77,9 +77,9 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         if isinstance(imgs, list):
             assert len(imgs) == len(img_metas)
             assert len(imgs) > 0
-            assert imgs[0].size(0) == 1, 'aug test does not support ' \
-                                         'inference with batch size ' \
-                                         f'{imgs[0].size(0)}'
+            assert imgs[0].size(0) == 1, ('aug test does not support '
+                                          f'inference with batch size '
+                                          f'{imgs[0].size(0)}')
             return self.aug_test(imgs, img_metas, **kwargs)
 
         return self.simple_test(imgs, img_metas, **kwargs)
@@ -105,8 +105,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                 losses and other necessary infomation.
 
         Returns:
-            tuple[tensor, dict]: (loss, log_vars), loss is the loss tensor \
-                which may be a weighted sum of all losses, log_vars contains \
+            tuple[tensor, dict]: (loss, log_vars), loss is the loss tensor
+                which may be a weighted sum of all losses, log_vars contains
                 all the variables to be sent to the logger.
         """
         log_vars = OrderedDict()
@@ -148,15 +148,15 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                 and reserved.
 
         Returns:
-            dict: It should contain at least 3 keys: ``loss``, ``log_vars``, \
+            dict: It should contain at least 3 keys: ``loss``, ``log_vars``,
                 ``num_samples``.
 
-                - ``loss`` is a tensor for back propagation, which is a \
+                - ``loss`` is a tensor for back propagation, which is a
                 weighted sum of multiple losses.
                 - ``log_vars`` contains all the variables to be sent to the
                 logger.
-                - ``num_samples`` indicates the batch size used for \
-                averaging the logs (Note: for the \
+                - ``num_samples`` indicates the batch size used for
+                averaging the logs (Note: for the
                 DDP model, num_samples refers to the batch size for each GPU).
         """
         losses = self(**data)
