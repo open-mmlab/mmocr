@@ -1,17 +1,17 @@
 <div align="center">
-  <img src="resources/mmocr-logo.png" width="500px"/>
+  <img src="resources/mmocr-logo.jpg" width="500px"/>
 </div>
 
 ## Introduction
 
-[![build](https://github.com/open-mmlab/mmocr/workflows/build/badge.svg)](https://github.com/open-mmlab/mmocr/actions)
-[![docs](https://readthedocs.org/projects/mmocr/badge/?version=latest)](https://mmocr.readthedocs.io/en/latest/?badge=latest)
-[![codecov](https://codecov.io/gh/open-mmlab/mmocr/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmocr)
-[![license](https://img.shields.io/github/license/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/blob/master/LICENSE)
+[![build](https://github.com/open-mmlab/mmediting/workflows/build/badge.svg)](https://github.com/open-mmlab/mmediting/actions)
+[![docs](https://readthedocs.org/projects/mmediting/badge/?version=latest)](https://mmediting.readthedocs.io/en/latest/?badge=latest)
+[![codecov](https://codecov.io/gh/open-mmlab/mmediting/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmediting)
+[![license](https://img.shields.io/github/license/open-mmlab/mmediting.svg)](https://github.com/open-mmlab/mmediting/blob/master/LICENSE)
 
 MMOCR is an open-source toolbox based on PyTorch and mmdetection for text detection, text recognition, and the corresponding downstream tasks including key information extraction. It is part of the open-mmlab project developed by [Multimedia Laboratory, CUHK](http://mmlab.ie.cuhk.edu.hk/).
 
-The master branch works with **PyTorch 1.5+**.
+The master branch works with **PyTorch 1.5**.
 
 Documentation: https://mmocr.readthedocs.io/en/latest/.
 
@@ -31,7 +31,7 @@ Documentation: https://mmocr.readthedocs.io/en/latest/.
 
 - **Modular Design**
 
-  The modular design of MMOCR enables users to define their own optimizers, data preprocessors, and model components such as backbones, necks and heads as well as losses. Please refer to [getting_started.md](docs/getting_started.md) for how to construct a customized model.
+  The modular design of MMOCR enables users to define their own optimizers, data preprocessors, and model components such as backbones, necks and heads as well as losses. Please refer to [GETTING_STARTED.md](docs/GETTING_STARTED.md) for how to construct a customized model.
 
 - **Numerous Utilities**
 
@@ -43,24 +43,24 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 ## Changelog
 
-v1.0 was released on 07/04/2021.
+v1.0 was released on 31/03/2021.
 
 
 ## Benchmark and Model Zoo
 
-Please refer to [modelzoo.md](modelzoo.md) for more details.
+Please refer to [MODEL_ZOO.md](MODEL_ZOO.md) for more details.
 
 ## Installation
 
-Please refer to [install.md](docs/install.md) for installation.
+Please refer to [INSTALL.md](docs/INSTALL.md) for installation.
 
 ## Get Started
 
-Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMOCR.
+Please see [GETTING_STARTED.md](docs/GETTING_STARTED.md) for the basic usage of MMOCR.
 
 ## Contributing
 
-We appreciate all contributions to improve MMOCR. Please refer to [contributing.md](docs/contributing.md) for the contributing guidelines.
+We appreciate all contributions to improve MMOCR. Please refer to [CONTRIBUTING.md](docs/CONTRIBUTING.md) for the contributing guidelines.
 
 ## Acknowledgement
 
