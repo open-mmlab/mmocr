@@ -22,7 +22,6 @@ class FPNC(nn.Module):
                  out_channels=64,
                  bias_on_lateral=False,
                  bn_re_on_lateral=False,
-                 smooth_before_add=False,
                  bias_on_smooth=False,
                  bn_re_on_smooth=False,
                  conv_after_concat=False):
@@ -34,10 +33,10 @@ class FPNC(nn.Module):
         self.num_ins = len(in_channels)
         self.bn_re_on_lateral = bn_re_on_lateral
         self.bn_re_on_smooth = bn_re_on_smooth
-        self.smooth_before_add = smooth_before_add
         self.conv_after_concat = conv_after_concat
         self.lateral_convs = nn.ModuleList()
         self.smooth_convs = nn.ModuleList()
+        self.num_outs = self.num_ins
 
         for i in range(self.num_ins):
             norm_cfg = None
@@ -72,8 +71,7 @@ class FPNC(nn.Module):
                 inplace=False)
 
             self.lateral_convs.append(l_conv)
-            if not (self.smooth_before_add and i == self.num_outs - 1):
-                self.smooth_convs.append(smooth_conv)
+            self.smooth_convs.append(smooth_conv)
         if self.conv_after_concat:
             norm_cfg = dict(type='BN')
             act_cfg = dict(type='ReLU')
@@ -95,7 +93,7 @@ class FPNC(nn.Module):
         for m in self.smooth_convs:
             m.init_weights()
         if self.conv_after_concat:
-            self.out_channels.init_weights()
+            self.out_conv.init_weights()
 
     @auto_fp16()
     def forward(self, inputs):
@@ -106,26 +104,17 @@ class FPNC(nn.Module):
             for i, lateral_conv in enumerate(self.lateral_convs)
         ]
         used_backbone_levels = len(laterals)
-        if self.smooth_before_add:
-            # build top-down path
-            for i in range(used_backbone_levels - 1, 0, -1):
-                prev_shape = laterals[i - 1].shape[2:]
-                laterals[i - 1] += F.interpolate(
-                    laterals[i], size=prev_shape, mode='nearest')
-                laterals[i - 1] = self.smooth_convs[i - 1](laterals[i - 1])
-
-        else:
-            # build top-down path
-            for i in range(used_backbone_levels - 1, 0, -1):
-                prev_shape = laterals[i - 1].shape[2:]
-                laterals[i - 1] += F.interpolate(
-                    laterals[i], size=prev_shape, mode='nearest')
-            # build outputs
-            # part 1: from original levels
-            outs = [
-                self.smooth_convs[i](laterals[i])
-                for i in range(used_backbone_levels)
-            ]
+        # build top-down path
+        for i in range(used_backbone_levels - 1, 0, -1):
+            prev_shape = laterals[i - 1].shape[2:]
+            laterals[i - 1] += F.interpolate(
+                laterals[i], size=prev_shape, mode='nearest')
+        # build outputs
+        # part 1: from original levels
+        outs = [
+            self.smooth_convs[i](laterals[i])
+            for i in range(used_backbone_levels)
+        ]
 
         for i in range(len(outs)):
             scale = 2**i
