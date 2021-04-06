@@ -1,11 +1,8 @@
-import numpy as np
 import pytest
 import torch
 
-from mmdet.core import BitmapMasks
 from mmocr.models.common.losses import DiceLoss
-from mmocr.models.textrecog.losses import (CAFCNLoss, CELoss, CTCLoss, SARLoss,
-                                           TFLoss)
+from mmocr.models.textrecog.losses import CELoss, CTCLoss, SARLoss, TFLoss
 
 
 def test_ctc_loss():
@@ -67,44 +64,6 @@ def test_tf_loss():
     new_output, new_target = tf_loss.format(outputs, targets_dict)
     assert new_output.shape == torch.Size([1, 37, 9])
     assert new_target.shape == torch.Size([1, 9])
-
-
-def test_cafcn_loss():
-    with pytest.raises(AssertionError):
-        CAFCNLoss(alpha='1')
-    with pytest.raises(AssertionError):
-        CAFCNLoss(attn_s2_downsample_ratio='2')
-    with pytest.raises(AssertionError):
-        CAFCNLoss(attn_s3_downsample_ratio='1.5')
-    with pytest.raises(AssertionError):
-        CAFCNLoss(seg_downsample_ratio='1.5')
-    with pytest.raises(AssertionError):
-        CAFCNLoss(attn_s2_downsample_ratio=2)
-    with pytest.raises(AssertionError):
-        CAFCNLoss(attn_s3_downsample_ratio=1.5)
-    with pytest.raises(AssertionError):
-        CAFCNLoss(seg_downsample_ratio=1.5)
-
-    bsz = 1
-    H = W = 64
-    out_neck = (torch.ones(bsz, 1, H // 4, W // 4) * 0.5,
-                torch.ones(bsz, 1, H // 8, W // 8) * 0.5,
-                torch.ones(bsz, 1, H // 8, W // 8) * 0.5,
-                torch.ones(bsz, 1, H // 8, W // 8) * 0.5,
-                torch.ones(bsz, 1, H // 2, W // 2) * 0.5)
-    out_head = torch.rand(bsz, 37, H // 2, W // 2)
-
-    attn_tgt = np.zeros((H, W), dtype=np.float32)
-    segm_tgt = np.zeros((H, W), dtype=np.float32)
-    mask = np.ones((H, W), dtype=np.float32)
-    gt_kernels = BitmapMasks([attn_tgt, segm_tgt, mask], H, W)
-
-    cafcn_loss = CAFCNLoss()
-    losses = cafcn_loss(out_neck, out_head, [gt_kernels])
-    assert isinstance(losses, dict)
-    assert 'loss_seg' in losses
-    assert torch.allclose(losses['loss_seg'],
-                          torch.tensor(losses['loss_seg'].item()).float())
 
 
 def test_dice_loss():
