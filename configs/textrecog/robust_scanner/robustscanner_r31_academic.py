@@ -55,27 +55,25 @@ test_pipeline = [
 
 dataset_type = 'OCRDataset'
 
-prefix = 'data/mixture/'
+train_prefix = 'data/mixture/'
 
-train_img_prefix1 = prefix + 'icdar_2011/Challenge1_Training_Task3_Images_GT'
-train_img_prefix2 = prefix + 'icdar_2013/recog_train_data/' + \
-    'Challenge2_Training_Task3_Images_GT'
-train_img_prefix3 = prefix + 'icdar_2015/ch4_training_word_images_gt'
-train_img_prefix4 = prefix + 'coco_text/train_words'
-train_img_prefix5 = prefix + 'III5K'
-train_img_prefix6 = prefix + 'SynthText_Add/SynthText_Add'
-train_img_prefix7 = prefix + 'SynthText/synthtext/SynthText_patch_horizontal'
-train_img_prefix8 = prefix + 'mnt/ramdisk/max/90kDICT32px'
+train_img_prefix1 = train_prefix + 'icdar_2011'
+train_img_prefix2 = train_prefix + 'icdar_2013'
+train_img_prefix3 = train_prefix + 'icdar_2015'
+train_img_prefix4 = train_prefix + 'coco_text'
+train_img_prefix5 = train_prefix + 'III5K'
+train_img_prefix6 = train_prefix + 'SynthText_Add'
+train_img_prefix7 = train_prefix + 'SynthText'
+train_img_prefix8 = train_prefix + 'Syn90k'
 
-train_ann_file1 = prefix + 'icdar_2011/training_label_fix.txt',
-train_ann_file2 = prefix + 'icdar_2013/recog_train_data/train_label.txt',
-train_ann_file3 = prefix + 'icdar_2015/training_label_fix.txt',
-train_ann_file4 = prefix + 'coco_text/train_label.txt',
-train_ann_file5 = prefix + 'III5K/train_label.txt',
-train_ann_file6 = prefix + 'SynthText_Add/SynthText_Add/' + \
-    'annotationlist/label.lmdb',
-train_ann_file7 = prefix + 'SynthText/synthtext/shuffle_labels.lmdb',
-train_ann_file8 = prefix + 'mnt/ramdisk/max/90kDICT32px/shuffle_labels.lmdb'
+train_ann_file1 = train_prefix + 'icdar_2011/train_label.txt',
+train_ann_file2 = train_prefix + 'icdar_2013/train_label.txt',
+train_ann_file3 = train_prefix + 'icdar_2015/train_label.txt',
+train_ann_file4 = train_prefix + 'coco_text/train_label.txt',
+train_ann_file5 = train_prefix + 'III5K/train_label.txt',
+train_ann_file6 = train_prefix + 'SynthText_Add/label.txt',
+train_ann_file7 = train_prefix + 'SynthText/shuffle_labels.txt',
+train_ann_file8 = train_prefix + 'Syn90k/shuffle_labels.txt'
 
 train1 = dict(
     type=dataset_type,
@@ -113,7 +111,7 @@ train6 = dict(
     img_prefix=train_img_prefix6,
     ann_file=train_ann_file6,
     loader=dict(
-        type='LmdbLoader',
+        type='HardDiskLoader',
         repeat=1,
         parser=dict(
             type='LineStrParser',
@@ -131,19 +129,20 @@ train8 = {key: value for key, value in train6.items()}
 train8['img_prefix'] = train_img_prefix8
 train8['ann_file'] = train_ann_file8
 
-test_img_prefix1 = prefix + 'testset/IIIT5K/'
-test_img_prefix2 = prefix + 'testset/svt/'
-test_img_prefix3 = prefix + 'testset/icdar_2013/Challenge2_Test_Task3_Images/'
-test_img_prefix4 = prefix + 'testset/icdar_2015/ch4_test_word_images_gt'
-test_img_prefix5 = prefix + 'testset/svtp/'
-test_img_prefix6 = prefix + 'testset/ct80/'
+test_prefix = 'data/mixture/'
+test_img_prefix1 = test_prefix + 'IIIT5K/'
+test_img_prefix2 = test_prefix + 'svt/'
+test_img_prefix3 = test_prefix + 'icdar_2013/'
+test_img_prefix4 = test_prefix + 'icdar_2015/'
+test_img_prefix5 = test_prefix + 'svtp/'
+test_img_prefix6 = test_prefix + 'ct80/'
 
-test_ann_file1 = prefix + 'testset/IIIT5K/label.txt'
-test_ann_file2 = prefix + 'testset/svt/test_list.txt'
-test_ann_file3 = prefix + 'testset/icdar_2013/test_label_1015.txt'
-test_ann_file4 = prefix + 'testset/icdar_2015/test_label.txt'
-test_ann_file5 = prefix + 'testset/svtp/imagelist.txt'
-test_ann_file6 = prefix + 'testset/ct80/imagelist.txt'
+test_ann_file1 = test_prefix + 'IIIT5K/test_label.txt'
+test_ann_file2 = test_prefix + 'svt/test_label.txt'
+test_ann_file3 = test_prefix + 'icdar_2013/test_label_1015.txt'
+test_ann_file4 = test_prefix + 'icdar_2015/test_label.txt'
+test_ann_file5 = test_prefix + 'svtp/test_label.txt'
+test_ann_file6 = test_prefix + 'ct80/test_label.txt'
 
 test1 = dict(
     type=dataset_type,

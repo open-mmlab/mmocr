@@ -76,15 +76,15 @@ test_pipeline = [
 
 dataset_type = 'OCRDataset'
 
-train_img_prefix = 'data/mixture/mnt/ramdisk/max/90kDICT32px'
-train_ann_file = 'data/mixture/mnt/ramdisk/max/90kDICT32px/label.txt'
+train_img_prefix = 'data/mixture/Syn90k/mnt/ramdisk/max/90kDICT32px'
+train_ann_file = 'data/mixture/Syn90k/label.lmdb'
 
 train1 = dict(
     type=dataset_type,
     img_prefix=train_img_prefix,
     ann_file=train_ann_file,
     loader=dict(
-        type='HardDiskLoader',
+        type='LmdbLoader',
         repeat=1,
         parser=dict(
             type='LineStrParser',
@@ -94,31 +94,14 @@ train1 = dict(
     pipeline=train_pipeline,
     test_mode=False)
 
-test1 = dict(
-    type=dataset_type,
-    img_prefix=train_img_prefix,
-    ann_file=train_ann_file,
-    loader=dict(
-        type='HardDiskLoader',
-        repeat=1,
-        parser=dict(
-            type='LineStrParser',
-            keys=['filename', 'text'],
-            keys_idx=[0, 1],
-            separator=' ')),
-    pipeline=test_pipeline,
-    test_mode=True)
+test_prefix = 'data/mixture/'
+test_img_prefix1 = test_prefix + 'icdar_2013/'
+test_img_prefix2 = test_prefix + 'IIIT5K/'
+test_img_prefix3 = test_prefix + 'svt/'
 
-test_img_prefix = 'data/mixture/'
-ic13_path = 'testset/icdar_2013/Challenge2_Test_Task3_Images/'
-test_img_prefix1 = test_img_prefix + ic13_path
-test_img_prefix2 = test_img_prefix + 'testset/IIIT5K/'
-test_img_prefix3 = test_img_prefix + 'testset/svt/'
-
-test_ann_prefix = 'data/mixture/'
-test_ann_file1 = test_ann_prefix + 'testset/icdar_2013/test_label_1015.txt'
-test_ann_file2 = test_ann_prefix + 'testset/IIIT5K/label.txt'
-test_ann_file3 = test_ann_prefix + 'testset/svt/test_list.txt'
+test_ann_file1 = test_prefix + 'icdar_2013/test_label_1015.txt'
+test_ann_file2 = test_prefix + 'IIIT5K/test_label.txt'
+test_ann_file3 = test_prefix + 'svt/test_label.txt'
 
 test1 = dict(
     type=dataset_type,
