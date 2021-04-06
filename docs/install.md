@@ -15,7 +15,7 @@
 
 - Linux (Windows is not officially supported)
 - Python 3.7
-- PyTorch 1.5
+- PyTorch 1.5 or higher
 - torchvision 0.6.0
 - CUDA 10.1
 - NCCL 2
