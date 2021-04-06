@@ -6,6 +6,14 @@ from mmocr.models.textrecog.losses import CELoss, CTCLoss, SARLoss, TFLoss
 
 
 def test_ctc_loss():
+    with pytest.raises(AssertionError):
+        CTCLoss(flatten='flatten')
+    with pytest.raises(AssertionError):
+        CTCLoss(blank=None)
+    with pytest.raises(AssertionError):
+        CTCLoss(reduction=1)
+    with pytest.raises(AssertionError):
+        CTCLoss(zero_infinity='zero')
     # test CTCLoss
     ctc_loss = CTCLoss()
     outputs = torch.zeros(2, 40, 37)

@@ -4,6 +4,7 @@ import unittest.mock as mock
 import numpy as np
 import torch
 import torchvision.transforms.functional as TF
+from PIL import Image
 
 import mmocr.datasets.pipelines.ocr_transforms as transforms
 
@@ -92,3 +93,48 @@ def test_online_crop(mock_random):
 
     results = rci(results)
     assert np.allclose(results['img'].shape, [100, 100, 3])
+
+
+def test_fancy_pca():
+    input_tensor = torch.rand(3, 32, 100)
+
+    rci = transforms.FancyPCA()
+
+    results = {'img': input_tensor}
+    results = rci(results)
+
+    assert results['img'].shape == torch.Size([3, 32, 100])
+
+
+@mock.patch('%s.transforms.np.random.uniform' % __name__)
+def test_random_padding(mock_random):
+    kwargs = dict(max_ratio=[0.0, 0.0, 0.0, 0.0], box_type=None)
+
+    mock_random.side_effect = [1, 1, 1, 1]
+
+    src_img = np.ones((32, 100, 3), dtype=np.uint8)
+    results = {'img': src_img, 'img_shape': (32, 100, 3)}
+
+    rci = transforms.RandomPaddingOCR(**kwargs)
+
+    results = rci(results)
+    print(results['img'].shape)
+    assert np.allclose(results['img_shape'], [96, 300, 3])
+
+
+def test_opencv2pil():
+    src_img = np.ones((32, 100, 3), dtype=np.uint8)
+    results = {'img': src_img}
+    rci = transforms.OpencvToPil()
+
+    results = rci(results)
+    assert np.allclose(results['img'].size, (100, 32))
+
+
+def test_pil2opencv():
+    src_img = Image.new('RGB', (100, 32), color=(255, 255, 255))
+    results = {'img': src_img}
+    rci = transforms.PilToOpencv()
+
+    results = rci(results)
+    assert np.allclose(results['img'].shape, (32, 100, 3))
