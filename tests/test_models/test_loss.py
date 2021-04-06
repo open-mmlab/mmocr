@@ -19,3 +19,15 @@ def test_panloss():
     assert len(results) == 1
     assert torch.sum(torch.abs(results[0].float() -
                                torch.Tensor(target))).item() == 0
+
+
+def test_textsnakeloss():
+    textsnakeloss = losses.TextSnakeLoss()
+
+    # test balanced_bce_loss
+    pred = torch.tensor([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=torch.float)
+    target = torch.tensor([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=torch.long)
+    mask = torch.tensor([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=torch.long)
+    bce_loss = textsnakeloss.balanced_bce_loss(pred, target, mask).item()
+
+    assert np.allclose(bce_loss, 0)

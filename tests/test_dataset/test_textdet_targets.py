@@ -135,3 +135,78 @@ def test_dbnet_generate_targets():
     assert 'gt_shrink_mask' in results['mask_fields']
     assert 'gt_thr' in results['mask_fields']
     assert 'gt_thr_mask' in results['mask_fields']
+
+
+@mock.patch('%s.cf_bundle.show_feature' % __name__)
+def test_gen_textsnake_targets(mock_show_feature):
+
+    target_generator = textdet_targets.TextSnakeTargets()
+    assert np.allclose(target_generator.orientation_thr, 2.0)
+    assert np.allclose(target_generator.resample_step, 4.0)
+    assert np.allclose(target_generator.center_region_shrink_ratio, 0.3)
+
+    # test find_head_tail
+    polygon = np.array([[1.0, 1.0], [5.0, 1.0], [5.0, 3.0], [1.0, 3.0]])
+    head_inds, tail_inds = target_generator.find_head_tail(polygon, 2.0)
+    assert np.allclose(head_inds, [3, 0])
+    assert np.allclose(tail_inds, [1, 2])
+
+    # test generate_text_region_mask
+    img_size = (3, 10)
+    text_polys = [[np.array([0, 0, 1, 0, 1, 1, 0, 1])],
+                  [np.array([2, 0, 3, 0, 3, 1, 2, 1])]]
+    output = target_generator.generate_text_region_mask(img_size, text_polys)
+    target = np.array([[1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+                       [1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+    assert np.allclose(output, target)
+
+    # test generate_center_region_mask
+    target_generator.center_region_shrink_ratio = 1.0
+    (center_region_mask, radius_map, sin_map,
+     cos_map) = target_generator.generate_center_mask_attrib_maps(
+         img_size, text_polys)
+    target = np.array([[1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+                       [1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
+    assert np.allclose(center_region_mask, target)
+    assert np.allclose(sin_map, np.zeros(img_size))
+    assert np.allclose(cos_map, target)
+
+    # test generate_effective_mask
+    polys_ignore = text_polys
+    output = target_generator.generate_effective_mask(img_size, polys_ignore)
+    target = np.array([[0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+                       [0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+                       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]])
+    assert np.allclose(output, target)
+
+    # test generate_targets
+    results = {}
+    results['img'] = np.zeros((3, 10, 3), np.uint8)
+    results['gt_masks'] = PolygonMasks(text_polys, 3, 10)
+    results['gt_masks_ignore'] = PolygonMasks([], 3, 10)
+    results['img_shape'] = (3, 10, 3)
+    results['mask_fields'] = []
+    output = target_generator(results)
+    assert len(output['gt_text_mask']) == 1
+    assert len(output['gt_center_region_mask']) == 1
+    assert len(output['gt_mask']) == 1
+    assert len(output['gt_radius_map']) == 1
+    assert len(output['gt_sin_map']) == 1
+    assert len(output['gt_cos_map']) == 1
+
+    bundle = cf_bundle.CustomFormatBundle(
+        keys=[
+            'gt_text_mask', 'gt_center_region_mask', 'gt_mask',
+            'gt_radius_map', 'gt_sin_map', 'gt_cos_map'
+        ],
+        visualize=dict(flag=True, boundary_key='gt_text_mask'))
+    bundle(output)
+    assert 'gt_text_mask' in output.keys()
+    assert 'gt_center_region_mask' in output.keys()
+    assert 'gt_mask' in output.keys()
+    assert 'gt_radius_map' in output.keys()
+    assert 'gt_sin_map' in output.keys()
+    assert 'gt_cos_map' in output.keys()
+    mock_show_feature.assert_called_once()
