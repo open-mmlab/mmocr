@@ -6,6 +6,12 @@ from mmdet.models.builder import BACKBONES
 
 @BACKBONES.register_module()
 class VeryDeepVgg(nn.Module):
+    """Implement VGG-VeryDeep backbone for text recognition, modified from
+      `VGG-VeryDeep <https://arxiv.org/pdf/1409.1556.pdf>`_
+    Args:
+        input_channels (int): Number of channels of input image tensor.
+        leakyRelu (bool): Use leakyRelu or not.
+    """
 
     def __init__(self, leakyRelu=True, input_channels=3):
         super().__init__()
