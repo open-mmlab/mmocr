@@ -5,6 +5,8 @@ All kinds of contributions are welcome, including but not limited to the followi
 - Fixes (typo, bugs)
 - New features and components
 
+Contents
+
 - [Workflow](#workflow)
     - [Main Steps](#main-steps)
     - [Detailed Steps](#detailed-steps)
