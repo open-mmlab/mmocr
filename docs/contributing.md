@@ -1,50 +1,29 @@
-<a id="markdown-contributing-to-mmocr" name="contributing-to-mmocr"></a>
-# Contributing to mmocr
-
-All kinds of contributions are welcome, including but not limited to the following.
-
-- Fixes (typo, bugs)
-- New features and components
-- Enhancement like function speedup
+This document describes the fork & merge request workflow that should be used when contributing to **MMOCR**.
 <!-- TOC -->
 
-- [Contributing to mmocr](#contributing-to-mmocr)
-  - [Workflow](#workflow)
-    - [Step 1: Create a Fork](#step-1-create-a-fork)
-    - [Step 2: Develop a new feature](#step-2-develop-a-new-feature)
-      - [Step 2.1: Keep your fork up to date](#step-21-keep-your-fork-up-to-date)
-      - [<span id = "step2.2">Step 2.2: Create a feature branch</span>](#step-22-create-a-feature-branch)
-        - [Create an issue on github](#create-an-issue-on-github)
-        - [Create branch](#create-branch)
-      - [Step 2.3: Develop and test <your_new_feature>](#step-23-develop-and-test-your_new_feature)
-      - [Step 2.4: Prepare to Pull Request](#step-24-prepare-to-pull-request)
-        - [Merge official repo updates to your fork](#merge-official-repo-updates-to-your-fork)
-        - [Push <your_new_feature> branch to your remote forked repo,](#push-your_new_feature-branch-to-your-remote-forked-repo)
-      - [Step 2.5: Create a Pull Request](#step-25-create-a-pull-request)
-      - [Step 2.6: Review code](#step-26-review-code)
-      - [Step 2.7: Revise <your_new_feature>  (optional)](#step-27-revise-your_new_feature--optional)
-      - [Step 2.8: Delete <your_new_feature> branch if your PR is accepted.](#step-28-delete-your_new_feature-branch-if-your-pr-is-accepted)
-  - [Code style](#code-style)
-    - [Python](#python)
-    - [C++ and CUDA](#c-and-cuda)
+- [Step 1: Create a Fork](#step-1-create-a-fork)
+- [Step 2: Develop a new feature](#step-2-develop-a-new-feature)
+  - [Step 2.1: Keep your fork up to date](#step-21-keep-your-fork-up-to-date)
+  - [<span id = "step2.2">Step 2.2: Create a feature branch</span>](#step-22-create-a-feature-branch)
+    - [Create an issue on github](#create-an-issue-on-github)
+    - [Create branch](#create-branch)
+  - [Step 2.3: Develop and test <your_new_feature>](#step-23-develop-and-test-your_new_feature)
+  - [Step 2.4: Prepare to Pull Request](#step-24-prepare-to-pull-request)
+    - [Merge official repo updates to your fork](#merge-official-repo-updates-to-your-fork)
+    - [Push <your_new_feature> branch to your remote forked repo,](#push-your_new_feature-branch-to-your-remote-forked-repo)
+  - [Step 2.5: Create a Pull Request](#step-25-create-a-pull-request)
+  - [Step 2.6: Review code](#step-26-review-code)
+  - [Step 2.7: Revise <your_new_feature>  (optional)](#step-27-revise-your_new_feature--optional)
+  - [Step 2.8: Delete <your_new_feature> branch if your PR is accepted.](#step-28-delete-your_new_feature-branch-if-your-pr-is-accepted)
 
 <!-- /TOC -->
-<a id="markdown-workflow" name="workflow"></a>
-## Workflow
+The official public [repository](https://github.com/open-mmlab/mmocr) holds only one branch with an infinite lifetime only:
++ main
 
-This document describes the fork & merge request workflow that should be used when contributing to **MMOCR**.
-
-The official public [repository](https://github.com/open-mmlab/mmocr) holds two branches with an infinite lifetime only:
-+ master
-+ develop
-
-The *master* branch is the main branch where the source code of **HEAD** always reflects a *production-ready state*.
-
-The *develop* branch is the branch where the source code of **HEAD** always reflects a state with the latest development changes for the next release.
+The *main* branch is the main branch where the source code of **HEAD** always reflects a *production-ready state*.
 
 Feature branches are used to develop new features for the upcoming or a distant future release.
 
-![](res/git-workflow-master-develop.png)
 
 All new developers to **MMOCR** need to follow the following steps:
 
@@ -74,15 +53,10 @@ Whenever you want to update your fork with the latest upstream changes, you need
 # Fetch from upstream remote
 git fetch upstream
 
-# Update your master branch
-git checkout master
-git rebase upstream/master
-git push origin master
-
-# Update your develop branch
-git checkout develop
-git rebase upsteam/develop
-git push origin develop
+# Update your main branch
+git checkout main
+git rebase upstream/main
+git push origin main
 ```
 
 <a id="markdown-span-id--step22step-22-create-a-feature-branchspan" name="span-id--step22step-22-create-a-feature-branchspan"></a>
@@ -90,24 +64,21 @@ git push origin develop
 <a id="markdown-create-an-issue-on-githubhttpsgithubcomopen-mmlabmmocr" name="create-an-issue-on-githubhttpsgithubcomopen-mmlabmmocr"></a>
 ##### Create an issue on [github](https://github.com/open-mmlab/mmocr)
 - The title of the issue should be one of the following formats: `[Feature]: xxx`, `[Fix]: xxx`, `[Enhance]: xxx`, `[Refactor]: xxx`.
-- More details can be written in comments.
+- More details can be written in the comments of the issue.
 
 <a id="markdown-create-branch" name="create-branch"></a>
 ##### Create branch
 ```
-git checkout -b feature/iss_<index> develop
+git checkout -b feature/iss_<index> main
 # index is the issue number above
 ```
-Till now, your fork has three branches as follows:
-
-![](res/git-workflow-feature.png)
 
 <a id="markdown-step-23-develop-and-test-your_new_feature" name="step-23-develop-and-test-your_new_feature"></a>
 #### Step 2.3: Develop and test <your_new_feature>
 
 Develop your new feature and test it to make sure it works well.
 
-Pls run
+Please run
 ```
 pre-commit run --all-files
 pytest tests
@@ -131,14 +102,14 @@ git commit -m "fix #<issue_index>: <commit_message>"
 # fetch from upstream remote. i.e., the official repo
 git fetch upstream
 
-# update the develop branch of your fork
-git checkout develop
-git rebase upsteam/develop
-git push origin develop
+# update the main branch of your fork
+git checkout main
+git rebase upsteam/main
+git push origin main
 
 # update the <your_new_feature> branch
 git checkout <your_new_feature>
-git rebase develop
+git rebase main
 # solve conflicts if any and Test
 ```
 
@@ -167,21 +138,3 @@ If PR is not accepted, pls follow Step 2.1, 2.3, 2.4 and 2.5 till your PR is acc
 git branch -d <your_new_feature>
 git push origin :<your_new_feature>
 ```
-
-<a id="markdown-code-style" name="code-style"></a>
-## Code style
-
-<a id="markdown-python" name="python"></a>
-### Python
-We adopt [PEP8](https://www.python.org/dev/peps/pep-0008/) as the preferred code style.
-
-We use the following tools for linting and formatting:
-- [flake8](http://flake8.pycqa.org/en/latest/): linter
-- [yapf](https://github.com/google/yapf): formatter
-- [isort](https://github.com/timothycrosley/isort): sort imports
-
->Before you create a PR, make sure that your code lints and is formatted by yapf.
-
-<a id="markdown-c-and-cuda" name="c-and-cuda"></a>
-### C++ and CUDA
-We follow the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).
