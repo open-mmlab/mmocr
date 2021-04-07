@@ -8,11 +8,11 @@ import torch
 from mmcv.utils import ProgressBar
 
 from mmdet.apis import init_detector
-from mmdet.utils import get_root_logger
 from mmocr.apis import model_inference
 from mmocr.core.evaluation.ocr_metric import eval_ocr_metric
 from mmocr.datasets import build_dataset  # noqa: F401
 from mmocr.models import build_detector  # noqa: F401
+from mmocr.utils import get_root_logger
 
 
 def save_results(img_paths, pred_labels, gt_labels, res_dir):

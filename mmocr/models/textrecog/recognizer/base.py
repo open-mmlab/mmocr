@@ -9,8 +9,8 @@ import torch.nn as nn
 from mmcv.runner import auto_fp16
 from mmcv.utils import print_log
 
-from mmdet.utils import get_root_logger
 from mmocr.core import imshow_text_label
+from mmocr.utils import get_root_logger
 
 
 class BaseRecognizer(nn.Module, metaclass=ABCMeta):
