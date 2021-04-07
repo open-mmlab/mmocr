@@ -58,15 +58,13 @@ git push origin main
 ```
 
 ##### Step 2.2: Create a feature branch
-###### Create an issue on [github](https://github.com/open-mmlab/mmocr)
-- The title of the issue should be one of the following formats: `[Feature]: xxx`, `[Fix]: xxx`, `[Enhance]: xxx`, `[Refactor]: xxx`.
-- More details can be written in the comments of the issue.
+- Create an issue on [github](https://github.com/open-mmlab/mmocr)
 
-###### Create branch
-```
-git checkout -b feature/iss_<index> main
-# index is the issue number above
-```
+- Create a feature branch
+- ```
+  git checkout -b feature/iss_<index> main
+  # index is the issue index on github above
+  ```
 
 #### Step 3: Commit your changes
 
