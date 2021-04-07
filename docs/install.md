@@ -1,16 +1,5 @@
-<a id="markdown-installation" name="installation"></a>
 # Installation
-<!-- TOC -->
 
-- [Installation](#installation)
-  - [Prerequisites](#prerequisites)
-  - [Step-by-Step Installation Instructions](#step-by-step-installation-instructions)
-  - [Full Set-up Script](#full-set-up-script)
-  - [Another option: Docker Image](#another-option-docker-image)
-  - [Prepare Datasets](#prepare-datasets)
-
-<!-- /TOC -->
-<a id="markdown-prerequisites" name="prerequisites"></a>
 ## Prerequisites
 
 - Linux (Windows is not officially supported)
@@ -33,7 +22,6 @@ We have tested the following versions of OS and softwares:
 
 MMOCR depends on Pytorch and mmdetection v2.9.0.
 
-<a id="markdown-step-by-step-installation-instructions" name="step-by-step-installation-instructions"></a>
 ## Step-by-Step Installation Instructions
 
 a. Create a conda virtual environment and activate it.
@@ -110,7 +98,6 @@ pip install -v -e .  # or "python setup.py build_ext --inplace"
 export PYTHONPATH=$(pwd):$PYTHONPATH
 ```
 
-<a id="markdown-full-set-up-script" name="full-set-up-script"></a>
 ## Full Set-up Script
 
 Here is the full script for setting up mmocr with conda.
@@ -150,7 +137,6 @@ pip install -v -e .  # or "python setup.py build_ext --inplace"
 export PYTHONPATH=$(pwd):$PYTHONPATH
 ```
 
-<a id="markdown-another-option-docker-image" name="another-option-docker-image"></a>
 ## Another option: Docker Image
 
 We provide a [Dockerfile](https://github.com/open-mmlab/mmocr/blob/master/docker/Dockerfile) to build an image.
@@ -166,7 +152,6 @@ Run it with
 docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmocr/data mmocr
 ```
 
-<a id="markdown-prepare-datasets" name="prepare-datasets"></a>
 ## Prepare Datasets
 
 It is recommended to symlink the dataset root to `mmocr/data`. Please refer to [datasets.md](datasets.md) to prepare your datasets.
