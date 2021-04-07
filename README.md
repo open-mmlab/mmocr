@@ -43,12 +43,12 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 ## Changelog
 
-v1.0 was released on 07/04/2021.
+v0.1.0 was released on 07/04/2021.
 
 
 ## Benchmark and Model Zoo
 
-Please refer to [modelzoo.md](modelzoo.md) for more details.
+Please refer to [modelzoo.md](https://mmocr.readthedocs.io/en/latest/modelzoo.html) for more details.
 
 ## Installation
 
