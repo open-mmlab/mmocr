@@ -102,7 +102,7 @@ def _get_detector_cfg(fname):
 @pytest.mark.parametrize('cfg_file', [
     'textrecog/sar/sar_r31_parallel_decoder_academic.py',
     'textrecog/crnn/crnn_academic_dataset.py',
-    'textrecog/nrtr/nrtr_r31_academic.py',
+    'textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py',
     'textrecog/robust_scanner/robustscanner_r31_academic.py',
     'textrecog/seg/seg_r31_1by16_fpnocr_academic.py'
 ])
