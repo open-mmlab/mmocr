@@ -8,14 +8,14 @@ import warnings
 import mmcv
 import torch
 from mmcv import Config, DictAction
-from mmcv.runner import get_dist_info, init_dist
+from mmcv.runner import get_dist_info, init_dist, set_random_seed
 from mmcv.utils import get_git_hash
 
-from mmdet import __version__
-from mmdet.apis import set_random_seed, train_detector
-from mmdet.utils import collect_env, get_root_logger
+from mmocr import __version__
+from mmocr.apis import train_detector
 from mmocr.datasets import build_dataset
 from mmocr.models import build_detector
+from mmocr.utils import collect_env, get_root_logger
 
 
 def parse_args():
@@ -187,7 +187,7 @@ def main():
         # save mmdet version, config file content and class names in
         # checkpoints as meta data
         cfg.checkpoint_config.meta = dict(
-            mmdet_version=__version__ + get_git_hash()[:7],
+            mmocr_version=__version__ + get_git_hash()[:7],
             CLASSES=datasets[0].CLASSES)
     # add an attribute for visualization convenience
     model.CLASSES = datasets[0].CLASSES

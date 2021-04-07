@@ -8,7 +8,7 @@ from mmcv.runner import load_checkpoint
 from mmcv.utils.parrots_wrapper import _BatchNorm
 
 from mmdet.models.builder import BACKBONES
-from mmdet.utils import get_root_logger
+from mmocr.utils import get_root_logger
 
 
 class UpConvBlock(nn.Module):
