@@ -20,7 +20,7 @@ This document describes the fork & merge request workflow that should be used wh
 The official public [repository](https://github.com/open-mmlab/mmocr) holds only one branch with an infinite lifetime only:
 + main
 
-The *main* branch is the main branch where the source code of **HEAD** always reflects a *production-ready state*.
+The *main* branch is the main branch where the source code of **HEAD** always reflects a state with the latest development changes for the next release.
 
 Feature branches are used to develop new features for the upcoming or a distant future release.
 

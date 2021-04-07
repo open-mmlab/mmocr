@@ -36,10 +36,10 @@ A placeholder for the command.
     - Other environment variables that may be related (such as `$PATH`, `$LD_LIBRARY_PATH`, `$PYTHONPATH`, etc.)
 
 **Error traceback**
-If applicable, paste the error trackback here.
+If applicable, paste the error traceback here.
 
 ```none
-A placeholder for trackback.
+A placeholder for traceback.
 ```
 
 **Bug fix**

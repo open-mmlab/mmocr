@@ -17,16 +17,16 @@ All kinds of contributions are welcome, including but not limited to the followi
 <a id="markdown-workflow" name="workflow"></a>
 ## Workflow
 
-1. fork and pull the latest mmdetection
+1. fork and pull the latest mmocr
 2. checkout a new branch (do not use main branch for PRs)
 3. commit your changes
 4. create a PR
 
 Note
 
-- Please refer to [contributing.md](../docs/contributing.md) for detail steps.
+- Please refer to [contributing.md](/docs/contributing.md) for detail steps.
 - If you plan to add some new features that involve large changes, it is encouraged to open an issue for discussion first.
-- If you are the author of some papers and would like to include your method to mmdetection, please let us know (open an issue or contact the maintainers). We will much appreciate your contribution.
+- If you are the author of some papers and would like to include your method to mmocr, please let us know (open an issue or contact the maintainers). We will much appreciate your contribution.
 - For new features and new modules, unit tests are required to improve the code's robustness.
 
 
@@ -66,8 +66,7 @@ If you are facing issue when installing markdown lint, you may install ruby for 
 # install rvm
 curl -L https://get.rvm.io | bash -s -- --autolibs=read-fail
 # set up environment
-# Note that you might need to edit ~/.bashrc, ~/.bash_profile, and ~/.profile
-source ~/.profile
+# Note that you might need to edit ~/.bashrc, ~/.bash_profile.
 rvm autolibs disable
 # install ruby
 rvm install 2.7.1
