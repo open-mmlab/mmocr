@@ -5,6 +5,25 @@ All kinds of contributions are welcome, including but not limited to the followi
 - Fixes (typo, bugs)
 - New features and components
 
+- [Workflow](#workflow)
+    - [Main Steps](#main-steps)
+    - [Detailed Steps](#detailed-steps)
+        - [Step 1: Create a Fork](#step-1-create-a-fork)
+        - [Step 2: Develop a new feature](#step-2-develop-a-new-feature)
+            - [Step 2.1: Keep your fork up to date](#step-21-keep-your-fork-up-to-date)
+            - [Step 2.2: Create a feature branch](#step-22-create-a-feature-branch)
+        - [Step 3: Commit your changes](#step-3-commit-your-changes)
+        - [Step 4: Prepare to Pull Request](#step-4-prepare-to-pull-request)
+            - [Step 4.1: Merge official repo updates to your fork](#step-41-merge-official-repo-updates-to-your-fork)
+            - [Step 4.2: Push <your_feature_branch> branch to your remote forked repo,](#step-42-push-your_feature_branch-branch-to-your-remote-forked-repo)
+            - [Step 4.3: Create a Pull Request](#step-43-create-a-pull-request)
+            - [Step 4.4: Review code](#step-44-review-code)
+            - [Step 4.5: Revise <your_feature_branch>  (optional)](#step-45-revise-your_feature_branch--optional)
+            - [Step 4.6: Delete <your_feature_branch> branch if your PR is accepted.](#step-46-delete-your_feature_branch-branch-if-your-pr-is-accepted)
+- [Code style](#code-style)
+    - [Python](#python)
+    - [C++ and CUDA](#c-and-cuda)
+
 ## Workflow
 ### Main Steps
 1. fork and pull the latest mmocr
