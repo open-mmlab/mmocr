@@ -60,7 +60,7 @@ Please see [getting_started.md](docs/getting_started.md) for the basic usage of 
 
 ## Contributing
 
-We appreciate all contributions to improve MMOCR. Please refer to [contributing.md](docs/contributing.md) for the contributing guidelines.
+We appreciate all contributions to improve MMOCR. Please refer to [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the contributing guidelines.
 
 ## Acknowledgement
 
