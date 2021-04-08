@@ -21,6 +21,12 @@ Welcome to MMOCR's documentation!
 
 .. toctree::
    :maxdepth: 2
+   :caption: Datasets
+
+   datasets.md
+
+.. toctree::
+   :maxdepth: 2
    :caption: Notes
 
    changelog.md
