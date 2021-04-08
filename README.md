@@ -9,7 +9,7 @@
 [![codecov](https://codecov.io/gh/open-mmlab/mmocr/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmocr)
 [![license](https://img.shields.io/github/license/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/blob/master/LICENSE)
 
-MMOCR is an open-source toolbox based on PyTorch and mmdetection for text detection, text recognition, and the corresponding downstream tasks including key information extraction. It is part of the open-mmlab project developed by [Multimedia Laboratory, CUHK](http://mmlab.ie.cuhk.edu.hk/).
+MMOCR is an open-source toolbox based on PyTorch and mmdetection for text detection, text recognition, and the corresponding downstream tasks including key information extraction. It is part of the open-mmlab project.
 
 The master branch works with **PyTorch 1.5+**.
 
@@ -48,7 +48,7 @@ v0.1.0 was released on 07/04/2021.
 
 ## Benchmark and Model Zoo
 
-Please refer to [modelzoo.md](https://mmocr.readthedocs.io/en/latest/modelzoo.html) for more details.
+Please refer to [modelzoo.md](https://mmocr.readthedocs.io/en/latest/index.html) for more details.
 
 ## Installation
 
