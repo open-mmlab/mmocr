@@ -23,7 +23,7 @@ Documentation: https://mmocr.readthedocs.io/en/latest/.
 
 - **Comprehensive Pipeline**
 
-   The toolbox supports not only text detection and text recognition, but also their downstream tasks such as key inforation extraction.
+   The toolbox supports not only text detection and text recognition, but also their downstream tasks such as key information extraction.
 
 - **Multiple Models**
 
@@ -35,7 +35,7 @@ Documentation: https://mmocr.readthedocs.io/en/latest/.
 
 - **Numerous Utilities**
 
-  The toolbox provides a comprehensive set of utilities which can help users assess the performance of models. It includes visualizers which allow visualization of images, ground truths as well as predicted bounding boxes, and a validation tool for evaluating checkpoints during training.  It also includes data converters to demostrate how to convert your own data to the annotation files which the toolbox supports.
+  The toolbox provides a comprehensive set of utilities which can help users assess the performance of models. It includes visualizers which allow visualization of images, ground truths as well as predicted bounding boxes, and a validation tool for evaluating checkpoints during training.  It also includes data converters to demonstrate how to convert your own data to the annotation files which the toolbox supports.
 
 ## License
 

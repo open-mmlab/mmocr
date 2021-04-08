@@ -171,12 +171,13 @@ mmocr
 │   ├── demo_text_recog.jpg
 │   ├── image_demo.py
 │   └── webcam_demo.py
+├── docker
+│   └── Dockerfile
 ├── docs
 │   ├── api.rst
 │   ├── changelog.md
 │   ├── code_of_conduct.md
 │   ├── conf.py
-│   ├── contributing.md
 │   ├── datasets.md
 │   ├── getting_started.md
 │   ├── index.rst
@@ -185,9 +186,7 @@ mmocr
 │   ├── Makefile
 │   ├── merge_docs.sh
 │   ├── requirements.txt
-│   ├── res
-│   ├── stats.py
-│   └── technical_details.md
+│   └── stats.py
 ├── LICENSE
 ├── mmocr
 │   ├── apis
@@ -213,22 +212,25 @@ mmocr
 ├── setup.py
 ├── tests
 │   ├── data
+│   ├── test_apis
 │   ├── test_dataset
 │   ├── test_metrics
 │   ├── test_models
 │   ├── test_tools
 │   └── test_utils
-└── tools
-    ├── data
-    ├── dist_test.sh
-    ├── dist_train.sh
-    ├── ocr_test_imgs.py
-    ├── ocr_test_imgs.sh
-    ├── publish_model.py
-    ├── slurm_test.sh
-    ├── slurm_train.sh
-    ├── test_imgs.py
-    ├── test_imgs.sh
-    ├── test.py
-    └── train.py
+├── tools
+│   ├── data
+│   ├── dist_test.sh
+│   ├── dist_train.sh
+│   ├── kie_test_imgs.py
+│   ├── kie_test_imgs.sh
+│   ├── ocr_test_imgs.py
+│   ├── ocr_test_imgs.sh
+│   ├── publish_model.py
+│   ├── slurm_test.sh
+│   ├── slurm_train.sh
+│   ├── test_imgs.py
+│   ├── test_imgs.sh
+│   ├── test.py
+│   └── train.py
 ```
