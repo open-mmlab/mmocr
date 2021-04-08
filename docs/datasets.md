@@ -20,6 +20,7 @@ This page lists the datasets which are commonly used in text detection, text rec
 │   ├── imgs
 │   └── instances_training.lmdb
 ```
+Download Table:
 |  Dataset  |   |           Images           |   |                                              |             Annotation Files             |                                          |   | Note |   |
 |:---------:|:-:|:--------------------------:|:-:|:--------------------------------------------:|:---------------------------------------:|:----------------------------------------:|:-:|:----:|---|
 |           |   |                            |   | training                                     | validation                               | testing                                  |   |      |   |
@@ -94,6 +95,7 @@ This page lists the datasets which are commonly used in text detection, text rec
 │   │   ├── SynthText_Add
 
 ```
+Download Table:
 |   Dataset  |   |                                       images                                      |                                            annotation file                                           |                                             annotation file                                             | Note |
 |:----------:|:-:|:---------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:|:----:|
 ||   | |training | test |      |
