@@ -4,11 +4,7 @@ lmdb
 matplotlib
 numba>=0.45.1
 numpy
-# need older pillow until torchvision is fixed
-Pillow<=6.2.2
 python-Levenshtein
 scikit-image
 six
 terminaltables
-torch>=1.1
-torchvision
