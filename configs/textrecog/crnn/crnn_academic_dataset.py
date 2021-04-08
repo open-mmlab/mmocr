@@ -42,7 +42,7 @@ total_epochs = 5
 img_norm_cfg = dict(mean=[0.5], std=[0.5])
 
 train_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='LoadImageFromFile', color_type='grayscale'),
     dict(
         type='ResizeOCR',
         height=32,
@@ -59,7 +59,7 @@ train_pipeline = [
         ]),
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='LoadImageFromFile', color_type='grayscale'),
     dict(
         type='ResizeOCR',
         height=32,

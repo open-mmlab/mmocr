@@ -26,7 +26,10 @@ def model_inference(model, img):
     data = collate([data], samples_per_gpu=1)
 
     # process img_metas
-    data['img_metas'] = data['img_metas'][0].data
+    if isinstance(data['img_metas'], list):
+        data['img_metas'] = data['img_metas'][0].data
+    else:
+        data['img_metas'] = data['img_metas'].data[0]
 
     if next(model.parameters()).is_cuda:
         # scatter to specified GPU
