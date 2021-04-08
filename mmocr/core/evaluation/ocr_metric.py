@@ -1,7 +1,7 @@
 import re
 from difflib import SequenceMatcher
 
-import Levenshtein
+from rapidfuzz import string_metric
 
 
 def cal_true_positive_char(pred, gt):
@@ -61,8 +61,8 @@ def count_matches(pred_texts, gt_texts):
         match_res['gt_word_num'] += 1
 
         # normalized edit distance
-        edit_dist = Levenshtein.distance(pred_text_lower_ignore,
-                                         gt_text_lower_ignore)
+        edit_dist = string_metric.levenshtein(pred_text_lower_ignore,
+                                              gt_text_lower_ignore)
         norm_ed = float(edit_dist) / max(1, len(gt_text_lower_ignore),
                                          len(pred_text_lower_ignore))
         norm_ed_sum += norm_ed

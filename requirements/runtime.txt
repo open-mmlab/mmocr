@@ -1,10 +1,9 @@
 imgaug
-Levenshtein
 lmdb
 matplotlib
 numba>=0.45.1
 numpy
-python-Levenshtein
+rapidfuzz
 scikit-image
 six
 terminaltables

@@ -7,7 +7,7 @@ numpy
 Polygon3
 pyclipper
 pycocotools
-python-Levenshtein
+rapidfuzz
 scikit-image
 scipy
 shapely
