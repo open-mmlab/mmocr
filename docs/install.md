@@ -39,53 +39,71 @@ conda install pytorch==1.5.0 torchvision==0.6.0 cudatoolkit=10.1 -c pytorch
 Note: Make sure that your compilation CUDA version and runtime CUDA version match.
 You can check the supported CUDA version for precompiled packages on the [PyTorch website](https://pytorch.org/).
 
-`E.g. 1` If you have CUDA 10.1 installed under `/usr/local/cuda` and would like to install
+`E.g.` If you have CUDA 10.1 installed under `/usr/local/cuda` and would like to install
 PyTorch 1.5, you need to install the prebuilt PyTorch with CUDA 10.1.
 
 ```python
 conda install pytorch cudatoolkit=10.1 torchvision -c pytorch
 ```
 
-`E.g. 2` If you have CUDA 9.2 installed under `/usr/local/cuda` and would like to install
-PyTorch 1.3.1., you need to install the prebuilt PyTorch with CUDA 9.2.
-
-```python
-conda install pytorch=1.3.1 cudatoolkit=9.2 torchvision=0.4.2 -c pytorch
-```
-
-If you build PyTorch from source instead of installing the prebuilt package,
-you can use more CUDA versions such as 9.0.
-
-c. Create a folder called `code` and clone the mmcv repository into it.
+c. Install mmcv, we recommend you to install the pre-build mmcv as below.
 
 ```shell
-mkdir code
-cd code
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
+```
+
+Please replace ``{cu_version}`` and ``{torch_version}`` in the url to your desired one. For example, to install the latest ``mmcv-full`` with ``CUDA 11`` and ``PyTorch 1.7.0``, use the following command:
+
+```shell
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
+```
+
+If it compiles during installation, then please check that the cuda version and pytorch version **exactly"" matches the version in the mmcv-full installation command. For example, pytorch 1.7.0 and 1.7.1 are treated differently.
+See [here](https://github.com/open-mmlab/mmcv#installation) for different versions of MMCV compatible to different PyTorch and CUDA versions.
+
+Optionally you can choose to compile mmcv from source by the following command
+
+```shell
 git clone https://github.com/open-mmlab/mmcv.git
 cd mmcv
+
 git checkout -b v1.2.6 v1.2.6
-pip install -r requirements.txt
-MMCV_WITH_OPS=1 pip install -v -e .
+MMCV_WITH_OPS=1 pip install -e .  # package mmcv-full, which contains cuda ops, will be installed after this step
+# OR pip install -e .  # package mmcv, which contains no cuda ops, will be installed after this step
+cd ..
 ```
 
-d. Clone the mmdetection repository into it. The mmdetection repo is separate from the mmcv repo in `code`.
+Or directly run
 
 ```shell
-cd ..
+pip install mmcv-full
+# alternative: pip install mmcv
+```
+
+**Important:** You need to run `pip uninstall mmcv` first if you have mmcv installed. If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
+
+d. Install [mmdet](https://github.com/open-mmlab/mmdetection.git), we recommend you to install mmdet with pip.
+See [here](https://pypi.org/project/mmdet/2.9.0/) for different versions of mmdet.
+```shell
+pip install mmdet==2.9.0
+```
+
+Optionally you can choose to install mmdetection from [source](https://github.com/open-mmlab/mmdetection.git) by the following command
+
+```shell
 git clone https://github.com/open-mmlab/mmdetection.git
 cd mmdetection
+
 git checkout -b v2.9.0 v2.9.0
 pip install -r requirements.txt
-pip install -v -e .
 export PYTHONPATH=$(pwd):$PYTHONPATH
 ```
 
 Note that we have tested mmdetection v2.9.0 only. Other versions might be incompatible.
 
-e. Clone the mmocr repository into it. The mmdetection repo is separate from the mmcv and mmdetection repo in `code`.
+e. Clone the mmocr repository.
 
 ```shell
-cd ..
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
 ```
@@ -94,7 +112,7 @@ f. Install build requirements and then install MMOCR.
 
 ```shell
 pip install -r requirements.txt
-pip install -v -e .  # or "python setup.py build_ext --inplace"
+pip install -v -e . # or "python setup.py build_ext --inplace"
 export PYTHONPATH=$(pwd):$PYTHONPATH
 ```
 
@@ -109,28 +127,15 @@ conda activate open-mmlab
 # install latest pytorch prebuilt with the default prebuilt CUDA version (usually the latest)
 conda install pytorch==1.5.0 torchvision==0.6.0 cudatoolkit=10.1 -c pytorch
 
-# install mmcv
-mkdir code
-cd code
-git clone https://github.com/open-mmlab/mmcv.git
-cd mmcv # code/mmcv
-git checkout -b v1.2.6 v1.2.6
-pip install -r requirements.txt
-MMCV_WITH_OPS=1 pip install -v -e .
+# install the latest mmcv-full or mmcv, here we take mmcv-full as example
+pip install mmcv-full
 
 # install mmdetection
-cd .. # exit to code
-git clone https://github.com/open-mmlab/mmdetection.git
-cd mmdetection # code/mmdetection
-git checkout -b v2.9.0 v2.9.0
-pip install -r requirements.txt
-pip install -v -e .
-export PYTHONPATH=$(pwd):$PYTHONPATH
+pip install mmdet==2.9.0
 
 # install mmocr
-cd ..
 git clone https://github.com/open-mmlab/mmocr.git
-cd mmocr # code/mmocr
+cd mmocr
 
 pip install -r requirements.txt
 pip install -v -e .  # or "python setup.py build_ext --inplace"
@@ -159,78 +164,18 @@ If your folder structure is different, you may need to change the corresponding 
 
 The `mmocr` folder is organized as follows:
 ```
-mmocr
-.
 ├── configs
-│   ├── _base_
-│   ├── kie
-│   ├── textdet
-│   └── textrecog
 ├── demo
-│   ├── demo_text_det.jpg
-│   ├── demo_text_recog.jpg
-│   ├── image_demo.py
-│   └── webcam_demo.py
 ├── docker
-│   └── Dockerfile
 ├── docs
-│   ├── api.rst
-│   ├── changelog.md
-│   ├── code_of_conduct.md
-│   ├── conf.py
-│   ├── datasets.md
-│   ├── getting_started.md
-│   ├── index.rst
-│   ├── install.md
-│   ├── make.bat
-│   ├── Makefile
-│   ├── merge_docs.sh
-│   ├── requirements.txt
-│   └── stats.py
 ├── LICENSE
 ├── mmocr
-│   ├── apis
-│   ├── core
-│   ├── datasets
-│   ├── __init__.py
-│   ├── models
-│   ├── utils
-│   └── version.py
 ├── README.md
 ├── requirements
-│   ├── build.txt
-│   ├── docs.txt
-│   ├── optional.txt
-│   ├── readthedocs.txt
-│   ├── runtime.txt
-│   └── tests.txt
 ├── requirements.txt
 ├── resources
-│   ├── illustration.jpg
-│   └── mmocr-logo.png
 ├── setup.cfg
 ├── setup.py
 ├── tests
-│   ├── data
-│   ├── test_apis
-│   ├── test_dataset
-│   ├── test_metrics
-│   ├── test_models
-│   ├── test_tools
-│   └── test_utils
 ├── tools
-│   ├── data
-│   ├── dist_test.sh
-│   ├── dist_train.sh
-│   ├── kie_test_imgs.py
-│   ├── kie_test_imgs.sh
-│   ├── ocr_test_imgs.py
-│   ├── ocr_test_imgs.sh
-│   ├── publish_model.py
-│   ├── slurm_test.sh
-│   ├── slurm_train.sh
-│   ├── test_imgs.py
-│   ├── test_imgs.sh
-│   ├── test.py
-│   └── train.py
 ```
