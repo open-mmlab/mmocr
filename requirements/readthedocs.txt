@@ -4,7 +4,6 @@ lmdb
 matplotlib
 mmcv
 numpy
-Pillow<=6.2.2
 Polygon3
 pyclipper
 pycocotools
@@ -12,7 +11,6 @@ python-Levenshtein
 scikit-image
 scipy
 shapely
-skimage
 titlecase
 torch
 torchvision
