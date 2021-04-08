@@ -12,7 +12,6 @@ python-Levenshtein
 scikit-image
 scipy
 shapely
-skimage
 titlecase
 torch
 torchvision
