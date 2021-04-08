@@ -7,8 +7,6 @@ Welcome to MMOCR's documentation!
 
    install.md
    getting_started.md
-   technical_details.md
-   contributing.md
 
 .. toctree::
    :maxdepth: 2
@@ -21,9 +19,20 @@ Welcome to MMOCR's documentation!
 
 .. toctree::
    :maxdepth: 2
+   :caption: Datasets
+
+   datasets.md
+
+.. toctree::
+   :maxdepth: 2
    :caption: Notes
 
    changelog.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: FAQ
+
    faq.md
 
 .. toctree::
