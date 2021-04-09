@@ -39,12 +39,6 @@ conda install pytorch==1.5.0 torchvision==0.6.0 cudatoolkit=10.1 -c pytorch
 Note: Make sure that your compilation CUDA version and runtime CUDA version match.
 You can check the supported CUDA version for precompiled packages on the [PyTorch website](https://pytorch.org/).
 
-`E.g.` If you have CUDA 10.1 installed under `/usr/local/cuda` and would like to install
-PyTorch 1.5, you need to install the prebuilt PyTorch with CUDA 10.1.
-
-```python
-conda install pytorch cudatoolkit=10.1 torchvision -c pytorch
-```
 
 c. Install mmcv, we recommend you to install the pre-build mmcv as below.
 
@@ -59,47 +53,23 @@ pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7
 ```
 
 If it compiles during installation, then please check that the cuda version and pytorch version **exactly"" matches the version in the mmcv-full installation command. For example, pytorch 1.7.0 and 1.7.1 are treated differently.
-See [here](https://github.com/open-mmlab/mmcv#installation) for different versions of MMCV compatible to different PyTorch and CUDA versions.
 
-Optionally you can choose to compile mmcv from source by the following command
-
-```shell
-git clone https://github.com/open-mmlab/mmcv.git
-cd mmcv
-
-git checkout -b v1.2.6 v1.2.6
-MMCV_WITH_OPS=1 pip install -e .  # package mmcv-full, which contains cuda ops, will be installed after this step
-# OR pip install -e .  # package mmcv, which contains no cuda ops, will be installed after this step
-cd ..
-```
-
-Or directly run
-
-```shell
-pip install mmcv-full
-# alternative: pip install mmcv
-```
+See official [installation](https://github.com/open-mmlab/mmcv#installation) for different versions of MMCV compatible to different PyTorch and CUDA versions.
 
 **Important:** You need to run `pip uninstall mmcv` first if you have mmcv installed. If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
 
-d. Install [mmdet](https://github.com/open-mmlab/mmdetection.git), we recommend you to install mmdet with pip.
-See [here](https://pypi.org/project/mmdet/2.9.0/) for different versions of mmdet.
+d. Install [mmdet](https://github.com/open-mmlab/mmdetection.git), we recommend you to install `mmdet` with pip.
+See [here](https://pypi.org/project/mmdet/2.9.0/) for different versions of `mmdet`.
+
 ```shell
 pip install mmdet==2.9.0
 ```
 
-Optionally you can choose to install mmdetection from [source](https://github.com/open-mmlab/mmdetection.git) by the following command
+Optionally you can choose to install `mmdet` following the official [installation](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md).
 
-```shell
-git clone https://github.com/open-mmlab/mmdetection.git
-cd mmdetection
 
-git checkout -b v2.9.0 v2.9.0
-pip install -r requirements.txt
-export PYTHONPATH=$(pwd):$PYTHONPATH
-```
 
-Note that we have tested mmdetection v2.9.0 only. Other versions might be incompatible.
+Note that we have tested mmdetection v2.9.0 only. Older versions might be incompatible.
 
 e. Clone the mmocr repository.
 
@@ -127,7 +97,7 @@ conda activate open-mmlab
 # install latest pytorch prebuilt with the default prebuilt CUDA version (usually the latest)
 conda install pytorch==1.5.0 torchvision==0.6.0 cudatoolkit=10.1 -c pytorch
 
-# install the latest mmcv-full or mmcv, here we take mmcv-full as example
+# install the latest mmcv-full
 pip install mmcv-full
 
 # install mmdetection
@@ -164,18 +134,18 @@ If your folder structure is different, you may need to change the corresponding 
 
 The `mmocr` folder is organized as follows:
 ```
-├── configs
-├── demo
-├── docker
-├── docs
+├── configs/
+├── demo/
+├── docker/
+├── docs/
 ├── LICENSE
-├── mmocr
+├── mmocr/
 ├── README.md
-├── requirements
+├── requirements/
 ├── requirements.txt
-├── resources
+├── resources/
 ├── setup.cfg
 ├── setup.py
-├── tests
-├── tools
+├── tests/
+├── tools/
 ```
