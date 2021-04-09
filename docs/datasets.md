@@ -58,7 +58,7 @@ The structure of the text detection dataset directory is organized as follows.
 
 - For `icdar2017`:
   - To avoid the effect of rotation when load `jpg` with opencv, We provide re-saved `png` format image in [renamed_images](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar). You can copy these images to `imgs`.
-  - 
+
 ## Text Recognition
 
 **The structure of the text recognition dataset directory is organized as follows.**
