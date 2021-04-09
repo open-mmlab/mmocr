@@ -50,7 +50,6 @@ autodoc_mock_imports = [
     'matplotlib',
     'Polygon',
     'cv2',
-    'mmcv',
     'numpy',
     'pyclipper',
     'pycocotools',
