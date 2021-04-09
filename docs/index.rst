@@ -23,7 +23,7 @@ Welcome to MMOCR's documentation!
    :maxdepth: 2
    :caption: Datasets
 
-   datasets.md
+   dataset.md
 
 .. toctree::
    :maxdepth: 2
