@@ -1,4 +1,3 @@
-numpy
 recommonmark
 sphinx
 sphinx_markdown_tables
