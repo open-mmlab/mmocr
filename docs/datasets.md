@@ -1,4 +1,3 @@
-<a id="markdown-datasets-preparation" name="datasets-preparation"></a>
 # Datasets Preparation
 
 This page lists the datasets which are commonly used in text detection, text recognition and key information extraction, and their download links.
@@ -11,7 +10,7 @@ This page lists the datasets which are commonly used in text detection, text rec
   - [Key Information Extraction](#key-information-extraction)
 
 <!-- /TOC -->
-<a id="markdown-text-detection" name="text-detection"></a>
+
 ## Text Detection
 
 The structure of the text detection dataset directory is organized as follows.
@@ -59,8 +58,7 @@ The structure of the text detection dataset directory is organized as follows.
 
 - For `icdar2017`:
   - To avoid the effect of rotation when load `jpg` with opencv, We provide re-saved `png` format image in [renamed_images](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar). You can copy these images to `imgs`.
-
-<a id="markdown-text-recognition" name="text-recognition"></a>
+  - 
 ## Text Recognition
 
 **The structure of the text recognition dataset directory is organized as follows.**
@@ -205,7 +203,6 @@ The structure of the text detection dataset directory is organized as follows.
   ln -s /path/to/SynthAdd SynthAdd
   ```
 
-<a id="markdown-key-information-extraction" name="key-information-extraction"></a>
 ## Key Information Extraction
 
 The structure of the key information extraction dataset directory is organized as follows.
