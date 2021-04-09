@@ -37,7 +37,7 @@ It will save both the prediction results and visualized images to `${RESULTS_DIR
 
 ### Test a Dataset
 
-MMOCR implements **distributed** testing with `MMDistributedDataParallel`. (Please refer to [dataset.md](dataset.md) to prepare your datasets)
+MMOCR implements **distributed** testing with `MMDistributedDataParallel`. (Please refer to [datasets.md](datasets.md) to prepare your datasets)
 
 #### Test with Single/Multiple GPUs
 
@@ -78,7 +78,7 @@ You can check [slurm_test.sh](https://github.com/open-mmlab/mmocr/blob/master/to
 
 ## Train a Model
 
-MMOCR implements **distributed** training with `MMDistributedDataParallel`. (Please refer to [dataset.md](dataset.md) to prepare your datasets)
+MMOCR implements **distributed** training with `MMDistributedDataParallel`. (Please refer to [datasets.md](datasets.md) to prepare your datasets)
 
 All outputs (log files and checkpoints) will be saved to a working directory specified by `work_dir` in the config file.
 

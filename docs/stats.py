@@ -85,7 +85,7 @@ modelzoo = f"""
 * Number of papers: {len(allpapers)}
 {countstr}
 
-For supported datasets, see [datasets overview](dataset.md).
+For supported datasets, see [datasets overview](datasets.md).
 
 {msglist}
 """
