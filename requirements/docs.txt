@@ -1,4 +1,5 @@
 mmdet==2.9.0
+numpy
 recommonmark
 sphinx
 sphinx_markdown_tables
