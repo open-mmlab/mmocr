@@ -3,6 +3,7 @@ kwarray
 lmdb
 matplotlib
 mmcv
+mmdet==2.9.0
 numpy
 Polygon3
 pyclipper
