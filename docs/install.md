@@ -129,7 +129,7 @@ docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmocr/data mmocr
 
 ## Prepare Datasets
 
-It is recommended to symlink the dataset root to `mmocr/data`. Please refer to [datasets.md](datasets.md) to prepare your datasets.
+It is recommended to symlink the dataset root to `mmocr/data`. Please refer to [dataset.md](dataset.md) to prepare your datasets.
 If your folder structure is different, you may need to change the corresponding paths in config files.
 
 The `mmocr` folder is organized as follows:
