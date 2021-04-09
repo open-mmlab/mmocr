@@ -39,7 +39,28 @@ extensions = [
 ]
 
 autodoc_mock_imports = [
-    'torch', 'torchvision', 'mmcv', 'mmocr.version', 'mmdet'
+    'torch',
+    'torchvision',
+    'mmcv',
+    'mmocr.version',
+    'mmdet',
+    'imgaug',
+    'kwarray',
+    'lmdb',
+    'matplotlib',
+    'Polygon',
+    'cv2',
+    'mmcv',
+    'numpy',
+    'pyclipper',
+    'pycocotools',
+    'pytest',
+    'rapidfuzz',
+    'scipy',
+    'shapely',
+    'skimage',
+    'titlecase',
+    'PIL',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
