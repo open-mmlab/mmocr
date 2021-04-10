@@ -5,11 +5,12 @@
 [ALGORITHM]
 
 ```bibtex
-@article{li2018shape,
+@inproceedings{wang2019shape,
   title={Shape robust text detection with progressive scale expansion network},
-  author={Li, Xiang and Wang, Wenhai and Hou, Wenbo and Liu, Ruo-Ze and Lu, Tong and Yang, Jian},
-  journal={arXiv preprint arXiv:1806.02559},
-  year={2018}
+  author={Wang, Wenhai and Xie, Enze and Li, Xiang and Hou, Wenbo and Lu, Tong and Yu, Gang and Shao, Shuai},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={9336--9345},
+  year={2019}
 }
 ```
 

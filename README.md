@@ -40,6 +40,27 @@ Documentation: https://mmocr.readthedocs.io/en/latest/.
 
   The toolbox provides a comprehensive set of utilities which can help users assess the performance of models. It includes visualizers which allow visualization of images, ground truths as well as predicted bounding boxes, and a validation tool for evaluating checkpoints during training.  It also includes data converters to demonstrate how to convert your own data to the annotation files which the toolbox supports.
 
+## [Model Zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html)
+
+Supported algorithms:
+
+<details open>
+<summary>(click to collapse)</summary>
+
+- [x] [DBNet](configs/textdet/dbnet/README.md) (AAAI'2020)
+- [x] [Mask R-CNN](configs/textdet/maskrcnn/README.md) (ICCV'2017)
+- [x] [PANet](configs/textdet/panet/README.md) (ICCV'2019)
+- [x] [PSENet](configs/textdet/psenet/README.md) (CVPR'2019)
+- [x] [TextSnake](configs/textdet/textsnake/README.md) (ECCV'2018)
+- [x] [CRNN](configs/textrecog/crnn/crnn_academic_dataset.py) (TPAMI'2016)
+- [x] [NRTR](configs/textrecog/nrtr/README.md) (ICDAR'2019)
+- [x] [RobustScanner](configs/textrecog/robust_scanner/README.md) (ECCV'2020)
+- [x] [SAR](configs/textrecog/sar/README.md) (AAAI'2019)
+- [x] [SegOCR](configs/bottom_up/higherhrnet/README.md) (Manuscript'2021)
+- [x] [SDMG-R](configs/kie/sdmgr/README.md) (ArXiv'2021)
+
+</details>
+
 ## License
 
 This project is released under the [Apache 2.0 license](LICENSE).
