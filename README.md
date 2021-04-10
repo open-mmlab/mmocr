@@ -6,15 +6,15 @@
 
 [![build](https://github.com/open-mmlab/mmocr/workflows/build/badge.svg)](https://github.com/open-mmlab/mmocr/actions)
 [![docs](https://readthedocs.org/projects/mmocr/badge/?version=latest)](https://mmocr.readthedocs.io/en/latest/?badge=latest)
-[![codecov](https://codecov.io/gh/open-mmlab/mmocr/branch/master/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmocr)
-[![license](https://img.shields.io/github/license/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/blob/master/LICENSE)
+[![codecov](https://codecov.io/gh/open-mmlab/mmocr/branch/main/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmocr)
+[![license](https://img.shields.io/github/license/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/blob/main/LICENSE)
 [![PyPI](https://badge.fury.io/py/mmocr.svg)](https://pypi.org/project/mmocr/)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 
 MMOCR is an open-source toolbox based on PyTorch and mmdetection for text detection, text recognition, and the corresponding downstream tasks including key information extraction. It is part of the [OpenMMLab](https://openmmlab.com/) project.
 
-The master branch works with **PyTorch 1.5+**.
+The main branch works with **PyTorch 1.5+**.
 
 Documentation: https://mmocr.readthedocs.io/en/latest/.
 
