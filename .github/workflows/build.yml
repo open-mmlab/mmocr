@@ -135,6 +135,9 @@ jobs:
         run: |
           rm -rf .eggs
           python setup.py check -m -s
+          echo $CUDA_HOME
+          ls /usr/local/
+          python -c 'import torch;print(torch.cuda.is_available())'
           TORCH_CUDA_ARCH_LIST=7.0 pip install .
       - name: Run unittests and generate coverage report
         run: |

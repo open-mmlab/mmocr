@@ -102,7 +102,7 @@ def parse_requirements(fname='requirements.txt', with_version=True):
 
 
 def get_rroi_align_extensions():
-
+    print('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
     extensions_dir = 'mmocr/models/utils/ops/rroi_align/csrc/csc'
     main_file = glob.glob(os.path.join(extensions_dir, '*.cpp'))
     source_cpu = glob.glob(os.path.join(extensions_dir, 'cpu', '*.cpp'))
