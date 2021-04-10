@@ -5,6 +5,18 @@
 [ALGORITHM]
 
 ```bibtex
+@INPROCEEDINGS{8237584,
+  author={K. {He} and G. {Gkioxari} and P. {Dollár} and R. {Girshick}},
+  booktitle={2017 IEEE International Conference on Computer Vision (ICCV)},
+  title={Mask R-CNN},
+  year={2017},
+  pages={2980-2988},
+  doi={10.1109/ICCV.2017.322}}
+```
+
+In tuning parameters, we refer to the baseline method in the following article:
+
+```bibtex
 @article{pmtd,
   author={Jingchao Liu and Xuebo Liu and Jie Sheng and Ding Liang and Xin Li and Qingjie Liu},
   title={Pyramid Mask Text Detector},
