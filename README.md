@@ -71,7 +71,7 @@ If you find this project useful in your research, please consider cite:
 
 ```bibtex
 @misc{mmocr2021,
-    title={MMOCR: OpenMMLab Text Detection, Recognition and Understanding Toolbox and Benchmark},
+    title={MMOCR:  A Comprehensive Toolbox for Text Detection, Recognition and Understanding},
     author={MMOCR Contributors},
     howpublished = {\url{https://github.com/open-mmlab/mmocr}},
     year={2021}
