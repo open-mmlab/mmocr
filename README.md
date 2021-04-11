@@ -65,10 +65,22 @@ Supported algorithms:
 
 This project is released under the [Apache 2.0 license](LICENSE).
 
+## Citation
+
+If you find this project useful in your research, please consider cite:
+
+```bibtex
+@misc{mmpocr2021,
+    title={MMOCR: OpenMMLab Text Detection, Recognition and Understanding Toolbox and Benchmark},
+    author={MMOCR Contributors},
+    howpublished = {\url{https://github.com/open-mmlab/mmocr}},
+    year={2021}
+}
+```
+
 ## Changelog
 
 v0.1.0 was released on 07/04/2021.
-
 
 ## Benchmark and Model Zoo
 
