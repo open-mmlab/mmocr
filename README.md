@@ -70,7 +70,7 @@ This project is released under the [Apache 2.0 license](LICENSE).
 If you find this project useful in your research, please consider cite:
 
 ```bibtex
-@misc{mmpocr2021,
+@misc{mmocr2021,
     title={MMOCR: OpenMMLab Text Detection, Recognition and Understanding Toolbox and Benchmark},
     author={MMOCR Contributors},
     howpublished = {\url{https://github.com/open-mmlab/mmocr}},
