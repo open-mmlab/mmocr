@@ -102,6 +102,7 @@ def parse_requirements(fname='requirements.txt', with_version=True):
 
 
 def get_rroi_align_extensions():
+
     extensions_dir = 'mmocr/models/utils/ops/rroi_align/csrc/csc'
     main_file = glob.glob(os.path.join(extensions_dir, '*.cpp'))
     source_cpu = glob.glob(os.path.join(extensions_dir, 'cpu', '*.cpp'))
@@ -145,23 +146,20 @@ if __name__ == '__main__':
     setup(
         name='mmocr',
         version=get_version(),
-        description='OpenMMLab Text Detection, OCR, and NLP Toolbox',
+        description='Text Detection, OCR, and NLP Toolbox',
         long_description=readme(),
-        long_description_content_type='text/markdown',
-        maintainer='MMOCR Authors',
-        maintainer_email='openmmlab@gmail.com',
         keywords='Text Detection, OCR, KIE, NLP',
-        packages=find_packages(exclude=('configs', 'tools', 'demo')),
         url='https://github.com/open-mmlab/mmocr',
+        packages=find_packages(exclude=('configs', 'tools', 'demo')),
         package_data={'mmocr.ops': ['*/*.so']},
         classifiers=[
             'Development Status :: 4 - Beta',
             'License :: OSI Approved :: Apache Software License',
             'Operating System :: OS Independent',
             'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
-            'Programming Language :: Python :: 3.8',
         ],
         license='Apache License 2.0',
         setup_requires=parse_requirements('requirements/build.txt'),
