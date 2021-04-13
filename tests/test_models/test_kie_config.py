@@ -74,6 +74,7 @@ def _get_detector_cfg(fname):
     influencing other tests.
     """
     config = _get_config_module(fname)
+    config.model.class_list = None
     model = copy.deepcopy(config.model)
     return model
 
