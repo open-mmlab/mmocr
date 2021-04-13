@@ -98,15 +98,18 @@ The structure of the text detection dataset directory is organized as follows.
 │   │   ├── image
 │   ├── Syn90k
 │   │   ├── shuffle_labels.txt
+│   │   ├── label.txt
 │   │   ├── label.lmdb
 │   │   ├── mnt
 │   ├── SynthText
 │   │   ├── shuffle_labels.txt
 │   │   ├── instances_train.txt
+│   │   ├── label.txt
 │   │   ├── label.lmdb
 │   │   ├── synthtext
 │   ├── SynthAdd
 │   │   ├── label.txt
+│   │   ├── label.lmdb
 │   │   ├── SynthText_Add
 ```
 
@@ -121,8 +124,8 @@ The structure of the text detection dataset directory is organized as follows.
 |    ct80    |                                            -                                           |                                                                                                                                                   -                                                                                                                                                    |         [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)         |       |
 |    svt     |[homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset) |                                                                                                                                                   -                                                                                                                                                    |         [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)          |       |
 |    svtp    |                              -                                           |                                                                                                                                                   -                                                                                                                                                    |         [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)         |       |
-|  Syn90k  |               [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)                |                                                       [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) \| [label.lmdb](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.lmdb)                                                       |                                                    -                                                    |       |
-| SynthText  |           [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)              | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.lmdb](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.lmdb) |                                                    -                                                    |       |
+|  Syn90k  |               [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)                |                                                       [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt)                                                       |                                                    -                                                    |       |
+| SynthText  |           [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)              | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) |                                                    -                                                    |       |
 |  SynthAdd  |  [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x)   |                                                                                                           [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)                                                                                                            |                                                    -                                                    |       |
 
 - For `icdar_2013`:
@@ -202,6 +205,15 @@ The structure of the text detection dataset directory is organized as follows.
 
   ln -s /path/to/SynthAdd SynthAdd
   ```
+**Note:**
+To convert label file with `txt` format to `lmdb` format,
+```bash
+python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
+```
+For example,
+```bash
+python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
+```
 
 ## Key Information Extraction
 
