@@ -83,7 +83,7 @@ MMOCR是基于PyTorch和mmdetection的开源工具箱，专注于文本检测，
 
 最新的月度版本 v0.1.0 在 2021.04.07 发布。
 
-## 基准测试和模型库
+## 模型以及测试结果
 
 测试结果和模型可以在[模型库](https://mmocr.readthedocs.io/en/latest/index.html)中找到。
 
