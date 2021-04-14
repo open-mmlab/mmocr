@@ -140,6 +140,10 @@ The structure of the text detection dataset directory is organized as follows.
 - For `svt`:
   - Step1: Download `svt.zip` form [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset)
   - Step2: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)
+  - Step3:
+  ```bash
+  python tools/data/textrecog/svt_converter.py <download_svt_dir_path>
+  ```
 - For `ct80`:
   - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)
 - For `svtp`:
