@@ -14,7 +14,7 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 
-MMOCR是基于PyTorch和mmdetection的开源工具箱，用于文本检测，文本识别以及相应的下游任务，包括关键信息提取。 它是OpenMMLab项目的一部分。
+MMOCR是基于PyTorch和mmdetection的开源工具箱，专注于文本检测，文本识别以及相应的下游任务，如关键信息提取。 它是OpenMMLab项目的一部分。
 
 主分支目前支持 **PyTorch 1.5 以上**的版本。
 
