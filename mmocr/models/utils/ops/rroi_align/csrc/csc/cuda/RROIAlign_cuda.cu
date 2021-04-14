@@ -15,6 +15,13 @@
   for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < n; \
        i += blockDim.x * gridDim.x)
 
+
+int  ceil_div_rroi(int a, int b){ 
+    return  (a + b - 1) / b; 
+}
+
+
+
 template <typename T>
 __global__ void RROIAlignForward(
     const int nthreads,
@@ -206,7 +213,7 @@ std::tuple<at::Tensor, at::Tensor, at::Tensor> RROIAlign_forward_cuda(
     auto con_idx_x = at::zeros({num_rois, channels, pooled_height, pooled_width}, input.options().dtype(at::kFloat));
     auto con_idx_y = at::zeros({num_rois, channels, pooled_height, pooled_width}, input.options().dtype(at::kFloat));
 
-    dim3 grid(std::min(THCCeilDiv(output_size, 512L), 4096L));
+    dim3 grid(std::min(ceil_div_rroi((int)output_size, 512), 4096));
     dim3 block(512);
 
     //const int kThreadsPerBlock = 1024;
@@ -345,7 +352,7 @@ at::Tensor RROIAlign_backward_cuda(const at::Tensor& grad,
 
   cudaStream_t stream = at::cuda::getCurrentCUDAStream();
 
-  dim3 grid(std::min(THCCeilDiv(grad.numel(), 512L), 4096L));
+  dim3 grid(std::min(ceil_div_rroi((int)grad.numel(), 512), 4096));
   dim3 block(512);
 
   // handle possibly empty gradients

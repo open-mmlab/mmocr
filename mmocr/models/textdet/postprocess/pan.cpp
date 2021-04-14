@@ -31,20 +31,24 @@ namespace panet{
         if (pbuf_similarity_vectors.ndim != 3 || pbuf_similarity_vectors.shape[0]!=h || pbuf_similarity_vectors.shape[1]!=w || pbuf_similarity_vectors.shape[2]!=4 ||
             pbuf_text.shape[0]!=h || pbuf_text.shape[1]!=w)
             throw std::runtime_error("similarity_vectors must have a shape of (h,w,4) and text must have a shape of (h,w,4)");
-        //初始化结果
+
         auto res = py::array_t<uint8_t>(pbuf_text.size);
         auto pbuf_res = res.request();
-        // 获取 text similarity_vectors 和 label_map的指针
+
         auto ptr_label_map = static_cast<int32_t *>(pbuf_label_map.ptr);
         auto ptr_text = static_cast<uint8_t *>(pbuf_text.ptr);
         auto ptr_similarity_vectors = static_cast<float *>(pbuf_similarity_vectors.ptr);
         auto ptr_res = static_cast<uint8_t *>(pbuf_res.ptr);
 
         std::queue<std::tuple<int, int, int32_t>> q;
-        // 计算各个kernel的similarity_vectors
-        float kernel_vector[label_num][5] = {0};
 
-        // 文本像素入队列
+        //float kernel_vector[label_num][5] = {0};
+		float **kernel_vector;    
+		kernel_vector=new float*[5];
+		for(int i=0;i<5;i++)
+			kernel_vector[i]=new float[label_num];
+
+
         for (int i = 0; i<h; i++)
         {
             auto p_label_map = ptr_label_map + i*w;
@@ -77,13 +81,13 @@ namespace panet{
         int dx[4] = {-1, 1, 0, 0};
         int dy[4] = {0, 0, -1, 1};
         while(!q.empty()){
-            //get each queue menber in q
+
             auto q_n = q.front();
             q.pop();
             int y = std::get<0>(q_n);
             int x = std::get<1>(q_n);
             int32_t l = std::get<2>(q_n);
-            //store the edge pixel after one expansion
+
             auto kernel_cv = kernel_vector[l];
             for (int idx=0; idx<4; idx++)
             {
@@ -94,12 +98,12 @@ namespace panet{
                     continue;
                 if (!ptr_text[tmpy*w+tmpx] || p_res[tmpx]>0)
                     continue;
-                // 计算距离
+
                 float dis = 0;
                 auto p_similarity_vectors = ptr_similarity_vectors + tmpy * w*4;
                 for(size_t i=0;i<4;i++)
                 {
-                    dis += pow(kernel_cv[i] - p_similarity_vectors[tmpx*4 + i],2);
+                    dis += pow(kernel_cv[i] - p_similarity_vectors[tmpx*4 + i],2.0);
                 }
                 dis = sqrt(dis);
                 if(dis >= dis_threshold)
