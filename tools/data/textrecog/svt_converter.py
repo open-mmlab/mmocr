@@ -63,7 +63,7 @@ def main():
                     if args.resize:
                         dst_img = cv2.resize(dst_img,
                                              (args.width, args.height))
-                    dst_img_name = 'img_' + f'{index:04}' + '.jpg'
+                    dst_img_name = f'img_{index:04}' + '.jpg'
                     index += 1
                     dst_img_path = osp.join(dst_image_root, dst_img_name)
                     cv2.imwrite(dst_img_path, dst_img)
