@@ -45,33 +45,33 @@ def main():
     index = 1
     with open(dst_label_file, 'w', encoding='utf-8') as fw:
         total_img_num = len(root)
-        for i, image in enumerate(root):
-            src_img_name = image[0].text
-            print(f'[{i}/{total_img_num}] Process image: {src_img_name}')
-            src_img_path = osp.join(src_image_root, src_img_name)
-            src_img = cv2.imread(src_img_path)
-            lex = image[2].text.lower()
-            for box in image[4]:
-                height = int(box.attrib['height'])
-                width = int(box.attrib['width'])
-                lefttop_x = int(box.attrib['x'])
-                lefttop_y = int(box.attrib['y'])
-                text_label = box[0].text.lower()
-                try:
-                    dst_img = src_img[lefttop_y:(lefttop_y + height),
-                                      lefttop_x:(lefttop_x + width)]
-                    if args.resize:
-                        dst_img = cv2.resize(dst_img,
-                                             (args.width, args.height))
-                    dst_img_name = f'img_{index:04}' + '.jpg'
-                    index += 1
-                    dst_img_path = osp.join(dst_image_root, dst_img_name)
-                    cv2.imwrite(dst_img_path, dst_img)
-                    fw.write(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                             f'{text_label} {lex}\n')
-                except Exception as e:
-                    print(e)
-                    continue
+        i = 1
+        for image_node in root.findall('image'):
+            image_name = image_node.find('imageName').text
+            print(f'[{i}/{total_img_num}] Process image: {image_name}')
+            i += 1
+            lexicon = image_node.find('lex').text.lower()
+            lexicon_list = lexicon.split(',')
+            lex_size = len(lexicon_list)
+            src_img = cv2.imread(osp.join(src_image_root, image_name))
+            for rectangle in image_node.find('taggedRectangles'):
+                x = int(rectangle.get('x'))
+                y = int(rectangle.get('y'))
+                w = int(rectangle.get('width'))
+                h = int(rectangle.get('height'))
+                rb, re = max(0, y), max(0, y + h)
+                cb, ce = max(0, x), max(0, x + w)
+                dst_img = src_img[rb:re, cb:ce]
+                text_label = rectangle.find('tag').text.lower()
+                if args.resize:
+                    dst_img = cv2.resize(dst_img, (args.width, args.height))
+                dst_img_name = f'img_{index:04}' + '.jpg'
+                index += 1
+                dst_img_path = osp.join(dst_image_root, dst_img_name)
+                cv2.imwrite(dst_img_path, dst_img)
+                fw.write(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                         f'{text_label} {lex_size} {lexicon}\n')
+
     print(f'Finish to generate svt testset, '
           f'with label file {dst_label_file}')
 
