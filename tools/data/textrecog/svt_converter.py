@@ -67,9 +67,8 @@ def main():
                     index += 1
                     dst_img_path = osp.join(dst_image_root, dst_img_name)
                     cv2.imwrite(dst_img_path, dst_img)
-                    fw.write(
-                        osp.basename(dst_image_root) + '/' + dst_img_name +
-                        ' ' + text_label + ' ' + lex + '\n')
+                    fw.write(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                             f'{text_label} {lex}\n')
                 except Exception as e:
                     print(e)
                     continue
