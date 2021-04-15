@@ -3,8 +3,8 @@ import torch
 from mmcv.ops import RoIPool
 from mmcv.parallel import collate, scatter
 
-from mmdet.datasets.pipelines import Compose
 from mmdet.datasets import replace_ImageToTensor
+from mmdet.datasets.pipelines import Compose
 
 
 def model_inference(model, img):
@@ -37,7 +37,7 @@ def model_inference(model, img):
     else:
         # add information into dict
         data = dict(img_info=dict(filename=img), img_prefix=None)
-    
+
     # build the data pipeline
     data = test_pipeline(data)
     data = collate([data], samples_per_gpu=1)

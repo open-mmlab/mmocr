@@ -3,18 +3,21 @@ import shutil
 import urllib
 
 import pytest
+from mmcv.image import imread
 
 from mmdet.apis import init_detector
 from mmocr.apis.inference import model_inference
-from mmcv.image import imread
+
 
 @pytest.fixture
 def project_dir():
     return os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
+
 @pytest.fixture
 def sample_img_path(project_dir):
     return os.path.join(project_dir, '../demo/demo_text_recog.jpg')
+
 
 @pytest.fixture
 def sarnet_model(project_dir):
@@ -44,9 +47,10 @@ def sarnet_model(project_dir):
     if model.cfg.data.test['type'] == 'ConcatDataset':
         model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
             0].pipeline
-    
+
     return model
-    
+
+
 def test_model_inference_image_path(sample_img_path, sarnet_model):
 
     with pytest.raises(AssertionError):
