@@ -14,7 +14,7 @@ class ResNet31OCR(nn.Module):
         base_channels (int): Number of channels of input image tensor.
         layers (list[int]): List of BasicBlock number for each stage.
         channels (list[int]): List of out_channels of Conv2d layer.
-        out_indices (None | Sequence[int]): Indicdes of output stages.
+        out_indices (None | Sequence[int]): Indices of output stages.
         stage4_pool_cfg (dict): Dictionary to construct and configure
             pooling layer in stage 4.
         last_stage_pool (bool): If True, add `MaxPool2d` layer to last stage.
