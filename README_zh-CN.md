@@ -65,7 +65,7 @@ MMOCR是基于PyTorch和mmdetection的开源工具箱，专注于文本检测，
 
 ## 开源许可证
 
-该项目采用 [Apache 2.0 license](LICENSE) 开源许可证。 
+该项目采用 [Apache 2.0 license](LICENSE) 开源许可证。
 
 ## 引用
 
@@ -94,7 +94,7 @@ MMOCR是基于PyTorch和mmdetection的开源工具箱，专注于文本检测，
 
 ## 快速入门
 
-请参考[快速入门](docs/getting_started.md)文档学习 MMOCR 的基本使用。 
+请参考[快速入门](docs/getting_started.md)文档学习 MMOCR 的基本使用。
 
 ## 贡献指南
 
