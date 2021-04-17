@@ -20,7 +20,7 @@ We have tested the following versions of OS and softwares:
 - PyTorch 1.5
 - torchvision 0.6.0
 
-MMOCR depends on Pytorch and mmdetection v2.9.0.
+MMOCR depends on Pytorch and mmdetection.
 
 ## Step-by-Step Installation Instructions
 
@@ -58,18 +58,15 @@ See official [installation](https://github.com/open-mmlab/mmcv#installation) for
 
 **Important:** You need to run `pip uninstall mmcv` first if you have mmcv installed. If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
 
-d. Install [mmdet](https://github.com/open-mmlab/mmdetection.git), we recommend you to install `mmdet` with pip.
-See [here](https://pypi.org/project/mmdet/2.9.0/) for different versions of `mmdet`.
+d. Install [mmdet](https://github.com/open-mmlab/mmdetection.git), we recommend you to install the latest `mmdet` with pip.
+See [here](https://pypi.org/project/mmdet/) for different versions of `mmdet`.
 
 ```shell
-pip install mmdet==2.9.0
+pip install mmdet
 ```
 
 Optionally you can choose to install `mmdet` following the official [installation](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md).
 
-
-
-Note that we have tested mmdetection v2.9.0 only. Older versions might be incompatible.
 
 e. Clone the mmocr repository.
 
@@ -101,7 +98,7 @@ conda install pytorch==1.5.0 torchvision==0.6.0 cudatoolkit=10.1 -c pytorch
 pip install mmcv-full
 
 # install mmdetection
-pip install mmdet==2.9.0
+pip install mmdet
 
 # install mmocr
 git clone https://github.com/open-mmlab/mmocr.git
