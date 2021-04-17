@@ -58,7 +58,7 @@ jobs:
       - name: Install MMCV
         run: pip install mmcv-full==1.3.0 -f https://download.openmmlab.com/mmcv/dist/cpu/torch${{matrix.torch}}/index.html
       - name: Install MMDet
-        run: pip install git+https://github.com/open-mmlab/mmdetection/
+        run: pip install mmdet
       - name: Install other dependencies
         run: pip install -r requirements.txt
       - name: Build and install
@@ -139,7 +139,7 @@ jobs:
       - name: Install mmocr dependencies
         run: |
           pip install mmcv-full==latest+torch${{matrix.mmcv}} -f https://download.openmmlab.com/mmcv/dist/index.html --use-deprecated=legacy-resolver
-          pip install -q git+https://github.com/open-mmlab/mmdetection/
+          pip install mmdet
           pip install -r requirements.txt
       - name: Build and install
         run: |
