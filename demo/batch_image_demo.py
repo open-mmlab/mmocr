@@ -29,7 +29,7 @@ def main():
         model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
             0].pipeline
 
-    # test a single image
+    # test multiple images
     results = model_inference(model, args.images)
     print(f'results: {results}')
 
