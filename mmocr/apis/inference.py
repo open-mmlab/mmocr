@@ -20,9 +20,12 @@ def model_inference(model, imgs):
 
     if isinstance(imgs, (list, tuple)):
         is_batch = True
-    else:
+    elif isinstance(imgs, (np.ndarray, str)):
         imgs = [imgs]
         is_batch = False
+    else:
+        raise AssertionError("imgs must be strings or numpy arrays")
+        
 
     cfg = model.cfg
     device = next(model.parameters()).device  # model device

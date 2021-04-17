@@ -51,6 +51,17 @@ def sarnet_model(project_dir):
     return model
 
 
+@pytest.fixture
+def sarnet_model_no_tta(sarnet_model):
+    # Disable TTA since its not supported with batch inference
+    sarnet_model.cfg.data.test.pipeline = [
+        sarnet_model.cfg.data.test.pipeline[0],
+        *sarnet_model.cfg.data.test.pipeline[1].transforms
+    ]
+
+    return sarnet_model
+
+
 def test_model_inference_image_path(sample_img_path, sarnet_model):
 
     with pytest.raises(AssertionError):
@@ -62,3 +73,16 @@ def test_model_inference_image_path(sample_img_path, sarnet_model):
 def test_model_inference_numpy_ndarray(sample_img_path, sarnet_model):
     img = imread(sample_img_path)
     model_inference(sarnet_model, img)
+
+
+def test_model_batch_inference_numpy_ndarray(sample_img_path, sarnet_model_no_tta):
+
+    img = imread(sample_img_path)
+    result = model_inference(sarnet_model_no_tta, [img, img])
+
+    assert len(result) == 2
+
+
+def test_model_batch_inference_image_path(sample_img_path, sarnet_model_no_tta):
+    result = model_inference(sarnet_model_no_tta, [sample_img_path, sample_img_path])
+    assert len(result) == 2
