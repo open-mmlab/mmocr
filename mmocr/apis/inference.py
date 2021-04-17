@@ -7,7 +7,7 @@ from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
 
 
-def model_inference(model, img):
+def model_inference(model, imgs):
     """Inference image(s) with the detector.
 
     Args:
@@ -18,12 +18,16 @@ def model_inference(model, img):
         result (dict): Detection results.
     """
 
-    assert isinstance(img, str) or isinstance(img, np.ndarray)
+    if isinstance(imgs, (list, tuple)):
+        is_batch = True
+    else:
+        imgs = [imgs]
+        is_batch = False
 
     cfg = model.cfg
     device = next(model.parameters()).device  # model device
 
-    if isinstance(img, np.ndarray):
+    if isinstance(imgs[0], np.ndarray):
         cfg = cfg.copy()
         # set loading pipeline type
         cfg.data.test.pipeline[0].type = 'LoadImageFromWebcam'
@@ -31,16 +35,20 @@ def model_inference(model, img):
     cfg.data.test.pipeline = replace_ImageToTensor(cfg.data.test.pipeline)
     test_pipeline = Compose(cfg.data.test.pipeline)
 
-    if isinstance(img, np.ndarray):
-        # directly add img
-        data = dict(img=img)
-    else:
-        # add information into dict
-        data = dict(img_info=dict(filename=img), img_prefix=None)
+    datas = []
+    for img in imgs:
+        # prepare data
+        if isinstance(img, np.ndarray):
+            # directly add img
+            data = dict(img=img)
+        else:
+            # add information into dict
+            data = dict(img_info=dict(filename=img), img_prefix=None)
+        # build the data pipeline
+        data = test_pipeline(data)
+        datas.append(data)
 
-    # build the data pipeline
-    data = test_pipeline(data)
-    data = collate([data], samples_per_gpu=1)
+    data = collate(datas, samples_per_gpu=len(imgs))
 
     # process img_metas
     if isinstance(data['img_metas'], list):
@@ -59,5 +67,9 @@ def model_inference(model, img):
 
     # forward the model
     with torch.no_grad():
-        result = model(return_loss=False, rescale=True, **data)[0]
-    return result
+        results = model(return_loss=False, rescale=True, **data)
+
+    if not is_batch:
+        return results[0]
+    else:
+        return results
