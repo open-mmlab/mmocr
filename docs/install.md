@@ -9,14 +9,16 @@
 - CUDA 10.1
 - NCCL 2
 - GCC 5.4.0 or higher
-- [mmcv](https://github.com/open-mmlab/mmcv) 1.2.6
+- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation) 1.3.1
+- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation) 2.11.0
 
 We have tested the following versions of OS and softwares:
 
 - OS: Ubuntu 16.04
 - CUDA: 10.1
 - GCC(G++): 5.4.0
-- mmcv 1.2.6
+- MMCV 1.3.1
+- MMDetection 2.11.0
 - PyTorch 1.5
 - torchvision 0.6.0
 
@@ -62,7 +64,7 @@ d. Install [mmdet](https://github.com/open-mmlab/mmdetection.git), we recommend 
 See [here](https://pypi.org/project/mmdet/) for different versions of `mmdet`.
 
 ```shell
-pip install mmdet
+pip install mmdet==2.11.0
 ```
 
 Optionally you can choose to install `mmdet` following the official [installation](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md).
@@ -95,10 +97,10 @@ conda activate open-mmlab
 conda install pytorch==1.5.0 torchvision==0.6.0 cudatoolkit=10.1 -c pytorch
 
 # install the latest mmcv-full
-pip install mmcv-full
+pip install mmcv-full==1.3.1
 
 # install mmdetection
-pip install mmdet
+pip install mmdet==2.11.0
 
 # install mmocr
 git clone https://github.com/open-mmlab/mmocr.git

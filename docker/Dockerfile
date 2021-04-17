@@ -13,9 +13,9 @@ RUN apt-get update && apt-get install -y git ninja-build libglib2.0-0 libsm6 lib
     && rm -rf /var/lib/apt/lists/*
 
 RUN conda clean --all
-RUN pip install mmcv-full==1.2.6+torch1.5.0+cu101 -f https://download.openmmlab.com/mmcv/dist/index.html
+RUN pip install mmcv-full==1.3.1+torch1.5.0+cu101 -f https://download.openmmlab.com/mmcv/dist/index.html
 
-RUN pip install mmdet
+RUN pip install mmdet==2.11.0
 
 RUN git clone https://github.com/open-mmlab/mmocr.git /mmocr
 WORKDIR /mmocr
