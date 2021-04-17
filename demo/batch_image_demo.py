@@ -37,9 +37,10 @@ def main():
     for img_path, result in zip(args.images, results):
 
         out_file = save_path / f'result_{Path(img_path).stem}.png'
-        
+
         # show the results
-        img = model.show_result(img_path, result, out_file=str(out_file), show=False)
+        img = model.show_result(
+            img_path, result, out_file=str(out_file), show=False)
         if args.imshow:
             mmcv.imshow(img, f'predicted results ({img_path})')
 

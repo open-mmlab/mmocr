@@ -75,14 +75,15 @@ def test_model_inference_numpy_ndarray(sample_img_path, sarnet_model):
     model_inference(sarnet_model, img)
 
 
-def test_model_batch_inference_numpy_ndarray(sample_img_path, sarnet_model_no_tta):
-
+def test_model_batch_inference_numpy_ndarray(sample_img_path,
+                                             sarnet_model_no_tta):
     img = imread(sample_img_path)
     result = model_inference(sarnet_model_no_tta, [img, img])
-
     assert len(result) == 2
 
 
-def test_model_batch_inference_image_path(sample_img_path, sarnet_model_no_tta):
-    result = model_inference(sarnet_model_no_tta, [sample_img_path, sample_img_path])
+def test_model_batch_inference_image_path(sample_img_path,
+                                          sarnet_model_no_tta):
+    result = model_inference(sarnet_model_no_tta,
+                             [sample_img_path, sample_img_path])
     assert len(result) == 2
