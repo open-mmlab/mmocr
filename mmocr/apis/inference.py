@@ -18,7 +18,7 @@ def model_inference(model, img):
         result (dict): Detection results.
     """
 
-    assert isinstance(img, str) or isinstance(img, np.ndarray)
+    assert isinstance(img, (str, np.ndarray))
 
     cfg = model.cfg
     device = next(model.parameters()).device  # model device
