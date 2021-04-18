@@ -3,14 +3,24 @@ import shutil
 import urllib
 
 import pytest
+from mmcv.image import imread
 
 from mmdet.apis import init_detector
 from mmocr.apis.inference import model_inference
 
 
-def test_model_inference():
+@pytest.fixture
+def project_dir():
+    return os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
-    project_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+
+@pytest.fixture
+def sample_img_path(project_dir):
+    return os.path.join(project_dir, '../demo/demo_text_recog.jpg')
+
+
+@pytest.fixture
+def sarnet_model(project_dir):
     print(project_dir)
     config_file = os.path.join(
         project_dir,
@@ -38,9 +48,17 @@ def test_model_inference():
         model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
             0].pipeline
 
-    img = os.path.join(project_dir, '../demo/demo_text_recog.jpg')
+    return model
+
+
+def test_model_inference_image_path(sample_img_path, sarnet_model):
 
     with pytest.raises(AssertionError):
-        model_inference(model, 1)
+        model_inference(sarnet_model, 1)
 
-    model_inference(model, img)
+    model_inference(sarnet_model, sample_img_path)
+
+
+def test_model_inference_numpy_ndarray(sample_img_path, sarnet_model):
+    img = imread(sample_img_path)
+    model_inference(sarnet_model, img)
