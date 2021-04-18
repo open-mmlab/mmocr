@@ -12,7 +12,8 @@ def model_inference(model, imgs):
 
     Args:
         model (nn.Module): The loaded detector.
-        imgs (str/ndarray): Image files.
+        imgs (str/ndarray or list[str/ndarray] or tuple[str/ndarray]):
+            Either image files or loaded images.
 
     Returns:
         result (dict): Detection results.
