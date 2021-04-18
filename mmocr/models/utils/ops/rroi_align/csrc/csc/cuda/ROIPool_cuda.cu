@@ -27,10 +27,10 @@ __global__ void RoIPoolFForward(const int nthreads, const T* bottom_data,
 
     const T* offset_bottom_rois = bottom_rois + n * 5;
     int roi_batch_ind = offset_bottom_rois[0];
-    int roi_start_w = round(offset_bottom_rois[1] * spatial_scale);
-    int roi_start_h = round(offset_bottom_rois[2] * spatial_scale);
-    int roi_end_w = round(offset_bottom_rois[3] * spatial_scale);
-    int roi_end_h = round(offset_bottom_rois[4] * spatial_scale);
+    int roi_start_w = roundf(offset_bottom_rois[1] * spatial_scale);
+    int roi_start_h = roundf(offset_bottom_rois[2] * spatial_scale);
+    int roi_end_w = roundf(offset_bottom_rois[3] * spatial_scale);
+    int roi_end_h = roundf(offset_bottom_rois[4] * spatial_scale);
 
     // Force malformed ROIs to be 1x1
     int roi_width = max(roi_end_w - roi_start_w + 1, 1);
@@ -40,13 +40,13 @@ __global__ void RoIPoolFForward(const int nthreads, const T* bottom_data,
     T bin_size_w = static_cast<T>(roi_width)
                        / static_cast<T>(pooled_width);
 
-    int hstart = static_cast<int>(floor(static_cast<T>(ph)
+    int hstart = static_cast<int>(floorf(static_cast<T>(ph)
                                         * bin_size_h));
-    int wstart = static_cast<int>(floor(static_cast<T>(pw)
+    int wstart = static_cast<int>(floorf(static_cast<T>(pw)
                                         * bin_size_w));
-    int hend = static_cast<int>(ceil(static_cast<T>(ph + 1)
+    int hend = static_cast<int>(ceilf(static_cast<T>(ph + 1)
                                      * bin_size_h));
-    int wend = static_cast<int>(ceil(static_cast<T>(pw + 1)
+    int wend = static_cast<int>(ceilf(static_cast<T>(pw + 1)
                                      * bin_size_w));
 
     // Add roi offsets and clip to input boundaries
@@ -126,7 +126,7 @@ std::tuple<at::Tensor, at::Tensor> ROIPool_forward_cuda(const at::Tensor& input,
 
   cudaStream_t stream = at::cuda::getCurrentCUDAStream();
 
-  dim3 grid(std::min(THCCeilDiv(output_size, 512L), 4096L));
+  dim3 grid(std::min(THCCeilDiv((long)output_size, 512L), 4096L));
   dim3 block(512);
 
   if (output.numel() == 0) {
@@ -173,7 +173,7 @@ at::Tensor ROIPool_backward_cuda(const at::Tensor& grad,
 
   cudaStream_t stream = at::cuda::getCurrentCUDAStream();
 
-  dim3 grid(std::min(THCCeilDiv(grad.numel(), 512L), 4096L));
+  dim3 grid(std::min(THCCeilDiv((long)grad.numel(), 512L), 4096L));
   dim3 block(512);
 
   // handle possibly empty gradients
