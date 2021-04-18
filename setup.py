@@ -1,5 +1,6 @@
 import glob
 import os
+import sys
 from setuptools import find_packages, setup
 
 import torch
@@ -14,6 +15,7 @@ def readme():
 
 
 version_file = 'mmocr/version.py'
+is_windows = sys.platform == 'win32'
 
 
 def get_version():
@@ -108,7 +110,7 @@ def get_rroi_align_extensions():
     source_cuda = glob.glob(os.path.join(extensions_dir, 'cuda', '*.cu'))
     sources = main_file + source_cpu
     extension = CppExtension
-    extra_compile_args = {'cxx': []}
+    extra_compile_args = {'cxx': ['/utf-8']} if is_windows else {}
     define_macros = []
 
     if torch.cuda.is_available() and CUDA_HOME is not None:
@@ -176,10 +178,12 @@ if __name__ == '__main__':
         ext_modules=[
             CppExtension(
                 name='mmocr.models.textdet.postprocess.pan',
-                sources=[cpp_root + 'pan.cpp']),
+                sources=[cpp_root + 'pan.cpp'],
+                extra_compile_args=(['/utf-8'] if is_windows else [])),
             CppExtension(
                 name='mmocr.models.textdet.postprocess.pse',
-                sources=[cpp_root + 'pse.cpp']),
+                sources=[cpp_root + 'pse.cpp'],
+                extra_compile_args=(['/utf-8'] if is_windows else [])),
             get_rroi_align_extensions()
         ],
         cmdclass={'build_ext': BuildExtension},
