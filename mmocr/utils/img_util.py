@@ -32,3 +32,20 @@ def drop_orientation(img_file):
     os.remove(img_file)
     print(f'{img_file} has orientation info. Ignore it by converting to png')
     return target_file
+
+
+def is_not_png(img_file):
+    """Check img_file is not png image.
+
+    Args:
+        img_file(str): The input image file name
+
+    Returns:
+        The bool flag indicating whether it is not png
+    """
+    assert isinstance(img_file, str)
+    assert img_file
+
+    suffix = os.path.splitext(img_file)[1]
+
+    return (suffix not in ['.PNG', '.png'])

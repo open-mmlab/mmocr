@@ -3,8 +3,8 @@ from mmcv.utils import Registry, build_from_cfg
 from .check_argument import (equal_len, is_2dlist, is_3dlist, is_ndarray_list,
                              is_none_or_type, is_type_list, valid_boundary)
 from .collect_env import collect_env
-from .data_convert_util import convert_annotations, is_not_png
-from .img_util import drop_orientation
+from .data_convert_util import convert_annotations
+from .img_util import drop_orientation, is_not_png
 from .lmdb_util import lmdb_converter
 from .logger import get_root_logger
 
