@@ -85,10 +85,10 @@ __global__ void RROIAlignForward(
         P[6] = M[0][0]*(pw+1)+M[0][1]*(ph+1)+M[0][2];
         P[7] = M[1][0]*(pw+1)+M[1][1]*(ph+1)+M[1][2];
 
-        T leftMost = (max(round(min(min(P[0],P[2]),min(P[4],P[6]))),0.0));
-        T rightMost= (min(round(max(max(P[0],P[2]),max(P[4],P[6]))),imageWidth-1.0));
-        T topMost= (max(round(min(min(P[1],P[3]),min(P[5],P[7]))),0.0));
-        T bottomMost= (min(round(max(max(P[1],P[3]),max(P[5],P[7]))),imageHeight-1.0));
+        T leftMost = (max(roundf(min(min(P[0],P[2]),min(P[4],P[6]))),0.0));
+        T rightMost= (min(roundf(max(max(P[0],P[2]),max(P[4],P[6]))),imageWidth-1.0));
+        T topMost= (max(roundf(min(min(P[1],P[3]),min(P[5],P[7]))),0.0));
+        T bottomMost= (min(roundf(max(max(P[1],P[3]),max(P[5],P[7]))),imageHeight-1.0));
 
         //float maxval = 0;
         //int maxidx = -1;
@@ -106,10 +106,10 @@ __global__ void RROIAlignForward(
         float bin_cx = (leftMost + rightMost) / 2.0; // shift
         float bin_cy = (topMost + bottomMost) / 2.0;
 
-        int bin_l = (int)floor(bin_cx);
-        int bin_r = (int)ceil(bin_cx);
-        int bin_t = (int)floor(bin_cy);
-        int bin_b = (int)ceil(bin_cy);
+        int bin_l = (int)floorf(bin_cx);
+        int bin_r = (int)ceilf(bin_cx);
+        int bin_t = (int)floorf(bin_cy);
+        int bin_b = (int)ceilf(bin_cy);
 
         T lt_value = 0.0;
         if (bin_t > 0 && bin_l > 0 && bin_t < height && bin_l < width)
@@ -124,8 +124,8 @@ __global__ void RROIAlignForward(
         if (bin_b > 0 && bin_r > 0 && bin_b < height && bin_r < width)
             rb_value = offset_bottom_data[bin_b * width + bin_r];
 
-        T rx = bin_cx - floor(bin_cx);
-        T ry = bin_cy - floor(bin_cy);
+        T rx = bin_cx - floorf(bin_cx);
+        T ry = bin_cy - floorf(bin_cy);
 
         T wlt = (1.0 - rx) * (1.0 - ry);
         T wrt = rx * (1.0 - ry);
@@ -206,7 +206,7 @@ std::tuple<at::Tensor, at::Tensor, at::Tensor> RROIAlign_forward_cuda(
     auto con_idx_x = at::zeros({num_rois, channels, pooled_height, pooled_width}, input.options().dtype(at::kFloat));
     auto con_idx_y = at::zeros({num_rois, channels, pooled_height, pooled_width}, input.options().dtype(at::kFloat));
 
-    dim3 grid(std::min(THCCeilDiv(output_size, 512L), 4096L));
+    dim3 grid(std::min(THCCeilDiv((long)output_size, 512L), 4096L));
     dim3 block(512);
 
     //const int kThreadsPerBlock = 1024;
@@ -276,8 +276,8 @@ __global__ void RROIAlignBackward(
         float bh = con_idx_y[index];
         //if (bh > 0.00001 && bw > 0.00001 && bw < height-1 && bw < width-1){
 
-        int bin_xs = int(floor(bw));
-        int bin_ys = int(floor(bh));
+        int bin_xs = int(floorf(bw));
+        int bin_ys = int(floorf(bh));
 
         float rx = bw - float(bin_xs);
         float ry = bh - float(bin_ys);
@@ -295,10 +295,10 @@ __global__ void RROIAlignBackward(
         //int max_x = max(min(bin_xs + 1, width - 1), 0);
         //int max_y = max(min(bin_ys + 1, height - 1), 0);
 
-        int min_x = (int)floor(bw);
-        int max_x = (int)ceil(bw);
-        int min_y = (int)floor(bh);
-        int max_y = (int)ceil(bh);
+        int min_x = (int)floorf(bw);
+        int max_x = (int)ceilf(bw);
+        int min_y = (int)floorf(bh);
+        int max_y = (int)ceilf(bh);
 
         T top_diff_of_bin = top_diff[index];
 
@@ -345,7 +345,7 @@ at::Tensor RROIAlign_backward_cuda(const at::Tensor& grad,
 
   cudaStream_t stream = at::cuda::getCurrentCUDAStream();
 
-  dim3 grid(std::min(THCCeilDiv(grad.numel(), 512L), 4096L));
+  dim3 grid(std::min(THCCeilDiv((long)grad.numel(), 512L), 4096L));
   dim3 block(512);
 
   // handle possibly empty gradients

@@ -27,14 +27,13 @@ namespace pse_adaptor {
     };
 
     void growing_text_line(const int *data,
-                           vector<long int> &data_shape,
+                           vector<pybind11::ssize_t> &data_shape,
                            const int *label_map,
-                           vector<long int> &label_shape,
+                           vector<pybind11::ssize_t> &label_shape,
                            int &label_num,
                            float &min_area,
                            vector<vector<int>> &text_line) {
-        int area[label_num + 1];
-        memset(area, 0, sizeof(area));
+        std::vector<int> area(label_num + 1);
         for (int x = 0; x < label_shape[0]; ++x) {
             for (int y = 0; y < label_shape[1]; ++y) {
                 int label = label_map[x * label_shape[1] + y];
@@ -100,11 +99,11 @@ namespace pse_adaptor {
                             int label_num) {
         auto buf = quad_n9.request();
         auto data = static_cast<int *>(buf.ptr);
-        vector<long int> data_shape = buf.shape;
+        vector<pybind11::ssize_t> data_shape = buf.shape;
 
         auto buf_label_map = label_map.request();
         auto data_label_map = static_cast<int32_t *>(buf_label_map.ptr);
-        vector<long int> label_map_shape = buf_label_map.shape;
+        vector<pybind11::ssize_t> label_map_shape = buf_label_map.shape;
 
         vector<vector<int>> text_line;
 
