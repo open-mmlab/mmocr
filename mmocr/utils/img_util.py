@@ -48,4 +48,4 @@ def is_not_png(img_file):
 
     suffix = os.path.splitext(img_file)[1]
 
-    return (suffix not in ['.PNG', '.png'])
+    return suffix not in ['.PNG', '.png']
