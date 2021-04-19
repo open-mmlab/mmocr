@@ -20,6 +20,11 @@ def sample_img_path(project_dir):
 
 
 @pytest.fixture
+def sample_det_img_path(project_dir):
+    return os.path.join(project_dir, '../demo/demo_text_det.jpg')
+
+
+@pytest.fixture
 def sarnet_model(project_dir):
     print(project_dir)
     config_file = os.path.join(
@@ -51,6 +56,21 @@ def sarnet_model(project_dir):
     return model
 
 
+@pytest.fixture
+def psenet_model(project_dir):
+    config_file = os.path.join(
+        project_dir,
+        '../configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2017.py')
+
+    device = 'cpu'
+    model = init_detector(config_file, checkpoint=None, device=device)
+    if model.cfg.data.test['type'] == 'ConcatDataset':
+        model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
+            0].pipeline
+
+    return model
+
+
 def test_model_inference_image_path(sample_img_path, sarnet_model):
 
     with pytest.raises(AssertionError):
@@ -59,6 +79,15 @@ def test_model_inference_image_path(sample_img_path, sarnet_model):
     model_inference(sarnet_model, sample_img_path)
 
 
+def test_model_inference_image_path_det(sample_det_img_path, psenet_model):
+    model_inference(psenet_model, sample_det_img_path)
+
+
 def test_model_inference_numpy_ndarray(sample_img_path, sarnet_model):
     img = imread(sample_img_path)
     model_inference(sarnet_model, img)
+
+
+def test_model_inference_numpy_ndarray_det(sample_det_img_path, psenet_model):
+    det_img = imread(sample_det_img_path)
+    model_inference(psenet_model, det_img)

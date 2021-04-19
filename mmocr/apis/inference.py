@@ -27,8 +27,8 @@ def model_inference(model, img):
         cfg = cfg.copy()
         # set loading pipeline type
         cfg.data.test.pipeline[0].type = 'LoadImageFromWebcam'
+        cfg.data.test.pipeline = replace_ImageToTensor(cfg.data.test.pipeline)
 
-    cfg.data.test.pipeline = replace_ImageToTensor(cfg.data.test.pipeline)
     test_pipeline = Compose(cfg.data.test.pipeline)
 
     if isinstance(img, np.ndarray):
@@ -44,9 +44,21 @@ def model_inference(model, img):
 
     # process img_metas
     if isinstance(data['img_metas'], list):
-        data['img_metas'] = data['img_metas'][0].data
+        if len(data['img_metas']) == 1:
+            data['img_metas'] = data['img_metas'][0].data
+        else:
+            data['img_metas'] = [
+                img_metas.data[0] for img_metas in data['img_metas']
+            ]
     else:
         data['img_metas'] = data['img_metas'].data[0]
+
+    # process img
+    if isinstance(img, np.ndarray):
+        data['img'] = [img.data[0] for img in data['img']]
+    for idx, img in enumerate(data['img']):
+        if img.dim() == 3:
+            data['img'][idx] = img.unsqueeze(0)
 
     if next(model.parameters()).is_cuda:
         # scatter to specified GPU
