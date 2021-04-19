@@ -8,9 +8,8 @@ import mmcv
 import numpy as np
 import scipy.io as scio
 from shapely.geometry import Polygon
-from tools.data_converter.common import convert_annotations, is_not_png
 
-from mmocr.utils import drop_orientation
+from mmocr.utils import convert_annotations, drop_orientation, is_not_png
 
 
 def collect_files(img_dir, gt_dir, split):

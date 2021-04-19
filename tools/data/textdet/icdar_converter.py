@@ -6,9 +6,8 @@ from functools import partial
 import mmcv
 import numpy as np
 from shapely.geometry import Polygon
-from tools.data.utils.common import convert_annotations, is_not_png
 
-from mmocr.utils import drop_orientation
+from mmocr.utils import convert_annotations, drop_orientation, is_not_png
 
 
 def collect_files(img_dir, gt_dir):
