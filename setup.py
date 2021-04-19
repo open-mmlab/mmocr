@@ -110,7 +110,7 @@ def get_rroi_align_extensions():
     source_cuda = glob.glob(os.path.join(extensions_dir, 'cuda', '*.cu'))
     sources = main_file + source_cpu
     extension = CppExtension
-    extra_compile_args = {'cxx': ['/utf-8']} if is_windows else {}
+    extra_compile_args = {'cxx': ['/utf-8']} if is_windows else {'cxx': []}
     define_macros = []
 
     if torch.cuda.is_available() and CUDA_HOME is not None:
