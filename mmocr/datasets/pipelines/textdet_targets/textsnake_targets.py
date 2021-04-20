@@ -251,7 +251,7 @@ class TextSnakeTargets(BaseTextDetTargets):
         ])
 
         total_length = (length1 + length2) / 2
-        resample_point_num = int(float(total_length) / resample_step)
+        resample_point_num = max(int(float(total_length) / resample_step), 1)
 
         resampled_line1 = self.resample_line(sideline1, resample_point_num)
         resampled_line2 = self.resample_line(sideline2, resample_point_num)
