@@ -85,12 +85,21 @@ def test_min_rect_crop():
     dummy_img = np.ones((600, 600, 3), dtype=np.uint8)
     dummy_box = [20, 20, 120, 20, 120, 40, 20, 40]
 
-    cropped_img = crop_img(dummy_img, dummy_box)
+    cropped_img = crop_img(
+        dummy_img,
+        dummy_box,
+        0.,
+        0.,
+    )
 
     with pytest.raises(AssertionError):
         crop_img(dummy_img, [])
     with pytest.raises(AssertionError):
         crop_img(dummy_img, [20, 40, 40, 20])
+    with pytest.raises(AssertionError):
+        crop_img(dummy_img, dummy_box, 4, 0.2)
+    with pytest.raises(AssertionError):
+        crop_img(dummy_img, dummy_box, 0.4, 1.2)
 
     assert math.isclose(cropped_img.shape[0], 20)
     assert math.isclose(cropped_img.shape[1], 100)
