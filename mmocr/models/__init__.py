@@ -4,11 +4,11 @@ from . import common, kie, textdet, textrecog
 from .builder import (CONVERTORS, DECODERS, ENCODERS, PREPROCESSOR,
                       build_convertor, build_decoder, build_encoder,
                       build_preprocessor)
-
-from .common import *  # NOQA
-from .kie import *  # NOQA
-from .textdet import *  # NOQA
-from .textrecog import *  # NOQA
+from .common import *  # noqa: F401,F403
+from .kie import *  # noqa: F401,F403
+from .ner import *  # noqa: F401,F403
+from .textdet import *  # noqa: F401,F403
+from .textrecog import *  # noqa: F401,F403
 
 __all__ = [
     'BACKBONES', 'DETECTORS', 'HEADS', 'LOSSES', 'NECKS', 'build_backbone',
