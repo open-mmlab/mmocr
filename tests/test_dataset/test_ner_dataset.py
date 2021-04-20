@@ -1,7 +1,7 @@
 import json
 
 from mmocr.datasets.ner_dataset import NerDataset
-import pytest
+
 
 def _create_dummy_gt_file(ann_file):
     dict_str = {
@@ -56,25 +56,35 @@ def test_ner_dataset():
     img_info = dataset.data_infos[0]
     results = dict(img_info=img_info)
     dataset.pre_pipeline(results)
-    #test _parse_anno_info
-    ann={"text": "彭小军认为，国内银行现在走的是台湾的发卡模式",
-     "label": {"address": {"台湾": [[15, 16]]}, "name": {"彭小军": [[0, 2]]}}}
+    # test _parse_anno_info
+    ann = {
+        'text': '彭小军认为，国内银行现在走的是台湾的发卡模式',
+        'label': {
+            'address': {
+                '台湾': [[15, 16]]
+            },
+            'name': {
+                '彭小军': [[0, 2]]
+            }
+        }
+    }
 
     ans = dataset._parse_anno_info(ann)
     assert isinstance(ans, dict)
-    assert "img" in ans
-    #test prepare_train_img
+    assert 'img' in ans
+    # test prepare_train_img
     dataset.prepare_train_img(0)
 
     # test evaluation
     result = []
     result.append([
-        31,7, 17, 17, 31, 31, 31, 31, 31, 31, 13, 31, 31, 31, 31, 31, 1, 11, 31,
+        31, 7, 17, 17, 31, 31, 31, 31, 31, 31, 13, 31, 31, 31, 31, 31, 1, 11,
         31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
         31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
         31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
         31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
         31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
-        31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 1, 31, 31, 31, 31, 31, 31
+        31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 1, 31, 31, 31, 31, 31,
+        31
     ])
     dataset.evaluate(result)
