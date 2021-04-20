@@ -188,6 +188,7 @@ class TextSnakeTargets(BaseTextDetTargets):
         assert line.shape[0] >= 2
         assert line.shape[1] == 2
         assert isinstance(n, int)
+        assert n > 0
 
         length_list = [
             norm(line[i + 1] - line[i]) for i in range(len(line) - 1)
@@ -234,8 +235,8 @@ class TextSnakeTargets(BaseTextDetTargets):
             resampled_line2 (ndarray): The resampled line 2.
         """
 
-        assert sideline1.ndim == sideline1.ndim == 2
-        assert sideline1.shape[1] == sideline1.shape[1] == 2
+        assert sideline1.ndim == sideline2.ndim == 2
+        assert sideline1.shape[1] == sideline2.shape[1] == 2
         assert sideline1.shape[0] >= 2
         assert sideline2.shape[0] >= 2
         assert isinstance(resample_step, float)
