@@ -52,7 +52,7 @@ def main():
         '--recog-model',
         type=str,
         default='sar',
-        choices=['sar', 'crnn', 'seg', 'nrtr', 'robustscanner'],
+        choices=['sar', 'crnn', 'seg', 'nrtr', 'robust_scanner'],
         help='Text recognize model type.')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference.')
