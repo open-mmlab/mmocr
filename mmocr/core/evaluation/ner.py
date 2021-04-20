@@ -188,7 +188,7 @@ def eval_ner(old_results, gt, max_len, id2label, label2id_dict):
     with open(gt) as f:
         lines = f.readlines()
         metric = SeqEntityScore(id2label, markup='bios')
-        for i in range(len(lines)):
+        for i in range(min(len(results), len(lines))):
             line_dict = json.loads(lines[i])
             text = line_dict['text']
             label = line_dict['label']
