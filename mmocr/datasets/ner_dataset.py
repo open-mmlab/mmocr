@@ -108,6 +108,8 @@ class NerDataset(BaseDataset):
         return self.pipeline(results)
 
     def evaluate(self, results, metric=None, logger=None, **kwargs):
+        # import pdb
+        # pdb.set_trace()
         gt = self.ann_file
         info = eval_ner(results, gt, self.max_len, self.id2label,
                         self.label2id_dict)

@@ -43,16 +43,18 @@ class NerEncoder(nn.Module):
         self.init_weights()
 
     def forward(self, img_metas):
+        device = next(self.bert.parameters()).device
         input_ids = []
         labels = []
         attention_masks = []
         token_type_ids = []
         for i in range(len(img_metas)):
-            input_id = torch.tensor(img_metas[i]['input_ids']) #.cuda()
-            label = torch.tensor(img_metas[i]['labels']) #.cuda()
+            input_id = torch.tensor(img_metas[i]['input_ids']).to(device)
+            label = torch.tensor(img_metas[i]['labels']).to(device)
             attention_mask = torch.tensor(
-                img_metas[i]['attention_mask']).cuda()
-            token_type_id = torch.tensor(img_metas[i]['token_type_ids']) #.cuda()
+                img_metas[i]['attention_mask']).to(device)
+            token_type_id = torch.tensor(
+                img_metas[i]['token_type_ids']).to(device)
             input_ids.append(input_id)
             labels.append(label)
             attention_masks.append(attention_mask)

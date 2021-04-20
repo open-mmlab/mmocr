@@ -1,13 +1,31 @@
-_base_ = [
-    '../../../mmocr/configs/_base_/schedules/schedule_adadelta_8e.py',
-    '../../../mmocr/configs/_base_/default_runtime.py'
-]
+# optimizer
+optimizer = dict(type='Adadelta', lr=0.1)
+optimizer_config = dict(grad_clip=dict(max_norm=0.5))
+# learning policy
+lr_config = dict(policy='step', step=[8, 14, 16])
+total_epochs = 18
+
+checkpoint_config = dict(interval=1)
+# yapf:disable
+log_config = dict(
+    interval=5,
+    hooks=[
+        dict(type='TextLoggerHook')
+
+    ])
+# yapf:enable
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = None
+resume_from = None
+workflow = [('train', 1)]
+
 
 img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-test_ann_file = 'data/ner_dataset/val.json'
-train_ann_file = 'data/ner_dataset/train.json'
-vocab_file = 'data/ner_dataset/vocab.txt'
-map_file = 'data/ner_dataset/map_file.json'
+test_ann_file = 'tests/data/ner_dataset/dev.json'
+train_ann_file = 'tests/data/ner_dataset/train.json'
+vocab_file = 'tests/data/ner_dataset/vocab.txt'
+map_file = 'tests/data/ner_dataset/map_file.json'
 
 loader = dict(
     type='HardDiskLoader',
@@ -58,7 +76,7 @@ test = dict(
     map_file=map_file,
     max_len=128)
 data = dict(
-    samples_per_gpu=32,
+    samples_per_gpu=8,
     workers_per_gpu=2,
     train=dict(type='ConcatDataset', datasets=[train]),
     val=dict(type='ConcatDataset', datasets=[test]),

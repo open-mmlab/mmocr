@@ -1,7 +1,9 @@
-import pytest
-import torch
 import copy
 from os.path import dirname, exists, join
+
+import pytest
+import torch
+
 
 def _get_config_directory():
     """Find the predefined detector config directory."""
@@ -38,48 +40,35 @@ def _get_detector_cfg(fname):
     return model
 
 
-@pytest.mark.parametrize('cfg_file', [
-    'ner/ner_task.py'
-])
+@pytest.mark.parametrize('cfg_file', ['ner/ner_task.py'])
 def test_encoder_decoder_pipeline(cfg_file):
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None
 
     from mmocr.models import build_detector
     detector = build_detector(model)
-
-    imgs = None
-
-    # imgs = torch.rand(1, 3, 32, 160)
-
-    # test extract feat
-    # feat = recognizer.extract_feat(imgs)
-    # assert feat.shape == torch.Size([1, 512, 1, 41])
-    texts=["中"]*47
-    img=[31]*47
-    labels=[31]*128
-    input_ids=[0]*128
-    attention_mask=[0]*128
-    token_type_ids=[0]*128
+    texts = ['中'] * 47
+    img = [31] * 47
+    labels = [31] * 128
+    input_ids = [0] * 128
+    attention_mask = [0] * 128
+    token_type_ids = [0] * 128
 
     # test forward train
     img_metas = [{
-            'texts':texts ,
-            'labels':labels ,
-            "img": img,
-            "input_ids":input_ids,
-            "attention_mask":attention_mask,
-            "token_type_ids":token_type_ids
+        'texts': texts,
+        'labels': labels,
+        'img': img,
+        'input_ids': input_ids,
+        'attention_mask': attention_mask,
+        'token_type_ids': token_type_ids
     }]
     # Test forward train
-    losses = detector.forward(imgs, img_metas)
+    losses = detector.forward(img, img_metas)
     assert isinstance(losses, dict)
 
     # Test forward test
     with torch.no_grad():
-        img_list = [g[None, :] for g in imgs]
         batch_results = []
-        for one_img, one_meta in zip(img_list, img_metas):
-            result = detector.forward([one_img], [[one_meta]],
-                                      return_loss=False)
-            batch_results.append(result)
+        result = detector.forward([img], img_metas, return_loss=False)
+        batch_results.append(result)

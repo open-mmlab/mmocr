@@ -26,14 +26,15 @@ class NerClassifier(BaseRecognizer):
         return
 
     def forward_train(self, imgs, img_metas, **kwargs):
+        device = next(self.encoder.parameters()).device
         x = self.encoder(img_metas)
         logits, x = self.decoder(x)
         labels = []
         attention_masks = []
         for i in range(len(img_metas)):
-            label = torch.tensor(img_metas[i]['labels']) #.cuda()
+            label = torch.tensor(img_metas[i]['labels']).to(device)
             attention_mask = torch.tensor(
-                img_metas[i]['attention_mask']) #.cuda()
+                img_metas[i]['attention_mask']).to(device)
             labels.append(label)
             attention_masks.append(attention_mask)
         labels = torch.stack(labels, 0)
