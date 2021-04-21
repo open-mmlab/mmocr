@@ -97,8 +97,8 @@ __global__ void RoIAlignForward(const int nthreads, const T* bottom_data,
     const T* offset_bottom_data = bottom_data + (roi_batch_ind * channels + c) * height * width;
 
     // We use roi_bin_grid to sample the grid and mimic integral
-    int roi_bin_grid_h = (sampling_ratio > 0) ? sampling_ratio : ceil(roi_height / pooled_height); // e.g., = 2
-    int roi_bin_grid_w = (sampling_ratio > 0) ? sampling_ratio : ceil(roi_width / pooled_width);
+    int roi_bin_grid_h = (sampling_ratio > 0) ? sampling_ratio : ceilf(roi_height / pooled_height); // e.g., = 2
+    int roi_bin_grid_w = (sampling_ratio > 0) ? sampling_ratio : ceilf(roi_width / pooled_width);
 
     // We do average (integral) pooling inside a bin
     const T count = roi_bin_grid_h * roi_bin_grid_w; // e.g. = 4
@@ -215,8 +215,8 @@ __global__ void RoIAlignBackwardFeature(const int nthreads, const T* top_diff,
     const T top_diff_this_bin = offset_top_diff[ph * pooled_width + pw];
 
     // We use roi_bin_grid to sample the grid and mimic integral
-    int roi_bin_grid_h = (sampling_ratio > 0) ? sampling_ratio : ceil(roi_height / pooled_height); // e.g., = 2
-    int roi_bin_grid_w = (sampling_ratio > 0) ? sampling_ratio : ceil(roi_width / pooled_width);
+    int roi_bin_grid_h = (sampling_ratio > 0) ? sampling_ratio : ceilf(roi_height / pooled_height); // e.g., = 2
+    int roi_bin_grid_w = (sampling_ratio > 0) ? sampling_ratio : ceilf(roi_width / pooled_width);
 
     // We do average (integral) pooling inside a bin
     const T count = roi_bin_grid_h * roi_bin_grid_w; // e.g. = 4
@@ -272,7 +272,7 @@ at::Tensor ROIAlign_forward_cuda(const at::Tensor& input,
   auto output_size = num_rois * pooled_height * pooled_width * channels;
   cudaStream_t stream = at::cuda::getCurrentCUDAStream();
 
-  dim3 grid(std::min(THCCeilDiv(output_size, 512L), 4096L));
+  dim3 grid(std::min(THCCeilDiv((long)output_size, 512L), 4096L));
   dim3 block(512);
 
   if (output.numel() == 0) {
@@ -317,7 +317,7 @@ at::Tensor ROIAlign_backward_cuda(const at::Tensor& grad,
 
   cudaStream_t stream = at::cuda::getCurrentCUDAStream();
 
-  dim3 grid(std::min(THCCeilDiv(grad.numel(), 512L), 4096L));
+  dim3 grid(std::min(THCCeilDiv((long)grad.numel(), 512L), 4096L));
   dim3 block(512);
 
   // handle possibly empty gradients

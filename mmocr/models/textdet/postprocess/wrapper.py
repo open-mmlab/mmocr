@@ -186,7 +186,7 @@ def db_decode(preds,
               min_text_score=0.3,
               min_text_width=5,
               unclip_ratio=1.5,
-              max_candidates=1000):
+              max_candidates=3000):
     """Decoding predictions of DbNet to instances. This is partially adapted
     from https://github.com/MhLiao/DB.
 

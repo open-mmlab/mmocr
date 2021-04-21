@@ -5,6 +5,7 @@
 #include <map>
 #include <algorithm>
 #include <vector>
+#include <array>
 #include "include/pybind11/pybind11.h"
 #include "include/pybind11/numpy.h"
 #include "include/pybind11/stl.h"
@@ -42,7 +43,7 @@ namespace panet{
 
         std::queue<std::tuple<int, int, int32_t>> q;
         // 计算各个kernel的similarity_vectors
-        float kernel_vector[label_num][5] = {0};
+        std::vector<std::array<float, 5>> kernel_vector(label_num);
 
         // 文本像素入队列
         for (int i = 0; i<h; i++)

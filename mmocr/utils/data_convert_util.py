@@ -1,23 +1,4 @@
-import os.path as osp
-
 import mmcv
-
-
-def is_not_png(img_file):
-    """Check img_file is not png image.
-
-    Args:
-        img_file(str): The input image file name
-
-    Returns:
-        The bool flag indicating whether it is not png
-    """
-    assert isinstance(img_file, str)
-    assert img_file
-
-    suffix = osp.splitext(img_file)[1]
-
-    return (suffix not in ['.PNG', '.png'])
 
 
 def convert_annotations(image_infos, out_json_name):
