@@ -10,7 +10,8 @@ from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.models import build_detector  # noqa: F401
 
 
-def end2end_inference(image_path, det_model, recog_model):
+def end2end_inference(args, det_model, recog_model):
+    image_path = args.img
     end2end_res = {'filename': image_path}
     end2end_res['result'] = []
 
@@ -23,6 +24,9 @@ def end2end_inference(image_path, det_model, recog_model):
         box_res['box'] = [round(x) for x in bbox[:8]]
         box_res['box_score'] = float('{:.4f}'.format(bbox[8]))
         box_img = crop_img(image, bbox[:8])
+
+        if args.recog_model == 'crnn':
+            box_img = mmcv.bgr2gray(box_img, keepdim=True)
 
         recog_result = model_inference(recog_model, box_img)
 
@@ -41,7 +45,7 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('img', type=str, help='Input Image file.')
     parser.add_argument(
-        'save_path', type=str, help='Path to save visualized image.')
+        'out_file', type=str, help='Output file name of the visualized image.')
     parser.add_argument(
         '--detect-model',
         type=str,
@@ -51,7 +55,7 @@ def main():
     parser.add_argument(
         '--recog-model',
         type=str,
-        default='sar',
+        default='crnn',
         choices=['sar', 'crnn', 'seg', 'nrtr', 'robust_scanner'],
         help='Text recognize model type.')
     parser.add_argument(
@@ -84,12 +88,12 @@ def main():
         recog_model.cfg.data.test.pipeline = \
             recog_model.cfg.data.test['datasets'][0].pipeline
 
-    end2end_result = end2end_inference(args.img, detect_model, recog_model)
+    end2end_result = end2end_inference(args, detect_model, recog_model)
     print(f'result: {end2end_result}')
-    write_json(end2end_result, args.save_path + '.json')
+    write_json(end2end_result, args.out_file + '.json')
 
     img = end2end_show_result(args.img, end2end_result)
-    mmcv.imwrite(img, args.save_path)
+    mmcv.imwrite(img, args.out_file)
     if args.imshow:
         mmcv.imshow(img, 'predicted results')
 
