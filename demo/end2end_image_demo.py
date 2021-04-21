@@ -21,11 +21,18 @@ def end2end_inference(args, det_model, recog_model):
 
     for bbox in bboxes:
         box_res = {}
-        box_res['box'] = [round(x) for x in bbox[:8]]
-        box_res['box_score'] = float('{:.4f}'.format(bbox[8]))
-        box_img = crop_img(image, bbox[:8])
+        box_res['box'] = [round(x) for x in bbox[:-1]]
+        box_res['box_score'] = float('{:.4f}'.format(bbox[-1]))
+        box = bbox[:8]
+        if len(bbox) > 9:
+            min_x = min(bbox[0:-1:2])
+            min_y = min(bbox[1:-1:2])
+            max_x = max(bbox[0:-1:2])
+            max_y = max(bbox[1:-1:2])
+            box = [min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y]
+        box_img = crop_img(image, box)
 
-        if args.recog_model == 'crnn':
+        if args.recog_alg == 'crnn':
             box_img = mmcv.bgr2gray(box_img, keepdim=True)
 
         recog_result = model_inference(recog_model, box_img)
@@ -47,17 +54,17 @@ def main():
     parser.add_argument(
         'out_file', type=str, help='Output file name of the visualized image.')
     parser.add_argument(
-        '--detect-model',
+        '--detect-alg',
         type=str,
         default='psenet',
         choices=['psenet', 'panet', 'dbnet', 'textsnake', 'maskrcnn'],
-        help='Text detect model type.')
+        help='Type of text detection algorithm.')
     parser.add_argument(
-        '--recog-model',
+        '--recog-alg',
         type=str,
         default='crnn',
         choices=['sar', 'crnn', 'seg', 'nrtr', 'robust_scanner'],
-        help='Text recognize model type.')
+        help='Type of text recognition algorithm.')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference.')
     parser.add_argument(
@@ -68,7 +75,7 @@ def main():
 
     # build detect model
     detect_config, detect_checkpoint = prepare_det_model(
-        model_type=args.detect_model)
+        model_type=args.detect_alg)
     detect_model = init_detector(
         detect_config, detect_checkpoint, device=args.device)
     if hasattr(detect_model, 'module'):
@@ -79,7 +86,7 @@ def main():
 
     # build recog model
     recog_config, recog_checkpoint = prepare_recog_model(
-        model_type=args.recog_model)
+        model_type=args.recog_alg)
     recog_model = init_detector(
         recog_config, recog_checkpoint, device=args.device)
     if hasattr(recog_model, 'module'):
