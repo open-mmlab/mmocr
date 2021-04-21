@@ -24,6 +24,7 @@ class NerDataset(BaseDataset):
         start_id (int): Start id.
         end_id (int): End id.
     """
+
     def __init__(self,
                  ann_file,
                  loader,
@@ -57,7 +58,9 @@ class NerDataset(BaseDataset):
             self.word2ids.update({lines[i].rstrip(): i})
 
     def _convert_text2id(self, text):
-        """Convert characters to ids. If the input is uppercase,
+        """Convert characters to ids.
+
+        If the input is uppercase,
             convert to lowercase first.
         Args:
             text (list[char]): Annotations of one paragraph.
@@ -74,6 +77,7 @@ class NerDataset(BaseDataset):
 
     def _conver_entity2label(self, label, text_len):
         """Convert labeled entities to ids.
+
         Args:
            label (dict):
         Returns:
@@ -150,6 +154,7 @@ class NerDataset(BaseDataset):
 
     def evaluate(self, results, metric=None, logger=None, **kwargs):
         """Evaluate the dataset.
+
         Args:
             results (list): Testing results of the dataset.
             metric (str | list[str]): Metrics to be evaluated.
