@@ -84,10 +84,10 @@ def warp_img(src_img,
 
 
 def crop_img(src_img, box, long_edge_pad_ratio=0.4, short_edge_pad_ratio=0.2):
-    """Crop box area to rectangle.
+    """Crop text region with their bounding box.
 
     Args:
-        src_img (np.array): Image before crop.
+        src_img (np.array): The original image.
         box (list[float | int]): Points of quadrangle.
         long_edge_pad_ratio (float): Box pad ratio for long edge.
         short_edge_pad_ratio (float): Box pad ratio for short edge.

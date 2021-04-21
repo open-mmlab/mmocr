@@ -48,8 +48,8 @@ def get_optimal_font_scale(text, width):
     """Get optimal font scale for cv2.putText.
 
     Args:
-        text (str): Text in box.
-        width (int): Width of box.
+        text (str): Text in one box.
+        width (int): The box width.
     """
     for scale in reversed(range(0, 60, 1)):
         textSize = cv2.getTextSize(
