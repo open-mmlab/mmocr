@@ -7,7 +7,23 @@ from mmocr.datasets.base_dataset import BaseDataset
 
 @DATASETS.register_module()
 class NerDataset(BaseDataset):
-
+    """
+    Args:
+        ann_file (txt): Annotation file path
+        loader (dict): Dictionary to construct loader
+            to load annotation infos.
+        pipeline (list[dict]): Processing pipeline.
+        img_prefix (str, optional): This parameter is not used.
+        test_mode (bool, optional): If True, try...except will
+            be turned off in __getitem__.
+        vocab_file (txt): Converting words to ids.
+        map_file (json): Geting label2id_dict and word2ids_dict.
+        max_len (int): The maximum reserved length of the input.
+        unknown_id (int): All characters that do not appear in
+            vocab_file are marked as unknown_id.
+        start_id (int): Start id.
+        end_id (int): End id.
+    """
     def __init__(self,
                  ann_file,
                  loader,
@@ -41,6 +57,13 @@ class NerDataset(BaseDataset):
             self.word2ids.update({lines[i].rstrip(): i})
 
     def _convert_text2id(self, text):
+        """Convert characters to ids. If the input is uppercase,
+            convert to lowercase first.
+        Args:
+            text (list[char]): Annotations of one paragraph.
+        Returns:
+            list: Corresponding IDs after conversion.
+        """
         ids = []
         for word in text.lower():
             if word in self.word2ids:
@@ -50,6 +73,12 @@ class NerDataset(BaseDataset):
         return ids
 
     def _conver_entity2label(self, label, text_len):
+        """Convert labeled entities to ids.
+        Args:
+           label (dict):
+        Returns:
+            list: label ids of an input text
+        """
         labels = [0] * self.max_len
         for j in range(text_len + 2):
             labels[j] = 31
@@ -64,6 +93,18 @@ class NerDataset(BaseDataset):
         return labels
 
     def _parse_anno_info(self, ann):
+        """Parse annotations of texts and labels for one text.
+        Args:
+            ann (dict): Annotations of texts and labels for one text
+        Returns:
+            dict: A dict containing the following keys:
+                - img (list): This parameter is reserved and not used here.
+                - labels (list): []*max_len
+                - texts (list): []*max_len
+                - input_ids (list): []*max_len
+                - attention_mask (list): []*max_len
+                - token_type_ids (list): []*max_len
+        """
 
         ids = self._convert_text2id(ann['text'])
         labels = self._conver_entity2label(ann['label'], len(ann['text']))
@@ -108,8 +149,14 @@ class NerDataset(BaseDataset):
         return self.pipeline(results)
 
     def evaluate(self, results, metric=None, logger=None, **kwargs):
-        # import pdb
-        # pdb.set_trace()
+        """Evaluate the dataset.
+        Args:
+            results (list): Testing results of the dataset.
+            metric (str | list[str]): Metrics to be evaluated.
+            logger (logging.Logger | str | None): Logger used for printing
+                related information during evaluation. Default: None.
+        Returns:  dict containing the following keys: 'acc', 'recall', 'f1'
+        """
         gt = self.ann_file
         info = eval_ner(results, gt, self.max_len, self.id2label,
                         self.label2id_dict)
