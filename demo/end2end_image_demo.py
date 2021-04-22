@@ -7,7 +7,6 @@ from mmocr.apis.inference import model_inference
 from mmocr.core.end2end_visualize import end2end_show_result, write_json
 from mmocr.core.prepare_model import prepare_det_model, prepare_recog_model
 from mmocr.datasets.pipelines.crop import crop_img
-from mmocr.models import build_detector  # noqa: F401
 
 
 def end2end_inference(args, det_model, recog_model):

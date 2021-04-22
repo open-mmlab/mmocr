@@ -77,19 +77,19 @@ def draw_texts(img, boxes, texts):
     h, w = img.shape[:2]
     out_img = np.ones((h, w, 3), dtype=np.uint8) * 255
     for idx, (box, text) in enumerate(zip(boxes, texts)):
-        new_box = [[x, y] for x, y in zip(box[0:8:2], box[1:9:2])]
+        new_box = [[x, y] for x, y in zip(box[0::2], box[1::2])]
         Pts = np.array([new_box], np.int32)
         cv2.polylines(
             out_img, [Pts.reshape((-1, 1, 2))],
             True,
             color=color_list[idx % len(color_list)],
             thickness=1)
-        min_x = int(min(box[0:8:2]))
+        min_x = int(min(box[0::2]))
         max_y = int(
-            np.mean(np.array(box[1:9:2])) + 0.2 *
-            (max(box[1:9:2]) - min(box[1:9:2])))
+            np.mean(np.array(box[1::2])) + 0.2 *
+            (max(box[1::2]) - min(box[1::2])))
         font_scale = get_optimal_font_scale(
-            text, int(max(box[0:8:2]) - min(box[0:8:2])))
+            text, int(max(box[0::2]) - min(box[0::2])))
         cv2.putText(out_img, text, (min_x, max_y), cv2.FONT_HERSHEY_SIMPLEX,
                     font_scale, (0, 0, 0), 1)
 
