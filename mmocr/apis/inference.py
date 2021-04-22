@@ -27,10 +27,11 @@ def model_inference(model, imgs):
     else:
         raise AssertionError('imgs must be strings or numpy arrays')
 
+    is_ndarray= isinstance(imgs[0], np.ndarray)
     cfg = model.cfg
     device = next(model.parameters()).device  # model device
 
-    if isinstance(imgs[0], np.ndarray):
+    if is_ndarray:
         cfg = cfg.copy()
         # set loading pipeline type
         cfg.data.test.pipeline[0].type = 'LoadImageFromWebcam'
@@ -41,7 +42,7 @@ def model_inference(model, imgs):
     datas = []
     for img in imgs:
         # prepare data
-        if isinstance(img, np.ndarray):
+        if is_ndarray:
             # directly add img
             data = dict(img=img)
         else:
@@ -66,10 +67,13 @@ def model_inference(model, imgs):
         data['img_metas'] = data['img_metas'].data[0]
 
     # process img
-    if isinstance(img, np.ndarray):
-        data['img'] = [img.data[0] for img in data['img']]
-        
+    # if is_ndarray:
+    #     data['img'] = [img.data[0] for img in data['img']]
+    
     for idx, img in enumerate(data['img']):
+        if is_ndarray:
+            data['img'][idx] = data["img"][idx].data[0]
+
         if img.dim() == 3:
             data['img'][idx] = img.unsqueeze(0)
 
