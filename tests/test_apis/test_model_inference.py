@@ -31,6 +31,5 @@ def test_model_inference(cfg_file):
 
     # numpy inference
     img = imread(sample_img_path)
-    if 'crnn' in config_file:
-        img = imread(sample_img_path, flag='grayscale')
+
     model_inference(model, img)

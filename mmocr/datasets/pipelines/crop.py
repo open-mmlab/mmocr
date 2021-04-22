@@ -89,8 +89,10 @@ def crop_img(src_img, box, long_edge_pad_ratio=0.4, short_edge_pad_ratio=0.2):
     Args:
         src_img (np.array): The original image.
         box (list[float | int]): Points of quadrangle.
-        long_edge_pad_ratio (float): Box pad ratio for long edge.
-        short_edge_pad_ratio (float): Box pad ratio for short edge.
+        long_edge_pad_ratio (float): Box pad ratio for long edge
+            corresponding to font size.
+        short_edge_pad_ratio (float): Box pad ratio for short edge
+            corresponding to font size.
     """
     assert utils.is_type_list(box, float) or utils.is_type_list(box, int)
     assert len(box) == 8
@@ -98,24 +100,24 @@ def crop_img(src_img, box, long_edge_pad_ratio=0.4, short_edge_pad_ratio=0.2):
     assert 0. <= short_edge_pad_ratio < 1.0
 
     h, w = src_img.shape[:2]
-    points_x = [min(max(x, 0), w) for x in box[0:8:2]]
-    points_y = [min(max(y, 0), h) for y in box[1:9:2]]
+    points_x = np.clip(np.array(box[0::2]), 0, w)
+    points_y = np.clip(np.array(box[1::2]), 0, h)
 
-    box_width = max(points_x) - min(points_x)
-    box_height = max(points_y) - min(points_y)
+    box_width = np.max(points_x) - np.min(points_x)
+    box_height = np.max(points_y) - np.min(points_y)
+    font_size = min(box_height, box_width)
+
     if box_height < box_width:
-        font_size = box_height
         horizontal_pad = long_edge_pad_ratio * font_size
         vertical_pad = short_edge_pad_ratio * font_size
     else:
-        font_size = box_width
         horizontal_pad = short_edge_pad_ratio * font_size
         vertical_pad = long_edge_pad_ratio * font_size
 
-    left = int(min(points_x) - horizontal_pad)
-    top = int(min(points_y) - vertical_pad)
-    right = int(max(points_x) + horizontal_pad)
-    bottom = int(max(points_y) + vertical_pad)
+    left = int(np.min(points_x) - horizontal_pad)
+    top = int(np.min(points_y) - vertical_pad)
+    right = int(np.max(points_x) + horizontal_pad)
+    bottom = int(np.max(points_y) + vertical_pad)
 
     dst_img = src_img[top:bottom, left:right]
 

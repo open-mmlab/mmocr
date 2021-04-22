@@ -96,7 +96,7 @@ def draw_texts(img, boxes, texts):
     return out_img
 
 
-def end2end_show_result(img, end2end_res):
+def det_recog_show_result(img, end2end_res):
     """Draw `result`(boxes and texts) on `img`.
     Args:
         img (str or np.ndarray): The image to be displayed.
