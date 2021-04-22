@@ -43,11 +43,14 @@ class SingleStageTextDetector(SingleStageDetector):
 
         if len(img_metas) > 1:
             boundaries = [
-                self.bbox_head.get_boundary(*(outs[i].unsqueeze(0)), [img_metas[i]], rescale) 
+                self.bbox_head.get_boundary(*(outs[i].unsqueeze(0)),
+                                            [img_metas[i]], rescale)
                 for i in range(len(img_metas))
             ]
-        
+
         else:
-            boundaries = [self.bbox_head.get_boundary(*outs, img_metas, rescale)]
+            boundaries = [
+                self.bbox_head.get_boundary(*outs, img_metas, rescale)
+            ]
 
         return boundaries

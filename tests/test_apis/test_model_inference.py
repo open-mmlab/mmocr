@@ -1,12 +1,16 @@
 import os
+import shutil
+import urllib
 
 import pytest
 from mmcv.image import imread
 
 from mmdet.apis import init_detector
 from mmocr.apis.inference import model_inference
+from mmocr.datasets import build_dataset  # noqa: F401
+from mmocr.models import build_detector  # noqa: F401
 
-# New
+
 @pytest.mark.parametrize('cfg_file', [
     '../configs/textrecog/sar/sar_r31_parallel_decoder_academic.py',
     '../configs/textrecog/crnn/crnn_academic_dataset.py',
@@ -16,10 +20,6 @@ from mmocr.apis.inference import model_inference
     '../configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2017.py'
 ])
 def test_model_inference(cfg_file):
-    from mmdet.apis import init_detector
-    from mmocr.apis.inference import model_inference
-    from mmocr.datasets import build_dataset  # noqa: F401
-    from mmocr.models import build_detector  # noqa: F401
     tmp_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     config_file = os.path.join(tmp_dir, cfg_file)
     device = 'cpu'
@@ -38,7 +38,6 @@ def test_model_inference(cfg_file):
 
     model_inference(model, img)
 
-# New
 
 @pytest.fixture
 def project_dir():
@@ -57,8 +56,6 @@ def sample_det_img_path(project_dir):
 
 @pytest.fixture
 def sarnet_model(project_dir):
-    from mmocr.datasets import build_dataset  # noqa: F401
-    from mmocr.models import build_detector  # noqa: F401
     print(project_dir)
     config_file = os.path.join(
         project_dir,
@@ -102,8 +99,6 @@ def sarnet_model_no_tta(sarnet_model):
 
 @pytest.fixture
 def psenet_model(project_dir):
-    from mmocr.datasets import build_dataset  # noqa: F401
-    from mmocr.models import build_detector  # noqa: F401
     config_file = os.path.join(
         project_dir,
         '../configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2017.py')
@@ -124,15 +119,10 @@ def psenet_model_no_tta(psenet_model):
     no_tta_pipeline = [psenet_model.cfg.data.test.pipeline[0]]
 
     for transform in psenet_model.cfg.data.test.pipeline[1].transforms:
-        if transform["type"] == "Collect":
-            transform["meta_keys"] = [
-                'filename', 
-                'ori_filename', 
-                'ori_shape',
-                'img_shape', 
-                'pad_shape', 
-                'scale_factor',
-                'img_norm_cfg'
+        if transform['type'] == 'Collect':
+            transform['meta_keys'] = [
+                'filename', 'ori_filename', 'ori_shape', 'img_shape',
+                'pad_shape', 'scale_factor', 'img_norm_cfg'
             ]
 
         no_tta_pipeline.append(transform)
@@ -154,7 +144,8 @@ def test_model_inference_image_path_det(sample_det_img_path, psenet_model):
     model_inference(psenet_model, sample_det_img_path)
 
 
-def test_model_inference_numpy_ndarray_recog(sample_recog_img_path, sarnet_model):
+def test_model_inference_numpy_ndarray_recog(sample_recog_img_path,
+                                             sarnet_model):
     img = imread(sample_recog_img_path)
     model_inference(sarnet_model, img)
 
@@ -165,28 +156,28 @@ def test_model_inference_numpy_ndarray_det(sample_det_img_path, psenet_model):
 
 
 def test_model_batch_inference_numpy_ndarray_recog(sample_recog_img_path,
-                                             sarnet_model_no_tta):
+                                                   sarnet_model_no_tta):
     img = imread(sample_recog_img_path)
     result = model_inference(sarnet_model_no_tta, [img, img])
     assert len(result) == 2
 
 
 def test_model_batch_inference_image_path_recog(sample_recog_img_path,
-                                          sarnet_model_no_tta):
+                                                sarnet_model_no_tta):
     result = model_inference(sarnet_model_no_tta,
                              [sample_recog_img_path, sample_recog_img_path])
     assert len(result) == 2
 
-    
+
 def test_model_batch_inference_numpy_ndarray_det(sample_det_img_path,
-                                             psenet_model_no_tta):
+                                                 psenet_model_no_tta):
     img = imread(sample_det_img_path)
     result = model_inference(psenet_model_no_tta, [img, img])
     assert len(result) == 2
 
 
 def test_model_batch_inference_image_path_det(sample_det_img_path,
-                                          psenet_model_no_tta):
+                                              psenet_model_no_tta):
     result = model_inference(psenet_model_no_tta,
                              [sample_det_img_path, sample_det_img_path])
     assert len(result) == 2

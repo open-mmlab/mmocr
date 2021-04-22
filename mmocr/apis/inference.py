@@ -27,7 +27,7 @@ def model_inference(model, imgs):
     else:
         raise AssertionError('imgs must be strings or numpy arrays')
 
-    is_ndarray= isinstance(imgs[0], np.ndarray)
+    is_ndarray = isinstance(imgs[0], np.ndarray)
     cfg = model.cfg
     device = next(model.parameters()).device  # model device
 
@@ -67,7 +67,7 @@ def model_inference(model, imgs):
         data['img'] = [img.data[0] for img in data['img']]
     else:
         data['img'] = data['img'].data
-    
+
     if next(model.parameters()).is_cuda:
         # scatter to specified GPU
         data = scatter(data, [device])[0]
