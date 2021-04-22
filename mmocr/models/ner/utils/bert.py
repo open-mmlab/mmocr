@@ -7,6 +7,25 @@ from mmocr.models.ner.utils.activations import ACT2FN
 
 
 class BertModel(nn.Module):
+    """Implement Bert model for named entity recognition task.
+        The code is borrowed from https://github.com/lonePatient/BERT-NER-Pytorch
+    Args:
+        num_hidden_layers (int): The number of hidden layers.
+        initializer_range (float):
+        vocab_size (int): Number of words supported.
+        hidden_size (int): Hidden size.
+        max_position_embeddings (int): Max positionsembedding size.
+        type_vocab_size (int): The size of type_vocab.
+        layer_norm_eps (float): eps.
+        hidden_dropout_prob (float): The dropout probability of hidden layer.
+        output_attentions (bool):  Whether use the attentions in output
+        output_hidden_states (bool): Whether use the hidden_states in output
+        num_attention_heads (int): The number of attention heads.
+        attention_probs_dropout_prob (float): The dropout probability
+            of attention.
+        intermediate_size (int): The size of intermediate layer.
+        hidden_act (str):  hidden layer activation
+    """
 
     def __init__(self,
                  num_hidden_layers=12,
@@ -104,7 +123,7 @@ class BertModel(nn.Module):
             # uses truncated_normal for initialization
             # cf https://github.com/pytorch/pytorch/pull/5617
             module.weight.data.normal_(mean=0.0, std=self.initializer_range)
-        elif isinstance(module, BertLayerNorm):
+        elif isinstance(module, torch.nn.LayerNorm):
             module.bias.data.zero_()
             module.weight.data.fill_(1.0)
         if isinstance(module, nn.Linear) and module.bias is not None:
@@ -114,9 +133,6 @@ class BertModel(nn.Module):
         """Initialize and prunes weights if needed."""
         # Initialize weights
         self.apply(self._init_weights)
-
-
-BertLayerNorm = torch.nn.LayerNorm
 
 
 class BertEmbeddings(nn.Module):
@@ -141,7 +157,7 @@ class BertEmbeddings(nn.Module):
         # self.LayerNorm is not snake-cased to stick with
         # TensorFlow model variable name and be able to load
         # any TensorFlow checkpoint file
-        self.LayerNorm = BertLayerNorm(hidden_size, eps=layer_norm_eps)
+        self.LayerNorm = torch.nn.LayerNorm(hidden_size, eps=layer_norm_eps)
         self.dropout = nn.Dropout(hidden_dropout_prob)
 
     def forward(self, input_ids, token_type_ids=None, position_ids=None):
@@ -150,8 +166,6 @@ class BertEmbeddings(nn.Module):
             position_ids = torch.arange(
                 seq_length, dtype=torch.long, device=input_ids.device)
             position_ids = position_ids.unsqueeze(0).expand_as(input_ids)
-            # import numpy as np
-            # np.save("npys/position_id.npy", position_ids.cpu().numpy())
         if token_type_ids is None:
             token_type_ids = torch.zeros_like(input_ids)
 
@@ -356,7 +370,7 @@ class BertSelfOutput(nn.Module):
                  hidden_dropout_prob=0.1):
         super(BertSelfOutput, self).__init__()
         self.dense = nn.Linear(hidden_size, hidden_size)
-        self.LayerNorm = BertLayerNorm(hidden_size, eps=layer_norm_eps)
+        self.LayerNorm = torch.nn.LayerNorm(hidden_size, eps=layer_norm_eps)
         self.dropout = nn.Dropout(hidden_dropout_prob)
 
     def forward(self, hidden_states, input_tensor):
@@ -480,7 +494,7 @@ class BertOutput(nn.Module):
 
         super(BertOutput, self).__init__()
         self.dense = nn.Linear(intermediate_size, hidden_size)
-        self.LayerNorm = BertLayerNorm(hidden_size, eps=layer_norm_eps)
+        self.LayerNorm = torch.nn.LayerNorm(hidden_size, eps=layer_norm_eps)
         self.dropout = nn.Dropout(hidden_dropout_prob)
 
     def forward(self, hidden_states, input_tensor):
