@@ -83,24 +83,41 @@ def warp_img(src_img,
     return dst_img
 
 
-def crop_img(src_img, box):
-    """Crop box area to rectangle.
+def crop_img(src_img, box, long_edge_pad_ratio=0.4, short_edge_pad_ratio=0.2):
+    """Crop text region with their bounding box.
 
     Args:
-        src_img (np.array): Image before crop.
+        src_img (np.array): The original image.
         box (list[float | int]): Points of quadrangle.
+        long_edge_pad_ratio (float): Box pad ratio for long edge
+            corresponding to font size.
+        short_edge_pad_ratio (float): Box pad ratio for short edge
+            corresponding to font size.
     """
     assert utils.is_type_list(box, float) or utils.is_type_list(box, int)
     assert len(box) == 8
+    assert 0. <= long_edge_pad_ratio < 1.0
+    assert 0. <= short_edge_pad_ratio < 1.0
 
     h, w = src_img.shape[:2]
-    points_x = [min(max(x, 0), w) for x in box[0:8:2]]
-    points_y = [min(max(y, 0), h) for y in box[1:9:2]]
+    points_x = np.clip(np.array(box[0::2]), 0, w)
+    points_y = np.clip(np.array(box[1::2]), 0, h)
 
-    left = int(min(points_x))
-    top = int(min(points_y))
-    right = int(max(points_x))
-    bottom = int(max(points_y))
+    box_width = np.max(points_x) - np.min(points_x)
+    box_height = np.max(points_y) - np.min(points_y)
+    font_size = min(box_height, box_width)
+
+    if box_height < box_width:
+        horizontal_pad = long_edge_pad_ratio * font_size
+        vertical_pad = short_edge_pad_ratio * font_size
+    else:
+        horizontal_pad = short_edge_pad_ratio * font_size
+        vertical_pad = long_edge_pad_ratio * font_size
+
+    left = np.clip(int(np.min(points_x) - horizontal_pad), 0, w)
+    top = np.clip(int(np.min(points_y) - vertical_pad), 0, h)
+    right = np.clip(int(np.max(points_x) + horizontal_pad), 0, w)
+    bottom = np.clip(int(np.max(points_y) + vertical_pad), 0, h)
 
     dst_img = src_img[top:bottom, left:right]
 

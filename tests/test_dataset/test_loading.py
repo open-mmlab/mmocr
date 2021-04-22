@@ -1,6 +1,6 @@
 import numpy as np
 
-from mmocr.datasets.pipelines import LoadTextAnnotations
+from mmocr.datasets.pipelines import LoadImageFromNdarray, LoadTextAnnotations
 
 
 def _create_dummy_ann():
@@ -36,3 +36,13 @@ def test_loadtextannotation():
     assert len(output['gt_masks_ignore']) == 4
     assert np.allclose(output['gt_masks_ignore'].masks[0],
                        [[499, 94, 531, 94, 531, 124, 499, 124]])
+
+
+def test_load_img_from_numpy():
+    result = {'img': np.ones((32, 100, 3), dtype=np.uint8)}
+
+    load = LoadImageFromNdarray(color_type='color')
+    output = load(result)
+
+    assert output['img'].shape[2] == 3
+    assert len(output['img'].shape) == 3

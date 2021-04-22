@@ -1,8 +1,9 @@
+import mmcv
 import numpy as np
 
 from mmdet.core import BitmapMasks, PolygonMasks
 from mmdet.datasets.builder import PIPELINES
-from mmdet.datasets.pipelines.loading import LoadAnnotations
+from mmdet.datasets.pipelines.loading import LoadAnnotations, LoadImageFromFile
 
 
 @PIPELINES.register_module()
@@ -65,4 +66,41 @@ class LoadTextAnnotations(LoadAnnotations):
 
         results['gt_masks'] = gt_masks
         results['mask_fields'].append('gt_masks')
+        return results
+
+
+@PIPELINES.register_module()
+class LoadImageFromNdarray(LoadImageFromFile):
+    """Load an image from np.ndarray.
+
+    Similar with :obj:`LoadImageFromFile`, but the image read from
+    ``results['img']``, which is np.ndarray.
+    """
+
+    def __call__(self, results):
+        """Call functions to add image meta information.
+
+        Args:
+            results (dict): Result dict with Webcam read image in
+                ``results['img']``.
+
+        Returns:
+            dict: The dict contains loaded image and meta information.
+        """
+        assert results['img'].dtype == 'uint8'
+
+        img = results['img']
+        if self.color_type == 'grayscale' and img.shape[2] == 3:
+            img = mmcv.bgr2gray(img, keepdim=True)
+        if self.color_type == 'color' and img.shape[2] == 1:
+            img = mmcv.gray2bgr(img)
+        if self.to_float32:
+            img = img.astype(np.float32)
+
+        results['filename'] = None
+        results['ori_filename'] = None
+        results['img'] = img
+        results['img_shape'] = img.shape
+        results['ori_shape'] = img.shape
+        results['img_fields'] = ['img']
         return results
