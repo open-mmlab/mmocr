@@ -3,11 +3,29 @@ import torch.nn as nn
 from mmcv.cnn import uniform_init, xavier_init
 
 from mmocr.models.builder import ENCODERS
-from .bert import BertModel
+from mmocr.models.ner.utils.bert import BertModel
 
 
 @ENCODERS.register_module()
 class NerEncoder(nn.Module):
+    """Ner encoder
+    Args:
+        num_hidden_layers (int): The number of hidden layers.
+        initializer_range (float):
+        vocab_size (int): Number of words supported.
+        hidden_size (int): Hidden size.
+        max_position_embeddings (int): Max positionsembedding size.
+        type_vocab_size (int): The size of type_vocab.
+        layer_norm_eps (float): eps.
+        hidden_dropout_prob (float): The dropout probability of hidden layer.
+        output_attentions (bool):  Whether use the attentions in output
+        output_hidden_states (bool): Whether use the hidden_states in output
+        num_attention_heads (int): The number of attention heads.
+        attention_probs_dropout_prob (float): The dropout probability
+            of attention.
+        intermediate_size (int): The size of intermediate layer.
+        hidden_act (str):  hidden layer activation
+    """
 
     def __init__(self,
                  num_hidden_layers=12,

@@ -21,10 +21,10 @@ resume_from = None
 workflow = [('train', 1)]
 
 img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-test_ann_file = 'data/ner/dev.json'
-train_ann_file = 'data/ner/train.json'
+test_ann_file = 'data/ner/dev_time.json'
+train_ann_file = 'data/ner/train_time.json'
 vocab_file = 'data/ner/vocab.txt'
-map_file = 'data/ner/map_file.json'
+map_file = 'data/ner/map_file_time.json'
 
 loader = dict(
     type='HardDiskLoader',
@@ -103,9 +103,9 @@ model = dict(
         hidden_act='gelu_new'),
     decoder=dict(
         type='NerDecoder',
-        num_labels=34,
+        num_labels=36,
         hidden_dropout_prob=0.1,
         hidden_size=768),
-    loss=dict(type='NerLoss', num_labels=34, loss_type='focal'))
+    loss=dict(type='NerLoss', num_labels=36, loss_type='focal'))
 
 test_cfg = None

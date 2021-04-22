@@ -32,9 +32,9 @@ def test_ner_dataset():
     # test initialization
     loader = _create_dummy_loader()
 
-    ann_file = 'tests/data/ner_dataset/dev.json'
-    vocab_file = 'tests/data/ner_dataset/vocab.txt'
-    map_file = 'tests/data/ner_dataset/map_file.json'
+    ann_file = 'tests/data/ner_toy_dataset/eval_sample.json'
+    vocab_file = 'tests/data/ner_toy_dataset/vocab_sample.txt'
+    map_file = 'tests/data/ner_toy_dataset/map_file.json'
     test_pipeline = [
         dict(
             type='Collect',
