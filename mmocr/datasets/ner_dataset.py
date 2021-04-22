@@ -1,7 +1,7 @@
 import json
 
 from mmdet.datasets.builder import DATASETS
-from mmocr.core.evaluation.ner import eval_ner
+from mmocr.core.evaluation.ner_metric import eval_ner
 from mmocr.datasets.base_dataset import BaseDataset
 
 
@@ -46,7 +46,7 @@ class NerDataset(BaseDataset):
         self.end_id = end_id
         self.max_len = max_len
         self.map_file = map_file
-        with open(self.map_file) as f:
+        with open(self.map_file, 'r') as f:
             map_dict = json.load(f)
             self.label2id_dict = map_dict['label2id_dict']
             id2label = map_dict['id2label']

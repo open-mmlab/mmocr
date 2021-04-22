@@ -2,13 +2,13 @@ from torch import nn
 from torch.nn import CrossEntropyLoss
 
 from mmdet.models.builder import LOSSES
-from .focal_loss import FocalLoss
+from mmocr.models.common.losses.focal_loss import FocalLoss
 from .label_smoothing import LabelSmoothingCrossEntropy
 
 
 @LOSSES.register_module()
 class NerLoss(nn.Module):
-    """"""
+    """The implementation the loss of named entity recognizier."""
 
     def __init__(self, num_labels=None, loss_type=None, **kwargs):
         super(NerLoss, self).__init__()
