@@ -1,3 +1,5 @@
+# used code from https://github.com/clovaai/deep-text-recognition-benchmark/blob/master/modules/transformation.py
+
 import numpy as np
 import torch
 import torch.nn as nn
