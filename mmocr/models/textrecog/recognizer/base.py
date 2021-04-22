@@ -75,7 +75,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
                 The outer list indicates images in a batch.
         """
         if isinstance(imgs, list):
-            assert len(imgs) == len(img_metas)
+            # assert len(imgs) == len(img_metas)
             assert len(imgs) > 0
             assert imgs[0].size(0) == 1, ('aug test does not support '
                                           f'inference with batch size '
