@@ -92,8 +92,16 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         Note that img and img_meta are single-nested (i.e. tensor and
         list[dict]).
         """
+
         if return_loss:
             return self.forward_train(img, img_metas, **kwargs)
+
+        if isinstance(img, list):
+            for idx, i in enumerate(img):
+                if i.dim() == 3:
+                    img[idx] = i.unsqueeze(0)
+        else:
+            img_metas = img_metas[0]
 
         return self.forward_test(img, img_metas, **kwargs)
 
