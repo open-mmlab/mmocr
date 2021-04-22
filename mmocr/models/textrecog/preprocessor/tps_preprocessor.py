@@ -28,47 +28,48 @@ class TPSPreprocessor(BasePreprocessor):
     def __init__(self,
                  num_fiducial,
                  img_size,
-                 img_rectified_size,
-                 img_channel_num=1):
+                 rectified_img_size,
+                 num_img_channel=1):
         """ Based on RARE TPS
         Args:
-            num_fiducial: number of fiducial points of TPS-STN
-            img_size : (height, width) of the input image
-            img_rectified_size : (height, width) of the rectified image
-            img_channel_num : the number of channels of the input image
+            num_fiducial (int): number of fiducial points of TPS-STN
+            img_size (int, int): (height, width) of the input image
+            rectified_img_size (int, int):
+                (height, width) of the rectified image
+            num_img_channel (int): the number of channels of the input image
         output:
-            batch_img_rectified: rectified image
-                [batch_size x img_channel_num x img_rectified_height
-                x img_rectified_width]
+            batch_rectified_img: rectified image
+                [batch_size x num_img_channel x rectified_img_height
+                x rectified_img_width]
         """
         super().__init__()
         self.num_fiducial = num_fiducial
         self.img_size = img_size
-        self.img_rectified_size = img_rectified_size
-        self.img_channel_num = img_channel_num
+        self.rectified_img_size = rectified_img_size
+        self.num_img_channel = num_img_channel
         self.LocalizationNetwork = LocalizationNetwork(self.num_fiducial,
-                                                       self.img_channel_num)
+                                                       self.num_img_channel)
         self.GridGenerator = GridGenerator(self.num_fiducial,
-                                           self.img_rectified_size)
+                                           self.rectified_img_size)
 
     def forward(self, batch_img):
         batch_C_prime = self.LocalizationNetwork(
             batch_img)  # batch_size x K x 2
         build_P_prime = self.GridGenerator.build_P_prime(
             batch_C_prime, batch_img.device
-        )  # batch_size x n (= img_rectified_width x img_rectified_height) x 2
+        )  # batch_size x n (= rectified_img_width x rectified_img_height) x 2
         build_P_prime_reshape = build_P_prime.reshape([
-            build_P_prime.size(0), self.img_rectified_size[0],
-            self.img_rectified_size[1], 2
+            build_P_prime.size(0), self.rectified_img_size[0],
+            self.rectified_img_size[1], 2
         ])
 
-        batch_img_rectified = F.grid_sample(
+        batch_rectified_img = F.grid_sample(
             batch_img,
             build_P_prime_reshape,
             padding_mode='border',
             align_corners=True)
 
-        return batch_img_rectified
+        return batch_rectified_img
 
     def init_weights(self):
         pass
@@ -78,13 +79,13 @@ class LocalizationNetwork(nn.Module):
     """Localization Network of RARE, which predicts C' (K x 2) from input
     (img_width x img_height)"""
 
-    def __init__(self, num_fiducial, img_channel_num):
+    def __init__(self, num_fiducial, num_img_channel):
         super(LocalizationNetwork, self).__init__()
         self.num_fiducial = num_fiducial
-        self.img_channel_num = img_channel_num
+        self.num_img_channel = num_img_channel
         self.conv = nn.Sequential(
             nn.Conv2d(
-                in_channels=self.img_channel_num,
+                in_channels=self.num_img_channel,
                 out_channels=64,
                 kernel_size=3,
                 stride=1,
@@ -125,8 +126,8 @@ class LocalizationNetwork(nn.Module):
     def forward(self, batch_img):
         """
         Args:
-            batch_img : Batch Input Image
-                [batch_size x img_channel_num x img_height x img_width]
+            batch_img (tensor): Batch Input Image
+                [batch_size x num_img_channel x img_height x img_width]
         output:
             batch_C_prime : Predicted coordinates of fiducial points for
             input batch [batch_size x num_fiducial x 2]
@@ -143,16 +144,16 @@ class GridGenerator(nn.Module):
     """Grid Generator of RARE, which produces P_prime by multipling T with
     P."""
 
-    def __init__(self, num_fiducial, img_rectified_size):
+    def __init__(self, num_fiducial, rectified_img_size):
         """Generate P_hat and inv_delta_C for later."""
         super(GridGenerator, self).__init__()
         self.eps = 1e-6
-        self.img_rectified_height = img_rectified_size[0]
-        self.img_rectified_width = img_rectified_size[1]
+        self.rectified_img_height = rectified_img_size[0]
+        self.rectified_img_width = rectified_img_size[1]
         self.num_fiducial = num_fiducial
         self.C = self._build_C(self.num_fiducial)  # num_fiducial x 2
-        self.P = self._build_P(self.img_rectified_width,
-                               self.img_rectified_height)
+        self.P = self._build_P(self.rectified_img_width,
+                               self.rectified_img_height)
         # for multi-gpu, you need register buffer
         self.register_buffer(
             'inv_delta_C',
@@ -175,7 +176,7 @@ class GridGenerator(nn.Module):
         #                       self.P)).float().cuda()  # n x num_fiducial+3
 
     def _build_C(self, num_fiducial):
-        """Return coordinates of fiducial points in img_rectified; C."""
+        """Return coordinates of fiducial points in rectified_img; C."""
         ctrl_pts_x = np.linspace(-1.0, 1.0, int(num_fiducial / 2))
         ctrl_pts_y_top = -1 * np.ones(int(num_fiducial / 2))
         ctrl_pts_y_bottom = np.ones(int(num_fiducial / 2))
@@ -186,8 +187,7 @@ class GridGenerator(nn.Module):
 
     def _build_inv_delta_C(self, num_fiducial, C):
         """Return inv_delta_C which is needed to calculate T."""
-        hat_C = np.zeros((num_fiducial, num_fiducial),
-                         dtype=float)  # num_fiducial x num_fiducial
+        hat_C = np.zeros((num_fiducial, num_fiducial), dtype=float)
         for i in range(0, num_fiducial):
             for j in range(i, num_fiducial):
                 r = np.linalg.norm(C[i] - C[j])
@@ -210,23 +210,23 @@ class GridGenerator(nn.Module):
         inv_delta_C = np.linalg.inv(delta_C)
         return inv_delta_C  # num_fiducial+3 x num_fiducial+3
 
-    def _build_P(self, img_rectified_width, img_rectified_height):
-        img_rectified_grid_x = (
-            np.arange(-img_rectified_width, img_rectified_width, 2) +
-            1.0) / img_rectified_width  # self.img_rectified_width
-        img_rectified_grid_y = (
-            np.arange(-img_rectified_height, img_rectified_height, 2) +
-            1.0) / img_rectified_height  # self.img_rectified_height
-        P = np.stack(  # self.img_rectified_w x self.img_rectified_h x 2
-            np.meshgrid(img_rectified_grid_x, img_rectified_grid_y),
+    def _build_P(self, rectified_img_width, rectified_img_height):
+        rectified_img_grid_x = (
+            np.arange(-rectified_img_width, rectified_img_width, 2) +
+            1.0) / rectified_img_width  # self.rectified_img_width
+        rectified_img_grid_y = (
+            np.arange(-rectified_img_height, rectified_img_height, 2) +
+            1.0) / rectified_img_height  # self.rectified_img_height
+        P = np.stack(  # self.rectified_img_w x self.rectified_img_h x 2
+            np.meshgrid(rectified_img_grid_x, rectified_img_grid_y),
             axis=2)
         return P.reshape([
             -1, 2
-        ])  # n (= self.img_rectified_width x self.img_rectified_height) x 2
+        ])  # n (= self.rectified_img_width x self.rectified_img_height) x 2
 
     def _build_P_hat(self, num_fiducial, C, P):
         n = P.shape[
-            0]  # n (= self.img_rectified_width x self.img_rectified_height)
+            0]  # n (= self.rectified_img_width x self.rectified_img_height)
         P_tile = np.tile(np.expand_dims(P, axis=1),
                          (1, num_fiducial,
                           1))  # n x 2 -> n x 1 x 2 -> n x num_fiducial x 2

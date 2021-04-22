@@ -8,8 +8,8 @@ def test_tps_preprocessor():
     tps_preprocessor = TPSPreprocessor(
         num_fiducial=20,
         img_size=(32, 100),
-        img_rectified_size=(32, 100),
-        img_channel_num=1)
+        rectified_img_size=(32, 100),
+        num_img_channel=1)
     tps_preprocessor.init_weights()
     tps_preprocessor.train()
 
