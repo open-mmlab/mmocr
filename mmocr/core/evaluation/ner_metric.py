@@ -105,7 +105,7 @@ def get_entity_bios(seq, id2label):
 
 class SeqEntityScore(object):
     """Get precision, recall and F1-score for named entity recognition task.
-        The code is borrowed from https://github.com/lonePatient/BERT-NER-Pytorch
+        The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
     """
 
     def __init__(self, id2label, markup='bios'):
