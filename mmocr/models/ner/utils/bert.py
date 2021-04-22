@@ -9,7 +9,7 @@ from mmocr.models.ner.utils.activations import ACT2FN
 class BertModel(nn.Module):
     """Implement Bert model for named entity recognition task.
 
-    The code is borrowed from https://github.com/lonePatient/BERT-NER-Pytorch
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
     Args:
         num_hidden_layers (int): The number of hidden layers.
         initializer_range (float):
