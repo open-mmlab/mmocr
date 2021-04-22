@@ -1,11 +1,18 @@
+import json
 from argparse import ArgumentParser
 
 import mmcv
 
 from mmdet.apis import init_detector
 from mmocr.apis.inference import model_inference
-from mmocr.core.det_recog_visualize import det_recog_show_result, write_json
+from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.pipelines.crop import crop_img
+
+
+def write_json(obj, fpath):
+    """Write json object to file."""
+    with open(fpath, 'w') as f:
+        json.dump(obj, f, indent=4, separators=(',', ': '), ensure_ascii=False)
 
 
 def det_and_recog_inference(args, det_model, recog_model):
@@ -49,13 +56,13 @@ def main():
     parser.add_argument(
         'out_file', type=str, help='Output file name of the visualized image.')
     parser.add_argument(
-        '--detect-config',
+        '--det-config',
         type=str,
         default='./configs/textdet/psenet/'
         'psenet_r50_fpnf_600e_icdar2015.py',
         help='Text detection config file.')
     parser.add_argument(
-        '--detect-ckpt',
+        '--det-ckpt',
         type=str,
         default='https://download.openmmlab.com/'
         'mmocr/textdet/psenet/'
@@ -84,7 +91,7 @@ def main():
 
     # build detect model
     detect_model = init_detector(
-        args.detect_config, args.detect_ckpt, device=args.device)
+        args.det_config, args.det_ckpt, device=args.device)
     if hasattr(detect_model, 'module'):
         detect_model = detect_model.module
     if detect_model.cfg.data.test['type'] == 'ConcatDataset':
