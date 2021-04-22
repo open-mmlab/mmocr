@@ -7,7 +7,7 @@ from mmocr.models.textrecog.recognizer.base import BaseRecognizer
 
 @DETECTORS.register_module()
 class NerClassifier(BaseRecognizer):
-    """Base class for encode-decode recognizer."""
+    """Base class for NER classifier."""
 
     def __init__(self,
                  encoder=None,

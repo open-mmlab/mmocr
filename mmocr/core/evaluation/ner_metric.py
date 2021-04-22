@@ -44,12 +44,13 @@ def get_entity_bio(seq, id2label):
 
 
 def get_entities(seq, id2label, markup='bios'):
-    '''
-    :param seq:
-    :param id2label:
-    :param markup:
-    :return:
-    '''
+    """Get entities.
+    Args:
+        seq (list): Sequence of labels.
+        id2label (dict): Dict for mapping ID to label.
+    Returns:
+        list: list of (chunk_type, chunk_start, chunk_end).
+    """
     assert markup in ['bio', 'bios']
     if markup == 'bio':
         return get_entity_bio(seq, id2label)
@@ -103,6 +104,9 @@ def get_entity_bios(seq, id2label):
 
 
 class SeqEntityScore(object):
+    """Get precision, recall and F1-score for named entity recognition task.
+        The code is borrowed from https://github.com/lonePatient/BERT-NER-Pytorch
+    """
 
     def __init__(self, id2label, markup='bios'):
         self.id2label = id2label
@@ -143,14 +147,12 @@ class SeqEntityScore(object):
         return {'acc': precision, 'recall': recall, 'f1': f1}, class_info
 
     def update(self, label_paths, pred_paths):
-        '''
-        labels_paths: [[],[],[],....]
-        pred_paths: [[],[],[],.....]
+        """
+        Args:
+            label_paths: [[],[],[],....]
+            pred_paths:[[],[],[],.....]
 
-        :param label_paths:
-        :param pred_paths:
-        :return:
-        '''
+        """
         for label_path, pre_path in zip(label_paths, pred_paths):
             label_entities = get_entities(label_path, self.id2label,
                                           self.markup)
@@ -164,7 +166,6 @@ class SeqEntityScore(object):
 
 
 def label2id(label, text_len, label2id_dict, max_len):
-    # print(label)
     id = [0] * max_len
     for j in range(text_len):
         id[j] = 31
@@ -181,9 +182,14 @@ def label2id(label, text_len, label2id_dict, max_len):
     return id
 
 
-def eval_ner(old_results, gt, max_len, id2label, label2id_dict):
+def eval_ner(res, gt, max_len, id2label, label2id_dict):
+    """Evaluate for ner task.
+    Args:
+        res (list): Predict results.
+        gt (list(dict)): Groudtruth file.
+    """
     results = []
-    for result in old_results:
+    for result in res:
         results.append(result[1:])
     with open(gt) as f:
         lines = f.readlines()
