@@ -114,10 +114,10 @@ def crop_img(src_img, box, long_edge_pad_ratio=0.4, short_edge_pad_ratio=0.2):
         horizontal_pad = short_edge_pad_ratio * font_size
         vertical_pad = long_edge_pad_ratio * font_size
 
-    left = int(np.min(points_x) - horizontal_pad)
-    top = int(np.min(points_y) - vertical_pad)
-    right = int(np.max(points_x) + horizontal_pad)
-    bottom = int(np.max(points_y) + vertical_pad)
+    left = np.clip(int(np.min(points_x) - horizontal_pad), 0, w)
+    top = np.clip(int(np.min(points_y) - vertical_pad), 0, h)
+    right = np.clip(int(np.max(points_x) + horizontal_pad), 0, w)
+    bottom = np.clip(int(np.max(points_y) + vertical_pad), 0, h)
 
     dst_img = src_img[top:bottom, left:right]
 
