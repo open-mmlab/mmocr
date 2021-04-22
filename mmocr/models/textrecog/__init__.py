@@ -6,3 +6,4 @@ from .heads import *  # noqa: F401,F403
 from .losses import *  # noqa: F401,F403
 from .necks import *  # noqa: F401,F403
 from .recognizer import *  # noqa: F401,F403
+from .preprocessor import *
