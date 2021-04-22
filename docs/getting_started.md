@@ -27,7 +27,7 @@ The predicted result will be saved as `demo/demo_text_det_pred.jpg`.
 To end-to-end test a single image with both text detection and recognition,
 
 ```shell
-python demo/det_recog_image_demo.py demo/demo_text_det.jpg demo/output.jpg
+python demo/ocr_image_demo.py demo/demo_text_det.jpg demo/output.jpg
 ```
 
 The predicted result will be saved as `demo/output.jpg`.
