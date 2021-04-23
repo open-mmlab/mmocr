@@ -25,7 +25,7 @@ class FPNC(nn.Module):
                  bias_on_smooth=False,
                  bn_re_on_smooth=False,
                  conv_after_concat=False):
-        super(FPNC, self).__init__()
+        super().__init__()
         assert isinstance(in_channels, list)
         self.in_channels = in_channels
         self.lateral_channels = lateral_channels
@@ -116,7 +116,7 @@ class FPNC(nn.Module):
             for i in range(used_backbone_levels)
         ]
 
-        for i in range(len(outs)):
+        for i, out in enumerate(outs):
             scale = 2**i
             outs[i] = F.interpolate(
                 outs[i], scale_factor=scale, mode='nearest')

@@ -31,8 +31,7 @@ class ResNet31OCR(nn.Module):
         assert isinstance(base_channels, int)
         assert utils.is_type_list(layers, int)
         assert utils.is_type_list(channels, int)
-        assert out_indices is None or (isinstance(out_indices, list)
-                                       or isinstance(out_indices, tuple))
+        assert out_indices is None or isinstance(out_indices, (list, tuple))
         assert isinstance(last_stage_pool, bool)
 
         self.out_indices = out_indices

@@ -97,9 +97,9 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             return self.forward_train(img, img_metas, **kwargs)
 
         if isinstance(img, list):
-            for idx, i in enumerate(img):
-                if i.dim() == 3:
-                    img[idx] = i.unsqueeze(0)
+            for idx, each_img in enumerate(img):
+                if each_img.dim() == 3:
+                    img[idx] = each_img.unsqueeze(0)
         else:
             img_metas = img_metas[0]
 
