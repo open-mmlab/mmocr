@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 from torch.nn import CrossEntropyLoss
 
@@ -15,11 +16,30 @@ class NerLoss(nn.Module):
         self.num_labels = num_labels
         self.loss_type = loss_type
 
-    def forward(self, logits, labels, attention_mask):
+    def forward(self, logits, img_metas, device):
+        '''Loss forword.
+        Args:
+            logits: [N, C]
+            img_metas (dict): A dict containing the following keys:
+                    - img (list): This parameter is reserved and not used here.
+                    - labels (list): []*max_len
+                    - texts (list): []*max_len
+                    - input_ids (list): []*max_len
+                    - attention_mask (list): []*max_len
+                    - token_type_ids (list): []*max_len
+            device (str): cuda or cpu
         '''
-        input: [N, C]
-        target: [N, ]
-        '''
+        labels = []
+        attention_masks = []
+        for i in range(len(img_metas)):
+            label = torch.tensor(img_metas[i]['labels']).to(device)
+            attention_mask = torch.tensor(
+                img_metas[i]['attention_mask']).to(device)
+            labels.append(label)
+            attention_masks.append(attention_mask)
+        labels = torch.stack(labels, 0)
+        attention_mask = torch.stack(attention_masks, 0)
+
         if labels is not None:
             assert self.loss_type in ['lsr', 'focal', 'ce']
             if self.loss_type == 'lsr':

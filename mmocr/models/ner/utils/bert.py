@@ -43,7 +43,7 @@ class BertModel(nn.Module):
                  attention_probs_dropout_prob=0.1,
                  intermediate_size=3072,
                  hidden_act='gelu_new'):
-        super(BertModel, self).__init__()
+        super().__init__()
         self.embeddings = BertEmbeddings(
             vocab_size=vocab_size,
             hidden_size=hidden_size,
@@ -147,7 +147,7 @@ class BertEmbeddings(nn.Module):
                  type_vocab_size=2,
                  layer_norm_eps=1e-12,
                  hidden_dropout_prob=0.1):
-        super(BertEmbeddings, self).__init__()
+        super().__init__()
 
         self.word_embeddings = nn.Embedding(
             vocab_size, hidden_size, padding_idx=0)
@@ -192,7 +192,7 @@ class BertEncoder(nn.Module):
                  hidden_dropout_prob=0.1,
                  intermediate_size=3072,
                  hidden_act='gelu_new'):
-        super(BertEncoder, self).__init__()
+        super().__init__()
         self.output_attentions = output_attentions
         self.output_hidden_states = output_hidden_states
         self.layer = nn.ModuleList([
@@ -237,7 +237,7 @@ class BertEncoder(nn.Module):
 class BertPooler(nn.Module):
 
     def __init__(self, hidden_size=768):
-        super(BertPooler, self).__init__()
+        super().__init__()
         self.dense = nn.Linear(hidden_size, hidden_size)
         self.activation = nn.Tanh()
 
@@ -261,7 +261,7 @@ class BertLayer(nn.Module):
                  hidden_dropout_prob=0.1,
                  intermediate_size=3072,
                  hidden_act='gelu_new'):
-        super(BertLayer, self).__init__()
+        super().__init__()
         self.attention = BertAttention(
             hidden_size=hidden_size,
             num_attention_heads=num_attention_heads,
@@ -297,7 +297,7 @@ class BertSelfAttention(nn.Module):
                  num_attention_heads=12,
                  output_attentions=False,
                  attention_probs_dropout_prob=0.1):
-        super(BertSelfAttention, self).__init__()
+        super().__init__()
         if hidden_size % num_attention_heads != 0:
             raise ValueError('The hidden size (%d) is not a multiple of'
                              'the number of attention heads (%d)' %
@@ -369,7 +369,7 @@ class BertSelfOutput(nn.Module):
                  hidden_size=768,
                  layer_norm_eps=1e-12,
                  hidden_dropout_prob=0.1):
-        super(BertSelfOutput, self).__init__()
+        super().__init__()
         self.dense = nn.Linear(hidden_size, hidden_size)
         self.LayerNorm = torch.nn.LayerNorm(hidden_size, eps=layer_norm_eps)
         self.dropout = nn.Dropout(hidden_dropout_prob)
@@ -418,7 +418,7 @@ class BertAttention(nn.Module):
                  attention_probs_dropout_prob=0.1,
                  layer_norm_eps=1e-12,
                  hidden_dropout_prob=0.1):
-        super(BertAttention, self).__init__()
+        super().__init__()
         self.self = BertSelfAttention(
             hidden_size=hidden_size,
             num_attention_heads=num_attention_heads,
@@ -472,7 +472,7 @@ class BertIntermediate(nn.Module):
                  hidden_size=768,
                  intermediate_size=3072,
                  hidden_act='gelu_new'):
-        super(BertIntermediate, self).__init__()
+        super().__init__()
         self.dense = nn.Linear(hidden_size, intermediate_size)
         if isinstance(hidden_act, str):
             self.intermediate_act_fn = ACT2FN[hidden_act]
@@ -493,7 +493,7 @@ class BertOutput(nn.Module):
                  layer_norm_eps=1e-12,
                  hidden_dropout_prob=0.1):
 
-        super(BertOutput, self).__init__()
+        super().__init__()
         self.dense = nn.Linear(intermediate_size, hidden_size)
         self.LayerNorm = torch.nn.LayerNorm(hidden_size, eps=layer_norm_eps)
         self.dropout = nn.Dropout(hidden_dropout_prob)

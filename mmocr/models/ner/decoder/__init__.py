@@ -1,3 +1,3 @@
-from .decoder import NerDecoder
+from .decoder import FCDecoder
 
-__all__ = ['NerDecoder']
+__all__ = ['FCDecoder']

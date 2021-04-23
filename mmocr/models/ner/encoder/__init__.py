@@ -1,3 +1,3 @@
-from .encoder import NerEncoder
+from .encoder import BertEncoder
 
-__all__ = ['NerEncoder']
+__all__ = ['BertEncoder']

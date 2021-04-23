@@ -55,12 +55,13 @@ def get_entities(seq, id2label, markup='bios'):
     assert markup in ['bio', 'bios']
     if markup == 'bio':
         return get_entity_bio(seq, id2label)
-    else:
-        return get_entity_bios(seq, id2label)
+
+    return get_entity_bios(seq, id2label)
 
 
 def get_entity_bios(seq, id2label):
     """Gets entities from sequence.
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
     note: BIOS
     Args:
         seq (list): sequence of labels.
@@ -104,7 +105,7 @@ def get_entity_bios(seq, id2label):
     return chunks
 
 
-class SeqEntityScore(object):
+class SeqEntityScore:
     """Get precision, recall and F1-score for NER task.
 
     The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
@@ -207,15 +208,15 @@ def eval_ner(res, gt, max_len, id2label, label2id_dict):
             temp_1 = []
             temp_2 = []
 
-            for j in range(len(label_ids)):  # enumerate(label_ids):
+            for j, _ in enumerate(label_ids):
                 if j == 0:
                     continue
-                elif j == len(text) - 1:
+                if j == len(text) - 1:
                     metric.update(pred_paths=[temp_2], label_paths=[temp_1])
                     break
-                else:
-                    temp_1.append(id2label[label_ids[j]])
-                    temp_2.append(pred[j])
+
+                temp_1.append(id2label[label_ids[j]])
+                temp_2.append(pred[j])
 
     eval_info, entity_info = metric.result()
 

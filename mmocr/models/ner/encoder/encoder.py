@@ -7,7 +7,7 @@ from mmocr.models.ner.utils.bert import BertModel
 
 
 @ENCODERS.register_module()
-class NerEncoder(nn.Module):
+class BertEncoder(nn.Module):
     """Ner encoder
     Args:
         num_hidden_layers (int): The number of hidden layers.
