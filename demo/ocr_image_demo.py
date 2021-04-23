@@ -1,4 +1,3 @@
-import json
 from argparse import ArgumentParser
 
 import mmcv
@@ -7,12 +6,6 @@ from mmdet.apis import init_detector
 from mmocr.apis.inference import model_inference
 from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.pipelines.crop import crop_img
-
-
-def write_json(obj, fpath):
-    """Write json object to file."""
-    with open(fpath, 'w') as f:
-        json.dump(obj, f, indent=4, separators=(',', ': '), ensure_ascii=False)
 
 
 def det_and_recog_inference(args, det_model, recog_model):
@@ -109,7 +102,11 @@ def main():
 
     det_recog_result = det_and_recog_inference(args, detect_model, recog_model)
     print(f'result: {det_recog_result}')
-    write_json(det_recog_result, args.out_file + '.json')
+    mmcv.dump(
+        det_recog_result,
+        args.out_file + '.json',
+        ensure_ascii=False,
+        indent=4)
 
     img = det_recog_show_result(args.img, det_recog_result)
     mmcv.imwrite(img, args.out_file)
