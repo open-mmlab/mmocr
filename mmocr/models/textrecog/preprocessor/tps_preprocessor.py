@@ -80,7 +80,7 @@ class LocalizationNetwork(nn.Module):
     (img_width x img_height)"""
 
     def __init__(self, num_fiducial, num_img_channel):
-        super(LocalizationNetwork, self).__init__()
+        super().__init__()
         self.num_fiducial = num_fiducial
         self.num_img_channel = num_img_channel
         self.conv = nn.Sequential(
@@ -146,7 +146,7 @@ class GridGenerator(nn.Module):
 
     def __init__(self, num_fiducial, rectified_img_size):
         """Generate P_hat and inv_delta_C for later."""
-        super(GridGenerator, self).__init__()
+        super().__init__()
         self.eps = 1e-6
         self.rectified_img_height = rectified_img_size[0]
         self.rectified_img_width = rectified_img_size[1]
