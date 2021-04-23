@@ -45,6 +45,7 @@ def get_entity_bio(seq, id2label):
 
 def get_entities(seq, id2label, markup='bios'):
     """Get entities.
+
     Args:
         seq (list): Sequence of labels.
         id2label (dict): Dict for mapping ID to label.
@@ -104,8 +105,9 @@ def get_entity_bios(seq, id2label):
 
 
 class SeqEntityScore(object):
-    """Get precision, recall and F1-score for named entity recognition task.
-        The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
+    """Get precision, recall and F1-score for NER task.
+
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
     """
 
     def __init__(self, id2label, markup='bios'):
@@ -184,6 +186,7 @@ def label2id(label, text_len, label2id_dict, max_len):
 
 def eval_ner(res, gt, max_len, id2label, label2id_dict):
     """Evaluate for ner task.
+
     Args:
         res (list): Predict results.
         gt (list(dict)): Groudtruth file.
