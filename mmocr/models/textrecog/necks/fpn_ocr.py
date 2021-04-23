@@ -17,7 +17,7 @@ class FPNOCR(nn.Module):
     """
 
     def __init__(self, in_channels, out_channels, last_stage_only=True):
-        super(FPNOCR, self).__init__()
+        super().__init__()
 
         self.in_channels = in_channels
         self.out_channels = out_channels

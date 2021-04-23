@@ -66,10 +66,9 @@ class ResizeOCR:
             dst_min_width = self.min_width
             dst_max_width = self.max_width
         else:
-            """Multi-scale resize used in distributed training.
+            # Multi-scale resize used in distributed training.
+            # Choose one (height, width) pair for one rank id.
 
-            Choose one (height, width) pair for one rank id.
-            """
             idx = rank % len(self.height)
             dst_height = self.height[idx]
             dst_min_width = self.min_width[idx]
