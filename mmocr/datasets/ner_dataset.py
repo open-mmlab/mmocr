@@ -46,6 +46,7 @@ class NerDataset(BaseDataset):
         self.end_id = end_id
         self.max_len = max_len
         self.map_file = map_file
+        self.ignore_label = None
         with open(self.map_file, 'r') as f:
             map_dict = json.load(f)
             self.label2id_dict = map_dict['label2id_dict']
@@ -53,6 +54,9 @@ class NerDataset(BaseDataset):
             self.id2label = {}
             for key, value in id2label.items():
                 self.id2label.update({int(key): value})
+                if value == 'O':
+                    self.ignore_label = int(key)
+        assert self.ignore_label is not None
         lines = open(vocab_file, encoding='utf-8').readlines()
         for i in range(len(lines)):
             self.word2ids.update({lines[i].rstrip(): i})
@@ -164,5 +168,5 @@ class NerDataset(BaseDataset):
         """
         gt = self.ann_file
         info = eval_ner(results, gt, self.max_len, self.id2label,
-                        self.label2id_dict)
+                        self.label2id_dict, self.ignore_label)
         return info

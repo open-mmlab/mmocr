@@ -4,6 +4,7 @@ from collections import Counter
 
 def get_entity_bio(seq, id2label):
     """Gets entities from sequence.
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
     note: BIO
     Args:
         seq (list): sequence of labels.
@@ -46,6 +47,7 @@ def get_entity_bio(seq, id2label):
 def get_entities(seq, id2label, markup='bios'):
     """Get entities.
 
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
     Args:
         seq (list): Sequence of labels.
         id2label (dict): Dict for mapping ID to label.
@@ -168,10 +170,10 @@ class SeqEntityScore:
             ])
 
 
-def label2id(label, text_len, label2id_dict, max_len):
+def label2id(label, text_len, label2id_dict, max_len, ignore_label):
     id = [0] * max_len
     for j in range(text_len):
-        id[j] = 31
+        id[j] = ignore_label
     # text_len
     categorys = label
     for key in categorys:
@@ -185,7 +187,7 @@ def label2id(label, text_len, label2id_dict, max_len):
     return id
 
 
-def eval_ner(res, gt, max_len, id2label, label2id_dict):
+def eval_ner(res, gt, max_len, id2label, label2id_dict, ignore_label):
     """Evaluate for ner task.
 
     Args:
@@ -202,7 +204,8 @@ def eval_ner(res, gt, max_len, id2label, label2id_dict):
             line_dict = json.loads(lines[i])
             text = line_dict['text']
             label = line_dict['label']
-            label_ids = label2id(label, len(text), label2id_dict, max_len)
+            label_ids = label2id(label, len(text), label2id_dict, max_len,
+                                 ignore_label)
             # break
             pred = results[i]
             temp_1 = []
