@@ -137,8 +137,10 @@ class BertModel(nn.Module):
 
 
 class BertEmbeddings(nn.Module):
-    """Construct the embeddings from word, position and token_type
-    embeddings."""
+    """Construct the embeddings from word, position and token_type embeddings.
+
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
+    """
 
     def __init__(self,
                  vocab_size=21128,
@@ -180,6 +182,8 @@ class BertEmbeddings(nn.Module):
 
 
 class BertEncoder(nn.Module):
+    """The code is adapted from https://github.com/lonePatient/BERT-NER-
+    Pytorch."""
 
     def __init__(self,
                  output_attentions=False,
@@ -251,6 +255,10 @@ class BertPooler(nn.Module):
 
 
 class BertLayer(nn.Module):
+    """Bert layer.
+
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
+    """
 
     def __init__(self,
                  hidden_size=768,
@@ -291,6 +299,10 @@ class BertLayer(nn.Module):
 
 
 class BertSelfAttention(nn.Module):
+    """Bert self attention module.
+
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
+    """
 
     def __init__(self,
                  hidden_size=768,
@@ -364,6 +376,10 @@ class BertSelfAttention(nn.Module):
 
 
 class BertSelfOutput(nn.Module):
+    """Bert self output.
+
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
+    """
 
     def __init__(self,
                  hidden_size=768,
@@ -384,6 +400,7 @@ class BertSelfOutput(nn.Module):
 def prune_linear_layer(layer, index, dim=0):
     """Prune a linear layer (a model parameters) to keep only entries in index.
 
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
     Return the pruned layer as a new layer with requires_grad=True. Used to
     remove heads.
     """
@@ -410,6 +427,10 @@ def prune_linear_layer(layer, index, dim=0):
 
 
 class BertAttention(nn.Module):
+    """Bert Attention module implementation.
+
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
+    """
 
     def __init__(self,
                  hidden_size=768,
@@ -467,6 +488,10 @@ class BertAttention(nn.Module):
 
 
 class BertIntermediate(nn.Module):
+    """Bert BertIntermediate module implementation.
+
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
+    """
 
     def __init__(self,
                  hidden_size=768,
@@ -486,6 +511,10 @@ class BertIntermediate(nn.Module):
 
 
 class BertOutput(nn.Module):
+    """Bert output module.
+
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
+    """
 
     def __init__(self,
                  intermediate_size=3072,

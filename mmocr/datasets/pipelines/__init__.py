@@ -2,7 +2,6 @@ from .box_utils import sort_vertex, sort_vertex8
 from .custom_format_bundle import CustomFormatBundle
 from .dbnet_transforms import EastRandomCrop, ImgAug
 from .kie_transforms import KIEFormatBundle
-from .ner_transforms import NerTransform
 from .loading import LoadImageFromNdarray, LoadTextAnnotations
 from .ocr_seg_targets import OCRSegTargets
 from .ocr_transforms import (FancyPCA, NormalizeOCR, OnlineCropOCR,
