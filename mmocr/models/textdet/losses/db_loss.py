@@ -3,7 +3,6 @@ import torch.nn.functional as F
 from torch import nn
 
 from mmdet.models.builder import LOSSES
-from mmocr.core.visualize import show_feature  # noqa F401
 from mmocr.models.common.losses.dice_loss import DiceLoss
 
 

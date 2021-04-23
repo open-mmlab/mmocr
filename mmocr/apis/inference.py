@@ -56,9 +56,9 @@ def model_inference(model, img):
     # process img
     if isinstance(data['img'], list):
         data['img'] = [img.data[0] for img in data['img']]
-        for idx, img in enumerate(data['img']):
-            if img.dim() == 3:
-                data['img'][idx] = img.unsqueeze(0)
+        for idx, each_img in enumerate(data['img']):
+            if each_img.dim() == 3:
+                data['img'][idx] = each_img.unsqueeze(0)
     else:
         data['img_metas'] = data['img_metas'][0]
 

@@ -175,7 +175,7 @@ def imshow_pred_boundary(img,
     assert utils.equal_len(boundaries_with_scores, labels)
     if len(boundaries_with_scores) == 0:
         warnings.warn('0 text found in ' + out_file)
-        return
+        return None
 
     utils.valid_boundary(boundaries_with_scores[0])
     img = mmcv.imread(img)
@@ -190,7 +190,7 @@ def imshow_pred_boundary(img,
     text_color = mmcv.color_val(text_color)
     font_scale = 0.5
 
-    for boundary, score, label in zip(boundaries, scores, labels):
+    for boundary, score in zip(boundaries, scores):
         boundary_int = np.array(boundary).astype(np.int32)
 
         cv2.polylines(
@@ -466,7 +466,7 @@ def get_optimal_font_scale(text, width):
             fontScale=scale / 10,
             thickness=1)
         new_width = textSize[0][0]
-        if (new_width <= width):
+        if new_width <= width:
             return scale / 10
     return 1
 

@@ -19,7 +19,7 @@ def lmdb_converter(img_list, output, batch_size=1000, coding='utf-8'):
             if Yn in ['Y', 'y']:
                 shutil.rmtree(output)
                 break
-            elif Yn in ['N', 'n']:
+            if Yn in ['N', 'n']:
                 return
     print('create database %s' % output)
     Path(output).mkdir(parents=True, exist_ok=False)

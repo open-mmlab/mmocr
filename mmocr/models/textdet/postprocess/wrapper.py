@@ -262,7 +262,7 @@ def centralize(points_yx,
     while np.any(step_flags):
         next_yx = np.array(top_yx + step, dtype=np.int32)
         next_y, next_x = next_yx[:, 0], next_yx[:, 1]
-        step_flags = (0 <= next_y) & (next_y < h) & (0 < next_x) & (
+        step_flags = (next_y >= 0) & (next_y < h) & (next_x > 0) & (
             next_x < w) & contour_mask[np.clip(next_y, 0, h - 1),
                                        np.clip(next_x, 0, w - 1)]
         top_yx = top_yx + step_flags.reshape((-1, 1)) * step
@@ -270,7 +270,7 @@ def centralize(points_yx,
     while np.any(step_flags):
         next_yx = np.array(bot_yx - step, dtype=np.int32)
         next_y, next_x = next_yx[:, 0], next_yx[:, 1]
-        step_flags = (0 <= next_y) & (next_y < h) & (0 < next_x) & (
+        step_flags = (next_y >= 0) & (next_y < h) & (next_x > 0) & (
             next_x < w) & contour_mask[np.clip(next_y, 0, h - 1),
                                        np.clip(next_x, 0, w - 1)]
         bot_yx = bot_yx - step_flags.reshape((-1, 1)) * step
@@ -289,22 +289,21 @@ def merge_disks(disks, disk_overlap_thr):
         if order.size == 1:
             merged_disks.append(disks[order])
             break
+        i = order[0]
+        d = norm(xy[i] - xy[order[1:]], axis=1)
+        ri = radius[i]
+        r = radius[order[1:]]
+        d_thr = (ri + r) * disk_overlap_thr
+
+        merge_inds = np.where(d <= d_thr)[0] + 1
+        if merge_inds.size > 0:
+            merge_order = np.hstack([i, order[merge_inds]])
+            merged_disks.append(np.mean(disks[merge_order], axis=0))
         else:
-            i = order[0]
-            d = norm(xy[i] - xy[order[1:]], axis=1)
-            ri = radius[i]
-            r = radius[order[1:]]
-            d_thr = (ri + r) * disk_overlap_thr
+            merged_disks.append(disks[i])
 
-            merge_inds = np.where(d <= d_thr)[0] + 1
-            if merge_inds.size > 0:
-                merge_order = np.hstack([i, order[merge_inds]])
-                merged_disks.append(np.mean(disks[merge_order], axis=0))
-            else:
-                merged_disks.append(disks[i])
-
-            inds = np.where(d > d_thr)[0] + 1
-            order = order[inds]
+        inds = np.where(d > d_thr)[0] + 1
+        order = order[inds]
     merged_disks = np.vstack(merged_disks)
 
     return merged_disks

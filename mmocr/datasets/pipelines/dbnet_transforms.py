@@ -16,15 +16,15 @@ class AugmenterBuilder:
     def build(self, args, root=True):
         if args is None:
             return None
-        elif isinstance(args, (int, float, str)):
+        if isinstance(args, (int, float, str)):
             return args
-        elif isinstance(args, list):
+        if isinstance(args, list):
             if root:
                 sequence = [self.build(value, root=False) for value in args]
                 return iaa.Sequential(sequence)
             arg_list = [self.to_tuple_if_list(a) for a in args[1:]]
             return getattr(iaa, args[0])(*arg_list)
-        elif isinstance(args, dict):
+        if isinstance(args, dict):
             if 'cls' in args:
                 cls = getattr(iaa, args['cls'])
                 return cls(
@@ -37,8 +37,7 @@ class AugmenterBuilder:
                     key: self.build(value, root=False)
                     for key, value in args.items()
                 }
-        else:
-            raise RuntimeError('unknown augmenter arg: ' + str(args))
+        raise RuntimeError('unknown augmenter arg: ' + str(args))
 
     def to_tuple_if_list(self, obj):
         if isinstance(obj, list):
@@ -211,7 +210,7 @@ class EastRandomCrop:
         xmax = np.clip(xmax, 0, max_size - 1)
         return xmin, xmax
 
-    def region_wise_random_select(self, regions, max_size):
+    def region_wise_random_select(self, regions):
         selected_index = list(np.random.choice(len(regions), 2))
         selected_values = []
         for index in selected_index:
@@ -247,11 +246,11 @@ class EastRandomCrop:
 
         for i in range(self.max_tries):
             if len(w_regions) > 1:
-                xmin, xmax = self.region_wise_random_select(w_regions, w)
+                xmin, xmax = self.region_wise_random_select(w_regions)
             else:
                 xmin, xmax = self.random_select(w_axis, w)
             if len(h_regions) > 1:
-                ymin, ymax = self.region_wise_random_select(h_regions, h)
+                ymin, ymax = self.region_wise_random_select(h_regions)
             else:
                 ymin, ymax = self.random_select(h_axis, h)
 
