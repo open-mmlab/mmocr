@@ -55,8 +55,7 @@ def test_model_inference(cfg_file):
 
 @pytest.mark.parametrize('cfg_file', [
     '../configs/textrecog/crnn/crnn_academic_dataset.py',
-    '../configs/textrecog/seg/seg_r31_1by16_fpnocr_academic.py',
-    '../configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2017.py'
+    '../configs/textrecog/seg/seg_r31_1by16_fpnocr_academic.py'
 ])
 def test_model_batch_inference(cfg_file):
     tmp_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
