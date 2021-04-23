@@ -1,5 +1,3 @@
-import torch
-
 from mmdet.models.builder import DETECTORS, build_loss
 from mmocr.models.builder import build_decoder, build_encoder
 from mmocr.models.textrecog.recognizer.base import BaseRecognizer
@@ -29,17 +27,7 @@ class NerClassifier(BaseRecognizer):
         device = next(self.encoder.parameters()).device
         x = self.encoder(img_metas)
         logits, x = self.decoder(x)
-        labels = []
-        attention_masks = []
-        for i in range(len(img_metas)):
-            label = torch.tensor(img_metas[i]['labels']).to(device)
-            attention_mask = torch.tensor(
-                img_metas[i]['attention_mask']).to(device)
-            labels.append(label)
-            attention_masks.append(attention_mask)
-        labels = torch.stack(labels, 0)
-        attention_masks = torch.stack(attention_masks, 0)
-        loss = self.loss(logits, labels, attention_masks)
+        loss = self.loss(logits, img_metas, device)
         return {'loss_cls': loss}
 
     def forward_test(self, imgs, img_metas, **kwargs):

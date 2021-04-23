@@ -7,8 +7,8 @@ from mmocr.models.builder import DECODERS
 
 
 @DECODERS.register_module()
-class NerDecoder(nn.Module):
-    """Decoder class for Ner."""
+class FCDecoder(nn.Module):
+    """FC Decoder class for Ner."""
 
     def __init__(self,
                  num_labels=None,

@@ -40,7 +40,8 @@ def _get_detector_cfg(fname):
     return model
 
 
-@pytest.mark.parametrize('cfg_file', ['ner/bert_softmax/bert_softmax_cluener.py'])
+@pytest.mark.parametrize('cfg_file',
+                         ['ner/bert_softmax/bert_softmax_cluener.py'])
 def test_encoder_decoder_pipeline(cfg_file):
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None

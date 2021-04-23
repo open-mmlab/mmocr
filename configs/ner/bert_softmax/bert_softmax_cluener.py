@@ -86,7 +86,7 @@ evaluation = dict(interval=1, metric='acc')
 model = dict(
     type='NerClassifier',
     encoder=dict(
-        type='NerEncoder',
+        type='BertEncoder',
         num_hidden_layers=12,
         initializer_range=0.02,
         vocab_size=21128,
@@ -102,7 +102,7 @@ model = dict(
         intermediate_size=3072,
         hidden_act='gelu_new'),
     decoder=dict(
-        type='NerDecoder',
+        type='FCDecoder',
         num_labels=34,
         hidden_dropout_prob=0.1,
         hidden_size=768),
