@@ -77,9 +77,9 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         if isinstance(imgs, list):
             assert len(imgs) == len(img_metas)
             assert len(imgs) > 0
-            assert imgs[0].size(0) == 1, ('aug test does not support '
-                                          f'inference with batch size '
-                                          f'{imgs[0].size(0)}')
+            assert len(imgs) == 1, ('aug test does not support '
+                                    f'inference with batch size '
+                                    f'{len(imgs)}')
             return self.aug_test(imgs, img_metas, **kwargs)
 
         return self.simple_test(imgs, img_metas, **kwargs)
@@ -100,6 +100,8 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             for idx, each_img in enumerate(img):
                 if each_img.dim() == 3:
                     img[idx] = each_img.unsqueeze(0)
+
+            img_metas = [[each_meta] for each_meta in img_metas[0]]
         else:
             img_metas = img_metas[0]
 

@@ -21,6 +21,9 @@ def model_inference(model, imgs):
 
     if isinstance(imgs, (list, tuple)):
         is_batch = True
+        if not isinstance(imgs[0], (np.ndarray, str)):
+            raise AssertionError('imgs must be strings or numpy arrays')
+
     elif isinstance(imgs, (np.ndarray, str)):
         imgs = [imgs]
         is_batch = False
@@ -64,7 +67,7 @@ def model_inference(model, imgs):
         data['img_metas'] = data['img_metas'].data
 
     if isinstance(data['img'], list):
-        data['img'] = [img.data[0] for img in data['img']]
+        data['img'] = [img for img in data['img'][0].data]
     else:
         data['img'] = data['img'].data
 
