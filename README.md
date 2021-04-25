@@ -116,3 +116,5 @@ We hope the toolbox and benchmark could serve the growing research community by 
 - [MMPose](https://github.com/open-mmlab/mmpose): OpenMMLab's pose estimation toolbox and benchmark.
 - [MMTracking](https://github.com/open-mmlab/mmtracking): OpenMMLab video perception toolbox and benchmark.
 - [MMEditing](https://github.com/open-mmlab/mmediting): OpenMMLab image editing toolbox and benchmark.
+- [MMOCR](https://github.com/open-mmlab/mmocr): A Comprehensive Toolbox for Text Detection, Recognition and Understanding.
+- [MMGeneration](https://github.com/open-mmlab/mmgeneration): OpenMMLab image and video generative models toolbox.
