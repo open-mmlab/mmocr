@@ -80,19 +80,43 @@ class TextSnakeTargets(BaseTextDetTargets):
             edge_vec = pad_points[1:] - pad_points[:-1]
 
             theta_sum = []
-
+            adjacent_vec_theta = []
             for i, edge_vec1 in enumerate(edge_vec):
                 adjacent_ind = [x % len(edge_vec) for x in [i - 1, i + 1]]
                 adjacent_edge_vec = edge_vec[adjacent_ind]
                 temp_theta_sum = np.sum(
                     self.vector_angle(edge_vec1, adjacent_edge_vec))
+                temp_adjacent_theta = self.vector_angle(
+                    adjacent_edge_vec[0], adjacent_edge_vec[1])
                 theta_sum.append(temp_theta_sum)
-            theta_sum = np.array(theta_sum)
-            head_start, tail_start = np.argsort(theta_sum)[::-1][0:2]
+                adjacent_vec_theta.append(temp_adjacent_theta)
+            theta_sum_score = np.array(theta_sum) / np.pi
+            adjacent_theta_score = np.array(adjacent_vec_theta) / np.pi
+            poly_center = np.mean(points, axis=0)
+            edge_dist = np.maximum(
+                norm(pad_points[1:] - poly_center, axis=-1),
+                norm(pad_points[:-1] - poly_center, axis=-1))
+            dist_score = edge_dist / np.max(edge_dist)
+            position_score = np.zeros(len(edge_vec))
+            score = 0.5 * theta_sum_score + 0.15 * adjacent_theta_score
+            score += 0.35 * dist_score
+            if len(points) % 2 == 0:
+                position_score[(len(score) // 2 - 1)] += 1
+                position_score[-1] += 1
+            score += 0.1 * position_score
+            pad_score = np.concatenate([score, score])
+            score_matrix = np.zeros((len(score), len(score) - 3))
+            x = np.arange(len(score) - 3) / float(len(score) - 4)
+            gaussian = 1. / (np.sqrt(2. * np.pi) * 0.5) * np.exp(-np.power(
+                (x - 0.5) / 0.5, 2.) / 2)
+            gaussian = gaussian / np.max(gaussian)
+            for i in range(len(score)):
+                score_matrix[i, :] = score[i] + pad_score[
+                    (i + 2):(i + len(score) - 1)] * gaussian * 0.3
 
-            if (abs(head_start - tail_start) < 2
-                    or abs(head_start - tail_start) > 12):
-                tail_start = (head_start + len(points) // 2) % len(points)
+            head_start, tail_increment = np.unravel_index(
+                score_matrix.argmax(), score_matrix.shape)
+            tail_start = (head_start + tail_increment + 2) % len(points)
             head_end = (head_start + 1) % len(points)
             tail_end = (tail_start + 1) % len(points)
 
@@ -297,16 +321,15 @@ class TextSnakeTargets(BaseTextDetTargets):
             sin_theta = self.vector_sin(text_direction)
             cos_theta = self.vector_cos(text_direction)
 
-            pnt_tl = center_line[i] + (top_line[i] -
-                                       center_line[i]) * region_shrink_ratio
-            pnt_tr = center_line[i + 1] + (
+            tl = center_line[i] + (top_line[i] -
+                                   center_line[i]) * region_shrink_ratio
+            tr = center_line[i + 1] + (
                 top_line[i + 1] - center_line[i + 1]) * region_shrink_ratio
-            pnt_br = center_line[i + 1] + (
+            br = center_line[i + 1] + (
                 bot_line[i + 1] - center_line[i + 1]) * region_shrink_ratio
-            pnt_bl = center_line[i] + (bot_line[i] -
-                                       center_line[i]) * region_shrink_ratio
-            current_center_box = np.vstack([pnt_tl, pnt_tr, pnt_br,
-                                            pnt_bl]).astype(np.int32)
+            bl = center_line[i] + (bot_line[i] -
+                                   center_line[i]) * region_shrink_ratio
+            current_center_box = np.vstack([tl, tr, br, bl]).astype(np.int32)
 
             cv2.fillPoly(center_region_mask, [current_center_box], color=1)
             cv2.fillPoly(sin_map, [current_center_box], color=sin_theta)
@@ -344,8 +367,7 @@ class TextSnakeTargets(BaseTextDetTargets):
             assert len(poly) == 1
             text_instance = [[poly[0][i], poly[0][i + 1]]
                              for i in range(0, len(poly[0]), 2)]
-            polygon_points = np.array(
-                text_instance, dtype=np.int32).reshape(-1, 2)
+            polygon_points = np.array(text_instance).reshape(-1, 2)
 
             _, _, top_line, bot_line = self.reorder_poly_edge(polygon_points)
             resampled_top_line, resampled_bot_line = self.resample_sidelines(

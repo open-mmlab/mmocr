@@ -145,11 +145,19 @@ def test_gen_textsnake_targets(mock_show_feature):
     assert np.allclose(target_generator.resample_step, 4.0)
     assert np.allclose(target_generator.center_region_shrink_ratio, 0.3)
 
-    # test find_head_tail
+    # test find_head_tail for quadrangle
     polygon = np.array([[1.0, 1.0], [5.0, 1.0], [5.0, 3.0], [1.0, 3.0]])
     head_inds, tail_inds = target_generator.find_head_tail(polygon, 2.0)
     assert np.allclose(head_inds, [3, 0])
     assert np.allclose(tail_inds, [1, 2])
+
+    # test find_head_tail for polygon
+    polygon = np.array([[0., 10.], [3., 3.], [10., 0.], [17., 3.], [20., 10.],
+                        [15., 10.], [13.5, 6.5], [10., 5.], [6.5, 6.5],
+                        [5., 10.]])
+    head_inds, tail_inds = target_generator.find_head_tail(polygon, 2.0)
+    assert np.allclose(head_inds, [9, 0])
+    assert np.allclose(tail_inds, [4, 5])
 
     # test generate_text_region_mask
     img_size = (3, 10)
