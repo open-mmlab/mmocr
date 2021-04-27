@@ -23,7 +23,7 @@ def parse_args():
     parser.add_argument('config', help='Train config file path.')
     parser.add_argument('--work-dir', help='The dir to save logs and models.')
     parser.add_argument(
-        '--load-from', help='The checkpoint file to resume from.')
+        '--load-from', help='The checkpoint file to load from.')
     parser.add_argument(
         '--resume-from', help='The checkpoint file to resume from.')
     parser.add_argument(
