@@ -369,6 +369,14 @@ class TextSnakeTargets(BaseTextDetTargets):
                              for i in range(0, len(poly[0]), 2)]
             polygon_points = np.array(text_instance).reshape(-1, 2)
 
+            n = len(polygon_points)
+            keep_inds = []
+            for i in range(n):
+                if norm(polygon_points[i] -
+                        polygon_points[(i + 1) % n]) > 1e-5:
+                    keep_inds.append(i)
+            polygon_points = polygon_points[keep_inds]
+
             _, _, top_line, bot_line = self.reorder_poly_edge(polygon_points)
             resampled_top_line, resampled_bot_line = self.resample_sidelines(
                 top_line, bot_line, self.resample_step)
