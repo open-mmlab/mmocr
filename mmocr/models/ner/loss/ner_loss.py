@@ -12,7 +12,7 @@ class NerLoss(nn.Module):
     """The implementation the loss of named entity recognizier."""
 
     def __init__(self, num_labels=None, loss_type=None, **kwargs):
-        super(NerLoss, self).__init__()
+        super().__init__()
         self.num_labels = num_labels
         self.loss_type = loss_type
 
@@ -31,7 +31,7 @@ class NerLoss(nn.Module):
         '''
         labels = []
         attention_masks = []
-        for i in range(len(img_metas)):
+        for i,_ in enumerate(img_metas):
             label = torch.tensor(img_metas[i]['labels']).to(device)
             attention_mask = torch.tensor(
                 img_metas[i]['attention_mask']).to(device)
@@ -40,22 +40,21 @@ class NerLoss(nn.Module):
         labels = torch.stack(labels, 0)
         attention_mask = torch.stack(attention_masks, 0)
 
-        if labels is not None:
-            assert self.loss_type in ['lsr', 'focal', 'ce']
-            if self.loss_type == 'lsr':
-                loss_fct = LabelSmoothingCrossEntropy(ignore_index=0)
-            elif self.loss_type == 'focal':
+        assert self.loss_type in ['lsr', 'focal', 'ce']
+        if self.loss_type == 'lsr':
+            loss_fct = LabelSmoothingCrossEntropy(ignore_index=0)
+        elif self.loss_type == 'focal':
 
-                loss_fct = FocalLoss(ignore_index=0)
-            else:
-                loss_fct = CrossEntropyLoss(ignore_index=0)
-            # Only keep active parts of the loss
-            if attention_mask is not None:
-                active_loss = attention_mask.view(-1) == 1
-                active_logits = logits.view(-1, self.num_labels)[active_loss]
-                active_labels = labels.view(-1)[active_loss]
-                loss = loss_fct(active_logits, active_labels)
-            else:
-                loss = loss_fct(
-                    logits.view(-1, self.num_labels), labels.view(-1))
-            return loss
+            loss_fct = FocalLoss(ignore_index=0)
+        else:
+            loss_fct = CrossEntropyLoss(ignore_index=0)
+        # Only keep active parts of the loss
+        if attention_mask is not None:
+            active_loss = attention_mask.view(-1) == 1
+            active_logits = logits.view(-1, self.num_labels)[active_loss]
+            active_labels = labels.view(-1)[active_loss]
+            loss = loss_fct(active_logits, active_labels)
+        else:
+            loss = loss_fct(
+                logits.view(-1, self.num_labels), labels.view(-1))
+        return loss
