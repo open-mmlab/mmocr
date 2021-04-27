@@ -4,7 +4,7 @@ from torch.nn import CrossEntropyLoss
 
 from mmdet.models.builder import LOSSES
 from mmocr.models.common.losses.focal_loss import FocalLoss
-from .label_smoothing import LabelSmoothingCrossEntropy
+from .label_smoothing_cross_entropy import LabelSmoothingCrossEntropy
 
 
 @LOSSES.register_module()
