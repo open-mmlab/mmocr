@@ -66,7 +66,7 @@ class BertEncoder(nn.Module):
         labels = []
         attention_masks = []
         token_type_ids = []
-        for i in range(len(img_metas)):
+        for i, _ in enumerate(img_metas):
             input_id = torch.tensor(img_metas[i]['input_ids']).to(device)
             label = torch.tensor(img_metas[i]['labels']).to(device)
             attention_mask = torch.tensor(
