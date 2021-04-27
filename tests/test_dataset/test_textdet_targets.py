@@ -210,3 +210,26 @@ def test_gen_textsnake_targets(mock_show_feature):
     assert 'gt_sin_map' in output.keys()
     assert 'gt_cos_map' in output.keys()
     mock_show_feature.assert_called_once()
+
+
+def test_fcenet_generate_targets():
+    fourier_degree = 5
+    target_generator = textdet_targets.FCENetTargets(fourier_degree=fourier_degree)
+
+    h, w, c = (64, 64, 3)
+    text_polys = [[np.array([0, 0, 10, 0, 10, 10, 0, 10])],
+                  [np.array([20, 0, 30, 0, 30, 10, 20, 10])]]
+    text_polys_ignore = [[np.array([0, 0, 15, 0, 15, 10, 0, 10])]]
+
+    results = {}
+    results['mask_fields'] = []
+    results['img_shape'] = (h, w, c)
+    results['gt_masks_ignore'] = PolygonMasks(text_polys_ignore, h, w)
+    results['gt_masks'] = PolygonMasks(text_polys, h, w)
+    results['gt_bboxes'] = np.array([[0, 0, 10, 10], [20, 0, 30, 10]])
+    results['gt_labels'] = np.array([0, 1])
+
+    target_generator.generate_targets(results)
+    assert 'p3_maps' in results.keys()
+    assert 'p4_maps' in results.keys()
+    assert 'p5_maps' in results.keys()

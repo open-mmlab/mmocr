@@ -5,8 +5,9 @@ from .psenet import PSENet
 from .single_stage_text_detector import SingleStageTextDetector
 from .text_detector_mixin import TextDetectorMixin
 from .textsnake import TextSnake
+from .fcenet import FCENet
 
 __all__ = [
     'TextDetectorMixin', 'SingleStageTextDetector', 'OCRMaskRCNN', 'DBNet',
-    'PANet', 'PSENet', 'TextSnake'
+    'PANet', 'PSENet', 'TextSnake', 'FCENet'
 ]

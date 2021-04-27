@@ -368,3 +368,62 @@ def test_textsnake(cfg_file):
     results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}
     img = np.random.rand(5, 5)
     detector.show_result(img, results)
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
+@pytest.mark.parametrize('cfg_file', [
+    'textdet/fcenet/fcenet_r50dcnv2_fpn_1200e_ctw1500.py'
+])
+def test_fcenet(cfg_file):
+    model = _get_detector_cfg(cfg_file)
+    model['pretrained'] = None
+    model['backbone']['norm_cfg']['type'] = 'BN'
+
+    from mmocr.models import build_detector
+    detector = build_detector(model)
+    detector = detector.cuda()
+    
+    fourier_degree = 5
+    input_shape = (1, 3, 256, 256)
+    (n, c, h, w) = input_shape
+
+    imgs = torch.randn(n, c, h, w).float().cuda()
+    img_metas = [{
+        'img_shape': (h, w, c),
+        'ori_shape': (h, w, c),
+        'pad_shape': (h, w, c),
+        'filename': '<demo>.png',
+        'scale_factor': np.array([1, 1, 1, 1]),
+        'flip': False,
+    } for _ in range(n)]
+
+    p3_maps = []
+    p4_maps = []
+    p5_maps = []
+    for _ in range(n):
+        p3_maps.append(np.random.random((5 + 4 * fourier_degree, h // 8, w // 8)))
+        p4_maps.append(np.random.random((5 + 4 * fourier_degree, h // 16, w // 16)))
+        p5_maps.append(np.random.random((5 + 4 * fourier_degree, h // 32, w // 32)))
+
+    # Test forward train
+    losses = detector.forward(
+        imgs,
+        img_metas,
+        p3_maps=p3_maps,
+        p4_maps=p4_maps,
+        p5_maps=p5_maps)
+    assert isinstance(losses, dict)
+
+    # Test forward test
+    with torch.no_grad():
+        img_list = [g[None, :] for g in imgs]
+        batch_results = []
+        for one_img, one_meta in zip(img_list, img_metas):
+            result = detector.forward([one_img], [[one_meta]],
+                                      return_loss=False)
+            batch_results.append(result)
+
+    # Test show result
+    results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}
+    img = np.random.rand(5, 5)
+    detector.show_result(img, results)

@@ -24,6 +24,8 @@ def decode(
         return db_decode(**kwargs)
     if decoding_type == 'textsnake':
         return textsnake_decode(**kwargs)
+    if decoding_type == 'fcenet':
+        return fcenet_decode(**kwargs)
 
     raise NotImplementedError
 
@@ -391,3 +393,169 @@ def textsnake_decode(preds,
             boundaries.append(boundary + [score])
 
     return boundaries
+
+
+def fcenet_decode(
+    preds,
+    fourier_degree,
+    reconstr_points,
+    scale,
+    tcl_tr_ratio,
+    text_repr_type='poly',
+    tr_thresh=0.8,
+    nms_thresh=0.1,
+):
+    """Decoding predictions of FCEnet to instances.
+
+    Args:
+        preds (list(Tensor)): The head output tensors.
+        fourier_degree (int): The maximum fourier transform degree k
+        reconstr_points (int): The points number of the polygon reconstructed from predicted
+            fourier coefficients.
+        scale (int): The downsample scale of preds
+        tcl_tr_ratio (float): The ratio to calculate final score.
+        text_repr_type (str): boundary encoding type 'poly' or 'quad'.
+        tr_thresh (float) : The threshold used to filter out the final
+            candidates.
+        nms_thresh (float) : The threshold of nms.
+
+    Returns:
+        boundaries (list[list[float]]): The instance boundary and its
+        instance confidence list.
+    """
+    assert isinstance(preds, list)
+    assert len(preds) == 2
+    assert text_repr_type == 'poly'
+
+    cls_pred = preds[0][0]
+    tr_pred = cls_pred[0:2].softmax(dim=0).data.cpu().numpy()
+    tcl_pred = cls_pred[2:].softmax(dim=0).data.cpu().numpy()
+
+    reg_pred = preds[1][0].permute(1, 2, 0).data.cpu().numpy()
+    x_pred = reg_pred[:, :, :2 * fourier_degree + 1]
+    y_pred = reg_pred[:, :, 2 * fourier_degree + 1:]
+
+    score_pred = tr_pred[1] * (tcl_pred[1]**tcl_tr_ratio)
+    tr_pred_mask = (score_pred) > tr_thresh
+    tr_mask = fill_hole(tr_pred_mask)
+
+    tr_contours, _ = cv2.findContours(
+        tr_mask.astype(np.uint8), cv2.RETR_TREE,
+        cv2.CHAIN_APPROX_SIMPLE)  # opencv4
+
+    mask = np.zeros_like(tr_mask)
+    e_matrix = generate_e_matrix(reconstr_points, fourier_degree)
+    boundaries = []
+    for cont in tr_contours:
+        deal_map = mask.copy().astype(np.int8)
+        cv2.drawContours(deal_map, [cont], -1, 1, -1)
+
+        text_map = score_pred * deal_map
+        polygons = contour_transfor_inv(fourier_degree, x_pred, y_pred, text_map, e_matrix,
+                                        scale)
+        polygons = poly_nms(polygons, nms_thresh)
+        boundaries = boundaries + polygons
+
+    boundaries = poly_nms(boundaries, nms_thresh)
+    return boundaries
+
+
+def poly_nms(polygons, threshold):
+    assert isinstance(polygons, list)
+
+    polygons = np.array(sorted(polygons, key=lambda x: x[-1]))
+
+    keep_poly = []
+    index = [i for i in range(polygons.shape[0])]
+
+    while len(index) > 0:
+        keep_poly.append(polygons[index[-1]].tolist())
+
+        A = Polygon(polygons[index[-1]][:-1].reshape(-1, 2)).buffer(0.01)
+
+        index = np.delete(index, -1)
+        iou_list = np.zeros((len(index), ))
+        for i in range(len(index)):
+            B = Polygon(polygons[index[i]][:-1].reshape(-1, 2)).buffer(0.01)
+
+            iou_list[i] = cal_iou(A, B)
+        remove_index = np.where(iou_list > threshold)
+        index = np.delete(index, remove_index)
+
+    return keep_poly
+
+
+def cal_iou(A, B):
+    if not A.intersects(B):
+        iou = 0
+    else:
+        area_AB = A.intersection(B).area
+        area_A = A.area
+        area_B = B.area
+        iou = area_AB / (area_A + area_B - area_AB)
+    return iou
+
+
+def contour_transfor_inv(fourier_degree, x_pred, y_pred, score_map, e_matrix,
+                         scale):
+    mask = score_map > 0
+
+    xy_text = np.argwhere(mask)
+    dxy = xy_text[:, 1] + xy_text[:, 0] * 1j
+
+    x = x_pred[mask]
+    y = y_pred[mask]
+
+    c = x + y * 1j
+    c[:, fourier_degree] = c[:, fourier_degree] + dxy
+    c *= scale
+
+    polygons = fourier_inverse_matrix(c, e_matrix=e_matrix)
+    score = score_map[mask].reshape(-1, 1)
+    return np.hstack((polygons, score)).tolist()
+
+
+def fourier_inverse_matrix(fourier_coeff, e_matrix):
+    ''' inverse fourier transform
+    Args:
+        fourier_coeff (np.ndarray): fourier coefficients shaped (n, 2k+1)
+        e_matrix (np.ndarray): a matrix of e^x, where x = 2pi x ikt and shape
+            is (2k+1, n')
+    Returns:
+        Polygons (np.ndarray): the reconstructed polygons shaped (n, n')
+    '''
+
+    assert type(fourier_coeff) == np.ndarray
+    assert fourier_coeff.shape[1] == e_matrix.shape[0]
+
+    n = e_matrix.shape[1]
+    polygons = np.zeros((fourier_coeff.shape[0], n, 2))
+
+    points = np.matmul(fourier_coeff, e_matrix)
+    p_x = np.real(points)
+    p_y = np.imag(points)
+    polygons[:, :, 0] = p_x
+    polygons[:, :, 1] = p_y
+    return polygons.astype('int32').reshape(polygons.shape[0], -1)
+
+
+def generate_e_matrix(point_num, fourier_degree):
+    ''' generate a matrix of e^x, where x = 2pi x ikt
+        Args:
+            point_num (int): number of reconstruct points of polygon
+            fourier_degree (int): maximum fourier degree k
+        Returns:
+            e_matrix (np.adarray): a matrix of e^x, where x = 2pi x ikt and
+                shape is (2k+1, n)
+    '''
+    e = complex(np.e)
+    e_matrix = np.zeros([2 * fourier_degree + 1, point_num], dtype='complex')
+
+    temp = np.zeros([point_num], dtype='complex')
+    for i in range(point_num):
+        temp[i] = 2 * np.pi * 1j / point_num * i
+
+    for i in range(2 * fourier_degree + 1):
+        e_matrix[i, :] = temp * (i - fourier_degree)
+
+    return np.power(e, e_matrix)
