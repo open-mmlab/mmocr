@@ -31,7 +31,7 @@ class NerLoss(nn.Module):
         '''
         labels = []
         attention_masks = []
-        for i,_ in enumerate(img_metas):
+        for i, _ in enumerate(img_metas):
             label = torch.tensor(img_metas[i]['labels']).to(device)
             attention_mask = torch.tensor(
                 img_metas[i]['attention_mask']).to(device)
@@ -55,6 +55,5 @@ class NerLoss(nn.Module):
             active_labels = labels.view(-1)[active_loss]
             loss = loss_fct(active_logits, active_labels)
         else:
-            loss = loss_fct(
-                logits.view(-1, self.num_labels), labels.view(-1))
+            loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
         return loss
