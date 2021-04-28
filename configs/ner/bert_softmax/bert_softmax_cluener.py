@@ -21,10 +21,10 @@ resume_from = None
 workflow = [('train', 1)]
 
 img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-test_ann_file = 'data/ner/dev.json'
-train_ann_file = 'data/ner/train.json'
-vocab_file = 'data/ner/vocab.txt'
-map_file = 'data/ner/map_file.json'
+test_ann_file = 'data/cluener/dev.json'
+train_ann_file = 'data/cluener/train.json'
+vocab_file = 'data/cluener/vocab.txt'
+map_file = 'data/cluener/map_file.json'
 
 loader = dict(
     type='HardDiskLoader',
@@ -41,14 +41,24 @@ test_pipeline = [
         ])
 ]
 
+# label2id_convertor=dict(
+#     type='SegConvertor', dict_type='DICT36', with_unknown=True, lower=True)
+
+
+
 train_pipeline = [
+    # dict(
+    #     type='OCRSegTargets',
+    #     label_convertor=label2id_convertor,
+    #     box_type='char_quads'),
     dict(
         type='Collect',
         keys=['img'],
         meta_keys=[
             'texts', 'img', 'labels', 'input_ids', 'attention_mask',
             'token_type_ids'
-        ])
+        ]),
+
 ]
 dataset_type = 'NerDataset'
 img_prefix = ''

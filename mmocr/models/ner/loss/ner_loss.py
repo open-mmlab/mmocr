@@ -15,14 +15,15 @@ class NerLoss(nn.Module):
         super().__init__()
         self.num_labels = num_labels
         self.loss_type = loss_type
+        assert self.loss_type in ['lsr', 'focal', 'ce']
 
     def forward(self, logits, img_metas, device):
         '''Loss forword.
         Args:
             logits: [N, C]
             img_metas (dict): A dict containing the following keys:
-                    - img (list): This parameter is reserved and not used here.
-                    - labels (list): []*max_len
+                    - img (list]): This parameter is reserved and not used here.
+                    - labels (list[int]): []*max_len
                     - texts (list): []*max_len
                     - input_ids (list): []*max_len
                     - attention_mask (list): []*max_len
@@ -40,7 +41,7 @@ class NerLoss(nn.Module):
         labels = torch.stack(labels, 0)
         attention_mask = torch.stack(attention_masks, 0)
 
-        assert self.loss_type in ['lsr', 'focal', 'ce']
+
         if self.loss_type == 'lsr':
             loss_fct = LabelSmoothingCrossEntropy(ignore_index=0)
         elif self.loss_type == 'focal':

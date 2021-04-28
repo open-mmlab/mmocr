@@ -5,11 +5,12 @@ from collections import Counter
 def get_entity_bio(seq, id2label):
     """Gets entities from sequence.
     The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
-    note: BIO
+    note: BIO((B-begin, I-inside, O-outside)).
     Args:
-        seq (list): sequence of labels.
+        seq (list): Sequence of labels.
+        id2label (dict): Dict for mapping ID to label.
     Returns:
-        list: list of (chunk_type, chunk_start, chunk_end).
+        chunks (list): List of (chunk_type, chunk_start, chunk_end).
     Example:
         seq = ['B-PER', 'I-PER', 'O', 'B-LOC']
         get_entity_bio(seq)
@@ -18,6 +19,7 @@ def get_entity_bio(seq, id2label):
     """
     chunks = []
     chunk = [-1, -1, -1]
+    assert isinstance(seq,list)
     for indx, tag in enumerate(seq):
         if not isinstance(tag, str):
             tag = id2label[tag]
@@ -49,10 +51,10 @@ def get_entities(seq, id2label, markup='bios'):
 
     The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
     Args:
-        seq (list): Sequence of labels.
+        seq (list[int]): Sequence of labels.
         id2label (dict): Dict for mapping ID to label.
     Returns:
-        list: list of (chunk_type, chunk_start, chunk_end).
+        List of (chunk_type, chunk_start, chunk_end).
     """
     assert markup in ['bio', 'bios']
     if markup == 'bio':
@@ -66,9 +68,10 @@ def get_entity_bios(seq, id2label):
     The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
     note: BIOS
     Args:
-        seq (list): sequence of labels.
+        seq (list[int]): sequence of labels.
+        id2label (dict): Dict for mapping ID to label.
     Returns:
-        list: list of (chunk_type, chunk_start, chunk_end).
+        chunks (list): list of (chunk_type, chunk_start, chunk_end).
     Example:
         # >>> seq = ['B-PER', 'I-PER', 'O', 'S-LOC']
         # >>> get_entity_bios(seq)
@@ -111,6 +114,9 @@ class SeqEntityScore:
     """Get precision, recall and F1-score for NER task.
 
     The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
+    Args:
+        id2label (dict): Dict for mapping ID to label.
+        markup (string): Patterns of sequence tagging(Bio and bioes).
     """
 
     def __init__(self, id2label, markup='bios'):
@@ -154,9 +160,8 @@ class SeqEntityScore:
     def update(self, label_paths, pred_paths):
         """
         Args:
-            label_paths: [[],[],[],....]
-            pred_paths:[[],[],[],.....]
-
+            label_paths (list[list]): Entity category label for the whole text.
+            pred_paths (list[list]): Model prediction results.
         """
         for label_path, pre_path in zip(label_paths, pred_paths):
             label_entities = get_entities(label_path, self.id2label,
@@ -171,6 +176,14 @@ class SeqEntityScore:
 
 
 def label2id(label, text_len, label2id_dict, max_len, ignore_label):
+    """Convert labels to ids.
+    Args:
+        label (list[int]): Entity category label.
+        text_len (int): The length of input text.
+        label2id_dict (dict): Map label to id.
+        max_len (int): The limited max valid text length.
+        ignore_label (int): Label for normal text other than valid categories.
+    """
     id = [0] * max_len
     for j in range(text_len):
         id[j] = ignore_label
@@ -192,7 +205,12 @@ def eval_ner(res, gt, max_len, id2label, label2id_dict, ignore_label):
 
     Args:
         res (list): Predict results.
-        gt (list(dict)): Groudtruth file.
+        gt (str): Groudtruth file path.
+        max_len (int): The max length of valid input size which is
+        set in config file.
+        id2label (dict): Dictionary for mapping ids to labels.
+        label2id_dict (dict): Dictionary for mapping labels to ids.
+        ignore_label (int): Label for normal text other than valid categories.
     """
     results = []
     for result in res:
