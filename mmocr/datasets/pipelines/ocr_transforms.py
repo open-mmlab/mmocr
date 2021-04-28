@@ -143,7 +143,7 @@ class NormalizeOCR:
 
     def __call__(self, results):
         results['img'] = TF.normalize(results['img'], self.mean, self.std)
-
+        results['img_norm_cfg'] = dict(mean=self.mean, std=self.std)
         return results
 
 
