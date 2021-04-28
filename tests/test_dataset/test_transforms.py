@@ -5,7 +5,7 @@ import torchvision.transforms as TF
 from PIL import Image
 
 import mmocr.datasets.pipelines.transforms as transforms
-from mmdet.core import BitmapMasks
+from mmdet.core import BitmapMasks, PolygonMasks
 
 
 @mock.patch('%s.transforms.np.random.random_sample' % __name__)
@@ -164,3 +164,67 @@ def test_affine_jitter():
     output2 = affine_jitter(results)
 
     assert np.allclose(np.array(output1), output2['img'])
+
+
+@mock.patch('%s.transforms.np.random.random_sample' % __name__)
+@mock.patch('%s.transforms.np.random.randint' % __name__)
+def test_random_crop_poly_instances(mock_randint, mock_sample):
+    results = {}
+    img = np.zeros((30, 30, 3))
+    poly_masks = PolygonMasks([[np.array([5., 5., 25., 5., 25., 10., 5., 10.])],
+                               [np.array([5., 20., 25., 20., 25., 25., 5., 25.])]], 30, 30)
+    results['img'] = img
+    results['gt_masks'] = poly_masks
+    results['mask_fields'] = ['gt_masks']
+    results['gt_labels'] = [1, 1]
+    mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 0, 0, 15]
+    rcpi = transforms.RandomCropPolyInstances(instance_key='gt_masks',
+                                              crop_ratio=1.0,
+                                              min_side_ratio=0.3)
+    crop_box = rcpi.sample_crop_box((30, 30), results)
+    assert np.allclose(np.array(crop_box), np.array([0, 0, 30, 15]))
+
+    mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 15, 0, 30]
+    mock_sample.side_effect = [0.1]
+    output = rcpi(results)
+    target = np.array([5., 5., 25., 5., 25., 10., 5., 10.])
+    assert len(output['gt_masks']) == 1
+    assert np.allclose(output['gt_masks'].masks[0][0], target)
+    assert output['img'].shape == (15, 30, 3)
+
+
+@mock.patch('%s.transforms.np.random.random_sample' % __name__)
+def test_random_rotate_poly_instances(mock_sample):
+    results = {}
+    img = np.zeros((30, 30, 3))
+    poly_masks = PolygonMasks([[np.array([10., 10., 20., 10., 20., 20., 10., 20.])]], 30, 30)
+    results['img'] = img
+    results['gt_masks'] = poly_masks
+    results['mask_fields'] = ['gt_masks']
+    rrpi = transforms.RandomRotatePolyInstances(rotate_ratio=1.0, max_angle=90)
+
+    mock_sample.side_effect = [0., 1.]
+    output = rrpi(results)
+    assert np.allclose(output['gt_masks'].masks[0][0],
+                       np.array([10., 20., 10., 10., 20., 10., 20., 20.]))
+    assert output['img'].shape == (30, 30, 3)
+
+
+@mock.patch('%s.transforms.np.random.random_sample' % __name__)
+def test_square_resize_pad(mock_sample):
+    results = {}
+    img = np.zeros((15, 30, 3))
+    polygon = np.array([10., 10., 20., 10., 20., 20., 10., 20.])
+    poly_masks = PolygonMasks([[polygon]], 15, 30)
+    results['img'] = img
+    results['gt_masks'] = poly_masks
+    results['mask_fields'] = ['gt_masks']
+    srp = transforms.SquareResizePad(target_size=40, pad_ratio=0.5)
+
+    # test resize with padding
+    mock_sample.side_effect = [0.]
+    output = srp(results)
+    target = 4. / 3 * polygon
+    target[1::2] += 10.
+    assert np.allclose(output['gt_masks'].masks[0][0], target)
+    assert output['img'].shape == (40, 40, 3)
