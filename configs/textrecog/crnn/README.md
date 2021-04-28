@@ -12,6 +12,16 @@
   year={2016}
 }
 ```
+[PREPROCESSOR]
+
+```bibtex
+@article{shi2016robust,
+  title={Robust Scene Text Recognition with Automatic Rectification},
+  author={Shi, Baoguang and Wang, Xinggang and Lyu, Pengyuan and Yao,
+  Cong and Bai, Xiang},
+  year={2016}
+}
+```
 
 ## Results and Models
 

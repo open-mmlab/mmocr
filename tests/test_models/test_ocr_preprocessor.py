@@ -1,3 +1,4 @@
+import pytest
 import torch
 
 from mmocr.models.textrecog.preprocessor import (BasePreprocessor,
@@ -5,6 +6,15 @@ from mmocr.models.textrecog.preprocessor import (BasePreprocessor,
 
 
 def test_tps_preprocessor():
+    with pytest.raises(AssertionError):
+        TPSPreprocessor(num_fiducial=-1)
+    with pytest.raises(AssertionError):
+        TPSPreprocessor(img_size=32)
+    with pytest.raises(AssertionError):
+        TPSPreprocessor(rectified_img_size=100)
+    with pytest.raises(AssertionError):
+        TPSPreprocessor(num_img_channel='bgr')
+
     tps_preprocessor = TPSPreprocessor(
         num_fiducial=20,
         img_size=(32, 100),
