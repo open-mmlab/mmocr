@@ -316,6 +316,7 @@ def test_dbnet(cfg_file):
     detector.show_result(img, results)
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
 @pytest.mark.parametrize(
     'cfg_file',
     ['textdet/textsnake/'
