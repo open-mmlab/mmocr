@@ -46,7 +46,7 @@ test_pipeline = [
                 keys=['img'],
                 meta_keys=[
                     'filename', 'ori_shape', 'img_shape', 'valid_ratio',
-                    'img_norm_cfg'
+                    'img_norm_cfg', 'ori_filename'
                 ]),
         ])
 ]
