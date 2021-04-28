@@ -409,8 +409,12 @@ class RandomCropPolyInstances:
         return start, end
 
     def sample_crop_box(self, img_size, results):
-        """Generate crop box and make sure not to crop the polygon
-        instances."""
+        """Generate crop box and make sure not to crop the polygon instances.
+
+        Args:
+            img_size (tuple(int)): The image size (h, w).
+            results (dict): The results dict.
+        """
 
         assert isinstance(img_size, tuple)
         h, w = img_size[:2]

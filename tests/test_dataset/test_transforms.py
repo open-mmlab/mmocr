@@ -176,21 +176,39 @@ def test_random_crop_poly_instances(mock_randint, mock_sample):
     ], [np.array([5., 20., 25., 20., 25., 25., 5., 25.])]], 30, 30)
     results['img'] = img
     results['gt_masks'] = poly_masks
-    results['mask_fields'] = ['gt_masks']
+    results['gt_masks_ignore'] = PolygonMasks([], 30, 30)
+    results['mask_fields'] = ['gt_masks', 'gt_masks_ignore']
     results['gt_labels'] = [1, 1]
-    mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 0, 0, 15]
     rcpi = transforms.RandomCropPolyInstances(
         instance_key='gt_masks', crop_ratio=1.0, min_side_ratio=0.3)
+
+    # test sample_crop_box(img_size, results)
+    mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 0, 0, 15]
     crop_box = rcpi.sample_crop_box((30, 30), results)
     assert np.allclose(np.array(crop_box), np.array([0, 0, 30, 15]))
 
+    # test __call__
     mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 15, 0, 30]
     mock_sample.side_effect = [0.1]
     output = rcpi(results)
     target = np.array([5., 5., 25., 5., 25., 10., 5., 10.])
     assert len(output['gt_masks']) == 1
+    assert len(output['gt_masks_ignore']) == 0
     assert np.allclose(output['gt_masks'].masks[0][0], target)
     assert output['img'].shape == (15, 30, 3)
+
+    # test __call__ with blank instace_key masks
+    mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 15, 0, 30]
+    mock_sample.side_effect = [0.1]
+    rcpi = transforms.RandomCropPolyInstances(
+        instance_key='gt_masks_ignore', crop_ratio=1.0, min_side_ratio=0.3)
+    results['img'] = img
+    results['gt_masks'] = poly_masks
+    output = rcpi(results)
+    assert len(output['gt_masks']) == 2
+    assert np.allclose(output['gt_masks'].masks[0][0], poly_masks.masks[0][0])
+    assert np.allclose(output['gt_masks'].masks[1][0], poly_masks.masks[1][0])
+    assert output['img'].shape == (30, 30, 3)
 
 
 @mock.patch('%s.transforms.np.random.random_sample' % __name__)
