@@ -233,7 +233,7 @@ def test_random_rotate_poly_instances(mock_sample):
 def test_square_resize_pad(mock_sample):
     results = {}
     img = np.zeros((15, 30, 3))
-    polygon = np.array([10., 10., 20., 10., 20., 20., 10., 20.])
+    polygon = np.array([10., 5., 20., 5., 20., 10., 10., 10.])
     poly_masks = PolygonMasks([[polygon]], 15, 30)
     results['img'] = img
     results['gt_masks'] = poly_masks
@@ -245,5 +245,16 @@ def test_square_resize_pad(mock_sample):
     output = srp(results)
     target = 4. / 3 * polygon
     target[1::2] += 10.
+    assert np.allclose(output['gt_masks'].masks[0][0], target)
+    assert output['img'].shape == (40, 40, 3)
+
+    # test resize to square without padding
+    results['img'] = img
+    results['gt_masks'] = poly_masks
+    mock_sample.side_effect = [1.]
+    output = srp(results)
+    target = polygon.copy()
+    target[::2] *= 4. / 3
+    target[1::2] *= 8. / 3
     assert np.allclose(output['gt_masks'].masks[0][0], target)
     assert output['img'].shape == (40, 40, 3)
