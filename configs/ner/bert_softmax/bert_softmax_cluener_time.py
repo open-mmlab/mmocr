@@ -21,10 +21,10 @@ resume_from = None
 workflow = [('train', 1)]
 
 img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-test_ann_file = 'data/ner/dev_time.json'
-train_ann_file = 'data/ner/train_time.json'
-vocab_file = 'data/ner/vocab.txt'
-map_file = 'data/ner/map_file_time.json'
+test_ann_file = 'data/cluener/dev_time.json'
+train_ann_file = 'data/cluener/train_time.json'
+vocab_file = 'data/cluener/vocab.txt'
+map_file = 'data/cluener/map_file_time.json'
 
 loader = dict(
     type='HardDiskLoader',

@@ -140,6 +140,13 @@ class BertEmbeddings(nn.Module):
     """Construct the embeddings from word, position and token_type embeddings.
 
     The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
+    Args:
+        vocab_size (int): Number of words supported.
+        hidden_size (int): Hidden size.
+        max_position_embeddings (int): Max positionsembedding size.
+        type_vocab_size (int): The size of type_vocab.
+        layer_norm_eps (float): eps.
+        hidden_dropout_prob (float): The dropout probability of hidden layer.
     """
 
     def __init__(self,
