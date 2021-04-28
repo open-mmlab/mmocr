@@ -171,16 +171,16 @@ def test_affine_jitter():
 def test_random_crop_poly_instances(mock_randint, mock_sample):
     results = {}
     img = np.zeros((30, 30, 3))
-    poly_masks = PolygonMasks([[np.array([5., 5., 25., 5., 25., 10., 5., 10.])],
-                               [np.array([5., 20., 25., 20., 25., 25., 5., 25.])]], 30, 30)
+    poly_masks = PolygonMasks([[
+        np.array([5., 5., 25., 5., 25., 10., 5., 10.])
+    ], [np.array([5., 20., 25., 20., 25., 25., 5., 25.])]], 30, 30)
     results['img'] = img
     results['gt_masks'] = poly_masks
     results['mask_fields'] = ['gt_masks']
     results['gt_labels'] = [1, 1]
     mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 0, 0, 15]
-    rcpi = transforms.RandomCropPolyInstances(instance_key='gt_masks',
-                                              crop_ratio=1.0,
-                                              min_side_ratio=0.3)
+    rcpi = transforms.RandomCropPolyInstances(
+        instance_key='gt_masks', crop_ratio=1.0, min_side_ratio=0.3)
     crop_box = rcpi.sample_crop_box((30, 30), results)
     assert np.allclose(np.array(crop_box), np.array([0, 0, 30, 15]))
 
@@ -197,7 +197,8 @@ def test_random_crop_poly_instances(mock_randint, mock_sample):
 def test_random_rotate_poly_instances(mock_sample):
     results = {}
     img = np.zeros((30, 30, 3))
-    poly_masks = PolygonMasks([[np.array([10., 10., 20., 10., 20., 20., 10., 20.])]], 30, 30)
+    poly_masks = PolygonMasks(
+        [[np.array([10., 10., 20., 10., 20., 20., 10., 20.])]], 30, 30)
     results['img'] = img
     results['gt_masks'] = poly_masks
     results['mask_fields'] = ['gt_masks']
