@@ -214,7 +214,8 @@ def test_gen_textsnake_targets(mock_show_feature):
 
 def test_fcenet_generate_targets():
     fourier_degree = 5
-    target_generator = textdet_targets.FCENetTargets(fourier_degree=fourier_degree)
+    target_generator = textdet_targets.FCENetTargets(
+        fourier_degree=fourier_degree)
 
     h, w, c = (64, 64, 3)
     text_polys = [[np.array([0, 0, 10, 0, 10, 10, 0, 10])],

@@ -5,5 +5,6 @@ from .pan_head import PANHead
 from .pse_head import PSEHead
 from .textsnake_head import TextSnakeHead
 
-__all__ = ['PSEHead', 'PANHead', 'DBHead', 'FCEHead', 'HeadMixin',
-           'TextSnakeHead']
+__all__ = [
+    'PSEHead', 'PANHead', 'DBHead', 'FCEHead', 'HeadMixin', 'TextSnakeHead'
+]

@@ -12,3 +12,17 @@ def test_db_boxes_from_bitmaps():
 
     boxes = db_decode(preds, text_repr_type='quad', min_text_width=0)
     assert len(boxes) == 1
+
+
+def test_fcenet_decode():
+    from mmocr.models.textdet.postprocess.wrapper import fcenet_decode
+
+    k = 5
+    preds = []
+    preds.append(torch.randn(1, 4, 40, 40))
+    preds.append(torch.randn(1, 4 * k + 2, 40, 40))
+
+    boundaries = fcenet_decode(
+        preds=preds, fourier_degree=k, reconstr_points=50, scale=1)
+
+    assert isinstance(boundaries, list)

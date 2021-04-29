@@ -1,4 +1,3 @@
-fourier_degree = 5
 model = dict(
     type='FCENet',
     pretrained='torchvision://resnet50',
@@ -27,14 +26,14 @@ model = dict(
         in_channels=256,
         scales=(8, 16, 32),
         loss=dict(type='FCELoss'),
-        fourier_degree=fourier_degree,
-        ))
+        fourier_degree=5,  # make sure it is same as it in 'FCENetTargets'
+    ))
 
 train_cfg = None
 test_cfg = None
 
 dataset_type = 'IcdarDataset'
-data_root = '/home/chen/mmocr_date_release/mmocr41/mmocr/data/ctw1500/'
+data_root = 'data/ctw1500/'
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -71,14 +70,12 @@ train_pipeline = [
     dict(type='SquareResizePad', target_size=800, pad_ratio=0.6),
     dict(type='RandomFlip', flip_ratio=0.5, direction='horizontal'),
     dict(type='Pad', size_divisor=32),
-    dict(type='FCENetTargets', fourier_degree=fourier_degree),
+    dict(type='FCENetTargets', fourier_degree=5),
     dict(
         type='CustomFormatBundle',
         keys=['p3_maps', 'p4_maps', 'p5_maps'],
         visualize=dict(flag=False, boundary_key=None)),
-    dict(
-        type='Collect',
-        keys=['img', 'p3_maps', 'p4_maps', 'p5_maps'])
+    dict(type='Collect', keys=['img', 'p3_maps', 'p4_maps', 'p5_maps'])
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile'),
@@ -112,13 +109,13 @@ data = dict(
         ann_file=data_root + '/instances_test.json',
         img_prefix=data_root + '/imgs',
         pipeline=test_pipeline))
-evaluation = dict(interval=1500, metric='hmean-iou')
+evaluation = dict(interval=1200, metric='hmean-iou')
 
 # optimizer
 optimizer = dict(type='SGD', lr=1e-3, momentum=0.90, weight_decay=5e-4)
 optimizer_config = dict(grad_clip=None)
 lr_config = dict(policy='poly', power=0.9, min_lr=1e-7, by_epoch=True)
-total_epochs = 3000
+total_epochs = 1200
 
 checkpoint_config = dict(interval=20)
 # yapf:disable

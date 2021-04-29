@@ -371,9 +371,8 @@ def test_textsnake(cfg_file):
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
-@pytest.mark.parametrize('cfg_file', [
-    'textdet/fcenet/fcenet_r50dcnv2_fpn_1200e_ctw1500.py'
-])
+@pytest.mark.parametrize(
+    'cfg_file', ['textdet/fcenet/fcenet_r50dcnv2_fpn_1200e_ctw1500.py'])
 def test_fcenet(cfg_file):
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None
@@ -382,7 +381,7 @@ def test_fcenet(cfg_file):
     from mmocr.models import build_detector
     detector = build_detector(model)
     detector = detector.cuda()
-    
+
     fourier_degree = 5
     input_shape = (1, 3, 256, 256)
     (n, c, h, w) = input_shape
@@ -401,17 +400,16 @@ def test_fcenet(cfg_file):
     p4_maps = []
     p5_maps = []
     for _ in range(n):
-        p3_maps.append(np.random.random((5 + 4 * fourier_degree, h // 8, w // 8)))
-        p4_maps.append(np.random.random((5 + 4 * fourier_degree, h // 16, w // 16)))
-        p5_maps.append(np.random.random((5 + 4 * fourier_degree, h // 32, w // 32)))
+        p3_maps.append(
+            np.random.random((5 + 4 * fourier_degree, h // 8, w // 8)))
+        p4_maps.append(
+            np.random.random((5 + 4 * fourier_degree, h // 16, w // 16)))
+        p5_maps.append(
+            np.random.random((5 + 4 * fourier_degree, h // 32, w // 32)))
 
     # Test forward train
     losses = detector.forward(
-        imgs,
-        img_metas,
-        p3_maps=p3_maps,
-        p4_maps=p4_maps,
-        p5_maps=p5_maps)
+        imgs, img_metas, p3_maps=p3_maps, p4_maps=p4_maps, p5_maps=p5_maps)
     assert isinstance(losses, dict)
 
     # Test forward test

@@ -1,5 +1,6 @@
 from mmdet.models.builder import DETECTORS
-from . import SingleStageTextDetector, TextDetectorMixin
+from .single_stage_text_detector import SingleStageTextDetector
+from .text_detector_mixin import TextDetectorMixin
 
 
 @DETECTORS.register_module()
@@ -10,6 +11,7 @@ class FCENet(TextDetectorMixin, SingleStageTextDetector):
 
     [https://arxiv.org/abs/2104.10442]
     """
+
     def __init__(self,
                  backbone,
                  neck,
