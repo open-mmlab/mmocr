@@ -139,6 +139,7 @@ class LocalizationNetwork(nn.Module):
         Args:
             batch_img (tensor): Batch Input Image
                 [batch_size x num_img_channel x img_height x img_width]
+
         Output:
             batch_C_prime : Predicted coordinates of fiducial points for
             input batch [batch_size x num_fiducial x 2]

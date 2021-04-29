@@ -1,4 +1,4 @@
-# An end-to-end trainable neural network for image-based sequence recognition and its application to scene text recognition
+# CRNN with TPS based STN
 
 ## Introduction
 
@@ -9,6 +9,17 @@
   title={An end-to-end trainable neural network for image-based sequence recognition and its application to scene text recognition},
   author={Shi, Baoguang and Bai, Xiang and Yao, Cong},
   journal={IEEE transactions on pattern analysis and machine intelligence},
+  year={2016}
+}
+```
+
+[PREPROCESSOR]
+
+```bibtex
+@article{shi2016robust,
+  title={Robust Scene Text Recognition with Automatic Rectification},
+  author={Shi, Baoguang and Wang, Xinggang and Lyu, Pengyuan and Yao,
+  Cong and Bai, Xiang},
   year={2016}
 }
 ```
@@ -33,5 +44,4 @@
 
 |                         methods                          |        | Regular Text |      |     |      | Irregular Text |      |                                                                                    download                                                                                    |
 | :------------------------------------------------------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|                         methods                          | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |
-| [CRNN](/configs/textrecog/crnn/crnn_academic_dataset.py) |  80.5  |     81.5     | 86.5 |     |  -   |       -        |  -   | [model](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/crnn/20210326_111035.log.json) |
+|                         CRNN-STN                          | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |
