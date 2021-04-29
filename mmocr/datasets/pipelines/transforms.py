@@ -408,37 +408,42 @@ class RandomCropPolyInstances:
                                 region_ends[region_ind])
         return start, end
 
-    def sample_crop_box(self, img_size, masks):
+    def sample_crop_box(self, img_size, results):
         """Generate crop box and make sure not to crop the polygon instances.
 
         Args:
-            img_size (tuple(int)): The image size.
-            masks (list[list[ndarray]]): The polygon masks.
+            img_size (tuple(int)): The image size (h, w).
+            results (dict): The results dict.
         """
 
         assert isinstance(img_size, tuple)
         h, w = img_size[:2]
 
+        key_masks = results[self.instance_key].masks
         x_valid_array = np.ones(w, dtype=np.int32)
         y_valid_array = np.ones(h, dtype=np.int32)
 
-        selected_mask = masks[np.random.randint(0, len(masks))]
+        selected_mask = key_masks[np.random.randint(0, len(key_masks))]
         selected_mask = selected_mask[0].reshape((-1, 2)).astype(np.int32)
         max_x_start = max(np.min(selected_mask[:, 0]) - 2, 0)
         min_x_end = min(np.max(selected_mask[:, 0]) + 3, w - 1)
         max_y_start = max(np.min(selected_mask[:, 1]) - 2, 0)
         min_y_end = min(np.max(selected_mask[:, 1]) + 3, h - 1)
 
-        for mask in masks:
-            assert len(mask) == 1
-            mask = mask[0].reshape((-1, 2)).astype(np.int32)
-            clip_x = np.clip(mask[:, 0], 0, w - 1)
-            clip_y = np.clip(mask[:, 1], 0, h - 1)
-            min_x, max_x = np.min(clip_x), np.max(clip_x)
-            min_y, max_y = np.min(clip_y), np.max(clip_y)
+        for key in results.get('mask_fields', []):
+            if len(results[key].masks) == 0:
+                continue
+            masks = results[key].masks
+            for mask in masks:
+                assert len(mask) == 1
+                mask = mask[0].reshape((-1, 2)).astype(np.int32)
+                clip_x = np.clip(mask[:, 0], 0, w - 1)
+                clip_y = np.clip(mask[:, 1], 0, h - 1)
+                min_x, max_x = np.min(clip_x), np.max(clip_x)
+                min_y, max_y = np.min(clip_y), np.max(clip_y)
 
-            x_valid_array[min_x - 2:max_x + 3] = 0
-            y_valid_array[min_y - 2:max_y + 3] = 0
+                x_valid_array[min_x - 2:max_x + 3] = 0
+                y_valid_array[min_y - 2:max_y + 3] = 0
 
         min_w = int(w * self.min_side_ratio)
         min_h = int(h * self.min_side_ratio)
@@ -458,9 +463,10 @@ class RandomCropPolyInstances:
         return img[bbox[1]:bbox[3], bbox[0]:bbox[2]]
 
     def __call__(self, results):
+        if len(results[self.instance_key].masks) < 1:
+            return results
         if np.random.random_sample() < self.crop_ratio:
-            crop_box = self.sample_crop_box(results['img'].shape,
-                                            results[self.instance_key].masks)
+            crop_box = self.sample_crop_box(results['img'].shape, results)
             results['crop_region'] = crop_box
             img = self.crop_img(results['img'], crop_box)
             results['img'] = img
