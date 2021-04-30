@@ -8,7 +8,7 @@ import mmocr.utils as utils
 from mmdet.datasets.builder import DATASETS
 from mmocr.core import compute_f1_score
 from mmocr.datasets.base_dataset import BaseDataset
-from mmocr.datasets.pipelines.crop import sort_vertex
+from mmocr.datasets.pipelines import sort_vertex8
 
 
 @DATASETS.register_module()
@@ -87,12 +87,7 @@ class KIEDataset(BaseDataset):
         boxes, texts, text_inds, labels, edges = [], [], [], [], []
         for ann in annotations:
             box = ann['box']
-            x_list, y_list = box[0:8:2], box[1:9:2]
-            sorted_x_list, sorted_y_list = sort_vertex(x_list, y_list)
-            sorted_box = []
-            for x, y in zip(sorted_x_list, sorted_y_list):
-                sorted_box.append(x)
-                sorted_box.append(y)
+            sorted_box = sort_vertex8(box[:8])
             boxes.append(sorted_box)
             text = ann['text']
             texts.append(ann['text'])
