@@ -1,5 +1,3 @@
-import json
-
 from mmocr.models.builder import CONVERTORS
 
 
@@ -42,8 +40,8 @@ class NerConvertor:
             self.word2ids.update({lines[i].rstrip(): i})
 
         if self.dict_type == 'bio':
-            self.label2id_dict, self.id2label, self.ignore_id = self._generate_labelid_dict(
-            )
+            self.label2id_dict, self.id2label, self.ignore_id = \
+                self._generate_labelid_dict()
         elif self.dict_type == 'bioes':
             raise NotImplementedError('Bioes format is not surpported now!')
 

@@ -4,6 +4,8 @@ from os.path import dirname, exists, join
 import pytest
 import torch
 
+from mmocr.models.ner.utils.activations import gelu, gelu_new, swish
+
 
 def _get_config_directory():
     """Find the predefined detector config directory."""
@@ -73,3 +75,8 @@ def test_encoder_decoder_pipeline(cfg_file):
         batch_results = []
         result = detector.forward([img], img_metas, return_loss=False)
         batch_results.append(result)
+
+    # Test activations
+    gelu(torch.tensor(0.5))
+    gelu_new(torch.tensor(0.5))
+    swish(torch.tensor(0.5))

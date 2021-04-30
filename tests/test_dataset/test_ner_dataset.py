@@ -1,5 +1,3 @@
-import json
-
 from mmocr.datasets.ner_dataset import NerDataset
 from mmocr.models.ner.convertors.ner_convertor import NerConvertor
 
