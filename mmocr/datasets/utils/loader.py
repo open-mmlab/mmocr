@@ -1,5 +1,7 @@
 import os.path as osp
 
+import mmcv
+
 from mmocr.datasets.builder import LOADERS, build_parser
 
 
@@ -47,13 +49,7 @@ class HardDiskLoader(Loader):
     """
 
     def _load(self, ann_file):
-        data_ret = []
-        with open(ann_file, 'r', encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                data_ret.append(line)
-
-        return data_ret
+        return mmcv.list_from_file(ann_file)
 
 
 @LOADERS.register_module()
