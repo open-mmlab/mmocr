@@ -4,7 +4,6 @@ from mmocr.datasets.ner_dataset import NerDataset
 from mmocr.models.ner.convertors.ner_convertor import NerConvertor
 
 
-
 def _create_dummy_loader():
     loader = dict(
         type='HardDiskLoader',
@@ -21,8 +20,8 @@ def test_ner_dataset():
         'organization', 'position', 'scene'
     ]
     ann_file = 'tests/data/ner_toy_dataset/eval_sample.json'
-    vocab_file = "tests/data/ner_toy_dataset/vocab_sample.txt"
-    max_len =128
+    vocab_file = 'tests/data/ner_toy_dataset/vocab_sample.txt'
+    max_len = 128
     ner_convertor = dict(
         type='NerConvertor',
         dict_type='bio',
@@ -31,7 +30,10 @@ def test_ner_dataset():
         max_len=max_len)
 
     test_pipeline = [
-        dict(type='NerTransform', label_convertor=ner_convertor, max_len=max_len),
+        dict(
+            type='NerTransform',
+            label_convertor=ner_convertor,
+            max_len=max_len),
         dict(
             type='Collect',
             keys=['img'],
@@ -40,11 +42,7 @@ def test_ner_dataset():
                 'token_type_ids'
             ])
     ]
-    dataset = NerDataset(
-        ann_file,
-        loader,
-        pipeline=test_pipeline
-    )
+    dataset = NerDataset(ann_file, loader, pipeline=test_pipeline)
 
     # test pre_pipeline
     img_info = dataset.data_infos[0]
@@ -70,26 +68,27 @@ def test_ner_dataset():
     dataset.prepare_train_img(0)
 
     # test evaluation
-    result = [[["address",15, 16],["name", 0, 2]]]
+    result = [[['address', 15, 16], ['name', 0, 2]]]
 
     dataset.evaluate(result)
 
     # test pred convert2entity function
-    pred=[[
-        21, 7, 17, 17, 21, 21, 21, 21, 21, 21, 13, 21, 21, 21, 21, 21, 1, 11, 21,
+    pred = [[
         21, 7, 17, 17, 21, 21, 21, 21, 21, 21, 13, 21, 21, 21, 21, 21, 1, 11,
+        21, 21, 7, 17, 17, 21, 21, 21, 21, 21, 21, 13, 21, 21, 21, 21, 21, 1,
+        11, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
         21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
         21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
         21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
         21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-        21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-        21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 1, 21, 21, 21, 21, 21, 21,
         21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 1, 21, 21, 21, 21, 21,
-        21]]
-    convertor = NerConvertor(dict_type="bio", vocab_file=vocab_file,categories=categories,max_len=128)
+        21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 1, 21, 21, 21, 21,
+        21, 21
+    ]]
+    convertor = NerConvertor(
+        dict_type='bio',
+        vocab_file=vocab_file,
+        categories=categories,
+        max_len=128)
     all_entities = convertor.convert_pred2entities(preds=pred)
     assert len(all_entities[0][0]) == 3
-
-
-
-

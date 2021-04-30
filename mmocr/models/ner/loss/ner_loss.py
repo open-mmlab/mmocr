@@ -4,7 +4,6 @@ from torch.nn import CrossEntropyLoss
 
 from mmdet.models.builder import LOSSES
 from mmocr.models.common.losses.focal_loss import FocalLoss
-from .label_smoothing_cross_entropy import LabelSmoothingCrossEntropy
 
 
 @LOSSES.register_module()
@@ -15,7 +14,7 @@ class NerLoss(nn.Module):
         super().__init__()
         self.num_labels = num_labels
         self.loss_type = loss_type
-        assert self.loss_type in ['lsr', 'focal', 'ce']
+        assert self.loss_type in ['focal', 'ce']
 
     def forward(self, logits, img_metas, device):
         '''Loss forword.
@@ -41,9 +40,7 @@ class NerLoss(nn.Module):
         labels = torch.stack(labels, 0)
         attention_mask = torch.stack(attention_masks, 0)
 
-        if self.loss_type == 'lsr':
-            loss_fct = LabelSmoothingCrossEntropy(ignore_index=0)
-        elif self.loss_type == 'focal':
+        if self.loss_type == 'focal':
 
             loss_fct = FocalLoss(ignore_index=0)
         else:
