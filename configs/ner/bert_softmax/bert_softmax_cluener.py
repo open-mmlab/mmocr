@@ -25,10 +25,9 @@ resume_from = None
 workflow = [('train', 1)]
 
 img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-test_ann_file = 'data/cluener/dev.json'
-train_ann_file = 'data/cluener/train.json'
-vocab_file = 'data/cluener/vocab.txt'
-map_file = 'data/cluener/map_file.json'
+test_ann_file = 'tests/data/ner_toy_dataset/eval_sample'
+train_ann_file = 'tests/data/ner_toy_dataset/train_sample.json'
+vocab_file = 'tests/data/ner_toy_dataset/vocab_sample.txt'
 max_len = 128
 loader = dict(
     type='HardDiskLoader',

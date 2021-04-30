@@ -1,7 +1,7 @@
 import json
 
 from mmocr.datasets.ner_dataset import NerDataset
-
+from mmocr.models.ner.convertors.ner_convertor import NerConvertor
 
 
 
@@ -73,3 +73,23 @@ def test_ner_dataset():
     result = [[["address",15, 16],["name", 0, 2]]]
 
     dataset.evaluate(result)
+
+    # test pred convert2entity function
+    pred=[[
+        21, 7, 17, 17, 21, 21, 21, 21, 21, 21, 13, 21, 21, 21, 21, 21, 1, 11, 21,
+        21, 7, 17, 17, 21, 21, 21, 21, 21, 21, 13, 21, 21, 21, 21, 21, 1, 11,
+        21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
+        21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
+        21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
+        21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
+        21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
+        21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 1, 21, 21, 21, 21, 21, 21,
+        21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 1, 21, 21, 21, 21, 21,
+        21]]
+    convertor = NerConvertor(dict_type="bio", vocab_file=vocab_file,categories=categories,max_len=128)
+    all_entities = convertor.convert_pred2entities(preds=pred)
+    assert len(all_entities[0][0]) == 3
+
+
+
+
