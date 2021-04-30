@@ -1,4 +1,4 @@
-from .box_utils import sort_vertex
+from .box_utils import sort_vertex, sort_vertex8
 from .custom_format_bundle import CustomFormatBundle
 from .dbnet_transforms import EastRandomCrop, ImgAug
 from .kie_transforms import KIEFormatBundle
@@ -22,5 +22,5 @@ __all__ = [
     'RandomCropPolyInstances', 'RandomRotatePolyInstances', 'RandomPaddingOCR',
     'ImgAug', 'EastRandomCrop', 'RandomRotateImageBox', 'OpencvToPil',
     'PilToOpencv', 'KIEFormatBundle', 'SquareResizePad', 'TextSnakeTargets',
-    'sort_vertex', 'LoadImageFromNdarray'
+    'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8'
 ]
