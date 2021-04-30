@@ -98,4 +98,4 @@ class TextDetectorMixin:
         if not (show or out_file):
             warnings.warn('show==False and out_file is not specified, '
                           'result image will be returned')
-            return img
+        return img
