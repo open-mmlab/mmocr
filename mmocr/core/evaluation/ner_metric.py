@@ -1,255 +1,113 @@
-import json
 from collections import Counter
 
 
-def get_entity_bio(seq, id2label):
-    """Gets entities from sequence.
-    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
-    note: BIO((B-begin, I-inside, O-outside)).
+def label2entity(gt_infos):
+    """Get all entities from ground truth file.
     Args:
-        seq (list): Sequence of labels.
-        id2label (dict): Dict for mapping ID to label.
+        gt_infos (list[dict]): Groudtruth infomation contains text and label.
     Returns:
-        chunks (list): List of (chunk_type, chunk_start, chunk_end).
-    Example:
-        seq = ['B-PER', 'I-PER', 'O', 'B-LOC']
-        get_entity_bio(seq)
-        #output
-        [['PER', 0,1], ['LOC', 3, 3]]
+        gt_entities (list[list]): Original labeled entities in groundtruth.
+                    [[category,start_position,end_position]]
     """
-    chunks = []
-    chunk = [-1, -1, -1]
-    assert isinstance(seq,list)
-    for indx, tag in enumerate(seq):
-        if not isinstance(tag, str):
-            tag = id2label[tag]
-        if tag.startswith('B-'):
-            if chunk[2] != -1:
-                chunks.append(chunk)
-            chunk = [-1, -1, -1]
-            chunk[1] = indx
-            chunk[0] = tag.split('-')[1]
-            chunk[2] = indx
-            if indx == len(seq) - 1:
-                chunks.append(chunk)
-        elif tag.startswith('I-') and chunk[1] != -1:
-            _type = tag.split('-')[1]
-            if _type == chunk[0]:
-                chunk[2] = indx
-
-            if indx == len(seq) - 1:
-                chunks.append(chunk)
-        else:
-            if chunk[2] != -1:
-                chunks.append(chunk)
-            chunk = [-1, -1, -1]
-    return chunks
+    gt_entities = []
+    for gt_info in gt_infos:
+        line_entities = []
+        label = gt_info['label']
+        for key, value in label.items():
+            for _, places in value.items():
+                for place in places:
+                    line_entities.append([key, place[0], place[1]])
+        gt_entities.append(line_entities)
+    return gt_entities
 
 
-def get_entities(seq, id2label, markup='bios'):
-    """Get entities.
+def compute(origin, found, right):
+    """Get recall, precision, f1.
 
-    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
     Args:
-        seq (list[int]): Sequence of labels.
-        id2label (dict): Dict for mapping ID to label.
+        origin: Original entities in groundtruth.
+        found: Predicted entities from model.
+        right: Predicted entities that can match to the original annotation.
     Returns:
-        List of (chunk_type, chunk_start, chunk_end).
+        recall, precision, f1-score
     """
-    assert markup in ['bio', 'bios']
-    if markup == 'bio':
-        return get_entity_bio(seq, id2label)
-
-    return get_entity_bios(seq, id2label)
-
-
-def get_entity_bios(seq, id2label):
-    """Gets entities from sequence.
-    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
-    note: BIOS
-    Args:
-        seq (list[int]): sequence of labels.
-        id2label (dict): Dict for mapping ID to label.
-    Returns:
-        chunks (list): list of (chunk_type, chunk_start, chunk_end).
-    Example:
-        # >>> seq = ['B-PER', 'I-PER', 'O', 'S-LOC']
-        # >>> get_entity_bios(seq)
-        [['PER', 0,1], ['LOC', 3, 3]]
-    """
-    chunks = []
-    chunk = [-1, -1, -1]
-    for indx, tag in enumerate(seq):
-        if not isinstance(tag, str):
-            tag = id2label[tag]
-        if tag.startswith('S-'):
-            if chunk[2] != -1:
-                chunks.append(chunk)
-            chunk = [-1, -1, -1]
-            chunk[1] = indx
-            chunk[2] = indx
-            chunk[0] = tag.split('-')[1]
-            chunks.append(chunk)
-            chunk = (-1, -1, -1)
-        if tag.startswith('B-'):
-            if chunk[2] != -1:
-                chunks.append(chunk)
-            chunk = [-1, -1, -1]
-            chunk[1] = indx
-            chunk[0] = tag.split('-')[1]
-        elif tag.startswith('I-') and chunk[1] != -1:
-            _type = tag.split('-')[1]
-            if _type == chunk[0]:
-                chunk[2] = indx
-            if indx == len(seq) - 1:
-                chunks.append(chunk)
-        else:
-            if chunk[2] != -1:
-                chunks.append(chunk)
-            chunk = [-1, -1, -1]
-    return chunks
+    recall = 0 if origin == 0 else (right / origin)
+    precision = 0 if found == 0 else (right / found)
+    f1 = 0. if recall + precision == 0 else (2 * precision * recall) / (
+        precision + recall)
+    return recall, precision, f1
 
 
-class SeqEntityScore:
+def pred_info(pred_entities, gt_entities):
     """Get precision, recall and F1-score for NER task.
 
-    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
     Args:
-        id2label (dict): Dict for mapping ID to label.
-        markup (string): Patterns of sequence tagging(Bio and bioes).
+        pred_entities: The predicted entities from model.
+        gt_entities: The entities of ground truth file.
+    Returns:
+        class_info (dict): precision,recall, f1-score in total and catogories.
     """
+    origins = []
+    founds = []
+    rights = []
+    for i, _ in enumerate(pred_entities):
+        origins.extend(gt_entities[i])
+        founds.extend(pred_entities[i])
+        rights.extend([
+            pre_entity for pre_entity in pred_entities[i]
+            if pre_entity in gt_entities[i]
+        ])
 
-    def __init__(self, id2label, markup='bios'):
-        self.id2label = id2label
-        self.markup = markup
-        self.reset()
+    class_info = {}
+    origin_counter = Counter([x[0] for x in origins])
+    found_counter = Counter([x[0] for x in founds])
+    right_counter = Counter([x[0] for x in rights])
+    for type_, count in origin_counter.items():
+        origin = count
+        found = found_counter.get(type_, 0)
+        right = right_counter.get(type_, 0)
+        recall, precision, f1 = compute(origin, found, right)
+        class_info[type_] = {
+            'acc': round(precision, 4),
+            'recall': round(recall, 4),
+            'f1': round(f1, 4)
+        }
+    origin = len(origins)
+    found = len(founds)
+    right = len(rights)
+    recall, precision, f1 = compute(origin, found, right)
 
-    def reset(self):
-        self.origins = []
-        self.founds = []
-        self.rights = []
+    for key in sorted(class_info.keys()):
+        print('******* %s results ********' % key)
+        info = '-'.join([
+            f' {key}: {value:.4f} ' for key, value in class_info[key].items()
+        ])
+        print(info)
 
-    def compute(self, origin, found, right):
-        recall = 0 if origin == 0 else (right / origin)
-        precision = 0 if found == 0 else (right / found)
-        f1 = 0. if recall + precision == 0 else (2 * precision * recall) / (
-            precision + recall)
-        return recall, precision, f1
-
-    def result(self):
-        class_info = {}
-        origin_counter = Counter([x[0] for x in self.origins])
-        found_counter = Counter([x[0] for x in self.founds])
-        right_counter = Counter([x[0] for x in self.rights])
-        for type_, count in origin_counter.items():
-            origin = count
-            found = found_counter.get(type_, 0)
-            right = right_counter.get(type_, 0)
-            recall, precision, f1 = self.compute(origin, found, right)
-            class_info[type_] = {
-                'acc': round(precision, 4),
-                'recall': round(recall, 4),
-                'f1': round(f1, 4)
-            }
-        origin = len(self.origins)
-        found = len(self.founds)
-        right = len(self.rights)
-        recall, precision, f1 = self.compute(origin, found, right)
-        return {'acc': precision, 'recall': recall, 'f1': f1}, class_info
-
-    def update(self, label_paths, pred_paths):
-        """
-        Args:
-            label_paths (list[list]): Entity category label for the whole text.
-            pred_paths (list[list]): Model prediction results.
-        """
-        for label_path, pre_path in zip(label_paths, pred_paths):
-            label_entities = get_entities(label_path, self.id2label,
-                                          self.markup)
-            pre_entities = get_entities(pre_path, self.id2label, self.markup)
-            self.origins.extend(label_entities)
-            self.founds.extend(pre_entities)
-            self.rights.extend([
-                pre_entity for pre_entity in pre_entities
-                if pre_entity in label_entities
-            ])
+    print({'acc': precision, 'recall': recall, 'f1': f1})
+    return class_info
 
 
-def label2id(label, text_len, label2id_dict, max_len, ignore_label):
-    """Convert labels to ids.
-    Args:
-        label (list[int]): Entity category label.
-        text_len (int): The length of input text.
-        label2id_dict (dict): Map label to id.
-        max_len (int): The limited max valid text length.
-        ignore_label (int): Label for normal text other than valid categories.
-    """
-    id = [0] * max_len
-    for j in range(text_len):
-        id[j] = ignore_label
-    # text_len
-    categorys = label
-    for key in categorys:
-        for text in categorys[key]:
-            for place in categorys[key][text]:
-
-                id[place[0]] = label2id_dict[key][0]
-
-                for i in range(place[0] + 1, place[1] + 1):
-                    id[i] = label2id_dict[key][1]
-    return id
-
-
-def eval_ner(res, gt, max_len, id2label, label2id_dict, ignore_label):
+def eval_ner(results, gt_infos):
     """Evaluate for ner task.
 
     Args:
-        res (list): Predict results.
-        gt (str): Groudtruth file path.
-        max_len (int): The max length of valid input size which is
-        set in config file.
-        id2label (dict): Dictionary for mapping ids to labels.
-        label2id_dict (dict): Dictionary for mapping labels to ids.
-        ignore_label (int): Label for normal text other than valid categories.
+        results (list): Predict results of entities.
+        gt_infos (list[dict]): Groudtruth infomation contains text and label .
+    Returns:
+        class_info (dict): precision,recall, f1-score in total and catogories.
     """
-    results = []
-    for result in res:
-        results.append(result[1:])
-    with open(gt) as f:
-        lines = f.readlines()
-        metric = SeqEntityScore(id2label, markup='bios')
-        for i in range(min(len(results), len(lines))):
-            line_dict = json.loads(lines[i])
-            text = line_dict['text']
-            label = line_dict['label']
-            label_ids = label2id(label, len(text), label2id_dict, max_len,
-                                 ignore_label)
-            # break
-            pred = results[i]
-            temp_1 = []
-            temp_2 = []
-
-            for j, _ in enumerate(label_ids):
-                if j == 0:
-                    continue
-                if j == len(text) - 1:
-                    metric.update(pred_paths=[temp_2], label_paths=[temp_1])
-                    break
-
-                temp_1.append(id2label[label_ids[j]])
-                temp_2.append(pred[j])
-
-    eval_info, entity_info = metric.result()
-
-    results = {f'{key}': value for key, value in eval_info.items()}
-
-    info = '-'.join(
-        [f' {key}: {value:.4f} ' for key, value in results.items()])
-    print(info)
-    for key in sorted(entity_info.keys()):
-        print('******* %s results ********' % key)
-        info = '-'.join([
-            f' {key}: {value:.4f} ' for key, value in entity_info[key].items()
-        ])
-        print(info)
-    return eval_info
+    assert len(results) == len(gt_infos)
+    gt_entities = label2entity(gt_infos)
+    pred_entities = []
+    for i, gt_info in enumerate(gt_infos):
+        text = gt_info['text']
+        line_entities = []
+        for result in results[i]:
+            if result[2] < len(text) and result[1] < len(text):
+                line_entities.append(result)
+        pred_entities.append(line_entities)
+    print('lens: {} vs {}'.format(len(pred_entities), len(gt_entities)))
+    assert len(pred_entities) == len(gt_entities)
+    class_info = pred_info(pred_entities, gt_entities)
+    return class_info
