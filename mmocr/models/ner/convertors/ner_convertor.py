@@ -160,33 +160,6 @@ class NerConvertor:
                         if entity[2] != -1:
                             entities.append(entity)
                         entity = [-1, -1, -1]
-
-                elif self.dict_type=="bioes":
-                    if tag.startswith("S-"):
-                        if entity[2] != -1:
-                            entities.append(entity)
-                        entity = [-1, -1, -1]
-                        entity[1] = indx
-                        entity[2] = indx
-                        entity[0] = tag.split('-')[1]
-                        entities.append(entity)
-                        entity = (-1, -1, -1)
-                    if tag.startswith("B-"):
-                        if entity[2] != -1:
-                            entities.append(entity)
-                        entity = [-1, -1, -1]
-                        entity[1] = indx
-                        entity[0] = tag.split('-')[1]
-                    elif tag.startswith('I-') and entity[1] != -1:
-                        _type = tag.split('-')[1]
-                        if _type == entity[0]:
-                            entity[2] = indx
-                        if indx == len(results) - 1:
-                            entities.append(entity)
-                    else:
-                        if entity[2] != -1:
-                            entities.append(entity)
-                        entity = [-1, -1, -1]
                 else:
                     raise NotImplementedError("The data format is not surpported now!")
             all_entities.append(entities)
