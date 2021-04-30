@@ -1,3 +1,7 @@
+categories = [
+    'address', 'book', 'company', 'game', 'government', 'movie', 'name',
+    'organization', 'position', 'scene'
+]
 # optimizer
 optimizer = dict(type='Adadelta', lr=0.1)
 optimizer_config = dict(grad_clip=dict(max_norm=0.5))
@@ -25,13 +29,21 @@ test_ann_file = 'data/cluener/dev.json'
 train_ann_file = 'data/cluener/train.json'
 vocab_file = 'data/cluener/vocab.txt'
 map_file = 'data/cluener/map_file.json'
-
+max_len = 128
 loader = dict(
     type='HardDiskLoader',
     repeat=1,
     parser=dict(type='LineJsonParser', keys=['text', 'label']))
 
+ner_convertor = dict(
+    type='NerConvertor',
+    dict_type='bio',
+    vocab_file=vocab_file,
+    categories=categories,
+    max_len=max_len)
+
 test_pipeline = [
+    dict(type='NerTransform', label_convertor=ner_convertor, max_len=max_len),
     dict(
         type='Collect',
         keys=['img'],
@@ -41,16 +53,8 @@ test_pipeline = [
         ])
 ]
 
-# label2id_convertor=dict(
-#     type='SegConvertor', dict_type='DICT36', with_unknown=True, lower=True)
-
-
-
 train_pipeline = [
-    # dict(
-    #     type='OCRSegTargets',
-    #     label_convertor=label2id_convertor,
-    #     box_type='char_quads'),
+    dict(type='NerTransform', label_convertor=ner_convertor, max_len=max_len),
     dict(
         type='Collect',
         keys=['img'],
@@ -58,7 +62,6 @@ train_pipeline = [
             'texts', 'img', 'labels', 'input_ids', 'attention_mask',
             'token_type_ids'
         ]),
-
 ]
 dataset_type = 'NerDataset'
 img_prefix = ''
@@ -69,10 +72,7 @@ train = dict(
     ann_file=train_ann_file,
     loader=loader,
     pipeline=train_pipeline,
-    test_mode=False,
-    vocab_file=vocab_file,
-    map_file=map_file,
-    max_len=128)
+    test_mode=False)
 
 test = dict(
     type=dataset_type,
@@ -80,10 +80,7 @@ test = dict(
     ann_file=test_ann_file,
     loader=loader,
     pipeline=test_pipeline,
-    test_mode=True,
-    vocab_file=vocab_file,
-    map_file=map_file,
-    max_len=128)
+    test_mode=True)
 data = dict(
     samples_per_gpu=8,
     workers_per_gpu=2,
@@ -111,11 +108,8 @@ model = dict(
         attention_probs_dropout_prob=0.1,
         intermediate_size=3072,
         hidden_act='gelu_new'),
-    decoder=dict(
-        type='FCDecoder',
-        num_labels=34,
-        hidden_dropout_prob=0.1,
-        hidden_size=768),
-    loss=dict(type='NerLoss', num_labels=34, loss_type='focal'))
+    decoder=dict(type='FCDecoder', hidden_dropout_prob=0.1, hidden_size=768),
+    loss=dict(type='NerLoss', loss_type='focal'),
+    label_convertor=ner_convertor)
 
 test_cfg = None

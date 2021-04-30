@@ -3,21 +3,6 @@ import json
 from mmocr.datasets.ner_dataset import NerDataset
 
 
-def _create_dummy_gt_file(ann_file):
-    dict_str = {
-        'text': '彭小军认为，国内银行现在走的是台湾的发卡模式',
-        'label': {
-            'address': {
-                '台湾': [[15, 16]]
-            },
-            'name': {
-                '彭小军': [[0, 2]]
-            }
-        }
-    }
-    with open(ann_file, 'w') as fw:
-        fw.write(json.dumps(dict_str, ensure_ascii=False) + '\n')
-    return ann_file
 
 
 def _create_dummy_loader():
@@ -31,11 +16,22 @@ def _create_dummy_loader():
 def test_ner_dataset():
     # test initialization
     loader = _create_dummy_loader()
-
+    categories = [
+        'address', 'book', 'company', 'game', 'government', 'movie', 'name',
+        'organization', 'position', 'scene'
+    ]
     ann_file = 'tests/data/ner_toy_dataset/eval_sample.json'
-    vocab_file = 'tests/data/ner_toy_dataset/vocab_sample.txt'
-    map_file = 'tests/data/ner_toy_dataset/map_file.json'
+    vocab_file = "tests/data/ner_toy_dataset/vocab_sample.txt"
+    max_len =128
+    ner_convertor = dict(
+        type='NerConvertor',
+        dict_type='bio',
+        vocab_file=vocab_file,
+        categories=categories,
+        max_len=max_len)
+
     test_pipeline = [
+        dict(type='NerTransform', label_convertor=ner_convertor, max_len=max_len),
         dict(
             type='Collect',
             keys=['img'],
@@ -47,9 +43,7 @@ def test_ner_dataset():
     dataset = NerDataset(
         ann_file,
         loader,
-        pipeline=test_pipeline,
-        vocab_file=vocab_file,
-        map_file=map_file,
+        pipeline=test_pipeline
     )
 
     # test pre_pipeline
@@ -71,20 +65,11 @@ def test_ner_dataset():
 
     ans = dataset._parse_anno_info(ann)
     assert isinstance(ans, dict)
-    assert 'img' in ans
+    assert 'text' in ans
     # test prepare_train_img
     dataset.prepare_train_img(0)
 
     # test evaluation
-    result = []
-    result.append([
-        31, 7, 17, 17, 31, 31, 31, 31, 31, 31, 13, 31, 31, 31, 31, 31, 1, 11,
-        31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
-        31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
-        31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
-        31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
-        31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31,
-        31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 1, 31, 31, 31, 31, 31,
-        31
-    ])
+    result = [[["address",15, 16],["name", 0, 2]]]
+
     dataset.evaluate(result)

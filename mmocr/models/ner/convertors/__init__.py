@@ -1,3 +1,3 @@
-from .bio_convertor import BIOConvertor
+from .ner_convertor import NerConvertor
 
-__all__=["BIOConvertor"]
+__all__ = ['NerConvertor']

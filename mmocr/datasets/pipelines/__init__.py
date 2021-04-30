@@ -3,6 +3,7 @@ from .custom_format_bundle import CustomFormatBundle
 from .dbnet_transforms import EastRandomCrop, ImgAug
 from .kie_transforms import KIEFormatBundle
 from .loading import LoadImageFromNdarray, LoadTextAnnotations
+from .ner_transforms import NerTransform
 from .ocr_seg_targets import OCRSegTargets
 from .ocr_transforms import (FancyPCA, NormalizeOCR, OnlineCropOCR,
                              OpencvToPil, PilToOpencv, RandomPaddingOCR,
@@ -22,5 +23,5 @@ __all__ = [
     'RandomCropPolyInstances', 'RandomRotatePolyInstances', 'RandomPaddingOCR',
     'ImgAug', 'EastRandomCrop', 'RandomRotateImageBox', 'OpencvToPil',
     'PilToOpencv', 'KIEFormatBundle', 'SquareResizePad', 'TextSnakeTargets',
-    'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8'
+    'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8', 'NerTransform'
 ]

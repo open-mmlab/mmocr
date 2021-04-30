@@ -22,7 +22,7 @@ class NerLoss(nn.Module):
         Args:
             logits: [N, C]
             img_metas (dict): A dict containing the following keys:
-                    - img (list]): This parameter is reserved and not used here.
+                    - img (list]): This parameter is reserved.
                     - labels (list[int]): []*max_len
                     - texts (list): []*max_len
                     - input_ids (list): []*max_len
@@ -40,7 +40,6 @@ class NerLoss(nn.Module):
             attention_masks.append(attention_mask)
         labels = torch.stack(labels, 0)
         attention_mask = torch.stack(attention_masks, 0)
-
 
         if self.loss_type == 'lsr':
             loss_fct = LabelSmoothingCrossEntropy(ignore_index=0)

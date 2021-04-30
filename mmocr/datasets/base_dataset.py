@@ -136,7 +136,6 @@ class BaseDataset(Dataset):
         """
         if self.test_mode:
             return self.prepare_test_img(index)
-
         while True:
             try:
                 data = self.prepare_train_img(index)
