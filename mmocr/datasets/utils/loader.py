@@ -39,6 +39,17 @@ class Loader:
         """Retrieve anno info of one instance with dict format."""
         return self.parser.get_item(self.ori_data_infos, index)
 
+    def __iter__(self):
+        self._n = 0
+        return self
+
+    def __next__(self):
+        if self._n < len(self):
+            data = self[self._n]
+            self._n += 1
+            return data
+        raise StopIteration
+
 
 @LOADERS.register_module()
 class HardDiskLoader(Loader):
