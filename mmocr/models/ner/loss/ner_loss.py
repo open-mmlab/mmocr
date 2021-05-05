@@ -42,15 +42,15 @@ class NerLoss(nn.Module):
 
         if self.loss_type == 'focal':
 
-            loss_fct = FocalLoss(ignore_index=0)
+            loss_function = FocalLoss(ignore_index=0)
         else:
-            loss_fct = CrossEntropyLoss(ignore_index=0)
+            loss_function = CrossEntropyLoss(ignore_index=0)
         # Only keep active parts of the loss
         if attention_mask is not None:
             active_loss = attention_mask.view(-1) == 1
             active_logits = logits.view(-1, self.num_labels)[active_loss]
             active_labels = labels.view(-1)[active_loss]
-            loss = loss_fct(active_logits, active_labels)
+            loss = loss_function(active_logits, active_labels)
         else:
-            loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
-        return loss
+            loss = loss_function(logits.view(-1, self.num_labels), labels.view(-1))
+        return {'loss_cls': loss}

@@ -32,7 +32,7 @@ class NerClassifier(BaseRecognizer):
         encode_out = self.encoder(img_metas)
         logits, _ = self.decoder(encode_out)
         loss = self.loss(logits, img_metas, device)
-        return {'loss_cls': loss}
+        return loss
 
     def forward_test(self, imgs, img_metas, **kwargs):
         encode_out = self.encoder(img_metas)

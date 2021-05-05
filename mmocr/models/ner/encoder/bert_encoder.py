@@ -8,7 +8,7 @@ from mmocr.models.ner.utils.bert import BertModel
 
 @ENCODERS.register_module()
 class BertEncoder(nn.Module):
-    """Ner encoder
+    """Bert encoder
     Args:
         num_hidden_layers (int): The number of hidden layers.
         initializer_range (float):

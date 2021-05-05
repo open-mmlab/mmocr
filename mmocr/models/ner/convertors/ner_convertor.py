@@ -6,6 +6,10 @@ class NerConvertor:
     """Convert between text, index and tensor for text recognize pipeline.
 
     Args:
+        annotation_type (str): BIO((B-begin, I-inside, O-outside)),
+                    BIOES(B-begin，I-inside，O-outside，E-end，S-single)
+        vocab_file (str): File to convert words to ids.
+        map_file (str): File to get label2id_dict and word2ids_dict.
     """
     unknown_id = 100
     start_id = 101
@@ -16,14 +20,6 @@ class NerConvertor:
                  vocab_file=None,
                  categories=None,
                  max_len=None):
-        """
-        Args:
-            annotation_type (str): BIO((B-begin, I-inside, O-outside)),
-                        BIOES(B-begin，I-inside，O-outside，E-end，S-single)
-            vocab_file (str): File to convert words to ids.
-            map_file (str): File to get label2id_dict and word2ids_dict.
-            max_len (int): The maximum reserved length of the input.
-        """
         self.annotation_type = annotation_type
         self.categories = categories
         self.word2ids = {}
@@ -74,7 +70,7 @@ class NerConvertor:
         Args:
             text (list[char]): Annotations of one paragraph.
         Returns:
-            ids (list): Corresponding IDs after conversion.
+            input_ids (list): Corresponding IDs after conversion.
         """
         ids = []
         for word in text.lower():
@@ -120,9 +116,8 @@ class NerConvertor:
         """Gets entities from preds.
         Args:
             preds (list): Sequence of preds.
-            id2label (dict): Dict for mapping ID to label.
         Returns:
-            entities (list): List of (entity_type, entity_start, entity_end).
+            all_entities (list): List of (entity_type, entity_start, entity_end).
         Example:
             preds = ['B-PER', 'I-PER', 'O', 'B-LOC']
             convert_pred2entities(seq)
