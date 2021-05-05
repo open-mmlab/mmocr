@@ -52,5 +52,6 @@ class NerLoss(nn.Module):
             active_labels = labels.view(-1)[active_loss]
             loss = loss_function(active_logits, active_labels)
         else:
-            loss = loss_function(logits.view(-1, self.num_labels), labels.view(-1))
+            loss = loss_function(
+                logits.view(-1, self.num_labels), labels.view(-1))
         return {'loss_cls': loss}

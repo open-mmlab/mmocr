@@ -27,7 +27,8 @@ def compute(origin, found, right):
     Args:
         origin (int): Original entities in groundtruth.
         found (int): Predicted entities from model.
-        right (int): Predicted entities that can match to the original annotation.
+        right (int): Predicted entities that
+                        can match to the original annotation.
     Returns:
         recall, precision, f1-score
     """

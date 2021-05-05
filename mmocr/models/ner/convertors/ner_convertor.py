@@ -117,7 +117,8 @@ class NerConvertor:
         Args:
             preds (list): Sequence of preds.
         Returns:
-            all_entities (list): List of (entity_type, entity_start, entity_end).
+            all_entities (list): List of (entity_type,
+                                entity_start, entity_end).
         Example:
             preds = ['B-PER', 'I-PER', 'O', 'B-LOC']
             convert_pred2entities(seq)
