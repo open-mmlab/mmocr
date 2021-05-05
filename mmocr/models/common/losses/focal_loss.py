@@ -5,6 +5,7 @@ import torch.nn.functional as F
 
 class FocalLoss(nn.Module):
     """Multi-class Focal loss implementation.
+
     Args:
         gamma (float): hyparam.
         weight (float): hyparam.

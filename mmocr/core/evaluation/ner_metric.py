@@ -95,7 +95,8 @@ def eval_ner(results, gt_infos):
         results (list): Predict results of entities.
         gt_infos (list[dict]): Groudtruth infomation contains text and label .
     Returns:
-        class_info (dict): precision,recall, f1-score of total and each catogory.
+        class_info (dict): precision,recall, f1-score of total
+                            and each catogory.
     """
     assert len(results) == len(gt_infos)
     gt_entities = label2entity(gt_infos)

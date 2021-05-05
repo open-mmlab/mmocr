@@ -46,9 +46,7 @@ class NerConvertor:
         self.num_labels = len(self.id2label)
 
     def _generate_labelid_dict(self):
-        """Generate a dictionary that maps input
-            to ID and ID to output.
-        """
+        """Generate a dictionary that maps input to ID and ID to output."""
         num_classes = len(self.categories)
         label2id_dict = {}
         ignore_id = 2 * num_classes + 1

@@ -22,7 +22,7 @@ def test_ner_dataset():
     max_len = 128
     ner_convertor = dict(
         type='NerConvertor',
-        dict_type='bio',
+        annotation_type='bio',
         vocab_file=vocab_file,
         categories=categories,
         max_len=max_len)
@@ -84,7 +84,7 @@ def test_ner_dataset():
         21, 21
     ]]
     convertor = NerConvertor(
-        dict_type='bio',
+        annotation_type='bio',
         vocab_file=vocab_file,
         categories=categories,
         max_len=128)
