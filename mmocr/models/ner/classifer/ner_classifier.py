@@ -41,13 +41,6 @@ class NerClassifier(BaseRecognizer):
         return pred_entities
 
     def aug_test(self, imgs, img_metas, **kwargs):
-        """Test function with test time augmentation.
-
-        Args:
-            imgs (list[Tensor]): Tensor should have a shape NxCxHxW,
-                which contains all images in the batch.
-            img_metas (List[List[dict]])
-        """
         pass
 
     def simple_test(self, img, img_metas, **kwargs):

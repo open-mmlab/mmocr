@@ -12,37 +12,33 @@ class NerConvertor:
     end_id = 102
 
     def __init__(self,
-                 dict_type='bio',
+                 annotation_type='bio',
                  vocab_file=None,
                  categories=None,
                  max_len=None):
         """
         Args:
-            dict_type (str):
+            annotation_type (str): BIO((B-begin, I-inside, O-outside)),
+                        BIOES(B-begin，I-inside，O-outside，E-end，S-single)
             vocab_file (str): File to convert words to ids.
             map_file (str): File to get label2id_dict and word2ids_dict.
             max_len (int): The maximum reserved length of the input.
-                dict_type: BIO((B-begin, I-inside, O-outside)),
-                        BIOES(B-begin，I-inside，O-outside，E-end，S-single)
-                vocab_file: File to convert words to ids.
-                categories: Entity types in this task.
-                max_len: The maximum reserved length of the input.
         """
-        self.dict_type = dict_type
+        self.annotation_type = annotation_type
         self.categories = categories
         self.word2ids = {}
         self.max_len = max_len
         assert self.max_len > 2
-        assert self.dict_type in ['bio', 'bioes']
+        assert self.annotation_type in ['bio', 'bioes']
 
         lines = open(vocab_file, encoding='utf-8').readlines()
         for i in range(len(lines)):
             self.word2ids.update({lines[i].rstrip(): i})
 
-        if self.dict_type == 'bio':
+        if self.annotation_type == 'bio':
             self.label2id_dict, self.id2label, self.ignore_id = \
                 self._generate_labelid_dict()
-        elif self.dict_type == 'bioes':
+        elif self.annotation_type == 'bioes':
             raise NotImplementedError('Bioes format is not surpported now!')
 
         assert self.ignore_id is not None
@@ -50,9 +46,8 @@ class NerConvertor:
         self.num_labels = len(self.id2label)
 
     def _generate_labelid_dict(self):
-        """
-
-        Returns:
+        """Generate a dictionary that maps input
+            to ID and ID to output.
         """
         num_classes = len(self.categories)
         label2id_dict = {}
@@ -146,7 +141,7 @@ class NerConvertor:
             for indx, tag in enumerate(results):
                 if not isinstance(tag, str):
                     tag = self.id2label[tag]
-                if self.dict_type == 'bio':
+                if self.annotation_type == 'bio':
                     if tag.startswith('B-'):
                         if entity[2] != -1:
                             entities.append(entity)

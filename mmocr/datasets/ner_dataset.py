@@ -32,7 +32,7 @@ class NerDataset(BaseDataset):
         Args:
             ann (dict): Annotations of texts and labels for one text
         Returns:
-            ans: A dict.
+            A dict.
         """
         text = ann['text']
         label = ann['label']

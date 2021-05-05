@@ -4,7 +4,12 @@ import torch.nn.functional as F
 
 
 class FocalLoss(nn.Module):
-    """Multi-class Focal loss implementation."""
+    """Multi-class Focal loss implementation.
+    Args:
+        gamma (float): hyparam.
+        weight (float): hyparam.
+        ignore index (int): ignore index in label.
+    """
 
     def __init__(self, gamma=2, weight=None, ignore_index=-100):
         super().__init__()
@@ -13,10 +18,6 @@ class FocalLoss(nn.Module):
         self.ignore_index = ignore_index
 
     def forward(self, input, target):
-        """
-        input: [N, C]
-        target: [N, ]
-        """
         logpt = F.log_softmax(input, dim=1)
         pt = torch.exp(logpt)
         logpt = (1 - pt)**self.gamma * logpt

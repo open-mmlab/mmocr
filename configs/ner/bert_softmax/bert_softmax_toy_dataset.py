@@ -36,7 +36,7 @@ loader = dict(
 
 ner_convertor = dict(
     type='NerConvertor',
-    dict_type='bio',
+    annotation_type='bio',
     vocab_file=vocab_file,
     categories=categories,
     max_len=max_len)
