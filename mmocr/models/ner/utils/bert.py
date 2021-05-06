@@ -20,7 +20,7 @@ class BertModel(nn.Module):
         layer_norm_eps (float): eps.
         hidden_dropout_prob (float): The dropout probability of hidden layer.
         output_attentions (bool):  Whether use the attentions in output
-        output_hidden_states (bool): Whether use the hidden_states in output
+        output_hidden_states (bool): Whether use the hidden_states in output.
         num_attention_heads (int): The number of attention heads.
         attention_probs_dropout_prob (float): The dropout probability
             of attention.
@@ -139,7 +139,7 @@ class BertModel(nn.Module):
 class BertEmbeddings(nn.Module):
     """Construct the embeddings from word, position and token_type embeddings.
 
-    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
     Args:
         vocab_size (int): Number of words supported.
         hidden_size (int): Hidden size.
@@ -264,7 +264,7 @@ class BertPooler(nn.Module):
 class BertLayer(nn.Module):
     """Bert layer.
 
-    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch
+    The code is adapted from https://github.com/lonePatient/BERT-NER-Pytorch.
     """
 
     def __init__(self,
@@ -354,8 +354,8 @@ class BertSelfAttention(nn.Module):
                                         key_layer.transpose(-1, -2))
         attention_scores = attention_scores / math.sqrt(self.att_head_size)
         if attention_mask is not None:
-            # Apply the attention mask is (precomputed for
-            # all layers in BertModel forward() function)
+            # Apply the attention mask is precomputed for
+            # all layers in BertModel forward() function.
             attention_scores = attention_scores + attention_mask
 
         # Normalize the attention scores to probabilities.
@@ -365,7 +365,7 @@ class BertSelfAttention(nn.Module):
         # seem a bit unusual, but is taken from the original Transformer paper.
         attention_probs = self.dropout(attention_probs)
 
-        # Mask heads if we want to
+        # Mask heads if we want to.
         if head_mask is not None:
             attention_probs = attention_probs * head_mask
 

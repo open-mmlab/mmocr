@@ -114,19 +114,15 @@ class NerConvertor:
 
     def convert_pred2entities(self, preds):
         """Gets entities from preds.
+
         Args:
             preds (list): Sequence of preds.
         Returns:
-            all_entities (list): List of (entity_type,
-                                entity_start, entity_end).
-        Example:
-            preds = ['B-PER', 'I-PER', 'O', 'B-LOC']
-            convert_pred2entities(seq)
-            #output
-            [['PER', 0,1], ['LOC', 3, 3]]
+            pred_entities (list): List of [[[entity_type,
+                                entity_start, entity_end]]].
         """
 
-        all_entities = []
+        pred_entities = []
         assert isinstance(preds, list)
         for pred in preds:
             entities = []
@@ -159,5 +155,5 @@ class NerConvertor:
                 else:
                     raise NotImplementedError(
                         'The data format is not surpported now!')
-            all_entities.append(entities)
-        return all_entities
+            pred_entities.append(entities)
+        return pred_entities

@@ -25,10 +25,7 @@ class FCDecoder(nn.Module):
         sequence_output = outputs[0]
         sequence_output = self.dropout(sequence_output)
         logits = self.classifier(sequence_output)
-        outputs = (logits, ) + outputs[
-            2:]  # add hidden states and attention if they are here
-
-        softmax = F.softmax(outputs[0], dim=2)
+        softmax = F.softmax(logits, dim=2)
         preds = softmax.detach().cpu().numpy()
         preds = np.argmax(preds, axis=2).tolist()
         return logits, preds

@@ -30,7 +30,9 @@ def compute(origin, found, right):
         right (int): Predicted entities that
                         can match to the original annotation.
     Returns:
-        recall, precision, f1-score
+        recall (float): Metric of recall.
+        precision (float): Metric of precision.
+        f1 (float): Metric of f1-score.
     """
     recall = 0 if origin == 0 else (right / origin)
     precision = 0 if found == 0 else (right / found)
