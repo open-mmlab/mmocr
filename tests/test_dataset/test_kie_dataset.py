@@ -94,6 +94,8 @@ def test_kie_dataset():
         'text': 'store',
         'box': [11.0, 0.0, 22.0, 0.0, 12.0, 12.0, 0.0, 12.0]
     }]
+    dataset._parse_anno_info(tmp_annos)
+    tmp_annos = [{'text': 'store'}]
     with pytest.raises(AssertionError):
         dataset._parse_anno_info(tmp_annos)
 
