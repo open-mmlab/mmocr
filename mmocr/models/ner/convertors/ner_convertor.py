@@ -3,7 +3,7 @@ from mmocr.models.builder import CONVERTORS
 
 @CONVERTORS.register_module()
 class NerConvertor:
-    """Convert between text, index and tensor for text recognize pipeline.
+    """Convert between text, index and tensor for NER pipeline.
 
     Args:
         annotation_type (str): BIO((B-begin, I-inside, O-outside)),

@@ -22,7 +22,7 @@ def label2entity(gt_infos):
 
 
 def compute(origin, found, right):
-    """Calculate recall, precision, f1.
+    """Calculate recall, precision, f1-score.
 
     Args:
         origin (int): Original entities in groundtruth.
