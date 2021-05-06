@@ -132,7 +132,7 @@ class NerConvertor:
             entities = []
             entity = [-1, -1, -1]
             results = pred[1:]
-            for indx, tag in enumerate(results):
+            for index, tag in enumerate(results):
                 if not isinstance(tag, str):
                     tag = self.id2label[tag]
                 if self.annotation_type == 'bio':
@@ -140,17 +140,17 @@ class NerConvertor:
                         if entity[2] != -1:
                             entities.append(entity)
                         entity = [-1, -1, -1]
-                        entity[1] = indx
+                        entity[1] = index
                         entity[0] = tag.split('-')[1]
-                        entity[2] = indx
-                        if indx == len(results) - 1:
+                        entity[2] = index
+                        if index == len(results) - 1:
                             entities.append(entity)
                     elif tag.startswith('I-') and entity[1] != -1:
                         _type = tag.split('-')[1]
                         if _type == entity[0]:
-                            entity[2] = indx
+                            entity[2] = index
 
-                        if indx == len(results) - 1:
+                        if index == len(results) - 1:
                             entities.append(entity)
                     else:
                         if entity[2] != -1:
