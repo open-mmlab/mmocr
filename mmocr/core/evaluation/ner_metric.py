@@ -108,8 +108,11 @@ def eval_ner(results, gt_infos):
         text = gt_info['text']
         line_entities = []
         for result in results[i]:
-            if result[2] < len(text) and result[1] < len(text):
-                line_entities.append(result)
+            if result[1] < len(text):
+                if result[2] > len(text):
+                    result[2] = len(text)
+                if result[2] - result[1] > 0:
+                    line_entities.append(result)
         pred_entities.append(line_entities)
     print('lens: {} vs {}'.format(len(pred_entities), len(gt_entities)))
     assert len(pred_entities) == len(gt_entities)
