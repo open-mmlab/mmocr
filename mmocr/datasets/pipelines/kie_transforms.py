@@ -47,7 +47,8 @@ class KIEFormatBundle(DefaultFormatBundle):
                     else:
                         sx, sy = results['scale_factor'][:2]
                     r = sx / sy
-                    value = value * np.array([sx, sy, r, 1, r])[None, None]
+                    factor = np.array([sx, sy, r, 1, r]).astype(np.float32)
+                    value = value * factor[None, None]
                 results[key] = DC(to_tensor(value))
         return results
 
