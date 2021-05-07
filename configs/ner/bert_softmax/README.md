@@ -28,6 +28,6 @@
 
 ## Results and models
 
-|                                 Method                                 |     Precision      |     Recall     |  F1-Score |                                                                                            Download                                                                                            |
-| :--------------------------------------------------------------------: | :--------------:  | :--------------: | :------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|   [bert_softmax](/configs/ner/bert_softmax/bert_softmax_cluener_18e.py)    | 0.7793 |  0.7920 |  0.7856     |
+|                                 Method                                 |  Precision  |   Recall  |  F1-Score |                Download                 |
+| :--------------------------------------------------------------------: |:-----------:| :--------:| :-------: | :-------------------------------------: |
+|   [bert_softmax](/configs/ner/bert_softmax/bert_softmax_cluener_18e.py)|  0.7793     |    0.7920 |  0.7856   |  [model](https://download.openmmlab.com/mmocr/ner/bert_softmax/bert_softmax_cluener_18e-d96b4a2c.pth) \| [log](https://download.openmmlab.com/mmocr/ner/bert_softmax/20210506_215252.log.json) |

@@ -9,9 +9,9 @@ categories = [
 ]
 
 img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-test_ann_file = 'data/cluener/dev.json'
-train_ann_file = 'data/cluener/train.json'
-vocab_file = 'data/cluener/vocab.txt'
+test_ann_file = 'data/cluener_public/dev.json'
+train_ann_file = 'data/cluener_public/train.json'
+vocab_file = 'data/cluener_public/vocab.txt'
 max_len = 128
 loader = dict(
     type='HardDiskLoader',
