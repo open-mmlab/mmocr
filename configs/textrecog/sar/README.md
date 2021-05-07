@@ -52,24 +52,11 @@
 
 ## Chinese Dataset
 
-### Train Dataset
-
-|  trainset  | instance_num | repeat_num |          source          |
-| :--------: | :----------: | :--------: | :----------------------: |
-| chineseocr |     3694909  |     1      |           synth          |
-
-
-### Test Dataset
-
-| testset | instance_num |            type             |
-| :-----: | :----------: | :-------------------------: |
-| chineseocr|     18547  |           synth             |
-
 ## Results and Models
 
-|Methods|  Backbone   |  Decoder | testset|| download |
-| :-----: | :------: | :-------: | :----: | :-------: | :---: |
-| [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_chineseocr.py)  | R31-1/8-1/4 |  ParallelSARDecoder  |  85.7  ||  [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210506_225557.log.json)  |
+|Methods|  Backbone   |  Decoder || download |
+| :-----: | :------: | :-------: | :-------: | :---: |
+| [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_chineseocr.py)  | R31-1/8-1/4 |  ParallelSARDecoder ||  [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210506_225557.log.json)  |
 
 **Notes:**
 
