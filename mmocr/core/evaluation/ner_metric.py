@@ -48,7 +48,8 @@ def pred_info(pred_entities, gt_entities):
         pred_entities: The predicted entities from model.
         gt_entities: The entities of ground truth file.
     Returns:
-        class_info (dict): precision,recall, f1-score in total and catogories.
+        class_info (dict): precision,recall, f1-score in total
+                        and each catogories.
     """
     origins = []
     founds = []
@@ -79,15 +80,11 @@ def pred_info(pred_entities, gt_entities):
     found = len(founds)
     right = len(rights)
     recall, precision, f1 = compute(origin, found, right)
-
-    for key in sorted(class_info.keys()):
-        print('******* %s results ********' % key)
-        info = '-'.join([
-            f' {key}: {value:.4f} ' for key, value in class_info[key].items()
-        ])
-        print(info)
-
-    print({'precision': precision, 'recall': recall, 'f1': f1})
+    class_info['all'] = {
+        'precision': round(precision, 4),
+        'recall': round(recall, 4),
+        'f1': round(f1, 4)
+    }
     return class_info
 
 

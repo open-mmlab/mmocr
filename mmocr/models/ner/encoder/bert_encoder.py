@@ -16,7 +16,7 @@ class BertEncoder(nn.Module):
         hidden_size (int): Hidden size.
         max_position_embeddings (int): Max positionsembedding size.
         type_vocab_size (int): The size of type_vocab.
-        layer_norm_eps (float): eps.
+        layer_norm_eps (float): Epsilon of layer norm.
         hidden_dropout_prob (float): The dropout probability of hidden layer.
         output_attentions (bool):  Whether use the attentions in output.
         output_hidden_states (bool): Whether use the hidden_states in output.
@@ -24,7 +24,7 @@ class BertEncoder(nn.Module):
         attention_probs_dropout_prob (float): The dropout probability
             of attention.
         intermediate_size (int): The size of intermediate layer.
-        hidden_act (str):  hidden layer activation.
+        hidden_act (str):  Hidden layer activation.
     """
 
     def __init__(self,

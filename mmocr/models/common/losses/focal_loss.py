@@ -7,9 +7,9 @@ class FocalLoss(nn.Module):
     """Multi-class Focal loss implementation.
 
     Args:
-        gamma (float): hyparam.
-        weight (float): hyparam.
-        ignore index (int): ignore index in label.
+        gamma (float): Hyparam.
+        weight (float): Hyparam.
+        ignore index (int): Ignore index in label.
     """
 
     def __init__(self, gamma=2, weight=None, ignore_index=-100):

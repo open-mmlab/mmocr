@@ -8,7 +8,7 @@ from mmocr.models.common.losses.focal_loss import FocalLoss
 
 @LOSSES.register_module()
 class NerLoss(nn.Module):
-    """The implementation the loss of named entity recognizier."""
+    """The implementation the loss for named entity recognizier."""
 
     def __init__(self, num_labels=None, loss_type=None, **kwargs):
         super().__init__()

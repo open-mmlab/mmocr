@@ -11,11 +11,11 @@ class NerTransform:
         self.label_convertor = build_convertor(label_convertor)
         self.max_len = max_len
 
-    def __call__(self, results):
-        texts = results['text']
+    def __call__(self, inputs):
+        texts = inputs['text']
         input_ids = self.label_convertor.convert_text2id(texts)
         labels = self.label_convertor.conver_entity2label(
-            results['label'], len(texts))
+            inputs['label'], len(texts))
 
         attention_mask = [0] * self.max_len
         token_type_ids = [0] * self.max_len
@@ -23,11 +23,11 @@ class NerTransform:
         # so the mask length is increased by 2
         for i in range(len(texts) + 2):
             attention_mask[i] = 1
-        ans = dict(
+        results = dict(
             img=input_ids,
             labels=labels,
             texts=texts,
             input_ids=input_ids,
             attention_mask=attention_mask,
             token_type_ids=token_type_ids)
-        return ans
+        return results

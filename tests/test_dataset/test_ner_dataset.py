@@ -17,7 +17,7 @@ def test_ner_dataset():
         'address', 'book', 'company', 'game', 'government', 'movie', 'name',
         'organization', 'position', 'scene'
     ]
-    ann_file = 'tests/data/ner_toy_dataset/eval_sample.json'
+    ann_file = 'tests/data/ner_toy_dataset/train_sample.json'
     vocab_file = 'tests/data/ner_toy_dataset/vocab_sample.txt'
     max_len = 128
     ner_convertor = dict(
