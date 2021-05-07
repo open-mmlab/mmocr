@@ -3,7 +3,7 @@ categories = [
     'organization', 'position', 'scene'
 ]
 # optimizer
-optimizer = dict(type='Adadelta', lr=1.0)
+optimizer = dict(type='Adadelta', lr=0.5)
 optimizer_config = dict(grad_clip=dict(max_norm=0.5))
 # learning policy
 lr_config = dict(policy='step', step=[8, 14, 16])
@@ -81,7 +81,7 @@ test = dict(
     pipeline=test_pipeline,
     test_mode=True)
 data = dict(
-    samples_per_gpu=8,
+    samples_per_gpu=24,
     workers_per_gpu=2,
     train=dict(type='ConcatDataset', datasets=[train]),
     val=dict(type='ConcatDataset', datasets=[test]),
@@ -108,7 +108,7 @@ model = dict(
         intermediate_size=3072,
         hidden_act='gelu_new'),
     decoder=dict(type='FCDecoder', hidden_dropout_prob=0.1, hidden_size=768),
-    loss=dict(type='NerLoss', loss_type='focal'),
+    loss=dict(type='NerLoss', loss_type='ce'),
     label_convertor=ner_convertor)
 
 test_cfg = None
