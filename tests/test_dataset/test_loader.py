@@ -60,6 +60,15 @@ def test_loader():
     text_loader = HardDiskLoader(ann_file, json_parser, repeat=1)
     assert text_loader[0] == {'filename': 'sample1.jpg', 'text': 'hello'}
 
+    # test text loader and linedict parser
+    _create_dummy_line_json_file(ann_file)
+    json_parser = dict(type='LineJsonParser', keys=['filename', 'text'])
+    text_loader = HardDiskLoader(ann_file, json_parser, repeat=1)
+    it = iter(text_loader)
+    with pytest.raises(StopIteration):
+        for _ in range(len(text_loader) + 1):
+            next(it)
+
     # test lmdb loader and line str parser
     _create_dummy_line_str_file(ann_file)
     lmdb_file = osp.join(tmp_dir.name, 'fake_data.lmdb')
