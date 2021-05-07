@@ -209,14 +209,7 @@ def main():
             ]:
                 eval_kwargs.pop(key, None)
             eval_kwargs.update(dict(metric=args.eval, **kwargs))
-            results = dataset.evaluate(outputs, **eval_kwargs)
-            for key in results.keys():
-                print('%s:' % key)
-                info = '-'.join([
-                    f' {key}: {value:.4f} '
-                    for key, value in results[key].items()
-                ])
-                print(info)
+            print(dataset.evaluate(outputs, **eval_kwargs))
 
 
 if __name__ == '__main__':
