@@ -15,15 +15,15 @@
 ## Dataset
 
 ### Train Dataset
-|  trainset  | text_num | entity_categories |
+|  trainset  | text_num | entity_num |
 | :--------: | :----------: | :--------: |
-| CLUENER2020 |     10748     |     10     |
+| CLUENER2020 |     10748     |     23338     |
 
 ### Test Dataset
 
 |  testset  | text_num | entity_categories |
 | :--------: | :----------: | :--------: |
-| CLUENER2020 |     1343     |     10     |
+| CLUENER2020 |     1343     |     2982     |
 
 
 ## Results and models

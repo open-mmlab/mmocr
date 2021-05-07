@@ -11,11 +11,11 @@ class NerTransform:
         self.label_convertor = build_convertor(label_convertor)
         self.max_len = max_len
 
-    def __call__(self, inputs):
-        texts = inputs['text']
+    def __call__(self, results):
+        texts = results['text']
         input_ids = self.label_convertor.convert_text2id(texts)
         labels = self.label_convertor.conver_entity2label(
-            inputs['label'], len(texts))
+            results['label'], len(texts))
 
         attention_mask = [0] * self.max_len
         token_type_ids = [0] * self.max_len

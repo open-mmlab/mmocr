@@ -70,5 +70,5 @@ class NerDataset(BaseDataset):
         gt_infos = []
         for i in range(len(self)):
             gt_infos.append(self.data_infos[i])
-        info = eval_ner(results, gt_infos)
-        return info
+        eval_results = eval_ner(results, gt_infos)
+        return eval_results
