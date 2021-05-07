@@ -1,28 +1,12 @@
+_base_ = [
+    'configs/_base_/schedules/schedule_adadelta_18e.py',
+    'configs/_base_/default_runtime.py'
+]
+
 categories = [
     'address', 'book', 'company', 'game', 'government', 'movie', 'name',
     'organization', 'position', 'scene'
 ]
-# optimizer
-optimizer = dict(type='Adadelta', lr=0.1)
-optimizer_config = dict(grad_clip=dict(max_norm=0.5))
-# learning policy
-lr_config = dict(policy='step', step=[8, 14, 16])
-total_epochs = 18
-
-checkpoint_config = dict(interval=1)
-# yapf:disable
-log_config = dict(
-    interval=5,
-    hooks=[
-        dict(type='TextLoggerHook')
-
-    ])
-# yapf:enable
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
-load_from = None
-resume_from = None
-workflow = [('train', 1)]
 
 img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 test_ann_file = 'tests/data/ner_toy_dataset/train_sample.json'
