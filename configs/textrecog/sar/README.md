@@ -50,6 +50,27 @@
 | [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_academic.py)  | R31-1/8-1/4 |  ParallelSARDecoder  |  95.0  |     89.6     | 93.7  |       | 79.0  |      82.2      | 88.9  |  [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210327_154129.log.json)  |
 | [SAR](configs/textrecog/sar/sar_r31_sequential_decoder_academic.py) | R31-1/8-1/4 | SequentialSARDecoder |  95.2  |     88.7     | 92.4  |       | 78.2  |      81.9      | 89.6  | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_sequential_decoder_academic-d06c9a8e.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210330_105728.log.json) |
 
+## Chinese Dataset
+
+### Train Dataset
+
+|  trainset  | instance_num | repeat_num |          source          |
+| :--------: | :----------: | :--------: | :----------------------: |
+| chineseocr |     3694909  |     1      |           synth          |
+
+
+### Test Dataset
+
+| testset | instance_num |            type             |
+| :-----: | :----------: | :-------------------------: |
+| chineseocr|     18547  |           synth             |
+
+## Results and Models
+
+|Methods|  Backbone   |  Decoder | testset|| download |
+| :-----: | :------: | :-------: | :----: | :-------: | :---: |
+| [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_chineseocr.py)  | R31-1/8-1/4 |  ParallelSARDecoder  |  85.7  ||  [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210506_225557.log.json)  |
+
 **Notes:**
 
 -   `R31-1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.
