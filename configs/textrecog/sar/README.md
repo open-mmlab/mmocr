@@ -56,7 +56,7 @@
 
 |Methods|  Backbone   |  Decoder || download |
 | :-----: | :------: | :-------: | :-------: | :---: |
-| [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_chineseocr.py)  | R31-1/8-1/4 |  ParallelSARDecoder ||  [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210506_225557.log.json)  |
+| [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_chineseocr.py)  | R31-1/8-1/4 |  ParallelSARDecoder ||  [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210506_225557.log.json) \| [dict](https://download.openmmlab.com/mmocr/textrecog/sar/dict_printed_chinese_english_digits.txt)  |
 
 **Notes:**
 
