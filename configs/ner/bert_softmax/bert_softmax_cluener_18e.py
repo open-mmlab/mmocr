@@ -1,6 +1,6 @@
 _base_ = [
-    'configs/_base_/schedules/schedule_adadelta_18e.py',
-    'configs/_base_/default_runtime.py'
+    '../../_base_/schedules/schedule_adadelta_18e.py',
+    '../../_base_/default_runtime.py'
 ]
 
 categories = [
