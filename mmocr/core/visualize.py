@@ -1,4 +1,7 @@
 import math
+import os
+import shutil
+import urllib
 import warnings
 
 import cv2
@@ -6,6 +9,7 @@ import mmcv
 import numpy as np
 import torch
 from matplotlib import pyplot as plt
+from PIL import Image, ImageDraw, ImageFont
 
 import mmocr.utils as utils
 
@@ -348,16 +352,22 @@ def imshow_text_label(img,
     resize_width = int(1.0 * src_w / src_h * resize_height)
     img = cv2.resize(img, (resize_width, resize_height))
     h, w = img.shape[:2]
-    pred_img = np.ones((h, w, 3), dtype=np.uint8) * 255
-    gt_img = np.ones((h, w, 3), dtype=np.uint8) * 255
 
-    cv2.putText(pred_img, pred_label, (5, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.9,
-                (0, 0, 255), 2)
+    if is_contain_chinese(pred_label):
+        pred_img = draw_texts_by_pil(img, [pred_label], None)
+    else:
+        pred_img = np.ones((h, w, 3), dtype=np.uint8) * 255
+        cv2.putText(pred_img, pred_label, (5, 40), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.9, (0, 0, 255), 2)
     images = [pred_img, img]
 
     if gt_label != '':
-        cv2.putText(gt_img, gt_label, (5, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.9,
-                    (255, 0, 0), 2)
+        if is_contain_chinese(gt_label):
+            gt_img = draw_texts_by_pil(img, [gt_label], None)
+        else:
+            gt_img = np.ones((h, w, 3), dtype=np.uint8) * 255
+            cv2.putText(gt_img, gt_label, (5, 40), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.9, (255, 0, 0), 2)
         images.append(gt_img)
 
     img = tile_image(images)
@@ -504,6 +514,62 @@ def draw_texts(img, boxes, texts):
     return out_img
 
 
+def draw_texts_by_pil(img, texts, boxes=None):
+    """Draw boxes and texts on empty image, especially for Chinese.
+
+    Args:
+        img (np.ndarray): The original image.
+        texts (list[str]): Recognized texts.
+        boxes (list[list[float]]): Detected bounding boxes.
+    Return:
+        out_img (np.ndarray): Visualized text image.
+    """
+
+    color_list = gen_color()
+    h, w = img.shape[:2]
+    if boxes is None:
+        boxes = [[0, 0, w, 0, w, h, 0, h]]
+
+    out_img = Image.new('RGB', (w, h), color=(255, 255, 255))
+    out_draw = ImageDraw.Draw(out_img)
+    for idx, (box, text) in enumerate(zip(boxes, texts)):
+        min_x, max_x = min(box[0::2]), max(box[0::2])
+        min_y, max_y = min(box[1::2]), max(box[1::2])
+        color = tuple(list(color_list[idx % len(color_list)])[::-1])
+        out_draw.line(box, fill=color, width=1)
+        box_width = max(max_x - min_x, max_y - min_y)
+        font_size = int(0.9 * box_width / len(text))
+        dirname, _ = os.path.split(os.path.abspath(__file__))
+        font_path = os.path.join(dirname, 'font.TTF')
+        if not os.path.exists(font_path):
+            url = ('http://download.openmmlab.com/mmocr/data/font.TTF')
+            print(f'Downloading {url} ...')
+            local_filename, _ = urllib.request.urlretrieve(url)
+            shutil.move(local_filename, font_path)
+        fnt = ImageFont.truetype(font_path, font_size)
+        out_draw.text((min_x + 1, min_y + 1), text, font=fnt, fill=(0, 0, 0))
+
+    del out_draw
+
+    out_img = cv2.cvtColor(np.asarray(out_img), cv2.COLOR_RGB2BGR)
+
+    return out_img
+
+
+def is_contain_chinese(check_str):
+    """Check whether string contains Chinese or not.
+
+    Args:
+        check_str (str): String to be checked.
+
+    Return True if contains Chinese, else False.
+    """
+    for ch in check_str:
+        if u'\u4e00' <= ch <= u'\u9fff':
+            return True
+    return False
+
+
 def det_recog_show_result(img, end2end_res):
     """Draw `result`(boxes and texts) on `img`.
     Args:
@@ -519,7 +585,11 @@ def det_recog_show_result(img, end2end_res):
         boxes.append(res['box'])
         texts.append(res['text'])
     box_vis_img = draw_polygons(img, boxes)
-    text_vis_img = draw_texts(img, boxes, texts)
+
+    if is_contain_chinese(''.join(texts)):
+        text_vis_img = draw_texts_by_pil(img, texts, boxes)
+    else:
+        text_vis_img = draw_texts(img, boxes, texts)
 
     h, w = img.shape[:2]
     out_img = np.ones((h, w * 2, 3), dtype=np.uint8)

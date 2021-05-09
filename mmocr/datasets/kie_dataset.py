@@ -82,7 +82,6 @@ class KIEDataset(BaseDataset):
         assert utils.is_type_list(annotations, dict)
         assert 'box' in annotations[0]
         assert 'text' in annotations[0]
-        assert 'label' in annotations[0]
 
         boxes, texts, text_inds, labels, edges = [], [], [], [], []
         for ann in annotations:
@@ -208,6 +207,6 @@ class KIEDataset(BaseDataset):
         dy = (y1.T - y1) / self.norm
         xhh, xwh = h.T / h, w.T / h
         whs = w / h + np.zeros_like(xhh)
-        relation = np.stack([dx, dy, whs, xhh, xwh], -1)
+        relation = np.stack([dx, dy, whs, xhh, xwh], -1).astype(np.float32)
         bboxes = np.concatenate([x1, y1, x2, y2], -1).astype(np.float32)
         return relation, bboxes
