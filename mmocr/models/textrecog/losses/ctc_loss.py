@@ -54,8 +54,7 @@ class CTCLoss(nn.Module):
                 targets[idx, :valid_len] = tensor[:valid_len]
 
         target_lengths = targets_dict['target_lengths']
-        target_lengths = torch.clamp(
-            target_lengths, min=1, max=seq_len - 1).long()
+        target_lengths = torch.clamp(target_lengths, min=1, max=seq_len).long()
 
         loss_ctc = self.ctc_loss(outputs_for_loss, targets, input_lengths,
                                  target_lengths)
