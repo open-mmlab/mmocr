@@ -8,7 +8,6 @@ categories = [
     'organization', 'position', 'scene'
 ]
 
-img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 test_ann_file = 'data/cluener_public/dev.json'
 train_ann_file = 'data/cluener_public/train.json'
 vocab_file = 'data/cluener_public/vocab.txt'

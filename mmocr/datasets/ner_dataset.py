@@ -65,7 +65,7 @@ class NerDataset(BaseDataset):
                 related information during evaluation. Default: None.
         Returns:
             info (dict): A dict containing the following keys:
-             'acc', 'recall', 'f1'.
+             'acc', 'recall', 'f1-score'.
         """
         gt_infos = []
         for i in range(len(self)):

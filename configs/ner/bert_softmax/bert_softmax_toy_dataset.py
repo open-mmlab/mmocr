@@ -8,7 +8,6 @@ categories = [
     'organization', 'position', 'scene'
 ]
 
-img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 test_ann_file = 'tests/data/ner_toy_dataset/train_sample.json'
 train_ann_file = 'tests/data/ner_toy_dataset/train_sample.json'
 vocab_file = 'tests/data/ner_toy_dataset/vocab_sample.txt'

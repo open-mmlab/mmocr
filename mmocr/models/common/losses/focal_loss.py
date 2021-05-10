@@ -7,8 +7,8 @@ class FocalLoss(nn.Module):
     """Multi-class Focal loss implementation.
 
     Args:
-        gamma (float): Hyper-parameter..
-        weight (float): Hyper-parameter..
+        gamma (float): Hyper-parameter.
+        weight (float): Hyper-parameter.
         ignore index (int): Ignore index in label.
     """
 

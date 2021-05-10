@@ -74,7 +74,7 @@ def pred_info(pred_entities, gt_entities):
         class_info[type_] = {
             'precision': round(precision, 4),
             'recall': round(recall, 4),
-            'f1': round(f1, 4)
+            'f1-score': round(f1, 4)
         }
     origin = len(origins)
     found = len(founds)
@@ -83,7 +83,7 @@ def pred_info(pred_entities, gt_entities):
     class_info['all'] = {
         'precision': round(precision, 4),
         'recall': round(recall, 4),
-        'f1': round(f1, 4)
+        'f1-score': round(f1, 4)
     }
     return class_info
 

@@ -19,7 +19,7 @@ class NerLoss(nn.Module):
     def forward(self, logits, img_metas, device):
         '''Loss forword.
         Args:
-            logits: [N, C]
+            logits: Model output with shape [N, C].
             img_metas (dict): A dict containing the following keys:
                     - img (list]): This parameter is reserved.
                     - labels (list[int]): []*max_len
@@ -27,7 +27,7 @@ class NerLoss(nn.Module):
                     - input_ids (list): []*max_len
                     - attention_mask (list): []*max_len
                     - token_type_ids (list): []*max_len
-            device (str): cuda or cpu
+            device (str): Cuda or cpu.
         '''
         labels = []
         attention_masks = []
@@ -41,7 +41,6 @@ class NerLoss(nn.Module):
         attention_mask = torch.stack(attention_masks, 0)
 
         if self.loss_type == 'focal':
-
             loss_function = FocalLoss(ignore_index=0)
         else:
             loss_function = CrossEntropyLoss(ignore_index=0)

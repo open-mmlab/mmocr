@@ -9,21 +9,28 @@ class NerConvertor:
         annotation_type (str): BIO((B-begin, I-inside, O-outside)),
                     BIOES(B-begin，I-inside，O-outside，E-end，S-single)
         vocab_file (str): File to convert words to ids.
-        map_file (str): File to get label2id_dict and word2ids_dict.
+        categories (list[str]): All entity categories supported by the model.
+        max_len (int): The maximum length of the input text.
+        unknown_id (int): For words that do not appear in vocab.txt.
+        start_id (int): Each input is prefixed with an input ID.
+        end_id (int): Each output is prefixed with an output ID.
     """
-    unknown_id = 100
-    start_id = 101
-    end_id = 102
 
     def __init__(self,
                  annotation_type='bio',
                  vocab_file=None,
                  categories=None,
-                 max_len=None):
+                 max_len=None,
+                 unknown_id=100,
+                 start_id=101,
+                 end_id=102):
         self.annotation_type = annotation_type
         self.categories = categories
         self.word2ids = {}
         self.max_len = max_len
+        self.unknown_id = unknown_id
+        self.start_id = start_id
+        self.end_id = end_id
         assert self.max_len > 2
         assert self.annotation_type in ['bio', 'bioes']
 
