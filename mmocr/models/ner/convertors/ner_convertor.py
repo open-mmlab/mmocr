@@ -7,7 +7,7 @@ class NerConvertor:
 
     Args:
         annotation_type (str): BIO((B-begin, I-inside, O-outside)),
-                    BIOES(B-begin，I-inside，O-outside，E-end，S-single)
+                    BIOES(B-begin, I-inside, O-outside, E-end, S-single)
         vocab_file (str): File to convert words to ids.
         categories (list[str]): All entity categories supported by the model.
         max_len (int): The maximum length of the input text.
