@@ -99,6 +99,8 @@ namespace pse_adaptor {
                             int label_num) {
         auto buf = quad_n9.request();
         auto data = static_cast<int *>(buf.ptr);
+        
+        
         vector<pybind11::ssize_t> data_shape = buf.shape;
 
         auto buf_label_map = label_map.request();

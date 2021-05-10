@@ -5,10 +5,9 @@ import torch
 from numpy.linalg import norm
 from shapely.geometry import Polygon
 from skimage.morphology import skeletonize
-
+from mmcv.ops import pixel_group, contour_expand
 from mmocr.core import points2boundary
 from mmocr.core.evaluation.utils import boundary_iou
-
 
 def filter_instance(area, confidence, min_area, min_confidence):
     return bool(area < min_area or confidence < min_confidence)
@@ -31,7 +30,7 @@ def decode(
     raise NotImplementedError
 
 
-def pan_decode(preds,
+def pan_decode_old(preds,
                text_repr_type='poly',
                min_text_confidence=0.5,
                min_kernel_confidence=0.5,
@@ -101,7 +100,116 @@ def pan_decode(preds,
 
     return boundaries
 
+def pan_decode(preds,
+               text_repr_type='poly',
+               min_text_confidence=0.5,
+               min_kernel_confidence=0.5,
+               min_text_avg_confidence=0.85,
+               min_text_area=16):
+    """Convert scores to quadrangles via post processing in PANet. This is
+    partially adapted from https://github.com/WenmuZhou/PAN.pytorch.
 
+    Args:
+        preds (tensor): The head output tensor of size 6xHxW.
+        text_repr_type (str): The boundary encoding type 'poly' or 'quad'.
+        min_text_confidence (float): The minimal text confidence.
+        min_kernel_confidence (float): The minimal kernel confidence.
+        min_text_avg_confidence (float): The minimal text average confidence.
+        min_text_area (int): The minimal text instance region area.
+    Returns:
+        boundaries: (list[list[float]]): The instance boundary and its
+            instance confidence list.
+    """
+    preds[:2, :, :] = torch.sigmoid(preds[:2, :, :])
+    preds = preds.detach().cpu().numpy()
+
+    text_score = preds[0].astype(np.float32)
+    text = preds[0] > min_text_confidence
+    kernel = (preds[1] > min_kernel_confidence) * text
+    embeddings = preds[2:].transpose((1, 2, 0))  # (h, w, 4)
+
+    region_num, labels = cv2.connectedComponents(
+        kernel.astype(np.uint8), connectivity=4)
+    contours, _ = cv2.findContours((kernel * 255).astype(np.uint8),
+                                   cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+    kernel_contours = np.zeros(text.shape, dtype="uint8") 
+    cv2.drawContours(kernel_contours, contours, -1, 255)
+    text_points = pixel_group(text_score, text, embeddings,labels,kernel_contours,region_num,min_text_avg_confidence)
+    
+    boundaries = []
+    for text_inx, text_point in enumerate(text_points):
+        text_confidence = text_point[0]
+        text_point = text_point[2:]
+        text_point = np.array(text_point, dtype=int).reshape(-1, 2)
+        area = text_point.shape[0]
+
+        if filter_instance(area, text_confidence, min_text_area,
+                           min_text_avg_confidence):
+            continue
+        vertices_confidence = points2boundary(text_point, text_repr_type,
+                                              text_confidence)
+        if vertices_confidence is not None:
+            boundaries.append(vertices_confidence)
+
+    return boundaries
+
+def pse_decode_old(preds,
+               text_repr_type='poly',
+               min_kernel_confidence=0.5,
+               min_text_avg_confidence=0.85,
+               min_kernel_area=0,
+               min_text_area=16):
+    """Decoding predictions of PSENet to instances. This is partially adapted
+    from https://github.com/whai362/PSENet.
+
+    Args:
+        preds (tensor): The head output tensor of size nxHxW.
+        text_repr_type (str): The boundary encoding type 'poly' or 'quad'.
+        min_text_confidence (float): The minimal text confidence.
+        min_kernel_confidence (float): The minimal kernel confidence.
+        min_text_avg_confidence (float): The minimal text average confidence.
+        min_kernel_area (int): The minimal text kernel area.
+        min_text_area (int): The minimal text instance region area.
+    Returns:
+        boundaries: (list[list[float]]): The instance boundary and its
+            instance confidence list.
+    """
+    preds = torch.sigmoid(preds)  # text confidence
+
+    score = preds[0, :, :]
+    masks = preds > min_kernel_confidence
+    text_mask = masks[0, :, :]
+    kernel_masks = masks[0:, :, :] * text_mask
+
+    score = score.data.cpu().numpy().astype(np.float32)  # to numpy
+
+    kernel_masks = kernel_masks.data.cpu().numpy().astype(np.uint8)  # to numpy
+    kernel_masks[0][0][0:10]=list(range(10))
+    print(kernel_masks[0][0][0:10])
+    from .pse import pse
+
+    region_num, labels = cv2.connectedComponents(
+        kernel_masks[-1], connectivity=4)
+
+    # labels = pse(kernel_masks, min_kernel_area)
+    labels = pse(kernel_masks, min_kernel_area, labels, region_num)
+    labels = np.array(labels)
+    label_num = np.max(labels) + 1
+    boundaries = []
+    for i in range(1, label_num):
+        points = np.array(np.where(labels == i)).transpose((1, 0))[:, ::-1]
+        area = points.shape[0]
+        score_instance = np.mean(score[labels == i])
+        if filter_instance(area, score_instance, min_text_area,
+                           min_text_avg_confidence):
+            continue
+
+        vertices_confidence = points2boundary(points, text_repr_type,
+                                              score_instance)
+        if vertices_confidence is not None:
+            boundaries.append(vertices_confidence)
+
+    return boundaries
 def pse_decode(preds,
                text_repr_type='poly',
                min_kernel_confidence=0.5,
@@ -133,17 +241,16 @@ def pse_decode(preds,
     score = score.data.cpu().numpy().astype(np.float32)  # to numpy
 
     kernel_masks = kernel_masks.data.cpu().numpy().astype(np.uint8)  # to numpy
-    from .pse import pse
-
+    
     region_num, labels = cv2.connectedComponents(
         kernel_masks[-1], connectivity=4)
 
     # labels = pse(kernel_masks, min_kernel_area)
-    labels = pse(kernel_masks, min_kernel_area, labels, region_num)
+    labels = contour_expand(kernel_masks, labels, min_kernel_area, region_num)
     labels = np.array(labels)
-    label_num = np.max(labels) + 1
+    label_num = np.max(labels)
     boundaries = []
-    for i in range(1, label_num):
+    for i in range(1, label_num+1):
         points = np.array(np.where(labels == i)).transpose((1, 0))[:, ::-1]
         area = points.shape[0]
         score_instance = np.mean(score[labels == i])

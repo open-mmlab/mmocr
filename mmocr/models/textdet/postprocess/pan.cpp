@@ -5,7 +5,6 @@
 #include <map>
 #include <algorithm>
 #include <vector>
-#include <array>
 #include "include/pybind11/pybind11.h"
 #include "include/pybind11/numpy.h"
 #include "include/pybind11/stl.h"
@@ -43,14 +42,17 @@ namespace panet{
 
         std::queue<std::tuple<int, int, int32_t>> q;
         // 计算各个kernel的similarity_vectors
-        std::vector<std::array<float, 5>> kernel_vector(label_num);
+        float kernel_vector[label_num][5] = {0};
 
         // 文本像素入队列
         for (int i = 0; i<h; i++)
         {
             auto p_label_map = ptr_label_map + i*w;
+            // kernel_label
             auto p_res = ptr_res + i*w;
+            // result
             auto p_similarity_vectors = ptr_similarity_vectors + i*w*4;
+            // embedding
             for(int j = 0, k = 0; j<w && k < w * 4; j++,k+=4)
             {
                 int32_t label = p_label_map[j];
@@ -61,9 +63,12 @@ namespace panet{
                     kernel_vector[label][2] += p_similarity_vectors[k+2];
                     kernel_vector[label][3] += p_similarity_vectors[k+3];
                     kernel_vector[label][4] += 1;
+                    // kernel pixel number
                     q.push(std::make_tuple(i, j, label));
+                    // 
                 }
                 p_res[j] = label;
+                // label;
             }
         }
 
@@ -74,12 +79,14 @@ namespace panet{
                 kernel_vector[i][j] /= kernel_vector[i][4];
             }
         }
+        // average kernel vector
 
         int dx[4] = {-1, 1, 0, 0};
         int dy[4] = {0, 0, -1, 1};
         while(!q.empty()){
             //get each queue menber in q
             auto q_n = q.front();
+            // current pixel
             q.pop();
             int y = std::get<0>(q_n);
             int x = std::get<1>(q_n);
@@ -93,8 +100,11 @@ namespace panet{
                 auto p_res = ptr_res + tmpy*w;
                 if (tmpy<0 || tmpy>=h || tmpx<0 || tmpx>=w)
                     continue;
+                // continue if outside of images
                 if (!ptr_text[tmpy*w+tmpx] || p_res[tmpx]>0)
                     continue;
+                // continue if not text or this pixel is assigned 
+                
                 // 计算距离
                 float dis = 0;
                 auto p_similarity_vectors = ptr_similarity_vectors + tmpy * w*4;
