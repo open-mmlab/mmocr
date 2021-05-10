@@ -29,7 +29,7 @@ class CELoss(nn.Module):
 
         return outputs.permute(0, 2, 1).contiguous(), targets
 
-    def forward(self, outputs, targets_dict):
+    def forward(self, outputs, targets_dict, img_metas=None):
         outputs, targets = self.format(outputs, targets_dict)
 
         loss_ce = self.loss_ce(outputs, targets.to(outputs.device))
