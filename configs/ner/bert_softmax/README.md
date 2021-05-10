@@ -21,7 +21,7 @@
 
 ### Test Dataset
 
-|  testset  | text_num | entity_categories |
+|  testset  | text_num | entity_num |
 | :--------: | :----------: | :--------: |
 | CLUENER2020 |     1343     |     2982     |
 
