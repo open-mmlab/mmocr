@@ -80,6 +80,7 @@ class KIEDataset(BaseDataset):
         """
 
         assert utils.is_type_list(annotations, dict)
+        assert len(annotations) > 0, 'Please remove data with empty annotation'
         assert 'box' in annotations[0]
         assert 'text' in annotations[0]
 
