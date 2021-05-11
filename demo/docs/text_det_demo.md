@@ -1,18 +1,18 @@
 ## Text Detection Demo
 
 <div align="center">
-    <img src="../../resources/demo_text_det_pred.jpg"/><br>
+    <img src="/resources/demo_text_det_pred.jpg"/><br>
 
 </div>
 
 ### Text Detection Image Demo
 
 
-We provide a demo script to test a [single image](../demo_text_det.jpg) for text detection with a single GPU.
+We provide a demo script to test a [single image](/demo/demo_text_det.jpg) for text detection with a single GPU.
 
 *Text Detection Model Preparation:*
 The pre-trained text detection model can be downloaded from [model zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html).
-Take [PANet](../../configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) as an example:
+Take [PANet](/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) as an example:
 
 ```shell
 python demo/image_demo.py ${TEST_IMG} ${CONFIG_FILE} ${CHECKPOINT_FILE} ${SAVE_PATH} [--imshow] [--device ${GPU_ID}]

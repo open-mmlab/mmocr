@@ -1,18 +1,18 @@
 ## Text Recognition Demo
 
 <div align="center">
-    <img src="../../resources/demo_text_recog_pred.jpg" width="200px" alt/><br>
+    <img src="/resources/demo_text_recog_pred.jpg" width="200px" alt/><br>
 
 </div>
 
 ### Text Recognition Image Demo
 
 
-We provide a demo script to test a [single demo image](../demo_text_recog.jpg) for text recognition with a single GPU.
+We provide a demo script to test a [single demo image](/demo/demo_text_recog.jpg) for text recognition with a single GPU.
 
 *Text Recognition Model Preparation:*
 The pre-trained text recognition model can be downloaded from [model zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html).
-Take [SAR](../../configs/textrecog/sar/sar_r31_parallel_decoder_academic.py) as an example:
+Take [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_academic.py) as an example:
 
 ```shell
 python demo/image_demo.py ${TEST_IMG} ${CONFIG_FILE} ${CHECKPOINT_FILE} ${SAVE_PATH} [--imshow] [--device ${GPU_ID}]
