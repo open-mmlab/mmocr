@@ -21,7 +21,7 @@ python demo/image_demo.py demo/demo_text_det.jpg configs/textdet/panet/panet_r18
 
 The predicted result will be saved as `demo/demo_text_det_pred.jpg`.
 
-### Text Recognition Webcam Demo
+### Text Detection Webcam Demo
 
 We also provide live demos from a webcam as in [mmdetection](https://github.com/open-mmlab/mmdetection/blob/a616886bf1e8de325e6906b8c76b6a4924ef5520/docs/1_exist_data_model.md).
 
