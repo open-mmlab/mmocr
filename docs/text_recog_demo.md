@@ -7,7 +7,7 @@ We provide a demo script to test a [single demo image](demo/demo_text_recog.jpg)
 
 *Text Recognition Model Preparation:*
 The pre-trained text recognition model can be downloaded from [model zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html).
-Take [SAR](https://download.openmmlab.com/mmocr/textdet/panet/panet_r18_fpem_ffm_sbn_600e_icdar2015_20210219-42dbe46a.pth) (pre-trained with ICDAR2015 for 600 epochs) as an example:
+Take [SAR](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth) as an example:
 
 ```shell
 python demo/image_demo.py ${TEST_IMG} ${CONFIG_FILE} ${CHECKPOINT_FILE} ${SAVE_PATH} [--imshow] [--device ${GPU_ID}]
