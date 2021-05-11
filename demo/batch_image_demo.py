@@ -14,7 +14,13 @@ def main():
     parser.add_argument('config', help='Config file.')
     parser.add_argument('checkpoint', help='Checkpoint file.')
     parser.add_argument('save_path', help='Folder to save visualized images.')
-    parser.add_argument('--images', nargs='+')
+    parser.add_argument(
+        '--images',
+        nargs='+',
+        help='Image files to be predicted with batch mode, '
+        'separated by space, like "image_1.jpg image2.jpg". '
+        'If algorithm use augmentation test, only one '
+        'image file can be given.')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference.')
     parser.add_argument(
