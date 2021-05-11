@@ -7,6 +7,7 @@ from PIL import Image
 import mmocr.datasets.pipelines.dbnet_transforms as transforms
 from mmdet.core import BitmapMasks, PolygonMasks
 
+
 def test_imgaug():
     args=[['Fliplr', 0.5], dict(cls='Affine', rotate=[-10, 10]), ['Resize', [0.5, 3.0]]]
     imgaug = transforms.ImgAug(args)
@@ -33,13 +34,3 @@ def test_eastrandomcrop():
     print(results['bboxes'])
 
     assert np.allclose(results['bboxes'][0],results['gt_masks'].masks[0][0][[0,2]].flatten())
-    
-
-
-
-
-
-
-    
-
-
