@@ -111,6 +111,7 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         loss_inputs = (
             out_dec,
             targets_dict,
+            img_metas,
         )
         losses = self.loss(*loss_inputs)
 
