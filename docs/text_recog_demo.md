@@ -3,11 +3,11 @@
 ### Text Recognition Image Demo
 
 
-We provide a demo script to test a [single demo image](demo/demo_text_recog.jpg) for text recognition with a single GPU.
+We provide a demo script to test a [single demo image](../demo/demo_text_recog.jpg) for text recognition with a single GPU.
 
 *Text Recognition Model Preparation:*
 The pre-trained text recognition model can be downloaded from [model zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html).
-Take [SAR](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth) as an example:
+Take [SAR](../configs/textrecog/sar/sar_r31_parallel_decoder_academic.py) as an example:
 
 ```shell
 python demo/image_demo.py ${TEST_IMG} ${CONFIG_FILE} ${CHECKPOINT_FILE} ${SAVE_PATH} [--imshow] [--device ${GPU_ID}]
@@ -42,17 +42,7 @@ python demo/webcam_demo.py \
     https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth
 ```
 
-### End-to-End Test Image Demo
-
-To end-to-end test a single image with text detection and recognition simutaneously:
-
-```shell
-python demo/ocr_image_demo.py demo/demo_text_det.jpg demo/output.jpg
-```
-
-The default config for text detection and recognition are [PSENet_ICDAR2015](./configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py) and [SAR](./configs/textrecog/sar/sar_r31_parallel_decoder_academic.py), respectively.
-
 ### Remarks
 
 1. If `--imshow` is specified, the demo will also show the image with OpenCV.
-2. The `demo.py` script only supports GPU and so the `--device` parameter cannot take cpu as an argument.
+2. The `image_demo.py` script only supports GPU and so the `--device` parameter cannot take cpu as an argument.
