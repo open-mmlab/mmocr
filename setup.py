@@ -154,6 +154,7 @@ if __name__ == '__main__':
         maintainer_email='openmmlab@gmail.com',
         keywords='Text Detection, OCR, KIE, NLP',
         packages=find_packages(exclude=('configs', 'tools', 'demo')),
+        include_package_data=True,
         url='https://github.com/open-mmlab/mmocr',
         package_data={'mmocr.ops': ['*/*.so']},
         classifiers=[
