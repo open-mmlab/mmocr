@@ -1,10 +1,5 @@
 ## OCR End2End Demo
 
-<div align="center">
-    <img src="/resources/demo_ocr_pred.jpg"/><br>
-
-</div>
-
 ### End-to-End Test Image Demo
 
 To end-to-end test a single image with text detection and recognition simutaneously:

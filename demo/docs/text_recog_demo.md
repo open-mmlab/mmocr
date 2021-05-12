@@ -1,10 +1,5 @@
 ## Text Recognition Demo
 
-<div align="center">
-    <img src="/resources/demo_text_recog_pred.jpg" width="200px" alt/><br>
-
-</div>
-
 ### Text Recognition Image Demo
 
 

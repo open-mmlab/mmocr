@@ -1,10 +1,5 @@
 ## Text Detection Demo
 
-<div align="center">
-    <img src="/resources/demo_text_det_pred.jpg"/><br>
-
-</div>
-
 ### Text Detection Image Demo
 
 
