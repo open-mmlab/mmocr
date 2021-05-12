@@ -20,25 +20,25 @@ Models:
       Training Data: SynthText
     Results:
       - Task: Regular Text Recognition
-        Dataset: IIIT5K
+        Dataset:
+          - IIIT5K
+          - SVT
+          - ICDAR2013
         Metrics:
-          acc: 93.9
-        Dataset: SVT
-        Metrics:
-          acc: 90.0
-        Dataset: ICDAR2013
-        Metrics:
-          acc: 93.5
+          acc:
+            - 93.9
+            - 90.0
+            - 93.5
       - Task: Irregular Text Recognition
-        Dataset: ICDAR2015
+        Dataset:
+          - ICDAR2015
+          - SVTP
+          - CT80
         Metrics:
-          acc: 74.5
-        Dataset: SVTP
-        Metrics:
-          acc: 78.5
-        Dataset: CT80
-        Metrics:
-          acc: 86.5
+          acc:
+            - 74.5
+            - 78.5
+            - 86.5
     Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_r31_academic_20210406-954db95e.pth
 
   - Name: nrtr_r31_1by16_1by8_academic
@@ -48,23 +48,23 @@ Models:
       Training Data: Syn90k
     Results:
       - Task: Regular Text Recognition
-        Dataset: IIIT5K
+        Dataset:
+          - IIIT5K
+          - SVT
+          - ICDAR2013
         Metrics:
-          acc: 94.7
-        Dataset: SVT
-        Metrics:
-          acc: 87.5
-        Dataset: ICDAR2013
-        Metrics:
-          acc: 93.3
+          acc:
+            - 94.7
+            - 87.5
+            - 93.3
       - Task: Irregular Text Recognition
-        Dataset: ICDAR2015
+        Dataset:
+          - ICDAR2015
+          - SVTP
+          - CT80
         Metrics:
-          acc: 75.1
-        Dataset: SVTP
-        Metrics:
-          acc: 78.9
-        Dataset: CT80
-        Metrics:
-          acc: 87.9
+          acc:
+            - 75.1
+            - 78.9
+            - 87.9
     Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_r31_1by8_1by4_academic_20210406-ce16e7cc.pth

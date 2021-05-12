@@ -28,23 +28,23 @@ Models:
         - Syn90k
     Results:
       - Task: Regular Text Recognition
-        Dataset: IIIT5K
+        Dataset:
+        - IIIT5K
+        - SVT
+        - ICDAR2013
         Metrics:
-          acc: 95.1
-        Dataset: SVT
-        Metrics:
-          acc: 89.2
-        Dataset: ICDAR2013
-        Metrics:
-          acc: 93.1
+          acc:
+          - 95.1
+          - 89.2
+          - 93.1
       - Task: Irregular Text Recognition
-        Dataset: ICDAR2015
+        Dataset:
+        - ICDAR2015
+        - SVTP
+        - CT80
         Metrics:
-          acc: 77.8
-        Dataset: SVTP
-        Metrics:
-          acc: 80.3
-        Dataset: CT80
-        Metrics:
-          acc: 90.3
+          acc:
+          - 77.8
+          - 80.3
+          - 90.3
     Weights: https://download.openmmlab.com/mmocr/textrecog/robustscanner/robustscanner_r31_academic-5f05874f.pth

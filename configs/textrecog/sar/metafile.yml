@@ -28,25 +28,25 @@ Models:
         - Syn90k
     Results:
       - Task: Regular Text Recognition
-        Dataset: IIIT5K
+        Dataset:
+        - IIIT5K
+        - SVT
+        - ICDAR2013
         Metrics:
-          acc: 95.0
-        Dataset: SVT
-        Metrics:
-          acc: 89.6
-        Dataset: ICDAR2013
-        Metrics:
-          acc: 93.7
+          acc:
+          - 95.0
+          - 89.6
+          - 93.7
       - Task: Irregular Text Recognition
-        Dataset: ICDAR2015
+        Dataset:
+        - ICDAR2015
+        - SVTP
+        - CT80
         Metrics:
-          acc: 79.0
-        Dataset: SVTP
-        Metrics:
-          acc: 82.2
-        Dataset: CT80
-        Metrics:
-          acc: 88.9
+          acc:
+          - 79.0
+          - 82.2
+          - 88.9
     Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth
 
   - Name: sar_r31_sequential_decoder_academic
@@ -64,25 +64,25 @@ Models:
         - Syn90k
     Results:
       - Task: Regular Text Recognition
-        Dataset: IIIT5K
+        Dataset:
+        - IIIT5K
+        - SVT
+        - ICDAR2013
         Metrics:
-          acc: 95.2
-        Dataset: SVT
-        Metrics:
-          acc: 88.7
-        Dataset: ICDAR2013
-        Metrics:
-          acc: 92.4
+          acc:
+          - 95.2
+          - 88.7
+          - 92.4
       - Task: Irregular Text Recognition
-        Dataset: ICDAR2015
+        Dataset:
+        - ICDAR2015
+        - SVTP
+        - CT80
         Metrics:
-          acc: 78.2
-        Dataset: SVTP
-        Metrics:
-          acc: 81.9
-        Dataset: CT80
-        Metrics:
-          acc: 89.6
+          acc:
+          - 78.2
+          - 81.9
+          - 89.6
     Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_sequential_decoder_academic-d06c9a8e.pth
 
   - Name: sar_r31_parallel_decoder_chinese
