@@ -4,7 +4,7 @@ Collections:
     Training Data: OCRDataset
     Training Techniques:
       - Adadelta
-    Training Resources: 8x NVIDIA V100 GPUs
+    Training Resources: 4x NVIDIA 1080Ti GPUs
     Architecture:
       - TPSPreprocessor
       - VeryDeepVgg
@@ -17,7 +17,7 @@ Collections:
 
 Models:
   - Name: crnn_tps_academic_dataset
-    In Collection: TPS
+    In Collection: TPS-CRNN
     Config: configs/textrecog/tps/crnn_tps_academic_dataset.py
     Metadata:
       Training Data: Syn90k
