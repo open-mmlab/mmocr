@@ -1,0 +1,25 @@
+Collections:
+- Name: TextSnake
+  Metadata:
+    Training Data: ICDARDataset
+    Training Techniques: 
+      - SGD with Momentum
+    Training Resources: 8x NVIDIA V100 GPUs
+    Architecture: 
+      - VGG-16/19
+      - ResNet
+  Paper: https://arxiv.org/abs/1807.01544
+  README: configs/textdet/textsnake/README.md
+
+Models:
+  - Name: textsnake_r50_fpn_unet_1200e_ctw1500
+    In Collection: TextSnake
+    Config: configs/textdet/textsnake/textsnake_r50_fpn_unet_1200e_ctw1500.py
+    Metadata:
+      Training Data: CTW1500
+    Results:
+      - Task: Instance Segmentation
+        Dataset: CTW1500
+        Metrics:
+          hmean: 0.817
+    Weights: https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_r50_fpn_unet_1200e_ctw1500-27f65b64.pth
