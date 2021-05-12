@@ -1,14 +1,14 @@
 Collections:
 - Name: NRTR
   Metadata:
-    Training Data: mixture
+    Training Data: OCRDataset
     Training Techniques:
-      - SGD with Momentum
+      - Adam
     Training Resources: 8x NVIDIA V100 GPUs
     Architecture:
-      - Encoder
-      - Decoder
-      - Modality-Transform Block
+      - ResNet31OCR
+      - TFEncoder
+      - TFDecoder
   Paper: https://arxiv.org/pdf/1806.00926.pdf
   README: configs/textrecog/nrtr/README.md
 
@@ -17,7 +17,9 @@ Models:
     In Collection: NRTR
     Config: configs/textrecog/nrtr/nrtr_r31_1by8_1by4_academic.py
     Metadata:
-      Training Data: SynthText
+      Training Data:
+        - SynthText
+        - Syn90k
     Results:
       - Task: Regular Text Recognition
         Dataset:
@@ -45,7 +47,9 @@ Models:
     In Collection: NRTR
     Config: configs/textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py
     Metadata:
-      Training Data: Syn90k
+      Training Data:
+        - SynthText
+        - Syn90k
     Results:
       - Task: Regular Text Recognition
         Dataset:

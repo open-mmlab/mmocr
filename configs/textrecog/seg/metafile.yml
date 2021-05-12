@@ -6,8 +6,8 @@ Collections:
       - Adam
     Training Resources: 8x NVIDIA V100 GPUs
     Architecture:
-      - ResNet
-      - FPN
+      - ResNet31OCR
+      - FPNOCR
   Paper:
   README: configs/textrecog/seg/README.md
 

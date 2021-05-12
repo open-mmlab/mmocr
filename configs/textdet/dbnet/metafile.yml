@@ -6,8 +6,8 @@ Collections:
       - SGD with Momentum
     Training Resources: 8x NVIDIA V100 GPUs
     Architecture:
-      - FPN
       - ResNet
+      - FPNC
   Paper: https://arxiv.org/pdf/1911.08947.pdf
   README: configs/textdet/dbnet/README.md
 
@@ -21,7 +21,7 @@ Models:
       - Task: Instance Segmentation
         Dataset: ICDAR2015
         Metrics:
-          hmean: 0.795
+          hmean-iou: 0.795
     Weights: https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth
 
   - Name: dbnet_r50dcnv2_fpnc_1200e_icdar2015
@@ -33,5 +33,5 @@ Models:
       - Task: Instance Segmentation
         Dataset: ICDAR2015
         Metrics:
-          hmean: 0.830
+          hmean-iou: 0.830
     Weights: https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20210325-91cef9af.pth
