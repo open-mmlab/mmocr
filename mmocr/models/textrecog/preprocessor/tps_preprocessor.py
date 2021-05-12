@@ -23,26 +23,35 @@ from .base_preprocessor import BasePreprocessor
 
 @PREPROCESSOR.register_module()
 class TPSPreprocessor(BasePreprocessor):
-    """Rectification Network of RARE, namely TPS based STN."""
+    """Rectification Network of RARE, namely TPS based STN in.
+
+    <https://arxiv.org/pdf/1603.03915.pdf>`_.
+
+    Args:
+        num_fiducial (int): Number of fiducial points of TPS-STN.
+        img_size (tuple(int, int)): Size (height, width) of the input image.
+        rectified_img_size (tuple(int, int))::
+            Size (height, width) of the rectified image.
+        num_img_channel (int): Number of channels of the input image.
+
+    Output:
+        batch_rectified_img: Rectified image with size
+            [batch_size x num_img_channel x rectified_img_height
+            x rectified_img_width]
+    """
 
     def __init__(self,
-                 num_fiducial,
-                 img_size,
-                 rectified_img_size,
+                 num_fiducial=20,
+                 img_size=(32, 100),
+                 rectified_img_size=(32, 100),
                  num_img_channel=1):
-        """ Based on RARE TPS
-        Args:
-            num_fiducial (int): number of fiducial points of TPS-STN
-            img_size (int, int): (height, width) of the input image
-            rectified_img_size (int, int):
-                (height, width) of the rectified image
-            num_img_channel (int): the number of channels of the input image
-        output:
-            batch_rectified_img: rectified image
-                [batch_size x num_img_channel x rectified_img_height
-                x rectified_img_width]
-        """
         super().__init__()
+        assert isinstance(num_fiducial, int)
+        assert num_fiducial > 0
+        assert isinstance(img_size, tuple)
+        assert isinstance(rectified_img_size, tuple)
+        assert isinstance(num_img_channel, int)
+
         self.num_fiducial = num_fiducial
         self.img_size = img_size
         self.rectified_img_size = rectified_img_size
@@ -71,13 +80,15 @@ class TPSPreprocessor(BasePreprocessor):
 
         return batch_rectified_img
 
-    def init_weights(self):
-        pass
-
 
 class LocalizationNetwork(nn.Module):
     """Localization Network of RARE, which predicts C' (K x 2) from input
-    (img_width x img_height)"""
+    (img_width x img_height)
+
+    Args:
+        num_fiducial (int): Number of fiducial points of TPS-STN.
+        num_img_channel (int): Number of channels of the input image.
+    """
 
     def __init__(self, num_fiducial, num_img_channel):
         super().__init__()
@@ -128,7 +139,8 @@ class LocalizationNetwork(nn.Module):
         Args:
             batch_img (tensor): Batch Input Image
                 [batch_size x num_img_channel x img_height x img_width]
-        output:
+
+        Output:
             batch_C_prime : Predicted coordinates of fiducial points for
             input batch [batch_size x num_fiducial x 2]
         """
@@ -141,8 +153,13 @@ class LocalizationNetwork(nn.Module):
 
 
 class GridGenerator(nn.Module):
-    """Grid Generator of RARE, which produces P_prime by multipling T with
-    P."""
+    """Grid Generator of RARE, which produces P_prime by multipling T with P.
+
+    Args:
+        num_fiducial (int): Number of fiducial points of TPS-STN.
+        rectified_img_size (tuple(int, int)):
+            Size (height, width) of the rectified image.
+    """
 
     def __init__(self, num_fiducial, rectified_img_size):
         """Generate P_hat and inv_delta_C for later."""

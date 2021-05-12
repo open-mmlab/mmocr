@@ -28,10 +28,13 @@
 | IIIT5K  |     3000     | regular |
 |   SVT   |     647      | regular |
 |  IC13   |     1015     | regular |
+|  IC15   |     2077     |irregular|
+|  SVTP   |     645      |irregular|
+|  CT80   |     288      |irregular|
 
 ## Results and models
 
 |                         methods                          |        | Regular Text |      |     |      | Irregular Text |      |                                                                                    download                                                                                    |
 | :------------------------------------------------------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 |                         methods                          | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |
-| [CRNN](/configs/textrecog/crnn/crnn_academic_dataset.py) |  80.5  |     81.5     | 86.5 |     |  -   |       -        |  -   | [model](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/crnn/20210326_111035.log.json) |
+| [CRNN](/configs/textrecog/crnn/crnn_academic_dataset.py) |  80.5  |     81.5     | 86.5 |     |  54.1   |       59.1        |  55.6   | [model](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/crnn/20210326_111035.log.json) |
