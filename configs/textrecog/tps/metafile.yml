@@ -11,6 +11,8 @@ Collections:
       - CRNNDecoder
       - CTCLoss
   Paper:
+    - https://arxiv.org/pdf/1507.05717.pdf
+    - https://arxiv.org/pdf/1603.03915.pdf
   README: configs/textrecog/tps/README.md
 
 Models:
@@ -27,4 +29,17 @@ Models:
         - ICDAR2013
         Metrics:
           acc:
-    Weights:
+            - 80.8
+            - 81.3
+            - 85.0
+      - Task: Irregular Text Recognition
+        Dataset:
+        - ICDAR2015
+        - SVTP
+        - CT80
+        Metrics:
+          acc:
+            - 59.6
+            - 68.1
+            - 53.8
+    Weights: https://download.openmmlab.com/mmocr/textrecog/tps/crnn_tps_academic_dataset_20210510-d221a905.pth

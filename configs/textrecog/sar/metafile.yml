@@ -4,7 +4,7 @@ Collections:
     Training Data: OCRDataset
     Training Techniques:
       - Adam
-    Training Resources: 48x NVIDIA V100 GPUs
+    Training Resources: 48x NVIDIA 1080Ti GPUs
     Architecture:
       - ResNet31OCR
       - SAREncoder

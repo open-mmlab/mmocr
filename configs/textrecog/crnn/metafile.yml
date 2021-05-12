@@ -4,7 +4,7 @@ Collections:
     Training Data: OCRDataset
     Training Techniques:
       - Adadelta
-    Training Resources: 8x NVIDIA V100 GPUs
+    Training Resources: 4x NVIDIA 1080Ti GPUs
     Architecture:
       - VeryDeepVgg
       - CRNNDecoder
