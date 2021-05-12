@@ -7,7 +7,16 @@ from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
 
 
-def model_inference(model, imgs):
+def disable_text_recog_aug_test(cfg):
+    if cfg.data.test.pipeline[1].type == 'MultiRotateAugOCR':
+        cfg.data.test.pipeline = [
+            cfg.data.test.pipeline[0], *cfg.data.test.pipeline[1].transforms
+        ]
+
+    return cfg
+
+
+def model_inference(model, imgs, batch_mode=False):
     """Inference image(s) with the detector.
 
     Args:
@@ -31,7 +40,17 @@ def model_inference(model, imgs):
         raise AssertionError('imgs must be strings or numpy arrays')
 
     is_ndarray = isinstance(imgs[0], np.ndarray)
+
     cfg = model.cfg
+
+    if batch_mode:
+        if cfg.data.test.pipeline[1].type == 'ResizeOCR':
+            if cfg.data.test.pipeline[1].max_width is None:
+                raise Exception('Free resize (keep aspect ratio '
+                                'such that image width is not fixed) '
+                                'do not support batch mode.')
+        cfg = disable_text_recog_aug_test(cfg)
+
     device = next(model.parameters()).device  # model device
 
     if is_ndarray:
@@ -54,6 +73,11 @@ def model_inference(model, imgs):
 
         # build the data pipeline
         data = test_pipeline(data)
+        # get tensor from list to stack for batch mode (text detection)
+        if batch_mode:
+            if cfg.data.test.pipeline[1].type == 'MultiScaleFlipAug':
+                for key, value in data.items():
+                    data[key] = value[0]
         datas.append(data)
 
     if isinstance(datas[0]['img'], list) and len(datas) > 1:
