@@ -3,6 +3,12 @@ Welcome to MMOCR's documentation!
 
 .. toctree::
    :maxdepth: 2
+   :caption: Demo
+
+   demo.md
+
+.. toctree::
+   :maxdepth: 2
    :caption: Get Started
 
    install.md
