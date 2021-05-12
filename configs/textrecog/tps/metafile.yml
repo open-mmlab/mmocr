@@ -21,13 +21,10 @@ Models:
       Training Data: Syn90k
     Results:
       - Task: Regular Text Recognition
-        Dataset: IIIT5K
-        Metrics:
-          acc:
-        Dataset: SVT
-        Metrics:
-          acc:
-        Dataset: ICDAR2013
+        Dataset:
+        - IIIT5K
+        - SVT
+        - ICDAR2013
         Metrics:
           acc:
     Weights:

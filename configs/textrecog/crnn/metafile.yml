@@ -20,13 +20,13 @@ Models:
       Training Data: Syn90k
     Results:
       - Task: Regular Text Recognition
-        Dataset: IIIT5K
+        Dataset:
+        - IIIT5K
+        - SVT
+        - ICDAR2013
         Metrics:
-          acc: 80.5
-        Dataset: SVT
-        Metrics:
-          acc: 81.5
-        Dataset: ICDAR2013
-        Metrics:
-          acc: 86.5
+          acc:
+          - 80.5
+          - 81.5
+          - 86.5
     Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth

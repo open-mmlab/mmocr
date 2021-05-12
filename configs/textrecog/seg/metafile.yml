@@ -19,15 +19,15 @@ Models:
       Training Data: SynthText
     Results:
       - Task: Regular Text Recognition
-        Dataset: IIIT5K
+        Dataset:
+        - IIIT5K
+        - SVT
+        - ICDAR2013
         Metrics:
-          acc: 90.9
-        Dataset: SVT
-        Metrics:
-          acc: 81.8
-        Dataset: ICDAR2013
-        Metrics:
-          acc: 90.7
+          acc:
+          - 90.9
+          - 81.8
+          - 90.7
       - Task: Irregular Text Recognition
         Dataset: CT80
         Metrics:
