@@ -2,10 +2,10 @@ Collections:
 - Name: PSENet
   Metadata:
     Training Data: ICDARDataset
-    Training Techniques: 
+    Training Techniques:
       - SGD with Momentum
     Training Resources: 8x NVIDIA V100 GPUs
-    Architecture: 
+    Architecture:
       - FPN
   Paper: https://arxiv.org/abs/1806.02559
   README: configs/textdet/psenet/README.md
@@ -22,7 +22,7 @@ Models:
         Metrics:
           hmean: 0.784
     Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_ctw1500_20210401-216fed50.pth
-    
+
   - Name: psenet_r50_fpnf_600e_icdar2015
     In Collection: PSENet
     Config: configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py
@@ -34,7 +34,7 @@ Models:
         Metrics:
           hmean: 0.807
     Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015-c6131f0d.pth
-  
+
   - Name: psenet_r50_fpnf_600e_icdar2017
     In Collection: PSENet
     Config: configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2017.py

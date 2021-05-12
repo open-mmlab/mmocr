@@ -2,10 +2,10 @@ Collections:
 - Name: TextSnake
   Metadata:
     Training Data: ICDARDataset
-    Training Techniques: 
+    Training Techniques:
       - SGD with Momentum
     Training Resources: 8x NVIDIA V100 GPUs
-    Architecture: 
+    Architecture:
       - VGG-16/19
       - ResNet
   Paper: https://arxiv.org/abs/1807.01544

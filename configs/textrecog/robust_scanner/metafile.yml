@@ -2,10 +2,10 @@ Collections:
 - Name: RobustScanner
   Metadata:
     Training Data: mixture
-    Training Techniques: 
+    Training Techniques:
       - Adam
     Training Resources: 8x NVIDIA V100 GPUs
-    Architecture: 
+    Architecture:
       - ResNet
       - Encoder
       - Decoder
@@ -17,7 +17,7 @@ Models:
     In Collection: RobustScanner
     Config: configs/textrecog/robust_scanner/robustscanner_r31_academic.py
     Metadata:
-      Training Data: 
+      Training Data:
         - ICDAR2011
         - ICDAR2013
         - ICDAR2015

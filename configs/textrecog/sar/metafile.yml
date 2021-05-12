@@ -2,10 +2,10 @@ Collections:
 - Name: SAR
   Metadata:
     Training Data: mixture
-    Training Techniques: 
+    Training Techniques:
       - Adam
     Training Resources: 48x NVIDIA V100 GPUs
-    Architecture: 
+    Architecture:
       - Encoder
       - Decoder
       - ResNet
@@ -17,7 +17,7 @@ Models:
     In Collection: SAR
     Config: configs/textrecog/sar/sar_r31_parallel_decoder_academic.py
     Metadata:
-      Training Data: 
+      Training Data:
         - ICDAR2011
         - ICDAR2013
         - ICDAR2015
@@ -48,12 +48,12 @@ Models:
         Metrics:
           acc: 88.9
     Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth
-  
+
   - Name: sar_r31_sequential_decoder_academic
     In Collection: SAR
     Config: configs/textrecog/sar/sar_r31_sequential_decoder_academic.py
     Metadata:
-      Training Data: 
+      Training Data:
         - ICDAR2011
         - ICDAR2013
         - ICDAR2015
@@ -89,10 +89,10 @@ Models:
     In Collection: SAR
     Config: configs/textrecog/sar/sar_r31_parallel_decoder_chinese.py
     Metadata:
-      Training Data: 
+      Training Data:
     Results:
-      - Task: 
-        Dataset: 
+      - Task:
+        Dataset:
         Metrics:
-          acc: 
+          acc:
     Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth

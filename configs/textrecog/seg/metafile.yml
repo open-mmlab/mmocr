@@ -2,10 +2,10 @@ Collections:
 - Name: SEG
   Metadata:
     Training Data: mixture
-    Training Techniques: 
+    Training Techniques:
       - Adam
     Training Resources: 8x NVIDIA V100 GPUs
-    Architecture: 
+    Architecture:
       - ResNet
       - FPN
   Paper:
