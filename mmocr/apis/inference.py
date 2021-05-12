@@ -56,6 +56,11 @@ def model_inference(model, imgs):
         data = test_pipeline(data)
         datas.append(data)
 
+    if isinstance(datas[0]['img'], list) and len(datas) > 1:
+        raise Exception('aug test does not support '
+                        f'inference with batch size '
+                        f'{len(datas)}')
+
     data = collate(datas, samples_per_gpu=len(imgs))
 
     # process img_metas
@@ -67,7 +72,9 @@ def model_inference(model, imgs):
         data['img_metas'] = data['img_metas'].data
 
     if isinstance(data['img'], list):
-        data['img'] = [img for img in data['img'][0].data]
+        data['img'] = [img.data for img in data['img']]
+        if isinstance(data['img'][0], list):
+            data['img'] = [img[0] for img in data['img']]
     else:
         data['img'] = data['img'].data
 
