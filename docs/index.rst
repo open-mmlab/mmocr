@@ -24,15 +24,15 @@ Welcome to MMOCR's documentation!
    datasets.md
 
 .. toctree::
-   :caption: API Reference
-
-   api.rst
-
-.. toctree::
    :maxdepth: 2
    :caption: Notes
 
    changelog.md
+
+.. toctree::
+   :caption: API Reference
+
+   api.rst
 
 Indices and tables
 ==================
