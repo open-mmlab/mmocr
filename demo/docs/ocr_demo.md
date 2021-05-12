@@ -1,7 +1,7 @@
 ## OCR End2End Demo
 
 <div align="center">
-    <img src="https://github.com/open-mmlab/mmocr/raw/main/resources/demo_ocr_pred.jpg"/><br>
+    <img src="https://github.com/open-mmlab/mmocr/raw/main/demo/resources/demo_ocr_pred.jpg"/><br>
 </div>
 
 ### End-to-End Test Image Demo
