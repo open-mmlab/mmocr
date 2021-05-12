@@ -2,10 +2,10 @@ Collections:
 - Name: CRNN
   Metadata:
     Training Data: mixture
-    Training Techniques: 
+    Training Techniques:
       - Adadelta
     Training Resources: 8x NVIDIA V100 GPUs
-    Architecture: 
+    Architecture:
       - CNN
       - Bidirectional RNN
       - Transcription layer

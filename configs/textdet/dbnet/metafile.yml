@@ -1,11 +1,11 @@
 Collections:
-- Name: DBNet 
+- Name: DBNet
   Metadata:
     Training Data: ICDAR2015
-    Training Techniques: 
+    Training Techniques:
       - SGD with Momentum
     Training Resources: 8x NVIDIA V100 GPUs
-    Architecture: 
+    Architecture:
       - FPN
       - ResNet
   Paper: https://arxiv.org/pdf/1911.08947.pdf
@@ -23,7 +23,7 @@ Models:
         Metrics:
           hmean: 0.795
     Weights: https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth
-    
+
   - Name: dbnet_r50dcnv2_fpnc_1200e_icdar2015
     In Collection: DBNet
     Config: configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py

@@ -2,10 +2,10 @@ Collections:
 - Name: SDMGR
   Metadata:
     Training Data: KIEDataset
-    Training Techniques: 
+    Training Techniques:
       - Adam
     Training Resources: 4x NVIDIA V100 GPUs
-    Architecture: 
+    Architecture:
       - UNet
   Paper: https://arxiv.org/abs/2103.14470.pdf
   README: configs/kie/sdmgr/README.md
@@ -22,7 +22,7 @@ Models:
         Metrics:
           macro_f1: 0.876
     Weights: https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt_20210405-16a47642.pth
-    
+
   - Name: sdmgr_unet16_60e_wildreceipt
     In Collection: SDMGR
     Config: configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py

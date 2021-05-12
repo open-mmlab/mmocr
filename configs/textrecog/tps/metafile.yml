@@ -2,10 +2,10 @@ Collections:
 - Name: TPS
   Metadata:
     Training Data: mixture
-    Training Techniques: 
+    Training Techniques:
       - Adadelta
     Training Resources: 8x NVIDIA V100 GPUs
-    Architecture: 
+    Architecture:
       - VeryDeepVgg
       - Encoder
       - Decoder
@@ -23,11 +23,11 @@ Models:
       - Task: Regular Text Recognition
         Dataset: IIIT5K
         Metrics:
-          acc: 
+          acc:
         Dataset: SVT
         Metrics:
-          acc: 
+          acc:
         Dataset: ICDAR2013
         Metrics:
-          acc: 
-    Weights: 
+          acc:
+    Weights:
