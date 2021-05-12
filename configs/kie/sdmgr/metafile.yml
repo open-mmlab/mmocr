@@ -4,16 +4,16 @@ Collections:
     Training Data: KIEDataset
     Training Techniques:
       - Adam
-    Training Resources: 4x NVIDIA V100 GPUs
+    Training Resources: 1x NVIDIA 1080Ti GPU
     Architecture:
       - UNet
   Paper: https://arxiv.org/abs/2103.14470.pdf
   README: configs/kie/sdmgr/README.md
 
 Models:
-  - Name: sdmgr_novisual_60e_wildreceipt
+  - Name: sdmgr_unet16_60e_wildreceipt
     In Collection: SDMGR
-    Config: configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt.py
+    Config: configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py
     Metadata:
       Training Data: wildreceipt
     Results:
@@ -23,9 +23,9 @@ Models:
           macro_f1: 0.876
     Weights: https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt_20210405-16a47642.pth
 
-  - Name: sdmgr_unet16_60e_wildreceipt
+  - Name: sdmgr_novisual_60e_wildreceipt
     In Collection: SDMGR
-    Config: configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py
+    Config: configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt.py
     Metadata:
       Training Data: wildreceipt
     Results:

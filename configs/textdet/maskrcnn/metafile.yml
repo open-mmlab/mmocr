@@ -4,7 +4,7 @@ Collections:
     Training Data: ICDARDataset
     Training Techniques:
       - SGD with Momentum
-    Training Resources: 8x NVIDIA V100 GPUs
+    Training Resources: 8x NVIDIA 1080Ti GPUs
     Architecture:
       - RoI Align
       - RPN

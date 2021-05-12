@@ -4,7 +4,7 @@ Collections:
     Training Data: OCRDataset
     Training Techniques:
       - Adam
-    Training Resources: 8x NVIDIA V100 GPUs
+    Training Resources: 64x NVIDIA 1080Ti GPUs
     Architecture:
       - ResNet31OCR
       - TFEncoder
@@ -13,9 +13,9 @@ Collections:
   README: configs/textrecog/nrtr/README.md
 
 Models:
-  - Name: nrtr_r31_1by8_1by4_academic
+  - Name: nrtr_r31_1by16_1by8_academic
     In Collection: NRTR
-    Config: configs/textrecog/nrtr/nrtr_r31_1by8_1by4_academic.py
+    Config: configs/textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py
     Metadata:
       Training Data:
         - SynthText
@@ -43,9 +43,9 @@ Models:
             - 86.5
     Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_r31_academic_20210406-954db95e.pth
 
-  - Name: nrtr_r31_1by16_1by8_academic
+  - Name: nrtr_r31_1by8_1by4_academic
     In Collection: NRTR
-    Config: configs/textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py
+    Config: configs/textrecog/nrtr/nrtr_r31_1by8_1by4_academic.py
     Metadata:
       Training Data:
         - SynthText

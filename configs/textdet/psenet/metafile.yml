@@ -4,7 +4,7 @@ Collections:
     Training Data: ICDARDataset
     Training Techniques:
       - Adam
-    Training Resources: 8x NVIDIA V100 GPUs
+    Training Resources: 8x NVIDIA 1080Ti GPUs
     Architecture:
       - ResNet
       - FPNF
@@ -36,9 +36,9 @@ Models:
           hmean-iou: 0.807
     Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015-c6131f0d.pth
 
-  - Name: psenet_r50_fpnf_600e_icdar2017
+  - Name: psenet_r50_fpnf_600e_icdar2015_with_pretrain
     In Collection: PSENet
-    Config: configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2017.py
+    Config: configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py
     Metadata:
       Training Data: ICDAR2017
     Results:
