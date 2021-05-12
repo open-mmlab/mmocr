@@ -1,0 +1,32 @@
+Collections:
+- Name: CRNN
+  Metadata:
+    Training Data: mixture
+    Training Techniques: 
+      - Adadelta
+    Training Resources: 8x NVIDIA V100 GPUs
+    Architecture: 
+      - CNN
+      - Bidirectional RNN
+      - Transcription layer
+  Paper: https://arxiv.org/pdf/1507.05717.pdf
+  README: configs/textrecog/crnn/README.md
+
+Models:
+  - Name: crnn_academic_dataset
+    In Collection: CRNN
+    Config: configs/textrecog/crnn/crnn_academic_dataset.py
+    Metadata:
+      Training Data: Syn90k
+    Results:
+      - Task: Regular Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          acc: 80.5
+        Dataset: SVT
+        Metrics:
+          acc: 81.5
+        Dataset: ICDAR2013
+        Metrics:
+          acc: 86.5
+    Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth

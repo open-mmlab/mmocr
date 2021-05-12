@@ -1,0 +1,35 @@
+Collections:
+- Name: SEG
+  Metadata:
+    Training Data: mixture
+    Training Techniques: 
+      - Adam
+    Training Resources: 8x NVIDIA V100 GPUs
+    Architecture: 
+      - ResNet
+      - FPN
+  Paper:
+  README: configs/textrecog/seg/README.md
+
+Models:
+  - Name: seg_r31_1by16_fpnocr_academic
+    In Collection: SEG
+    Config: configs/textrecog/seg/seg_r31_1by16_fpnocr_academic.py
+    Metadata:
+      Training Data: SynthText
+    Results:
+      - Task: Regular Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          acc: 90.9
+        Dataset: SVT
+        Metrics:
+          acc: 81.8
+        Dataset: ICDAR2013
+        Metrics:
+          acc: 90.7
+      - Task: Irregular Text Recognition
+        Dataset: CT80
+        Metrics:
+          acc: 80.9
+    Weights: https://download.openmmlab.com/mmocr/textrecog/seg/seg_r31_1by16_fpnocr_academic-72235b11.pth

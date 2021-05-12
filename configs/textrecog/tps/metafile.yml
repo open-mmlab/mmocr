@@ -1,0 +1,33 @@
+Collections:
+- Name: TPS
+  Metadata:
+    Training Data: mixture
+    Training Techniques: 
+      - Adadelta
+    Training Resources: 8x NVIDIA V100 GPUs
+    Architecture: 
+      - VeryDeepVgg
+      - Encoder
+      - Decoder
+      - CTCLoss
+  Paper:
+  README: configs/textrecog/tps/README.md
+
+Models:
+  - Name: crnn_tps_academic_dataset
+    In Collection: TPS
+    Config: configs/textrecog/tps/crnn_tps_academic_dataset.py
+    Metadata:
+      Training Data: Syn90k
+    Results:
+      - Task: Regular Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          acc: 
+        Dataset: SVT
+        Metrics:
+          acc: 
+        Dataset: ICDAR2013
+        Metrics:
+          acc: 
+    Weights: 
