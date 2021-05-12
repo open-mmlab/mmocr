@@ -1,14 +1,14 @@
 Collections:
 - Name: TPS
   Metadata:
-    Training Data: mixture
+    Training Data: OCRDataset
     Training Techniques:
       - Adadelta
     Training Resources: 8x NVIDIA V100 GPUs
     Architecture:
+      - TPSPreprocessor
       - VeryDeepVgg
-      - Encoder
-      - Decoder
+      - CRNNDecoder
       - CTCLoss
   Paper:
   README: configs/textrecog/tps/README.md

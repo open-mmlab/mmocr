@@ -3,49 +3,47 @@ Collections:
   Metadata:
     Training Data: ICDARDataset
     Training Techniques:
-      - SGD with Momentum
+      - Adam
     Training Resources: 8x NVIDIA V100 GPUs
     Architecture:
-      - FPN
       - ResNet
-      - Adaptive Feature Pooling
-      - MLP
-  Paper: https://arxiv.org/pdf/1703.06870.pdf
-  README: configs/textdet/maskrcnn/README.md
+      - FPEM_FFM
+  Paper: https://arxiv.org/pdf/1803.01534.pdf
+  README: configs/textdet/panet/README.md
 
 Models:
-  - Name: mask_rcnn_r50_fpn_160e_ctw1500
-    In Collection: Mask R-CNN
-    Config: configs/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_ctw1500.py
+  - Name: panet_r18_fpem_ffm_600e_ctw1500
+    In Collection: PANet
+    Config: configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:
       - Task: Instance Segmentation
         Dataset: CTW1500
         Metrics:
-          hmean: 0.732
-    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_ctw1500_20210219-96497a76.pth
+          hmean-iou: 0.806
+    Weights: https://download.openmmlab.com/mmocr/textdet/panet/panet_r18_fpem_ffm_sbn_600e_ctw1500_20210219-3b3a9aa3.pth
 
-  - Name: mask_rcnn_r50_fpn_160e_icdar2015
-    In Collection: Mask R-CNN
-    Config: configs/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015.py
+  - Name: panet_r18_fpem_ffm_600e_icdar2015
+    In Collection: PANet
+    Config: configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:
       - Task: Instance Segmentation
         Dataset: ICDAR2015
         Metrics:
-          hmean: 0.825
-    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015_20210219-8eb340a3.pth
+          hmean-iou: 0.791
+    Weights: https://download.openmmlab.com/mmocr/textdet/panet/panet_r18_fpem_ffm_sbn_600e_icdar2015_20210219-42dbe46a.pth
 
-  - Name: mask_rcnn_r50_fpn_160e_icdar2017
-    In Collection: Mask R-CNN
-    Config: configs/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017.py
+  - Name: panet_r50_fpem_ffm_600e_icdar2017
+    In Collection: PANet
+    Config: configs/textdet/panet/panet_r50_fpem_ffm_600e_icdar2017.py
     Metadata:
       Training Data: ICDAR2017
     Results:
       - Task: Instance Segmentation
         Dataset: ICDAR2017
         Metrics:
-          hmean: 0.789
-    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017_20210218-c6ec3ebb.pth
+          hmean-iou:
+    Weights:

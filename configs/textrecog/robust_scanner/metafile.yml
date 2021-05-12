@@ -1,14 +1,14 @@
 Collections:
 - Name: RobustScanner
   Metadata:
-    Training Data: mixture
+    Training Data: OCRDataset
     Training Techniques:
       - Adam
     Training Resources: 8x NVIDIA V100 GPUs
     Architecture:
-      - ResNet
-      - Encoder
-      - Decoder
+      - ResNet31OCR
+      - ChannelReductionEncoder
+      - RobustScannerDecoder
   Paper: https://arxiv.org/pdf/2007.07542.pdf
   README: configs/textrecog/robust_scanner/README.md
 

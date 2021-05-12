@@ -3,11 +3,12 @@ Collections:
   Metadata:
     Training Data: ICDARDataset
     Training Techniques:
-      - SGD with Momentum
+      - Adam
     Training Resources: 8x NVIDIA V100 GPUs
     Architecture:
-      - FPN
-  Paper: https://arxiv.org/abs/1806.02559
+      - ResNet
+      - FPNF
+  Paper: https://arxiv.org/abs/1806.02559.pdf
   README: configs/textdet/psenet/README.md
 
 Models:
@@ -20,7 +21,7 @@ Models:
       - Task: Instance Segmentation
         Dataset: CTW1500
         Metrics:
-          hmean: 0.784
+          hmean-iou: 0.784
     Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_ctw1500_20210401-216fed50.pth
 
   - Name: psenet_r50_fpnf_600e_icdar2015
@@ -32,7 +33,7 @@ Models:
       - Task: Instance Segmentation
         Dataset: ICDAR2015
         Metrics:
-          hmean: 0.807
+          hmean-iou: 0.807
     Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015-c6131f0d.pth
 
   - Name: psenet_r50_fpnf_600e_icdar2017
@@ -44,5 +45,5 @@ Models:
       - Task: Instance Segmentation
         Dataset: ICDAR2017
         Metrics:
-          hmean: 0.847
+          hmean-iou: 0.847
     Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015_pretrain-eefd8fe6.pth

@@ -1,14 +1,13 @@
 Collections:
 - Name: CRNN
   Metadata:
-    Training Data: mixture
+    Training Data: OCRDataset
     Training Techniques:
       - Adadelta
     Training Resources: 8x NVIDIA V100 GPUs
     Architecture:
-      - CNN
-      - Bidirectional RNN
-      - Transcription layer
+      - VeryDeepVgg
+      - CRNNDecoder
   Paper: https://arxiv.org/pdf/1507.05717.pdf
   README: configs/textrecog/crnn/README.md
 

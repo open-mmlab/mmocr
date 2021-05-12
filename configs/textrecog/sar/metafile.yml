@@ -1,14 +1,14 @@
 Collections:
 - Name: SAR
   Metadata:
-    Training Data: mixture
+    Training Data: OCRDataset
     Training Techniques:
       - Adam
     Training Resources: 48x NVIDIA V100 GPUs
     Architecture:
-      - Encoder
-      - Decoder
-      - ResNet
+      - ResNet31OCR
+      - SAREncoder
+      - ParallelSARDecoder
   Paper: https://arxiv.org/pdf/1811.00751.pdf
   README: configs/textrecog/sar/README.md
 
