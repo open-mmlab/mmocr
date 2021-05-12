@@ -1,7 +1,7 @@
 ## Text Detection Demo
 
 <div align="center">
-    <img src="https://github.com/open-mmlab/mmocr/raw/main/resources/demo_text_det_pred.jpg"/><br>
+    <img src="https://github.com/open-mmlab/mmocr/raw/main/demo/resources/demo_text_det_pred.jpg"/><br>
 
 </div>
 

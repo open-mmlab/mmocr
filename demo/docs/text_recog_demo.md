@@ -1,7 +1,7 @@
 ## Text Recognition Demo
 
 <div align="center">
-    <img src="https://github.com/open-mmlab/mmocr/raw/main/resources/demo_text_recog_pred.jpg" width="200px" alt/><br>
+    <img src="https://github.com/open-mmlab/mmocr/raw/main/demo/resources/demo_text_recog_pred.jpg" width="200px" alt/><br>
 
 </div>
 
