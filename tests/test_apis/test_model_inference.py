@@ -85,13 +85,13 @@ def test_model_batch_inference_raises_assertion_error_if_unsupported(cfg_file):
     model = build_model(config_file)
 
     with pytest.raises(
-            AssertionError,
+            Exception,
             match='aug test does not support inference with batch size'):
         sample_img_path = os.path.join(tmp_dir, '../demo/demo_text_det.jpg')
         model_inference(model, [sample_img_path, sample_img_path])
 
     with pytest.raises(
-            AssertionError,
+            Exception,
             match='aug test does not support inference with batch size'):
         img = imread(sample_img_path)
         model_inference(model, [img, img])
