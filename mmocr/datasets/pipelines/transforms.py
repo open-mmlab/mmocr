@@ -748,7 +748,7 @@ class RandomScaling:
         assert isinstance(scale, float) or isinstance(scale, tuple)
         self.size = size
         self.scale = scale if isinstance(scale, tuple) \
-            else ( 1 - scale, 1 + scale)
+            else (1 - scale, 1 + scale)
 
     def __call__(self, results):
         image = results['img']
