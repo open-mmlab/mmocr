@@ -51,16 +51,15 @@ def test_model_batch_inference_det(cfg_file):
     model = build_model(config_file)
 
     sample_img_path = os.path.join(tmp_dir, '../demo/demo_text_det.jpg')
-    results = model_inference(
-        model, [sample_img_path, sample_img_path], batch_mode=True)
+    results = model_inference(model, [sample_img_path], batch_mode=True)
 
-    assert len(results) == 2
+    assert len(results) == 1
 
     # numpy inference
     img = imread(sample_img_path)
-    results = model_inference(model, [img, img], batch_mode=True)
+    results = model_inference(model, [img], batch_mode=True)
 
-    assert len(results) == 2
+    assert len(results) == 1
 
 
 @pytest.mark.parametrize('cfg_file', [
