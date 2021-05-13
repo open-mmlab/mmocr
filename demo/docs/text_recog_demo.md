@@ -5,8 +5,7 @@
 
 </div>
 
-### Text Recognition Image Demo
-
+### Text Recognition Single Image Demo
 
 We provide a demo script to test a [single demo image](/demo/demo_text_recog.jpg) for text recognition with a single GPU.
 
@@ -25,6 +24,28 @@ python demo/image_demo.py demo/demo_text_recog.jpg configs/textrecog/sar/sar_r31
 ```
 
 The predicted result will be saved as `demo/demo_text_recog_pred.jpg`.
+
+
+### Text Recognition Multiple Image Demo
+
+We provide a demo script to test multi-images in batch mode for text recognition with a single GPU.
+
+*Text Recognition Model Preparation:*
+The pre-trained text recognition model can be downloaded from [model zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html).
+Take [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_academic.py) as an example:
+
+```shell
+python demo/batch_image_demo.py ${CONFIG_FILE} ${CHECKPOINT_FILE} ${SAVE_PATH} --images ${IMAGE1} ${IMAGE2} [--imshow] [--device ${GPU_ID}]
+```
+
+Example:
+
+```shell
+python demo/image_demo.py configs/textrecog/sar/sar_r31_parallel_decoder_academic.py https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth save_results --images demo/demo_text_recog.jpg demo/demo_text_recog.jpg
+```
+
+The predicted result will be saved in folder `save_results`.
+
 
 ### Text Recognition Webcam Demo
 

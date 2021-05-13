@@ -16,6 +16,7 @@ python demo/ocr_image_demo.py demo/demo_text_det.jpg demo/output.jpg
 
 - The predicted result will be saved as `demo/output.jpg`.
 - To use other algorithms of text detection and recognition, please set arguments: `--det-config`, `--det-ckpt`, `--recog-config`, `--recog-ckpt`.
+- To use batch mode for text recognition, please set arguments: `--batch-mode`, `--batch-size`.
 
 ### Remarks
 
