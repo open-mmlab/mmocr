@@ -4,7 +4,7 @@ Collections:
     Training Data: OCRDataset
     Training Techniques:
       - Adadelta
-    Training Resources: 4x NVIDIA 1080Ti GPUs
+    Training Resources: 4x GeForce GTX 1080 Ti
     Architecture:
       - TPSPreprocessor
       - VeryDeepVgg
@@ -23,23 +23,27 @@ Models:
       Training Data: Syn90k
     Results:
       - Task: Regular Text Recognition
-        Dataset:
-        - IIIT5K
-        - SVT
-        - ICDAR2013
+        Dataset: IIIT5K
         Metrics:
-          acc:
-            - 80.8
-            - 81.3
-            - 85.0
+          acc: 80.8
+      - Task: Regular Text Recognition
+        Dataset: SVT
+        Metrics:
+          acc: 81.3
+      - Task: Regular Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          acc: 85.0
       - Task: Irregular Text Recognition
-        Dataset:
-        - ICDAR2015
-        - SVTP
-        - CT80
+        Dataset: ICDAR2015
         Metrics:
-          acc:
-            - 59.6
-            - 68.1
-            - 53.8
+          acc: 59.6
+      - Task: Irregular Text Recognition
+        Dataset: SVTP
+        Metrics:
+          acc: 68.1
+      - Task: Irregular Text Recognition
+        Dataset: CT80
+        Metrics:
+          acc: 53.8
     Weights: https://download.openmmlab.com/mmocr/textrecog/tps/crnn_tps_academic_dataset_20210510-d221a905.pth
