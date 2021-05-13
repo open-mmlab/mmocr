@@ -372,7 +372,7 @@ def test_textsnake(cfg_file):
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
 @pytest.mark.parametrize(
-    'cfg_file', ['textdet/fcenet/fcenet_r50dcnv2_fpn_1200e_ctw1500.py'])
+    'cfg_file', ['textdet/fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500.py'])
 def test_fcenet(cfg_file):
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None

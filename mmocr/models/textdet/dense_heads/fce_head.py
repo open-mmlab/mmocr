@@ -28,7 +28,7 @@ class FCEHead(HeadMixin, nn.Module):
                  score_thresh=0.3,
                  nms_thresh=0.1,
                  alpha=1.0,
-                 beta=2.0,
+                 beta=1.0,
                  train_cfg=None,
                  test_cfg=None):
         """Initialization.

@@ -9,7 +9,7 @@ model = dict(
         frozen_stages=-1,
         norm_cfg=dict(type='BN', requires_grad=True),
         norm_eval=True,
-        style='caffe',
+        style='pytorch',
         dcn=dict(type='DCNv2', deform_groups=2, fallback_on_stride=False),
         stage_with_dcn=(False, True, True, True)),
     neck=dict(
@@ -45,43 +45,49 @@ train_pipeline = [
         with_bbox=True,
         with_mask=True,
         poly2mask=False),
-    dict(type='ColorJitter', brightness=32.0 / 255, saturation=0.5),
+    dict(
+        type='ColorJitter',
+         brightness=32.0 / 255,
+         saturation=0.5,
+         contrast=0.5),
     dict(type='Normalize', **img_norm_cfg),
+    dict(
+        type='RandomScaling',
+         size=800,
+         scale=(3./4, 5./2)),
+    dict(
+        type='RandomCropFlip',
+         crop_ratio=0.5,
+         frequency=1,
+         min_area_ratio=0.2),
     dict(
         type='RandomCropPolyInstances',
         instance_key='gt_masks',
-        crop_ratio=0.65,
+        crop_ratio=0.8,
         min_side_ratio=0.3),
     dict(
         type='RandomRotatePolyInstances',
         rotate_ratio=0.5,
         max_angle=30,
         pad_with_fixed_color=False),
-    dict(
-        type='ScaleAspectJitter',
-        img_scale=[(3000, 736)],  # unused
-        ratio_range=(0.7, 1.3),
-        aspect_ratio_range=(0.9, 1.1),
-        multiscale_mode='value',
-        long_size_bound=800,
-        short_size_bound=480,
-        resize_type='long_short_bound',
-        keep_ratio=False),
     dict(type='SquareResizePad', target_size=800, pad_ratio=0.6),
     dict(type='RandomFlip', flip_ratio=0.5, direction='horizontal'),
     dict(type='Pad', size_divisor=32),
-    dict(type='FCENetTargets', fourier_degree=5),
+    dict(type='FCENetTargets',
+         fourier_degree=5,
+         level_proportion_range=((0, 0.25), (0.2, 0.65), (0.55, 1.0))),
     dict(
         type='CustomFormatBundle',
         keys=['p3_maps', 'p4_maps', 'p5_maps'],
         visualize=dict(flag=False, boundary_key=None)),
-    dict(type='Collect', keys=['img', 'p3_maps', 'p4_maps', 'p5_maps'])
+    dict(type='Collect',
+         keys=['img', 'p3_maps', 'p4_maps', 'p5_maps'])
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(1080, 640),
+        img_scale=(1080, 736),
         flip=False,
         transforms=[
             dict(type='Resize', img_scale=(1280, 800), keep_ratio=True),
@@ -92,8 +98,8 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    samples_per_gpu=4,
-    workers_per_gpu=8,
+    samples_per_gpu=6,
+    workers_per_gpu=12,
     train=dict(
         type=dataset_type,
         ann_file=data_root + '/instances_training.json',
@@ -109,15 +115,15 @@ data = dict(
         ann_file=data_root + '/instances_test.json',
         img_prefix=data_root + '/imgs',
         pipeline=test_pipeline))
-evaluation = dict(interval=1200, metric='hmean-iou')
+evaluation = dict(interval=5, metric='hmean-iou')
 
 # optimizer
 optimizer = dict(type='SGD', lr=1e-3, momentum=0.90, weight_decay=5e-4)
 optimizer_config = dict(grad_clip=None)
 lr_config = dict(policy='poly', power=0.9, min_lr=1e-7, by_epoch=True)
-total_epochs = 1200
+total_epochs = 1500
 
-checkpoint_config = dict(interval=20)
+checkpoint_config = dict(interval=5)
 # yapf:disable
 log_config = dict(
     interval=20,
