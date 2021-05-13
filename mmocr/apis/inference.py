@@ -7,16 +7,33 @@ from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
 
 
-def model_inference(model, imgs):
+def disable_text_recog_aug_test(cfg):
+    """Remove aug_test from test pipeline of text recognition.
+    Args:
+        cfg (mmcv.Config): Input config.
+
+    Returns:
+        cfg (mmcv.Config): Output config removing
+            `MultiRotateAugOCR` in test pipeline.
+    """
+    if cfg.data.test.pipeline[1].type == 'MultiRotateAugOCR':
+        cfg.data.test.pipeline = [
+            cfg.data.test.pipeline[0], *cfg.data.test.pipeline[1].transforms
+        ]
+
+    return cfg
+
+
+def model_inference(model, imgs, batch_mode=False):
     """Inference image(s) with the detector.
 
     Args:
         model (nn.Module): The loaded detector.
         imgs (str/ndarray or list[str/ndarray] or tuple[str/ndarray]):
             Either image files or loaded images.
-
+        batch_mode (bool): If True, use batch mode for inference.
     Returns:
-        result (dict): Detection results.
+        result (dict): Predicted results.
     """
 
     if isinstance(imgs, (list, tuple)):
@@ -31,7 +48,18 @@ def model_inference(model, imgs):
         raise AssertionError('imgs must be strings or numpy arrays')
 
     is_ndarray = isinstance(imgs[0], np.ndarray)
+
     cfg = model.cfg
+
+    if batch_mode:
+        if cfg.data.test.pipeline[1].type == 'ResizeOCR':
+            if cfg.data.test.pipeline[1].max_width is None:
+                raise Exception('Free resize do not support batch mode '
+                                'since the image width is not fixed, '
+                                'for resize keeping aspect ratio and '
+                                'max_width is not give.')
+        cfg = disable_text_recog_aug_test(cfg)
+
     device = next(model.parameters()).device  # model device
 
     if is_ndarray:
@@ -54,7 +82,17 @@ def model_inference(model, imgs):
 
         # build the data pipeline
         data = test_pipeline(data)
+        # get tensor from list to stack for batch mode (text detection)
+        if batch_mode:
+            if cfg.data.test.pipeline[1].type == 'MultiScaleFlipAug':
+                for key, value in data.items():
+                    data[key] = value[0]
         datas.append(data)
+
+    if isinstance(datas[0]['img'], list) and len(datas) > 1:
+        raise Exception('aug test does not support '
+                        f'inference with batch size '
+                        f'{len(datas)}')
 
     data = collate(datas, samples_per_gpu=len(imgs))
 
@@ -67,7 +105,9 @@ def model_inference(model, imgs):
         data['img_metas'] = data['img_metas'].data
 
     if isinstance(data['img'], list):
-        data['img'] = [img for img in data['img'][0].data]
+        data['img'] = [img.data for img in data['img']]
+        if isinstance(data['img'][0], list):
+            data['img'] = [img[0] for img in data['img']]
     else:
         data['img'] = data['img'].data
 
