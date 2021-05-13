@@ -1,7 +1,2 @@
-<<<<<<< HEAD
 mmcv-full>=1.3.1
 mmdet>=2.11.0
-=======
-mmcv-full 1.3.1
-mmdet 2.11.0
->>>>>>> bc0a95531107092a1016c39fcfafb3efb5336271
