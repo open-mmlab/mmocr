@@ -1,0 +1,49 @@
+Collections:
+- Name: TPS
+  Metadata:
+    Training Data: OCRDataset
+    Training Techniques:
+      - Adadelta
+    Training Resources: 4x GeForce GTX 1080 Ti
+    Architecture:
+      - TPSPreprocessor
+      - VeryDeepVgg
+      - CRNNDecoder
+      - CTCLoss
+  Paper:
+    - https://arxiv.org/pdf/1507.05717.pdf
+    - https://arxiv.org/pdf/1603.03915.pdf
+  README: configs/textrecog/tps/README.md
+
+Models:
+  - Name: crnn_tps_academic_dataset
+    In Collection: TPS-CRNN
+    Config: configs/textrecog/tps/crnn_tps_academic_dataset.py
+    Metadata:
+      Training Data: Syn90k
+    Results:
+      - Task: Regular Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          acc: 80.8
+      - Task: Regular Text Recognition
+        Dataset: SVT
+        Metrics:
+          acc: 81.3
+      - Task: Regular Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          acc: 85.0
+      - Task: Irregular Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          acc: 59.6
+      - Task: Irregular Text Recognition
+        Dataset: SVTP
+        Metrics:
+          acc: 68.1
+      - Task: Irregular Text Recognition
+        Dataset: CT80
+        Metrics:
+          acc: 53.8
+    Weights: https://download.openmmlab.com/mmocr/textrecog/tps/crnn_tps_academic_dataset_20210510-d221a905.pth

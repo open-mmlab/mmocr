@@ -1,2 +1,6 @@
-from .backbones import *  # noqa:  F401,F403
-from .losses import *  # noqa:  F401,F403
+from . import backbones, losses
+
+from .backbones import *  # NOQA
+from .losses import *  # NOQA
+
+__all__ = backbones.__all__ + losses.__all__

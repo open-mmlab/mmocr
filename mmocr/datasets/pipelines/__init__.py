@@ -1,4 +1,4 @@
-from .box_utils import sort_vertex
+from .box_utils import sort_vertex, sort_vertex8
 from .custom_format_bundle import CustomFormatBundle
 from .dbnet_transforms import EastRandomCrop, ImgAug
 from .kie_transforms import KIEFormatBundle
@@ -18,11 +18,11 @@ from .transforms import (ColorJitter, RandomCropFlip, RandomCropInstances,
 __all__ = [
     'LoadTextAnnotations', 'NormalizeOCR', 'OnlineCropOCR', 'ResizeOCR',
     'ToTensorOCR', 'CustomFormatBundle', 'DBNetTargets', 'PANetTargets',
-    'FCENetTargets', 'ColorJitter', 'RandomCropInstances',
-    'RandomRotateTextDet', 'ScaleAspectJitter', 'MultiRotateAugOCR',
-    'OCRSegTargets', 'FancyPCA', 'RandomCropPolyInstances',
-    'RandomRotatePolyInstances', 'RandomPaddingOCR', 'ImgAug',
-    'EastRandomCrop', 'RandomRotateImageBox', 'OpencvToPil', 'PilToOpencv',
-    'KIEFormatBundle', 'SquareResizePad', 'TextSnakeTargets', 'sort_vertex',
-    'LoadImageFromNdarray', 'RandomScaling', 'RandomCropFlip'
+    'ColorJitter', 'RandomCropInstances', 'RandomRotateTextDet',
+    'ScaleAspectJitter', 'MultiRotateAugOCR', 'OCRSegTargets', 'FancyPCA',
+    'RandomCropPolyInstances', 'RandomRotatePolyInstances', 'RandomPaddingOCR',
+    'ImgAug', 'EastRandomCrop', 'RandomRotateImageBox', 'OpencvToPil',
+    'PilToOpencv', 'KIEFormatBundle', 'SquareResizePad', 'TextSnakeTargets',
+    'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets',
+    'RandomScaling', 'RandomCropFlip'
 ]

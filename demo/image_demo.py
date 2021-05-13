@@ -13,7 +13,7 @@ def main():
     parser.add_argument('img', help='Image file.')
     parser.add_argument('config', help='Config file.')
     parser.add_argument('checkpoint', help='Checkpoint file.')
-    parser.add_argument('save_path', help='Path to save visualized image.')
+    parser.add_argument('out_file', help='Path to save visualized image.')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference.')
     parser.add_argument(
@@ -33,9 +33,13 @@ def main():
     print(f'result: {result}')
 
     # show the results
-    img = model.show_result(args.img, result, out_file=None, show=False)
+    img = model.show_result(
+        args.img, result, out_file=args.out_file, show=False)
 
-    mmcv.imwrite(img, args.save_path)
+    if img is None:
+        img = mmcv.imread(args.img)
+
+    mmcv.imwrite(img, args.out_file)
     if args.imshow:
         mmcv.imshow(img, 'predicted results')
 

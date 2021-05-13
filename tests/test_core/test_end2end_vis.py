@@ -15,6 +15,10 @@ def test_det_recog_show_result():
     }
 
     vis_img = det_recog_show_result(img, det_recog_res)
+
     assert vis_img.shape[0] == 100
     assert vis_img.shape[1] == 200
     assert vis_img.shape[2] == 3
+
+    det_recog_res['result'][0]['text'] = '中文'
+    det_recog_show_result(img, det_recog_res)

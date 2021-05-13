@@ -1,0 +1,106 @@
+Collections:
+- Name: SAR
+  Metadata:
+    Training Data: OCRDataset
+    Training Techniques:
+      - Adam
+    Training Resources: 48x GeForce GTX 1080 Ti
+    Architecture:
+      - ResNet31OCR
+      - SAREncoder
+      - ParallelSARDecoder
+  Paper: https://arxiv.org/pdf/1811.00751.pdf
+  README: configs/textrecog/sar/README.md
+
+Models:
+  - Name: sar_r31_parallel_decoder_academic
+    In Collection: SAR
+    Config: configs/textrecog/sar/sar_r31_parallel_decoder_academic.py
+    Metadata:
+      Training Data:
+        - ICDAR2011
+        - ICDAR2013
+        - ICDAR2015
+        - COCO text
+        - IIIT5K
+        - SynthText
+        - SynthAdd
+        - Syn90k
+    Results:
+      - Task: Regular Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          acc: 95.0
+      - Task: Regular Text Recognition
+        Dataset: SVT
+        Metrics:
+          acc: 89.6
+      - Task: Regular Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          acc: 93.7
+      - Task: Irregular Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          acc: 79.0
+      - Task: Irregular Text Recognition
+        Dataset: SVTP
+        Metrics:
+          acc: 82.2
+      - Task: Irregular Text Recognition
+        Dataset: CT80
+        Metrics:
+          acc: 88.9
+    Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth
+
+  - Name: sar_r31_sequential_decoder_academic
+    In Collection: SAR
+    Config: configs/textrecog/sar/sar_r31_sequential_decoder_academic.py
+    Metadata:
+      Training Data:
+        - ICDAR2011
+        - ICDAR2013
+        - ICDAR2015
+        - COCO text
+        - IIIT5K
+        - SynthText
+        - SynthAdd
+        - Syn90k
+    Results:
+      - Task: Regular Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          acc: 95.2
+      - Task: Regular Text Recognition
+        Dataset: SVT
+        Metrics:
+          acc: 88.7
+      - Task: Regular Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          acc: 92.4
+      - Task: Irregular Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          acc: 78.2
+      - Task: Irregular Text Recognition
+        Dataset: SVTP
+        Metrics:
+          acc: 81.9
+      - Task: Irregular Text Recognition
+        Dataset: CT80
+        Metrics:
+          acc: 89.6
+    Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_sequential_decoder_academic-d06c9a8e.pth
+
+  - Name: sar_r31_parallel_decoder_chinese
+    In Collection: SAR
+    Config: configs/textrecog/sar/sar_r31_parallel_decoder_chinese.py
+    Metadata:
+      Training Data:
+    Results:
+      - Task:
+        Dataset:
+        Metrics:
+          acc:
+    Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth
