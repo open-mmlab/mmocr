@@ -1,3 +1,4 @@
+fourier_degree = 5
 model = dict(
     type='FCENet',
     pretrained='torchvision://resnet50',
@@ -26,7 +27,7 @@ model = dict(
         in_channels=256,
         scales=(8, 16, 32),
         loss=dict(type='FCELoss'),
-        fourier_degree=5,  # make sure it is same as it in 'FCENetTargets'
+        fourier_degree=fourier_degree,
     ))
 
 train_cfg = None
@@ -47,19 +48,19 @@ train_pipeline = [
         poly2mask=False),
     dict(
         type='ColorJitter',
-         brightness=32.0 / 255,
-         saturation=0.5,
-         contrast=0.5),
+        brightness=32.0 / 255,
+        saturation=0.5,
+        contrast=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(
         type='RandomScaling',
-         size=800,
-         scale=(3./4, 5./2)),
+        size=800,
+        scale=(3./4, 5./2)),
     dict(
         type='RandomCropFlip',
-         crop_ratio=0.5,
-         frequency=1,
-         min_area_ratio=0.2),
+        crop_ratio=0.5,
+        frequency=1,
+        min_area_ratio=0.2),
     dict(
         type='RandomCropPolyInstances',
         instance_key='gt_masks',
@@ -74,7 +75,7 @@ train_pipeline = [
     dict(type='RandomFlip', flip_ratio=0.5, direction='horizontal'),
     dict(type='Pad', size_divisor=32),
     dict(type='FCENetTargets',
-         fourier_degree=5,
+         fourier_degree=fourier_degree,
          level_proportion_range=((0, 0.25), (0.2, 0.65), (0.55, 1.0))),
     dict(
         type='CustomFormatBundle',
