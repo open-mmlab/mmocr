@@ -4,6 +4,7 @@ Collections:
     Training Data: ICDAR2015
     Training Techniques:
       - SGD with Momentum
+      - Weight Decay
     Training Resources: 8x GeForce GTX 1080 Ti
     Architecture:
       - ResNet
@@ -18,7 +19,7 @@ Models:
     Metadata:
       Training Data: ICDAR2015
     Results:
-      - Task: Instance Segmentation
+      - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
           hmean-iou: 0.795
@@ -30,7 +31,7 @@ Models:
     Metadata:
       Training Data: ICDAR2015
     Results:
-      - Task: Instance Segmentation
+      - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
           hmean-iou: 0.830

@@ -1,7 +1,7 @@
 Collections:
 - Name: TextSnake
   Metadata:
-    Training Data: ICDARDataset
+    Training Data: SCUT-CTW1500
     Training Techniques:
       - SGD with Momentum
     Training Resources: 8x GeForce GTX 1080 Ti
@@ -18,7 +18,7 @@ Models:
     Metadata:
       Training Data: CTW1500
     Results:
-      - Task: Instance Segmentation
+      - Task: Text Detection
         Dataset: CTW1500
         Metrics:
           hmean-iou: 0.817
