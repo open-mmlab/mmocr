@@ -1,12 +1,14 @@
 Collections:
 - Name: Mask R-CNN
   Metadata:
-    Training Data: ICDARDataset
+    Training Data: ICDAR SCUT-CTW1500
     Training Techniques:
       - SGD with Momentum
+      - Weight Decay
     Training Resources: 8x GeForce GTX 1080 Ti
     Architecture:
-      - RoI Align
+      - ResNet
+      - FPN
       - RPN
   Paper: https://arxiv.org/pdf/1703.06870.pdf
   README: configs/textdet/maskrcnn/README.md
@@ -18,7 +20,7 @@ Models:
     Metadata:
       Training Data: CTW1500
     Results:
-      - Task: Instance Segmentation
+      - Task: Text Detection
         Dataset: CTW1500
         Metrics:
           hmean: 0.732
@@ -30,7 +32,7 @@ Models:
     Metadata:
       Training Data: ICDAR2015
     Results:
-      - Task: Instance Segmentation
+      - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
           hmean: 0.825
@@ -42,7 +44,7 @@ Models:
     Metadata:
       Training Data: ICDAR2017
     Results:
-      - Task: Instance Segmentation
+      - Task: Text Detection
         Dataset: ICDAR2017
         Metrics:
           hmean: 0.789

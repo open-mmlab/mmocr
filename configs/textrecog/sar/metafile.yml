@@ -5,6 +5,8 @@ Collections:
     Training Techniques:
       - Adam
     Training Resources: 48x GeForce GTX 1080 Ti
+    Epochs: 5
+    Batch Size: 3072
     Architecture:
       - ResNet31OCR
       - SAREncoder
@@ -30,27 +32,27 @@ Models:
       - Task: Regular Text Recognition
         Dataset: IIIT5K
         Metrics:
-          acc: 95.0
+          word_acc: 95.0
       - Task: Regular Text Recognition
         Dataset: SVT
         Metrics:
-          acc: 89.6
+          word_acc: 89.6
       - Task: Regular Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          acc: 93.7
+          word_acc: 93.7
       - Task: Irregular Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          acc: 79.0
+          word_acc: 79.0
       - Task: Irregular Text Recognition
         Dataset: SVTP
         Metrics:
-          acc: 82.2
+          word_acc: 82.2
       - Task: Irregular Text Recognition
         Dataset: CT80
         Metrics:
-          acc: 88.9
+          word_acc: 88.9
     Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth
 
   - Name: sar_r31_sequential_decoder_academic
@@ -70,37 +72,25 @@ Models:
       - Task: Regular Text Recognition
         Dataset: IIIT5K
         Metrics:
-          acc: 95.2
+          word_acc: 95.2
       - Task: Regular Text Recognition
         Dataset: SVT
         Metrics:
-          acc: 88.7
+          word_acc: 88.7
       - Task: Regular Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          acc: 92.4
+          word_acc: 92.4
       - Task: Irregular Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          acc: 78.2
+          word_acc: 78.2
       - Task: Irregular Text Recognition
         Dataset: SVTP
         Metrics:
-          acc: 81.9
+          word_acc: 81.9
       - Task: Irregular Text Recognition
         Dataset: CT80
         Metrics:
-          acc: 89.6
+          word_acc: 89.6
     Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_sequential_decoder_academic-d06c9a8e.pth
-
-  - Name: sar_r31_parallel_decoder_chinese
-    In Collection: SAR
-    Config: configs/textrecog/sar/sar_r31_parallel_decoder_chinese.py
-    Metadata:
-      Training Data:
-    Results:
-      - Task:
-        Dataset:
-        Metrics:
-          acc:
-    Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth

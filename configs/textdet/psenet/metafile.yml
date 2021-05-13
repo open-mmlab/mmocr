@@ -1,7 +1,7 @@
 Collections:
 - Name: PSENet
   Metadata:
-    Training Data: ICDARDataset
+    Training Data: ICDAR SCUT-CTW1500
     Training Techniques:
       - Adam
     Training Resources: 8x GeForce GTX 1080 Ti
@@ -18,7 +18,7 @@ Models:
     Metadata:
       Training Data: CTW1500
     Results:
-      - Task: Instance Segmentation
+      - Task: Text Detection
         Dataset: CTW1500
         Metrics:
           hmean-iou: 0.784
@@ -30,7 +30,7 @@ Models:
     Metadata:
       Training Data: ICDAR2015
     Results:
-      - Task: Instance Segmentation
+      - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
           hmean-iou: 0.807
@@ -40,10 +40,10 @@ Models:
     In Collection: PSENet
     Config: configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py
     Metadata:
-      Training Data: ICDAR2017
+      Training Data: ICDAR2017 ICDAR2015
     Results:
-      - Task: Instance Segmentation
-        Dataset: ICDAR2017
+      - Task: Text Detection
+        Dataset: ICDAR2017 ICDAR2015
         Metrics:
           hmean-iou: 0.847
     Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015_pretrain-eefd8fe6.pth
