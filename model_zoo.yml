@@ -1,0 +1,13 @@
+Import:
+  - configs/textdet/dbnet/metafile.yml
+  - configs/textdet/maskrcnn/metafile.yml
+  - configs/textdet/panet/metafile.yml
+  - configs/textdet/psenet/metafile.yml
+  - configs/textdet/textsnake/metafile.yml
+  - configs/textrecog/crnn/metafile.yml
+  - configs/textrecog/nrtr/metafile.yml
+  - configs/textrecog/robust_scanner/metafile.yml
+  - configs/textrecog/sar/metafile.yml
+  - configs/textrecog/seg/metafile.yml
+  - configs/textrecog/tps/metafile.yml
+  - configs/kie/sdmgr/metafile.yml

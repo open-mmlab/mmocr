@@ -1,0 +1,50 @@
+Collections:
+- Name: RobustScanner
+  Metadata:
+    Training Data: OCRDataset
+    Training Techniques:
+      - Adam
+    Training Resources: 16x NVIDIA 1080Ti GPUs
+    Architecture:
+      - ResNet31OCR
+      - ChannelReductionEncoder
+      - RobustScannerDecoder
+  Paper: https://arxiv.org/pdf/2007.07542.pdf
+  README: configs/textrecog/robust_scanner/README.md
+
+Models:
+  - Name: robustscanner_r31_academic
+    In Collection: RobustScanner
+    Config: configs/textrecog/robust_scanner/robustscanner_r31_academic.py
+    Metadata:
+      Training Data:
+        - ICDAR2011
+        - ICDAR2013
+        - ICDAR2015
+        - COCO text
+        - IIIT5K
+        - SynthText
+        - SynthAdd
+        - Syn90k
+    Results:
+      - Task: Regular Text Recognition
+        Dataset:
+        - IIIT5K
+        - SVT
+        - ICDAR2013
+        Metrics:
+          acc:
+          - 95.1
+          - 89.2
+          - 93.1
+      - Task: Irregular Text Recognition
+        Dataset:
+        - ICDAR2015
+        - SVTP
+        - CT80
+        Metrics:
+          acc:
+          - 77.8
+          - 80.3
+          - 90.3
+    Weights: https://download.openmmlab.com/mmocr/textrecog/robustscanner/robustscanner_r31_academic-5f05874f.pth

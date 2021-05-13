@@ -1,0 +1,31 @@
+Collections:
+- Name: CRNN
+  Metadata:
+    Training Data: OCRDataset
+    Training Techniques:
+      - Adadelta
+    Training Resources: 4x NVIDIA 1080Ti GPUs
+    Architecture:
+      - VeryDeepVgg
+      - CRNNDecoder
+  Paper: https://arxiv.org/pdf/1507.05717.pdf
+  README: configs/textrecog/crnn/README.md
+
+Models:
+  - Name: crnn_academic_dataset
+    In Collection: CRNN
+    Config: configs/textrecog/crnn/crnn_academic_dataset.py
+    Metadata:
+      Training Data: Syn90k
+    Results:
+      - Task: Regular Text Recognition
+        Dataset:
+        - IIIT5K
+        - SVT
+        - ICDAR2013
+        Metrics:
+          acc:
+          - 80.5
+          - 81.5
+          - 86.5
+    Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth
