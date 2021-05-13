@@ -4,7 +4,7 @@ Collections:
     Training Data: mixture
     Training Techniques:
       - Adam
-    Training Resources: 4x NVIDIA 1080Ti GPUs
+    Training Resources: 4x GeForce GTX 1080 Ti
     Architecture:
       - ResNet31OCR
       - FPNOCR
@@ -19,15 +19,17 @@ Models:
       Training Data: SynthText
     Results:
       - Task: Regular Text Recognition
-        Dataset:
-        - IIIT5K
-        - SVT
-        - ICDAR2013
+        Dataset: IIIT5K
         Metrics:
-          acc:
-          - 90.9
-          - 81.8
-          - 90.7
+          acc: 90.9
+      - Task: Regular Text Recognition
+        Dataset: SVT
+        Metrics:
+          acc: 81.8
+      - Task: Regular Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          acc: 90.7
       - Task: Irregular Text Recognition
         Dataset: CT80
         Metrics:
