@@ -4,6 +4,8 @@ Collections:
     Training Data: OCRDataset
     Training Techniques:
       - Adam
+    Epochs: 5
+    Batch Size: 1024
     Training Resources: 16x GeForce GTX 1080 Ti
     Architecture:
       - ResNet31OCR
@@ -30,25 +32,25 @@ Models:
       - Task: Regular Text Recognition
         Dataset: IIIT5K
         Metrics:
-          acc: 95.1
+          word_acc: 95.1
       - Task: Regular Text Recognition
         Dataset: SVT
         Metrics:
-          acc: 89.2
+          word_acc: 89.2
       - Task: Regular Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          acc: 93.1
+          word_acc: 93.1
       - Task: Irregular Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          acc: 77.8
+          word_acc: 77.8
       - Task: Irregular Text Recognition
         Dataset: SVTP
         Metrics:
-          acc: 80.3
+          word_acc: 80.3
       - Task: Irregular Text Recognition
         Dataset: CT80
         Metrics:
-          acc: 90.3
+          word_acc: 90.3
     Weights: https://download.openmmlab.com/mmocr/textrecog/robustscanner/robustscanner_r31_academic-5f05874f.pth

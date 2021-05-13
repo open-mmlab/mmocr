@@ -4,6 +4,8 @@ Collections:
     Training Data: OCRDataset
     Training Techniques:
       - Adadelta
+    Epochs: 5
+    Batch Size: 256
     Training Resources: 4x GeForce GTX 1080 Ti
     Architecture:
       - VeryDeepVgg
@@ -21,13 +23,13 @@ Models:
       - Task: Regular Text Recognition
         Dataset: IIIT5K
         Metrics:
-          acc: 80.5
+          word_acc: 80.5
       - Task: Regular Text Recognition
         Dataset: SVT
         Metrics:
-          acc: 81.5
+          word_acc: 81.5
       - Task: Regular Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          acc: 86.5
+          word_acc: 86.5
     Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth
