@@ -18,9 +18,7 @@ def main():
         '--images',
         nargs='+',
         help='Image files to be predicted with batch mode, '
-        'separated by space, like "image_1.jpg image2.jpg". '
-        'If algorithm use augmentation test, only one '
-        'image file can be given.')
+        'separated by space, like "image_1.jpg image2.jpg".')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference.')
     parser.add_argument(
@@ -36,7 +34,7 @@ def main():
             0].pipeline
 
     # test multiple images
-    results = model_inference(model, args.images)
+    results = model_inference(model, args.images, batch_mode=True)
     print(f'results: {results}')
 
     save_path = Path(args.save_path)
