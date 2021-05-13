@@ -25,7 +25,7 @@ class FCENetTargets(TextSnakeTargets):
     """
 
     def __init__(self,
-                 fourier_degree=10,
+                 fourier_degree=5,
                  resample_step=4.0,
                  center_region_shrink_ratio=0.3,
                  level_size_divisors=(8, 16, 32),
