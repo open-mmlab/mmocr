@@ -8,6 +8,14 @@ from mmdet.datasets.pipelines import Compose
 
 
 def disable_text_recog_aug_test(cfg):
+    """Remove aug_test from test pipeline of text recognition.
+    Args:
+        cfg (mmcv.Config): Input config.
+
+    Returns:
+        cfg (mmcv.Config): Output config removing
+            `MultiRotateAugOCR` in test pipeline.
+    """
     if cfg.data.test.pipeline[1].type == 'MultiRotateAugOCR':
         cfg.data.test.pipeline = [
             cfg.data.test.pipeline[0], *cfg.data.test.pipeline[1].transforms
@@ -23,9 +31,9 @@ def model_inference(model, imgs, batch_mode=False):
         model (nn.Module): The loaded detector.
         imgs (str/ndarray or list[str/ndarray] or tuple[str/ndarray]):
             Either image files or loaded images.
-
+        batch_mode (bool): If True, use batch mode for inference.
     Returns:
-        result (dict): Detection results.
+        result (dict): Predicted results.
     """
 
     if isinstance(imgs, (list, tuple)):
@@ -46,9 +54,10 @@ def model_inference(model, imgs, batch_mode=False):
     if batch_mode:
         if cfg.data.test.pipeline[1].type == 'ResizeOCR':
             if cfg.data.test.pipeline[1].max_width is None:
-                raise Exception('Free resize (keep aspect ratio '
-                                'such that image width is not fixed) '
-                                'do not support batch mode.')
+                raise Exception('Free resize do not support batch mode '
+                                'since the image width is not fixed, '
+                                'for resize keeping aspect ratio and '
+                                'max_width is not give.')
         cfg = disable_text_recog_aug_test(cfg)
 
     device = next(model.parameters()).device  # model device
