@@ -90,8 +90,6 @@ class FCELoss(nn.Module):
         tr_train_mask = train_mask * tr_mask
         device = x_map.device
         # tr loss
-        # loss_tr = torch.tensor(0.).float().to(device)
-        # if tr_train_mask.sum().item() > 0:
         loss_tr = self.ohem(tr_pred, tr_mask.long(), train_mask.long())
 
         # tcl loss
