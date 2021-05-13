@@ -4,7 +4,7 @@ Collections:
     Training Data: KIEDataset
     Training Techniques:
       - Adam
-    Training Resources: 1x NVIDIA 1080Ti GPU
+    Training Resources: 1x GeForce GTX 1080 Ti
     Architecture:
       - UNet
   Paper: https://arxiv.org/abs/2103.14470.pdf

@@ -4,7 +4,7 @@ Collections:
     Training Data: OCRDataset
     Training Techniques:
       - Adadelta
-    Training Resources: 4x NVIDIA 1080Ti GPUs
+    Training Resources: 4x GeForce GTX 1080 Ti
     Architecture:
       - VeryDeepVgg
       - CRNNDecoder
@@ -19,13 +19,15 @@ Models:
       Training Data: Syn90k
     Results:
       - Task: Regular Text Recognition
-        Dataset:
-        - IIIT5K
-        - SVT
-        - ICDAR2013
+        Dataset: IIIT5K
         Metrics:
-          acc:
-          - 80.5
-          - 81.5
-          - 86.5
+          acc: 80.5
+      - Task: Regular Text Recognition
+        Dataset: SVT
+        Metrics:
+          acc: 81.5
+      - Task: Regular Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          acc: 86.5
     Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth
