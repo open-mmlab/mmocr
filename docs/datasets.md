@@ -237,17 +237,19 @@ The structure of the key information extraction dataset directory is organized a
 
 
 ## Named Entity Recognition
+
 ### CLUENER2020
+
 The structure of the named entity recognition dataset directory is organized as follows.
 
 ```text
-cluener_public
-├── cluener_predict.json
-├── dev.json
-├── README.md
-├── test.json
-├── train.json
-└── vocab.txt
+└── cluener_public
+  ├── cluener_predict.json
+  ├── dev.json
+  ├── README.md
+  ├── test.json
+  ├── train.json
+  └── vocab.txt
 
 ```
 - Download [cluener_public.zip](https://storage.googleapis.com/cluebenchmark/tasks/cluener_public.zip)

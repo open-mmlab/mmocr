@@ -1,11 +1,12 @@
 from mmdet.datasets.builder import DATASETS
-from mmocr.core.evaluation.ner_metric import eval_ner
+from mmocr.core.evaluation.ner_metric import eval_ner_f1
 from mmocr.datasets.base_dataset import BaseDataset
 
 
 @DATASETS.register_module()
 class NerDataset(BaseDataset):
-    """
+    """Custom dataset for named entity recognition tasks.
+
     Args:
         ann_file (txt): Annotation file path.
         loader (dict): Dictionary to construct loader
@@ -24,7 +25,6 @@ class NerDataset(BaseDataset):
                  test_mode=False):
         super().__init__(
             ann_file, loader, pipeline, img_prefix='', test_mode=False)
-        self.ann_file = ann_file
 
     def _parse_anno_info(self, ann):
         """Parse annotations of texts and labels for one text.
@@ -70,5 +70,5 @@ class NerDataset(BaseDataset):
         gt_infos = []
         for i in range(len(self)):
             gt_infos.append(self.data_infos[i])
-        eval_results = eval_ner(results, gt_infos)
+        eval_results = eval_ner_f1(results, gt_infos)
         return eval_results

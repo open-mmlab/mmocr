@@ -1,7 +1,7 @@
 from collections import Counter
 
 
-def label2entity(gt_infos):
+def gt_label2entity(gt_infos):
     """Get all entities from ground truth infos.
     Args:
         gt_infos (list[dict]): Groudtruth infomation contains text and label.
@@ -21,7 +21,7 @@ def label2entity(gt_infos):
     return gt_entities
 
 
-def compute(origin, found, right):
+def _compute_f1(origin, found, right):
     """Calculate recall, precision, f1-score.
 
     Args:
@@ -41,8 +41,8 @@ def compute(origin, found, right):
     return recall, precision, f1
 
 
-def pred_info(pred_entities, gt_entities):
-    """Calculate precision, recall and F1-score for NER task.
+def compute_f1_all(pred_entities, gt_entities):
+    """Calculate precision, recall and F1-score for all categories.
 
     Args:
         pred_entities: The predicted entities from model.
@@ -70,36 +70,37 @@ def pred_info(pred_entities, gt_entities):
         origin = count
         found = found_counter.get(type_, 0)
         right = right_counter.get(type_, 0)
-        recall, precision, f1 = compute(origin, found, right)
+        recall, precision, f1 = _compute_f1(origin, found, right)
         class_info[type_] = {
-            'precision': round(precision, 4),
-            'recall': round(recall, 4),
-            'f1-score': round(f1, 4)
+            'precision': precision,
+            'recall': recall,
+            'f1-score': f1
         }
     origin = len(origins)
     found = len(founds)
     right = len(rights)
-    recall, precision, f1 = compute(origin, found, right)
+    recall, precision, f1 = _compute_f1(origin, found, right)
     class_info['all'] = {
-        'precision': round(precision, 4),
-        'recall': round(recall, 4),
-        'f1-score': round(f1, 4)
+        'precision': precision,
+        'recall': recall,
+        'f1-score': f1
     }
     return class_info
 
 
-def eval_ner(results, gt_infos):
+def eval_ner_f1(results, gt_infos):
     """Evaluate for ner task.
 
     Args:
         results (list): Predict results of entities.
-        gt_infos (list[dict]): Groudtruth infomation contains text and label .
+        gt_infos (list[dict]): Groudtruth infomation which contains
+                            text and label.
     Returns:
         class_info (dict): precision,recall, f1-score of total
                             and each catogory.
     """
     assert len(results) == len(gt_infos)
-    gt_entities = label2entity(gt_infos)
+    gt_entities = gt_label2entity(gt_infos)
     pred_entities = []
     for i, gt_info in enumerate(gt_infos):
         text = gt_info['text']
@@ -108,10 +109,9 @@ def eval_ner(results, gt_infos):
             if result[1] < len(text):
                 if result[2] > len(text):
                     result[2] = len(text)
-                if result[2] - result[1] > 0:
+                if result[2] > result[1]:
                     line_entities.append(result)
         pred_entities.append(line_entities)
-    print('lens: {} vs {}'.format(len(pred_entities), len(gt_entities)))
     assert len(pred_entities) == len(gt_entities)
-    class_info = pred_info(pred_entities, gt_entities)
+    class_info = compute_f1_all(pred_entities, gt_entities)
     return class_info

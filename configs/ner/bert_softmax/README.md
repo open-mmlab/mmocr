@@ -1,4 +1,4 @@
-# Chinese Named Entity Recognition using BERT(softmax).
+# Chinese Named Entity Recognition using BERT + Softmax.
 
 ## Introduction
 
@@ -15,6 +15,7 @@
 ## Dataset
 
 ### Train Dataset
+
 |  trainset  | text_num | entity_num |
 | :--------: | :----------: | :--------: |
 | CLUENER2020 |     10748     |     23338     |

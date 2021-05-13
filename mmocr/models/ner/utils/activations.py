@@ -26,6 +26,8 @@ def gelu_new(x):
 
 
 def swish(x):
+    if torch.__version__ >= '1.7.0':
+        return torch.nn.functional.silu(x)
     return x * torch.sigmoid(x)
 
 

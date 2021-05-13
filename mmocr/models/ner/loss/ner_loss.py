@@ -16,7 +16,7 @@ class NerLoss(nn.Module):
         self.loss_type = loss_type
         assert self.loss_type in ['focal', 'ce']
 
-    def forward(self, logits, img_metas, device):
+    def forward(self, logits, img_metas):
         '''Loss forword.
         Args:
             logits: Model output with shape [N, C].
@@ -27,14 +27,13 @@ class NerLoss(nn.Module):
                     - input_ids (list): []*max_len
                     - attention_mask (list): []*max_len
                     - token_type_ids (list): []*max_len
-            device (str): Cuda or cpu.
         '''
         labels = []
         attention_masks = []
         for i, _ in enumerate(img_metas):
-            label = torch.tensor(img_metas[i]['labels']).to(device)
-            attention_mask = torch.tensor(
-                img_metas[i]['attention_mask']).to(device)
+            label = torch.tensor(img_metas[i]['labels']).to(logits.device)
+            attention_mask = torch.tensor(img_metas[i]['attention_mask']).to(
+                logits.device)
             labels.append(label)
             attention_masks.append(attention_mask)
         labels = torch.stack(labels, 0)

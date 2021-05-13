@@ -63,23 +63,19 @@ class BertEncoder(nn.Module):
     def forward(self, img_metas):
         device = next(self.bert.parameters()).device
         input_ids = []
-        labels = []
         attention_masks = []
         token_type_ids = []
         for i, _ in enumerate(img_metas):
             input_id = torch.tensor(img_metas[i]['input_ids']).to(device)
-            label = torch.tensor(img_metas[i]['labels']).to(device)
             attention_mask = torch.tensor(
                 img_metas[i]['attention_mask']).to(device)
             token_type_id = torch.tensor(
                 img_metas[i]['token_type_ids']).to(device)
             input_ids.append(input_id)
-            labels.append(label)
             attention_masks.append(attention_mask)
             token_type_ids.append(token_type_id)
 
         input_ids = torch.stack(input_ids, 0)
-        labels = torch.stack(labels, 0)
         attention_masks = torch.stack(attention_masks, 0)
         token_type_ids = torch.stack(token_type_ids, 0)
         outputs = self.bert(

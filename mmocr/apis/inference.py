@@ -128,3 +128,30 @@ def model_inference(model, imgs, batch_mode=False):
         return results[0]
     else:
         return results
+
+
+def text_model_inference(model, input_sentence):
+    """Inference text(s) with the detector.
+
+    Args:
+        model (nn.Module): The loaded detector.
+        input_sentence (str): A text entered by the user.
+
+    Returns:
+        result (dict): Detection results.
+    """
+
+    assert isinstance(input_sentence, (str))
+
+    cfg = model.cfg
+    test_pipeline = Compose(cfg.data.test.pipeline)
+    data = {'text': input_sentence, 'label': {}}
+
+    # build the data pipeline
+    data = test_pipeline(data)
+    img_metas = data['img_metas']._data
+
+    # forward the model
+    with torch.no_grad():
+        result = model(img_metas['img'], [img_metas], return_loss=False)
+    return result

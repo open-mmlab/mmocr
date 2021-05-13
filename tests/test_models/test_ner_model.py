@@ -1,5 +1,4 @@
 import copy
-from os.path import dirname, exists, join
 
 import pytest
 import torch
@@ -7,27 +6,10 @@ import torch
 from mmocr.models.ner.utils.activations import gelu, gelu_new, swish
 
 
-def _get_config_directory():
-    """Find the predefined detector config directory."""
-    try:
-        # Assume we are running in the source mmocr repo
-        repo_dpath = dirname(dirname(dirname(__file__)))
-    except NameError:
-        # For IPython development when this __file__ is not defined
-        import mmocr
-        repo_dpath = dirname(dirname(mmocr.__file__))
-    config_dpath = join(repo_dpath, 'configs')
-    if not exists(config_dpath):
-        raise Exception('Cannot find config path')
-    return config_dpath
-
-
 def _get_config_module(fname):
     """Load a configuration as a python module."""
     from mmcv import Config
-    config_dpath = _get_config_directory()
-    config_fpath = join(config_dpath, fname)
-    config_mod = Config.fromfile(config_fpath)
+    config_mod = Config.fromfile(fname)
     return config_mod
 
 
@@ -42,8 +24,8 @@ def _get_detector_cfg(fname):
     return model
 
 
-@pytest.mark.parametrize('cfg_file',
-                         ['ner/bert_softmax/bert_softmax_toy_dataset.py'])
+@pytest.mark.parametrize(
+    'cfg_file', ['configs/ner/bert_softmax/bert_softmax_toy_dataset.py'])
 def test_encoder_decoder_pipeline(cfg_file):
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None
