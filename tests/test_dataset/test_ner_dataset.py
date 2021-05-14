@@ -59,9 +59,6 @@ def test_ner_dataset():
         }
     }
 
-    ans = dataset._parse_anno_info(ann)
-    assert isinstance(ans, dict)
-    assert 'text' in ans
     # test prepare_train_img
     dataset.prepare_train_img(0)
 
