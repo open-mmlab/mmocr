@@ -9,7 +9,7 @@
 - CUDA 10.1
 - NCCL 2
 - GCC 5.4.0 or higher
-- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation) 1.3.1
+- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation) 1.3.4
 - [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation) 2.11.0
 
 We have tested the following versions of OS and softwares:
@@ -17,7 +17,7 @@ We have tested the following versions of OS and softwares:
 - OS: Ubuntu 16.04
 - CUDA: 10.1
 - GCC(G++): 5.4.0
-- MMCV 1.3.1
+- MMCV 1.3.4
 - MMDetection 2.11.0
 - PyTorch 1.5
 - torchvision 0.6.0
@@ -53,6 +53,7 @@ Please replace ``{cu_version}`` and ``{torch_version}`` in the url to your desir
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
 ```
+Note that mmocr 0.2.0 or later requires mmcv 1.3.4 or later.
 
 If it compiles during installation, then please check that the cuda version and pytorch version **exactly"" matches the version in the mmcv-full installation command. For example, pytorch 1.7.0 and 1.7.1 are treated differently.
 
@@ -97,7 +98,7 @@ conda activate open-mmlab
 conda install pytorch==1.5.0 torchvision==0.6.0 cudatoolkit=10.1 -c pytorch
 
 # install the latest mmcv-full
-pip install mmcv-full==1.3.1
+pip install mmcv-full==1.3.4
 
 # install mmdetection
 pip install mmdet==2.11.0
