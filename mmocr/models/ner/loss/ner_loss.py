@@ -1,4 +1,3 @@
-import torch
 from torch import nn
 from torch.nn import CrossEntropyLoss
 
@@ -28,24 +27,17 @@ class NerLoss(nn.Module):
                     - attention_mask (list): []*max_len
                     - token_type_ids (list): []*max_len
         '''
-        labels = []
-        attention_masks = []
-        for i, _ in enumerate(img_metas):
-            label = torch.tensor(img_metas[i]['labels']).to(logits.device)
-            attention_mask = torch.tensor(img_metas[i]['attention_mask']).to(
-                logits.device)
-            labels.append(label)
-            attention_masks.append(attention_mask)
-        labels = torch.stack(labels, 0)
-        attention_mask = torch.stack(attention_masks, 0)
+
+        labels = img_metas['labels']
+        attention_masks = img_metas['attention_masks']
 
         if self.loss_type == 'focal':
             loss_function = FocalLoss(ignore_index=0)
         else:
             loss_function = CrossEntropyLoss(ignore_index=0)
         # Only keep active parts of the loss
-        if attention_mask is not None:
-            active_loss = attention_mask.view(-1) == 1
+        if attention_masks is not None:
+            active_loss = attention_masks.view(-1) == 1
             active_logits = logits.view(-1, self.num_labels)[active_loss]
             active_labels = labels.view(-1)[active_loss]
             loss = loss_function(active_logits, active_labels)

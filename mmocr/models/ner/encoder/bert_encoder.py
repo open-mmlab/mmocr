@@ -41,7 +41,8 @@ class BertEncoder(nn.Module):
                  num_attention_heads=12,
                  attention_probs_dropout_prob=0.1,
                  intermediate_size=3072,
-                 hidden_act='gelu_new'):
+                 hidden_act='gelu_new',
+                 pretrained=None):
         super().__init__()
         self.bert = BertModel(
             num_hidden_layers=num_hidden_layers,
@@ -58,36 +59,34 @@ class BertEncoder(nn.Module):
             attention_probs_dropout_prob=attention_probs_dropout_prob,
             intermediate_size=intermediate_size,
             hidden_act=hidden_act)
-        self.init_weights()
+        self.init_weights(pretrained=pretrained)
 
-    def forward(self, img_metas):
+    def forward(self, results):
+
         device = next(self.bert.parameters()).device
-        input_ids = []
-        attention_masks = []
-        token_type_ids = []
-        for i, _ in enumerate(img_metas):
-            input_id = torch.tensor(img_metas[i]['input_ids']).to(device)
-            attention_mask = torch.tensor(
-                img_metas[i]['attention_mask']).to(device)
-            token_type_id = torch.tensor(
-                img_metas[i]['token_type_ids']).to(device)
-            input_ids.append(input_id)
-            attention_masks.append(attention_mask)
-            token_type_ids.append(token_type_id)
+        input_ids = results['input_ids'].to(device)
+        attention_masks = results['attention_masks'].to(device)
+        token_type_ids = results['token_type_ids'].to(device)
 
-        input_ids = torch.stack(input_ids, 0)
-        attention_masks = torch.stack(attention_masks, 0)
-        token_type_ids = torch.stack(token_type_ids, 0)
         outputs = self.bert(
             input_ids=input_ids,
-            attention_mask=attention_masks,
+            attention_masks=attention_masks,
             token_type_ids=token_type_ids)
         return outputs
 
-    def init_weights(self):
+    def init_weights(self, pretrained=None):
+        if pretrained is not None:
+            checkpoint = torch.load(pretrained)
+            new_dict = {}
+            for key in checkpoint.keys():
+                # if "cls." in key or "meta" in key:
+                #     continue
+                new_dict.update({key: checkpoint[key]})
+            self.load_state_dict(new_dict)
+        else:
 
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                xavier_init(m)
-            elif isinstance(m, nn.BatchNorm2d):
-                uniform_init(m)
+            for m in self.modules():
+                if isinstance(m, nn.Conv2d):
+                    xavier_init(m)
+                elif isinstance(m, nn.BatchNorm2d):
+                    uniform_init(m)

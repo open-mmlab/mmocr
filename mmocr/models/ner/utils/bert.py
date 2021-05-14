@@ -76,15 +76,15 @@ class BertModel(nn.Module):
 
     def forward(self,
                 input_ids,
-                attention_mask=None,
+                attention_masks=None,
                 token_type_ids=None,
                 position_ids=None,
                 head_mask=None):
-        if attention_mask is None:
-            attention_mask = torch.ones_like(input_ids)
+        if attention_masks is None:
+            attention_masks = torch.ones_like(input_ids)
         if token_type_ids is None:
             token_type_ids = torch.zeros_like(input_ids)
-        extended_attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)
+        extended_attention_mask = attention_masks.unsqueeze(1).unsqueeze(2)
         extended_attention_mask = extended_attention_mask.to(
             dtype=next(self.parameters()).dtype)
         extended_attention_mask = (1.0 - extended_attention_mask) * -10000.0

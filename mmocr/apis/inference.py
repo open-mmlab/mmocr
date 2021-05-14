@@ -149,7 +149,7 @@ def text_model_inference(model, input_sentence):
 
     # build the data pipeline
     data = test_pipeline(data)
-    img_metas = data['img_metas']._data
+    img_metas = data['img_metas'].data
 
     # forward the model
     with torch.no_grad():

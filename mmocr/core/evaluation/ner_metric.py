@@ -114,4 +114,21 @@ def eval_ner_f1(results, gt_infos):
         pred_entities.append(line_entities)
     assert len(pred_entities) == len(gt_entities)
     class_info = compute_f1_all(pred_entities, gt_entities)
+    show(class_info)
+
     return class_info
+
+
+def show(results):
+    from terminaltables import GithubFlavoredMarkdownTable
+    table_data = [['class', 'precision', 'recall', 'f1-score']]
+    for key in results.keys():
+        row_data = [
+            '%s' % key.replace('0_', ''),
+            '{:.3f}'.format(results[key]['precision']),
+            '{:.3f}'.format(results[key]['recall']),
+            '{:.3f}'.format(results[key]['f1-score']),
+        ]
+        table_data.append(row_data)
+    table = GithubFlavoredMarkdownTable(table_data)
+    print('\n' + table.table)

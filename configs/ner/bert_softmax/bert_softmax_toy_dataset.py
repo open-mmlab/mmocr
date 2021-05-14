@@ -11,6 +11,7 @@ categories = [
 test_ann_file = 'tests/data/ner_toy_dataset/train_sample.json'
 train_ann_file = 'tests/data/ner_toy_dataset/train_sample.json'
 vocab_file = 'tests/data/ner_toy_dataset/vocab_sample.txt'
+pretrained = 'data/pretrained_model/bert_mmocr_pretrained_model.pth'
 max_len = 128
 loader = dict(
     type='HardDiskLoader',
@@ -80,7 +81,7 @@ model = dict(
         initializer_range=0.02,
         vocab_size=21128,
         hidden_size=768,
-        max_position_embeddings=128,
+        max_position_embeddings=512,
         type_vocab_size=2,
         layer_norm_eps=1e-12,
         hidden_dropout_prob=0.1,
@@ -89,7 +90,8 @@ model = dict(
         num_attention_heads=12,
         attention_probs_dropout_prob=0.1,
         intermediate_size=3072,
-        hidden_act='gelu_new'),
+        hidden_act='gelu_new',
+        pretrained=pretrained),
     decoder=dict(type='FCDecoder', hidden_dropout_prob=0.1, hidden_size=768),
     loss=dict(type='NerLoss', loss_type='focal'),
     label_convertor=ner_convertor)

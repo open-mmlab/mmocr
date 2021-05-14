@@ -40,14 +40,14 @@ def test_encoder_decoder_pipeline(cfg_file):
     token_type_ids = [0] * 128
 
     # test forward train
-    img_metas = [{
+    img_metas = {
         'texts': texts,
-        'labels': labels,
+        'labels': torch.tensor(labels).unsqueeze(0),
         'img': img,
-        'input_ids': input_ids,
-        'attention_mask': attention_mask,
-        'token_type_ids': token_type_ids
-    }]
+        'input_ids': torch.tensor(input_ids).unsqueeze(0),
+        'attention_masks': torch.tensor(attention_mask).unsqueeze(0),
+        'token_type_ids': torch.tensor(token_type_ids).unsqueeze(0)
+    }
     # Test forward train
     losses = detector.forward(img, img_metas)
     assert isinstance(losses, dict)
