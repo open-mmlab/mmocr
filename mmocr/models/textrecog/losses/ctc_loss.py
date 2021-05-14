@@ -4,7 +4,6 @@ import torch
 import torch.nn as nn
 
 from mmdet.models.builder import LOSSES
-import pdb
 
 
 @LOSSES.register_module()
@@ -49,6 +48,7 @@ class CTCLoss(nn.Module):
         outputs = torch.log_softmax(outputs, dim=2)
         bsz, seq_len = outputs.size(0), outputs.size(1)
         outputs_for_loss = outputs.permute(1, 0, 2).contiguous()  # T * N * C
+
         if self.flatten:
             targets = targets_dict['flatten_targets']
         else:
