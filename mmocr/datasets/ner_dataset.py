@@ -24,7 +24,7 @@ class NerDataset(BaseDataset):
                  img_prefix='',
                  test_mode=False):
         super().__init__(
-            ann_file, loader, pipeline, img_prefix='', test_mode=False)
+            ann_file, loader, pipeline, img_prefix='', test_mode=test_mode)
 
     def prepare_train_img(self, index):
         """Get training data and annotations after pipeline.
