@@ -166,6 +166,72 @@ def test_affine_jitter():
     assert np.allclose(np.array(output1), output2['img'])
 
 
+def test_random_scale():
+    h, w, c = 100, 100, 3
+    img = np.ones((h, w, c), dtype=np.uint8)
+    results = {'img': img, 'img_shape': (h, w, c)}
+
+    polygon = np.array([0., 0., 0., 10., 10., 10., 10., 0.])
+
+    results['gt_masks'] = PolygonMasks([[polygon]], *(img.shape[:2]))
+    results['mask_fields'] = ['gt_masks']
+
+    size = 100
+    scale = (2., 2.)
+    random_scaler = transforms.RandomScaling(size=size, scale=scale)
+
+    results = random_scaler(results)
+
+    out_img = results['img']
+    out_poly = results['gt_masks'].masks[0][0]
+    gt_poly = polygon * 2
+
+    assert np.allclose(out_img.shape, (2 * h, 2 * w, c))
+    assert np.allclose(out_poly, gt_poly)
+
+
+@mock.patch('%s.transforms.np.random.randint' % __name__)
+def test_random_crop_flip(mock_randint):
+    img = np.ones((10, 10, 3), dtype=np.uint8)
+    img[0, 0, :] = 0
+    results = {'img': img, 'img_shape': img.shape}
+
+    polygon = np.array([0., 0., 0., 10., 10., 10., 10., 0.])
+
+    results['gt_masks'] = PolygonMasks([[polygon]], *(img.shape[:2]))
+    results['gt_masks_ignore'] = PolygonMasks([], *(img.shape[:2]))
+    results['mask_fields'] = ['gt_masks', 'gt_masks_ignore']
+
+    crop_ratio = 1.1
+    iter_num = 3
+    random_crop_fliper = transforms.RandomCropFlip(
+        crop_ratio=crop_ratio, iter_num=iter_num)
+
+    # test crop_target
+    scale = 10
+    all_polys = results['gt_masks'].masks
+    h_axis, w_axis = random_crop_fliper.crop_target(img, all_polys, scale)
+
+    assert np.allclose(h_axis, (0, 11))
+    assert np.allclose(w_axis, (0, 11))
+
+    # test __call__
+    polygon = np.array([1., 1., 1., 9., 9., 9., 9., 1.])
+    results['gt_masks'] = PolygonMasks([[polygon]], *(img.shape[:2]))
+    results['gt_masks_ignore'] = PolygonMasks([[polygon]], *(img.shape[:2]))
+
+    mock_randint.side_effect = [0, 1, 2]
+    results = random_crop_fliper(results)
+
+    out_img = results['img']
+    out_poly = results['gt_masks'].masks[0][0]
+    gt_img = img
+    gt_poly = polygon
+
+    assert np.allclose(out_img, gt_img)
+    assert np.allclose(out_poly, gt_poly)
+
+
 @mock.patch('%s.transforms.np.random.random_sample' % __name__)
 @mock.patch('%s.transforms.np.random.randint' % __name__)
 def test_random_crop_poly_instances(mock_randint, mock_sample):

@@ -8,10 +8,11 @@ from .ocr_transforms import (FancyPCA, NormalizeOCR, OnlineCropOCR,
                              OpencvToPil, PilToOpencv, RandomPaddingOCR,
                              RandomRotateImageBox, ResizeOCR, ToTensorOCR)
 from .test_time_aug import MultiRotateAugOCR
-from .textdet_targets import DBNetTargets, PANetTargets, TextSnakeTargets
-from .transforms import (ColorJitter, RandomCropInstances,
+from .textdet_targets import (DBNetTargets, FCENetTargets, PANetTargets,
+                              TextSnakeTargets)
+from .transforms import (ColorJitter, RandomCropFlip, RandomCropInstances,
                          RandomCropPolyInstances, RandomRotatePolyInstances,
-                         RandomRotateTextDet, ScaleAspectJitter,
+                         RandomRotateTextDet, RandomScaling, ScaleAspectJitter,
                          SquareResizePad)
 
 __all__ = [
@@ -22,5 +23,6 @@ __all__ = [
     'RandomCropPolyInstances', 'RandomRotatePolyInstances', 'RandomPaddingOCR',
     'ImgAug', 'EastRandomCrop', 'RandomRotateImageBox', 'OpencvToPil',
     'PilToOpencv', 'KIEFormatBundle', 'SquareResizePad', 'TextSnakeTargets',
-    'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8'
+    'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets',
+    'RandomScaling', 'RandomCropFlip'
 ]
