@@ -15,7 +15,7 @@ class FCENetTargets(TextSnakeTargets):
     [https://arxiv.org/abs/2104.10442]
 
     Args:
-        fourier_degree (int): The maximum fourier transform degree k.
+        fourier_degree (int): The maximum Fourier transform degree k.
         resample_step (float): The step size for resampling the text center
             line (TCL). It's better not to exceed half of the minimum width.
         center_region_shrink_ratio (float): The shrink ratio of text center
@@ -106,7 +106,7 @@ class FCENetTargets(TextSnakeTargets):
         """Resample one polygon with n points on its boundary.
 
         Args:
-            polygon (list[float]): The polygon need to be resampled.
+            polygon (list[float]): The input polygon.
             n (int): The number of resampled points.
         Returns:
             resampled_polygon (list[float]): The resampled polygon.
@@ -162,12 +162,12 @@ class FCENetTargets(TextSnakeTargets):
         return new_polygon
 
     def fourier_transform(self, polygon, fourier_degree):
-        """Perform fourier transformation to generate fourier coefficients ck
+        """Perform Fourier transformation to generate Fourier coefficients ck
         from polygon.
 
         Args:
             polygon (ndarray): An input polygon.
-            fourier_degree (int): The maximum fourier degree K.
+            fourier_degree (int): The maximum Fourier degree K.
         Returns:
             c (ndarray(complex)): Fourier coefficients.
         """
@@ -184,13 +184,13 @@ class FCENetTargets(TextSnakeTargets):
         return c
 
     def clockwise(self, c, fourier_degree):
-        """Make sure the polygon reconstructed from fourier coefficients c in
+        """Make sure the polygon reconstructed from Fourier coefficients c in
         the clockwise direction.
 
         Args:
             polygon (list[float]): The origin polygon.
         Returns:
-            new_polygon (lost[float]): The polygon with clockwise point order.
+            new_polygon (lost[float]): The polygon in clockwise point order.
         """
         if np.abs(c[fourier_degree + 1]) > np.abs(c[fourier_degree - 1]):
             return c
@@ -203,14 +203,14 @@ class FCENetTargets(TextSnakeTargets):
                 return c[::-1]
 
     def cal_fourier_signature(self, polygon, fourier_degree):
-        """Calculate fourier signature from input polygon.
+        """Calculate Fourier signature from input polygon.
 
         Args:
               polygon (ndarray): The input polygon.
-              fourier_degree (int): The maximum fourier degree K.
+              fourier_degree (int): The maximum Fourier degree K.
         Returns:
               fourier_signature (ndarray): An array shaped (2k+1, 2) containing
-                  real part and image part of 2k+1 fourier coefficients.
+                  real part and image part of 2k+1 Fourier coefficients.
         """
         resampled_polygon = self.resample_polygon(polygon)
         resampled_polygon = self.normalize_polygon(resampled_polygon)

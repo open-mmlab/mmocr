@@ -151,7 +151,7 @@ class FCELoss(nn.Module):
         return (loss_pos + loss_neg.sum()) / (n_pos + n_neg).float()
 
     def fourier2poly(self, real_maps, imag_maps):
-        """Transform fourier coefficient maps to polygon maps.
+        """Transform Fourier coefficient maps to polygon maps.
 
         Args:
             real_maps (tensor): A map composed of the real parts of the
