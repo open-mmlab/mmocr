@@ -5,7 +5,7 @@ from .icdar_dataset import IcdarDataset
 from .kie_dataset import KIEDataset
 from .ocr_dataset import OCRDataset
 from .ocr_seg_dataset import OCRSegDataset
-from .pipelines import CustomFormatBundle, DBNetTargets
+from .pipelines import CustomFormatBundle, DBNetTargets, FCENetTargets
 from .text_det_dataset import TextDetDataset
 
 from .utils import *  # NOQA
@@ -13,7 +13,7 @@ from .utils import *  # NOQA
 __all__ = [
     'DATASETS', 'IcdarDataset', 'build_dataloader', 'build_dataset',
     'BaseDataset', 'OCRDataset', 'TextDetDataset', 'CustomFormatBundle',
-    'DBNetTargets', 'OCRSegDataset', 'KIEDataset'
+    'DBNetTargets', 'OCRSegDataset', 'KIEDataset', 'FCENetTargets'
 ]
 
 __all__ += utils.__all__

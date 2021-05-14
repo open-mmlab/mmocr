@@ -2,6 +2,7 @@ import math
 
 import cv2
 import numpy as np
+import Polygon as plg
 import torchvision.transforms as transforms
 from PIL import Image
 
@@ -731,3 +732,231 @@ class SquareResizePad:
     def __repr__(self):
         repr_str = self.__class__.__name__
         return repr_str
+
+
+@PIPELINES.register_module()
+class RandomScaling:
+
+    def __init__(self, size=800, scale=(3. / 4, 5. / 2)):
+        """Random scale the image while keeping aspect.
+
+        Args:
+            size (int) : Base size before scaling.
+            scale (tuple(float)) : The range of scaling.
+        """
+        assert isinstance(size, int)
+        assert isinstance(scale, float) or isinstance(scale, tuple)
+        self.size = size
+        self.scale = scale if isinstance(scale, tuple) \
+            else (1 - scale, 1 + scale)
+
+    def __call__(self, results):
+        image = results['img']
+        h, w, _ = results['img_shape']
+
+        aspect_ratio = np.random.uniform(min(self.scale), max(self.scale))
+        scales = self.size * 1.0 / max(h, w) * aspect_ratio
+        scales = np.array([scales, scales])
+        out_size = (int(h * scales[1]), int(w * scales[0]))
+        image = cv2.resize(image, out_size[::-1])
+
+        results['img'] = image
+        results['img_shape'] = image.shape
+
+        for key in results.get('mask_fields', []):
+            if len(results[key].masks) == 0:
+                continue
+            results[key] = results[key].resize(out_size)
+
+        return results
+
+
+@PIPELINES.register_module()
+class RandomCropFlip:
+
+    def __init__(self, crop_ratio=0.5, iter_num=1, min_area_ratio=0.2):
+        """Random crop and flip a patch of the image.
+
+        Args:
+            crop_ratio (float): The ratio of cropping.
+            iter_num (int): Number of operations.
+            min_area_ratio (float): Minimal area ratio between cropped patch
+                and original image.
+        """
+        assert isinstance(crop_ratio, float)
+        assert isinstance(iter_num, int)
+        assert isinstance(min_area_ratio, float)
+
+        self.scale = 10
+        self.epsilon = 1e-2
+        self.crop_ratio = crop_ratio
+        self.iter_num = iter_num
+        self.min_area_ratio = min_area_ratio
+
+    def __call__(self, results):
+        for i in range(self.iter_num):
+            results = self.random_crop_flip(results)
+        return results
+
+    def random_crop_flip(self, results):
+        image = results['img']
+        polygons = results['gt_masks'].masks
+        ignore_polygons = results['gt_masks_ignore'].masks
+        all_polygons = polygons + ignore_polygons
+        if len(polygons) == 0:
+            return results
+
+        if np.random.random() >= self.crop_ratio:
+            return results
+
+        h_axis, w_axis = self.crop_target(image, all_polygons, self.scale)
+        if len(h_axis) == 0 or len(w_axis) == 0:
+            return results
+
+        attempt = 0
+        h, w, _ = results['img_shape']
+        area = h * w
+        pad_h = h // self.scale
+        pad_w = w // self.scale
+        while attempt < 10:
+            attempt += 1
+            polys_keep = []
+            polys_new = []
+            ign_polys_keep = []
+            ign_polys_new = []
+            xx = np.random.choice(w_axis, size=2)
+            xmin = np.min(xx) - pad_w
+            xmax = np.max(xx) - pad_w
+            xmin = np.clip(xmin, 0, w - 1)
+            xmax = np.clip(xmax, 0, w - 1)
+            yy = np.random.choice(h_axis, size=2)
+            ymin = np.min(yy) - pad_h
+            ymax = np.max(yy) - pad_h
+            ymin = np.clip(ymin, 0, h - 1)
+            ymax = np.clip(ymax, 0, h - 1)
+            if (xmax - xmin) * (ymax - ymin) < area * self.min_area_ratio:
+                # area too small
+                continue
+
+            pts = np.stack([[xmin, xmax, xmax, xmin],
+                            [ymin, ymin, ymax, ymax]]).T.astype(np.int32)
+            pp = plg.Polygon(pts)
+            fail_flag = False
+            for polygon in polygons:
+                ppi = plg.Polygon(polygon[0].reshape(-1, 2))
+                ppiou, _ = eval_utils.poly_intersection(ppi, pp)
+                if np.abs(ppiou - float(ppi.area())) > self.epsilon and \
+                        np.abs(ppiou) > self.epsilon:
+                    fail_flag = True
+                    break
+                elif np.abs(ppiou - float(ppi.area())) < self.epsilon:
+                    polys_new.append(polygon)
+                else:
+                    polys_keep.append(polygon)
+
+            for polygon in ignore_polygons:
+                ppi = plg.Polygon(polygon[0].reshape(-1, 2))
+                ppiou, _ = eval_utils.poly_intersection(ppi, pp)
+                if np.abs(ppiou - float(ppi.area())) > self.epsilon and \
+                        np.abs(ppiou) > self.epsilon:
+                    fail_flag = True
+                    break
+                elif np.abs(ppiou - float(ppi.area())) < self.epsilon:
+                    ign_polys_new.append(polygon)
+                else:
+                    ign_polys_keep.append(polygon)
+
+            if fail_flag:
+                continue
+            else:
+                break
+
+        cropped = image[ymin:ymax, xmin:xmax, :]
+        select_type = np.random.randint(3)
+        if select_type == 0:
+            img = np.ascontiguousarray(cropped[:, ::-1])
+        elif select_type == 1:
+            img = np.ascontiguousarray(cropped[::-1, :])
+        else:
+            img = np.ascontiguousarray(cropped[::-1, ::-1])
+        image[ymin:ymax, xmin:xmax, :] = img
+        results['img'] = image
+
+        if len(polys_new) + len(ign_polys_new) != 0:
+            height, width, _ = cropped.shape
+            if select_type == 0:
+                for idx, polygon in enumerate(polys_new):
+                    poly = polygon[0].reshape(-1, 2)
+                    poly[:, 0] = width - poly[:, 0] + 2 * xmin
+                    polys_new[idx] = [poly.reshape(-1, )]
+                for idx, polygon in enumerate(ign_polys_new):
+                    poly = polygon[0].reshape(-1, 2)
+                    poly[:, 0] = width - poly[:, 0] + 2 * xmin
+                    ign_polys_new[idx] = [poly.reshape(-1, )]
+            elif select_type == 1:
+                for idx, polygon in enumerate(polys_new):
+                    poly = polygon[0].reshape(-1, 2)
+                    poly[:, 1] = height - poly[:, 1] + 2 * ymin
+                    polys_new[idx] = [poly.reshape(-1, )]
+                for idx, polygon in enumerate(ign_polys_new):
+                    poly = polygon[0].reshape(-1, 2)
+                    poly[:, 1] = height - poly[:, 1] + 2 * ymin
+                    ign_polys_new[idx] = [poly.reshape(-1, )]
+            else:
+                for idx, polygon in enumerate(polys_new):
+                    poly = polygon[0].reshape(-1, 2)
+                    poly[:, 0] = width - poly[:, 0] + 2 * xmin
+                    poly[:, 1] = height - poly[:, 1] + 2 * ymin
+                    polys_new[idx] = [poly.reshape(-1, )]
+                for idx, polygon in enumerate(ign_polys_new):
+                    poly = polygon[0].reshape(-1, 2)
+                    poly[:, 0] = width - poly[:, 0] + 2 * xmin
+                    poly[:, 1] = height - poly[:, 1] + 2 * ymin
+                    ign_polys_new[idx] = [poly.reshape(-1, )]
+            polygons = polys_keep + polys_new
+            ignore_polygons = ign_polys_keep + ign_polys_new
+            results['gt_masks'] = PolygonMasks(polygons, *(image.shape[:2]))
+            results['gt_masks_ignore'] = PolygonMasks(ignore_polygons,
+                                                      *(image.shape[:2]))
+
+        return results
+
+    def crop_target(self, image, all_polys, scale):
+        """Generate crop target and make sure not to crop the polygon
+        instances.
+
+        Args:
+            image (ndarray): The image waited to be crop.
+            all_polys (list[list[ndarray]]): All polygons including ground
+                truth polygons and ground truth ignored polygons.
+            scale (int): A scale factor to control crop range.
+        Returns:
+            h_axis (ndarray): Vertical cropping range.
+            w_axis (ndarray): Horizontal cropping range.
+        """
+        h, w, _ = image.shape
+        pad_h = h // scale
+        pad_w = w // scale
+        h_array = np.zeros((h + pad_h * 2), dtype=np.int32)
+        w_array = np.zeros((w + pad_w * 2), dtype=np.int32)
+
+        text_polys = []
+        for polygon in all_polys:
+            rect = cv2.minAreaRect(polygon[0].astype(np.int32).reshape(-1, 2))
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
+            text_polys.append([box[0], box[1], box[2], box[3]])
+
+        polys = np.array(text_polys, dtype=np.int32)
+        for poly in polys:
+            poly = np.round(poly, decimals=0).astype(np.int32)  # 四舍五入
+            minx = np.min(poly[:, 0])
+            maxx = np.max(poly[:, 0])
+            w_array[minx + pad_w:maxx + pad_w] = 1
+            miny = np.min(poly[:, 1])
+            maxy = np.max(poly[:, 1])
+            h_array[miny + pad_h:maxy + pad_h] = 1
+
+        h_axis = np.where(h_array == 0)[0]
+        w_axis = np.where(w_array == 0)[0]
+        return h_axis, w_axis
