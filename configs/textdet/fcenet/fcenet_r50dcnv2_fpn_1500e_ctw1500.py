@@ -52,15 +52,9 @@ train_pipeline = [
         saturation=0.5,
         contrast=0.5),
     dict(type='Normalize', **img_norm_cfg),
+    dict(type='RandomScaling', size=800, scale=(3. / 4, 5. / 2)),
     dict(
-        type='RandomScaling',
-        size=800,
-        scale=(3./4, 5./2)),
-    dict(
-        type='RandomCropFlip',
-        crop_ratio=0.5,
-        iter_num=1,
-        min_area_ratio=0.2),
+        type='RandomCropFlip', crop_ratio=0.5, iter_num=1, min_area_ratio=0.2),
     dict(
         type='RandomCropPolyInstances',
         instance_key='gt_masks',
@@ -74,15 +68,15 @@ train_pipeline = [
     dict(type='SquareResizePad', target_size=800, pad_ratio=0.6),
     dict(type='RandomFlip', flip_ratio=0.5, direction='horizontal'),
     dict(type='Pad', size_divisor=32),
-    dict(type='FCENetTargets',
-         fourier_degree=fourier_degree,
-         level_proportion_range=((0, 0.25), (0.2, 0.65), (0.55, 1.0))),
+    dict(
+        type='FCENetTargets',
+        fourier_degree=fourier_degree,
+        level_proportion_range=((0, 0.25), (0.2, 0.65), (0.55, 1.0))),
     dict(
         type='CustomFormatBundle',
         keys=['p3_maps', 'p4_maps', 'p5_maps'],
         visualize=dict(flag=False, boundary_key=None)),
-    dict(type='Collect',
-         keys=['img', 'p3_maps', 'p4_maps', 'p5_maps'])
+    dict(type='Collect', keys=['img', 'p3_maps', 'p4_maps', 'p5_maps'])
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile'),

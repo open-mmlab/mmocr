@@ -1,5 +1,7 @@
 import os.path as osp
 
+import mmcv
+
 from mmocr.datasets.builder import LOADERS, build_parser
 
 
@@ -37,6 +39,17 @@ class Loader:
         """Retrieve anno info of one instance with dict format."""
         return self.parser.get_item(self.ori_data_infos, index)
 
+    def __iter__(self):
+        self._n = 0
+        return self
+
+    def __next__(self):
+        if self._n < len(self):
+            data = self[self._n]
+            self._n += 1
+            return data
+        raise StopIteration
+
 
 @LOADERS.register_module()
 class HardDiskLoader(Loader):
@@ -47,13 +60,7 @@ class HardDiskLoader(Loader):
     """
 
     def _load(self, ann_file):
-        data_ret = []
-        with open(ann_file, 'r', encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                data_ret.append(line)
-
-        return data_ret
+        return mmcv.list_from_file(ann_file)
 
 
 @LOADERS.register_module()

@@ -40,6 +40,18 @@ def sort_vertex(points_x, points_y):
     return convert_canonical(sorted_points_x, sorted_points_y)
 
 
+def sort_vertex8(points):
+    """Sort vertex with 8 points [x1 y1 x2 y2 x3 y3 x4 y4]"""
+    assert len(points) == 8
+    x_list, y_list = points[0::2], points[1::2]
+    sorted_x_list, sorted_y_list = sort_vertex(x_list, y_list)
+    sorted_box = []
+    for x, y in zip(sorted_x_list, sorted_y_list):
+        sorted_box.append(x)
+        sorted_box.append(y)
+    return sorted_box
+
+
 def convert_canonical(points_x, points_y):
     """Make left-top be first.
 

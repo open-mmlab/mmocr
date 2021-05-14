@@ -103,13 +103,14 @@ class FCENetTargets(TextSnakeTargets):
         return center_region_mask
 
     def resample_polygon(self, polygon, n=400):
-        '''Resample one polygon with n points on its boundary.
+        """Resample one polygon with n points on its boundary.
+
         Args:
             polygon (list[float]): The polygon need to be resampled.
-            n (int):
+            n (int): The number of resampled points.
         Returns:
             resampled_polygon (list[float]): The resampled polygon.
-        '''
+        """
         length = []
 
         for i in range(len(polygon)):

@@ -329,7 +329,7 @@ def test_textsnake(cfg_file):
     from mmocr.models import build_detector
     detector = build_detector(model)
     detector = detector.cuda()
-    input_shape = (1, 3, 64, 64)
+    input_shape = (1, 3, 224, 224)
     num_kernels = 1
     mm_inputs = _demo_mm_inputs(num_kernels, input_shape)
 
@@ -355,14 +355,18 @@ def test_textsnake(cfg_file):
         gt_cos_map=gt_cos_map)
     assert isinstance(losses, dict)
 
-    # Test forward test
-    # with torch.no_grad():
-    #     img_list = [g[None, :] for g in imgs]
-    #     batch_results = []
-    #     for one_img, one_meta in zip(img_list, img_metas):
-    #         result = detector.forward([one_img], [[one_meta]],
-    #                                   return_loss=False)
-    #         batch_results.append(result)
+    # Test forward test get_boundary
+    maps = torch.zeros((1, 5, 224, 224), dtype=torch.float)
+    maps[:, 0:2, :, :] = -10.
+    maps[:, 0, 60:100, 12:212] = 10.
+    maps[:, 1, 70:90, 22:202] = 10.
+    maps[:, 2, 70:90, 22:202] = 0.
+    maps[:, 3, 70:90, 22:202] = 1.
+    maps[:, 4, 70:90, 22:202] = 10.
+
+    one_meta = img_metas[0]
+    result = detector.bbox_head.get_boundary(maps, [one_meta], False)
+    assert len(result) == 1
 
     # Test show result
     results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}
