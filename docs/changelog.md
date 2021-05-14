@@ -6,7 +6,7 @@
 - MMOCR is compiling-free via moving textdet postprocessing and ops to mmcv 1.3.4 or later.
 - Add a new OCR downstream task-NER.
 - Add two new text detection methods: DRRG and FCENet.
-- Add end-to-end demo.
+- Add an end-to-end demo.
 
 ## v0.1.0 (7/4/2021)
 
