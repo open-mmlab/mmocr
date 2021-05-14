@@ -65,34 +65,15 @@ test = dict(
     pipeline=test_pipeline,
     test_mode=True)
 data = dict(
-    samples_per_gpu=8,
-    workers_per_gpu=2,
-    train=dict(type='ConcatDataset', datasets=[train]),
-    val=dict(type='ConcatDataset', datasets=[test]),
-    test=dict(type='ConcatDataset', datasets=[test]))
+    samples_per_gpu=8, workers_per_gpu=2, train=train, val=test, test=test)
 
 evaluation = dict(interval=1, metric='acc')
 
 model = dict(
     type='NerClassifier',
-    encoder=dict(
-        type='BertEncoder',
-        num_hidden_layers=12,
-        initializer_range=0.02,
-        vocab_size=21128,
-        hidden_size=768,
-        max_position_embeddings=512,
-        type_vocab_size=2,
-        layer_norm_eps=1e-12,
-        hidden_dropout_prob=0.1,
-        output_attentions=False,
-        output_hidden_states=False,
-        num_attention_heads=12,
-        attention_probs_dropout_prob=0.1,
-        intermediate_size=3072,
-        hidden_act='gelu_new',
-        pretrained=pretrained),
-    decoder=dict(type='FCDecoder', hidden_dropout_prob=0.1, hidden_size=768),
+    pretrained=pretrained,
+    encoder=dict(type='BertEncoder', max_position_embeddings=512),
+    decoder=dict(type='FCDecoder'),
     loss=dict(type='MaskedCrossEntropyLoss'),
     label_convertor=ner_convertor)
 

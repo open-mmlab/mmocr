@@ -35,6 +35,7 @@ class NerConvertor:
         assert self.annotation_type in ['bio', 'bioes']
 
         lines = open(vocab_file, encoding='utf-8').readlines()
+        self.vocab_size = len(lines)
         for i in range(len(lines)):
             self.word2ids.update({lines[i].rstrip(): i})
 
