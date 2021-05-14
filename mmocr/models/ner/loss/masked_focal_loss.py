@@ -1,19 +1,16 @@
 from torch import nn
-from torch.nn import CrossEntropyLoss
 
 from mmdet.models.builder import LOSSES
 from mmocr.models.common.losses.focal_loss import FocalLoss
 
 
 @LOSSES.register_module()
-class NerLoss(nn.Module):
-    """The implementation the loss for named entity recognizier."""
+class MaskedFocalLoss(nn.Module):
+    """The implementation of masked focal loss."""
 
-    def __init__(self, num_labels=None, loss_type=None, **kwargs):
+    def __init__(self, num_labels=None, **kwargs):
         super().__init__()
         self.num_labels = num_labels
-        self.loss_type = loss_type
-        assert self.loss_type in ['focal', 'ce']
 
     def forward(self, logits, img_metas):
         '''Loss forword.
@@ -30,10 +27,7 @@ class NerLoss(nn.Module):
 
         labels = img_metas['labels']
         attention_masks = img_metas['attention_masks']
-        if self.loss_type == 'focal':
-            loss_function = FocalLoss(ignore_index=0)
-        else:
-            loss_function = CrossEntropyLoss(ignore_index=0)
+        loss_function = FocalLoss(ignore_index=0)
         # Only keep active parts of the loss
         if attention_masks is not None:
             active_loss = attention_masks.view(-1) == 1

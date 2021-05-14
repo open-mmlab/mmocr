@@ -3,6 +3,7 @@ import copy
 import pytest
 import torch
 
+from mmocr.models import build_detector
 from mmocr.models.ner.utils.activations import gelu, gelu_new, swish
 
 
@@ -27,19 +28,13 @@ def _get_detector_cfg(fname):
 @pytest.mark.parametrize(
     'cfg_file', ['configs/ner/bert_softmax/bert_softmax_toy_dataset.py'])
 def test_encoder_decoder_pipeline(cfg_file):
-    model = _get_detector_cfg(cfg_file)
-    model['pretrained'] = None
-
-    from mmocr.models import build_detector
-    detector = build_detector(model)
+    # prepare data
     texts = ['中'] * 47
     img = [31] * 47
     labels = [31] * 128
     input_ids = [0] * 128
     attention_mask = [0] * 128
     token_type_ids = [0] * 128
-
-    # test forward train
     img_metas = {
         'texts': texts,
         'labels': torch.tensor(labels).unsqueeze(0),
@@ -48,7 +43,16 @@ def test_encoder_decoder_pipeline(cfg_file):
         'attention_masks': torch.tensor(attention_mask).unsqueeze(0),
         'token_type_ids': torch.tensor(token_type_ids).unsqueeze(0)
     }
-    # Test forward train
+
+    model = _get_detector_cfg(cfg_file)
+    model['pretrained'] = None
+
+    detector = build_detector(model)
+    losses = detector.forward(img, img_metas)
+    assert isinstance(losses, dict)
+
+    model['loss']['type'] = 'MaskedFocalLoss'
+    detector = build_detector(model)
     losses = detector.forward(img, img_metas)
     assert isinstance(losses, dict)
 

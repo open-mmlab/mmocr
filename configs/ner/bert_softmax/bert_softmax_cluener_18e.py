@@ -95,7 +95,7 @@ model = dict(
         hidden_act='gelu_new',
         pretrained=pretrained),
     decoder=dict(type='FCDecoder', hidden_dropout_prob=0.1, hidden_size=768),
-    loss=dict(type='NerLoss', loss_type='ce'),
+    loss=dict(type='MaskedCrossEntropyLoss'),
     label_convertor=ner_convertor)
 
 test_cfg = None
