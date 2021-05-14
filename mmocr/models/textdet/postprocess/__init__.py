@@ -1,3 +1,3 @@
-from .wrapper import decode  # NOQA
+from .wrapper import decode
 
 __all__ = ['decode']
