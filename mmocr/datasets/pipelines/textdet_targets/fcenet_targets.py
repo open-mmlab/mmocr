@@ -13,6 +13,7 @@ class FCENetTargets(TextSnakeTargets):
     for Arbitrary-Shaped Text Detection.
 
     [https://arxiv.org/abs/2104.10442]
+
     Args:
         fourier_degree (int): The maximum fourier transform degree k.
         resample_step (float): The step size for resampling the text center
@@ -25,7 +26,7 @@ class FCENetTargets(TextSnakeTargets):
     """
 
     def __init__(self,
-                 fourier_degree=10,
+                 fourier_degree=5,
                  resample_step=4.0,
                  center_region_shrink_ratio=0.3,
                  level_size_divisors=(8, 16, 32),
@@ -102,6 +103,13 @@ class FCENetTargets(TextSnakeTargets):
         return center_region_mask
 
     def resample_polygon(self, polygon, n=400):
+        '''Resample one polygon with n points on its boundary.
+        Args:
+            polygon (list[float]): The polygon need to be resampled.
+            n (int):
+        Returns:
+            resampled_polygon (list[float]): The resampled polygon.
+        '''
         length = []
 
         for i in range(len(polygon)):
@@ -136,7 +144,13 @@ class FCENetTargets(TextSnakeTargets):
         return np.array(new_polygon)
 
     def normalize_polygon(self, polygon):
-        """Normalize one polygon so that its start point is at right most."""
+        """Normalize one polygon so that its start point is at right most.
+
+        Args:
+            polygon (list[float]): The origin polygon.
+        Returns:
+            new_polygon (lost[float]): The polygon with start point at right.
+        """
         temp_polygon = polygon - polygon.mean(axis=0)
         x = np.abs(temp_polygon[:, 0])
         y = temp_polygon[:, 1]
@@ -170,7 +184,13 @@ class FCENetTargets(TextSnakeTargets):
 
     def clockwise(self, c, fourier_degree):
         """Make sure the polygon reconstructed from fourier coefficients c in
-        the clockwise direction."""
+        the clockwise direction.
+
+        Args:
+            polygon (list[float]): The origin polygon.
+        Returns:
+            new_polygon (lost[float]): The polygon with clockwise point order.
+        """
         if np.abs(c[fourier_degree + 1]) > np.abs(c[fourier_degree - 1]):
             return c
         elif np.abs(c[fourier_degree + 1]) < np.abs(c[fourier_degree - 1]):
@@ -189,7 +209,7 @@ class FCENetTargets(TextSnakeTargets):
               fourier_degree (int): The maximum fourier degree K.
         Returns:
               fourier_signature (ndarray): An array shaped (2k+1, 2) containing
-               real part and image part of 2k+1 fourier coefficients.
+                  real part and image part of 2k+1 fourier coefficients.
         """
         resampled_polygon = self.resample_polygon(polygon)
         resampled_polygon = self.normalize_polygon(resampled_polygon)
@@ -249,12 +269,12 @@ class FCENetTargets(TextSnakeTargets):
         return real_map, imag_map
 
     def generate_level_targets(self, img_size, text_polys, ignore_polys):
-        """Generate ground target on each level.
+        """Generate ground truth target on each level.
 
         Args:
-            img_size (list): Shape of input image.
-            text_polys (list): A list of ground truth polygons.
-            ignore_polys (list): A list of ignored polygons.
+            img_size (list[int]): Shape of input image.
+            text_polys (list[list[ndarray]]): A list of ground truth polygons.
+            ignore_polys (list[list[ndarray]]): A list of ignored polygons.
         Returns:
             level_maps (list(ndarray)): A list of ground target on each level.
         """

@@ -14,25 +14,23 @@ class FCELoss(nn.Module):
         Text Detection
 
     [https://arxiv.org/abs/2104.10442]
+
+    Args:
+        fourier_degree (int) : The maximum Fourier transform degree k.
+        sample_num (int) : The sampling points number of regression
+            loss. If it is too small, fcenet tends to be overfitting.
+        ohem_ratio (float): the negative/positive ratio in OHEM.
     """
 
-    def __init__(self, fourier_degree, sample_points, ohem_ratio=3.):
-        """Initialization.
-
-        Args:
-            fourier_degree (int) : The maximum Fourier transform degree k.
-            sample_points (int) : The sampling points number of regression
-                loss. If it is too small, fcenet tends to be overfitting.
-            ohem_ratio (float): the negative/positive ratio in OHEM.
-        """
+    def __init__(self, fourier_degree, sample_num, ohem_ratio=3.):
         super().__init__()
-        self.k = fourier_degree
-        self.n = sample_points
+        self.fourier_degree = fourier_degree
+        self.sample_num = sample_num
         self.ohem_ratio = ohem_ratio
 
     def forward(self, preds, _, p3_maps, p4_maps, p5_maps):
         assert isinstance(preds, list)
-        assert p3_maps[0].shape[0] == 4 * self.k + 5,\
+        assert p3_maps[0].shape[0] == 4 * self.fourier_degree + 5,\
             'fourier degree not equal in FCEhead and FCEtarget'
 
         device = preds[0][0].device
@@ -74,24 +72,25 @@ class FCELoss(nn.Module):
             .contiguous().view(-1, 2)
         tcl_pred = cls_pred[:, 2:, :, :].permute(0, 2, 3, 1)\
             .contiguous().view(-1, 2)
-        x_pred = reg_pred[:, 0:2 * self.k + 1, :, :].permute(0, 2, 3, 1)\
-            .contiguous().view(-1, 2 * self.k + 1)
-        y_pred = reg_pred[:, 2 * self.k + 1:4 * self.k + 2, :, :]\
-            .permute(0, 2, 3, 1).contiguous().view(-1, 2 * self.k + 1)
+        x_pred = reg_pred[:, 0:2 * self.fourier_degree + 1, :, :]\
+            .permute(0, 2, 3, 1).contiguous().view(
+            -1, 2 * self.fourier_degree + 1)
+        y_pred = reg_pred[:,
+                          2 * self.fourier_degree + 1:4 * self.fourier_degree +
+                          2, :, :].permute(0, 2, 3, 1).contiguous().view(
+                              -1, 2 * self.fourier_degree + 1)
 
         tr_mask = gt[:, :1, :, :].permute(0, 2, 3, 1).contiguous().view(-1)
         tcl_mask = gt[:, 1:2, :, :].permute(0, 2, 3, 1).contiguous().view(-1)
         train_mask = gt[:, 2:3, :, :].permute(0, 2, 3, 1).contiguous().view(-1)
-        x_map = gt[:, 3:4 + 2 * self.k, :, :].permute(0, 2, 3, 1).contiguous()\
-            .view(-1, 2 * self.k + 1)
-        y_map = gt[:, 4 + 2 * self.k:, :, :].permute(0, 2, 3, 1).contiguous()\
-            .view(-1, 2 * self.k + 1)
+        x_map = gt[:, 3:4 + 2 * self.fourier_degree, :, :].permute(
+            0, 2, 3, 1).contiguous().view(-1, 2 * self.fourier_degree + 1)
+        y_map = gt[:, 4 + 2 * self.fourier_degree:, :, :].permute(
+            0, 2, 3, 1).contiguous().view(-1, 2 * self.fourier_degree + 1)
 
         tr_train_mask = train_mask * tr_mask
         device = x_map.device
         # tr loss
-        # loss_tr = torch.tensor(0.).float().to(device)
-        # if tr_train_mask.sum().item() > 0:
         loss_tr = self.ohem(tr_pred, tr_mask.long(), train_mask.long())
 
         # tcl loss
@@ -113,8 +112,8 @@ class FCELoss(nn.Module):
                       tcl_mask[tr_train_mask.bool()].float()) / 2
             weight = weight.contiguous().view(-1, 1)
 
-            ft_x, ft_y = self.fourier_transfer(x_map, y_map)
-            ft_x_pre, ft_y_pre = self.fourier_transfer(x_pred, y_pred)
+            ft_x, ft_y = self.fourier2poly(x_map, y_map)
+            ft_x_pre, ft_y_pre = self.fourier2poly(x_pred, y_pred)
 
             loss_reg_x = torch.mean(weight * F.smooth_l1_loss(
                 ft_x_pre[tr_train_mask.bool()],
@@ -151,8 +150,8 @@ class FCELoss(nn.Module):
 
         return (loss_pos + loss_neg.sum()) / (n_pos + n_neg).float()
 
-    def fourier_transfer(self, real_maps, imag_maps):
-        """transfer fourier coefficient maps to polygon maps.
+    def fourier2poly(self, real_maps, imag_maps):
+        """Transform fourier coefficient maps to polygon maps.
 
         Args:
             real_maps (tensor): A map composed of the real parts of the
@@ -170,11 +169,15 @@ class FCELoss(nn.Module):
         device = real_maps.device
 
         k_vect = torch.arange(
-            -self.k, self.k + 1, dtype=torch.float, device=device).view(-1, 1)
+            -self.fourier_degree,
+            self.fourier_degree + 1,
+            dtype=torch.float,
+            device=device).view(-1, 1)
         i_vect = torch.arange(
-            0, self.n, dtype=torch.float, device=device).view(1, -1)
+            0, self.sample_num, dtype=torch.float, device=device).view(1, -1)
 
-        transform_matrix = 2 * np.pi / self.n * torch.mm(k_vect, i_vect)
+        transform_matrix = 2 * np.pi / self.sample_num * torch.mm(
+            k_vect, i_vect)
 
         x1 = torch.einsum('ak, kn-> an', real_maps,
                           torch.cos(transform_matrix))

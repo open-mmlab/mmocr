@@ -407,24 +407,22 @@ def fcenet_decode(
     score_thresh=0.8,
     nms_thresh=0.1,
 ):
-    """Decoding predictions of FCEnet to instances.
+    """Decoding predictions of FCENet to instances.
 
     Args:
         preds (list(Tensor)): The head output tensors.
-        fourier_degree (int): The maximum fourier transform degree k
+        fourier_degree (int): The maximum Fourier transform degree k.
         reconstr_points (int): The points number of the polygon reconstructed
-            from predicted fourier coefficients.
-        scale (int): The downsample scale of preds
-        alpha (float) : The arg to calculate final score. And Score(final)
-                = (Score(text region) ** alpha)
-                * (Score(text center region) ** beta)
-        beta (float) :The arg to calculate final score. And Score(final)
-                = (Score(text region) ** alpha)
-                * (Score(text center region) ** beta)
-        text_repr_type (str): Boundary encoding type 'poly' or 'quad'.
+            from predicted Fourier coefficients.
+        scale (int): The downsample scale of the prediction.
+        alpha (float) : The parameter to calculate final scores. Score_{final}
+                = (Score_{text region} ^ alpha)
+                * (Score_{text center region}^ beta)
+        beta (float) : The parameter to calculate final score.
+        text_repr_type (str):  Boundary encoding type 'poly' or 'quad'.
         score_thresh (float) : The threshold used to filter out the final
             candidates.
-        nms_thresh (float) : The threshold of nms.
+        nms_thresh (float) :  The threshold of nms.
 
     Returns:
         boundaries (list[list[float]]): The instance boundary and confidence
@@ -496,14 +494,14 @@ def contour_transfor_inv(fourier_degree, x_pred, y_pred, score_map, exp_matrix,
     """Reconstruct polygon from predicts.
 
     Args:
-        fourier_degree (int): The maximum fourier degree K.
+        fourier_degree (int): The maximum Fourier degree K.
         x_pred (ndarray): The real part of predicted Fourier coefficients.
         y_pred (ndarray): The image part of predicted Fourier coefficients.
         score_map (ndarray): The final score of candidates.
-        exp_matrix (ndarray): A matrix of e^x, where x = 2pi x ikt.and shape
-            is (2k+1, n') where n' is reconstructed point number. See Equ.2
+        exp_matrix (ndarray): A matrix of e^x, where x = 2pi x ikt, and shape
+            is (2k+1, n') where n' is reconstructed point number. See Eq.2
             in paper.
-        scale (int): The downsample scale.
+        scale (int): The down-sample scale.
     Returns:
         Polygons (list): The reconstructed polygons and scores.
     """
@@ -525,16 +523,16 @@ def contour_transfor_inv(fourier_degree, x_pred, y_pred, score_map, exp_matrix,
 
 
 def fourier_inverse_matrix(fourier_coeff, exp_matrix):
-    ''' Inverse fourier transform
+    """ Inverse Fourier transform
     Args:
         fourier_coeff (ndarray): Fourier coefficients shaped (n, 2k+1), with
             n and k being candidates number and Fourier degree respectively.
         exp_matrix (ndarray): A matrix of e^x, where x = 2pi x ikt and shape
             is (2k+1, n') where n' is reconstructed point number.
-            See Equ.2 in paper.
+            See Eq.2 in paper.
     Returns:
         Polygons (ndarray): The reconstructed polygons shaped (n, n')
-    '''
+    """
 
     assert type(fourier_coeff) == np.ndarray
     assert fourier_coeff.shape[1] == exp_matrix.shape[0]
@@ -551,14 +549,14 @@ def fourier_inverse_matrix(fourier_coeff, exp_matrix):
 
 
 def generate_exp_matrix(point_num, fourier_degree):
-    ''' generate a matrix of e^x, where x = 2pi x ikt. See Equ.2 in paper.
+    """ Generate a matrix of e^x, where x = 2pi x ikt. See Eq.2 in paper.
         Args:
-            point_num (int): number of reconstruct points of polygon
-            fourier_degree (int): maximum fourier degree k
+            point_num (int): Number of reconstruct points of polygon
+            fourier_degree (int): Maximum Fourier degree k
         Returns:
-            exp_matrix (np.adarray): a matrix of e^x, where x = 2pi x ikt and
+            exp_matrix (ndarray): A matrix of e^x, where x = 2pi x ikt and
             shape is (2k+1, n') where n' is reconstructed point number.
-    '''
+    """
     e = complex(np.e)
     exp_matrix = np.zeros([2 * fourier_degree + 1, point_num], dtype='complex')
 

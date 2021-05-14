@@ -10,18 +10,32 @@ from .head_mixin import HeadMixin
 
 @HEADS.register_module()
 class FCEHead(HeadMixin, nn.Module):
-    """The class for implementing FCENet head
+    """The class for implementing FCENet head.
     FCENet(CVPR2021): Fourier Contour Embedding for Arbitrary-shaped Text
-    Detection
+    Detection.
 
     [https://arxiv.org/abs/2104.10442]
+
+    Args:
+        in_channels (int): The number of input channels.
+        scales (list[int]) : The scale of each layer.
+        fourier_degree (int) : The maximum Fourier transform degree k.
+        sample_num (int) : The sampling points number of regression
+            loss. If it is too small, FCEnet tends to be overfitting.
+        score_thresh (float) : The threshold to filter out the final
+            candidates.
+        nms_thresh (float) : The threshold of nms.
+        alpha (float) : The parameter to calculate final scores. Score_{final}
+            = (Score_{text region} ^ alpha)
+            * (Score{text center region} ^ beta)
+        beta (float) :The parameter to calculate final scores.
     """
 
     def __init__(self,
                  in_channels,
                  scales,
                  fourier_degree=5,
-                 sample_points=50,
+                 sample_num=50,
                  reconstr_points=50,
                  decoding_type='fcenet',
                  loss=dict(type='FCELoss'),
@@ -31,35 +45,18 @@ class FCEHead(HeadMixin, nn.Module):
                  beta=1.0,
                  train_cfg=None,
                  test_cfg=None):
-        """Initialization.
 
-        Args:
-            in_channels (int): The number of input channels.
-            scales (list[int]) : The scale of each layer.
-            fourier_degree (int) : The maximum fourier transform degree k.
-            sample_points (int) : The sampling points number of regression
-                loss. If it is too small, fcenet is tend to be overfitting.
-            score_thresh (float) : The threshold to filter out the final
-                candidates.
-            nms_thresh (float) : The threshold of nms.
-            alpha (float) : The arg to calculate final score. And Score(final)
-                = (Score(text region) ** alpha)
-                * (Score(text center region) ** beta)
-            beta (float) :The arg to calculate final score. And Score(final)
-                = (Score(text region) ** alpha)
-                * (Score(text center region) ** beta)
-        """
         super().__init__()
         assert isinstance(in_channels, int)
 
         self.downsample_ratio = 1.0
         self.in_channels = in_channels
         self.scales = scales
-        self.k = fourier_degree
-        self.n = sample_points
+        self.fourier_degree = fourier_degree
+        self.sample_num = sample_num
         self.reconstr_points = reconstr_points
         loss['fourier_degree'] = fourier_degree
-        loss['sample_points'] = sample_points
+        loss['sample_num'] = sample_num
         self.decoding_type = decoding_type
         self.loss_module = build_loss(loss)
         self.score_thresh = score_thresh
@@ -69,7 +66,7 @@ class FCEHead(HeadMixin, nn.Module):
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
         self.out_channels_cls = 4
-        self.out_channels_reg = (2 * self.k + 1) * 2
+        self.out_channels_reg = (2 * self.fourier_degree + 1) * 2
 
         self.out_conv_cls = nn.Conv2d(
             self.in_channels,
@@ -122,12 +119,12 @@ class FCEHead(HeadMixin, nn.Module):
 
     def _get_boundary_single(self, score_map, scale):
         assert len(score_map) == 2
-        assert score_map[1].shape[1] == 4 * self.k + 2
+        assert score_map[1].shape[1] == 4 * self.fourier_degree + 2
 
-        t = decode(
+        return decode(
             decoding_type=self.decoding_type,
             preds=score_map,
-            fourier_degree=self.k,
+            fourier_degree=self.fourier_degree,
             reconstr_points=self.reconstr_points,
             scale=scale,
             alpha=self.alpha,
@@ -135,5 +132,3 @@ class FCEHead(HeadMixin, nn.Module):
             text_repr_type='poly',
             score_thresh=self.score_thresh,
             nms_thresh=self.nms_thresh)
-
-        return t

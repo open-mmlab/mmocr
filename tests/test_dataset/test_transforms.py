@@ -205,9 +205,9 @@ def test_random_crop_flip(mock_randint):
     results['mask_fields'] = ['gt_masks', 'gt_masks_ignore']
 
     crop_ratio = 1.1
-    frequency = 3
+    iter_num = 3
     random_crop_fliper = transforms.RandomCropFlip(crop_ratio=crop_ratio,
-                                                   frequency=frequency)
+                                                   iter_num=iter_num)
 
     # test crop_target
     scale = 10

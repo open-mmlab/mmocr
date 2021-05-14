@@ -742,7 +742,7 @@ class RandomScaling:
         assert isinstance(scale, float) or isinstance(scale, tuple)
         self.size = size
         self.scale = scale if isinstance(scale, tuple) \
-            else ( 1 - scale, 1 + scale)
+            else (1 - scale, 1 + scale)
 
     def __call__(self, results):
         image = results['img']
@@ -768,27 +768,27 @@ class RandomScaling:
 @PIPELINES.register_module()
 class RandomCropFlip:
 
-    def __init__(self, crop_ratio=0.5, frequency=1, min_area_ratio=0.2):
+    def __init__(self, crop_ratio=0.5, iter_num=1, min_area_ratio=0.2):
         """Random crop and flip a patch of the image.
 
         Args:
             crop_ratio (float): The ratio of cropping.
-            frequency (int): Number of operations.
+            iter_num (int): Number of operations.
             min_area_ratio (float): Minimal area ratio between cropped patch
              and original image.
         """
         assert isinstance(crop_ratio, float)
-        assert isinstance(frequency, int)
+        assert isinstance(iter_num, int)
         assert isinstance(min_area_ratio, float)
 
         self.scale = 10
         self.epsilon = 1e-2
         self.crop_ratio = crop_ratio
-        self.frequency = frequency
+        self.iter_num = iter_num
         self.min_area_ratio = min_area_ratio
 
     def __call__(self, results):
-        for i in range(self.frequency):
+        for i in range(self.iter_num):
             results = self.random_crop_flip(results)
         return results
 
