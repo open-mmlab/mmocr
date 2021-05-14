@@ -429,3 +429,75 @@ def test_fcenet(cfg_file):
     results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}
     img = np.random.rand(5, 5)
     detector.show_result(img, results)
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
+@pytest.mark.parametrize(
+    'cfg_file', ['textdet/drrg/'
+                 'drrg_r50_fpn_unet_1200e_ctw1500.py'])
+def test_drrg(cfg_file):
+    model = _get_detector_cfg(cfg_file)
+    model['pretrained'] = None
+    model['backbone']['norm_cfg']['type'] = 'BN'
+
+    from mmocr.models import build_detector
+    detector = build_detector(model)
+    detector = detector.cuda()
+    input_shape = (1, 3, 224, 224)
+    num_kernels = 1
+    mm_inputs = _demo_mm_inputs(num_kernels, input_shape)
+
+    imgs = mm_inputs.pop('imgs')
+    imgs = imgs.cuda()
+    img_metas = mm_inputs.pop('img_metas')
+    gt_text_mask = mm_inputs.pop('gt_text_mask')
+    gt_center_region_mask = mm_inputs.pop('gt_center_region_mask')
+    gt_mask = mm_inputs.pop('gt_mask')
+    gt_top_height_map = mm_inputs.pop('gt_radius_map')
+    gt_bot_height_map = gt_top_height_map.copy()
+    gt_sin_map = mm_inputs.pop('gt_sin_map')
+    gt_cos_map = mm_inputs.pop('gt_cos_map')
+    roi_num = 32
+    x = np.random.randint(4, 224, (roi_num, 1))
+    y = np.random.randint(4, 224, (roi_num, 1))
+    h = 4 * np.ones((roi_num, 1))
+    w = 4 * np.ones((roi_num, 1))
+    angle = (np.random.random_sample((roi_num, 1)) * 2 - 1) * np.pi / 2
+    cos, sin = np.cos(angle), np.sin(angle)
+    comp_labels = np.random.randint(1, 3, (roi_num, 1))
+    roi_num = roi_num * np.ones((roi_num, 1))
+    comp_attribs = np.hstack([roi_num, x, y, h, w, cos, sin, comp_labels])
+    gt_comp_attribs = np.expand_dims(comp_attribs.astype(np.float32), axis=0)
+
+    # Test forward train
+    losses = detector.forward(
+        imgs,
+        img_metas,
+        gt_text_mask=gt_text_mask,
+        gt_center_region_mask=gt_center_region_mask,
+        gt_mask=gt_mask,
+        gt_top_height_map=gt_top_height_map,
+        gt_bot_height_map=gt_bot_height_map,
+        gt_sin_map=gt_sin_map,
+        gt_cos_map=gt_cos_map,
+        gt_comp_attribs=gt_comp_attribs)
+    assert isinstance(losses, dict)
+
+    # Test forward test
+    input_shape = (1, 3, 64, 64)
+    num_kernels = 1
+    mm_inputs = _demo_mm_inputs(num_kernels, input_shape)
+    imgs = mm_inputs.pop('imgs')
+    imgs = imgs.cuda()
+    with torch.no_grad():
+        img_list = [g[None, :] for g in imgs]
+        batch_results = []
+        for one_img, one_meta in zip(img_list, img_metas):
+            result = detector.forward([one_img], [[one_meta]],
+                                      return_loss=False)
+            batch_results.append(result)
+
+    # Test show result
+    results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}
+    img = np.random.rand(5, 5)
+    detector.show_result(img, results)

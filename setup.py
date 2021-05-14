@@ -103,41 +103,6 @@ def parse_requirements(fname='requirements.txt', with_version=True):
     return packages
 
 
-def get_rroi_align_extensions():
-    extensions_dir = 'mmocr/models/utils/ops/rroi_align/csrc/csc'
-    main_file = glob.glob(os.path.join(extensions_dir, '*.cpp'))
-    source_cpu = glob.glob(os.path.join(extensions_dir, 'cpu', '*.cpp'))
-    source_cuda = glob.glob(os.path.join(extensions_dir, 'cuda', '*.cu'))
-    sources = main_file + source_cpu
-    extension = CppExtension
-    extra_compile_args = {'cxx': ['/utf-8']} if is_windows else {'cxx': []}
-    define_macros = []
-
-    if torch.cuda.is_available() and CUDA_HOME is not None:
-        extension = CUDAExtension
-        sources += source_cuda
-        define_macros += [('WITH_CUDA', None)]
-        extra_compile_args['nvcc'] = [
-            '-DCUDA_HAS_FP16=1',
-            '-D__CUDA_NO_HALF_OPERATORS__',
-            '-D__CUDA_NO_HALF_CONVERSIONS__',
-            '-D__CUDA_NO_HALF2_OPERATORS__',
-        ]
-
-    print(sources)
-    include_dirs = [extensions_dir]
-    print('include_dirs', include_dirs, flush=True)
-    ext = extension(
-        name='mmocr.models.utils.ops.rroi_align.csrc',
-        sources=sources,
-        include_dirs=include_dirs,
-        define_macros=define_macros,
-        extra_compile_args=extra_compile_args,
-    )
-
-    return ext
-
-
 if __name__ == '__main__':
     library_dirs = [
         lp for lp in os.environ.get('LD_LIBRARY_PATH', '').split(':')
@@ -185,7 +150,6 @@ if __name__ == '__main__':
                 name='mmocr.models.textdet.postprocess.pse',
                 sources=[cpp_root + 'pse.cpp'],
                 extra_compile_args=(['/utf-8'] if is_windows else [])),
-            get_rroi_align_extensions()
         ],
         cmdclass={'build_ext': BuildExtension},
         zip_safe=False)

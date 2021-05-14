@@ -1,4 +1,5 @@
 imgaug
+lanms-proper
 lmdb
 matplotlib
 numba>=0.45.1
