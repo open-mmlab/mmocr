@@ -163,5 +163,5 @@ def text_model_inference(model, input_sentence):
     }
     # forward the model
     with torch.no_grad():
-        result = model(data['img'], img_metas, return_loss=False)
+        result = model(None, img_metas, return_loss=False)
     return result
