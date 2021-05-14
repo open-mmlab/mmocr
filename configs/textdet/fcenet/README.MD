@@ -6,7 +6,7 @@
 
 ```bibtex
 @InProceedings{zhu2021fourier,
-      title={Fourier Contour Embedding for Arbitrary-Shaped Text Detection}, 
+      title={Fourier Contour Embedding for Arbitrary-Shaped Text Detection},
       author={Yiqin Zhu and Jianyong Chen and Lingyu Liang and Zhanghui Kuang and Lianwen Jin and Wayne Zhang},
       year={2021},
       booktitle = {CVPR}
