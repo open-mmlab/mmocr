@@ -64,7 +64,7 @@ def pan_decode(preds,
         kernel.astype(np.uint8), connectivity=4)
     contours, _ = cv2.findContours((kernel * 255).astype(np.uint8),
                                    cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
-    kernel_contours = np.zeros(text.shape, dtype="uint8")
+    kernel_contours = np.zeros(text.shape, dtype='uint8')
     cv2.drawContours(kernel_contours, contours, -1, 255)
     text_points = pixel_group(text_score, text, embeddings, labels,
                               kernel_contours, region_num,
