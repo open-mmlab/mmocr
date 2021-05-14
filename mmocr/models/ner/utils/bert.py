@@ -1,3 +1,8 @@
+# ------------------------------------------------------------------------------
+# Adapted from https://github.com/lonePatient/BERT-NER-Pytorch
+# Original licence: Copyright (c) 2020 Weitang Liu, under the MIT License.
+# ------------------------------------------------------------------------------
+
 import math
 
 import torch
@@ -143,7 +148,7 @@ class BertEmbeddings(nn.Module):
     Args:
         vocab_size (int): Number of words supported.
         hidden_size (int): Hidden size.
-        max_position_embeddings (int): Max positionsembedding size.
+        max_position_embeddings (int): Max positions embedding size.
         type_vocab_size (int): The size of type_vocab.
         layer_norm_eps (float): eps.
         hidden_dropout_prob (float): The dropout probability of hidden layer.
