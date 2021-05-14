@@ -30,7 +30,6 @@ class NerLoss(nn.Module):
 
         labels = img_metas['labels']
         attention_masks = img_metas['attention_masks']
-
         if self.loss_type == 'focal':
             loss_function = FocalLoss(ignore_index=0)
         else:

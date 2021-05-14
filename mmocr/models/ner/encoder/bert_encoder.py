@@ -79,8 +79,6 @@ class BertEncoder(nn.Module):
             checkpoint = torch.load(pretrained)
             new_dict = {}
             for key in checkpoint.keys():
-                # if "cls." in key or "meta" in key:
-                #     continue
                 new_dict.update({key: checkpoint[key]})
             self.load_state_dict(new_dict)
         else:
