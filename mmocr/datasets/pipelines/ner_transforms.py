@@ -37,7 +37,7 @@ class NerTransform:
 
 @PIPELINES.register_module()
 class ToTensorNER:
-    """Convert a ``PIL Image`` or ``numpy.ndarray`` to tensor."""
+    """Convert data with ``list`` type to tensor."""
 
     def __init__(self):
         pass
