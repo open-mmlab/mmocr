@@ -26,19 +26,6 @@ class NerDataset(BaseDataset):
         super().__init__(
             ann_file, loader, pipeline, img_prefix='', test_mode=False)
 
-    def _parse_anno_info(self, ann):
-        """Parse annotations of texts and labels for one text.
-
-        Args:
-            ann (dict): Annotations of texts and labels for one text
-        Returns:
-            A dict.
-        """
-        text = ann['text']
-        label = ann['label']
-
-        return {'text': text, 'label': label}
-
     def prepare_train_img(self, index):
         """Get training data and annotations after pipeline.
 
@@ -49,11 +36,9 @@ class NerDataset(BaseDataset):
             dict: Training data and annotation after pipeline with new keys \
                 introduced by pipeline.
         """
-        img_ann_info = self.data_infos[index]
-        ann_info = self._parse_anno_info(img_ann_info)
-        results = dict(ann_info)
+        ann_info = self.data_infos[index]
 
-        return self.pipeline(results)
+        return self.pipeline(ann_info)
 
     def evaluate(self, results, metric=None, logger=None, **kwargs):
         """Evaluate the dataset.
