@@ -12,8 +12,8 @@ class FCDecoder(nn.Module):
 
     def __init__(self,
                  num_labels=None,
-                 hidden_dropout_prob=None,
-                 hidden_size=None):
+                 hidden_dropout_prob=0.1,
+                 hidden_size=768):
         super().__init__()
         self.num_labels = num_labels
 
