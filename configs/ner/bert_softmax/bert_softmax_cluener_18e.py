@@ -69,7 +69,7 @@ test = dict(
 data = dict(
     samples_per_gpu=24, workers_per_gpu=2, train=train, val=test, test=test)
 
-evaluation = dict(interval=1, metric='acc')
+evaluation = dict(interval=1, metric='f1-score')
 
 model = dict(
     type='NerClassifier',

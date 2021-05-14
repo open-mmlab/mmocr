@@ -59,7 +59,7 @@ def test_encoder_decoder_pipeline(cfg_file):
     # Test forward test
     with torch.no_grad():
         batch_results = []
-        result = detector.forward([img], img_metas, return_loss=False)
+        result = detector.forward(None, img_metas, return_loss=False)
         batch_results.append(result)
 
     # Test activations

@@ -25,19 +25,14 @@ def main():
     result = text_model_inference(model, input_sentence)
 
     # show the results
-    assert len(result) == len([input_sentence])
-    with open('pred_result.txt', 'w') as f:
-        for i in range(len(result)):
-            pred_entities = result[i]
-            text = input_sentence
-            for entity in pred_entities:
-                if entity[2] > entity[1] and entity[1] < len(text):
-                    if entity[2] > len(text):
-                        entity[2] = len(text)
-                    print('{}: {}'.format(entity[0],
-                                          text[entity[1]:entity[2] + 1]))
-                    f.write('{}: {}\n'.format(entity[0],
-                                              text[entity[1]:entity[2] + 1]))
+    for i in range(len(result)):
+        pred_entities = result[i]
+        text = input_sentence
+        for entity in pred_entities:
+            if entity[2] > entity[1] and entity[1] < len(text):
+                if entity[2] > len(text):
+                    entity[2] = len(text)
+                print(f'{entity[0]}: {text[entity[1]:entity[2] + 1]}')
 
 
 if __name__ == '__main__':
