@@ -268,12 +268,14 @@ def test_gen_drrg_targets():
         max_rand_half_height=5.)
 
     results = {}
-    results['img'] = np.zeros((20, 30, 3), np.uint8)
-    text_polys = [[np.array([4, 2, 18, 2, 18, 10, 4, 10])],
-                  [np.array([8, 12, 8, 12, 23, 18, 23, 18])]]
+    results['img'] = np.zeros((64, 64, 3), np.uint8)
+    text_polys = [[np.array([4, 2, 30, 2, 30, 10, 4, 10])],
+                  [np.array([36, 22, 8, 22, 8, 12, 36, 12])],
+                  [np.array([48, 20, 52, 20, 52, 50, 48, 50])],
+                  [np.array([44, 50, 38, 50, 38, 20, 44, 20])]]
     results['gt_masks'] = PolygonMasks(text_polys, 20, 30)
-    results['gt_masks_ignore'] = PolygonMasks([], 20, 30)
-    results['img_shape'] = (20, 30, 3)
+    results['gt_masks_ignore'] = PolygonMasks([], 64, 64)
+    results['img_shape'] = (64, 64, 3)
     results['mask_fields'] = []
     output = target_generator(results)
     assert len(output['gt_text_mask']) == 1
@@ -285,7 +287,24 @@ def test_gen_drrg_targets():
     assert len(output['gt_cos_map']) == 1
     assert output['gt_comp_attribs'].shape[-1] == 8
 
+    # test generate_targets with the number of proposed text components exceeds
+    # max_comp_num
+    target_generator = textdet_targets.DRRGTargets(
+        min_width=2.,
+        max_width=4.,
+        min_rand_half_height=3.,
+        max_rand_half_height=5.,
+        max_comp_num=6)
+    output = target_generator(results)
+    assert output['gt_comp_attribs'].ndim == 2
+    assert output['gt_comp_attribs'].shape[0] == 6
+
     # test generate_targets with blank polygon masks
+    target_generator = textdet_targets.DRRGTargets(
+        min_width=2.,
+        max_width=4.,
+        min_rand_half_height=3.,
+        max_rand_half_height=5.)
     results = {}
     results['img'] = np.zeros((20, 30, 3), np.uint8)
     results['gt_masks'] = PolygonMasks([], 20, 30)

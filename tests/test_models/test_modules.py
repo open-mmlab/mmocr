@@ -53,13 +53,13 @@ def test_local_graph_forward_test():
 
     maps = torch.zeros((1, 6, 224, 224), dtype=torch.float)
     maps[:, 0:2, :, :] = -10.
-    maps[:, 0, 60:100, 12:212] = 10.
-    maps[:, 1, 70:90, 22:202] = 10.
-    maps[:, 2, 70:90, 22:202] = 0.
-    maps[:, 3, 70:90, 22:202] = 1.
-    maps[:, 4, 70:90, 22:202] = 5.
-    maps[:, 5, 70:90, 22:202] = 5.
-    feature_maps = torch.randn((2, 3, 128, 128), dtype=torch.float)
+    maps[:, 0, 60:100, 50:170] = 10.
+    maps[:, 1, 75:85, 60:160] = 10.
+    maps[:, 2, 75:85, 60:160] = 0.
+    maps[:, 3, 75:85, 60:160] = 1.
+    maps[:, 4, 75:85, 60:160] = 10.
+    maps[:, 5, 75:85, 60:160] = 10.
+    feature_maps = torch.randn((2, 6, 224, 224), dtype=torch.float)
     feat_len = geo_feat_len + feature_maps.size()[1] * pooling_h * pooling_w
 
     none_flag, graph_data = local_grpah_generator(maps, feature_maps)
