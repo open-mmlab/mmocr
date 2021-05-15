@@ -1,11 +1,8 @@
-import glob
 import os
 import sys
 from setuptools import find_packages, setup
 
-import torch
-from torch.utils.cpp_extension import (CUDA_HOME, BuildExtension, CppExtension,
-                                       CUDAExtension)
+from torch.utils.cpp_extension import BuildExtension, CppExtension
 
 
 def readme():

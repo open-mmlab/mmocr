@@ -6,6 +6,5 @@ from .pse_loss import PSELoss
 from .textsnake_loss import TextSnakeLoss
 
 __all__ = [
-    'PANLoss', 'PSELoss', 'DBLoss', 'TextSnakeLoss', 'FCELoss', 
-    'DRRGLoss'
+    'PANLoss', 'PSELoss', 'DBLoss', 'TextSnakeLoss', 'FCELoss', 'DRRGLoss'
 ]

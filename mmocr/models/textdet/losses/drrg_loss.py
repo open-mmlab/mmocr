@@ -9,17 +9,18 @@ from mmocr.utils import check_argument
 
 @LOSSES.register_module()
 class DRRGLoss(nn.Module):
-    """The class for implementing DRRG loss. Deep Relational Reasoning Graph
+    """The class for implementing DRRG loss: Deep Relational Reasoning Graph
     Network for Arbitrary Shape Text Detection.
 
-    [https://arxiv.org/abs/1908.05900]
+    [https://arxiv.org/abs/1908.05900] This is partially adapted from
+    https://github.com/GXYM/DRRG.
     """
 
     def __init__(self, ohem_ratio=3.0):
         """Initialization.
 
         Args:
-            ohem_ratio (float): the negative/positive ratio in OHEM.
+            ohem_ratio (float): The negative/positive ratio in OHEM.
         """
         super().__init__()
         self.ohem_ratio = ohem_ratio
@@ -65,12 +66,12 @@ class DRRGLoss(nn.Module):
 
         Args:
             bitmasks (list[BitmapMasks]): The BitmapMasks list. Each item is
-            for one img.
+                for one img.
             target_sz (tuple(int, int)): The target tensor size HxW.
 
         Returns
             results (list[tensor]): The list of kernel tensors. Each
-            element is for one kernel level.
+                element is for one kernel level.
         """
         assert check_argument.is_type_list(bitmasks, BitmapMasks)
         assert isinstance(target_sz, tuple)

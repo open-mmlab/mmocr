@@ -5,9 +5,8 @@ import torch.nn.functional as F
 from mmcv.cnn import normal_init
 
 from mmdet.models.builder import HEADS, build_loss
-from mmocr.models.textdet.modules import (GCN, LocalGraphs,
-                                          ProposalLocalGraphs,
-                                          merge_text_comps)
+from mmocr.models.textdet.modules import GCN, LocalGraphs, ProposalLocalGraphs
+from mmocr.models.textdet.postprocess import decode
 from mmocr.utils import check_argument
 from .head_mixin import HeadMixin
 
@@ -192,8 +191,8 @@ class DRRGHead(HeadMixin, nn.Module):
             scores (ndarray): The edge score array.
             text_comps (ndarray): The text components.
             img_metas (dict): The image meta info.
-            rescale (bool): Rescale boundaries to the original image resolution
-            if true, and keep the score_maps resolution if false.
+            rescale (bool): Rescale boundaries to the original image
+                resolution.
 
         Returns:
             results (dict): The result dict.
@@ -204,8 +203,12 @@ class DRRGHead(HeadMixin, nn.Module):
 
         boundaries = []
         if edges is not None:
-            boundaries = merge_text_comps(edges, scores, text_comps,
-                                          self.link_thr)
+            boundaries = decode(
+                decoding_type='drrg',
+                edges=edges,
+                scores=scores,
+                text_comps=text_comps,
+                link_thr=self.link_thr)
         if rescale:
             boundaries = self.resize_boundary(
                 boundaries,
