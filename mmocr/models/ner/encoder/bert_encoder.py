@@ -77,10 +77,7 @@ class BertEncoder(nn.Module):
     def init_weights(self, pretrained=None):
         if pretrained is not None:
             checkpoint = torch.load(pretrained)
-            new_dict = {}
-            for key in checkpoint.keys():
-                new_dict.update({key: checkpoint[key]})
-            self.load_state_dict(new_dict)
+            self.load_state_dict(checkpoint)
         else:
 
             for m in self.modules():

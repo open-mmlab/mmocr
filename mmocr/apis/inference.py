@@ -138,10 +138,10 @@ def text_model_inference(model, input_sentence):
         input_sentence (str): A text entered by the user.
 
     Returns:
-        result (dict): Recognition results.
+        result (dict): Predicted results.
     """
 
-    assert isinstance(input_sentence, (str))
+    assert isinstance(input_sentence, str)
 
     cfg = model.cfg
     test_pipeline = Compose(cfg.data.test.pipeline)
@@ -154,7 +154,7 @@ def text_model_inference(model, input_sentence):
     else:
         img_metas = data['img_metas'].data
 
-    assert isinstance(img_metas, (dict))
+    assert isinstance(img_metas, dict)
     img_metas = {
         'input_ids': img_metas['input_ids'].unsqueeze(0),
         'attention_masks': img_metas['attention_masks'].unsqueeze(0),

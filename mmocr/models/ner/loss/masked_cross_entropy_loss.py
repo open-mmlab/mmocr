@@ -11,6 +11,7 @@ class MaskedCrossEntropyLoss(nn.Module):
     def __init__(self, num_labels=None, **kwargs):
         super().__init__()
         self.num_labels = num_labels
+        self.criterion = CrossEntropyLoss(ignore_index=0)
 
     def forward(self, logits, img_metas):
         '''Loss forword.
@@ -27,14 +28,14 @@ class MaskedCrossEntropyLoss(nn.Module):
 
         labels = img_metas['labels']
         attention_masks = img_metas['attention_masks']
-        loss_function = CrossEntropyLoss(ignore_index=0)
+
         # Only keep active parts of the loss
         if attention_masks is not None:
             active_loss = attention_masks.view(-1) == 1
             active_logits = logits.view(-1, self.num_labels)[active_loss]
             active_labels = labels.view(-1)[active_loss]
-            loss = loss_function(active_logits, active_labels)
+            loss = self.criterion(active_logits, active_labels)
         else:
-            loss = loss_function(
+            loss = self.criterion(
                 logits.view(-1, self.num_labels), labels.view(-1))
         return {'loss_cls': loss}

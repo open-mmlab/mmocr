@@ -1,6 +1,30 @@
 from mmocr.datasets.ner_dataset import NerDataset
 from mmocr.models.ner.convertors.ner_convertor import NerConvertor
+import tempfile
+import os.path as osp
+import json
 
+def _create_dummy_ann_file(ann_file):
+    data = {
+        'text': '彭小军认为，国内银行现在走的是台湾的发卡模式',
+        'label': {
+            'address': {
+                '台湾': [[15, 16]]
+            },
+            'name': {
+                '彭小军': [[0, 2]]
+            }
+        }
+    }
+
+    with open(ann_file, 'w') as fw:
+        fw.write(json.dumps(data,ensure_ascii=False)+'\n')
+    return data
+
+def _create_dummy_vocab_file(vocab_file):
+    with open(vocab_file, 'w') as fw:
+        for char in list(map(chr, range(ord('a'), ord('z') + 1))):
+            fw.write(char + '\n')
 
 def _create_dummy_loader():
     loader = dict(
@@ -17,8 +41,14 @@ def test_ner_dataset():
         'address', 'book', 'company', 'game', 'government', 'movie', 'name',
         'organization', 'position', 'scene'
     ]
-    ann_file = 'tests/data/ner_toy_dataset/train_sample.json'
-    vocab_file = 'tests/data/ner_toy_dataset/vocab_sample.txt'
+
+    # create dummy data
+    tmp_dir = tempfile.TemporaryDirectory()
+    ann_file = osp.join(tmp_dir.name, 'fake_data.txt')
+    vocab_file = osp.join(tmp_dir.name, 'fake_vocab.txt')
+    ann = _create_dummy_ann_file(ann_file)
+    _create_dummy_vocab_file(vocab_file)
+
     max_len = 128
     ner_convertor = dict(
         type='NerConvertor',
@@ -46,19 +76,14 @@ def test_ner_dataset():
     img_info = dataset.data_infos[0]
     results = dict(img_info=img_info)
     dataset.pre_pipeline(results)
-    # test _parse_anno_info
-    ann = {
-        'text': '彭小军认为，国内银行现在走的是台湾的发卡模式',
-        'label': {
-            'address': {
-                '台湾': [[15, 16]]
-            },
-            'name': {
-                '彭小军': [[0, 2]]
-            }
-        }
-    }
 
+<<<<<<< 170ac029f2855bd34b75ac07c8dde23b3f792861
+=======
+    # test _parse_anno_info
+    ans = dataset._parse_anno_info(ann)
+    assert isinstance(ans, dict)
+    assert 'text' in ans
+>>>>>>> rm toy config and data
     # test prepare_train_img
     dataset.prepare_train_img(0)
 
@@ -87,3 +112,5 @@ def test_ner_dataset():
         max_len=128)
     all_entities = convertor.convert_pred2entities(preds=pred)
     assert len(all_entities[0][0]) == 3
+
+    tmp_dir.cleanup()

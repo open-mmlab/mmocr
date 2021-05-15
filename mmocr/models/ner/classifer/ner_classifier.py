@@ -21,7 +21,6 @@ class NerClassifier(BaseRecognizer):
 
         assert encoder is not None
         encoder.update(pretrained=pretrained)
-        encoder.update(vocab_size=self.label_convertor.vocab_size)
         self.encoder = build_encoder(encoder)
 
         assert decoder is not None

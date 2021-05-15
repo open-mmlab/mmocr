@@ -26,7 +26,7 @@ def _get_detector_cfg(fname):
 
 
 @pytest.mark.parametrize(
-    'cfg_file', ['configs/ner/bert_softmax/bert_softmax_toy_dataset.py'])
+    'cfg_file', ['configs/ner/bert_softmax/bert_softmax_cluener_18e.py'])
 def test_encoder_decoder_pipeline(cfg_file):
     # prepare data
     texts = ['中'] * 47

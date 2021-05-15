@@ -12,19 +12,25 @@ class NerDataset(BaseDataset):
         loader (dict): Dictionary to construct loader
             to load annotation infos.
         pipeline (list[dict]): Processing pipeline.
-        img_prefix (str, optional): This parameter is not used.
         test_mode (bool, optional): If True, try...except will
             be turned off in __getitem__.
     """
 
-    def __init__(self,
-                 ann_file,
-                 loader,
-                 pipeline,
-                 img_prefix='',
-                 test_mode=False):
-        super().__init__(
-            ann_file, loader, pipeline, img_prefix='', test_mode=test_mode)
+    def __init__(self, ann_file, loader, pipeline, test_mode=False):
+        super().__init__(ann_file, loader, pipeline, test_mode=False)
+
+    def _parse_anno_info(self, ann):
+        """Parse annotations of texts and labels for one text.
+
+        Args:
+            ann (dict): Annotations of texts and labels for one text
+        Returns:
+            A dict.
+        """
+        text = ann['text']
+        label = ann['label']
+
+        return {'text': text, 'label': label}
 
     def prepare_train_img(self, index):
         """Get training data and annotations after pipeline.

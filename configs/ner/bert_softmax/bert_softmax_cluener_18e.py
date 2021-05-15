@@ -49,11 +49,9 @@ train_pipeline = [
     dict(type='ToTensorNER')
 ]
 dataset_type = 'NerDataset'
-img_prefix = ''
 
 train = dict(
     type=dataset_type,
-    img_prefix=img_prefix,
     ann_file=train_ann_file,
     loader=loader,
     pipeline=train_pipeline,
@@ -61,7 +59,6 @@ train = dict(
 
 test = dict(
     type=dataset_type,
-    img_prefix=img_prefix,
     ann_file=test_ann_file,
     loader=loader,
     pipeline=test_pipeline,
