@@ -5,7 +5,7 @@ from lanms import merge_quadrangle_n9 as la_nms
 from mmcv.ops import RoIAlignRotated
 
 from mmocr.models.textdet.postprocess.wrapper import fill_hole
-from .utils import (feature_embedding, euclidean_distance_matrix,
+from .utils import (euclidean_distance_matrix, feature_embedding,
                     normalize_adjacent_matrix)
 
 
