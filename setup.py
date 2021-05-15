@@ -1,11 +1,6 @@
-import glob
 import os
 import sys
 from setuptools import find_packages, setup
-
-import torch
-from torch.utils.cpp_extension import (CUDA_HOME, BuildExtension, CppExtension,
-                                       CUDAExtension)
 
 
 def readme():
@@ -103,47 +98,11 @@ def parse_requirements(fname='requirements.txt', with_version=True):
     return packages
 
 
-def get_rroi_align_extensions():
-    extensions_dir = 'mmocr/models/utils/ops/rroi_align/csrc/csc'
-    main_file = glob.glob(os.path.join(extensions_dir, '*.cpp'))
-    source_cpu = glob.glob(os.path.join(extensions_dir, 'cpu', '*.cpp'))
-    source_cuda = glob.glob(os.path.join(extensions_dir, 'cuda', '*.cu'))
-    sources = main_file + source_cpu
-    extension = CppExtension
-    extra_compile_args = {'cxx': ['/utf-8']} if is_windows else {'cxx': []}
-    define_macros = []
-
-    if torch.cuda.is_available() and CUDA_HOME is not None:
-        extension = CUDAExtension
-        sources += source_cuda
-        define_macros += [('WITH_CUDA', None)]
-        extra_compile_args['nvcc'] = [
-            '-DCUDA_HAS_FP16=1',
-            '-D__CUDA_NO_HALF_OPERATORS__',
-            '-D__CUDA_NO_HALF_CONVERSIONS__',
-            '-D__CUDA_NO_HALF2_OPERATORS__',
-        ]
-
-    print(sources)
-    include_dirs = [extensions_dir]
-    print('include_dirs', include_dirs, flush=True)
-    ext = extension(
-        name='mmocr.models.utils.ops.rroi_align.csrc',
-        sources=sources,
-        include_dirs=include_dirs,
-        define_macros=define_macros,
-        extra_compile_args=extra_compile_args,
-    )
-
-    return ext
-
-
 if __name__ == '__main__':
     library_dirs = [
         lp for lp in os.environ.get('LD_LIBRARY_PATH', '').split(':')
         if len(lp) > 1
     ]
-    cpp_root = 'mmocr/models/textdet/postprocess/'
     setup(
         name='mmocr',
         version=get_version(),
@@ -156,7 +115,6 @@ if __name__ == '__main__':
         packages=find_packages(exclude=('configs', 'tools', 'demo')),
         include_package_data=True,
         url='https://github.com/open-mmlab/mmocr',
-        package_data={'mmocr.ops': ['*/*.so']},
         classifiers=[
             'Development Status :: 4 - Beta',
             'License :: OSI Approved :: Apache Software License',
@@ -176,16 +134,4 @@ if __name__ == '__main__':
             'build': parse_requirements('requirements/build.txt'),
             'optional': parse_requirements('requirements/optional.txt'),
         },
-        ext_modules=[
-            CppExtension(
-                name='mmocr.models.textdet.postprocess.pan',
-                sources=[cpp_root + 'pan.cpp'],
-                extra_compile_args=(['/utf-8'] if is_windows else [])),
-            CppExtension(
-                name='mmocr.models.textdet.postprocess.pse',
-                sources=[cpp_root + 'pse.cpp'],
-                extra_compile_args=(['/utf-8'] if is_windows else [])),
-            get_rroi_align_extensions()
-        ],
-        cmdclass={'build_ext': BuildExtension},
         zip_safe=False)
