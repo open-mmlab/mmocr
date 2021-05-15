@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from mmcv.ops import RoIAlignRotated
 
-from .utils import (feature_embedding, euclidean_distance_matrix,
+from .utils import (euclidean_distance_matrix, feature_embedding,
                     normalize_adjacent_matrix)
 
 
