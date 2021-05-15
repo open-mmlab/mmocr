@@ -77,13 +77,6 @@ def test_ner_dataset():
     results = dict(img_info=img_info)
     dataset.pre_pipeline(results)
 
-<<<<<<< 170ac029f2855bd34b75ac07c8dde23b3f792861
-=======
-    # test _parse_anno_info
-    ans = dataset._parse_anno_info(ann)
-    assert isinstance(ans, dict)
-    assert 'text' in ans
->>>>>>> rm toy config and data
     # test prepare_train_img
     dataset.prepare_train_img(0)
 
