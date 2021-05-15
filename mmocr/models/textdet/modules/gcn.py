@@ -34,7 +34,7 @@ class GraphConv(nn.Module):
 
 
 class GCN(nn.Module):
-    """graph convolutional network implentation This was from repo
+    """Graph convolutional network for clustering. This was from repo
     https://github.com/Zhongdao/gcn_clustering.
 
     Args:

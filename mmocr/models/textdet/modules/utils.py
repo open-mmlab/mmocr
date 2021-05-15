@@ -61,22 +61,24 @@ def euclidean_distance_matrix(A, B):
     return D
 
 
-def embed_geo_feats(geo_feats, out_feat_len):
-    """Embed geometric feature of text components. This code was partially
-    adapted from https://github.com/GXYM/DRRG.
+def feature_embedding(input_feats, out_feat_len):
+    """Embed features. This code was partially adapted from
+    https://github.com/GXYM/DRRG.
 
     Args:
-        geo_feats (ndarray): The geometric features of text components.
+        input_feats (ndarray): The input features of shape (N, d), where N is
+            the number of nodes in graph, d is the input feature vector length.
         out_feat_len (int): The length of output feature vector.
 
     Returns:
-        embedded_feats (ndarray): The embedded geometric features.
+        embedded_feats (ndarray): The embedded features.
     """
+    assert input_feats.ndim == 2
     assert isinstance(out_feat_len, int)
-    assert out_feat_len >= geo_feats.shape[1]
+    assert out_feat_len >= input_feats.shape[1]
 
-    comp_num = geo_feats.shape[0]
-    feat_dim = geo_feats.shape[1]
+    node_num = input_feats.shape[0]
+    feat_dim = input_feats.shape[1]
     feat_repeat_times = out_feat_len // feat_dim
     residue_dim = out_feat_len % feat_dim
 
@@ -86,28 +88,28 @@ def embed_geo_feats(geo_feats, out_feat_len):
             for j in range(feat_repeat_times + 1)
         ]).reshape((feat_repeat_times + 1, 1, 1))
         repeat_feats = np.repeat(
-            np.expand_dims(geo_feats, axis=0), feat_repeat_times, axis=0)
+            np.expand_dims(input_feats, axis=0), feat_repeat_times, axis=0)
         residue_feats = np.hstack([
-            geo_feats[:, 0:residue_dim],
-            np.zeros((comp_num, feat_dim - residue_dim))
+            input_feats[:, 0:residue_dim],
+            np.zeros((node_num, feat_dim - residue_dim))
         ])
         repeat_feats = np.stack([repeat_feats, residue_feats], axis=0)
         embedded_feats = repeat_feats / embed_wave
         embedded_feats[:, 0::2] = np.sin(embedded_feats[:, 0::2])
         embedded_feats[:, 1::2] = np.cos(embedded_feats[:, 1::2])
         embedded_feats = np.transpose(embedded_feats, (1, 0, 2)).reshape(
-            (comp_num, -1))[:, 0:out_feat_len]
+            (node_num, -1))[:, 0:out_feat_len]
     else:
         embed_wave = np.array([
             np.power(1000, 2.0 * (j // 2) / feat_repeat_times)
             for j in range(feat_repeat_times)
         ]).reshape((feat_repeat_times, 1, 1))
         repeat_feats = np.repeat(
-            np.expand_dims(geo_feats, axis=0), feat_repeat_times, axis=0)
+            np.expand_dims(input_feats, axis=0), feat_repeat_times, axis=0)
         embedded_feats = repeat_feats / embed_wave
         embedded_feats[:, 0::2] = np.sin(embedded_feats[:, 0::2])
         embedded_feats[:, 1::2] = np.cos(embedded_feats[:, 1::2])
         embedded_feats = np.transpose(embedded_feats, (1, 0, 2)).reshape(
-            (comp_num, -1)).astype(np.float32)
+            (node_num, -1)).astype(np.float32)
 
     return embedded_feats
