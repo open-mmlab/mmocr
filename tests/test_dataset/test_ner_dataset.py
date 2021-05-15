@@ -113,4 +113,5 @@ def test_ner_dataset():
     all_entities = convertor.convert_pred2entities(preds=pred)
     assert len(all_entities[0][0]) == 3
 
+
     tmp_dir.cleanup()
