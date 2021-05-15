@@ -1,10 +1,18 @@
 import copy
+import os.path as osp
+import tempfile
 
 import pytest
 import torch
 
 from mmocr.models import build_detector
 from mmocr.models.ner.utils.activations import gelu, gelu_new, swish
+
+
+def _create_dummy_vocab_file(vocab_file):
+    with open(vocab_file, 'w') as fw:
+        for char in list(map(chr, range(ord('a'), ord('z') + 1))):
+            fw.write(char + '\n')
 
 
 def _get_config_module(fname):
@@ -44,8 +52,14 @@ def test_encoder_decoder_pipeline(cfg_file):
         'token_type_ids': torch.tensor(token_type_ids).unsqueeze(0)
     }
 
+    # create dummy data
+    tmp_dir = tempfile.TemporaryDirectory()
+    vocab_file = osp.join(tmp_dir.name, 'fake_vocab.txt')
+    _create_dummy_vocab_file(vocab_file)
+
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None
+    model['vocab_file'] = vocab_file
 
     detector = build_detector(model)
     losses = detector.forward(img, img_metas)
