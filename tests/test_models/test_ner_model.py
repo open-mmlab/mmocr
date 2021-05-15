@@ -58,8 +58,8 @@ def test_encoder_decoder_pipeline(cfg_file):
     _create_dummy_vocab_file(vocab_file)
 
     model = _get_detector_cfg(cfg_file)
+    model['label_convertor']['vocab_file'] = vocab_file
     model['pretrained'] = None
-    model['vocab_file'] = vocab_file
 
     detector = build_detector(model)
     losses = detector.forward(img, img_metas)
@@ -69,6 +69,8 @@ def test_encoder_decoder_pipeline(cfg_file):
     detector = build_detector(model)
     losses = detector.forward(img, img_metas)
     assert isinstance(losses, dict)
+
+    tmp_dir.cleanup()
 
     # Test forward test
     with torch.no_grad():
