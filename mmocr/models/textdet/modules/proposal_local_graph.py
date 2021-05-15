@@ -15,7 +15,7 @@ class ProposalLocalGraphs(object):
     Network for Arbitrary Shape Text Detection.
 
     [https://arxiv.org/abs/2003.07493]. This code was partially adapted from
-    https://github.com/GXYM/DRRG.
+    https://github.com/GXYM/DRRG under MIT License.
 
     Args:
         k_at_hops (tuple(int)): The number of i-hop neighbors, i = 1, 2.

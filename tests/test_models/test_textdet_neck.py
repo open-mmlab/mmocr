@@ -1,7 +1,7 @@
 import pytest
 import torch
 
-from mmocr.models.textdet.necks import FPN_UNET, FPNC
+from mmocr.models.textdet.necks import FPNC, FPN_UNet
 
 
 def test_fpnc():
@@ -32,18 +32,18 @@ def test_fpn_unet_neck():
 
     # len(in_channcels) is not equal to 4
     with pytest.raises(AssertionError):
-        FPN_UNET(in_channels + [128], out_channels)
+        FPN_UNet(in_channels + [128], out_channels)
 
     # `out_channels` is not int type
     with pytest.raises(AssertionError):
-        FPN_UNET(in_channels, [2, 4])
+        FPN_UNet(in_channels, [2, 4])
 
     feats = [
         torch.rand(1, in_channels[i], feat_sizes[i], feat_sizes[i])
         for i in range(len(in_channels))
     ]
 
-    fpn_unet_neck = FPN_UNET(in_channels, out_channels)
+    fpn_unet_neck = FPN_UNet(in_channels, out_channels)
     fpn_unet_neck.init_weights()
 
     out_neck = fpn_unet_neck(feats)

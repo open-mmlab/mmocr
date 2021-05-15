@@ -12,7 +12,7 @@ class LocalGraphs(object):
     Detection.
 
     [https://arxiv.org/abs/2003.07493]. This code was partially adapted from
-    https://github.com/GXYM/DRRG.
+    https://github.com/GXYM/DRRG  licensed under the MIT license.
 
     Args:
         k_at_hops (tuple(int)): The number of h-hop neighbors.

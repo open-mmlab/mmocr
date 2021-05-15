@@ -14,7 +14,7 @@ class MeanAggregator(nn.Module):
 class GraphConv(nn.Module):
 
     def __init__(self, in_dim, out_dim):
-        super(GraphConv, self).__init__()
+        super().__init__()
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.weight = nn.Parameter(torch.FloatTensor(in_dim * 2, out_dim))
@@ -35,7 +35,7 @@ class GraphConv(nn.Module):
 
 class GCN(nn.Module):
     """Graph convolutional network for clustering. This was from repo
-    https://github.com/Zhongdao/gcn_clustering.
+    https://github.com/Zhongdao/gcn_clustering licensed under the MIT license.
 
     Args:
         feat_len(int): The input node feature length.

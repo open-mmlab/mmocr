@@ -15,7 +15,7 @@ class DRRGTargets(TextSnakeTargets):
     Graph Network for Arbitrary Shape Text Detection.
 
     [https://arxiv.org/abs/2003.07493]. This code was partially adapted from
-    https://github.com/GXYM/DRRG.
+    https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
         orientation_thr (float): The threshold for distinguishing between

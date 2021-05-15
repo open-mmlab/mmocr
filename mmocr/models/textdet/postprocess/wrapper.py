@@ -581,7 +581,8 @@ class Node(object):
 
 def graph_propagation(edges, scores, text_comps, edge_len_thr=50.):
     """Propagate edge score information and construct graph. This code was
-    partially adapted from https://github.com/GXYM/DRRG.
+    partially adapted from https://github.com/GXYM/DRRG licensed under the MIT
+    license.
 
     Args:
         edges (ndarray): The edge array of shape N * 2, each row is a node
@@ -630,7 +631,7 @@ def graph_propagation(edges, scores, text_comps, edge_len_thr=50.):
 
 def connected_components(nodes, score_dict, link_thr):
     """Conventional connected components searching. This code was partially
-    adapted from https://github.com/GXYM/DRRG.
+    adapted from https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
         nodes (list[Node]): The list of Node object.
@@ -667,7 +668,8 @@ def connected_components(nodes, score_dict, link_thr):
 
 def clusters2labels(clusters, node_num):
     """Convert clusters of Node to text component labels. This code was
-    partially adapted from https://github.com/GXYM/DRRG.
+    partially adapted from https://github.com/GXYM/DRRG licensed under the MIT
+    license.
 
     Args:
         clusters (List[list[Node]]): The clusters of Node object.
@@ -691,7 +693,7 @@ def clusters2labels(clusters, node_num):
 
 def remove_single(text_comps, comp_pred_labels):
     """Remove isolated text components. This code was partially adapted from
-    https://github.com/GXYM/DRRG.
+    https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
         text_comps (ndarray): The text components.
@@ -725,7 +727,7 @@ def norm2(point1, point2):
 
 def min_connect_path(points):
     """Find the shortest path to traverse all points. This code was partially
-    adapted from https://github.com/GXYM/DRRG.
+    adapted from https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
         points(List[list[int]]): The point sequence [[x0, y0], [x1, y1], ...].
@@ -785,7 +787,7 @@ def in_contour(cont, point):
 
 def fix_corner(top_line, bot_line, start_box, end_box):
     """Add corner points in predicted sidelines. This code was partially
-    adapted from https://github.com/GXYM/DRRG.
+    adapted from https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
         top_line (List[list[int]]): The predicted top sideline of text
@@ -828,7 +830,8 @@ def fix_corner(top_line, bot_line, start_box, end_box):
 
 def comps2boundaries(text_comps, comp_pred_labels):
     """Construct text instance boundaries from clustered text components. This
-    code was partially adapted from https://github.com/GXYM/DRRG.
+    code was partially adapted from https://github.com/GXYM/DRRG licensed under
+    the MIT license.
 
     Args:
         text_comps (ndarray): The text components.

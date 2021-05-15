@@ -15,7 +15,7 @@ model = dict(
         norm_eval=True,
         style='caffe'),
     neck=dict(
-        type='FPN_UNET', in_channels=[256, 512, 1024, 2048], out_channels=32),
+        type='FPN_UNet', in_channels=[256, 512, 1024, 2048], out_channels=32),
     bbox_head=dict(
         type='DRRGHead',
         in_channels=32,
@@ -93,17 +93,18 @@ data = dict(
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
-        ann_file=data_root + '/instances_training.json',
-        img_prefix=data_root + '/imgs',
+        ann_file=f'{data_root}/instances_training.json',
+        img_prefix=f'{data_root}/imgs',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + '/instances_test.json',
-        img_prefix=data_root + '/imgs',
+        ann_file=f'{data_root}/instances_test.json',
+        img_prefix=f'{data_root}/imgs',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + '/instances_test.json',
-        img_prefix=data_root + '/imgs',
+        ann_file=f'{data_root}/instances_test.json',
+        img_prefix=f'{data_root}/imgs',
         pipeline=test_pipeline))
+
 evaluation = dict(interval=20, metric='hmean-iou')

@@ -13,7 +13,7 @@ class DRRGLoss(nn.Module):
     Network for Arbitrary Shape Text Detection.
 
     [https://arxiv.org/abs/1908.05900] This is partially adapted from
-    https://github.com/GXYM/DRRG.
+    https://github.com/GXYM/DRRG licensed under the MIT license.
     """
 
     def __init__(self, ohem_ratio=3.0):

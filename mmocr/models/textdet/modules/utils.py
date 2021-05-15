@@ -4,7 +4,7 @@ import torch
 
 def normalize_adjacent_matrix(A, mode='AD'):
     """Normalize adjacent matrix for GCN. This code was partially adapted from
-    https://github.com/GXYM/DRRG.
+    https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
         A (ndarray): The adjacent matrix.
@@ -15,7 +15,7 @@ def normalize_adjacent_matrix(A, mode='AD'):
     """
     assert A.ndim == 2
     assert A.shape[0] == A.shape[1]
-    assert mode in ['DAD', 'AD']
+
     if mode == 'DAD':
         A = A + np.eye(A.shape[0])
         d = np.sum(A, axis=0)
@@ -63,7 +63,7 @@ def euclidean_distance_matrix(A, B):
 
 def feature_embedding(input_feats, out_feat_len):
     """Embed features. This code was partially adapted from
-    https://github.com/GXYM/DRRG.
+    https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
         input_feats (ndarray): The input features of shape (N, d), where N is
@@ -93,7 +93,8 @@ def feature_embedding(input_feats, out_feat_len):
             input_feats[:, 0:residue_dim],
             np.zeros((node_num, feat_dim - residue_dim))
         ])
-        repeat_feats = np.stack([repeat_feats, residue_feats], axis=0)
+        residue_feats = np.expand_dims(residue_feats, axis=0)
+        repeat_feats = np.concatenate([repeat_feats, residue_feats], axis=0)
         embedded_feats = repeat_feats / embed_wave
         embedded_feats[:, 0::2] = np.sin(embedded_feats[:, 0::2])
         embedded_feats[:, 1::2] = np.cos(embedded_feats[:, 1::2])

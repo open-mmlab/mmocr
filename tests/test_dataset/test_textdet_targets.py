@@ -246,8 +246,6 @@ def test_fcenet_generate_targets():
 
 def test_gen_drrg_targets():
     target_generator = textdet_targets.DRRGTargets()
-    text_polys = [[np.array([4, 2, 18, 2, 18, 10, 4, 10])],
-                  [np.array([8, 12, 8, 12, 23, 18, 23, 18])]]
     assert np.allclose(target_generator.orientation_thr, 2.0)
     assert np.allclose(target_generator.resample_step, 8.0)
     assert target_generator.min_comp_num == 9
@@ -263,8 +261,16 @@ def test_gen_drrg_targets():
     assert np.allclose(target_generator.jitter_level, 0.2)
 
     # test generate_targets
+    target_generator = textdet_targets.DRRGTargets(
+        min_width=2.,
+        max_width=4.,
+        min_rand_half_height=3.,
+        max_rand_half_height=5.)
+
     results = {}
     results['img'] = np.zeros((20, 30, 3), np.uint8)
+    text_polys = [[np.array([4, 2, 18, 2, 18, 10, 4, 10])],
+                  [np.array([8, 12, 8, 12, 23, 18, 23, 18])]]
     results['gt_masks'] = PolygonMasks(text_polys, 20, 30)
     results['gt_masks_ignore'] = PolygonMasks([], 20, 30)
     results['img_shape'] = (20, 30, 3)
@@ -277,4 +283,22 @@ def test_gen_drrg_targets():
     assert len(output['gt_bot_height_map']) == 1
     assert len(output['gt_sin_map']) == 1
     assert len(output['gt_cos_map']) == 1
+    assert output['gt_comp_attribs'].shape[-1] == 8
+
+    # test generate_targets with blank polygon masks
+    results = {}
+    results['img'] = np.zeros((20, 30, 3), np.uint8)
+    results['gt_masks'] = PolygonMasks([], 20, 30)
+    results['gt_masks_ignore'] = PolygonMasks([], 20, 30)
+    results['img_shape'] = (20, 30, 3)
+    results['mask_fields'] = []
+    output = target_generator(results)
+    assert len(output['gt_text_mask']) == 1
+    assert len(output['gt_center_region_mask']) == 1
+    assert len(output['gt_mask']) == 1
+    assert len(output['gt_top_height_map']) == 1
+    assert len(output['gt_bot_height_map']) == 1
+    assert len(output['gt_sin_map']) == 1
+    assert len(output['gt_cos_map']) == 1
+    assert output['gt_comp_attribs'].shape[0] > 8
     assert output['gt_comp_attribs'].shape[-1] == 8
