@@ -29,7 +29,7 @@ class DRRGTargets(TextSnakeTargets):
         min_width (float): The minimum width of text components.
         max_width (float): The maximum width of text components.
         center_region_shrink_ratio (float): The shrink ratio of text center
-            region.
+            regions.
         comp_shrink_ratio (float): The shrink ratio of text components.
         text_comp_ratio (float): The reciprocal of aspect ratio of text
             components.
@@ -83,28 +83,28 @@ class DRRGTargets(TextSnakeTargets):
                                 center_region_mask, top_height_map,
                                 bot_height_map, sin_map, cos_map,
                                 region_shrink_ratio):
-        """Draw attributes of text components on text center region.
+        """Draw attributes of text components on text center regions.
 
         Args:
-            top_line (ndarray): The points composing top sideline of text
-                polygon.
-            bot_line (ndarray): The points composing bottom sideline of text
-                polygon.
-            center_line (ndarray): The points composing the center line of text
-                instance.
+            top_line (ndarray): The points composing the top side lines of text
+                polygons.
+            bot_line (ndarray): The points composing bottom side lines of text
+                polygons.
+            center_line (ndarray): The points composing the center lines of
+                text instances.
             center_region_mask (ndarray): The text center region mask.
-            top_height_map (ndarray): The map on which the distance from point
-                to top sideline will be drawn for each pixel in text center
-                region.
-            bot_height_map (ndarray): The map on which the distance from point
-                to bottom sideline will be drawn for each pixel in text center
-                region.
+            top_height_map (ndarray): The map on which the distance from points
+                to top side lines will be drawn for each pixel in text center
+                regions.
+            bot_height_map (ndarray): The map on which the distance from points
+                to bottom side lines will be drawn for each pixel in text
+                center regions.
             sin_map (ndarray): The map of vector_sin(top_point - bot_point)
-                that will be drawn on text center region.
+                that will be drawn on text center regions.
             cos_map (ndarray): The map of vector_cos(top_point - bot_point)
-                will be drawn on text center region.
+                will be drawn on text center regions.
             region_shrink_ratio (float): The shrink ratio of text center
-                region.
+                regions.
         """
 
         assert top_line.shape == bot_line.shape == center_line.shape
@@ -156,7 +156,7 @@ class DRRGTargets(TextSnakeTargets):
                 inds_xy, (bot_line[i], bot_line[i + 1]))
 
     def generate_center_mask_attrib_maps(self, img_size, text_polys):
-        """Generate text center region mask and geometric attribute maps.
+        """Generate text center region masks and geometric attribute maps.
 
         Args:
             img_size (tuple): The image size (height, width).
@@ -165,10 +165,12 @@ class DRRGTargets(TextSnakeTargets):
         Returns:
             center_lines (list): The list of text center lines.
             center_region_mask (ndarray): The text center region mask.
-            top_height_map (ndarray): The distance map from each pixel in text
-                center region to top sideline.
-            bot_height_map (ndarray): The distance map from each pixel in text
-                center region to bottom sideline.
+            top_height_map (ndarray): The map on which the distance from points
+                to top side lines will be drawn for each pixel in text center
+                regions.
+            bot_height_map (ndarray): The map on which the distance from points
+                to bottom side lines will be drawn for each pixel in text
+                center regions.
             sin_map (ndarray): The sin(theta) map where theta is the angle
                 between vector (top point - bottom point) and vector (1, 0).
             cos_map (ndarray): The cos(theta) map where theta is the angle
@@ -244,8 +246,8 @@ class DRRGTargets(TextSnakeTargets):
                 component centers .
 
         Returns:
-            rand_comp_attribs (ndarray): The random text components
-                attributes (x, y, h, w, cos, sin, comp_label=0).
+            rand_comp_attribs (ndarray): The random text component attributes
+            (x, y, h, w, cos, sin, comp_label=0).
         """
 
         assert isinstance(rand_comp_num, int)
@@ -319,13 +321,13 @@ class DRRGTargets(TextSnakeTargets):
         """Jitter text components attributes.
 
         Args:
-            comp_attribs (ndarray): The text components attributes.
+            comp_attribs (ndarray): The text component attributes.
             jitter_level (float): The jitter level of text components
                 attributes.
 
         Returns:
-            jittered_comp_attribs (ndarray): The jittered text components
-                attributes(x, y, h, w, cos, sin, comp_label).
+            jittered_comp_attribs (ndarray): The jittered text component
+                attributes (x, y, h, w, cos, sin, comp_label).
         """
 
         assert comp_attribs.shape[1] == 7
@@ -366,24 +368,26 @@ class DRRGTargets(TextSnakeTargets):
     def generate_comp_attribs(self, center_lines, text_mask,
                               center_region_mask, top_height_map,
                               bot_height_map, sin_map, cos_map):
-        """Generate text components attributes.
+        """Generate text component attributes.
 
         Args:
-            center_lines (list[ndarray]): The text center lines list.
+            center_lines (list[ndarray]): The list of text center lines .
             text_mask (ndarray): The text region mask.
             center_region_mask (ndarray): The text center region mask.
-            top_height_map (ndarray): The distance map from each pixel in text
-                center region to top sideline.
-            bot_height_map (ndarray): The distance map from each pixel in text
-                center region to bottom sideline.
+            top_height_map (ndarray): The map on which the distance from points
+                to top side lines will be drawn for each pixel in text center
+                regions.
+            bot_height_map (ndarray): The map on which the distance from points
+                to bottom side lines will be drawn for each pixel in text
+                center regions.
             sin_map (ndarray): The sin(theta) map where theta is the angle
                 between vector (top point - bottom point) and vector (1, 0).
             cos_map (ndarray): The cos(theta) map where theta is the angle
                 between vector (top point - bottom point) and vector (1, 0).
 
         Returns:
-            pad_comp_attribs (ndarray): The padded text components attributes
-                with a fixed size.
+            pad_comp_attribs (ndarray): The padded text component attributes
+                of a fixed size.
         """
 
         assert isinstance(center_lines, list)
