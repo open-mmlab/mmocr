@@ -55,7 +55,7 @@ def test_drrg_head():
     y1 = np.ones(10) * 2
     y2 = y1 + 2
     comp_scores = np.ones(10, dtype=np.float32) * 0.9
-    text_comps = np.stack([x1, y1, x2, y1, x2, y2, x1, y2, 
+    text_comps = np.stack([x1, y1, x2, y1, x2, y2, x1, y2,
                            comp_scores]).transpose()
 
     (C, H, W) = (10, 128, 128)
