@@ -247,7 +247,7 @@ class DRRGTargets(TextSnakeTargets):
 
         Returns:
             rand_comp_attribs (ndarray): The random text component attributes
-            (x, y, h, w, cos, sin, comp_label=0).
+                (x, y, h, w, cos, sin, comp_label=0).
         """
 
         assert isinstance(rand_comp_num, int)
