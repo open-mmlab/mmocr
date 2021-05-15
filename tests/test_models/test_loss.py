@@ -42,9 +42,9 @@ def test_fcenetloss():
 
     # test ohem
     pred = torch.ones((200, 2), dtype=torch.float)
-    target = torch.ones((200, ), dtype=torch.long)
+    target = torch.ones(200, dtype=torch.long)
     target[20:] = 0
-    mask = torch.ones((200, ), dtype=torch.long)
+    mask = torch.ones(200, dtype=torch.long)
 
     ohem_loss1 = fcenetloss.ohem(pred, target, mask)
     ohem_loss2 = fcenetloss.ohem(pred, target, 1 - mask)
