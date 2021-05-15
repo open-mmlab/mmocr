@@ -58,7 +58,7 @@ def test_drrg_head():
     text_comps = np.stack(
         [x1, y1, x2, y1, x2, y2, x1, y2, comp_scores]).transpose()
 
-    (N, C, H, W) = (1, 10, 128, 128)
+    (C, H, W) = (10, 128, 128)
     img_metas = [{
         'img_shape': (H, W, C),
         'ori_shape': (H, W, C),
