@@ -24,7 +24,17 @@ We have tested the following versions of OS and softwares:
 
 MMOCR depends on Pytorch and mmdetection.
 
-## Step-by-Step Installation Instructions
+## 1-Step installation using Conda environment
+```
+###Note: Tested on Ubuntu 18.04 using Cuda 10.1 and Pytorch 1.5 it will take some time to install
+conda env create -f environment.yml
+conda activate mmocr
+git clone https://github.com/open-mmlab/mmocr.git
+cd mmocr
+```
+
+
+## Step-by-Step installation using instructions
 
 a. Create a conda virtual environment and activate it.
 
