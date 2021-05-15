@@ -43,8 +43,7 @@ train_pipeline = [
     dict(type='Normalize', **img_norm_cfg),
     dict(type='RandomScaling', size=800, scale=(0.75, 2.5)),
     dict(
-        type='RandomCropFlip', crop_ratio=0.5, frequency=1,
-        min_area_ratio=0.2),
+        type='RandomCropFlip', crop_ratio=0.5, iter_num=1, min_area_ratio=0.2),
     dict(
         type='RandomCropPolyInstances',
         instance_key='gt_masks',
