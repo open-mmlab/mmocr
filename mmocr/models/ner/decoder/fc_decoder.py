@@ -11,7 +11,9 @@ class FCDecoder(nn.Module):
     """FC Decoder class for Ner.
 
     Args:
-        num_labels (int):
+        num_labels (int): Number of categories mapped by entity label.
+        hidden_dropout_prob (float): The dropout probability of hidden layer.
+        hidden_size (int): Hidden layer output layer channels.
     """
 
     def __init__(self,
