@@ -14,7 +14,8 @@ from .utils import *  # NOQA
 __all__ = [
     'DATASETS', 'IcdarDataset', 'build_dataloader', 'build_dataset',
     'BaseDataset', 'OCRDataset', 'TextDetDataset', 'CustomFormatBundle',
-    'DBNetTargets', 'OCRSegDataset', 'KIEDataset', 'FCENetTargets', 'NerDataset'
+    'DBNetTargets', 'OCRSegDataset', 'KIEDataset', 'FCENetTargets',
+    'NerDataset'
 ]
 
 __all__ += utils.__all__

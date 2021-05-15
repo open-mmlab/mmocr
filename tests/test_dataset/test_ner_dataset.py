@@ -1,8 +1,10 @@
+import json
+import os.path as osp
+import tempfile
+
 from mmocr.datasets.ner_dataset import NerDataset
 from mmocr.models.ner.convertors.ner_convertor import NerConvertor
-import tempfile
-import os.path as osp
-import json
+
 
 def _create_dummy_ann_file(ann_file):
     data = {
@@ -18,13 +20,14 @@ def _create_dummy_ann_file(ann_file):
     }
 
     with open(ann_file, 'w') as fw:
-        fw.write(json.dumps(data,ensure_ascii=False)+'\n')
-    return data
+        fw.write(json.dumps(data, ensure_ascii=False) + '\n')
+
 
 def _create_dummy_vocab_file(vocab_file):
     with open(vocab_file, 'w') as fw:
         for char in list(map(chr, range(ord('a'), ord('z') + 1))):
             fw.write(char + '\n')
+
 
 def _create_dummy_loader():
     loader = dict(
@@ -46,7 +49,7 @@ def test_ner_dataset():
     tmp_dir = tempfile.TemporaryDirectory()
     ann_file = osp.join(tmp_dir.name, 'fake_data.txt')
     vocab_file = osp.join(tmp_dir.name, 'fake_vocab.txt')
-    ann = _create_dummy_ann_file(ann_file)
+    _create_dummy_ann_file(ann_file)
     _create_dummy_vocab_file(vocab_file)
 
     max_len = 128
@@ -105,6 +108,5 @@ def test_ner_dataset():
         max_len=128)
     all_entities = convertor.convert_pred2entities(preds=pred)
     assert len(all_entities[0][0]) == 3
-
 
     tmp_dir.cleanup()
