@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from mmcv.ops import RoIAlignRotated
 
-from .utils import (embed_geo_feats, euclidean_distance_matrix,
+from .utils import (feature_embedding, euclidean_distance_matrix,
                     normalize_adjacent_matrix)
 
 
@@ -269,8 +269,8 @@ class LocalGraphs(object):
 
             content_feats = content_feats.view(content_feats.shape[0],
                                                -1).to(feat_maps.device)
-            geo_feats = embed_geo_feats(comp_geo_attribs,
-                                        self.node_geo_feat_dim)
+            geo_feats = feature_embedding(comp_geo_attribs,
+                                          self.node_geo_feat_dim)
             geo_feats = torch.from_numpy(geo_feats).to(device)
             node_feats = torch.cat([content_feats, geo_feats], dim=-1)
 

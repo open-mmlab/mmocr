@@ -5,7 +5,7 @@ from lanms import merge_quadrangle_n9 as la_nms
 from mmcv.ops import RoIAlignRotated
 
 from mmocr.models.textdet.postprocess.wrapper import fill_hole
-from .utils import (embed_geo_feats, euclidean_distance_matrix,
+from .utils import (feature_embedding, euclidean_distance_matrix,
                     normalize_adjacent_matrix)
 
 
@@ -388,7 +388,7 @@ class ProposalLocalGraphs(object):
         comp_centers = comp_attribs[:, 0:2]
         distance_matrix = euclidean_distance_matrix(comp_centers, comp_centers)
 
-        geo_feats = embed_geo_feats(comp_attribs, self.node_geo_feat_dim)
+        geo_feats = feature_embedding(comp_attribs, self.node_geo_feat_dim)
         geo_feats = torch.from_numpy(geo_feats).to(preds.device)
 
         batch_id = np.zeros((comp_attribs.shape[0], 1), dtype=np.float32)
