@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import pyclipper
 import torch
+from mmcv.ops import contour_expand, pixel_group
 from numpy.linalg import norm
 from shapely.geometry import Polygon
 from skimage.morphology import skeletonize
@@ -41,7 +42,6 @@ def pan_decode(preds,
                min_text_confidence=0.5,
                min_kernel_confidence=0.5,
                min_text_avg_confidence=0.85,
-               min_kernel_area=0,
                min_text_area=16):
     """Convert scores to quadrangles via post processing in PANet. This is
     partially adapted from https://github.com/WenmuZhou/PAN.pytorch.
@@ -52,13 +52,11 @@ def pan_decode(preds,
         min_text_confidence (float): The minimal text confidence.
         min_kernel_confidence (float): The minimal kernel confidence.
         min_text_avg_confidence (float): The minimal text average confidence.
-        min_kernel_area (int): The minimal text kernel area.
         min_text_area (int): The minimal text instance region area.
     Returns:
         boundaries: (list[list[float]]): The instance boundary and its
             instance confidence list.
     """
-    from .pan import assign_pixels, estimate_text_confidence, get_pixel_num
     preds[:2, :, :] = torch.sigmoid(preds[:2, :, :])
     preds = preds.detach().cpu().numpy()
 
@@ -69,28 +67,16 @@ def pan_decode(preds,
 
     region_num, labels = cv2.connectedComponents(
         kernel.astype(np.uint8), connectivity=4)
-    valid_kernel_inx = []
-    region_pixel_num = get_pixel_num(labels, region_num)
-
-    # from inx 1. 0: meaningless.
-    for region_idx in range(1, region_num):
-        if region_pixel_num[region_idx] < min_kernel_area:
-            continue
-        valid_kernel_inx.append(region_idx)
-
-    # assign pixels to valid kernels
-    assignment = assign_pixels(
-        text.astype(np.uint8), embeddings, labels, region_num, 0.8)
-    assignment = assignment.reshape(text.shape)
+    contours, _ = cv2.findContours((kernel * 255).astype(np.uint8),
+                                   cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+    kernel_contours = np.zeros(text.shape, dtype='uint8')
+    cv2.drawContours(kernel_contours, contours, -1, 255)
+    text_points = pixel_group(text_score, text, embeddings, labels,
+                              kernel_contours, region_num,
+                              min_text_avg_confidence)
 
     boundaries = []
-
-    # compute text avg confidence
-
-    text_points = estimate_text_confidence(assignment, text_score, region_num)
-    for text_inx, text_point in text_points.items():
-        if text_inx not in valid_kernel_inx:
-            continue
+    for text_inx, text_point in enumerate(text_points):
         text_confidence = text_point[0]
         text_point = text_point[2:]
         text_point = np.array(text_point, dtype=int).reshape(-1, 2)
@@ -138,17 +124,16 @@ def pse_decode(preds,
     score = score.data.cpu().numpy().astype(np.float32)  # to numpy
 
     kernel_masks = kernel_masks.data.cpu().numpy().astype(np.uint8)  # to numpy
-    from .pse import pse
 
     region_num, labels = cv2.connectedComponents(
         kernel_masks[-1], connectivity=4)
 
     # labels = pse(kernel_masks, min_kernel_area)
-    labels = pse(kernel_masks, min_kernel_area, labels, region_num)
+    labels = contour_expand(kernel_masks, labels, min_kernel_area, region_num)
     labels = np.array(labels)
-    label_num = np.max(labels) + 1
+    label_num = np.max(labels)
     boundaries = []
-    for i in range(1, label_num):
+    for i in range(1, label_num + 1):
         points = np.array(np.where(labels == i)).transpose((1, 0))[:, ::-1]
         area = points.shape[0]
         score_instance = np.mean(score[labels == i])

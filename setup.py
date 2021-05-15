@@ -2,8 +2,6 @@ import os
 import sys
 from setuptools import find_packages, setup
 
-from torch.utils.cpp_extension import BuildExtension, CppExtension
-
 
 def readme():
     with open('README.md', encoding='utf-8') as f:
@@ -105,7 +103,6 @@ if __name__ == '__main__':
         lp for lp in os.environ.get('LD_LIBRARY_PATH', '').split(':')
         if len(lp) > 1
     ]
-    cpp_root = 'mmocr/models/textdet/postprocess/'
     setup(
         name='mmocr',
         version=get_version(),
@@ -118,7 +115,6 @@ if __name__ == '__main__':
         packages=find_packages(exclude=('configs', 'tools', 'demo')),
         include_package_data=True,
         url='https://github.com/open-mmlab/mmocr',
-        package_data={'mmocr.ops': ['*/*.so']},
         classifiers=[
             'Development Status :: 4 - Beta',
             'License :: OSI Approved :: Apache Software License',
@@ -138,15 +134,4 @@ if __name__ == '__main__':
             'build': parse_requirements('requirements/build.txt'),
             'optional': parse_requirements('requirements/optional.txt'),
         },
-        ext_modules=[
-            CppExtension(
-                name='mmocr.models.textdet.postprocess.pan',
-                sources=[cpp_root + 'pan.cpp'],
-                extra_compile_args=(['/utf-8'] if is_windows else [])),
-            CppExtension(
-                name='mmocr.models.textdet.postprocess.pse',
-                sources=[cpp_root + 'pse.cpp'],
-                extra_compile_args=(['/utf-8'] if is_windows else [])),
-        ],
-        cmdclass={'build_ext': BuildExtension},
         zip_safe=False)
