@@ -18,28 +18,28 @@ class LocalGraphs(object):
         k_at_hops (tuple(int)): The number of h-hop neighbors.
         active_connection (int): The number of neighbors deem as linked to a
             pivot.
-        node_geo_feat_dim (int): The dimension of embedded geometric features
-            of a component.
-        pooling_scale (float): The spatial scale of RRoI-Aligning.
-        pooling_output_size (tuple(int)): The size of RRoI-Aligning output.
+        node_geo_feat_len (int): The length of embedded geometric feature
+            vector of a text component.
+        pooling_scale (float): The spatial scale of rotated RoI-Align.
+        pooling_output_size (tuple(int)): The output size of rotated RoI-Align.
         local_graph_thr(float): The threshold for filtering out identical local
             graphs.
     """
 
-    def __init__(self, k_at_hops, active_connection, node_geo_feat_dim,
+    def __init__(self, k_at_hops, active_connection, node_geo_feat_len,
                  pooling_scale, pooling_output_size, local_graph_thr):
 
         assert len(k_at_hops) == 2
         assert all(isinstance(n, int) for n in k_at_hops)
         assert isinstance(active_connection, int)
-        assert isinstance(node_geo_feat_dim, int)
+        assert isinstance(node_geo_feat_len, int)
         assert isinstance(pooling_scale, float)
         assert all(isinstance(n, int) for n in pooling_output_size)
         assert isinstance(local_graph_thr, float)
 
         self.k_at_hops = k_at_hops
         self.active_connection = active_connection
-        self.node_geo_feat_dim = node_geo_feat_dim
+        self.node_geo_feat_dim = node_geo_feat_len
         self.pooling = RoIAlignRotated(pooling_output_size, pooling_scale)
         self.local_graph_thr = local_graph_thr
 
@@ -48,15 +48,15 @@ class LocalGraphs(object):
         component belongs to.
 
         Args:
-            sorted_dist_inds (ndarray): The complete graph node indexes, which
-                is sorted according to euclidean distance.
-            gt_comp_labels(ndarray): The ground truth labels define which
-                instance text components (nodes in graphs) belong to.
+            sorted_dist_inds (ndarray): The complete graph node indices, which
+                is sorted according to the Euclidean distance.
+            gt_comp_labels(ndarray): The ground truth labels define the
+                instance to which the text components (nodes in graphs) belong.
 
         Returns:
             pivot_local_graphs(list[list[int]]): The list of local graph
-                neighbor indexes of pivots.
-            pivot_knns(list[list[int]]): The list of k nearest neighbor indexes
+                neighbor indices of pivots.
+            pivot_knns(list[list[int]]): The list of k-nearest neighbor indices
                 of pivots.
         """
 
@@ -125,7 +125,7 @@ class LocalGraphs(object):
             knn_batch (List[List[list[int]]]): The knn graph node indices of
                 image batch.
             sorted_dist_ind_batch (list[ndarray]): The node indices sorted
-                according to euclidean distance.
+                according to the Euclidean distance.
 
         Returns:
             local_graphs_node_feat (Tensor): The node features of graph.
@@ -221,9 +221,9 @@ class LocalGraphs(object):
         """Generate local graphs as GCN input.
 
         Args:
-            feat_maps (Tensor): The feature maps to extract content feature of
-                text components.
-            comp_attribs (ndarray): The text components attributes.
+            feat_maps (Tensor): The feature maps to extract the content
+                features of text components.
+            comp_attribs (ndarray): The text component attributes.
 
         Returns:
             local_graphs_node_feat (Tensor): The node features of graph.

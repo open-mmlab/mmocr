@@ -19,12 +19,12 @@ class ProposalLocalGraphs(object):
 
     Args:
         k_at_hops (tuple(int)): The number of i-hop neighbors, i = 1, 2.
-        adjacent_linkage_num (int): The number of linkage when constructing
+        adjacent_linkage_num (int): The number of linkages when constructing
             adjacent matrix.
         node_geo_feat_len (int): The length of embedded geometric feature
-            vector of a component.
+            vector of a text component.
         pooling_scale (float): The spatial scale of rotated RoI-Align.
-        pooling_output_size (tuple(int)): The output size of RRoI-Aligning.
+        pooling_output_size (tuple(int)): The output size of rotated RoI-Align.
         nms_thr (float): The locality-aware NMS threshold for text components.
         min_width (float): The minimum width of text components.
         max_width (float): The maximum width of text components.
@@ -146,7 +146,7 @@ class ProposalLocalGraphs(object):
             cos_map (ndarray): The predicted cos(theta) map.
 
         Returns:
-            comp_attribs (ndarray): The text components attributes.
+            comp_attribs (ndarray): The text component attributes.
             text_comps (ndarray): The text components.
         """
 
@@ -239,16 +239,17 @@ class ProposalLocalGraphs(object):
 
         Args:
             sorted_dist_inds (ndarray): The node indices sorted according to
-                euclidean distance.
-            node_feats (tensor): The graph nodes features.
+                the Euclidean distance.
+            node_feats (tensor): The features of nodes in graph.
 
         Returns:
-            local_graphs_node_feats (tensor): The graph nodes features.
+            local_graphs_node_feats (tensor): The features of nodes in local
+                graphs.
             adjacent_matrices (tensor): The adjacent matrices.
             pivots_knn_inds (tensor): The k-nearest neighbor indices in
-                local graph.
+                local graphs.
             pivots_local_graphs (tensor): The indices of nodes in local
-                graph.
+                graphs.
         """
 
         assert sorted_dist_inds.ndim == 2
@@ -345,7 +346,7 @@ class ProposalLocalGraphs(object):
                 pivots_local_graphs)
 
     def __call__(self, preds, feat_maps):
-        """Generate local graphs and graph convolution network input data.
+        """Generate local graphs and graph convolutional network input data.
 
         Args:
             preds (tensor): The predicted maps.
@@ -355,12 +356,13 @@ class ProposalLocalGraphs(object):
         Returns:
             none_flag (bool): The flag showing whether the number of proposed
                 text components is 0.
-            local_graphs_node_feats (tensor): The graph nodes features.
+            local_graphs_node_feats (tensor): The features of nodes in local
+                graphs.
             adjacent_matrices (tensor): The adjacent matrices.
             pivots_knn_inds (tensor): The k-nearest neighbor indices in
-                local graph.
+                local graphs.
             pivots_local_graphs (tensor): The indices of nodes in local
-                graph.
+                graphs.
             text_comps (ndarray): The predicted text components.
         """
 

@@ -39,10 +39,10 @@ def euclidean_distance_matrix(A, B):
 
     Args:
         A (ndarray): The point sequence.
-        B (ndarray): The point sequence in the same dimension as A.
+        B (ndarray): The point sequence with the same dimensions as A.
 
     returns:
-        D (ndarray): The euclidean distance matrix.
+        D (ndarray): The Euclidean distance matrix.
     """
     assert A.ndim == 2
     assert B.ndim == 2

@@ -586,7 +586,7 @@ def graph_propagation(edges, scores, text_comps, edge_len_thr=50.):
 
     Args:
         edges (ndarray): The edge array of shape N * 2, each row is a node
-            index pair that make up an edge in graph.
+            index pair that makes up an edge in graph.
         scores (ndarray): The edge score array.
         text_comps (ndarray): The text components.
         edge_len_thr (float): The edge length threshold.
@@ -634,7 +634,7 @@ def connected_components(nodes, score_dict, link_thr):
     adapted from https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
-        nodes (list[Node]): The list of Node object.
+        nodes (list[Node]): The list of Node objects.
         score_dict (dict): The edge score dict.
         link_thr (float): The link threshold.
 
@@ -672,7 +672,7 @@ def clusters2labels(clusters, node_num):
     license.
 
     Args:
-        clusters (List[list[Node]]): The clusters of Node object.
+        clusters (List[list[Node]]): The clusters of Node objects.
         node_num (int): The total node number of graphs in an image.
 
     Returns:
@@ -697,7 +697,7 @@ def remove_single(text_comps, comp_pred_labels):
 
     Args:
         text_comps (ndarray): The text components.
-        comp_pred_labels (ndarray): The clustering label of text components.
+        comp_pred_labels (ndarray): The clustering labels of text components.
 
     Returns:
         filtered_text_comps (ndarray): The text components with isolated ones
