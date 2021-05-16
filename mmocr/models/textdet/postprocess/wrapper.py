@@ -790,16 +790,16 @@ def fix_corner(top_line, bot_line, start_box, end_box):
     adapted from https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
-        top_line (List[list[int]]): The predicted top sideline of text
+        top_line (List[list[int]]): The predicted top sidelines of text
             instance.
-        bot_line (List[list[int]]): The predicted bottom sideline of text
+        bot_line (List[list[int]]): The predicted bottom sidelines of text
             instance.
         start_box (ndarray): The first text component box.
         end_box (ndarray): The last text component box.
 
     Returns:
-        top_line (List[list[int]]): The top sideline with corner point added.
-        bot_line (List[list[int]]): The bottom sideline with corner point
+        top_line (List[list[int]]): The top sidelines with corner point added.
+        bot_line (List[list[int]]): The bottom sidelines with corner point
             added.
     """
     assert isinstance(top_line, list)
@@ -835,7 +835,7 @@ def comps2boundaries(text_comps, comp_pred_labels):
 
     Args:
         text_comps (ndarray): The text components.
-        comp_pred_labels (ndarray): The clustering label of text components.
+        comp_pred_labels (ndarray): The clustering labels of text components.
 
     Returns:
         boundaries (List[list[float]]): The predicted boundaries of text
@@ -885,7 +885,7 @@ def drrg_decode(edges, scores, text_comps, link_thr):
 
     Args:
         edges (ndarray): The edge array of shape N * 2, each row is a node
-            index pair that make up an edge in graph.
+            index pair that makes up an edge in graph.
         scores (ndarray): The edge score array.
         text_comps (ndarray): The text components.
         link_thr (float): The edge score threshold.

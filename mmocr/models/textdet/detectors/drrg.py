@@ -33,7 +33,7 @@ class DRRG(TextDetectorMixin, SingleStageTextDetector):
             img_metas (list[dict]): A List of image info dict where each dict
                 has: 'img_shape', 'scale_factor', 'flip', and may also contain
                 'filename', 'ori_shape', 'pad_shape', and 'img_norm_cfg'.
-                For details on the values of these keys see
+                For details of the values of these keys see
                 :class:`mmdet.datasets.pipelines.Collect`.
         Returns:
             dict[str, Tensor]: A dictionary of loss components.

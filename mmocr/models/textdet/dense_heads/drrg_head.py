@@ -20,7 +20,7 @@ class DRRGHead(HeadMixin, nn.Module):
 
     Args:
         k_at_hops (tuple(int)): The number of i-hop neighbors, i = 1, 2.
-        adjacent_linkage_num (int): The number of linkage when constructing
+        adjacent_linkage_num (int): The number of linkages when constructing
             adjacent matrix.
         node_geo_feat_len (int): The length of embedded geometric feature
             vector of a component.
@@ -31,7 +31,7 @@ class DRRGHead(HeadMixin, nn.Module):
         max_width (float): The maximum width of text components.
         comp_shrink_ratio (float): The shrink ratio of text components.
         comp_ratio (float): The reciprocal of aspect ratio of text components.
-        comp_score_thr (float): The score threshold of text component.
+        comp_score_thr (float): The score threshold of text components.
         text_region_thr (float): The threshold for text region probability map.
         center_region_thr (float): The threshold for text center region
             probability map.
@@ -39,7 +39,7 @@ class DRRGHead(HeadMixin, nn.Module):
             text center region.
         local_graph_thr (float): The threshold to filter identical local
             graphs.
-        link_thr(float): The threshold for connected components searching.
+        link_thr(float): The threshold for connected components search.
     """
 
     def __init__(self,
@@ -187,7 +187,7 @@ class DRRGHead(HeadMixin, nn.Module):
 
         Args:
             edges (ndarray): The edge array of shape N * 2, each row is a pair
-                of text component indices that make up an edge in graph.
+                of text component indices that makes up an edge in graph.
             scores (ndarray): The edge score array.
             text_comps (ndarray): The text components.
             img_metas (list[dict]): The image meta infos.
