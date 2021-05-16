@@ -47,6 +47,13 @@ def test_drrg_head():
     assert gt_labels.size()[0] * gt_labels.size()[1] == pred_labels.size()[0]
     assert pred_labels.size()[1] == 2
 
+    # test forward test
+    with torch.no_grad():
+        feat_maps = torch.zeros((1, 10, 128, 128))
+        drrg_head.out_conv.bias.fill_(-10)
+        preds = drrg_head.single_test(feat_maps)
+        assert all([pred is None for pred in preds])
+
     # test get_boundary
     edges = np.stack([np.arange(0, 10), np.arange(1, 11)]).transpose()
     edges = np.vstack([edges, np.array([1, 0])])
