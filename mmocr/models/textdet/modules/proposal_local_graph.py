@@ -15,7 +15,7 @@ class ProposalLocalGraphs(object):
     Network for Arbitrary Shape Text Detection.
 
     [https://arxiv.org/abs/2003.07493]. This code was partially adapted from
-    https://github.com/GXYM/DRRG under MIT License.
+    https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
         k_at_hops (tuple(int)): The number of i-hop neighbors, i = 1, 2.
@@ -183,8 +183,6 @@ class ProposalLocalGraphs(object):
 
             text_comps = la_nms(text_comps, self.nms_thr)
             text_comp_mask = np.zeros(mask_sz)
-            if text_comps.ndim == 1:
-                text_comps = np.expand_dims(text_comps, axis=0)
             text_comp_boxs = text_comps[:, :8].reshape(
                 (-1, 4, 2)).astype(np.int32)
 

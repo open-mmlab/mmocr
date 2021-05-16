@@ -74,18 +74,26 @@ def test_fcenetloss():
 
 def test_drrgloss():
     drrgloss = losses.DRRGLoss()
+    assert np.allclose(drrgloss.ohem_ratio, 3.0)
 
-    # test balanced_bce_loss
+    # test balance_bce_loss
     pred = torch.tensor([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=torch.float)
     target = torch.tensor([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=torch.long)
     mask = torch.tensor([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=torch.long)
     bce_loss = drrgloss.balance_bce_loss(pred, target, mask).item()
     assert np.allclose(bce_loss, 0)
 
+    # test balance_bce_loss with positive_count equal to zero
+    pred = torch.ones((16, 16), dtype=torch.float)
+    target = torch.ones((16, 16), dtype=torch.long)
+    mask = torch.zeros((16, 16), dtype=torch.long)
+    bce_loss = drrgloss.balance_bce_loss(pred, target, mask).item()
+    assert np.allclose(bce_loss, 0)
+
     # test gcn_loss
-    preds = torch.tensor([[0., 1.], [1., 0.]])
+    gcn_preds = torch.tensor([[0., 1.], [1., 0.]])
     labels = torch.tensor([1, 0], dtype=torch.long)
-    gcn_loss = drrgloss.gcn_loss((preds, labels))
+    gcn_loss = drrgloss.gcn_loss((gcn_preds, labels))
     assert gcn_loss.item()
 
     # test bitmasks2tensor
@@ -99,3 +107,39 @@ def test_drrgloss():
     assert len(results) == 1
     assert torch.sum(torch.abs(results[0].float() -
                                torch.Tensor(target))).item() == 0
+
+    # test forward
+    target_maps = [BitmapMasks([np.random.randn(20, 20)], 20, 20)]
+    target_masks = [BitmapMasks([np.ones((20, 20))], 20, 20)]
+    gt_masks = [BitmapMasks([np.ones((20, 20))], 20, 20)]
+    preds = (torch.randn((1, 6, 20, 20)), (gcn_preds, labels))
+    loss_dict = drrgloss(preds, 1., target_masks, target_masks, gt_masks,
+                         target_maps, target_maps, target_maps, target_maps)
+
+    assert isinstance(loss_dict, dict)
+    assert 'loss_text' in loss_dict.keys()
+    assert 'loss_center' in loss_dict.keys()
+    assert 'loss_height' in loss_dict.keys()
+    assert 'loss_sin' in loss_dict.keys()
+    assert 'loss_cos' in loss_dict.keys()
+    assert 'loss_gcn' in loss_dict.keys()
+
+    # test forward with downsample_ratio less than 1.
+    target_maps = [BitmapMasks([np.random.randn(40, 40)], 40, 40)]
+    target_masks = [BitmapMasks([np.ones((40, 40))], 40, 40)]
+    gt_masks = [BitmapMasks([np.ones((40, 40))], 40, 40)]
+    preds = (torch.randn((1, 6, 20, 20)), (gcn_preds, labels))
+    loss_dict = drrgloss(preds, 0.5, target_masks, target_masks, gt_masks,
+                         target_maps, target_maps, target_maps, target_maps)
+
+    assert isinstance(loss_dict, dict)
+
+    # test forward with blank gt_mask.
+    target_maps = [BitmapMasks([np.random.randn(20, 20)], 20, 20)]
+    target_masks = [BitmapMasks([np.ones((20, 20))], 20, 20)]
+    gt_masks = [BitmapMasks([np.zeros((20, 20))], 20, 20)]
+    preds = (torch.randn((1, 6, 20, 20)), (gcn_preds, labels))
+    loss_dict = drrgloss(preds, 1., target_masks, target_masks, gt_masks,
+                         target_maps, target_maps, target_maps, target_maps)
+
+    assert isinstance(loss_dict, dict)

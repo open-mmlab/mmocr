@@ -47,7 +47,7 @@ def test_local_graph_forward_test():
     geo_feat_len = 24
     pooling_h, pooling_w = pooling_out_size = (2, 2)
 
-    local_grpah_generator = ProposalLocalGraphs(
+    local_graph_generator = ProposalLocalGraphs(
         (4, 4), 2, geo_feat_len, 1., pooling_out_size, 0.1, 3., 6., 1., 0.5,
         0.3, 0.5, 0.5, 2)
 
@@ -62,7 +62,7 @@ def test_local_graph_forward_test():
     feature_maps = torch.randn((2, 6, 224, 224), dtype=torch.float)
     feat_len = geo_feat_len + feature_maps.size()[1] * pooling_h * pooling_w
 
-    none_flag, graph_data = local_grpah_generator(maps, feature_maps)
+    none_flag, graph_data = local_graph_generator(maps, feature_maps)
     (node_feats, adjacent_matrices, knn_inds, local_graphs,
      text_comps) = graph_data
 
@@ -76,6 +76,26 @@ def test_local_graph_forward_test():
     assert (node_feats.size()[1] == adjacent_matrices.size()[1] ==
             adjacent_matrices.size()[2] == local_graphs.size()[1])
     assert node_feats.size()[-1] == feat_len
+
+    # test proposal local graphs with area of center region less than threshold
+    maps[:, 1, 75:85, 60:160] = -10.
+    maps[:, 1, 80, 80] = 10.
+    none_flag, _ = local_graph_generator(maps, feature_maps)
+    assert none_flag
+
+    # test proposal local graphs with one text component
+    local_graph_generator = ProposalLocalGraphs(
+        (4, 4), 2, geo_feat_len, 1., pooling_out_size, 0.1, 8., 20., 1., 0.5,
+        0.3, 0.5, 0.5, 2)
+    maps[:, 1, 78:82, 78:82] = 10.
+    none_flag, _ = local_graph_generator(maps, feature_maps)
+    assert none_flag
+
+    # test proposal local graphs with text components out of text region
+    maps[:, 0, 60:100, 50:170] = -10.
+    maps[:, 0, 78:82, 78:82] = 10.
+    none_flag, _ = local_graph_generator(maps, feature_maps)
+    assert none_flag
 
 
 def test_gcn():

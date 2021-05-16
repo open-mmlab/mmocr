@@ -26,3 +26,23 @@ def test_fcenet_decode():
         preds=preds, fourier_degree=k, reconstr_points=50, scale=1)
 
     assert isinstance(boundaries, list)
+
+
+def test_comps2boundaries():
+    from mmocr.models.textdet.postprocess.wrapper import comps2boundaries
+
+    # test comps2boundaries
+    x1 = np.arange(2, 14, 2)
+    x2 = x1 + 2
+    y1 = np.ones(6) * 2
+    y2 = y1 + 2
+    comp_scores = np.ones(6, dtype=np.float32) * 0.9
+    text_comps = np.stack([x1, y1, x2, y1, x2, y2, x1, y2,
+                           comp_scores]).transpose()
+    comp_labels = np.array([1, 1, 1, 3, 5, 5])
+    boundaries = comps2boundaries(text_comps, comp_labels)
+    assert len(boundaries) == 3
+
+    # test comps2boundaries with blank inputs
+    boundaries = comps2boundaries(text_comps[[]], comp_labels[[]])
+    assert len(boundaries) == 0

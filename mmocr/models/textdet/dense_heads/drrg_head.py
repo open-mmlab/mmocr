@@ -186,11 +186,11 @@ class DRRGHead(HeadMixin, nn.Module):
         """Compute text boundaries via post processing.
 
         Args:
-            edges (ndarray): The edge array of shape N * 2, each row is a text
-                component index pair that make up an edge in graph.
+            edges (ndarray): The edge array of shape N * 2, each row is a pair
+                of text component indices that make up an edge in graph.
             scores (ndarray): The edge score array.
             text_comps (ndarray): The text components.
-            img_metas (dict): The image meta info.
+            img_metas (list[dict]): The image meta infos.
             rescale (bool): Rescale boundaries to the original image
                 resolution.
 

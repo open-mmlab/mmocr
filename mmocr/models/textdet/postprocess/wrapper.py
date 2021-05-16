@@ -786,7 +786,7 @@ def in_contour(cont, point):
 
 
 def fix_corner(top_line, bot_line, start_box, end_box):
-    """Add corner points in predicted sidelines. This code was partially
+    """Add corner points to predicted side lines. This code was partially
     adapted from https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
