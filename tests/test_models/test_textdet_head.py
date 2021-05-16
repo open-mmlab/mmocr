@@ -49,7 +49,8 @@ def test_drrg_head():
 
     # test get_boundary
     edges = np.stack([np.arange(0, 10), np.arange(1, 11)]).transpose()
-    scores = np.ones(10, dtype=np.float32) * 0.9
+    edges = np.vstack([edges, np.array([1, 0])])
+    scores = np.ones(11, dtype=np.float32) * 0.9
     x1 = np.arange(2, 22, 2)
     x2 = x1 + 2
     y1 = np.ones(10) * 2
@@ -59,7 +60,6 @@ def test_drrg_head():
                            comp_scores]).transpose()
     outlier = np.array([50, 50, 52, 50, 52, 52, 50, 52, 0.9])
     text_comps = np.vstack([text_comps, outlier])
-
 
     (C, H, W) = (10, 128, 128)
     img_metas = [{
