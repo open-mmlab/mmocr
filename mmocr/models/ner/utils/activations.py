@@ -1,6 +1,12 @@
+# ------------------------------------------------------------------------------
+# Adapted from https://github.com/lonePatient/BERT-NER-Pytorch
+# Original licence: Copyright (c) 2020 Weitang Liu, under the MIT License.
+# ------------------------------------------------------------------------------
+
 import math
 
 import torch
+from mmcv.cnn import Swish
 
 
 def gelu(x):
@@ -25,15 +31,9 @@ def gelu_new(x):
         math.sqrt(2 / math.pi) * (x + 0.044715 * torch.pow(x, 3))))
 
 
-def swish(x):
-    if torch.__version__ >= '1.7.0':
-        return torch.nn.functional.silu(x)
-    return x * torch.sigmoid(x)
-
-
 ACT2FN = {
     'gelu': gelu,
     'relu': torch.nn.functional.relu,
-    'swish': swish,
+    'swish': Swish,
     'gelu_new': gelu_new
 }

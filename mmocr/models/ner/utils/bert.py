@@ -28,7 +28,8 @@ class BertModel(nn.Module):
         output_hidden_states (bool): Whether use the hidden_states in output.
         num_attention_heads (int): The number of attention heads.
         attention_probs_dropout_prob (float): The dropout probability
-            of attention.
+            for the attention probabilities normalized from
+            the attention scores.
         intermediate_size (int): The size of intermediate layer.
         hidden_act (str):  hidden layer activation
     """
@@ -96,8 +97,6 @@ class BertModel(nn.Module):
         if head_mask is not None:
             if head_mask.dim() == 1:
                 head_mask = head_mask[None, None, :, None, None]
-                head_mask = head_mask.expand(self.num_hidden_layers, -1, -1,
-                                             -1, -1)
             elif head_mask.dim() == 2:
                 head_mask = head_mask[None, :, None, None]
             head_mask = head_mask.to(dtype=next(self.parameters()).dtype)
@@ -108,9 +107,9 @@ class BertModel(nn.Module):
             input_ids,
             position_ids=position_ids,
             token_type_ids=token_type_ids)
-        encoder_outputs = self.encoder(
+        sequence_output, *encoder_outputs = self.encoder(
             embedding_output, attention_masks, head_mask=head_mask)
-        sequence_output = encoder_outputs[0]
+        # sequence_output = encoder_outputs[0]
         pooled_output = self.pooler(sequence_output)
 
         # add hidden_states and attentions if they are here
@@ -118,7 +117,7 @@ class BertModel(nn.Module):
         outputs = (
             sequence_output,
             pooled_output,
-        ) + encoder_outputs[1:]
+        ) + tuple(encoder_outputs)
         return outputs
 
     def _init_weights(self, module):

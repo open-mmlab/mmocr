@@ -1,7 +1,8 @@
-import torch
 import torch.nn as nn
 from mmcv.cnn import uniform_init, xavier_init
+from mmcv.runner import load_checkpoint
 
+from mmdet.utils import get_root_logger
 from mmocr.models.builder import ENCODERS
 from mmocr.models.ner.utils.bert import BertModel
 
@@ -76,10 +77,9 @@ class BertEncoder(nn.Module):
 
     def init_weights(self, pretrained=None):
         if pretrained is not None:
-            checkpoint = torch.load(pretrained)
-            self.load_state_dict(checkpoint)
+            logger = get_root_logger()
+            load_checkpoint(self, pretrained, strict=False, logger=logger)
         else:
-
             for m in self.modules():
                 if isinstance(m, nn.Conv2d):
                     xavier_init(m)

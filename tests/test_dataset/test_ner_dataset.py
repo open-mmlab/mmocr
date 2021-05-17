@@ -67,13 +67,7 @@ def test_ner_dataset():
             type='NerTransform',
             label_convertor=ner_convertor,
             max_len=max_len),
-        dict(
-            type='Collect',
-            keys=['img'],
-            meta_keys=[
-                'texts', 'img', 'labels', 'input_ids', 'attention_mask',
-                'token_type_ids'
-            ])
+        dict(type='ToTensorNER')
     ]
     dataset = NerDataset(ann_file, loader, pipeline=test_pipeline)
 

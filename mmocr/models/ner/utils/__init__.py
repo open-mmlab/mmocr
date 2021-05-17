@@ -1,4 +1,4 @@
-from .activations import gelu, gelu_new, swish
+from .activations import ACT2FN
 from .bert import BertModel
 
-__all__ = ['BertModel', 'gelu', 'swish', 'gelu_new']
+__all__ = ['BertModel', 'ACT2FN']

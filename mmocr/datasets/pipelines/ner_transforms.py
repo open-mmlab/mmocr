@@ -33,7 +33,6 @@ class NerTransform:
         for i in range(len(texts) + 2):
             attention_mask[i] = 1
         results = dict(
-            img=input_ids,
             labels=labels,
             texts=texts,
             input_ids=input_ids,
@@ -48,14 +47,13 @@ class ToTensorNER:
 
     def __call__(self, results):
 
-        img_metas = results['img_metas'].data
-        input_ids = torch.tensor(img_metas['input_ids'])
-        labels = torch.tensor(img_metas['labels'])
-        attention_masks = torch.tensor(img_metas['attention_mask'])
-        token_type_ids = torch.tensor(img_metas['token_type_ids'])
+        input_ids = torch.tensor(results['input_ids'])
+        labels = torch.tensor(results['labels'])
+        attention_masks = torch.tensor(results['attention_mask'])
+        token_type_ids = torch.tensor(results['token_type_ids'])
 
         results = dict(
-            img=img_metas['img'],
+            img=[],
             img_metas=dict(
                 input_ids=input_ids,
                 attention_masks=attention_masks,

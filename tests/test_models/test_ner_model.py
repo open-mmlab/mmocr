@@ -6,7 +6,7 @@ import pytest
 import torch
 
 from mmocr.models import build_detector
-from mmocr.models.ner.utils.activations import gelu, gelu_new, swish
+from mmocr.models.ner.utils.activations import gelu, gelu_new
 
 
 def _create_dummy_vocab_file(vocab_file):
@@ -81,4 +81,3 @@ def test_encoder_decoder_pipeline(cfg_file):
     # Test activations
     gelu(torch.tensor(0.5))
     gelu_new(torch.tensor(0.5))
-    swish(torch.tensor(0.5))
