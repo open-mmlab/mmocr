@@ -1,3 +1,7 @@
+import os
+import shutil
+import urllib
+
 import torch
 import torch.nn as nn
 from mmcv.cnn import uniform_init, xavier_init
@@ -76,7 +80,18 @@ class BertEncoder(nn.Module):
 
     def init_weights(self, pretrained=None):
         if pretrained is not None:
-            checkpoint = torch.load(pretrained)
+            checkpoint_file = pretrained
+            if not os.path.exists(checkpoint_file):
+                url = ('https://download.openmmlab.com/mmocr'
+                       '/ner/bert_softmax/bert_pretrain.pth')
+                print(f'Downloading {url} ...')
+                local_filename, _ = urllib.request.urlretrieve(url)
+                os.makedirs(os.path.dirname(checkpoint_file), exist_ok=True)
+                shutil.move(local_filename, checkpoint_file)
+                print(f'Saved as {checkpoint_file}')
+            else:
+                print(f'Using existing checkpoint {checkpoint_file}')
+            checkpoint = torch.load(checkpoint_file)
             self.load_state_dict(checkpoint)
         else:
 
