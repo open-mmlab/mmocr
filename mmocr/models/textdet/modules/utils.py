@@ -35,7 +35,7 @@ def normalize_adjacent_matrix(A, mode='AD'):
 
 
 def euclidean_distance_matrix(A, B):
-    """Calculate euclidean distance matrix.
+    """Calculate the Euclidean distance matrix.
 
     Args:
         A (ndarray): The point sequence.
