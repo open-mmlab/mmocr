@@ -89,18 +89,17 @@ class BertModel(nn.Module):
             attention_masks = torch.ones_like(input_ids)
         if token_type_ids is None:
             token_type_ids = torch.zeros_like(input_ids)
-        extended_attention_mask = attention_masks.unsqueeze(1).unsqueeze(2)
+        extended_attention_mask = attention_masks[:, None, None]
         extended_attention_mask = extended_attention_mask.to(
             dtype=next(self.parameters()).dtype)
         extended_attention_mask = (1.0 - extended_attention_mask) * -10000.0
         if head_mask is not None:
             if head_mask.dim() == 1:
-                head_mask = head_mask.unsqueeze(0).unsqueeze(0).unsqueeze(
-                    -1).unsqueeze(-1)
+                head_mask = head_mask[None, None, :, None, None]
                 head_mask = head_mask.expand(self.num_hidden_layers, -1, -1,
                                              -1, -1)
             elif head_mask.dim() == 2:
-                head_mask = head_mask.unsqueeze(1).unsqueeze(-1).unsqueeze(-1)
+                head_mask = head_mask[None, :, None, None]
             head_mask = head_mask.to(dtype=next(self.parameters()).dtype)
         else:
             head_mask = [None] * self.num_hidden_layers
