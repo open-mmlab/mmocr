@@ -15,10 +15,6 @@ class NerDataset(BaseDataset):
         test_mode (bool, optional): If True, try...except will
             be turned off in __getitem__.
     """
-
-    def __init__(self, ann_file, loader, pipeline, test_mode=False):
-        super().__init__(ann_file, loader, pipeline, test_mode=test_mode)
-
     def prepare_train_img(self, index):
         """Get training data and annotations after pipeline.
 
@@ -45,8 +41,6 @@ class NerDataset(BaseDataset):
             info (dict): A dict containing the following keys:
              'acc', 'recall', 'f1-score'.
         """
-        gt_infos = []
-        for i in range(len(self)):
-            gt_infos.append(self.data_infos[i])
+        gt_infos = list(self.data_infos)
         eval_results = eval_ner_f1(results, gt_infos)
         return eval_results

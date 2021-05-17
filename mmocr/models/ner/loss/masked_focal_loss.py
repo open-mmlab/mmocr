@@ -8,10 +8,10 @@ from mmocr.models.common.losses.focal_loss import FocalLoss
 class MaskedFocalLoss(nn.Module):
     """The implementation of masked focal loss."""
 
-    def __init__(self, num_labels=None, **kwargs):
+    def __init__(self, num_labels=None, ignore_index=0):
         super().__init__()
         self.num_labels = num_labels
-        self.criterion = FocalLoss(ignore_index=0)
+        self.criterion = FocalLoss(ignore_index=ignore_index)
 
     def forward(self, logits, img_metas):
         '''Loss forword.

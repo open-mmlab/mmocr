@@ -6,10 +6,13 @@ from mmocr.models.builder import build_convertor
 
 @PIPELINES.register_module()
 class NerTransform:
-    """Ner transform.
+    """Convert text to ID and entity in ground truth to label ID.
+    The masks and tokens are generated at the same time.
+    The four parameters will be used as input to the model.
 
     Args:
-        label_convertor
+        label_convertor: Convert text to ID and entity in ground truth to label ID.
+        max_len (int): Limited maximum input length.
     """
 
     def __init__(self, label_convertor=None, max_len=None):

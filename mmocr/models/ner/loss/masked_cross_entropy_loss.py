@@ -8,10 +8,10 @@ from mmdet.models.builder import LOSSES
 class MaskedCrossEntropyLoss(nn.Module):
     """The implementation of masked cross entropy loss."""
 
-    def __init__(self, num_labels=None, **kwargs):
+    def __init__(self, num_labels=None, ignore_index=0):
         super().__init__()
         self.num_labels = num_labels
-        self.criterion = CrossEntropyLoss(ignore_index=0)
+        self.criterion = CrossEntropyLoss(ignore_index=ignore_index)
 
     def forward(self, logits, img_metas):
         '''Loss forword.
