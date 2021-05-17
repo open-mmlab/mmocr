@@ -50,7 +50,7 @@ def test_drrg_head():
     # test forward test
     with torch.no_grad():
         feat_maps = torch.zeros((1, 10, 128, 128))
-        drrg_head.out_conv.bias.fill_(-10)
+        drrg_head.out_conv.bias.data.fill_(-10)
         preds = drrg_head.single_test(feat_maps)
         assert all([pred is None for pred in preds])
 

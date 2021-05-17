@@ -482,18 +482,28 @@ def test_drrg(cfg_file):
     assert isinstance(losses, dict)
 
     # Test forward test
-    input_shape = (1, 3, 64, 64)
-    num_kernels = 1
-    mm_inputs = _demo_mm_inputs(num_kernels, input_shape)
-    imgs = mm_inputs.pop('imgs')
+    model['bbox_head']['in_channels'] = 6
+    model['bbox_head']['text_region_thr'] = 0.8
+    model['bbox_head']['center_region_thr'] = 0.8
+    detector = build_detector(model)
+    maps = torch.zeros((1, 6, 224, 224), dtype=torch.float)
+    maps[:, 0:2, :, :] = -10.
+    maps[:, 0, 60:100, 50:170] = 10.
+    maps[:, 1, 75:85, 60:160] = 10.
+    maps[:, 2, 75:85, 60:160] = 0.
+    maps[:, 3, 75:85, 60:160] = 1.
+    maps[:, 4, 75:85, 60:160] = 10.
+    maps[:, 5, 75:85, 60:160] = 10.
 
     with torch.no_grad():
-        img_list = [g[None, :] for g in imgs]
-        batch_results = []
-        for one_img, one_meta in zip(img_list, img_metas):
-            result = detector.forward([one_img], [[one_meta]],
-                                      return_loss=False)
-            batch_results.append(result)
+        full_pass_weight = torch.zeros((6, 6, 1, 1))
+        for i in range(6):
+            full_pass_weight[i, i, 0, 0] = 1
+        detector.bbox_head.out_conv.weight.data = full_pass_weight
+        detector.bbox_head.out_conv.bias.data.fill_(0.)
+        outs = detector.bbox_head.single_test(maps)
+        boundaries = detector.bbox_head.get_boundary(*outs, img_metas, True)
+    assert len(boundaries)
 
     # Test show result
     results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}
