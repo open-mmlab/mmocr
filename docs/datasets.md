@@ -243,7 +243,7 @@ The structure of the key information extraction dataset directory is organized a
 The structure of the named entity recognition dataset directory is organized as follows.
 
 ```text
-└── cluener_public
+└── cluener2020
   ├── cluener_predict.json
   ├── dev.json
   ├── README.md
@@ -254,4 +254,4 @@ The structure of the named entity recognition dataset directory is organized as 
 ```
 - Download [cluener_public.zip](https://storage.googleapis.com/cluebenchmark/tasks/cluener_public.zip)
 
-- Download [vocab.txt](https://download.openmmlab.com/mmocr/data/cluener_public/vocab.txt) and move `vocab.txt` to `cluener_public`
+- Download [vocab.txt](https://download.openmmlab.com/mmocr/data/cluener2020/vocab.txt) and move `vocab.txt` to `cluener2020`

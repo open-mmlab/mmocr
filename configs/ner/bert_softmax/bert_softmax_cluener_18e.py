@@ -8,9 +8,9 @@ categories = [
     'organization', 'position', 'scene'
 ]
 
-test_ann_file = 'data/cluener_public/dev.json'
-train_ann_file = 'data/cluener_public/train.json'
-vocab_file = 'data/cluener_public/vocab.txt'
+test_ann_file = 'data/cluener2020/dev.json'
+train_ann_file = 'data/cluener2020/train.json'
+vocab_file = 'data/cluener2020/vocab.txt'
 pretrained = 'checkpoints/bert_pretrain.pth'
 max_len = 128
 loader = dict(
