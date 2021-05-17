@@ -15,6 +15,7 @@ class NerDataset(BaseDataset):
         test_mode (bool, optional): If True, try...except will
             be turned off in __getitem__.
     """
+
     def prepare_train_img(self, index):
         """Get training data and annotations after pipeline.
 
