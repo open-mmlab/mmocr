@@ -1,7 +1,3 @@
-import os
-import shutil
-import urllib
-
 import torch
 import torch.nn as nn
 from mmcv.cnn import uniform_init, xavier_init
