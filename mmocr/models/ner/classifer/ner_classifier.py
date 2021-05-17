@@ -8,26 +8,22 @@ class NerClassifier(BaseRecognizer):
     """Base class for NER classifier."""
 
     def __init__(self,
-                 encoder=None,
-                 decoder=None,
-                 loss=None,
-                 label_convertor=None,
+                 encoder,
+                 decoder,
+                 loss,
+                 label_convertor,
                  train_cfg=None,
                  test_cfg=None,
                  pretrained=None):
         super().__init__()
-        assert label_convertor is not None
         self.label_convertor = build_convertor(label_convertor)
 
-        assert encoder is not None
         encoder.update(pretrained=pretrained)
         self.encoder = build_encoder(encoder)
 
-        assert decoder is not None
         decoder.update(num_labels=self.label_convertor.num_labels)
         self.decoder = build_decoder(decoder)
 
-        assert loss is not None
         loss.update(num_labels=self.label_convertor.num_labels)
         self.loss = build_loss(loss)
 

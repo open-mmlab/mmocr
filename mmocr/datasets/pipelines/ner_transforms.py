@@ -16,9 +16,7 @@ class NerTransform:
         max_len (int): Limited maximum input length.
     """
 
-    def __init__(self, label_convertor=None, max_len=None):
-        assert label_convertor is not None
-        assert max_len is not None
+    def __init__(self, label_convertor, max_len):
         self.label_convertor = build_convertor(label_convertor)
         self.max_len = max_len
 
