@@ -9,8 +9,10 @@ class FocalLoss(nn.Module):
     Args:
         gamma (float): The larger the gamma, the smaller
             the loss weight of easier samples.
-        weight (float): Hyper-parameter.
-        ignore_index (int): Ignore index in label.
+        weight (float): A manual rescaling weight given to each
+            class.
+        ignore_index (int): Specifies a target value that is ignored
+            and does not contribute to the input gradient.
     """
 
     def __init__(self, gamma=2, weight=None, ignore_index=-100):

@@ -6,7 +6,15 @@ from mmdet.models.builder import LOSSES
 
 @LOSSES.register_module()
 class MaskedCrossEntropyLoss(nn.Module):
-    """The implementation of masked cross entropy loss."""
+    """The implementation of masked cross entropy loss.
+
+    The mask has 1 for real tokens and 0 for padding tokens,
+        which only keep active parts of the cross entropy loss.
+    Args:
+        num_labels (int): Number of classes in labels.
+        ignore_index (int): Specifies a target value that is ignored
+            and does not contribute to the input gradient.
+    """
 
     def __init__(self, num_labels=None, ignore_index=0):
         super().__init__()
@@ -19,11 +27,17 @@ class MaskedCrossEntropyLoss(nn.Module):
             logits: Model output with shape [N, C].
             img_metas (dict): A dict containing the following keys:
                     - img (list]): This parameter is reserved.
-                    - labels (list[int]): []*max_len
-                    - texts (list): []*max_len
-                    - input_ids (list): []*max_len
-                    - attention_mask (list): []*max_len
-                    - token_type_ids (list): []*max_len
+                    - labels (list[int]): The labels for each word
+                        of the sequence.
+                    - texts (list): The words of the sequence.
+                    - input_ids (list): The ids for each word of
+                        the sequence.
+                    - attention_mask (list): The mask for each word
+                        of the sequence. The mask has 1 for real tokens
+                        and 0 for padding tokens. Only real tokens are
+                        attended to.
+                    - token_type_ids (list): The tokens for each word
+                        of the sequence.
         '''
 
         labels = img_metas['labels']
