@@ -89,10 +89,10 @@ class BertModel(nn.Module):
             attention_masks = torch.ones_like(input_ids)
         if token_type_ids is None:
             token_type_ids = torch.zeros_like(input_ids)
-        extended_attention_mask = attention_masks[:, None, None]
-        extended_attention_mask = extended_attention_mask.to(
+        attention_masks = attention_masks[:, None, None]
+        attention_masks = attention_masks.to(
             dtype=next(self.parameters()).dtype)
-        extended_attention_mask = (1.0 - extended_attention_mask) * -10000.0
+        attention_masks = (1.0 - attention_masks) * -10000.0
         if head_mask is not None:
             if head_mask.dim() == 1:
                 head_mask = head_mask[None, None, :, None, None]
@@ -109,7 +109,7 @@ class BertModel(nn.Module):
             position_ids=position_ids,
             token_type_ids=token_type_ids)
         encoder_outputs = self.encoder(
-            embedding_output, extended_attention_mask, head_mask=head_mask)
+            embedding_output, attention_masks, head_mask=head_mask)
         sequence_output = encoder_outputs[0]
         pooled_output = self.pooler(sequence_output)
 

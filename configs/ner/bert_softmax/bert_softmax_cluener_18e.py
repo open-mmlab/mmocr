@@ -70,8 +70,9 @@ evaluation = dict(interval=1, metric='f1-score')
 
 model = dict(
     type='NerClassifier',
-    pretrained='https://download.openmmlab.com/mmocr/ner/'
-    'bert_softmax/bert_pretrain.pth',
+    pretrained='checkpoints/bert_pretrain.pth',
+    # pretrained='https://download.openmmlab.com/mmocr/ner/'
+    # 'bert_softmax/bert_pretrain.pth',
     encoder=dict(type='BertEncoder', max_position_embeddings=512),
     decoder=dict(type='FCDecoder'),
     loss=dict(type='MaskedCrossEntropyLoss'),
