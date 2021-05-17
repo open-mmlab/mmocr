@@ -6,17 +6,22 @@ from mmocr.models.builder import build_convertor
 
 @PIPELINES.register_module()
 class NerTransform:
-    """Ner transform ."""
+    """Ner transform.
+
+    Args:
+        label_convertor
+    """
 
     def __init__(self, label_convertor=None, max_len=None):
         assert label_convertor is not None
+        assert max_len is not None
         self.label_convertor = build_convertor(label_convertor)
         self.max_len = max_len
 
     def __call__(self, results):
         texts = results['text']
         input_ids = self.label_convertor.convert_text2id(texts)
-        labels = self.label_convertor.conver_entity2label(
+        labels = self.label_convertor.convert_entity2label(
             results['label'], len(texts))
 
         attention_mask = [0] * self.max_len
@@ -38,9 +43,6 @@ class NerTransform:
 @PIPELINES.register_module()
 class ToTensorNER:
     """Convert data with ``list`` type to tensor."""
-
-    def __init__(self):
-        pass
 
     def __call__(self, results):
 

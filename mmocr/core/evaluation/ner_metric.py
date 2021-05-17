@@ -103,14 +103,9 @@ def eval_ner_f1(results, gt_infos):
     gt_entities = gt_label2entity(gt_infos)
     pred_entities = []
     for i, gt_info in enumerate(gt_infos):
-        text = gt_info['text']
         line_entities = []
         for result in results[i]:
-            if result[1] < len(text):
-                if result[2] > len(text):
-                    result[2] = len(text)
-                if result[2] > result[1]:
-                    line_entities.append(result)
+            line_entities.append(result)
         pred_entities.append(line_entities)
     assert len(pred_entities) == len(gt_entities)
     class_info = compute_f1_all(pred_entities, gt_entities)

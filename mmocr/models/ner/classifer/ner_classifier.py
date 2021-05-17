@@ -33,7 +33,8 @@ class NerClassifier(BaseRecognizer):
 
     def extract_feat(self, imgs):
         """Extract features from images."""
-        return
+        raise NotImplementedError(
+            'Extract feature module is not implemented yet.')
 
     def forward_train(self, imgs, img_metas, **kwargs):
         encode_out = self.encoder(img_metas)
@@ -44,11 +45,12 @@ class NerClassifier(BaseRecognizer):
     def forward_test(self, imgs, img_metas, **kwargs):
         encode_out = self.encoder(img_metas)
         _, preds = self.decoder(encode_out)
-        pred_entities = self.label_convertor.convert_pred2entities(preds)
+        pred_entities = self.label_convertor.convert_pred2entities(
+            preds, img_metas['attention_masks'])
         return pred_entities
 
     def aug_test(self, imgs, img_metas, **kwargs):
-        pass
+        raise NotImplementedError('Augmentation test is not implemented yet.')
 
     def simple_test(self, img, img_metas, **kwargs):
-        pass
+        raise NotImplementedError('Simple test is not implemented yet.')

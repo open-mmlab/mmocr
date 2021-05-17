@@ -7,9 +7,10 @@ class FocalLoss(nn.Module):
     """Multi-class Focal loss implementation.
 
     Args:
-        gamma (float): Hyper-parameter.
+        gamma (float): The larger the gamma, the smaller
+            the loss weight of easier samples.
         weight (float): Hyper-parameter.
-        ignore index (int): Ignore index in label.
+        ignore_index (int): Ignore index in label.
     """
 
     def __init__(self, gamma=2, weight=None, ignore_index=-100):

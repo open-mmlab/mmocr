@@ -2,6 +2,8 @@ import json
 import os.path as osp
 import tempfile
 
+import torch
+
 from mmocr.datasets.ner_dataset import NerDataset
 from mmocr.models.ner.convertors.ner_convertor import NerConvertor
 
@@ -89,7 +91,7 @@ def test_ner_dataset():
     dataset.evaluate(result)
 
     # test pred convert2entity function
-    pred = [[
+    pred = [
         21, 7, 17, 17, 21, 21, 21, 21, 21, 21, 13, 21, 21, 21, 21, 21, 1, 11,
         21, 21, 7, 17, 17, 21, 21, 21, 21, 21, 21, 13, 21, 21, 21, 21, 21, 1,
         11, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
@@ -100,13 +102,19 @@ def test_ner_dataset():
         21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 1, 21, 21, 21, 21, 21,
         21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 1, 21, 21, 21, 21,
         21, 21
-    ]]
+    ]
+    preds = [pred[:128]]
+    mask = [0] * 128
+    for i in range(10):
+        mask[i] = 1
+    assert len(preds[0]) == len(mask)
+    masks = torch.tensor([mask])
     convertor = NerConvertor(
         annotation_type='bio',
         vocab_file=vocab_file,
         categories=categories,
         max_len=128)
-    all_entities = convertor.convert_pred2entities(preds=pred)
+    all_entities = convertor.convert_pred2entities(preds=preds, masks=masks)
     assert len(all_entities[0][0]) == 3
 
     tmp_dir.cleanup()
