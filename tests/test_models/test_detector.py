@@ -447,7 +447,6 @@ def test_drrg(cfg_file):
     mm_inputs = _demo_mm_inputs(num_kernels, input_shape)
 
     imgs = mm_inputs.pop('imgs')
-    imgs = imgs.cuda()
     img_metas = mm_inputs.pop('img_metas')
     gt_text_mask = mm_inputs.pop('gt_text_mask')
     gt_center_region_mask = mm_inputs.pop('gt_center_region_mask')
@@ -487,7 +486,7 @@ def test_drrg(cfg_file):
     num_kernels = 1
     mm_inputs = _demo_mm_inputs(num_kernels, input_shape)
     imgs = mm_inputs.pop('imgs')
-    imgs = imgs.cuda()
+
     with torch.no_grad():
         img_list = [g[None, :] for g in imgs]
         batch_results = []
