@@ -441,7 +441,7 @@ def test_drrg(cfg_file):
 
     from mmocr.models import build_detector
     detector = build_detector(model)
-    detector = detector.cuda()
+
     input_shape = (1, 3, 224, 224)
     num_kernels = 1
     mm_inputs = _demo_mm_inputs(num_kernels, input_shape)
