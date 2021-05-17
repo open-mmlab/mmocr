@@ -9,7 +9,7 @@ def test_drrg_head():
     drrg_head = DRRGHead(in_channels)
     assert drrg_head.in_channels == in_channels
     assert drrg_head.k_at_hops == (8, 4)
-    assert drrg_head.adjacent_linkage_num == 3
+    assert drrg_head.num_adjacent_linkages == 3
     assert drrg_head.node_geo_feat_len == 120
     assert np.allclose(drrg_head.pooling_scale, 1.0)
     assert drrg_head.pooling_output_size == (4, 3)
@@ -26,17 +26,17 @@ def test_drrg_head():
     assert np.allclose(drrg_head.link_thr, 0.85)
 
     # test forward train
-    roi_num = 16
+    num_rois = 16
     feature_maps = torch.randn((2, 10, 128, 128), dtype=torch.float)
-    x = np.random.randint(4, 124, (roi_num, 1))
-    y = np.random.randint(4, 124, (roi_num, 1))
-    h = 4 * np.ones((roi_num, 1))
-    w = 4 * np.ones((roi_num, 1))
-    angle = (np.random.random_sample((roi_num, 1)) * 2 - 1) * np.pi / 2
+    x = np.random.randint(4, 124, (num_rois, 1))
+    y = np.random.randint(4, 124, (num_rois, 1))
+    h = 4 * np.ones((num_rois, 1))
+    w = 4 * np.ones((num_rois, 1))
+    angle = (np.random.random_sample((num_rois, 1)) * 2 - 1) * np.pi / 2
     cos, sin = np.cos(angle), np.sin(angle)
-    comp_labels = np.random.randint(1, 3, (roi_num, 1))
-    roi_num = roi_num * np.ones((roi_num, 1))
-    comp_attribs = np.hstack([roi_num, x, y, h, w, cos, sin, comp_labels])
+    comp_labels = np.random.randint(1, 3, (num_rois, 1))
+    num_rois = num_rois * np.ones((num_rois, 1))
+    comp_attribs = np.hstack([num_rois, x, y, h, w, cos, sin, comp_labels])
     comp_attribs = comp_attribs.astype(np.float32)
     comp_attribs_ = comp_attribs.copy()
     comp_attribs = np.stack([comp_attribs, comp_attribs_])

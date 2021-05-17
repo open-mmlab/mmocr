@@ -15,9 +15,9 @@ class LocalGraphs(object):
     https://github.com/GXYM/DRRG  licensed under the MIT license.
 
     Args:
-        k_at_hops (tuple(int)): The number of h-hop neighbors.
-        active_connection (int): The number of neighbors deem as linked to a
-            pivot.
+        k_at_hops (tuple(int)): The number of i-hop neighbors, i = 1, 2.
+        num_adjacent_linkages (int): The number of linkages when constructing
+            adjacent matrix.
         node_geo_feat_len (int): The length of embedded geometric feature
             vector of a text component.
         pooling_scale (float): The spatial scale of rotated RoI-Align.
@@ -26,19 +26,19 @@ class LocalGraphs(object):
             graphs.
     """
 
-    def __init__(self, k_at_hops, active_connection, node_geo_feat_len,
+    def __init__(self, k_at_hops, num_adjacent_linkages, node_geo_feat_len,
                  pooling_scale, pooling_output_size, local_graph_thr):
 
         assert len(k_at_hops) == 2
         assert all(isinstance(n, int) for n in k_at_hops)
-        assert isinstance(active_connection, int)
+        assert isinstance(num_adjacent_linkages, int)
         assert isinstance(node_geo_feat_len, int)
         assert isinstance(pooling_scale, float)
         assert all(isinstance(n, int) for n in pooling_output_size)
         assert isinstance(local_graph_thr, float)
 
         self.k_at_hops = k_at_hops
-        self.active_connection = active_connection
+        self.num_adjacent_linkages = num_adjacent_linkages
         self.node_geo_feat_dim = node_geo_feat_len
         self.pooling = RoIAlignRotated(pooling_output_size, pooling_scale)
         self.local_graph_thr = local_graph_thr
@@ -141,7 +141,7 @@ class LocalGraphs(object):
         assert isinstance(knn_batch, list)
         assert isinstance(sorted_dist_ind_batch, list)
 
-        max_node_num = max([
+        num_max_nodes = max([
             len(pivot_local_graph) for pivot_local_graphs in local_graph_batch
             for pivot_local_graph in pivot_local_graphs
         ])
@@ -160,7 +160,7 @@ class LocalGraphs(object):
 
             for graph_ind, pivot_knn in enumerate(pivot_knns):
                 pivot_local_graph = pivot_local_graphs[graph_ind]
-                node_num = len(pivot_local_graph)
+                num_nodes = len(pivot_local_graph)
                 pivot_ind = pivot_local_graph[0]
                 node2ind_map = {j: i for i, j in enumerate(pivot_local_graph)}
 
@@ -169,11 +169,12 @@ class LocalGraphs(object):
                 pivot_feats = node_feats[pivot_ind]
                 normalized_feats = node_feats[pivot_local_graph] - pivot_feats
 
-                adjacent_matrix = np.zeros((node_num, node_num),
+                adjacent_matrix = np.zeros((num_nodes, num_nodes),
                                            dtype=np.float32)
                 for node in pivot_local_graph:
                     neighbors = sorted_dist_inds[node,
-                                                 1:self.active_connection + 1]
+                                                 1:self.num_adjacent_linkages +
+                                                 1]
                     for neighbor in neighbors:
                         if neighbor in pivot_local_graph:
 
@@ -184,15 +185,16 @@ class LocalGraphs(object):
 
                 adjacent_matrix = normalize_adjacent_matrix(
                     adjacent_matrix, mode='DAD')
-                pad_adjacent_matrix = torch.zeros((max_node_num, max_node_num),
-                                                  dtype=torch.float,
-                                                  device=device)
-                pad_adjacent_matrix[:node_num, :node_num] = adjacent_matrix
+                pad_adjacent_matrix = torch.zeros(
+                    (num_max_nodes, num_max_nodes),
+                    dtype=torch.float,
+                    device=device)
+                pad_adjacent_matrix[:num_nodes, :num_nodes] = adjacent_matrix
 
                 pad_normalized_feats = torch.cat([
                     normalized_feats,
                     torch.zeros(
-                        (max_node_num - node_num, normalized_feats.shape[1]),
+                        (num_max_nodes - num_nodes, normalized_feats.shape[1]),
                         dtype=torch.float,
                         device=device)
                 ],
@@ -246,9 +248,9 @@ class LocalGraphs(object):
         device = feat_maps.device
 
         for batch_ind in range(comp_attribs.shape[0]):
-            comp_num = int(comp_attribs[batch_ind, 0, 0])
-            comp_geo_attribs = comp_attribs[batch_ind, :comp_num, 1:7]
-            node_labels = comp_attribs[batch_ind, :comp_num,
+            num_comps = int(comp_attribs[batch_ind, 0, 0])
+            comp_geo_attribs = comp_attribs[batch_ind, :num_comps, 1:7]
+            node_labels = comp_attribs[batch_ind, :num_comps,
                                        7].astype(np.int32)
 
             comp_centers = comp_geo_attribs[:, 0:2]

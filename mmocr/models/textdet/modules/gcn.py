@@ -53,11 +53,11 @@ class GCN(nn.Module):
 
     def forward(self, x, A, knn_inds):
 
-        local_graph_num, max_node_num, feat_len = x.shape
+        num_local_graphs, num_max_nodes, feat_len = x.shape
 
         x = x.view(-1, feat_len)
         x = self.bn0(x)
-        x = x.view(local_graph_num, max_node_num, feat_len)
+        x = x.view(num_local_graphs, num_max_nodes, feat_len)
 
         x = self.conv1(x, A)
         x = self.conv2(x, A)
@@ -65,9 +65,9 @@ class GCN(nn.Module):
         x = self.conv4(x, A)
         k = knn_inds.size(-1)
         mid_feat_len = x.size(-1)
-        edge_feat = torch.zeros((local_graph_num, k, mid_feat_len),
+        edge_feat = torch.zeros((num_local_graphs, k, mid_feat_len),
                                 device=x.device)
-        for graph_ind in range(local_graph_num):
+        for graph_ind in range(num_local_graphs):
             edge_feat[graph_ind, :, :] = x[graph_ind, knn_inds[graph_ind]]
         edge_feat = edge_feat.view(-1, mid_feat_len)
         pred = self.classifier(edge_feat)

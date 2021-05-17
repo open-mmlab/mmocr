@@ -666,14 +666,14 @@ def connected_components(nodes, score_dict, link_thr):
     return clusters
 
 
-def clusters2labels(clusters, node_num):
+def clusters2labels(clusters, num_nodes):
     """Convert clusters of Node to text component labels. This code was
     partially adapted from https://github.com/GXYM/DRRG licensed under the MIT
     license.
 
     Args:
         clusters (List[list[Node]]): The clusters of Node objects.
-        node_num (int): The total node number of graphs in an image.
+        num_nodes (int): The total node number of graphs in an image.
 
     Returns:
         node_labels (ndarray): The node label array.
@@ -682,9 +682,9 @@ def clusters2labels(clusters, node_num):
     assert all([isinstance(cluster, list) for cluster in clusters])
     assert all(
         [isinstance(node, Node) for cluster in clusters for node in cluster])
-    assert isinstance(node_num, int)
+    assert isinstance(num_nodes, int)
 
-    node_labels = np.zeros(node_num)
+    node_labels = np.zeros(num_nodes)
     for cluster_ind, cluster in enumerate(clusters):
         for node in cluster:
             node_labels[node.ind] = cluster_ind

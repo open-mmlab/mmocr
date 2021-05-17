@@ -23,34 +23,33 @@ class DRRGTargets(TextSnakeTargets):
             of a quadrangle.
         resample_step (float): The step size for resampling the text center
             line.
-        min_comp_num (int): The minimum number of text components, which
+        num_min_comps (int): The minimum number of text components, which
             should be larger than k_hop1 mentioned in paper.
-        max_comp_num (int): The maximum number of text components.
+        num_max_comps (int): The maximum number of text components.
         min_width (float): The minimum width of text components.
         max_width (float): The maximum width of text components.
         center_region_shrink_ratio (float): The shrink ratio of text center
             regions.
         comp_shrink_ratio (float): The shrink ratio of text components.
-        text_comp_ratio (float): The reciprocal of aspect ratio of text
-            components.
+        comp_w_h_ratio (float): The width to height ratio of text components.
         min_rand_half_height(float): The minimum half-height of random text
             components.
         max_rand_half_height (float): The maximum half-height of random
             text components.
-        jitter_level (float): The jitter level of text components geometric
+        jitter_level (float): The jitter level of text component geometric
             features.
     """
 
     def __init__(self,
                  orientation_thr=2.0,
                  resample_step=8.0,
-                 min_comp_num=9,
-                 max_comp_num=600,
+                 num_min_comps=9,
+                 num_max_comps=600,
                  min_width=8.0,
                  max_width=24.0,
                  center_region_shrink_ratio=0.3,
                  comp_shrink_ratio=1.0,
-                 text_comp_ratio=0.3,
+                 comp_w_h_ratio=0.3,
                  text_comp_nms_thr=0.25,
                  min_rand_half_height=8.0,
                  max_rand_half_height=24.0,
@@ -59,13 +58,13 @@ class DRRGTargets(TextSnakeTargets):
         super().__init__()
         self.orientation_thr = orientation_thr
         self.resample_step = resample_step
-        self.max_comp_num = max_comp_num
-        self.min_comp_num = min_comp_num
+        self.num_max_comps = num_max_comps
+        self.num_min_comps = num_min_comps
         self.min_width = min_width
         self.max_width = max_width
         self.center_region_shrink_ratio = center_region_shrink_ratio
         self.comp_shrink_ratio = comp_shrink_ratio
-        self.text_comp_ratio = text_comp_ratio
+        self.comp_w_h_ratio = comp_w_h_ratio
         self.text_comp_nms_thr = text_comp_nms_thr
         self.min_rand_half_height = min_rand_half_height
         self.max_rand_half_height = max_rand_half_height
@@ -210,20 +209,20 @@ class DRRGTargets(TextSnakeTargets):
                     resampled_bot_line = resampled_bot_line[::-1]
 
             line_head_shrink_len = np.clip(
-                (norm(top_line[0] - bot_line[0]) * self.text_comp_ratio),
+                (norm(top_line[0] - bot_line[0]) * self.comp_w_h_ratio),
                 self.min_width, self.max_width) / 2
             line_tail_shrink_len = np.clip(
-                (norm(top_line[-1] - bot_line[-1]) * self.text_comp_ratio),
+                (norm(top_line[-1] - bot_line[-1]) * self.comp_w_h_ratio),
                 self.min_width, self.max_width) / 2
-            head_shrink_num = int(line_head_shrink_len // self.resample_step)
-            tail_shrink_num = int(line_tail_shrink_len // self.resample_step)
-            if len(center_line) > head_shrink_num + tail_shrink_num + 2:
-                center_line = center_line[head_shrink_num:len(center_line) -
-                                          tail_shrink_num]
+            num_head_shrink = int(line_head_shrink_len // self.resample_step)
+            num_tail_shrink = int(line_tail_shrink_len // self.resample_step)
+            if len(center_line) > num_head_shrink + num_tail_shrink + 2:
+                center_line = center_line[num_head_shrink:len(center_line) -
+                                          num_tail_shrink]
                 resampled_top_line = resampled_top_line[
-                    head_shrink_num:len(resampled_top_line) - tail_shrink_num]
+                    num_head_shrink:len(resampled_top_line) - num_tail_shrink]
                 resampled_bot_line = resampled_bot_line[
-                    head_shrink_num:len(resampled_bot_line) - tail_shrink_num]
+                    num_head_shrink:len(resampled_bot_line) - num_tail_shrink]
             center_lines.append(center_line.astype(np.int32))
 
             self.draw_center_region_maps(resampled_top_line,
@@ -235,13 +234,13 @@ class DRRGTargets(TextSnakeTargets):
         return (center_lines, center_region_mask, top_height_map,
                 bot_height_map, sin_map, cos_map)
 
-    def generate_rand_comp_attribs(self, rand_comp_num, center_sample_mask):
+    def generate_rand_comp_attribs(self, num_rand_comps, center_sample_mask):
         """Generate random text components and their attributes to ensure the
         the number of text components in an image is larger than k_hop1, which
         is the number of one hop neighbors in KNN graph.
 
         Args:
-            rand_comp_num (int): The number of random text components.
+            num_rand_comps (int): The number of random text components.
             center_sample_mask (ndarray): The region mask for sampling text
                 component centers .
 
@@ -250,8 +249,8 @@ class DRRGTargets(TextSnakeTargets):
                 (x, y, h, w, cos, sin, comp_label=0).
         """
 
-        assert isinstance(rand_comp_num, int)
-        assert rand_comp_num > 0
+        assert isinstance(num_rand_comps, int)
+        assert num_rand_comps > 0
         assert center_sample_mask.ndim == 2
 
         h, w = center_sample_mask.shape
@@ -259,7 +258,7 @@ class DRRGTargets(TextSnakeTargets):
         max_rand_half_height = self.max_rand_half_height
         min_rand_half_height = self.min_rand_half_height
         max_rand_height = max_rand_half_height * 2
-        max_rand_width = np.clip(max_rand_height * self.text_comp_ratio,
+        max_rand_width = np.clip(max_rand_height * self.comp_w_h_ratio,
                                  self.min_width, self.max_width)
         margin = int(
             np.sqrt((max_rand_height / 2)**2 + (max_rand_width / 2)**2)) + 1
@@ -272,14 +271,14 @@ class DRRGTargets(TextSnakeTargets):
                                        self.min_width / 2)
 
             max_rand_height = max_rand_half_height * 2
-            max_rand_width = np.clip(max_rand_height * self.text_comp_ratio,
+            max_rand_width = np.clip(max_rand_height * self.comp_w_h_ratio,
                                      self.min_width, self.max_width)
             margin = int(
                 np.sqrt((max_rand_height / 2)**2 +
                         (max_rand_width / 2)**2)) + 1
 
         inner_center_sample_mask = np.zeros_like(center_sample_mask)
-        inner_center_sample_mask[margin:h-margin, margin:w-margin] = \
+        inner_center_sample_mask[margin:h - margin, margin:w - margin] = \
             center_sample_mask[margin:h - margin, margin:w - margin]
         kernel_size = int(np.clip(max_rand_half_height, 7, 21))
         inner_center_sample_mask = cv2.erode(
@@ -287,8 +286,8 @@ class DRRGTargets(TextSnakeTargets):
             np.ones((kernel_size, kernel_size), np.uint8))
 
         center_candidates = np.argwhere(inner_center_sample_mask > 0)
-        center_candidate_num = len(center_candidates)
-        sample_inds = np.random.choice(center_candidate_num, rand_comp_num)
+        num_center_candidates = len(center_candidates)
+        sample_inds = np.random.choice(num_center_candidates, num_rand_comps)
         rand_centers = center_candidates[sample_inds]
 
         rand_top_height = np.random.randint(
@@ -307,7 +306,7 @@ class DRRGTargets(TextSnakeTargets):
         rand_sin = rand_sin * scale
 
         height = (rand_top_height + rand_bot_height)
-        width = np.clip(height * self.text_comp_ratio, self.min_width,
+        width = np.clip(height * self.comp_w_h_ratio, self.min_width,
                         self.max_width)
 
         rand_comp_attribs = np.hstack([
@@ -415,7 +414,7 @@ class DRRGTargets(TextSnakeTargets):
         bot_mid_points = comp_centers - np.hstack(
             [bot_height * sin, bot_height * cos])
 
-        width = (top_height + bot_height) * self.text_comp_ratio
+        width = (top_height + bot_height) * self.comp_w_h_ratio
         width = np.clip(width, self.min_width, self.max_width)
         r = width / 2
 
@@ -442,7 +441,7 @@ class DRRGTargets(TextSnakeTargets):
 
             height = (top_height_map[y, x] + bot_height_map[y, x]).reshape(
                 (-1, 1))
-            width = np.clip(height * self.text_comp_ratio, self.min_width,
+            width = np.clip(height * self.comp_w_h_ratio, self.min_width,
                             self.max_width)
 
             cos = cos_map[y, x].reshape((-1, 1))
@@ -460,26 +459,26 @@ class DRRGTargets(TextSnakeTargets):
             comp_attribs = self.jitter_comp_attribs(comp_attribs,
                                                     self.jitter_level)
 
-            if comp_attribs.shape[0] < self.min_comp_num:
-                rand_comp_num = self.min_comp_num - comp_attribs.shape[0]
+            if comp_attribs.shape[0] < self.num_min_comps:
+                num_rand_comps = self.num_min_comps - comp_attribs.shape[0]
                 rand_comp_attribs = self.generate_rand_comp_attribs(
-                    rand_comp_num, 1 - text_mask)
+                    num_rand_comps, 1 - text_mask)
                 comp_attribs = np.vstack([comp_attribs, rand_comp_attribs])
         else:
             comp_attribs = self.generate_rand_comp_attribs(
-                self.min_comp_num, 1 - text_mask)
+                self.num_min_comps, 1 - text_mask)
 
-        comp_num = (
+        num_comps = (
             np.ones((comp_attribs.shape[0], 1), dtype=np.float32) *
             comp_attribs.shape[0])
-        comp_attribs = np.hstack([comp_num, comp_attribs])
+        comp_attribs = np.hstack([num_comps, comp_attribs])
 
-        if comp_attribs.shape[0] > self.max_comp_num:
-            comp_attribs = comp_attribs[:self.max_comp_num, :]
-            comp_attribs[:, 0] = self.max_comp_num
+        if comp_attribs.shape[0] > self.num_max_comps:
+            comp_attribs = comp_attribs[:self.num_max_comps, :]
+            comp_attribs[:, 0] = self.num_max_comps
 
-        pad_comp_attribs = np.zeros((self.max_comp_num, comp_attribs.shape[1]),
-                                    dtype=np.float32)
+        pad_comp_attribs = np.zeros(
+            (self.num_max_comps, comp_attribs.shape[1]), dtype=np.float32)
         pad_comp_attribs[:comp_attribs.shape[0], :] = comp_attribs
 
         return pad_comp_attribs

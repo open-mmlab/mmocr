@@ -20,7 +20,7 @@ class DRRGHead(HeadMixin, nn.Module):
 
     Args:
         k_at_hops (tuple(int)): The number of i-hop neighbors, i = 1, 2.
-        adjacent_linkage_num (int): The number of linkages when constructing
+        num_adjacent_linkages (int): The number of linkages when constructing
             adjacent matrix.
         node_geo_feat_len (int): The length of embedded geometric feature
             vector of a component.
@@ -45,7 +45,7 @@ class DRRGHead(HeadMixin, nn.Module):
     def __init__(self,
                  in_channels,
                  k_at_hops=(8, 4),
-                 adjacent_linkage_num=3,
+                 num_adjacent_linkages=3,
                  node_geo_feat_len=120,
                  pooling_scale=1.0,
                  pooling_output_size=(4, 3),
@@ -67,7 +67,7 @@ class DRRGHead(HeadMixin, nn.Module):
 
         assert isinstance(in_channels, int)
         assert isinstance(k_at_hops, tuple)
-        assert isinstance(adjacent_linkage_num, int)
+        assert isinstance(num_adjacent_linkages, int)
         assert isinstance(node_geo_feat_len, int)
         assert isinstance(pooling_scale, float)
         assert isinstance(pooling_output_size, tuple)
@@ -87,7 +87,7 @@ class DRRGHead(HeadMixin, nn.Module):
         self.out_channels = 6
         self.downsample_ratio = 1.0
         self.k_at_hops = k_at_hops
-        self.adjacent_linkage_num = adjacent_linkage_num
+        self.num_adjacent_linkages = num_adjacent_linkages
         self.node_geo_feat_len = node_geo_feat_len
         self.pooling_scale = pooling_scale
         self.pooling_output_size = pooling_output_size
@@ -115,14 +115,14 @@ class DRRGHead(HeadMixin, nn.Module):
         self.init_weights()
 
         self.graph_train = LocalGraphs(self.k_at_hops,
-                                       self.adjacent_linkage_num,
+                                       self.num_adjacent_linkages,
                                        self.node_geo_feat_len,
                                        self.pooling_scale,
                                        self.pooling_output_size,
                                        self.local_graph_thr)
 
         self.graph_test = ProposalLocalGraphs(
-            self.k_at_hops, self.adjacent_linkage_num, self.node_geo_feat_len,
+            self.k_at_hops, self.num_adjacent_linkages, self.node_geo_feat_len,
             self.pooling_scale, self.pooling_output_size, self.nms_thr,
             self.min_width, self.max_width, self.comp_shrink_ratio,
             self.comp_ratio, self.comp_score_thr, self.text_region_thr,

@@ -10,21 +10,21 @@ from mmocr.models.textdet.modules.utils import (feature_embedding,
 def test_local_graph_forward_train():
     geo_feat_len = 24
     pooling_h, pooling_w = pooling_out_size = (2, 2)
-    roi_num = 32
+    num_rois = 32
 
     local_graph_generator = LocalGraphs((4, 4), 3, geo_feat_len, 1.0,
                                         pooling_out_size, 0.5)
 
     feature_maps = torch.randn((2, 3, 128, 128), dtype=torch.float)
-    x = np.random.randint(4, 124, (roi_num, 1))
-    y = np.random.randint(4, 124, (roi_num, 1))
-    h = 4 * np.ones((roi_num, 1))
-    w = 4 * np.ones((roi_num, 1))
-    angle = (np.random.random_sample((roi_num, 1)) * 2 - 1) * np.pi / 2
+    x = np.random.randint(4, 124, (num_rois, 1))
+    y = np.random.randint(4, 124, (num_rois, 1))
+    h = 4 * np.ones((num_rois, 1))
+    w = 4 * np.ones((num_rois, 1))
+    angle = (np.random.random_sample((num_rois, 1)) * 2 - 1) * np.pi / 2
     cos, sin = np.cos(angle), np.sin(angle)
-    comp_labels = np.random.randint(1, 3, (roi_num, 1))
-    roi_num = roi_num * np.ones((roi_num, 1))
-    comp_attribs = np.hstack([roi_num, x, y, h, w, cos, sin, comp_labels])
+    comp_labels = np.random.randint(1, 3, (num_rois, 1))
+    num_rois = num_rois * np.ones((num_rois, 1))
+    comp_attribs = np.hstack([num_rois, x, y, h, w, cos, sin, comp_labels])
     comp_attribs = comp_attribs.astype(np.float32)
     comp_attribs_ = comp_attribs.copy()
     comp_attribs = np.stack([comp_attribs, comp_attribs_])
@@ -99,18 +99,18 @@ def test_local_graph_forward_test():
 
 
 def test_gcn():
-    local_graph_num = 32
-    max_graph_node_num = 16
+    num_local_graphs = 32
+    num_max_graph_nodes = 16
     input_feat_len = 512
     k = 8
     gcn = GCN(input_feat_len)
     node_feat = torch.randn(
-        (local_graph_num, max_graph_node_num, input_feat_len))
+        (num_local_graphs, num_max_graph_nodes, input_feat_len))
     adjacent_matrix = torch.rand(
-        (local_graph_num, max_graph_node_num, max_graph_node_num))
-    knn_inds = torch.randint(1, max_graph_node_num, (local_graph_num, k))
+        (num_local_graphs, num_max_graph_nodes, num_max_graph_nodes))
+    knn_inds = torch.randint(1, num_max_graph_nodes, (num_local_graphs, k))
     output = gcn(node_feat, adjacent_matrix, knn_inds)
-    assert output.size() == (local_graph_num * k, 2)
+    assert output.size() == (num_local_graphs * k, 2)
 
 
 def test_normalize_adjacent_matrix():

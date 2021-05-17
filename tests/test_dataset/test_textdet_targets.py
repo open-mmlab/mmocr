@@ -248,13 +248,13 @@ def test_gen_drrg_targets():
     target_generator = textdet_targets.DRRGTargets()
     assert np.allclose(target_generator.orientation_thr, 2.0)
     assert np.allclose(target_generator.resample_step, 8.0)
-    assert target_generator.min_comp_num == 9
-    assert target_generator.max_comp_num == 600
+    assert target_generator.num_min_comps == 9
+    assert target_generator.num_max_comps == 600
     assert np.allclose(target_generator.min_width, 8.0)
     assert np.allclose(target_generator.max_width, 24.0)
     assert np.allclose(target_generator.center_region_shrink_ratio, 0.3)
     assert np.allclose(target_generator.comp_shrink_ratio, 1.0)
-    assert np.allclose(target_generator.text_comp_ratio, 0.3)
+    assert np.allclose(target_generator.comp_w_h_ratio, 0.3)
     assert np.allclose(target_generator.text_comp_nms_thr, 0.25)
     assert np.allclose(target_generator.min_rand_half_height, 8.0)
     assert np.allclose(target_generator.max_rand_half_height, 24.0)
@@ -288,13 +288,13 @@ def test_gen_drrg_targets():
     assert output['gt_comp_attribs'].shape[-1] == 8
 
     # test generate_targets with the number of proposed text components exceeds
-    # max_comp_num
+    # num_max_comps
     target_generator = textdet_targets.DRRGTargets(
         min_width=2.,
         max_width=4.,
         min_rand_half_height=3.,
         max_rand_half_height=5.,
-        max_comp_num=6)
+        num_max_comps=6)
     output = target_generator(results)
     assert output['gt_comp_attribs'].ndim == 2
     assert output['gt_comp_attribs'].shape[0] == 6

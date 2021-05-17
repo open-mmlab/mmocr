@@ -19,7 +19,7 @@ class ProposalLocalGraphs(object):
 
     Args:
         k_at_hops (tuple(int)): The number of i-hop neighbors, i = 1, 2.
-        adjacent_linkage_num (int): The number of linkages when constructing
+        num_adjacent_linkages (int): The number of linkages when constructing
             adjacent matrix.
         node_geo_feat_len (int): The length of embedded geometric feature
             vector of a text component.
@@ -29,7 +29,7 @@ class ProposalLocalGraphs(object):
         min_width (float): The minimum width of text components.
         max_width (float): The maximum width of text components.
         comp_shrink_ratio (float): The shrink ratio of text components.
-        comp_ratio (float): The reciprocal of aspect ratio of text components.
+        comp_w_h_ratio (float): The width to height ratio of text components.
         comp_score_thr (float): The score threshold of text component.
         text_region_thr (float): The threshold for text region probability map.
         center_region_thr (float): The threshold for text center region
@@ -38,14 +38,14 @@ class ProposalLocalGraphs(object):
             text center region.
     """
 
-    def __init__(self, k_at_hops, adjacent_linkage_num, node_geo_feat_len,
+    def __init__(self, k_at_hops, num_adjacent_linkages, node_geo_feat_len,
                  pooling_scale, pooling_output_size, nms_thr, min_width,
-                 max_width, comp_shrink_ratio, comp_ratio, comp_score_thr,
+                 max_width, comp_shrink_ratio, comp_w_h_ratio, comp_score_thr,
                  text_region_thr, center_region_thr, center_region_area_thr):
 
         assert len(k_at_hops) == 2
         assert isinstance(k_at_hops, tuple)
-        assert isinstance(adjacent_linkage_num, int)
+        assert isinstance(num_adjacent_linkages, int)
         assert isinstance(node_geo_feat_len, int)
         assert isinstance(pooling_scale, float)
         assert isinstance(pooling_output_size, tuple)
@@ -53,14 +53,14 @@ class ProposalLocalGraphs(object):
         assert isinstance(min_width, float)
         assert isinstance(max_width, float)
         assert isinstance(comp_shrink_ratio, float)
-        assert isinstance(comp_ratio, float)
+        assert isinstance(comp_w_h_ratio, float)
         assert isinstance(comp_score_thr, float)
         assert isinstance(text_region_thr, float)
         assert isinstance(center_region_thr, float)
         assert isinstance(center_region_area_thr, int)
 
         self.k_at_hops = k_at_hops
-        self.active_connection = adjacent_linkage_num
+        self.active_connection = num_adjacent_linkages
         self.local_graph_depth = len(self.k_at_hops)
         self.node_geo_feat_dim = node_geo_feat_len
         self.pooling = RoIAlignRotated(pooling_output_size, pooling_scale)
@@ -68,7 +68,7 @@ class ProposalLocalGraphs(object):
         self.min_width = min_width
         self.max_width = max_width
         self.comp_shrink_ratio = comp_shrink_ratio
-        self.comp_ratio = comp_ratio
+        self.comp_w_h_ratio = comp_w_h_ratio
         self.comp_score_thr = comp_score_thr
         self.text_region_thr = text_region_thr
         self.center_region_thr = center_region_thr
@@ -76,7 +76,7 @@ class ProposalLocalGraphs(object):
 
     def propose_comps(self, score_map, top_height_map, bot_height_map, sin_map,
                       cos_map, comp_score_thr, min_width, max_width,
-                      comp_shrink_ratio, comp_ratio):
+                      comp_shrink_ratio, comp_w_h_ratio):
         """Propose text components.
 
         Args:
@@ -91,7 +91,7 @@ class ProposalLocalGraphs(object):
             min_width (float): The minimum width of text components.
             max_width (float): The maximum width of text components.
             comp_shrink_ratio (float): The shrink ratio of text components.
-            comp_ratio (float): The reciprocal of aspect ratio of text
+            comp_w_h_ratio (float): The width to height ratio of text
                 components.
 
         Returns:
@@ -113,7 +113,7 @@ class ProposalLocalGraphs(object):
         bot_mid_pts = comp_centers - np.hstack(
             [bot_height * sin, bot_height * cos])
 
-        width = (top_height + bot_height) * comp_ratio
+        width = (top_height + bot_height) * comp_w_h_ratio
         width = np.clip(width, min_width, max_width)
         r = width / 2
 
@@ -179,7 +179,7 @@ class ProposalLocalGraphs(object):
                                             self.comp_score_thr,
                                             self.min_width, self.max_width,
                                             self.comp_shrink_ratio,
-                                            self.comp_ratio)
+                                            self.comp_w_h_ratio)
 
             text_comps = la_nms(text_comps, self.nms_thr)
             text_comp_mask = np.zeros(mask_sz)
@@ -224,7 +224,7 @@ class ProposalLocalGraphs(object):
 
         h = top_height_map[y, x].reshape(
             (-1, 1)) + bot_height_map[y, x].reshape((-1, 1))
-        w = np.clip(h * self.comp_ratio, self.min_width, self.max_width)
+        w = np.clip(h * self.comp_w_h_ratio, self.min_width, self.max_width)
         sin = sin_map[y, x].reshape((-1, 1))
         cos = cos_map[y, x].reshape((-1, 1))
 
@@ -278,7 +278,7 @@ class ProposalLocalGraphs(object):
             pivot_local_graphs.append(pivot_local_graph)
             pivot_knns.append(pivot_knn)
 
-        max_node_num = max([
+        num_max_nodes = max([
             len(pivot_local_graph) for pivot_local_graph in pivot_local_graphs
         ])
 
@@ -289,7 +289,7 @@ class ProposalLocalGraphs(object):
 
         for graph_ind, pivot_knn in enumerate(pivot_knns):
             pivot_local_graph = pivot_local_graphs[graph_ind]
-            node_num = len(pivot_local_graph)
+            num_nodes = len(pivot_local_graph)
             pivot_ind = pivot_local_graph[0]
             node2ind_map = {j: i for i, j in enumerate(pivot_local_graph)}
 
@@ -298,7 +298,7 @@ class ProposalLocalGraphs(object):
             pivot_feats = node_feats[pivot_ind]
             normalized_feats = node_feats[pivot_local_graph] - pivot_feats
 
-            adjacent_matrix = np.zeros((node_num, node_num))
+            adjacent_matrix = np.zeros((num_nodes, num_nodes))
             for node in pivot_local_graph:
                 neighbors = sorted_dist_inds[node,
                                              1:self.active_connection + 1]
@@ -311,15 +311,15 @@ class ProposalLocalGraphs(object):
 
             adjacent_matrix = normalize_adjacent_matrix(
                 adjacent_matrix, mode='DAD')
-            pad_adjacent_matrix = torch.zeros((max_node_num, max_node_num),
+            pad_adjacent_matrix = torch.zeros((num_max_nodes, num_max_nodes),
                                               dtype=torch.float,
                                               device=device)
-            pad_adjacent_matrix[:node_num, :node_num] = adjacent_matrix
+            pad_adjacent_matrix[:num_nodes, :num_nodes] = adjacent_matrix
 
             pad_normalized_feats = torch.cat([
                 normalized_feats,
                 torch.zeros(
-                    (max_node_num - node_num, normalized_feats.shape[1]),
+                    (num_max_nodes - num_nodes, normalized_feats.shape[1]),
                     dtype=torch.float,
                     device=device)
             ],
@@ -328,7 +328,7 @@ class ProposalLocalGraphs(object):
             local_graph_nodes = torch.tensor(pivot_local_graph)
             local_graph_nodes = torch.cat([
                 local_graph_nodes,
-                torch.zeros(max_node_num - node_num, dtype=torch.long)
+                torch.zeros(num_max_nodes - num_nodes, dtype=torch.long)
             ],
                                           dim=-1)
 

@@ -455,16 +455,16 @@ def test_drrg(cfg_file):
     gt_bot_height_map = gt_top_height_map.copy()
     gt_sin_map = mm_inputs.pop('gt_sin_map')
     gt_cos_map = mm_inputs.pop('gt_cos_map')
-    roi_num = 32
-    x = np.random.randint(4, 224, (roi_num, 1))
-    y = np.random.randint(4, 224, (roi_num, 1))
-    h = 4 * np.ones((roi_num, 1))
-    w = 4 * np.ones((roi_num, 1))
-    angle = (np.random.random_sample((roi_num, 1)) * 2 - 1) * np.pi / 2
+    num_rois = 32
+    x = np.random.randint(4, 224, (num_rois, 1))
+    y = np.random.randint(4, 224, (num_rois, 1))
+    h = 4 * np.ones((num_rois, 1))
+    w = 4 * np.ones((num_rois, 1))
+    angle = (np.random.random_sample((num_rois, 1)) * 2 - 1) * np.pi / 2
     cos, sin = np.cos(angle), np.sin(angle)
-    comp_labels = np.random.randint(1, 3, (roi_num, 1))
-    roi_num = roi_num * np.ones((roi_num, 1))
-    comp_attribs = np.hstack([roi_num, x, y, h, w, cos, sin, comp_labels])
+    comp_labels = np.random.randint(1, 3, (num_rois, 1))
+    num_rois = num_rois * np.ones((num_rois, 1))
+    comp_attribs = np.hstack([num_rois, x, y, h, w, cos, sin, comp_labels])
     gt_comp_attribs = np.expand_dims(comp_attribs.astype(np.float32), axis=0)
 
     # Test forward train

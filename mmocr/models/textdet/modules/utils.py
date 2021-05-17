@@ -77,7 +77,7 @@ def feature_embedding(input_feats, out_feat_len):
     assert isinstance(out_feat_len, int)
     assert out_feat_len >= input_feats.shape[1]
 
-    node_num = input_feats.shape[0]
+    num_nodes = input_feats.shape[0]
     feat_dim = input_feats.shape[1]
     feat_repeat_times = out_feat_len // feat_dim
     residue_dim = out_feat_len % feat_dim
@@ -91,7 +91,7 @@ def feature_embedding(input_feats, out_feat_len):
             np.expand_dims(input_feats, axis=0), feat_repeat_times, axis=0)
         residue_feats = np.hstack([
             input_feats[:, 0:residue_dim],
-            np.zeros((node_num, feat_dim - residue_dim))
+            np.zeros((num_nodes, feat_dim - residue_dim))
         ])
         residue_feats = np.expand_dims(residue_feats, axis=0)
         repeat_feats = np.concatenate([repeat_feats, residue_feats], axis=0)
@@ -99,7 +99,7 @@ def feature_embedding(input_feats, out_feat_len):
         embedded_feats[:, 0::2] = np.sin(embedded_feats[:, 0::2])
         embedded_feats[:, 1::2] = np.cos(embedded_feats[:, 1::2])
         embedded_feats = np.transpose(embedded_feats, (1, 0, 2)).reshape(
-            (node_num, -1))[:, 0:out_feat_len]
+            (num_nodes, -1))[:, 0:out_feat_len]
     else:
         embed_wave = np.array([
             np.power(1000, 2.0 * (j // 2) / feat_repeat_times)
@@ -111,6 +111,6 @@ def feature_embedding(input_feats, out_feat_len):
         embedded_feats[:, 0::2] = np.sin(embedded_feats[:, 0::2])
         embedded_feats[:, 1::2] = np.cos(embedded_feats[:, 1::2])
         embedded_feats = np.transpose(embedded_feats, (1, 0, 2)).reshape(
-            (node_num, -1)).astype(np.float32)
+            (num_nodes, -1)).astype(np.float32)
 
     return embedded_feats
