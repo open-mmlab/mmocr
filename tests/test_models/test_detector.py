@@ -431,7 +431,6 @@ def test_fcenet(cfg_file):
     detector.show_result(img, results)
 
 
-@pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
 @pytest.mark.parametrize(
     'cfg_file', ['textdet/drrg/'
                  'drrg_r50_fpn_unet_1200e_ctw1500.py'])
