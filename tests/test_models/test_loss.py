@@ -35,7 +35,7 @@ def test_textsnakeloss():
 
 def test_fcenetloss():
     k = 5
-    fcenetloss = losses.FCELoss(fourier_degree=k, sample_num=10)
+    fcenetloss = losses.FCELoss(fourier_degree=k, num_sample=10)
 
     input_shape = (1, 3, 64, 64)
     (n, c, h, w) = input_shape

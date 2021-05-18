@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from numpy.fft import fft
 from numpy.linalg import norm
 
 import mmocr.utils.check_argument as check_argument
@@ -161,7 +162,7 @@ class FCENetTargets(TextSnakeTargets):
         new_polygon = np.concatenate([polygon[index:], polygon[:index]])
         return new_polygon
 
-    def fourier_transform(self, polygon, fourier_degree):
+    def poly2fourier(self, polygon, fourier_degree):
         """Perform Fourier transformation to generate Fourier coefficients ck
         from polygon.
 
@@ -172,15 +173,8 @@ class FCENetTargets(TextSnakeTargets):
             c (ndarray(complex)): Fourier coefficients.
         """
         points = polygon[:, 0] + polygon[:, 1] * 1j
-        n = len(points)
-        t = np.multiply([i / n for i in range(n)], -2 * np.pi * 1j)
-
-        e = complex(np.e)
-        c = np.zeros((2 * fourier_degree + 1, ), dtype='complex')
-
-        for i in range(-fourier_degree, fourier_degree + 1):
-            c[i + fourier_degree] = np.sum(points * np.power(e, i * t)) / n
-
+        c_fft = fft(points) / len(points)
+        c = np.hstack((c_fft[-fourier_degree:], c_fft[:fourier_degree + 1]))
         return c
 
     def clockwise(self, c, fourier_degree):
@@ -215,8 +209,7 @@ class FCENetTargets(TextSnakeTargets):
         resampled_polygon = self.resample_polygon(polygon)
         resampled_polygon = self.normalize_polygon(resampled_polygon)
 
-        fourier_coeff = self.fourier_transform(resampled_polygon,
-                                               fourier_degree)
+        fourier_coeff = self.poly2fourier(resampled_polygon, fourier_degree)
         fourier_coeff = self.clockwise(fourier_coeff, fourier_degree)
 
         real_part = np.real(fourier_coeff).reshape((-1, 1))
@@ -315,18 +308,15 @@ class FCENetTargets(TextSnakeTargets):
             level_img_size = (h // size_divisor, w // size_divisor)
 
             text_region = self.generate_text_region_mask(
-                level_img_size, lv_text_polys[ind])
-            text_region = np.expand_dims(text_region, axis=0)
+                level_img_size, lv_text_polys[ind])[None]
             current_level_maps.append(text_region)
 
             center_region = self.generate_center_region_mask(
-                level_img_size, lv_text_polys[ind])
-            center_region = np.expand_dims(center_region, axis=0)
+                level_img_size, lv_text_polys[ind])[None]
             current_level_maps.append(center_region)
 
             effective_mask = self.generate_effective_mask(
-                level_img_size, lv_ignore_polys[ind])
-            effective_mask = np.expand_dims(effective_mask, axis=0)
+                level_img_size, lv_ignore_polys[ind])[None]
             current_level_maps.append(effective_mask)
 
             fourier_real_map, fourier_image_maps = self.generate_fourier_maps(

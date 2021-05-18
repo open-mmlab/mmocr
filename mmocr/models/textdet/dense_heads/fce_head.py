@@ -20,11 +20,11 @@ class FCEHead(HeadMixin, nn.Module):
         in_channels (int): The number of input channels.
         scales (list[int]) : The scale of each layer.
         fourier_degree (int) : The maximum Fourier transform degree k.
-        sample_num (int) : The sampling points number of regression
+        num_sample (int) : The sampling points number of regression
             loss. If it is too small, FCEnet tends to be overfitting.
-        score_thresh (float) : The threshold to filter out the final
+        score_thr (float) : The threshold to filter out the final
             candidates.
-        nms_thresh (float) : The threshold of nms.
+        nms_thr (float) : The threshold of nms.
         alpha (float) : The parameter to calculate final scores. Score_{final}
             = (Score_{text region} ^ alpha)
             * (Score{text center region} ^ beta)
@@ -35,12 +35,12 @@ class FCEHead(HeadMixin, nn.Module):
                  in_channels,
                  scales,
                  fourier_degree=5,
-                 sample_num=50,
-                 reconstr_points=50,
+                 num_sample=50,
+                 num_reconstr_points=50,
                  decoding_type='fcenet',
                  loss=dict(type='FCELoss'),
-                 score_thresh=0.3,
-                 nms_thresh=0.1,
+                 score_thr=0.3,
+                 nms_thr=0.1,
                  alpha=1.0,
                  beta=1.0,
                  train_cfg=None,
@@ -53,14 +53,14 @@ class FCEHead(HeadMixin, nn.Module):
         self.in_channels = in_channels
         self.scales = scales
         self.fourier_degree = fourier_degree
-        self.sample_num = sample_num
-        self.reconstr_points = reconstr_points
+        self.sample_num = num_sample
+        self.num_reconstr_points = num_reconstr_points
         loss['fourier_degree'] = fourier_degree
-        loss['sample_num'] = sample_num
+        loss['num_sample'] = num_sample
         self.decoding_type = decoding_type
         self.loss_module = build_loss(loss)
-        self.score_thresh = score_thresh
-        self.nms_thresh = nms_thresh
+        self.score_thr = score_thr
+        self.nms_thr = nms_thr
         self.alpha = alpha
         self.beta = beta
         self.train_cfg = train_cfg
@@ -108,7 +108,7 @@ class FCEHead(HeadMixin, nn.Module):
                 score_map, scale)
 
         # nms
-        boundaries = poly_nms(boundaries, self.nms_thresh)
+        boundaries = poly_nms(boundaries, self.nms_thr)
 
         if rescale:
             boundaries = self.resize_boundary(
@@ -125,10 +125,10 @@ class FCEHead(HeadMixin, nn.Module):
             decoding_type=self.decoding_type,
             preds=score_map,
             fourier_degree=self.fourier_degree,
-            reconstr_points=self.reconstr_points,
+            num_reconstr_points=self.num_reconstr_points,
             scale=scale,
             alpha=self.alpha,
             beta=self.beta,
             text_repr_type='poly',
-            score_thresh=self.score_thresh,
-            nms_thresh=self.nms_thresh)
+            score_thr=self.score_thr,
+            nms_thr=self.nms_thr)

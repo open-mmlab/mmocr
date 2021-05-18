@@ -17,15 +17,32 @@ def test_db_boxes_from_bitmaps():
 def test_fcenet_decode():
     from mmocr.models.textdet.postprocess.wrapper import fcenet_decode
 
-    k = 5
+    k = 1
     preds = []
-    preds.append(torch.randn(1, 4, 40, 40))
-    preds.append(torch.randn(1, 4 * k + 2, 40, 40))
+    preds.append(torch.ones(1, 4, 10, 10))
+    preds.append(torch.ones(1, 4 * k + 2, 10, 10))
 
     boundaries = fcenet_decode(
-        preds=preds, fourier_degree=k, reconstr_points=50, scale=1)
+        preds=preds,
+        fourier_degree=k,
+        num_reconstr_points=50,
+        scale=1,
+        nms_thr=0.01)
 
     assert isinstance(boundaries, list)
+
+
+def test_poly_nms():
+    from mmocr.models.textdet.postprocess.wrapper import poly_nms
+    threshold = 0
+    polygons = []
+    polygons.append([10, 10, 10, 30, 30, 30, 30, 10, 0.95])
+    polygons.append([15, 15, 15, 25, 25, 25, 25, 15, 0.9])
+    polygons.append([40, 40, 40, 50, 50, 50, 50, 40, 0.85])
+    polygons.append([5, 5, 5, 15, 15, 15, 15, 5, 0.7])
+
+    keep_poly = poly_nms(polygons, threshold)
+    assert isinstance(keep_poly, list)
 
 
 def test_comps2boundaries():
