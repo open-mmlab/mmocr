@@ -316,7 +316,6 @@ def test_dbnet(cfg_file):
     detector.show_result(img, results)
 
 
-@pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
 @pytest.mark.parametrize(
     'cfg_file',
     ['textdet/textsnake/'
@@ -328,13 +327,11 @@ def test_textsnake(cfg_file):
 
     from mmocr.models import build_detector
     detector = build_detector(model)
-    detector = detector.cuda()
     input_shape = (1, 3, 224, 224)
     num_kernels = 1
     mm_inputs = _demo_mm_inputs(num_kernels, input_shape)
 
     imgs = mm_inputs.pop('imgs')
-    imgs = imgs.cuda()
     img_metas = mm_inputs.pop('img_metas')
     gt_text_mask = mm_inputs.pop('gt_text_mask')
     gt_center_region_mask = mm_inputs.pop('gt_center_region_mask')
