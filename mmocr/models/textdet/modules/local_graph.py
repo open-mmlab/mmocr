@@ -6,7 +6,7 @@ from .utils import (euclidean_distance_matrix, feature_embedding,
                     normalize_adjacent_matrix)
 
 
-class LocalGraphs(object):
+class LocalGraphs:
     """Generate local graphs for GCN to classify the neighbors of a pivot for
     DRRG: Deep Relational Reasoning Graph Network for Arbitrary Shape Text
     Detection.

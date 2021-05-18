@@ -45,7 +45,7 @@ class NerConvertor:
             self.label2id_dict, self.id2label, self.ignore_id = \
                 self._generate_labelid_dict()
         elif self.annotation_type == 'bioes':
-            raise NotImplementedError('Bioes format is not surpported yet!')
+            raise NotImplementedError('Bioes format is not supported yet!')
 
         assert self.ignore_id is not None
         assert self.id2label is not None
@@ -110,10 +110,10 @@ class NerConvertor:
         labels = [0] * self.max_len
         for j in range(min(text_len + 2, self.max_len)):
             labels[j] = self.ignore_id
-        categorys = label
-        for key in categorys:
-            for text in categorys[key]:
-                for place in categorys[key][text]:
+        categories = label
+        for key in categories:
+            for text in categories[key]:
+                for place in categories[key][text]:
                     # Remove the label position beyond the maximum length.
                     if place[0] + 1 < len(labels):
                         labels[place[0] + 1] = self.label2id_dict[key][0]
@@ -166,6 +166,6 @@ class NerConvertor:
                         entity = [-1, -1, -1]
                 else:
                     raise NotImplementedError(
-                        'The data format is not surpported yet!')
+                        'The data format is not supported yet!')
             pred_entities.append(entities)
         return pred_entities
