@@ -19,8 +19,8 @@ def test_fcenet_decode():
 
     k = 1
     preds = []
-    preds.append(torch.randn(1, 4, 100, 100))
-    preds.append(torch.randn(1, 4 * k + 2, 100, 100))
+    preds.append(torch.ones(1, 4, 10, 10))
+    preds.append(torch.ones(1, 4 * k + 2, 10, 10))
 
     boundaries = fcenet_decode(
         preds=preds,
@@ -30,6 +30,19 @@ def test_fcenet_decode():
         nms_thr=0.01)
 
     assert isinstance(boundaries, list)
+
+
+def test_poly_nms():
+    from mmocr.models.textdet.postprocess.wrapper import poly_nms
+    threshold = 0
+    polygons = []
+    polygons.append([10, 10, 10, 30, 30, 30, 30, 10, 0.95])
+    polygons.append([15, 15, 15, 25, 25, 25, 25, 15, 0.9])
+    polygons.append([40, 40, 40, 50, 50, 50, 50, 40, 0.85])
+    polygons.append([5, 5, 5, 15, 15, 15, 15, 5, 0.7])
+
+    keep_poly = poly_nms(polygons, threshold)
+    assert isinstance(keep_poly, list)
 
 
 def test_comps2boundaries():
