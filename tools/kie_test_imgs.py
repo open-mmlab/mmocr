@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import ast
 import os
 import os.path as osp
 
@@ -61,6 +62,10 @@ def parse_args():
     parser.add_argument(
         '--show-dir', help='Directory where the output images will be saved.')
     parser.add_argument('--local_rank', type=int, default=0)
+    parser.add_argument(
+        '--device',
+        help='Use int or int list for gpu. Default is cpu',
+        default=None)
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
@@ -74,7 +79,9 @@ def main():
                                         'operation (show the results / save )'
                                         'the results with the argument '
                                         '"--show" or "--show-dir".')
-
+    device = args.device
+    if device is not None:
+        device = ast.literal_eval(f'[{device}]')
     cfg = Config.fromfile(args.config)
     # import modules from string list.
     if cfg.get('custom_imports', None):
@@ -101,7 +108,7 @@ def main():
     model = build_detector(cfg.model, test_cfg=cfg.get('test_cfg'))
     load_checkpoint(model, args.checkpoint, map_location='cpu')
 
-    model = MMDataParallel(model, device_ids=[0])
+    model = MMDataParallel(model, device_ids=device)
     test(model, data_loader, args.show, args.show_dir)
 
 
