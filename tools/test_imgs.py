@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import codecs
 import os.path as osp
 from argparse import ArgumentParser
