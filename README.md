@@ -47,21 +47,44 @@ Documentation: https://mmocr.readthedocs.io/en/latest/.
 Supported algorithms:
 
 <details open>
-<summary>(click to collapse)</summary>
+<summary>Text Detection</summary>
 
 - [x] [DBNet](configs/textdet/dbnet/README.md) (AAAI'2020)
 - [x] [Mask R-CNN](configs/textdet/maskrcnn/README.md) (ICCV'2017)
 - [x] [PANet](configs/textdet/panet/README.md) (ICCV'2019)
 - [x] [PSENet](configs/textdet/psenet/README.md) (CVPR'2019)
 - [x] [TextSnake](configs/textdet/textsnake/README.md) (ECCV'2018)
+- [x] [DRRG](configs/textdet/drrg/README.md) (CVPR'2020)
+- [x] [FCENet](configs/textdet/fcenet/README.MD) (CVPR'2021)
+
+</details>
+
+<details open>
+<summary>Text Recognition</summary>
+
 - [x] [CRNN](configs/textrecog/crnn/crnn_academic_dataset.py) (TPAMI'2016)
 - [x] [NRTR](configs/textrecog/nrtr/README.md) (ICDAR'2019)
 - [x] [RobustScanner](configs/textrecog/robust_scanner/README.md) (ECCV'2020)
 - [x] [SAR](configs/textrecog/sar/README.md) (AAAI'2019)
 - [x] [SegOCR](configs/bottom_up/higherhrnet/README.md) (Manuscript'2021)
+
+</details>
+
+<details open>
+<summary>Key Information Extraction</summary>
+
 - [x] [SDMG-R](configs/kie/sdmgr/README.md) (ArXiv'2021)
 
 </details>
+
+<details open>
+<summary>Named Entity Recognition</summary>
+
+- [x] [Bert-Softmax](configs/ner/bert_softmax/README.md) (NAACL'2019)
+
+</details>
+
+Please refer to [model_zoo](https://mmocr.readthedocs.io/en/latest/index.html) for more details.
 
 ## License
 
@@ -82,11 +105,8 @@ If you find this project useful in your research, please consider cite:
 
 ## Changelog
 
-v0.1.0 was released on 07/04/2021.
+v0.2.0 was released in 2021-5-18.
 
-## Benchmark and Model Zoo
-
-Please refer to [modelzoo.md](https://mmocr.readthedocs.io/en/latest/index.html) for more details.
 
 ## Installation
 
