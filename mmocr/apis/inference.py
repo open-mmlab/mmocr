@@ -128,3 +128,40 @@ def model_inference(model, imgs, batch_mode=False):
         return results[0]
     else:
         return results
+
+
+def text_model_inference(model, input_sentence):
+    """Inference text(s) with the entity recognizer.
+
+    Args:
+        model (nn.Module): The loaded recognizer.
+        input_sentence (str): A text entered by the user.
+
+    Returns:
+        result (dict): Predicted results.
+    """
+
+    assert isinstance(input_sentence, str)
+
+    cfg = model.cfg
+    test_pipeline = Compose(cfg.data.test.pipeline)
+    data = {'text': input_sentence, 'label': {}}
+
+    # build the data pipeline
+    data = test_pipeline(data)
+    if isinstance(data['img_metas'], dict):
+        img_metas = data['img_metas']
+    else:
+        img_metas = data['img_metas'].data
+
+    assert isinstance(img_metas, dict)
+    img_metas = {
+        'input_ids': img_metas['input_ids'].unsqueeze(0),
+        'attention_masks': img_metas['attention_masks'].unsqueeze(0),
+        'token_type_ids': img_metas['token_type_ids'].unsqueeze(0),
+        'labels': img_metas['labels'].unsqueeze(0)
+    }
+    # forward the model
+    with torch.no_grad():
+        result = model(None, img_metas, return_loss=False)
+    return result
