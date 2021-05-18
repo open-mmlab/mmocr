@@ -66,25 +66,21 @@ class FCELoss(nn.Module):
         return results
 
     def forward_single(self, pred, gt):
-        cls_pred, reg_pred = pred[0], pred[1]
+        cls_pred = pred[0].permute(0, 2, 3, 1).contiguous()
+        reg_pred = pred[1].permute(0, 2, 3, 1).contiguous()
+        gt = gt.permute(0, 2, 3, 1).contiguous()
 
         k = 2 * self.fourier_degree + 1
-        tr_pred = cls_pred[:, :2, :, :].permute(0, 2, 3, 1)\
-            .contiguous().view(-1, 2)
-        tcl_pred = cls_pred[:, 2:, :, :].permute(0, 2, 3, 1)\
-            .contiguous().view(-1, 2)
-        x_pred = reg_pred[:, 0:k, :, :].permute(0, 2, 3, 1)\
-            .contiguous().view(-1, k)
-        y_pred = reg_pred[:, k:2 * k, :, :].permute(0, 2, 3, 1)\
-            .contiguous().view(-1, k)
+        tr_pred = cls_pred[:, :, :, :2].view(-1, 2)
+        tcl_pred = cls_pred[:, :, :, 2:].view(-1, 2)
+        x_pred = reg_pred[:, :, :, 0:k].view(-1, k)
+        y_pred = reg_pred[:, :, :, k:2 * k].view(-1, k)
 
-        tr_mask = gt[:, :1, :, :].permute(0, 2, 3, 1).contiguous().view(-1)
-        tcl_mask = gt[:, 1:2, :, :].permute(0, 2, 3, 1).contiguous().view(-1)
-        train_mask = gt[:, 2:3, :, :].permute(0, 2, 3, 1).contiguous().view(-1)
-        x_map = gt[:, 3:3 + k, :, :].permute(0, 2, 3, 1)\
-            .contiguous().view(-1, k)
-        y_map = gt[:, 3 + k:, :, :].permute(0, 2, 3, 1)\
-            .contiguous().view(-1, k)
+        tr_mask = gt[:, :, :, :1].view(-1)
+        tcl_mask = gt[:, :, :, 1:2].view(-1)
+        train_mask = gt[:, :, :, 2:3].view(-1)
+        x_map = gt[:, :, :, 3:3 + k].view(-1, k)
+        y_map = gt[:, :, :, 3 + k:].view(-1, k)
 
         tr_train_mask = train_mask * tr_mask
         device = x_map.device
