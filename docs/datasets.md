@@ -8,6 +8,8 @@ This page lists the datasets which are commonly used in text detection, text rec
   - [Text Detection](#text-detection)
   - [Text Recognition](#text-recognition)
   - [Key Information Extraction](#key-information-extraction)
+  - [Named Entity Recognition](#named-entity-recognition)
+    - [CLUENER2020](#cluener2020)
 
 <!-- /TOC -->
 
@@ -225,7 +227,6 @@ The structure of the key information extraction dataset directory is organized a
 
 ```text
 └── wildreceipt
-  ├── anno_files
   ├── class_list.txt
   ├── dict.txt
   ├── image_files
