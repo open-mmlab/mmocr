@@ -18,18 +18,25 @@
 - Support batch inference [#86](https://github.com/open-mmlab/mmocr/pull/86) [#87](https://github.com/open-mmlab/mmocr/pull/87) [#178](https://github.com/open-mmlab/mmocr/pull/178)
 - Add TPS preprocessor for text recognition [#117](https://github.com/open-mmlab/mmocr/pull/117) [#135](https://github.com/open-mmlab/mmocr/pull/135)
 - Add demo documentation [#151](https://github.com/open-mmlab/mmocr/pull/151) [#166](https://github.com/open-mmlab/mmocr/pull/166) [#168](https://github.com/open-mmlab/mmocr/pull/168) [#170](https://github.com/open-mmlab/mmocr/pull/170) [#171](https://github.com/open-mmlab/mmocr/pull/171)
-- Add checkout for Chinese recognition [#156](https://github.com/open-mmlab/mmocr/pull/156)
+- Add checkpoint for Chinese recognition [#156](https://github.com/open-mmlab/mmocr/pull/156)
 - Add metafile [#175](https://github.com/open-mmlab/mmocr/pull/175) [#176](https://github.com/open-mmlab/mmocr/pull/176) [#177](https://github.com/open-mmlab/mmocr/pull/177) [#182](https://github.com/open-mmlab/mmocr/pull/182) [#183](https://github.com/open-mmlab/mmocr/pull/183)
+- Add support for numpy array inference [#74](https://github.com/open-mmlab/mmocr/pull/74)
 
 **Bug Fixes**
 
 - Fix duplicated points due to transform for textsnake [#130](https://github.com/open-mmlab/mmocr/pull/130)
 - Fix CTC loss NaN [#159](https://github.com/open-mmlab/mmocr/pull/159)
 - Fix error raised if result is empty in demo [#144](https://github.com/open-mmlab/mmocr/pull/141)
+- Fix results missed if a large number of boxes on one image [#98](https://github.com/open-mmlab/mmocr/pull/98)
+- Fix package missed in dockerfile [#109](https://github.com/open-mmlab/mmocr/pull/109)
 
 **Improvements**
 
 - Simplify installation procedure [#188](https://github.com/open-mmlab/mmocr/pull/188)
+- Add zh-CN README [#70](https://github.com/open-mmlab/mmocr/pull/70) [#95](https://github.com/open-mmlab/mmocr/pull/95)
+- Support windows [#89](https://github.com/open-mmlab/mmocr/pull/89)
+- Add Colab [#147](https://github.com/open-mmlab/mmocr/pull/147) [#199](https://github.com/open-mmlab/mmocr/pull/199)
+- Add 1-step installation using conda environment [#193](https://github.com/open-mmlab/mmocr/pull/193) [#194](https://github.com/open-mmlab/mmocr/pull/194) [#195](https://github.com/open-mmlab/mmocr/pull/195)
 
 
 ## v0.1.0 (7/4/2021)
