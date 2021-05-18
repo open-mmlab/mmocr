@@ -774,7 +774,11 @@ class RandomScaling:
 @PIPELINES.register_module()
 class RandomCropFlip:
 
-    def __init__(self, crop_ratio=0.5, iter_num=1, min_area_ratio=0.2):
+    def __init__(self,
+                 pad_ratio=0.1,
+                 crop_ratio=0.5,
+                 iter_num=1,
+                 min_area_ratio=0.2):
         """Random crop and flip a patch of the image.
 
         Args:
@@ -787,7 +791,7 @@ class RandomCropFlip:
         assert isinstance(iter_num, int)
         assert isinstance(min_area_ratio, float)
 
-        self.scale = 10
+        self.pad_ratio = pad_ratio
         self.epsilon = 1e-2
         self.crop_ratio = crop_ratio
         self.iter_num = iter_num
@@ -809,15 +813,16 @@ class RandomCropFlip:
         if np.random.random() >= self.crop_ratio:
             return results
 
-        h_axis, w_axis = self.crop_target(image, all_polygons, self.scale)
+        h, w, _ = results['img_shape']
+        area = h * w
+        pad_h = int(h * self.pad_ratio)
+        pad_w = int(w * self.pad_ratio)
+        h_axis, w_axis = self.generate_crop_target(image, all_polygons, pad_h,
+                                                   pad_w)
         if len(h_axis) == 0 or len(w_axis) == 0:
             return results
 
         attempt = 0
-        h, w, _ = results['img_shape']
-        area = h * w
-        pad_h = h // self.scale
-        pad_w = w // self.scale
         while attempt < 10:
             attempt += 1
             polys_keep = []
@@ -921,7 +926,7 @@ class RandomCropFlip:
 
         return results
 
-    def crop_target(self, image, all_polys, scale):
+    def generate_crop_target(self, image, all_polys, pad_h, pad_w):
         """Generate crop target and make sure not to crop the polygon
         instances.
 
@@ -929,14 +934,13 @@ class RandomCropFlip:
             image (ndarray): The image waited to be crop.
             all_polys (list[list[ndarray]]): All polygons including ground
                 truth polygons and ground truth ignored polygons.
-            scale (int): A scale factor to control crop range.
+            pad_h (int): Padding length of height.
+            pad_w (int): Padding length of width.
         Returns:
             h_axis (ndarray): Vertical cropping range.
             w_axis (ndarray): Horizontal cropping range.
         """
         h, w, _ = image.shape
-        pad_h = h // scale
-        pad_w = w // scale
         h_array = np.zeros((h + pad_h * 2), dtype=np.int32)
         w_array = np.zeros((w + pad_w * 2), dtype=np.int32)
 
@@ -949,7 +953,7 @@ class RandomCropFlip:
 
         polys = np.array(text_polys, dtype=np.int32)
         for poly in polys:
-            poly = np.round(poly, decimals=0).astype(np.int32)  # 四舍五入
+            poly = np.round(poly, decimals=0).astype(np.int32)
             minx = np.min(poly[:, 0])
             maxx = np.max(poly[:, 0])
             w_array[minx + pad_w:maxx + pad_w] = 1

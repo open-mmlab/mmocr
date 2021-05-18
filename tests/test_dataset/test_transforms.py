@@ -208,9 +208,13 @@ def test_random_crop_flip(mock_randint):
         crop_ratio=crop_ratio, iter_num=iter_num)
 
     # test crop_target
-    scale = 10
+    pad_ratio = 0.1
+    h, w = img.shape[:2]
+    pad_h = int(h * pad_ratio)
+    pad_w = int(w * pad_ratio)
     all_polys = results['gt_masks'].masks
-    h_axis, w_axis = random_crop_fliper.crop_target(img, all_polys, scale)
+    h_axis, w_axis = random_crop_fliper.generate_crop_target(
+        img, all_polys, pad_h, pad_w)
 
     assert np.allclose(h_axis, (0, 11))
     assert np.allclose(w_axis, (0, 11))

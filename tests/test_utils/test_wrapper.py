@@ -19,10 +19,10 @@ def test_fcenet_decode():
 
     k = 5
     preds = []
-    preds.append(torch.randn(1, 4, 40, 40))
-    preds.append(torch.randn(1, 4 * k + 2, 40, 40))
+    preds.append(torch.ones(1, 4, 40, 40))
+    preds.append(torch.ones(1, 4 * k + 2, 40, 40))
 
     boundaries = fcenet_decode(
-        preds=preds, fourier_degree=k, reconstr_points=50, scale=1)
+        preds=preds, fourier_degree=k, num_reconstr_points=50, scale=1)
 
     assert isinstance(boundaries, list)
