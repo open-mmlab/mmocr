@@ -26,11 +26,9 @@ def main():
     result = text_model_inference(model, input_sentence)
 
     # show the results
-    for i in range(len(result)):
-        pred_entities = result[i]
-        text = input_sentence
+    for pred_entities in result:
         for entity in pred_entities:
-            print(f'{entity[0]}: {text[entity[1]:entity[2] + 1]}')
+            print(f'{entity[0]}: {input_sentence[entity[1]:entity[2] + 1]}')
 
 
 if __name__ == '__main__':
