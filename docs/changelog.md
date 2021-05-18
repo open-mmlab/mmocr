@@ -4,10 +4,11 @@
 
 **Highlights**
 
-1. Support Bert-softmax (NAACL'2019)
-2. Support DRRG (CVPR'2020)
-3. Support FCENet (CVPR'2021)
-4. Add text detection and recognition end-to-end demo.
+1. Add the NER approach Bert-softmax (NAACL'2019)
+2. Add the text detection method DRRG (CVPR'2020)
+3. Add the text detection method FCENet (CVPR'2021)
+4. Increase the ease of use via adding text detection and recognition end-to-end demo, and colab online demo.
+5. Simplify the installation.
 
 **New Features**
 
@@ -24,15 +25,16 @@
 
 **Bug Fixes**
 
-- Fix duplicated points due to transform for textsnake [#130](https://github.com/open-mmlab/mmocr/pull/130)
+- Fix the duplicated point bug due to transform for textsnake [#130](https://github.com/open-mmlab/mmocr/pull/130)
 - Fix CTC loss NaN [#159](https://github.com/open-mmlab/mmocr/pull/159)
 - Fix error raised if result is empty in demo [#144](https://github.com/open-mmlab/mmocr/pull/141)
-- Fix results missed if a large number of boxes on one image [#98](https://github.com/open-mmlab/mmocr/pull/98)
-- Fix package missed in dockerfile [#109](https://github.com/open-mmlab/mmocr/pull/109)
+- Fix results missing if one image has a large number of boxes [#98](https://github.com/open-mmlab/mmocr/pull/98)
+- Fix package missing in dockerfile [#109](https://github.com/open-mmlab/mmocr/pull/109)
 
 **Improvements**
 
-- Simplify installation procedure [#188](https://github.com/open-mmlab/mmocr/pull/188)
+- Simplify installation procedure via removing compiling [#188](https://github.com/open-mmlab/mmocr/pull/188)
+- Speed up panet post processing so that it can detect dense texts [#188](https://github.com/open-mmlab/mmocr/pull/188)
 - Add zh-CN README [#70](https://github.com/open-mmlab/mmocr/pull/70) [#95](https://github.com/open-mmlab/mmocr/pull/95)
 - Support windows [#89](https://github.com/open-mmlab/mmocr/pull/89)
 - Add Colab [#147](https://github.com/open-mmlab/mmocr/pull/147) [#199](https://github.com/open-mmlab/mmocr/pull/199)
