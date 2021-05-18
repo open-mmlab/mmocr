@@ -7,8 +7,7 @@ import math
 
 import torch
 import torch.nn as nn
-
-from mmocr.models.ner.utils.activations import ACT2FN
+from mmcv.cnn import build_activation_layer
 
 
 class BertModel(nn.Module):
@@ -31,7 +30,7 @@ class BertModel(nn.Module):
             for the attention probabilities normalized from
             the attention scores.
         intermediate_size (int): The size of intermediate layer.
-        hidden_act (str):  hidden layer activation
+        hidden_act_cfg (str):  hidden layer activation
     """
 
     def __init__(self,
@@ -48,7 +47,7 @@ class BertModel(nn.Module):
                  num_attention_heads=12,
                  attention_probs_dropout_prob=0.1,
                  intermediate_size=3072,
-                 hidden_act='gelu_new'):
+                 hidden_act_cfg=dict(type='GeluNew')):
         super().__init__()
         self.embeddings = BertEmbeddings(
             vocab_size=vocab_size,
@@ -67,7 +66,7 @@ class BertModel(nn.Module):
             layer_norm_eps=layer_norm_eps,
             hidden_dropout_prob=hidden_dropout_prob,
             intermediate_size=intermediate_size,
-            hidden_act=hidden_act)
+            hidden_act_cfg=hidden_act_cfg)
         self.pooler = BertPooler(hidden_size=hidden_size)
         self.num_hidden_layers = num_hidden_layers
         self.initializer_range = initializer_range
@@ -205,7 +204,7 @@ class BertEncoder(nn.Module):
                  layer_norm_eps=1e-12,
                  hidden_dropout_prob=0.1,
                  intermediate_size=3072,
-                 hidden_act='gelu_new'):
+                 hidden_act_cfg=dict(type='GeluNew')):
         super().__init__()
         self.output_attentions = output_attentions
         self.output_hidden_states = output_hidden_states
@@ -218,7 +217,8 @@ class BertEncoder(nn.Module):
                 layer_norm_eps=layer_norm_eps,
                 hidden_dropout_prob=hidden_dropout_prob,
                 intermediate_size=intermediate_size,
-                hidden_act=hidden_act) for _ in range(num_hidden_layers)
+                hidden_act_cfg=hidden_act_cfg)
+            for _ in range(num_hidden_layers)
         ])
 
     def forward(self, hidden_states, attention_mask=None, head_mask=None):
@@ -278,7 +278,7 @@ class BertLayer(nn.Module):
                  layer_norm_eps=1e-12,
                  hidden_dropout_prob=0.1,
                  intermediate_size=3072,
-                 hidden_act='gelu_new'):
+                 hidden_act_cfg=dict(type='GeluNew')):
         super().__init__()
         self.attention = BertAttention(
             hidden_size=hidden_size,
@@ -290,7 +290,7 @@ class BertLayer(nn.Module):
         self.intermediate = BertIntermediate(
             hidden_size=hidden_size,
             intermediate_size=intermediate_size,
-            hidden_act=hidden_act)
+            hidden_act_cfg=hidden_act_cfg)
         self.output = BertOutput(
             intermediate_size=intermediate_size,
             hidden_size=hidden_size,
@@ -448,13 +448,11 @@ class BertIntermediate(nn.Module):
     def __init__(self,
                  hidden_size=768,
                  intermediate_size=3072,
-                 hidden_act='gelu_new'):
+                 hidden_act_cfg=dict(type='GeluNew')):
         super().__init__()
+
         self.dense = nn.Linear(hidden_size, intermediate_size)
-        if isinstance(hidden_act, str):
-            self.intermediate_act_fn = ACT2FN[hidden_act]
-        else:
-            self.intermediate_act_fn = hidden_act
+        self.intermediate_act_fn = build_activation_layer(hidden_act_cfg)
 
     def forward(self, hidden_states):
         hidden_states = self.dense(hidden_states)

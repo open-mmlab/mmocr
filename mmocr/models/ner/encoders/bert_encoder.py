@@ -25,7 +25,7 @@ class BertEncoder(nn.Module):
         attention_probs_dropout_prob (float): The dropout probability
             of attention.
         intermediate_size (int): The size of intermediate layer.
-        hidden_act (str):  Hidden layer activation.
+        hidden_act_cfg (dict):  Hidden layer activation.
     """
 
     def __init__(self,
@@ -42,7 +42,7 @@ class BertEncoder(nn.Module):
                  num_attention_heads=12,
                  attention_probs_dropout_prob=0.1,
                  intermediate_size=3072,
-                 hidden_act='gelu_new',
+                 hidden_act_cfg=dict(type='GeluNew'),
                  pretrained=None):
         super().__init__()
         self.bert = BertModel(
@@ -59,7 +59,7 @@ class BertEncoder(nn.Module):
             num_attention_heads=num_attention_heads,
             attention_probs_dropout_prob=attention_probs_dropout_prob,
             intermediate_size=intermediate_size,
-            hidden_act=hidden_act)
+            hidden_act_cfg=hidden_act_cfg)
         self.init_weights(pretrained=pretrained)
 
     def forward(self, results):

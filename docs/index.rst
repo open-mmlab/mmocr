@@ -16,6 +16,7 @@ Welcome to MMOCR's documentation!
    textdet_models.md
    textrecog_models.md
    kie_models.md
+   ner_models.md
 
 .. toctree::
    :maxdepth: 2
