@@ -47,9 +47,9 @@ class DBNetTargets(BaseTextDetTargets):
         texts = results['gt_masks'].masks
         ignore_tags = [False] * len(texts)
 
-        for inx, text in enumerate(texts):
+        for idx, text in enumerate(texts):
             if self.invalid_polygon(text[0]):
-                ignore_tags[inx] = True
+                ignore_tags[idx] = True
         return ignore_tags
 
     def invalid_polygon(self, poly):

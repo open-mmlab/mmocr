@@ -30,7 +30,7 @@ class UpBlock(nn.Module):
 
 
 @NECKS.register_module()
-class FPN_UNET(nn.Module):
+class FPN_UNet(nn.Module):
     """The class for implementing DRRG and TextSnake U-Net-like FPN.
 
     DRRG: Deep Relational Reasoning Graph Network for Arbitrary Shape

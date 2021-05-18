@@ -7,6 +7,7 @@ from .builder import (CONVERTORS, DECODERS, ENCODERS, PREPROCESSOR,
 
 from .common import *  # NOQA
 from .kie import *  # NOQA
+from .ner import *  # NOQA
 from .textdet import *  # NOQA
 from .textrecog import *  # NOQA
 

@@ -28,8 +28,8 @@ def trace_boundary(char_boxes):
     p_top = [box[0:2] for box in char_boxes]
     # from bottom right to bottom left
     p_bottom = [
-        char_boxes[inx][[2, 3], :]
-        for inx in range(len(char_boxes) - 1, -1, -1)
+        char_boxes[idx][[2, 3], :]
+        for idx in range(len(char_boxes) - 1, -1, -1)
     ]
 
     p = p_top + p_bottom

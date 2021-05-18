@@ -86,9 +86,9 @@ class PSELoss(PANLoss):
         num_kernel = pred_kernels.shape[1]
         assert num_kernel == len(gt_kernels) - 1
         loss_list = []
-        for inx in range(num_kernel):
+        for idx in range(num_kernel):
             loss_kernels = self.dice_loss_with_logits(
-                pred_kernels[:, inx, :, :], gt_kernels[1 + inx],
+                pred_kernels[:, idx, :, :], gt_kernels[1 + idx],
                 sampled_masks_kernel)
             loss_list.append(loss_kernels)
 

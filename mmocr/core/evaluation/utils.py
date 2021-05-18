@@ -400,8 +400,8 @@ def filter_2dlist_result(results, scores, score_thr):
     assert 0 <= score_thr <= 1
 
     inds = np.array(scores) > score_thr
-    valid_results = [results[inx] for inx in np.where(inds)[0].tolist()]
-    valid_scores = [scores[inx] for inx in np.where(inds)[0].tolist()]
+    valid_results = [results[idx] for idx in np.where(inds)[0].tolist()]
+    valid_scores = [scores[idx] for idx in np.where(inds)[0].tolist()]
     return valid_results, valid_scores
 
 

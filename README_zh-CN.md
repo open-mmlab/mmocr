@@ -47,21 +47,44 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 支持的算法：
 
 <details open>
-<summary>(click to collapse)</summary>
+<summary>文字检测</summary>
 
 - [x] [DBNet](configs/textdet/dbnet/README.md) (AAAI'2020)
 - [x] [Mask R-CNN](configs/textdet/maskrcnn/README.md) (ICCV'2017)
 - [x] [PANet](configs/textdet/panet/README.md) (ICCV'2019)
 - [x] [PSENet](configs/textdet/psenet/README.md) (CVPR'2019)
 - [x] [TextSnake](configs/textdet/textsnake/README.md) (ECCV'2018)
+- [x] [DRRG](configs/textdet/drrg/README.md) (CVPR'2020)
+- [x] [FCENet](configs/textdet/fcenet/README.MD) (CVPR'2021)
+
+</details>
+
+<details open>
+<summary>文字识别</summary>
+
 - [x] [CRNN](configs/textrecog/crnn/crnn_academic_dataset.py) (TPAMI'2016)
 - [x] [NRTR](configs/textrecog/nrtr/README.md) (ICDAR'2019)
 - [x] [RobustScanner](configs/textrecog/robust_scanner/README.md) (ECCV'2020)
 - [x] [SAR](configs/textrecog/sar/README.md) (AAAI'2019)
 - [x] [SegOCR](configs/bottom_up/higherhrnet/README.md) (Manuscript'2021)
+
+</details>
+
+<details open>
+<summary>关键信息提取</summary>
+
 - [x] [SDMG-R](configs/kie/sdmgr/README.md) (ArXiv'2021)
 
 </details>
+
+<details open>
+<summary>命名实体识别</summary>
+
+- [x] [Bert-Softmax](configs/ner/bert_softmax/README.md) (NAACL'2019)
+
+</details>
+
+请点击[模型库](https://mmocr.readthedocs.io/en/latest/modelzoo.html)查看更多关于上述算法的详细信息。
 
 ## 开源许可证
 
@@ -82,11 +105,8 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 
 ## 更新日志
 
-最新的月度版本 v0.1.0 在 2021.04.07 发布。
+最新的月度版本 v0.2.0 在 2021.05.18 发布。
 
-## 模型以及测试结果
-
-测试结果和模型可以在[模型库](https://mmocr.readthedocs.io/en/latest/index.html)中找到。
 
 ## 安装
 

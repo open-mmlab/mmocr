@@ -429,3 +429,83 @@ def test_fcenet(cfg_file):
     results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}
     img = np.random.rand(5, 5)
     detector.show_result(img, results)
+
+
+@pytest.mark.parametrize(
+    'cfg_file', ['textdet/drrg/'
+                 'drrg_r50_fpn_unet_1200e_ctw1500.py'])
+def test_drrg(cfg_file):
+    model = _get_detector_cfg(cfg_file)
+    model['pretrained'] = None
+    model['backbone']['norm_cfg']['type'] = 'BN'
+
+    from mmocr.models import build_detector
+    detector = build_detector(model)
+
+    input_shape = (1, 3, 224, 224)
+    num_kernels = 1
+    mm_inputs = _demo_mm_inputs(num_kernels, input_shape)
+
+    imgs = mm_inputs.pop('imgs')
+    img_metas = mm_inputs.pop('img_metas')
+    gt_text_mask = mm_inputs.pop('gt_text_mask')
+    gt_center_region_mask = mm_inputs.pop('gt_center_region_mask')
+    gt_mask = mm_inputs.pop('gt_mask')
+    gt_top_height_map = mm_inputs.pop('gt_radius_map')
+    gt_bot_height_map = gt_top_height_map.copy()
+    gt_sin_map = mm_inputs.pop('gt_sin_map')
+    gt_cos_map = mm_inputs.pop('gt_cos_map')
+    num_rois = 32
+    x = np.random.randint(4, 224, (num_rois, 1))
+    y = np.random.randint(4, 224, (num_rois, 1))
+    h = 4 * np.ones((num_rois, 1))
+    w = 4 * np.ones((num_rois, 1))
+    angle = (np.random.random_sample((num_rois, 1)) * 2 - 1) * np.pi / 2
+    cos, sin = np.cos(angle), np.sin(angle)
+    comp_labels = np.random.randint(1, 3, (num_rois, 1))
+    num_rois = num_rois * np.ones((num_rois, 1))
+    comp_attribs = np.hstack([num_rois, x, y, h, w, cos, sin, comp_labels])
+    gt_comp_attribs = np.expand_dims(comp_attribs.astype(np.float32), axis=0)
+
+    # Test forward train
+    losses = detector.forward(
+        imgs,
+        img_metas,
+        gt_text_mask=gt_text_mask,
+        gt_center_region_mask=gt_center_region_mask,
+        gt_mask=gt_mask,
+        gt_top_height_map=gt_top_height_map,
+        gt_bot_height_map=gt_bot_height_map,
+        gt_sin_map=gt_sin_map,
+        gt_cos_map=gt_cos_map,
+        gt_comp_attribs=gt_comp_attribs)
+    assert isinstance(losses, dict)
+
+    # Test forward test
+    model['bbox_head']['in_channels'] = 6
+    model['bbox_head']['text_region_thr'] = 0.8
+    model['bbox_head']['center_region_thr'] = 0.8
+    detector = build_detector(model)
+    maps = torch.zeros((1, 6, 224, 224), dtype=torch.float)
+    maps[:, 0:2, :, :] = -10.
+    maps[:, 0, 60:100, 50:170] = 10.
+    maps[:, 1, 75:85, 60:160] = 10.
+    maps[:, 2, 75:85, 60:160] = 0.
+    maps[:, 3, 75:85, 60:160] = 1.
+    maps[:, 4, 75:85, 60:160] = 10.
+    maps[:, 5, 75:85, 60:160] = 10.
+
+    with torch.no_grad():
+        full_pass_weight = torch.zeros((6, 6, 1, 1))
+        for i in range(6):
+            full_pass_weight[i, i, 0, 0] = 1
+        detector.bbox_head.out_conv.weight.data = full_pass_weight
+        detector.bbox_head.out_conv.bias.data.fill_(0.)
+        outs = detector.bbox_head.single_test(maps)
+        boundaries = detector.bbox_head.get_boundary(*outs, img_metas, True)
+    assert len(boundaries)
+
+    # Test show result
+    results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}
+    img = np.random.rand(5, 5)
+    detector.show_result(img, results)

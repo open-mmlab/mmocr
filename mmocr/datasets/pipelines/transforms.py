@@ -87,7 +87,7 @@ class RandomCropInstances:
         canvas_poly = eval_utils.box2polygon(canvas_bbox)
         tl = canvas_bbox[0:2]
 
-        for inx, bbox in enumerate(bboxes):
+        for idx, bbox in enumerate(bboxes):
             poly = eval_utils.box2polygon(bbox)
             area, inters = eval_utils.poly_intersection(poly, canvas_poly)
             if area == 0:
@@ -98,7 +98,7 @@ class RandomCropInstances:
                     [xmin - tl[0], ymin - tl[1], xmax - tl[0], ymax - tl[1]],
                     dtype=np.float32)
             ]
-            kept_inx += [inx]
+            kept_inx += [idx]
 
         if len(kept_inx) == 0:
             return np.array([]).astype(np.float32).reshape(0, 4), kept_inx
@@ -112,8 +112,8 @@ class RandomCropInstances:
             return gt_mask.masks[0]
         if type == 'union_all':
             mask = gt_mask.masks[0].copy()
-            for inx in range(1, len(gt_mask.masks)):
-                mask = np.logical_or(mask, gt_mask.masks[inx])
+            for idx in range(1, len(gt_mask.masks)):
+                mask = np.logical_or(mask, gt_mask.masks[idx])
             return mask
 
         raise NotImplementedError
@@ -147,15 +147,15 @@ class RandomCropInstances:
                     ori_labels = results['gt_labels']
                     ori_inst_num = len(ori_labels)
                     results['gt_labels'] = [
-                        ori_labels[inx] for inx in range(ori_inst_num)
-                        if inx in kept_inx
+                        ori_labels[idx] for idx in range(ori_inst_num)
+                        if idx in kept_inx
                     ]
                 # ignore g_masks accordingly
                 if 'gt_masks' in results:
                     ori_mask = results['gt_masks'].masks
                     kept_mask = [
-                        ori_mask[inx] for inx in range(ori_inst_num)
-                        if inx in kept_inx
+                        ori_mask[idx] for idx in range(ori_inst_num)
+                        if idx in kept_inx
                     ]
                     target_h, target_w = bbox[3] - bbox[1], bbox[2] - bbox[0]
                     if len(kept_inx) > 0:
