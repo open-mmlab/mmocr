@@ -560,7 +560,7 @@ def generate_exp_matrix(point_num, fourier_degree):
     return np.power(e, exp_matrix)
 
 
-class Node(object):
+class Node:
 
     def __init__(self, ind):
         self.__ind = ind

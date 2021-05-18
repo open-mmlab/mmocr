@@ -4,7 +4,7 @@ from collections import Counter
 def gt_label2entity(gt_infos):
     """Get all entities from ground truth infos.
     Args:
-        gt_infos (list[dict]): Groudtruth infomation contains text and label.
+        gt_infos (list[dict]): Ground-truth infomation contains text and label.
     Returns:
         gt_entities (list[list]): Original labeled entities in groundtruth.
                     [[category,start_position,end_position]]
@@ -49,7 +49,7 @@ def compute_f1_all(pred_entities, gt_entities):
         gt_entities: The entities of ground truth file.
     Returns:
         class_info (dict): precision,recall, f1-score in total
-                        and each catogories.
+                        and each categories.
     """
     origins = []
     founds = []
@@ -93,7 +93,7 @@ def eval_ner_f1(results, gt_infos):
 
     Args:
         results (list): Predict results of entities.
-        gt_infos (list[dict]): Groudtruth infomation which contains
+        gt_infos (list[dict]): Ground-truth infomation which contains
                             text and label.
     Returns:
         class_info (dict): precision,recall, f1-score of total

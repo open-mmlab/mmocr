@@ -9,7 +9,7 @@ from .utils import (euclidean_distance_matrix, feature_embedding,
                     normalize_adjacent_matrix)
 
 
-class ProposalLocalGraphs(object):
+class ProposalLocalGraphs:
     """Propose text components and generate local graphs for GCN to classify
     the k-nearest neighbors of a pivot in DRRG: Deep Relational Reasoning Graph
     Network for Arbitrary Shape Text Detection.
@@ -183,10 +183,10 @@ class ProposalLocalGraphs(object):
 
             text_comps = la_nms(text_comps, self.nms_thr)
             text_comp_mask = np.zeros(mask_sz)
-            text_comp_boxs = text_comps[:, :8].reshape(
+            text_comp_boxes = text_comps[:, :8].reshape(
                 (-1, 4, 2)).astype(np.int32)
 
-            cv2.drawContours(text_comp_mask, text_comp_boxs, -1, 1, -1)
+            cv2.drawContours(text_comp_mask, text_comp_boxes, -1, 1, -1)
             if (text_comp_mask * text_mask).sum() < text_comp_mask.sum() * 0.5:
                 continue
             if text_comps.shape[-1] > 0:
@@ -196,13 +196,13 @@ class ProposalLocalGraphs(object):
             return None, None
 
         text_comps = np.vstack(comp_list)
-        text_comp_boxs = text_comps[:, :8].reshape((-1, 4, 2))
-        centers = np.mean(text_comp_boxs, axis=1).astype(np.int32)
+        text_comp_boxes = text_comps[:, :8].reshape((-1, 4, 2))
+        centers = np.mean(text_comp_boxes, axis=1).astype(np.int32)
         x = centers[:, 0]
         y = centers[:, 1]
 
         scores = []
-        for text_comp_box in text_comp_boxs:
+        for text_comp_box in text_comp_boxes:
             text_comp_box[:, 0] = np.clip(text_comp_box[:, 0], 0,
                                           mask_sz[1] - 1)
             text_comp_box[:, 1] = np.clip(text_comp_box[:, 1], 0,
