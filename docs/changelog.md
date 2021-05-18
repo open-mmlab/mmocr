@@ -1,13 +1,36 @@
 # Changelog
-## v0.2.0 (16/5/2021)
+
+## v0.2.0 (18/5/2021)
 
 **Highlights**
 
-- MMOCR is compiling-free via moving textdet postprocessing and ops to mmcv 1.3.4 or later.
-- Add a new OCR downstream task-NER.
-- Add two new text detection methods: DRRG and FCENet.
-- Add a new text recognition method: TPS-CRNN.
-- Add an end-to-end demo.
+1. Support Bert-softmax (NAACL'2019)
+2. Support DRRG (CVPR'2020)
+3. Support FCENet (CVPR'2021)
+4. Add text detection and recognition end-to-end demo.
+
+**New Features**
+
+- Add Bert-softmax for Ner task [#148](https://github.com/open-mmlab/mmocr/pull/148)
+- Add DRRG [#189](https://github.com/open-mmlab/mmocr/pull/189)
+- Add FCENet [#133](https://github.com/open-mmlab/mmocr/pull/133)
+- Add end-to-end demo [#105](https://github.com/open-mmlab/mmocr/pull/105)
+- Support batch inference [#86](https://github.com/open-mmlab/mmocr/pull/86) [#87](https://github.com/open-mmlab/mmocr/pull/87) [#178](https://github.com/open-mmlab/mmocr/pull/178)
+- Add TPS preprocessor for text recognition [#117](https://github.com/open-mmlab/mmocr/pull/117) [#135](https://github.com/open-mmlab/mmocr/pull/135)
+- Add demo documentation [#151](https://github.com/open-mmlab/mmocr/pull/151) [#166](https://github.com/open-mmlab/mmocr/pull/166) [#168](https://github.com/open-mmlab/mmocr/pull/168) [#170](https://github.com/open-mmlab/mmocr/pull/170) [#171](https://github.com/open-mmlab/mmocr/pull/171)
+- Add checkout for Chinese recognition [#156](https://github.com/open-mmlab/mmocr/pull/156)
+- Add metafile [#175](https://github.com/open-mmlab/mmocr/pull/175) [#176](https://github.com/open-mmlab/mmocr/pull/176) [#177](https://github.com/open-mmlab/mmocr/pull/177) [#182](https://github.com/open-mmlab/mmocr/pull/182) [#183](https://github.com/open-mmlab/mmocr/pull/183)
+
+**Bug Fixes**
+
+- Fix duplicated points due to transform for textsnake [#130](https://github.com/open-mmlab/mmocr/pull/130)
+- Fix CTC loss NaN [#159](https://github.com/open-mmlab/mmocr/pull/159)
+- Fix error raised if result is empty in demo [#144](https://github.com/open-mmlab/mmocr/pull/141)
+
+**Improvements**
+
+- Simplify installation procedure [#188](https://github.com/open-mmlab/mmocr/pull/188)
+
 
 ## v0.1.0 (7/4/2021)
 
