@@ -6,7 +6,6 @@ import pytest
 import torch
 
 from mmocr.models import build_detector
-from mmocr.models.ner.utils.activations import gelu, gelu_new
 
 
 def _create_dummy_vocab_file(vocab_file):
@@ -35,7 +34,7 @@ def _get_detector_cfg(fname):
 
 @pytest.mark.parametrize(
     'cfg_file', ['configs/ner/bert_softmax/bert_softmax_cluener_18e.py'])
-def test_encoder_decoder_pipeline(cfg_file):
+def test_bert_softmax(cfg_file):
     # prepare data
     texts = ['中'] * 47
     img = [31] * 47
@@ -77,7 +76,3 @@ def test_encoder_decoder_pipeline(cfg_file):
         batch_results = []
         result = detector.forward(None, img_metas, return_loss=False)
         batch_results.append(result)
-
-    # Test activations
-    gelu(torch.tensor(0.5))
-    gelu_new(torch.tensor(0.5))
