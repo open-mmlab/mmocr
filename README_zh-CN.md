@@ -84,7 +84,7 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 
 </details>
 
-请点击[模型库](https://mmocr.readthedocs.io/en/latest/index.html)查看更多关于上述算法的详细信息。
+请点击[模型库](https://mmocr.readthedocs.io/en/latest/modelzoo.html)查看更多关于上述算法的详细信息。
 
 ## 开源许可证
 

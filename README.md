@@ -84,7 +84,7 @@ Supported algorithms:
 
 </details>
 
-Please refer to [model_zoo](https://mmocr.readthedocs.io/en/latest/index.html) for more details.
+Please refer to [model_zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html) for more details.
 
 ## License
 
