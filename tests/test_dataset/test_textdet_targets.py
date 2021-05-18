@@ -242,3 +242,94 @@ def test_fcenet_generate_targets():
     assert 'p3_maps' in results.keys()
     assert 'p4_maps' in results.keys()
     assert 'p5_maps' in results.keys()
+
+
+def test_gen_drrg_targets():
+    target_generator = textdet_targets.DRRGTargets()
+    assert np.allclose(target_generator.orientation_thr, 2.0)
+    assert np.allclose(target_generator.resample_step, 8.0)
+    assert target_generator.num_min_comps == 9
+    assert target_generator.num_max_comps == 600
+    assert np.allclose(target_generator.min_width, 8.0)
+    assert np.allclose(target_generator.max_width, 24.0)
+    assert np.allclose(target_generator.center_region_shrink_ratio, 0.3)
+    assert np.allclose(target_generator.comp_shrink_ratio, 1.0)
+    assert np.allclose(target_generator.comp_w_h_ratio, 0.3)
+    assert np.allclose(target_generator.text_comp_nms_thr, 0.25)
+    assert np.allclose(target_generator.min_rand_half_height, 8.0)
+    assert np.allclose(target_generator.max_rand_half_height, 24.0)
+    assert np.allclose(target_generator.jitter_level, 0.2)
+
+    # test generate_targets
+    target_generator = textdet_targets.DRRGTargets(
+        min_width=2.,
+        max_width=4.,
+        min_rand_half_height=3.,
+        max_rand_half_height=5.)
+
+    results = {}
+    results['img'] = np.zeros((64, 64, 3), np.uint8)
+    text_polys = [[np.array([4, 2, 30, 2, 30, 10, 4, 10])],
+                  [np.array([36, 12, 8, 12, 8, 22, 36, 22])],
+                  [np.array([48, 20, 52, 20, 52, 50, 48, 50])],
+                  [np.array([44, 50, 38, 50, 38, 20, 44, 20])]]
+    results['gt_masks'] = PolygonMasks(text_polys, 20, 30)
+    results['gt_masks_ignore'] = PolygonMasks([], 64, 64)
+    results['img_shape'] = (64, 64, 3)
+    results['mask_fields'] = []
+    output = target_generator(results)
+    assert len(output['gt_text_mask']) == 1
+    assert len(output['gt_center_region_mask']) == 1
+    assert len(output['gt_mask']) == 1
+    assert len(output['gt_top_height_map']) == 1
+    assert len(output['gt_bot_height_map']) == 1
+    assert len(output['gt_sin_map']) == 1
+    assert len(output['gt_cos_map']) == 1
+    assert output['gt_comp_attribs'].shape[-1] == 8
+
+    # test generate_targets with the number of proposed text components exceeds
+    # num_max_comps
+    target_generator = textdet_targets.DRRGTargets(
+        min_width=2.,
+        max_width=4.,
+        min_rand_half_height=3.,
+        max_rand_half_height=5.,
+        num_max_comps=6)
+    output = target_generator(results)
+    assert output['gt_comp_attribs'].ndim == 2
+    assert output['gt_comp_attribs'].shape[0] == 6
+
+    # test generate_targets with blank polygon masks
+    target_generator = textdet_targets.DRRGTargets(
+        min_width=2.,
+        max_width=4.,
+        min_rand_half_height=3.,
+        max_rand_half_height=5.)
+    results = {}
+    results['img'] = np.zeros((20, 30, 3), np.uint8)
+    results['gt_masks'] = PolygonMasks([], 20, 30)
+    results['gt_masks_ignore'] = PolygonMasks([], 20, 30)
+    results['img_shape'] = (20, 30, 3)
+    results['mask_fields'] = []
+    output = target_generator(results)
+    assert output['gt_comp_attribs'][0, 0] > 8
+
+    # test generate_targets with one proposed text component
+    text_polys = [[np.array([13, 6, 17, 6, 17, 14, 13, 14])]]
+    target_generator = textdet_targets.DRRGTargets(
+        min_width=4.,
+        max_width=8.,
+        min_rand_half_height=3.,
+        max_rand_half_height=5.)
+    results['gt_masks'] = PolygonMasks(text_polys, 20, 30)
+    output = target_generator(results)
+    assert output['gt_comp_attribs'][0, 0] > 8
+
+    # test generate_targets with shrunk margin in generate_rand_comp_attribs
+    target_generator = textdet_targets.DRRGTargets(
+        min_width=2.,
+        max_width=30.,
+        min_rand_half_height=3.,
+        max_rand_half_height=30.)
+    output = target_generator(results)
+    assert output['gt_comp_attribs'][0, 0] > 8
