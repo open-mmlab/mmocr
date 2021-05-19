@@ -66,7 +66,7 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 - [x] [NRTR](configs/textrecog/nrtr/README.md) (ICDAR'2019)
 - [x] [RobustScanner](configs/textrecog/robust_scanner/README.md) (ECCV'2020)
 - [x] [SAR](configs/textrecog/sar/README.md) (AAAI'2019)
-- [x] [SegOCR](configs/bottom_up/higherhrnet/README.md) (Manuscript'2021)
+- [x] [SegOCR](configs/textrecog/seg/README.md) (Manuscript'2021)
 
 </details>
 
