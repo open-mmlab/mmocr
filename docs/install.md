@@ -82,7 +82,7 @@ f. Install build requirements and then install MMOCR.
 
 ```shell
 pip install -r requirements.txt
-pip install -v -e . # or "python setup.py build_ext --inplace"
+pip install -v -e . # or "python setup.py develop"
 export PYTHONPATH=$(pwd):$PYTHONPATH
 ```
 
@@ -108,7 +108,7 @@ git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
 
 pip install -r requirements.txt
-pip install -v -e .  # or "python setup.py build_ext --inplace"
+pip install -v -e .  # or "python setup.py develop"
 export PYTHONPATH=$(pwd):$PYTHONPATH
 ```
 
