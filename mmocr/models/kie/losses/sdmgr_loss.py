@@ -14,7 +14,7 @@ class SDMGRLoss(nn.Module):
     https://arxiv.org/abs/2103.14470.
     """
 
-    def __init__(self, node_weight=1.0, edge_weight=1.0, ignore=0):
+    def __init__(self, node_weight=1.0, edge_weight=1.0, ignore=-100):
         super().__init__()
         self.loss_node = nn.CrossEntropyLoss(ignore_index=ignore)
         self.loss_edge = nn.CrossEntropyLoss(ignore_index=-1)
