@@ -1,0 +1,25 @@
+Collections:
+- Name: FCENet
+  Metadata:
+    Training Data: SCUT-CTW1500
+    Training Techniques:
+      - SGD with Momentum
+    Training Resources: 1x GeForce GTX 2080 Ti
+    Architecture:
+      - ResNet with DCNv2
+      - FPN
+  Paper: https://arxiv.org/abs/2002.02709.pdf
+  README: configs/textdet/fcenet/README.md
+
+Models:
+  - Name: fcenet_r50dcnv2_fpn_1500e_ctw1500
+    In Collection: FCENet
+    Config: configs/textdet/fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500.py
+    Metadata:
+      Training Data: CTW1500
+    Results:
+      - Task: Text Detection
+        Dataset: CTW1500
+        Metrics:
+          hmean-iou: 0.851
+    Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500-05d740bb.pth
