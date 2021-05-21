@@ -157,7 +157,7 @@ class ProposalLocalGraphs:
         center_region_mask = (center_region_map >
                               self.center_region_thr) * text_mask
 
-        scale = np.sqrt(1.0 / (sin_map**2 + cos_map**2))
+        scale = np.sqrt(1.0 / (sin_map**2 + cos_map**2 + 1e-8))
         sin_map, cos_map = sin_map * scale, cos_map * scale
 
         center_region_mask = fill_hole(center_region_mask)
@@ -309,12 +309,12 @@ class ProposalLocalGraphs:
                         adjacent_matrix[node2ind_map[neighbor],
                                         node2ind_map[node]] = 1
 
-            adjacent_matrix = normalize_adjacent_matrix(
-                adjacent_matrix, mode='DAD')
+            adjacent_matrix = normalize_adjacent_matrix(adjacent_matrix)
             pad_adjacent_matrix = torch.zeros((num_max_nodes, num_max_nodes),
                                               dtype=torch.float,
                                               device=device)
-            pad_adjacent_matrix[:num_nodes, :num_nodes] = adjacent_matrix
+            pad_adjacent_matrix[:num_nodes, :num_nodes] = torch.from_numpy(
+                adjacent_matrix)
 
             pad_normalized_feats = torch.cat([
                 normalized_feats,

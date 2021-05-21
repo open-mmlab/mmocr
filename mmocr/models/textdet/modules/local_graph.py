@@ -183,13 +183,13 @@ class LocalGraphs:
                             adjacent_matrix[node2ind_map[neighbor],
                                             node2ind_map[node]] = 1
 
-                adjacent_matrix = normalize_adjacent_matrix(
-                    adjacent_matrix, mode='DAD')
+                adjacent_matrix = normalize_adjacent_matrix(adjacent_matrix)
                 pad_adjacent_matrix = torch.zeros(
                     (num_max_nodes, num_max_nodes),
                     dtype=torch.float,
                     device=device)
-                pad_adjacent_matrix[:num_nodes, :num_nodes] = adjacent_matrix
+                pad_adjacent_matrix[:num_nodes, :num_nodes] = torch.from_numpy(
+                    adjacent_matrix)
 
                 pad_normalized_feats = torch.cat([
                     normalized_feats,

@@ -1,14 +1,12 @@
 import numpy as np
-import torch
 
 
-def normalize_adjacent_matrix(A, mode='AD'):
+def normalize_adjacent_matrix(A):
     """Normalize adjacent matrix for GCN. This code was partially adapted from
     https://github.com/GXYM/DRRG licensed under the MIT license.
 
     Args:
         A (ndarray): The adjacent matrix.
-        mode (string): The normalize mode.
 
     returns:
         G (ndarray): The normalized adjacent matrix.
@@ -16,21 +14,13 @@ def normalize_adjacent_matrix(A, mode='AD'):
     assert A.ndim == 2
     assert A.shape[0] == A.shape[1]
 
-    if mode == 'DAD':
-        A = A + np.eye(A.shape[0])
-        d = np.sum(A, axis=0)
-        d_inv = np.power(d, -0.5).flatten()
-        d_inv[np.isinf(d_inv)] = 0.0
-        d_inv = np.diag(d_inv)
-        G = A.dot(d_inv).transpose().dot(d_inv)
-        G = torch.from_numpy(G)
-    elif mode == 'AD':
-        A = A + np.eye(A.shape[0])
-        A = torch.from_numpy(A)
-        D = A.sum(1, keepdim=True)
-        G = A.div(D)
-    else:
-        raise NotImplementedError
+    A = A + np.eye(A.shape[0])
+    d = np.sum(A, axis=0)
+    d = np.clip(d, 0, None)
+    d_inv = np.power(d, -0.5).flatten()
+    d_inv[np.isinf(d_inv)] = 0.0
+    d_inv = np.diag(d_inv)
+    G = A.dot(d_inv).transpose().dot(d_inv)
     return G
 
 
