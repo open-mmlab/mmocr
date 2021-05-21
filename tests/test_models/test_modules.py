@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 import torch
 
 from mmocr.models.textdet.modules import GCN, LocalGraphs, ProposalLocalGraphs
@@ -114,16 +113,9 @@ def test_gcn():
 
 
 def test_normalize_adjacent_matrix():
-    adjacent_matrix = np.random.randn(32, 32)
-    normalized_matrix = normalize_adjacent_matrix(adjacent_matrix, mode='AD')
+    adjacent_matrix = np.random.randint(0, 2, (16, 16))
+    normalized_matrix = normalize_adjacent_matrix(adjacent_matrix)
     assert normalized_matrix.shape == adjacent_matrix.shape
-
-    normalized_matrix = normalize_adjacent_matrix(adjacent_matrix, mode='DAD')
-    assert normalized_matrix.shape == adjacent_matrix.shape
-
-    with pytest.raises(NotImplementedError):
-        normalized_matrix = normalize_adjacent_matrix(
-            adjacent_matrix, mode='DA')
 
 
 def test_feature_embedding():
