@@ -1,15 +1,14 @@
 import copy
 from os import path as osp
 
-import mmcv
 import numpy as np
 import torch
 
-import mmocr.utils as utils
 from mmdet.datasets.builder import DATASETS
 from mmocr.core import compute_f1_score
 from mmocr.datasets.base_dataset import BaseDataset
 from mmocr.datasets.pipelines import sort_vertex8
+from mmocr.utils import is_type_list, list_from_file
 
 
 @DATASETS.register_module()
@@ -52,7 +51,7 @@ class KIEDataset(BaseDataset):
             '': 0,
             **{
                 line.rstrip('\r\n'): ind
-                for ind, line in enumerate(mmcv.list_from_file(dict_file), 1)
+                for ind, line in enumerate(list_from_file(dict_file), 1)
             }
         }
 
@@ -79,7 +78,7 @@ class KIEDataset(BaseDataset):
                     box_num * (box_num + 1).
         """
 
-        assert utils.is_type_list(annotations, dict)
+        assert is_type_list(annotations, dict)
         assert len(annotations) > 0, 'Please remove data with empty annotation'
         assert 'box' in annotations[0]
         assert 'text' in annotations[0]

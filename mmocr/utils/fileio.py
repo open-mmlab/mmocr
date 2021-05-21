@@ -1,0 +1,30 @@
+def list_to_file(filename, lines):
+    """Write a list of strings to a text file.
+
+    Args:
+        filename (str): The output filename. It will be created/overwritten.
+        lines (list(str)): Data to be written.
+    """
+    with open(filename, 'w', encoding='utf-8') as fw:
+        for line in lines:
+            fw.write(line + '\n')
+
+
+def list_from_file(filename, encoding='utf-8'):
+    """Load a text file and parse the content as a list of strings.
+
+    Note:
+        This will be replaced by mmcv's version after it supports encoding.
+
+    Args:
+        filename (str): Filename.
+        encoding (str): Encoding used to open the file. Default utf-8.
+
+    Returns:
+        list[str]: A list of strings.
+    """
+    item_list = []
+    with open(filename, 'r', encoding=encoding) as f:
+        for line in f:
+            item_list.append(line.rstrip('\n\r'))
+    return item_list

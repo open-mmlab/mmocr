@@ -5,11 +5,12 @@ from pathlib import Path
 
 import lmdb
 
+from mmocr.utils import list_from_file
 
-def lmdb_converter(img_list, output, batch_size=1000, coding='utf-8'):
-    # read img_list
-    with open(img_list) as f:
-        lines = f.readlines()
+
+def lmdb_converter(img_list_file, output, batch_size=1000, coding='utf-8'):
+    # read img_list_file
+    lines = list_from_file(img_list_file)
 
     # create lmdb database
     if Path(output).is_dir():

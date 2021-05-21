@@ -3,6 +3,7 @@ import os.path as osp
 import shutil
 import time
 from argparse import ArgumentParser
+from itertools import compress
 
 import mmcv
 import torch
@@ -13,7 +14,7 @@ from mmocr.apis import model_inference
 from mmocr.core.evaluation.ocr_metric import eval_ocr_metric
 from mmocr.datasets import build_dataset  # noqa: F401
 from mmocr.models import build_detector  # noqa: F401
-from mmocr.utils import get_root_logger
+from mmocr.utils import get_root_logger, list_from_file, list_to_file
 
 
 def save_results(img_paths, pred_labels, gt_labels, res_dir):
@@ -26,21 +27,15 @@ def save_results(img_paths, pred_labels, gt_labels, res_dir):
         res_dir (str)
     """
     assert len(img_paths) == len(pred_labels) == len(gt_labels)
-    res_file = osp.join(res_dir, 'results.txt')
-    correct_file = osp.join(res_dir, 'correct.txt')
-    wrong_file = osp.join(res_dir, 'wrong.txt')
-    with open(res_file, 'w') as fw, \
-        open(correct_file, 'w') as fw_correct, \
-            open(wrong_file, 'w') as fw_wrong:
-        for img_path, pred_label, gt_label in zip(img_paths, pred_labels,
-                                                  gt_labels):
-            fw.write(img_path + ' ' + pred_label + ' ' + gt_label + '\n')
-            if pred_label == gt_label:
-                fw_correct.write(img_path + ' ' + pred_label + ' ' + gt_label +
-                                 '\n')
-            else:
-                fw_wrong.write(img_path + ' ' + pred_label + ' ' + gt_label +
-                               '\n')
+    corrects = [pred == gt for pred, gt in zip(pred_labels, gt_labels)]
+    wrongs = [not c for c in corrects]
+    lines = [
+        f'{img} {pred} {gt}'
+        for img, pred, gt in zip(img_paths, pred_labels, gt_labels)
+    ]
+    list_to_file(osp.join(res_dir, 'results.txt'), lines)
+    list_to_file(osp.join(res_dir, 'correct.txt'), compress(lines, corrects))
+    list_to_file(osp.join(res_dir, 'wrong.txt'), compress(lines, wrongs))
 
 
 def main():
@@ -80,39 +75,38 @@ def main():
     total_img_num = sum([1 for _ in open(args.img_list)])
     progressbar = ProgressBar(task_num=total_img_num)
     num_gt_label = 0
-    with open(args.img_list, 'r') as fr:
-        for line in fr:
-            progressbar.update()
-            item_list = line.strip().split()
-            img_file = item_list[0]
-            gt_label = ''
-            if len(item_list) >= 2:
-                gt_label = item_list[1]
-                num_gt_label += 1
-            img_path = osp.join(args.img_root_path, img_file)
-            if not osp.exists(img_path):
-                raise FileNotFoundError(img_path)
-            # Test a single image
-            result = model_inference(model, img_path)
-            pred_label = result['text']
+    for line in list_from_file(args.img_list):
+        progressbar.update()
+        item_list = line.strip().split()
+        img_file = item_list[0]
+        gt_label = ''
+        if len(item_list) >= 2:
+            gt_label = item_list[1]
+            num_gt_label += 1
+        img_path = osp.join(args.img_root_path, img_file)
+        if not osp.exists(img_path):
+            raise FileNotFoundError(img_path)
+        # Test a single image
+        result = model_inference(model, img_path)
+        pred_label = result['text']
 
-            out_img_name = '_'.join(img_file.split('/'))
-            out_file = osp.join(out_vis_dir, out_img_name)
-            kwargs_dict = {
-                'gt_label': gt_label,
-                'show': args.show,
-                'out_file': '' if args.show else out_file
-            }
-            model.show_result(img_path, result, **kwargs_dict)
-            if gt_label != '':
-                if gt_label == pred_label:
-                    dst_file = osp.join(correct_vis_dir, out_img_name)
-                else:
-                    dst_file = osp.join(wrong_vis_dir, out_img_name)
-                shutil.copy(out_file, dst_file)
-            img_paths.append(img_path)
-            gt_labels.append(gt_label)
-            pred_labels.append(pred_label)
+        out_img_name = '_'.join(img_file.split('/'))
+        out_file = osp.join(out_vis_dir, out_img_name)
+        kwargs_dict = {
+            'gt_label': gt_label,
+            'show': args.show,
+            'out_file': '' if args.show else out_file
+        }
+        model.show_result(img_path, result, **kwargs_dict)
+        if gt_label != '':
+            if gt_label == pred_label:
+                dst_file = osp.join(correct_vis_dir, out_img_name)
+            else:
+                dst_file = osp.join(wrong_vis_dir, out_img_name)
+            shutil.copy(out_file, dst_file)
+        img_paths.append(img_path)
+        gt_labels.append(gt_label)
+        pred_labels.append(pred_label)
 
     # Save results
     save_results(img_paths, pred_labels, gt_labels, args.out_dir)

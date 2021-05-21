@@ -1,8 +1,7 @@
 import os.path as osp
 
-import mmcv
-
 from mmocr.datasets.builder import LOADERS, build_parser
+from mmocr.utils import list_from_file
 
 
 @LOADERS.register_module()
@@ -60,7 +59,7 @@ class HardDiskLoader(Loader):
     """
 
     def _load(self, ann_file):
-        return mmcv.list_from_file(ann_file)
+        return list_from_file(ann_file)
 
 
 @LOADERS.register_module()
