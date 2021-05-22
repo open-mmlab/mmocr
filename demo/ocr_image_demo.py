@@ -113,6 +113,8 @@ def main():
         help='Whether show image with OpenCV.')
     args = parser.parse_args()
 
+    if args.device == 'cpu':
+        args.device = None
     # build detect model
     detect_model = init_detector(
         args.det_config, args.det_ckpt, device=args.device)
