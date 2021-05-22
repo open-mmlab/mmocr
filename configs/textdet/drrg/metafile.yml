@@ -1,0 +1,25 @@
+Collections:
+- Name: DRRG
+  Metadata:
+    Training Data: SCUT-CTW1500
+    Training Techniques:
+      - SGD with Momentum
+    Training Resources: 1x GeForce GTX 3090
+    Architecture:
+      - ResNet
+      - FPN_UNet
+  Paper: https://arxiv.org/abs/2003.07493.pdf
+  README: configs/textdet/drrg/README.md
+
+Models:
+  - Name: drrg_r50_fpn_unet_1200e_ctw1500
+    In Collection: DRRG
+    Config: configs/textdet/drrg/drrg_r50_fpn_unet_1200e_ctw1500.py
+    Metadata:
+      Training Data: CTW1500
+    Results:
+      - Task: Text Detection
+        Dataset: CTW1500
+        Metrics:
+          hmean-iou: 0.840
+    Weights: https://download.openmmlab.com/mmocr/textdet/drrg/drrg_r50_fpn_unet_1200e_ctw1500-1abf4f67.pth
