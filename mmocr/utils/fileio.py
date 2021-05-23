@@ -11,7 +11,8 @@ def list_to_file(filename, lines):
 
 
 def list_from_file(filename, encoding='utf-8'):
-    """Load a text file and parse the content as a list of strings.
+    """Load a text file and parse the content as a list of strings. The
+    trailing "\\r" and "\\n" of each line will be removed.
 
     Note:
         This will be replaced by mmcv's version after it supports encoding.
