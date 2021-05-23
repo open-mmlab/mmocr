@@ -7,7 +7,7 @@ def list_to_file(filename, lines):
     """
     with open(filename, 'w', encoding='utf-8') as fw:
         for line in lines:
-            fw.write(line + '\n')
+            fw.write(f'{line}\n')
 
 
 def list_from_file(filename, encoding='utf-8'):

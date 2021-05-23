@@ -12,7 +12,7 @@ lists = [
     ['a', 'b'],
     ['a', 1, 1.],
     [1, 1., 'a'],
-    ['啊']['啊', '啊啊'],
+    ['啊', '啊啊'],
     ['選択', 'noël', 'Информацией', 'ÄÆä'],
 ]
 
@@ -22,7 +22,11 @@ def test_list_to_file():
         for i, lines in enumerate(lists):
             filename = f'{tmpdirname}/{i}.txt'
             list_to_file(filename, lines)
-            lines2 = open(filename, 'r', encoding='utf-8').readlines()
+            lines2 = [
+                line.rstrip('\r\n')
+                for line in open(filename, 'r', encoding='utf-8').readlines()
+            ]
+            lines = list(map(str, lines))
             assert len(lines) == len(lines2)
             assert all(line1 == line2 for line1, line2 in zip(lines, lines2))
 
@@ -34,8 +38,9 @@ def test_list_from_file():
                 for i, lines in enumerate(lists):
                     filename = f'{tmpdirname}/{i}.txt'
                     with open(filename, 'w', encoding=encoding) as f:
-                        f.writelines(line + lineend for line in lines)
-                    lines2 = list_from_file(filename)
+                        f.writelines(f'{line}{lineend}' for line in lines)
+                    lines2 = list_from_file(filename, encoding=encoding)
+                    lines = list(map(str, lines))
                     assert len(lines) == len(lines2)
                     assert all(line1 == line2
                                for line1, line2 in zip(lines, lines2))
