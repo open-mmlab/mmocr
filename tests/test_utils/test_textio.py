@@ -4,6 +4,8 @@ from mmocr.utils import list_from_file, list_to_file
 
 lists = [
     [],
+    [' '],
+    ['\t'],
     ['a'],
     [1],
     [1.],
