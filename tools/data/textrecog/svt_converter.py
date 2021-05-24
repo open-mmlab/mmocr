@@ -5,6 +5,8 @@ import xml.etree.ElementTree as ET
 
 import cv2
 
+from mmocr.utils.fileio import list_to_file
+
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -43,35 +45,35 @@ def main():
     root = tree.getroot()
 
     index = 1
-    with open(dst_label_file, 'w', encoding='utf-8') as fw:
-        total_img_num = len(root)
-        i = 1
-        for image_node in root.findall('image'):
-            image_name = image_node.find('imageName').text
-            print(f'[{i}/{total_img_num}] Process image: {image_name}')
-            i += 1
-            lexicon = image_node.find('lex').text.lower()
-            lexicon_list = lexicon.split(',')
-            lex_size = len(lexicon_list)
-            src_img = cv2.imread(osp.join(src_image_root, image_name))
-            for rectangle in image_node.find('taggedRectangles'):
-                x = int(rectangle.get('x'))
-                y = int(rectangle.get('y'))
-                w = int(rectangle.get('width'))
-                h = int(rectangle.get('height'))
-                rb, re = max(0, y), max(0, y + h)
-                cb, ce = max(0, x), max(0, x + w)
-                dst_img = src_img[rb:re, cb:ce]
-                text_label = rectangle.find('tag').text.lower()
-                if args.resize:
-                    dst_img = cv2.resize(dst_img, (args.width, args.height))
-                dst_img_name = f'img_{index:04}' + '.jpg'
-                index += 1
-                dst_img_path = osp.join(dst_image_root, dst_img_name)
-                cv2.imwrite(dst_img_path, dst_img)
-                fw.write(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                         f'{text_label} {lex_size} {lexicon}\n')
-
+    lines = []
+    total_img_num = len(root)
+    i = 1
+    for image_node in root.findall('image'):
+        image_name = image_node.find('imageName').text
+        print(f'[{i}/{total_img_num}] Process image: {image_name}')
+        i += 1
+        lexicon = image_node.find('lex').text.lower()
+        lexicon_list = lexicon.split(',')
+        lex_size = len(lexicon_list)
+        src_img = cv2.imread(osp.join(src_image_root, image_name))
+        for rectangle in image_node.find('taggedRectangles'):
+            x = int(rectangle.get('x'))
+            y = int(rectangle.get('y'))
+            w = int(rectangle.get('width'))
+            h = int(rectangle.get('height'))
+            rb, re = max(0, y), max(0, y + h)
+            cb, ce = max(0, x), max(0, x + w)
+            dst_img = src_img[rb:re, cb:ce]
+            text_label = rectangle.find('tag').text.lower()
+            if args.resize:
+                dst_img = cv2.resize(dst_img, (args.width, args.height))
+            dst_img_name = f'img_{index:04}' + '.jpg'
+            index += 1
+            dst_img_path = osp.join(dst_image_root, dst_img_name)
+            cv2.imwrite(dst_img_path, dst_img)
+            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                         f'{text_label} {lex_size} {lexicon}')
+    list_to_file(dst_label_file, lines)
     print(f'Finish to generate svt testset, '
           f'with label file {dst_label_file}')
 

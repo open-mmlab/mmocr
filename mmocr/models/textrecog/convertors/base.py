@@ -1,4 +1,5 @@
 from mmocr.models.builder import CONVERTORS
+from mmocr.utils import list_from_file
 
 
 @CONVERTORS.register_module()
@@ -27,11 +28,10 @@ class BaseConvertor:
         assert dict_list is None or isinstance(dict_list, list)
         self.idx2char = []
         if dict_file is not None:
-            with open(dict_file, encoding='utf-8') as fr:
-                for line in fr:
-                    line = line.strip()
-                    if line != '':
-                        self.idx2char.append(line)
+            for line in list_from_file(dict_file):
+                line = line.strip()
+                if line != '':
+                    self.idx2char.append(line)
         elif dict_list is not None:
             self.idx2char = dict_list
         else:

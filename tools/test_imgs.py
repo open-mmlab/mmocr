@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import codecs
 import os.path as osp
 from argparse import ArgumentParser
 
@@ -11,6 +10,7 @@ from mmcv.utils import ProgressBar
 from mmdet.apis import inference_detector, init_detector
 from mmocr.core.evaluation.utils import filter_result
 from mmocr.models import build_detector  # noqa: F401
+from mmocr.utils import list_from_file, list_to_file
 
 
 def gen_target_path(target_root_path, src_name, suffix):
@@ -25,9 +25,9 @@ def gen_target_path(target_root_path, src_name, suffix):
     assert isinstance(src_name, str)
     assert isinstance(suffix, str)
 
-    dir_name, file_name = osp.split(src_name)
-    name, file_suffix = osp.splitext(file_name)
-    return target_root_path + '/' + name + suffix
+    file_name = osp.split(src_name)[-1]
+    name = osp.splitext(file_name)[0]
+    return osp.join(target_root_path, name + suffix)
 
 
 def save_2darray(mat, file_name):
@@ -37,10 +37,8 @@ def save_2darray(mat, file_name):
         mat (ndarray): 2d-array of shape (n, m).
         file_name (str): The output file name.
     """
-    with codecs.open(file_name, 'w', 'utf-8') as fw:
-        for row in mat:
-            row_str = ','.join([str(x) for x in row])
-            fw.write(row_str + '\n')
+    lines = [','.join([str(x) for x in row]) for row in mat]
+    list_to_file(file_name, lines)
 
 
 def save_bboxes_quadrangles(bboxes_with_scores,
@@ -144,22 +142,21 @@ def main():
 
     total_img_num = sum([1 for _ in open(args.img_list)])
     progressbar = ProgressBar(task_num=total_img_num)
-    with codecs.open(args.img_list, 'r', 'utf-8') as fr:
-        for line in fr:
-            progressbar.update()
-            img_path = args.img_root + '/' + line.strip()
-            if not osp.exists(img_path):
-                raise FileNotFoundError(img_path)
-            # Test a single image
-            result = inference_detector(model, img_path)
-            img_name = osp.basename(img_path)
-            out_file = osp.join(out_vis_dir, img_name)
-            kwargs_dict = {
-                'score_thr': args.score_thr,
-                'show': False,
-                'out_file': out_file
-            }
-            model.show_result(img_path, result, **kwargs_dict)
+    for line in list_from_file(args.img_list):
+        progressbar.update()
+        img_path = osp.join(args.img_root, line.strip())
+        if not osp.exists(img_path):
+            raise FileNotFoundError(img_path)
+        # Test a single image
+        result = inference_detector(model, img_path)
+        img_name = osp.basename(img_path)
+        out_file = osp.join(out_vis_dir, img_name)
+        kwargs_dict = {
+            'score_thr': args.score_thr,
+            'show': False,
+            'out_file': out_file
+        }
+        model.show_result(img_path, result, **kwargs_dict)
 
     print(f'\nInference done, and results saved in {args.out_dir}\n')
 

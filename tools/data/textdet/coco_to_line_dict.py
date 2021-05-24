@@ -1,16 +1,13 @@
 import argparse
-import codecs
 import json
 
+import mmcv
 
-def read_json(fpath):
-    with codecs.open(fpath, 'r', 'utf-8') as f:
-        obj = json.load(f)
-    return obj
+from mmocr.utils import list_to_file
 
 
 def parse_coco_json(in_path):
-    json_obj = read_json(in_path)
+    json_obj = mmcv.load(in_path)
     image_infos = json_obj['images']
     annotations = json_obj['annotations']
     imgid2imgname = {}
@@ -35,18 +32,17 @@ def parse_coco_json(in_path):
 
 
 def gen_line_dict_file(out_path, imgid2imgname, imgid2anno):
-    # import pdb; pdb.set_trace()
-    with codecs.open(out_path, 'w', 'utf-8') as fw:
-        for key, value in imgid2imgname.items():
-            if key in imgid2anno:
-                anno = imgid2anno[key]
-                line_dict = {}
-                line_dict['file_name'] = value['file_name']
-                line_dict['height'] = value['height']
-                line_dict['width'] = value['width']
-                line_dict['annotations'] = anno
-                line_dict_str = json.dumps(line_dict)
-                fw.write(line_dict_str + '\n')
+    lines = []
+    for key, value in imgid2imgname.items():
+        if key in imgid2anno:
+            anno = imgid2anno[key]
+            line_dict = {}
+            line_dict['file_name'] = value['file_name']
+            line_dict['height'] = value['height']
+            line_dict['width'] = value['width']
+            line_dict['annotations'] = anno
+            lines.append(json.dumps(line_dict))
+    list_to_file(out_path, lines)
 
 
 def parse_args():

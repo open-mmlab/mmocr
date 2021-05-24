@@ -8,6 +8,7 @@ from mmdet.core import bbox2roi
 from mmdet.models.builder import DETECTORS, build_roi_extractor
 from mmdet.models.detectors import SingleStageDetector
 from mmocr.core import imshow_edge_node
+from mmocr.utils import list_from_file
 
 
 @DETECTORS.register_module()
@@ -126,11 +127,9 @@ class SDMGR(SingleStageDetector):
 
         idx_to_cls = {}
         if self.class_list is not None:
-            with open(self.class_list, 'r') as fr:
-                for line in fr:
-                    line = line.strip().split()
-                    class_idx, class_label = line
-                    idx_to_cls[class_idx] = class_label
+            for line in list_from_file(self.class_list):
+                class_idx, class_label = line.strip().split()
+                idx_to_cls[class_idx] = class_label
 
         # if out_file specified, do not show image in window
         if out_file is not None:

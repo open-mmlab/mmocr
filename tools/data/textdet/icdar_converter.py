@@ -7,7 +7,8 @@ import mmcv
 import numpy as np
 from shapely.geometry import Polygon
 
-from mmocr.utils import convert_annotations, drop_orientation, is_not_png
+from mmocr.utils import (convert_annotations, drop_orientation, is_not_png,
+                         list_from_file)
 
 
 def collect_files(img_dir, gt_dir):
@@ -96,11 +97,9 @@ def load_img_info(files, dataset):
     assert img.shape[0:2] == img_color.shape[0:2]
 
     if dataset == 'icdar2017':
-        with open(gt_file) as f:
-            gt_list = f.readlines()
+        gt_list = list_from_file(gt_file)
     elif dataset == 'icdar2015':
-        with open(gt_file, mode='r', encoding='utf-8-sig') as f:
-            gt_list = f.readlines()
+        gt_list = list_from_file(gt_file, encoding='utf-8-sig')
     else:
         raise NotImplementedError(f'Not support {dataset}')
 

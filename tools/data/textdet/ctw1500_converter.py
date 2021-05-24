@@ -8,7 +8,8 @@ import mmcv
 import numpy as np
 from shapely.geometry import Polygon
 
-from mmocr.utils import convert_annotations, drop_orientation, is_not_png
+from mmocr.utils import (convert_annotations, drop_orientation, is_not_png,
+                         list_from_file)
 
 
 def collect_files(img_dir, gt_dir, split):
@@ -84,11 +85,8 @@ def collect_annotations(files, split, nproc=1):
 
 
 def load_txt_info(gt_file, img_info):
-    with open(gt_file) as f:
-        gt_list = f.readlines()
-
     anno_info = []
-    for line in gt_list:
+    for line in list_from_file(gt_file):
         # each line has one ploygen (n vetices), and one text.
         # e.g., 695,885,866,888,867,1146,696,1143,####Latin 9
         line = line.strip()
