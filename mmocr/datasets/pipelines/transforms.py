@@ -1,6 +1,7 @@
 import math
 
 import cv2
+import mmcv
 import numpy as np
 import Polygon as plg
 import torchvision.transforms as transforms
@@ -587,7 +588,7 @@ class RandomRotatePolyInstances:
             (h_ind, w_ind) = (np.random.randint(0, h * 7 // 8),
                               np.random.randint(0, w * 7 // 8))
             img_cut = img[h_ind:(h_ind + h // 9), w_ind:(w_ind + w // 9)]
-            img_cut = cv2.resize(img_cut, (canvas_size[1], canvas_size[0]))
+            img_cut = mmcv.imresize(img_cut, (canvas_size[1], canvas_size[0]))
             mask = cv2.warpAffine(
                 mask,
                 rotation_matrix, (canvas_size[1], canvas_size[0]),
@@ -670,7 +671,7 @@ class SquareResizePad:
             t_w = self.target_size if h <= w else int(w * self.target_size / h)
         else:
             t_h = t_w = self.target_size
-        img = cv2.resize(img, (t_w, t_h))
+        img = mmcv.imresize(img, (t_w, t_h))
         return img, (t_h, t_w)
 
     def square_pad(self, img):
@@ -685,7 +686,7 @@ class SquareResizePad:
             (h_ind, w_ind) = (np.random.randint(0, h * 7 // 8),
                               np.random.randint(0, w * 7 // 8))
             img_cut = img[h_ind:(h_ind + h // 9), w_ind:(w_ind + w // 9)]
-            expand_img = cv2.resize(img_cut, (pad_size, pad_size))
+            expand_img = mmcv.imresize(img_cut, (pad_size, pad_size))
         if h > w:
             y0, x0 = 0, (h - w) // 2
         else:
@@ -758,7 +759,7 @@ class RandomScaling:
         scales = self.size * 1.0 / max(h, w) * aspect_ratio
         scales = np.array([scales, scales])
         out_size = (int(h * scales[1]), int(w * scales[0]))
-        image = cv2.resize(image, out_size[::-1])
+        image = mmcv.imresize(image, out_size[::-1])
 
         results['img'] = image
         results['img_shape'] = image.shape
