@@ -1,3 +1,8 @@
+import os
+
+import mmcv
+
+
 def list_to_file(filename, lines):
     """Write a list of strings to a text file.
 
@@ -5,6 +10,7 @@ def list_to_file(filename, lines):
         filename (str): The output filename. It will be created/overwritten.
         lines (list(str)): Data to be written.
     """
+    mmcv.mkdir_or_exist(os.path.dirname(filename))
     with open(filename, 'w', encoding='utf-8') as fw:
         for line in lines:
             fw.write(f'{line}\n')
