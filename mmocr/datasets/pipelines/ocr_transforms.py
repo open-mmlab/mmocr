@@ -285,10 +285,8 @@ class RandomPaddingOCR:
         random_padding_bottom = round(
             np.random.uniform(0, self.max_ratio[3]) * ori_height)
 
-        padding = [
-            random_padding_left, random_padding_top, random_padding_right,
-            random_padding_bottom
-        ]
+        padding = (random_padding_left, random_padding_top,
+                   random_padding_right, random_padding_bottom)
         img = mmcv.impad(results['img'], padding=padding, padding_mode='edge')
 
         results['img'] = img
