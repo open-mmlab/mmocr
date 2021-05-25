@@ -30,8 +30,9 @@ class SDMGRLoss(nn.Module):
         node_gts = torch.cat(node_gts).long()
         edge_gts = torch.cat(edge_gts).long()
 
-        node_valids = torch.nonzero(node_gts != self.ignore).view(-1)
-        edge_valids = torch.nonzero(edge_gts != -1).view(-1)
+        node_valids = torch.nonzero(
+            node_gts != self.ignore, as_tuple=False).view(-1)
+        edge_valids = torch.nonzero(edge_gts != -1, as_tuple=False).view(-1)
         return dict(
             loss_node=self.node_weight * self.loss_node(node_preds, node_gts),
             loss_edge=self.edge_weight * self.loss_edge(edge_preds, edge_gts),
