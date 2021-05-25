@@ -20,6 +20,7 @@ def sort_vertex(points_x, points_y):
     assert len(points_x) == 4
     assert len(points_y) == 4
     vertices = np.stack((points_x, points_y), axis=-1).astype(np.float32)
+    vertices = _sort_vertex(vertices)
     sorted_points_x = list(vertices[:, 0])
     sorted_points_y = list(vertices[:, 1])
     return sorted_points_x, sorted_points_y

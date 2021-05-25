@@ -1,9 +1,10 @@
 import math
+from itertools import chain, permutations
 
 import numpy as np
 import pytest
 
-from mmocr.datasets.pipelines.box_utils import convert_canonical, sort_vertex
+from mmocr.datasets.pipelines.box_utils import sort_vertex, sort_vertex8
 from mmocr.datasets.pipelines.crop import box_jitter, crop_img, warp_img
 
 
@@ -11,38 +12,36 @@ def test_order_vertex():
     dummy_points_x = [20, 20, 120, 120]
     dummy_points_y = [20, 40, 40, 20]
 
+    expect_points_x = [20, 120, 120, 20]
+    expect_points_y = [20, 20, 40, 40]
+
     with pytest.raises(AssertionError):
         sort_vertex([], dummy_points_y)
     with pytest.raises(AssertionError):
         sort_vertex(dummy_points_x, [])
 
-    ordered_points_x, ordered_points_y = sort_vertex(dummy_points_x,
-                                                     dummy_points_y)
+    for perm in set(permutations([0, 1, 2, 3])):
+        points_x = [dummy_points_x[i] for i in perm]
+        points_y = [dummy_points_y[i] for i in perm]
+        ordered_points_x, ordered_points_y = sort_vertex(points_x, points_y)
 
-    expect_points_x = [20, 120, 120, 20]
-    expect_points_y = [20, 20, 40, 40]
-
-    assert np.allclose(ordered_points_x, expect_points_x)
-    assert np.allclose(ordered_points_y, expect_points_y)
+        assert np.allclose(ordered_points_x, expect_points_x)
+        assert np.allclose(ordered_points_y, expect_points_y)
 
 
-def test_convert_canonical():
-    dummy_points_x = [120, 120, 20, 20]
-    dummy_points_y = [20, 40, 40, 20]
+def test_sort_vertex8():
+    dummy_points_x = [21, 21, 122, 122]
+    dummy_points_y = [21, 39, 39, 21]
 
-    with pytest.raises(AssertionError):
-        convert_canonical([], dummy_points_y)
-    with pytest.raises(AssertionError):
-        convert_canonical(dummy_points_x, [])
+    expect_points = [21, 21, 122, 21, 122, 39, 21, 39]
 
-    ordered_points_x, ordered_points_y = convert_canonical(
-        dummy_points_x, dummy_points_y)
+    for perm in set(permutations([0, 1, 2, 3])):
+        points_x = [dummy_points_x[i] for i in perm]
+        points_y = [dummy_points_y[i] for i in perm]
+        points = list(chain.from_iterable(zip(points_x, points_y)))
+        ordered_points = sort_vertex8(points)
 
-    expect_points_x = [20, 120, 120, 20]
-    expect_points_y = [20, 20, 40, 40]
-
-    assert np.allclose(ordered_points_x, expect_points_x)
-    assert np.allclose(ordered_points_y, expect_points_y)
+        assert np.allclose(ordered_points, expect_points)
 
 
 def test_box_jitter():
