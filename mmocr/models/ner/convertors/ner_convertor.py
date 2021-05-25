@@ -1,6 +1,7 @@
 import numpy as np
 
 from mmocr.models.builder import CONVERTORS
+from mmocr.utils import list_from_file
 
 
 @CONVERTORS.register_module()
@@ -36,10 +37,10 @@ class NerConvertor:
         assert self.max_len > 2
         assert self.annotation_type in ['bio', 'bioes']
 
-        lines = open(vocab_file, encoding='utf-8').readlines()
-        self.vocab_size = len(lines)
-        for i in range(len(lines)):
-            self.word2ids.update({lines[i].rstrip(): i})
+        vocabs = list_from_file(vocab_file)
+        self.vocab_size = len(vocabs)
+        for idx, vocab in enumerate(vocabs):
+            self.word2ids.update({vocab: idx})
 
         if self.annotation_type == 'bio':
             self.label2id_dict, self.id2label, self.ignore_id = \

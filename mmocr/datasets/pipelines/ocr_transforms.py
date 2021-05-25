@@ -1,6 +1,5 @@
 import math
 
-import cv2
 import mmcv
 import numpy as np
 import torch
@@ -91,8 +90,8 @@ class ResizeOCR:
             if dst_max_width is not None:
                 valid_ratio = min(1.0, 1.0 * new_width / dst_max_width)
                 resize_width = min(dst_max_width, new_width)
-                img_resize = cv2.resize(results['img'],
-                                        (resize_width, dst_height))
+                img_resize = mmcv.imresize(results['img'],
+                                           (resize_width, dst_height))
                 resize_shape = img_resize.shape
                 pad_shape = img_resize.shape
                 if new_width < dst_max_width:
@@ -102,13 +101,13 @@ class ResizeOCR:
                         pad_val=self.img_pad_value)
                     pad_shape = img_resize.shape
             else:
-                img_resize = cv2.resize(results['img'],
-                                        (new_width, dst_height))
+                img_resize = mmcv.imresize(results['img'],
+                                           (new_width, dst_height))
                 resize_shape = img_resize.shape
                 pad_shape = img_resize.shape
         else:
-            img_resize = cv2.resize(results['img'],
-                                    (dst_max_width, dst_height))
+            img_resize = mmcv.imresize(results['img'],
+                                       (dst_max_width, dst_height))
             resize_shape = img_resize.shape
             pad_shape = img_resize.shape
 
@@ -286,10 +285,10 @@ class RandomPaddingOCR:
         random_padding_bottom = round(
             np.random.uniform(0, self.max_ratio[3]) * ori_height)
 
-        img = np.copy(results['img'])
-        img = cv2.copyMakeBorder(img, random_padding_top,
-                                 random_padding_bottom, random_padding_left,
-                                 random_padding_right, cv2.BORDER_REPLICATE)
+        padding = (random_padding_left, random_padding_top,
+                   random_padding_right, random_padding_bottom)
+        img = mmcv.impad(results['img'], padding=padding, padding_mode='edge')
+
         results['img'] = img
         results['img_shape'] = img.shape
 

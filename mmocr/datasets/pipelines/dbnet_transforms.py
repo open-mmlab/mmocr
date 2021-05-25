@@ -1,6 +1,6 @@
-import cv2
 import imgaug
 import imgaug.augmenters as iaa
+import mmcv
 import numpy as np
 
 from mmdet.core.mask import PolygonMasks
@@ -145,7 +145,7 @@ class EastRandomCrop:
         padded_img = np.zeros(
             (self.target_size[1], self.target_size[0], img.shape[2]),
             img.dtype)
-        padded_img[:h, :w] = cv2.resize(
+        padded_img[:h, :w] = mmcv.imresize(
             img[crop_y:crop_y + crop_h, crop_x:crop_x + crop_w], (w, h))
 
         # for bboxes
