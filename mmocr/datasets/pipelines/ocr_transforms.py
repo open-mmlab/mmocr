@@ -54,7 +54,6 @@ class ResizeOCR:
             assert isinstance(min_width, tuple)
             assert isinstance(max_width, tuple)
             assert len(height) == len(min_width) == len(max_width)
-        assert backend in ('cv2', 'pillow') or backend is None
 
         self.height = height
         self.min_width = min_width
