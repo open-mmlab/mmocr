@@ -6,9 +6,9 @@ train_pipeline = [
     dict(
         type='ResizeOCR',
         height=32,
-        min_width=256,
+        min_width=32,
         max_width=256,
-        keep_aspect_ratio=True),
+        keep_aspect_ratio=False),
     dict(type='ToTensorOCR'),
     dict(type='NormalizeOCR', **img_norm_cfg),
     dict(
@@ -23,7 +23,7 @@ test_pipeline = [
     dict(
         type='ResizeOCR',
         height=32,
-        min_width=4,
+        min_width=32,
         max_width=None,
         keep_aspect_ratio=True),
     dict(type='ToTensorOCR'),
