@@ -150,13 +150,13 @@ class KIEDataset(BaseDataset):
         node_preds = []
         node_gts = []
         for idx, result in enumerate(results):
-            node_preds.append(result['nodes'])
+            node_preds.append(result['nodes'].cpu())
             box_ann_infos = self.data_infos[idx]['annotations']
             node_gt = [box_ann_info['label'] for box_ann_info in box_ann_infos]
             node_gts.append(torch.Tensor(node_gt))
 
         node_preds = torch.cat(node_preds)
-        node_gts = torch.cat(node_gts).int().to(node_preds.device)
+        node_gts = torch.cat(node_gts).int()
 
         node_f1s = compute_f1_score(node_preds, node_gts, ignores)
 

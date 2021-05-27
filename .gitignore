@@ -137,3 +137,4 @@ log.txt
 workspace.code-workspace
 results
 mmocr/core/font.TTF
+workdirs/
