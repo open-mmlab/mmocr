@@ -1,5 +1,6 @@
 imgaug
 kwarray
+lanms-proper
 lmdb
 matplotlib
 mmcv

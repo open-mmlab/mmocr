@@ -152,3 +152,8 @@ pipelines
 ^^^^^^^^^^^
 .. automodule:: mmocr.datasets.pipelines
     :members:
+
+utils
+^^^^^^^^^^^
+.. automodule:: mmocr.datasets.utils
+    :members:
