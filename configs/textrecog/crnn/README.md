@@ -38,3 +38,11 @@
 | :------------------------------------------------------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 |                         methods                          | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |
 | [CRNN](/configs/textrecog/crnn/crnn_academic_dataset.py) |  80.5  |     81.5     | 86.5 |     |  54.1   |       59.1        |  55.6   | [model](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/crnn/20210326_111035.log.json) |
+
+## Chinese Dataset
+
+## Results and Models
+
+|Methods|  Backbone   |  Decoder || download |
+| :-----: | :------: | :-------: | :-------: | :---: |
+| [CRNN](/configs/textrecog/crnn/crnn_chinese_dataset.py)  | VeryDeepVgg |  CTC ||  [model](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_chineseocr_20210526-dce9c433.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_chineseocr_20210526-dce9c433.log) \| [dict](https://download.openmmlab.com/mmocr/textrecog/crnn/dict_printed_chinese_english_digits.txt)  |
