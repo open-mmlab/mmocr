@@ -30,6 +30,9 @@ class ResizeOCR:
         img_pad_value (int): Scalar to fill padding area.
         width_downsample_ratio (float): Downsample ratio in horizontal
             direction from input image to output feature.
+        backend (str | None): The image resize backend type. Options are `cv2`,
+            `pillow`, `None`. If backend is None, the global imread_backend
+            specified by ``mmcv.use_backend()`` will be used. Default: None.
     """
 
     def __init__(self,
@@ -38,7 +41,8 @@ class ResizeOCR:
                  max_width=None,
                  keep_aspect_ratio=True,
                  img_pad_value=0,
-                 width_downsample_ratio=1.0 / 16):
+                 width_downsample_ratio=1.0 / 16,
+                 backend=None):
         assert isinstance(height, (int, tuple))
         assert utils.is_none_or_type(min_width, (int, tuple))
         assert utils.is_none_or_type(max_width, (int, tuple))
@@ -57,6 +61,7 @@ class ResizeOCR:
         self.keep_aspect_ratio = keep_aspect_ratio
         self.img_pad_value = img_pad_value
         self.width_downsample_ratio = width_downsample_ratio
+        self.backend = backend
 
     def __call__(self, results):
         rank, _ = get_dist_info()
@@ -90,8 +95,9 @@ class ResizeOCR:
             if dst_max_width is not None:
                 valid_ratio = min(1.0, 1.0 * new_width / dst_max_width)
                 resize_width = min(dst_max_width, new_width)
-                img_resize = mmcv.imresize(results['img'],
-                                           (resize_width, dst_height))
+                img_resize = mmcv.imresize(
+                    results['img'], (resize_width, dst_height),
+                    backend=self.backend)
                 resize_shape = img_resize.shape
                 pad_shape = img_resize.shape
                 if new_width < dst_max_width:
@@ -101,13 +107,15 @@ class ResizeOCR:
                         pad_val=self.img_pad_value)
                     pad_shape = img_resize.shape
             else:
-                img_resize = mmcv.imresize(results['img'],
-                                           (new_width, dst_height))
+                img_resize = mmcv.imresize(
+                    results['img'], (new_width, dst_height),
+                    backend=self.backend)
                 resize_shape = img_resize.shape
                 pad_shape = img_resize.shape
         else:
-            img_resize = mmcv.imresize(results['img'],
-                                       (dst_max_width, dst_height))
+            img_resize = mmcv.imresize(
+                results['img'], (dst_max_width, dst_height),
+                backend=self.backend)
             resize_shape = img_resize.shape
             pad_shape = img_resize.shape
 
