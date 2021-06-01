@@ -201,7 +201,7 @@ def parse_args():
     parser.add_argument(
         '--split-list',
         nargs='+',
-        help='a list of splits. e.g., "--split_list training test"')
+        help='a list of splits. e.g., "--split-list training test"')
 
     parser.add_argument(
         '--nproc', default=1, type=int, help='number of process')
