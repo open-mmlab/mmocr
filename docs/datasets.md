@@ -44,22 +44,52 @@ The structure of the text detection dataset directory is organized as follows.
 | Synthtext | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  |                                                                                      | [instances_training.lmdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb) |                    -                    |
 
 - For `icdar2015`:
-  - Step1: Download `ch4_training_images.zip` and `ch4_test_images.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
-  - Step2: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json)
-  - Step3:
-
+  - Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
+  - Step2:
   ```bash
   mkdir icdar2015 && cd icdar2015
-  mv /path/to/instances_training.json .
-  mv /path/to/instances_test.json .
-
-  mkdir imgs && cd imgs
-  ln -s /path/to/ch4_training_images training
-  ln -s /path/to/ch4_test_images test
+  mkdir imgs && mkdir annotations
+  # For images,
+  mv ch4_training_images imgs/training
+  mv ch4_test_images imgs/test
+  # For annotations,
+  mv ch4_training_localization_transcription_gt annotations/training
+  mv Challenge4_Test_Task1_GT annotations/test
+  ```
+  - Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) and move them to `icdar2015`
+  - Or, generate `instances_training.json` and `instances_test.json` with following command:
+  ```bash
+  python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
   ```
 
 - For `icdar2017`:
   - To avoid the effect of rotation when load `jpg` with opencv, We provide re-saved `png` format image in [renamed_images](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar). You can copy these images to `imgs`.
+
+- For `ctw1500`:
+  - Step1: Download `train_images.zip`, `test_images.zip`, `train_labels.zip`, `test_labels.zip` from [github](https://github.com/Yuliang-Liu/Curve-Text-Detector)
+  ```bash
+  mkdir ctw1500 && cd ctw1500
+  mkdir imgs && mkdir annotations
+
+  # For annotations
+  cd annotations
+  wget -O train_labels.zip https://universityofadelaide.box.com/shared/static/jikuazluzyj4lq6umzei7m2ppmt3afyw.zip
+  wget -O test_labels.zip https://cloudstor.aarnet.edu.au/plus/s/uoeFl0pCN9BOCN5/download
+  unzip train_labels.zip && mv ctw1500_train_labels training
+  unzip test_labels.zip -d test
+  cd ..
+  # For images
+  cd imgs
+  wget -O train_images.zip https://universityofadelaide.box.com/shared/static/py5uwlfyyytbb2pxzq9czvu6fuqbjdh8.zip
+  wget -O test_images.zip https://universityofadelaide.box.com/shared/static/t4w48ofnqkdw7jyc4t11nsukoeqk9c3d.zip
+  unzip train_images.zip && mv train_images training
+  unzip test_images.zip && mv test_images test
+  ```
+  - Step2: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/ctw1500/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/ctw1500/instances_test.json), and move them to `ctw1500` folder.
+  - Or, generate `instances_training.json` and `instances_test.json` with following command:
+  ```bash
+  python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
+  ```
 
 ## Text Recognition
 

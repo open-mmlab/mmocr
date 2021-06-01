@@ -150,11 +150,12 @@ def parse_args():
     )
     parser.add_argument('icdar_path', help='icdar root path')
     parser.add_argument('-o', '--out-dir', help='output path')
-    parser.add_argument('-d', '--dataset', help='icdar2017 or icdar2015')
+    parser.add_argument(
+        '-d', '--dataset', required=True, help='icdar2017 or icdar2015')
     parser.add_argument(
         '--split-list',
         nargs='+',
-        help='a list of splits. e.g., "--split-list training validation test"')
+        help='a list of splits. e.g., "--split-list training test"')
 
     parser.add_argument(
         '--nproc', default=1, type=int, help='number of process')
