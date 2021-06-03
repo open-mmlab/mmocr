@@ -300,7 +300,7 @@ class FCENetTargets(TextSnakeTargets):
 
             for ind, proportion_range in enumerate(lv_proportion_range):
                 if proportion_range[0] < proportion < proportion_range[1]:
-                    lv_text_polys[ind].append(
+                    lv_ignore_polys[ind].append(
                         [ignore_poly[0] / lv_size_divs[ind]])
 
         for ind, size_divisor in enumerate(lv_size_divs):

@@ -43,6 +43,7 @@ class FCEHead(HeadMixin, nn.Module):
                  nms_thr=0.1,
                  alpha=1.0,
                  beta=1.0,
+                 text_repr_type='poly',
                  train_cfg=None,
                  test_cfg=None):
 
@@ -63,6 +64,7 @@ class FCEHead(HeadMixin, nn.Module):
         self.nms_thr = nms_thr
         self.alpha = alpha
         self.beta = beta
+        self.text_repr_type = text_repr_type
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
         self.out_channels_cls = 4
@@ -129,6 +131,6 @@ class FCEHead(HeadMixin, nn.Module):
             scale=scale,
             alpha=self.alpha,
             beta=self.beta,
-            text_repr_type='poly',
+            text_repr_type=self.text_repr_type,
             score_thr=self.score_thr,
             nms_thr=self.nms_thr)
