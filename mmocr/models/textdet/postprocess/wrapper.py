@@ -419,7 +419,7 @@ def fcenet_decode(preds,
     """
     assert isinstance(preds, list)
     assert len(preds) == 2
-    assert text_repr_type == 'poly'
+    assert text_repr_type in ['poly', 'quad']
 
     cls_pred = preds[0][0]
     tr_pred = cls_pred[0:2].softmax(dim=0).data.cpu().numpy()
@@ -460,6 +460,16 @@ def fcenet_decode(preds,
         boundaries = boundaries + polygons
 
     boundaries = poly_nms(boundaries, nms_thr)
+
+    if text_repr_type == 'quad':
+        new_boundaries = []
+        for boundary in boundaries:
+            poly = np.array(boundary[:-1]).reshape(-1, 2).astype(np.float32)
+            score = boundary[-1]
+            points = cv2.boxPoints(cv2.minAreaRect(poly))
+            points = np.int0(points)
+            new_boundaries.append(points.reshape(-1).tolist() + [score])
+
     return boundaries
 
 
