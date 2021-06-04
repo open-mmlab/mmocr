@@ -14,26 +14,6 @@ assert build_dataset is not None
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector.')
     parser.add_argument('config', help='Train config file path.')
-    parser.add_argument(
-        '--load-from', help='The checkpoint file to load from.')
-    parser.add_argument(
-        '--resume-from', help='The checkpoint file to resume from.')
-    parser.add_argument(
-        '--no-validate',
-        action='store_true',
-        help='Whether not to evaluate the checkpoint during training.')
-    group_gpus = parser.add_mutually_exclusive_group()
-    group_gpus.add_argument(
-        '--gpus',
-        type=int,
-        help='Number of gpus to use '
-        '(only applicable to non-distributed training).')
-    group_gpus.add_argument(
-        '--gpu-ids',
-        type=int,
-        nargs='+',
-        help='ids of gpus to use '
-        '(only applicable to non-distributed training).')
     parser.add_argument('--seed', type=int, default=None, help='Random seed.')
     parser.add_argument(
         '--deterministic',
