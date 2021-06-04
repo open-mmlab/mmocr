@@ -14,28 +14,6 @@ assert build_dataset is not None
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector.')
     parser.add_argument('config', help='Train config file path.')
-    parser.add_argument('--seed', type=int, default=None, help='Random seed.')
-    parser.add_argument(
-        '--deterministic',
-        action='store_true',
-        help='Whether to set deterministic options for CUDNN backend.')
-    parser.add_argument(
-        '--options',
-        nargs='+',
-        action=DictAction,
-        help='Override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file (deprecate), '
-        'change to --cfg-options instead.')
-    parser.add_argument(
-        '--cfg-options',
-        nargs='+',
-        action=DictAction,
-        help='Override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file. If the value to '
-        'be overwritten is a list, it should be of the form of either '
-        'key="[a,b]" or key=a,b .The argument also allows nested list/tuple '
-        'values, e.g. key="[(a,b),(c,d)]". Note that the quotation marks '
-        'are necessary and that no white space is allowed.')
     parser.add_argument(
         '--launcher',
         choices=['none', 'pytorch', 'slurm', 'mpi'],
