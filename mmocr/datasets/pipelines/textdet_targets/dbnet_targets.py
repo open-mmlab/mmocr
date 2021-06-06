@@ -100,8 +100,9 @@ class DBNetTargets(BaseTextDetTargets):
             mask for i, mask in enumerate(results['gt_labels'])
             if not ignore_tags[i]
         ])
+        new_ignore_tags = [ignore for ignore in ignore_tags if not ignore]
 
-        return results
+        return results, new_ignore_tags
 
     def generate_thr_map(self, img_size, polygons):
         """Generate threshold map.
@@ -149,12 +150,15 @@ class DBNetTargets(BaseTextDetTargets):
         else:
             print(f'padding {polygon} with {distance} gets {padded_polygon}')
             padded_polygon = polygon.copy().astype(np.int32)
-        cv2.fillPoly(mask, [padded_polygon.astype(np.int32)], 1.0)
 
         x_min = padded_polygon[:, 0].min()
         x_max = padded_polygon[:, 0].max()
         y_min = padded_polygon[:, 1].min()
         y_max = padded_polygon[:, 1].max()
+
+        if x_max <= 0 or y_max <= 0:
+            return
+
         width = x_max - x_min + 1
         height = y_max - y_min + 1
 
@@ -180,6 +184,16 @@ class DBNetTargets(BaseTextDetTargets):
         x_max_valid = min(max(0, x_max), canvas.shape[1] - 1)
         y_min_valid = min(max(0, y_min), canvas.shape[0] - 1)
         y_max_valid = min(max(0, y_max), canvas.shape[0] - 1)
+
+        if x_min_valid - x_min >= distance_map.shape[
+                1] or y_min_valid - y_min >= distance_map.shape[0]:
+            return
+        if x_max_valid - x_max + width <= 0:
+            return
+        if y_max_valid - y_max + height <= 0:
+            return
+
+        cv2.fillPoly(mask, [padded_polygon.astype(np.int32)], 1.0)
         canvas[y_min_valid:y_max_valid + 1,
                x_min_valid:x_max_valid + 1] = np.fmax(
                    1 - distance_map[y_min_valid - y_min:y_max_valid - y_max +
@@ -198,25 +212,29 @@ class DBNetTargets(BaseTextDetTargets):
             results (dict): The output result dictionary.
         """
         assert isinstance(results, dict)
-        polygons = results['gt_masks'].masks
+
         if 'bbox_fields' in results:
             results['bbox_fields'].clear()
-        ignore_tags = self.find_invalid(results)
-        h, w, _ = results['img_shape']
 
+        ignore_tags = self.find_invalid(results)
+        results, ignore_tags = self.ignore_texts(results, ignore_tags)
+
+        h, w, _ = results['img_shape']
+        polygons = results['gt_masks'].masks
+
+        # generate gt_shrink_kernel
         gt_shrink, ignore_tags = self.generate_kernels((h, w),
                                                        polygons,
                                                        self.shrink_ratio,
                                                        ignore_tags=ignore_tags)
 
-        results = self.ignore_texts(results, ignore_tags)
-
-        # polygons and  polygons_ignore reassignment.
-        polygons = results['gt_masks'].masks
+        results, ignore_tags = self.ignore_texts(results, ignore_tags)
+        # genenrate gt_shrink_mask
         polygons_ignore = results['gt_masks_ignore'].masks
-
         gt_shrink_mask = self.generate_effective_mask((h, w), polygons_ignore)
 
+        # generate gt_threshold and gt_threshold_mask
+        polygons = results['gt_masks'].masks
         gt_thr, gt_thr_mask = self.generate_thr_map((h, w), polygons)
 
         results['mask_fields'].clear()  # rm gt_masks encoded by polygons
