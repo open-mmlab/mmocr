@@ -46,7 +46,7 @@ The structure of the text detection dataset directory is organized as follows.
 | ICDAR2015 | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)     |                                                                                      | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
 | ICDAR2017 | [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [renamed_imgs](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar) | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
 | Synthtext | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  |                                                                                      | [instances_training.lmdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb) |                    -                    |
-| Totaltext | [homepage](https://github.com/cs-chan/Total-Text-Dataset)  |                                                                                      | [instances_training.json](https://download.openmmlab.com/mmocr/data/totaltext/instances_training.lmdb) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/totaltext/instances_test.lmdb)
+| Totaltext | [homepage](https://github.com/cs-chan/Total-Text-Dataset)  |                                                                                      | - |                    -                    | -
 
 - For `icdar2015`:
   - Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
@@ -114,8 +114,7 @@ The structure of the text detection dataset directory is organized as follows.
   mv Polygon/Test ../annotations/test
 
   ```
-  - Step2: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/totaltext/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/totaltext/instances_test.json), and move them to `totaltext` folder.
-  - Or, generate `instances_training.json` and `instances_test.json` with following command:
+  - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
   ```bash
   python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
   ```
