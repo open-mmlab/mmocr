@@ -109,8 +109,9 @@ The structure of the text detection dataset directory is organized as follows.
 
   # For annotations
   unzip groundtruth_text.zip
-  mv Polygon/Train annotations/training
-  mv Polygon/Test annotations/test
+  cd Groundtruth
+  mv Polygon/Train ../annotations/training
+  mv Polygon/Test ../annotations/test
 
   ```
   - Step2: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/totaltext/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/totaltext/instances_test.json), and move them to `totaltext` folder.
