@@ -44,17 +44,17 @@ def collect_files(img_dir, gt_dir, split):
     files = []
     if split == 'training':
         for img_file in imgs_list:
-            gt_file = gt_dir + '/poly_gt_' + osp.splitext(
-                osp.basename(img_file))[0] + '.mat'
-            # gt_file = gt_dir + '/' + osp.splitext(
-            #    osp.basename(img_file))[0] + '.png'
+            gt_file = osp.join(
+                gt_dir,
+                'poly_gt_' + osp.splitext(osp.basename(img_file))[0] + '.mat')
             files.append((img_file, gt_file))
         assert len(files), f'No images found in {img_dir}'
         print(f'Loaded {len(files)} images from {img_dir}')
     elif split == 'test':
         for img_file in imgs_list:
-            gt_file = gt_dir + '/poly_gt_' + osp.splitext(
-                osp.basename(img_file))[0] + '.mat'
+            gt_file = osp.join(
+                gt_dir,
+                'poly_gt_' + osp.splitext(osp.basename(img_file))[0] + '.mat')
             files.append((img_file, gt_file))
         assert len(files), f'No images found in {img_dir}'
         print(f'Loaded {len(files)} images from {img_dir}')
