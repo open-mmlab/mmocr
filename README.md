@@ -55,7 +55,7 @@ Supported algorithms:
 - [x] [PSENet](configs/textdet/psenet/README.md) (CVPR'2019)
 - [x] [TextSnake](configs/textdet/textsnake/README.md) (ECCV'2018)
 - [x] [DRRG](configs/textdet/drrg/README.md) (CVPR'2020)
-- [x] [FCENet](configs/textdet/fcenet/README.MD) (CVPR'2021)
+- [x] [FCENet](configs/textdet/fcenet/README.md) (CVPR'2021)
 
 </details>
 
