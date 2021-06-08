@@ -44,7 +44,7 @@ def collect_files(img_dir, gt_dir, split):
     files = []
     if split == 'training':
         for img_file in imgs_list:
-            gt_file = gt_dir + '/gt_' + osp.splitext(
+            gt_file = gt_dir + '/poly_gt_' + osp.splitext(
                 osp.basename(img_file))[0] + '.mat'
             # gt_file = gt_dir + '/' + osp.splitext(
             #    osp.basename(img_file))[0] + '.png'
@@ -107,7 +107,7 @@ def get_contours(gt_path, split):
     words = []
     data = scio.loadmat(gt_path)
     if split == 'training':
-        data_polygt = data['gt']
+        data_polygt = data['polygt']
     elif split == 'test':
         data_polygt = data['polygt']
 
