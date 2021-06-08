@@ -33,6 +33,10 @@ The structure of the text detection dataset directory is organized as follows.
 ├── synthtext
 │   ├── imgs
 │   └── instances_training.lmdb
+├── totaltext
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
 ```
 
 |  Dataset  |                             Images                             |                                                                                      |                                                                                                        |            Annotation Files             |                                                                                                |
@@ -42,6 +46,7 @@ The structure of the text detection dataset directory is organized as follows.
 | ICDAR2015 | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)     |                                                                                      | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
 | ICDAR2017 | [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [renamed_imgs](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar) | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
 | Synthtext | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  |                                                                                      | [instances_training.lmdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb) |                    -                    |
+| Totaltext | [homepage](https://github.com/cs-chan/Total-Text-Dataset)  |                                                                                      | - |                    -                    | -
 
 - For `icdar2015`:
   - Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
@@ -90,7 +95,29 @@ The structure of the text detection dataset directory is organized as follows.
   ```bash
   python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
   ```
+- For `Totaltext`:
+  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (We recommend downloading the text groundtruth with .mat format since our totaltext_converter.py supports groundtruth with .mat format only).
+  ```bash
+  mkdir totaltext && cd totaltext
+  mkdir imgs && mkdir annotations
 
+  # For images
+  # in ./totaltext
+  unzip totaltext.zip
+  mv Images/Train imgs/training
+  mv Images/Test imgs/test
+
+  # For annotations
+  unzip groundtruth_text.zip
+  cd Groundtruth
+  mv Polygon/Train ../annotations/training
+  mv Polygon/Test ../annotations/test
+
+  ```
+  - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
+  ```bash
+  python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
+  ```
 ## Text Recognition
 
 **The structure of the text recognition dataset directory is organized as follows.**
