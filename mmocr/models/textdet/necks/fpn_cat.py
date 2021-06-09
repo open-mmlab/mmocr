@@ -117,9 +117,8 @@ class FPNC(nn.Module):
         ]
 
         for i, out in enumerate(outs):
-            scale = 2**i
             outs[i] = F.interpolate(
-                outs[i], scale_factor=scale, mode='nearest')
+                outs[i], size=outs[0].shape[2:], mode='nearest')
         out = torch.cat(outs, dim=1)
 
         if self.conv_after_concat:
