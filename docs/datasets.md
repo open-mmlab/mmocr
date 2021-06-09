@@ -19,6 +19,7 @@ The structure of the text detection dataset directory is organized as follows.
 
 ```text
 ├── ctw1500
+│   ├── annotations
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
@@ -42,7 +43,7 @@ The structure of the text detection dataset directory is organized as follows.
 |  Dataset  |                             Images                             |                                                                                      |                                                                                                        |            Annotation Files             |                                                                                                |
 | :-------: | :------------------------------------------------------------: | :----------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: | :-------------------------------------: | :--------------------------------------------------------------------------------------------: |
 |      |                                                                |                                                                                      |                                                training                                                |               validation                |                                            testing                                             |       |
-|  CTW1500  | [homepage](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                                                                                      |  [instances_training.json](https://download.openmmlab.com/mmocr/data/ctw1500/instances_training.json)  |                    -                    |  [instances_test.json](https://download.openmmlab.com/mmocr/data/ctw1500/instances_test.json)  |
+|  CTW1500  | [homepage](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                                        |                    -                    |                    -                    |                    -                    |
 | ICDAR2015 | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)     |                                                                                      | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
 | ICDAR2017 | [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [renamed_imgs](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar) | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
 | Synthtext | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  |                                                                                      | [instances_training.lmdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb) |                    -                    |
@@ -90,8 +91,8 @@ The structure of the text detection dataset directory is organized as follows.
   unzip train_images.zip && mv train_images training
   unzip test_images.zip && mv test_images test
   ```
-  - Step2: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/ctw1500/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/ctw1500/instances_test.json), and move them to `ctw1500` folder.
-  - Or, generate `instances_training.json` and `instances_test.json` with following command:
+  - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
+
   ```bash
   python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
   ```
