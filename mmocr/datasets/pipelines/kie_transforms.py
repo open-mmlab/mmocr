@@ -1,8 +1,42 @@
 import numpy as np
+from mmcv import rescale_size
 from mmcv.parallel import DataContainer as DC
 
 from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines.formating import DefaultFormatBundle, to_tensor
+
+
+@PIPELINES.register_module()
+class ResizeNoImg:
+    """Image resizing without img.
+
+    Used for KIE.
+    """
+
+    def __init__(self, img_scale, keep_ratio=True):
+        self.img_scale = img_scale
+        self.keep_ratio = keep_ratio
+
+    def __call__(self, results):
+        w, h = results['img_info']['width'], results['img_info']['height']
+        if self.keep_ratio:
+            (new_w, new_h) = rescale_size((w, h),
+                                          self.img_scale,
+                                          return_scale=False)
+            w_scale = new_w / w
+            h_scale = new_h / h
+        else:
+            (new_w, new_h) = self.img_scale
+
+        w_scale = new_w / w
+        h_scale = new_h / h
+        scale_factor = np.array([w_scale, h_scale, w_scale, h_scale],
+                                dtype=np.float32)
+        results['img_shape'] = (new_h, new_w, 1)
+        results['scale_factor'] = scale_factor
+        results['keep_ratio'] = True
+
+        return results
 
 
 @PIPELINES.register_module()

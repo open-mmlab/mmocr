@@ -4,6 +4,8 @@ max_scale, min_scale = 1024, 512
 
 train_pipeline = [
     dict(type='LoadAnnotations'),
+    dict(
+        type='ResizeNoImg', img_scale=(max_scale, min_scale), keep_ratio=True),
     dict(type='KIEFormatBundle'),
     dict(
         type='Collect',
@@ -12,6 +14,8 @@ train_pipeline = [
 ]
 test_pipeline = [
     dict(type='LoadAnnotations'),
+    dict(
+        type='ResizeNoImg', img_scale=(max_scale, min_scale), keep_ratio=True),
     dict(type='KIEFormatBundle'),
     dict(
         type='Collect',
@@ -47,7 +51,7 @@ test = dict(
     test_mode=True)
 
 data = dict(
-    samples_per_gpu=4, workers_per_gpu=1, train=train, val=test, test=test)
+    samples_per_gpu=4, workers_per_gpu=0, train=train, val=test, test=test)
 
 evaluation = dict(
     interval=1,
