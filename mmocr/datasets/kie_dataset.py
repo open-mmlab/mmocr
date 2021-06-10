@@ -58,6 +58,7 @@ class KIEDataset(BaseDataset):
     def pre_pipeline(self, results):
         results['img_prefix'] = self.img_prefix
         results['bbox_fields'] = []
+        results['img'] = np.zeros((1, 1, 1), dtype=np.uint8)
 
     def _parse_anno_info(self, annotations):
         """Parse annotations of boxes, texts and labels for one image.
