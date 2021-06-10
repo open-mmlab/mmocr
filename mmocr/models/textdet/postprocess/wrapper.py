@@ -380,10 +380,10 @@ def textsnake_decode(preds,
 
         score = np.sum(instance_mask * pred_text_score) / (
             np.sum(instance_mask) + 1e-8)
-        if len(contours) > 0 and cv2.contourArea(contours[0]) > 0:
+        if (len(contours) > 0 and cv2.contourArea(contours[0]) > 0
+                and contours[0].size > 8):
             boundary = contours[0].flatten().tolist()
-            if len(boundary) >= 8:
-                boundaries.append(boundary + [score])
+            boundaries.append(boundary + [score])
 
     return boundaries
 

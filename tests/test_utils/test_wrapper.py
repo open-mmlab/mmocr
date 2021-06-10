@@ -1,10 +1,14 @@
 import numpy as np
 import torch
 
+from mmocr.models.textdet.postprocess.wrapper import (comps2boundaries,
+                                                      db_decode, fcenet_decode,
+                                                      poly_nms,
+                                                      textsnake_decode)
+
 
 def test_db_boxes_from_bitmaps():
     """Test the boxes_from_bitmaps function in db_decoder."""
-    from mmocr.models.textdet.postprocess.wrapper import db_decode
     pred = np.array([[[0.8, 0.8, 0.8, 0.8, 0], [0.8, 0.8, 0.8, 0.8, 0],
                       [0.8, 0.8, 0.8, 0.8, 0], [0.8, 0.8, 0.8, 0.8, 0],
                       [0.8, 0.8, 0.8, 0.8, 0]]])
@@ -15,7 +19,6 @@ def test_db_boxes_from_bitmaps():
 
 
 def test_fcenet_decode():
-    from mmocr.models.textdet.postprocess.wrapper import fcenet_decode
 
     k = 1
     preds = []
@@ -33,7 +36,6 @@ def test_fcenet_decode():
 
 
 def test_poly_nms():
-    from mmocr.models.textdet.postprocess.wrapper import poly_nms
     threshold = 0
     polygons = []
     polygons.append([10, 10, 10, 30, 30, 30, 30, 10, 0.95])
@@ -46,7 +48,6 @@ def test_poly_nms():
 
 
 def test_comps2boundaries():
-    from mmocr.models.textdet.postprocess.wrapper import comps2boundaries
 
     # test comps2boundaries
     x1 = np.arange(2, 18, 2)
@@ -64,3 +65,31 @@ def test_comps2boundaries():
     # test comps2boundaries with blank inputs
     boundaries = comps2boundaries(text_comps[[]], comp_labels[[]])
     assert len(boundaries) == 0
+
+
+def test_textsnake_decode():
+
+    maps = torch.zeros((1, 6, 224, 224), dtype=torch.float)
+    maps[:, 0:2, :, :] = -10.
+    maps[:, 0, 60:100, 50:170] = 10.
+    maps[:, 1, 75:85, 60:160] = 10.
+    maps[:, 2, 75:85, 60:160] = 0.
+    maps[:, 3, 75:85, 60:160] = 1.
+    maps[:, 4, 75:85, 60:160] = 10.
+    # test decoding with text center region of small area
+    maps[:, 0:2, 150:152, 5:7] = 10.
+
+    results = textsnake_decode(torch.squeeze(maps))
+    assert len(results) == 1
+
+    # test decoding with small radius
+    maps.fill_(0.)
+    maps[:, 0:2, :, :] = -10.
+    maps[:, 0, 120:140, 20:40] = 10.
+    maps[:, 1, 120:140, 20:40] = 10.
+    maps[:, 2, 120:140, 20:40] = 0.
+    maps[:, 3, 120:140, 20:40] = 1.
+    maps[:, 4, 120:140, 20:40] = 0.5
+
+    results = textsnake_decode(torch.squeeze(maps))
+    assert len(results) == 0
