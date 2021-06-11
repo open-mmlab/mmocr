@@ -49,8 +49,6 @@ def collect_files(img_dir, gt_dir, split):
             gt_file = osp.join(
                 gt_dir,
                 'poly_gt_' + osp.splitext(osp.basename(img_file))[0] + '.mat')
-            # gt_file = gt_dir + '/' + osp.splitext(
-            #    osp.basename(img_file))[0] + '.png'
             files.append((img_file, gt_file))
         assert len(files), f'No images found in {img_dir}'
         print(f'Loaded {len(files)} images from {img_dir}')
