@@ -275,6 +275,16 @@ The structure of the text detection dataset directory is organized as follows.
 
   ln -s /path/to/SynthAdd SynthAdd
   ```
+  **Note:**
+To convert label file with `txt` format to `lmdb` format,
+```bash
+python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
+```
+For example,
+```bash
+python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
+```
+
 - For `Totaltext`:
   - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (We recommend downloading the text groundtruth with .mat format since our totaltext_converter.py supports groundtruth with .mat format only).
   ```bash
