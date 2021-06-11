@@ -245,13 +245,6 @@ def pytorch2onnx(model: nn.Module,
                 for _ in img_list
             ]
 
-            # concate flip image for batch test
-            flip_img_list = [_.flip(-1) for _ in img_list]
-            img_list = [
-                torch.cat((ori_img, flip_img), 0)
-                for ori_img, flip_img in zip(img_list, flip_img_list)
-            ]
-
             # update img_meta
             img_list, img_metas = _update_input_img(img_list, img_metas)
 
