@@ -4,7 +4,6 @@ import os
 import os.path as osp
 from functools import partial
 
-import cv2
 import mmcv
 import numpy as np
 import scipy.io as scio
@@ -33,7 +32,7 @@ def collect_files(img_dir, gt_dir, split):
 
     # note that we handle png and jpg only. Pls convert others such as gif to
     # jpg or png offline
-    suffixes = ['.png', '.PNG', '.jpg', '.JPG', '.jpeg', '.JPEG']
+    suffixes = ['.png', '.jpg', '.jpeg']
     # suffixes = ['.png']
 
     imgs_list = []
@@ -47,8 +46,9 @@ def collect_files(img_dir, gt_dir, split):
     files = []
     if split == 'training':
         for img_file in imgs_list:
-            gt_file = gt_dir + '/poly_gt_' + osp.splitext(
-                osp.basename(img_file))[0] + '.mat'
+            gt_file = osp.join(
+                gt_dir,
+                'poly_gt_' + osp.splitext(osp.basename(img_file))[0] + '.mat')
             # gt_file = gt_dir + '/' + osp.splitext(
             #    osp.basename(img_file))[0] + '.png'
             files.append((img_file, gt_file))
@@ -56,8 +56,9 @@ def collect_files(img_dir, gt_dir, split):
         print(f'Loaded {len(files)} images from {img_dir}')
     elif split == 'test':
         for img_file in imgs_list:
-            gt_file = gt_dir + '/poly_gt_' + osp.splitext(
-                osp.basename(img_file))[0] + '.mat'
+            gt_file = osp.join(
+                gt_dir,
+                'poly_gt_' + osp.splitext(osp.basename(img_file))[0] + '.mat')
             files.append((img_file, gt_file))
         assert len(files), f'No images found in {img_dir}'
         print(f'Loaded {len(files)} images from {img_dir}')
@@ -114,7 +115,7 @@ def get_contours(gt_path, split):
     elif split == 'test':
         data_polygt = data['polygt']
 
-    for i, lines in enumerate(data_polygt):
+    for lines in data_polygt:
         X = np.array(lines[1])
         Y = np.array(lines[3])
 
@@ -177,24 +178,27 @@ def load_mat_info(img_info, gt_file, split):
 
 def generate_ann(root_path, split, image_infos):
 
-    dst_image_root = osp.join(root_path, 'dst_imgs/' + split)
-    dst_label_file = osp.join(root_path, 'train_label.txt')
+    dst_image_root = osp.join(root_path, 'dst_imgs', split)
+    if split == 'training':
+        dst_label_file = osp.join(root_path, 'train_label.txt')
+    elif split == 'test':
+        dst_label_file = osp.join(root_path, 'test_label.txt')
     os.makedirs(dst_image_root, exist_ok=True)
 
     lines = []
     for image_info in image_infos:
         index = 1
-        src_img_path = osp.join(root_path + '/imgs', image_info['file_name'])
+        src_img_path = osp.join(root_path, 'imgs', image_info['file_name'])
         image = mmcv.imread(src_img_path)
         src_img_root = osp.splitext(image_info['file_name'])[0].split('/')[1]
 
         for anno in image_info['anno_info']:
             word = anno['word']
             dst_img = crop_img(image, anno['bbox'])
-            dst_img_name = f'{src_img_root}_{index}' + '.png'
+            dst_img_name = f'{src_img_root}_{index}.png'
             index += 1
             dst_img_path = osp.join(dst_image_root, dst_img_name)
-            cv2.imwrite(dst_img_path, dst_img)
+            mmcv.imwrite(dst_img, dst_img_path)
             lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
                          f'{word}')
     list_to_file(dst_label_file, lines)
