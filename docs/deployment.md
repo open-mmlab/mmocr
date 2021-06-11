@@ -80,7 +80,7 @@ python tools/deployment/onnx2tensorrt.py
 Description of arguments:
 
 - `model_config` : The path of a model config file.
-- `model_type` :The model type of the config file, options: 
+- `model_type` :The model type of the config file, options:
 - `image_path` : The path to input image file.
 - `onnx_file` : The path to input ONNX file.
 - `--trt-file` : The path of output TensorRT model. If not specified, it will be set to `tmp.trt`.
@@ -112,4 +112,3 @@ The table below lists the models that are guaranteed to be exportable to TensorR
 - *All models above are tested with Pytorch==1.8.1,  onnxruntime==1.7.0 and tensorrt==7.2.1.6*
 - If you meet any problem with the listed models above, please create an issue and it would be taken care of soon. For models not included in the list, please try to solve them by yourself.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
-

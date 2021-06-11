@@ -4,8 +4,8 @@ from typing import Any, Iterable
 
 import numpy as np
 import torch
-from mmdet.models.builder import DETECTORS
 
+from mmdet.models.builder import DETECTORS
 from mmocr.models.textdet.detectors.single_stage_text_detector import \
     SingleStageTextDetector
 from mmocr.models.textdet.detectors.text_detector_mixin import \
@@ -14,7 +14,8 @@ from mmocr.models.textrecog.recognizer.encode_decode_recognizer import \
     EncodeDecodeRecognizer
 
 
-def inference_with_session(sess, io_binding, input_name, output_names, input_tensor):
+def inference_with_session(sess, io_binding, input_name, output_names,
+                           input_tensor):
     device_type = input_tensor.device.type
     device_id = input_tensor.device.index
     device_id = 0 if device_id is None else device_id
@@ -36,9 +37,16 @@ def inference_with_session(sess, io_binding, input_name, output_names, input_ten
 class ONNXRuntimeDetector(TextDetectorMixin, SingleStageTextDetector):
     """The class for evaluating onnx file of detection."""
 
-    def __init__(self, onnx_file: str, cfg: Any, device_id: int, show_score: bool=False):
-        SingleStageTextDetector.__init__(self, cfg.model.backbone, cfg.model.neck, cfg.model.bbox_head,
-                                         cfg.model.train_cfg, cfg.model.test_cfg, cfg.model.pretrained)
+    def __init__(self,
+                 onnx_file: str,
+                 cfg: Any,
+                 device_id: int,
+                 show_score: bool = False):
+        SingleStageTextDetector.__init__(self, cfg.model.backbone,
+                                         cfg.model.neck, cfg.model.bbox_head,
+                                         cfg.model.train_cfg,
+                                         cfg.model.test_cfg,
+                                         cfg.model.pretrained)
         TextDetectorMixin.__init__(self, show_score)
         import onnxruntime as ort
         # get the custom op path
@@ -80,8 +88,12 @@ class ONNXRuntimeDetector(TextDetectorMixin, SingleStageTextDetector):
     def extract_feat(self, imgs):
         raise NotImplementedError('This method is not implemented.')
 
-    def simple_test(self, img: torch.Tensor, img_metas: Iterable, rescale: bool=False):
-        onnx_pred = inference_with_session(self.sess, self.io_binding, 'input', self.output_names, img)
+    def simple_test(self,
+                    img: torch.Tensor,
+                    img_metas: Iterable,
+                    rescale: bool = False):
+        onnx_pred = inference_with_session(self.sess, self.io_binding, 'input',
+                                           self.output_names, img)
         onnx_pred = torch.from_numpy(onnx_pred[0])
         if len(img_metas) > 1:
             boundaries = [
@@ -102,9 +114,17 @@ class ONNXRuntimeDetector(TextDetectorMixin, SingleStageTextDetector):
 class ONNXRuntimeRecognizer(EncodeDecodeRecognizer):
     """The class for evaluating onnx file of recognition."""
 
-    def __init__(self, onnx_file: str, cfg: Any, device_id: int, show_score: bool=False):
-        EncodeDecodeRecognizer.__init__(self, cfg.model.preprocessor, cfg.model.backbone, cfg.model.encoder, cfg.model.decoder, cfg.model.loss,cfg.model.label_convertor,
-                                        cfg.train_cfg, cfg.test_cfg, 40, cfg.model.pretrained)
+    def __init__(self,
+                 onnx_file: str,
+                 cfg: Any,
+                 device_id: int,
+                 show_score: bool = False):
+        EncodeDecodeRecognizer.__init__(self, cfg.model.preprocessor,
+                                        cfg.model.backbone, cfg.model.encoder,
+                                        cfg.model.decoder, cfg.model.loss,
+                                        cfg.model.label_convertor,
+                                        cfg.train_cfg, cfg.test_cfg, 40,
+                                        cfg.model.pretrained)
         import onnxruntime as ort
         # get the custom op path
         ort_custom_op_path = ''
@@ -145,7 +165,10 @@ class ONNXRuntimeRecognizer(EncodeDecodeRecognizer):
     def extract_feat(self, imgs):
         raise NotImplementedError('This method is not implemented.')
 
-    def simple_test(self, img: torch.Tensor, img_metas: Iterable, rescale: bool=False):
+    def simple_test(self,
+                    img: torch.Tensor,
+                    img_metas: Iterable,
+                    rescale: bool = False):
         """Test function.
 
         Args:
@@ -155,7 +178,8 @@ class ONNXRuntimeRecognizer(EncodeDecodeRecognizer):
         Returns:
             list[str]: Text label result of each image.
         """
-        onnx_pred = inference_with_session(self.sess, self.io_binding, 'input', self.output_names, img)
+        onnx_pred = inference_with_session(self.sess, self.io_binding, 'input',
+                                           self.output_names, img)
         onnx_pred = torch.from_numpy(onnx_pred[0])
 
         label_indexes, label_scores = self.label_convertor.tensor2idx(
@@ -174,9 +198,16 @@ class ONNXRuntimeRecognizer(EncodeDecodeRecognizer):
 class TensorRTDetector(TextDetectorMixin, SingleStageTextDetector):
     """The class for evaluating TensorRT file of detection."""
 
-    def __init__(self, trt_file: str, cfg: Any, device_id: int, show_score: bool=False):
-        SingleStageTextDetector.__init__(self, cfg.model.backbone, cfg.model.neck, cfg.model.bbox_head,
-                                         cfg.model.train_cfg, cfg.model.test_cfg, cfg.model.pretrained)
+    def __init__(self,
+                 trt_file: str,
+                 cfg: Any,
+                 device_id: int,
+                 show_score: bool = False):
+        SingleStageTextDetector.__init__(self, cfg.model.backbone,
+                                         cfg.model.neck, cfg.model.bbox_head,
+                                         cfg.model.train_cfg,
+                                         cfg.model.test_cfg,
+                                         cfg.model.pretrained)
         TextDetectorMixin.__init__(self, show_score)
         from mmcv.tensorrt import TRTWraper, load_tensorrt_plugin
         try:
@@ -200,7 +231,10 @@ class TensorRTDetector(TextDetectorMixin, SingleStageTextDetector):
     def extract_feat(self, imgs):
         raise NotImplementedError('This method is not implemented.')
 
-    def simple_test(self, img: torch.Tensor, img_metas: Iterable, rescale: bool=False):
+    def simple_test(self,
+                    img: torch.Tensor,
+                    img_metas: Iterable,
+                    rescale: bool = False):
         with torch.cuda.device(self.device_id), torch.no_grad():
             trt_pred = self.model({'input': img})['output']
         if len(img_metas) > 1:
@@ -222,9 +256,17 @@ class TensorRTDetector(TextDetectorMixin, SingleStageTextDetector):
 class TensorRTRecognizer(EncodeDecodeRecognizer):
     """The class for evaluating TensorRT file of recognition."""
 
-    def __init__(self, trt_file: str, cfg: Any, device_id: int, show_score: bool=False):
-        EncodeDecodeRecognizer.__init__(self, cfg.model.preprocessor, cfg.model.backbone, cfg.model.encoder, cfg.model.decoder, cfg.model.loss,cfg.model.label_convertor,
-                                        cfg.train_cfg, cfg.test_cfg, 40, cfg.model.pretrained)
+    def __init__(self,
+                 trt_file: str,
+                 cfg: Any,
+                 device_id: int,
+                 show_score: bool = False):
+        EncodeDecodeRecognizer.__init__(self, cfg.model.preprocessor,
+                                        cfg.model.backbone, cfg.model.encoder,
+                                        cfg.model.decoder, cfg.model.loss,
+                                        cfg.model.label_convertor,
+                                        cfg.train_cfg, cfg.test_cfg, 40,
+                                        cfg.model.pretrained)
         from mmcv.tensorrt import TRTWraper, load_tensorrt_plugin
         try:
             load_tensorrt_plugin()
@@ -247,7 +289,10 @@ class TensorRTRecognizer(EncodeDecodeRecognizer):
     def extract_feat(self, imgs):
         raise NotImplementedError('This method is not implemented.')
 
-    def simple_test(self, img: torch.Tensor, img_metas: Iterable, rescale: bool=False):
+    def simple_test(self,
+                    img: torch.Tensor,
+                    img_metas: Iterable,
+                    rescale: bool = False):
         """Test function.
 
         Args:

@@ -1,18 +1,19 @@
 from argparse import ArgumentParser
 from functools import partial
 
-import torch
 import cv2
-from torch import nn
 import numpy as np
-from mmcv.parallel import collate
+import torch
 from mmcv.onnx import register_extra_symbolics
+from mmcv.parallel import collate
+from torch import nn
 
 from mmdet.apis import init_detector
-from mmocr.datasets.pipelines.crop import crop_img # noqa: F401
-from mmocr.models.export_warper import ONNXRuntimeDetector, ONNXRuntimeRecognizer
-from mmdet.datasets.pipelines import Compose
 from mmdet.datasets import replace_ImageToTensor
+from mmdet.datasets.pipelines import Compose
+from mmocr.datasets.pipelines.crop import crop_img  # noqa: F401
+from mmocr.models.export_warper import (ONNXRuntimeDetector,
+                                        ONNXRuntimeRecognizer)
 
 
 def _convert_batchnorm(module):
@@ -56,7 +57,8 @@ def _update_input_img(img_list, img_meta_list, update_ori_shape=False):
         'filename':
         img_meta['filename'],
         'scale_factor':
-        np.array((img_shape[1] / ori_shape[1], img_shape[0] / ori_shape[0]) * 2),
+        np.array(
+            (img_shape[1] / ori_shape[1], img_shape[0] / ori_shape[0]) * 2),
         'flip':
         False,
     } for _ in range(N)]]
@@ -75,13 +77,11 @@ def _prepare_data(cfg, imgs):
         result (dict): Predicted results.
     """
     if isinstance(imgs, (list, tuple)):
-        is_batch = True
         if not isinstance(imgs[0], (np.ndarray, str)):
             raise AssertionError('imgs must be strings or numpy arrays')
 
     elif isinstance(imgs, (np.ndarray, str)):
         imgs = [imgs]
-        is_batch = False
     else:
         raise AssertionError('imgs must be strings or numpy arrays')
 
@@ -146,6 +146,7 @@ def pytorch2onnx(model: nn.Module,
                  device_id: int = 0):
     """Export Pytorch model to ONNX model and verify the outputs are same
     between Pytorch and ONNX.
+
     Args:
         model (nn.Module): Pytorch model we want to export.
         model_type (str): Model type, detection or recognition model.
@@ -182,9 +183,7 @@ def pytorch2onnx(model: nn.Module,
     origin_forward = model.forward
     if (model_type == 'det'):
         model.forward = partial(
-            model.simple_test,
-            img_metas=img_metas,
-            rescale=True)
+            model.simple_test, img_metas=img_metas, rescale=True)
     else:
         model.forward = partial(
             model.forward,
@@ -196,7 +195,7 @@ def pytorch2onnx(model: nn.Module,
     # by replacing these existing op
     register_extra_symbolics(opset_version)
     dynamic_axes = None
-    if dynamic_export and model_type =='det':
+    if dynamic_export and model_type == 'det':
         dynamic_axes = {
             'input': {
                 0: 'batch',
@@ -209,7 +208,7 @@ def pytorch2onnx(model: nn.Module,
                 3: 'width'
             }
         }
-    elif dynamic_export and model_type =='recog':
+    elif dynamic_export and model_type == 'recog':
         dynamic_axes = {
             'input': {
                 0: 'batch',
@@ -238,7 +237,7 @@ def pytorch2onnx(model: nn.Module,
         onnx_model = onnx.load(output_file)
         onnx.checker.check_model(onnx_model)
 
-        scale_factor = (0.5, 0.5) if model_type =='det' else (1, 0.5)
+        scale_factor = (0.5, 0.5) if model_type == 'det' else (1, 0.5)
         if dynamic_export:
             # scale image for dynamic shape test
             img_list = [
@@ -254,21 +253,23 @@ def pytorch2onnx(model: nn.Module,
             ]
 
             # update img_meta
-            img_list, img_metas = _update_input_img(
-                img_list, img_metas)
+            img_list, img_metas = _update_input_img(img_list, img_metas)
 
         # check the numerical value
         # get pytorch output
         with torch.no_grad():
             model.forward = origin_forward
-            pytorch_out = model.simple_test(img_list[0], img_metas[0], rescale=True)
+            pytorch_out = model.simple_test(
+                img_list[0], img_metas[0], rescale=True)
 
         # get onnx output
-        if model_type=='det':
+        if model_type == 'det':
             onnx_model = ONNXRuntimeDetector(output_file, model.cfg, device_id)
         else:
-            onnx_model = ONNXRuntimeRecognizer(output_file, model.cfg, device_id)
-        onnx_out = onnx_model.simple_test(img_list[0], img_metas[0], rescale=True)
+            onnx_model = ONNXRuntimeRecognizer(output_file, model.cfg,
+                                               device_id)
+        onnx_out = onnx_model.simple_test(
+            img_list[0], img_metas[0], rescale=True)
 
         # compare results
         same_diff = 'same'
@@ -283,17 +284,23 @@ def pytorch2onnx(model: nn.Module,
                     same_diff = 'different'
                     break
         else:
-            for onnx_result, pytorch_result in zip(onnx_out[0]['boundary_result'], pytorch_out[0]['boundary_result']):
-                if not np.allclose(np.array(onnx_result), 
-                                    np.array(pytorch_result), 
-                                    rtol=1e-4,atol=1e-4):
-                                    same_diff = 'different'
-                                    break
+            for onnx_result, pytorch_result in zip(
+                    onnx_out[0]['boundary_result'],
+                    pytorch_out[0]['boundary_result']):
+                if not np.allclose(
+                        np.array(onnx_result),
+                        np.array(pytorch_result),
+                        rtol=1e-4,
+                        atol=1e-4):
+                    same_diff = 'different'
+                    break
         print('The outputs are {} between Pytorch and ONNX'.format(same_diff))
 
         if show:
-            onnx_img = onnx_model.show_result(img_path, onnx_out[0], out_file='onnx.jpg', show=False)
-            pytorch_img = model.show_result(img_path, pytorch_out[0], out_file='pytorch.jpg', show=False)
+            onnx_img = onnx_model.show_result(
+                img_path, onnx_out[0], out_file='onnx.jpg', show=False)
+            pytorch_img = model.show_result(
+                img_path, pytorch_out[0], out_file='pytorch.jpg', show=False)
             if onnx_img is None:
                 onnx_img = cv2.imread(img_path)
             if pytorch_img is None:
@@ -308,23 +315,15 @@ def pytorch2onnx(model: nn.Module,
 def main():
     parser = ArgumentParser(
         description='Convert MMOCR models from pytorch to ONNX')
+    parser.add_argument('model_config', type=str, help='Config file.')
     parser.add_argument(
-        'model_config',
-        type=str,
-        help='Config file.')
-    parser.add_argument(
-        'model_ckpt',
-        type=str,
-        help='Checkpint file (local or url).')
+        'model_ckpt', type=str, help='Checkpint file (local or url).')
     parser.add_argument(
         'model_type',
         type=str,
         help='Detection or recognition model to deploy.',
         choices=['recog', 'det'])
-    parser.add_argument(
-        'image_path',
-        type=str,
-        help='Input Image file.')
+    parser.add_argument('image_path', type=str, help='Input Image file.')
     parser.add_argument(
         '--output-file',
         type=str,
@@ -362,8 +361,7 @@ def main():
     device = torch.device(type='cuda', index=args.device_id)
 
     # build model
-    model = init_detector(
-        args.model_config, args.model_ckpt, device=device)
+    model = init_detector(args.model_config, args.model_ckpt, device=device)
     if hasattr(model, 'module'):
         model = model.module
     if model.cfg.data.test['type'] == 'ConcatDataset':

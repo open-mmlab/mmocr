@@ -1,19 +1,20 @@
-import os
 import argparse
+import os
 import os.path as osp
 from typing import Iterable
 
-import torch
-import mmcv
 import cv2
+import mmcv
 import numpy as np
+import torch
 from mmcv.parallel import collate
-from mmcv.tensorrt import (is_tensorrt_plugin_loaded, onnx2trt,
-                           save_trt_engine)
+from mmcv.tensorrt import is_tensorrt_plugin_loaded, onnx2trt, save_trt_engine
 
-from mmdet.datasets.pipelines import Compose
 from mmdet.datasets import replace_ImageToTensor
-from mmocr.models.export_warper import ONNXRuntimeDetector, ONNXRuntimeRecognizer, TensorRTDetector, TensorRTRecognizer
+from mmdet.datasets.pipelines import Compose
+from mmocr.models.export_warper import (ONNXRuntimeDetector,
+                                        ONNXRuntimeRecognizer,
+                                        TensorRTDetector, TensorRTRecognizer)
 
 
 def get_GiB(x: int):
@@ -41,7 +42,8 @@ def _update_input_img(img_list, img_meta_list, update_ori_shape=False):
         'filename':
         img_meta['filename'],
         'scale_factor':
-        np.array((img_shape[1] / ori_shape[1], img_shape[0] / ori_shape[0]) * 2),
+        np.array(
+            (img_shape[1] / ori_shape[1], img_shape[0] / ori_shape[0]) * 2),
         'flip':
         False,
     } for _ in range(N)]]
@@ -60,13 +62,11 @@ def _prepare_input_img(imgs, test_pipeline: Iterable[dict]):
         result (dict): Predicted results.
     """
     if isinstance(imgs, (list, tuple)):
-        is_batch = True
         if not isinstance(imgs[0], (np.ndarray, str)):
             raise AssertionError('imgs must be strings or numpy arrays')
 
     elif isinstance(imgs, (np.ndarray, str)):
         imgs = [imgs]
-        is_batch = False
     else:
         raise AssertionError('imgs must be strings or numpy arrays')
 
@@ -151,26 +151,28 @@ def onnx2tensorrt(onnx_file: str,
         img_list, img_metas = _update_input_img(img_list, img_metas)
 
         # Get results from ONNXRuntime
-        if model_type=='det':
+        if model_type == 'det':
             onnx_model = ONNXRuntimeDetector(onnx_file, config, 0)
         else:
             onnx_model = ONNXRuntimeRecognizer(onnx_file, config, 0)
-        onnx_out = onnx_model.simple_test(img_list[0], img_metas[0], rescale=True)
+        onnx_out = onnx_model.simple_test(
+            img_list[0], img_metas[0], rescale=True)
 
         # Get results from TensorRT
-        if model_type=='det':
+        if model_type == 'det':
             trt_model = TensorRTDetector(trt_file, config, 0)
         else:
             trt_model = TensorRTRecognizer(trt_file, config, 0)
         img_list[0] = img_list[0].to(torch.device('cuda:0'))
-        trt_out = trt_model.simple_test(img_list[0], img_metas[0], rescale=True)
+        trt_out = trt_model.simple_test(
+            img_list[0], img_metas[0], rescale=True)
 
         # compare results
         same_diff = 'same'
         if model_type == 'recog':
             for onnx_result, trt_result in zip(onnx_out, trt_out):
-                if onnx_result['text'] != trt_result[
-                        'text'] or not np.allclose(
+                if onnx_result['text'] != trt_result['text'] or \
+                     not np.allclose(
                             np.array(onnx_result['score']),
                             np.array(trt_result['score']),
                             rtol=1e-4,
@@ -178,17 +180,28 @@ def onnx2tensorrt(onnx_file: str,
                     same_diff = 'different'
                     break
         else:
-            for onnx_result, trt_result in zip(onnx_out[0]['boundary_result'], trt_out[0]['boundary_result']):
-                if not np.allclose(np.array(onnx_result), 
-                                    np.array(trt_result), 
-                                    rtol=1e-4,atol=1e-4):
-                                    same_diff = 'different'
-                                    break
+            for onnx_result, trt_result in zip(onnx_out[0]['boundary_result'],
+                                               trt_out[0]['boundary_result']):
+                if not np.allclose(
+                        np.array(onnx_result),
+                        np.array(trt_result),
+                        rtol=1e-4,
+                        atol=1e-4):
+                    same_diff = 'different'
+                    break
         print('The outputs are {} between TensorRT and ONNX'.format(same_diff))
 
         if show:
-            onnx_img = onnx_model.show_result(input_config['input_path'], onnx_out[0], out_file='onnx.jpg', show=False)
-            trt_img = trt_model.show_result(input_config['input_path'], trt_out[0], out_file='tensorrt.jpg', show=False)
+            onnx_img = onnx_model.show_result(
+                input_config['input_path'],
+                onnx_out[0],
+                out_file='onnx.jpg',
+                show=False)
+            trt_img = trt_model.show_result(
+                input_config['input_path'],
+                trt_out[0],
+                out_file='tensorrt.jpg',
+                show=False)
             if onnx_img is None:
                 onnx_img = cv2.imread(input_config['input_path'])
             if trt_img is None:
@@ -203,21 +216,14 @@ def onnx2tensorrt(onnx_file: str,
 def parse_args():
     parser = argparse.ArgumentParser(
         description='Convert MMOCR models from ONNX to TensorRT')
-    parser.add_argument(
-        'model_config',
-        help='Config file of the model')
+    parser.add_argument('model_config', help='Config file of the model')
     parser.add_argument(
         'model_type',
         type=str,
         help='Detection or recognition model to deploy.',
         choices=['recog', 'det'])
-    parser.add_argument(
-        'image_path',
-        type=str,
-        help='Image for test')
-    parser.add_argument(
-        'onnx_file',
-        help='Path to the input ONNX model')
+    parser.add_argument('image_path', type=str, help='Image for test')
+    parser.add_argument('onnx_file', help='Path to the input ONNX model')
     parser.add_argument(
         '--trt-file',
         type=str,
@@ -266,7 +272,8 @@ if __name__ == '__main__':
     args = parse_args()
 
     # check arguments
-    assert osp.exists(args.model_config), 'Config {} not found.'.format(args.model_config)
+    assert osp.exists(args.model_config), 'Config {} not found.'.format(
+        args.model_config)
     assert osp.exists(args.onnx_file), \
         'ONNX model {} not found.'.format(args.onnx_file)
     assert args.workspace_size >= 0, 'Workspace size less than 0.'
