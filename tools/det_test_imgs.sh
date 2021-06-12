@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-DATE=`date +%Y-%m-%d`
-TIME=`date +"%H-%M-%S"`
+set -x
+export PYTHONPATH=`pwd`:$PYTHONPATH
 
 if [ $# -lt 5 ]
 then
@@ -14,10 +14,11 @@ CHECKPOINT=$2
 IMG_ROOT_PATH=$3
 IMG_LIST=$4
 OUT_DIR=$5
+PY_ARGS=${@:6}
 
 mkdir ${OUT_DIR} -p &&
 
 
-python tools/test_imgs.py \
+python tools/det_test_imgs.py \
      ${CONFIG_FILE} ${CHECKPOINT} ${IMG_ROOT_PATH} ${IMG_LIST} \
-      --out-dir ${OUT_DIR}
+      --out-dir ${OUT_DIR} ${PY_ARGS}
