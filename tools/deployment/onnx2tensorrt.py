@@ -12,7 +12,7 @@ from mmcv.tensorrt import is_tensorrt_plugin_loaded, onnx2trt, save_trt_engine
 
 from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
-from mmocr.models.export_warper import (ONNXRuntimeDetector,
+from tools.deployment.deploy_helper import (ONNXRuntimeDetector,
                                         ONNXRuntimeRecognizer,
                                         TensorRTDetector, TensorRTRecognizer)
 

@@ -12,7 +12,7 @@ from mmdet.apis import init_detector
 from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
 from mmocr.datasets.pipelines.crop import crop_img  # noqa: F401
-from mmocr.models.export_warper import (ONNXRuntimeDetector,
+from tools.deployment.deploy_helper import (ONNXRuntimeDetector,
                                         ONNXRuntimeRecognizer)
 
 
