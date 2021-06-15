@@ -39,7 +39,7 @@ The predicted result will be saved as `demo/output.jpg`.
 ./tools/det_test_imgs.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${IMG_ROOT_PATH} ${IMG_LIST} ${RESULTS_DIR}
 
 # for text recognition
-./tools/ocr_test_imgs.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${IMG_ROOT_PATH} ${IMG_LIST} ${RESULTS_DIR}
+./tools/recog_test_imgs.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${IMG_ROOT_PATH} ${IMG_LIST} ${RESULTS_DIR}
 ```
 It will save both the prediction results and visualized images to `${RESULTS_DIR}`
 

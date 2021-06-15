@@ -17,7 +17,7 @@ OUT_DIR=$5_${DATE}_${TIME}
 
 mkdir ${OUT_DIR} -p &&
 
-python tools/ocr_test_imgs.py \
+python tools/recog_test_imgs.py \
       --img_root_path ${IMG_ROOT_PATH} \
       --img_list ${IMG_LIST} \
       --config ${CONFIG_FILE} \
