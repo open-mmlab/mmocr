@@ -52,10 +52,10 @@ def save_results(result, out_dir, img_name, score_thr=0.3):
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument('config', type=str, help='Config file')
-    parser.add_argument('checkpoint', type=str, help='Checkpoint file')
     parser.add_argument('img_root', type=str, help='Image root path')
     parser.add_argument('img_list', type=str, help='Image path list file')
+    parser.add_argument('config', type=str, help='Config file')
+    parser.add_argument('checkpoint', type=str, help='Checkpoint file')
     parser.add_argument(
         '--score-thr', type=float, default=0.5, help='Bbox score threshold')
     parser.add_argument(
