@@ -1,3 +1,5 @@
+import torch
+
 from mmdet.models.builder import DETECTORS
 from mmdet.models.detectors import SingleStageDetector
 
@@ -40,6 +42,10 @@ class SingleStageTextDetector(SingleStageDetector):
     def simple_test(self, img, img_metas, rescale=False):
         x = self.extract_feat(img)
         outs = self.bbox_head(x)
+
+        # early return to avoid post processing
+        if torch.onnx.is_in_onnx_export():
+            return outs
 
         if len(img_metas) > 1:
             boundaries = [
