@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-DATE=`date +%Y-%m-%d`
-TIME=`date +"%H-%M-%S"`
+set -x
+export PYTHONPATH=`pwd`:$PYTHONPATH
 
 if [ $# -lt 5 ]
 then
@@ -13,13 +13,14 @@ CONFIG_FILE=$1
 CHECKPOINT=$2
 IMG_ROOT_PATH=$3
 IMG_LIST=$4
-OUT_DIR=$5_${DATE}_${TIME}
+OUT_DIR=$5
+PY_ARGS=${@:6}
 
 mkdir ${OUT_DIR} -p &&
 
 python tools/recog_test_imgs.py \
-      --img_root_path ${IMG_ROOT_PATH} \
-      --img_list ${IMG_LIST} \
-      --config ${CONFIG_FILE} \
-      --checkpoint ${CHECKPOINT} \
-      --out_dir ${OUT_DIR}
+      ${IMG_ROOT_PATH} \
+      ${IMG_LIST} \
+      ${CONFIG_FILE} \
+      ${CHECKPOINT} \
+      --out_dir ${OUT_DIR} ${PY_ARGS}

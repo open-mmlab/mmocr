@@ -3,7 +3,6 @@ import os.path as osp
 from argparse import ArgumentParser
 
 import mmcv
-import torch
 from mmcv.utils import ProgressBar
 
 from mmdet.apis import inference_detector, init_detector
@@ -66,13 +65,14 @@ def main():
         help='Dir to save '
         'visualize images '
         'and bbox')
+    parser.add_argument(
+        '--device', default='cuda:0', help='Device used for inference.')
     args = parser.parse_args()
 
     assert 0 < args.score_thr < 1
 
     # build the model from a config file and a checkpoint file
-    device = 'cuda:' + str(torch.cuda.current_device())
-    model = init_detector(args.config, args.checkpoint, device=device)
+    model = init_detector(args.config, args.checkpoint, device=args.device)
     if hasattr(model, 'module'):
         model = model.module
     if model.cfg.data.test['type'] == 'ConcatDataset':
@@ -94,7 +94,6 @@ def main():
             raise FileNotFoundError(img_path)
         # Test a single image
         result = inference_detector(model, img_path)
-        # import pdb; pdb.set_trace()
         img_name = osp.basename(img_path)
         # save result
         save_results(result, out_txt_dir, img_name, score_thr=args.score_thr)
