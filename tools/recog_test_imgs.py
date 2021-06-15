@@ -6,7 +6,6 @@ from argparse import ArgumentParser
 from itertools import compress
 
 import mmcv
-import torch
 from mmcv.utils import ProgressBar
 
 from mmdet.apis import init_detector
@@ -40,14 +39,16 @@ def save_results(img_paths, pred_labels, gt_labels, res_dir):
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument('--img_root_path', type=str, help='Image root path')
-    parser.add_argument('--img_list', type=str, help='Image path list file')
-    parser.add_argument('--config', type=str, help='Config file')
-    parser.add_argument('--checkpoint', type=str, help='Checkpoint file')
+    parser.add_argument('img_root_path', type=str, help='Image root path')
+    parser.add_argument('img_list', type=str, help='Image path list file')
+    parser.add_argument('config', type=str, help='Config file')
+    parser.add_argument('checkpoint', type=str, help='Checkpoint file')
     parser.add_argument(
         '--out_dir', type=str, default='./results', help='Dir to save results')
     parser.add_argument(
         '--show', action='store_true', help='show image or save')
+    parser.add_argument(
+        '--device', default='cuda:0', help='Device used for inference.')
     args = parser.parse_args()
 
     # init the logger before other steps
@@ -56,8 +57,7 @@ def main():
     logger = get_root_logger(log_file=log_file, log_level='INFO')
 
     # build the model from a config file and a checkpoint file
-    device = 'cuda:' + str(torch.cuda.current_device())
-    model = init_detector(args.config, args.checkpoint, device=device)
+    model = init_detector(args.config, args.checkpoint, device=args.device)
     if hasattr(model, 'module'):
         model = model.module
     if model.cfg.data.test['type'] == 'ConcatDataset':
