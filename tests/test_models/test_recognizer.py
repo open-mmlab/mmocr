@@ -1,5 +1,6 @@
 import os.path as osp
 import tempfile
+from functools import partial
 
 import numpy as np
 import pytest
@@ -70,6 +71,20 @@ def test_base_recognizer():
     assert isinstance(results[0], dict)
     assert 'text' in results[0]
     assert 'score' in results[0]
+
+    # test onnx export
+    recognizer.forward = partial(
+        recognizer.simple_test,
+        img_metas=img_metas,
+        return_loss=False,
+        rescale=True)
+    torch.onnx.export(
+        recognizer, (imgs, ),
+        'tmp.onnx',
+        input_names=['input'],
+        output_names=['output'],
+        export_params=True,
+        keep_initializers_as_inputs=False)
 
     # test aug_test
     aug_results = recognizer.aug_test([imgs, imgs], [img_metas, img_metas])

@@ -1,5 +1,6 @@
 """pytest tests/test_detector.py."""
 import copy
+from functools import partial
 from os.path import dirname, exists, join
 
 import numpy as np
@@ -217,6 +218,17 @@ def test_panet(cfg_file):
             result = detector.forward([one_img], [[one_meta]],
                                       return_loss=False)
             batch_results.append(result)
+
+        # Test onnx export
+        detector.forward = partial(
+            detector.simple_test, img_metas=img_metas, rescale=True)
+        torch.onnx.export(
+            detector, (img_list[0], ),
+            'tmp.onnx',
+            input_names=['input'],
+            output_names=['output'],
+            export_params=True,
+            keep_initializers_as_inputs=False)
 
     # Test show result
     results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}
