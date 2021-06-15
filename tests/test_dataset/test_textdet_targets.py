@@ -1,10 +1,10 @@
 from unittest import mock
 
 import numpy as np
+from mmdet.core import PolygonMasks
 
 import mmocr.datasets.pipelines.custom_format_bundle as cf_bundle
 import mmocr.datasets.pipelines.textdet_targets as textdet_targets
-from mmdet.core import PolygonMasks
 
 
 @mock.patch('%s.cf_bundle.show_feature' % __name__)

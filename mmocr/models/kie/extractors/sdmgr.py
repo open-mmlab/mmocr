@@ -1,12 +1,12 @@
 import warnings
 
 import mmcv
-from torch import nn
-from torch.nn import functional as F
-
 from mmdet.core import bbox2roi
 from mmdet.models.builder import DETECTORS, build_roi_extractor
 from mmdet.models.detectors import SingleStageDetector
+from torch import nn
+from torch.nn import functional as F
+
 from mmocr.core import imshow_edge_node
 from mmocr.utils import list_from_file
 

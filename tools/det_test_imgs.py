@@ -4,8 +4,8 @@ from argparse import ArgumentParser
 
 import mmcv
 from mmcv.utils import ProgressBar
-
 from mmdet.apis import inference_detector, init_detector
+
 from mmocr.models import build_detector  # noqa: F401
 from mmocr.utils import list_from_file, list_to_file
 

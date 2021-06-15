@@ -1,6 +1,5 @@
 import torch.nn as nn
 from mmcv.cnn import kaiming_init, uniform_init
-
 from mmdet.models.builder import BACKBONES
 
 

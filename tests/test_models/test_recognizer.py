@@ -5,8 +5,8 @@ from functools import partial
 import numpy as np
 import pytest
 import torch
-
 from mmdet.core import BitmapMasks
+
 from mmocr.models.textrecog.recognizer import (EncodeDecodeRecognizer,
                                                SegRecognizer)
 

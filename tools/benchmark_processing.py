@@ -16,8 +16,8 @@ import argparse
 
 import mmcv
 from mmcv import Config
-
 from mmdet.datasets import build_dataloader
+
 from mmocr.datasets import build_dataset
 
 assert build_dataset is not None

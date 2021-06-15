@@ -1,5 +1,6 @@
-import mmocr.utils as utils
 from mmdet.datasets.builder import DATASETS
+
+import mmocr.utils as utils
 from mmocr.datasets.ocr_dataset import OCRDataset
 
 

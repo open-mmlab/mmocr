@@ -1,8 +1,8 @@
 from argparse import ArgumentParser
 
 import mmcv
-
 from mmdet.apis import init_detector
+
 from mmocr.apis.inference import model_inference
 from mmocr.datasets import build_dataset  # noqa: F401
 from mmocr.models import build_detector  # noqa: F401

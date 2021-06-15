@@ -1,6 +1,5 @@
 import mmcv
 import numpy as np
-
 from mmdet.core import BitmapMasks, PolygonMasks
 from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines.loading import LoadAnnotations, LoadImageFromFile

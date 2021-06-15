@@ -1,8 +1,7 @@
 import torch.nn.functional as F
 from mmcv.cnn import xavier_init
-from torch import nn
-
 from mmdet.models.builder import NECKS
+from torch import nn
 
 
 class FPEM(nn.Module):

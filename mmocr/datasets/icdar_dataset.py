@@ -1,9 +1,9 @@
 import numpy as np
+from mmdet.datasets.builder import DATASETS
+from mmdet.datasets.coco import CocoDataset
 from pycocotools.coco import COCO
 
 import mmocr.utils as utils
-from mmdet.datasets.builder import DATASETS
-from mmdet.datasets.coco import CocoDataset
 from mmocr.core.evaluation.hmean import eval_hmean
 
 

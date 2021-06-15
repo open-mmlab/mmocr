@@ -5,12 +5,12 @@ import numpy as np
 import torch
 import torchvision.transforms.functional as TF
 from mmcv.runner.dist_utils import get_dist_info
+from mmdet.datasets.builder import PIPELINES
 from PIL import Image
 from shapely.geometry import Polygon
 from shapely.geometry import box as shapely_box
 
 import mmocr.utils as utils
-from mmdet.datasets.builder import PIPELINES
 from mmocr.datasets.pipelines.crop import warp_img
 
 

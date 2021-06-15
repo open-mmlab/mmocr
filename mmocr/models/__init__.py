@@ -1,5 +1,6 @@
 from mmdet.models.builder import (BACKBONES, DETECTORS, HEADS, LOSSES, NECKS,
                                   build_backbone, build_detector, build_loss)
+
 from . import common, kie, textdet, textrecog
 from .builder import (CONVERTORS, DECODERS, ENCODERS, PREPROCESSOR,
                       build_convertor, build_decoder, build_encoder,

@@ -1,4 +1,5 @@
 from mmdet.models.builder import DETECTORS
+
 from . import SingleStageTextDetector, TextDetectorMixin
 
 

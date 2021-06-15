@@ -1,5 +1,4 @@
 import torch
-
 from mmdet.models.builder import DETECTORS
 from mmdet.models.detectors import SingleStageDetector
 

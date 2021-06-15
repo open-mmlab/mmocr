@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
 import pyclipper
-from shapely.geometry import Polygon
-
 from mmdet.core import BitmapMasks
 from mmdet.datasets.builder import PIPELINES
+from shapely.geometry import Polygon
+
 from . import BaseTextDetTargets
 
 

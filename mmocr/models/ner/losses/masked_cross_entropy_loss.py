@@ -1,7 +1,6 @@
+from mmdet.models.builder import LOSSES
 from torch import nn
 from torch.nn import CrossEntropyLoss
-
-from mmdet.models.builder import LOSSES
 
 
 @LOSSES.register_module()

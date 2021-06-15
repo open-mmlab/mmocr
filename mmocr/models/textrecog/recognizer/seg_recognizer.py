@@ -1,5 +1,6 @@
 from mmdet.models.builder import (DETECTORS, build_backbone, build_head,
                                   build_loss, build_neck)
+
 from mmocr.models.builder import build_convertor, build_preprocessor
 from .base import BaseRecognizer
 
