@@ -30,10 +30,7 @@ class LineStrParser:
     def get_item(self, data_ret, index):
         map_index = index % len(data_ret)
         line_str = data_ret[map_index]
-        for split_key in self.separator:
-            if split_key != ' ':
-                line_str = line_str.replace(split_key, ' ')
-        line_str = line_str.split()
+        line_str = line_str.split(self.separator)
         if len(line_str) <= max(self.keys_idx):
             raise Exception(
                 f'key index: {max(self.keys_idx)} out of range: {line_str}')
