@@ -1,6 +1,6 @@
 import torch
-
 from mmdet.datasets.builder import PIPELINES
+
 from mmocr.models.builder import build_convertor
 
 

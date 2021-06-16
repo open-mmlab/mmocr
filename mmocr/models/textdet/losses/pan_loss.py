@@ -4,10 +4,10 @@ import warnings
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch import nn
-
 from mmdet.core import BitmapMasks
 from mmdet.models.builder import LOSSES
+from torch import nn
+
 from mmocr.utils import check_argument
 
 

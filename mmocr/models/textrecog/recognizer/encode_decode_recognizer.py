@@ -1,6 +1,6 @@
 import torch
-
 from mmdet.models.builder import DETECTORS, build_backbone, build_loss
+
 from mmocr.models.builder import (build_convertor, build_decoder,
                                   build_encoder, build_preprocessor)
 from .base import BaseRecognizer

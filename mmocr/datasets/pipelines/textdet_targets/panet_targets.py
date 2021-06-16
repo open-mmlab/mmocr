@@ -1,5 +1,6 @@
 from mmdet.core import BitmapMasks
 from mmdet.datasets.builder import PIPELINES
+
 from . import BaseTextDetTargets
 
 

@@ -1,8 +1,8 @@
 import torch.nn as nn
 from mmcv.cnn import normal_init
-
 from mmdet.core import multi_apply
 from mmdet.models.builder import HEADS, build_loss
+
 from mmocr.models.textdet.postprocess import decode
 from ..postprocess.wrapper import poly_nms
 from .head_mixin import HeadMixin

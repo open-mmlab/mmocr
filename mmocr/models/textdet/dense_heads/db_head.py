@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
-
 from mmdet.models.builder import HEADS, build_loss
+
 from .head_mixin import HeadMixin
 
 

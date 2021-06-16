@@ -1,6 +1,5 @@
 import mmcv
 import numpy as np
-
 from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines.compose import Compose
 

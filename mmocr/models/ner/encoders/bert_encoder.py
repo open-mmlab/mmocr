@@ -1,8 +1,8 @@
 import torch.nn as nn
 from mmcv.cnn import uniform_init, xavier_init
 from mmcv.runner import load_checkpoint
-
 from mmdet.utils import get_root_logger
+
 from mmocr.models.builder import ENCODERS
 from mmocr.models.ner.utils.bert import BertModel
 

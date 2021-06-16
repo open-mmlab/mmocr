@@ -1,7 +1,7 @@
 import torch.nn as nn
 from mmcv.cnn import normal_init
-
 from mmdet.models.builder import HEADS, build_loss
+
 from . import HeadMixin
 
 

@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
+from mmdet.datasets.builder import PIPELINES
 from numpy.fft import fft
 from numpy.linalg import norm
 
 import mmocr.utils.check_argument as check_argument
-from mmdet.datasets.builder import PIPELINES
 from .textsnake_targets import TextSnakeTargets
 
 

@@ -9,13 +9,14 @@ import numpy as np
 import torch
 from mmcv.parallel import collate
 from mmcv.tensorrt import is_tensorrt_plugin_loaded, onnx2trt, save_trt_engine
+from mmdet.datasets import replace_ImageToTensor
+from mmdet.datasets.pipelines import Compose
 from tools.deployment.deploy_helper import (ONNXRuntimeDetector,
                                             ONNXRuntimeRecognizer,
                                             TensorRTDetector,
                                             TensorRTRecognizer)
 
-from mmdet.datasets import replace_ImageToTensor
-from mmdet.datasets.pipelines import Compose
+from mmocr.datasets.pipelines.crop import crop_img  # noqa: F401
 
 
 def get_GiB(x: int):
@@ -56,9 +57,9 @@ def _prepare_input_img(imgs, test_pipeline: Iterable[dict]):
     """Inference image(s) with the detector.
 
     Args:
-        model (nn.Module): The loaded detector.
         imgs (str/ndarray or list[str/ndarray] or tuple[str/ndarray]):
             Either image files or loaded images.
+        test_pipeline (Iterable[dict]): Test pipline of configuration.
     Returns:
         result (dict): Predicted results.
     """
