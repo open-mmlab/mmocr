@@ -1,4 +1,6 @@
+import torch
 from mmdet.models.builder import DETECTORS, build_backbone, build_loss
+
 from mmocr.models.builder import (build_convertor, build_decoder,
                                   build_encoder, build_preprocessor)
 from .base import BaseRecognizer
@@ -135,6 +137,10 @@ class EncodeDecodeRecognizer(BaseRecognizer):
 
         out_dec = self.decoder(
             feat, out_enc, None, img_metas, train_mode=False)
+
+        # early return to avoid post processing
+        if torch.onnx.is_in_onnx_export():
+            return out_dec
 
         label_indexes, label_scores = self.label_convertor.tensor2idx(
             out_dec, img_metas)

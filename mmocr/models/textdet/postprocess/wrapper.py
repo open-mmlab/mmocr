@@ -373,14 +373,15 @@ def textsnake_decode(preds,
 
         instance_mask = np.zeros(mask_sz, dtype=np.uint8)
         for x, y, radius, score in instance_disks:
-            if radius > 0:
+            if radius > 1:
                 cv2.circle(instance_mask, (int(x), int(y)), int(radius), 1, -1)
         contours, _ = cv2.findContours(instance_mask, cv2.RETR_TREE,
                                        cv2.CHAIN_APPROX_SIMPLE)
 
         score = np.sum(instance_mask * pred_text_score) / (
             np.sum(instance_mask) + 1e-8)
-        if len(contours) > 0:
+        if (len(contours) > 0 and cv2.contourArea(contours[0]) > 0
+                and contours[0].size > 8):
             boundary = contours[0].flatten().tolist()
             boundaries.append(boundary + [score])
 

@@ -1,8 +1,8 @@
 from argparse import ArgumentParser
 
 import mmcv
-
 from mmdet.apis import init_detector
+
 from mmocr.apis.inference import model_inference
 from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.pipelines.crop import crop_img

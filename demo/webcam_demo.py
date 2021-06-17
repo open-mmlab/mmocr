@@ -2,8 +2,8 @@ import argparse
 
 import cv2
 import torch
-
 from mmdet.apis import init_detector
+
 from mmocr.apis import model_inference
 from mmocr.datasets import build_dataset  # noqa: F401
 from mmocr.models import build_detector  # noqa: F401

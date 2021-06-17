@@ -115,7 +115,7 @@ The structure of the text detection dataset directory is organized as follows.
   mv Polygon/Test ../annotations/test
 
   ```
-  - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
+  - Step2: Generate `instances_training.json` and `instances_test.json` with the following command:
   ```bash
   python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
   ```
@@ -171,6 +171,11 @@ The structure of the text detection dataset directory is organized as follows.
 │   │   ├── label.txt
 │   │   ├── label.lmdb
 │   │   ├── SynthText_Add
+│   ├── Totaltext
+│   │   ├── imgs
+│   │   ├── annotations
+│   │   ├── train_label.txt
+│   │   ├── test_label.txt
 ```
 
 |  Dataset   |                                        images                                         |                                                                                                                                            annotation file                                                                                                                                             |                                             annotation file                                             |
@@ -187,6 +192,7 @@ The structure of the text detection dataset directory is organized as follows.
 |  Syn90k  |               [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)                |                                                       [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt)                                                       |                                                    -                                                    |       |
 | SynthText  |           [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)              | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) |                                                    -                                                    |       |
 |  SynthAdd  |  [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x)   |                                                                                                           [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)                                                                                                            |                                                    -                                                    |       |
+|  Totaltext  |  [homepage](https://github.com/cs-chan/Total-Text-Dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
 
 - For `icdar_2013`:
   - Step1: Download `Challenge2_Test_Task3_Images.zip` and `Challenge2_Training_Task3_Images_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads)
@@ -269,7 +275,7 @@ The structure of the text detection dataset directory is organized as follows.
 
   ln -s /path/to/SynthAdd SynthAdd
   ```
-**Note:**
+  **Note:**
 To convert label file with `txt` format to `lmdb` format,
 ```bash
 python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
@@ -278,6 +284,32 @@ For example,
 ```bash
 python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
 ```
+
+- For `Totaltext`:
+  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (We recommend downloading the text groundtruth with .mat format since our totaltext_converter.py supports groundtruth with .mat format only).
+  ```bash
+  mkdir totaltext && cd totaltext
+  mkdir imgs && mkdir annotations
+
+  # For images
+  # in ./totaltext
+  unzip totaltext.zip
+  mv Images/Train imgs/training
+  mv Images/Test imgs/test
+
+  # For annotations
+  unzip groundtruth_text.zip
+  cd Groundtruth
+  mv Polygon/Train ../annotations/training
+  mv Polygon/Test ../annotations/test
+
+  ```
+  - Step2: Generate cropped images, `train_label.txt` and `test_label.txt` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`.):
+  ```bash
+  python tools/data/textrecog/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
+  ```
+
+
 
 ## Key Information Extraction
 

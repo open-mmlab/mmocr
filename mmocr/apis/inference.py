@@ -2,7 +2,6 @@ import numpy as np
 import torch
 from mmcv.ops import RoIPool
 from mmcv.parallel import collate, scatter
-
 from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
 

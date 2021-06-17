@@ -3,7 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.runner import auto_fp16
-
 from mmdet.models.builder import NECKS
 
 
@@ -117,9 +116,8 @@ class FPNC(nn.Module):
         ]
 
         for i, out in enumerate(outs):
-            scale = 2**i
             outs[i] = F.interpolate(
-                outs[i], scale_factor=scale, mode='nearest')
+                outs[i], size=outs[0].shape[2:], mode='nearest')
         out = torch.cat(outs, dim=1)
 
         if self.conv_after_concat:

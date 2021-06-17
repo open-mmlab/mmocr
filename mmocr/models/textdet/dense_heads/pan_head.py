@@ -2,8 +2,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 from mmcv.cnn import normal_init
-
 from mmdet.models.builder import HEADS, build_loss
+
 from mmocr.utils import check_argument
 from . import HeadMixin
 

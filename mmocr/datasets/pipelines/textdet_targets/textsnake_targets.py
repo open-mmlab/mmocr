@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
+from mmdet.core import BitmapMasks
+from mmdet.datasets.builder import PIPELINES
 from numpy.linalg import norm
 
 import mmocr.utils.check_argument as check_argument
-from mmdet.core import BitmapMasks
-from mmdet.datasets.builder import PIPELINES
 from . import BaseTextDetTargets
 
 

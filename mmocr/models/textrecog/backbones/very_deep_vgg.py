@@ -1,6 +1,5 @@
 import torch.nn as nn
 from mmcv.cnn import uniform_init, xavier_init
-
 from mmdet.models.builder import BACKBONES
 
 

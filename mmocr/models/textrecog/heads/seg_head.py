@@ -1,8 +1,7 @@
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
-from torch import nn
-
 from mmdet.models.builder import HEADS
+from torch import nn
 
 
 @HEADS.register_module()

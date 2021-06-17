@@ -1,10 +1,9 @@
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch import nn
-
 from mmdet.core import multi_apply
 from mmdet.models.builder import LOSSES
+from torch import nn
 
 
 @LOSSES.register_module()
