@@ -112,3 +112,188 @@ The table below lists the models that are guaranteed to be exportable to TensorR
 - *All models above are tested with Pytorch==1.8.1,  onnxruntime==1.7.0 and tensorrt==7.2.1.6*
 - If you meet any problem with the listed models above, please create an issue and it would be taken care of soon. For models not included in the list, please try to solve them by yourself.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
+
+
+### Evaluate ONNX and TensorRT Models (experimental)
+
+We provide methods to evaluate TensorRT and ONNX models in `tools/deployment/deploy_test.py`.
+
+#### Prerequisite
+To evaluate ONNX and TensorRT models, onnx, onnxruntime and TensorRT should be installed first. Install `mmcv-full` with ONNXRuntime custom ops and TensorRT plugins follow [ONNXRuntime in mmcv](https://mmcv.readthedocs.io/en/latest/onnxruntime_op.html) and [TensorRT plugin in mmcv](https://github.com/open-mmlab/mmcv/blob/master/docs/tensorrt_plugin.md).
+
+#### Usage
+
+```bash
+python tools/deploy_test.py \
+    ${CONFIG_FILE} \
+    ${MODEL_PATH} \
+    ${MODEL_TYPE} \
+    ${BACKEND} \
+    --eval ${METRICS} \
+    --device ${DEVICE}
+```
+
+#### Description of all arguments
+
+- `model_config`: The path of a model config file.
+- `model_file`: The path of a TensorRT or an ONNX model file.
+- `model_type`: Detection or recognition model to deploy. Choose `recog` or `det`.
+- `backend`: The backend for testing, choose TensorRT or ONNXRuntime.
+- `--eval`: The evaluation metrics. `acc` for recognition models, `hmean-iou` for detection models.
+- `--device`: Device for evaluation, `cuda:0` as default.
+
+#### Results and Models
+
+
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-9wq8">Model</th>
+    <th class="tg-9wq8">Config</th>
+    <th class="tg-9wq8">Dataset</th>
+    <th class="tg-9wq8">Metric</th>
+    <th class="tg-9wq8">PyTorch</th>
+    <th class="tg-9wq8">ONNX Runtime</th>
+    <th class="tg-9wq8">TensorRT FP32</th>
+    <th class="tg-9wq8">TensorRT FP16</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-9wq8" rowspan="3">DBNet</td>
+    <td class="tg-9wq8" rowspan="3">dbnet_r18_fpnc_1200e_icdar2015.py<br></td>
+    <td class="tg-9wq8" rowspan="3">icdar2015</td>
+    <td class="tg-9wq8"><span style="font-style:normal">Recall</span><br></td>
+    <td class="tg-9wq8">0.731</td>
+    <td class="tg-9wq8">0.731</td>
+    <td class="tg-9wq8">0.678</td>
+    <td class="tg-9wq8">0.679</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8">Precision</td>
+    <td class="tg-9wq8"><span style="font-weight:400;font-style:normal">0.871</span></td>
+    <td class="tg-9wq8">0.871</td>
+    <td class="tg-9wq8">0.844</td>
+    <td class="tg-9wq8">0.842</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8"><span style="font-style:normal">Hmean</span></td>
+    <td class="tg-9wq8"><span style="font-weight:400;font-style:normal">0.795</span></td>
+    <td class="tg-9wq8">0.795</td>
+    <td class="tg-9wq8">0.752</td>
+    <td class="tg-9wq8">0.752</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8" rowspan="3">DBNet*</td>
+    <td class="tg-9wq8" rowspan="3">dbnet_r18_fpnc_1200e_icdar2015.py<br></td>
+    <td class="tg-9wq8" rowspan="3">icdar2015</td>
+    <td class="tg-9wq8"><span style="font-style:normal">Recall</span><br></td>
+    <td class="tg-9wq8">0.720</td>
+    <td class="tg-9wq8">0.720</td>
+    <td class="tg-9wq8">0.720</td>
+    <td class="tg-9wq8">0.718</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8">Precision</td>
+    <td class="tg-9wq8"><span style="font-weight:400;font-style:normal">0.868</span></td>
+    <td class="tg-9wq8"><span style="font-weight:400;font-style:normal">0.868</span></td>
+    <td class="tg-9wq8"><span style="font-weight:400;font-style:normal">0.868</span></td>
+    <td class="tg-9wq8">0.868</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8"><span style="font-style:normal">Hmean</span></td>
+    <td class="tg-9wq8"><span style="font-weight:400;font-style:normal">0.787</span></td>
+    <td class="tg-9wq8"><span style="font-weight:400;font-style:normal">0.787</span></td>
+    <td class="tg-9wq8"><span style="font-weight:400;font-style:normal">0.787</span></td>
+    <td class="tg-9wq8">0.786</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8" rowspan="3">PSENet</td>
+    <td class="tg-9wq8" rowspan="3">psenet_r50_fpnf_600e_icdar2015.py<br></td>
+    <td class="tg-9wq8" rowspan="3">icdar2015</td>
+    <td class="tg-9wq8"><span style="font-style:normal">Recall</span><br></td>
+    <td class="tg-9wq8">0.753</td>
+    <td class="tg-9wq8">0.753</td>
+    <td class="tg-9wq8">0.753</td>
+    <td class="tg-9wq8">0.752</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8">Precision</td>
+    <td class="tg-9wq8">0.867</td>
+    <td class="tg-9wq8">0.867</td>
+    <td class="tg-9wq8">0.867</td>
+    <td class="tg-9wq8">0.867</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8"><span style="font-style:normal">Hmean</span></td>
+    <td class="tg-9wq8">0.806</td>
+    <td class="tg-9wq8">0.806</td>
+    <td class="tg-9wq8">0.806</td>
+    <td class="tg-9wq8">0.805</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8" rowspan="3">PANet</td>
+    <td class="tg-9wq8" rowspan="3">panet_r18_fpem_ffm_600e_icdar2015.py<br></td>
+    <td class="tg-9wq8" rowspan="3">icdar2015</td>
+    <td class="tg-9wq8">Recall<br></td>
+    <td class="tg-9wq8">0.740</td>
+    <td class="tg-9wq8">0.740</td>
+    <td class="tg-9wq8">0.687</td>
+    <td class="tg-9wq8">N/A</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8">Precision</td>
+    <td class="tg-9wq8">0.860</td>
+    <td class="tg-9wq8">0.860</td>
+    <td class="tg-9wq8">0.815</td>
+    <td class="tg-9wq8">N/A</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8">Hmean</td>
+    <td class="tg-9wq8">0.796</td>
+    <td class="tg-9wq8">0.796</td>
+    <td class="tg-9wq8">0.746</td>
+    <td class="tg-9wq8">N/A</td>
+  </tr>
+  <tr>
+    <td class="tg-nrix" rowspan="3">PANet*</td>
+    <td class="tg-nrix" rowspan="3">panet_r18_fpem_ffm_600e_icdar2015.py<br></td>
+    <td class="tg-nrix" rowspan="3">icdar2015</td>
+    <td class="tg-nrix">Recall<br></td>
+    <td class="tg-nrix">0.736</td>
+    <td class="tg-nrix">0.736</td>
+    <td class="tg-nrix">0.736</td>
+    <td class="tg-nrix">N/A</td>
+  </tr>
+  <tr>
+    <td class="tg-nrix">Precision</td>
+    <td class="tg-nrix">0.857</td>
+    <td class="tg-nrix">0.857</td>
+    <td class="tg-nrix">0.857</td>
+    <td class="tg-nrix">N/A</td>
+  </tr>
+  <tr>
+    <td class="tg-nrix">Hmean</td>
+    <td class="tg-nrix">0.792</td>
+    <td class="tg-nrix">0.792</td>
+    <td class="tg-nrix">0.792</td>
+    <td class="tg-nrix">N/A</td>
+  </tr>
+  <tr>
+    <td class="tg-9wq8">CRNN</td>
+    <td class="tg-9wq8">crnn_academic_dataset.py<br></td>
+    <td class="tg-9wq8">IIIT5K</td>
+    <td class="tg-9wq8">Acc</td>
+    <td class="tg-9wq8">0.806</td>
+    <td class="tg-9wq8">0.806</td>
+    <td class="tg-9wq8">0.806</td>
+    <td class="tg-9wq8">0.806</td>
+  </tr>
+</tbody>
+</table>
+
+**Notes**:
+- TensorRT upsampling operation is a little different from pytorch. For DBNet and PANet, we suggest replacing upsampling operations with neast mode to operations with bilinear mode. [Here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpem_ffm.py#L33) for PANet, [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L111) and [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L121) for DBNet. As is shown in the above table, networks with tag * means the upsampling mode is changed.
+- Note that, changing upsampling mode reduces less performance compared with using nearst mode. However, the weights of networks are trained through nearst mode. To persue best performance, using bilinear mode for both training and TensorRT deployment is recommanded.
+- All ONNX and TensorRT models are evaluated with dynamic shape on the datasets and images are preprocessed according to the original config file.
+- This tool is still experimental, and we only support `detection` and `recognition` for now.
