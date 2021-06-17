@@ -52,16 +52,16 @@ def is_not_png(img_file):
     return suffix not in ['.PNG', '.png']
 
 
-def is_on_same_line(box_a, box_b, min_y_overlap_rate=0.8):
+def is_on_same_line(box_a, box_b, min_y_overlap_ratio=0.8):
     """Check if two boxes are on the same line by their y-axis coordinates.
 
     Two boxes are on the same line if they overlap vertically, and the length
-    of the overlapping line segment is greater than min_y_overlap_rate * height
-    of either of the boxes.
+    of the overlapping line segment is greater than min_y_overlap_ratio * the
+    height of either of the boxes.
 
     Args:
         box_a (list), box_b (list): Two bounding boxes to be checked
-        min_y_overlap_rate (float): The minimum vertical overlapping rate
+        min_y_overlap_ratio (float): The minimum vertical overlapping ratio
                                     allowed for boxes in the same line
 
     Returns:
@@ -78,11 +78,11 @@ def is_on_same_line(box_a, box_b, min_y_overlap_rate=0.8):
         a_y_max, b_y_max = b_y_max, a_y_max
 
     if b_y_min <= a_y_max:
-        if min_y_overlap_rate is not None:
+        if min_y_overlap_ratio is not None:
             sorted_y = sorted([b_y_min, b_y_max, a_y_max])
             overlap = sorted_y[1] - sorted_y[0]
-            min_a_overlap = (a_y_max - a_y_min) * min_y_overlap_rate
-            min_b_overlap = (b_y_max - b_y_min) * min_y_overlap_rate
+            min_a_overlap = (a_y_max - a_y_min) * min_y_overlap_ratio
+            min_b_overlap = (b_y_max - b_y_min) * min_y_overlap_ratio
             return overlap >= min_a_overlap or \
                 overlap >= min_b_overlap
         else:
@@ -90,7 +90,7 @@ def is_on_same_line(box_a, box_b, min_y_overlap_rate=0.8):
     return False
 
 
-def stitch_boxes_into_lines(boxes, max_x_dist=10, min_y_overlap_rate=0.8):
+def stitch_boxes_into_lines(boxes, max_x_dist=10, min_y_overlap_ratio=0.8):
     """Stitch fragmented boxes of words into lines.
 
     Note: part of its logic is inspired by @Johndirr
@@ -100,7 +100,7 @@ def stitch_boxes_into_lines(boxes, max_x_dist=10, min_y_overlap_rate=0.8):
         boxes (list): List of ocr results to be stitched
         max_x_dist (int): The maximum horizontal distance between the closest
                     edges of neighboring boxes in the same line
-        min_y_overlap_rate (float): The minimum vertical overlapping rate
+        min_y_overlap_ratio (float): The minimum vertical overlapping ratio
                     allowed for any pairs of neighboring boxes in the same line
 
     Returns:
@@ -129,7 +129,7 @@ def stitch_boxes_into_lines(boxes, max_x_dist=10, min_y_overlap_rate=0.8):
             if j in skip_idxs:
                 continue
             if is_on_same_line(x_sorted_boxes[rightmost_box_idx]['box'],
-                               x_sorted_boxes[j]['box'], min_y_overlap_rate):
+                               x_sorted_boxes[j]['box'], min_y_overlap_ratio):
                 line.append(j)
                 skip_idxs.add(j)
                 rightmost_box_idx = j
