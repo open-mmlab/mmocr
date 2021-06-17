@@ -22,6 +22,8 @@ def test_detector_wraper():
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
+    if not torch.cuda.is_available():
+        pytest.skip('ONNXRuntime or TensorRT are supposed to use GPU.')
     onnx_path = 'tmp.onnx'
     cfg = dict(
         model=dict(
@@ -126,6 +128,8 @@ def test_recognizer_wraper():
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
+    if not torch.cuda.is_available():
+        pytest.skip('ONNXRuntime or TensorRT are supposed to use GPU.')
     onnx_path = 'tmp.onnx'
     cfg = dict(
         label_convertor=dict(
