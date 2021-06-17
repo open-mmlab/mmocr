@@ -1,11 +1,7 @@
-from .deploy_helper import (ONNXRuntimeRecognizer,
-                            ONNXRuntimeDetector,
-                            TensorRTDetector,
-                            TensorRTRecognizer)
+from .wrappers import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
+                       TensorRTDetector, TensorRTRecognizer)
 
 __all__ = [
-    'ONNXRuntimeRecognizer',
-    'ONNXRuntimeDetector',
-    'TensorRTDetector',
+    'ONNXRuntimeRecognizer', 'ONNXRuntimeDetector', 'TensorRTDetector',
     'TensorRTRecognizer'
 ]
