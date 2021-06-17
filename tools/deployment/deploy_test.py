@@ -5,10 +5,9 @@ from mmcv.parallel import MMDataParallel
 from mmcv.runner import get_dist_info
 from mmdet.apis import single_gpu_test
 
+from mmocr.core.deployment import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
+                                   TensorRTDetector, TensorRTRecognizer)
 from mmocr.datasets import build_dataloader, build_dataset
-from mmocr.models.deploy_helper import (ONNXRuntimeDetector,
-                                        ONNXRuntimeRecognizer,
-                                        TensorRTDetector, TensorRTRecognizer)
 
 
 def parse_args():

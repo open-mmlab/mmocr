@@ -7,6 +7,9 @@ import torch
 from mmdet.models import build_detector
 from packaging import version
 
+from mmocr.core.deployment import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
+                                   TensorRTDetector, TensorRTRecognizer)
+
 
 @pytest.mark.skipif(torch.__version__ == 'parrots', reason='skip parrots.')
 @pytest.mark.skipif(
@@ -19,8 +22,6 @@ def test_detector_wraper():
         import onnxruntime as ort  # noqa: F401
         import tensorrt as trt
         from mmcv.tensorrt import (onnx2trt, save_trt_engine)
-        from mmocr.models.deploy_helper import (ONNXRuntimeDetector,
-                                                TensorRTDetector)
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
@@ -125,8 +126,6 @@ def test_recognizer_wraper():
         import onnxruntime as ort  # noqa: F401
         import tensorrt as trt
         from mmcv.tensorrt import (onnx2trt, save_trt_engine)
-        from mmocr.models.deploy_helper import (ONNXRuntimeRecognizer,
-                                                TensorRTRecognizer)
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
