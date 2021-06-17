@@ -1,5 +1,4 @@
 import argparse
-import gc
 import json
 import math
 import os
@@ -24,7 +23,7 @@ def convert_textocr(root_path,
                     dst_label_filename,
                     annotation_filename,
                     img_start_idx=0,
-                    print_every=100):
+                    print_every=2000):
 
     annotation_path = osp.join(root_path, annotation_filename)
     if not osp.exists(annotation_path):
@@ -63,9 +62,6 @@ def convert_textocr(root_path,
             dst_img_name = f'img_{img_idx}_{ann_idx}.jpg'
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             cv2.imwrite(dst_img_path, dst_img)
-            del src_img
-            del dst_img
-            gc.collect()
             labels.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
                           f'{text_label}')
         img_idx += 1
