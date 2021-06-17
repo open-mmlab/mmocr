@@ -12,6 +12,8 @@ from packaging import version
 @pytest.mark.skipif(
     version.parse(torch.__version__) < version.parse('1.4.0'),
     reason='skip if torch=1.3.x')
+@pytest.mark.skipif(
+    not torch.cuda.is_available(), reason='skip if on cpu device')
 def test_detector_wraper():
     try:
         import onnxruntime as ort  # noqa: F401
@@ -22,8 +24,6 @@ def test_detector_wraper():
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
-    if not torch.cuda.is_available():
-        pytest.skip('ONNXRuntime or TensorRT are supposed to use GPU.')
     onnx_path = 'tmp.onnx'
     cfg = dict(
         model=dict(
@@ -118,6 +118,8 @@ def test_detector_wraper():
 @pytest.mark.skipif(
     version.parse(torch.__version__) < version.parse('1.4.0'),
     reason='skip if torch=1.3.x')
+@pytest.mark.skipif(
+    not torch.cuda.is_available(), reason='skip if on cpu device')
 def test_recognizer_wraper():
     try:
         import onnxruntime as ort  # noqa: F401
@@ -128,8 +130,6 @@ def test_recognizer_wraper():
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
-    if not torch.cuda.is_available():
-        pytest.skip('ONNXRuntime or TensorRT are supposed to use GPU.')
     onnx_path = 'tmp.onnx'
     cfg = dict(
         label_convertor=dict(
