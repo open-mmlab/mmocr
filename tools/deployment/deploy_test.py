@@ -1,26 +1,22 @@
 import argparse
 
-import torch
 from mmcv import Config
 from mmcv.parallel import MMDataParallel
 from mmcv.runner import get_dist_info
-
 from mmdet.apis import single_gpu_test
+
 from mmocr.datasets import build_dataloader, build_dataset
-from mmocr.models.deploy_helper import (ONNXRuntimeDetector, ONNXRuntimeRecognizer, TensorRTDetector, TensorRTRecognizer)
+from mmocr.models.deploy_helper import (ONNXRuntimeDetector,
+                                        ONNXRuntimeRecognizer,
+                                        TensorRTDetector, TensorRTRecognizer)
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
         description='MMOCR test (and eval) a onnx or tensorrt model.')
+    parser.add_argument('model_config', type=str, help='Config file.')
     parser.add_argument(
-        'model_config',
-        type=str,
-        help='Config file.')
-    parser.add_argument(
-        'model_file',
-        type=str,
-        help='Input file name for evaluation.')
+        'model_file', type=str, help='Input file name for evaluation.')
     parser.add_argument(
         'model_type',
         type=str,
@@ -50,7 +46,6 @@ def main():
     args = parse_args()
     if args.device == 'cpu':
         args.device = None
-    device = torch.device(args.device)
 
     cfg = Config.fromfile(args.model_config)
 
@@ -92,6 +87,7 @@ def main():
                 eval_kwargs.pop(key, None)
             eval_kwargs.update(dict(metric=args.eval, **kwargs))
             print(dataset.evaluate(outputs, **eval_kwargs))
+
 
 if __name__ == '__main__':
     main()

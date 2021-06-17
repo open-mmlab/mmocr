@@ -1,14 +1,11 @@
-import os
 from functools import partial
 
 import mmcv
 import numpy as np
 import pytest
 import torch
-from packaging import version
-
 from mmdet.models import build_detector
-
+from packaging import version
 
 
 @pytest.mark.skipif(torch.__version__ == 'parrots', reason='skip parrots.')
@@ -17,17 +14,17 @@ from mmdet.models import build_detector
     reason='skip if torch=1.3.x')
 def test_detector_wraper():
     try:
-        import onnxruntime as ort
+        import onnxruntime as ort  # noqa: F401
         import tensorrt as trt
-        from mmcv.tensorrt import (onnx2trt,save_trt_engine)
+        from mmcv.tensorrt import (onnx2trt, save_trt_engine)
         from mmocr.models.deploy_helper import (ONNXRuntimeDetector,
-                                                 TensorRTDetector)
+                                                TensorRTDetector)
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
     onnx_path = 'tmp.onnx'
     cfg = dict(
-        model = dict(
+        model=dict(
             type='DBNet',
             pretrained='torchvision://resnet18',
             backbone=dict(
@@ -40,12 +37,15 @@ def test_detector_wraper():
                 norm_eval=False,
                 style='caffe'),
             neck=dict(
-                type='FPNC', in_channels=[64, 128, 256, 512], lateral_channels=256),
+                type='FPNC',
+                in_channels=[64, 128, 256, 512],
+                lateral_channels=256),
             bbox_head=dict(
                 type='DBHead',
                 text_repr_type='quad',
                 in_channels=256,
-                loss=dict(type='DBLoss', alpha=5.0, beta=10.0, bbce_loss=True)),
+                loss=dict(type='DBLoss', alpha=5.0, beta=10.0,
+                          bbce_loss=True)),
             train_cfg=None,
             test_cfg=None))
 
@@ -55,11 +55,13 @@ def test_detector_wraper():
 
     # prepare data
     inputs = torch.rand(1, 3, 224, 224)
-    img_metas = [{'img_shape':[1, 3, 224, 224], 
-                  'ori_shape':[1, 3, 224, 224], 
-                  'pad_shape':[1, 3, 224, 224], 
-                  'filename':None, 
-                  'scale_factor':np.array([1,1,1,1])}]
+    img_metas = [{
+        'img_shape': [1, 3, 224, 224],
+        'ori_shape': [1, 3, 224, 224],
+        'pad_shape': [1, 3, 224, 224],
+        'filename': None,
+        'scale_factor': np.array([1, 1, 1, 1])
+    }]
 
     pytorch_model.forward = pytorch_model.forward_dummy
     with torch.no_grad():
@@ -78,6 +80,7 @@ def test_detector_wraper():
     def get_GiB(x: int):
         """return x GiB."""
         return x * (1 << 30)
+
     trt_path = onnx_path.replace('.onnx', '.trt')
     min_shape = [1, 3, 224, 224]
     max_shape = [1, 3, 224, 224]
@@ -115,30 +118,37 @@ def test_detector_wraper():
     reason='skip if torch=1.3.x')
 def test_recognizer_wraper():
     try:
-        import onnxruntime as ort
+        import onnxruntime as ort  # noqa: F401
         import tensorrt as trt
-        from mmcv.tensorrt import (onnx2trt,save_trt_engine)
+        from mmcv.tensorrt import (onnx2trt, save_trt_engine)
         from mmocr.models.deploy_helper import (ONNXRuntimeRecognizer,
-                                                 TensorRTRecognizer)
+                                                TensorRTRecognizer)
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
     onnx_path = 'tmp.onnx'
     cfg = dict(
-        label_convertor = dict(
-            type='CTCConvertor', dict_type='DICT36', with_unknown=False, lower=True),
-        model = dict(
+        label_convertor=dict(
+            type='CTCConvertor',
+            dict_type='DICT36',
+            with_unknown=False,
+            lower=True),
+        model=dict(
             type='CRNNNet',
             preprocessor=None,
-            backbone=dict(type='VeryDeepVgg', leaky_relu=False, input_channels=1),
+            backbone=dict(
+                type='VeryDeepVgg', leaky_relu=False, input_channels=1),
             encoder=None,
             decoder=dict(type='CRNNDecoder', in_channels=512, rnn_flag=True),
             loss=dict(type='CTCLoss'),
             label_convertor=dict(
-            type='CTCConvertor', dict_type='DICT36', with_unknown=False, lower=True),
+                type='CTCConvertor',
+                dict_type='DICT36',
+                with_unknown=False,
+                lower=True),
             pretrained=None),
-        train_cfg = None,
-        test_cfg = None)
+        train_cfg=None,
+        test_cfg=None)
 
     cfg = mmcv.Config(cfg)
 
@@ -146,11 +156,13 @@ def test_recognizer_wraper():
 
     # prepare data
     inputs = torch.rand(1, 1, 32, 32)
-    img_metas = [{'img_shape':[1, 1, 32, 32], 
-                  'ori_shape':[1, 1, 32, 32], 
-                  'pad_shape':[1, 1, 32, 32], 
-                  'filename':None, 
-                  'scale_factor':np.array([1,1,1,1])}]
+    img_metas = [{
+        'img_shape': [1, 1, 32, 32],
+        'ori_shape': [1, 1, 32, 32],
+        'pad_shape': [1, 1, 32, 32],
+        'filename': None,
+        'scale_factor': np.array([1, 1, 1, 1])
+    }]
 
     pytorch_model.forward = partial(
         pytorch_model.forward,
@@ -173,6 +185,7 @@ def test_recognizer_wraper():
     def get_GiB(x: int):
         """return x GiB."""
         return x * (1 << 30)
+
     trt_path = onnx_path.replace('.onnx', '.trt')
     min_shape = [1, 1, 32, 32]
     max_shape = [1, 1, 32, 32]
@@ -202,5 +215,3 @@ def test_recognizer_wraper():
     assert isinstance(trt_outputs[0], dict)
     assert 'text' in onnx_outputs[0]
     assert 'text' in trt_outputs[0]
-
-test_recognizer_wraper()
