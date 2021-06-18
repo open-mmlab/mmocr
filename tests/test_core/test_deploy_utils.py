@@ -17,13 +17,13 @@ from mmocr.core.deployment import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
     reason='skip if torch=1.3.x')
 @pytest.mark.skipif(
     not torch.cuda.is_available(), reason='skip if on cpu device')
-@pytest.mark.importorskip('onnxruntime')
-@pytest.mark.importorskip('tensorrt')
-@pytest.mark.importorskip('mmcv.tensorrt')
 def test_detector_wraper():
-    import onnxruntime as ort  # noqa: F401
-    import tensorrt as trt
-    from mmcv.tensorrt import (onnx2trt, save_trt_engine)
+    try:
+        import onnxruntime as ort  # noqa: F401
+        import tensorrt as trt
+        from mmcv.tensorrt import (onnx2trt, save_trt_engine)
+    except ImportError:
+        pytest.skip('ONNXRuntime or TensorRT is not available.')
 
     onnx_path = 'tmp.onnx'
     cfg = dict(
@@ -121,13 +121,13 @@ def test_detector_wraper():
     reason='skip if torch=1.3.x')
 @pytest.mark.skipif(
     not torch.cuda.is_available(), reason='skip if on cpu device')
-@pytest.mark.importorskip('onnxruntime')
-@pytest.mark.importorskip('tensorrt')
-@pytest.mark.importorskip('mmcv.tensorrt')
 def test_recognizer_wraper():
-    import onnxruntime as ort  # noqa: F401
-    import tensorrt as trt
-    from mmcv.tensorrt import (onnx2trt, save_trt_engine)
+    try:
+        import onnxruntime as ort  # noqa: F401
+        import tensorrt as trt
+        from mmcv.tensorrt import (onnx2trt, save_trt_engine)
+    except ImportError:
+        pytest.skip('ONNXRuntime or TensorRT is not available.')
 
     onnx_path = 'tmp.onnx'
     cfg = dict(
