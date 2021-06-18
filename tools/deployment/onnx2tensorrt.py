@@ -11,11 +11,9 @@ from mmcv.parallel import collate
 from mmcv.tensorrt import is_tensorrt_plugin_loaded, onnx2trt, save_trt_engine
 from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
-from tools.deployment.deploy_helper import (ONNXRuntimeDetector,
-                                            ONNXRuntimeRecognizer,
-                                            TensorRTDetector,
-                                            TensorRTRecognizer)
 
+from mmocr.core.deployment import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
+                                   TensorRTDetector, TensorRTRecognizer)
 from mmocr.datasets.pipelines.crop import crop_img  # noqa: F401
 
 
