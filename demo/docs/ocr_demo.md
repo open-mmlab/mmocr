@@ -22,3 +22,4 @@ python demo/ocr_image_demo.py demo/demo_text_det.jpg demo/output.jpg
 
 1. If `--imshow` is specified, the demo will also show the image with OpenCV.
 2. The `ocr_image_demo.py` script only supports GPU and so the `--device` parameter cannot take cpu as an argument.
+3. (Experimental) By specifying `--ocr-in-lines`, the ocr results will be grouped and presented in lines.

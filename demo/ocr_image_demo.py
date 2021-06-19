@@ -6,6 +6,7 @@ from mmdet.apis import init_detector
 from mmocr.apis.inference import model_inference
 from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.pipelines.crop import crop_img
+from mmocr.utils.img_util import stitch_boxes_into_lines
 
 
 def det_and_recog_inference(args, det_model, recog_model):
@@ -111,6 +112,10 @@ def main():
         '--imshow',
         action='store_true',
         help='Whether show image with OpenCV.')
+    parser.add_argument(
+        '--ocr-in-lines',
+        action='store_true',
+        help='Whether group ocr results in lines.')
     args = parser.parse_args()
 
     if args.device == 'cpu':
@@ -140,6 +145,16 @@ def main():
         args.out_file + '.json',
         ensure_ascii=False,
         indent=4)
+
+    if args.ocr_in_lines:
+        res = det_recog_result['result']
+        res = stitch_boxes_into_lines(res, 10, 0.5)
+        det_recog_result['result'] = res
+        mmcv.dump(
+            det_recog_result,
+            args.out_file + '.line.json',
+            ensure_ascii=False,
+            indent=4)
 
     img = det_recog_show_result(args.img, det_recog_result)
     mmcv.imwrite(img, args.out_file)
