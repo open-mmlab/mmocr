@@ -6,7 +6,7 @@ from mmdet.apis import init_detector
 from mmocr.apis.inference import model_inference
 from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.pipelines.crop import crop_img
-from mmocr.utils.img_util import stitch_boxes_into_lines
+from mmocr.utils.box_util import stitch_boxes_into_lines
 
 
 def det_and_recog_inference(args, det_model, recog_model):
