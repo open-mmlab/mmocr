@@ -156,9 +156,6 @@ class DBNetTargets(BaseTextDetTargets):
         y_min = padded_polygon[:, 1].min()
         y_max = padded_polygon[:, 1].max()
 
-        if x_max <= 0 or y_max <= 0:
-            return
-
         width = x_max - x_min + 1
         height = y_max - y_min + 1
 
@@ -185,12 +182,7 @@ class DBNetTargets(BaseTextDetTargets):
         y_min_valid = min(max(0, y_min), canvas.shape[0] - 1)
         y_max_valid = min(max(0, y_max), canvas.shape[0] - 1)
 
-        if x_min_valid - x_min >= distance_map.shape[
-                1] or y_min_valid - y_min >= distance_map.shape[0]:
-            return
-        if x_max_valid - x_max + width <= 0:
-            return
-        if y_max_valid - y_max + height <= 0:
+        if x_min_valid - x_min >= width or y_min_valid - y_min >= height:
             return
 
         cv2.fillPoly(mask, [padded_polygon.astype(np.int32)], 1.0)
