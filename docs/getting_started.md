@@ -346,4 +346,4 @@ You can check the content of the annotation file in `tests/data/toy_dataset/inst
 
 To use the same pipeline for multiple datasets, as well as support extra parameters such as `samples_per_gpu` in `cfg.data.test` to activate `batch inference`, we design `UniformConcatDataset`. See [config](/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py) for an example.
 
-If you want to use `batch inference` during testing, please update the config file refering to [L108](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py#L108) to [L117](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py#L117)
+If you want to use `batch inference` during testing, please update the config file refering to [L106](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py#L106) to [L116](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py#L116)
