@@ -326,10 +326,11 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   unzip -q train_val_images.zip
   mv train_images train
   ```
-  - Step2: Generate `train_label.txt`, `val_label.txt` and crop images with the following command:
+  - Step2: Generate `train_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
   ```bash
-  python tools/data/textrecog/textocr_converter.py /path/to/textocr
+  python tools/data/textrecog/textocr_converter.py /path/to/textocr 4
   ```
+
 
 - For `Totaltext`:
   - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (We recommend downloading the text groundtruth with .mat format since our totaltext_converter.py supports groundtruth with .mat format only).

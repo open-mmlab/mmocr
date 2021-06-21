@@ -1,7 +1,8 @@
 import argparse
-import json
 import math
 import os.path as osp
+
+import mmcv
 
 from mmocr.utils import convert_annotations
 
@@ -21,7 +22,7 @@ def collect_textocr_info(root_path, annotation_filename, print_every=1000):
         raise Exception(
             f'{annotation_path} not exists, please check and try again.')
 
-    annotation = json.load(open(annotation_path, 'r'))
+    annotation = mmcv.load(annotation_path)
 
     # img_idx = img_start_idx
     img_infos = []
@@ -36,7 +37,7 @@ def collect_textocr_info(root_path, annotation_filename, print_every=1000):
             ann = annotation['anns'][ann_id]
 
             # Ignore illegible or non-English words
-            text_label = ann['utf8_string'].lower()
+            text_label = ann['utf8_string']
             iscrowd = 1 if text_label == '.' else 0
 
             x, y, w, h = ann['bbox']

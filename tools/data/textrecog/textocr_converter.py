@@ -1,5 +1,4 @@
 import argparse
-import json
 import math
 import os
 import os.path as osp
@@ -27,7 +26,7 @@ def process_img(args, src_image_root, dst_image_root):
     src_img = mmcv.imread(osp.join(src_image_root, img_info['file_name']))
     labels = []
     for ann_idx, ann in enumerate(anns):
-        text_label = ann['utf8_string'].lower()
+        text_label = ann['utf8_string']
 
         # Ignore illegible or non-English words
         if text_label == '.':
@@ -63,7 +62,7 @@ def convert_textocr(root_path,
     dst_image_root = osp.join(root_path, dst_image_path)
     os.makedirs(dst_image_root, exist_ok=True)
 
-    annotation = json.load(open(annotation_path, 'r'))
+    annotation = mmcv.load(annotation_path)
 
     process_img_with_path = partial(
         process_img,
