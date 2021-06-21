@@ -6,21 +6,38 @@ from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
 
 
-def disable_text_recog_aug_test(cfg):
+def disable_text_recog_aug_test(cfg, set_types=None):
     """Remove aug_test from test pipeline of text recognition.
     Args:
         cfg (mmcv.Config): Input config.
+        set_types (list[str]): Type of dataset source. Should be
+            None or sublist of ['test', 'val']
 
     Returns:
         cfg (mmcv.Config): Output config removing
             `MultiRotateAugOCR` in test pipeline.
     """
-    if cfg.data.test.pipeline[1].type == 'MultiRotateAugOCR':
-        cfg.data.test.pipeline = [
-            cfg.data.test.pipeline[0], *cfg.data.test.pipeline[1].transforms
-        ]
+    assert set_types is None or isinstance(set_types, list)
+    if set_types is None:
+        set_types = ['val', 'test']
+    for set_type in set_types:
+        if cfg.data[set_type].pipeline[1].type == 'MultiRotateAugOCR':
+            cfg.data[set_type].pipeline = [
+                cfg.data[set_type].pipeline[0],
+                *cfg.data[set_type].pipeline[1].transforms
+            ]
+        assert_if_not_support_batch_mode(cfg, set_type)
 
     return cfg
+
+
+def assert_if_not_support_batch_mode(cfg, set_type='test'):
+    if cfg.data[set_type].pipeline[1].type == 'ResizeOCR':
+        if cfg.data[set_type].pipeline[1].max_width is None:
+            raise Exception('Batch mode is not supported '
+                            'since the image width is not fixed, '
+                            'in the case that keeping aspect ratio but '
+                            'max_width is none when do resize.')
 
 
 def model_inference(model, imgs, batch_mode=False):
@@ -51,13 +68,7 @@ def model_inference(model, imgs, batch_mode=False):
     cfg = model.cfg
 
     if batch_mode:
-        if cfg.data.test.pipeline[1].type == 'ResizeOCR':
-            if cfg.data.test.pipeline[1].max_width is None:
-                raise Exception('Free resize do not support batch mode '
-                                'since the image width is not fixed, '
-                                'for resize keeping aspect ratio and '
-                                'max_width is not give.')
-        cfg = disable_text_recog_aug_test(cfg)
+        cfg = disable_text_recog_aug_test(cfg, set_types=['test'])
 
     device = next(model.parameters()).device  # model device
 

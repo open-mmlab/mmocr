@@ -98,14 +98,22 @@ test = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=test_pipeline,
+    pipeline=None,
     test_mode=True)
 
 data = dict(
     samples_per_gpu=16,
     workers_per_gpu=2,
     train=dict(type='ConcatDataset', datasets=[train1, train2]),
-    val=dict(type='ConcatDataset', datasets=[test]),
-    test=dict(type='ConcatDataset', datasets=[test]))
+    val=dict(
+        type='UniformConcatDataset',
+        datasets=[test],
+        pipeline=test_pipeline,
+        samples_per_gpu=16),
+    test=dict(
+        type='UniformConcatDataset',
+        datasets=[test],
+        pipeline=test_pipeline,
+        samples_per_gpu=16))
 
 evaluation = dict(interval=1, metric='acc')

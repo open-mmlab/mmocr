@@ -13,6 +13,7 @@ from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
 from mmdet.apis import multi_gpu_test, single_gpu_test
 from mmdet.datasets import replace_ImageToTensor
 
+from mmocr.apis.inference import disable_text_recog_aug_test
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
 
@@ -143,9 +144,11 @@ def main():
         cfg.data.test.test_mode = True
         samples_per_gpu = cfg.data.test.pop('samples_per_gpu', 1)
         if samples_per_gpu > 1:
-            # Replace 'ImageToTensor' to 'DefaultFormatBundle'
-            cfg.data.test.pipeline = replace_ImageToTensor(
-                cfg.data.test.pipeline)
+            cfg = disable_text_recog_aug_test(cfg)
+            if cfg.data.test.get('pipeline', None) is not None:
+                # Replace 'ImageToTensor' to 'DefaultFormatBundle'
+                cfg.data.test.pipeline = replace_ImageToTensor(
+                    cfg.data.test.pipeline)
     elif isinstance(cfg.data.test, list):
         for ds_cfg in cfg.data.test:
             ds_cfg.test_mode = True
