@@ -16,9 +16,10 @@ class SingleStageTextDetector(SingleStageDetector):
                  bbox_head,
                  train_cfg=None,
                  test_cfg=None,
-                 pretrained=None):
+                 pretrained=None,
+                 init_cfg=None):
         SingleStageDetector.__init__(self, backbone, neck, bbox_head,
-                                     train_cfg, test_cfg, pretrained)
+                                     train_cfg, test_cfg, pretrained, init_cfg)
 
     def forward_train(self, img, img_metas, **kwargs):
         """

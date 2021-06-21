@@ -1,12 +1,13 @@
 import torch
 import torch.nn as nn
+from mmcv.runner import BaseModule
 from mmdet.models.builder import HEADS, build_loss
 
 from .head_mixin import HeadMixin
 
 
 @HEADS.register_module()
-class DBHead(HeadMixin, nn.Module):
+class DBHead(HeadMixin, BaseModule):
     """The class for DBNet head.
 
     This was partially adapted from https://github.com/MhLiao/DB
@@ -20,7 +21,12 @@ class DBHead(HeadMixin, nn.Module):
                  downsample_ratio=1.0,
                  loss=dict(type='DBLoss'),
                  train_cfg=None,
-                 test_cfg=None):
+                 test_cfg=None,
+                 init_cfg=[
+                     dict(type='Kaiming', layer='Conv'),
+                     dict(
+                         type='Constant', layer='BatchNorm', val=1., bias=1e-4)
+                 ]):
         """Initialization.
 
         Args:
@@ -30,7 +36,7 @@ class DBHead(HeadMixin, nn.Module):
             downsample_ratio (float): The downsample ratio of ground truths.
             loss (dict): The type of loss for dbnet.
         """
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
 
         assert isinstance(in_channels, int)
 
@@ -52,10 +58,12 @@ class DBHead(HeadMixin, nn.Module):
 
         self.threshold = self._init_thr(in_channels)
 
+    '''
     def init_weights(self):
         self.binarize.apply(self.init_class_parameters)
         self.threshold.apply(self.init_class_parameters)
-
+    '''
+    '''
     def init_class_parameters(self, m):
         classname = m.__class__.__name__
         if classname.find('Conv') != -1:
@@ -63,6 +71,7 @@ class DBHead(HeadMixin, nn.Module):
         elif classname.find('BatchNorm') != -1:
             m.weight.data.fill_(1.)
             m.bias.data.fill_(1e-4)
+    '''
 
     def diff_binarize(self, prob_map, thr_map, k):
         return torch.reciprocal(1.0 + torch.exp(-k * (prob_map - thr_map)))
