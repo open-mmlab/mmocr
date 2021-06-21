@@ -66,7 +66,7 @@ train1 = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=train_pipeline,
+    pipeline=None,
     test_mode=False)
 
 train_anno_file2 = 'tests/data/ocr_toy_dataset/label.lmdb'
@@ -82,7 +82,7 @@ train2 = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=train_pipeline,
+    pipeline=None,
     test_mode=False)
 
 test_anno_file1 = 'tests/data/ocr_toy_dataset/label.lmdb'
@@ -92,7 +92,7 @@ test = dict(
     ann_file=test_anno_file1,
     loader=dict(
         type='LmdbLoader',
-        repeat=1,
+        repeat=10,
         parser=dict(
             type='LineStrParser',
             keys=['filename', 'text'],
@@ -102,18 +102,17 @@ test = dict(
     test_mode=True)
 
 data = dict(
-    samples_per_gpu=16,
     workers_per_gpu=2,
-    train=dict(type='ConcatDataset', datasets=[train1, train2]),
+    train_dataloader=dict(samples_per_gpu=8, drop_last=True),
+    val_dataloader=dict(samples_per_gpu=8),
+    test_dataloader=dict(samples_per_gpu=8),
+    train=dict(
+        type='UniformConcatDataset',
+        datasets=[train1, train2],
+        pipeline=train_pipeline),
     val=dict(
-        type='UniformConcatDataset',
-        datasets=[test],
-        pipeline=test_pipeline,
-        samples_per_gpu=16),
+        type='UniformConcatDataset', datasets=[test], pipeline=test_pipeline),
     test=dict(
-        type='UniformConcatDataset',
-        datasets=[test],
-        pipeline=test_pipeline,
-        samples_per_gpu=16))
+        type='UniformConcatDataset', datasets=[test], pipeline=test_pipeline))
 
 evaluation = dict(interval=1, metric='acc')

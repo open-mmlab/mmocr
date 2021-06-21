@@ -142,8 +142,10 @@ def main():
     samples_per_gpu = 1
     if isinstance(cfg.data.test, dict):
         cfg.data.test.test_mode = True
-        samples_per_gpu = cfg.data.test.pop('samples_per_gpu', 1)
+        samples_per_gpu = (cfg.data.get('test_dataloader',
+                                        {})).get('samples_per_gpu', 1)
         if samples_per_gpu > 1:
+            # Support batch_size > 1 in test
             cfg = disable_text_recog_aug_test(cfg)
             if cfg.data.test.get('pipeline', None) is not None:
                 # Replace 'ImageToTensor' to 'DefaultFormatBundle'
