@@ -1,5 +1,5 @@
 import torch.nn as nn
-from mmcv.cnn import normal_init
+from mmcv.runner import BaseModule
 from mmdet.core import multi_apply
 from mmdet.models.builder import HEADS, build_loss
 
@@ -9,7 +9,7 @@ from .head_mixin import HeadMixin
 
 
 @HEADS.register_module()
-class FCEHead(HeadMixin, nn.Module):
+class FCEHead(HeadMixin, BaseModule):
     """The class for implementing FCENet head.
     FCENet(CVPR2021): Fourier Contour Embedding for Arbitrary-shaped Text
     Detection.
@@ -45,9 +45,14 @@ class FCEHead(HeadMixin, nn.Module):
                  beta=1.0,
                  text_repr_type='poly',
                  train_cfg=None,
-                 test_cfg=None):
+                 test_cfg=None,
+                 init_cfg=dict(
+                     type='Normal',
+                     mean=0,
+                     std=0.01,
+                     override=dict(name=['out_conv_cls', 'out_conv_reg']))):
 
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
         assert isinstance(in_channels, int)
 
         self.downsample_ratio = 1.0
@@ -85,9 +90,11 @@ class FCEHead(HeadMixin, nn.Module):
 
         self.init_weights()
 
+    '''
     def init_weights(self):
         normal_init(self.out_conv_cls, mean=0, std=0.01)
         normal_init(self.out_conv_reg, mean=0, std=0.01)
+    '''
 
     def forward(self, feats):
         cls_res, reg_res = multi_apply(self.forward_single, feats)
