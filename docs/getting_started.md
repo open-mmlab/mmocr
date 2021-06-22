@@ -344,6 +344,36 @@ You can check the content of the annotation file in `tests/data/toy_dataset/inst
 
 #### UniformConcatDataset
 
-To use the same pipeline for multiple datasets, as well as support extra parameters such as `samples_per_gpu` in `cfg.data.test` to activate `batch inference`, we design `UniformConcatDataset`. See [config](/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py) for an example.
+To use the `universal pipeline` for multiple datasets, we design `UniformConcatDataset`.
+For example, apply `train_pipeline` for both `train1` and `train2`,
 
-If you want to use `batch inference` during testing, please update the config file refering to [L106](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py#L106) to [L116](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py#L116)
+```python
+data = dict(
+    ...
+    train=dict(
+        type='UniformConcatDataset',
+        datasets=[train1, train2],
+        pipeline=train_pipeline))
+```
+
+Meanwhile, we have
+- train_dataloader
+- val_dataloader
+- test_dataloader
+
+to give specific settings. They will override the general settings in `data` dict.
+For example,
+
+```python
+data = dict(
+    workers_per_gpu=2,                                          # global setting
+    train_dataloader=dict(samples_per_gpu=8, drop_last=True),   # train-specific setting
+    val_dataloader=dict(samples_per_gpu=8, workers_per_gpu=1),  # val-specific setting
+    test_dataloader=dict(samples_per_gpu=8),                    # test-specific setting
+    ...
+```
+`workers_per_gpu` is global setting and `train_dataloader` and `val_dataloader` will inherit the values.
+`val_dataloader` override the value by `workers_per_gpu=1`.
+
+To activate `batch inference` for `val` and `test`, please set `val_dataloader=dict(samples_per_gpu=xxx)` and `test_dataloader=dict(samples_per_gpu=xxx)` as above.
+See [config](/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py) or [L106-L116](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py#L106) for an example.
