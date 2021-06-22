@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from mmcv.runner import BaseModule
+from mmcv.runner import BaseModule, Sequential
 from mmdet.models.builder import HEADS, build_loss
 
 from .head_mixin import HeadMixin
@@ -48,7 +48,7 @@ class DBHead(HeadMixin, BaseModule):
         self.downsample_ratio = downsample_ratio
         self.decoding_type = decoding_type
 
-        self.binarize = nn.Sequential(
+        self.binarize = Sequential(
             nn.Conv2d(
                 in_channels, in_channels // 4, 3, bias=with_bias, padding=1),
             nn.BatchNorm2d(in_channels // 4), nn.ReLU(inplace=True),
@@ -85,7 +85,7 @@ class DBHead(HeadMixin, BaseModule):
 
     def _init_thr(self, inner_channels, bias=False):
         in_channels = inner_channels
-        seq = nn.Sequential(
+        seq = Sequential(
             nn.Conv2d(
                 in_channels, inner_channels // 4, 3, padding=1, bias=bias),
             nn.BatchNorm2d(inner_channels // 4), nn.ReLU(inplace=True),
