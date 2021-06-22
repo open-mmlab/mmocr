@@ -30,24 +30,19 @@ train_pipeline = [
 test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
-        type='MultiRotateAugOCR',
-        rotate_degrees=[0, 90, 270],
-        transforms=[
-            dict(
-                type='ResizeOCR',
-                height=48,
-                min_width=48,
-                max_width=160,
-                keep_aspect_ratio=True),
-            dict(type='ToTensorOCR'),
-            dict(type='NormalizeOCR', **img_norm_cfg),
-            dict(
-                type='Collect',
-                keys=['img'],
-                meta_keys=[
-                    'filename', 'ori_shape', 'img_shape', 'valid_ratio',
-                    'img_norm_cfg', 'ori_filename'
-                ]),
+        type='ResizeOCR',
+        height=48,
+        min_width=48,
+        max_width=160,
+        keep_aspect_ratio=True),
+    dict(type='ToTensorOCR'),
+    dict(type='NormalizeOCR', **img_norm_cfg),
+    dict(
+        type='Collect',
+        keys=['img'],
+        meta_keys=[
+            'filename', 'ori_shape', 'img_shape', 'valid_ratio',
+            'img_norm_cfg', 'ori_filename'
         ])
 ]
 
@@ -103,9 +98,7 @@ test = dict(
 
 data = dict(
     workers_per_gpu=2,
-    train_dataloader=dict(samples_per_gpu=8, drop_last=True),
-    val_dataloader=dict(samples_per_gpu=8),
-    test_dataloader=dict(samples_per_gpu=8),
+    samples_per_gpu=8,
     train=dict(
         type='UniformConcatDataset',
         datasets=[train1, train2],

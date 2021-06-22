@@ -141,10 +141,11 @@ def main():
     # in case the test dataset is concatenated
     samples_per_gpu = 1
     if isinstance(cfg.data.test, dict):
-        samples_per_gpu = (cfg.data.get('test_dataloader',
-                                        {})).get('samples_per_gpu', 1)
+        samples_per_gpu = (cfg.data.get('test_dataloader', {})).get(
+            'samples_per_gpu', cfg.data.get('samples_per_gpu', 1))
         if samples_per_gpu > 1:
-            # Support batch_size > 1 in test
+            # Support batch_size > 1 in test for text recognition
+            # by disable MultiRotateAugOCR since it is useless for most case
             cfg = disable_text_recog_aug_test(cfg)
             if cfg.data.test.get('pipeline', None) is not None:
                 # Replace 'ImageToTensor' to 'DefaultFormatBundle'

@@ -113,10 +113,11 @@ def train_detector(model,
 
     # register eval hooks
     if validate:
-        val_samples_per_gpu = (cfg.data.get('val_dataloader',
-                                            {})).get('samples_per_gpu', 1)
+        val_samples_per_gpu = (cfg.data.get('val_dataloader', {})).get(
+            'samples_per_gpu', cfg.data.get('samples_per_gpu', 1))
         if val_samples_per_gpu > 1:
-            # Support batch_size > 1 in validation
+            # Support batch_size > 1 in test for text recognition
+            # by disable MultiRotateAugOCR since it is useless for most case
             cfg = disable_text_recog_aug_test(cfg)
             if cfg.data.val.get('pipeline', None) is not None:
                 # Replace 'ImageToTensor' to 'DefaultFormatBundle'

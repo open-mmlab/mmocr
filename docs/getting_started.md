@@ -375,5 +375,6 @@ data = dict(
 `workers_per_gpu` is global setting and `train_dataloader` and `val_dataloader` will inherit the values.
 `val_dataloader` override the value by `workers_per_gpu=1`.
 
-To activate `batch inference` for `val` and `test`, please set `val_dataloader=dict(samples_per_gpu=xxx)` and `test_dataloader=dict(samples_per_gpu=xxx)` as above.
-See [config](/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py) or [L106-L116](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py#L106) for an example.
+To activate `batch inference` for `val` and `test`, please set `val_dataloader=dict(samples_per_gpu=8)` and `test_dataloader=dict(samples_per_gpu=8)` as above.
+Or just set `samples_per_gpu=8` as global setting.
+See [config](/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py) for an example.
