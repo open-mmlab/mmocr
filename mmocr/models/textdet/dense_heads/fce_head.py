@@ -31,26 +31,28 @@ class FCEHead(HeadMixin, BaseModule):
         beta (float) :The parameter to calculate final scores.
     """
 
-    def __init__(self,
-                 in_channels,
-                 scales,
-                 fourier_degree=5,
-                 num_sample=50,
-                 num_reconstr_points=50,
-                 decoding_type='fcenet',
-                 loss=dict(type='FCELoss'),
-                 score_thr=0.3,
-                 nms_thr=0.1,
-                 alpha=1.0,
-                 beta=1.0,
-                 text_repr_type='poly',
-                 train_cfg=None,
-                 test_cfg=None,
-                 init_cfg=dict(
-                     type='Normal',
-                     mean=0,
-                     std=0.01,
-                     override=dict(name=['out_conv_cls', 'out_conv_reg']))):
+    def __init__(
+        self,
+        in_channels,
+        scales,
+        fourier_degree=5,
+        num_sample=50,
+        num_reconstr_points=50,
+        decoding_type='fcenet',
+        loss=dict(type='FCELoss'),
+        score_thr=0.3,
+        nms_thr=0.1,
+        alpha=1.0,
+        beta=1.0,
+        text_repr_type='poly',
+        train_cfg=None,
+        test_cfg=None,
+        init_cfg=dict(
+            type='Normal',
+            mean=0,
+            std=0.01,
+            override=[dict(name='out_conv_cls'),
+                      dict(name='out_conv_reg')])):
 
         super().__init__(init_cfg=init_cfg)
         assert isinstance(in_channels, int)
