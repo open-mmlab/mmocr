@@ -21,7 +21,9 @@ class PANet(TextDetectorMixin, SingleStageTextDetector):
                  train_cfg=None,
                  test_cfg=None,
                  pretrained=None,
-                 show_score=False):
+                 show_score=False,
+                 init_cfg=None):
         SingleStageTextDetector.__init__(self, backbone, neck, bbox_head,
-                                         train_cfg, test_cfg, pretrained)
+                                         train_cfg, test_cfg, pretrained,
+                                         init_cfg)
         TextDetectorMixin.__init__(self, show_score)
