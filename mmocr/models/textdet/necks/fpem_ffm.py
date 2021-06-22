@@ -1,14 +1,14 @@
 import torch.nn.functional as F
-from mmcv.cnn import xavier_init
+from mmcv.runner import BaseModule
 from mmdet.models.builder import NECKS
 from torch import nn
 
 
-class FPEM(nn.Module):
+class FPEM(BaseModule):
     """FPN-like feature fusion module in PANet."""
 
-    def __init__(self, in_channels=128):
-        super().__init__()
+    def __init__(self, in_channels=128, init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
         self.up_add1 = SeparableConv2d(in_channels, in_channels, 1)
         self.up_add2 = SeparableConv2d(in_channels, in_channels, 1)
         self.up_add3 = SeparableConv2d(in_channels, in_channels, 1)
@@ -32,10 +32,10 @@ class FPEM(nn.Module):
         return F.interpolate(x, size=y.size()[2:]) + y
 
 
-class SeparableConv2d(nn.Module):
+class SeparableConv2d(BaseModule):
 
-    def __init__(self, in_channels, out_channels, stride=1):
-        super().__init__()
+    def __init__(self, in_channels, out_channels, stride=1, init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
 
         self.depthwise_conv = nn.Conv2d(
             in_channels=in_channels,
@@ -58,15 +58,17 @@ class SeparableConv2d(nn.Module):
 
 
 @NECKS.register_module()
-class FPEM_FFM(nn.Module):
+class FPEM_FFM(BaseModule):
     """This code is from https://github.com/WenmuZhou/PAN.pytorch."""
 
     def __init__(self,
                  in_channels,
                  conv_out=128,
                  fpem_repeat=2,
-                 align_corners=False):
-        super().__init__()
+                 align_corners=False,
+                 init_cfg=dict(
+                     type='Xavier', layer='Conv2d', distrbution='uniform')):
+        super().__init__(init_cfg=init_cfg)
         # reduce layers
         self.reduce_conv_c2 = nn.Sequential(
             nn.Conv2d(
@@ -93,12 +95,14 @@ class FPEM_FFM(nn.Module):
         for _ in range(fpem_repeat):
             self.fpems.append(FPEM(conv_out))
 
+    '''
     def init_weights(self):
         """Initialize the weights of FPN module."""
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 xavier_init(m, distribution='uniform')
+    '''
 
     def forward(self, x):
         c2, c3, c4, c5 = x
