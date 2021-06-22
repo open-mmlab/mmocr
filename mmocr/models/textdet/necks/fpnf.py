@@ -1,23 +1,24 @@
 import torch
 import torch.nn.functional as F
-from mmcv.cnn import ConvModule, xavier_init
-from mmcv.runner import auto_fp16
+from mmcv.cnn import ConvModule
+from mmcv.runner import BaseModule, auto_fp16
 from mmdet.models.builder import NECKS
 from torch import nn
 
 
 @NECKS.register_module()
-class FPNF(nn.Module):
+class FPNF(BaseModule):
     """FPN-like fusion module in Shape Robust Text Detection with Progressive
     Scale Expansion Network."""
 
-    def __init__(
-            self,
-            in_channels=[256, 512, 1024, 2048],
-            out_channels=256,
-            fusion_type='concat',  # 'concat' or 'add'
-            upsample_ratio=1):
-        super().__init__()
+    def __init__(self,
+                 in_channels=[256, 512, 1024, 2048],
+                 out_channels=256,
+                 fusion_type='concat',
+                 upsample_ratio=1,
+                 init_cfg=dict(
+                     type='Xavier', layer='Conv2d', distribution='uniform')):
+        super().__init__(init_cfg=init_cfg)
         conv_cfg = None
         norm_cfg = dict(type='BN')
         act_cfg = dict(type='ReLU')
@@ -72,10 +73,12 @@ class FPNF(nn.Module):
         self.upsample_ratio = upsample_ratio
 
     # default init_weights for conv(msra) and norm in ConvModule
+    '''
     def init_weights(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 xavier_init(m, distribution='uniform')
+    '''
 
     @auto_fp16()
     def forward(self, inputs):
