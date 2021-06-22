@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from mmcv.cnn import normal_init
+from mmcv.runner import BaseModule
 from mmdet.models.builder import HEADS, build_loss
 
 from mmocr.models.textdet.modules import GCN, LocalGraphs, ProposalLocalGraphs
@@ -12,7 +12,7 @@ from .head_mixin import HeadMixin
 
 
 @HEADS.register_module()
-class DRRGHead(HeadMixin, nn.Module):
+class DRRGHead(HeadMixin, BaseModule):
     """The class for DRRG head: Deep Relational Reasoning Graph Network for
     Arbitrary Shape Text Detection.
 
@@ -62,8 +62,13 @@ class DRRGHead(HeadMixin, nn.Module):
                  link_thr=0.85,
                  loss=dict(type='DRRGLoss'),
                  train_cfg=None,
-                 test_cfg=None):
-        super().__init__()
+                 test_cfg=None,
+                 init_cfg=dict(
+                     type='Normal',
+                     override=dict(name='out_conv'),
+                     mean=0,
+                     std=0.01)):
+        super().__init__(init_cfg=init_cfg)
 
         assert isinstance(in_channels, int)
         assert isinstance(k_at_hops, tuple)
@@ -133,8 +138,10 @@ class DRRGHead(HeadMixin, nn.Module):
             self.in_channels + self.out_channels) + self.node_geo_feat_len
         self.gcn = GCN(node_feat_len)
 
+    '''
     def init_weights(self):
         normal_init(self.out_conv, mean=0, std=0.01)
+    '''
 
     def forward(self, inputs, gt_comp_attribs):
 
