@@ -178,7 +178,7 @@ test1 = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=None,
+    pipeline=test_pipeline,
     test_mode=True)
 
 test2 = {key: value for key, value in test1.items()}
@@ -212,14 +212,10 @@ data = dict(
             train1, train2, train3, train4, train5, train6, train7, train8
         ]),
     val=dict(
-        type='UniformConcatDataset',
-        datasets=[test1, test2, test3, test4, test5, test6],
-        pipeline=test_pipeline,
-        samples_per_gpu=8),
+        type='ConcatDataset',
+        datasets=[test1, test2, test3, test4, test5, test6]),
     test=dict(
-        type='UniformConcatDataset',
-        datasets=[test1, test2, test3, test4, test5, test6],
-        pipeline=test_pipeline,
-        samples_per_gpu=8))
+        type='ConcatDataset',
+        datasets=[test1, test2, test3, test4, test5, test6]))
 
 evaluation = dict(interval=1, metric='acc')
