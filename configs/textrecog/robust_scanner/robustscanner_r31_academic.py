@@ -182,6 +182,8 @@ test6['ann_file'] = test_ann_file6
 data = dict(
     samples_per_gpu=64,
     workers_per_gpu=2,
+    val_dataloader=dict(samples_per_gpu=1),
+    test_dataloader=dict(samples_per_gpu=1),
     train=dict(
         type='ConcatDataset',
         datasets=[
