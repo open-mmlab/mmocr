@@ -13,6 +13,7 @@ from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
 from mmdet.apis import multi_gpu_test, single_gpu_test
 from mmdet.datasets import replace_ImageToTensor
 
+from mmocr.apis.inference import disable_text_recog_aug_test
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
 
@@ -140,12 +141,16 @@ def main():
     # in case the test dataset is concatenated
     samples_per_gpu = 1
     if isinstance(cfg.data.test, dict):
-        cfg.data.test.test_mode = True
-        samples_per_gpu = cfg.data.test.pop('samples_per_gpu', 1)
+        samples_per_gpu = (cfg.data.get('test_dataloader', {})).get(
+            'samples_per_gpu', cfg.data.get('samples_per_gpu', 1))
         if samples_per_gpu > 1:
-            # Replace 'ImageToTensor' to 'DefaultFormatBundle'
-            cfg.data.test.pipeline = replace_ImageToTensor(
-                cfg.data.test.pipeline)
+            # Support batch_size > 1 in test for text recognition
+            # by disable MultiRotateAugOCR since it is useless for most case
+            cfg = disable_text_recog_aug_test(cfg)
+            if cfg.data.test.get('pipeline', None) is not None:
+                # Replace 'ImageToTensor' to 'DefaultFormatBundle'
+                cfg.data.test.pipeline = replace_ImageToTensor(
+                    cfg.data.test.pipeline)
     elif isinstance(cfg.data.test, list):
         for ds_cfg in cfg.data.test:
             ds_cfg.test_mode = True
@@ -163,13 +168,29 @@ def main():
         init_dist(args.launcher, **cfg.dist_params)
 
     # build the dataloader
-    dataset = build_dataset(cfg.data.test)
-    data_loader = build_dataloader(
-        dataset,
-        samples_per_gpu=samples_per_gpu,
-        workers_per_gpu=cfg.data.workers_per_gpu,
-        dist=distributed,
-        shuffle=False)
+    dataset = build_dataset(cfg.data.test, dict(test_mode=True))
+    # step 1: give default values and override (if exist) from cfg.data
+    loader_cfg = {
+        **dict(seed=cfg.get('seed'), drop_last=False, dist=distributed),
+        **({} if torch.__version__ != 'parrots' else dict(
+               prefetch_num=2,
+               pin_memory=False,
+           )),
+        **dict((k, cfg.data[k]) for k in [
+                   'workers_per_gpu',
+                   'seed',
+                   'prefetch_num',
+                   'pin_memory',
+               ] if k in cfg.data)
+    }
+    test_loader_cfg = {
+        **loader_cfg,
+        **dict(shuffle=False, drop_last=False),
+        **cfg.data.get('test_dataloader', {}),
+        **dict(samples_per_gpu=samples_per_gpu)
+    }
+
+    data_loader = build_dataloader(dataset, **test_loader_cfg)
 
     # build the model and load checkpoint
     cfg.model.train_cfg = None

@@ -202,7 +202,12 @@ To support the tasks of `text detection`, `text recognition` and `key informatio
 
 Here we show some examples of using different combination of `loader` and `parser`.
 
-#### Encoder-Decoder-Based Text Recognition Task
+#### Text Recognition Task
+
+##### OCRDataset
+
+<small>*Dataset for encoder-decoder based recognizer*</small>
+
 ```python
 dataset_type = 'OCRDataset'
 img_prefix = 'tests/data/ocr_toy_dataset/imgs'
@@ -225,7 +230,7 @@ train = dict(
 You can check the content of the annotation file in `tests/data/ocr_toy_dataset/label.txt`.
 The combination of `HardDiskLoader` and `LineStrParser` will return a dict for each file by calling `__getitem__`: `{'filename': '1223731.jpg', 'text': 'GRAND'}`.
 
-##### Optional Arguments:
+**Optional Arguments:**
 
 - `repeat`: The number of repeated lines in the annotation files. For example, if there are `10` lines in the annotation file, setting `repeat=10` will generate a corresponding annotation file with size `100`.
 
@@ -254,7 +259,10 @@ train = dict(
     test_mode=False)
 ```
 
-#### Segmentation-Based Text Recognition Task
+##### OCRSegDataset
+
+<small>*Dataset for segmentation-based recognizer*</small>
+
 ```python
 prefix = 'tests/data/ocr_char_ann_toy_dataset/'
 train = dict(
@@ -277,6 +285,11 @@ The combination of `HardDiskLoader` and `LineJsonParser` will return a dict for 
 ```
 
 #### Text Detection Task
+
+##### TextDetDataset
+
+<small>*Dataset with annotation file in line-json txt format*</small>
+
 ```python
 dataset_type = 'TextDetDataset'
 img_prefix = 'tests/data/toy_dataset/imgs'
@@ -302,7 +315,10 @@ The combination of `HardDiskLoader` and `LineJsonParser` will return a dict for 
 ```
 
 
-### COCO-like Dataset
+##### IcdarDataset
+
+<small>*Dataset with annotation file in coco-like json format*</small>
+
 For text detection, you can also use an annotation file in a COCO format that is defined in [mmdet](https://github.com/open-mmlab/mmdetection/blob/master/mmdet/datasets/coco.py):
 ```python
 dataset_type = 'IcdarDataset'
@@ -325,4 +341,40 @@ You can check the content of the annotation file in `tests/data/toy_dataset/inst
   ```shell
   python tools/data_converter/ctw1500_converter.py ${src_root_path} -o ${out_path} --split-list training test
   ```
+
+#### UniformConcatDataset
+
+To use the `universal pipeline` for multiple datasets, we design `UniformConcatDataset`.
+For example, apply `train_pipeline` for both `train1` and `train2`,
+
+```python
+data = dict(
+    ...
+    train=dict(
+        type='UniformConcatDataset',
+        datasets=[train1, train2],
+        pipeline=train_pipeline))
 ```
+
+Meanwhile, we have
+- train_dataloader
+- val_dataloader
+- test_dataloader
+
+to give specific settings. They will override the general settings in `data` dict.
+For example,
+
+```python
+data = dict(
+    workers_per_gpu=2,                                          # global setting
+    train_dataloader=dict(samples_per_gpu=8, drop_last=True),   # train-specific setting
+    val_dataloader=dict(samples_per_gpu=8, workers_per_gpu=1),  # val-specific setting
+    test_dataloader=dict(samples_per_gpu=8),                    # test-specific setting
+    ...
+```
+`workers_per_gpu` is global setting and `train_dataloader` and `val_dataloader` will inherit the values.
+`val_dataloader` override the value by `workers_per_gpu=1`.
+
+To activate `batch inference` for `val` and `test`, please set `val_dataloader=dict(samples_per_gpu=8)` and `test_dataloader=dict(samples_per_gpu=8)` as above.
+Or just set `samples_per_gpu=8` as global setting.
+See [config](/configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py) for an example.

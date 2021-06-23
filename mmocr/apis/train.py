@@ -10,6 +10,7 @@ from mmdet.core import DistEvalHook, EvalHook
 from mmdet.datasets import (build_dataloader, build_dataset,
                             replace_ImageToTensor)
 
+from mmocr.apis.inference import disable_text_recog_aug_test
 from mmocr.utils import get_root_logger
 
 
@@ -24,30 +25,32 @@ def train_detector(model,
 
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
-    if 'imgs_per_gpu' in cfg.data:
-        logger.warning('"imgs_per_gpu" is deprecated in MMDet V2.0. '
-                       'Please use "samples_per_gpu" instead')
-        if 'samples_per_gpu' in cfg.data:
-            logger.warning(
-                f'Got "imgs_per_gpu"={cfg.data.imgs_per_gpu} and '
-                f'"samples_per_gpu"={cfg.data.samples_per_gpu}, "imgs_per_gpu"'
-                f'={cfg.data.imgs_per_gpu} is used in this experiments')
-        else:
-            logger.warning(
-                'Automatically set "samples_per_gpu"="imgs_per_gpu"='
-                f'{cfg.data.imgs_per_gpu} in this experiments')
-        cfg.data.samples_per_gpu = cfg.data.imgs_per_gpu
-
-    data_loaders = [
-        build_dataloader(
-            ds,
-            cfg.data.samples_per_gpu,
-            cfg.data.workers_per_gpu,
-            # cfg.gpus will be ignored if distributed
-            len(cfg.gpu_ids),
+    # step 1: give default values and override (if exist) from cfg.data
+    loader_cfg = {
+        **dict(
+            seed=cfg.get('seed'),
+            drop_last=False,
             dist=distributed,
-            seed=cfg.seed) for ds in dataset
-    ]
+            num_gpus=len(cfg.gpu_ids)),
+        **({} if torch.__version__ != 'parrots' else dict(
+               prefetch_num=2,
+               pin_memory=False,
+           )),
+        **dict((k, cfg.data[k]) for k in [
+                   'samples_per_gpu',
+                   'workers_per_gpu',
+                   'shuffle',
+                   'seed',
+                   'drop_last',
+                   'prefetch_num',
+                   'pin_memory',
+               ] if k in cfg.data)
+    }
+
+    # step 2: cfg.data.train_dataloader has highest priority
+    train_loader_cfg = dict(loader_cfg, **cfg.data.get('train_dataloader', {}))
+
+    data_loaders = [build_dataloader(ds, **train_loader_cfg) for ds in dataset]
 
     # put model on gpus
     if distributed:
@@ -110,19 +113,28 @@ def train_detector(model,
 
     # register eval hooks
     if validate:
-        # Support batch_size > 1 in validation
-        val_samples_per_gpu = cfg.data.val.pop('samples_per_gpu', 1)
+        val_samples_per_gpu = (cfg.data.get('val_dataloader', {})).get(
+            'samples_per_gpu', cfg.data.get('samples_per_gpu', 1))
         if val_samples_per_gpu > 1:
-            # Replace 'ImageToTensor' to 'DefaultFormatBundle'
-            cfg.data.val.pipeline = replace_ImageToTensor(
-                cfg.data.val.pipeline)
+            # Support batch_size > 1 in test for text recognition
+            # by disable MultiRotateAugOCR since it is useless for most case
+            cfg = disable_text_recog_aug_test(cfg)
+            if cfg.data.val.get('pipeline', None) is not None:
+                # Replace 'ImageToTensor' to 'DefaultFormatBundle'
+                cfg.data.val.pipeline = replace_ImageToTensor(
+                    cfg.data.val.pipeline)
+
         val_dataset = build_dataset(cfg.data.val, dict(test_mode=True))
-        val_dataloader = build_dataloader(
-            val_dataset,
-            samples_per_gpu=val_samples_per_gpu,
-            workers_per_gpu=cfg.data.workers_per_gpu,
-            dist=distributed,
-            shuffle=False)
+
+        val_loader_cfg = {
+            **loader_cfg,
+            **dict(shuffle=False, drop_last=False),
+            **cfg.data.get('val_dataloader', {}),
+            **dict(samples_per_gpu=val_samples_per_gpu)
+        }
+
+        val_dataloader = build_dataloader(val_dataset, **val_loader_cfg)
+
         eval_cfg = cfg.get('evaluation', {})
         eval_cfg['by_epoch'] = cfg.runner['type'] != 'IterBasedRunner'
         eval_hook = DistEvalHook if distributed else EvalHook

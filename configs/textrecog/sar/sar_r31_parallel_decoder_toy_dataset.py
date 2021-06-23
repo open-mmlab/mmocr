@@ -30,24 +30,19 @@ train_pipeline = [
 test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
-        type='MultiRotateAugOCR',
-        rotate_degrees=[0, 90, 270],
-        transforms=[
-            dict(
-                type='ResizeOCR',
-                height=48,
-                min_width=48,
-                max_width=160,
-                keep_aspect_ratio=True),
-            dict(type='ToTensorOCR'),
-            dict(type='NormalizeOCR', **img_norm_cfg),
-            dict(
-                type='Collect',
-                keys=['img'],
-                meta_keys=[
-                    'filename', 'ori_shape', 'img_shape', 'valid_ratio',
-                    'img_norm_cfg', 'ori_filename'
-                ]),
+        type='ResizeOCR',
+        height=48,
+        min_width=48,
+        max_width=160,
+        keep_aspect_ratio=True),
+    dict(type='ToTensorOCR'),
+    dict(type='NormalizeOCR', **img_norm_cfg),
+    dict(
+        type='Collect',
+        keys=['img'],
+        meta_keys=[
+            'filename', 'ori_shape', 'img_shape', 'valid_ratio',
+            'img_norm_cfg', 'ori_filename'
         ])
 ]
 
@@ -66,7 +61,7 @@ train1 = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=train_pipeline,
+    pipeline=None,
     test_mode=False)
 
 train_anno_file2 = 'tests/data/ocr_toy_dataset/label.lmdb'
@@ -82,7 +77,7 @@ train2 = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=train_pipeline,
+    pipeline=None,
     test_mode=False)
 
 test_anno_file1 = 'tests/data/ocr_toy_dataset/label.lmdb'
@@ -92,20 +87,25 @@ test = dict(
     ann_file=test_anno_file1,
     loader=dict(
         type='LmdbLoader',
-        repeat=1,
+        repeat=10,
         parser=dict(
             type='LineStrParser',
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=test_pipeline,
+    pipeline=None,
     test_mode=True)
 
 data = dict(
-    samples_per_gpu=16,
     workers_per_gpu=2,
-    train=dict(type='ConcatDataset', datasets=[train1, train2]),
-    val=dict(type='ConcatDataset', datasets=[test]),
-    test=dict(type='ConcatDataset', datasets=[test]))
+    samples_per_gpu=8,
+    train=dict(
+        type='UniformConcatDataset',
+        datasets=[train1, train2],
+        pipeline=train_pipeline),
+    val=dict(
+        type='UniformConcatDataset', datasets=[test], pipeline=test_pipeline),
+    test=dict(
+        type='UniformConcatDataset', datasets=[test], pipeline=test_pipeline))
 
 evaluation = dict(interval=1, metric='acc')
