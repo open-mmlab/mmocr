@@ -83,36 +83,47 @@ class ImgAug:
     def may_augment_annotation(self, aug, shape, target_shape, results):
         if aug is None:
             return results
+
+        # augment polygon mask
         for key in results['mask_fields']:
-            # augment polygon mask
-            masks = []
-            for mask in results[key]:
-                masks.append(
-                    [self.may_augment_poly(aug, shape, target_shape, mask[0])])
+            masks = self.may_augment_poly(aug, shape, results[key])
             if len(masks) > 0:
                 results[key] = PolygonMasks(masks, *target_shape[:2])
 
+        # augment bbox
         for key in results['bbox_fields']:
-            # augment bbox
-            bboxes = []
-            for bbox in results[key]:
-                bbox = self.may_augment_poly(aug, shape, target_shape, bbox)
-                bboxes.append(bbox)
+            bboxes = self.may_augment_poly(
+                aug, shape, results[key], mask_flag=False)
             results[key] = np.zeros(0)
             if len(bboxes) > 0:
                 results[key] = np.stack(bboxes)
 
         return results
 
-    def may_augment_poly(self, aug, img_shape, target_shape, poly):
-        # poly n x 2
-        poly = poly.reshape(-1, 2)
-        keypoints = [imgaug.Keypoint(p[0], p[1]) for p in poly]
-        keypoints = aug.augment_keypoints(
-            [imgaug.KeypointsOnImage(keypoints, shape=img_shape)])[0].keypoints
-        poly = [[p.x, p.y] for p in keypoints]
-        poly = np.array(poly).flatten()
-        return poly
+    def may_augment_poly(self, aug, img_shape, polys, mask_flag=True):
+        key_points, poly_point_nums = [], []
+        for poly in polys:
+            if mask_flag:
+                poly = poly[0]
+            poly = poly.reshape(-1, 2)
+            key_points.extend([imgaug.Keypoint(p[0], p[1]) for p in poly])
+            poly_point_nums.append(poly.shape[0])
+        key_points = aug.augment_keypoints(
+            [imgaug.KeypointsOnImage(keypoints=key_points,
+                                     shape=img_shape)])[0].keypoints
+
+        new_polys = []
+        start_idx = 0
+        for poly_point_num in poly_point_nums:
+            new_poly = []
+            for key_point in key_points[start_idx:(start_idx +
+                                                   poly_point_num)]:
+                new_poly.append([key_point.x, key_point.y])
+            start_idx += poly_point_num
+            new_poly = np.array(new_poly).flatten()
+            new_polys.append([new_poly] if mask_flag else new_poly)
+
+        return new_polys
 
     def __repr__(self):
         repr_str = self.__class__.__name__

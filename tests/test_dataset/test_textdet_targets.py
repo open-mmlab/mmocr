@@ -116,6 +116,16 @@ def test_dbnet_generate_thr_map():
     assert np.all((thr_map >= 0.29) * (thr_map <= 0.71))
 
 
+def test_dbnet_draw_border_map():
+    target_generator = textdet_targets.DBNetTargets()
+    poly = np.array([[20, 21], [-14, 20], [-11, 30], [-22, 26]])
+    img_size = (40, 40)
+    thr_map = np.zeros(img_size, dtype=np.float32)
+    thr_mask = np.zeros(img_size, dtype=np.uint8)
+
+    target_generator.draw_border_map(poly, thr_map, thr_mask)
+
+
 def test_dbnet_generate_targets():
     target_generator = textdet_targets.DBNetTargets()
     text_polys = [[np.array([0, 0, 10, 0, 10, 10, 0, 10])],
