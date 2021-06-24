@@ -1,13 +1,19 @@
 import torch.nn as nn
-from mmcv.cnn import kaiming_init, uniform_init
+from mmcv.runner import BaseModule
 from mmdet.models.builder import BACKBONES
 
 
 @BACKBONES.register_module()
-class NRTRModalityTransform(nn.Module):
+class NRTRModalityTransform(BaseModule):
 
-    def __init__(self, input_channels=3, input_height=32):
-        super().__init__()
+    def __init__(self,
+                 input_channels=3,
+                 input_height=32,
+                 init_cfg=[
+                     dict(type='Kaiming', layer='Conv2d'),
+                     dict(type='Uniform', layer='BatchNorm2d')
+                 ]):
+        super().__init__(init_cfg=init_cfg)
 
         self.conv_1 = nn.Conv2d(
             in_channels=input_channels,
@@ -31,12 +37,14 @@ class NRTRModalityTransform(nn.Module):
 
         self.linear = nn.Linear(64 * feat_height, 512)
 
+    '''
     def init_weights(self, pretrained=None):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 kaiming_init(m)
             elif isinstance(m, nn.BatchNorm2d):
                 uniform_init(m)
+    '''
 
     def forward(self, x):
         x = self.conv_1(x)
