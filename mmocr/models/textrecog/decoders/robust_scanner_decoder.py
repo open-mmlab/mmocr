@@ -20,8 +20,9 @@ class RobustScannerDecoder(BaseDecoder):
                  padding_idx=None,
                  encode_value=False,
                  hybrid_decoder=None,
-                 position_decoder=None):
-        super().__init__()
+                 position_decoder=None,
+                 init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
         self.num_classes = num_classes
         self.dim_input = dim_input
         self.dim_model = dim_model

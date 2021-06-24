@@ -20,8 +20,9 @@ class PositionAttentionDecoder(BaseDecoder):
                  max_seq_len=40,
                  mask=True,
                  return_feature=False,
-                 encode_value=False):
-        super().__init__()
+                 encode_value=False,
+                 init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
 
         self.num_classes = num_classes
         self.dim_input = dim_input
