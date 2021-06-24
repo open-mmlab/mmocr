@@ -56,7 +56,7 @@ jobs:
       - name: Install PyTorch
         run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install MMCV
-        run: pip install mmcv-full==1.3.4 -f https://download.openmmlab.com/mmcv/dist/cpu/torch${{matrix.torch}}/index.html
+        run: pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${{matrix.torch}}/index.html
       - name: Install MMDet
         run: pip install mmdet==2.11.0
       - name: Install other dependencies
@@ -82,24 +82,24 @@ jobs:
         torch: [1.5.0+cu101, 1.6.0+cu101, 1.7.0+cu101, 1.8.0+cu101]
         include:
           - torch: 1.5.0+cu101
+            torch_version: 1.5.0
             torchvision: 0.6.0+cu101
-            mmcv: 1.5.0+cu101
           - torch: 1.6.0+cu101
+            torch_version: 1.6.0
             torchvision: 0.7.0+cu101
-            mmcv: 1.6.0+cu101
           - torch: 1.7.0+cu101
+            torch_version: 1.7.0
             torchvision: 0.8.1+cu101
-            mmcv: 1.7.0+cu101
           - torch: 1.8.0+cu101
+            torch_version: 1.8.0
             torchvision: 0.9.0+cu101
-            mmcv: 1.8.0+cu101
           - torch: 1.8.0+cu101
+            torch_version: 1.8.0
             torchvision: 0.9.0+cu101
-            mmcv: 1.8.0+cu101
             python-version: 3.6
           - torch: 1.8.0+cu101
+            torch_version: 1.8.0
             torchvision: 0.9.0+cu101
-            mmcv: 1.8.0+cu101
             python-version: 3.8
     steps:
       - uses: actions/checkout@v2
@@ -138,7 +138,7 @@ jobs:
         run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmocr dependencies
         run: |
-          pip install mmcv-full==latest+torch${{matrix.mmcv}} -f https://download.openmmlab.com/mmcv/dist/index.html --use-deprecated=legacy-resolver
+          pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch${{matrix.torch_version}}/index.html
           pip install mmdet==2.11.0
           pip install -r requirements.txt
       - name: Build and install
