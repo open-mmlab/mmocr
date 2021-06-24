@@ -1,15 +1,19 @@
 import argparse
 import glob
+import os
 import os.path as osp
 from functools import partial
+import yaml
+import re
 
 import cv2
 import mmcv
 import numpy as np
 import scipy.io as scio
 from shapely.geometry import Polygon
+import ast
 
-from mmocr.utils import convert_annotations, drop_orientation, is_not_png
+from mmocr.utils import convert_annotations, drop_orientation, is_not_png, list_from_file
 
 
 def collect_files(img_dir, gt_dir, split):
@@ -37,27 +41,14 @@ def collect_files(img_dir, gt_dir, split):
     for suffix in suffixes:
         imgs_list.extend(glob.glob(osp.join(img_dir, '*' + suffix)))
 
-    imgs_list = [
+    imgs_list = sorted([
         drop_orientation(f) if is_not_png(f) else f for f in imgs_list
-    ]
+    ])
+    ann_list = sorted([osp.join(gt_dir, gt_file) for gt_file in os.listdir(gt_dir)])
 
-    files = []
-    if split == 'training':
-        for img_file in imgs_list:
-            gt_file = osp.join(
-                gt_dir,
-                'poly_gt_' + osp.splitext(osp.basename(img_file))[0] + '.mat')
-            files.append((img_file, gt_file))
-        assert len(files), f'No images found in {img_dir}'
-        print(f'Loaded {len(files)} images from {img_dir}')
-    elif split == 'test':
-        for img_file in imgs_list:
-            gt_file = osp.join(
-                gt_dir,
-                'poly_gt_' + osp.splitext(osp.basename(img_file))[0] + '.mat')
-            files.append((img_file, gt_file))
-        assert len(files), f'No images found in {img_dir}'
-        print(f'Loaded {len(files)} images from {img_dir}')
+    files = [(img_file, gt_file) for (img_file, gt_file) in zip(imgs_list, ann_list)]
+    assert len(files), f'No images found in {img_dir}'
+    print(f'Loaded {len(files)} images from {img_dir}')
 
     return files
 
@@ -87,12 +78,11 @@ def collect_annotations(files, split, nproc=1):
     return images
 
 
-def get_contours(gt_path, split):
+def get_contours_mat(gt_path):
     """Get the contours and words for each ground_truth file.
 
     Args:
         gt_path(str): The relative path of the ground_truth mat file
-        split(str): The split of dataset: training or test
 
     Returns:
         contours(list[lists]): A list of lists of contours
@@ -101,15 +91,11 @@ def get_contours(gt_path, split):
         for the text instances
     """
     assert isinstance(gt_path, str)
-    assert isinstance(split, str)
 
     contours = []
     words = []
     data = scio.loadmat(gt_path)
-    if split == 'training':
-        data_polygt = data['polygt']
-    elif split == 'test':
-        data_polygt = data['polygt']
+    data_polygt = data['polygt']
 
     for i, lines in enumerate(data_polygt):
         X = np.array(lines[1])
@@ -138,23 +124,21 @@ def get_contours(gt_path, split):
     return contours, words
 
 
-def load_mat_info(img_info, gt_file, split):
+def load_mat_info(img_info, gt_file):
     """Load the information of one ground truth in .mat format.
 
     Args:
         img_info(dict): The dict of only the image information
         gt_file(str): The relative path of the ground_truth mat
         file for one image
-        split(str): The split of dataset: training or test
 
     Returns:
         img_info(dict): The dict of the img and annotation information
     """
     assert isinstance(img_info, dict)
     assert isinstance(gt_file, str)
-    assert isinstance(split, str)
 
-    contours, words = get_contours(gt_file, split)
+    contours, words = get_contours_mat(gt_file)
     anno_info = []
     for contour in contours:
         if contour.shape[0] == 2:
@@ -181,6 +165,86 @@ def load_mat_info(img_info, gt_file, split):
 
     return img_info
 
+def get_contours_txt(gt_path):
+    """Get the contours and words for each ground_truth file.
+
+    Args:
+        gt_path(str): The relative path of the ground_truth mat file
+        split(str): The split of dataset: training or test
+
+    Returns:
+        contours(list[lists]): A list of lists of contours
+        for the text instances
+        words(list[list]): A list of lists of words (string)
+        for the text instances
+    """
+    assert isinstance(gt_path, str)
+
+    contours = []
+    words = []
+
+    with open(gt_path, 'r') as f:
+        for line in f:
+            line = line.strip()
+            line = '{' + line.replace('[[', '[').replace(']]', ']') + '}'
+            ann_dict = re.sub('([0-9]) +([0-9])', r'\1,\2', line)
+            ann_dict = re.sub('([0-9]) +([ 0-9])', r'\1,\2', ann_dict)
+            ann_dict = re.sub('([0-9]) -([0-9])', r'\1,-\2', ann_dict)
+            ann_dict = yaml.load(ann_dict)
+            X = np.array([ann_dict['x']])
+            Y = np.array([ann_dict['y']])
+            word = str(eval(ann_dict['transcriptions'][0]))
+            category_id = 1
+            point_num = len(X[0])
+    
+            if len(word) == 0:
+                word = '???'
+            else:
+                word = word
+
+            if word == '#':
+                word = '###'
+                continue
+
+            words.append(word)
+
+            arr = np.concatenate([X, Y]).T
+            contour = []
+            for i in range(point_num):
+                contour.append(arr[i][0])
+                contour.append(arr[i][1])
+            contours.append(np.asarray(contour))
+
+    return contours, words
+
+def load_txt_info(gt_file, img_info):
+
+    contours, words = get_contours_txt(gt_file)
+    anno_info = []
+    for contour in contours:
+        if contour.shape[0] == 2:
+            continue
+        category_id = 1
+        coordinates = np.array(contour).reshape(-1, 2)
+        polygon = Polygon(coordinates)
+        iscrowd = 0
+
+        area = polygon.area
+        # convert to COCO style XYWH format
+        min_x, min_y, max_x, max_y = polygon.bounds
+        bbox = [min_x, min_y, max_x - min_x, max_y - min_y]
+
+        anno = dict(
+            iscrowd=iscrowd,
+            category_id=category_id,
+            bbox=bbox,
+            area=area,
+            segmentation=[contour])
+        anno_info.append(anno)
+
+    img_info.update(anno_info=anno_info)
+
+    return img_info
 
 def load_png_info(gt_file, img_info):
     """Load the information of one ground truth in .png format.
@@ -257,12 +321,13 @@ def load_img_info(files, split):
         # anno_info=anno_info,
         segm_file=osp.join(split_name, osp.basename(gt_file)))
 
-    if split == 'training':
-        img_info = load_mat_info(img_info, gt_file, split)
-    elif split == 'test':
-        img_info = load_mat_info(img_info, gt_file, split)
+    if osp.splitext(gt_file)[1] == '.mat': 
+        img_info = load_mat_info(img_info, gt_file)
+    elif osp.splitext(gt_file)[1] == '.txt':
+        img_info = load_txt_info(gt_file, img_info)
     else:
         raise NotImplementedError
+
 
     return img_info
 
@@ -289,8 +354,10 @@ def main():
     out_dir = args.out_dir if args.out_dir else root_path
     mmcv.mkdir_or_exist(out_dir)
 
+
     img_dir = osp.join(root_path, 'imgs')
     gt_dir = osp.join(root_path, 'annotations')
+
 
     set_name = {}
     for split in args.split_list:
