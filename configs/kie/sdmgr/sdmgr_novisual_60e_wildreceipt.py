@@ -10,7 +10,7 @@ train_pipeline = [
     dict(
         type='Collect',
         keys=['img', 'relations', 'texts', 'gt_bboxes', 'gt_labels'],
-        meta_keys=('filename', 'ori_texts'))
+        meta_keys=('filename', 'ori_filename', 'ori_texts'))
 ]
 test_pipeline = [
     dict(type='LoadAnnotations'),
@@ -20,7 +20,7 @@ test_pipeline = [
     dict(
         type='Collect',
         keys=['img', 'relations', 'texts', 'gt_bboxes'],
-        meta_keys=('filename', 'ori_texts'))
+        meta_keys=('filename', 'ori_filename', 'ori_texts'))
 ]
 
 dataset_type = 'KIEDataset'
