@@ -1,14 +1,14 @@
-import torch.nn as nn
+from mmcv.runner import BaseModule
 
 from mmocr.models.builder import DECODERS
 
 
 @DECODERS.register_module()
-class BaseDecoder(nn.Module):
+class BaseDecoder(BaseModule):
     """Base decoder class for text recognition."""
 
-    def __init__(self, **kwargs):
-        super().__init__()
+    def __init__(self, init_cfg=None, **kwargs):
+        super().__init__(init_cfg=init_cfg)
 
     def init_weights(self):
         pass

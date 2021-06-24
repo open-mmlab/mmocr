@@ -1,10 +1,10 @@
 import torch.nn as nn
-from mmcv.cnn import uniform_init, xavier_init
+from mmcv.runner import BaseModule, Sequential
 from mmdet.models.builder import BACKBONES
 
 
 @BACKBONES.register_module()
-class VeryDeepVgg(nn.Module):
+class VeryDeepVgg(BaseModule):
     """Implement VGG-VeryDeep backbone for text recognition, modified from
       `VGG-VeryDeep <https://arxiv.org/pdf/1409.1556.pdf>`_
     Args:
@@ -12,8 +12,14 @@ class VeryDeepVgg(nn.Module):
         input_channels (int): Number of channels of input image tensor.
     """
 
-    def __init__(self, leaky_relu=True, input_channels=3):
-        super().__init__()
+    def __init__(self,
+                 leaky_relu=True,
+                 input_channels=3,
+                 init_cfg=[
+                     dict(type='Xavier', layer='Conv2d'),
+                     dict(type='Uniform', layer='BatchNorm2d')
+                 ]):
+        super().__init__(init_cfg=init_cfg)
 
         ks = [3, 3, 3, 3, 3, 3, 2]
         ps = [1, 1, 1, 1, 1, 1, 0]
@@ -22,7 +28,8 @@ class VeryDeepVgg(nn.Module):
 
         self.channels = nm
 
-        cnn = nn.Sequential()
+        # cnn = nn.Sequential()
+        cnn = Sequential()
 
         def conv_relu(i, batch_normalization=False):
             n_in = input_channels if i == 0 else nm[i - 1]
@@ -53,12 +60,14 @@ class VeryDeepVgg(nn.Module):
 
         self.cnn = cnn
 
+    '''
     def init_weights(self, pretrained=None):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 xavier_init(m)
             elif isinstance(m, nn.BatchNorm2d):
                 uniform_init(m)
+    '''
 
     def out_channels(self):
         return self.channels[-1]

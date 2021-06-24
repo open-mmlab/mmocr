@@ -1,5 +1,4 @@
 import torch.nn as nn
-from mmcv.cnn import xavier_init
 
 from mmocr.models.builder import DECODERS
 from mmocr.models.textrecog.layers import BidirectionalLSTM
@@ -13,8 +12,9 @@ class CRNNDecoder(BaseDecoder):
                  in_channels=None,
                  num_classes=None,
                  rnn_flag=False,
+                 init_cfg=dict(type='Xavier', layer='Conv2d'),
                  **kwargs):
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
         self.num_classes = num_classes
         self.rnn_flag = rnn_flag
 
@@ -26,10 +26,12 @@ class CRNNDecoder(BaseDecoder):
             self.decoder = nn.Conv2d(
                 in_channels, num_classes, kernel_size=1, stride=1)
 
+    '''
     def init_weights(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 xavier_init(m)
+    '''
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
         assert feat.size(2) == 1, 'feature height must be 1'

@@ -5,19 +5,18 @@ from collections import OrderedDict
 import mmcv
 import torch
 import torch.distributed as dist
-import torch.nn as nn
-from mmcv.runner import auto_fp16
+from mmcv.runner import BaseModule, auto_fp16
 from mmcv.utils import print_log
 
 from mmocr.core import imshow_text_label
 from mmocr.utils import get_root_logger
 
 
-class BaseRecognizer(nn.Module, metaclass=ABCMeta):
+class BaseRecognizer(BaseModule, metaclass=ABCMeta):
     """Base class for text recognition."""
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, init_cfg=None):
+        super().__init__(init_cfg=None)
         self.fp16_enabled = False
 
     @abstractmethod
