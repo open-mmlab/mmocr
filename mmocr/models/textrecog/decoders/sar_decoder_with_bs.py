@@ -54,11 +54,24 @@ class ParallelSARDecoderWithBS(ParallelSARDecoder):
                  start_idx=0,
                  padding_idx=0,
                  pred_concat=False,
+                 init_cfg=None,
                  **kwargs):
-        super().__init__(num_classes, enc_bi_rnn, dec_bi_rnn, dec_do_rnn,
-                         dec_gru, d_model, d_enc, d_k, pred_dropout,
-                         max_seq_len, mask, start_idx, padding_idx,
-                         pred_concat)
+        super().__init__(
+            num_classes,
+            enc_bi_rnn,
+            dec_bi_rnn,
+            dec_do_rnn,
+            dec_gru,
+            d_model,
+            d_enc,
+            d_k,
+            pred_dropout,
+            max_seq_len,
+            mask,
+            start_idx,
+            padding_idx,
+            pred_concat,
+            init_cfg=init_cfg)
         assert isinstance(beam_width, int)
         assert beam_width > 0
 
