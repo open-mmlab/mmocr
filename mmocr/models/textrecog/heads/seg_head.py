@@ -1,11 +1,12 @@
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
+from mmcv.runner import BaseModule
 from mmdet.models.builder import HEADS
 from torch import nn
 
 
 @HEADS.register_module()
-class SegHead(nn.Module):
+class SegHead(BaseModule):
     """Head for segmentation based text recognition.
 
     Args:
@@ -15,8 +16,12 @@ class SegHead(nn.Module):
             Default: `dict(scale_factor=1.0, mode='nearest')`
     """
 
-    def __init__(self, in_channels=128, num_classes=37, upsample_param=None):
-        super().__init__()
+    def __init__(self,
+                 in_channels=128,
+                 num_classes=37,
+                 upsample_param=None,
+                 init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
         assert isinstance(num_classes, int)
         assert num_classes > 0
         assert upsample_param is None or isinstance(upsample_param, dict)
@@ -35,8 +40,10 @@ class SegHead(nn.Module):
         self.pred_conv = nn.Conv2d(
             in_channels, num_classes, kernel_size=1, stride=1, padding=0)
 
+    '''
     def init_weights(self):
         pass
+    '''
 
     def forward(self, out_neck):
 

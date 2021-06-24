@@ -1,3 +1,5 @@
+import warnings
+
 from mmdet.models.builder import (DETECTORS, build_backbone, build_head,
                                   build_loss, build_neck)
 
@@ -18,8 +20,13 @@ class SegRecognizer(BaseRecognizer):
                  label_convertor=None,
                  train_cfg=None,
                  test_cfg=None,
-                 pretrained=None):
-        super().__init__()
+                 pretrained=None,
+                 init_cfg=None):
+        if pretrained is not None:
+            warnings.warn('DeprecationWarning: pretrained is a deprecated \
+                key, please consider using init_cfg')
+            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
+        super().__init__(init_cfg=init_cfg)
 
         # Label_convertor
         assert label_convertor is not None
@@ -49,8 +56,9 @@ class SegRecognizer(BaseRecognizer):
 
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
-        self.init_weights(pretrained=pretrained)
+        # self.init_weights(pretrained=pretrained)
 
+    '''
     def init_weights(self, pretrained=None):
         """Initialize the weights of recognizer."""
         super().init_weights(pretrained)
@@ -64,6 +72,7 @@ class SegRecognizer(BaseRecognizer):
             self.neck.init_weights()
 
         self.head.init_weights()
+    '''
 
     def extract_feat(self, img):
         """Directly extract features from the backbone."""
