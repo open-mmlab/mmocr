@@ -1,4 +1,3 @@
-import os
 import os.path as osp
 import tempfile
 from functools import partial
@@ -79,14 +78,15 @@ def test_base_recognizer():
         img_metas=img_metas,
         return_loss=False,
         rescale=True)
-    torch.onnx.export(
-        recognizer, (imgs, ),
-        '.pytest_cache/tmp.onnx',
-        input_names=['input'],
-        output_names=['output'],
-        export_params=True,
-        keep_initializers_as_inputs=False)
-    os.remove('.pytest_cache/tmp.onnx')
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        onnx_path = f'{tmpdirname}/tmp.onnx'
+        torch.onnx.export(
+            recognizer, (imgs, ),
+            onnx_path,
+            input_names=['input'],
+            output_names=['output'],
+            export_params=True,
+            keep_initializers_as_inputs=False)
 
     # test aug_test
     aug_results = recognizer.aug_test([imgs, imgs], [img_metas, img_metas])

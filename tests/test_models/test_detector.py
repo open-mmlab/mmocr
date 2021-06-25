@@ -1,6 +1,6 @@
 """pytest tests/test_detector.py."""
 import copy
-import os
+import tempfile
 from functools import partial
 from os.path import dirname, exists, join
 
@@ -223,14 +223,15 @@ def test_panet(cfg_file):
         # Test onnx export
         detector.forward = partial(
             detector.simple_test, img_metas=img_metas, rescale=True)
-        torch.onnx.export(
-            detector, (img_list[0], ),
-            '.pytest_cache/tmp.onnx',
-            input_names=['input'],
-            output_names=['output'],
-            export_params=True,
-            keep_initializers_as_inputs=False)
-        os.remove('.pytest_cache/tmp.onnx')
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            onnx_path = f'{tmpdirname}/tmp.onnx'
+            torch.onnx.export(
+                detector, (img_list[0], ),
+                onnx_path,
+                input_names=['input'],
+                output_names=['output'],
+                export_params=True,
+                keep_initializers_as_inputs=False)
 
     # Test show result
     results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}

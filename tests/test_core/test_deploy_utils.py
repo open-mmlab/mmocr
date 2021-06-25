@@ -1,4 +1,4 @@
-import os
+import tempfile
 from functools import partial
 
 import mmcv
@@ -18,7 +18,7 @@ from mmocr.core.deployment import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
     reason='skip if torch=1.3.x')
 @pytest.mark.skipif(
     not torch.cuda.is_available(), reason='skip if on cpu device')
-def test_detector_wraper():
+def test_detector_wrapper():
     try:
         import onnxruntime as ort  # noqa: F401
         import tensorrt as trt
@@ -26,7 +26,6 @@ def test_detector_wraper():
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
-    onnx_path = '.pytest_cache/tmp.onnx'
     cfg = dict(
         model=dict(
             type='DBNet',
@@ -68,40 +67,42 @@ def test_detector_wraper():
     }]
 
     pytorch_model.forward = pytorch_model.forward_dummy
-    with torch.no_grad():
-        torch.onnx.export(
-            pytorch_model,
-            inputs,
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        onnx_path = f'{tmpdirname}/tmp.onnx'
+        with torch.no_grad():
+            torch.onnx.export(
+                pytorch_model,
+                inputs,
+                onnx_path,
+                input_names=['input'],
+                output_names=['output'],
+                export_params=True,
+                keep_initializers_as_inputs=False,
+                verbose=False,
+                opset_version=11)
+
+        # TensorRT part
+        def get_GiB(x: int):
+            """return x GiB."""
+            return x * (1 << 30)
+
+        trt_path = onnx_path.replace('.onnx', '.trt')
+        min_shape = [1, 3, 224, 224]
+        max_shape = [1, 3, 224, 224]
+        # create trt engine and wraper
+        opt_shape_dict = {'input': [min_shape, min_shape, max_shape]}
+        max_workspace_size = get_GiB(1)
+        trt_engine = onnx2trt(
             onnx_path,
-            input_names=['input'],
-            output_names=['output'],
-            export_params=True,
-            keep_initializers_as_inputs=False,
-            verbose=False,
-            opset_version=11)
+            opt_shape_dict,
+            log_level=trt.Logger.ERROR,
+            fp16_mode=False,
+            max_workspace_size=max_workspace_size)
+        save_trt_engine(trt_engine, trt_path)
+        print(f'Successfully created TensorRT engine: {trt_path}')
 
-    # TensorRT part
-    def get_GiB(x: int):
-        """return x GiB."""
-        return x * (1 << 30)
-
-    trt_path = onnx_path.replace('.onnx', '.trt')
-    min_shape = [1, 3, 224, 224]
-    max_shape = [1, 3, 224, 224]
-    # create trt engine and wraper
-    opt_shape_dict = {'input': [min_shape, min_shape, max_shape]}
-    max_workspace_size = get_GiB(1)
-    trt_engine = onnx2trt(
-        onnx_path,
-        opt_shape_dict,
-        log_level=trt.Logger.ERROR,
-        fp16_mode=False,
-        max_workspace_size=max_workspace_size)
-    save_trt_engine(trt_engine, trt_path)
-    print(f'Successfully created TensorRT engine: {trt_path}')
-
-    wrap_onnx = ONNXRuntimeDetector(onnx_path, cfg, 0)
-    wrap_trt = TensorRTDetector(trt_path, cfg, 0)
+        wrap_onnx = ONNXRuntimeDetector(onnx_path, cfg, 0)
+        wrap_trt = TensorRTDetector(trt_path, cfg, 0)
 
     assert isinstance(wrap_onnx, ONNXRuntimeDetector)
     assert isinstance(wrap_trt, TensorRTDetector)
@@ -115,12 +116,6 @@ def test_detector_wraper():
     assert 'boundary_result' in onnx_outputs[0]
     assert 'boundary_result' in trt_outputs[0]
 
-    # remove temperary files
-    if os.path.exists(onnx_path):
-        os.remove(onnx_path)
-    if os.path.exists(trt_path):
-        os.remove(trt_path)
-
 
 @pytest.mark.skipif(torch.__version__ == 'parrots', reason='skip parrots.')
 @pytest.mark.skipif(
@@ -128,7 +123,7 @@ def test_detector_wraper():
     reason='skip if torch=1.3.x')
 @pytest.mark.skipif(
     not torch.cuda.is_available(), reason='skip if on cpu device')
-def test_recognizer_wraper():
+def test_recognizer_wrapper():
     try:
         import onnxruntime as ort  # noqa: F401
         import tensorrt as trt
@@ -136,7 +131,6 @@ def test_recognizer_wraper():
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
-    onnx_path = '.pytest_cache/tmp.onnx'
     cfg = dict(
         label_convertor=dict(
             type='CTCConvertor',
@@ -179,40 +173,42 @@ def test_recognizer_wraper():
         img_metas=img_metas,
         return_loss=False,
         rescale=True)
-    with torch.no_grad():
-        torch.onnx.export(
-            pytorch_model,
-            inputs,
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        onnx_path = f'{tmpdirname}/tmp.onnx'
+        with torch.no_grad():
+            torch.onnx.export(
+                pytorch_model,
+                inputs,
+                onnx_path,
+                input_names=['input'],
+                output_names=['output'],
+                export_params=True,
+                keep_initializers_as_inputs=False,
+                verbose=False,
+                opset_version=11)
+
+        # TensorRT part
+        def get_GiB(x: int):
+            """return x GiB."""
+            return x * (1 << 30)
+
+        trt_path = onnx_path.replace('.onnx', '.trt')
+        min_shape = [1, 1, 32, 32]
+        max_shape = [1, 1, 32, 32]
+        # create trt engine and wraper
+        opt_shape_dict = {'input': [min_shape, min_shape, max_shape]}
+        max_workspace_size = get_GiB(1)
+        trt_engine = onnx2trt(
             onnx_path,
-            input_names=['input'],
-            output_names=['output'],
-            export_params=True,
-            keep_initializers_as_inputs=False,
-            verbose=False,
-            opset_version=11)
+            opt_shape_dict,
+            log_level=trt.Logger.ERROR,
+            fp16_mode=False,
+            max_workspace_size=max_workspace_size)
+        save_trt_engine(trt_engine, trt_path)
+        print(f'Successfully created TensorRT engine: {trt_path}')
 
-    # TensorRT part
-    def get_GiB(x: int):
-        """return x GiB."""
-        return x * (1 << 30)
-
-    trt_path = onnx_path.replace('.onnx', '.trt')
-    min_shape = [1, 1, 32, 32]
-    max_shape = [1, 1, 32, 32]
-    # create trt engine and wraper
-    opt_shape_dict = {'input': [min_shape, min_shape, max_shape]}
-    max_workspace_size = get_GiB(1)
-    trt_engine = onnx2trt(
-        onnx_path,
-        opt_shape_dict,
-        log_level=trt.Logger.ERROR,
-        fp16_mode=False,
-        max_workspace_size=max_workspace_size)
-    save_trt_engine(trt_engine, trt_path)
-    print(f'Successfully created TensorRT engine: {trt_path}')
-
-    wrap_onnx = ONNXRuntimeRecognizer(onnx_path, cfg, 0)
-    wrap_trt = TensorRTRecognizer(trt_path, cfg, 0)
+        wrap_onnx = ONNXRuntimeRecognizer(onnx_path, cfg, 0)
+        wrap_trt = TensorRTRecognizer(trt_path, cfg, 0)
 
     assert isinstance(wrap_onnx, ONNXRuntimeRecognizer)
     assert isinstance(wrap_trt, TensorRTRecognizer)
@@ -225,9 +221,3 @@ def test_recognizer_wraper():
     assert isinstance(trt_outputs[0], dict)
     assert 'text' in onnx_outputs[0]
     assert 'text' in trt_outputs[0]
-
-    # remove temperary files
-    if os.path.exists(onnx_path):
-        os.remove(onnx_path)
-    if os.path.exists(trt_path):
-        os.remove(trt_path)
