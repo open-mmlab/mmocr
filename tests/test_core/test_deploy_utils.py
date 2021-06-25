@@ -1,3 +1,4 @@
+import os
 from functools import partial
 
 import mmcv
@@ -25,7 +26,7 @@ def test_detector_wraper():
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
-    onnx_path = 'tmp.onnx'
+    onnx_path = '.pytest_cache/tmp.onnx'
     cfg = dict(
         model=dict(
             type='DBNet',
@@ -101,7 +102,7 @@ def test_detector_wraper():
 
     wrap_onnx = ONNXRuntimeDetector(onnx_path, cfg, 0)
     wrap_trt = TensorRTDetector(trt_path, cfg, 0)
-    # os.remove(onnx_path)
+
     assert isinstance(wrap_onnx, ONNXRuntimeDetector)
     assert isinstance(wrap_trt, TensorRTDetector)
 
@@ -113,6 +114,12 @@ def test_detector_wraper():
     assert isinstance(trt_outputs[0], dict)
     assert 'boundary_result' in onnx_outputs[0]
     assert 'boundary_result' in trt_outputs[0]
+
+    # remove temperary files
+    if os.path.exists(onnx_path):
+        os.remove(onnx_path)
+    if os.path.exists(trt_path):
+        os.remove(trt_path)
 
 
 @pytest.mark.skipif(torch.__version__ == 'parrots', reason='skip parrots.')
@@ -129,7 +136,7 @@ def test_recognizer_wraper():
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
-    onnx_path = 'tmp.onnx'
+    onnx_path = '.pytest_cache/tmp.onnx'
     cfg = dict(
         label_convertor=dict(
             type='CTCConvertor',
@@ -206,7 +213,7 @@ def test_recognizer_wraper():
 
     wrap_onnx = ONNXRuntimeRecognizer(onnx_path, cfg, 0)
     wrap_trt = TensorRTRecognizer(trt_path, cfg, 0)
-    # os.remove(onnx_path)
+
     assert isinstance(wrap_onnx, ONNXRuntimeRecognizer)
     assert isinstance(wrap_trt, TensorRTRecognizer)
 
@@ -218,3 +225,9 @@ def test_recognizer_wraper():
     assert isinstance(trt_outputs[0], dict)
     assert 'text' in onnx_outputs[0]
     assert 'text' in trt_outputs[0]
+
+    # remove temperary files
+    if os.path.exists(onnx_path):
+        os.remove(onnx_path)
+    if os.path.exists(trt_path):
+        os.remove(trt_path)
