@@ -122,6 +122,3 @@ def test_kie_dataset():
 
     eval_res = dataset.evaluate(results)
     assert math.isclose(eval_res['macro_f1'], 0.2, abs_tol=1e-4)
-
-
-test_kie_dataset()
