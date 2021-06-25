@@ -89,7 +89,7 @@ def test_detector_wrapper():
         trt_path = onnx_path.replace('.onnx', '.trt')
         min_shape = [1, 3, 224, 224]
         max_shape = [1, 3, 224, 224]
-        # create trt engine and wraper
+        # create trt engine and wrapper
         opt_shape_dict = {'input': [min_shape, min_shape, max_shape]}
         max_workspace_size = get_GiB(1)
         trt_engine = onnx2trt(
@@ -195,7 +195,7 @@ def test_recognizer_wrapper():
         trt_path = onnx_path.replace('.onnx', '.trt')
         min_shape = [1, 1, 32, 32]
         max_shape = [1, 1, 32, 32]
-        # create trt engine and wraper
+        # create trt engine and wrapper
         opt_shape_dict = {'input': [min_shape, min_shape, max_shape]}
         max_workspace_size = get_GiB(1)
         trt_engine = onnx2trt(

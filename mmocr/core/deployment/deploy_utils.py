@@ -209,13 +209,13 @@ class TensorRTDetector(TextDetectorMixin, SingleStageTextDetector):
                                          cfg.model.test_cfg,
                                          cfg.model.pretrained)
         TextDetectorMixin.__init__(self, show_score)
-        from mmcv.tensorrt import TRTWraper, load_tensorrt_plugin
+        from mmcv.tensorrt import TRTWrapper, load_tensorrt_plugin
         try:
             load_tensorrt_plugin()
         except (ImportError, ModuleNotFoundError):
             warnings.warn('If input model has custom op from mmcv, \
                 you may have to build mmcv with TensorRT from source.')
-        model = TRTWraper(
+        model = TRTWrapper(
             trt_file, input_names=['input'], output_names=['output'])
 
         self.model = model
@@ -267,13 +267,13 @@ class TensorRTRecognizer(EncodeDecodeRecognizer):
                                         cfg.model.label_convertor,
                                         cfg.train_cfg, cfg.test_cfg, 40,
                                         cfg.model.pretrained)
-        from mmcv.tensorrt import TRTWraper, load_tensorrt_plugin
+        from mmcv.tensorrt import TRTWrapper, load_tensorrt_plugin
         try:
             load_tensorrt_plugin()
         except (ImportError, ModuleNotFoundError):
             warnings.warn('If input model has custom op from mmcv, \
                 you may have to build mmcv with TensorRT from source.')
-        model = TRTWraper(
+        model = TRTWrapper(
             trt_file, input_names=['input'], output_names=['output'])
 
         self.model = model
