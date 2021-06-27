@@ -21,7 +21,10 @@ class TextSnakeHead(HeadMixin, BaseModule):
                  train_cfg=None,
                  test_cfg=None,
                  init_cfg=dict(
-                     type='Normal', layer='Conv2d', mean=0, std=0.01)):
+                     type='Normal',
+                     override=dict(name='out_conv'),
+                     mean=0,
+                     std=0.01)):
         super().__init__(init_cfg=init_cfg)
 
         assert isinstance(in_channels, int)
