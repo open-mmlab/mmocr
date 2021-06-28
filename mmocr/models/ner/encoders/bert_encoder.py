@@ -1,14 +1,11 @@
-import torch.nn as nn
-from mmcv.cnn import uniform_init, xavier_init
-from mmcv.runner import load_checkpoint
-from mmdet.utils import get_root_logger
+from mmcv.runner import BaseModule
 
 from mmocr.models.builder import ENCODERS
 from mmocr.models.ner.utils.bert import BertModel
 
 
 @ENCODERS.register_module()
-class BertEncoder(nn.Module):
+class BertEncoder(BaseModule):
     """Bert encoder
     Args:
         num_hidden_layers (int): The number of hidden layers.
@@ -43,8 +40,11 @@ class BertEncoder(nn.Module):
                  attention_probs_dropout_prob=0.1,
                  intermediate_size=3072,
                  hidden_act_cfg=dict(type='GeluNew'),
-                 pretrained=None):
-        super().__init__()
+                 init_cfg=[
+                     dict(type='Xavier', layer='Conv2d'),
+                     dict(type='Uniform', layer='BatchNorm2d')
+                 ]):
+        super().__init__(init_cfg=init_cfg)
         self.bert = BertModel(
             num_hidden_layers=num_hidden_layers,
             initializer_range=initializer_range,
@@ -60,7 +60,7 @@ class BertEncoder(nn.Module):
             attention_probs_dropout_prob=attention_probs_dropout_prob,
             intermediate_size=intermediate_size,
             hidden_act_cfg=hidden_act_cfg)
-        self.init_weights(pretrained=pretrained)
+        # self.init_weights(pretrained=pretrained)
 
     def forward(self, results):
 
@@ -75,6 +75,7 @@ class BertEncoder(nn.Module):
             token_type_ids=token_type_ids)
         return outputs
 
+    '''
     def init_weights(self, pretrained=None):
         if pretrained is not None:
             logger = get_root_logger()
@@ -85,3 +86,4 @@ class BertEncoder(nn.Module):
                     xavier_init(m)
                 elif isinstance(m, nn.BatchNorm2d):
                     uniform_init(m)
+    '''

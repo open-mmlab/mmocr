@@ -15,12 +15,10 @@ class NerClassifier(BaseRecognizer):
                  label_convertor,
                  train_cfg=None,
                  test_cfg=None,
-                 pretrained=None,
                  init_cfg=None):
         super().__init__(init_cfg=init_cfg)
         self.label_convertor = build_convertor(label_convertor)
 
-        encoder.update(pretrained=pretrained)
         self.encoder = build_encoder(encoder)
 
         decoder.update(num_labels=self.label_convertor.num_labels)
