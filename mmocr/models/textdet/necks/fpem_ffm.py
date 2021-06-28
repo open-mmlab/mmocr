@@ -1,5 +1,5 @@
 import torch.nn.functional as F
-from mmcv.runner import BaseModule
+from mmcv.runner import BaseModule, ModuleList
 from mmdet.models.builder import NECKS
 from torch import nn
 
@@ -91,7 +91,7 @@ class FPEM_FFM(BaseModule):
                 out_channels=conv_out,
                 kernel_size=1), nn.BatchNorm2d(conv_out), nn.ReLU())
         self.align_corners = align_corners
-        self.fpems = nn.ModuleList()
+        self.fpems = ModuleList()
         for _ in range(fpem_repeat):
             self.fpems.append(FPEM(conv_out))
 

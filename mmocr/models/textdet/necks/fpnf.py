@@ -1,9 +1,8 @@
 import torch
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
-from mmcv.runner import BaseModule, auto_fp16
+from mmcv.runner import BaseModule, ModuleList, auto_fp16
 from mmdet.models.builder import NECKS
-from torch import nn
 
 
 @NECKS.register_module()
@@ -26,8 +25,8 @@ class FPNF(BaseModule):
         self.in_channels = in_channels
         self.out_channels = out_channels
 
-        self.lateral_convs = nn.ModuleList()
-        self.fpn_convs = nn.ModuleList()
+        self.lateral_convs = ModuleList()
+        self.fpn_convs = ModuleList()
         self.backbone_end_level = len(in_channels)
         for i in range(self.backbone_end_level):
             l_conv = ConvModule(

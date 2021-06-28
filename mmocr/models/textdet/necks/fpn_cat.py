@@ -1,8 +1,7 @@
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
-from mmcv.runner import BaseModule, auto_fp16
+from mmcv.runner import BaseModule, ModuleList, auto_fp16
 from mmdet.models.builder import NECKS
 
 
@@ -34,8 +33,8 @@ class FPNC(BaseModule):
         self.bn_re_on_lateral = bn_re_on_lateral
         self.bn_re_on_smooth = bn_re_on_smooth
         self.conv_after_concat = conv_after_concat
-        self.lateral_convs = nn.ModuleList()
-        self.smooth_convs = nn.ModuleList()
+        self.lateral_convs = ModuleList()
+        self.smooth_convs = ModuleList()
         self.num_outs = self.num_ins
 
         for i in range(self.num_ins):
