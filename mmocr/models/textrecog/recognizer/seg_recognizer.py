@@ -22,10 +22,6 @@ class SegRecognizer(BaseRecognizer):
                  test_cfg=None,
                  pretrained=None,
                  init_cfg=None):
-        if pretrained is not None:
-            warnings.warn('DeprecationWarning: pretrained is a deprecated \
-                key, please consider using init_cfg')
-            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         super().__init__(init_cfg=init_cfg)
 
         # Label_convertor
@@ -57,6 +53,10 @@ class SegRecognizer(BaseRecognizer):
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
         # self.init_weights(pretrained=pretrained)
+        if pretrained is not None:
+            warnings.warn('DeprecationWarning: pretrained is a deprecated \
+                key, please consider using init_cfg')
+            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
 
     '''
     def init_weights(self, pretrained=None):
