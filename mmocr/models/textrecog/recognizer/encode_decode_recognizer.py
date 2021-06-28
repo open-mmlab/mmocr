@@ -24,10 +24,6 @@ class EncodeDecodeRecognizer(BaseRecognizer):
                  max_seq_len=40,
                  pretrained=None,
                  init_cfg=None):
-        if pretrained is not None:
-            warnings.warn('DeprecationWarning: pretrained is a deprecated \
-                key, please consider using init_cfg')
-            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
 
         super().__init__(init_cfg=init_cfg)
 
@@ -67,6 +63,10 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         self.test_cfg = test_cfg
         self.max_seq_len = max_seq_len
 
+        if pretrained is not None:
+            warnings.warn('DeprecationWarning: pretrained is a deprecated \
+                key, please consider using init_cfg')
+            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
         # self.init_weights(pretrained=pretrained)
 
     '''
