@@ -1,7 +1,6 @@
 fourier_degree = 5
 model = dict(
     type='FCENet',
-    pretrained='torchvision://resnet50',
     backbone=dict(
         type='ResNet',
         depth=50,
@@ -9,6 +8,7 @@ model = dict(
         out_indices=(1, 2, 3),
         frozen_stages=-1,
         norm_cfg=dict(type='BN', requires_grad=True),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
         norm_eval=False,
         style='pytorch'),
     neck=dict(

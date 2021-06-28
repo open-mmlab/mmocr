@@ -4,7 +4,6 @@ _base_ = [
 ]
 model = dict(
     type='PANet',
-    pretrained='torchvision://resnet18',
     backbone=dict(
         type='ResNet',
         depth=18,
@@ -12,6 +11,7 @@ model = dict(
         out_indices=(0, 1, 2, 3),
         frozen_stages=-1,
         norm_cfg=dict(type='SyncBN', requires_grad=True),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet18'),
         norm_eval=True,
         style='caffe'),
     neck=dict(type='FPEM_FFM', in_channels=[64, 128, 256, 512]),
