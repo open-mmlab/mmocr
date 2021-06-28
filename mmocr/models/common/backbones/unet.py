@@ -2,13 +2,10 @@ import torch
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import (UPSAMPLE_LAYERS, ConvModule, build_activation_layer,
-                      build_norm_layer, build_upsample_layer, constant_init,
-                      kaiming_init)
-from mmcv.runner import BaseModule, load_checkpoint
+                      build_norm_layer, build_upsample_layer)
+from mmcv.runner import BaseModule
 from mmcv.utils.parrots_wrapper import _BatchNorm
 from mmdet.models.builder import BACKBONES
-
-from mmocr.utils import get_root_logger
 
 
 class UpConvBlock(nn.Module):
@@ -516,6 +513,7 @@ class UNet(BaseModule):
             f'{self.num_stages}, strides is {self.strides}, and downsamples '
             f'is {self.downsamples}.')
 
+    '''
     def init_weights(self, pretrained=None):
         """Initialize the weights in backbone.
 
@@ -535,3 +533,4 @@ class UNet(BaseModule):
 
         else:
             raise TypeError('pretrained must be a str or None')
+    '''

@@ -34,17 +34,10 @@ class SDMGR(SingleStageDetector):
                  visual_modality=False,
                  train_cfg=None,
                  test_cfg=None,
-                 pretrained=None,
                  class_list=None,
                  init_cfg=None):
         super().__init__(
-            backbone,
-            neck,
-            bbox_head,
-            train_cfg,
-            test_cfg,
-            pretrained,
-            init_cfg=init_cfg)
+            backbone, neck, bbox_head, train_cfg, test_cfg, init_cfg=init_cfg)
         self.visual_modality = visual_modality
         if visual_modality:
             self.extractor = build_roi_extractor({
