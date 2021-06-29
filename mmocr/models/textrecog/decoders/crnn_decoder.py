@@ -1,4 +1,5 @@
 import torch.nn as nn
+from mmcv.runner import Sequential
 
 from mmocr.models.builder import DECODERS
 from mmocr.models.textrecog.layers import BidirectionalLSTM
@@ -19,7 +20,7 @@ class CRNNDecoder(BaseDecoder):
         self.rnn_flag = rnn_flag
 
         if rnn_flag:
-            self.decoder = nn.Sequential(
+            self.decoder = Sequential(
                 BidirectionalLSTM(in_channels, 256, 256),
                 BidirectionalLSTM(256, 256, num_classes))
         else:
