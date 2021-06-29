@@ -5,14 +5,15 @@ import os.path as osp
 import re
 from functools import partial
 
-import cv2
 import mmcv
 import numpy as np
 import scipy.io as scio
 import yaml
 from shapely.geometry import Polygon
 
-from mmocr.utils import convert_annotations, drop_orientation, is_not_png
+from mmocr.datasets.pipelines.crop import crop_img
+from mmocr.utils import drop_orientation, is_not_png
+from mmocr.utils.fileio import list_to_file
 
 
 def collect_files(img_dir, gt_dir, split):
@@ -138,29 +139,19 @@ def load_mat_info(img_info, gt_file):
 
     contours, words = get_contours_mat(gt_file)
     anno_info = []
-    for contour in contours:
+    for contour, word in zip(contours, words):
         if contour.shape[0] == 2:
             continue
-        category_id = 1
         coordinates = np.array(contour).reshape(-1, 2)
         polygon = Polygon(coordinates)
-        iscrowd = 0
 
-        area = polygon.area
         # convert to COCO style XYWH format
         min_x, min_y, max_x, max_y = polygon.bounds
-        bbox = [min_x, min_y, max_x - min_x, max_y - min_y]
-
-        anno = dict(
-            iscrowd=iscrowd,
-            category_id=category_id,
-            bbox=bbox,
-            area=area,
-            segmentation=[contour])
+        bbox = [min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y]
+        anno = dict(word=word, bbox=bbox)
         anno_info.append(anno)
 
     img_info.update(anno_info=anno_info)
-
     return img_info
 
 
@@ -271,75 +262,56 @@ def load_txt_info(gt_file, img_info):
 
     contours, words = get_contours_txt(gt_file)
     anno_info = []
-    for contour in contours:
+    for contour, word in zip(contours, words):
         if contour.shape[0] == 2:
             continue
-        category_id = 1
         coordinates = np.array(contour).reshape(-1, 2)
         polygon = Polygon(coordinates)
-        iscrowd = 0
 
-        area = polygon.area
         # convert to COCO style XYWH format
         min_x, min_y, max_x, max_y = polygon.bounds
-        bbox = [min_x, min_y, max_x - min_x, max_y - min_y]
-
-        anno = dict(
-            iscrowd=iscrowd,
-            category_id=category_id,
-            bbox=bbox,
-            area=area,
-            segmentation=[contour])
+        bbox = [min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y]
+        anno = dict(word=word, bbox=bbox)
         anno_info.append(anno)
 
     img_info.update(anno_info=anno_info)
-
     return img_info
 
 
-def load_png_info(gt_file, img_info):
-    """Load the information of one ground truth in .png format.
+def generate_ann(root_path, split, image_infos):
+    """Generate cropped annotations and label txt file.
 
     Args:
-        gt_file(str): The relative path of the ground_truth file for one image
-        img_info(dict): The dict of only the image information
-
-    Returns:
-        img_info(dict): The dict of the img and annotation information
+        root_path(str): The relative path of the totaltext file
+        split(str): The split of dataset. Namely: training or test
+        image_infos(list[dict]): A list of dicts of the img and
+        annotation information
     """
-    assert isinstance(gt_file, str)
-    assert isinstance(img_info, dict)
-    gt_img = cv2.imread(gt_file, 0)
-    contours, _ = cv2.findContours(gt_img, cv2.RETR_EXTERNAL,
-                                   cv2.CHAIN_APPROX_SIMPLE)
 
-    anno_info = []
-    for contour in contours:
-        if contour.shape[0] == 2:
-            continue
-        category_id = 1
-        xy = np.array(contour).flatten().tolist()
+    dst_image_root = osp.join(root_path, 'dst_imgs', split)
+    if split == 'training':
+        dst_label_file = osp.join(root_path, 'train_label.txt')
+    elif split == 'test':
+        dst_label_file = osp.join(root_path, 'test_label.txt')
+    os.makedirs(dst_image_root, exist_ok=True)
 
-        coordinates = np.array(contour).reshape(-1, 2)
-        polygon = Polygon(coordinates)
-        iscrowd = 0
+    lines = []
+    for image_info in image_infos:
+        index = 1
+        src_img_path = osp.join(root_path, 'imgs', image_info['file_name'])
+        image = mmcv.imread(src_img_path)
+        src_img_root = osp.splitext(image_info['file_name'])[0].split('/')[1]
 
-        area = polygon.area
-        # convert to COCO style XYWH format
-        min_x, min_y, max_x, max_y = polygon.bounds
-        bbox = [min_x, min_y, max_x - min_x, max_y - min_y]
-
-        anno = dict(
-            iscrowd=iscrowd,
-            category_id=category_id,
-            bbox=bbox,
-            area=area,
-            segmentation=[xy])
-        anno_info.append(anno)
-
-    img_info.update(anno_info=anno_info)
-
-    return img_info
+        for anno in image_info['anno_info']:
+            word = anno['word']
+            dst_img = crop_img(image, anno['bbox'])
+            dst_img_name = f'{src_img_root}_{index}.png'
+            index += 1
+            dst_img_path = osp.join(dst_image_root, dst_img_name)
+            mmcv.imwrite(dst_img, dst_img_path)
+            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                         f'{word}')
+    list_to_file(dst_label_file, lines)
 
 
 def load_img_info(files):
@@ -417,7 +389,7 @@ def main():
             files = collect_files(
                 osp.join(img_dir, split), osp.join(gt_dir, split), split)
             image_infos = collect_annotations(files, nproc=args.nproc)
-            convert_annotations(image_infos, osp.join(out_dir, json_name))
+            generate_ann(root_path, split, image_infos)
 
 
 if __name__ == '__main__':
