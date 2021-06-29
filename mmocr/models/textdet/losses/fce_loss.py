@@ -134,7 +134,7 @@ class FCELoss(nn.Module):
                 int(neg.float().sum().item()),
                 int(self.ohem_ratio * n_pos.float()))
         else:
-            loss_pos = torch.tensor(0.)
+            loss_pos = torch.tensor(0.).cuda()
             loss_neg = F.cross_entropy(
                 predict[neg], target[neg], reduction='none')
             n_neg = 100
