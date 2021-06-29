@@ -5,6 +5,7 @@ import os
 import os.path as osp
 
 import mmcv
+import numpy as np
 import torch
 from mmcv import Config
 from mmcv.image import tensor2imgs
@@ -28,13 +29,19 @@ def test(model, data_loader, show=False, out_dir=None):
         if show or out_dir:
             img_tensor = data['img'].data[0]
             img_metas = data['img_metas'].data[0]
-            imgs = tensor2imgs(img_tensor, **img_metas[0]['img_norm_cfg'])
+            if np.prod(img_tensor.shape) == 0:
+                imgs = [mmcv.imread(m['filename']) for m in img_metas]
+            else:
+                imgs = tensor2imgs(img_tensor, **img_metas[0]['img_norm_cfg'])
             assert len(imgs) == len(img_metas)
             gt_bboxes = [data['gt_bboxes'].data[0][0].numpy().tolist()]
 
             for i, (img, img_meta) in enumerate(zip(imgs, img_metas)):
-                h, w, _ = img_meta['img_shape']
-                img_show = img[:h, :w, :]
+                if 'img_shape' in img_meta:
+                    h, w, _ = img_meta['img_shape']
+                    img_show = img[:h, :w, :]
+                else:
+                    img_show = img
 
                 if out_dir:
                     out_file = osp.join(out_dir, img_meta['ori_filename'])

@@ -80,9 +80,17 @@ def test_kie_dataset():
 
     tmp_dir.cleanup()
 
+    dataset.prepare_train_img(0)
+
     # test pre_pipeline
-    img_info = dataset.data_infos[0]
-    results = dict(img_info=img_info)
+    img_ann_info = dataset.data_infos[0]
+    img_info = {
+        'filename': img_ann_info['file_name'],
+        'height': img_ann_info['height'],
+        'width': img_ann_info['width']
+    }
+    ann_info = dataset._parse_anno_info(img_ann_info['annotations'])
+    results = dict(img_info=img_info, ann_info=ann_info)
     dataset.pre_pipeline(results)
     assert results['img_prefix'] == dataset.img_prefix
 
@@ -114,3 +122,6 @@ def test_kie_dataset():
 
     eval_res = dataset.evaluate(results)
     assert math.isclose(eval_res['macro_f1'], 0.2, abs_tol=1e-4)
+
+
+test_kie_dataset()
