@@ -6,10 +6,8 @@ import mmcv
 import torch
 import torch.distributed as dist
 from mmcv.runner import BaseModule, auto_fp16
-from mmcv.utils import print_log
 
 from mmocr.core import imshow_text_label
-from mmocr.utils import get_root_logger
 
 
 class BaseRecognizer(BaseModule, metaclass=ABCMeta):
@@ -54,6 +52,7 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
         """
         pass
 
+    '''
     def init_weights(self, pretrained=None):
         """Initialize the weights for detector.
 
@@ -64,6 +63,7 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
         if pretrained is not None:
             logger = get_root_logger()
             print_log(f'load model from: {pretrained}', logger=logger)
+    '''
 
     def forward_test(self, imgs, img_metas, **kwargs):
         """
