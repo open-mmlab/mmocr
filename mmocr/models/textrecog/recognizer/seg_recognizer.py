@@ -121,7 +121,7 @@ class SegRecognizer(BaseRecognizer):
         out_head = self.head(out_neck)
 
         # texts, scores = self.label_convertor.tensor2str(out_head)
-        scores = self.label_convertor.tensor2str(out_head)
+        # scores = self.label_convertor.tensor2str(out_head)
         # scores = torch.from_numpy(numpy.array(scores)).cuda()
         # flatten batch results
         # results = []
