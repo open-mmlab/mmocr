@@ -1,3 +1,5 @@
+import numpy
+import torch
 from mmdet.models.builder import (DETECTORS, build_backbone, build_head,
                                   build_loss, build_neck)
 
@@ -101,7 +103,7 @@ class SegRecognizer(BaseRecognizer):
 
         return losses
 
-    def simple_test(self, img, img_metas, **kwargs):
+    def simple_test(self, img, **kwargs):
         """Test function without test time augmentation.
 
         Args:
@@ -118,14 +120,15 @@ class SegRecognizer(BaseRecognizer):
 
         out_head = self.head(out_neck)
 
-        texts, scores = self.label_convertor.tensor2str(out_head, img_metas)
-
+        # texts, scores = self.label_convertor.tensor2str(out_head)
+        scores = self.label_convertor.tensor2str(out_head)
+        # scores = torch.from_numpy(numpy.array(scores)).cuda()
         # flatten batch results
-        results = []
-        for text, score in zip(texts, scores):
-            results.append(dict(text=text, score=score))
+        # results = []
+        # for text, score in zip(texts, scores):
+        #     results.append(dict(text=text, score=score))
 
-        return results
+        return out_head
 
     def merge_aug_results(self, aug_results):
         out_text, out_score = '', -1
