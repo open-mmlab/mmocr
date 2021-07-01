@@ -1,4 +1,4 @@
 include requirements/*.txt
-include mmocr/model_zoo.yml
+include mmocr/model-index.yml
 recursive-include mmocr/configs *.py *.yml
 recursive-include mmocr/tools *.sh *.py
