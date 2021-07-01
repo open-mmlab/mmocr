@@ -22,6 +22,7 @@ class UniformConcatDataset(ConcatDataset):
         if pipeline is not None:
             assert from_cfg, 'datasets should be config dicts'
             for dataset in datasets:
-                dataset['pipeline'] = copy.deepcopy(pipeline)
+                if dataset['pipeline'] is None:
+                    dataset['pipeline'] = copy.deepcopy(pipeline)
         datasets = [build_dataset(c, kwargs) for c in datasets]
         super().__init__(datasets, separate_eval)
