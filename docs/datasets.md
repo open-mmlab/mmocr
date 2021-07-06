@@ -267,21 +267,27 @@ The structure of the text detection dataset directory is organized as follows.
 
 - For `SynthText`:
   - Step1: Download `SynthText.zip` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)
-  - Step2: Download [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt)
-  - Step3: Download [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt)
-  - Step4:
+  - Step2:
 
   ```bash
+  mkdir SynthText && cd SynthText
+  mv /path/to/SynthText.zip SynthText
   unzip SynthText.zip
-
-  cd SynthText
+  mv SynthText synthtext
 
   mv /path/to/shuffle_labels.txt .
 
   # create soft link
   cd /path/to/mmocr/data/mixture
-
   ln -s /path/to/SynthText SynthText
+  ```
+  - Step3:
+  Generate cropped images and labels:
+
+  ```bash
+  cd /path/to/mmocr
+
+  python tools/data/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat data/mixture/SynthText/ data/mixture/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
   ```
 
 - For `SynthAdd`:
