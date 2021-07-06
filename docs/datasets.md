@@ -271,7 +271,7 @@ The structure of the text detection dataset directory is organized as follows.
 
   ```bash
   mkdir SynthText && cd SynthText
-  mv /path/to/SynthText.zip SynthText
+  mv /path/to/SynthText.zip .
   unzip SynthText.zip
   mv SynthText synthtext
 
