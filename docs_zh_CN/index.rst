@@ -7,6 +7,7 @@ Welcome to MMOCR's documentation!
    install.md
    getting_started.md
    demo.md
+   deployment.md
 
 .. toctree::
    :maxdepth: 2
