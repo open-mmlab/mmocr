@@ -1,7 +1,7 @@
-Welcome to MMOCR's documentation!
+欢迎来到 MMOCR 的中文文档!
 =======================================
 
-You can switch between English and Chinese in the lower-left corner of the layout.
+您可以在页面左下角切换中英文文档。
 
 .. toctree::
    :maxdepth: 2
@@ -9,7 +9,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    install.md
    getting_started.md
    demo.md
-   depolyment.md
+   deployment.md
 
 .. toctree::
    :maxdepth: 2
@@ -38,7 +38,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
    api.rst
 
-Indices and tables
+导引
 ==================
 
 * :ref:`genindex`

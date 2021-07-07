@@ -73,6 +73,8 @@ source_suffix = {
     '.md': 'markdown',
 }
 
+language = 'zh_CN'
+
 # The master toctree document.
 master_doc = 'index'
 
@@ -87,8 +89,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
-
-language = 'en'
 
 master_doc = 'index'
 
