@@ -1,6 +1,8 @@
 Welcome to MMOCR's documentation!
 =======================================
 
+You can switch between English and Chinese in the lower-left corner of the layout.
+
 .. toctree::
    :maxdepth: 2
 
