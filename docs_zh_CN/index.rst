@@ -13,7 +13,7 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Model Zoo
+   :caption: 模型库
 
    modelzoo.md
    textdet_models.md
@@ -23,25 +23,26 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Datasets
+   :caption: 数据集
 
    datasets.md
 
 .. toctree::
    :maxdepth: 2
-   :caption: Notes
+   :caption: 记录
 
    changelog.md
 
 .. toctree::
-   :caption: API Reference
+   :caption: API 参考
 
    api.rst
 
 .. toctree::
-   :caption: Switch Language
+   :caption: 切换语言
 
-   switch_language.md
+   English <https://mmocr.readthedocs.io/en/latest/>
+   简体中文 <https://mmocr.readthedocs.io/zh_CN/latest/>
 
 导引
 ==================

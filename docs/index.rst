@@ -41,7 +41,8 @@ You can switch between English and Chinese in the lower-left corner of the layou
 .. toctree::
    :caption: Switch Language
 
-   switch_language.md
+   English <https://mmocr.readthedocs.io/en/latest/>
+   简体中文 <https://mmocr.readthedocs.io/zh_CN/latest/>
 
 Indices and tables
 ==================
