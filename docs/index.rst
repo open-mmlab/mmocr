@@ -9,7 +9,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    install.md
    getting_started.md
    demo.md
-   depolyment.md
+   deployment.md
 
 .. toctree::
    :maxdepth: 2
@@ -37,6 +37,11 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :caption: API Reference
 
    api.rst
+
+.. toctree::
+   :caption: Switch Language
+
+   switch_language.md
 
 Indices and tables
 ==================
