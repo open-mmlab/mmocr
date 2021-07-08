@@ -77,7 +77,7 @@ train_img_prefix1 = train_prefix + \
     'SynthText/synthtext/SynthText_patch_horizontal'
 train_img_prefix2 = train_prefix + 'Syn90k/mnt/ramdisk/max/90kDICT32px'
 
-train_ann_file1 = train_prefix + 'SynthText/label.lmdb',
+train_ann_file1 = train_prefix + 'SynthText/label.lmdb'
 train_ann_file2 = train_prefix + 'Syn90k/label.lmdb'
 
 train1 = dict(
