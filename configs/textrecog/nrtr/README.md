@@ -59,5 +59,5 @@
 
 **Notes:**
 
--   `R31-1/16-1/8` means the height of feature from backbone is 1/16 of input image, where 1/8 for width.
--   `R31-1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.
+- `R31-1/16-1/8` means the height of feature from backbone is 1/16 of input image, where 1/8 for width.
+- `R31-1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.

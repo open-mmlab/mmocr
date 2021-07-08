@@ -5,7 +5,6 @@
 
 </div>
 
-
 ### Text Detection Single Image Demo
 
 We provide a demo script to test a [single image](/demo/demo_text_det.jpg) for text detection with a single GPU.
@@ -26,7 +25,6 @@ python demo/image_demo.py demo/demo_text_det.jpg configs/textdet/panet/panet_r18
 
 The predicted result will be saved as `demo/demo_text_det_pred.jpg`.
 
-
 ### Text Detection Multiple Image Demo
 
 We provide a demo script to test multi-images in batch mode for text detection with a single GPU.
@@ -46,7 +44,6 @@ python demo/batch_image_demo.py configs/textdet/panet/panet_r18_fpem_ffm_600e_ic
 ```
 
 The predicted result will be saved in folder `save_results`.
-
 
 ### Text Detection Webcam Demo
 

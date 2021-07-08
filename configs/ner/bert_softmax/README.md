@@ -3,6 +3,7 @@
 ## Introduction
 
 [ALGORITHM]
+
 ```bibtex
 @article{devlin2018bert,
   title={Bert: Pre-training of deep bidirectional transformers for language understanding},
@@ -25,7 +26,6 @@
 |  testset  | text_num | entity_num |
 | :--------: | :----------: | :--------: |
 | CLUENER2020 |     1343     |     2982     |
-
 
 ## Results and models
 

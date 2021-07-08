@@ -60,15 +60,15 @@
 
 **Notes:**
 
--   `R31-1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.
--   We did not use beam search during decoding.
--   We implemented two kinds of decoder. Namely, `ParallelSARDecoder` and `SequentialSARDecoder`.
-    -   `ParallelSARDecoder`: Parallel decoding during training with `LSTM` layer. It would be faster.
-    -   `SequentialSARDecoder`: Sequential Decoding during training with `LSTMCell`. It would be easier to understand.
--   For train dataset.
-    -   We did not construct distinct data groups (20 groups in [[1]](#1)) to train the model group-by-group since it would render model training too complicated.
-    -   Instead, we randomly selected `2.4m` patches from `Syn90k`, `2.4m` from `SynthText` and `1.2m` from `SynthAdd`, and grouped all data together. See [config](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_academic.py) for details.
--   We used 48 GPUs with `total_batch_size = 64 * 48` in the experiment above to speedup training, while keeping the `initial lr = 1e-3` unchanged.
+- `R31-1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.
+- We did not use beam search during decoding.
+- We implemented two kinds of decoder. Namely, `ParallelSARDecoder` and `SequentialSARDecoder`.
+  - `ParallelSARDecoder`: Parallel decoding during training with `LSTM` layer. It would be faster.
+  - `SequentialSARDecoder`: Sequential Decoding during training with `LSTMCell`. It would be easier to understand.
+- For train dataset.
+  - We did not construct distinct data groups (20 groups in [[1]](#1)) to train the model group-by-group since it would render model training too complicated.
+  - Instead, we randomly selected `2.4m` patches from `Syn90k`, `2.4m` from `SynthText` and `1.2m` from `SynthAdd`, and grouped all data together. See [config](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_academic.py) for details.
+- We used 48 GPUs with `total_batch_size = 64 * 48` in the experiment above to speedup training, while keeping the `initial lr = 1e-3` unchanged.
 
 ## References
 

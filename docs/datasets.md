@@ -57,6 +57,7 @@ The structure of the text detection dataset directory is organized as follows.
 - For `icdar2015`:
   - Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
   - Step2:
+
   ```bash
   mkdir icdar2015 && cd icdar2015
   mkdir imgs && mkdir annotations
@@ -67,8 +68,10 @@ The structure of the text detection dataset directory is organized as follows.
   mv ch4_training_localization_transcription_gt annotations/training
   mv Challenge4_Test_Task1_GT annotations/test
   ```
+
   - Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) and move them to `icdar2015`
   - Or, generate `instances_training.json` and `instances_test.json` with following command:
+
   ```bash
   python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
   ```
@@ -78,6 +81,7 @@ The structure of the text detection dataset directory is organized as follows.
 
 - For `ctw1500`:
   - Step1: Download `train_images.zip`, `test_images.zip`, `train_labels.zip`, `test_labels.zip` from [github](https://github.com/Yuliang-Liu/Curve-Text-Detector)
+
   ```bash
   mkdir ctw1500 && cd ctw1500
   mkdir imgs && mkdir annotations
@@ -96,13 +100,16 @@ The structure of the text detection dataset directory is organized as follows.
   unzip train_images.zip && mv train_images training
   unzip test_images.zip && mv test_images test
   ```
+
   - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
 
   ```bash
   python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
   ```
+
 - For `TextOCR`:
   - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
+
   ```bash
   mkdir textocr && cd textocr
 
@@ -115,12 +122,16 @@ The structure of the text detection dataset directory is organized as follows.
   unzip -q train_val_images.zip
   mv train_images train
   ```
+
   - Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
+
   ```bash
   python tools/data/textdet/textocr_converter.py /path/to/textocr
   ```
+
 - For `Totaltext`:
   - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
+
   ```bash
   mkdir totaltext && cd totaltext
   mkdir imgs && mkdir annotations
@@ -138,10 +149,13 @@ The structure of the text detection dataset directory is organized as follows.
   mv Polygon/Test ../annotations/test
 
   ```
+
   - Step2: Generate `instances_training.json` and `instances_test.json` with the following command:
+
   ```bash
   python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
   ```
+
 ## Text Recognition
 
 **The structure of the text recognition dataset directory is organized as follows.**
@@ -235,9 +249,11 @@ The structure of the text detection dataset directory is organized as follows.
   - Step1: Download `svt.zip` form [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset)
   - Step2: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)
   - Step3:
+
   ```bash
   python tools/data/textrecog/svt_converter.py <download_svt_dir_path>
   ```
+
 - For `ct80`:
   - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)
 - For `svtp`:
@@ -303,17 +319,23 @@ The structure of the text detection dataset directory is organized as follows.
 
   ln -s /path/to/SynthAdd SynthAdd
   ```
+
   **Note:**
 To convert label file with `txt` format to `lmdb` format,
+
 ```bash
 python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
 ```
+
 For example,
+
 ```bash
 python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
 ```
+
 - For `TextOCR`:
   - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
+
   ```bash
   mkdir textocr && cd textocr
 
@@ -326,14 +348,16 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   unzip -q train_val_images.zip
   mv train_images train
   ```
+
   - Step2: Generate `train_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
+
   ```bash
   python tools/data/textrecog/textocr_converter.py /path/to/textocr 4
   ```
 
-
 - For `Totaltext`:
   - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
+
   ```bash
   mkdir totaltext && cd totaltext
   mkdir imgs && mkdir annotations
@@ -349,14 +373,13 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   cd Groundtruth
   mv Polygon/Train ../annotations/training
   mv Polygon/Test ../annotations/test
-
   ```
+
   - Step2: Generate cropped images, `train_label.txt` and `test_label.txt` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`.):
+
   ```bash
   python tools/data/textrecog/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
   ```
-
-
 
 ## Key Information Extraction
 
@@ -372,7 +395,6 @@ The structure of the key information extraction dataset directory is organized a
 ```
 
 - Download [wildreceipt.tar](https://download.openmmlab.com/mmocr/data/wildreceipt.tar)
-
 
 ## Named Entity Recognition
 
@@ -390,6 +412,7 @@ The structure of the named entity recognition dataset directory is organized as 
   └── vocab.txt
 
 ```
+
 - Download [cluener_public.zip](https://storage.googleapis.com/cluebenchmark/tasks/cluener_public.zip)
 
 - Download [vocab.txt](https://download.openmmlab.com/mmocr/data/cluener2020/vocab.txt) and move `vocab.txt` to `cluener2020`

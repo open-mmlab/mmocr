@@ -25,7 +25,6 @@ python demo/image_demo.py demo/demo_text_recog.jpg configs/textrecog/sar/sar_r31
 
 The predicted result will be saved as `demo/demo_text_recog_pred.jpg`.
 
-
 ### Text Recognition Multiple Image Demo
 
 We provide a demo script to test multi-images in batch mode for text recognition with a single GPU.
@@ -45,7 +44,6 @@ python demo/image_demo.py configs/textrecog/sar/sar_r31_parallel_decoder_academi
 ```
 
 The predicted result will be saved in folder `save_results`.
-
 
 ### Text Recognition Webcam Demo
 

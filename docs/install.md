@@ -38,9 +38,9 @@ b. Install PyTorch and torchvision following the [official instructions](https:/
 ```shell
 conda install pytorch==1.5.0 torchvision==0.6.0 cudatoolkit=10.1 -c pytorch
 ```
+
 Note: Make sure that your compilation CUDA version and runtime CUDA version match.
 You can check the supported CUDA version for precompiled packages on the [PyTorch website](https://pytorch.org/).
-
 
 c. Install mmcv, we recommend you to install the pre-build mmcv as below.
 
@@ -53,6 +53,7 @@ Please replace ``{cu_version}`` and ``{torch_version}`` in the url to your desir
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
 ```
+
 Note that mmocr 0.2.0 or later require mmcv 1.3.4 or later.
 
 If it compiles during installation, then please check that the cuda version and pytorch version **exactly"" matches the version in the mmcv-full installation command. For example, pytorch 1.7.0 and 1.7.1 are treated differently.
@@ -69,7 +70,6 @@ pip install mmdet==2.11.0
 ```
 
 Optionally you can choose to install `mmdet` following the official [installation](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md).
-
 
 e. Clone the mmocr repository.
 
@@ -133,6 +133,7 @@ It is recommended to symlink the dataset root to `mmocr/data`. Please refer to [
 If your folder structure is different, you may need to change the corresponding paths in config files.
 
 The `mmocr` folder is organized as follows:
+
 ```
 ├── configs/
 ├── demo/

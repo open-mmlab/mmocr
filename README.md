@@ -107,7 +107,6 @@ If you find this project useful in your research, please consider cite:
 
 v0.2.0 was released in 2021-5-18.
 
-
 ## Installation
 
 Please refer to [install.md](docs/install.md) for installation.

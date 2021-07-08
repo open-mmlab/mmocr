@@ -27,13 +27,16 @@ Contents
     - [C++ and CUDA](#c-and-cuda)
 
 ## Workflow
+
 ### Main Steps
+
 1. fork and pull the latest mmocr
 2. checkout a new branch (do not use main branch for PRs)
 3. commit your changes
 4. create a PR
 
 **Note**
+
 - If you plan to add some new features that involve large changes, it is encouraged to open an issue for discussion first.
 - If you are the author of some papers and would like to include your method to mmocr, please let us know (open an issue or contact the maintainers). We will much appreciate your contribution.
 - For new features and new modules, unit tests are required to improve the code's robustness.
@@ -46,18 +49,19 @@ The *main* branch is the main branch where the source code of **HEAD** always re
 
 Feature branches are used to develop new features for the upcoming or a distant future release.
 
-
 All new developers to **MMOCR** need to follow the following steps:
 
 #### Step 1: Create a Fork
 
 1. Fork the repo on GitHub or GitLab to your personal account. Click the `Fork` button on the [project page](https://github.com/open-mmlab/mmocr).
-
 2. Clone your new forked repo to your computer.
+
 ```
 git clone https://github.com/<your name>/mmocr.git
 ```
+
 3. Add the official repo as an upstream:
+
 ```
 git remote add upstream https://github.com/open-mmlab/mmocr.git
 ```
@@ -79,31 +83,36 @@ git push origin main
 ```
 
 ##### Step 2.2: Create a feature branch
+
 - Create an issue on [github](https://github.com/open-mmlab/mmocr)
 
 - Create a feature branch
-- ```
+
+```
   git checkout -b feature/iss_<index> main
   # index is the issue index on github above
-  ```
+```
 
 #### Step 3: Commit your changes
 
 Develop your new feature and test it to make sure it works well, then commit.
 
 Please run
+
 ```
 pre-commit run --all-files
 pytest tests
 ```
+
 and fix all failures before every git commit.
+
 ```
 git commit -m "fix #<issue_index>: <commit_message>"
 ```
 
 #### Step 4: Prepare to Pull Request
-- Make sure to link your pull request to the related issue. Please refer to the [instructon](https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue)
 
+- Make sure to link your pull request to the related issue. Please refer to the [instructon](https://docs.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue)
 
 ##### Step 4.1: Merge official repo updates to your fork
 
@@ -122,30 +131,34 @@ git rebase main
 # solve conflicts if any and Test
 ```
 
-##### Step 4.2: Push <your_feature_branch> branch to your remote forked repo,
+##### Step 4.2: Push <your_feature_branch> branch to your remote forked repo
+
 ```
 git checkout <your_feature_branch>
 git push origin <your_feature_branch>
 ```
+
 ##### Step 4.3: Create a Pull Request
 
 Go to the page for your fork on GitHub, select your new feature branch, and click the pull request button to integrate your feature branch into the upstream remote’s develop branch.
 
 ##### Step 4.4: Review code
 
-
 ##### Step 4.5: Revise <your_feature_branch>  (optional)
+
 If PR is not accepted, pls follow steps above till your PR is accepted.
 
-##### Step 4.6: Delete <your_feature_branch> branch if your PR is accepted.
+##### Step 4.6: Delete <your_feature_branch> branch if your PR is accepted
+
 ```
 git branch -d <your_feature_branch>
 git push origin :<your_feature_branch>
 ```
 
-
 ## Code style
+
 ### Python
+
 We adopt [PEP8](https://www.python.org/dev/peps/pep-0008/) as the preferred code style.
 
 We use the following tools for linting and formatting:
@@ -189,4 +202,5 @@ After this on every commit check code linters and formatter will be enforced.
 >Before you create a PR, make sure that your code lints and is formatted by yapf.
 
 ### C++ and CUDA
+
 We follow the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html).

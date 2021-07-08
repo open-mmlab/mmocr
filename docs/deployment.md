@@ -60,7 +60,6 @@ The table below lists the models that are guaranteed to be exportable to ONNX an
 
 We also provide a script to convert [ONNX](https://github.com/onnx/onnx) model to [TensorRT](https://github.com/NVIDIA/TensorRT) format. Besides, we support comparing the output results between ONNX and TensorRT model.
 
-
 ```bash
 python tools/deployment/onnx2tensorrt.py
     ${MODEL_CONFIG_PATH} \
@@ -113,12 +112,12 @@ The table below lists the models that are guaranteed to be exportable to TensorR
 - If you meet any problem with the listed models above, please create an issue and it would be taken care of soon. For models not included in the list, please try to solve them by yourself.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
 
-
 ### Evaluate ONNX and TensorRT Models (experimental)
 
 We provide methods to evaluate TensorRT and ONNX models in `tools/deployment/deploy_test.py`.
 
 #### Prerequisite
+
 To evaluate ONNX and TensorRT models, onnx, onnxruntime and TensorRT should be installed first. Install `mmcv-full` with ONNXRuntime custom ops and TensorRT plugins follow [ONNXRuntime in mmcv](https://mmcv.readthedocs.io/en/latest/onnxruntime_op.html) and [TensorRT plugin in mmcv](https://github.com/open-mmlab/mmcv/blob/master/docs/tensorrt_plugin.md).
 
 #### Usage
@@ -143,7 +142,6 @@ python tools/deploy_test.py \
 - `--device`: Device for evaluation, `cuda:0` as default.
 
 #### Results and Models
-
 
 <table class="tg">
 <thead>
@@ -293,6 +291,7 @@ python tools/deploy_test.py \
 </table>
 
 **Notes**:
+
 - TensorRT upsampling operation is a little different from pytorch. For DBNet and PANet, we suggest replacing upsampling operations with neast mode to operations with bilinear mode. [Here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpem_ffm.py#L33) for PANet, [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L111) and [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L121) for DBNet. As is shown in the above table, networks with tag * means the upsampling mode is changed.
 - Note that, changing upsampling mode reduces less performance compared with using nearst mode. However, the weights of networks are trained through nearst mode. To persue best performance, using bilinear mode for both training and TensorRT deployment is recommanded.
 - All ONNX and TensorRT models are evaluated with dynamic shape on the datasets and images are preprocessed according to the original config file.
