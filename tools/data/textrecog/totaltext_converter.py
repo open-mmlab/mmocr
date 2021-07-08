@@ -3,7 +3,6 @@ import glob
 import os
 import os.path as osp
 import re
-from functools import partial
 
 import mmcv
 import numpy as np
@@ -65,12 +64,11 @@ def collect_annotations(files, nproc=1):
     assert isinstance(files, list)
     assert isinstance(nproc, int)
 
-    load_img_info_with_split = partial(load_img_info)
     if nproc > 1:
         images = mmcv.track_parallel_progress(
-            load_img_info_with_split, files, nproc=nproc)
+            load_img_info, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info_with_split, files)
+        images = mmcv.track_progress(load_img_info, files)
 
     return images
 

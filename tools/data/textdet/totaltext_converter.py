@@ -3,7 +3,6 @@ import glob
 import os
 import os.path as osp
 import re
-from functools import partial
 
 import cv2
 import mmcv
@@ -44,8 +43,7 @@ def collect_files(img_dir, gt_dir, split):
     ann_list = sorted(
         [osp.join(gt_dir, gt_file) for gt_file in os.listdir(gt_dir)])
 
-    files = [(img_file, gt_file)
-             for (img_file, gt_file) in zip(imgs_list, ann_list)]
+    files = list(zip(imgs_list, ann_list))
     assert len(files), f'No images found in {img_dir}'
     print(f'Loaded {len(files)} images from {img_dir}')
 
@@ -64,12 +62,11 @@ def collect_annotations(files, nproc=1):
     assert isinstance(files, list)
     assert isinstance(nproc, int)
 
-    load_img_info_with_split = partial(load_img_info)
     if nproc > 1:
         images = mmcv.track_parallel_progress(
-            load_img_info_with_split, files, nproc=nproc)
+            load_img_info, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info_with_split, files)
+        images = mmcv.track_progress(load_img_info, files)
 
     return images
 
