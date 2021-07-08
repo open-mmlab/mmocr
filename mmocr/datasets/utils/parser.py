@@ -1,6 +1,7 @@
 import json
 
 from mmocr.datasets.builder import PARSERS
+from mmocr.utils import StringStrip
 
 
 @PARSERS.register_module()
@@ -17,7 +18,8 @@ class LineStrParser:
     def __init__(self,
                  keys=['filename', 'text'],
                  keys_idx=[0, 1],
-                 separator=' '):
+                 separator=' ',
+                 **kwargs):
         assert isinstance(keys, list)
         assert isinstance(keys_idx, list)
         assert isinstance(separator, str)
@@ -26,10 +28,12 @@ class LineStrParser:
         self.keys = keys
         self.keys_idx = keys_idx
         self.separator = separator
+        self.strip_cls = StringStrip(**kwargs)
 
     def get_item(self, data_ret, index):
         map_index = index % len(data_ret)
         line_str = data_ret[map_index]
+        line_str = self.strip_cls(line_str)
         line_str = line_str.split(self.separator)
         if len(line_str) <= max(self.keys_idx):
             raise Exception(
@@ -53,10 +57,13 @@ class LineJsonParser:
         assert isinstance(keys, list)
         assert len(keys) > 0
         self.keys = keys
+        self.strip_cls = StringStrip(**kwargs)
 
     def get_item(self, data_ret, index):
         map_index = index % len(data_ret)
-        line_json_obj = json.loads(data_ret[map_index])
+        json_str = data_ret[map_index]
+        json_str = self.strip_cls(json_str)
+        line_json_obj = json.loads(json_str)
         line_info = {}
         for key in self.keys:
             if key not in line_json_obj:

@@ -6,7 +6,7 @@ from mmocr.datasets.utils.parser import LineJsonParser, LineStrParser
 
 
 def test_line_str_parser():
-    data_ret = ['sample1.jpg hello', 'sample2.jpg world']
+    data_ret = ['sample1.jpg hello\n', 'sample2.jpg world']
     keys = ['filename', 'text']
     keys_idx = [0, 1]
     separator = ' '
