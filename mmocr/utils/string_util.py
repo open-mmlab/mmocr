@@ -22,29 +22,14 @@ class StringStrip:
         self.strip_pos = strip_pos
         self.strip_str = strip_str
 
-    def _strip(self, in_str):
-        in_str = in_str.strip(self.strip_str)
-
-        return in_str
-
-    def _lstrip(self, in_str):
-        in_str = in_str.lstrip(self.strip_str)
-
-        return in_str
-
-    def _rstrip(self, in_str):
-        in_str = in_str.rstrip(self.strip_str)
-
-        return in_str
-
     def __call__(self, in_str):
 
         if not self.strip:
             return in_str
 
         if self.strip_pos == 'left':
-            return self._lstrip(in_str)
+            return in_str.lstrip(self.strip_str)
         elif self.strip_pos == 'right':
-            return self._rstrip(in_str)
+            return in_str.rstrip(self.strip_str)
         else:
-            return self._strip(in_str)
+            return in_str.strip(self.strip_str)
