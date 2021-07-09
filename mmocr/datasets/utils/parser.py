@@ -53,16 +53,14 @@ class LineJsonParser:
         keys (list[str]): Keys in both json-string and result dict.
     """
 
-    def __init__(self, keys=[], **kwargs):
+    def __init__(self, keys=[]):
         assert isinstance(keys, list)
         assert len(keys) > 0
         self.keys = keys
-        self.strip_cls = StringStrip(**kwargs)
 
     def get_item(self, data_ret, index):
         map_index = index % len(data_ret)
         json_str = data_ret[map_index]
-        json_str = self.strip_cls(json_str)
         line_json_obj = json.loads(json_str)
         line_info = {}
         for key in self.keys:

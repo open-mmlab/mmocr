@@ -13,7 +13,7 @@ class StringStrip:
             are removed from the string. Default: None.
     """
 
-    def __init__(self, strip=True, strip_pos='both', strip_str=None, **kwargs):
+    def __init__(self, strip=True, strip_pos='both', strip_str=None):
         assert isinstance(strip, bool)
         assert strip_pos in ('both', 'left', 'right')
         assert strip_str is None or isinstance(strip_str, str)
@@ -23,26 +23,17 @@ class StringStrip:
         self.strip_str = strip_str
 
     def _strip(self, in_str):
-        if self.strip_str is None:
-            in_str = in_str.strip()
-        else:
-            in_str = in_str.strip(self.strip_str)
+        in_str = in_str.strip(self.strip_str)
 
         return in_str
 
     def _lstrip(self, in_str):
-        if self.strip_str is None:
-            in_str = in_str.lstrip()
-        else:
-            in_str = in_str.lstrip(self.strip_str)
+        in_str = in_str.lstrip(self.strip_str)
 
         return in_str
 
     def _rstrip(self, in_str):
-        if self.strip_str is None:
-            in_str = in_str.rstrip()
-        else:
-            in_str = in_str.rstrip(self.strip_str)
+        in_str = in_str.rstrip(self.strip_str)
 
         return in_str
 
