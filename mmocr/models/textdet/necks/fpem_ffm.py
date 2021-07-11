@@ -67,7 +67,7 @@ class FPEM_FFM(BaseModule):
                  fpem_repeat=2,
                  align_corners=False,
                  init_cfg=dict(
-                     type='Xavier', layer='Conv2d', distrbution='uniform')):
+                     type='Xavier', layer='Conv2d', distribution='uniform')):
         super().__init__(init_cfg=init_cfg)
         # reduce layers
         self.reduce_conv_c2 = nn.Sequential(
