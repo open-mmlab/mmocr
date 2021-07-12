@@ -120,6 +120,7 @@ class FCELoss(nn.Module):
         return loss_tr, loss_tcl, loss_reg_x, loss_reg_y
 
     def ohem(self, predict, target, train_mask):
+        device = train_mask.device
         pos = (target * train_mask).bool()
         neg = ((1 - target) * train_mask).bool()
 
@@ -134,7 +135,7 @@ class FCELoss(nn.Module):
                 int(neg.float().sum().item()),
                 int(self.ohem_ratio * n_pos.float()))
         else:
-            loss_pos = torch.tensor(0.)
+            loss_pos = torch.tensor(0.).to(device)
             loss_neg = F.cross_entropy(
                 predict[neg], target[neg], reduction='none')
             n_neg = 100

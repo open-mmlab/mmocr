@@ -84,7 +84,7 @@ dataset_type = 'OCRDataset'
 train_img_prefix = 'data/mixture/Syn90k/mnt/ramdisk/max/90kDICT32px'
 train_ann_file = 'data/mixture/Syn90k/label.lmdb'
 
-train1 = dict(
+train = dict(
     type=dataset_type,
     img_prefix=train_img_prefix,
     ann_file=train_ann_file,
@@ -127,7 +127,7 @@ test1 = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=test_pipeline,
+    pipeline=None,
     test_mode=True)
 
 test2 = {key: value for key, value in test1.items()}
@@ -153,13 +153,15 @@ test6['ann_file'] = test_ann_file6
 data = dict(
     samples_per_gpu=64,
     workers_per_gpu=4,
-    train=dict(type='ConcatDataset', datasets=[train1]),
+    train=train,
     val=dict(
-        type='ConcatDataset',
-        datasets=[test1, test2, test3, test4, test5, test6]),
+        type='UniformConcatDataset',
+        datasets=[test1, test2, test3, test4, test5, test6],
+        pipeline=test_pipeline),
     test=dict(
-        type='ConcatDataset',
-        datasets=[test1, test2, test3, test4, test5, test6]))
+        type='UniformConcatDataset',
+        datasets=[test1, test2, test3, test4, test5, test6],
+        pipeline=test_pipeline))
 
 evaluation = dict(interval=1, metric='acc')
 
