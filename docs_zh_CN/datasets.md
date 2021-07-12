@@ -1,21 +1,22 @@
-# Datasets Preparation
+# 配置数据集
 
-This page lists the datasets which are commonly used in text detection, text recognition and key information extraction, and their download links.
+本页列出了在文字检测、文字识别、关键信息提取、命名实体识别四个文本类任务中常用的数据集以及下载链接。
 
 <!-- TOC -->
 
-- [Datasets Preparation](#datasets-preparation)
-  - [Text Detection](#text-detection)
-  - [Text Recognition](#text-recognition)
-  - [Key Information Extraction](#key-information-extraction)
-  - [Named Entity Recognition](#named-entity-recognition)
+- [数据集](#数据集)
+  - [文字检测](#文字检测)
+  - [文字识别](#文字识别)
+  - [关键信息提取](#关键信息提取)
+  - [命名实体识别（专名识别）](#命名实体识别（专名识别）)
     - [CLUENER2020](#cluener2020)
 
 <!-- /TOC -->
 
-## Text Detection
 
-The structure of the text detection dataset directory is organized as follows.
+## 文字检测
+
+文字检测任务的数据集应按如下目录配置：
 
 ```text
 ├── ctw1500
@@ -44,107 +45,111 @@ The structure of the text detection dataset directory is organized as follows.
 │   └── instances_training.json
 ```
 
-|  Dataset  |                             Images                             |                                                                                      |                                                                                                        |            Annotation Files             |                                                                                                |
-| :-------: | :------------------------------------------------------------: | :----------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: | :-------------------------------------: | :--------------------------------------------------------------------------------------------: |
-|      |                                                                |                                                                                      |                                                training                                                |               validation                |                                            testing                                             |       |
-|  CTW1500  | [homepage](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                                        |                    -                    |                    -                    |                    -                    |
-| ICDAR2015 | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)     |                                                                                      | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
-| ICDAR2017 | [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [renamed_imgs](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar) | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
-| Synthtext | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  |                                                                                      | [instances_training.lmdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb) |                    -                    |
-| TextOCR | [homepage](https://textvqa.org/textocr/dataset)  |                                                                                      | - |                    -                    | -
-| Totaltext | [homepage](https://github.com/cs-chan/Total-Text-Dataset)  |                                                                                      | - |                    -                    | -
+|  数据集名称  |                             数据图片                             |                                      补充数据                                     |                                                                                                     |               标注文件                  |                                                                                                |
+| :---------: | :----------------------------------------------------------: | :----------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: | :-------------------------------------: | :--------------------------------------------------------------------------------------------: |
+|           |                                                                |                                                                                      |                                                训练集 (training)                                                |               验证集 (validation)                |                                           测试集 (testing)                                             |       |
+|  CTW1500  | [下载地址](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                                        |                    -                    |                    -                    |                    -                    |
+| ICDAR2015 | [下载地址](https://rrc.cvc.uab.es/?ch=4&com=downloads)     |                                                                                      | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
+| ICDAR2017 | [下载地址](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [renamed_imgs](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar) | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
+| Synthtext | [下载地址](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  |                                                                                      | [instances_training.lmdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb) |                    -                    |
+| TextOCR | [下载地址](https://textvqa.org/textocr/dataset)  |                                                                                      | - |                    -                    | -
+| Totaltext | [下载地址](https://github.com/cs-chan/Total-Text-Dataset)  |                                                                                      | - |                    -                    | -
 
-- For `icdar2015`:
-  - Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
-  - Step2:
+- `icdar2015` 数据集：
+  - 第一步：从[下载地址](https://rrc.cvc.uab.es/?ch=4&com=downloads)下载 `ch4_training_images.zip`、`ch4_test_images.zip`、`ch4_training_localization_transcription_gt.zip`、`Challenge4_Test_Task1_GT.zip` 四个文件，分别对应训练集数据、测试集数据、训练集标注、测试集标注。
+  - 第二步：运行以下命令，移动数据集到对应文件夹
   ```bash
   mkdir icdar2015 && cd icdar2015
   mkdir imgs && mkdir annotations
-  # For images,
+  # 移动数据到目录：
   mv ch4_training_images imgs/training
   mv ch4_test_images imgs/test
-  # For annotations,
+  # 移动标注到目录：
   mv ch4_training_localization_transcription_gt annotations/training
   mv Challenge4_Test_Task1_GT annotations/test
   ```
-  - Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) and move them to `icdar2015`
-  - Or, generate `instances_training.json` and `instances_test.json` with following command:
+  - 第三步：下载 [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) 和 [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json)，并放入 `icdar2015` 文件夹里。或者也可以用以下命令直接生成 `instances_training.json` 和 `instances_test.json`:
   ```bash
   python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
   ```
 
-- For `icdar2017`:
-  - To avoid the effect of rotation when load `jpg` with opencv, We provide re-saved `png` format image in [renamed_images](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar). You can copy these images to `imgs`.
+- `icdar2017` 数据集：
+  - 由于使用 opencv 加载 `.jpg` 文件时有旋转失真，我们把原数据集中的图片转换为 `.png` 格式，在这里下载：[renamed_images](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar)。下载后，把 `.png` 图片复制到 `imgs` 文件夹里.
 
-- For `ctw1500`:
-  - Step1: Download `train_images.zip`, `test_images.zip`, `train_labels.zip`, `test_labels.zip` from [github](https://github.com/Yuliang-Liu/Curve-Text-Detector)
+- `ctw1500` 数据集：
+  - 第一步：执行以下命令，从 [下载地址](https://github.com/Yuliang-Liu/Curve-Text-Detector) 下载 `train_images.zip`，`test_images.zip`，`train_labels.zip`，`test_labels.zip` 四个文件并配置到对应目录：
+
   ```bash
   mkdir ctw1500 && cd ctw1500
   mkdir imgs && mkdir annotations
 
-  # For annotations
+  # 下载并配置标注
   cd annotations
   wget -O train_labels.zip https://universityofadelaide.box.com/shared/static/jikuazluzyj4lq6umzei7m2ppmt3afyw.zip
   wget -O test_labels.zip https://cloudstor.aarnet.edu.au/plus/s/uoeFl0pCN9BOCN5/download
   unzip train_labels.zip && mv ctw1500_train_labels training
   unzip test_labels.zip -d test
   cd ..
-  # For images
+  # 下载并配置数据
   cd imgs
   wget -O train_images.zip https://universityofadelaide.box.com/shared/static/py5uwlfyyytbb2pxzq9czvu6fuqbjdh8.zip
   wget -O test_images.zip https://universityofadelaide.box.com/shared/static/t4w48ofnqkdw7jyc4t11nsukoeqk9c3d.zip
   unzip train_images.zip && mv train_images training
   unzip test_images.zip && mv test_images test
   ```
-  - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
+  - 第二步：执行以下命令，生成 `instances_training.json` 和 `instances_test.json`。
 
   ```bash
   python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
   ```
-- For `TextOCR`:
-  - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
+
+- `TextOCR` 数据集：
+  - 第一步：下载 [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip)，[TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) 和 [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) 到 `textocr` 文件夹里。
   ```bash
   mkdir textocr && cd textocr
 
-  # Download TextOCR dataset
+  # 下载 TextOCR 数据集
   wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
   wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json
   wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
 
-  # For images
+  # 把图片移到对应目录
   unzip -q train_val_images.zip
   mv train_images train
   ```
-  - Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
+
+  - 第二步：生成 `instances_training.json` 和 `instances_val.json`:
   ```bash
   python tools/data/textdet/textocr_converter.py /path/to/textocr
   ```
-- For `Totaltext`:
-  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (We recommend downloading the text groundtruth with .mat format since our totaltext_converter.py supports groundtruth with .mat format only).
+
+- `Totaltext` 数据集：
+  - 第一步：从 [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) 下载 `totaltext.zip`，从 [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) 下载 `groundtruth_text.zip` 。（建议下载 `.mat` 格式的标注文件，因为我们提供的标注格式转换脚本 `totaltext_converter.py` 仅支持 `.mat` 格式。）
   ```bash
   mkdir totaltext && cd totaltext
   mkdir imgs && mkdir annotations
 
-  # For images
-  # in ./totaltext
+  # 图像
+  # 在 ./totaltext 中执行
   unzip totaltext.zip
   mv Images/Train imgs/training
   mv Images/Test imgs/test
 
-  # For annotations
+  # 标注文件
   unzip groundtruth_text.zip
   cd Groundtruth
   mv Polygon/Train ../annotations/training
   mv Polygon/Test ../annotations/test
 
   ```
-  - Step2: Generate `instances_training.json` and `instances_test.json` with the following command:
+  - 第二步：用以下命令生成 `instances_training.json` 和 `instances_test.json` ：
   ```bash
   python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
   ```
-## Text Recognition
 
-**The structure of the text recognition dataset directory is organized as follows.**
+## 文字识别
+
+**文字识别任务的数据集应按如下目录配置：**
 
 ```text
 ├── mixture
@@ -205,50 +210,50 @@ The structure of the text detection dataset directory is organized as follows.
 │   │   ├── test_label.txt
 ```
 
-|  Dataset   |                                        images                                         |                                                                                                                                            annotation file                                                                                                                                             |                                             annotation file                                             |
+|  数据集名称   |                                        数据图片                                         |                                                                                                                                            标注文件                                                                                                                                                 |                                             标注文件                                             |
 | :--------: | :-----------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: |
-|       |                                                                                       |                                                                                                                                                training                                                                                                                                                |                                                  test                                                   |
-| coco_text  |                [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads)                 |                                                                                                     [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt)                                                                                                     |                                                    -                                                    |       |
-| icdar_2011 | [homepage](http://www.cvc.uab.es/icdar2011competition/?com=downloads)         |                                                                                                    [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt)                                                                                                     |                                                    -                                                    |       |
-| icdar_2013 |              [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads)                 |                                                                                                    [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/train_label.txt)                                                                                                     | [test_label_1015.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt) |       |
-| icdar_2015 |               [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)                 |                                                                                                    [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt)                                                                                                     |      [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt)      |       |
-|   IIIT5K   |    [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html)     |                                                                                                      [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt)                                                                                                       |        [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt)        |       |
+|       |                                                                                       |                                                                                                                                                训练集(training)                                                                                                                                               |                                                  测试集(test)                                                   |
+| coco_text  |                [下载地址](https://rrc.cvc.uab.es/?ch=5&com=downloads)                 |                                                                                                     [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt)                                                                                                     |                                                    -                                                    |       |
+| icdar_2011 | [下载地址](http://www.cvc.uab.es/icdar2011competition/?com=downloads)         |                                                                                                    [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt)                                                                                                     |                                                    -                                                    |       |
+| icdar_2013 |              [下载地址](https://rrc.cvc.uab.es/?ch=2&com=downloads)                 |                                                                                                    [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/train_label.txt)                                                                                                     | [test_label_1015.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt) |       |
+| icdar_2015 |               [下载地址](https://rrc.cvc.uab.es/?ch=4&com=downloads)                 |                                                                                                    [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt)                                                                                                     |      [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt)      |       |
+|   IIIT5K   |    [下载地址](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html)     |                                                                                                      [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt)                                                                                                       |        [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt)        |       |
 |    ct80    |                                            -                                           |                                                                                                                                                   -                                                                                                                                                    |         [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)         |       |
-|    svt     |[homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset) |                                                                                                                                                   -                                                                                                                                                    |         [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)          |       |
+|    svt     |[下载地址](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset) |                                                                                                                                                   -                                                                                                                                                    |         [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)          |       |
 |    svtp    |                              -                                           |                                                                                                                                                   -                                                                                                                                                    |         [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)         |       |
-|  Syn90k  |               [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)                |                                                       [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt)                                                       |                                                    -                                                    |       |
-| SynthText  |           [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)              | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) |                                                    -                                                    |       |
+|  Syn90k  |               [下载地址](https://www.robots.ox.ac.uk/~vgg/data/text/)                |                                                       [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt)                                                       |                                                    -                                                    |       |
+| SynthText  |           [下载地址](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)              | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) |                                                    -                                                    |       |
 |  SynthAdd  |  [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x)   |                                                                                                           [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)                                                                                                            |                                                    -                                                    |       |
-|  TextOCR  |  [homepage](https://textvqa.org/textocr/dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
-|  Totaltext  |  [homepage](https://github.com/cs-chan/Total-Text-Dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
+|  TextOCR  |  [下载地址](https://textvqa.org/textocr/dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
+|  Totaltext  |  [下载地址](https://github.com/cs-chan/Total-Text-Dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
 
-- For `icdar_2013`:
-  - Step1: Download `Challenge2_Test_Task3_Images.zip` and `Challenge2_Training_Task3_Images_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads)
-  - Step2: Download [test_label_1015.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt) and [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/train_label.txt)
-- For `icdar_2015`:
-  - Step1: Download `ch4_training_word_images_gt.zip` and `ch4_test_word_images_gt.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
-  - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt)
-- For `IIIT5K`:
-  - Step1: Download `IIIT5K-Word_V3.0.tar.gz` from [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html)
-  - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt)
-- For `svt`:
-  - Step1: Download `svt.zip` form [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset)
-  - Step2: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)
-  - Step3:
+- `icdar_2013` 数据集：
+  - 第一步：从 [下载地址](https://rrc.cvc.uab.es/?ch=2&com=downloads) 下载 `Challenge2_Test_Task3_Images.zip` 和 `Challenge2_Training_Task3_Images_GT.zip`
+  - 第二步：下载 [test_label_1015.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt) 和 [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/train_label.txt)
+- `icdar_2015` 数据集：
+  - 第一步：从 [下载地址](https://rrc.cvc.uab.es/?ch=4&com=downloads) 下载 `ch4_training_word_images_gt.zip` 和 `ch4_test_word_images_gt.zip`
+  - 第二步：下载 [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt)
+- `IIIT5K` 数据集：
+  - 第一步：从 [下载地址](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html) 下载 `IIIT5K-Word_V3.0.tar.gz`
+  - 第二步：下载 [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt) 和 [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt)
+- `svt` 数据集：
+  - 第一步：从 [下载地址](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset) 下载 `svt.zip`
+  - 第二步：下载 [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)
+  - 第三步：
   ```bash
   python tools/data/textrecog/svt_converter.py <download_svt_dir_path>
   ```
-- For `ct80`:
-  - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)
-- For `svtp`:
-  - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)
-- For `coco_text`:
-  - Step1: Download from [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads)
-  - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt)
-- For `Syn90k`:
-  - Step1: Download `mjsynth.tar.gz` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)
-  - Step2: Download [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt)
-  - Step3:
+- `ct80` 数据集：
+  - 第一步：下载 [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)
+- `svtp` 数据集：
+  - 第一步：下载 [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)
+- `coco_text` 数据集：
+  - 第一步：从 [下载地址](https://rrc.cvc.uab.es/?ch=5&com=downloads) 下载文件
+  - 第二步：下载 [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt)
+- `Syn90k` 数据集：
+  - 第一步：从 [下载地址](https://www.robots.ox.ac.uk/~vgg/data/text/) 下载 `mjsynth.tar.gz`
+  - 第二步：下载 [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt)
+  - 第三步：
 
   ```bash
   mkdir Syn90k && cd Syn90k
@@ -259,15 +264,15 @@ The structure of the text detection dataset directory is organized as follows.
 
   mv /path/to/shuffle_labels.txt .
 
-  # create soft link
+  # 创建soft link
   cd /path/to/mmocr/data/mixture
 
   ln -s /path/to/Syn90k Syn90k
   ```
 
-- For `SynthText`:
-  - Step1: Download `SynthText.zip` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)
-  - Step2:
+- `SynthText` 数据集：
+  - 第一步：下载 `SynthText.zip` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)
+  - 第二步：
 
   ```bash
   mkdir SynthText && cd SynthText
@@ -277,12 +282,12 @@ The structure of the text detection dataset directory is organized as follows.
 
   mv /path/to/shuffle_labels.txt .
 
-  # create soft link
+  # 创建soft link
   cd /path/to/mmocr/data/mixture
   ln -s /path/to/SynthText SynthText
   ```
-  - Step3:
-  Generate cropped images and labels:
+  - 第三步：
+  生成裁剪后的图像和标注：
 
   ```bash
   cd /path/to/mmocr
@@ -290,10 +295,10 @@ The structure of the text detection dataset directory is organized as follows.
   python tools/data/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat data/mixture/SynthText/ data/mixture/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
   ```
 
-- For `SynthAdd`:
-  - Step1: Download `SynthText_Add.zip` from [SynthAdd](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg) (code:627x))
-  - Step2: Download [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)
-  - Step3:
+- `SynthAdd` 数据集：
+  - 第一步：从 [SynthAdd](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg) (code:627x) 下载 `SynthText_Add.zip`
+  - 第二步：下载 [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)
+  - 第三步：
 
   ```bash
   mkdir SynthAdd && cd SynthAdd
@@ -304,69 +309,67 @@ The structure of the text detection dataset directory is organized as follows.
 
   mv /path/to/label.txt .
 
-  # create soft link
+  # 创建 soft link
   cd /path/to/mmocr/data/mixture
 
   ln -s /path/to/SynthAdd SynthAdd
   ```
-  **Note:**
-To convert label file with `txt` format to `lmdb` format,
+  **注意：**
+把 `.txt` 格式的标注文件转换成 `.lmdb` 格式：
 ```bash
 python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
 ```
-For example,
+例如：
 ```bash
 python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
 ```
-- For `TextOCR`:
-  - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
+- `TextOCR` 数据集：
+  - 第一步：下载 [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip)，[TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) 和 [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) 到 `textocr/` 目录.
   ```bash
   mkdir textocr && cd textocr
 
-  # Download TextOCR dataset
+  # 下载 TextOCR dataset
   wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
   wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json
   wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
 
-  # For images
+  # 对于数据图像
   unzip -q train_val_images.zip
   mv train_images train
   ```
-  - Step2: Generate `train_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
+  - 第二步：用四个并行线程剪裁图像然后生成  `train_label.txt`，`val_label.txt` ，可以使用以下命令：
   ```bash
   python tools/data/textrecog/textocr_converter.py /path/to/textocr 4
   ```
 
 
-- For `Totaltext`:
-  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (We recommend downloading the text groundtruth with .mat format since our totaltext_converter.py supports groundtruth with .mat format only).
+- `Totaltext` 数据集：
+  - 第一步：从 [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) 下载 `totaltext.zip`，然后从 [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) 下载 `groundtruth_text.zip` （我们建议下载 `.mat` 格式的标注文件，因为我们提供的 `totaltext_converter.py` 标注格式转换工具只支持 `.mat` 文件）
   ```bash
   mkdir totaltext && cd totaltext
   mkdir imgs && mkdir annotations
 
-  # For images
-  # in ./totaltext
+  # 对于图像数据
+  # 在 ./totaltext
   unzip totaltext.zip
   mv Images/Train imgs/training
   mv Images/Test imgs/test
 
-  # For annotations
+  # 对于标注文件
   unzip groundtruth_text.zip
   cd Groundtruth
   mv Polygon/Train ../annotations/training
   mv Polygon/Test ../annotations/test
 
   ```
-  - Step2: Generate cropped images, `train_label.txt` and `test_label.txt` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`.):
+  - 第二步：用以下命令生成经剪裁后的标注文件 `train_label.txt` 和 `test_label.txt` （剪裁后的图像会被保存在目录 `data/totaltext/dst_imgs/`）：
   ```bash
   python tools/data/textrecog/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
   ```
 
+## 关键信息提取
 
-
-## Key Information Extraction
-
-The structure of the key information extraction dataset directory is organized as follows.
+关键信息提取任务的数据集，文件目录应按如下配置：
 
 ```text
 └── wildreceipt
@@ -377,14 +380,14 @@ The structure of the key information extraction dataset directory is organized a
   └── train.txt
 ```
 
-- Download [wildreceipt.tar](https://download.openmmlab.com/mmocr/data/wildreceipt.tar)
+- 下载 [wildreceipt.tar](https://download.openmmlab.com/mmocr/data/wildreceipt.tar)
 
 
-## Named Entity Recognition
+## 命名实体识别（专名识别）
 
 ### CLUENER2020
 
-The structure of the named entity recognition dataset directory is organized as follows.
+命名实体识别任务的数据集，文件目录应按如下配置：
 
 ```text
 └── cluener2020
@@ -396,6 +399,7 @@ The structure of the named entity recognition dataset directory is organized as 
   └── vocab.txt
 
 ```
-- Download [cluener_public.zip](https://storage.googleapis.com/cluebenchmark/tasks/cluener_public.zip)
 
-- Download [vocab.txt](https://download.openmmlab.com/mmocr/data/cluener2020/vocab.txt) and move `vocab.txt` to `cluener2020`
+- 下载 [cluener_public.zip](https://storage.googleapis.com/cluebenchmark/tasks/cluener_public.zip)
+
+- 下载 [vocab.txt](https://download.openmmlab.com/mmocr/data/cluener2020/vocab.txt) 然后将 `vocab.txt` 移动到 `cluener2020` 文件夹下
