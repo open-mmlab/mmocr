@@ -110,8 +110,8 @@ def process(data, img_path_prefix, out_dir):
             continue
 
         word_bbox = word_bboxes[i]
-        min_x, max_x = min(word_bbox[::2]), max(word_bbox[::2])
-        min_y, max_y = min(word_bbox[1::2]), max(word_bbox[1::2])
+        min_x, max_x = int(min(word_bbox[::2])), int(max(word_bbox[::2]))
+        min_y, max_y = int(min(word_bbox[1::2])), int(max(word_bbox[1::2]))
         cropped_img = input_img[min_y:max_y, min_x:max_x]
         if cropped_img.shape[0] <= 0 or cropped_img.shape[1] <= 0:
             continue
