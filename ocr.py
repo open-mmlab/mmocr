@@ -165,26 +165,28 @@ def main():
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument('img', type=str, help='Input Image file.')
-    parser.add_argument('--out_img', type=str,
+    parser.add_argument('--out_img', type=str, default='',
                         help='Output file name of the visualized image.')
     parser.add_argument('--textdet', type=str,
                         default='DB_r18', help='Text detection algorithm')
     parser.add_argument('--textrecog', type=str,
                         default='CRNN', help='Text recognition algorithm')
-    parser.add_argument('--batch-mode', action='store_false',
+    parser.add_argument('--batch-mode', action='store_true',
                         help='Whether use batch mode for text recognition.')
     parser.add_argument('--batch-size', type=int, default=4,
                         help='Batch size for text recognition inference if batch_mode is True above.')
     parser.add_argument('--device', default='cuda:0',
                         help='Device used for inference.')
-    parser.add_argument('--export-json', action='store_false',
+    parser.add_argument('--export-json', action='store_true',
                         help='Whether export the ocr results in a json file.')
-    parser.add_argument('--details', action='store_True',
+    parser.add_argument('--details', action='store_true',
                         help='Whether include the text boxes coordinates and confidence values')
-    parser.add_argument('--imshow', action='store_false',
+    parser.add_argument('--imshow', action='store_true',
                         help='Whether show image with OpenCV.')
-    parser.add_argument('--ocr-in-lines', action='store_false',
+    parser.add_argument('--ocr-in-lines', action='store_true',
                         help='Whether group ocr results in lines.')
+    parser.add_argument('--print-result', action='store_true',
+                        help='Prints the recognised text')
     args = parser.parse_args()
     return args
 
@@ -230,7 +232,8 @@ class MMOCR:
                 model.cfg.data.test.pipeline = \
                     model.cfg.data.test['datasets'][0].pipeline
 
-    def readtext(self, img, out_img=None, details=False, export_json=False, batch_mode=False, batch_size=4, imshow=False, ocr_in_lines=False, **kwargs):
+    def readtext(self, img, out_img=None, details=False, export_json=False, batch_mode=False,
+                batch_size=4, imshow=False, ocr_in_lines=False, print_result=False,**kwargs):
         args = locals()
         [args.pop(x, None) for x in ['kwargs', 'self']]
         args = Namespace(**args)
@@ -254,12 +257,15 @@ class MMOCR:
         if args.out_img:
             img = det_recog_show_result(img, det_recog_result)
             mmcv.imwrite(img, out_img)
-            if args.imshow:
-                mmcv.imshow(img, 'predicted results')
+        if args.imshow:
+            if not args.out_img:
+                img = det_recog_show_result(img, det_recog_result)
+            mmcv.imshow(img, 'predicted results')
         if not args.details:
             det_recog_result = [x['text'] for x in det_recog_result['result']]
+        if args.print_result:
+            print(det_recog_result)
         return det_recog_result
-
 
 if __name__ == "__main__":
     main()
