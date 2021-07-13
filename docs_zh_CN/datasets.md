@@ -264,14 +264,14 @@
 
   mv /path/to/shuffle_labels.txt .
 
-  # 创建soft link
+  # 创建软链接
   cd /path/to/mmocr/data/mixture
 
   ln -s /path/to/Syn90k Syn90k
   ```
 
 - `SynthText` 数据集：
-  - 第一步：下载 `SynthText.zip` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)
+  - 第一步： 从 [下载地址](https://www.robots.ox.ac.uk/~vgg/data/scenetext/) 下载 `SynthText.zip`
   - 第二步：
 
   ```bash
@@ -282,7 +282,7 @@
 
   mv /path/to/shuffle_labels.txt .
 
-  # 创建soft link
+  # 创建软链接
   cd /path/to/mmocr/data/mixture
   ln -s /path/to/SynthText SynthText
   ```
@@ -309,13 +309,13 @@
 
   mv /path/to/label.txt .
 
-  # 创建 soft link
+  # 创建软链接
   cd /path/to/mmocr/data/mixture
 
   ln -s /path/to/SynthAdd SynthAdd
   ```
-  **注意：**
-把 `.txt` 格式的标注文件转换成 `.lmdb` 格式：
+  **额外说明：**
+运行以下命令，可以把 `.txt` 格式的标注文件转换成 `.lmdb` 格式：
 ```bash
 python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
 ```
@@ -328,7 +328,7 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   ```bash
   mkdir textocr && cd textocr
 
-  # 下载 TextOCR dataset
+  # 下载 TextOCR 数据集
   wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
   wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json
   wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
@@ -337,7 +337,7 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   unzip -q train_val_images.zip
   mv train_images train
   ```
-  - 第二步：用四个并行线程剪裁图像然后生成  `train_label.txt`，`val_label.txt` ，可以使用以下命令：
+  - 第二步：用四个并行进程剪裁图像然后生成  `train_label.txt`，`val_label.txt` ，可以使用以下命令：
   ```bash
   python tools/data/textrecog/textocr_converter.py /path/to/textocr 4
   ```
@@ -350,7 +350,7 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   mkdir imgs && mkdir annotations
 
   # 对于图像数据
-  # 在 ./totaltext
+  # 在 ./totaltext 目录下运行
   unzip totaltext.zip
   mv Images/Train imgs/training
   mv Images/Test imgs/test
