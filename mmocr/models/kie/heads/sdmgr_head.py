@@ -1,9 +1,8 @@
 import torch
 from mmcv.cnn import normal_init
+from mmdet.models.builder import HEADS, build_loss
 from torch import nn
 from torch.nn import functional as F
-
-from mmdet.models.builder import HEADS, build_loss
 
 
 @HEADS.register_module()

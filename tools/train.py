@@ -186,7 +186,16 @@ def main():
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
         val_dataset = copy.deepcopy(cfg.data.val)
-        val_dataset.pipeline = cfg.data.train.pipeline
+        if cfg.data.train['type'] == 'ConcatDataset':
+            train_pipeline = cfg.data.train['datasets'][0].pipeline
+        else:
+            train_pipeline = cfg.data.train.pipeline
+
+        if val_dataset['type'] == 'ConcatDataset':
+            for dataset in val_dataset['datasets']:
+                dataset.pipeline = train_pipeline
+        else:
+            val_dataset.pipeline = train_pipeline
         datasets.append(build_dataset(val_dataset))
     if cfg.checkpoint_config is not None:
         # save mmdet version, config file content and class names in

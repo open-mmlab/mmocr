@@ -34,6 +34,10 @@ The structure of the text detection dataset directory is organized as follows.
 ├── synthtext
 │   ├── imgs
 │   └── instances_training.lmdb
+├── textocr
+│   ├── train
+│   ├── instances_training.json
+│   └── instances_val.json
 ├── totaltext
 │   ├── imgs
 │   ├── instances_test.json
@@ -47,6 +51,7 @@ The structure of the text detection dataset directory is organized as follows.
 | ICDAR2015 | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)     |                                                                                      | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
 | ICDAR2017 | [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [renamed_imgs](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar) | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
 | Synthtext | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  |                                                                                      | [instances_training.lmdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb) |                    -                    |
+| TextOCR | [homepage](https://textvqa.org/textocr/dataset)  |                                                                                      | - |                    -                    | -
 | Totaltext | [homepage](https://github.com/cs-chan/Total-Text-Dataset)  |                                                                                      | - |                    -                    | -
 
 - For `icdar2015`:
@@ -96,8 +101,26 @@ The structure of the text detection dataset directory is organized as follows.
   ```bash
   python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
   ```
+- For `TextOCR`:
+  - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
+  ```bash
+  mkdir textocr && cd textocr
+
+  # Download TextOCR dataset
+  wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
+  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json
+  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
+
+  # For images
+  unzip -q train_val_images.zip
+  mv train_images train
+  ```
+  - Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
+  ```bash
+  python tools/data/textdet/textocr_converter.py /path/to/textocr
+  ```
 - For `Totaltext`:
-  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (We recommend downloading the text groundtruth with .mat format since our totaltext_converter.py supports groundtruth with .mat format only).
+  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
   ```bash
   mkdir totaltext && cd totaltext
   mkdir imgs && mkdir annotations
@@ -171,6 +194,10 @@ The structure of the text detection dataset directory is organized as follows.
 │   │   ├── label.txt
 │   │   ├── label.lmdb
 │   │   ├── SynthText_Add
+│   ├── TextOCR
+│   │   ├── image
+│   │   ├── train_label.txt
+│   │   ├── val_label.txt
 │   ├── Totaltext
 │   │   ├── imgs
 │   │   ├── annotations
@@ -192,6 +219,7 @@ The structure of the text detection dataset directory is organized as follows.
 |  Syn90k  |               [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)                |                                                       [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt)                                                       |                                                    -                                                    |       |
 | SynthText  |           [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)              | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) |                                                    -                                                    |       |
 |  SynthAdd  |  [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x)   |                                                                                                           [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)                                                                                                            |                                                    -                                                    |       |
+|  TextOCR  |  [homepage](https://textvqa.org/textocr/dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
 |  Totaltext  |  [homepage](https://github.com/cs-chan/Total-Text-Dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
 
 - For `icdar_2013`:
@@ -239,21 +267,27 @@ The structure of the text detection dataset directory is organized as follows.
 
 - For `SynthText`:
   - Step1: Download `SynthText.zip` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)
-  - Step2: Download [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt)
-  - Step3: Download [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt)
-  - Step4:
+  - Step2:
 
   ```bash
+  mkdir SynthText && cd SynthText
+  mv /path/to/SynthText.zip .
   unzip SynthText.zip
-
-  cd SynthText
+  mv SynthText synthtext
 
   mv /path/to/shuffle_labels.txt .
 
   # create soft link
   cd /path/to/mmocr/data/mixture
-
   ln -s /path/to/SynthText SynthText
+  ```
+  - Step3:
+  Generate cropped images and labels:
+
+  ```bash
+  cd /path/to/mmocr
+
+  python tools/data/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat data/mixture/SynthText/ data/mixture/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
   ```
 
 - For `SynthAdd`:
@@ -284,9 +318,28 @@ For example,
 ```bash
 python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
 ```
+- For `TextOCR`:
+  - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
+  ```bash
+  mkdir textocr && cd textocr
+
+  # Download TextOCR dataset
+  wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
+  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json
+  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
+
+  # For images
+  unzip -q train_val_images.zip
+  mv train_images train
+  ```
+  - Step2: Generate `train_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
+  ```bash
+  python tools/data/textrecog/textocr_converter.py /path/to/textocr 4
+  ```
+
 
 - For `Totaltext`:
-  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (We recommend downloading the text groundtruth with .mat format since our totaltext_converter.py supports groundtruth with .mat format only).
+  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
   ```bash
   mkdir totaltext && cd totaltext
   mkdir imgs && mkdir annotations

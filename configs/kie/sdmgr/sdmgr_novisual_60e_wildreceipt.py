@@ -10,7 +10,7 @@ train_pipeline = [
     dict(
         type='Collect',
         keys=['img', 'relations', 'texts', 'gt_bboxes', 'gt_labels'],
-        meta_keys=())
+        meta_keys=('filename', 'ori_texts'))
 ]
 test_pipeline = [
     dict(type='LoadAnnotations'),
@@ -20,7 +20,7 @@ test_pipeline = [
     dict(
         type='Collect',
         keys=['img', 'relations', 'texts', 'gt_bboxes'],
-        meta_keys=())
+        meta_keys=('filename', 'ori_texts'))
 ]
 
 dataset_type = 'KIEDataset'
@@ -51,7 +51,13 @@ test = dict(
     test_mode=True)
 
 data = dict(
-    samples_per_gpu=4, workers_per_gpu=1, train=train, val=test, test=test)
+    samples_per_gpu=4,
+    workers_per_gpu=1,
+    val_dataloader=dict(samples_per_gpu=1),
+    test_dataloader=dict(samples_per_gpu=1),
+    train=train,
+    val=test,
+    test=test)
 
 evaluation = dict(
     interval=1,

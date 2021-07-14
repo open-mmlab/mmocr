@@ -1,8 +1,8 @@
 import torch.nn as nn
 from mmcv.cnn import kaiming_init, uniform_init
+from mmdet.models.builder import BACKBONES
 
 import mmocr.utils as utils
-from mmdet.models.builder import BACKBONES
 from mmocr.models.textrecog.layers import BasicBlock
 
 

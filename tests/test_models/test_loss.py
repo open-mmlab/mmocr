@@ -1,8 +1,8 @@
 import numpy as np
 import torch
+from mmdet.core import BitmapMasks
 
 import mmocr.models.textdet.losses as losses
-from mmdet.core import BitmapMasks
 
 
 def test_panloss():

@@ -91,7 +91,7 @@ train1 = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=train_pipeline,
+    pipeline=None,
     test_mode=False)
 
 test_prefix = 'data/mixture/'
@@ -122,7 +122,7 @@ test1 = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=test_pipeline,
+    pipeline=None,
     test_mode=True)
 
 test2 = {key: value for key, value in test1.items()}
@@ -148,13 +148,20 @@ test6['ann_file'] = test_ann_file6
 data = dict(
     samples_per_gpu=64,
     workers_per_gpu=4,
-    train=dict(type='ConcatDataset', datasets=[train1]),
+    val_dataloader=dict(samples_per_gpu=1),
+    test_dataloader=dict(samples_per_gpu=1),
+    train=dict(
+        type='UniformConcatDataset',
+        datasets=[train1],
+        pipeline=train_pipeline),
     val=dict(
-        type='ConcatDataset',
-        datasets=[test1, test2, test3, test4, test5, test6]),
+        type='UniformConcatDataset',
+        datasets=[test1, test2, test3, test4, test5, test6],
+        pipeline=test_pipeline),
     test=dict(
-        type='ConcatDataset',
-        datasets=[test1, test2, test3, test4, test5, test6]))
+        type='UniformConcatDataset',
+        datasets=[test1, test2, test3, test4, test5, test6],
+        pipeline=test_pipeline))
 
 evaluation = dict(interval=1, metric='acc')
 

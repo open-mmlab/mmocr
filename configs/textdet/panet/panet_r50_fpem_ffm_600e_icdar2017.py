@@ -75,6 +75,8 @@ test_pipeline = [
 data = dict(
     samples_per_gpu=4,
     workers_per_gpu=4,
+    val_dataloader=dict(samples_per_gpu=1),
+    test_dataloader=dict(samples_per_gpu=1),
     train=dict(
         type=dataset_type,
         ann_file=data_root + '/instances_training.json',

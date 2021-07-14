@@ -1,9 +1,9 @@
 import numpy as np
 from mmcv.utils import print_log
-from torch.utils.data import Dataset
-
 from mmdet.datasets.builder import DATASETS
 from mmdet.datasets.pipelines import Compose
+from torch.utils.data import Dataset
+
 from mmocr.datasets.builder import build_loader
 
 

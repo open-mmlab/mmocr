@@ -6,13 +6,12 @@ import numpy as np
 import torch
 from mmcv.onnx import register_extra_symbolics
 from mmcv.parallel import collate
-from tools.deployment.deploy_helper import (ONNXRuntimeDetector,
-                                            ONNXRuntimeRecognizer)
-from torch import nn
-
 from mmdet.apis import init_detector
 from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
+from torch import nn
+
+from mmocr.core.deployment import ONNXRuntimeDetector, ONNXRuntimeRecognizer
 from mmocr.datasets.pipelines.crop import crop_img  # noqa: F401
 
 
@@ -158,17 +157,16 @@ def pytorch2onnx(model: nn.Module,
             Default: `tmp.onnx`.
         verify (bool): Whether compare the outputs between Pytorch and ONNX.
             Default: False.
+        dynamic_export (bool): Whether apply dynamic export.
+            Default: False.
         device_id (id): Device id to place model and data.
             Default: 0
     """
     device = torch.device(type='cuda', index=device_id)
     model.to(device).eval()
     _convert_batchnorm(model)
-    # model.forward = model.simple_test
-    end2end_res = {'filename': img_path}
-    end2end_res['result'] = []
 
-    # mm_inputs = _demo_mm_inputs([1,3,512,512], 20)
+    # prepare inputs
     mm_inputs = _prepare_data(cfg=model.cfg, imgs=img_path)
     imgs = mm_inputs.pop('img')
     img_metas = mm_inputs.pop('img_metas')

@@ -1,10 +1,10 @@
 from unittest import mock
 
 import numpy as np
+from mmdet.core import PolygonMasks
 
 import mmocr.datasets.pipelines.custom_format_bundle as cf_bundle
 import mmocr.datasets.pipelines.textdet_targets as textdet_targets
-from mmdet.core import PolygonMasks
 
 
 @mock.patch('%s.cf_bundle.show_feature' % __name__)
@@ -114,6 +114,16 @@ def test_dbnet_generate_thr_map():
                   [np.array([20, 0, 30, 0, 30, 10, 20, 10])]]
     thr_map, thr_mask = target_generator.generate_thr_map((40, 40), text_polys)
     assert np.all((thr_map >= 0.29) * (thr_map <= 0.71))
+
+
+def test_dbnet_draw_border_map():
+    target_generator = textdet_targets.DBNetTargets()
+    poly = np.array([[20, 21], [-14, 20], [-11, 30], [-22, 26]])
+    img_size = (40, 40)
+    thr_map = np.zeros(img_size, dtype=np.float32)
+    thr_mask = np.zeros(img_size, dtype=np.uint8)
+
+    target_generator.draw_border_map(poly, thr_map, thr_mask)
 
 
 def test_dbnet_generate_targets():

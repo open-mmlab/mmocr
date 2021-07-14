@@ -3,8 +3,8 @@ from os import path as osp
 
 import numpy as np
 import torch
-
 from mmdet.datasets.builder import DATASETS
+
 from mmocr.core import compute_f1_score
 from mmocr.datasets.base_dataset import BaseDataset
 from mmocr.datasets.pipelines import sort_vertex8
@@ -58,7 +58,12 @@ class KIEDataset(BaseDataset):
     def pre_pipeline(self, results):
         results['img_prefix'] = self.img_prefix
         results['bbox_fields'] = []
-        results['img'] = np.zeros((1, 1, 1), dtype=np.uint8)
+        results['ori_texts'] = results['ann_info']['texts']
+        results['filename'] = osp.join(self.img_prefix,
+                                       results['img_info']['filename'])
+        results['ori_filename'] = results['img_info']['filename']
+        # a dummy img data
+        results['img'] = np.zeros((0, 0, 0), dtype=np.uint8)
 
     def _parse_anno_info(self, annotations):
         """Parse annotations of boxes, texts and labels for one image.

@@ -88,6 +88,8 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 html_theme = 'sphinx_rtd_theme'
 
+language = 'en'
+
 master_doc = 'index'
 
 # Add any paths that contain custom static files (such as style sheets) here,

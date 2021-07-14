@@ -6,8 +6,8 @@ from mmcv.cnn import (UPSAMPLE_LAYERS, ConvModule, build_activation_layer,
                       kaiming_init)
 from mmcv.runner import load_checkpoint
 from mmcv.utils.parrots_wrapper import _BatchNorm
-
 from mmdet.models.builder import BACKBONES
+
 from mmocr.utils import get_root_logger
 
 

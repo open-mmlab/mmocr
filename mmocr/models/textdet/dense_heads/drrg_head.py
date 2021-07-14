@@ -3,8 +3,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import normal_init
-
 from mmdet.models.builder import HEADS, build_loss
+
 from mmocr.models.textdet.modules import GCN, LocalGraphs, ProposalLocalGraphs
 from mmocr.models.textdet.postprocess import decode
 from mmocr.utils import check_argument

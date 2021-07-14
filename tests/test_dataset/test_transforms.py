@@ -2,10 +2,10 @@ import unittest.mock as mock
 
 import numpy as np
 import torchvision.transforms as TF
+from mmdet.core import BitmapMasks, PolygonMasks
 from PIL import Image
 
 import mmocr.datasets.pipelines.transforms as transforms
-from mmdet.core import BitmapMasks, PolygonMasks
 
 
 @mock.patch('%s.transforms.np.random.random_sample' % __name__)

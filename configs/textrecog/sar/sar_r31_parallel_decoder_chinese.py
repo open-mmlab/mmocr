@@ -94,7 +94,7 @@ train = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=train_pipeline,
+    pipeline=None,
     test_mode=False)
 
 test_prefix = 'data/chineseocr/'
@@ -113,14 +113,20 @@ test = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=test_pipeline,
+    pipeline=None,
     test_mode=False)
 
 data = dict(
     samples_per_gpu=40,
     workers_per_gpu=2,
-    train=dict(type='ConcatDataset', datasets=[train]),
-    val=dict(type='ConcatDataset', datasets=[test]),
-    test=dict(type='ConcatDataset', datasets=[test]))
+    val_dataloader=dict(samples_per_gpu=1),
+    test_dataloader=dict(samples_per_gpu=1),
+    train=dict(
+        type='UniformConcatDataset', datasets=[train],
+        pipeline=train_pipeline),
+    val=dict(
+        type='UniformConcatDataset', datasets=[test], pipeline=test_pipeline),
+    test=dict(
+        type='UniformConcatDataset', datasets=[test], pipeline=test_pipeline))
 
 evaluation = dict(interval=1, metric='acc')

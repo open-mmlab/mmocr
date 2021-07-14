@@ -107,7 +107,7 @@ train = dict(
         repeat=1,
         parser=dict(
             type='LineJsonParser', keys=['file_name', 'annotations', 'text'])),
-    pipeline=train_pipeline,
+    pipeline=None,
     test_mode=False)
 
 dataset_type = 'OCRDataset'
@@ -135,7 +135,7 @@ test1 = dict(
             keys=['filename', 'text'],
             keys_idx=[0, 1],
             separator=' ')),
-    pipeline=test_pipeline,
+    pipeline=None,
     test_mode=True)
 
 test2 = {key: value for key, value in test1.items()}
@@ -153,8 +153,16 @@ test4['ann_file'] = test_ann_file4
 data = dict(
     samples_per_gpu=16,
     workers_per_gpu=2,
-    train=dict(type='ConcatDataset', datasets=[train]),
-    val=dict(type='ConcatDataset', datasets=[test1, test2, test3, test4]),
-    test=dict(type='ConcatDataset', datasets=[test1, test2, test3, test4]))
+    train=dict(
+        type='UniformConcatDataset', datasets=[train],
+        pipeline=train_pipeline),
+    val=dict(
+        type='UniformConcatDataset',
+        datasets=[test1, test2, test3, test4],
+        pipeline=test_pipeline),
+    test=dict(
+        type='UniformConcatDataset',
+        datasets=[test1, test2, test3, test4],
+        pipeline=test_pipeline))
 
 evaluation = dict(interval=1, metric='acc')

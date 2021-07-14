@@ -2,8 +2,8 @@ import os
 
 import pytest
 from mmcv.image import imread
-
 from mmdet.apis import init_detector
+
 from mmocr.apis.inference import model_inference
 from mmocr.datasets import build_dataset  # noqa: F401
 from mmocr.models import build_detector  # noqa: F401
@@ -114,19 +114,19 @@ def test_model_batch_inference_raises_exception_error_free_resize_recog(
 
     with pytest.raises(
             Exception,
-            match='Free resize do not support batch mode '
+            match='Batch mode is not supported '
             'since the image width is not fixed, '
-            'for resize keeping aspect ratio and '
-            'max_width is not give.'):
+            'in the case that keeping aspect ratio but '
+            'max_width is none when do resize.'):
         sample_img_path = os.path.join(tmp_dir, '../demo/demo_text_recog.jpg')
         model_inference(
             model, [sample_img_path, sample_img_path], batch_mode=True)
 
     with pytest.raises(
             Exception,
-            match='Free resize do not support batch mode '
+            match='Batch mode is not supported '
             'since the image width is not fixed, '
-            'for resize keeping aspect ratio and '
-            'max_width is not give.'):
+            'in the case that keeping aspect ratio but '
+            'max_width is none when do resize.'):
         img = imread(sample_img_path)
         model_inference(model, [img, img], batch_mode=True)
