@@ -1,7 +1,4 @@
-import sys
-
-sys.path.insert(1, '../mmocr/')
-
+import os
 from argparse import ArgumentParser, Namespace
 
 import mmcv
@@ -12,16 +9,17 @@ from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.utils.box_util import stitch_boxes_into_lines
 
-import os
-
 textdet_models = {
     'DB_r18': {
         'config': 'dbnet/dbnet_r18_fpnc_1200e_icdar2015.py',
-        'ckpt': 'dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth'
+        'ckpt':
+        'dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth'
     },
     'DB_r50': {
-        'config': 'dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py',
-        'ckpt': 'dbnet/dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20210325-91cef9af.pth'
+        'config':
+        'dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py',
+        'ckpt':
+        'dbnet/dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20210325-91cef9af.pth'
     },
     'DRRG': {
         'config': 'drrg/drrg_r50_fpn_unet_1200e_ctw1500.py',
@@ -41,19 +39,23 @@ textdet_models = {
     },
     'MaskRCNN_ICDAR15': {
         'config': 'maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015.py',
-        'ckpt': 'maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015_20210219-8eb340a3.pth'
+        'ckpt':
+        'maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015_20210219-8eb340a3.pth'
     },
     'MaskRCNN_ICDAR17': {
         'config': 'maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017.py',
-        'ckpt': 'maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017_20210218-c6ec3ebb.pth'
+        'ckpt':
+        'maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017_20210218-c6ec3ebb.pth'
     },
     'PANet_CTW': {
         'config': 'panet/panet_r18_fpem_ffm_600e_ctw1500.py',
-        'ckpt': 'panet/panet_r18_fpem_ffm_sbn_600e_ctw1500_20210219-3b3a9aa3.pth'
+        'ckpt':
+        'panet/panet_r18_fpem_ffm_sbn_600e_ctw1500_20210219-3b3a9aa3.pth'
     },
     'PANet_ICDAR15': {
         'config': 'panet/panet_r18_fpem_ffm_600e_icdar2015.py',
-        'ckpt': 'panet/panet_r18_fpem_ffm_sbn_600e_icdar2015_20210219-42dbe46a.pth'
+        'ckpt':
+        'panet/panet_r18_fpem_ffm_sbn_600e_icdar2015_20210219-42dbe46a.pth'
     },
     'PS_CTW': {
         'config': 'psenet/psenet_r50_fpnf_600e_ctw1500.py',
@@ -169,34 +171,64 @@ def main():
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument('img', type=str, help='Input Image file.')
-    parser.add_argument('--out_img', type=str, default='',
-                        help='Output file name of the visualized image.')
-    parser.add_argument('--textdet', type=str,
-                        default='DB_r18', help='Text detection algorithm')
-    parser.add_argument('--textrecog', type=str,
-                        default='CRNN', help='Text recognition algorithm')
-    parser.add_argument('--batch-mode', action='store_true',
-                        help='Whether use batch mode for text recognition.')
-    parser.add_argument('--batch-size', type=int, default=4,
-                        help='Batch size for text recognition inference if batch_mode is True above.')
-    parser.add_argument('--device', default='cuda:0',
-                        help='Device used for inference.')
-    parser.add_argument('--export-json', action='store_true',
-                        help='Whether export the ocr results in a json file.')
-    parser.add_argument('--details', action='store_true',
-                        help='Whether include the text boxes coordinates and confidence values')
-    parser.add_argument('--imshow', action='store_true',
-                        help='Whether show image with OpenCV.')
-    parser.add_argument('--ocr-in-lines', action='store_true',
-                        help='Whether group ocr results in lines.')
-    parser.add_argument('--print-result', action='store_true',
-                        help='Prints the recognised text')
+    parser.add_argument(
+        '--out_img',
+        type=str,
+        default='',
+        help='Output file name of the visualized image.')
+    parser.add_argument(
+        '--textdet',
+        type=str,
+        default='DB_r18',
+        help='Text detection algorithm')
+    parser.add_argument(
+        '--textrecog',
+        type=str,
+        default='CRNN',
+        help='Text recognition algorithm')
+    parser.add_argument(
+        '--batch-mode',
+        action='store_true',
+        help='Whether use batch mode for text recognition.')
+    parser.add_argument(
+        '--batch-size',
+        type=int,
+        default=4,
+        help='Batch size for text recognition inference')
+    parser.add_argument(
+        '--device', default='cuda:0', help='Device used for inference.')
+    parser.add_argument(
+        '--export-json',
+        action='store_true',
+        help='Whether export the ocr results in a json file.')
+    parser.add_argument(
+        '--details',
+        action='store_true',
+        help='Whether include the text boxes coordinates and confidence values'
+    )
+    parser.add_argument(
+        '--imshow',
+        action='store_true',
+        help='Whether show image with OpenCV.')
+    parser.add_argument(
+        '--ocr-in-lines',
+        action='store_true',
+        help='Whether group ocr results in lines.')
+    parser.add_argument(
+        '--print-result',
+        action='store_true',
+        help='Prints the recognised text')
     args = parser.parse_args()
     return args
 
 
 class MMOCR:
-    def __init__(self, textdet='DB_r18', textrecog='CRNN', device='cuda:0', **kwargs):
+
+    def __init__(self,
+                 textdet='DB_r18',
+                 textrecog='CRNN',
+                 device='cuda:0',
+                 **kwargs):
         self.td = textdet
         self.tr = textrecog
         if device == 'cpu':
@@ -205,25 +237,27 @@ class MMOCR:
             self.device = device
 
         if self.td not in textdet_models:
-            raise ValueError(
-                self.td, 'is not a supported text detection algorthm')
+            raise ValueError(self.td,
+                             'is not a supported text detection algorthm')
         elif self.tr not in textrecog_models:
-            raise ValueError(
-                self.tr, 'is not a supported text recognition algorithm')
+            raise ValueError(self.tr,
+                             'is not a supported text recognition algorithm')
 
-        dir_path = os.path.dirname(os.path.realpath(__file__))
+        dir_path = os.getcwd()
         # build detect model
-        det_config = dir_path + '/configs/textdet/' + textdet_models[self.td]["config"]
+        det_config = dir_path + '/configs/textdet/' + textdet_models[
+            self.td]['config']
         det_ckpt = 'https://download.openmmlab.com/mmocr/textdet/' + \
-            textdet_models[self.td]["ckpt"]
+            textdet_models[self.td]['ckpt']
 
         self.detect_model = init_detector(
             det_config, det_ckpt, device=self.device)
 
         # build recog model
-        recog_config = dir_path + '/configs/textrecog/' + textrecog_models[self.tr]["config"]
+        recog_config = dir_path + '/configs/textrecog/' + textrecog_models[
+            self.tr]['config']
         recog_ckpt = 'https://download.openmmlab.com/mmocr/textrecog/' + \
-            textrecog_models[self.tr]["ckpt"]
+            textrecog_models[self.tr]['ckpt']
 
         self.recog_model = init_detector(
             recog_config, recog_ckpt, device=self.device)
@@ -236,13 +270,22 @@ class MMOCR:
                 model.cfg.data.test.pipeline = \
                     model.cfg.data.test['datasets'][0].pipeline
 
-    def readtext(self, img, out_img=None, details=False, export_json=False, batch_mode=False,
-                batch_size=4, imshow=False, ocr_in_lines=False, print_result=False,**kwargs):
+    def readtext(self,
+                 img,
+                 out_img=None,
+                 details=False,
+                 export_json=False,
+                 batch_mode=False,
+                 batch_size=4,
+                 imshow=False,
+                 ocr_in_lines=False,
+                 print_result=False,
+                 **kwargs):
         args = locals()
         [args.pop(x, None) for x in ['kwargs', 'self']]
         args = Namespace(**args)
-        det_recog_result = det_and_recog_inference(
-            args, self.detect_model, self.recog_model)
+        det_recog_result = det_and_recog_inference(args, self.detect_model,
+                                                   self.recog_model)
         if args.export_json:
             mmcv.dump(
                 det_recog_result,
@@ -271,5 +314,6 @@ class MMOCR:
             print(det_recog_result)
         return det_recog_result
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()
