@@ -24,7 +24,7 @@ def disable_text_recog_aug_test(cfg):
     return cfg
 
 
-def model_inference(model, imgs, batch_mode=False):
+def model_inference(model, imgs, ann=None, batch_mode=False, return_data=False):
     """Inference image(s) with the detector.
 
     Args:
@@ -75,10 +75,11 @@ def model_inference(model, imgs, batch_mode=False):
         # prepare data
         if is_ndarray:
             # directly add img
-            data = dict(img=img)
+            data = dict(img=img, ann_info=ann, bbox_fields=[])
         else:
             # add information into dict
-            data = dict(img_info=dict(filename=img), img_prefix=None)
+            data = dict(img_info=dict(filename=img), img_prefix=None, ann_info=ann,
+            bbox_fields=[])
 
         # build the data pipeline
         data = test_pipeline(data)
@@ -125,9 +126,13 @@ def model_inference(model, imgs, batch_mode=False):
         results = model(return_loss=False, rescale=True, **data)
 
     if not is_batch:
-        return results[0]
+        if not return_data:
+            return results[0]
+        return results[0], datas[0]
     else:
-        return results
+        if not return_data:
+            return results
+        return results, datas
 
 
 def text_model_inference(model, input_sentence):
