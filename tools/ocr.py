@@ -1,3 +1,7 @@
+import sys
+
+sys.path.insert(1, '../mmocr/')
+
 from argparse import ArgumentParser, Namespace
 
 import mmcv
@@ -83,8 +87,8 @@ textrecog_models = {
         'ckpt': 'nrtr/nrtr_r31_1by8_1by4_academic_20210406-ce16e7cc.pth'
     },
     'RobustScanner': {
-        'config': 'robustscanner/robustscanner_r31_academic.py',
-        'ckpt': 'robustscanner/robustscanner_r31_academic-5f05874f.pth'
+        'config': 'robust_scanner/robustscanner_r31_academic.py',
+        'ckpt': 'robust_scanner/robustscanner_r31_academic-5f05874f.pth'
     },
     'SEG': {
         'config': 'seg/seg_r31_1by16_fpnocr_academic.py',
