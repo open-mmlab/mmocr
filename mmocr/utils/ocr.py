@@ -177,15 +177,22 @@ def parse_args():
         default='',
         help='Output file name of the visualized image.')
     parser.add_argument(
-        '--textdet',
+        '--det',
         type=str,
-        default='DB_r18',
+        default='PANet_ICDAR15',
         help='Text detection algorithm')
     parser.add_argument(
-        '--textrecog',
+        '--det-config',
         type=str,
-        default='CRNN',
-        help='Text recognition algorithm')
+        default='',
+        help='Path to the custom config of the selected textdet model')
+    parser.add_argument(
+        '--recog', type=str, default='SEG', help='Text recognition algorithm')
+    parser.add_argument(
+        '--recog-config',
+        type=str,
+        default='',
+        help='Path to the custom config of the selected textrecog model')
     parser.add_argument(
         '--batch-mode',
         action='store_true',
@@ -225,12 +232,14 @@ def parse_args():
 class MMOCR:
 
     def __init__(self,
-                 textdet='DB_r18',
-                 textrecog='CRNN',
+                 det='PANet_ICDAR15',
+                 det_config='',
+                 recog='SEG',
+                 recog_config='',
                  device='cuda:0',
                  **kwargs):
-        self.td = textdet
-        self.tr = textrecog
+        self.td = det
+        self.tr = recog
         if device == 'cpu':
             self.device = 0
         else:
@@ -245,8 +254,9 @@ class MMOCR:
 
         dir_path = os.getcwd()
         # build detect model
-        det_config = dir_path + '/configs/textdet/' + textdet_models[
-            self.td]['config']
+        if not det_config:
+            det_config = dir_path + '/configs/textdet/' + textdet_models[
+                self.td]['config']
         det_ckpt = 'https://download.openmmlab.com/mmocr/textdet/' + \
             textdet_models[self.td]['ckpt']
 
@@ -254,8 +264,9 @@ class MMOCR:
             det_config, det_ckpt, device=self.device)
 
         # build recog model
-        recog_config = dir_path + '/configs/textrecog/' + textrecog_models[
-            self.tr]['config']
+        if not recog_config:
+            recog_config = dir_path + '/configs/textrecog/' + textrecog_models[
+                self.tr]['config']
         recog_ckpt = 'https://download.openmmlab.com/mmocr/textrecog/' + \
             textrecog_models[self.tr]['ckpt']
 
