@@ -90,8 +90,6 @@ class FCEHead(HeadMixin, BaseModule):
             stride=1,
             padding=1)
 
-        self.init_weights()
-
     '''
     def init_weights(self):
         normal_init(self.out_conv_cls, mean=0, std=0.01)
