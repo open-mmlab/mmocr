@@ -66,7 +66,7 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             logger = get_root_logger()
             print_log(f'load model from: {pretrained}', logger=logger)
 
-    def forward_test(self, imgs, img_metas, **kwargs):
+    def forward_test(self, imgs, **kwargs):
         """
         Args:
             imgs (tensor | list[tensor]): Tensor should have shape NxCxHxW,
@@ -79,13 +79,11 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             assert imgs[0].size(0) == 1, ('aug test does not support '
                                           f'inference with batch size '
                                           f'{imgs[0].size(0)}')
-            assert len(imgs) == len(img_metas)
-            return self.aug_test(imgs, img_metas, **kwargs)
 
-        return self.simple_test(imgs, img_metas, **kwargs)
+        return self.simple_test(imgs, **kwargs)
 
     @auto_fp16(apply_to=('img', ))
-    def forward(self, img, img_metas, return_loss=True, **kwargs):
+    def forward(self, img, return_loss=False, **kwargs):
         """Calls either :func:`forward_train` or :func:`forward_test` depending
         on whether ``return_loss`` is ``True``.
 
@@ -94,17 +92,14 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
         """
 
         if return_loss:
-            return self.forward_train(img, img_metas, **kwargs)
+            return self.forward_train(img, **kwargs)
 
         if isinstance(img, list):
             for idx, each_img in enumerate(img):
                 if each_img.dim() == 3:
                     img[idx] = each_img.unsqueeze(0)
-        else:
-            if len(img_metas) == 1 and isinstance(img_metas[0], list):
-                img_metas = img_metas[0]
 
-        return self.forward_test(img, img_metas, **kwargs)
+        return self.forward_test(img, **kwargs)
 
     def _parse_losses(self, losses):
         """Parse the raw outputs (losses) of the network.

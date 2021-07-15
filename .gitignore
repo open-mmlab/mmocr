@@ -138,3 +138,4 @@ workspace.code-workspace
 results
 mmocr/core/font.TTF
 workdirs/
+*.pt

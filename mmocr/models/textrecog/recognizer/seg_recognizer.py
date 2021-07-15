@@ -76,7 +76,7 @@ class SegRecognizer(BaseRecognizer):
 
         return x
 
-    def forward_train(self, img, img_metas, gt_kernels=None):
+    def forward_train(self, img, gt_kernels=None):
         """
         Args:
             img (tensor): Input images of shape (N, C, H, W).
@@ -141,7 +141,7 @@ class SegRecognizer(BaseRecognizer):
         out_results = [dict(text=out_text, score=out_score)]
         return out_results
 
-    def aug_test(self, imgs, img_metas, **kwargs):
+    def aug_test(self, imgs, **kwargs):
         """Test function with test time augmentation.
 
         Args:
@@ -151,7 +151,7 @@ class SegRecognizer(BaseRecognizer):
         """
         aug_results = []
         for img, img_meta in zip(imgs, img_metas):
-            result = self.simple_test(img, img_meta, **kwargs)
+            result = self.simple_test(img, **kwargs)
             aug_results.append(result)
 
         return self.merge_aug_results(aug_results)
