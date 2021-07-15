@@ -103,6 +103,46 @@ textrecog_models = {
 }
 
 
+def det_recog_pp(args, det_recog_result):
+    if args.export_json:
+        mmcv.dump(
+            det_recog_result,
+            args.out_img + '.json',
+            ensure_ascii=False,
+            indent=4)
+    if args.ocr_in_lines:
+        res = det_recog_result['result']
+        res = stitch_boxes_into_lines(res, 10, 0.5)
+        det_recog_result['result'] = res
+        mmcv.dump(
+            det_recog_result,
+            args.out_img + '.line.json',
+            ensure_ascii=False,
+            indent=4)
+    if args.out_img or args.imshow:
+        res_img = det_recog_show_result(args.img, det_recog_result)
+        if args.out_img:
+            mmcv.imwrite(res_img, args.out_img)
+        if args.imshow:
+            mmcv.imshow(res_img, 'predicted results')
+    if not args.details:
+        det_recog_result = [x['text'] for x in det_recog_result['result']]
+    if args.print_result:
+        print(det_recog_result)
+    return det_recog_result
+
+
+def single_pp(args, result, model):
+    if args.export_json:
+        mmcv.dump(result, args.out_img + '.json', ensure_ascii=False, indent=4)
+    if args.out_img or args.imshow:
+        model.show_result(
+            args.img, result, out_file=args.out_img, show=args.imshow)
+    if args.print_result:
+        print(result)
+    return result
+
+
 def det_and_recog_inference(args, det_model, recog_model):
     image = args.img
     if isinstance(image, str):
@@ -110,7 +150,6 @@ def det_and_recog_inference(args, det_model, recog_model):
     else:
         end2end_res = {}
     end2end_res['result'] = []
-
     image = mmcv.imread(image)
     det_result = model_inference(det_model, image)
     bboxes = det_result['boundary_result']
@@ -238,6 +277,7 @@ class MMOCR:
                  recog_config='',
                  device='cuda:0',
                  **kwargs):
+        print(det, recog)
         self.td = det
         self.tr = recog
         if device == 'cpu':
@@ -245,36 +285,43 @@ class MMOCR:
         else:
             self.device = device
 
-        if self.td not in textdet_models:
+        if self.td and self.td not in textdet_models:
             raise ValueError(self.td,
                              'is not a supported text detection algorthm')
-        elif self.tr not in textrecog_models:
+        elif self.tr and self.tr not in textrecog_models:
             raise ValueError(self.tr,
                              'is not a supported text recognition algorithm')
 
         dir_path = os.getcwd()
-        # build detect model
-        if not det_config:
-            det_config = dir_path + '/configs/textdet/' + textdet_models[
-                self.td]['config']
-        det_ckpt = 'https://download.openmmlab.com/mmocr/textdet/' + \
-            textdet_models[self.td]['ckpt']
 
-        self.detect_model = init_detector(
-            det_config, det_ckpt, device=self.device)
+        if self.td:
+            # build detection model
+            if not det_config:
+                det_config = dir_path + '/configs/textdet/' + textdet_models[
+                    self.td]['config']
+            det_ckpt = 'https://download.openmmlab.com/mmocr/textdet/' + \
+                textdet_models[self.td]['ckpt']
 
-        # build recog model
-        if not recog_config:
-            recog_config = dir_path + '/configs/textrecog/' + textrecog_models[
-                self.tr]['config']
-        recog_ckpt = 'https://download.openmmlab.com/mmocr/textrecog/' + \
-            textrecog_models[self.tr]['ckpt']
+            self.detect_model = init_detector(
+                det_config, det_ckpt, device=self.device)
+        else:
+            self.detect_model = None
 
-        self.recog_model = init_detector(
-            recog_config, recog_ckpt, device=self.device)
+        if self.tr:
+            # build recognition model
+            if not recog_config:
+                recog_config = dir_path + '/configs/textrecog/' + \
+                    textrecog_models[self.tr]['config']
+            recog_ckpt = 'https://download.openmmlab.com/mmocr/textrecog/' + \
+                textrecog_models[self.tr]['ckpt']
+
+            self.recog_model = init_detector(
+                recog_config, recog_ckpt, device=self.device)
+        else:
+            self.recog_model = None
 
         # Attribute check
-        for model in [self.recog_model, self.detect_model]:
+        for model in list(filter(None, [self.recog_model, self.detect_model])):
             if hasattr(model, 'module'):
                 model = model.module
             if model.cfg.data.test['type'] == 'ConcatDataset':
@@ -295,35 +342,18 @@ class MMOCR:
         args = locals()
         [args.pop(x, None) for x in ['kwargs', 'self']]
         args = Namespace(**args)
-        det_recog_result = det_and_recog_inference(args, self.detect_model,
-                                                   self.recog_model)
-        if args.export_json:
-            mmcv.dump(
-                det_recog_result,
-                out_img + '.json',
-                ensure_ascii=False,
-                indent=4)
-        if args.ocr_in_lines:
-            res = det_recog_result['result']
-            res = stitch_boxes_into_lines(res, 10, 0.5)
-            det_recog_result['result'] = res
-            mmcv.dump(
-                det_recog_result,
-                args.out_img + '.line.json',
-                ensure_ascii=False,
-                indent=4)
-        if args.out_img:
-            img = det_recog_show_result(img, det_recog_result)
-            mmcv.imwrite(img, out_img)
-        if args.imshow:
-            if not args.out_img:
-                img = det_recog_show_result(img, det_recog_result)
-            mmcv.imshow(img, 'predicted results')
-        if not args.details:
-            det_recog_result = [x['text'] for x in det_recog_result['result']]
-        if args.print_result:
-            print(det_recog_result)
-        return det_recog_result
+        if self.detect_model and self.recog_model:
+            det_recog_result = det_and_recog_inference(args, self.detect_model,
+                                                       self.recog_model)
+            pp_result = det_recog_pp(args, det_recog_result)
+        elif self.detect_model:
+            result = model_inference(self.detect_model, args.img)
+            pp_result = single_pp(args, result, self.detect_model)
+        elif self.recog_model:
+            result = model_inference(self.recog_model, args.img)
+            pp_result = single_pp(args, result, self.recog_model)
+
+        return pp_result
 
 
 if __name__ == '__main__':
