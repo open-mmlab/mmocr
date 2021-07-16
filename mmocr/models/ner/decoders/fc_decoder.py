@@ -29,7 +29,6 @@ class FCDecoder(BaseModule):
 
         self.dropout = nn.Dropout(hidden_dropout_prob)
         self.classifier = nn.Linear(hidden_size, self.num_labels)
-        # self.init_weights()
 
     def forward(self, outputs):
         sequence_output = outputs[0]
@@ -39,13 +38,3 @@ class FCDecoder(BaseModule):
         preds = softmax.detach().cpu().numpy()
         preds = np.argmax(preds, axis=2).tolist()
         return logits, preds
-
-    '''
-    def init_weights(self):
-
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                xavier_init(m)
-            elif isinstance(m, nn.BatchNorm2d):
-                uniform_init(m)
-    '''

@@ -84,18 +84,6 @@ class FPNC(BaseModule):
                 act_cfg=act_cfg,
                 inplace=False)
 
-    '''
-    # default init_weights for conv(msra) and norm in ConvModule
-    def init_weights(self):
-        """Initialize the weights of FPN module."""
-        for m in self.lateral_convs:
-            m.init_weights()
-        for m in self.smooth_convs:
-            m.init_weights()
-        if self.conv_after_concat:
-            self.out_conv.init_weights()
-    '''
-
     @auto_fp16()
     def forward(self, inputs):
         assert len(inputs) == len(self.in_channels)

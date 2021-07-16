@@ -45,11 +45,6 @@ class PositionAttentionDecoder(BaseDecoder):
             self.prediction = nn.Linear(
                 dim_model if encode_value else dim_input, pred_num_classes)
 
-    '''
-    def init_weights(self):
-        pass
-    '''
-
     def _get_position_index(self, length, batch_size, device=None):
         position_index = torch.arange(0, length, device=device)
         position_index = position_index.repeat([batch_size, 1])

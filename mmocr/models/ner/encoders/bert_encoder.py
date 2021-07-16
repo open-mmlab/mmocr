@@ -60,7 +60,6 @@ class BertEncoder(BaseModule):
             attention_probs_dropout_prob=attention_probs_dropout_prob,
             intermediate_size=intermediate_size,
             hidden_act_cfg=hidden_act_cfg)
-        # self.init_weights(pretrained=pretrained)
 
     def forward(self, results):
 
@@ -74,16 +73,3 @@ class BertEncoder(BaseModule):
             attention_masks=attention_masks,
             token_type_ids=token_type_ids)
         return outputs
-
-    '''
-    def init_weights(self, pretrained=None):
-        if pretrained is not None:
-            logger = get_root_logger()
-            load_checkpoint(self, pretrained, strict=False, logger=logger)
-        else:
-            for m in self.modules():
-                if isinstance(m, nn.Conv2d):
-                    xavier_init(m)
-                elif isinstance(m, nn.BatchNorm2d):
-                    uniform_init(m)
-    '''

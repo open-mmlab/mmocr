@@ -52,27 +52,10 @@ class SegRecognizer(BaseRecognizer):
 
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
-        # self.init_weights(pretrained=pretrained)
         if pretrained is not None:
             warnings.warn('DeprecationWarning: pretrained is a deprecated \
                 key, please consider using init_cfg')
             self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
-
-    '''
-    def init_weights(self, pretrained=None):
-        """Initialize the weights of recognizer."""
-        super().init_weights(pretrained)
-
-        if self.preprocessor is not None:
-            self.preprocessor.init_weights()
-
-        self.backbone.init_weights(pretrained=pretrained)
-
-        if self.neck is not None:
-            self.neck.init_weights()
-
-        self.head.init_weights()
-    '''
 
     def extract_feat(self, img):
         """Directly extract features from the backbone."""

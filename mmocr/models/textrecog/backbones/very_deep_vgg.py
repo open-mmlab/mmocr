@@ -60,15 +60,6 @@ class VeryDeepVgg(BaseModule):
 
         self.cnn = cnn
 
-    '''
-    def init_weights(self, pretrained=None):
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                xavier_init(m)
-            elif isinstance(m, nn.BatchNorm2d):
-                uniform_init(m)
-    '''
-
     def out_channels(self):
         return self.channels[-1]
 

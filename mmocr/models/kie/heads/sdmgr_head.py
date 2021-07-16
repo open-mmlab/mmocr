@@ -45,11 +45,6 @@ class SDMGRHead(BaseModule):
         self.edge_cls = nn.Linear(edge_embed, 2)
         self.loss = build_loss(loss)
 
-    '''
-    def init_weights(self, pretrained=False):
-        normal_init(self.edge_embed, mean=0, std=0.01)
-    '''
-
     def forward(self, relations, texts, x=None):
         node_nums, char_nums = [], []
         for text in texts:

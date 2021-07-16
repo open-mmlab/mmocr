@@ -117,7 +117,6 @@ class DRRGHead(HeadMixin, BaseModule):
             kernel_size=1,
             stride=1,
             padding=0)
-        self.init_weights()
 
         self.graph_train = LocalGraphs(self.k_at_hops,
                                        self.num_adjacent_linkages,
@@ -137,11 +136,6 @@ class DRRGHead(HeadMixin, BaseModule):
         node_feat_len = (pool_w * pool_h) * (
             self.in_channels + self.out_channels) + self.node_geo_feat_len
         self.gcn = GCN(node_feat_len)
-
-    '''
-    def init_weights(self):
-        normal_init(self.out_conv, mean=0, std=0.01)
-    '''
 
     def forward(self, inputs, gt_comp_attribs):
 

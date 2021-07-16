@@ -90,12 +90,6 @@ class FCEHead(HeadMixin, BaseModule):
             stride=1,
             padding=1)
 
-    '''
-    def init_weights(self):
-        normal_init(self.out_conv_cls, mean=0, std=0.01)
-        normal_init(self.out_conv_reg, mean=0, std=0.01)
-    '''
-
     def forward(self, feats):
         cls_res, reg_res = multi_apply(self.forward_single, feats)
         level_num = len(cls_res)

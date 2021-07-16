@@ -43,12 +43,6 @@ class TextSnakeHead(HeadMixin, BaseModule):
             kernel_size=1,
             stride=1,
             padding=0)
-        # self.init_weights()
-
-    '''
-    def init_weights(self):
-        normal_init(self.out_conv, mean=0, std=0.01)
-    '''
 
     def forward(self, inputs):
         outputs = self.out_conv(inputs)

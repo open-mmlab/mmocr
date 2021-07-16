@@ -52,19 +52,6 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
         """
         pass
 
-    '''
-    def init_weights(self, pretrained=None):
-        """Initialize the weights for detector.
-
-        Args:
-            pretrained (str, optional): Path to pre-trained weights.
-                Defaults to None.
-        """
-        if pretrained is not None:
-            logger = get_root_logger()
-            print_log(f'load model from: {pretrained}', logger=logger)
-    '''
-
     def forward_test(self, imgs, img_metas, **kwargs):
         """
         Args:

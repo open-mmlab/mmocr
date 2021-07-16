@@ -66,16 +66,6 @@ class SAREncoder(BaseEncoder):
         encoder_rnn_out_size = d_enc * (int(enc_bi_rnn) + 1)
         self.linear = nn.Linear(encoder_rnn_out_size, encoder_rnn_out_size)
 
-    '''
-    def init_weights(self):
-        # initialize weight and bias
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                xavier_init(m)
-            elif isinstance(m, nn.BatchNorm2d):
-                uniform_init(m)
-    '''
-
     def forward(self, feat, img_metas=None):
         if img_metas is not None:
             assert utils.is_type_list(img_metas, dict)

@@ -58,21 +58,6 @@ class DBHead(HeadMixin, BaseModule):
 
         self.threshold = self._init_thr(in_channels)
 
-    '''
-    def init_weights(self):
-        self.binarize.apply(self.init_class_parameters)
-        self.threshold.apply(self.init_class_parameters)
-    '''
-    '''
-    def init_class_parameters(self, m):
-        classname = m.__class__.__name__
-        if classname.find('Conv') != -1:
-            nn.init.kaiming_normal_(m.weight.data)
-        elif classname.find('BatchNorm') != -1:
-            m.weight.data.fill_(1.)
-            m.bias.data.fill_(1e-4)
-    '''
-
     def diff_binarize(self, prob_map, thr_map, k):
         return torch.reciprocal(1.0 + torch.exp(-k * (prob_map - thr_map)))
 

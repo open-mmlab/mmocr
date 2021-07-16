@@ -49,11 +49,6 @@ class FPNOCR(BaseModule):
             self.smooth_convs_1x1.append(s_conv_1x1)
             self.smooth_convs_3x3.append(s_conv_3x3)
 
-    '''
-    def init_weights(self):
-        pass
-    '''
-
     def _upsample_x2(self, x):
         return F.interpolate(x, scale_factor=2, mode='bilinear')
 

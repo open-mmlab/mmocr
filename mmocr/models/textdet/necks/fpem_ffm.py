@@ -95,15 +95,6 @@ class FPEM_FFM(BaseModule):
         for _ in range(fpem_repeat):
             self.fpems.append(FPEM(conv_out))
 
-    '''
-    def init_weights(self):
-        """Initialize the weights of FPN module."""
-
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                xavier_init(m, distribution='uniform')
-    '''
-
     def forward(self, x):
         c2, c3, c4, c5 = x
         # reduce channel

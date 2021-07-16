@@ -54,11 +54,6 @@ class SequenceAttentionDecoder(BaseDecoder):
             self.prediction = nn.Linear(
                 dim_model if encode_value else dim_input, pred_num_classes)
 
-    '''
-    def init_weights(self):
-        pass
-    '''
-
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
         valid_ratios = [
             img_meta.get('valid_ratio', 1.0) for img_meta in img_metas

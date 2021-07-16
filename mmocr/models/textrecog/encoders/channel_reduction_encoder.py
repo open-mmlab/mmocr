@@ -16,12 +16,5 @@ class ChannelReductionEncoder(BaseEncoder):
         self.layer = nn.Conv2d(
             in_channels, out_channels, kernel_size=1, stride=1, padding=0)
 
-    '''
-    def init_weights(self):
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                xavier_init(m)
-    '''
-
     def forward(self, feat, img_metas=None):
         return self.layer(feat)

@@ -69,15 +69,6 @@ class FPN_UNet(BaseModule):
         self.up_block1 = UpBlock(blocks_in_channels[1], blocks_out_channels[1])
         self.up_block0 = UpBlock(blocks_in_channels[0], blocks_out_channels[0])
 
-    '''
-        self.init_weights()
-
-    def init_weights(self):
-        for m in self.modules():
-            if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d)):
-                xavier_init(m, distribution='uniform')
-    '''
-
     def forward(self, x):
         c2, c3, c4, c5 = x
 

@@ -89,16 +89,6 @@ class ResNet31OCR(BaseModule):
         self.bn5 = nn.BatchNorm2d(channels[5])
         self.relu5 = nn.ReLU(inplace=True)
 
-    '''
-    def init_weights(self, pretrained=None):
-        # initialize weight and bias
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                kaiming_init(m)
-            elif isinstance(m, nn.BatchNorm2d):
-                uniform_init(m)
-    '''
-
     def _make_layer(self, input_channels, output_channels, blocks):
         layers = []
         for _ in range(blocks):

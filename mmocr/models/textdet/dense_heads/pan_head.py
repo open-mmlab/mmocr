@@ -49,12 +49,6 @@ class PANHead(HeadMixin, BaseModule):
             in_channels=np.sum(np.array(in_channels)),
             out_channels=out_channels,
             kernel_size=1)
-        self.init_weights()
-
-    '''
-    def init_weights(self):
-        normal_init(self.out_conv, mean=0, std=0.01)
-    '''
 
     def forward(self, inputs):
         if isinstance(inputs, tuple):

@@ -40,11 +40,6 @@ class SegHead(BaseModule):
         self.pred_conv = nn.Conv2d(
             in_channels, num_classes, kernel_size=1, stride=1, padding=0)
 
-    '''
-    def init_weights(self):
-        pass
-    '''
-
     def forward(self, out_neck):
 
         seg_map = self.seg_conv(out_neck[-1])

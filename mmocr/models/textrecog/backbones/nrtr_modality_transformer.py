@@ -37,15 +37,6 @@ class NRTRModalityTransform(BaseModule):
 
         self.linear = nn.Linear(64 * feat_height, 512)
 
-    '''
-    def init_weights(self, pretrained=None):
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                kaiming_init(m)
-            elif isinstance(m, nn.BatchNorm2d):
-                uniform_init(m)
-    '''
-
     def forward(self, x):
         x = self.conv_1(x)
         x = self.relu_1(x)

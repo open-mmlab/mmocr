@@ -67,23 +67,6 @@ class EncodeDecodeRecognizer(BaseRecognizer):
             warnings.warn('DeprecationWarning: pretrained is a deprecated \
                 key, please consider using init_cfg')
             self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
-        # self.init_weights(pretrained=pretrained)
-
-    '''
-    def init_weights(self, pretrained=None):
-        """Initialize the weights of recognizer."""
-        super().init_weights(pretrained)
-
-        if self.preprocessor is not None:
-            self.preprocessor.init_weights()
-
-        self.backbone.init_weights()
-
-        if self.encoder is not None:
-            self.encoder.init_weights()
-
-        self.decoder.init_weights()
-    '''
 
     def extract_feat(self, img):
         """Directly extract features from the backbone."""

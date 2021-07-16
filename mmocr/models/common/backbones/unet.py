@@ -512,25 +512,3 @@ class UNet(BaseModule):
             f'downsample rate {whole_downsample_rate}, when num_stages is '
             f'{self.num_stages}, strides is {self.strides}, and downsamples '
             f'is {self.downsamples}.')
-
-    '''
-    def init_weights(self, pretrained=None):
-        """Initialize the weights in backbone.
-
-        Args:
-            pretrained (str, optional): Path to pre-trained weights.
-                Defaults to None.
-        """
-        if isinstance(pretrained, str):
-            logger = get_root_logger()
-            load_checkpoint(self, pretrained, strict=False, logger=logger)
-        elif pretrained is None:
-            for m in self.modules():
-                if isinstance(m, nn.Conv2d):
-                    kaiming_init(m)
-                elif isinstance(m, (_BatchNorm, nn.GroupNorm)):
-                    constant_init(m, 1)
-
-        else:
-            raise TypeError('pretrained must be a str or None')
-    '''

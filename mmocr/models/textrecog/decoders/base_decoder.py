@@ -10,11 +10,6 @@ class BaseDecoder(BaseModule):
     def __init__(self, init_cfg=None, **kwargs):
         super().__init__(init_cfg=init_cfg)
 
-    '''
-    def init_weights(self):
-        pass
-    '''
-
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
         raise NotImplementedError
 
