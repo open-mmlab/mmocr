@@ -1,7 +1,7 @@
-Welcome to MMOCR's documentation!
+欢迎来到 MMOCR 的中文文档!
 =======================================
 
-You can switch between English and Chinese in the lower-left corner of the layout.
+您可以在页面左下角切换中英文文档。
 
 .. toctree::
    :maxdepth: 2
@@ -13,7 +13,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
-   :caption: Model Zoo
+   :caption: 模型库
 
    modelzoo.md
    textdet_models.md
@@ -23,28 +23,28 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
-   :caption: Datasets
+   :caption: 数据集
 
    datasets.md
 
 .. toctree::
    :maxdepth: 2
-   :caption: Notes
+   :caption: 记录
 
    changelog.md
 
 .. toctree::
-   :caption: API Reference
+   :caption: API 参考
 
    api.rst
 
 .. toctree::
-   :caption: Switch Language
+   :caption: 切换语言
 
    English <https://mmocr.readthedocs.io/en/latest/>
    简体中文 <https://mmocr.readthedocs.io/zh_CN/latest/>
 
-Indices and tables
+导引
 ==================
 
 * :ref:`genindex`
