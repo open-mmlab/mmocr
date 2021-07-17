@@ -153,12 +153,7 @@ def single_pp(args, result, model):
 def det_and_recog_inference(args, det_model, recog_model):
     end2end_res = []
     # Find bounding boxes in the images (text detection)
-    if args.batch_mode:
-        det_result = model_inference(det_model, args.arrays, batch_mode=True)
-    else:
-        det_result = []
-        for arr in args.arrays:
-            det_result.append(model_inference(det_model, arr, batch_mode=False))
+    det_result = single_inference(det_model, args.arrays, args.batch_mode, args.det_batch_size)
     bboxes_list = [res['boundary_result'] for res in det_result]
 
     # For each bounding box, the image is cropped and sent to the recognition model
@@ -186,14 +181,14 @@ def det_and_recog_inference(args, det_model, recog_model):
                 recog_result = model_inference(recog_model, box_img)
                 text = recog_result['text']
                 text_score = recog_result['score']
-                if isinstance(text_score, (list,tuple)):
+                if isinstance(text_score, list):
                     text_score = sum(text_score) / max(1, len(text))
                 box_res['text'] = text
                 box_res['text_score'] = text_score
             img_e2e_res['result'].append(box_res)
 
         if args.batch_mode:
-            recog_results = model_inference(recog_model, box_imgs, batch_mode=True)
+            recog_results = single_inference(recog_model, box_imgs, True, args.recog_batch_size)
             for i, recog_result in enumerate(recog_results):
                 text = recog_result['text']
                 text_score = recog_result['score']
@@ -204,6 +199,22 @@ def det_and_recog_inference(args, det_model, recog_model):
 
         end2end_res.append(img_e2e_res)
     return end2end_res
+
+# Separate det/recog inference pipeline
+def single_inference(model, arrays, batch_mode, batch_size):
+    result = []
+    if batch_mode:
+        if batch_size == 0:
+            result = model_inference(model, arrays, batch_mode=True)
+        else:
+            n = batch_size
+            arr_chunks = [arrays[i:i + n] for i in range(0, len(arrays), n)]
+            for chunk in arr_chunks:
+                result.extend(model_inference(model, chunk, batch_mode=True))
+    else:
+        for arr in arrays:
+            result.append(model_inference(model, arr, batch_mode=False))
+    return result
 
 # Arguments pre-processing function
 def args_processing(args):
@@ -304,6 +315,21 @@ def parse_args():
         default='auto',
         help='Whether use batch mode for text recognition.')
     parser.add_argument(
+        '--recog-batch-size',
+        type=int,
+        default=0,
+        help='Batch size for text recognition')
+    parser.add_argument(
+        '--det-batch-size',
+        type=int,
+        default=0,
+        help='Batch size for text detection')
+    parser.add_argument(
+        '--single-batch-size',
+        type=int,
+        default=0,
+        help='Batch size for separate det/recog inference')
+    parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference.')
     parser.add_argument(
         '--export',
@@ -403,6 +429,9 @@ class MMOCR:
                  export=None,
                  export_format='json',
                  batch_mode='auto',
+                 recog_batch_size=0,
+                 det_batch_size=0,
+                 single_batch_size=0,
                  imshow=False,
                  print_result=False,
                  **kwargs):
@@ -423,13 +452,8 @@ class MMOCR:
             pp_result = det_recog_pp(args,det_recog_result)
         else:
             for model in list(filter(None, [self.recog_model, self.detect_model])):
-                if args.batch_mode:
-                    result = model_inference(model, args.arrays, batch_mode=True)
-                else:
-                    result = []
-                    for arr in args.arrays:
-                        result.append(model_inference(model, arr, batch_mode=False))
-
+                result = single_inference(model, args.arrays, args.batch_mode,
+                                        args.single_batch_size)
                 pp_result = single_pp(args, result, model)
 
         return pp_result
