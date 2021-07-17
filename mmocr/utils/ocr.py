@@ -1,17 +1,13 @@
-from pathlib import Path
-from typing import final
-from numpy.lib.function_base import append
-from tqdm import tqdm
 from argparse import ArgumentParser, Namespace
+from pathlib import Path
 
-import numpy as np
 import mmcv
+import numpy as np
 from mmdet.apis import init_detector
 
 from mmocr.apis.inference import model_inference
 from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.pipelines.crop import crop_img
-from mmocr.utils.box_util import stitch_boxes_into_lines
 
 textdet_models = {
     'DB_r18': {
@@ -29,7 +25,7 @@ textdet_models = {
         'config': 'drrg/drrg_r50_fpn_unet_1200e_ctw1500.py',
         'ckpt': 'drrg/drrg_r50_fpn_unet_1200e_ctw1500-1abf4f67.pth'
     },
-    'FCE_ICDAR15': {
+    'FCE_IC15': {
         'config': 'fcenet/fcenet_r50_fpn_1500e_icdar2015.py',
         'ckpt': 'fcenet/fcenet_r50_fpn_1500e_icdar2015-d435c061.pth'
     },
@@ -41,12 +37,12 @@ textdet_models = {
         'config': 'maskrcnn/mask_rcnn_r50_fpn_160e_ctw1500.py',
         'ckpt': 'maskrcnn/mask_rcnn_r50_fpn_160e_ctw1500_20210219-96497a76.pth'
     },
-    'MaskRCNN_ICDAR15': {
+    'MaskRCNN_IC15': {
         'config': 'maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015.py',
         'ckpt':
         'maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015_20210219-8eb340a3.pth'
     },
-    'MaskRCNN_ICDAR17': {
+    'MaskRCNN_IC17': {
         'config': 'maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017.py',
         'ckpt':
         'maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017_20210218-c6ec3ebb.pth'
@@ -56,7 +52,7 @@ textdet_models = {
         'ckpt':
         'panet/panet_r18_fpem_ffm_sbn_600e_ctw1500_20210219-3b3a9aa3.pth'
     },
-    'PANet_ICDAR15': {
+    'PANet_IC15': {
         'config': 'panet/panet_r18_fpem_ffm_600e_icdar2015.py',
         'ckpt':
         'panet/panet_r18_fpem_ffm_sbn_600e_icdar2015_20210219-42dbe46a.pth'
@@ -65,7 +61,7 @@ textdet_models = {
         'config': 'psenet/psenet_r50_fpnf_600e_ctw1500.py',
         'ckpt': 'psenet/psenet_r50_fpnf_600e_ctw1500_20210401-216fed50.pth'
     },
-    'PS_ICDAR15': {
+    'PS_IC15': {
         'config': 'psenet/psenet_r50_fpnf_600e_icdar2015.py',
         'ckpt': 'psenet/psenet_r50_fpnf_600e_icdar2015_pretrain-eefd8fe6.pth'
     },
@@ -106,10 +102,13 @@ textrecog_models = {
     }
 }
 
+
 # Post processing function for end2end ocr
-def det_recog_pp(args,result):
+def det_recog_pp(args, result):
     final_results = []
-    for arr, out_img, export, det_recog_result in zip(args.arrays, args.out_img, args.export, result):
+    for arr, out_img, export, det_recog_result in zip(args.arrays,
+                                                      args.out_img,
+                                                      args.export, result):
         if out_img or args.imshow:
             res_img = det_recog_show_result(arr, det_recog_result)
             if out_img:
@@ -119,45 +118,43 @@ def det_recog_pp(args,result):
         if not args.details:
             simple_res = {}
             simple_res['filename'] = det_recog_result['filename']
-            simple_res['text'] = [x['text'] for x in det_recog_result['result']]
+            simple_res['text'] = [
+                x['text'] for x in det_recog_result['result']
+            ]
             final_result = simple_res
         else:
             final_result = det_recog_result
         if export:
-            mmcv.dump(
-                final_result,
-                export,
-                ensure_ascii=False,
-                indent=4)
+            mmcv.dump(final_result, export, ensure_ascii=False, indent=4)
         if args.print_result:
-            print(final_result,end='\n\n')
+            print(final_result, end='\n\n')
         final_results.append(final_result)
     return final_results
 
+
 # Post processing function for separate det/recog inference
 def single_pp(args, result, model):
-    for arr, out_img, export, res in zip(args.arrays, args.out_img, args.export, result):
+    for arr, out_img, export, res in zip(args.arrays, args.out_img,
+                                         args.export, result):
         if export:
-            mmcv.dump(
-                res,
-                export,
-                ensure_ascii=False,
-                indent=4)
+            mmcv.dump(res, export, ensure_ascii=False, indent=4)
         if out_img or args.imshow:
             model.show_result(arr, res, out_file=out_img, show=args.imshow)
         if args.print_result:
-            print(res,end='\n\n')
+            print(res, end='\n\n')
     return result
+
 
 # End2end ocr inference pipeline
 def det_and_recog_inference(args, det_model, recog_model):
     end2end_res = []
     # Find bounding boxes in the images (text detection)
-    det_result = single_inference(det_model, args.arrays, args.batch_mode, args.det_batch_size)
+    det_result = single_inference(det_model, args.arrays, args.batch_mode,
+                                  args.det_batch_size)
     bboxes_list = [res['boundary_result'] for res in det_result]
 
-    # For each bounding box, the image is cropped and sent to the recognition model
-    # either one by one or all together depending on the batch_mode value
+    # For each bounding box, the image is cropped and sent to the recognition
+    # model either one by one or all together depending on the batch_mode
     for filename, arr, bboxes in zip(args.filenames, args.arrays, bboxes_list):
         img_e2e_res = {}
         img_e2e_res['filename'] = filename
@@ -188,17 +185,19 @@ def det_and_recog_inference(args, det_model, recog_model):
             img_e2e_res['result'].append(box_res)
 
         if args.batch_mode:
-            recog_results = single_inference(recog_model, box_imgs, True, args.recog_batch_size)
+            recog_results = single_inference(recog_model, box_imgs, True,
+                                             args.recog_batch_size)
             for i, recog_result in enumerate(recog_results):
                 text = recog_result['text']
                 text_score = recog_result['score']
-                if isinstance(text_score, (list,tuple)):
+                if isinstance(text_score, (list, tuple)):
                     text_score = sum(text_score) / max(1, len(text))
                 img_e2e_res['result'][i]['text'] = text
                 img_e2e_res['result'][i]['text_score'] = text_score
 
         end2end_res.append(img_e2e_res)
     return end2end_res
+
 
 # Separate det/recog inference pipeline
 def single_inference(model, arrays, batch_mode, batch_size):
@@ -216,39 +215,32 @@ def single_inference(model, arrays, batch_mode, batch_size):
             result.append(model_inference(model, arr, batch_mode=False))
     return result
 
+
 # Arguments pre-processing function
 def args_processing(args):
-    # Check if the input is a list/tuple that contains only np arrays or strings
-    if isinstance(args.img,(list,tuple)):
-        if args.batch_mode == 'auto': args.batch_mode = True
+    # Check if the input is a list/tuple that
+    # contains only np arrays or strings
+    if isinstance(args.img, (list, tuple)):
         img_list = args.img
         if not all([isinstance(x, (np.ndarray, str)) for x in args.img]):
             raise AssertionError('Images must be strings or numpy arrays')
 
     # Create a list of the images
-    if isinstance(args.img,str):
+    if isinstance(args.img, str):
         img_path = Path(args.img)
         if img_path.is_dir():
-            if args.batch_mode == 'auto': args.batch_mode = True
             img_list = [str(x) for x in img_path.glob('*')]
         else:
             img_list = [str(img_path)]
-    elif isinstance(args.img,np.ndarray):
+    elif isinstance(args.img, np.ndarray):
         img_list = [args.img]
 
-    # Find the bool value of the batch_mode string input
-    if args.batch_mode == 'auto': args.batch_mode = False
-    elif args.batch_mode == 'True': args.batch_mode = True
-    elif args.batch_mode == 'False': args.batch_mode = False
-    elif not isinstance(args.batch_mode,bool):
-        raise AssertionError('Batch_mode value is invalid')
-
-    # Read all image(s) in advance to reduce wasted time re-reading the images for
-    # vizualisation output
-    args.arrays =[mmcv.imread(x) for x in img_list]
+    # Read all image(s) in advance to reduce wasted time
+    # re-reading the images for vizualisation output
+    args.arrays = [mmcv.imread(x) for x in img_list]
 
     # Create a list of filenames (used for output imgages and result files)
-    if isinstance(img_list[0],str):
+    if isinstance(img_list[0], str):
         args.filenames = [str(Path(x).stem) for x in img_list]
     else:
         args.filenames = [str(x) for x in range(len(img_list))]
@@ -258,22 +250,30 @@ def args_processing(args):
     if args.out_img:
         out_img_path = Path(args.out_img)
         if out_img_path.is_dir():
-            args.out_img = [str(out_img_path / f'out_{x}.png') for x in args.filenames]
+            args.out_img = [
+                str(out_img_path / f'out_{x}.png') for x in args.filenames
+            ]
         else:
             args.out_img = [str(args.out_img)]
             if args.batch_mode:
-                raise AssertionError('Output of multiple images inference must be a directory')
+                raise AssertionError(
+                    'Output of multiple images inference must be a directory')
     else:
         args.out_img = [None] * num_res
 
-    # If given an export argument, create a list of result filenames for each image
+    # If given an export argument, create a list of
+    # result filenames for each image
     if args.export:
         export_path = Path(args.export)
-        args.export = [str(export_path / f'out_{x}.{args.export_format}') for x in args.filenames]
+        args.export = [
+            str(export_path / f'out_{x}.{args.export_format}')
+            for x in args.filenames
+        ]
     else:
         args.export = [None] * num_res
 
     return args
+
 
 # Create an inference pipeline with parsed arguments
 def main():
@@ -281,39 +281,38 @@ def main():
     ocr = MMOCR(**vars(args))
     ocr.readtext(**vars(args))
 
+
 # Parse CLI arguments
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument('img',
-        type=str,
-        help='Input image file or folder path.')
     parser.add_argument(
-        '--out_img',
+        'img', type=str, help='Input image file or folder path.')
+    parser.add_argument(
+        '--out-img',
         type=str,
         default='',
         help='Output file/folder name for visualization')
     parser.add_argument(
         '--det',
         type=str,
-        default='PANet_ICDAR15',
+        default='PANet_IC15',
         help='Text detection algorithm')
     parser.add_argument(
         '--det-config',
         type=str,
         default='',
-        help='Path to the custom config of the selected textdet model')
+        help='Path to the custom config of the selected det model')
     parser.add_argument(
         '--recog', type=str, default='SEG', help='Text recognition algorithm')
     parser.add_argument(
         '--recog-config',
         type=str,
         default='',
-        help='Path to the custom config of the selected textrecog model')
+        help='Path to the custom config of the selected recog model')
     parser.add_argument(
         '--batch-mode',
-        type=str,
-        default='auto',
-        help='Whether use batch mode for text recognition.')
+        action='store_true',
+        help='Whether use batch mode for inference')
     parser.add_argument(
         '--recog-batch-size',
         type=int,
@@ -335,12 +334,12 @@ def parse_args():
         '--export',
         type=str,
         default='',
-        help='Directory in which to export the results of each image to a file')
+        help='Folder where the results of each image are exported')
     parser.add_argument(
         '--export-format',
         type=str,
         default='json',
-        help='Format of the result file(s) to export')
+        help='Format of the exported result file(s)')
     parser.add_argument(
         '--details',
         action='store_true',
@@ -351,20 +350,21 @@ def parse_args():
         action='store_true',
         help='Whether show image with OpenCV.')
     parser.add_argument(
-        '--ocr-in-lines',
-        action='store_true',
-        help='Whether group ocr results in lines.')
-    parser.add_argument(
         '--print-result',
         action='store_true',
         help='Prints the recognised text')
     args = parser.parse_args()
+    if args.det == "''":
+        args.det = None
+    if args.recog == "''":
+        args.recog = None
     return args
 
 
 class MMOCR:
+
     def __init__(self,
-                 det='PANet_ICDAR15',
+                 det='PANet_IC15',
                  det_config='',
                  recog='SEG',
                  recog_config='',
@@ -404,8 +404,8 @@ class MMOCR:
         if self.tr:
             # Build recognition model
             if not recog_config:
-                recog_config = dir_path + '/configs/textrecog/' + textrecog_models[
-                    self.tr]['config']
+                recog_config = dir_path + '/configs/textrecog/' + \
+                    textrecog_models[self.tr]['config']
             recog_ckpt = 'https://download.openmmlab.com/mmocr/textrecog/' + \
                 textrecog_models[self.tr]['ckpt']
 
@@ -428,7 +428,7 @@ class MMOCR:
                  details=False,
                  export=None,
                  export_format='json',
-                 batch_mode='auto',
+                 batch_mode=False,
                  recog_batch_size=0,
                  det_batch_size=0,
                  single_batch_size=0,
@@ -448,15 +448,17 @@ class MMOCR:
         # and call post-processing functions for the output
         if self.detect_model and self.recog_model:
             det_recog_result = det_and_recog_inference(args, self.detect_model,
-                                                    self.recog_model)
-            pp_result = det_recog_pp(args,det_recog_result)
+                                                       self.recog_model)
+            pp_result = det_recog_pp(args, det_recog_result)
         else:
-            for model in list(filter(None, [self.recog_model, self.detect_model])):
+            for model in list(
+                    filter(None, [self.recog_model, self.detect_model])):
                 result = single_inference(model, args.arrays, args.batch_mode,
-                                        args.single_batch_size)
+                                          args.single_batch_size)
                 pp_result = single_pp(args, result, model)
 
         return pp_result
+
 
 if __name__ == '__main__':
     main()
