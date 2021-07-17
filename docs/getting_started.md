@@ -6,42 +6,7 @@ For the installation instructions, please see [install.md](install.md).
 
 ## Inference with Pretrained Models
 
-We provide testing scripts to evaluate a full dataset, as well as some task-specific image demos.
-
-### Test a Single Image
-
-You can use the following command to test a single image with one GPU.
-
-```shell
-python demo/image_demo.py ${TEST_IMG} ${CONFIG_FILE} ${CHECKPOINT_FILE} ${SAVE_PATH} [--imshow] [--device ${GPU_ID}]
-```
-
-If `--imshow` is specified, the demo will also show the image with OpenCV. For example:
-
-```shell
-python demo/image_demo.py demo/demo_text_det.jpg configs/xxx.py xxx.pth demo/demo_text_det_pred.jpg
-```
-
-The predicted result will be saved as `demo/demo_text_det_pred.jpg`.
-
-To end-to-end test a single image with both text detection and recognition,
-
-```shell
-python demo/ocr_image_demo.py demo/demo_text_det.jpg demo/output.jpg
-```
-
-The predicted result will be saved as `demo/output.jpg`.
-
-### Test Multiple Images
-
-```shell
-# for text detection
-./tools/det_test_imgs.py ${IMG_ROOT_PATH} ${IMG_LIST} ${CONFIG_FILE} ${CHECKPOINT_FILE} --out-dir ${RESULTS_DIR}
-
-# for text recognition
-./tools/recog_test_imgs.py ${IMG_ROOT_PATH} ${IMG_LIST} ${CONFIG_FILE} ${CHECKPOINT_FILE} --out-dir ${RESULTS_DIR}
-```
-It will save both the prediction results and visualized images to `${RESULTS_DIR}`
+Please refer to the [OCR API](../demo/docs/demo.md)
 
 ### Test a Dataset
 
