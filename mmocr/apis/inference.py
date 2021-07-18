@@ -48,6 +48,8 @@ def model_inference(model, imgs, ann=None, batch_mode=False, return_data=False):
         imgs (str/ndarray or list[str/ndarray] or tuple[str/ndarray]):
             Either image files or loaded images.
         batch_mode (bool): If True, use batch mode for inference.
+        ann (dict): annotation info for kie
+        return_data: return postprocessed data
     Returns:
         result (dict): Predicted results.
     """
