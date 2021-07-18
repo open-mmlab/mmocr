@@ -1,25 +1,22 @@
-import json
-from mmocr.utils.fileio import list_from_file
-import cv2
-from numpy.lib.type_check import imag
-import torch
+"""
+KIE Image Demo
 
-from torch.utils import data
-from mmocr.models import kie
-import os
-from mmcv.image.misc import tensor2imgs
+Combines Text Detection + Text Recognition + KIE stages. Configs can be provided for each of the stages. The output is an image containing bounding boxes around text with KIE annotations and a json file containing these annotations.
+"""
+
 import numpy as np
 from argparse import ArgumentParser
 
-from mmocr.datasets.pipelines.box_utils import sort_vertex8
-from mmocr.utils.check_argument import is_type_list
+import torch
 
 import mmcv
-
 from mmdet.apis import init_detector
+from mmcv.image.misc import tensor2imgs
+from mmocr.utils.fileio import list_from_file
 from mmocr.apis.inference import model_inference
-from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.pipelines.crop import crop_img
+from mmocr.utils.check_argument import is_type_list
+from mmocr.datasets.pipelines.box_utils import sort_vertex8
 
 
 def pad_text_indices(text_inds):
@@ -32,17 +29,17 @@ def pad_text_indices(text_inds):
 
 
 def compute_relation(boxes, norm=10.):
-        """Compute relation between every two boxes."""
-        x1, y1 = boxes[:, 0:1], boxes[:, 1:2]
-        x2, y2 = boxes[:, 4:5], boxes[:, 5:6]
-        w, h = np.maximum(x2 - x1 + 1, 1), np.maximum(y2 - y1 + 1, 1)
-        dx = (x1.T - x1) / norm
-        dy = (y1.T - y1) / norm
-        xhh, xwh = h.T / h, w.T / h
-        whs = w / h + np.zeros_like(xhh)
-        relation = np.stack([dx, dy, whs, xhh, xwh], -1).astype(np.float32)
-        bboxes = np.concatenate([x1, y1, x2, y2], -1).astype(np.float32)
-        return relation, bboxes
+    """Compute relation between every two boxes."""
+    x1, y1 = boxes[:, 0:1], boxes[:, 1:2]
+    x2, y2 = boxes[:, 4:5], boxes[:, 5:6]
+    w, h = np.maximum(x2 - x1 + 1, 1), np.maximum(y2 - y1 + 1, 1)
+    dx = (x1.T - x1) / norm
+    dy = (y1.T - y1) / norm
+    xhh, xwh = h.T / h, w.T / h
+    whs = w / h + np.zeros_like(xhh)
+    relation = np.stack([dx, dy, whs, xhh, xwh], -1).astype(np.float32)
+    bboxes = np.concatenate([x1, y1, x2, y2], -1).astype(np.float32)
+    return relation, bboxes
 
 
 def list_to_numpy(ann_infos, directed=False):
@@ -70,12 +67,6 @@ def list_to_numpy(ann_infos, directed=False):
         relations=relations,
         texts=padded_text_inds,
         labels=labels)
-
-
-def pre_pipeline(results, img_prefix=None):
-    results['img_prefix'] = img_prefix
-    results['bbox_fields'] = []
-    results['img'] = np.zeros((1, 1, 1), dtype=np.uint8)
 
 
 def parse_anno_info(annotations, vocab):
@@ -124,15 +115,57 @@ def parse_anno_info(annotations, vocab):
     return list_to_numpy(ann_infos)
 
 
+def generate_kie_labels(result, boxes, class_list):
+    idx_to_cls = {}
+    if class_list is not None:
+        for line in list_from_file(class_list):
+            class_idx, class_label = line.strip().split()
+            idx_to_cls[class_idx] = class_label
+
+    max_value, max_idx = torch.max(result['nodes'].detach().cpu(), -1)
+    node_pred_label = max_idx.numpy().tolist()
+    node_pred_score = max_value.numpy().tolist()
+    labels = []
+    for i in range(len(boxes)):
+        pred_label = str(node_pred_label[i])
+        if pred_label in idx_to_cls:
+            pred_label = idx_to_cls[pred_label]
+        pred_score = node_pred_score[i]
+        # text = pred_label + '(' + pred_score + ')'
+        labels.append((pred_label, pred_score))
+    return labels
+
+
+def visualize_kie_output(model, data, result, out_file=None, show=False):
+    """
+    Visualizes KIE output
+    """
+    img_tensor = data['img'].data
+    img_meta = data['img_metas'].data
+    # assert len(imgs) == len(img_metas)
+    gt_bboxes = data['gt_bboxes'].data.numpy().tolist()
+    img = tensor2imgs(img_tensor.unsqueeze(0), **img_meta['img_norm_cfg'])[0]
+    h, w, _ = img_meta['img_shape']
+    img_show = img[:h, :w, :]
+    model.show_result(
+        img_show,
+        result,
+        gt_bboxes,
+        show=show,
+        out_file=out_file)
+
+
 def det_recog_kie_inference(args, det_model, recog_model, kie_model):
     image_path = args.img
     end2end_res = {'filename': image_path}
     end2end_res['result'] = []
 
     image = mmcv.imread(image_path)
+    # detection
     det_result = model_inference(det_model, image)
     bboxes = det_result['boundary_result']
-
+    
+    # recognition
     box_imgs = []
     for bbox in bboxes:
         box_res = {}
@@ -156,7 +189,6 @@ def det_recog_kie_inference(args, det_model, recog_model, kie_model):
                 text_score = sum(text_score) / max(1, len(text))
             box_res['text'] = text
             box_res['text_score'] = text_score
-
         end2end_res['result'].append(box_res)
 
     if args.batch_mode:
@@ -177,6 +209,7 @@ def det_recog_kie_inference(args, det_model, recog_model, kie_model):
                 end2end_res['result'][start_idx + i]['text'] = text
                 end2end_res['result'][start_idx + i]['text_score'] = text_score
 
+    # KIE
     annotations = end2end_res['result']
     with open(kie_model.cfg.data.test.dict_file) as f:
         vocab = f.readlines()
@@ -184,80 +217,15 @@ def det_recog_kie_inference(args, det_model, recog_model, kie_model):
     ann_info = parse_anno_info(annotations, vocab)
     kie_result, data = model_inference(kie_model, image, ann=ann_info, return_data=True)
     # visualize KIE results
-    # visualize_kie_output(kie_model, data, kie_result, out_file=args.out_file, 
-    #                      show=args.imshow)
-    img_tensor = data['img'].data
-    img_meta = data['img_metas'].data
-    # assert len(imgs) == len(img_metas)
+    visualize_kie_output(kie_model, data, kie_result, out_file=args.out_file, 
+                         show=args.imshow)
     gt_bboxes = data['gt_bboxes'].data.numpy().tolist()
-    img = tensor2imgs(img_tensor.unsqueeze(0), **img_meta['img_norm_cfg'])[0]
-    # for i, (img, img_meta) in enumerate(zip(imgs, img_metas)):
-    h, w, _ = img_meta['img_shape']
-    img_show = img[:h, :w, :]
-    kie_model.show_result(
-        img_show,
-        kie_result,
-        gt_bboxes,
-        show=args.imshow,
-        out_file=args.out_file)
-    # boxes = data['gt_bboxes'].data.numpy().tolist()
-    # generating labels
     labels = generate_kie_labels(kie_result, gt_bboxes, kie_model.class_list)
     for i in range(len(gt_bboxes)):
         end2end_res['result'][i]['label'] = labels[i][0]
         end2end_res['result'][i]['label_score'] = labels[i][1]
+
     return end2end_res
-
-
-def generate_kie_labels(result, boxes, class_list):
-    idx_to_cls = {}
-    if class_list is not None:
-        for line in list_from_file(class_list):
-            class_idx, class_label = line.strip().split()
-            idx_to_cls[class_idx] = class_label
-
-    max_value, max_idx = torch.max(result['nodes'].detach().cpu(), -1)
-    node_pred_label = max_idx.numpy().tolist()
-    node_pred_score = max_value.numpy().tolist()
-    labels = []
-    for i in range(len(boxes)):
-        # new_box = [[box[0], box[1]], [box[2], box[1]], [box[2], box[3]],
-        #            [box[0], box[3]]]
-        # Pts = np.array([new_box], np.int32)
-        # cv2.polylines(
-        #     img, [Pts.reshape((-1, 1, 2))],
-        #     True,
-        #     color=(255, 255, 0),
-        #     thickness=1)
-        # x_min = int(min([point[0] for point in new_box]))
-        # y_min = int(min([point[1] for point in new_box]))
-        pred_label = str(node_pred_label[i])
-        if pred_label in idx_to_cls:
-            pred_label = idx_to_cls[pred_label]
-        pred_score = node_pred_score[i]
-        # text = pred_label + '(' + pred_score + ')'
-        labels.append((pred_label, pred_score))
-    return labels
-
-
-def visualize_kie_output(model, data, result, out_file=None, show=False):
-    """
-    Visualizes KIE output
-    """
-    img_tensor = data['img'].data
-    img_meta = data['img_metas'].data
-    # assert len(imgs) == len(img_metas)
-    gt_bboxes = data['gt_bboxes'].data.numpy().tolist()
-    img = tensor2imgs(img_tensor.unsqueeze(0), **img_meta['img_norm_cfg'])[0]
-    # for i, (img, img_meta) in enumerate(zip(imgs, img_metas)):
-    h, w, _ = img_meta['img_shape']
-    img_show = img[:h, :w, :]
-    model.show_result(
-        img_show,
-        result,
-        gt_bboxes,
-        show=show,
-        out_file=out_file)
 
 
 def main():
@@ -352,16 +320,12 @@ def main():
             kie_model.cfg.data.test['datasets'][0].pipeline
 
     result = det_recog_kie_inference(args, detect_model, recog_model, kie_model)
+    print(f'result: {result}')
     mmcv.dump(
         result,
         args.out_file + '.json',
         ensure_ascii=False,
         indent=4)
-
-    img = det_recog_show_result(args.img, result)
-    mmcv.imwrite(img, args.out_file)
-    if args.imshow:
-        mmcv.imshow(img, 'predicted results')
 
 
 if __name__ == '__main__':
