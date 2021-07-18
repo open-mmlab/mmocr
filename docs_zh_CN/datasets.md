@@ -2,18 +2,6 @@
 
 本页列出了在文字检测、文字识别、关键信息提取、命名实体识别四个文本类任务中常用的数据集以及下载链接。
 
-<!-- TOC -->
-
-- [数据集](#数据集)
-  - [文字检测](#文字检测)
-  - [文字识别](#文字识别)
-  - [关键信息提取](#关键信息提取)
-  - [命名实体识别（专名识别）](#命名实体识别（专名识别）)
-    - [CLUENER2020](#cluener2020)
-
-<!-- /TOC -->
-
-
 ## 文字检测
 
 文字检测任务的数据集应按如下目录配置：
@@ -385,8 +373,6 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
 
 ## 命名实体识别（专名识别）
 
-### CLUENER2020
-
 命名实体识别任务的数据集，文件目录应按如下配置：
 
 ```text
@@ -402,4 +388,4 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
 
 - 下载 [cluener_public.zip](https://storage.googleapis.com/cluebenchmark/tasks/cluener_public.zip)
 
-- 下载 [vocab.txt](https://download.openmmlab.com/mmocr/data/cluener2020/vocab.txt) 然后将 `vocab.txt` 移动到 `cluener2020` 文件夹下
+- 下载 [vocab.txt](https://download.openmmlab.com/mmocr/data/cluener_public/vocab.txt) 然后将 `vocab.txt` 移动到 `cluener2020` 文件夹下
