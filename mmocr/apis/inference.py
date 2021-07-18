@@ -40,7 +40,11 @@ def assert_if_not_support_batch_mode(cfg, set_type='test'):
                             'max_width is none when do resize.')
 
 
-def model_inference(model, imgs, ann=None, batch_mode=False, return_data=False):
+def model_inference(model,
+                    imgs,
+                    ann=None,
+                    batch_mode=False,
+                    return_data=False):
     """Inference image(s) with the detector.
 
     Args:
@@ -90,8 +94,11 @@ def model_inference(model, imgs, ann=None, batch_mode=False, return_data=False):
             data = dict(img=img, ann_info=ann, bbox_fields=[])
         else:
             # add information into dict
-            data = dict(img_info=dict(filename=img), img_prefix=None, ann_info=ann,
-            bbox_fields=[])
+            data = dict(
+                img_info=dict(filename=img),
+                img_prefix=None,
+                ann_info=ann,
+                bbox_fields=[])
 
         # build the data pipeline
         data = test_pipeline(data)

@@ -1,22 +1,24 @@
-"""
-KIE Image Demo
+"""KIE Image Demo.
 
-Combines Text Detection + Text Recognition + KIE stages. Configs can be provided for each of the stages. The output is an image containing bounding boxes around text with KIE annotations and a json file containing these annotations.
+Combines Text Detection + Text Recognition + KIE stages. Configs can be
+provided for each of the stages. The output is an image containing bounding
+boxes around text with KIE annotations and a json file containing these
+annotations.
 """
 
-import numpy as np
 from argparse import ArgumentParser
 
-import torch
-
 import mmcv
-from mmdet.apis import init_detector
+import numpy as np
+import torch
 from mmcv.image.misc import tensor2imgs
-from mmocr.utils.fileio import list_from_file
+from mmdet.apis import init_detector
+
 from mmocr.apis.inference import model_inference
+from mmocr.datasets.pipelines.box_utils import sort_vertex8
 from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.utils.check_argument import is_type_list
-from mmocr.datasets.pipelines.box_utils import sort_vertex8
+from mmocr.utils.fileio import list_from_file
 
 
 def pad_text_indices(text_inds):
@@ -137,9 +139,7 @@ def generate_kie_labels(result, boxes, class_list):
 
 
 def visualize_kie_output(model, data, result, out_file=None, show=False):
-    """
-    Visualizes KIE output
-    """
+    """Visualizes KIE output."""
     img_tensor = data['img'].data
     img_meta = data['img_metas'].data
     # assert len(imgs) == len(img_metas)
@@ -148,11 +148,7 @@ def visualize_kie_output(model, data, result, out_file=None, show=False):
     h, w, _ = img_meta['img_shape']
     img_show = img[:h, :w, :]
     model.show_result(
-        img_show,
-        result,
-        gt_bboxes,
-        show=show,
-        out_file=out_file)
+        img_show, result, gt_bboxes, show=show, out_file=out_file)
 
 
 def det_recog_kie_inference(args, det_model, recog_model, kie_model):
@@ -164,7 +160,7 @@ def det_recog_kie_inference(args, det_model, recog_model, kie_model):
     # detection
     det_result = model_inference(det_model, image)
     bboxes = det_result['boundary_result']
-    
+
     # recognition
     box_imgs = []
     for bbox in bboxes:
@@ -213,12 +209,13 @@ def det_recog_kie_inference(args, det_model, recog_model, kie_model):
     annotations = end2end_res['result']
     with open(kie_model.cfg.data.test.dict_file) as f:
         vocab = f.readlines()
-    vocab = [x.strip() for x in vocab] 
+    vocab = [x.strip() for x in vocab]
     ann_info = parse_anno_info(annotations, vocab)
-    kie_result, data = model_inference(kie_model, image, ann=ann_info, return_data=True)
+    kie_result, data = model_inference(
+        kie_model, image, ann=ann_info, return_data=True)
     # visualize KIE results
-    visualize_kie_output(kie_model, data, kie_result, out_file=args.out_file, 
-                         show=args.imshow)
+    visualize_kie_output(
+        kie_model, data, kie_result, out_file=args.out_file, show=args.imshow)
     gt_bboxes = data['gt_bboxes'].data.numpy().tolist()
     labels = generate_kie_labels(kie_result, gt_bboxes, kie_model.class_list)
     for i in range(len(gt_bboxes)):
@@ -319,13 +316,10 @@ def main():
         kie_model.cfg.data.test.pipeline = \
             kie_model.cfg.data.test['datasets'][0].pipeline
 
-    result = det_recog_kie_inference(args, detect_model, recog_model, kie_model)
+    result = det_recog_kie_inference(args, detect_model, recog_model,
+                                     kie_model)
     print(f'result: {result}')
-    mmcv.dump(
-        result,
-        args.out_file + '.json',
-        ensure_ascii=False,
-        indent=4)
+    mmcv.dump(result, args.out_file + '.json', ensure_ascii=False, indent=4)
 
 
 if __name__ == '__main__':
