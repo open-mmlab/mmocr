@@ -32,6 +32,13 @@ python demo/ocr_image_demo.py demo/demo_text_det.jpg demo/output.jpg
 
 The predicted result will be saved as `demo/output.jpg`.
 
+To end-to-end test a single image with kie,
+
+```shell
+python demo/kie_image_demo.py demo/demo_kie.jpg demo/output.jpg
+```
+
+The predicted result will be saved as `demo/output.jpg` and `demo/output.jpg.json`.
 ### Test Multiple Images
 
 ```shell
