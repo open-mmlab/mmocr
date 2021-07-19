@@ -87,10 +87,6 @@ test = dict(
     test_mode=True)
 
 data = dict(
-    samples_per_gpu=8,
-    workers_per_gpu=1,
-    train=dict(type='ConcatDataset', datasets=[train]),
-    val=dict(type='ConcatDataset', datasets=[test]),
-    test=dict(type='ConcatDataset', datasets=[test]))
+    samples_per_gpu=8, workers_per_gpu=1, train=train, val=test, test=test)
 
 evaluation = dict(interval=1, metric='acc')

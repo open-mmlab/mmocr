@@ -9,7 +9,6 @@ This page lists the datasets which are commonly used in text detection, text rec
   - [Text Recognition](#text-recognition)
   - [Key Information Extraction](#key-information-extraction)
   - [Named Entity Recognition](#named-entity-recognition)
-    - [CLUENER2020](#cluener2020)
 
 <!-- /TOC -->
 
@@ -120,7 +119,7 @@ The structure of the text detection dataset directory is organized as follows.
   python tools/data/textdet/textocr_converter.py /path/to/textocr
   ```
 - For `Totaltext`:
-  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (We recommend downloading the text groundtruth with .mat format since our totaltext_converter.py supports groundtruth with .mat format only).
+  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
   ```bash
   mkdir totaltext && cd totaltext
   mkdir imgs && mkdir annotations
@@ -267,21 +266,27 @@ The structure of the text detection dataset directory is organized as follows.
 
 - For `SynthText`:
   - Step1: Download `SynthText.zip` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)
-  - Step2: Download [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt)
-  - Step3: Download [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt)
-  - Step4:
+  - Step2:
 
   ```bash
+  mkdir SynthText && cd SynthText
+  mv /path/to/SynthText.zip .
   unzip SynthText.zip
-
-  cd SynthText
+  mv SynthText synthtext
 
   mv /path/to/shuffle_labels.txt .
 
   # create soft link
   cd /path/to/mmocr/data/mixture
-
   ln -s /path/to/SynthText SynthText
+  ```
+  - Step3:
+  Generate cropped images and labels:
+
+  ```bash
+  cd /path/to/mmocr
+
+  python tools/data/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat data/mixture/SynthText/ data/mixture/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
   ```
 
 - For `SynthAdd`:
@@ -333,7 +338,7 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
 
 
 - For `Totaltext`:
-  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (We recommend downloading the text groundtruth with .mat format since our totaltext_converter.py supports groundtruth with .mat format only).
+  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
   ```bash
   mkdir totaltext && cd totaltext
   mkdir imgs && mkdir annotations
@@ -376,8 +381,6 @@ The structure of the key information extraction dataset directory is organized a
 
 ## Named Entity Recognition
 
-### CLUENER2020
-
 The structure of the named entity recognition dataset directory is organized as follows.
 
 ```text
@@ -392,4 +395,4 @@ The structure of the named entity recognition dataset directory is organized as 
 ```
 - Download [cluener_public.zip](https://storage.googleapis.com/cluebenchmark/tasks/cluener_public.zip)
 
-- Download [vocab.txt](https://download.openmmlab.com/mmocr/data/cluener2020/vocab.txt) and move `vocab.txt` to `cluener2020`
+- Download [vocab.txt](https://download.openmmlab.com/mmocr/data/cluener_public/vocab.txt) and move `vocab.txt` to `cluener2020`
