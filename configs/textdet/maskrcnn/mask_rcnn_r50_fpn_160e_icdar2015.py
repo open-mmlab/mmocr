@@ -8,7 +8,7 @@ img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 # img_norm_cfg = dict(mean=[0, 0, 0], std=[1, 1, 1], to_rgb=True)
 train_pipeline = [
-    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(type='LoadOCRImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
     dict(
         type='ScaleAspectJitter',
@@ -28,7 +28,7 @@ train_pipeline = [
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels', 'gt_masks']),
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(type='LoadOCRImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
         # resize the long size to 1600
