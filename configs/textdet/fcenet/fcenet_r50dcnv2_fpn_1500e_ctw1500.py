@@ -1,7 +1,6 @@
 fourier_degree = 5
 model = dict(
     type='FCENet',
-    pretrained='torchvision://resnet50',
     backbone=dict(
         type='ResNet',
         depth=50,
@@ -12,13 +11,13 @@ model = dict(
         norm_eval=True,
         style='pytorch',
         dcn=dict(type='DCNv2', deform_groups=2, fallback_on_stride=False),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
         stage_with_dcn=(False, True, True, True)),
     neck=dict(
         type='FPN',
         in_channels=[512, 1024, 2048],
         out_channels=256,
-        add_extra_convs=True,
-        extra_convs_on_inputs=False,  # use P5
+        add_extra_convs='on_output',
         num_outs=3,
         relu_before_extra_convs=True,
         act_cfg=None),

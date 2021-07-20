@@ -18,7 +18,8 @@ class OCRMaskRCNN(TextDetectorMixin, MaskRCNN):
                  neck=None,
                  pretrained=None,
                  text_repr_type='quad',
-                 show_score=False):
+                 show_score=False,
+                 init_cfg=None):
         TextDetectorMixin.__init__(self, show_score)
         MaskRCNN.__init__(
             self,
@@ -28,7 +29,8 @@ class OCRMaskRCNN(TextDetectorMixin, MaskRCNN):
             roi_head=roi_head,
             train_cfg=train_cfg,
             test_cfg=test_cfg,
-            pretrained=pretrained)
+            pretrained=pretrained,
+            init_cfg=init_cfg)
         assert text_repr_type in ['quad', 'poly']
         self.text_repr_type = text_repr_type
 

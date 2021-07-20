@@ -5,7 +5,6 @@ load_from = 'checkpoints/textdet/dbnet/res50dcnv2_synthtext.pth'
 
 model = dict(
     type='DBNet',
-    pretrained='torchvision://resnet50',
     backbone=dict(
         type='ResNet',
         depth=50,
@@ -16,6 +15,7 @@ model = dict(
         norm_eval=False,
         style='caffe',
         dcn=dict(type='DCNv2', deform_groups=1, fallback_on_stride=False),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
         stage_with_dcn=(False, True, True, True)),
     neck=dict(
         type='FPNC', in_channels=[256, 512, 1024, 2048], lateral_channels=256),

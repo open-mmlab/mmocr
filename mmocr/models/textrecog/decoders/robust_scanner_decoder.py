@@ -20,8 +20,9 @@ class RobustScannerDecoder(BaseDecoder):
                  padding_idx=None,
                  encode_value=False,
                  hybrid_decoder=None,
-                 position_decoder=None):
-        super().__init__()
+                 position_decoder=None,
+                 init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
         self.num_classes = num_classes
         self.dim_input = dim_input
         self.dim_model = dim_model
@@ -61,9 +62,6 @@ class RobustScannerDecoder(BaseDecoder):
         pred_num_classes = num_classes - 1
         self.prediction = nn.Linear(dim_model if encode_value else dim_input,
                                     pred_num_classes)
-
-    def init_weights(self):
-        pass
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
         hybrid_glimpse = self.hybrid_decoder.forward_train(

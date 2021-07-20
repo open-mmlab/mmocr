@@ -44,8 +44,9 @@ class TPSPreprocessor(BasePreprocessor):
                  num_fiducial=20,
                  img_size=(32, 100),
                  rectified_img_size=(32, 100),
-                 num_img_channel=1):
-        super().__init__()
+                 num_img_channel=1,
+                 init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
         assert isinstance(num_fiducial, int)
         assert num_fiducial > 0
         assert isinstance(img_size, tuple)

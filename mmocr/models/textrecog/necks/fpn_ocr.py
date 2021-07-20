@@ -1,12 +1,12 @@
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
+from mmcv.runner import BaseModule, ModuleList
 from mmdet.models.builder import NECKS
 
 
 @NECKS.register_module()
-class FPNOCR(nn.Module):
+class FPNOCR(BaseModule):
     """FPN-like Network for segmentation based text recognition.
 
     Args:
@@ -15,8 +15,12 @@ class FPNOCR(nn.Module):
         last_stage_only (bool): If True, output last stage only.
     """
 
-    def __init__(self, in_channels, out_channels, last_stage_only=True):
-        super().__init__()
+    def __init__(self,
+                 in_channels,
+                 out_channels,
+                 last_stage_only=True,
+                 init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
 
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -24,9 +28,9 @@ class FPNOCR(nn.Module):
 
         self.last_stage_only = last_stage_only
 
-        self.lateral_convs = nn.ModuleList()
-        self.smooth_convs_1x1 = nn.ModuleList()
-        self.smooth_convs_3x3 = nn.ModuleList()
+        self.lateral_convs = ModuleList()
+        self.smooth_convs_1x1 = ModuleList()
+        self.smooth_convs_3x3 = ModuleList()
 
         for i in range(self.num_ins):
             l_conv = ConvModule(
@@ -44,9 +48,6 @@ class FPNOCR(nn.Module):
                 norm_cfg=dict(type='BN'))
             self.smooth_convs_1x1.append(s_conv_1x1)
             self.smooth_convs_3x3.append(s_conv_3x3)
-
-    def init_weights(self):
-        pass
 
     def _upsample_x2(self, x):
         return F.interpolate(x, scale_factor=2, mode='bilinear')

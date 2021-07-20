@@ -1,7 +1,6 @@
 # model settings
 model = dict(
     type='OCRMaskRCNN',
-    pretrained='torchvision://resnet50',
     backbone=dict(
         type='ResNet',
         depth=50,
@@ -9,6 +8,7 @@ model = dict(
         out_indices=(0, 1, 2, 3),
         frozen_stages=1,
         norm_cfg=dict(type='BN', requires_grad=True),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
         norm_eval=True,
         style='pytorch'),
     neck=dict(
@@ -91,8 +91,8 @@ model = dict(
             nms_across_levels=False,
             nms_pre=2000,
             nms_post=1000,
-            max_num=1000,
-            nms_thr=0.7,
+            max_per_img=1000,
+            nms=dict(type='nms', iou_threshold=0.7),
             min_bbox_size=0),
         rcnn=dict(
             assigner=dict(
@@ -116,8 +116,8 @@ model = dict(
             nms_across_levels=False,
             nms_pre=1000,
             nms_post=1000,
-            max_num=1000,
-            nms_thr=0.7,
+            max_per_img=1000,
+            nms=dict(type='nms', iou_threshold=0.7),
             min_bbox_size=0),
         rcnn=dict(
             score_thr=0.05,
