@@ -25,4 +25,4 @@ class PSEHead(PANHead):
             loss=loss,
             train_cfg=train_cfg,
             test_cfg=test_cfg,
-            init_cfg=None)
+            init_cfg=init_cfg)
