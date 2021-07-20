@@ -16,7 +16,7 @@
 
 MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检测，文本识别以及相应的下游任务，如关键信息提取。 它是 OpenMMLab 项目的一部分。
 
-主分支目前支持 **PyTorch 1.5 以上**的版本。
+主分支目前支持 **PyTorch 1.6 以上**的版本。
 
 文档：https://mmocr.readthedocs.io/en/latest/。
 
@@ -105,7 +105,7 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 
 ## 更新日志
 
-最新的月度版本 v0.2.0 在 2021.05.18 发布。
+最新的月度版本 v0.2.1 在 2021.07.20 发布。
 
 
 ## 安装
