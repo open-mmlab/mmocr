@@ -113,7 +113,7 @@ export PYTHONPATH=$(pwd):$PYTHONPATH
 
 ## 可选方式: Docker镜像
 
-我们提供了一个docker文件以建立docker镜像 [Dockerfile](https://github.com/open-mmlab/mmocr/blob/master/docker/Dockerfile)。
+我们提供了一个 [Dockerfile](https://github.com/open-mmlab/mmocr/blob/master/docker/Dockerfile) 文件以建立 docker 镜像 。
 
 ```shell
 # build an image with PyTorch 1.5, CUDA 10.1
