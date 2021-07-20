@@ -33,7 +33,7 @@ img_norm_cfg = dict(
 #    mean=[0, 0, 0], std=[1, 1, 1], to_rgb=True)
 
 train_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadTextAnnotations',
         with_bbox=True,
@@ -64,7 +64,7 @@ train_pipeline = [
     dict(type='Collect', keys=['img', 'gt_kernels', 'gt_mask'])
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
         img_scale=(1333, 736),
