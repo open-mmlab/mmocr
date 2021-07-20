@@ -107,7 +107,7 @@ class LoadImageFromNdarray(LoadImageFromFile):
 
 @PIPELINES.register_module()
 class LoadOCRImageFromFile(LoadImageFromFile):
-    """Load an image from file and ignores orientation info by default.
+    """Load an image from file and ignore orientation info by default.
 
     The interface is the same as :obj:`LoadImageFromFile`, but the default
     loading type is `color_ignore_orientation` (see MMCV's documentation
