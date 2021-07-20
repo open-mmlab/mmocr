@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.1 (19/7/2021)
+## v0.2.1 (20/7/2021)
 
 **Highlights**
 1. Upgrade to use MMCV-full **>= 1.3.8** and MMDetection **>= 2.13.0** for latest features
