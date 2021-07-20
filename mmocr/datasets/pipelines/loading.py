@@ -103,24 +103,3 @@ class LoadImageFromNdarray(LoadImageFromFile):
         results['ori_shape'] = img.shape
         results['img_fields'] = ['img']
         return results
-
-
-@PIPELINES.register_module()
-class LoadOCRImageFromFile(LoadImageFromFile):
-    """Load an image from file and ignore orientation info by default.
-
-    The interface is the same as :obj:`LoadImageFromFile`, but the default
-    loading type is `color_ignore_orientation` (see MMCV's documentation
-    on `imread` for details), which is specifically customized for OCR
-    datasets.
-
-    In some OCR datasets, including `ctw1500` and `icdar2017`, there are some
-    images containing orientation info in  EXIF data. The default OpenCV
-    backend used in MMCV would read them and apply the rotation on the images.
-    However, their associated annotations are made on the raw pixels, and such
-    inconsistency results in wrong examples during training. This module
-    addresses this problem by changing MMCV's default loading behaviour.
-    """
-
-    def __init__(self, color_type='color_ignore_orientation', **kwargs):
-        super().__init__(color_type=color_type, **kwargs)
