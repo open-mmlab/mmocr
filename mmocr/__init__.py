@@ -26,7 +26,7 @@ assert (mmcv_version >= digit_version(mmcv_minimum_version)
     f'Please use MMCV >= {mmcv_minimum_version}, ' \
     f'<= {mmcv_maximum_version} instead.'
 
-mmdet_minimum_version = '2.13.0'
+mmdet_minimum_version = '2.14.0'
 mmdet_maximum_version = '2.20.0'
 mmdet_version = digit_version(mmdet.__version__)
 

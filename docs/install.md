@@ -10,7 +10,7 @@
 - NCCL 2
 - GCC 5.4.0 or higher
 - [MMCV](https://mmcv.readthedocs.io/en/latest/#installation) >= 1.3.8
-- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation) >= 2.13.0
+- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation) >= 2.14.0
 
 We have tested the following versions of OS and softwares:
 
@@ -18,7 +18,7 @@ We have tested the following versions of OS and softwares:
 - CUDA: 10.1
 - GCC(G++): 5.4.0
 - MMCV 1.3.8
-- MMDetection 2.13.0
+- MMDetection 2.14.0
 - PyTorch 1.6.0
 - torchvision 0.7.0
 
