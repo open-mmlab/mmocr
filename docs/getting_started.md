@@ -69,7 +69,7 @@ results = ocr.readtext('demo/demo_text_det.jpg', output='demo/det_out.jpg', expo
 
 - CL interface:
 ```shell
-python mmocr/utils/ocr.py %INPUT_FOLDER_PATH% --det '' --recog CRNN_TPS --batch-mode --single-batch-size 10 --output %OUPUT_FOLDER_PATH%
+python mmocr/utils/ocr.py %INPUT_FOLDER_PATH% --det None --recog CRNN_TPS --batch-mode --single-batch-size 10 --output %OUPUT_FOLDER_PATH%
 ```
 
 - Python interface:
