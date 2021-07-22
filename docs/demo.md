@@ -1,40 +1,14 @@
-<center> <h1> OCR API </h1> </center>
+# Demo
 
-An easy to use API for text detection/recognition and end to end ocr is provided through the [ocr.py](/mmocr/utils/ocr.py) script.
+An easy to use API for text detection/recognition and end to end ocr is provided through the [ocr.py](https://github.com/open-mmlab/mmocr/blob/main/mmocr/utils/ocr.py) script.
 
 The API can be called through command line (CL) or by calling it from another python script.
 
 ---
 
-#### Example 1:
-
+## Example 1: Text Detection
 <div align="center">
-    <img src="/demo/resources/demo_ocr_pred.jpg"/><br>
-</div>
-<br>
-
-**Instruction:** Perform ocr (det + recog) inference on the demo/demo_text_det.jpg image with the PANet_IC15 (default) detection model and SAR (default) recognition model, print the result in the terminal and show the visualization.
-
-- CL interface:
-```shell
-python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
-```
-*Note: When calling the script from the command line, the `configs` folder must be in the current working directory*
-
-- Python interface:
-```python
-from mmocr.utils.ocr import MMOCR
-
-# Load models into memory
-ocr = MMOCR()
-
-# Inference
-results = ocr.readtext('./demo/demo_text_ocr.jpg', print_result=True, imshow=True)
-```
-
-#### Example 2:
-<div align="center">
-    <img src="/demo/resources/text_det_pred.jpg"/><br>
+    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/resources/text_det_pred.jpg"/><br>
 </div>
 <br>
 
@@ -57,10 +31,10 @@ results = ocr.readtext('demo/demo_text_det.jpg', output='demo/det_out.jpg', expo
 ```
 
 
-#### Example 3:
+## Example 2: Text Recognition
 
 <div align="center">
-    <img src="/demo/resources/text_recog_pred.jpg"/><br>
+    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/resources/text_recog_pred.jpg"/><br>
 </div>
 <br>
 
@@ -82,12 +56,39 @@ ocr = MMOCR(det=None, recog='CRNN_TPS')
 # Inference
 results = ocr.readtext(%INPUT_FOLDER_PATH%, output = %OUTPUT_FOLDER_PATH%, batch_mode=True, single_batch_size = 10)
 ```
+
+## Example 3: Text Detection + Recognition
+
+<div align="center">
+    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/resources/demo_ocr_pred.jpg"/><br>
+</div>
+<br>
+
+**Instruction:** Perform ocr (det + recog) inference on the demo/demo_text_det.jpg image with the PANet_IC15 (default) detection model and SAR (default) recognition model, print the result in the terminal and show the visualization.
+
+- CL interface:
+```shell
+python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
+```
+*Note: When calling the script from the command line, the `configs` folder must be in the current working directory*
+
+- Python interface:
+```python
+from mmocr.utils.ocr import MMOCR
+
+# Load models into memory
+ocr = MMOCR()
+
+# Inference
+results = ocr.readtext('https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/resources/demo_text_ocr.jpg', print_result=True, imshow=True)
+```
 ---
 
-### Arguments
+## API Arguments
 The API has an extensive list of arguments that you can use. The following tables are for the python interface.
 
 **MMOCR():**
+
 | Arguments      | Type                  | Default       | Description                                                 |
 | -------------- | --------------------- | ------------- | ----------------------------------------------------------- |
 | `det`          | see [models](#models) | PANet_IC15 | Text detection algorithm                                    |
@@ -97,6 +98,7 @@ The API has an extensive list of arguments that you can use. The following table
 | `device`       | str                   | cuda:0        | Device used for inference: 'cuda:0' or 'cpu'                |
 
 **readtext():**
+
 | Arguments           | Type                    | Default      | Description                                                            |
 | ------------------- | ----------------------- | ------------ | ---------------------------------------------------------------------- |
 | `img`               | str/list/tuple/np.array | **required** | img, folder path, np array or list/tuple (with img paths or np arrays) |
@@ -122,9 +124,10 @@ means that `batch_mode` and `print_result` are set to `True`
 
 ---
 
-### Models
+## Batch Mode Support
 
 **Text detection:**
+
 | Name          |                                                                        Reference                                                                         | `batch_mode` support |
 | ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------: |
 | DB_r18        |            [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |         :x:          |
@@ -155,7 +158,7 @@ means that `batch_mode` and `print_result` are set to `True`
 
 ---
 
-### Additional info
+## Additional info
 
 - To perform det + recog inference (end2end ocr), both the `det` and `recog` arguments must be defined.
 - To perform only detection set the `recog` argument to `None`
