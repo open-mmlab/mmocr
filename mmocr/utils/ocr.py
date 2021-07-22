@@ -106,12 +106,11 @@ textrecog_models = {
 # Post processing function for end2end ocr
 def det_recog_pp(args, result):
     final_results = []
-    for arr, out_img, export, det_recog_result in zip(args.arrays,
-                                                      args.out_img,
-                                                      args.export, result):
-        if out_img or args.imshow:
+    for arr, output, export, det_recog_result in zip(args.arrays, args.output,
+                                                     args.export, result):
+        if output or args.imshow:
             res_img = det_recog_show_result(
-                arr, det_recog_result, out_file=out_img)
+                arr, det_recog_result, out_file=output)
             if args.imshow:
                 mmcv.imshow(res_img, 'inference results')
         if not args.details:
@@ -133,12 +132,12 @@ def det_recog_pp(args, result):
 
 # Post processing function for separate det/recog inference
 def single_pp(args, result, model):
-    for arr, out_img, export, res in zip(args.arrays, args.out_img,
-                                         args.export, result):
+    for arr, output, export, res in zip(args.arrays, args.output, args.export,
+                                        result):
         if export:
             mmcv.dump(res, export, indent=4)
-        if out_img or args.imshow:
-            res_img = model.show_result(arr, res, out_file=out_img)
+        if output or args.imshow:
+            res_img = model.show_result(arr, res, out_file=output)
             if args.imshow:
                 mmcv.imshow(res_img, 'inference results')
         if args.print_result:
@@ -248,19 +247,19 @@ def args_processing(args):
 
     # If given an output argument, create a list of output image filenames
     num_res = len(img_list)
-    if args.out_img:
-        out_img_path = Path(args.out_img)
-        if out_img_path.is_dir():
-            args.out_img = [
-                str(out_img_path / f'out_{x}.png') for x in args.filenames
+    if args.output:
+        output_path = Path(args.output)
+        if output_path.is_dir():
+            args.output = [
+                str(output_path / f'out_{x}.png') for x in args.filenames
             ]
         else:
-            args.out_img = [str(args.out_img)]
+            args.output = [str(args.output)]
             if args.batch_mode:
                 raise AssertionError(
                     'Output of multiple images inference must be a directory')
     else:
-        args.out_img = [None] * num_res
+        args.output = [None] * num_res
 
     # If given an export argument, create a list of
     # result filenames for each image
