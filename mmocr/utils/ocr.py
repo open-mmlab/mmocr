@@ -110,11 +110,10 @@ def det_recog_pp(args, result):
                                                       args.out_img,
                                                       args.export, result):
         if out_img or args.imshow:
-            res_img = det_recog_show_result(arr, det_recog_result)
-            if out_img:
-                mmcv.imwrite(res_img, out_img)
+            res_img = det_recog_show_result(
+                arr, det_recog_result, out_file=out_img)
             if args.imshow:
-                mmcv.imshow(res_img, 'predicted results')
+                mmcv.imshow(res_img, 'inference results')
         if not args.details:
             simple_res = {}
             simple_res['filename'] = det_recog_result['filename']
@@ -125,7 +124,7 @@ def det_recog_pp(args, result):
         else:
             final_result = det_recog_result
         if export:
-            mmcv.dump(final_result, export, ensure_ascii=False, indent=4)
+            mmcv.dump(final_result, export, indent=4)
         if args.print_result:
             print(final_result, end='\n\n')
         final_results.append(final_result)
@@ -137,9 +136,11 @@ def single_pp(args, result, model):
     for arr, out_img, export, res in zip(args.arrays, args.out_img,
                                          args.export, result):
         if export:
-            mmcv.dump(res, export, ensure_ascii=False, indent=4)
+            mmcv.dump(res, export, indent=4)
         if out_img or args.imshow:
-            model.show_result(arr, res, out_file=out_img, show=args.imshow)
+            res_img = model.show_result(arr, res, out_file=out_img)
+            if args.imshow:
+                mmcv.imshow(res_img, 'inference results')
         if args.print_result:
             print(res, end='\n\n')
     return result
@@ -239,7 +240,7 @@ def args_processing(args):
     # re-reading the images for vizualisation output
     args.arrays = [mmcv.imread(x) for x in img_list]
 
-    # Create a list of filenames (used for output imgages and result files)
+    # Create a list of filenames (used for output images and result files)
     if isinstance(img_list[0], str):
         args.filenames = [str(Path(x).stem) for x in img_list]
     else:
@@ -288,7 +289,7 @@ def parse_args():
     parser.add_argument(
         'img', type=str, help='Input image file or folder path.')
     parser.add_argument(
-        '--out-img',
+        '--output',
         type=str,
         default='',
         help='Output file/folder name for visualization')
@@ -354,9 +355,9 @@ def parse_args():
         action='store_true',
         help='Prints the recognised text')
     args = parser.parse_args()
-    if args.det == "''":
+    if args.det == 'None':
         args.det = None
-    if args.recog == "''":
+    if args.recog == 'None':
         args.recog = None
     return args
 
@@ -424,7 +425,7 @@ class MMOCR:
 
     def readtext(self,
                  img,
-                 out_img=None,
+                 output=None,
                  details=False,
                  export=None,
                  export_format='json',
