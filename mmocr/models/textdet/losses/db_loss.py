@@ -133,8 +133,6 @@ class DBLoss(nn.Module):
         assert isinstance(gt_thr, list)
         assert isinstance(gt_thr_mask, list)
 
-        preds = preds[0]
-
         pred_prob = preds[:, 0, :, :]
         pred_thr = preds[:, 1, :, :]
         pred_db = preds[:, 2, :, :]

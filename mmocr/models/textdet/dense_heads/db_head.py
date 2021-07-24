@@ -66,7 +66,7 @@ class DBHead(HeadMixin, BaseModule):
         thr_map = self.threshold(inputs)
         binary_map = self.diff_binarize(prob_map, thr_map, k=50)
         outputs = torch.cat((prob_map, thr_map, binary_map), dim=1)
-        return (outputs, )
+        return outputs
 
     def _init_thr(self, inner_channels, bias=False):
         in_channels = inner_channels
