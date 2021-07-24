@@ -39,7 +39,7 @@ results = ocr.readtext('demo/demo_text_det.jpg', output='demo/det_out.jpg', expo
 <br>
 
 **Instruction:** Perform batched recognition inference on a folder with hundreds of image with the CRNN_TPS recognition model and save the visualization results in another folder.
-*Batch size is set to 10 to prevent out of memory CUDA runtime errors*
+*Batch size is set to 10 to prevent out of memory CUDA runtime errors.*
 
 - CL interface:
 ```shell
