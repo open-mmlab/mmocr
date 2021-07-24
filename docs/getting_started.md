@@ -6,42 +6,84 @@ For the installation instructions, please see [install.md](install.md).
 
 ## Inference with Pretrained Models
 
-We provide testing scripts to evaluate a full dataset, as well as some task-specific image demos.
+#### Example 1:
 
-### Test a Single Image
+<div align="center">
+    <img src="/demo/resources/demo_ocr_pred.jpg"/><br>
+</div>
+<br>
 
-You can use the following command to test a single image with one GPU.
+**Instruction:** Perform ocr (det + recog) inference on the demo/demo_text_det.jpg image with the PANet_IC15 (default) detection model and SAR (default) recognition model, print the result in the terminal and show the visualization.
 
+- CL interface:
 ```shell
-python demo/image_demo.py ${TEST_IMG} ${CONFIG_FILE} ${CHECKPOINT_FILE} ${SAVE_PATH} [--imshow] [--device ${GPU_ID}]
+python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
+```
+*Note: When calling the script from the command line, the `configs` folder must be in the current working directory*
+
+- Python interface:
+```python
+from mmocr.utils.ocr import MMOCR
+
+# Load models into memory
+ocr = MMOCR()
+
+# Inference
+results = ocr.readtext('./demo/demo_text_ocr.jpg', print_result=True, imshow=True)
 ```
 
-If `--imshow` is specified, the demo will also show the image with OpenCV. For example:
+#### Example 2:
+<div align="center">
+    <img src="/demo/resources/text_det_pred.jpg"/><br>
+</div>
+<br>
 
+**Instruction:** Perform detection inference on an image with the TextSnake recognition model, export the result in a json file (default) and save the visualization file.
+
+- CL interface:
 ```shell
-python demo/image_demo.py demo/demo_text_det.jpg configs/xxx.py xxx.pth demo/demo_text_det_pred.jpg
+python mmocr/utils/ocr.py demo/demo_text_det.jpg --output demo/det_out.jpg --det TextSnake --recog None --export demo/
 ```
 
-The predicted result will be saved as `demo/demo_text_det_pred.jpg`.
+- Python interface:
+```python
+from mmocr.utils.ocr import MMOCR
 
-To end-to-end test a single image with both text detection and recognition,
+# Load models into memory
+ocr = MMOCR(det='TextSnake', recog=None)
 
-```shell
-python demo/ocr_image_demo.py demo/demo_text_det.jpg demo/output.jpg
+# Inference
+results = ocr.readtext('demo/demo_text_det.jpg', output='demo/det_out.jpg', export='demo/')
 ```
 
-The predicted result will be saved as `demo/output.jpg`.
 
-### Test Multiple Images
+#### Example 3:
 
+<div align="center">
+    <img src="/demo/resources/text_recog_pred.jpg"/><br>
+</div>
+<br>
+
+**Instruction:** Perform batched recognition inference on a folder with hundreds of image with the CRNN_TPS recognition model and save the visualization results in another folder.
+*Batch size is set to 10 to prevent out of memory CUDA runtime errors*
+
+- CL interface:
 ```shell
-# for text detection
-./tools/det_test_imgs.py ${IMG_ROOT_PATH} ${IMG_LIST} ${CONFIG_FILE} ${CHECKPOINT_FILE} --out-dir ${RESULTS_DIR}
-
-# for text recognition
-./tools/recog_test_imgs.py ${IMG_ROOT_PATH} ${IMG_LIST} ${CONFIG_FILE} ${CHECKPOINT_FILE} --out-dir ${RESULTS_DIR}
+python mmocr/utils/ocr.py %INPUT_FOLDER_PATH% --det None --recog CRNN_TPS --batch-mode --single-batch-size 10 --output %OUPUT_FOLDER_PATH%
 ```
-It will save both the prediction results and visualized images to `${RESULTS_DIR}`
+
+- Python interface:
+```python
+from mmocr.utils.ocr import MMOCR
+
+# Load models into memory
+ocr = MMOCR(det=None, recog='CRNN_TPS')
+
+# Inference
+results = ocr.readtext(%INPUT_FOLDER_PATH%, output = %OUTPUT_FOLDER_PATH%, batch_mode=True, single_batch_size = 10)
+```
+
+For more details on the arguments, please refer to the [OCR API](demo/docs/demo.md)
 
 ### Test a Dataset
 
