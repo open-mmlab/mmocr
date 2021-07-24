@@ -70,7 +70,7 @@ results = ocr.readtext(%INPUT_FOLDER_PATH%, output = %OUTPUT_FOLDER_PATH%, batch
 ```shell
 python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
 ```
-*Note: When calling the script from the command line, the `configs` folder must be in the current working directory*
+*Note: When calling the script from the command line, the `configs` folder must be in the current working directory.*
 
 - Python interface:
 ```python
@@ -113,18 +113,18 @@ The API has an extensive list of arguments that you can use. The following table
 | `imshow`            | bool                    | False        | Whether to show the result visualization on screen                     |
 | `print_result`      | bool                    | False        | Whether to show the result for each image                              |
 
-[1]: Make sure that the model is compatible with batch mode
+[1]: Make sure that the model is compatible with batch mode.
 
 All arguments are the same for the cli, all you need to do is add 2 hyphens at the beginning of the argument and replace underscores by hyphens.
-*Example:* `det_batch_size` becomes `--det-batch-size`
+(*Example:* `det_batch_size` becomes `--det-batch-size`)
 
 For bool type arguments, putting the argument in the command stores it as true.
-*Example:* `python mmocr/utils/ocr.py demo/demo_text_det.jpg --batch_mode --print_result`
-means that `batch_mode` and `print_result` are set to `True`
+(*Example:* `python mmocr/utils/ocr.py demo/demo_text_det.jpg --batch_mode --print_result`
+means that `batch_mode` and `print_result` are set to `True`)
 
 ---
 
-## Batch Mode Support
+## Models
 
 **Text detection:**
 
@@ -161,8 +161,8 @@ means that `batch_mode` and `print_result` are set to `True`
 ## Additional info
 
 - To perform det + recog inference (end2end ocr), both the `det` and `recog` arguments must be defined.
-- To perform only detection set the `recog` argument to `None`
-- To perform only recognition set the `det` argument to `None`
+- To perform only detection set the `recog` argument to `None`.
+- To perform only recognition set the `det` argument to `None`.
 - `details` argument only works with end2end ocr.
 - `det_batch_size` and `recog_batch_size` arguments define the number of images you want to forward to the model at the same time. For maximum speed, set this to the highest number you can. The max batch size is limited by the model complexity and the GPU VRAM size.
 
