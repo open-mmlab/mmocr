@@ -3,7 +3,6 @@ import os
 import shutil
 import urllib
 import warnings
-from pathlib import Path
 
 import cv2
 import mmcv
@@ -599,11 +598,6 @@ def det_recog_show_result(img, end2end_res, out_file=None):
     out_img[:, w:, :] = text_vis_img
 
     if out_file:
-        out_file = Path(out_file)
-        if out_file.is_file():
-            mmcv.imwrite(out_img, str(out_file))
-        else:
-            raise AssertionError(
-                'Output file must be an image file path (str)')
+        mmcv.imwrite(out_img, out_file)
 
     return out_img
