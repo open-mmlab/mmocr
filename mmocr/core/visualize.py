@@ -570,12 +570,13 @@ def is_contain_chinese(check_str):
     return False
 
 
-def det_recog_show_result(img, end2end_res):
+def det_recog_show_result(img, end2end_res, out_file=None):
     """Draw `result`(boxes and texts) on `img`.
+
     Args:
         img (str or np.ndarray): The image to be displayed.
         end2end_res (dict): Text detect and recognize results.
-
+        out_file (str): Image path where the visualized image should be saved.
     Return:
         out_img (np.ndarray): Visualized image.
     """
@@ -595,5 +596,8 @@ def det_recog_show_result(img, end2end_res):
     out_img = np.ones((h, w * 2, 3), dtype=np.uint8)
     out_img[:, :w, :] = box_vis_img
     out_img[:, w:, :] = text_vis_img
+
+    if out_file:
+        mmcv.imwrite(out_img, out_file)
 
     return out_img
