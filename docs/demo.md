@@ -80,7 +80,7 @@ from mmocr.utils.ocr import MMOCR
 ocr = MMOCR()
 
 # Inference
-results = ocr.readtext('https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/resources/demo_text_ocr.jpg', print_result=True, imshow=True)
+results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, imshow=True)
 ```
 ---
 
