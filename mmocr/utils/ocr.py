@@ -1,3 +1,4 @@
+import os
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
@@ -166,10 +167,10 @@ def det_and_recog_inference(args, det_model, recog_model):
             box_res['box_score'] = float(bbox[-1])
             box = bbox[:8]
             if len(bbox) > 9:
-                min_x = min(bbox[0:-1:2])
-                min_y = min(bbox[1:-1:2])
-                max_x = max(bbox[0:-1:2])
-                max_y = max(bbox[1:-1:2])
+                min_x = min(bbox[0::2])
+                min_y = min(bbox[1::2])
+                max_x = max(bbox[0::2])
+                max_y = max(bbox[1::2])
                 box = [min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y]
             box_img = crop_img(arr, box)
             if args.batch_mode:
@@ -301,14 +302,20 @@ def parse_args():
         '--det-config',
         type=str,
         default='',
-        help='Path to the custom config of the selected det model')
+        help='Path to the custom config file of the selected det model')
     parser.add_argument(
         '--recog', type=str, default='SEG', help='Text recognition algorithm')
     parser.add_argument(
         '--recog-config',
         type=str,
         default='',
-        help='Path to the custom config of the selected recog model')
+        help='Path to the custom config file of the selected recog model')
+    parser.add_argument(
+        '--config-dir',
+        type=str,
+        default=os.path.join(str(Path.cwd()), 'configs/'),
+        help='Path to the config directory where all the config files '
+        'are located. Defaults to "configs/"')
     parser.add_argument(
         '--batch-mode',
         action='store_true',
@@ -368,14 +375,12 @@ class MMOCR:
                  det_config='',
                  recog='SEG',
                  recog_config='',
+                 config_dir=os.path.join(str(Path.cwd()), 'configs/'),
                  device='cuda:0',
                  **kwargs):
         self.td = det
         self.tr = recog
-        if device == 'cpu':
-            self.device = 0
-        else:
-            self.device = device
+        self.device = device
 
         # Check if the det/recog model choice is valid
         if self.td and self.td not in textdet_models:
@@ -385,14 +390,11 @@ class MMOCR:
             raise ValueError(self.tr,
                              'is not a supported text recognition algorithm')
 
-        # By default, the config folder should be in the cwd
-        dir_path = str(Path.cwd())
-
         if self.td:
             # Build detection model
             if not det_config:
-                det_config = dir_path + '/configs/textdet/' + textdet_models[
-                    self.td]['config']
+                det_config = os.path.join(config_dir, 'textdet/',
+                                          textdet_models[self.td]['config'])
             det_ckpt = 'https://download.openmmlab.com/mmocr/textdet/' + \
                 textdet_models[self.td]['ckpt']
 
@@ -404,8 +406,9 @@ class MMOCR:
         if self.tr:
             # Build recognition model
             if not recog_config:
-                recog_config = dir_path + '/configs/textrecog/' + \
-                    textrecog_models[self.tr]['config']
+                recog_config = os.path.join(
+                    config_dir, 'textrecog/',
+                    textrecog_models[self.tr]['config'])
             recog_ckpt = 'https://download.openmmlab.com/mmocr/textrecog/' + \
                 textrecog_models[self.tr]['ckpt']
 
