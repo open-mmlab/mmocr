@@ -6,84 +6,20 @@ For the installation instructions, please see [install.md](install.md).
 
 ## Inference with Pretrained Models
 
-#### Example 1:
+MMOCR provides a handy script, which allows users to use any combination of pretrained models to perform inference on images.
+
+For example, you can apply PANet_IC15 (default) detection model and SAR (default) recognition model on demo/demo_text_det.jpg by running:
+```shell
+python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --imshow
+```
+This command also visualizes the detection result:
 
 <div align="center">
-    <img src="/demo/resources/demo_ocr_pred.jpg"/><br>
+    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/resources/demo_ocr_pred.jpg"/><br>
 </div>
 <br>
 
-**Instruction:** Perform ocr (det + recog) inference on the demo/demo_text_det.jpg image with the PANet_IC15 (default) detection model and SAR (default) recognition model, print the result in the terminal and show the visualization.
-
-- CL interface:
-```shell
-python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
-```
-*Note: When calling the script from the command line, the `configs` folder must be in the current working directory*
-
-- Python interface:
-```python
-from mmocr.utils.ocr import MMOCR
-
-# Load models into memory
-ocr = MMOCR()
-
-# Inference
-results = ocr.readtext('./demo/demo_text_ocr.jpg', print_result=True, imshow=True)
-```
-
-#### Example 2:
-<div align="center">
-    <img src="/demo/resources/text_det_pred.jpg"/><br>
-</div>
-<br>
-
-**Instruction:** Perform detection inference on an image with the TextSnake recognition model, export the result in a json file (default) and save the visualization file.
-
-- CL interface:
-```shell
-python mmocr/utils/ocr.py demo/demo_text_det.jpg --output demo/det_out.jpg --det TextSnake --recog None --export demo/
-```
-
-- Python interface:
-```python
-from mmocr.utils.ocr import MMOCR
-
-# Load models into memory
-ocr = MMOCR(det='TextSnake', recog=None)
-
-# Inference
-results = ocr.readtext('demo/demo_text_det.jpg', output='demo/det_out.jpg', export='demo/')
-```
-
-
-#### Example 3:
-
-<div align="center">
-    <img src="/demo/resources/text_recog_pred.jpg"/><br>
-</div>
-<br>
-
-**Instruction:** Perform batched recognition inference on a folder with hundreds of image with the CRNN_TPS recognition model and save the visualization results in another folder.
-*Batch size is set to 10 to prevent out of memory CUDA runtime errors*
-
-- CL interface:
-```shell
-python mmocr/utils/ocr.py %INPUT_FOLDER_PATH% --det None --recog CRNN_TPS --batch-mode --single-batch-size 10 --output %OUPUT_FOLDER_PATH%
-```
-
-- Python interface:
-```python
-from mmocr.utils.ocr import MMOCR
-
-# Load models into memory
-ocr = MMOCR(det=None, recog='CRNN_TPS')
-
-# Inference
-results = ocr.readtext(%INPUT_FOLDER_PATH%, output = %OUTPUT_FOLDER_PATH%, batch_mode=True, single_batch_size = 10)
-```
-
-For more details on the arguments, please refer to the [OCR API](demo/docs/demo.md)
+For more details, please refer to [Demo](demo.md).
 
 ### Test a Dataset
 
