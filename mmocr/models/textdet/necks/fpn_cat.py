@@ -1,13 +1,12 @@
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
-from mmcv.runner import auto_fp16
+from mmcv.runner import BaseModule, ModuleList, auto_fp16
 from mmdet.models.builder import NECKS
 
 
 @NECKS.register_module()
-class FPNC(nn.Module):
+class FPNC(BaseModule):
     """FPN-like fusion module in Real-time Scene Text Detection with
     Differentiable Binarization.
 
@@ -23,8 +22,9 @@ class FPNC(nn.Module):
                  bn_re_on_lateral=False,
                  bias_on_smooth=False,
                  bn_re_on_smooth=False,
-                 conv_after_concat=False):
-        super().__init__()
+                 conv_after_concat=False,
+                 init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
         assert isinstance(in_channels, list)
         self.in_channels = in_channels
         self.lateral_channels = lateral_channels
@@ -33,8 +33,8 @@ class FPNC(nn.Module):
         self.bn_re_on_lateral = bn_re_on_lateral
         self.bn_re_on_smooth = bn_re_on_smooth
         self.conv_after_concat = conv_after_concat
-        self.lateral_convs = nn.ModuleList()
-        self.smooth_convs = nn.ModuleList()
+        self.lateral_convs = ModuleList()
+        self.smooth_convs = ModuleList()
         self.num_outs = self.num_ins
 
         for i in range(self.num_ins):
@@ -83,16 +83,6 @@ class FPNC(nn.Module):
                 norm_cfg=norm_cfg,
                 act_cfg=act_cfg,
                 inplace=False)
-
-    # default init_weights for conv(msra) and norm in ConvModule
-    def init_weights(self):
-        """Initialize the weights of FPN module."""
-        for m in self.lateral_convs:
-            m.init_weights()
-        for m in self.smooth_convs:
-            m.init_weights()
-        if self.conv_after_concat:
-            self.out_conv.init_weights()
 
     @auto_fp16()
     def forward(self, inputs):

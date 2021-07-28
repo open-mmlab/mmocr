@@ -11,7 +11,7 @@ import scipy.io as scio
 import yaml
 from shapely.geometry import Polygon
 
-from mmocr.utils import convert_annotations, drop_orientation, is_not_png
+from mmocr.utils import convert_annotations
 
 
 def collect_files(img_dir, gt_dir, split):
@@ -38,8 +38,7 @@ def collect_files(img_dir, gt_dir, split):
     for suffix in suffixes:
         imgs_list.extend(glob.glob(osp.join(img_dir, '*' + suffix)))
 
-    imgs_list = sorted(
-        [drop_orientation(f) if is_not_png(f) else f for f in imgs_list])
+    imgs_list = sorted(imgs_list)
     ann_list = sorted(
         [osp.join(gt_dir, gt_file) for gt_file in os.listdir(gt_dir)])
 

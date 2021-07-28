@@ -1,12 +1,12 @@
 import torch.nn as nn
-from mmcv.cnn import normal_init
+from mmcv.runner import BaseModule
 from mmdet.models.builder import HEADS, build_loss
 
 from . import HeadMixin
 
 
 @HEADS.register_module()
-class TextSnakeHead(HeadMixin, nn.Module):
+class TextSnakeHead(HeadMixin, BaseModule):
     """The class for TextSnake head: TextSnake: A Flexible Representation for
     Detecting Text of Arbitrary Shapes.
 
@@ -19,8 +19,13 @@ class TextSnakeHead(HeadMixin, nn.Module):
                  text_repr_type='poly',
                  loss=dict(type='TextSnakeLoss'),
                  train_cfg=None,
-                 test_cfg=None):
-        super().__init__()
+                 test_cfg=None,
+                 init_cfg=dict(
+                     type='Normal',
+                     override=dict(name='out_conv'),
+                     mean=0,
+                     std=0.01)):
+        super().__init__(init_cfg=init_cfg)
 
         assert isinstance(in_channels, int)
         self.in_channels = in_channels
@@ -38,10 +43,6 @@ class TextSnakeHead(HeadMixin, nn.Module):
             kernel_size=1,
             stride=1,
             padding=0)
-        self.init_weights()
-
-    def init_weights(self):
-        normal_init(self.out_conv, mean=0, std=0.01)
 
     def forward(self, inputs):
         outputs = self.out_conv(inputs)

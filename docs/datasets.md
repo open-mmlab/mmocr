@@ -43,15 +43,19 @@ The structure of the text detection dataset directory is organized as follows.
 │   └── instances_training.json
 ```
 
-|  Dataset  |                             Images                             |                                                                                      |                                                                                                        |            Annotation Files             |                                                                                                |
+|Dataset|Images|                                                                                      |  Annotation Files                                                                                                      |                         |                                                                                                |
 | :-------: | :------------------------------------------------------------: | :----------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: | :-------------------------------------: | :--------------------------------------------------------------------------------------------: |
-|      |                                                                |                                                                                      |                                                training                                                |               validation                |                                            testing                                             |       |
-|  CTW1500  | [homepage](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                                        |                    -                    |                    -                    |                    -                    |
-| ICDAR2015 | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)     |                                                                                      | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
-| ICDAR2017 | [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [renamed_imgs](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar) | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
-| Synthtext | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  |                                                                                      | [instances_training.lmdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb) |                    -                    |
-| TextOCR | [homepage](https://textvqa.org/textocr/dataset)  |                                                                                      | - |                    -                    | -
-| Totaltext | [homepage](https://github.com/cs-chan/Total-Text-Dataset)  |                                                                                      | - |                    -                    | -
+|      |                                                                                      |                                                training                                                |               validation                |                                            testing                                             |       |
+|  CTW1500  | [homepage](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                    -                    |                    -                    |                    -                    |
+| ICDAR2015 | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)     | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
+| ICDAR2017 | [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
+| Synthtext | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  | [instances_training.lmdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb) |                    -                    | - |
+| TextOCR | [homepage](https://textvqa.org/textocr/dataset)  | - |                    -                    | -
+| Totaltext | [homepage](https://github.com/cs-chan/Total-Text-Dataset)  | - |                    -                    | -
+
+**Note: For users who want to train models on CTW1500, ICDAR 2015/2017, and Totaltext dataset,** there might be some images containing orientation info in EXIF data. The default OpenCV
+backend used in MMCV would read them and apply the rotation on the images.  However, their gold annotations are made on the raw pixels, and such
+inconsistency results in false examples in the training set. Therefore, users should use `dict(type='LoadImageFromFile', color_type='color_ignore_orientation')` in pipelines to change MMCV's default loading behaviour. (see [DBNet's config](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py) for example)
 
 - For `icdar2015`:
   - Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
@@ -73,7 +77,7 @@ The structure of the text detection dataset directory is organized as follows.
   ```
 
 - For `icdar2017`:
-  - To avoid the effect of rotation when load `jpg` with opencv, We provide re-saved `png` format image in [renamed_images](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar). You can copy these images to `imgs`.
+  - Follow similar steps as above.
 
 - For `ctw1500`:
   - Step1: Download `train_images.zip`, `test_images.zip`, `train_labels.zip`, `test_labels.zip` from [github](https://github.com/Yuliang-Liu/Curve-Text-Detector)

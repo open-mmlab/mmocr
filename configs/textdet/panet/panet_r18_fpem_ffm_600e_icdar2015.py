@@ -4,7 +4,6 @@ _base_ = [
 ]
 model = dict(
     type='PANet',
-    pretrained='torchvision://resnet18',
     backbone=dict(
         type='ResNet',
         depth=18,
@@ -12,6 +11,7 @@ model = dict(
         out_indices=(0, 1, 2, 3),
         frozen_stages=-1,
         norm_cfg=dict(type='SyncBN', requires_grad=True),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet18'),
         norm_eval=True,
         style='caffe'),
     neck=dict(type='FPEM_FFM', in_channels=[64, 128, 256, 512]),
@@ -33,7 +33,7 @@ img_norm_cfg = dict(
 #    mean=[0, 0, 0], std=[1, 1, 1], to_rgb=True)
 
 train_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadTextAnnotations',
         with_bbox=True,
@@ -64,7 +64,7 @@ train_pipeline = [
     dict(type='Collect', keys=['img', 'gt_kernels', 'gt_mask'])
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
         img_scale=(1333, 736),

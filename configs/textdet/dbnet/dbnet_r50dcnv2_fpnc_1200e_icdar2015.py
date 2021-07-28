@@ -5,7 +5,6 @@ load_from = 'checkpoints/textdet/dbnet/res50dcnv2_synthtext.pth'
 
 model = dict(
     type='DBNet',
-    pretrained='torchvision://resnet50',
     backbone=dict(
         type='ResNet',
         depth=50,
@@ -16,6 +15,7 @@ model = dict(
         norm_eval=False,
         style='caffe',
         dcn=dict(type='DCNv2', deform_groups=1, fallback_on_stride=False),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
         stage_with_dcn=(False, True, True, True)),
     neck=dict(
         type='FPNC', in_channels=[256, 512, 1024, 2048], lateral_channels=256),
@@ -40,7 +40,7 @@ img_norm_cfg = dict(
 # img_norm_cfg = dict(mean=[0, 0, 0], std=[1, 1, 1], to_rgb=True)
 
 train_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadTextAnnotations',
         with_bbox=True,
@@ -67,7 +67,7 @@ train_pipeline = [
         keys=['img', 'gt_shrink', 'gt_shrink_mask', 'gt_thr', 'gt_thr_mask'])
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
         img_scale=(4068, 1024),

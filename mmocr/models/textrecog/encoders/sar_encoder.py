@@ -3,7 +3,6 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from mmcv.cnn import uniform_init, xavier_init
 
 import mmocr.utils as utils
 from mmocr.models.builder import ENCODERS
@@ -32,8 +31,12 @@ class SAREncoder(BaseEncoder):
                  d_model=512,
                  d_enc=512,
                  mask=True,
+                 init_cfg=[
+                     dict(type='Xavier', layer='Conv2d'),
+                     dict(type='Uniform', layer='BatchNorm2d')
+                 ],
                  **kwargs):
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
         assert isinstance(enc_bi_rnn, bool)
         assert isinstance(enc_do_rnn, (int, float))
         assert 0 <= enc_do_rnn < 1.0
@@ -62,14 +65,6 @@ class SAREncoder(BaseEncoder):
         # global feature transformation
         encoder_rnn_out_size = d_enc * (int(enc_bi_rnn) + 1)
         self.linear = nn.Linear(encoder_rnn_out_size, encoder_rnn_out_size)
-
-    def init_weights(self):
-        # initialize weight and bias
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                xavier_init(m)
-            elif isinstance(m, nn.BatchNorm2d):
-                uniform_init(m)
 
     def forward(self, feat, img_metas=None):
         if img_metas is not None:

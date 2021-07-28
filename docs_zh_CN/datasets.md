@@ -33,15 +33,17 @@
 │   └── instances_training.json
 ```
 
-|  数据集名称  |                             数据图片                             |                                      补充数据                                     |                                                                                                     |               标注文件                  |                                                                                                |
-| :---------: | :----------------------------------------------------------: | :----------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: | :-------------------------------------: | :--------------------------------------------------------------------------------------------: |
-|           |                                                                |                                                                                      |                                                训练集 (training)                                                |               验证集 (validation)                |                                           测试集 (testing)                                             |       |
-|  CTW1500  | [下载地址](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                                        |                    -                    |                    -                    |                    -                    |
-| ICDAR2015 | [下载地址](https://rrc.cvc.uab.es/?ch=4&com=downloads)     |                                                                                      | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
-| ICDAR2017 | [下载地址](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [renamed_imgs](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar) | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
-| Synthtext | [下载地址](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  |                                                                                      | [instances_training.lmdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb) |                    -                    |
-| TextOCR | [下载地址](https://textvqa.org/textocr/dataset)  |                                                                                      | - |                    -                    | -
-| Totaltext | [下载地址](https://github.com/cs-chan/Total-Text-Dataset)  |                                                                                      | - |                    -                    | -
+|  数据集名称  |                             数据图片                             |                                                                                                     |               标注文件                  |                                                                                                |
+| :---------: | :----------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: | :-------------------------------------: | :--------------------------------------------------------------------------------------------: |
+|           |                                                                                      |                                                训练集 (training)                                                |               验证集 (validation)                |                                           测试集 (testing)                                             |       |
+|  CTW1500  | [下载地址](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                    -                    |                    -                    |                    -                    |
+| ICDAR2015 | [下载地址](https://rrc.cvc.uab.es/?ch=4&com=downloads)     | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
+| ICDAR2017 | [下载地址](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
+| Synthtext | [下载地址](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  | [instances_training.lmdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb) |                    -                    | - |
+| TextOCR | [下载地址](https://textvqa.org/textocr/dataset)  | - |                    -                    | -
+| Totaltext | [下载地址](https://github.com/cs-chan/Total-Text-Dataset)  | - |                    -                    | -
+
+**注意：若用户需要在 CTW1500, ICDAR 2015/2017 或 Totaltext 数据集上训练模型**, 请注意这些数据集中有部分图片的 EXIF 信息里保存着方向信息。MMCV 采用的 OpenCV 后端会默认根据方向信息对图片进行旋转；而由于数据集的标注是在原图片上进行的，这种冲突会使得部分训练样本失效。因此，用户应该在配置 pipeline 时使用 `dict(type='LoadImageFromFile', color_type='color_ignore_orientation')` 以避免 MMCV 的这一行为。（配置文件可参考 [DBNet](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)）
 
 - `icdar2015` 数据集：
   - 第一步：从[下载地址](https://rrc.cvc.uab.es/?ch=4&com=downloads)下载 `ch4_training_images.zip`、`ch4_test_images.zip`、`ch4_training_localization_transcription_gt.zip`、`Challenge4_Test_Task1_GT.zip` 四个文件，分别对应训练集数据、测试集数据、训练集标注、测试集标注。
@@ -62,7 +64,7 @@
   ```
 
 - `icdar2017` 数据集：
-  - 由于使用 opencv 加载 `.jpg` 文件时有旋转失真，我们把原数据集中的图片转换为 `.png` 格式，在这里下载：[renamed_images](https://download.openmmlab.com/mmocr/data/icdar2017/renamed_imgs.tar)。下载后，把 `.png` 图片复制到 `imgs` 文件夹里.
+  - 与上述步骤类似。
 
 - `ctw1500` 数据集：
   - 第一步：执行以下命令，从 [下载地址](https://github.com/Yuliang-Liu/Curve-Text-Detector) 下载 `train_images.zip`，`test_images.zip`，`train_labels.zip`，`test_labels.zip` 四个文件并配置到对应目录：
