@@ -391,7 +391,6 @@ class UNet(nn.Module):
                  upsample_cfg=dict(type='InterpConv'),
                  norm_eval=False,
                  dcn=None,
-                 pretrained=None,
                  plugins=None):
         super().__init__()
         assert dcn is None, 'Not implemented yet.'

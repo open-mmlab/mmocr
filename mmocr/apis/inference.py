@@ -131,6 +131,14 @@ def model_inference(model,
     else:
         data['img'] = data['img'].data
 
+    # for KIE models
+    if ann is not None:
+        data['relations'] = data['relations'].data[0]
+        data['gt_bboxes'] = data['gt_bboxes'].data[0]
+        data['texts'] = data['texts'].data[0]
+        data['img'] = data['img'][0]
+        data['img_metas'] = data['img_metas'][0]
+
     if next(model.parameters()).is_cuda:
         # scatter to specified GPU
         data = scatter(data, [device])[0]

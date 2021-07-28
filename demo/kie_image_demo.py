@@ -9,112 +9,14 @@ annotations.
 from argparse import ArgumentParser
 
 import mmcv
-import numpy as np
 import torch
 from mmcv.image.misc import tensor2imgs
 from mmdet.apis import init_detector
 
 from mmocr.apis.inference import model_inference
-from mmocr.datasets.pipelines.box_utils import sort_vertex8
+from mmocr.datasets.kie_dataset import KIEDataset
 from mmocr.datasets.pipelines.crop import crop_img
-from mmocr.utils.check_argument import is_type_list
 from mmocr.utils.fileio import list_from_file
-
-
-def pad_text_indices(text_inds):
-    """Pad text index to same length."""
-    max_len = max([len(text_ind) for text_ind in text_inds])
-    padded_text_inds = -np.ones((len(text_inds), max_len), np.int32)
-    for idx, text_ind in enumerate(text_inds):
-        padded_text_inds[idx, :len(text_ind)] = np.array(text_ind)
-    return padded_text_inds
-
-
-def compute_relation(boxes, norm=10.):
-    """Compute relation between every two boxes."""
-    x1, y1 = boxes[:, 0:1], boxes[:, 1:2]
-    x2, y2 = boxes[:, 4:5], boxes[:, 5:6]
-    w, h = np.maximum(x2 - x1 + 1, 1), np.maximum(y2 - y1 + 1, 1)
-    dx = (x1.T - x1) / norm
-    dy = (y1.T - y1) / norm
-    xhh, xwh = h.T / h, w.T / h
-    whs = w / h + np.zeros_like(xhh)
-    relation = np.stack([dx, dy, whs, xhh, xwh], -1).astype(np.float32)
-    bboxes = np.concatenate([x1, y1, x2, y2], -1).astype(np.float32)
-    return relation, bboxes
-
-
-def list_to_numpy(ann_infos, directed=False):
-    """Convert bboxes, relations, texts and labels to ndarray."""
-    boxes, text_inds = ann_infos['boxes'], ann_infos['text_inds']
-    boxes = np.array(boxes, np.int32)
-    relations, bboxes = compute_relation(boxes)
-
-    labels = ann_infos.get('labels', None)
-    if labels is not None:
-        labels = np.array(labels, np.int32)
-        edges = ann_infos.get('edges', None)
-        if edges is not None:
-            labels = labels[:, None]
-            edges = np.array(edges)
-            edges = (edges[:, None] == edges[None, :]).astype(np.int32)
-            if directed:
-                edges = (edges & labels == 1).astype(np.int32)
-            np.fill_diagonal(edges, -1)
-            labels = np.concatenate([labels, edges], -1)
-    padded_text_inds = pad_text_indices(text_inds)
-
-    return dict(
-        bboxes=bboxes,
-        relations=relations,
-        texts=padded_text_inds,
-        labels=labels)
-
-
-def parse_anno_info(annotations, vocab):
-    """Parse annotations of boxes, texts and labels for one image.
-    Args:
-        annotations (list[dict]): Annotations of one image, where
-            each dict is for one character.
-
-    Returns:
-        dict: A dict containing the following keys:
-
-            - bboxes (np.ndarray): Bbox in one image with shape:
-                box_num * 4. They are sorted clockwise when loading.
-            - relations (np.ndarray): Relations between bbox with shape:
-                box_num * box_num * D.
-            - texts (np.ndarray): Text index with shape:
-                box_num * text_max_len.
-            - labels (np.ndarray): Box Labels with shape:
-                box_num * (box_num + 1).
-    """
-
-    assert is_type_list(annotations, dict)
-    assert len(annotations) > 0, 'Please remove data with empty annotation'
-    assert 'box' in annotations[0]
-    assert 'text' in annotations[0]
-
-    boxes, texts, text_inds, labels, edges = [], [], [], [], []
-    for ann in annotations:
-        box = ann['box']
-        sorted_box = sort_vertex8(box[:8])
-        boxes.append(sorted_box)
-        text = ann['text']
-        texts.append(ann['text'])
-        text_ind = [vocab.index(c) for c in text if c in vocab]
-        text_inds.append(text_ind)
-        labels.append(ann.get('label', 0))
-        edges.append(ann.get('edge', 0))
-
-    ann_infos = dict(
-        boxes=boxes,
-        texts=texts,
-        text_inds=text_inds,
-        edges=edges,
-        labels=labels)
-
-    return list_to_numpy(ann_infos)
 
 
 def generate_kie_labels(result, boxes, class_list):
@@ -133,7 +35,6 @@ def generate_kie_labels(result, boxes, class_list):
         if pred_label in idx_to_cls:
             pred_label = idx_to_cls[pred_label]
         pred_score = node_pred_score[i]
-        # text = pred_label + '(' + pred_score + ')'
         labels.append((pred_label, pred_score))
     return labels
 
@@ -142,7 +43,6 @@ def visualize_kie_output(model, data, result, out_file=None, show=False):
     """Visualizes KIE output."""
     img_tensor = data['img'].data
     img_meta = data['img_metas'].data
-    # assert len(imgs) == len(img_metas)
     gt_bboxes = data['gt_bboxes'].data.numpy().tolist()
     img = tensor2imgs(img_tensor.unsqueeze(0), **img_meta['img_norm_cfg'])[0]
     h, w, _ = img_meta['img_shape']
@@ -207,10 +107,8 @@ def det_recog_kie_inference(args, det_model, recog_model, kie_model):
 
     # KIE
     annotations = end2end_res['result']
-    with open(kie_model.cfg.data.test.dict_file) as f:
-        vocab = f.readlines()
-    vocab = [x.strip() for x in vocab]
-    ann_info = parse_anno_info(annotations, vocab)
+    kie_dataset = KIEDataset(dict_file=kie_model.cfg.data.test.dict_file)
+    ann_info = kie_dataset._parse_anno_info(annotations)
     kie_result, data = model_inference(
         kie_model, image, ann=ann_info, return_data=True)
     # visualize KIE results
@@ -241,7 +139,7 @@ def main():
         type=str,
         default='https://download.openmmlab.com/'
         'mmocr/textdet/psenet/'
-        'psenet_r50_fpnf_600e_icdar2015_pretrain-eefd8fe6.pth',
+        'psenet_r50_fpnf_600e_ctw1500_20210401-216fed50.pth',
         help='Text detection checkpint file (local or url).')
     parser.add_argument(
         '--recog-config',
@@ -310,11 +208,6 @@ def main():
     # build KIE model
     kie_model = init_detector(
         args.kie_config, args.kie_ckpt, device=args.device)
-    if hasattr(kie_model, 'module'):
-        kie_model = kie_model.module
-    if kie_model.cfg.data.test['type'] == 'ConcatDataset':
-        kie_model.cfg.data.test.pipeline = \
-            kie_model.cfg.data.test['datasets'][0].pipeline
 
     result = det_recog_kie_inference(args, detect_model, recog_model,
                                      kie_model)

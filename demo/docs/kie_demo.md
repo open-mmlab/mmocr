@@ -6,7 +6,7 @@
 
 ### End-to-End KIE Demo
 
-End-toEnd KIE performs text detection and recognition before key information extraction (KIE). To end-to-end test a single image for KIE:
+End-to-End KIE performs text detection and recognition before key information extraction (KIE). To end-to-end test a single image for KIE:
 
 ```shell
 python demo/kie_image_demo.py demo/demo_kie.jpg demo/output.jpg
