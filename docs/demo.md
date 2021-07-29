@@ -108,7 +108,7 @@ The API has an extensive list of arguments that you can use. The following table
 | ------------------- | ----------------------- | ------------ | ---------------------------------------------------------------------- |
 | `img`               | str/list/tuple/np.array | **required** | img, folder path, np array or list/tuple (with img paths or np arrays) |
 | `output`           | str                     | None         | Output result visualization - img path or folder path                  |
-| `batch_mode`        | bool                    | False        | Whether use batch mode for inference (*)                                  |
+| `batch_mode`        | bool                    | False        | Whether use batch mode for inference [1]                                  |
 | `det_batch_size`    | int                     | 0            | Batch size for text detection (0 for max size)                         |
 | `recog_batch_size`  | int                     | 0            | Batch size for text recognition (0 for max size)                       |
 | `single_batch_size` | int                     | 0            | Batch size for only detection or recognition                           |
@@ -117,8 +117,12 @@ The API has an extensive list of arguments that you can use. The following table
 | `details`           | bool                    | False        | Whether include the text boxes coordinates and confidence values       |
 | `imshow`            | bool                    | False        | Whether to show the result visualization on screen                     |
 | `print_result`      | bool                    | False        | Whether to show the result for each image                              |
+| `merge`      | bool                    | False        | Whether to merge neighboring boxes [2]                              |
+| `merge_xdist`      | float                    | 20        | The maximum x-axis distance to merge boxes                              |
 
-**(*)Note:** Make sure that the model is compatible with batch mode.
+[1]: Make sure that the model is compatible with batch mode.
+
+[2]: Only effective when the script is running in det + recog mode.
 
 All arguments are the same for the cli, all you need to do is add 2 hyphens at the beginning of the argument and replace underscores by hyphens.
 (*Example:* `det_batch_size` becomes `--det-batch-size`)
