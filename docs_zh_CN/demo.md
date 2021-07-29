@@ -80,7 +80,7 @@ from mmocr.utils.ocr import MMOCR
 ocr = MMOCR()
 
 # Inference
-results = ocr.readtext('https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/resources/demo_text_ocr.jpg', print_result=True, imshow=True)
+results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, imshow=True)
 ```
 ---
 
@@ -92,18 +92,23 @@ The API has an extensive list of arguments that you can use. The following table
 | Arguments      | Type                  | Default       | Description                                                 |
 | -------------- | --------------------- | ------------- | ----------------------------------------------------------- |
 | `det`          | see [models](#models) | PANet_IC15 | Text detection algorithm                                    |
-| `det_config`   | str                   | None          | Path to the custom config of the selected det model         |
 | `recog`        | see [models](#models) | SAR           | Text recognition algorithm                                  |
-| `recog_config` | str                   | None          | Path to the custom config of the selected recog model model |
+| `config_dir`   | str                   | configs/      | Path to the config directory where all the config files are located  |
+| `det_config`   | str                   | None          | Path to the custom config file of the selected det model         |
+| `det_ckpt`     | str                   | None          | Path to the custom checkpoint file of the selected det model         |
+| `recog_config` | str                   | None          | Path to the custom config file of the selected recog model model |
+| `recog_ckpt`   | str                   | None          | Path to the custom checkpoint file of the selected recog model model |
 | `device`       | str                   | cuda:0        | Device used for inference: 'cuda:0' or 'cpu'                |
 
-**readtext():**
+**Note:** User can use default pretrained models by specifying `det` and/or `recog`, which is equivalent to setting `*_config` and `*_ckpt` as default values. However, manually specifying `*_config` and `*_ckpt` will always override default values set by `det` and/or `recog`.
+
+### readtext():
 
 | Arguments           | Type                    | Default      | Description                                                            |
 | ------------------- | ----------------------- | ------------ | ---------------------------------------------------------------------- |
 | `img`               | str/list/tuple/np.array | **required** | img, folder path, np array or list/tuple (with img paths or np arrays) |
 | `output`           | str                     | None         | Output result visualization - img path or folder path                  |
-| `batch_mode`        | bool                    | False        | Whether use batch mode for inference [1]                               |
+| `batch_mode`        | bool                    | False        | Whether use batch mode for inference (*)                                  |
 | `det_batch_size`    | int                     | 0            | Batch size for text detection (0 for max size)                         |
 | `recog_batch_size`  | int                     | 0            | Batch size for text recognition (0 for max size)                       |
 | `single_batch_size` | int                     | 0            | Batch size for only detection or recognition                           |
@@ -113,7 +118,7 @@ The API has an extensive list of arguments that you can use. The following table
 | `imshow`            | bool                    | False        | Whether to show the result visualization on screen                     |
 | `print_result`      | bool                    | False        | Whether to show the result for each image                              |
 
-[1]: Make sure that the model is compatible with batch mode.
+**(*)Note:** Make sure that the model is compatible with batch mode.
 
 All arguments are the same for the cli, all you need to do is add 2 hyphens at the beginning of the argument and replace underscores by hyphens.
 (*Example:* `det_batch_size` becomes `--det-batch-size`)
