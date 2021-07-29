@@ -5,12 +5,16 @@ from pathlib import Path
 
 import mmcv
 import numpy as np
+import torch
+from mmcv.image.misc import tensor2imgs
 from mmdet.apis import init_detector
 
 from mmocr.apis.inference import model_inference
 from mmocr.core.visualize import det_recog_show_result
+from mmocr.datasets.kie_dataset import KIEDataset
 from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.utils.box_util import stitch_boxes_into_lines
+from mmocr.utils.fileio import list_from_file
 
 textdet_models = {
     'DB_r18': {
@@ -105,6 +109,17 @@ textrecog_models = {
     }
 }
 
+kie_models = {
+    'SDMGR': {
+        'config': 'sdmgr/sdmgr_unet16_60e_wildreceipt.py',
+        'ckpt': 'sdmgr/sdmgr_unet16_60e_wildreceipt_20210520-7489e6de.pth'
+    },
+    'SDMGR_NOVIS': {
+        'config': 'sdmgr/sdmgr_novisual_60e_wildreceipt.py',
+        'ckpt': 'sdmgr/sdmgr_novisual_60e_wildreceipt_20210517-a44850da.pth'
+    }
+}
+
 
 # Post processing function for end2end ocr
 def det_recog_pp(args, result):
@@ -148,8 +163,40 @@ def single_pp(args, result, model):
     return result
 
 
+def generate_kie_labels(result, boxes, class_list):
+    idx_to_cls = {}
+    if class_list is not None:
+        for line in list_from_file(class_list):
+            class_idx, class_label = line.strip().split()
+            idx_to_cls[class_idx] = class_label
+
+    max_value, max_idx = torch.max(result['nodes'].detach().cpu(), -1)
+    node_pred_label = max_idx.numpy().tolist()
+    node_pred_score = max_value.numpy().tolist()
+    labels = []
+    for i in range(len(boxes)):
+        pred_label = str(node_pred_label[i])
+        if pred_label in idx_to_cls:
+            pred_label = idx_to_cls[pred_label]
+        pred_score = node_pred_score[i]
+        labels.append((pred_label, pred_score))
+    return labels
+
+
+def visualize_kie_output(model, data, result, out_file=None, show=False):
+    """Visualizes KIE output."""
+    img_tensor = data['img'].data
+    img_meta = data['img_metas'].data
+    gt_bboxes = data['gt_bboxes'].data.numpy().tolist()
+    img = tensor2imgs(img_tensor.unsqueeze(0), **img_meta['img_norm_cfg'])[0]
+    h, w, _ = img_meta['img_shape']
+    img_show = img[:h, :w, :]
+    model.show_result(
+        img_show, result, gt_bboxes, show=show, out_file=out_file)
+
+
 # End2end ocr inference pipeline
-def det_and_recog_inference(args, det_model, recog_model):
+def det_recog_kie_inference(args, det_model, recog_model, kie_model=None):
     end2end_res = []
     # Find bounding boxes in the images (text detection)
     det_result = single_inference(det_model, args.arrays, args.batch_mode,
@@ -201,6 +248,31 @@ def det_and_recog_inference(args, det_model, recog_model):
         if args.merge:
             img_e2e_res['result'] = stitch_boxes_into_lines(
                 img_e2e_res['result'], args.merge_xdist, 0.5)
+
+        if kie_model:
+            annotations = img_e2e_res['result']
+            kie_dataset = KIEDataset(
+                dict_file=kie_model.cfg.data.test.dict_file)
+            ann_info = kie_dataset._parse_anno_info(annotations)
+            kie_result, data = model_inference(
+                kie_model,
+                args.arrays,
+                ann=ann_info,
+                return_data=True,
+                batch_mode=args.batch_mode)
+            # visualize KIE results
+            visualize_kie_output(
+                kie_model,
+                data,
+                kie_result,
+                out_file=args.out_file,
+                show=args.imshow)
+            gt_bboxes = data['gt_bboxes'].data.numpy().tolist()
+            labels = generate_kie_labels(kie_result, gt_bboxes,
+                                         kie_model.class_list)
+            for i in range(len(gt_bboxes)):
+                img_e2e_res['result'][i]['label'] = labels[i][0]
+                img_e2e_res['result'][i]['label_score'] = labels[i][1]
 
         end2end_res.append(img_e2e_res)
     return end2end_res
@@ -334,6 +406,23 @@ def parse_args():
         help='Path to the custom checkpoint file of the selected recog model. '
         'It overrides the settings in recog')
     parser.add_argument(
+        '--kie',
+        type=str,
+        default='',
+        help='Pretrained key information extraction algorithm')
+    parser.add_argument(
+        '--kie-config',
+        type=str,
+        default='',
+        help='Path to the custom config file of the selected kie model. It'
+        'overrides the settings in kie')
+    parser.add_argument(
+        '--kie-ckpt',
+        type=str,
+        default='',
+        help='Path to the custom checkpoint file of the selected kie model. '
+        'It overrides the settings in kie')
+    parser.add_argument(
         '--config-dir',
         type=str,
         default=os.path.join(str(Path.cwd()), 'configs/'),
@@ -418,11 +507,15 @@ class MMOCR:
                  recog='SEG',
                  recog_config='',
                  recog_ckpt='',
+                 kie='',
+                 kie_config='',
+                 kie_ckpt='',
                  config_dir=os.path.join(str(Path.cwd()), 'configs/'),
                  device='cuda:0',
                  **kwargs):
         self.td = det
         self.tr = recog
+        self.kie = kie
         self.device = device
 
         # Check if the det/recog model choice is valid
@@ -432,7 +525,12 @@ class MMOCR:
         elif self.tr and self.tr not in textrecog_models:
             raise ValueError(self.tr,
                              'is not a supported text recognition algorithm')
+        elif self.kie and self.kie not in kie_models:
+            raise ValueError(
+                self.kie, 'is not a supported key information extraction'
+                ' algorithm')
 
+        self.detect_model = None
         if self.td:
             # Build detection model
             if not det_config:
@@ -444,9 +542,8 @@ class MMOCR:
 
             self.detect_model = init_detector(
                 det_config, det_ckpt, device=self.device)
-        else:
-            self.detect_model = None
 
+        self.recog_model = None
         if self.tr:
             # Build recognition model
             if not recog_config:
@@ -454,16 +551,29 @@ class MMOCR:
                     config_dir, 'textrecog/',
                     textrecog_models[self.tr]['config'])
             if not recog_ckpt:
-                recog_ckpt = 'https://download.openmmlab.com/mmocr/'
-                'textrecog/' + textrecog_models[self.tr]['ckpt']
+                recog_ckpt = 'https://download.openmmlab.com/mmocr/' + \
+                    'textrecog/' + textrecog_models[self.tr]['ckpt']
 
             self.recog_model = init_detector(
                 recog_config, recog_ckpt, device=self.device)
-        else:
-            self.recog_model = None
+
+        self.kie_model = None
+        if self.kie:
+            # Build key information extraction model
+            if not kie_config:
+                kie_config = os.path.join(config_dir, 'kie/',
+                                          kie_models[self.kie]['config'])
+            if not kie_ckpt:
+                kie_ckpt = 'https://download.openmmlab.com/mmocr/' + \
+                    'kie/' + kie_models[self.kie]['ckpt']
+
+            self.kie_model = init_detector(
+                kie_config, kie_ckpt, device=self.device)
 
         # Attribute check
-        for model in list(filter(None, [self.recog_model, self.detect_model])):
+        for model in list(
+                filter(None,
+                       [self.recog_model, self.detect_model, self.kie_model])):
             if hasattr(model, 'module'):
                 model = model.module
             if model.cfg.data.test['type'] == 'ConcatDataset':
@@ -497,8 +607,11 @@ class MMOCR:
         # Send args and models to the MMOCR model inference API
         # and call post-processing functions for the output
         if self.detect_model and self.recog_model:
-            det_recog_result = det_and_recog_inference(args, self.detect_model,
-                                                       self.recog_model)
+            det_recog_result = det_recog_kie_inference(
+                args,
+                self.detect_model,
+                self.recog_model,
+                kie_model=self.kie_model)
             pp_result = det_recog_pp(args, det_recog_result)
         else:
             for model in list(
