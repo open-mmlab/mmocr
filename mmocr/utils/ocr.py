@@ -1,3 +1,5 @@
+import os
+import warnings
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
@@ -8,6 +10,7 @@ from mmdet.apis import init_detector
 from mmocr.apis.inference import model_inference
 from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.pipelines.crop import crop_img
+from mmocr.utils.box_util import stitch_boxes_into_lines
 
 textdet_models = {
     'DB_r18': {
@@ -195,6 +198,10 @@ def det_and_recog_inference(args, det_model, recog_model):
                 img_e2e_res['result'][i]['text'] = text
                 img_e2e_res['result'][i]['text_score'] = text_score
 
+        if args.merge:
+            img_e2e_res['result'] = stitch_boxes_into_lines(
+                img_e2e_res['result'], args.merge_xdist, 0.5)
+
         end2end_res.append(img_e2e_res)
     return end2end_res
 
@@ -296,19 +303,42 @@ def parse_args():
         '--det',
         type=str,
         default='PANet_IC15',
-        help='Text detection algorithm')
+        help='Pretrained text detection algorithm')
     parser.add_argument(
         '--det-config',
         type=str,
         default='',
-        help='Path to the custom config of the selected det model')
+        help='Path to the custom config file of the selected det model. It '
+        'overrides the settings in det')
     parser.add_argument(
-        '--recog', type=str, default='SEG', help='Text recognition algorithm')
+        '--det-ckpt',
+        type=str,
+        default='',
+        help='Path to the custom checkpoint file of the selected det model. '
+        'It overrides the settings in det')
+    parser.add_argument(
+        '--recog',
+        type=str,
+        default='SEG',
+        help='Pretrained text recognition algorithm')
     parser.add_argument(
         '--recog-config',
         type=str,
         default='',
-        help='Path to the custom config of the selected recog model')
+        help='Path to the custom config file of the selected recog model. It'
+        'overrides the settings in recog')
+    parser.add_argument(
+        '--recog-ckpt',
+        type=str,
+        default='',
+        help='Path to the custom checkpoint file of the selected recog model. '
+        'It overrides the settings in recog')
+    parser.add_argument(
+        '--config-dir',
+        type=str,
+        default=os.path.join(str(Path.cwd()), 'configs/'),
+        help='Path to the config directory where all the config files '
+        'are located. Defaults to "configs/"')
     parser.add_argument(
         '--batch-mode',
         action='store_true',
@@ -353,11 +383,29 @@ def parse_args():
         '--print-result',
         action='store_true',
         help='Prints the recognised text')
+    parser.add_argument(
+        '--merge', action='store_true', help='Merge neighboring boxes')
+    parser.add_argument(
+        '--merge-xdist',
+        type=float,
+        default=20,
+        help='The maximum x-axis distance to merge boxes')
     args = parser.parse_args()
     if args.det == 'None':
         args.det = None
     if args.recog == 'None':
         args.recog = None
+    # Warnings
+    if args.merge and not (args.det and args.recog):
+        warnings.warn(
+            'Box merging will not work if the script is not'
+            ' running in detection + recognition mode.', UserWarning)
+    if not os.path.samefile(args.config_dir, os.path.join(str(
+            Path.cwd()))) and (args.det_config != ''
+                               or args.recog_config != ''):
+        warnings.warn(
+            'config_dir will be overrided by det-config or recog-config.',
+            UserWarning)
     return args
 
 
@@ -366,16 +414,16 @@ class MMOCR:
     def __init__(self,
                  det='PANet_IC15',
                  det_config='',
+                 det_ckpt='',
                  recog='SEG',
                  recog_config='',
+                 recog_ckpt='',
+                 config_dir=os.path.join(str(Path.cwd()), 'configs/'),
                  device='cuda:0',
                  **kwargs):
         self.td = det
         self.tr = recog
-        if device == 'cpu':
-            self.device = 0
-        else:
-            self.device = device
+        self.device = device
 
         # Check if the det/recog model choice is valid
         if self.td and self.td not in textdet_models:
@@ -385,16 +433,14 @@ class MMOCR:
             raise ValueError(self.tr,
                              'is not a supported text recognition algorithm')
 
-        # By default, the config folder should be in the cwd
-        dir_path = str(Path.cwd())
-
         if self.td:
             # Build detection model
             if not det_config:
-                det_config = dir_path + '/configs/textdet/' + textdet_models[
-                    self.td]['config']
-            det_ckpt = 'https://download.openmmlab.com/mmocr/textdet/' + \
-                textdet_models[self.td]['ckpt']
+                det_config = os.path.join(config_dir, 'textdet/',
+                                          textdet_models[self.td]['config'])
+            if not det_ckpt:
+                det_ckpt = 'https://download.openmmlab.com/mmocr/textdet/' + \
+                    textdet_models[self.td]['ckpt']
 
             self.detect_model = init_detector(
                 det_config, det_ckpt, device=self.device)
@@ -404,10 +450,12 @@ class MMOCR:
         if self.tr:
             # Build recognition model
             if not recog_config:
-                recog_config = dir_path + '/configs/textrecog/' + \
-                    textrecog_models[self.tr]['config']
-            recog_ckpt = 'https://download.openmmlab.com/mmocr/textrecog/' + \
-                textrecog_models[self.tr]['ckpt']
+                recog_config = os.path.join(
+                    config_dir, 'textrecog/',
+                    textrecog_models[self.tr]['config'])
+            if not recog_ckpt:
+                recog_ckpt = 'https://download.openmmlab.com/mmocr/'
+                'textrecog/' + textrecog_models[self.tr]['ckpt']
 
             self.recog_model = init_detector(
                 recog_config, recog_ckpt, device=self.device)
@@ -434,6 +482,8 @@ class MMOCR:
                  single_batch_size=0,
                  imshow=False,
                  print_result=False,
+                 merge=False,
+                 merge_xdist=20,
                  **kwargs):
         args = locals()
         [args.pop(x, None) for x in ['kwargs', 'self']]
