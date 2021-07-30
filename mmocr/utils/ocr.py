@@ -293,12 +293,6 @@ class MMOCR:
                 'config': 'sdmgr/sdmgr_unet16_60e_wildreceipt.py',
                 'ckpt':
                 'sdmgr/sdmgr_unet16_60e_wildreceipt_20210520-7489e6de.pth'
-            },
-            'SDMGR_NOVIS': {
-                'config':
-                'sdmgr/sdmgr_novisual_60e_wildreceipt.py',
-                'ckpt':
-                'sdmgr/sdmgr_novisual_60e_wildreceipt_20210517-a44850da.pth'
             }
         }
 
@@ -557,9 +551,9 @@ class MMOCR:
                     img_e2e_res['result'], self.args.merge_xdist, 0.5)
 
             if kie_model:
-                # customized for kie_dataset, which
-                # assumes that boxes are represented by only 4 points
                 annotations = copy.deepcopy(img_e2e_res['result'])
+                # Customized for kie_dataset, which
+                # assumes that boxes are represented by only 4 points
                 for i, ann in enumerate(annotations):
                     min_x = min(ann['box'][::2])
                     min_y = min(ann['box'][1::2])

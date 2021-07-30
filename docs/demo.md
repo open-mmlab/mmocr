@@ -70,7 +70,7 @@ results = ocr.readtext(%INPUT_FOLDER_PATH%, output = %OUTPUT_FOLDER_PATH%, batch
 ```shell
 python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
 ```
-*Note: When calling the script from the command line, the `configs` folder must be in the current working directory.*
+*Note: When calling the script from the command line, the script assumes configs are saved in the `configs/` folder. User can customize the directory by specifying the value of `config_dir`. *
 
 - Python interface:
 ```python
@@ -84,6 +84,33 @@ results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, imshow=True)
 ```
 ---
 
+## Example 4: Text Detection + Recognition + Key Information Extraction
+
+<div align="center">
+    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/resources/demo_kie_pred.png"/><br>
+</div>
+<br>
+
+**Instruction:** Perform end-to-end ocr (det + recog) inference first with PS_CTW detection model and SAR recognition model, then run KIE inference with SDMGR model on the ocr result and show the visualization.
+
+- CL interface:
+```shell
+python mmocr/utils/ocr.py demo/demo_kie.jpeg  --det PS_CTW --recog SAR --kie SDMGR --print-result --imshow
+```
+*Note: When calling the script from the command line, the script assumes configs are saved in the `configs/` folder. User can customize the directory by specifying the value of `config_dir`. *
+
+- Python interface:
+```python
+from mmocr.utils.ocr import MMOCR
+
+# Load models into memory
+ocr = MMOCR(det='PS_CTW', recog='SAR', kie='SDMGR')
+
+# Inference
+results = ocr.readtext('demo/demo_kie.jpeg', print_result=True, imshow=True)
+```
+---
+
 ## API Arguments
 The API has an extensive list of arguments that you can use. The following tables are for the python interface.
 
@@ -91,16 +118,21 @@ The API has an extensive list of arguments that you can use. The following table
 
 | Arguments      | Type                  | Default       | Description                                                 |
 | -------------- | --------------------- | ------------- | ----------------------------------------------------------- |
-| `det`          | see [models](#models) | PANet_IC15 | Text detection algorithm                                    |
+| `det`          | see [models](#models) | PANet_IC15    | Text detection algorithm                                    |
 | `recog`        | see [models](#models) | SAR           | Text recognition algorithm                                  |
+| `kie` [1]      | see [models](#models) | None          | Key information extraction algorithm                                  |
 | `config_dir`   | str                   | configs/      | Path to the config directory where all the config files are located  |
 | `det_config`   | str                   | None          | Path to the custom config file of the selected det model         |
 | `det_ckpt`     | str                   | None          | Path to the custom checkpoint file of the selected det model         |
-| `recog_config` | str                   | None          | Path to the custom config file of the selected recog model model |
-| `recog_ckpt`   | str                   | None          | Path to the custom checkpoint file of the selected recog model model |
+| `recog_config` | str                   | None          | Path to the custom config file of the selected recog model |
+| `recog_ckpt`   | str                   | None          | Path to the custom checkpoint file of the selected recog model |
+| `kie_config`   | str                   | None          | Path to the custom config file of the selected kie model |
+| `kie_ckpt`     | str                   | None          | Path to the custom checkpoint file of the selected kie model |
 | `device`       | str                   | cuda:0        | Device used for inference: 'cuda:0' or 'cpu'                |
 
-**Note:** User can use default pretrained models by specifying `det` and/or `recog`, which is equivalent to setting `*_config` and `*_ckpt` as default values. However, manually specifying `*_config` and `*_ckpt` will always override default values set by `det` and/or `recog`.
+[1]: `kie` is only effective when both text detection and recognition models are specified.
+
+**Note:** User can use default pretrained models by specifying `det` and/or `recog`, which is equivalent to specifying their corresponding `*_config` and `*_ckpt`. However, manually specifying `*_config` and `*_ckpt` will always override values set by `det` and/or `recog`. Similar rules also apply to `kie`, `kie_config` and `kie_ckpt`.
 
 ### readtext():
 
@@ -117,8 +149,8 @@ The API has an extensive list of arguments that you can use. The following table
 | `details`           | bool                    | False        | Whether include the text boxes coordinates and confidence values       |
 | `imshow`            | bool                    | False        | Whether to show the result visualization on screen                     |
 | `print_result`      | bool                    | False        | Whether to show the result for each image                              |
-| `merge`      | bool                    | False        | Whether to merge neighboring boxes [2]                              |
-| `merge_xdist`      | float                    | 20        | The maximum x-axis distance to merge boxes                              |
+| `merge`             | bool                    | False        | Whether to merge neighboring boxes [2]                              |
+| `merge_xdist`       | float                   | 20           | The maximum x-axis distance to merge boxes                              |
 
 [1]: Make sure that the model is compatible with batch mode.
 
@@ -165,6 +197,11 @@ means that `batch_mode` and `print_result` are set to `True`)
 | SEG           | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline) |         :x:          |
 | CRNN_TPS      | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#crnn-with-tps-based-stn) |  :heavy_check_mark:  |
 
+**Key information extraction:**
+
+| Name          |                                                                        Reference                                                                         | `batch_mode` support |
+| ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------: |
+| SDMGR         |            [link](https://mmocr.readthedocs.io/en/latest/kie_models.html#spatial-dual-modality-graph-reasoning-for-key-information-extraction)            |         :heavy_check_mark:          |
 ---
 
 ## Additional info
