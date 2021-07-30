@@ -1,7 +1,7 @@
 ## KIE End2End Demo
 
 <div align="center">
-    <img src="../resources/demo_kie_pred.jpeg"/><br>
+    <img src="../resources/demo_kie_pred.png"/><br>
 </div>
 
 ### End-to-End KIE Demo
