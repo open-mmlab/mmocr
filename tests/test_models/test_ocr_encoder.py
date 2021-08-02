@@ -1,7 +1,8 @@
 import pytest
 import torch
 
-from mmocr.models.textrecog.encoders import BaseEncoder, SAREncoder, TFEncoder
+from mmocr.models.textrecog.encoders import (BaseEncoder, SAREncoder,
+                                             SatrnEncoder, TFEncoder)
 
 
 def test_sar_encoder():
@@ -40,6 +41,17 @@ def test_transformer_encoder():
     out_enc = tf_encoder(feat)
     print('hello', out_enc.size())
     assert out_enc.shape == torch.Size([1, 512, 1, 25])
+
+
+def test_satrn_encoder():
+    satrn_encoder = SatrnEncoder()
+    satrn_encoder.init_weights()
+    satrn_encoder.train()
+
+    feat = torch.randn(1, 512, 8, 25)
+    out_enc = satrn_encoder(feat)
+    print('hello', out_enc.size())
+    assert out_enc.shape == torch.Size([1, 512, 8, 25])
 
 
 def test_base_encoder():
