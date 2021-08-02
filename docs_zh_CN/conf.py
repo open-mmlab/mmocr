@@ -23,7 +23,11 @@ copyright = '2020-2030, OpenMMLab'
 author = 'OpenMMLab'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.1'
+version_file = '../mmocr/version.py'
+with open(version_file, 'r') as f:
+    exec(compile(f.read(), version_file, 'exec'))
+__version__ = locals()['__version__']
+release = __version__
 
 # -- General configuration ---------------------------------------------------
 
