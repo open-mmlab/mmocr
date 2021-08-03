@@ -1,6 +1,6 @@
 version: 2
 
-format: all
+formats: all
 
 python:
     version: 3.7
