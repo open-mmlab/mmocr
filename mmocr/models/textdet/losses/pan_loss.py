@@ -261,7 +261,7 @@ class PANLoss(nn.Module):
         pred = pred * mask
         target = target * mask
 
-        a = torch.sum(pred * target, 1)
+        a = torch.sum(pred * target, 1) + smooth
         b = torch.sum(pred * pred, 1) + smooth
         c = torch.sum(target * target, 1) + smooth
         d = (2 * a) / (b + c)
