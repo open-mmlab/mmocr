@@ -53,7 +53,7 @@ def model_inference(model,
             Either image files or loaded images.
         batch_mode (bool): If True, use batch mode for inference.
         ann (dict): Annotation info for key information extraction.
-        return_data: return postprocessed data
+        return_data: Return postprocessed data.
     Returns:
         result (dict): Predicted results.
     """

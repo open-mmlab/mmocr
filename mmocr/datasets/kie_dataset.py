@@ -40,7 +40,7 @@ class KIEDataset(BaseDataset):
                  **kwargs):
         if ann_file is None and loader is None:
             warnings.warn(
-                'KIEDataset is only partially initialized'
+                'KIEDataset is only initialized as a downstream demo task of text detection and recognition'
                 ' without an annotation file.', UserWarning)
         else:
             super().__init__(
