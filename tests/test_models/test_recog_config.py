@@ -26,7 +26,7 @@ def _demo_mm_inputs(num_kernels=0, input_shape=(1, 3, 300, 300),
     img_metas = [{
         'img_shape': (H, W, C),
         'ori_shape': (H, W, C),
-        'pad_shape': (H, W, C),
+        'resize_shape': (H, W, C),
         'filename': '<demo>.png',
         'text': 'hello',
         'valid_ratio': 1.0,

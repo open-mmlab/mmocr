@@ -66,8 +66,11 @@ class SegConvertor(BaseConvertor):
         texts, scores = [], []
         for b in range(output.size(0)):
             seg_pred = output[b].detach()
+            valid_width = int(
+                output.size(-1) * img_metas[b]['valid_ratio'] + 1)
             seg_res = torch.argmax(
-                seg_pred, dim=0).cpu().numpy().astype(np.int32)
+                seg_pred[:, :, :valid_width],
+                dim=0).cpu().numpy().astype(np.int32)
 
             seg_thr = np.where(seg_res == 0, 0, 255).astype(np.uint8)
             _, labels, stats, centroids = cv2.connectedComponentsWithStats(

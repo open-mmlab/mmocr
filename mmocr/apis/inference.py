@@ -26,18 +26,8 @@ def disable_text_recog_aug_test(cfg, set_types=None):
                 cfg.data[set_type].pipeline[0],
                 *cfg.data[set_type].pipeline[1].transforms
             ]
-        assert_if_not_support_batch_mode(cfg, set_type)
 
     return cfg
-
-
-def assert_if_not_support_batch_mode(cfg, set_type='test'):
-    if cfg.data[set_type].pipeline[1].type == 'ResizeOCR':
-        if cfg.data[set_type].pipeline[1].max_width is None:
-            raise Exception('Batch mode is not supported '
-                            'since the image width is not fixed, '
-                            'in the case that keeping aspect ratio but '
-                            'max_width is none when do resize.')
 
 
 def model_inference(model, imgs, batch_mode=False):
