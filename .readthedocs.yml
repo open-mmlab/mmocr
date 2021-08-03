@@ -1,5 +1,7 @@
 version: 2
 
+format: all
+
 python:
     version: 3.7
     install:
