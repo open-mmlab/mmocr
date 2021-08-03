@@ -102,31 +102,3 @@ def test_model_batch_inference_recog(cfg_file):
     results = model_inference(model, [img, img], batch_mode=True)
 
     assert len(results) == 2
-
-
-@pytest.mark.parametrize(
-    'cfg_file', ['../configs/textrecog/crnn/crnn_academic_dataset.py'])
-def test_model_batch_inference_raises_exception_error_free_resize_recog(
-        cfg_file):
-    tmp_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-    config_file = os.path.join(tmp_dir, cfg_file)
-    model = build_model(config_file)
-
-    with pytest.raises(
-            Exception,
-            match='Batch mode is not supported '
-            'since the image width is not fixed, '
-            'in the case that keeping aspect ratio but '
-            'max_width is none when do resize.'):
-        sample_img_path = os.path.join(tmp_dir, '../demo/demo_text_recog.jpg')
-        model_inference(
-            model, [sample_img_path, sample_img_path], batch_mode=True)
-
-    with pytest.raises(
-            Exception,
-            match='Batch mode is not supported '
-            'since the image width is not fixed, '
-            'in the case that keeping aspect ratio but '
-            'max_width is none when do resize.'):
-        img = imread(sample_img_path)
-        model_inference(model, [img, img], batch_mode=True)
