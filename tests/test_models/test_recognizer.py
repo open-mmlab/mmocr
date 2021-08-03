@@ -60,7 +60,11 @@ def test_base_recognizer():
     assert feat.shape == torch.Size([1, 512, 1, 41])
 
     # test forward train
-    img_metas = [{'text': 'hello', 'resize_shape': (32, 120, 3), 'valid_ratio': 1.0}]
+    img_metas = [{
+        'text': 'hello',
+        'resize_shape': (32, 120, 3),
+        'valid_ratio': 1.0
+    }]
     losses = recognizer.forward_train(imgs, img_metas)
     assert isinstance(losses, dict)
     assert 'loss_ctc' in losses
@@ -162,7 +166,11 @@ def test_seg_recognizer():
     gt_kernels = BitmapMasks([attn_tgt, segm_tgt, mask], 64, 256)
 
     # test forward train
-    img_metas = [{'text': 'hello', 'resize_shape': (64, 256, 3), 'valid_ratio': 1.0}]
+    img_metas = [{
+        'text': 'hello',
+        'resize_shape': (64, 256, 3),
+        'valid_ratio': 1.0
+    }]
     losses = recognizer.forward_train(imgs, img_metas, gt_kernels=[gt_kernels])
     assert isinstance(losses, dict)
 
