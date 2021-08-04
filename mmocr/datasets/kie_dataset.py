@@ -1,4 +1,5 @@
 import copy
+import warnings
 from os import path as osp
 
 import numpy as np
@@ -28,22 +29,28 @@ class KIEDataset(BaseDataset):
     """
 
     def __init__(self,
-                 ann_file,
-                 loader,
-                 dict_file,
+                 ann_file=None,
+                 loader=None,
+                 dict_file=None,
                  img_prefix='',
                  pipeline=None,
                  norm=10.,
                  directed=False,
                  test_mode=True,
                  **kwargs):
-        super().__init__(
-            ann_file,
-            loader,
-            pipeline,
-            img_prefix=img_prefix,
-            test_mode=test_mode)
-        assert osp.exists(dict_file)
+        if ann_file is None and loader is None:
+            warnings.warn(
+                'KIEDataset is only initialized as a downstream demo task '
+                'of text detection and recognition '
+                'without an annotation file.', UserWarning)
+        else:
+            super().__init__(
+                ann_file,
+                loader,
+                pipeline,
+                img_prefix=img_prefix,
+                test_mode=test_mode)
+            assert osp.exists(dict_file)
 
         self.norm = norm
         self.directed = directed

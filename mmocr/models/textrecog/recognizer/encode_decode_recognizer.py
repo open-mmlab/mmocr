@@ -91,6 +91,10 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         Returns:
             dict[str, tensor]: A dictionary of loss components.
         """
+        for img_meta in img_metas:
+            valid_ratio = 1.0 * img_meta['resize_shape'][1] / img.size(-1)
+            img_meta['valid_ratio'] = valid_ratio
+
         feat = self.extract_feat(img)
 
         gt_labels = [img_meta['text'] for img_meta in img_metas]
@@ -123,6 +127,10 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         Returns:
             list[str]: Text label result of each image.
         """
+        for img_meta in img_metas:
+            valid_ratio = 1.0 * img_meta['resize_shape'][1] / img.size(-1)
+            img_meta['valid_ratio'] = valid_ratio
+
         feat = self.extract_feat(img)
 
         out_enc = None

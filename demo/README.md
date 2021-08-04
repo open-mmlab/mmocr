@@ -26,5 +26,15 @@ Please refer to [End2End Demo](docs/ocr_demo.md) for the tutorial of Text Detect
     <img src="resources/demo_ocr_pred.jpg"/><br>
 
 </div>
+<br>
+<br>
+
+Please refer to [KIE End2End Demo](docs/kie_demo.md) for the tutorial of KIE end-to-end demo.
+
+<div align="center">
+    <img src="resources/demo_kie_pred.jpeg"/><br>
+
+</div>
+
 
 <br>

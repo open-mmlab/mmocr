@@ -49,7 +49,7 @@ train_pipeline = [
         type='Collect',
         keys=['img'],
         meta_keys=[
-            'filename', 'ori_shape', 'img_shape', 'text', 'valid_ratio'
+            'filename', 'ori_shape', 'resize_shape', 'text', 'valid_ratio'
         ]),
 ]
 test_pipeline = [
@@ -71,7 +71,7 @@ test_pipeline = [
                 type='Collect',
                 keys=['img'],
                 meta_keys=[
-                    'filename', 'ori_shape', 'img_shape', 'valid_ratio'
+                    'filename', 'ori_shape', 'resize_shape', 'valid_ratio'
                 ]),
         ])
 ]

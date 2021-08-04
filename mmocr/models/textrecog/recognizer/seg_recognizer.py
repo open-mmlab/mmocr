@@ -110,6 +110,10 @@ class SegRecognizer(BaseRecognizer):
 
         out_head = self.head(out_neck)
 
+        for img_meta in img_metas:
+            valid_ratio = 1.0 * img_meta['resize_shape'][1] / img.size(-1)
+            img_meta['valid_ratio'] = valid_ratio
+
         texts, scores = self.label_convertor.tensor2str(out_head, img_metas)
 
         # flatten batch results

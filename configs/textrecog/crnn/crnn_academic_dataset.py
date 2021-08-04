@@ -39,7 +39,7 @@ lr_config = dict(policy='step', step=[])
 total_epochs = 5
 
 # data
-img_norm_cfg = dict(mean=[0.5], std=[0.5])
+img_norm_cfg = dict(mean=[127], std=[127])
 
 train_pipeline = [
     dict(type='LoadImageFromFile', color_type='grayscale'),
@@ -49,29 +49,27 @@ train_pipeline = [
         min_width=100,
         max_width=100,
         keep_aspect_ratio=False),
-    dict(type='ToTensorOCR'),
-    dict(type='NormalizeOCR', **img_norm_cfg),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='DefaultFormatBundle'),
     dict(
         type='Collect',
         keys=['img'],
-        meta_keys=[
-            'filename', 'ori_shape', 'img_shape', 'text', 'valid_ratio'
-        ]),
+        meta_keys=['filename', 'resize_shape', 'text', 'valid_ratio']),
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile', color_type='grayscale'),
     dict(
         type='ResizeOCR',
         height=32,
-        min_width=4,
+        min_width=32,
         max_width=None,
         keep_aspect_ratio=True),
-    dict(type='ToTensorOCR'),
-    dict(type='NormalizeOCR', **img_norm_cfg),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='DefaultFormatBundle'),
     dict(
         type='Collect',
         keys=['img'],
-        meta_keys=['filename', 'ori_shape', 'img_shape', 'valid_ratio']),
+        meta_keys=['filename', 'resize_shape', 'valid_ratio']),
 ]
 
 dataset_type = 'OCRDataset'
