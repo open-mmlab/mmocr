@@ -401,7 +401,7 @@ class MMOCR:
                 result = self.single_inference(model, args.arrays,
                                                args.batch_mode,
                                                args.single_batch_size)
-                pp_result = self.single_pp(args, result, model)
+                pp_result = self.single_pp(result, model)
 
         return pp_result
 
