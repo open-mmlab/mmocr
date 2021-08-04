@@ -4,6 +4,7 @@ lanms-proper
 lmdb
 matplotlib
 mmcv
+mmdet
 Polygon3
 pyclipper
 rapidfuzz
