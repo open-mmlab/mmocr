@@ -80,3 +80,19 @@ Here is an example of using 8 GPUs to test an example model on the 'dev' partiti
 ```shell
 GPUS=8 ./tools/slurm_test.sh dev test_job configs/example_config.py work_dirs/example_exp/example_model_20200202.pth --eval hmean-iou
 ```
+
+#### Batch Testing
+
+By default, MMOCR tests the model image by image. For faster inference, you may change `data.val_dataloader.samples_per_gpu` and `data.test_dataloader.samples_per_gpu` in the config. For example,
+
+```
+data = dict(
+    ...
+    val_dataloader=dict(samples_per_gpu=16),
+    test_dataloader=dict(samples_per_gpu=16),
+    ...
+)
+```
+will test the model with 16 images in a batch.
+
+**Warning:** Batch testing may incur performance decrease of the model due to the different behavior of the data preprocessing pipeline.
