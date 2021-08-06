@@ -81,7 +81,7 @@ class SatrnEncoderLayer(nn.Module):
         x = x.transpose(1, 2).contiguous().view(n, c, h, w)
         x = self.feed_forward(x)
         x = x.view(n, c, hw).transpose(1, 2)
-        x = self.feedforward_norm(residual + x)
+        x = residual + x
         return x
 
 
