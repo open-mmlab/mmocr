@@ -28,7 +28,8 @@ class ShallowCNN(BaseModule):
             int(hidden_dim / 2),
             kernel_size=3,
             stride=1,
-            padding=1)
+            padding=1,
+            bias=False)
         self.bn1 = nn.BatchNorm2d(int(hidden_dim / 2))
         self.relu1 = nn.ReLU(inplace=True)
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
