@@ -69,7 +69,6 @@ class SatrnEncoderLayer(nn.Module):
         self.norm2 = nn.LayerNorm(d_model)
         self.feed_forward = LocalityAwareFeedforward(
             d_model, d_inner, dropout=dropout)
-        self.feedforward_norm = nn.LayerNorm(normalized_shape=d_model)
 
     def forward(self, x, h, w, mask=None):
         n, hw, c = x.size()
