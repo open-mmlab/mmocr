@@ -87,3 +87,4 @@ def builder_inited_handler(app):
 
 def setup(app):
     app.connect('builder-inited', builder_inited_handler)
+    app.add_css_file('readthedocs.css')
