@@ -7,7 +7,7 @@ label_convertor = dict(
 
 model = dict(
     type='SATRN',
-    backbone=dict(type='ShallowCNN', input_channels=1, hidden_dim=256),
+    backbone=dict(type='ShallowCNN', input_channels=3, hidden_dim=256),
     encoder=dict(
         type='SatrnEncoder',
         n_layers=6,
