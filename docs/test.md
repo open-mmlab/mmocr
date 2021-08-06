@@ -1,8 +1,8 @@
 # Test
 
-### Test a Dataset
+## Test a Dataset
 
-#### Test with Single GPU
+### Test with Single GPU
 
 
 You can use the `tools/test.py` to perform single GPU inference. For example, to evaluate DBNet on IC15: (You can download pretrained models from [Model Zoo](modelzoo.md)):
@@ -13,7 +13,7 @@ You can use the `tools/test.py` to perform single GPU inference. For example, to
 
 And here is the full usage of the script:
 
-```
+```shell
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 ```
 
@@ -34,7 +34,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 | `--launcher`       | 'none', 'pytorch', 'slurm', 'mpi' |  Options for job launcher. |
 
 
-#### Test with Multiple GPUs
+### Test with Multiple GPUs
 
 MMOCR implements **distributed** testing with `MMDistributedDataParallel`.
 
@@ -47,7 +47,7 @@ You can use the following command to test a dataset with multiple GPUs.
 
 | Arguments      | Type                  |  Description                                                 |
 | -------------- | --------------------- |  ----------------------------------------------------------- |
-| `PORT`          | int                   |  The master port that will be used by the machine with rank 0. Default to 29500. |
+| `PORT`          | int                   |  The master port that will be used by the machine with rank 0. Defaults to 29500. |
 | `PY_ARGS`   | str                   |  Arguments to be parsed by `tools/test.py`.         |
 
 
@@ -55,10 +55,9 @@ For example,
 
 ```shell
 ./tools/dist_test.sh configs/example_config.py work_dirs/example_exp/example_model_20200202.pth 1 --eval hmean-iou
-./tools/dist_test.sh  --eval hmean-iou
 ```
 
-#### Test with Slurm
+### Test with Slurm
 
 If you run MMOCR on a cluster managed with [Slurm](https://slurm.schedmd.com/), you can use the script `tools/slurm_test.sh`.
 
@@ -69,8 +68,8 @@ If you run MMOCR on a cluster managed with [Slurm](https://slurm.schedmd.com/), 
 
 | Arguments      | Type                  |  Description                                                 |
 | -------------- | --------------------- |  ----------------------------------------------------------- |
-| `GPUS`          | int                   |  The number of GPUs to be used by this task. Default to 8. |
-| `GPUS_PER_NODE`   | str                   |  The number of GPUs to be allocated per node. Default to 8. |
+| `GPUS`          | int                   |  The number of GPUs to be used by this task. Defaults to 8. |
+| `GPUS_PER_NODE`   | str                   |  The number of GPUs to be allocated per node. Defaults to 8. |
 | `SRUN_ARGS`        | str                   |  Arguments to be parsed by srun. Available options can be found [here](https://slurm.schedmd.com/srun.html). |
 | `PY_ARGS`   | str                   |  Arguments to be parsed by `tools/test.py`.         |
 
@@ -81,7 +80,7 @@ Here is an example of using 8 GPUs to test an example model on the 'dev' partiti
 GPUS=8 ./tools/slurm_test.sh dev test_job configs/example_config.py work_dirs/example_exp/example_model_20200202.pth --eval hmean-iou
 ```
 
-#### Batch Testing
+### Batch Testing
 
 By default, MMOCR tests the model image by image. For faster inference, you may change `data.val_dataloader.samples_per_gpu` and `data.test_dataloader.samples_per_gpu` in the config. For example,
 
