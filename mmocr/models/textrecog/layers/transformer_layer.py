@@ -237,18 +237,38 @@ class LocalityAwareFeedforward(nn.Module):
 
     def __init__(self, d_in, d_hid, dropout=0.1):
         super().__init__()
-        self.conv_1 = nn.Conv2d(d_in, d_hid, kernel_size=3, padding=1)
-        self.relu_1 = nn.ReLU(inplace=True)
-        self.dropout_1 = nn.Dropout(dropout)
-        self.conv_2 = nn.Conv2d(d_hid, d_in, kernel_size=3, padding=1)
-        self.dropout_2 = nn.Dropout(dropout)
+        self.conv_1 = nn.Conv2d(
+            d_in, d_hid, kernel_size=1, padding='same', bias=False)
+        self.bn_1 = nn.BatchNorm2d(d_hid)
+        self.relu_1 = nn.ReLU()
+
+        self.conv_2 = nn.Conv2d(
+            d_hid,
+            d_hid,
+            kernel_size=3,
+            padding='same',
+            bias=False,
+            groups=d_hid)
+        self.bn_2 = nn.BatchNorm2d(d_hid)
+        self.relu_2 = nn.ReLU()
+
+        self.conv_3 = nn.Conv2d(
+            d_hid, d_in, kernel_size=1, padding='same', bias=False)
+        self.bn_3 = nn.BatchNorm2d(d_in)
+        self.relu_3 = nn.ReLU()
 
     def forward(self, x):
         x = self.conv_1(x)
+        x = self.bn_1(x)
         x = self.relu_1(x)
-        x = self.dropout_1(x)
+
         x = self.conv_2(x)
-        x = self.dropout_2(x)
+        x = self.bn_2(x)
+        x = self.relu_2(x)
+
+        x = self.conv_3(x)
+        x = self.bn_3(x)
+        x = self.relu_3(x)
 
         return x
 
