@@ -50,7 +50,6 @@ def test_satrn_encoder():
 
     feat = torch.randn(1, 512, 8, 25)
     out_enc = satrn_encoder(feat)
-    print('hello', out_enc.size())
     assert out_enc.shape == torch.Size([1, 512, 8, 25])
 
 
