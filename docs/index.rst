@@ -5,9 +5,11 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
+   :caption: Getting Started
 
    install.md
    getting_started.md
+   testing.md
    demo.md
    deployment.md
 
