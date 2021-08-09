@@ -229,7 +229,7 @@ class PositionwiseFeedForward(nn.Module):
         return x
 
 
-class LocalityAwareFeedforward(nn.Module):
+class LocalityAwareFeedforward(BaseModule):
     """Locality-aware feedforward layer in SATRN, see `SATRN.
 
     <https://arxiv.org/abs/1910.04396>`_
