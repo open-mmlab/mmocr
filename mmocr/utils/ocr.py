@@ -276,7 +276,7 @@ class MMOCR:
             'RobustScanner': {
                 'config': 'robust_scanner/robustscanner_r31_academic.py',
                 'ckpt':
-                'robust_scanner/robustscanner_r31_academic-5f05874f.pth'
+                'robustscanner/robustscanner_r31_academic-5f05874f.pth'
             },
             'SEG': {
                 'config': 'seg/seg_r31_1by16_fpnocr_academic.py',
