@@ -43,7 +43,7 @@ class TransformerEncoderLayer(nn.Module):
         return x
 
 
-class SatrnEncoderLayer(nn.Module):
+class SatrnEncoderLayer(BaseModule):
     """"""
 
     def __init__(self,
