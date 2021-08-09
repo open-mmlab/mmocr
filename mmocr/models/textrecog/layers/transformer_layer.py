@@ -3,6 +3,7 @@ pytorch."""
 import numpy as np
 import torch
 import torch.nn as nn
+from mmcv.runner import BaseModule
 
 
 class TransformerEncoderLayer(nn.Module):
