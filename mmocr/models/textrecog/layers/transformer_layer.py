@@ -235,8 +235,15 @@ class LocalityAwareFeedforward(BaseModule):
     <https://arxiv.org/abs/1910.04396>`_
     """
 
-    def __init__(self, d_in, d_hid, dropout=0.1):
-        super().__init__()
+    def __init__(self,
+                 d_in,
+                 d_hid,
+                 dropout=0.1,
+                 init_cfg=[
+                     dict(type='Xavier', layer='Conv2d'),
+                     dict(type='Constant', layer='BatchNorm2d', val=1, bias=0)
+                 ]):
+        super().__init__(init_cfg=init_cfg)
         self.conv_1 = nn.Conv2d(
             d_in, d_hid, kernel_size=1, padding='same', bias=False)
         self.bn_1 = nn.BatchNorm2d(d_hid)
