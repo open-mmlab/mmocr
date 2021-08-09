@@ -304,7 +304,7 @@ class PositionalEncoding(nn.Module):
         return x + self.position_table[:, :x.size(1)].clone().detach()
 
 
-class Adaptive2DPositionalEncoding(nn.Module):
+class Adaptive2DPositionalEncoding(BaseModule):
     """Implement Adaptive 2D positional encoder for SATRN, see
       `SATRN <https://arxiv.org/abs/1910.04396>`_
       Modified from https://github.com/Media-Smart/vedastr
