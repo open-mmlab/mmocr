@@ -245,7 +245,7 @@ class LocalityAwareFeedforward(BaseModule):
                  ]):
         super().__init__(init_cfg=init_cfg)
         self.conv_1 = nn.Conv2d(
-            d_in, d_hid, kernel_size=1, padding='same', bias=False)
+            d_in, d_hid, kernel_size=1, padding=0, bias=False)
         self.bn_1 = nn.BatchNorm2d(d_hid)
         self.relu_1 = nn.ReLU()
 
