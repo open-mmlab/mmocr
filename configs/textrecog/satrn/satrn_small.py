@@ -29,7 +29,7 @@ model = dict(
         d_v=256 // 8),
     loss=dict(type='TFLoss'),
     label_convertor=label_convertor,
-    max_seq_len=40)
+    max_seq_len=25)
 
 # optimizer
 optimizer = dict(type='Adam', lr=3e-4)
