@@ -55,8 +55,8 @@ class SatrnEncoderLayer(BaseModule):
                  dropout=0.1,
                  qkv_bias=False,
                  mask_value=0,
-                 act_layer=nn.GELU):
-        super().__init__()
+                 init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
         self.norm1 = nn.LayerNorm(d_model)
         self.attn = MultiHeadAttention(
             n_head,
