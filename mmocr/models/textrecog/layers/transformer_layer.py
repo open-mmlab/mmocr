@@ -316,8 +316,13 @@ class Adaptive2DPositionalEncoding(BaseModule):
         dropout (int): Size of hidden layers of the model.
     """
 
-    def __init__(self, d_hid=512, n_height=100, n_width=100, dropout=0.1):
-        super().__init__()
+    def __init__(self,
+                 d_hid=512,
+                 n_height=100,
+                 n_width=100,
+                 dropout=0.1,
+                 init_cfg=[dict(type='Xavier', layer='Conv2d')]):
+        super().__init__(init_cfg=init_cfg)
 
         h_position_encoder = self._get_sinusoid_encoding_table(n_height, d_hid)
         h_position_encoder = h_position_encoder.transpose(0, 1)
