@@ -19,6 +19,7 @@ from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.models import build_detector
 from mmocr.utils.box_util import stitch_boxes_into_lines
 from mmocr.utils.fileio import list_from_file
+from mmocr.utils.model import revert_sync_batchnorm
 
 
 # Parse CLI arguments
@@ -275,8 +276,7 @@ class MMOCR:
             },
             'RobustScanner': {
                 'config': 'robust_scanner/robustscanner_r31_academic.py',
-                'ckpt':
-                'robustscanner/robustscanner_r31_academic-5f05874f.pth'
+                'ckpt': 'robustscanner/robustscanner_r31_academic-5f05874f.pth'
             },
             'SEG': {
                 'config': 'seg/seg_r31_1by16_fpnocr_academic.py',
@@ -325,6 +325,7 @@ class MMOCR:
 
             self.detect_model = init_detector(
                 det_config, det_ckpt, device=self.device)
+            self.detect_model = revert_sync_batchnorm(self.detect_model)
 
         self.recog_model = None
         if self.tr:
@@ -339,6 +340,7 @@ class MMOCR:
 
             self.recog_model = init_detector(
                 recog_config, recog_ckpt, device=self.device)
+            self.recog_model = revert_sync_batchnorm(self.recog_model)
 
         self.kie_model = None
         if self.kie:
@@ -353,6 +355,7 @@ class MMOCR:
             kie_cfg = Config.fromfile(kie_config)
             self.kie_model = build_detector(
                 kie_cfg.model, test_cfg=kie_cfg.get('test_cfg'))
+            self.kie_model = revert_sync_batchnorm(self.kie_model)
             self.kie_model.cfg = kie_cfg
             load_checkpoint(self.kie_model, kie_ckpt, map_location=self.device)
 
