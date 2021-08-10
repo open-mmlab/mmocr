@@ -223,7 +223,14 @@ def db_decode(preds,
         if len(poly) == 0 or isinstance(poly[0], list):
             continue
         poly = poly.reshape(-1, 2)
-        poly = points2boundary(poly, text_repr_type, score, min_text_width)
+
+        if text_repr_type == 'quad':
+            poly = points2boundary(poly, text_repr_type, score, min_text_width)
+        elif text_repr_type == 'poly':
+            poly = poly.flatten().tolist() + [score]
+        else:
+            raise ValueError(f'Invalid text repr type {text_repr_type}')
+
         if poly is not None:
             boundaries.append(poly)
     return boundaries
