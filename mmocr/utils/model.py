@@ -1,7 +1,7 @@
 import torch
 
 
-class BatchNormXd(torch.nn.modules.batchnorm._BatchNorm):
+class _BatchNormXd(torch.nn.modules.batchnorm._BatchNorm):
     """A general BatchNorm layer without input dimension check.
 
     Reproduced from @kapily's work:
@@ -31,9 +31,9 @@ def revert_sync_batchnorm(module):
     """
     module_output = module
     if isinstance(module, torch.nn.modules.batchnorm.SyncBatchNorm):
-        module_output = BatchNormXd(module.num_features, module.eps,
-                                    module.momentum, module.affine,
-                                    module.track_running_stats)
+        module_output = _BatchNormXd(module.num_features, module.eps,
+                                     module.momentum, module.affine,
+                                     module.track_running_stats)
         if module.affine:
             with torch.no_grad():
                 module_output.weight = module.weight
