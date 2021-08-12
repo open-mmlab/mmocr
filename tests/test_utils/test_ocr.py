@@ -13,6 +13,7 @@ import pytest
 import torch
 from mmdet.apis import init_detector
 
+from mmocr.datasets.kie_dataset import KIEDataset
 from mmocr.utils.ocr import MMOCR
 
 
@@ -219,7 +220,8 @@ def MMOCR_testobj(mock_loading, mock_init_detector, **kwargs):
     return MMOCR(**kwargs, device=device)
 
 
-def test_readtext():
+@mock.patch('mmocr.utils.ocr.KIEDataset')
+def test_readtext(mock_kiedataset):
     # Fixing the weights of models to prevent them from
     # generating invalid results and triggering other assertion errors
     torch.manual_seed(4)
@@ -236,6 +238,12 @@ def test_readtext():
         for res in e2e_res:
             res.pop('filename')
         return e2e_res
+
+    def kiedataset_with_test_dict(**kwargs):
+        kwargs['dict_file'] = 'tests/data/kie_toy_dataset/dict.txt'
+        return KIEDataset(**kwargs)
+
+    mock_kiedataset.side_effect = kiedataset_with_test_dict
 
     # Single image
     toy_dir = 'tests/data/toy_dataset/imgs/test/'
