@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest import mock
 
 import mmcv
+import numpy as np
 import pytest
 import torch
 from mmdet.apis import init_detector
@@ -214,7 +215,8 @@ def MMOCR_testobj(mock_loading, mock_init_detector, **kwargs):
     kwargs['det'] = kwargs.get('det', 'DB_r18')
     kwargs['recog'] = kwargs.get('recog', 'CRNN')
     kwargs['kie'] = kwargs.get('kie', 'SDMGR')
-    return MMOCR(**kwargs)
+    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    return MMOCR(**kwargs, device=device)
 
 
 def test_readtext():
@@ -268,8 +270,18 @@ def test_readtext():
     det_res = mmocr_det.readtext(toy_imgs)
     batch_det_res = mmocr_det.readtext(
         toy_imgs, batch_mode=True, single_batch_size=2)
-    assert full_batch_det_res == det_res
-    assert batch_det_res == det_res
+    assert len(full_batch_det_res) == len(det_res)
+    assert len(batch_det_res) == len(det_res)
+    assert all([
+        np.allclose(full_batch_det_res[i]['boundary_result'],
+                    det_res[i]['boundary_result'])
+        for i in range(len(full_batch_det_res))
+    ])
+    assert all([
+        np.allclose(batch_det_res[i]['boundary_result'],
+                    det_res[i]['boundary_result'])
+        for i in range(len(batch_det_res))
+    ])
 
     # Batch mode test with CRNN_TPS only (CRNN doesn't support batch inference)
     full_batch_recog_res = mmocr_recog.readtext(toy_imgs, batch_mode=True)
