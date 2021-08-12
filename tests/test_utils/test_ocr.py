@@ -80,31 +80,32 @@ def test_ocr_init(mock_loading, mock_config, mock_build_detector,
         assert args[1] == gt_ckpt[-1]
 
     mock_loading.side_effect = loadcheckpoint_assert
-    if kie == '':
-        if config_dir == '':
-            _ = MMOCR(det=det, recog=recog)
+    with mock.patch('mmocr.utils.ocr.revert_sync_batchnorm'):
+        if kie == '':
+            if config_dir == '':
+                _ = MMOCR(det=det, recog=recog)
+            else:
+                _ = MMOCR(det=det, recog=recog, config_dir=config_dir)
         else:
-            _ = MMOCR(det=det, recog=recog, config_dir=config_dir)
-    else:
-        if config_dir == '':
-            _ = MMOCR(det=det, recog=recog, kie=kie)
-        else:
-            _ = MMOCR(det=det, recog=recog, kie=kie, config_dir=config_dir)
-    if isinstance(gt_cfg, str):
-        gt_cfg = [gt_cfg]
-    if isinstance(gt_ckpt, str):
-        gt_ckpt = [gt_ckpt]
+            if config_dir == '':
+                _ = MMOCR(det=det, recog=recog, kie=kie)
+            else:
+                _ = MMOCR(det=det, recog=recog, kie=kie, config_dir=config_dir)
+        if isinstance(gt_cfg, str):
+            gt_cfg = [gt_cfg]
+        if isinstance(gt_ckpt, str):
+            gt_ckpt = [gt_ckpt]
 
-    i_range = range(len(gt_cfg))
-    if kie:
-        i_range = i_range[:-1]
-        mock_config.assert_called_with(gt_cfg[-1])
-        mock_build_detector.assert_called_once()
-        mock_loading.assert_called_once()
-    calls = [
-        mock.call(gt_cfg[i], gt_ckpt[i], device='cuda:0') for i in i_range
-    ]
-    mock_init_detector.assert_has_calls(calls)
+        i_range = range(len(gt_cfg))
+        if kie:
+            i_range = i_range[:-1]
+            mock_config.assert_called_with(gt_cfg[-1])
+            mock_build_detector.assert_called_once()
+            mock_loading.assert_called_once()
+        calls = [
+            mock.call(gt_cfg[i], gt_ckpt[i], device='cuda:0') for i in i_range
+        ]
+        mock_init_detector.assert_has_calls(calls)
 
 
 @pytest.mark.parametrize(
@@ -142,29 +143,29 @@ def test_ocr_init_customize_config(mock_loading, mock_config,
         assert args[1] == gt_ckpt[-1]
 
     mock_loading.side_effect = loadcheckpoint_assert
+    with mock.patch('mmocr.utils.ocr.revert_sync_batchnorm'):
+        _ = MMOCR(
+            det=det,
+            det_config=det_config,
+            det_ckpt=det_ckpt,
+            recog=recog,
+            recog_config=recog_config,
+            recog_ckpt=recog_ckpt,
+            kie=kie,
+            kie_config=kie_config,
+            kie_ckpt=kie_ckpt,
+            config_dir=config_dir)
 
-    _ = MMOCR(
-        det=det,
-        det_config=det_config,
-        det_ckpt=det_ckpt,
-        recog=recog,
-        recog_config=recog_config,
-        recog_ckpt=recog_ckpt,
-        kie=kie,
-        kie_config=kie_config,
-        kie_ckpt=kie_ckpt,
-        config_dir=config_dir)
-
-    i_range = range(len(gt_cfg))
-    if kie:
-        i_range = i_range[:-1]
-        mock_config.assert_called_with(gt_cfg[-1])
-        mock_build_detector.assert_called_once()
-        mock_loading.assert_called_once()
-    calls = [
-        mock.call(gt_cfg[i], gt_ckpt[i], device='cuda:0') for i in i_range
-    ]
-    mock_init_detector.assert_has_calls(calls)
+        i_range = range(len(gt_cfg))
+        if kie:
+            i_range = i_range[:-1]
+            mock_config.assert_called_with(gt_cfg[-1])
+            mock_build_detector.assert_called_once()
+            mock_loading.assert_called_once()
+        calls = [
+            mock.call(gt_cfg[i], gt_ckpt[i], device='cuda:0') for i in i_range
+        ]
+        mock_init_detector.assert_has_calls(calls)
 
 
 @mock.patch('mmocr.utils.ocr.init_detector')
