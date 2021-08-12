@@ -3,8 +3,8 @@ pytorch."""
 import numpy as np
 import torch
 import torch.nn as nn
-from mmcv.runner import BaseModule
 from mmcv.cnn import ConvModule
+from mmcv.runner import BaseModule
 
 
 class TransformerEncoderLayer(nn.Module):
@@ -272,7 +272,7 @@ class LocalityAwareFeedforward(BaseModule):
             padding=0,
             bias=False,
             norm_cfg=dict(type='BN'),
-            act_cfg=dict(type='ReLU')
+            act_cfg=dict(type='ReLU'))
 
     def forward(self, x):
         x = self.conv1(x)

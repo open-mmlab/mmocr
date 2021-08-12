@@ -1,6 +1,6 @@
 import torch.nn as nn
-from mmcv.runner import BaseModule
 from mmcv.cnn import ConvModule
+from mmcv.runner import BaseModule
 from mmdet.models.builder import BACKBONES
 
 
