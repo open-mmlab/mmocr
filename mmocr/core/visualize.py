@@ -533,6 +533,8 @@ def draw_texts_by_pil(img, texts, boxes=None):
     out_img = Image.new('RGB', (w, h), color=(255, 255, 255))
     out_draw = ImageDraw.Draw(out_img)
     for idx, (box, text) in enumerate(zip(boxes, texts)):
+        if len(text) == 0:
+            continue
         min_x, max_x = min(box[0::2]), max(box[0::2])
         min_y, max_y = min(box[1::2]), max(box[1::2])
         color = tuple(list(color_list[idx % len(color_list)])[::-1])

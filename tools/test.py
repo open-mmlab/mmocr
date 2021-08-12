@@ -16,6 +16,7 @@ from mmdet.datasets import replace_ImageToTensor
 from mmocr.apis.inference import disable_text_recog_aug_test
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
+from mmocr.utils import revert_sync_batchnorm
 
 
 def parse_args():
@@ -127,7 +128,8 @@ def main():
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
-    cfg.model.pretrained = None
+    if cfg.model.get('pretrained'):
+        cfg.model.pretrained = None
     if cfg.model.get('neck'):
         if isinstance(cfg.model.neck, list):
             for neck_cfg in cfg.model.neck:
@@ -195,6 +197,7 @@ def main():
     # build the model and load checkpoint
     cfg.model.train_cfg = None
     model = build_detector(cfg.model, test_cfg=cfg.get('test_cfg'))
+    model = revert_sync_batchnorm(model)
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
         wrap_fp16_model(model)

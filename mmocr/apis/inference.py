@@ -26,21 +26,15 @@ def disable_text_recog_aug_test(cfg, set_types=None):
                 cfg.data[set_type].pipeline[0],
                 *cfg.data[set_type].pipeline[1].transforms
             ]
-        assert_if_not_support_batch_mode(cfg, set_type)
 
     return cfg
 
 
-def assert_if_not_support_batch_mode(cfg, set_type='test'):
-    if cfg.data[set_type].pipeline[1].type == 'ResizeOCR':
-        if cfg.data[set_type].pipeline[1].max_width is None:
-            raise Exception('Batch mode is not supported '
-                            'since the image width is not fixed, '
-                            'in the case that keeping aspect ratio but '
-                            'max_width is none when do resize.')
-
-
-def model_inference(model, imgs, batch_mode=False):
+def model_inference(model,
+                    imgs,
+                    ann=None,
+                    batch_mode=False,
+                    return_data=False):
     """Inference image(s) with the detector.
 
     Args:
@@ -48,6 +42,8 @@ def model_inference(model, imgs, batch_mode=False):
         imgs (str/ndarray or list[str/ndarray] or tuple[str/ndarray]):
             Either image files or loaded images.
         batch_mode (bool): If True, use batch mode for inference.
+        ann (dict): Annotation info for key information extraction.
+        return_data: Return postprocessed data.
     Returns:
         result (dict): Predicted results.
     """
@@ -85,10 +81,14 @@ def model_inference(model, imgs, batch_mode=False):
         # prepare data
         if is_ndarray:
             # directly add img
-            data = dict(img=img)
+            data = dict(img=img, ann_info=ann, bbox_fields=[])
         else:
             # add information into dict
-            data = dict(img_info=dict(filename=img), img_prefix=None)
+            data = dict(
+                img_info=dict(filename=img),
+                img_prefix=None,
+                ann_info=ann,
+                bbox_fields=[])
 
         # build the data pipeline
         data = test_pipeline(data)
@@ -121,6 +121,14 @@ def model_inference(model, imgs, batch_mode=False):
     else:
         data['img'] = data['img'].data
 
+    # for KIE models
+    if ann is not None:
+        data['relations'] = data['relations'].data[0]
+        data['gt_bboxes'] = data['gt_bboxes'].data[0]
+        data['texts'] = data['texts'].data[0]
+        data['img'] = data['img'][0]
+        data['img_metas'] = data['img_metas'][0]
+
     if next(model.parameters()).is_cuda:
         # scatter to specified GPU
         data = scatter(data, [device])[0]
@@ -135,9 +143,13 @@ def model_inference(model, imgs, batch_mode=False):
         results = model(return_loss=False, rescale=True, **data)
 
     if not is_batch:
-        return results[0]
+        if not return_data:
+            return results[0]
+        return results[0], datas[0]
     else:
-        return results
+        if not return_data:
+            return results
+        return results, datas
 
 
 def text_model_inference(model, input_sentence):

@@ -1,4 +1,4 @@
 include requirements/*.txt
-include mmocr/model-index.yml
-recursive-include mmocr/configs *.py *.yml
-recursive-include mmocr/tools *.sh *.py
+include mmocr/.mim/model-index.yml
+recursive-include mmocr/.mim/configs *.py *.yml
+recursive-include mmocr/.mim/tools *.sh *.py
