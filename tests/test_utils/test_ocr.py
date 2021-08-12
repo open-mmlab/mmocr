@@ -212,7 +212,11 @@ def MMOCR_testobj(mock_loading, mock_init_detector, **kwargs):
     def init_detector_skip_ckpt(config, ckpt, device):
         return init_detector(config, device=device)
 
+    def modify_kie_class(model, ckpt, map_location):
+        model.class_list = 'tests/data/kie_toy_dataset/class_list.txt'
+
     mock_init_detector.side_effect = init_detector_skip_ckpt
+    mock_loading.side_effect = modify_kie_class
     kwargs['det'] = kwargs.get('det', 'DB_r18')
     kwargs['recog'] = kwargs.get('recog', 'CRNN')
     kwargs['kie'] = kwargs.get('kie', 'SDMGR')
