@@ -4,6 +4,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from mmcv.runner import BaseModule
+from mmcv.cnn import ConvModule
 
 
 class TransformerEncoderLayer(nn.Module):
@@ -245,33 +246,38 @@ class LocalityAwareFeedforward(BaseModule):
                      dict(type='Constant', layer='BatchNorm2d', val=1, bias=0)
                  ]):
         super().__init__(init_cfg=init_cfg)
-        self.conv_1 = nn.Conv2d(
-            d_in, d_hid, kernel_size=1, padding=0, bias=False)
-        self.bn_1 = nn.BatchNorm2d(d_hid)
-        self.relu_1 = nn.ReLU()
+        self.conv1 = ConvModule(
+            d_in,
+            d_hid,
+            kernel_size=1,
+            padding=0,
+            bias=False,
+            norm_cfg=dict(type='BN'),
+            act_cfg=dict(type='ReLU'))
 
-        self.conv_2 = nn.Conv2d(
-            d_hid, d_hid, kernel_size=3, padding=1, bias=False, groups=d_hid)
-        self.bn_2 = nn.BatchNorm2d(d_hid)
-        self.relu_2 = nn.ReLU()
+        self.depthwise_conv = ConvModule(
+            d_hid,
+            d_hid,
+            kernel_size=3,
+            padding=1,
+            bias=False,
+            groups=d_hid,
+            norm_cfg=dict(type='BN'),
+            act_cfg=dict(type='ReLU'))
 
-        self.conv_3 = nn.Conv2d(
-            d_hid, d_in, kernel_size=1, padding=0, bias=False)
-        self.bn_3 = nn.BatchNorm2d(d_in)
-        self.relu_3 = nn.ReLU()
+        self.conv2 = ConvModule(
+            d_hid,
+            d_in,
+            kernel_size=1,
+            padding=0,
+            bias=False,
+            norm_cfg=dict(type='BN'),
+            act_cfg=dict(type='ReLU')
 
     def forward(self, x):
-        x = self.conv_1(x)
-        x = self.bn_1(x)
-        x = self.relu_1(x)
-
-        x = self.conv_2(x)
-        x = self.bn_2(x)
-        x = self.relu_2(x)
-
-        x = self.conv_3(x)
-        x = self.bn_3(x)
-        x = self.relu_3(x)
+        x = self.conv1(x)
+        x = self.depthwise_conv(x)
+        x = self.conv2(x)
 
         return x
 

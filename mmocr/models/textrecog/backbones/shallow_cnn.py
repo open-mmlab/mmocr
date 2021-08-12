@@ -1,5 +1,6 @@
 import torch.nn as nn
 from mmcv.runner import BaseModule
+from mmcv.cnn import ConvModule
 from mmdet.models.builder import BACKBONES
 
 
@@ -23,38 +24,32 @@ class ShallowCNN(BaseModule):
         assert isinstance(input_channels, int)
         assert isinstance(hidden_dim, int)
 
-        self.conv1 = nn.Conv2d(
+        self.conv1 = ConvModule(
             input_channels,
-            int(hidden_dim / 2),
+            hidden_dim // 2,
             kernel_size=3,
             stride=1,
             padding=1,
-            bias=False)
-        self.bn1 = nn.BatchNorm2d(int(hidden_dim / 2))
-        self.relu1 = nn.ReLU(inplace=True)
-        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
-
-        self.conv2 = nn.Conv2d(
-            int(hidden_dim / 2),
+            bias=False,
+            norm_cfg=dict(type='BN'),
+            act_cfg=dict(type='ReLU'))
+        self.conv2 = ConvModule(
+            hidden_dim // 2,
             hidden_dim,
             kernel_size=3,
             stride=1,
             padding=1,
-            bias=False)
-        self.bn2 = nn.BatchNorm2d(hidden_dim)
-        self.relu2 = nn.ReLU(inplace=True)
-        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
+            bias=False,
+            norm_cfg=dict(type='BN'),
+            act_cfg=dict(type='ReLU'))
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
 
     def forward(self, x):
 
         x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.relu1(x)
-        x = self.pool1(x)
+        x = self.pool(x)
 
         x = self.conv2(x)
-        x = self.bn2(x)
-        x = self.relu2(x)
-        x = self.pool2(x)
+        x = self.pool(x)
 
         return x
