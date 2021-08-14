@@ -1,5 +1,4 @@
-from mmdet.models.builder import HEADS
-
+from mmocr.models.builder import HEADS
 from . import PANHead
 
 

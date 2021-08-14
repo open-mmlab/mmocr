@@ -1,6 +1,7 @@
 import torch
-from mmdet.models.builder import DETECTORS
-from mmdet.models.detectors import SingleStageDetector
+
+from mmocr.models.builder import DETECTORS
+from mmocr.models.common.detectors import SingleStageDetector
 
 
 @DETECTORS.register_module()

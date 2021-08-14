@@ -1,5 +1,4 @@
-from mmdet.models.builder import DETECTORS
-
+from mmocr.models.builder import DETECTORS
 from .encode_decode_recognizer import EncodeDecodeRecognizer
 
 

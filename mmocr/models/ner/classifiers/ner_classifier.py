@@ -1,6 +1,5 @@
-from mmdet.models.builder import DETECTORS, build_loss
-
-from mmocr.models.builder import build_convertor, build_decoder, build_encoder
+from mmocr.models.builder import (DETECTORS, build_convertor, build_decoder,
+                                  build_encoder, build_loss)
 from mmocr.models.textrecog.recognizer.base import BaseRecognizer
 
 

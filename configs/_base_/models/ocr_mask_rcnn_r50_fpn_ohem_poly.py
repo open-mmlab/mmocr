@@ -3,7 +3,7 @@ model = dict(
     type='OCRMaskRCNN',
     text_repr_type='poly',
     backbone=dict(
-        type='ResNet',
+        type='mmdet.ResNet',
         depth=50,
         num_stages=4,
         out_indices=(0, 1, 2, 3),
@@ -13,7 +13,7 @@ model = dict(
         init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
         style='pytorch'),
     neck=dict(
-        type='FPN',
+        type='mmdet.FPN',
         in_channels=[256, 512, 1024, 2048],
         out_channels=256,
         num_outs=5),

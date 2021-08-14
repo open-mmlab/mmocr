@@ -2,12 +2,12 @@ import warnings
 
 import mmcv
 from mmdet.core import bbox2roi
-from mmdet.models.builder import DETECTORS, build_roi_extractor
-from mmdet.models.detectors import SingleStageDetector
 from torch import nn
 from torch.nn import functional as F
 
 from mmocr.core import imshow_edge_node
+from mmocr.models.builder import DETECTORS, build_roi_extractor
+from mmocr.models.common.detectors import SingleStageDetector
 from mmocr.utils import list_from_file
 
 
@@ -28,7 +28,7 @@ class SDMGR(SingleStageDetector):
                  neck=None,
                  bbox_head=None,
                  extractor=dict(
-                     type='SingleRoIExtractor',
+                     type='mmdet.SingleRoIExtractor',
                      roi_layer=dict(type='RoIAlign', output_size=7),
                      featmap_strides=[1]),
                  visual_modality=False,

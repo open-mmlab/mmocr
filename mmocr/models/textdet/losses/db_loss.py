@@ -1,8 +1,8 @@
 import torch
 import torch.nn.functional as F
-from mmdet.models.builder import LOSSES
 from torch import nn
 
+from mmocr.models.builder import LOSSES
 from mmocr.models.common.losses.dice_loss import DiceLoss
 
 

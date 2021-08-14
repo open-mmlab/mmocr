@@ -7,7 +7,8 @@ import math
 
 import torch
 import torch.nn as nn
-from mmcv.cnn import ACTIVATION_LAYERS
+
+from mmocr.models.builder import ACTIVATION_LAYERS
 
 
 @ACTIVATION_LAYERS.register_module()

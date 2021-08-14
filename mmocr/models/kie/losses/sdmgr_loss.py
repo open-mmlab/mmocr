@@ -1,7 +1,8 @@
 import torch
-from mmdet.models.builder import LOSSES
 from mmdet.models.losses import accuracy
 from torch import nn
+
+from mmocr.models.builder import LOSSES
 
 
 @LOSSES.register_module()

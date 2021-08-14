@@ -1,6 +1,6 @@
 import numpy as np
-from mmdet.models.builder import HEADS
 
+from mmocr.models.builder import HEADS
 from mmocr.models.textdet.postprocess import decode
 from mmocr.utils import check_argument
 

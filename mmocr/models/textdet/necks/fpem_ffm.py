@@ -1,7 +1,8 @@
 import torch.nn.functional as F
 from mmcv.runner import BaseModule, ModuleList
-from mmdet.models.builder import NECKS
 from torch import nn
+
+from mmocr.models.builder import NECKS
 
 
 class FPEM(BaseModule):

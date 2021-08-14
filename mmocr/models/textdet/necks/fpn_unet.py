@@ -1,9 +1,9 @@
 import torch
 import torch.nn.functional as F
-# from mmcv.cnn import xavier_init
 from mmcv.runner import BaseModule
-from mmdet.models.builder import NECKS
 from torch import nn
+
+from mmocr.models.builder import NECKS
 
 
 class UpBlock(BaseModule):

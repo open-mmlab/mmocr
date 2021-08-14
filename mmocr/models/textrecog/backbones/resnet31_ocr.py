@@ -1,8 +1,8 @@
 import torch.nn as nn
 from mmcv.runner import BaseModule, Sequential
-from mmdet.models.builder import BACKBONES
 
 import mmocr.utils as utils
+from mmocr.models.builder import BACKBONES
 from mmocr.models.textrecog.layers import BasicBlock
 
 
