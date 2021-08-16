@@ -294,6 +294,9 @@ def generate_ann(root_path, split, image_infos):
         for anno in image_info['anno_info']:
             word = anno['word']
             dst_img = crop_img(image, anno['bbox'])
+            # skip invalid annotations
+            if dst_img.shape[0] == 0 or dst_img.shape[1] == 0:
+                continue
             dst_img_name = f'{src_img_root}_{index}.png'
             index += 1
             dst_img_path = osp.join(dst_image_root, dst_img_name)
