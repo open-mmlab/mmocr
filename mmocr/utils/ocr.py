@@ -316,10 +316,15 @@ class MMOCR:
         elif self.tr and self.tr not in textrecog_models:
             raise ValueError(self.tr,
                              'is not a supported text recognition algorithm')
-        elif self.kie and self.kie not in kie_models:
-            raise ValueError(
-                self.kie, 'is not a supported key information extraction'
-                ' algorithm')
+        elif self.kie:
+            if self.kie not in kie_models:
+                raise ValueError(
+                    self.kie, 'is not a supported key information extraction'
+                    ' algorithm')
+            elif not (self.td and self.tr):
+                raise NotImplementedError(
+                    self.kie, 'has to run together'
+                    ' with text detection and recognition algorithms.')
 
         self.detect_model = None
         if self.td:
@@ -598,7 +603,7 @@ class MMOCR:
         return end2end_res
 
     # Separate det/recog inference pipeline
-    def single_inference(self, model, arrays, batch_mode, batch_size):
+    def single_inference(self, model, arrays, batch_mode, batch_size=0):
         result = []
         if batch_mode:
             if batch_size == 0:
