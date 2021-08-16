@@ -104,7 +104,8 @@ def _get_detector_cfg(fname):
     'textrecog/crnn/crnn_academic_dataset.py',
     'textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py',
     'textrecog/robust_scanner/robustscanner_r31_academic.py',
-    'textrecog/seg/seg_r31_1by16_fpnocr_academic.py'
+    'textrecog/seg/seg_r31_1by16_fpnocr_academic.py',
+    'textrecog/satrn/satrn_academic.py'
 ])
 def test_recognizer_pipeline(cfg_file):
     model = _get_detector_cfg(cfg_file)
