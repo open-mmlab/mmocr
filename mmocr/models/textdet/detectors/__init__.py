@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .dbnet import DBNet
 from .drrg import DRRG
 from .fcenet import FCENet

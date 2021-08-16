@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 """Test text mask_utils."""
 import tempfile
 from unittest import mock

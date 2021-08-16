@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from . import (backbones, convertors, decoders, encoders, heads, losses, necks,
                preprocessor, recognizer)
 

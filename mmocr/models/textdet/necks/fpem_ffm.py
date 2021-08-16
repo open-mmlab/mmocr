@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn.functional as F
 from mmcv.runner import BaseModule, ModuleList
 from mmdet.models.builder import NECKS

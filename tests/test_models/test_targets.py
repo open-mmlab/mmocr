@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 
 from mmocr.datasets.pipelines.textdet_targets.dbnet_targets import DBNetTargets

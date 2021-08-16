@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 
 from mmdet.models.builder import (DETECTORS, build_backbone, build_head,

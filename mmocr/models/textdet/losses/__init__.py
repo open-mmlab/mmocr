@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .db_loss import DBLoss
 from .drrg_loss import DRRGLoss
 from .fce_loss import FCELoss

@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.runner import BaseModule
 
 from mmocr.models.builder import DECODERS
