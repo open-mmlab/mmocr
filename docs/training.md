@@ -103,26 +103,31 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 GPUS=4 ./tools/slurm_train.sh ${PARTITION} ${JOB_NA
 
 Here we list some configs that are frequently used during training for quick reference.
 
+### General Settings
+
 ```python
-# General Settings
 total_epochs = 1200
 data = dict(
+    # Note: User can configure general settings of train, val and test dataloader by specifying them here. However, their values can be overrided in dataloader's config.
     samples_per_gpu=8, # Batch size per GPU
     workers_per_gpu=4, # Number of workers to process data for each GPU
+    train_dataloader=dict(samples_per_gpu=10, drop_last=True),   # Batch size = 10, workers_per_gpu = 4
+    val_dataloader=dict(samples_per_gpu=6, workers_per_gpu=1),  # Batch size = 6, workers_per_gpu = 1
+    test_dataloader=dict(workers_per_gpu=16),  # Batch size = 8, workers_per_gpu = 16
     ...
 )
 # Evaluation
-evaluation = dict(interval=1, by_epoch=True) # Evaluate the model every epoch
+evaluation = dict(interval=1, by_epoch=True)  # Evaluate the model every epoch
 # Saving and Logging
-checkpoint_config = dict(interval=1) # Save a checkpoint every epoch
+checkpoint_config = dict(interval=1)  # Save a checkpoint every epoch
 log_config = dict(
-    interval=5, # Print out the model's performance every 5 iterations
+    interval=5,  # Print out the model's performance every 5 iterations
     hooks=[
         dict(type='TextLoggerHook')
     ])
 # Optimizer
-optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001) # Supports all optimizers in PyTorch and shares the same parameters
-optimizer_config = dict(grad_clip=None) # Parameters for the optimizer hook. See https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/optimizer.py for implementation details
+optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)  # Supports all optimizers in PyTorch and shares the same parameters
+optimizer_config = dict(grad_clip=None)  # Parameters for the optimizer hook. See https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/optimizer.py for implementation details
 # Learning policy
 lr_config = dict(policy='poly', power=0.9, min_lr=1e-7, by_epoch=True)
 ```
