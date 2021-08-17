@@ -1,0 +1,1 @@
+sdmgr_novisual_60e_wildreceipt_20210517-a44850da.pth
