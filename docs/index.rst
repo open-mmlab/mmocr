@@ -32,6 +32,12 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
+   :caption: Configuration System
+
+   dataset_types.md
+
+.. toctree::
+   :maxdepth: 2
    :caption: Notes
 
    changelog.md
