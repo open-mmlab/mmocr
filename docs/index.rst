@@ -9,8 +9,9 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
    install.md
    getting_started.md
+   training.md
    testing.md
-   demo.md
+   inference.md
    deployment.md
 
 .. toctree::
