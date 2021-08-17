@@ -69,7 +69,7 @@ If you run MMOCR on a cluster managed with [Slurm](https://slurm.schedmd.com/), 
 | Arguments      | Type                  |  Description                                                 |
 | -------------- | --------------------- |  ----------------------------------------------------------- |
 | `GPUS`          | int                   |  The number of GPUs to be used by this task. Defaults to 8. |
-| `GPUS_PER_NODE`   | str                   |  The number of GPUs to be allocated per node. Defaults to 8. |
+| `GPUS_PER_NODE`   | int                   |  The number of GPUs to be allocated per node. Defaults to 8. |
 | `SRUN_ARGS`        | str                   |  Arguments to be parsed by srun. Available options can be found [here](https://slurm.schedmd.com/srun.html). |
 | `PY_ARGS`   | str                   |  Arguments to be parsed by `tools/test.py`.         |
 
