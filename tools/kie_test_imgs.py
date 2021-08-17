@@ -16,6 +16,26 @@ from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description='MMOCR visualize for kie model.')
+    parser.add_argument('config', help='Test config file path.')
+    parser.add_argument('checkpoint', help='Checkpoint file.')
+    parser.add_argument('--show', action='store_true', help='Show results.')
+    parser.add_argument(
+        '--show-dir', help='Directory where the output images will be saved.')
+    parser.add_argument('--local_rank', type=int, default=0)
+    parser.add_argument(
+        '--device',
+        help='Use int or int list for gpu. Default is cpu',
+        default=None)
+    args = parser.parse_args()
+    if 'LOCAL_RANK' not in os.environ:
+        os.environ['LOCAL_RANK'] = str(args.local_rank)
+
+    return args
+
+
 def test(model, data_loader, show=False, out_dir=None):
     model.eval()
     results = []
@@ -60,26 +80,6 @@ def test(model, data_loader, show=False, out_dir=None):
     return results
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description='MMOCR visualize for kie model.')
-    parser.add_argument('config', help='Test config file path.')
-    parser.add_argument('checkpoint', help='Checkpoint file.')
-    parser.add_argument('--show', action='store_true', help='Show results.')
-    parser.add_argument(
-        '--show-dir', help='Directory where the output images will be saved.')
-    parser.add_argument('--local_rank', type=int, default=0)
-    parser.add_argument(
-        '--device',
-        help='Use int or int list for gpu. Default is cpu',
-        default=None)
-    args = parser.parse_args()
-    if 'LOCAL_RANK' not in os.environ:
-        os.environ['LOCAL_RANK'] = str(args.local_rank)
-
-    return args
-
-
 def main():
     args = parse_args()
     assert args.show or args.show_dir, ('Please specify at least one '
@@ -87,7 +87,10 @@ def main():
                                         'the results with the argument '
                                         '"--show" or "--show-dir".')
     device = args.device
-    if device is not None:
+    if device == 'cpu' or device is None:
+        device = None
+        device = [0]
+    else:
         device = ast.literal_eval(f'[{device}]')
     cfg = Config.fromfile(args.config)
     # import modules from string list.
