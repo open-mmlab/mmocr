@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 _base_ = [
     '../../_base_/schedules/schedule_1200e.py',
     '../../_base_/default_runtime.py'

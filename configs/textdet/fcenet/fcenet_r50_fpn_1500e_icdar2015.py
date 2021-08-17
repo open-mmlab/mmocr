@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 fourier_degree = 5
 model = dict(
     type='FCENet',

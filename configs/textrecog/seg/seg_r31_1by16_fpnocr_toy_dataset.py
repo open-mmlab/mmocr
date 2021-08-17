@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 _base_ = [
     '../../_base_/default_runtime.py',
     '../../_base_/recog_datasets/seg_toy_dataset.py'

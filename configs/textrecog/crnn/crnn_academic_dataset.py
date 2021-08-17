@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 _base_ = []
 checkpoint_config = dict(interval=1)
 # yapf:disable

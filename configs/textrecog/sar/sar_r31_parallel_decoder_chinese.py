@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 _base_ = ['../../_base_/default_runtime.py']
 
 dict_file = 'data/chineseocr/labels/dict_printed_chinese_english_digits.txt'

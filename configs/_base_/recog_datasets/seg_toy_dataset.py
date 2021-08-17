@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 img_norm_cfg = dict(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 
 gt_label_convertor = dict(

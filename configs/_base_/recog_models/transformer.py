@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 label_convertor = dict(
     type='AttnConvertor', dict_type='DICT90', with_unknown=False)
 

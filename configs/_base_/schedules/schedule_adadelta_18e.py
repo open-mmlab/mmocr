@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 # optimizer
 optimizer = dict(type='Adadelta', lr=0.5)
 optimizer_config = dict(grad_clip=dict(max_norm=0.5))
