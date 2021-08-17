@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.datasets.builder import DATASETS
 
 from mmocr.core.evaluation.ner_metric import eval_ner_f1

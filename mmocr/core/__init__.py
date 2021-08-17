@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from . import evaluation
 from .mask import extract_boundary, points2boundary, seg2boundary
 from .visualize import (det_recog_show_result, imshow_edge_node,

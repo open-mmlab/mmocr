@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch
 from mmcv.runner import BaseModule
 from mmdet.models.builder import HEADS, build_loss

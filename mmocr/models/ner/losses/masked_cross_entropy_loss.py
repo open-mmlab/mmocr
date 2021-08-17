@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.models.builder import LOSSES
 from torch import nn
 from torch.nn import CrossEntropyLoss

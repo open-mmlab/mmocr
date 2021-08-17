@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.models.builder import DETECTORS
 
 from .single_stage_text_detector import SingleStageTextDetector

@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 """pytest tests/test_detector.py."""
 import copy
 import tempfile

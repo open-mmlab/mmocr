@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from . import backbones, losses
 
 from .backbones import *  # NOQA

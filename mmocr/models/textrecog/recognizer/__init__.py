@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .base import BaseRecognizer
 from .crnn import CRNNNet
 from .encode_decode_recognizer import EncodeDecodeRecognizer
