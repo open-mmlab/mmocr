@@ -88,8 +88,7 @@ def main():
                                         '"--show" or "--show-dir".')
     device = args.device
     if device == 'cpu' or device is None:
-        device = None
-        device = [0]
+        device = [None]
     else:
         device = ast.literal_eval(f'[{device}]')
     cfg = Config.fromfile(args.config)
