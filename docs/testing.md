@@ -1,9 +1,8 @@
 # Testing
 
-## Test a Dataset
+We introduce the way to test pretrained models on datasets here. The steps to apply models on your own images can be found in [inference.md](inference.md).
 
-### Test with Single GPU
-
+## Testing with Single GPU
 
 You can use `tools/test.py` to perform single GPU inference. For example, to evaluate DBNet on IC15: (You can download pretrained models from [Model Zoo](modelzoo.md)):
 
@@ -34,7 +33,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 | `--launcher`       | 'none', 'pytorch', 'slurm', 'mpi' |  Options for job launcher. |
 
 
-### Test with Multiple GPUs
+## Testing with Multiple GPUs
 
 MMOCR implements **distributed** testing with `MMDistributedDataParallel`.
 
@@ -57,7 +56,7 @@ For example,
 ./tools/dist_test.sh configs/example_config.py work_dirs/example_exp/example_model_20200202.pth 1 --eval hmean-iou
 ```
 
-### Test with Slurm
+## Testing with Slurm
 
 If you run MMOCR on a cluster managed with [Slurm](https://slurm.schedmd.com/), you can use the script `tools/slurm_test.sh`.
 
@@ -80,7 +79,7 @@ Here is an example of using 8 GPUs to test an example model on the 'dev' partiti
 GPUS=8 ./tools/slurm_test.sh dev test_job configs/example_config.py work_dirs/example_exp/example_model_20200202.pth --eval hmean-iou
 ```
 
-### Batch Testing
+## Batch Testing
 
 By default, MMOCR tests the model image by image. For faster inference, you may change `data.val_dataloader.samples_per_gpu` and `data.test_dataloader.samples_per_gpu` in the config. For example,
 

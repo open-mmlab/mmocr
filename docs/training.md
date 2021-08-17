@@ -1,6 +1,6 @@
 # Training
 
-### Training in a Single Machine
+## Training on a Single Machine
 
 
 You can use `tools/train.py` to train a model in a single machine with one or more GPUs.
@@ -28,7 +28,7 @@ python tools/train.py ${CONFIG_FILE} [ARGS]
 | `--mc-config`       | str                   |Memory cache config for image loading speed-up during training.|
 
 
-#### Training with Toy Dataset
+### Training with Toy Dataset
 
 We provide a toy dataset under `tests/data`, and you can train a toy model directly, before the academic dataset is prepared.
 
@@ -42,7 +42,7 @@ To train a text recognition task with `sar` method and toy dataset,
 python tools/train.py configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py --work-dir work_dirs/sar
 ```
 
-## Training in Multiple Machines
+## Training on Multiple Machines
 
 MMOCR implements **distributed** training with `MMDistributedDataParallel`. (Please refer to [datasets.md](datasets.md) to prepare your datasets)
 
