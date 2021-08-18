@@ -16,7 +16,7 @@ Here we show some examples of using different combination of `loader` and `parse
 
 ### UniformConcatDataset
 
-`UniformConcatDataset` allows users to apply a universal pipeline on multiple datasets without specifying the pipeline for each of them.
+`UniformConcatDataset` is a dataset wrapper which allows users to apply a universal pipeline on multiple datasets without specifying the pipeline for each of them.
 
 For example, to apply `train_pipeline` on both `train1` and `train2`,
 
