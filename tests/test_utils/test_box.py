@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmocr.utils import is_on_same_line, stitch_boxes_into_lines
 
 

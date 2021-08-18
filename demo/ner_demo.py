@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from argparse import ArgumentParser
 
 from mmdet.apis import init_detector

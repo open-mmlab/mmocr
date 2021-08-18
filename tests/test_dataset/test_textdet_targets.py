@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from unittest import mock
 
 import numpy as np

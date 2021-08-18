@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
 from argparse import ArgumentParser
 

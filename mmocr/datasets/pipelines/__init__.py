@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .box_utils import sort_vertex, sort_vertex8
 from .custom_format_bundle import CustomFormatBundle
 from .dbnet_transforms import EastRandomCrop, ImgAug

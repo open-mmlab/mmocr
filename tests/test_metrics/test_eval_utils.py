@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 """Tests the utils of evaluation."""
 import numpy as np
 import pytest

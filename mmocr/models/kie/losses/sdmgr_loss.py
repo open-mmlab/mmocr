@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch
 from mmdet.models.losses import accuracy
 from torch import nn

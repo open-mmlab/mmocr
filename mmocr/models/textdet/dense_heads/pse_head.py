@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmocr.models.builder import HEADS
 from . import PANHead
 

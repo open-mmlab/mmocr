@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 """This code is from https://github.com/jadore801120/attention-is-all-you-need-
 pytorch."""
 import numpy as np

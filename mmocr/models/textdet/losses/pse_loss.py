@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.core import BitmapMasks
 
 from mmocr.models.builder import LOSSES

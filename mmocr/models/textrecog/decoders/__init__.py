@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .base_decoder import BaseDecoder
 from .crnn_decoder import CRNNDecoder
 from .position_attention_decoder import PositionAttentionDecoder

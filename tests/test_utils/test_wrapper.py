@@ -1,4 +1,6 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
+import pytest
 import torch
 
 from mmocr.models.textdet.postprocess.wrapper import (comps2boundaries,
@@ -93,3 +95,22 @@ def test_textsnake_decode():
 
     results = textsnake_decode(torch.squeeze(maps))
     assert len(results) == 0
+
+
+def test_db_decode():
+    pred = torch.zeros((1, 8, 8))
+    pred[0, 2:7, 2:7] = 0.8
+    expect_result_quad = [[
+        1.0, 8.0, 1.0, 1.0, 8.0, 1.0, 8.0, 8.0, 0.800000011920929
+    ]]
+    expect_result_poly = [[
+        8, 2, 8, 6, 6, 8, 2, 8, 1, 6, 1, 2, 2, 1, 6, 1, 0.800000011920929
+    ]]
+    with pytest.raises(ValueError):
+        db_decode(preds=pred, text_repr_type='dummpy')
+    result_quad = db_decode(
+        preds=pred, text_repr_type='quad', min_text_width=1)
+    result_poly = db_decode(
+        preds=pred, text_repr_type='poly', min_text_width=1)
+    assert result_quad == expect_result_quad
+    assert result_poly == expect_result_poly

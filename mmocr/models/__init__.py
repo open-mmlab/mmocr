@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from . import common, kie, textdet, textrecog
 from .builder import (BACKBONES, CONVERTORS, DECODERS, DETECTORS, ENCODERS,
                       HEADS, LOSSES, NECKS, PREPROCESSOR, build_backbone,
