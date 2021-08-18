@@ -103,8 +103,6 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 GPUS=4 ./tools/slurm_train.sh ${PARTITION} ${JOB_NA
 
 Here we list some configs that are frequently used during training for quick reference.
 
-### General Settings
-
 ```python
 total_epochs = 1200
 data = dict(
