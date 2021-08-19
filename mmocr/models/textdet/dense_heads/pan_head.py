@@ -1,9 +1,10 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 import torch
 import torch.nn as nn
 from mmcv.runner import BaseModule
-from mmdet.models.builder import HEADS, build_loss
 
+from mmocr.models.builder import HEADS, build_loss
 from mmocr.utils import check_argument
 from . import HeadMixin
 

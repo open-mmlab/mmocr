@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 from mmdet.datasets.api_wrappers import COCO
 from mmdet.datasets.builder import DATASETS

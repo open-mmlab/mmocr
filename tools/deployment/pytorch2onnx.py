@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from argparse import ArgumentParser
 from functools import partial
 
@@ -6,11 +7,11 @@ import numpy as np
 import torch
 from mmcv.onnx import register_extra_symbolics
 from mmcv.parallel import collate
-from mmdet.apis import init_detector
 from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
 from torch import nn
 
+from mmocr.apis import init_detector
 from mmocr.core.deployment import ONNXRuntimeDetector, ONNXRuntimeRecognizer
 from mmocr.datasets.pipelines.crop import crop_img  # noqa: F401
 

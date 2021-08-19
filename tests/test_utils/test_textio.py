@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import tempfile
 
 from mmocr.utils import list_from_file, list_to_file

@@ -1,11 +1,13 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn as nn
 import torch.utils.checkpoint as cp
-from mmcv.cnn import (UPSAMPLE_LAYERS, ConvModule, build_activation_layer,
-                      build_norm_layer, build_upsample_layer)
+from mmcv.cnn import ConvModule, build_norm_layer
 from mmcv.runner import BaseModule
 from mmcv.utils.parrots_wrapper import _BatchNorm
-from mmdet.models.builder import BACKBONES
+
+from mmocr.models.builder import (BACKBONES, UPSAMPLE_LAYERS,
+                                  build_activation_layer, build_upsample_layer)
 
 
 class UpConvBlock(nn.Module):

@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 
 import mmocr.datasets.pipelines.dbnet_transforms as transforms

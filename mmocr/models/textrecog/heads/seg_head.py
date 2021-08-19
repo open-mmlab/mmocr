@@ -1,8 +1,10 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule
-from mmdet.models.builder import HEADS
 from torch import nn
+
+from mmocr.models.builder import HEADS
 
 
 @HEADS.register_module()

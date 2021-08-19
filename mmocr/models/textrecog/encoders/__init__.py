@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .base_encoder import BaseEncoder
 from .channel_reduction_encoder import ChannelReductionEncoder
 from .sar_encoder import SAREncoder

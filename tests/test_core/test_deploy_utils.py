@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import tempfile
 from functools import partial
 
@@ -5,11 +6,11 @@ import mmcv
 import numpy as np
 import pytest
 import torch
-from mmdet.models import build_detector
 from packaging import version
 
 from mmocr.core.deployment import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
                                    TensorRTDetector, TensorRTRecognizer)
+from mmocr.models import build_detector
 
 
 @pytest.mark.skipif(torch.__version__ == 'parrots', reason='skip parrots.')

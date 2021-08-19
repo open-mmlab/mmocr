@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 class StringStrip:
     """Removing the leading and/or the trailing characters based on the string
     argument passed.

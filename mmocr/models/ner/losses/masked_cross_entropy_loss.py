@@ -1,6 +1,8 @@
-from mmdet.models.builder import LOSSES
+# Copyright (c) OpenMMLab. All rights reserved.
 from torch import nn
 from torch.nn import CrossEntropyLoss
+
+from mmocr.models.builder import LOSSES
 
 
 @LOSSES.register_module()

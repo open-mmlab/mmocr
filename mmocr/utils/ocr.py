@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os
 import warnings
@@ -10,8 +11,8 @@ import torch
 from mmcv.image.misc import tensor2imgs
 from mmcv.runner import load_checkpoint
 from mmcv.utils.config import Config
-from mmdet.apis import init_detector
 
+from mmocr.apis import init_detector
 from mmocr.apis.inference import model_inference
 from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.kie_dataset import KIEDataset

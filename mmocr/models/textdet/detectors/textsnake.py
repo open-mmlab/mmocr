@@ -1,5 +1,5 @@
-from mmdet.models.builder import DETECTORS
-
+# Copyright (c) OpenMMLab. All rights reserved.
+from mmocr.models.builder import DETECTORS
 from . import SingleStageTextDetector, TextDetectorMixin
 
 

@@ -1,9 +1,9 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 
-from mmdet.models.builder import (DETECTORS, build_backbone, build_head,
-                                  build_loss, build_neck)
-
-from mmocr.models.builder import build_convertor, build_preprocessor
+from mmocr.models.builder import (DETECTORS, build_backbone, build_convertor,
+                                  build_head, build_loss, build_neck,
+                                  build_preprocessor)
 from .base import BaseRecognizer
 
 

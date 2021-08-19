@@ -1,6 +1,7 @@
-from mmdet.models.builder import DETECTORS
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.models.detectors import MaskRCNN
 
+from mmocr.models.builder import DETECTORS
 from mmocr.models.textdet.detectors.text_detector_mixin import \
     TextDetectorMixin
 

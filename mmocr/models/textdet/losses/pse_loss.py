@@ -1,6 +1,7 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.core import BitmapMasks
-from mmdet.models.builder import LOSSES
 
+from mmocr.models.builder import LOSSES
 from mmocr.utils import check_argument
 from . import PANLoss
 

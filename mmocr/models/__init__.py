@@ -1,10 +1,9 @@
-from mmdet.models.builder import (BACKBONES, DETECTORS, HEADS, LOSSES, NECKS,
-                                  build_backbone, build_detector, build_loss)
-
+# Copyright (c) OpenMMLab. All rights reserved.
 from . import common, kie, textdet, textrecog
-from .builder import (CONVERTORS, DECODERS, ENCODERS, PREPROCESSOR,
-                      build_convertor, build_decoder, build_encoder,
-                      build_preprocessor)
+from .builder import (BACKBONES, CONVERTORS, DECODERS, DETECTORS, ENCODERS,
+                      HEADS, LOSSES, NECKS, PREPROCESSOR, build_backbone,
+                      build_convertor, build_decoder, build_detector,
+                      build_encoder, build_loss, build_preprocessor)
 
 from .common import *  # NOQA
 from .kie import *  # NOQA

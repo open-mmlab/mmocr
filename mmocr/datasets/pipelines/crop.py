@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import cv2
 import numpy as np
 from shapely.geometry import LineString, Point
@@ -83,7 +84,11 @@ def warp_img(src_img,
     return dst_img
 
 
-def crop_img(src_img, box, long_edge_pad_ratio=0.4, short_edge_pad_ratio=0.2):
+def crop_img(src_img,
+             box,
+             long_edge_pad_ratio=0.4,
+             short_edge_pad_ratio=0.2,
+             debug=False):
     """Crop text region with their bounding box.
 
     Args:

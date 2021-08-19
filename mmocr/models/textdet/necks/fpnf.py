@@ -1,8 +1,10 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule, ModuleList, auto_fp16
-from mmdet.models.builder import NECKS
+
+from mmocr.models.builder import NECKS
 
 
 @NECKS.register_module()

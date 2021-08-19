@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .hmean import eval_hmean
 from .hmean_ic13 import eval_hmean_ic13
 from .hmean_iou import eval_hmean_iou

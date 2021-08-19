@@ -1,10 +1,11 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 
 import torch
-from mmdet.models.builder import DETECTORS, build_backbone, build_loss
 
-from mmocr.models.builder import (build_convertor, build_decoder,
-                                  build_encoder, build_preprocessor)
+from mmocr.models.builder import (DETECTORS, build_backbone, build_convertor,
+                                  build_decoder, build_encoder, build_loss,
+                                  build_preprocessor)
 from .base import BaseRecognizer
 
 
