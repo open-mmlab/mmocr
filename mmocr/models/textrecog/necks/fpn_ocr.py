@@ -3,7 +3,8 @@ import torch
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule, ModuleList
-from mmdet.models.builder import NECKS
+
+from mmocr.models.builder import NECKS
 
 
 @NECKS.register_module()

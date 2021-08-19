@@ -12,8 +12,8 @@ import mmcv
 import numpy as np
 import pytest
 import torch
-from mmdet.apis import init_detector
 
+from mmocr.apis import init_detector
 from mmocr.datasets.kie_dataset import KIEDataset
 from mmocr.utils.ocr import MMOCR
 

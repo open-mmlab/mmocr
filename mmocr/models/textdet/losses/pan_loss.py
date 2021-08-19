@@ -6,9 +6,9 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from mmdet.core import BitmapMasks
-from mmdet.models.builder import LOSSES
 from torch import nn
 
+from mmocr.models.builder import LOSSES
 from mmocr.utils import check_argument
 
 

@@ -3,9 +3,8 @@ import os
 
 import pytest
 from mmcv.image import imread
-from mmdet.apis import init_detector
 
-from mmocr.apis.inference import model_inference
+from mmocr.apis.inference import init_detector, model_inference
 from mmocr.datasets import build_dataset  # noqa: F401
 from mmocr.models import build_detector  # noqa: F401
 
