@@ -2,7 +2,8 @@
 import torch.nn as nn
 from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule
-from mmdet.models.builder import BACKBONES
+
+from mmocr.models.builder import BACKBONES
 
 
 @BACKBONES.register_module()
