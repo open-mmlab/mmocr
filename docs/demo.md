@@ -194,6 +194,8 @@ means that `batch_mode` and `print_result` are set to `True`)
 | NRTR_1/16-1/8 | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr) |  :heavy_check_mark:  |
 | NRTR_1/8-1/4  | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr) |  :heavy_check_mark:  |
 | RobustScanner | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#robustscanner-dynamically-enhancing-positional-clues-for-robust-text-recognition) |  :heavy_check_mark:  |
+| SATRN | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn) |  :heavy_check_mark:  |
+| SATRN_sm | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn) |  :heavy_check_mark:  |
 | SEG           | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline) |         :x:          |
 | CRNN_TPS      | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#crnn-with-tps-based-stn) |  :heavy_check_mark:  |
 

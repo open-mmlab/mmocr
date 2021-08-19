@@ -279,6 +279,14 @@ class MMOCR:
                 'config': 'robust_scanner/robustscanner_r31_academic.py',
                 'ckpt': 'robustscanner/robustscanner_r31_academic-5f05874f.pth'
             },
+            'SATRN': {
+                'config': 'satrn/satrn_academic.py',
+                'ckpt': 'satrn/satrn_academic_20210809-59c8c92d.pth'
+            },
+            'SATRN_sm': {
+                'config': 'satrn/satrn_small.py',
+                'ckpt': 'satrn/satrn_small_20210811-2badf6fc.pth'
+            },
             'SEG': {
                 'config': 'seg/seg_r31_1by16_fpnocr_academic.py',
                 'ckpt': 'seg/seg_r31_1by16_fpnocr_academic-72235b11.pth'
