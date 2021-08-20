@@ -29,6 +29,55 @@ data = dict(
         pipeline=train_pipeline))
 ```
 
+## Text Detection Task
+
+### TextDetDataset
+
+*Dataset with annotation file in line-json txt format*
+
+```python
+dataset_type = 'TextDetDataset'
+img_prefix = 'tests/data/toy_dataset/imgs'
+test_anno_file = 'tests/data/toy_dataset/instances_test.txt'
+test = dict(
+    type=dataset_type,
+    img_prefix=img_prefix,
+    ann_file=test_anno_file,
+    loader=dict(
+        type='HardDiskLoader',
+        repeat=4,
+        parser=dict(
+            type='LineJsonParser',
+            keys=['file_name', 'height', 'width', 'annotations'])),
+    pipeline=test_pipeline,
+    test_mode=True)
+```
+The results are generated in the same way as the segmentation-based text recognition task above.
+You can check the content of the annotation file in `tests/data/toy_dataset/instances_test.txt`.
+The combination of `HardDiskLoader` and `LineJsonParser` will return a dict for each file by calling `__getitem__`:
+```python
+{"file_name": "test/img_10.jpg", "height": 720, "width": 1280, "annotations": [{"iscrowd": 1, "category_id": 1, "bbox": [260.0, 138.0, 24.0, 20.0], "segmentation": [[261, 138, 284, 140, 279, 158, 260, 158]]}, {"iscrowd": 0, "category_id": 1, "bbox": [288.0, 138.0, 129.0, 23.0], "segmentation": [[288, 138, 417, 140, 416, 161, 290, 157]]}, {"iscrowd": 0, "category_id": 1, "bbox": [743.0, 145.0, 37.0, 18.0], "segmentation": [[743, 145, 779, 146, 780, 163, 746, 163]]}, {"iscrowd": 0, "category_id": 1, "bbox": [783.0, 129.0, 50.0, 26.0], "segmentation": [[783, 129, 831, 132, 833, 155, 785, 153]]}, {"iscrowd": 1, "category_id": 1, "bbox": [831.0, 133.0, 43.0, 23.0], "segmentation": [[831, 133, 870, 135, 874, 156, 835, 155]]}, {"iscrowd": 1, "category_id": 1, "bbox": [159.0, 204.0, 72.0, 15.0], "segmentation": [[159, 205, 230, 204, 231, 218, 159, 219]]}, {"iscrowd": 1, "category_id": 1, "bbox": [785.0, 158.0, 75.0, 21.0], "segmentation": [[785, 158, 856, 158, 860, 178, 787, 179]]}, {"iscrowd": 1, "category_id": 1, "bbox": [1011.0, 157.0, 68.0, 16.0], "segmentation": [[1011, 157, 1079, 160, 1076, 173, 1011, 170]]}]}
+```
+
+
+### IcdarDataset
+
+*Dataset with annotation file in coco-like json format*
+
+For text detection, you can also use an annotation file in a COCO format that is defined in [MMDetection](https://github.com/open-mmlab/mmdetection/blob/master/mmdet/datasets/coco.py):
+```python
+dataset_type = 'IcdarDataset'
+prefix = 'tests/data/toy_dataset/'
+test=dict(
+        type=dataset_type,
+        ann_file=prefix + 'instances_test.json',
+        img_prefix=prefix + 'imgs',
+        pipeline=test_pipeline)
+```
+You can check the content of the annotation file in `tests/data/toy_dataset/instances_test.json`.
+
+Note: Icdar 2015/2017 and ctw1500 annotations need to be converted into the COCO format following the steps in [datasets.md](datasets.md).
+
 ## Text Recognition Task
 
 ### OCRDataset
@@ -110,52 +159,3 @@ The combination of `HardDiskLoader` and `LineJsonParser` will return a dict for 
 ```python
 {"file_name": "resort_88_101_1.png", "annotations": [{"char_text": "F", "char_box": [11.0, 0.0, 22.0, 0.0, 12.0, 12.0, 0.0, 12.0]}, {"char_text": "r", "char_box": [23.0, 2.0, 31.0, 1.0, 24.0, 11.0, 16.0, 11.0]}, {"char_text": "o", "char_box": [33.0, 2.0, 43.0, 2.0, 36.0, 12.0, 25.0, 12.0]}, {"char_text": "m", "char_box": [46.0, 2.0, 61.0, 2.0, 53.0, 12.0, 39.0, 12.0]}, {"char_text": ":", "char_box": [61.0, 2.0, 69.0, 2.0, 63.0, 12.0, 55.0, 12.0]}], "text": "From:"}
 ```
-
-## Text Detection Task
-
-### TextDetDataset
-
-*Dataset with annotation file in line-json txt format*
-
-```python
-dataset_type = 'TextDetDataset'
-img_prefix = 'tests/data/toy_dataset/imgs'
-test_anno_file = 'tests/data/toy_dataset/instances_test.txt'
-test = dict(
-    type=dataset_type,
-    img_prefix=img_prefix,
-    ann_file=test_anno_file,
-    loader=dict(
-        type='HardDiskLoader',
-        repeat=4,
-        parser=dict(
-            type='LineJsonParser',
-            keys=['file_name', 'height', 'width', 'annotations'])),
-    pipeline=test_pipeline,
-    test_mode=True)
-```
-The results are generated in the same way as the segmentation-based text recognition task above.
-You can check the content of the annotation file in `tests/data/toy_dataset/instances_test.txt`.
-The combination of `HardDiskLoader` and `LineJsonParser` will return a dict for each file by calling `__getitem__`:
-```python
-{"file_name": "test/img_10.jpg", "height": 720, "width": 1280, "annotations": [{"iscrowd": 1, "category_id": 1, "bbox": [260.0, 138.0, 24.0, 20.0], "segmentation": [[261, 138, 284, 140, 279, 158, 260, 158]]}, {"iscrowd": 0, "category_id": 1, "bbox": [288.0, 138.0, 129.0, 23.0], "segmentation": [[288, 138, 417, 140, 416, 161, 290, 157]]}, {"iscrowd": 0, "category_id": 1, "bbox": [743.0, 145.0, 37.0, 18.0], "segmentation": [[743, 145, 779, 146, 780, 163, 746, 163]]}, {"iscrowd": 0, "category_id": 1, "bbox": [783.0, 129.0, 50.0, 26.0], "segmentation": [[783, 129, 831, 132, 833, 155, 785, 153]]}, {"iscrowd": 1, "category_id": 1, "bbox": [831.0, 133.0, 43.0, 23.0], "segmentation": [[831, 133, 870, 135, 874, 156, 835, 155]]}, {"iscrowd": 1, "category_id": 1, "bbox": [159.0, 204.0, 72.0, 15.0], "segmentation": [[159, 205, 230, 204, 231, 218, 159, 219]]}, {"iscrowd": 1, "category_id": 1, "bbox": [785.0, 158.0, 75.0, 21.0], "segmentation": [[785, 158, 856, 158, 860, 178, 787, 179]]}, {"iscrowd": 1, "category_id": 1, "bbox": [1011.0, 157.0, 68.0, 16.0], "segmentation": [[1011, 157, 1079, 160, 1076, 173, 1011, 170]]}]}
-```
-
-
-### IcdarDataset
-
-*Dataset with annotation file in coco-like json format*
-
-For text detection, you can also use an annotation file in a COCO format that is defined in [MMDetection](https://github.com/open-mmlab/mmdetection/blob/master/mmdet/datasets/coco.py):
-```python
-dataset_type = 'IcdarDataset'
-prefix = 'tests/data/toy_dataset/'
-test=dict(
-        type=dataset_type,
-        ann_file=prefix + 'instances_test.json',
-        img_prefix=prefix + 'imgs',
-        pipeline=test_pipeline)
-```
-You can check the content of the annotation file in `tests/data/toy_dataset/instances_test.json`.
-
-Note: Icdar 2015/2017 and ctw1500 annotations need to be converted into the COCO format following the steps in [datasets.md](datasets.md).
