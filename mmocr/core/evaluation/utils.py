@@ -174,12 +174,14 @@ def poly_union(poly_det, poly_gt):
     return area_det + area_gt - area_inters
 
 
-def boundary_iou(src, target):
+def boundary_iou(src, target, zero_division=0):
     """Calculate the IOU between two boundaries.
 
     Args:
        src (list): Source boundary.
        target (list): Target boundary.
+        zero_division (int|float): The return value when both polygons
+                                    have areas of 0.
 
     Returns:
        iou (float): The iou between two boundaries.
@@ -189,15 +191,17 @@ def boundary_iou(src, target):
     src_poly = points2polygon(src)
     target_poly = points2polygon(target)
 
-    return poly_iou(src_poly, target_poly)
+    return poly_iou(src_poly, target_poly, zero_division=zero_division)
 
 
-def poly_iou(poly_det, poly_gt):
+def poly_iou(poly_det, poly_gt, zero_division=0):
     """Calculate the IOU between two polygons.
 
     Args:
         poly_det (Polygon): A polygon predicted by detector.
         poly_gt (Polygon): A gt polygon.
+        zero_division (int|float): The return value when both polygons
+                                    have areas of 0.
 
     Returns:
         iou (float): The IOU between two polygons.
@@ -205,8 +209,8 @@ def poly_iou(poly_det, poly_gt):
     assert isinstance(poly_det, plg.Polygon)
     assert isinstance(poly_gt, plg.Polygon)
     area_inters, _ = poly_intersection(poly_det, poly_gt)
-
-    return area_inters / poly_union(poly_det, poly_gt)
+    area_union = poly_union(poly_det, poly_gt)
+    return area_inters / area_union if area_union != 0 else zero_division
 
 
 def one2one_match_ic13(gt_id, det_id, recall_mat, precision_mat, recall_thr,
