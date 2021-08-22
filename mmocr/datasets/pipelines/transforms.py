@@ -4,12 +4,12 @@ import math
 import cv2
 import mmcv
 import numpy as np
-import Polygon as plg
 import torchvision.transforms as transforms
 from mmdet.core import BitmapMasks, PolygonMasks
 from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines.transforms import Resize
 from PIL import Image
+from shapely.geometry import Polygon as plg
 
 import mmocr.core.evaluation.utils as eval_utils
 from mmocr.utils import check_argument
@@ -91,10 +91,11 @@ class RandomCropInstances:
 
         for idx, bbox in enumerate(bboxes):
             poly = eval_utils.box2polygon(bbox)
-            area, inters = eval_utils.poly_intersection(poly, canvas_poly)
+            area, inters = eval_utils.poly_intersection(
+                poly, canvas_poly, return_poly=True)
             if area == 0:
                 continue
-            xmin, xmax, ymin, ymax = inters.boundingBox()
+            xmin, ymin, xmax, ymax = inters.bounds
             kept_bboxes += [
                 np.array(
                     [xmin - tl[0], ymin - tl[1], xmax - tl[0], ymax - tl[1]],
@@ -847,28 +848,28 @@ class RandomCropFlip:
 
             pts = np.stack([[xmin, xmax, xmax, xmin],
                             [ymin, ymin, ymax, ymax]]).T.astype(np.int32)
-            pp = plg.Polygon(pts)
+            pp = plg(pts)
             fail_flag = False
             for polygon in polygons:
-                ppi = plg.Polygon(polygon[0].reshape(-1, 2))
-                ppiou, _ = eval_utils.poly_intersection(ppi, pp)
-                if np.abs(ppiou - float(ppi.area())) > self.epsilon and \
+                ppi = plg(polygon[0].reshape(-1, 2))
+                ppiou = eval_utils.poly_intersection(ppi, pp)
+                if np.abs(ppiou - float(ppi.area)) > self.epsilon and \
                         np.abs(ppiou) > self.epsilon:
                     fail_flag = True
                     break
-                elif np.abs(ppiou - float(ppi.area())) < self.epsilon:
+                elif np.abs(ppiou - float(ppi.area)) < self.epsilon:
                     polys_new.append(polygon)
                 else:
                     polys_keep.append(polygon)
 
             for polygon in ignore_polygons:
-                ppi = plg.Polygon(polygon[0].reshape(-1, 2))
-                ppiou, _ = eval_utils.poly_intersection(ppi, pp)
-                if np.abs(ppiou - float(ppi.area())) > self.epsilon and \
+                ppi = plg(polygon[0].reshape(-1, 2))
+                ppiou = eval_utils.poly_intersection(ppi, pp)
+                if np.abs(ppiou - float(ppi.area)) > self.epsilon and \
                         np.abs(ppiou) > self.epsilon:
                     fail_flag = True
                     break
-                elif np.abs(ppiou - float(ppi.area())) < self.epsilon:
+                elif np.abs(ppiou - float(ppi.area)) < self.epsilon:
                     ign_polys_new.append(polygon)
                 else:
                     ign_polys_keep.append(polygon)

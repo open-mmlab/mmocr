@@ -33,9 +33,9 @@ def compute_recall_precision(gt_polys, pred_polys):
             gt = gt_polys[gt_id]
             det = pred_polys[pred_id]
 
-            inter_area, _ = eval_utils.poly_intersection(det, gt)
-            gt_area = gt.area()
-            det_area = det.area()
+            inter_area = eval_utils.poly_intersection(det, gt)
+            gt_area = gt.area
+            det_area = det.area
             if gt_area != 0:
                 recall[gt_id, pred_id] = inter_area / gt_area
             if det_area != 0:
