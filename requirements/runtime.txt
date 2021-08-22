@@ -4,7 +4,6 @@ lmdb
 matplotlib
 numba>=0.45.1
 numpy
-Polygon3
 pyclipper
 rapidfuzz
 scikit-image
