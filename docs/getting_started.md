@@ -8,7 +8,7 @@ Check out our [installation guide](install.md) for full steps.
 
 ## Dataset Preparation
 
-MMOCR supports numerous datasets. Check out preparation steps in the "DATASETS" section.
+MMOCR supports numerous datasets which are classified by the type of their corresponding tasks. You may find their preparation steps in these sections: [Detection Datasets](datasets/det.md), [Recognition Datasets](datasets/recog.md), [KIE Datasets](datasets/kie.md) and [NER Datasets](datasets/ner.md).
 
 ## Inference with Pretrained Models
 
@@ -18,7 +18,7 @@ You can perform end-to-end OCR on our demo image with one simple line of command
 python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
 ```
 
-Its detection result will be printed out and a new window will pop up with result visualization. More examples and full instructions and be found in [Inference](inference.md).
+Its detection result will be printed out and a new window will pop up with result visualization. More demo and full instructions and be found in [Inference](inference.md).
 
 ## Training
 
