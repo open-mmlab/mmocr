@@ -28,20 +28,6 @@ python tools/train.py ${CONFIG_FILE} [ARGS]
 | `--mc-config`       | str                   |Memory cache config for image loading speed-up during training.|
 
 
-### Training with Toy Dataset
-
-We provide a toy dataset under `tests/data`, and you can train a toy model directly, before the academic dataset is prepared.
-
-For example, to train a text recognition task with `seg` method and toy dataset,
-```shell
-python tools/train.py configs/textrecog/seg/seg_r31_1by16_fpnocr_toy_dataset.py --work-dir work_dirs/seg
-```
-
-To train a text recognition task with `sar` method and toy dataset,
-```shell
-python tools/train.py configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py --work-dir work_dirs/sar
-```
-
 ## Training on Multiple Machines
 
 MMOCR implements **distributed** training with `MMDistributedDataParallel`. (Please refer to [datasets.md](datasets.md) to prepare your datasets)
