@@ -28,7 +28,10 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :maxdepth: 2
    :caption: Datasets
 
-   datasets.md
+   datasets/det.md
+   datasets/recog.md
+   datasets/kie.md
+   datasets/ner.md
 
 .. toctree::
    :maxdepth: 2
