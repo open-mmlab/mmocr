@@ -41,8 +41,9 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
-   :caption: Notes
+   :caption: Miscellaneous
 
+   tools.md
    changelog.md
 
 .. toctree::

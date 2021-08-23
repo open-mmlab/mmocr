@@ -110,7 +110,7 @@ The combination of `HardDiskLoader` and `LineStrParser` will return a dict for e
 
 - `repeat`: The number of repeated lines in the annotation files. For example, if there are `10` lines in the annotation file, setting `repeat=10` will generate a corresponding annotation file with size `100`.
 
-If the annotation file is extreme large, you can convert it from txt format to lmdb format with the following command:
+If the annotation file is extremely large, you can convert it from txt format to lmdb format with the following command:
 ```python
 python tools/data_converter/txt2lmdb.py -i ann_file.txt -o ann_file.lmdb
 ```
