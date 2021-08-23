@@ -21,7 +21,7 @@ def revert_sync_batchnorm(module):
     """Helper function to convert all `SyncBatchNorm` layers in the model to
     `BatchNormXd` layers.
 
-    Reproduced from @kapily's work:
+    Adapted from @kapily's work:
     (https://github.com/pytorch/pytorch/issues/41081#issuecomment-783961547)
 
     Args:
@@ -42,6 +42,7 @@ def revert_sync_batchnorm(module):
         module_output.running_mean = module.running_mean
         module_output.running_var = module.running_var
         module_output.num_batches_tracked = module.num_batches_tracked
+        module_output.training = module.training
         if hasattr(module, 'qconfig'):
             module_output.qconfig = module.qconfig
     for name, child in module.named_children():
