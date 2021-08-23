@@ -26,7 +26,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
-   :caption: Datasets
+   :caption: Dataset Zoo
 
    datasets/det.md
    datasets/recog.md
