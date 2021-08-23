@@ -50,7 +50,9 @@ The structure of the text detection dataset directory is organized as follows.
 backend used in MMCV would read them and apply the rotation on the images.  However, their gold annotations are made on the raw pixels, and such
 inconsistency results in false examples in the training set. Therefore, users should use `dict(type='LoadImageFromFile', color_type='color_ignore_orientation')` in pipelines to change MMCV's default loading behaviour. (see [DBNet's config](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py) for example)
 
-## ICDAR 2015
+## Preparation Steps
+### ICDAR 2015
+- Step0: Read [Important Note](#important-note)
 - Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
 - Step2:
 ```bash
@@ -69,10 +71,11 @@ mv Challenge4_Test_Task1_GT annotations/test
 python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
 ```
 
-## ICDAR 2017
-- Follow similar steps as above.
+### ICDAR 2017
+- Follow similar steps as [ICDAR 2015](#icdar-2015).
 
-## CTW1500
+### CTW1500
+- Step0: Read [Important Note](#important-note)
 - Step1: Download `train_images.zip`, `test_images.zip`, `train_labels.zip`, `test_labels.zip` from [github](https://github.com/Yuliang-Liu/Curve-Text-Detector)
 ```bash
 mkdir ctw1500 && cd ctw1500
@@ -98,11 +101,11 @@ unzip test_images.zip && mv test_images test
 python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
 ```
 
-## SynthText
+### SynthText
 
 - Download [data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb) and [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb) to `synthtext/instances_training.lmdb/`.
 
-## TextOCR
+### TextOCR
 - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
 ```bash
 mkdir textocr && cd textocr
@@ -120,7 +123,8 @@ mv train_images train
 ```bash
 python tools/data/textdet/textocr_converter.py /path/to/textocr
 ```
-## Totaltext
+### Totaltext
+- Step0: Read [Important Note](#important-note)
 - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
 ```bash
 mkdir totaltext && cd totaltext

@@ -13,6 +13,8 @@ The structure of the key information extraction dataset directory is organized a
   └── train.txt
 ```
 
-## WildReceipt
+## Preparation Steps
+
+### WildReceipt
 
 - Just download and extract [wildreceipt.tar](https://download.openmmlab.com/mmocr/data/wildreceipt.tar).
