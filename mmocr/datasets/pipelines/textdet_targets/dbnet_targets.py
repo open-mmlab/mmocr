@@ -3,9 +3,9 @@ import cv2
 import numpy as np
 import pyclipper
 from mmdet.core import BitmapMasks
-from mmdet.datasets.builder import PIPELINES
 from shapely.geometry import Polygon
 
+from mmocr.datasets.builder import PIPELINES
 from . import BaseTextDetTargets
 
 

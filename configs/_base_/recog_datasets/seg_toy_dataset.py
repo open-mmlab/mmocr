@@ -4,7 +4,7 @@ gt_label_convertor = dict(
     type='SegConvertor', dict_type='DICT36', with_unknown=True, lower=True)
 
 train_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='mmdet.LoadImageFromFile'),
     dict(
         type='RandomPaddingOCR',
         max_ratio=[0.15, 0.2, 0.15, 0.2],
@@ -36,7 +36,7 @@ train_pipeline = [
         visualize=dict(flag=False, boundary_key=None),
         call_super=False),
     dict(
-        type='Collect',
+        type='mmdet.Collect',
         keys=['img', 'gt_kernels'],
         meta_keys=['filename', 'ori_shape', 'img_shape'])
 ]
@@ -45,17 +45,17 @@ test_img_norm_cfg = dict(
     mean=[x * 255 for x in img_norm_cfg['mean']],
     std=[x * 255 for x in img_norm_cfg['std']])
 test_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='mmdet.LoadImageFromFile'),
     dict(
         type='ResizeOCR',
         height=64,
         min_width=64,
         max_width=None,
         keep_aspect_ratio=True),
-    dict(type='Normalize', **test_img_norm_cfg),
-    dict(type='DefaultFormatBundle'),
+    dict(type='mmdet.Normalize', **test_img_norm_cfg),
+    dict(type='mmdet.DefaultFormatBundle'),
     dict(
-        type='Collect',
+        type='mmdet.Collect',
         keys=['img'],
         meta_keys=['filename', 'ori_shape', 'resize_shape'])
 ]

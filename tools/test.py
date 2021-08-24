@@ -12,10 +12,10 @@ from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
                          wrap_fp16_model)
 from mmdet.apis import multi_gpu_test, single_gpu_test
-from mmdet.datasets import replace_ImageToTensor
 
 from mmocr.apis.inference import disable_text_recog_aug_test
-from mmocr.datasets import build_dataloader, build_dataset
+from mmocr.datasets import (build_dataloader, build_dataset,
+                            replace_ImageToTensor)
 from mmocr.models import build_detector
 from mmocr.utils import revert_sync_batchnorm
 
@@ -151,7 +151,7 @@ def main():
             # by disable MultiRotateAugOCR since it is useless for most case
             cfg = disable_text_recog_aug_test(cfg)
             if cfg.data.test.get('pipeline', None) is not None:
-                # Replace 'ImageToTensor' to 'DefaultFormatBundle'
+                # Replace 'mmdet.ImageToTensor' to 'DefaultFormatBundle'
                 cfg.data.test.pipeline = replace_ImageToTensor(
                     cfg.data.test.pipeline)
     elif isinstance(cfg.data.test, list):

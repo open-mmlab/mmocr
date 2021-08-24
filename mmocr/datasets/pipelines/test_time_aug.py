@@ -1,8 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import mmcv
 import numpy as np
-from mmdet.datasets.builder import PIPELINES
-from mmdet.datasets.pipelines.compose import Compose
+
+from mmocr.datasets.builder import PIPELINES
+from mmocr.datasets.pipelines.compose import Compose
 
 
 @PIPELINES.register_module()
@@ -25,7 +26,7 @@ class MultiRotateAugOCR:
             dict(type='ToTensorOCR'),
             dict(type='NormalizeOCR', **img_norm_cfg),
             dict(
-                type='Collect',
+                type='mmdet.Collect',
                 keys=['img'],
                 meta_keys=[
                     'filename', 'ori_shape', 'img_shape', 'valid_ratio'

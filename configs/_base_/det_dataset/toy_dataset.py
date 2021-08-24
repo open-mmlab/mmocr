@@ -5,14 +5,15 @@ train_cfg = None
 test_cfg = None
 
 train_pipeline = [
-    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(
+        type='mmdet.LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadTextAnnotations',
         with_bbox=True,
         with_mask=True,
         poly2mask=False),
     dict(type='ColorJitter', brightness=32.0 / 255, saturation=0.5),
-    dict(type='Normalize', **img_norm_cfg),
+    dict(type='mmdet.Normalize', **img_norm_cfg),
     dict(
         type='ScaleAspectJitter',
         img_scale=[(3000, 640)],
@@ -22,31 +23,32 @@ train_pipeline = [
         keep_ratio=False),
     # shrink_ratio is from big to small. The 1st must be 1.0
     dict(type='PANetTargets', shrink_ratio=(1.0, 0.7)),
-    dict(type='RandomFlip', flip_ratio=0.5, direction='horizontal'),
+    dict(type='mmdet.RandomFlip', flip_ratio=0.5, direction='horizontal'),
     dict(type='RandomRotateTextDet'),
     dict(
         type='RandomCropInstances',
         target_size=(640, 640),
         instance_key='gt_kernels'),
-    dict(type='Pad', size_divisor=32),
+    dict(type='mmdet.Pad', size_divisor=32),
     dict(
         type='CustomFormatBundle',
         keys=['gt_kernels', 'gt_mask'],
         visualize=dict(flag=False, boundary_key='gt_kernels')),
-    dict(type='Collect', keys=['img', 'gt_kernels', 'gt_mask'])
+    dict(type='mmdet.Collect', keys=['img', 'gt_kernels', 'gt_mask'])
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
-        type='MultiScaleFlipAug',
+        type='mmdet.LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(
+        type='mmdet.MultiScaleFlipAug',
         img_scale=(3000, 640),
         flip=False,
         transforms=[
-            dict(type='Resize', img_scale=(3000, 640), keep_ratio=True),
-            dict(type='Normalize', **img_norm_cfg),
-            dict(type='Pad', size_divisor=32),
-            dict(type='ImageToTensor', keys=['img']),
-            dict(type='Collect', keys=['img']),
+            dict(type='mmdet.Resize', img_scale=(3000, 640), keep_ratio=True),
+            dict(type='mmdet.Normalize', **img_norm_cfg),
+            dict(type='mmdet.Pad', size_divisor=32),
+            dict(type='mmdet.ImageToTensor', keys=['img']),
+            dict(type='mmdet.Collect', keys=['img']),
         ])
 ]
 

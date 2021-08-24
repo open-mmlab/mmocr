@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .box_utils import sort_vertex, sort_vertex8
+from .compose import Compose
 from .custom_format_bundle import CustomFormatBundle
 from .dbnet_transforms import EastRandomCrop, ImgAug
 from .kie_transforms import KIEFormatBundle, ResizeNoImg
@@ -18,14 +19,14 @@ from .transforms import (ColorJitter, RandomCropFlip, RandomCropInstances,
                          SquareResizePad)
 
 __all__ = [
-    'LoadTextAnnotations', 'NormalizeOCR', 'OnlineCropOCR', 'ResizeOCR',
-    'ToTensorOCR', 'CustomFormatBundle', 'DBNetTargets', 'PANetTargets',
-    'ColorJitter', 'RandomCropInstances', 'RandomRotateTextDet',
-    'ScaleAspectJitter', 'MultiRotateAugOCR', 'OCRSegTargets', 'FancyPCA',
-    'RandomCropPolyInstances', 'RandomRotatePolyInstances', 'RandomPaddingOCR',
-    'ImgAug', 'EastRandomCrop', 'RandomRotateImageBox', 'OpencvToPil',
-    'PilToOpencv', 'KIEFormatBundle', 'SquareResizePad', 'TextSnakeTargets',
-    'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets',
-    'RandomScaling', 'RandomCropFlip', 'NerTransform', 'ToTensorNER',
-    'ResizeNoImg'
+    'Compose', 'LoadTextAnnotations', 'NormalizeOCR', 'OnlineCropOCR',
+    'ResizeOCR', 'ToTensorOCR', 'CustomFormatBundle', 'DBNetTargets',
+    'PANetTargets', 'ColorJitter', 'RandomCropInstances',
+    'RandomRotateTextDet', 'ScaleAspectJitter', 'MultiRotateAugOCR',
+    'OCRSegTargets', 'FancyPCA', 'RandomCropPolyInstances',
+    'RandomRotatePolyInstances', 'RandomPaddingOCR', 'ImgAug',
+    'EastRandomCrop', 'RandomRotateImageBox', 'OpencvToPil', 'PilToOpencv',
+    'KIEFormatBundle', 'SquareResizePad', 'TextSnakeTargets', 'sort_vertex',
+    'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets', 'RandomScaling',
+    'RandomCropFlip', 'NerTransform', 'ToTensorNER', 'ResizeNoImg'
 ]

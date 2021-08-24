@@ -3,22 +3,22 @@ img_norm_cfg = dict(
 max_scale, min_scale = 1024, 512
 
 train_pipeline = [
-    dict(type='LoadAnnotations'),
+    dict(type='mmdet.LoadAnnotations'),
     dict(
         type='ResizeNoImg', img_scale=(max_scale, min_scale), keep_ratio=True),
     dict(type='KIEFormatBundle'),
     dict(
-        type='Collect',
+        type='mmdet.Collect',
         keys=['img', 'relations', 'texts', 'gt_bboxes', 'gt_labels'],
         meta_keys=('filename', 'ori_texts'))
 ]
 test_pipeline = [
-    dict(type='LoadAnnotations'),
+    dict(type='mmdet.LoadAnnotations'),
     dict(
         type='ResizeNoImg', img_scale=(max_scale, min_scale), keep_ratio=True),
     dict(type='KIEFormatBundle'),
     dict(
-        type='Collect',
+        type='mmdet.Collect',
         keys=['img', 'relations', 'texts', 'gt_bboxes'],
         meta_keys=('filename', 'ori_texts'))
 ]

@@ -8,10 +8,10 @@ from mmcv.runner import (HOOKS, DistSamplerSeedHook, EpochBasedRunner,
                          build_runner)
 from mmcv.utils import build_from_cfg
 from mmdet.core import DistEvalHook, EvalHook
-from mmdet.datasets import (build_dataloader, build_dataset,
-                            replace_ImageToTensor)
+from mmdet.datasets import build_dataloader
 
 from mmocr.apis.inference import disable_text_recog_aug_test
+from mmocr.datasets import build_dataset, replace_ImageToTensor
 from mmocr.utils import get_root_logger
 
 
@@ -121,7 +121,7 @@ def train_detector(model,
             # by disable MultiRotateAugOCR since it is useless for most case
             cfg = disable_text_recog_aug_test(cfg)
             if cfg.data.val.get('pipeline', None) is not None:
-                # Replace 'ImageToTensor' to 'DefaultFormatBundle'
+                # Replace 'mmdet.ImageToTensor' to 'DefaultFormatBundle'
                 cfg.data.val.pipeline = replace_ImageToTensor(
                     cfg.data.val.pipeline)
 

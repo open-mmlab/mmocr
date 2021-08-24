@@ -1,7 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 
-from mmdet.datasets import DATASETS, ConcatDataset, build_dataset
+from mmdet.datasets import ConcatDataset
+
+from mmocr.datasets import DATASETS, build_dataset
 
 
 @DATASETS.register_module()

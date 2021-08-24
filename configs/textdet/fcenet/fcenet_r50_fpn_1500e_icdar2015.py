@@ -40,7 +40,8 @@ img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 
 train_pipeline = [
-    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(
+        type='mmdet.LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadTextAnnotations',
         with_bbox=True,
@@ -51,7 +52,7 @@ train_pipeline = [
         brightness=32.0 / 255,
         saturation=0.5,
         contrast=0.5),
-    dict(type='Normalize', **img_norm_cfg),
+    dict(type='mmdet.Normalize', **img_norm_cfg),
     dict(type='RandomScaling', size=800, scale=(3. / 4, 5. / 2)),
     dict(
         type='RandomCropFlip', crop_ratio=0.5, iter_num=1, min_area_ratio=0.2),
@@ -66,8 +67,8 @@ train_pipeline = [
         max_angle=30,
         pad_with_fixed_color=False),
     dict(type='SquareResizePad', target_size=800, pad_ratio=0.6),
-    dict(type='RandomFlip', flip_ratio=0.5, direction='horizontal'),
-    dict(type='Pad', size_divisor=32),
+    dict(type='mmdet.RandomFlip', flip_ratio=0.5, direction='horizontal'),
+    dict(type='mmdet.Pad', size_divisor=32),
     dict(
         type='FCENetTargets',
         fourier_degree=fourier_degree,
@@ -76,20 +77,21 @@ train_pipeline = [
         type='CustomFormatBundle',
         keys=['p3_maps', 'p4_maps', 'p5_maps'],
         visualize=dict(flag=False, boundary_key=None)),
-    dict(type='Collect', keys=['img', 'p3_maps', 'p4_maps', 'p5_maps'])
+    dict(type='mmdet.Collect', keys=['img', 'p3_maps', 'p4_maps', 'p5_maps'])
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
-        type='MultiScaleFlipAug',
+        type='mmdet.LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(
+        type='mmdet.MultiScaleFlipAug',
         img_scale=(2260, 2260),
         flip=False,
         transforms=[
-            dict(type='Resize', img_scale=(1280, 800), keep_ratio=True),
-            dict(type='Normalize', **img_norm_cfg),
-            dict(type='Pad', size_divisor=32),
-            dict(type='ImageToTensor', keys=['img']),
-            dict(type='Collect', keys=['img']),
+            dict(type='mmdet.Resize', img_scale=(1280, 800), keep_ratio=True),
+            dict(type='mmdet.Normalize', **img_norm_cfg),
+            dict(type='mmdet.Pad', size_divisor=32),
+            dict(type='mmdet.ImageToTensor', keys=['img']),
+            dict(type='mmdet.Collect', keys=['img']),
         ])
 ]
 data = dict(
