@@ -1,6 +1,6 @@
-# Inference
+# Demo
 
-An easy to use API for inference with MMOCR is provided through the [ocr.py](https://github.com/open-mmlab/mmocr/blob/main/mmocr/utils/ocr.py) script.
+We provide an easy-to-use API for inference with MMOCR in [ocr.py](https://github.com/open-mmlab/mmocr/blob/main/mmocr/utils/ocr.py) script.
 
 The API can be called through command line (CL) or by calling it from another python script.
 
