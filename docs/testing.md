@@ -1,6 +1,6 @@
 # Testing
 
-We introduce the way to test pretrained models on datasets here. The steps to apply models on your own images can be found in [inference.md](inference.md).
+We introduce the way to test pretrained models on datasets here.
 
 ## Testing with Single GPU
 
@@ -20,7 +20,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 | ARGS      | Type                  |  Description                                                 |
 | -------------- | --------------------- |  ----------------------------------------------------------- |
 | `--out`          | str                   |  Output result file in pickle format. |
-| `--fuse-conv-bn`   | bool                   |  Path to the custom config of the selected det model         |
+| `--fuse-conv-bn`   | bool                   |  Path to the custom config of the selected det model.        |
 | `--format-only`        | bool |  Format the output results without performing evaluation. It is useful when you want to format the results to a specific format and submit them to the test server.|
 | `--eval` | 'hmean-ic13', 'hmean-iou', 'acc' |  The evaluation metrics, which depends on the task. For text detection, the metric should be either 'hmean-ic13' or 'hmean-iou'. For text recognition, the metric should be 'acc'. |
 | `--show`       | bool                   |  Whether to show results. |
