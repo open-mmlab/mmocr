@@ -1,6 +1,6 @@
 # Demo
 
-We provide an easy-to-use API for demo and application purpose in [ocr.py](https://github.com/open-mmlab/mmocr/blob/main/mmocr/utils/ocr.py) script.
+We provide an easy-to-use API for the demo and application purpose in [ocr.py](https://github.com/open-mmlab/mmocr/blob/main/mmocr/utils/ocr.py) script.
 
 The API can be called through command line (CL) or by calling it from another python script.
 
