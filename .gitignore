@@ -140,3 +140,4 @@ mmocr/core/font.TTF
 mmocr/.mim
 workdirs/
 .history/
+.dev/
