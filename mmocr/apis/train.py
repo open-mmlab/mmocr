@@ -45,7 +45,7 @@ def train_detector(model,
                    'drop_last',
                    'prefetch_num',
                    'pin_memory',
-                   'persistent_workers'
+                   'persistent_workers',
                ] if k in cfg.data)
     }
 
