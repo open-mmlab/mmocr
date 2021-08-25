@@ -66,7 +66,7 @@ Here is an example of using 8 GPUs to train a text detection model on the dev pa
 ```
 
 ### Running Multiple Training Jobs on a Single Machine
-If you are launching multiple training jobs on a single machine with Slurm, you may need to modifyj the port in configs to avoid communication conflicts.
+If you are launching multiple training jobs on a single machine with Slurm, you may need to modify the port in configs to avoid communication conflicts.
 
 For example, in `config1.py`,
 ```python
