@@ -1,5 +1,4 @@
 # These must be installed before building mmocr
 numpy
-Polygon3
 pyclipper
 torch>=1.1
