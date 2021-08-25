@@ -180,7 +180,6 @@ def main():
                pin_memory=False,
            )),
         **dict((k, cfg.data[k]) for k in [
-                   'samples_per_gpu',
                    'workers_per_gpu',
                    'seed',
                    'prefetch_num',
