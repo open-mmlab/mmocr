@@ -393,7 +393,8 @@ def imshow_edge_node(img,
     img = mmcv.imread(img)
     h, w = img.shape[:2]
 
-    pred_img = np.ones((h, w * 2, 3), dtype=np.uint8) * 255
+    pred_img = Image.new('RGB', (w * 2, h), color=(255, 255, 255))
+    pred_draw = ImageDraw.Draw(pred_img)
     max_value, max_idx = torch.max(result['nodes'].detach().cpu(), -1)
     node_pred_label = max_idx.numpy().tolist()
     node_pred_score = max_value.numpy().tolist()
@@ -415,12 +416,21 @@ def imshow_edge_node(img,
             pred_label = idx_to_cls[pred_label]
         pred_score = '{:.2f}'.format(node_pred_score[i])
         text = pred_label + '(' + pred_score + ')'
-        cv2.putText(pred_img, text, (x_min * 2, y_min),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+        font_size = int(new_box[3][1] - new_box[0][1])
+        dirname, _ = os.path.split(os.path.abspath(__file__))
+        font_path = os.path.join(dirname, 'font.TTF')
+        if not os.path.exists(font_path):
+            url = ('http://download.openmmlab.com/mmocr/data/font.TTF')
+            print(f'Downloading {url} ...')
+            local_filename, _ = urllib.request.urlretrieve(url)
+            shutil.move(local_filename, font_path)
+        fnt = ImageFont.truetype(font_path, font_size)
+        pred_draw.text((x_min * 2, y_min), text, font=fnt, fill=(0, 0, 255))
+    del pred_draw
 
     vis_img = np.ones((h, w * 3, 3), dtype=np.uint8) * 255
     vis_img[:, :w] = img
-    vis_img[:, w:] = pred_img
+    vis_img[:, w:] = cv2.cvtColor(np.asarray(pred_img), cv2.COLOR_RGB2BGR)
 
     if show:
         mmcv.imshow(vis_img, win_name, wait_time)
