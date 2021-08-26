@@ -429,7 +429,8 @@ def imshow_edge_node(img,
         text_boxes.append(text_box)
 
     pred_img = np.ones((h, w * 2, 3), dtype=np.uint8) * 255
-    pred_img = draw_texts_by_pil(pred_img, texts, text_boxes, draw_box=False)
+    pred_img = draw_texts_by_pil(
+        pred_img, texts, text_boxes, draw_box=False, on_ori_img=True)
 
     vis_img = np.ones((h, w * 3, 3), dtype=np.uint8) * 255
     vis_img[:, :w] = img
@@ -495,27 +496,38 @@ def get_optimal_font_scale(text, width):
     return 1
 
 
-def draw_texts(img, boxes, texts):
+def draw_texts(img, texts, boxes=None, draw_box=True, on_ori_img=False):
     """Draw boxes and texts on empty img.
 
     Args:
         img (np.ndarray): The original image.
-        boxes (list[list[float]]): Detected bounding boxes.
         texts (list[str]): Recognized texts.
+        boxes (list[list[float]]): Detected bounding boxes.
+        draw_box (bool): Whether draw box or not. If False, draw text only.
+        on_ori_img (bool): If True, draw box and text on input image,
+            else, on a new empty image.
     Return:
         out_img (np.ndarray): Visualized image.
     """
     color_list = gen_color()
     h, w = img.shape[:2]
-    out_img = np.ones((h, w, 3), dtype=np.uint8) * 255
+    if boxes is None:
+        boxes = [[0, 0, w, 0, w, h, 0, h]]
+    assert len(texts) == len(boxes)
+
+    if on_ori_img:
+        out_img = img
+    else:
+        out_img = np.ones((h, w, 3), dtype=np.uint8) * 255
     for idx, (box, text) in enumerate(zip(boxes, texts)):
-        new_box = [[x, y] for x, y in zip(box[0::2], box[1::2])]
-        Pts = np.array([new_box], np.int32)
-        cv2.polylines(
-            out_img, [Pts.reshape((-1, 1, 2))],
-            True,
-            color=color_list[idx % len(color_list)],
-            thickness=1)
+        if draw_box:
+            new_box = [[x, y] for x, y in zip(box[0::2], box[1::2])]
+            Pts = np.array([new_box], np.int32)
+            cv2.polylines(
+                out_img, [Pts.reshape((-1, 1, 2))],
+                True,
+                color=color_list[idx % len(color_list)],
+                thickness=1)
         min_x = int(min(box[0::2]))
         max_y = int(
             np.mean(np.array(box[1::2])) + 0.2 *
@@ -528,13 +540,16 @@ def draw_texts(img, boxes, texts):
     return out_img
 
 
-def draw_texts_by_pil(img, texts, boxes=None, draw_box=True):
+def draw_texts_by_pil(img, texts, boxes=None, draw_box=True, on_ori_img=False):
     """Draw boxes and texts on empty image, especially for Chinese.
 
     Args:
         img (np.ndarray): The original image.
         texts (list[str]): Recognized texts.
         boxes (list[list[float]]): Detected bounding boxes.
+        draw_box (bool): Whether draw box or not. If False, draw text only.
+        on_ori_img (bool): If True, draw box and text on input image,
+            else, on a new empty image.
     Return:
         out_img (np.ndarray): Visualized text image.
     """
@@ -543,8 +558,12 @@ def draw_texts_by_pil(img, texts, boxes=None, draw_box=True):
     h, w = img.shape[:2]
     if boxes is None:
         boxes = [[0, 0, w, 0, w, h, 0, h]]
+    assert len(boxes) == len(texts)
 
-    out_img = Image.new('RGB', (w, h), color=(255, 255, 255))
+    if on_ori_img:
+        out_img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    else:
+        out_img = Image.new('RGB', (w, h), color=(255, 255, 255))
     out_draw = ImageDraw.Draw(out_img)
     for idx, (box, text) in enumerate(zip(boxes, texts)):
         if len(text) == 0:
@@ -607,7 +626,7 @@ def det_recog_show_result(img, end2end_res, out_file=None):
     if is_contain_chinese(''.join(texts)):
         text_vis_img = draw_texts_by_pil(img, texts, boxes)
     else:
-        text_vis_img = draw_texts(img, boxes, texts)
+        text_vis_img = draw_texts(img, texts, boxes)
 
     h, w = img.shape[:2]
     out_img = np.ones((h, w * 2, 3), dtype=np.uint8)
