@@ -393,12 +393,11 @@ def imshow_edge_node(img,
     img = mmcv.imread(img)
     h, w = img.shape[:2]
 
-    pred_img = Image.new('RGB', (w * 2, h), color=(255, 255, 255))
-    pred_draw = ImageDraw.Draw(pred_img)
     max_value, max_idx = torch.max(result['nodes'].detach().cpu(), -1)
     node_pred_label = max_idx.numpy().tolist()
     node_pred_score = max_value.numpy().tolist()
 
+    texts, text_boxes = [], []
     for i, box in enumerate(boxes):
         new_box = [[box[0], box[1]], [box[2], box[1]], [box[2], box[3]],
                    [box[0], box[3]]]
@@ -411,22 +410,26 @@ def imshow_edge_node(img,
         x_min = int(min([point[0] for point in new_box]))
         y_min = int(min([point[1] for point in new_box]))
 
+        # text
         pred_label = str(node_pred_label[i])
         if pred_label in idx_to_cls:
             pred_label = idx_to_cls[pred_label]
         pred_score = '{:.2f}'.format(node_pred_score[i])
         text = pred_label + '(' + pred_score + ')'
+        texts.append(text)
+
+        # text box
         font_size = int(new_box[3][1] - new_box[0][1])
-        dirname, _ = os.path.split(os.path.abspath(__file__))
-        font_path = os.path.join(dirname, 'font.TTF')
-        if not os.path.exists(font_path):
-            url = ('http://download.openmmlab.com/mmocr/data/font.TTF')
-            print(f'Downloading {url} ...')
-            local_filename, _ = urllib.request.urlretrieve(url)
-            shutil.move(local_filename, font_path)
-        fnt = ImageFont.truetype(font_path, font_size)
-        pred_draw.text((x_min * 2, y_min), text, font=fnt, fill=(0, 0, 255))
-    del pred_draw
+        char_num = len(text)
+        text_box = [
+            x_min * 2, y_min, x_min * 2 + font_size * char_num, y_min,
+            x_min * 2 + font_size * char_num, y_min + font_size, x_min * 2,
+            y_min + font_size
+        ]
+        text_boxes.append(text_box)
+
+    pred_img = np.ones((h, w * 2, 3), dtype=np.uint8) * 255
+    pred_img = draw_texts_by_pil(pred_img, texts, text_boxes, draw_box=False)
 
     vis_img = np.ones((h, w * 3, 3), dtype=np.uint8) * 255
     vis_img[:, :w] = img
@@ -525,7 +528,7 @@ def draw_texts(img, boxes, texts):
     return out_img
 
 
-def draw_texts_by_pil(img, texts, boxes=None):
+def draw_texts_by_pil(img, texts, boxes=None, draw_box=True):
     """Draw boxes and texts on empty image, especially for Chinese.
 
     Args:
@@ -549,7 +552,8 @@ def draw_texts_by_pil(img, texts, boxes=None):
         min_x, max_x = min(box[0::2]), max(box[0::2])
         min_y, max_y = min(box[1::2]), max(box[1::2])
         color = tuple(list(color_list[idx % len(color_list)])[::-1])
-        out_draw.line(box, fill=color, width=1)
+        if draw_box:
+            out_draw.line(box, fill=color, width=1)
         box_width = max(max_x - min_x, max_y - min_y)
         font_size = int(0.9 * box_width / len(text))
         dirname, _ = os.path.split(os.path.abspath(__file__))
