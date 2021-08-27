@@ -419,7 +419,10 @@ def imshow_edge_node(img,
         texts.append(text)
 
         # text box
-        font_size = int(new_box[3][1] - new_box[0][1])
+        font_size = int(
+            min(
+                abs(new_box[3][1] - new_box[0][1]),
+                abs(new_box[1][0] - new_box[0][0])))
         char_num = len(text)
         text_box = [
             x_min * 2, y_min, x_min * 2 + font_size * char_num, y_min,
