@@ -215,12 +215,13 @@ class KIEDataset(BaseDataset):
     def compute_relation(self, boxes):
         """Compute relation between every two boxes."""
         # Get minimal axis-aligned bounding boxes for each of the boxes
+        # yapf: disable
         bboxes = np.concatenate(
             [boxes[:, 0::2].min(axis=1, keepdims=True),
              boxes[:, 1::2].min(axis=1, keepdims=True),
              boxes[:, 0::2].max(axis=1, keepdims=True),
              boxes[:, 1::2].max(axis=1, keepdims=True)],
-             axis=1).astype(np.float32)
+            axis=1).astype(np.float32)
         x1, y1 = bboxes[:, 0:1], bboxes[:, 1:2]
         x2, y2 = bboxes[:, 2:3], bboxes[:, 3:4]
         w, h = np.maximum(x2 - x1 + 1, 1), np.maximum(y2 - y1 + 1, 1)
