@@ -165,17 +165,16 @@ jobs:
   build_cu102:
     runs-on: ubuntu-latest
     env:
-      CUDA: 10.2.89-1
-      CUDA_SHORT: 10.2
+      CUDA_SHORT: 11.1
       UBUNTU_VERSION: ubuntu1804
     strategy:
       matrix:
         python-version: [3.7]
-        torch: [1.9.0+cu102]
+        torch: [1.9.0+cu111]
         include:
-          - torch: 1.9.0+cu102
+          - torch: 1.9.0+cu111
             torch_version: 1.9.0
-            torchvision: 0.10.0+cu102
+            torchvision: 0.10.0+cu111
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -212,7 +211,7 @@ jobs:
         run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmocr dependencies
         run: |
-          pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/torch${{matrix.torch_version}}/index.html
+          pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu111/torch${{matrix.torch_version}}/index.html
           pip install mmdet
           pip install -r requirements.txt
       - name: Build and install
