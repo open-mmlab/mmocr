@@ -168,7 +168,7 @@ jobs:
     env:
       CUDA: 10.2.89-1
       CUDA_SHORT: 10.2
-      UBUNTU_VERSION: ubuntu1804
+      UBUNTU_VERSION: ubuntu2004
     strategy:
       matrix:
         python-version: [3.7]
