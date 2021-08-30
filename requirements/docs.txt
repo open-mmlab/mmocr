@@ -1,3 +1,5 @@
+-e docs/_theme/pytorch_sphinx_theme/
+docutils==0.16
 recommonmark
 sphinx==v2.4.4
 sphinx_markdown_tables
