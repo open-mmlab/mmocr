@@ -116,7 +116,7 @@ jobs:
           wget https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/${INSTALLER}
           sudo dpkg -i ${INSTALLER}
           ls /var/
-          sudo apt-key add /var/cuda-repo-${UBUNTU_VERSION}/7fa2af80.pub
+          sudo apt-key add /var/cuda-repo-10-1-local-10.1.105-418.39/7fa2af80.pub
           sudo apt update -qq
           sudo apt clean
           sudo apt install -y cuda
