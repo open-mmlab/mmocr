@@ -113,7 +113,7 @@ jobs:
       - name: Install CUDA
         run: |
           export INSTALLER=cuda-repo-${UBUNTU_VERSION}-10-1-local-10.1.105-418.39_1.0-1_amd64.deb
-          wget http://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/${INSTALLER}
+          wget https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/${INSTALLER}
           sudo dpkg -i ${INSTALLER}
           sudo apt-key add /var/cuda-repo-${UBUNTU_VERSION}/7fa2af80.pub
           sudo apt update -qq
@@ -192,7 +192,7 @@ jobs:
           wget https://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda-repo-${UBUNTU_VERSION}-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb
           sudo dpkg -i cuda-repo-${UBUNTU_VERSION}-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb
           sudo apt-key add /var/cuda-repo-10-2-local-10.2.89-440.33.01/7fa2af80.pub
-          sudo apt update -qq
+          sudo apt update
           sudo apt-get install -y install cuda
           export CUDA_HOME=/usr/local/cuda-${CUDA_SHORT}
           export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${CUDA_HOME}/include:${LD_LIBRARY_PATH}
