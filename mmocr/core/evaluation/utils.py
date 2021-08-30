@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
-from shapely import validation
 from shapely.geometry import Polygon as plg
 
 import mmocr.utils as utils
@@ -148,7 +147,7 @@ def poly_intersection(poly_det, poly_gt, invalid='allow', return_poly=False):
             polygons by cleaning the their self-touching or self-crossing
             parts.
         return_poly (bool): Whether to return the polygon of the intersection
-                            area.
+            area.
     Returns:
         intersection_area (float): The intersection area between two polygons.
         poly_obj (Polygon, optional): The Polygon object of the intersection
@@ -159,15 +158,9 @@ def poly_intersection(poly_det, poly_gt, invalid='allow', return_poly=False):
 
     if invalid == 'allow':
         if not poly_det.is_valid:
-            # print('before', poly_det)
-            print(validation.explain_validity(poly_det))
             poly_det = poly_det.buffer(0)
-            # print('after', poly_det)
         if not poly_gt.is_valid:
-            # print('before', poly_gt)
-            validation.explain_validity(poly_gt)
             poly_gt = poly_gt.buffer(0)
-            # print('after', poly_gt)
 
     if poly_det.is_valid and poly_gt.is_valid:
         poly_obj = poly_det.intersection(poly_gt)
@@ -192,12 +185,10 @@ def poly_union(poly_det, poly_gt, invalid='allow', return_poly=False):
             polygons by cleaning the their self-touching or self-crossing
             parts.
         return_poly (bool): Whether to return the polygon of the intersection
-                            area.
+            area.
 
     Returns:
         union_area (float): The union area between two polygons.
-        poly_obj (Polygon, optional): The polygon object of the union area
-            between two polygons. Set as `None` if the input is invalid.
         poly_obj (Polygon | MultiPolygon, optional): The Polygon or
             MultiPolygon object of the union of the inputs. The type of object
             depends on whether they intersect or not. Set as `None` if the
