@@ -75,9 +75,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      CUDA: 10.1.105-1
+      CUDA: 10.1.105-418.39_1.0-1
       CUDA_SHORT: 10.1
-      UBUNTU_VERSION: ubuntu2004
+      UBUNTU_VERSION: ubuntu1804
     strategy:
       matrix:
         python-version: [3.7]
@@ -113,13 +113,13 @@ jobs:
         run: pip install pip --upgrade
       - name: Install CUDA
         run: |
-          export INSTALLER=cuda-repo-${UBUNTU_VERSION}_${CUDA}_amd64.deb
+          export INSTALLER=cuda-repo-${UBUNTU_VERSION}-${CUDA}_amd64.deb
           wget http://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/${INSTALLER}
           sudo dpkg -i ${INSTALLER}
-          wget https://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/7fa2af80.pub
-          sudo apt-key add 7fa2af80.pub
+          sudo apt-key add /var/cuda-repo-${UBUNTU_VERSION}/7fa2af80.pub
           sudo apt update -qq
           sudo apt clean
+          sudo apt install -y cuda
           export CUDA_HOME=/usr/local/cuda-${CUDA_SHORT}
           export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${CUDA_HOME}/include:${LD_LIBRARY_PATH}
           export PATH=${CUDA_HOME}/bin:${PATH}
@@ -168,7 +168,7 @@ jobs:
     env:
       CUDA: 10.2.89-1
       CUDA_SHORT: 10.2
-      UBUNTU_VERSION: ubuntu2004
+      UBUNTU_VERSION: ubuntu1804
     strategy:
       matrix:
         python-version: [3.7]
@@ -187,13 +187,14 @@ jobs:
         run: pip install pip --upgrade
       - name: Install CUDA
         run: |
-          export INSTALLER=cuda-repo-${UBUNTU_VERSION}_${CUDA}_amd64.deb
-          wget http://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/${INSTALLER}
-          sudo dpkg -i ${INSTALLER}
+          wget https://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/cuda-${UBUNTU_VERSION}.pin
+          sudo mv cuda-${UBUNTU_VERSION}.pin /etc/apt/preferences.d/cuda-repository-pin-600
           wget https://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/7fa2af80.pub
-          sudo apt-key add 7fa2af80.pub
+          wget https://developer.download.nvidia.com/compute/cuda/10.2/Prod/local_installers/cuda-repo-${UBUNTU_VERSION}-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb
+          sudo dpkg -i cuda-repo-${UBUNTU_VERSION}-10-2-local-10.2.89-440.33.01_1.0-1_amd64.deb
+          sudo apt-key add /var/cuda-repo-10-2-local-10.2.89-440.33.01/7fa2af80.pub
           sudo apt update -qq
-          sudo apt clean
+          sudo apt install -y install cuda
           export CUDA_HOME=/usr/local/cuda-${CUDA_SHORT}
           export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${CUDA_HOME}/include:${LD_LIBRARY_PATH}
           export PATH=${CUDA_HOME}/bin:${PATH}
