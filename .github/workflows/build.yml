@@ -162,7 +162,7 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  build_cu102:
+  build_cu111:
     runs-on: ubuntu-latest
     env:
       CUDA_SHORT: 11.1
