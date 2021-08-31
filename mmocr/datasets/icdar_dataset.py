@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 from mmdet.datasets.api_wrappers import COCO
-from mmdet.datasets.coco import CocoDataset
 
 import mmocr.utils as utils
 from mmocr.core.evaluation.hmean import eval_hmean
 from mmocr.datasets.builder import DATASETS
+from .coco import CocoDataset
 
 
 @DATASETS.register_module()
