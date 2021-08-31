@@ -61,6 +61,21 @@ def test_random_crop_instances(mock_randint, mock_sample):
     assert np.allclose(np.array([[0, 0], [0, 0], [0, 0]]), crop[0])
     assert np.allclose(crop[1], [0, 0, 2, 3])
 
+    # test crop_bboxes
+    canvas_box = np.array([2, 3, 5, 5])
+    bboxes = np.array([[2, 3, 4, 4], [0, 0, 1, 1], [1, 2, 4, 4],
+                       [0, 0, 10, 10]])
+    kept_bboxes, kept_idx = rci.crop_bboxes(bboxes, canvas_box)
+    assert np.allclose(kept_bboxes,
+                       np.array([[0, 0, 2, 1], [0, 0, 2, 1], [0, 0, 3, 2]]))
+    assert kept_idx == [0, 2, 3]
+
+    bboxes = np.array([[10, 10, 11, 11], [0, 0, 1, 1]])
+    kept_bboxes, kept_idx = rci.crop_bboxes(bboxes, canvas_box)
+    assert kept_bboxes.size == 0
+    assert kept_bboxes.shape == (0, 4)
+    assert len(kept_idx) == 0
+
     # test __call__
     rci = transforms.RandomCropInstances(3, instance_key='gt_kernels')
     results = {}
@@ -71,7 +86,6 @@ def test_random_crop_instances(mock_randint, mock_sample):
     mock_sample.side_effect = [0.1]
     mock_randint.side_effect = [1, 1]
     output = rci(results)
-    print(output['img'])
     target = np.array([[0, 0, 0], [0, 1, 1], [0, 1, 1]])
     assert output['img_shape'] == (3, 3)
 

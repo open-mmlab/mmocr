@@ -72,7 +72,7 @@ jobs:
           coverage report -m
 
   build_cu101:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     env:
       CUDA: 10.1.105-1
@@ -165,7 +165,7 @@ jobs:
           fail_ci_if_error: false
 
   build_cu102:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     env:
       CUDA: 10.2.89-1
       CUDA_SHORT: 10.2

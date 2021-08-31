@@ -2,6 +2,7 @@
 """Tests the utils of evaluation."""
 import numpy as np
 import pytest
+from shapely.geometry import MultiPolygon, Polygon
 
 import mmocr.core.evaluation.utils as utils
 
@@ -85,11 +86,19 @@ def test_points2polygon():
     # test np.array
     points = np.array([1, 2, 3, 4, 5, 6, 7, 8])
     poly = utils.points2polygon(points)
-    assert poly.nPoints() == 4
+    i = 0
+    for coord in poly.exterior.coords[:-1]:
+        assert coord[0] == points[i]
+        assert coord[1] == points[i + 1]
+        i += 2
 
     points = [1, 2, 3, 4, 5, 6, 7, 8]
     poly = utils.points2polygon(points)
-    assert poly.nPoints() == 4
+    i = 0
+    for coord in poly.exterior.coords[:-1]:
+        assert coord[0] == points[i]
+        assert coord[1] == points[i + 1]
+        i += 2
 
 
 def test_poly_intersection():
@@ -102,16 +111,34 @@ def test_poly_intersection():
 
     points = [0, 0, 0, 1, 1, 1, 1, 0]
     points1 = [10, 20, 30, 40, 50, 60, 70, 80]
+    points2 = [0, 0, 0, 0, 0, 0, 0, 0]  # Invalid polygon
+    points3 = [0, 0, 0, 1, 1, 0, 1, 1]  # Self-intersected polygon
+    points4 = [0.5, 0, 1.5, 0, 1.5, 1, 0.5, 1]
     poly = utils.points2polygon(points)
     poly1 = utils.points2polygon(points1)
+    poly2 = utils.points2polygon(points2)
+    poly3 = utils.points2polygon(points3)
+    poly4 = utils.points2polygon(points4)
 
-    area_inters, _ = utils.poly_intersection(poly, poly1)
+    area_inters = utils.poly_intersection(poly, poly1)
 
     assert area_inters == 0
 
     # test overlapping polygons
-    area_inters, _ = utils.poly_intersection(poly, poly)
+    area_inters = utils.poly_intersection(poly, poly)
     assert area_inters == 1
+    area_inters = utils.poly_intersection(poly, poly4)
+    assert area_inters == 0.5
+
+    # test invalid polygons
+    assert utils.poly_intersection(poly2, poly2) == 0
+    assert utils.poly_intersection(poly3, poly3, invalid_ret=1) == 1
+
+    # test poly return
+    _, poly = utils.poly_intersection(poly, poly4, return_poly=True)
+    assert isinstance(poly, Polygon)
+    _, poly = utils.poly_intersection(poly2, poly3, return_poly=True)
+    assert poly is None
 
 
 def test_poly_union():
@@ -124,13 +151,27 @@ def test_poly_union():
 
     points = [0, 0, 0, 1, 1, 1, 1, 0]
     points1 = [2, 2, 2, 3, 3, 3, 3, 2]
+    points2 = [0, 0, 0, 0, 0, 0, 0, 0]  # Invalid polygon
+    points3 = [0, 0, 0, 1, 1, 0, 1, 1]  # Self-intersected polygon
     poly = utils.points2polygon(points)
     poly1 = utils.points2polygon(points1)
+    poly2 = utils.points2polygon(points2)
+    poly3 = utils.points2polygon(points3)
 
     assert utils.poly_union(poly, poly1) == 2
 
     # test overlapping polygons
     assert utils.poly_union(poly, poly) == 1
+
+    # test invalid polygons
+    assert utils.poly_union(poly2, poly2) == 0
+    assert utils.poly_union(poly3, poly3, invalid_ret=1) == 1
+
+    # test poly return
+    _, poly = utils.poly_union(poly, poly1, return_poly=True)
+    assert isinstance(poly, MultiPolygon)
+    _, poly = utils.poly_union(poly2, poly3, return_poly=True)
+    assert poly is None
 
 
 def test_poly_iou():
@@ -141,24 +182,40 @@ def test_poly_iou():
 
     points = [0, 0, 0, 1, 1, 1, 1, 0]
     points1 = [10, 20, 30, 40, 50, 60, 70, 80]
+    points2 = [0, 0, 0, 0, 0, 0, 0, 0]  # Invalid polygon
+    points3 = [0, 0, 0, 1, 1, 0, 1, 1]  # Self-intersected polygon
+
     poly = utils.points2polygon(points)
     poly1 = utils.points2polygon(points1)
+    poly2 = utils.points2polygon(points2)
+    poly3 = utils.points2polygon(points3)
 
     assert utils.poly_iou(poly, poly1) == 0
 
     # test overlapping polygons
-
     assert utils.poly_iou(poly, poly) == 1
+
+    # test invalid polygons
+    assert utils.poly_iou(poly2, poly2) == 0
+    assert utils.poly_iou(poly3, poly3, zero_division=1) == 1
+    assert utils.poly_iou(poly2, poly3) == 0
 
 
 def test_boundary_iou():
     points = [0, 0, 0, 1, 1, 1, 1, 0]
     points1 = [10, 20, 30, 40, 50, 60, 70, 80]
+    points2 = [0, 0, 0, 0, 0, 0, 0, 0]  # Invalid polygon
+    points3 = [0, 0, 0, 1, 1, 0, 1, 1]  # Self-intersected polygon
 
     assert utils.boundary_iou(points, points1) == 0
 
     # test overlapping boundaries
     assert utils.boundary_iou(points, points) == 1
+
+    # test invalid boundaries
+    assert utils.boundary_iou(points2, points2) == 0
+    assert utils.boundary_iou(points3, points3, zero_division=1) == 1
+    assert utils.boundary_iou(points2, points3) == 0
 
 
 def test_points_center():

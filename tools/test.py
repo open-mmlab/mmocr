@@ -184,6 +184,7 @@ def main():
                    'seed',
                    'prefetch_num',
                    'pin_memory',
+                   'persistent_workers',
                ] if k in cfg.data)
     }
     test_loader_cfg = {

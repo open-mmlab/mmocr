@@ -503,7 +503,7 @@ def poly_nms(polygons, threshold):
         for i in range(len(index)):
             B = polygons[index[i]][:-1]
 
-            iou_list[i] = boundary_iou(A, B)
+            iou_list[i] = boundary_iou(A, B, 1)
         remove_index = np.where(iou_list > threshold)
         index = np.delete(index, remove_index)
 

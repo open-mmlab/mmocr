@@ -3,9 +3,9 @@ import sys
 
 import cv2
 import numpy as np
-import Polygon as plg
 import pyclipper
 from mmcv.utils import print_log
+from shapely.geometry import Polygon as plg
 
 import mmocr.utils.check_argument as check_argument
 
@@ -110,7 +110,7 @@ class BaseTextDetTargets:
 
         for text_ind, poly in enumerate(text_polys):
             instance = poly[0].reshape(-1, 2).astype(np.int32)
-            area = plg.Polygon(instance).area()
+            area = plg(instance).area
             peri = cv2.arcLength(instance, True)
             distance = min(
                 int(area * (1 - shrink_ratio * shrink_ratio) / (peri + 0.001) +
