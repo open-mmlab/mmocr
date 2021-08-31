@@ -92,8 +92,8 @@ test = dict(
 data = dict(
     samples_per_gpu=2,
     workers_per_gpu=2,
-    train=dict(type='ConcatDataset', datasets=[train1, train2]),
-    val=dict(type='ConcatDataset', datasets=[test]),
-    test=dict(type='ConcatDataset', datasets=[test]))
+    train=dict(type='mmdet.ConcatDataset', datasets=[train1, train2]),
+    val=dict(type='mmdet.ConcatDataset', datasets=[test]),
+    test=dict(type='mmdet.ConcatDataset', datasets=[test]))
 
 evaluation = dict(interval=1, metric='hmean-iou')

@@ -188,12 +188,12 @@ def main():
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
         val_dataset = copy.deepcopy(cfg.data.val)
-        if cfg.data.train['type'] == 'ConcatDataset':
+        if cfg.data.train['type'] == 'mmdet.ConcatDataset':
             train_pipeline = cfg.data.train['datasets'][0].pipeline
         else:
             train_pipeline = cfg.data.train.pipeline
 
-        if val_dataset['type'] == 'ConcatDataset':
+        if val_dataset['type'] == 'mmdet.ConcatDataset':
             for dataset in val_dataset['datasets']:
                 dataset.pipeline = train_pipeline
         else:
