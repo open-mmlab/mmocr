@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "OpenMMLab Text Detection, Recognition and Understanding Toolbox"
+authors:
+  - name: "MMOCR Contributors"
+version: 0.3.0
+date-released: 2020-08-15
+repository-code: "https://github.com/open-mmlab/mmocr"
+license: Apache-2.0
