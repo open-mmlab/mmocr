@@ -38,8 +38,11 @@ b. Install PyTorch and torchvision following the [official instructions](https:/
 ```shell
 conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.1 -c pytorch
 ```
-Note: Make sure that your compilation CUDA version and runtime CUDA version match.
+
+:::{note}
+Make sure that your compilation CUDA version and runtime CUDA version match.
 You can check the supported CUDA version for precompiled packages on the [PyTorch website](https://pytorch.org/).
+:::
 
 
 c. Install mmcv, we recommend you to install the pre-build mmcv as below.

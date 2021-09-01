@@ -1,4 +1,6 @@
+docutils==0.16.0
+myst-parser
 recommonmark
-sphinx==v2.4.4
+sphinx==4.0.2
 sphinx_markdown_tables
-sphinx_rtd_theme
+sphinx_rtd_theme==0.5.2

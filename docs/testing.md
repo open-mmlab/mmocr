@@ -93,4 +93,6 @@ data = dict(
 ```
 will test the model with 16 images in a batch.
 
-**Warning:** Batch testing may incur performance decrease of the model due to the different behavior of the data preprocessing pipeline.
+:::{warning}
+Batch testing may incur performance decrease of the model due to the different behavior of the data preprocessing pipeline.
+:::

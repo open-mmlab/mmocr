@@ -37,7 +37,9 @@ Description of arguments:
 | `--show`| bool | Determines whether to visualize outputs of ONNXRuntime and PyTorch. Defaults to `False`. |
 | `--dynamic-export`| bool | Determines whether to export ONNX model with dynamic input and output shapes. Defaults to `False`. |
 
-**Note**: This tool is still experimental. For now, some customized operators are not supported, and we only support a subset of detection and recognition algorithms.
+:::{note}
+This tool is still experimental. For now, some customized operators are not supported, and we only support a subset of detection and recognition algorithms.
+:::
 
 ### List of supported models exportable to ONNX
 
@@ -52,11 +54,11 @@ The table below lists the models that are guaranteed to be exportable to ONNX an
 |  PANet | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |      |
 |  CRNN  |             [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)            |       Y       |        Y        | CRNN only accepts input with height 32 |
 
-**Notes**:
-
+:::{note}
 - *All models above are tested with Pytorch==1.8.1 and onnxruntime==1.7.0*
 - If you meet any problem with the listed models above, please create an issue and it would be taken care of soon.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
+:::
 
 ## Convert ONNX to TensorRT (experimental)
 
@@ -96,7 +98,9 @@ Description of arguments:
 | `--show`| bool | Determines whether to show the output of ONNX and TensorRT. Defaults to `False`. |
 | `--verbose`| bool | Determines whether to verbose logging messages while creating TensorRT engine. Defaults to `False`. |
 
-**Note**: This tool is still experimental. For now, some customized operators are not supported, and we only support a subset of detection and recognition algorithms.
+:::{note}
+This tool is still experimental. For now, some customized operators are not supported, and we only support a subset of detection and recognition algorithms.
+:::
 
 ### List of supported models exportable to TensorRT
 
@@ -111,11 +115,11 @@ The table below lists the models that are guaranteed to be exportable to TensorR
 |  PANet | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |      |
 |  CRNN  |             [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)            |       Y       |        Y        | CRNN only accepts input with height 32 |
 
-**Notes**:
-
+:::{note}
 - *All models above are tested with Pytorch==1.8.1,  onnxruntime==1.7.0 and tensorrt==7.2.1.6*
 - If you meet any problem with the listed models above, please create an issue and it would be taken care of soon.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
+:::
 
 
 ## Evaluate ONNX and TensorRT Models (experimental)
@@ -298,8 +302,9 @@ python tools/deploy_test.py \
 </tbody>
 </table>
 
-**Notes**:
+:::{note}
 - TensorRT upsampling operation is a little different from PyTorch. For DBNet and PANet, we suggest replacing upsampling operations with the nearest mode to operations with bilinear mode. [Here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpem_ffm.py#L33) for PANet, [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L111) and [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L121) for DBNet. As is shown in the above table, networks with tag * mean the upsampling mode is changed.
 - Note that changing upsampling mode reduces less performance compared with using the nearest mode. However, the weights of networks are trained through the nearest mode. To pursue the best performance, using bilinear mode for both training and TensorRT deployment is recommended.
 - All ONNX and TensorRT models are evaluated with dynamic shapes on the datasets, and images are preprocessed according to the original config file.
 - This tool is still experimental, and we only support a subset of detection and recognition algorithms for now.
+:::
