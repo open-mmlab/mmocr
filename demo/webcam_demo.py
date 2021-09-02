@@ -29,7 +29,7 @@ def main():
     device = torch.device(args.device)
 
     model = init_detector(args.config, args.checkpoint, device=device)
-    if model.cfg.data.test['type'] == 'ConcatDataset':
+    if model.cfg.data.test['type'] == 'mmdet.ConcatDataset':
         model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
             0].pipeline
 

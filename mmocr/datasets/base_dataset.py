@@ -1,11 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 from mmcv.utils import print_log
-from mmdet.datasets.builder import DATASETS
-from mmdet.datasets.pipelines import Compose
 from torch.utils.data import Dataset
 
-from mmocr.datasets.builder import build_loader
+from mmocr.datasets.builder import DATASETS, build_loader
+from mmocr.datasets.pipelines.compose import Compose
 
 
 @DATASETS.register_module()

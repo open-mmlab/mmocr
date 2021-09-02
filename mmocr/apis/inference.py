@@ -8,9 +8,9 @@ from mmcv.ops import RoIPool
 from mmcv.parallel import collate, scatter
 from mmcv.runner import load_checkpoint
 from mmdet.core import get_classes
-from mmdet.datasets import replace_ImageToTensor
-from mmdet.datasets.pipelines import Compose
 
+from mmocr.datasets import replace_ImageToTensor
+from mmocr.datasets.pipelines.compose import Compose
 from mmocr.models import build_detector
 
 
@@ -142,7 +142,7 @@ def model_inference(model,
         data = test_pipeline(data)
         # get tensor from list to stack for batch mode (text detection)
         if batch_mode:
-            if cfg.data.test.pipeline[1].type == 'MultiScaleFlipAug':
+            if cfg.data.test.pipeline[1].type == 'mmdet.MultiScaleFlipAug':
                 for key, value in data.items():
                     data[key] = value[0]
         datas.append(data)

@@ -3,10 +3,10 @@ import cv2
 import numpy as np
 from lanms import merge_quadrangle_n9 as la_nms
 from mmdet.core import BitmapMasks
-from mmdet.datasets.builder import PIPELINES
 from numpy.linalg import norm
 
 import mmocr.utils.check_argument as check_argument
+from mmocr.datasets.builder import PIPELINES
 from .textsnake_targets import TextSnakeTargets
 
 

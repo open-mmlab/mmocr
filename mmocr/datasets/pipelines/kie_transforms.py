@@ -2,8 +2,9 @@
 import numpy as np
 from mmcv import rescale_size
 from mmcv.parallel import DataContainer as DC
-from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines.formating import DefaultFormatBundle, to_tensor
+
+from mmocr.datasets.builder import PIPELINES
 
 
 @PIPELINES.register_module()

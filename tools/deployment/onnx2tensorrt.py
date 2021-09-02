@@ -10,11 +10,11 @@ import numpy as np
 import torch
 from mmcv.parallel import collate
 from mmcv.tensorrt import is_tensorrt_plugin_loaded, onnx2trt, save_trt_engine
-from mmdet.datasets import replace_ImageToTensor
-from mmdet.datasets.pipelines import Compose
 
 from mmocr.core.deployment import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
                                    TensorRTDetector, TensorRTRecognizer)
+from mmocr.datasets import replace_ImageToTensor
+from mmocr.datasets.pipelines.compose import Compose
 from mmocr.datasets.pipelines.crop import crop_img  # noqa: F401
 
 
@@ -289,7 +289,7 @@ if __name__ == '__main__':
     }
 
     cfg = mmcv.Config.fromfile(args.model_config)
-    if cfg.data.test['type'] == 'ConcatDataset':
+    if cfg.data.test['type'] == 'mmdet.ConcatDataset':
         cfg.data.test.pipeline = \
             cfg.data.test['datasets'][0].pipeline
     onnx2tensorrt(

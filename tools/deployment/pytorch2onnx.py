@@ -7,12 +7,12 @@ import numpy as np
 import torch
 from mmcv.onnx import register_extra_symbolics
 from mmcv.parallel import collate
-from mmdet.datasets import replace_ImageToTensor
-from mmdet.datasets.pipelines import Compose
 from torch import nn
 
 from mmocr.apis import init_detector
 from mmocr.core.deployment import ONNXRuntimeDetector, ONNXRuntimeRecognizer
+from mmocr.datasets import replace_ImageToTensor
+from mmocr.datasets.pipelines.compose import Compose
 from mmocr.datasets.pipelines.crop import crop_img  # noqa: F401
 
 
@@ -356,7 +356,7 @@ def main():
     model = init_detector(args.model_config, args.model_ckpt, device=device)
     if hasattr(model, 'module'):
         model = model.module
-    if model.cfg.data.test['type'] == 'ConcatDataset':
+    if model.cfg.data.test['type'] == 'mmdet.ConcatDataset':
         model.cfg.data.test.pipeline = \
             model.cfg.data.test['datasets'][0].pipeline
 

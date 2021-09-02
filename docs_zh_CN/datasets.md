@@ -43,7 +43,7 @@
 | TextOCR | [下载地址](https://textvqa.org/textocr/dataset)  | - |                    -                    | -
 | Totaltext | [下载地址](https://github.com/cs-chan/Total-Text-Dataset)  | - |                    -                    | -
 
-**注意：若用户需要在 CTW1500, ICDAR 2015/2017 或 Totaltext 数据集上训练模型**, 请注意这些数据集中有部分图片的 EXIF 信息里保存着方向信息。MMCV 采用的 OpenCV 后端会默认根据方向信息对图片进行旋转；而由于数据集的标注是在原图片上进行的，这种冲突会使得部分训练样本失效。因此，用户应该在配置 pipeline 时使用 `dict(type='LoadImageFromFile', color_type='color_ignore_orientation')` 以避免 MMCV 的这一行为。（配置文件可参考 [DBNet](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)）
+**注意：若用户需要在 CTW1500, ICDAR 2015/2017 或 Totaltext 数据集上训练模型**, 请注意这些数据集中有部分图片的 EXIF 信息里保存着方向信息。MMCV 采用的 OpenCV 后端会默认根据方向信息对图片进行旋转；而由于数据集的标注是在原图片上进行的，这种冲突会使得部分训练样本失效。因此，用户应该在配置 pipeline 时使用 `dict(type='mmdet.LoadImageFromFile', color_type='color_ignore_orientation')` 以避免 MMCV 的这一行为。（配置文件可参考 [DBNet](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)）
 
 - `icdar2015` 数据集：
   - 第一步：从[下载地址](https://rrc.cvc.uab.es/?ch=4&com=downloads)下载 `ch4_training_images.zip`、`ch4_test_images.zip`、`ch4_training_localization_transcription_gt.zip`、`Challenge4_Test_Task1_GT.zip` 四个文件，分别对应训练集数据、测试集数据、训练集标注、测试集标注。

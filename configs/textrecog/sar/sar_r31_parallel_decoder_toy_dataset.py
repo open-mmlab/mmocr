@@ -11,7 +11,7 @@ total_epochs = 5
 
 img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 train_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='mmdet.LoadImageFromFile'),
     dict(
         type='ResizeOCR',
         height=48,
@@ -21,14 +21,14 @@ train_pipeline = [
     dict(type='ToTensorOCR'),
     dict(type='NormalizeOCR', **img_norm_cfg),
     dict(
-        type='Collect',
+        type='mmdet.Collect',
         keys=['img'],
         meta_keys=[
             'filename', 'ori_shape', 'resize_shape', 'text', 'valid_ratio'
         ]),
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='mmdet.LoadImageFromFile'),
     dict(
         type='ResizeOCR',
         height=48,
@@ -38,7 +38,7 @@ test_pipeline = [
     dict(type='ToTensorOCR'),
     dict(type='NormalizeOCR', **img_norm_cfg),
     dict(
-        type='Collect',
+        type='mmdet.Collect',
         keys=['img'],
         meta_keys=[
             'filename', 'ori_shape', 'resize_shape', 'valid_ratio',

@@ -6,12 +6,12 @@ import mmcv
 import numpy as np
 import torchvision.transforms as transforms
 from mmdet.core import BitmapMasks, PolygonMasks
-from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines.transforms import Resize
 from PIL import Image
 from shapely.geometry import Polygon as plg
 
 import mmocr.core.evaluation.utils as eval_utils
+from mmocr.datasets.builder import PIPELINES
 from mmocr.utils import check_argument
 
 

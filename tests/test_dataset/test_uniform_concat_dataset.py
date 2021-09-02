@@ -4,8 +4,11 @@ from mmocr.utils import list_from_file
 
 
 def test_dataset_warpper():
-    pipeline1 = [dict(type='LoadImageFromFile')]
-    pipeline2 = [dict(type='LoadImageFromFile'), dict(type='ColorJitter')]
+    pipeline1 = [dict(type='mmdet.LoadImageFromFile')]
+    pipeline2 = [
+        dict(type='mmdet.LoadImageFromFile'),
+        dict(type='ColorJitter')
+    ]
 
     img_prefix = 'tests/data/ocr_toy_dataset/imgs'
     ann_file = 'tests/data/ocr_toy_dataset/label.txt'

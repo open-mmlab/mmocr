@@ -2,9 +2,9 @@
 import cv2
 import numpy as np
 from mmdet.core import BitmapMasks
-from mmdet.datasets.builder import PIPELINES
 
 import mmocr.utils.check_argument as check_argument
+from mmocr.datasets.builder import PIPELINES
 from mmocr.models.builder import build_convertor
 
 

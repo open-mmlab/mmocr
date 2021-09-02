@@ -3,26 +3,31 @@ img_norm_cfg = dict(
 max_scale, min_scale = 1024, 512
 
 train_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations'),
-    dict(type='Resize', img_scale=(max_scale, min_scale), keep_ratio=True),
-    dict(type='RandomFlip', flip_ratio=0.),
-    dict(type='Normalize', **img_norm_cfg),
-    dict(type='Pad', size_divisor=32),
+    dict(type='mmdet.LoadImageFromFile'),
+    dict(type='mmdet.LoadAnnotations'),
+    dict(
+        type='mmdet.Resize', img_scale=(max_scale, min_scale),
+        keep_ratio=True),
+    dict(type='mmdet.RandomFlip', flip_ratio=0.),
+    dict(type='mmdet.Normalize', **img_norm_cfg),
+    dict(type='mmdet.Pad', size_divisor=32),
     dict(type='KIEFormatBundle'),
     dict(
-        type='Collect',
+        type='mmdet.Collect',
         keys=['img', 'relations', 'texts', 'gt_bboxes', 'gt_labels'])
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations'),
-    dict(type='Resize', img_scale=(max_scale, min_scale), keep_ratio=True),
-    dict(type='RandomFlip', flip_ratio=0.),
-    dict(type='Normalize', **img_norm_cfg),
-    dict(type='Pad', size_divisor=32),
+    dict(type='mmdet.LoadImageFromFile'),
+    dict(type='mmdet.LoadAnnotations'),
+    dict(
+        type='mmdet.Resize', img_scale=(max_scale, min_scale),
+        keep_ratio=True),
+    dict(type='mmdet.RandomFlip', flip_ratio=0.),
+    dict(type='mmdet.Normalize', **img_norm_cfg),
+    dict(type='mmdet.Pad', size_divisor=32),
     dict(type='KIEFormatBundle'),
-    dict(type='Collect', keys=['img', 'relations', 'texts', 'gt_bboxes'])
+    dict(
+        type='mmdet.Collect', keys=['img', 'relations', 'texts', 'gt_bboxes'])
 ]
 
 dataset_type = 'KIEDataset'

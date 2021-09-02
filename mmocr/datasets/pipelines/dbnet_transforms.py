@@ -4,7 +4,8 @@ import imgaug.augmenters as iaa
 import mmcv
 import numpy as np
 from mmdet.core.mask import PolygonMasks
-from mmdet.datasets.builder import PIPELINES
+
+from mmocr.datasets.builder import PIPELINES
 
 
 class AugmenterBuilder:

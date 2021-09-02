@@ -18,7 +18,7 @@ def main():
 
     # build the model from a config file and a checkpoint file
     model = init_detector(args.config, args.checkpoint, device=args.device)
-    if model.cfg.data.test['type'] == 'ConcatDataset':
+    if model.cfg.data.test['type'] == 'mmdet.ConcatDataset':
         model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
             0].pipeline
 

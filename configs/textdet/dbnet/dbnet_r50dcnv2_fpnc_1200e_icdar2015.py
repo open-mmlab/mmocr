@@ -40,14 +40,15 @@ img_norm_cfg = dict(
 # img_norm_cfg = dict(mean=[0, 0, 0], std=[1, 1, 1], to_rgb=True)
 
 train_pipeline = [
-    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(
+        type='mmdet.LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadTextAnnotations',
         with_bbox=True,
         with_mask=True,
         poly2mask=False),
     dict(type='ColorJitter', brightness=32.0 / 255, saturation=0.5),
-    dict(type='Normalize', **img_norm_cfg),
+    dict(type='mmdet.Normalize', **img_norm_cfg),
     # img aug
     dict(
         type='ImgAug',
@@ -56,28 +57,29 @@ train_pipeline = [
     # random crop
     dict(type='EastRandomCrop', target_size=(640, 640)),
     dict(type='DBNetTargets', shrink_ratio=0.4),
-    dict(type='Pad', size_divisor=32),
+    dict(type='mmdet.Pad', size_divisor=32),
     # for visualizing img and gts, pls set visualize = True
     dict(
         type='CustomFormatBundle',
         keys=['gt_shrink', 'gt_shrink_mask', 'gt_thr', 'gt_thr_mask'],
         visualize=dict(flag=False, boundary_key='gt_shrink')),
     dict(
-        type='Collect',
+        type='mmdet.Collect',
         keys=['img', 'gt_shrink', 'gt_shrink_mask', 'gt_thr', 'gt_thr_mask'])
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
-        type='MultiScaleFlipAug',
+        type='mmdet.LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(
+        type='mmdet.MultiScaleFlipAug',
         img_scale=(4068, 1024),
         flip=False,
         transforms=[
-            dict(type='Resize', img_scale=(4068, 1024), keep_ratio=True),
-            dict(type='Normalize', **img_norm_cfg),
-            dict(type='Pad', size_divisor=32),
-            dict(type='ImageToTensor', keys=['img']),
-            dict(type='Collect', keys=['img']),
+            dict(type='mmdet.Resize', img_scale=(4068, 1024), keep_ratio=True),
+            dict(type='mmdet.Normalize', **img_norm_cfg),
+            dict(type='mmdet.Pad', size_divisor=32),
+            dict(type='mmdet.ImageToTensor', keys=['img']),
+            dict(type='mmdet.Collect', keys=['img']),
         ])
 ]
 data = dict(
