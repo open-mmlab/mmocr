@@ -1,0 +1,1 @@
+./tools/dist_train.sh configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py dbnet 4
