@@ -1,5 +1,5 @@
--e git+https://github.com/zhouzaida/pytorch_sphinx_theme.git
 docutils==0.16
+-e git+https://github.com/zhouzaida/pytorch_sphinx_theme.git#egg=pytorch_sphinx_theme
 recommonmark
 sphinx==v2.4.4
 sphinx_markdown_tables
