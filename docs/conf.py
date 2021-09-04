@@ -74,6 +74,51 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # html_theme = 'sphinx_rtd_theme'
 html_theme = 'pytorch_sphinx_theme'
 html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
+html_theme_options = {
+    'logo_url': 'https://mmocr.readthedocs.io/en/latest/',
+    'menu': [
+        {'name': 'OpenMMLab', 'url': 'https://openmmlab.com/'},
+        {'name': 'MMOCR', 'url': 'https://github.com/open-mmlab/mmocr'},
+        {'name': 'Projects', 'children': [
+            {'name': 'MMCV', 'url': 'https://github.com/open-mmlab/mmcv', 
+            'description': 'Foundational library for computer vision'},
+            {'name': 'MMDetection', 
+            'url': 'https://github.com/open-mmlab/mmdetection',
+            'description': 'Object detection toolbox and benchmark'},
+            {'name': 'MMAction2', 
+            'url': 'https://github.com/open-mmlab/mmaction2',
+            'description': 'The next generation toolbox for human action'
+            ' understanding'},
+            {'name': 'MMClassification', 
+            'url': 'https://github.com/open-mmlab/mmclassification',
+            'description': 'Image Classification Toolbox and Benchmark'},
+            {'name': 'MMSegmentation', 
+            'url': 'https://github.com/open-mmlab/mmsegmentation',
+            'description': 'The most comprehensive semantic segmentation'
+            ' toolbox'},
+            {'name': 'MMDetection3D', 
+            'url': 'https://github.com/open-mmlab/mmdetection3d',
+            'description': 'The next generation toolbox for general 3D'
+            ' detection'},
+            {'name': 'MMEditing', 
+            'url': 'https://github.com/open-mmlab/mmediting',
+            'description': 'An Image and Video Editing Toolbox for many popular'
+            ' editing tasks'},
+            {'name': 'MMDetection3D', 
+            'url': 'https://github.com/open-mmlab/mmdetection3d',
+            'description': 'The next generation toolbox for general 3D'
+            ' detection'},
+            {'name': 'MMPose', 
+            'url': 'https://github.com/open-mmlab/mmdetection3d',
+            'description': 'The swift knife for pose estimation'},
+
+        ], 'active': True},
+        {'name': 'Contact Us', 'children': [
+            {'name': 'Wechat', 'url': "#"},
+            {'name': 'QQ', 'url': "#"}
+        ]}
+    ]
+}
 
 language = 'en'
 
