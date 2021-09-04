@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import imgaug
 import imgaug.augmenters as iaa
 import mmcv

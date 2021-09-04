@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.core import BitmapMasks
 from mmdet.datasets.builder import PIPELINES
 

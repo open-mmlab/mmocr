@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .db_head import DBHead
 from .drrg_head import DRRGHead
 from .fce_head import FCEHead

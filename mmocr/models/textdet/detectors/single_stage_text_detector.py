@@ -1,6 +1,8 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch
-from mmdet.models.builder import DETECTORS
-from mmdet.models.detectors import SingleStageDetector
+
+from mmocr.models.builder import DETECTORS
+from mmocr.models.common.detectors import SingleStageDetector
 
 
 @DETECTORS.register_module()
@@ -16,9 +18,10 @@ class SingleStageTextDetector(SingleStageDetector):
                  bbox_head,
                  train_cfg=None,
                  test_cfg=None,
-                 pretrained=None):
+                 pretrained=None,
+                 init_cfg=None):
         SingleStageDetector.__init__(self, backbone, neck, bbox_head,
-                                     train_cfg, test_cfg, pretrained)
+                                     train_cfg, test_cfg, pretrained, init_cfg)
 
     def forward_train(self, img, img_metas, **kwargs):
         """

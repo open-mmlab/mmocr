@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os.path as osp
 import tempfile
@@ -58,7 +59,6 @@ def test_bert_softmax(cfg_file):
 
     model = _get_detector_cfg(cfg_file)
     model['label_convertor']['vocab_file'] = vocab_file
-    model['pretrained'] = None
 
     detector = build_detector(model)
     losses = detector.forward(img, img_metas)

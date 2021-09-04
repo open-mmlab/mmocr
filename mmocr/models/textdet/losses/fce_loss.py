@@ -1,9 +1,11 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 import torch
 import torch.nn.functional as F
 from mmdet.core import multi_apply
-from mmdet.models.builder import LOSSES
 from torch import nn
+
+from mmocr.models.builder import LOSSES
 
 
 @LOSSES.register_module()

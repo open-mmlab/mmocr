@@ -16,7 +16,7 @@
 
 MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检测，文本识别以及相应的下游任务，如关键信息提取。 它是 OpenMMLab 项目的一部分。
 
-主分支目前支持 **PyTorch 1.5 以上**的版本。
+主分支目前支持 **PyTorch 1.6 以上**的版本。
 
 文档：https://mmocr.readthedocs.io/en/latest/。
 
@@ -66,6 +66,7 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 - [x] [NRTR](configs/textrecog/nrtr/README.md) (ICDAR'2019)
 - [x] [RobustScanner](configs/textrecog/robust_scanner/README.md) (ECCV'2020)
 - [x] [SAR](configs/textrecog/sar/README.md) (AAAI'2019)
+- [x] [SATRN](configs/textrecog/satrn/README.md) (CVPR'2020 Workshop on Text and Documents in the Deep Learning Era)
 - [x] [SegOCR](configs/textrecog/seg/README.md) (Manuscript'2021)
 
 </details>
@@ -95,17 +96,17 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 如果您发现此项目对您的研究有用，请考虑引用：
 
 ```bibtex
-@misc{mmocr2021,
+@article{mmocr2021,
     title={MMOCR:  A Comprehensive Toolbox for Text Detection, Recognition and Understanding},
-    author={MMOCR Contributors},
-    howpublished = {\url{https://github.com/open-mmlab/mmocr}},
+    author={Kuang, Zhanghui and Sun, Hongbin and Li, Zhizhong and Yue, Xiaoyu and Lin, Tsui Hin and Chen, Jianyong and Wei, Huaqiang and Zhu, Yiqin and Gao, Tong and Zhang, Wenwei and Chen, Kai and Zhang, Wayne and Lin, Dahua},
+    journal= {arXiv preprint arXiv:2108.06543},
     year={2021}
 }
 ```
 
 ## 更新日志
 
-最新的月度版本 v0.2.0 在 2021.05.18 发布。
+最新的月度版本 v0.3.0 在 2021.08.25 发布。
 
 
 ## 安装
@@ -127,6 +128,7 @@ MMOCR 是一款由来自不同高校和企业的研发人员共同参与贡献�
 
 
 - [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab 计算机视觉基础库
+- [MIM](https://github.com/open-mmlab/mim): MIM 是 OpenMMlab 项目、算法、模型的统一入口
 - [MMClassification](https://github.com/open-mmlab/mmclassification): OpenMMLab 图像分类工具箱与测试基准
 - [MMDetection](https://github.com/open-mmlab/mmdetection): OpenMMLab 检测工具箱与测试基准
 - [MMDetection3D](https://github.com/open-mmlab/mmdetection3d): OpenMMLab 新一代通用3D目标检测平台

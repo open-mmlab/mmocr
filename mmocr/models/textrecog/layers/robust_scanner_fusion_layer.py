@@ -1,11 +1,13 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn as nn
+from mmcv.runner import BaseModule
 
 
-class RobustScannerFusionLayer(nn.Module):
+class RobustScannerFusionLayer(BaseModule):
 
-    def __init__(self, dim_model, dim=-1):
-        super().__init__()
+    def __init__(self, dim_model, dim=-1, init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
 
         self.dim_model = dim_model
         self.dim = dim

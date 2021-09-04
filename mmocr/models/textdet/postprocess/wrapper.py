@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import functools
 import operator
 
@@ -223,7 +224,18 @@ def db_decode(preds,
         if len(poly) == 0 or isinstance(poly[0], list):
             continue
         poly = poly.reshape(-1, 2)
-        poly = points2boundary(poly, text_repr_type, score, min_text_width)
+
+        if text_repr_type == 'quad':
+            poly = points2boundary(poly, text_repr_type, score, min_text_width)
+        elif text_repr_type == 'poly':
+            poly = poly.flatten().tolist()
+            if score is not None:
+                poly = poly + [score]
+            if len(poly) < 8:
+                poly = None
+        else:
+            raise ValueError(f'Invalid text repr type {text_repr_type}')
+
         if poly is not None:
             boundaries.append(poly)
     return boundaries
@@ -491,7 +503,7 @@ def poly_nms(polygons, threshold):
         for i in range(len(index)):
             B = polygons[index[i]][:-1]
 
-            iou_list[i] = boundary_iou(A, B)
+            iou_list[i] = boundary_iou(A, B, 1)
         remove_index = np.where(iou_list > threshold)
         index = np.delete(index, remove_index)
 

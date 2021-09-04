@@ -1,9 +1,8 @@
 fourier_degree = 5
 model = dict(
     type='FCENet',
-    pretrained='torchvision://resnet50',
     backbone=dict(
-        type='ResNet',
+        type='mmdet.ResNet',
         depth=50,
         num_stages=4,
         out_indices=(1, 2, 3),
@@ -12,13 +11,13 @@ model = dict(
         norm_eval=True,
         style='pytorch',
         dcn=dict(type='DCNv2', deform_groups=2, fallback_on_stride=False),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
         stage_with_dcn=(False, True, True, True)),
     neck=dict(
-        type='FPN',
+        type='mmdet.FPN',
         in_channels=[512, 1024, 2048],
         out_channels=256,
-        add_extra_convs=True,
-        extra_convs_on_inputs=False,  # use P5
+        add_extra_convs='on_output',
         num_outs=3,
         relu_before_extra_convs=True,
         act_cfg=None),
@@ -40,7 +39,7 @@ img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 
 train_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadTextAnnotations',
         with_bbox=True,
@@ -79,7 +78,7 @@ train_pipeline = [
     dict(type='Collect', keys=['img', 'p3_maps', 'p4_maps', 'p5_maps'])
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
         img_scale=(1080, 736),

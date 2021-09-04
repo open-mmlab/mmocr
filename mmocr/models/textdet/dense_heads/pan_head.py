@@ -1,27 +1,30 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 import torch
 import torch.nn as nn
-from mmcv.cnn import normal_init
-from mmdet.models.builder import HEADS, build_loss
+from mmcv.runner import BaseModule
 
+from mmocr.models.builder import HEADS, build_loss
 from mmocr.utils import check_argument
 from . import HeadMixin
 
 
 @HEADS.register_module()
-class PANHead(HeadMixin, nn.Module):
+class PANHead(HeadMixin, BaseModule):
     """The class for PANet head."""
 
     def __init__(
-            self,
-            in_channels,
-            out_channels,
-            text_repr_type='poly',  # 'poly' or 'quad'
-            downsample_ratio=0.25,
-            loss=dict(type='PANLoss'),
-            train_cfg=None,
-            test_cfg=None):
-        super().__init__()
+        self,
+        in_channels,
+        out_channels,
+        text_repr_type='poly',  # 'poly' or 'quad'
+        downsample_ratio=0.25,
+        loss=dict(type='PANLoss'),
+        train_cfg=None,
+        test_cfg=None,
+        init_cfg=dict(
+            type='Normal', mean=0, std=0.01, override=dict(name='out_conv'))):
+        super().__init__(init_cfg=init_cfg)
 
         assert check_argument.is_type_list(in_channels, int)
         assert isinstance(out_channels, int)
@@ -47,10 +50,6 @@ class PANHead(HeadMixin, nn.Module):
             in_channels=np.sum(np.array(in_channels)),
             out_channels=out_channels,
             kernel_size=1)
-        self.init_weights()
-
-    def init_weights(self):
-        normal_init(self.out_conv, mean=0, std=0.01)
 
     def forward(self, inputs):
         if isinstance(inputs, tuple):

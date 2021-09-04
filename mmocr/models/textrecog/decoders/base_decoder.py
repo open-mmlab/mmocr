@@ -1,17 +1,15 @@
-import torch.nn as nn
+# Copyright (c) OpenMMLab. All rights reserved.
+from mmcv.runner import BaseModule
 
 from mmocr.models.builder import DECODERS
 
 
 @DECODERS.register_module()
-class BaseDecoder(nn.Module):
+class BaseDecoder(BaseModule):
     """Base decoder class for text recognition."""
 
-    def __init__(self, **kwargs):
-        super().__init__()
-
-    def init_weights(self):
-        pass
+    def __init__(self, init_cfg=None, **kwargs):
+        super().__init__(init_cfg=init_cfg)
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
         raise NotImplementedError

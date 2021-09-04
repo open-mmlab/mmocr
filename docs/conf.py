@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -23,7 +24,11 @@ copyright = '2020-2030, OpenMMLab'
 author = 'OpenMMLab'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+version_file = '../mmocr/version.py'
+with open(version_file, 'r') as f:
+    exec(compile(f.read(), version_file, 'exec'))
+__version__ = locals()['__version__']
+release = __version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -38,29 +43,7 @@ extensions = [
     'sphinx_markdown_tables',
 ]
 
-autodoc_mock_imports = [
-    'torch',
-    'torchvision',
-    'mmcv',
-    'mmocr.version',
-    'mmdet',
-    'imgaug',
-    'kwarray',
-    'lmdb',
-    'matplotlib',
-    'Polygon',
-    'cv2',
-    'numpy',
-    'pyclipper',
-    'pycocotools',
-    'pytest',
-    'rapidfuzz',
-    'scipy',
-    'shapely',
-    'skimage',
-    'titlecase',
-    'PIL',
-]
+autodoc_mock_imports = ['mmcv._ext']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -95,7 +78,8 @@ master_doc = 'index'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = []
+html_static_path = ['_static']
+html_css_files = ['css/readthedocs.css']
 
 
 def builder_inited_handler(app):

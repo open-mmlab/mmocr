@@ -1,8 +1,10 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import math
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from mmcv.runner import ModuleList
 
 from mmocr.models.builder import DECODERS
 from mmocr.models.textrecog.layers.transformer_layer import (
@@ -29,8 +31,9 @@ class TFDecoder(BaseDecoder):
                  max_seq_len=40,
                  start_idx=1,
                  padding_idx=92,
+                 init_cfg=None,
                  **kwargs):
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
 
         self.padding_idx = padding_idx
         self.start_idx = start_idx
@@ -43,7 +46,7 @@ class TFDecoder(BaseDecoder):
             d_embedding, n_position=n_position)
         self.dropout = nn.Dropout(p=dropout)
 
-        self.layer_stack = nn.ModuleList([
+        self.layer_stack = ModuleList([
             TransformerDecoderLayer(
                 d_model, d_inner, n_head, d_k, d_v, dropout=dropout)
             for _ in range(n_layers)

@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import math
 
 import torch
@@ -49,8 +50,9 @@ class ParallelSARDecoder(BaseDecoder):
                  start_idx=0,
                  padding_idx=92,
                  pred_concat=False,
+                 init_cfg=None,
                  **kwargs):
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
 
         self.num_classes = num_classes
         self.enc_bi_rnn = enc_bi_rnn
@@ -258,8 +260,9 @@ class SequentialSARDecoder(BaseDecoder):
                  start_idx=0,
                  padding_idx=92,
                  pred_concat=False,
+                 init_cfg=None,
                  **kwargs):
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
 
         self.num_classes = num_classes
         self.enc_bi_rnn = enc_bi_rnn

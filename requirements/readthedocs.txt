@@ -1,10 +1,10 @@
 imgaug
 kwarray
-lanms-proper
+lanms-neo==1.0.2
 lmdb
 matplotlib
 mmcv
-Polygon3
+mmdet
 pyclipper
 rapidfuzz
 regex

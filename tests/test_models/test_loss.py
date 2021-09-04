@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 import torch
 from mmdet.core import BitmapMasks
@@ -143,3 +144,16 @@ def test_drrgloss():
                          target_maps, target_maps, target_maps, target_maps)
 
     assert isinstance(loss_dict, dict)
+
+
+def test_dice_loss():
+    pred = torch.Tensor([[[-1000, -1000, -1000], [-1000, -1000, -1000],
+                          [-1000, -1000, -1000]]])
+    target = torch.Tensor([[[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
+    mask = torch.Tensor([[[1, 1, 1], [1, 1, 1], [1, 1, 1]]])
+
+    pan_loss = losses.PANLoss()
+
+    dice_loss = pan_loss.dice_loss_with_logits(pred, target, mask)
+
+    assert np.allclose(dice_loss.item(), 0)

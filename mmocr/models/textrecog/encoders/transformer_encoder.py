@@ -1,6 +1,8 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import math
 
 import torch.nn as nn
+from mmcv.runner import ModuleList
 
 from mmocr.models.builder import ENCODERS
 from mmocr.models.textrecog.layers import TransformerEncoderLayer
@@ -19,10 +21,11 @@ class TFEncoder(BaseEncoder):
                  d_model=512,
                  d_inner=256,
                  dropout=0.1,
+                 init_cfg=None,
                  **kwargs):
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
         self.d_model = d_model
-        self.layer_stack = nn.ModuleList([
+        self.layer_stack = ModuleList([
             TransformerEncoderLayer(
                 d_model, d_inner, n_head, d_k, d_v, dropout=dropout)
             for _ in range(n_layers)

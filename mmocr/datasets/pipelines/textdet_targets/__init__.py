@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .base_textdet_targets import BaseTextDetTargets
 from .dbnet_targets import DBNetTargets
 from .drrg_targets import DRRGTargets

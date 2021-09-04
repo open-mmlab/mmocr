@@ -1,15 +1,16 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
-from mmcv.cnn import normal_init
+from mmcv.runner import BaseModule
 from mmdet.core import multi_apply
-from mmdet.models.builder import HEADS, build_loss
 
+from mmocr.models.builder import HEADS, build_loss
 from mmocr.models.textdet.postprocess import decode
 from ..postprocess.wrapper import poly_nms
 from .head_mixin import HeadMixin
 
 
 @HEADS.register_module()
-class FCEHead(HeadMixin, nn.Module):
+class FCEHead(HeadMixin, BaseModule):
     """The class for implementing FCENet head.
     FCENet(CVPR2021): Fourier Contour Embedding for Arbitrary-shaped Text
     Detection.
@@ -31,23 +32,30 @@ class FCEHead(HeadMixin, nn.Module):
         beta (float) :The parameter to calculate final scores.
     """
 
-    def __init__(self,
-                 in_channels,
-                 scales,
-                 fourier_degree=5,
-                 num_sample=50,
-                 num_reconstr_points=50,
-                 decoding_type='fcenet',
-                 loss=dict(type='FCELoss'),
-                 score_thr=0.3,
-                 nms_thr=0.1,
-                 alpha=1.0,
-                 beta=1.0,
-                 text_repr_type='poly',
-                 train_cfg=None,
-                 test_cfg=None):
+    def __init__(
+        self,
+        in_channels,
+        scales,
+        fourier_degree=5,
+        num_sample=50,
+        num_reconstr_points=50,
+        decoding_type='fcenet',
+        loss=dict(type='FCELoss'),
+        score_thr=0.3,
+        nms_thr=0.1,
+        alpha=1.0,
+        beta=1.0,
+        text_repr_type='poly',
+        train_cfg=None,
+        test_cfg=None,
+        init_cfg=dict(
+            type='Normal',
+            mean=0,
+            std=0.01,
+            override=[dict(name='out_conv_cls'),
+                      dict(name='out_conv_reg')])):
 
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
         assert isinstance(in_channels, int)
 
         self.downsample_ratio = 1.0
@@ -82,12 +90,6 @@ class FCEHead(HeadMixin, nn.Module):
             kernel_size=3,
             stride=1,
             padding=1)
-
-        self.init_weights()
-
-    def init_weights(self):
-        normal_init(self.out_conv_cls, mean=0, std=0.01)
-        normal_init(self.out_conv_reg, mean=0, std=0.01)
 
     def forward(self, feats):
         cls_res, reg_res = multi_apply(self.forward_single, feats)

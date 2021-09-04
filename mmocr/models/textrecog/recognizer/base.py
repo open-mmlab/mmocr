@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
@@ -5,19 +6,16 @@ from collections import OrderedDict
 import mmcv
 import torch
 import torch.distributed as dist
-import torch.nn as nn
-from mmcv.runner import auto_fp16
-from mmcv.utils import print_log
+from mmcv.runner import BaseModule, auto_fp16
 
 from mmocr.core import imshow_text_label
-from mmocr.utils import get_root_logger
 
 
-class BaseRecognizer(nn.Module, metaclass=ABCMeta):
+class BaseRecognizer(BaseModule, metaclass=ABCMeta):
     """Base class for text recognition."""
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
         self.fp16_enabled = False
 
     @abstractmethod
@@ -54,17 +52,6 @@ class BaseRecognizer(nn.Module, metaclass=ABCMeta):
             img_metas (list[list[dict]]): The metadata of images.
         """
         pass
-
-    def init_weights(self, pretrained=None):
-        """Initialize the weights for detector.
-
-        Args:
-            pretrained (str, optional): Path to pre-trained weights.
-                Defaults to None.
-        """
-        if pretrained is not None:
-            logger = get_root_logger()
-            print_log(f'load model from: {pretrained}', logger=logger)
 
     def forward_test(self, imgs, img_metas, **kwargs):
         """

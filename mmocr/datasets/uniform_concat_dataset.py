@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import copy
 
 from mmdet.datasets import DATASETS, ConcatDataset, build_dataset

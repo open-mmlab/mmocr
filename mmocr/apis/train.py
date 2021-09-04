@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 
 import torch
@@ -44,6 +45,7 @@ def train_detector(model,
                    'drop_last',
                    'prefetch_num',
                    'pin_memory',
+                   'persistent_workers',
                ] if k in cfg.data)
     }
 

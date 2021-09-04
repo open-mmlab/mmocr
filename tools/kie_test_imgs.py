@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import ast
 import os
@@ -44,7 +45,8 @@ def test(model, data_loader, show=False, out_dir=None):
                     img_show = img
 
                 if out_dir:
-                    out_file = osp.join(out_dir, img_meta['ori_filename'])
+                    out_file = osp.join(out_dir,
+                                        osp.basename(img_meta['filename']))
                 else:
                     out_file = None
 
@@ -97,7 +99,6 @@ def main():
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
-    cfg.model.pretrained = None
 
     distributed = False
 

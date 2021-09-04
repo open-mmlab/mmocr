@@ -1,8 +1,11 @@
-import torch
-from mmdet.models.builder import DETECTORS, build_backbone, build_loss
+# Copyright (c) OpenMMLab. All rights reserved.
+import warnings
 
-from mmocr.models.builder import (build_convertor, build_decoder,
-                                  build_encoder, build_preprocessor)
+import torch
+
+from mmocr.models.builder import (DETECTORS, build_backbone, build_convertor,
+                                  build_decoder, build_encoder, build_loss,
+                                  build_preprocessor)
 from .base import BaseRecognizer
 
 
@@ -20,8 +23,10 @@ class EncodeDecodeRecognizer(BaseRecognizer):
                  train_cfg=None,
                  test_cfg=None,
                  max_seq_len=40,
-                 pretrained=None):
-        super().__init__()
+                 pretrained=None,
+                 init_cfg=None):
+
+        super().__init__(init_cfg=init_cfg)
 
         # Label convertor (str2tensor, tensor2str)
         assert label_convertor is not None
@@ -58,21 +63,11 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
         self.max_seq_len = max_seq_len
-        self.init_weights(pretrained=pretrained)
 
-    def init_weights(self, pretrained=None):
-        """Initialize the weights of recognizer."""
-        super().init_weights(pretrained)
-
-        if self.preprocessor is not None:
-            self.preprocessor.init_weights()
-
-        self.backbone.init_weights()
-
-        if self.encoder is not None:
-            self.encoder.init_weights()
-
-        self.decoder.init_weights()
+        if pretrained is not None:
+            warnings.warn('DeprecationWarning: pretrained is a deprecated \
+                key, please consider using init_cfg')
+            self.init_cfg = dict(type='Pretrained', checkpoint=pretrained)
 
     def extract_feat(self, img):
         """Directly extract features from the backbone."""
@@ -97,6 +92,10 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         Returns:
             dict[str, tensor]: A dictionary of loss components.
         """
+        for img_meta in img_metas:
+            valid_ratio = 1.0 * img_meta['resize_shape'][1] / img.size(-1)
+            img_meta['valid_ratio'] = valid_ratio
+
         feat = self.extract_feat(img)
 
         gt_labels = [img_meta['text'] for img_meta in img_metas]
@@ -129,6 +128,10 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         Returns:
             list[str]: Text label result of each image.
         """
+        for img_meta in img_metas:
+            valid_ratio = 1.0 * img_meta['resize_shape'][1] / img.size(-1)
+            img_meta['valid_ratio'] = valid_ratio
+
         feat = self.extract_feat(img)
 
         out_enc = None

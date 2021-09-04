@@ -7,7 +7,8 @@ import math
 
 import torch
 import torch.nn as nn
-from mmcv.cnn import build_activation_layer
+
+from mmocr.models.builder import build_activation_layer
 
 
 class BertModel(nn.Module):

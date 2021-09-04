@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import math
 
 import torch
@@ -20,8 +21,9 @@ class PositionAttentionDecoder(BaseDecoder):
                  max_seq_len=40,
                  mask=True,
                  return_feature=False,
-                 encode_value=False):
-        super().__init__()
+                 encode_value=False,
+                 init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
 
         self.num_classes = num_classes
         self.dim_input = dim_input
@@ -43,9 +45,6 @@ class PositionAttentionDecoder(BaseDecoder):
             pred_num_classes = num_classes - 1
             self.prediction = nn.Linear(
                 dim_model if encode_value else dim_input, pred_num_classes)
-
-    def init_weights(self):
-        pass
 
     def _get_position_index(self, length, batch_size, device=None):
         position_index = torch.arange(0, length, device=device)

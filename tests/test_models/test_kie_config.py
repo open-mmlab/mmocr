@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import copy
 from os.path import dirname, exists, join
 
@@ -85,7 +86,6 @@ def _get_detector_cfg(fname):
 ])
 def test_sdmgr_pipeline(cfg_file):
     model = _get_detector_cfg(cfg_file)
-    model['pretrained'] = None
 
     from mmocr.models import build_detector
     detector = build_detector(model)

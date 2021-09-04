@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.datasets.builder import DATASETS
 
 import mmocr.utils as utils

@@ -1,12 +1,14 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch
-from mmcv.cnn import normal_init
-from mmdet.models.builder import HEADS, build_loss
+from mmcv.runner import BaseModule
 from torch import nn
 from torch.nn import functional as F
 
+from mmocr.models.builder import HEADS, build_loss
+
 
 @HEADS.register_module()
-class SDMGRHead(nn.Module):
+class SDMGRHead(BaseModule):
 
     def __init__(self,
                  num_chars=92,
@@ -21,8 +23,13 @@ class SDMGRHead(nn.Module):
                  loss=dict(type='SDMGRLoss'),
                  bidirectional=False,
                  train_cfg=None,
-                 test_cfg=None):
-        super().__init__()
+                 test_cfg=None,
+                 init_cfg=dict(
+                     type='Normal',
+                     override=dict(name='edge_embed'),
+                     mean=0,
+                     std=0.01)):
+        super().__init__(init_cfg=init_cfg)
 
         self.fusion = Block([visual_dim, node_embed], node_embed, fusion_dim)
         self.node_embed = nn.Embedding(num_chars, node_input, 0)
@@ -39,9 +46,6 @@ class SDMGRHead(nn.Module):
         self.node_cls = nn.Linear(node_embed, num_classes)
         self.edge_cls = nn.Linear(edge_embed, 2)
         self.loss = build_loss(loss)
-
-    def init_weights(self, pretrained=False):
-        normal_init(self.edge_embed, mean=0, std=0.01)
 
     def forward(self, relations, texts, x=None):
         node_nums, char_nums = [], []

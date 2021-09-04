@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import tempfile
 from functools import partial
 
@@ -5,11 +6,11 @@ import mmcv
 import numpy as np
 import pytest
 import torch
-from mmdet.models import build_detector
 from packaging import version
 
 from mmocr.core.deployment import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
                                    TensorRTDetector, TensorRTRecognizer)
+from mmocr.models import build_detector
 
 
 @pytest.mark.skipif(torch.__version__ == 'parrots', reason='skip parrots.')
@@ -29,7 +30,6 @@ def test_detector_wrapper():
     cfg = dict(
         model=dict(
             type='DBNet',
-            pretrained='torchvision://resnet18',
             backbone=dict(
                 type='ResNet',
                 depth=18,
@@ -37,6 +37,8 @@ def test_detector_wrapper():
                 out_indices=(0, 1, 2, 3),
                 frozen_stages=-1,
                 norm_cfg=dict(type='BN', requires_grad=True),
+                init_cfg=dict(
+                    type='Pretrained', checkpoint='torchvision://resnet18'),
                 norm_eval=False,
                 style='caffe'),
             neck=dict(

@@ -1,8 +1,9 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn.functional as F
-from mmdet.models.builder import LOSSES
 from torch import nn
 
+from mmocr.models.builder import LOSSES
 from mmocr.models.common.losses.dice_loss import DiceLoss
 
 
@@ -132,8 +133,6 @@ class DBLoss(nn.Module):
         assert isinstance(gt_shrink_mask, list)
         assert isinstance(gt_thr, list)
         assert isinstance(gt_thr_mask, list)
-
-        preds = preds[0]
 
         pred_prob = preds[:, 0, :, :]
         pred_thr = preds[:, 1, :, :]

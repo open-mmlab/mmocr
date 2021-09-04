@@ -1,7 +1,7 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from argparse import ArgumentParser
 
-from mmdet.apis import init_detector
-
+from mmocr.apis import init_detector
 from mmocr.apis.inference import text_model_inference
 
 from mmocr.datasets import build_dataset  # NOQA

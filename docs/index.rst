@@ -5,10 +5,13 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
+   :caption: Getting Started
 
    install.md
    getting_started.md
    demo.md
+   training.md
+   testing.md
    deployment.md
 
 .. toctree::
@@ -23,14 +26,24 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
-   :caption: Datasets
+   :caption: Dataset Zoo
 
-   datasets.md
+   datasets/det.md
+   datasets/recog.md
+   datasets/kie.md
+   datasets/ner.md
 
 .. toctree::
    :maxdepth: 2
-   :caption: Notes
+   :caption: Configuration System
 
+   dataset_types.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Miscellaneous
+
+   tools.md
    changelog.md
 
 .. toctree::

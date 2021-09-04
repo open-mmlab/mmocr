@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 """pytest tests/test_detector.py."""
 import copy
 import tempfile
@@ -9,6 +10,7 @@ import pytest
 import torch
 
 import mmocr.core.evaluation.utils as utils
+from mmocr.utils import revert_sync_batchnorm
 
 
 def _demo_mm_inputs(num_kernels=0, input_shape=(1, 3, 300, 300),
@@ -192,10 +194,10 @@ def test_ocr_mask_rcnn(cfg_file):
 def test_panet(cfg_file):
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None
-    model['backbone']['norm_cfg']['type'] = 'BN'
 
     from mmocr.models import build_detector
     detector = build_detector(model)
+    detector = revert_sync_batchnorm(detector)
 
     input_shape = (1, 3, 224, 224)
     num_kernels = 2
@@ -247,10 +249,10 @@ def test_panet(cfg_file):
 def test_psenet(cfg_file):
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None
-    model['backbone']['norm_cfg']['type'] = 'BN'
 
     from mmocr.models import build_detector
     detector = build_detector(model)
+    detector = revert_sync_batchnorm(detector)
 
     input_shape = (1, 3, 224, 224)
     num_kernels = 7
@@ -289,10 +291,10 @@ def test_psenet(cfg_file):
 def test_dbnet(cfg_file):
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None
-    model['backbone']['norm_cfg']['type'] = 'BN'
 
     from mmocr.models import build_detector
     detector = build_detector(model)
+    detector = revert_sync_batchnorm(detector)
     detector = detector.cuda()
     input_shape = (1, 3, 224, 224)
     num_kernels = 7
@@ -338,10 +340,10 @@ def test_dbnet(cfg_file):
 def test_textsnake(cfg_file):
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None
-    model['backbone']['norm_cfg']['type'] = 'BN'
 
     from mmocr.models import build_detector
     detector = build_detector(model)
+    detector = revert_sync_batchnorm(detector)
     input_shape = (1, 3, 224, 224)
     num_kernels = 1
     mm_inputs = _demo_mm_inputs(num_kernels, input_shape)
@@ -394,10 +396,10 @@ def test_textsnake(cfg_file):
 def test_fcenet(cfg_file):
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None
-    model['backbone']['norm_cfg']['type'] = 'BN'
 
     from mmocr.models import build_detector
     detector = build_detector(model)
+    detector = revert_sync_batchnorm(detector)
     detector = detector.cuda()
 
     fourier_degree = 5
@@ -451,10 +453,10 @@ def test_fcenet(cfg_file):
 def test_drrg(cfg_file):
     model = _get_detector_cfg(cfg_file)
     model['pretrained'] = None
-    model['backbone']['norm_cfg']['type'] = 'BN'
 
     from mmocr.models import build_detector
     detector = build_detector(model)
+    detector = revert_sync_batchnorm(detector)
 
     input_shape = (1, 3, 224, 224)
     num_kernels = 1

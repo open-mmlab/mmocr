@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmocr.datasets import UniformConcatDataset
 from mmocr.utils import list_from_file
 

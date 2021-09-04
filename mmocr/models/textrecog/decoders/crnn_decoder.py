@@ -1,5 +1,6 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
-from mmcv.cnn import xavier_init
+from mmcv.runner import Sequential
 
 from mmocr.models.builder import DECODERS
 from mmocr.models.textrecog.layers import BidirectionalLSTM
@@ -13,23 +14,19 @@ class CRNNDecoder(BaseDecoder):
                  in_channels=None,
                  num_classes=None,
                  rnn_flag=False,
+                 init_cfg=dict(type='Xavier', layer='Conv2d'),
                  **kwargs):
-        super().__init__()
+        super().__init__(init_cfg=init_cfg)
         self.num_classes = num_classes
         self.rnn_flag = rnn_flag
 
         if rnn_flag:
-            self.decoder = nn.Sequential(
+            self.decoder = Sequential(
                 BidirectionalLSTM(in_channels, 256, 256),
                 BidirectionalLSTM(256, 256, num_classes))
         else:
             self.decoder = nn.Conv2d(
                 in_channels, num_classes, kernel_size=1, stride=1)
-
-    def init_weights(self):
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                xavier_init(m)
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
         assert feat.size(2) == 1, 'feature height must be 1'

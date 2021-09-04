@@ -1,5 +1,5 @@
-from mmdet.models.builder import HEADS
-
+# Copyright (c) OpenMMLab. All rights reserved.
+from mmocr.models.builder import HEADS
 from . import PANHead
 
 
@@ -15,7 +15,8 @@ class PSEHead(PANHead):
             downsample_ratio=0.25,
             loss=dict(type='PSELoss'),
             train_cfg=None,
-            test_cfg=None):
+            test_cfg=None,
+            init_cfg=None):
         super().__init__(
             in_channels=in_channels,
             out_channels=out_channels,
@@ -23,4 +24,5 @@ class PSEHead(PANHead):
             downsample_ratio=downsample_ratio,
             loss=loss,
             train_cfg=train_cfg,
-            test_cfg=test_cfg)
+            test_cfg=test_cfg,
+            init_cfg=init_cfg)

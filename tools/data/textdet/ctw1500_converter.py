@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import glob
 import os.path as osp
@@ -8,8 +9,7 @@ import mmcv
 import numpy as np
 from shapely.geometry import Polygon
 
-from mmocr.utils import (convert_annotations, drop_orientation, is_not_png,
-                         list_from_file)
+from mmocr.utils import convert_annotations, list_from_file
 
 
 def collect_files(img_dir, gt_dir, split):
@@ -35,10 +35,6 @@ def collect_files(img_dir, gt_dir, split):
     imgs_list = []
     for suffix in suffixes:
         imgs_list.extend(glob.glob(osp.join(img_dir, '*' + suffix)))
-
-    imgs_list = [
-        drop_orientation(f) if is_not_png(f) else f for f in imgs_list
-    ]
 
     files = []
     if split == 'training':
@@ -169,10 +165,6 @@ def load_img_info(files, split):
     img_file, gt_file = files
     # read imgs with ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
-    # read imgs with orientations as dataloader does when training and testing
-    img_color = mmcv.imread(img_file, 'color')
-    # make sure imgs have no orientations info, or annotation gt is wrong.
-    assert img.shape[0:2] == img_color.shape[0:2]
 
     split_name = osp.basename(osp.dirname(img_file))
     img_info = dict(

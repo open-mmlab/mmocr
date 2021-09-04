@@ -4,23 +4,23 @@
 
 - Linux (Windows is not officially supported)
 - Python 3.7
-- PyTorch 1.5 or higher
-- torchvision 0.6.0
+- PyTorch 1.6 or higher
+- torchvision 0.7.0
 - CUDA 10.1
 - NCCL 2
 - GCC 5.4.0 or higher
-- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation) 1.3.4
-- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation) 2.11.0
+- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation) >= 1.3.8
+- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation) >= 2.14.0
 
 我们已经测试了以下操作系统和软件版本:
 
 - OS: Ubuntu 16.04
 - CUDA: 10.1
 - GCC(G++): 5.4.0
-- MMCV 1.3.4
-- MMDetection 2.11.0
-- PyTorch 1.5
-- torchvision 0.6.0
+- MMCV 1.3.8
+- MMDetection 2.14.0
+- PyTorch 1.6.0
+- torchvision 0.7.0
 
 MMOCR基于Pytorch和mmdetection项目实现。
 
@@ -36,7 +36,7 @@ conda activate open-mmlab
 b. 按照Pytorch官网教程安装Pytorch和torchvision。[official instructions](https://pytorch.org/), 例如,
 
 ```shell
-conda install pytorch==1.5.0 torchvision==0.6.0 cudatoolkit=10.1 -c pytorch
+conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.1 -c pytorch
 ```
 注意：确定CUDA编译版本和运行版本一致。你可以在Pytorch官网检查预编译Pytorch所支持的CUDA版本[PyTorch website](https://pytorch.org/)。
 
@@ -53,8 +53,8 @@ pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
 ```
 注意：使用mmocr 0.2.0及更高版本需要安装mmcv 1.3.4或更高版本。
-
 如果安装时进行了编译过程，请再次确认安装的mmcv-full版本与环境中CUDA版本，Pytorch版本匹配。即使是Pytorch 1.7.0和1.7.1，mmcv-full的安装版本也是有区别的。
+
 
 如有需要，可以在[installation](https://github.com/open-mmlab/mmcv#installation) 检查mmcv与CUDA和Pytorch的版本对应关系。 
 
@@ -64,7 +64,7 @@ d. 安装 [mmdet](https://github.com/open-mmlab/mmdetection.git), 我们推荐�
 在 [here](https://pypi.org/project/mmdet/) 可以查看`mmdet`版本信息.
 
 ```shell
-pip install mmdet==2.11.0
+pip install mmdet
 ```
 
 或者，你也可以按照[installation](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md)中的方法安装 `mmdet` 。
@@ -94,13 +94,13 @@ conda create -n open-mmlab python=3.7 -y
 conda activate open-mmlab
 
 # install latest pytorch prebuilt with the default prebuilt CUDA version (usually the latest)
-conda install pytorch==1.5.0 torchvision==0.6.0 cudatoolkit=10.1 -c pytorch
+conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.1 -c pytorch
 
 # install the latest mmcv-full
-pip install mmcv-full==1.3.4
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch1.6.0/index.html
 
 # install mmdetection
-pip install mmdet==2.11.0
+pip install mmdet
 
 # install mmocr
 git clone https://github.com/open-mmlab/mmocr.git
@@ -116,7 +116,7 @@ export PYTHONPATH=$(pwd):$PYTHONPATH
 我们提供了一个 [Dockerfile](https://github.com/open-mmlab/mmocr/blob/master/docker/Dockerfile) 文件以建立 docker 镜像 。
 
 ```shell
-# build an image with PyTorch 1.5, CUDA 10.1
+# build an image with PyTorch 1.6, CUDA 10.1
 docker build -t mmocr docker/
 ```
 

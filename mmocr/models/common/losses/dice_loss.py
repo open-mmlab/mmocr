@@ -1,6 +1,8 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn as nn
-from mmdet.models.builder import LOSSES
+
+from mmocr.models.builder import LOSSES
 
 
 @LOSSES.register_module()

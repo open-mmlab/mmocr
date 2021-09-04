@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import glob
 import os
@@ -11,7 +12,6 @@ import yaml
 from shapely.geometry import Polygon
 
 from mmocr.datasets.pipelines.crop import crop_img
-from mmocr.utils import drop_orientation, is_not_png
 from mmocr.utils.fileio import list_to_file
 
 
@@ -39,8 +39,7 @@ def collect_files(img_dir, gt_dir, split):
     for suffix in suffixes:
         imgs_list.extend(glob.glob(osp.join(img_dir, '*' + suffix)))
 
-    imgs_list = sorted(
-        [drop_orientation(f) if is_not_png(f) else f for f in imgs_list])
+    imgs_list = sorted(imgs_list)
     ann_list = sorted(
         [osp.join(gt_dir, gt_file) for gt_file in os.listdir(gt_dir)])
 
@@ -296,6 +295,11 @@ def generate_ann(root_path, split, image_infos):
         for anno in image_info['anno_info']:
             word = anno['word']
             dst_img = crop_img(image, anno['bbox'])
+
+            # Skip invalid annotations
+            if min(dst_img.shape) == 0:
+                continue
+
             dst_img_name = f'{src_img_root}_{index}.png'
             index += 1
             dst_img_path = osp.join(dst_image_root, dst_img_name)
@@ -318,10 +322,6 @@ def load_img_info(files):
     img_file, gt_file = files
     # read imgs with ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
-    # read imgs with orientations as dataloader does when training and testing
-    img_color = mmcv.imread(img_file, 'color')
-    # make sure imgs have no orientation info, or annotation gt is wrong.
-    assert img.shape[0:2] == img_color.shape[0:2]
 
     split_name = osp.basename(osp.dirname(img_file))
     img_info = dict(

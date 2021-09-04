@@ -72,9 +72,12 @@ train_pipeline = [
     dict(
         type='Collect',
         keys=['img', 'gt_kernels'],
-        meta_keys=['filename', 'ori_shape', 'img_shape'])
+        meta_keys=['filename', 'ori_shape', 'resize_shape'])
 ]
 
+test_img_norm_cfg = dict(
+    mean=[x * 255 for x in img_norm_cfg['mean']],
+    std=[x * 255 for x in img_norm_cfg['std']])
 test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
@@ -83,13 +86,12 @@ test_pipeline = [
         min_width=64,
         max_width=None,
         keep_aspect_ratio=True),
-    dict(type='ToTensorOCR'),
-    dict(type='NormalizeOCR', **img_norm_cfg),
-    dict(type='CustomFormatBundle', call_super=False),
+    dict(type='Normalize', **test_img_norm_cfg),
+    dict(type='DefaultFormatBundle'),
     dict(
         type='Collect',
         keys=['img'],
-        meta_keys=['filename', 'ori_shape', 'img_shape'])
+        meta_keys=['filename', 'ori_shape', 'resize_shape'])
 ]
 
 train_img_root = 'data/mixture/'

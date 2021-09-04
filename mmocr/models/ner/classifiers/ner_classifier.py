@@ -1,6 +1,6 @@
-from mmdet.models.builder import DETECTORS, build_loss
-
-from mmocr.models.builder import build_convertor, build_decoder, build_encoder
+# Copyright (c) OpenMMLab. All rights reserved.
+from mmocr.models.builder import (DETECTORS, build_convertor, build_decoder,
+                                  build_encoder, build_loss)
 from mmocr.models.textrecog.recognizer.base import BaseRecognizer
 
 
@@ -15,11 +15,10 @@ class NerClassifier(BaseRecognizer):
                  label_convertor,
                  train_cfg=None,
                  test_cfg=None,
-                 pretrained=None):
-        super().__init__()
+                 init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
         self.label_convertor = build_convertor(label_convertor)
 
-        encoder.update(pretrained=pretrained)
         self.encoder = build_encoder(encoder)
 
         decoder.update(num_labels=self.label_convertor.num_labels)
