@@ -1,3 +1,6 @@
-.wy-nav-content {
-    max-width: none;
+.header-logo {
+    background-image: url("../images/mmocr.png");
+    background-size: 110px 40px;
+    height: 40px;
+    width: 110px;
 }
