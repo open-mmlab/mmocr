@@ -122,15 +122,11 @@ html_theme_options = {
             'url': 'https://github.com/open-mmlab/mmgeneration',
             'description': 'A powerful toolkit for generative models'},
 
-        ], 'active': True},
+        ]},
         {'name': 'OpenMMLab', 'children': [
             {'name': 'Homepage', 'url': 'https://openmmlab.com/'},
             {'name': 'GitHub', 'url': 'https://github.com/open-mmlab/'},
         ]},
-        {'name': 'Contact Us', 'children': [
-            {'name': 'Wechat', 'url': "#"},
-            {'name': 'QQ', 'url': "#"}
-        ]}
     ]
 }
 
