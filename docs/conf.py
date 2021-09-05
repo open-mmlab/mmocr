@@ -76,7 +76,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_theme = 'pytorch_sphinx_theme'
 html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
-    'logo_url': 'https://mmocr.readthedocs.io/en/latest/',
+    # 'logo_url': 'https://mmocr.readthedocs.io/en/latest/',
     'menu': [
         {'name': 'Tutorial', 'url': 'https://colab.research.google.com/github/'
             'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'},
@@ -121,7 +121,6 @@ html_theme_options = {
             {'name': 'MMGeneration', 
             'url': 'https://github.com/open-mmlab/mmgeneration',
             'description': 'A powerful toolkit for generative models'},
-
         ]},
         {'name': 'OpenMMLab', 'children': [
             {'name': 'Homepage', 'url': 'https://openmmlab.com/'},
