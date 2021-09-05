@@ -43,6 +43,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'recommonmark',
     'sphinx_markdown_tables',
+    'sphinx_copybutton',
 ]
 
 autodoc_mock_imports = ['mmcv._ext']
@@ -77,14 +78,17 @@ html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
     'logo_url': 'https://mmocr.readthedocs.io/en/latest/',
     'menu': [
-        {'name': 'OpenMMLab', 'url': 'https://openmmlab.com/'},
-        {'name': 'MMOCR', 'url': 'https://github.com/open-mmlab/mmocr'},
-        {'name': 'Projects', 'children': [
+        {'name': 'Tutorial', 'url': 'https://colab.research.google.com/github/'
+            'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'},
+        {'name': 'GitHub', 'url': 'https://github.com/open-mmlab/mmocr'},
+        {'name': 'Upstream', 'children': [
             {'name': 'MMCV', 'url': 'https://github.com/open-mmlab/mmcv', 
             'description': 'Foundational library for computer vision'},
             {'name': 'MMDetection', 
             'url': 'https://github.com/open-mmlab/mmdetection',
             'description': 'Object detection toolbox and benchmark'},
+        ]},
+        {'name': 'Projects', 'children': [
             {'name': 'MMAction2', 
             'url': 'https://github.com/open-mmlab/mmaction2',
             'description': 'The next generation toolbox for human action'
@@ -109,10 +113,20 @@ html_theme_options = {
             'description': 'The next generation toolbox for general 3D'
             ' detection'},
             {'name': 'MMPose', 
-            'url': 'https://github.com/open-mmlab/mmdetection3d',
+            'url': 'https://github.com/open-mmlab/mmpose',
             'description': 'The swift knife for pose estimation'},
+            {'name': 'MMTracking', 
+            'url': 'https://github.com/open-mmlab/mmtracking',
+            'description': 'The First Unified Video Perception Platform'},
+            {'name': 'MMGeneration', 
+            'url': 'https://github.com/open-mmlab/mmgeneration',
+            'description': 'A powerful toolkit for generative models'},
 
         ], 'active': True},
+        {'name': 'OpenMMLab', 'children': [
+            {'name': 'Homepage', 'url': 'https://openmmlab.com/'},
+            {'name': 'GitHub', 'url': 'https://github.com/open-mmlab/'},
+        ]},
         {'name': 'Contact Us', 'children': [
             {'name': 'Wechat', 'url': "#"},
             {'name': 'QQ', 'url': "#"}
