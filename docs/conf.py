@@ -44,6 +44,10 @@ extensions = [
 
 autodoc_mock_imports = ['mmcv._ext']
 
+# Ignore >>> when copying code
+copybutton_prompt_text = r'>>> |\.\.\. '
+copybutton_prompt_is_regexp = True
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -106,70 +110,40 @@ html_theme_options = {
             'Projects',
             'children': [
                 {
-                    'name':
-                    'MMAction2',
-                    'url':
-                    'https://github.com/open-mmlab/mmaction2',
-                    'description':
-                    'The next generation toolbox for human action'
-                    ' understanding'
+                    'name': 'MMAction2',
+                    'url': 'https://github.com/open-mmlab/mmaction2',
                 },
                 {
                     'name': 'MMClassification',
                     'url': 'https://github.com/open-mmlab/mmclassification',
-                    'description': 'Image Classification Toolbox and Benchmark'
                 },
                 {
-                    'name':
-                    'MMSegmentation',
-                    'url':
-                    'https://github.com/open-mmlab/mmsegmentation',
-                    'description':
-                    'The most comprehensive semantic segmentation'
-                    ' toolbox'
+                    'name': 'MMSegmentation',
+                    'url': 'https://github.com/open-mmlab/mmsegmentation',
                 },
                 {
-                    'name':
-                    'MMDetection3D',
-                    'url':
-                    'https://github.com/open-mmlab/mmdetection3d',
-                    'description':
-                    'The next generation toolbox for general 3D'
-                    ' detection'
+                    'name': 'MMDetection3D',
+                    'url': 'https://github.com/open-mmlab/mmdetection3d',
                 },
                 {
-                    'name':
-                    'MMEditing',
-                    'url':
-                    'https://github.com/open-mmlab/mmediting',
-                    'description':
-                    'An Image and Video Editing Toolbox for many popular'
-                    ' editing tasks'
+                    'name': 'MMEditing',
+                    'url': 'https://github.com/open-mmlab/mmediting',
                 },
                 {
-                    'name':
-                    'MMDetection3D',
-                    'url':
-                    'https://github.com/open-mmlab/mmdetection3d',
-                    'description':
-                    'The next generation toolbox for general 3D'
-                    ' detection'
+                    'name': 'MMDetection3D',
+                    'url': 'https://github.com/open-mmlab/mmdetection3d',
                 },
                 {
                     'name': 'MMPose',
                     'url': 'https://github.com/open-mmlab/mmpose',
-                    'description': 'The swift knife for pose estimation'
                 },
                 {
                     'name': 'MMTracking',
                     'url': 'https://github.com/open-mmlab/mmtracking',
-                    'description':
-                    'The First Unified Video Perception Platform'
                 },
                 {
                     'name': 'MMGeneration',
                     'url': 'https://github.com/open-mmlab/mmgeneration',
-                    'description': 'A powerful toolkit for generative models'
                 },
             ]
         },
