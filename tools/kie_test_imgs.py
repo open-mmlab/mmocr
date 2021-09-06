@@ -45,7 +45,8 @@ def test(model, data_loader, show=False, out_dir=None):
                     img_show = img
 
                 if out_dir:
-                    out_file = osp.join(out_dir, img_meta['ori_filename'])
+                    out_file = osp.join(out_dir,
+                                        osp.basename(img_meta['filename']))
                 else:
                     out_file = None
 

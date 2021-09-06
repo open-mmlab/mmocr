@@ -38,12 +38,8 @@ release = __version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode',
-    'recommonmark',
-    'sphinx_markdown_tables',
-    'sphinx_copybutton',
+    'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode',
+    'sphinx_markdown_tables', 'sphinx_copybutton', 'myst_parser'
 ]
 
 autodoc_mock_imports = ['mmcv._ext']
@@ -78,54 +74,119 @@ html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
     # 'logo_url': 'https://mmocr.readthedocs.io/en/latest/',
     'menu': [
-        {'name': 'Tutorial', 'url': 'https://colab.research.google.com/github/'
-            'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'},
-        {'name': 'GitHub', 'url': 'https://github.com/open-mmlab/mmocr'},
-        {'name': 'Upstream', 'children': [
-            {'name': 'MMCV', 'url': 'https://github.com/open-mmlab/mmcv', 
-            'description': 'Foundational library for computer vision'},
-            {'name': 'MMDetection', 
-            'url': 'https://github.com/open-mmlab/mmdetection',
-            'description': 'Object detection toolbox and benchmark'},
-        ]},
-        {'name': 'Projects', 'children': [
-            {'name': 'MMAction2', 
-            'url': 'https://github.com/open-mmlab/mmaction2',
-            'description': 'The next generation toolbox for human action'
-            ' understanding'},
-            {'name': 'MMClassification', 
-            'url': 'https://github.com/open-mmlab/mmclassification',
-            'description': 'Image Classification Toolbox and Benchmark'},
-            {'name': 'MMSegmentation', 
-            'url': 'https://github.com/open-mmlab/mmsegmentation',
-            'description': 'The most comprehensive semantic segmentation'
-            ' toolbox'},
-            {'name': 'MMDetection3D', 
-            'url': 'https://github.com/open-mmlab/mmdetection3d',
-            'description': 'The next generation toolbox for general 3D'
-            ' detection'},
-            {'name': 'MMEditing', 
-            'url': 'https://github.com/open-mmlab/mmediting',
-            'description': 'An Image and Video Editing Toolbox for many popular'
-            ' editing tasks'},
-            {'name': 'MMDetection3D', 
-            'url': 'https://github.com/open-mmlab/mmdetection3d',
-            'description': 'The next generation toolbox for general 3D'
-            ' detection'},
-            {'name': 'MMPose', 
-            'url': 'https://github.com/open-mmlab/mmpose',
-            'description': 'The swift knife for pose estimation'},
-            {'name': 'MMTracking', 
-            'url': 'https://github.com/open-mmlab/mmtracking',
-            'description': 'The First Unified Video Perception Platform'},
-            {'name': 'MMGeneration', 
-            'url': 'https://github.com/open-mmlab/mmgeneration',
-            'description': 'A powerful toolkit for generative models'},
-        ]},
-        {'name': 'OpenMMLab', 'children': [
-            {'name': 'Homepage', 'url': 'https://openmmlab.com/'},
-            {'name': 'GitHub', 'url': 'https://github.com/open-mmlab/'},
-        ]},
+        {
+            'name':
+            'Tutorial',
+            'url':
+            'https://colab.research.google.com/github/'
+            'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'
+        },
+        {
+            'name': 'GitHub',
+            'url': 'https://github.com/open-mmlab/mmocr'
+        },
+        {
+            'name':
+            'Upstream',
+            'children': [
+                {
+                    'name': 'MMCV',
+                    'url': 'https://github.com/open-mmlab/mmcv',
+                    'description': 'Foundational library for computer vision'
+                },
+                {
+                    'name': 'MMDetection',
+                    'url': 'https://github.com/open-mmlab/mmdetection',
+                    'description': 'Object detection toolbox and benchmark'
+                },
+            ]
+        },
+        {
+            'name':
+            'Projects',
+            'children': [
+                {
+                    'name':
+                    'MMAction2',
+                    'url':
+                    'https://github.com/open-mmlab/mmaction2',
+                    'description':
+                    'The next generation toolbox for human action'
+                    ' understanding'
+                },
+                {
+                    'name': 'MMClassification',
+                    'url': 'https://github.com/open-mmlab/mmclassification',
+                    'description': 'Image Classification Toolbox and Benchmark'
+                },
+                {
+                    'name':
+                    'MMSegmentation',
+                    'url':
+                    'https://github.com/open-mmlab/mmsegmentation',
+                    'description':
+                    'The most comprehensive semantic segmentation'
+                    ' toolbox'
+                },
+                {
+                    'name':
+                    'MMDetection3D',
+                    'url':
+                    'https://github.com/open-mmlab/mmdetection3d',
+                    'description':
+                    'The next generation toolbox for general 3D'
+                    ' detection'
+                },
+                {
+                    'name':
+                    'MMEditing',
+                    'url':
+                    'https://github.com/open-mmlab/mmediting',
+                    'description':
+                    'An Image and Video Editing Toolbox for many popular'
+                    ' editing tasks'
+                },
+                {
+                    'name':
+                    'MMDetection3D',
+                    'url':
+                    'https://github.com/open-mmlab/mmdetection3d',
+                    'description':
+                    'The next generation toolbox for general 3D'
+                    ' detection'
+                },
+                {
+                    'name': 'MMPose',
+                    'url': 'https://github.com/open-mmlab/mmpose',
+                    'description': 'The swift knife for pose estimation'
+                },
+                {
+                    'name': 'MMTracking',
+                    'url': 'https://github.com/open-mmlab/mmtracking',
+                    'description':
+                    'The First Unified Video Perception Platform'
+                },
+                {
+                    'name': 'MMGeneration',
+                    'url': 'https://github.com/open-mmlab/mmgeneration',
+                    'description': 'A powerful toolkit for generative models'
+                },
+            ]
+        },
+        {
+            'name':
+            'OpenMMLab',
+            'children': [
+                {
+                    'name': 'Homepage',
+                    'url': 'https://openmmlab.com/'
+                },
+                {
+                    'name': 'GitHub',
+                    'url': 'https://github.com/open-mmlab/'
+                },
+            ]
+        },
     ]
 }
 
@@ -138,6 +199,9 @@ master_doc = 'index'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
+
+# Enable ::: for my_st
+myst_enable_extensions = ['colon_fence']
 
 
 def builder_inited_handler(app):
