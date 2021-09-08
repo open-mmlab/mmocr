@@ -76,7 +76,9 @@ test=dict(
 ```
 You can check the content of the annotation file in `tests/data/toy_dataset/instances_test.json`.
 
-Note: Icdar 2015/2017 and ctw1500 annotations need to be converted into the COCO format following the steps in [datasets.md](datasets.md).
+:::{note}
+Icdar 2015/2017 and ctw1500 annotations need to be converted into the COCO format following the steps in [datasets.md](datasets.md).
+:::
 
 ## Text Recognition Task
 

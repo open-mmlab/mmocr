@@ -181,7 +181,7 @@ cd /path/to/mmocr/data/mixture
 
 ln -s /path/to/SynthAdd SynthAdd
 ```
-**Note:**
+:::{note}
 To convert label file with `txt` format to `lmdb` format,
 ```bash
 python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
@@ -190,6 +190,7 @@ For example,
 ```bash
 python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
 ```
+:::
 
 ### TextOCR
   - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.

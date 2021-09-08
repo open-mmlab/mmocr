@@ -15,6 +15,8 @@ import os
 import subprocess
 import sys
 
+import pytorch_sphinx_theme
+
 sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
@@ -56,8 +58,6 @@ source_suffix = {
     '.md': 'markdown',
 }
 
-language = 'zh_CN'
-
 # The master toctree document.
 master_doc = 'index'
 
@@ -71,14 +71,19 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+# html_theme = 'sphinx_rtd_theme'
+html_theme = 'pytorch_sphinx_theme'
+html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
+
+language = 'en'
 
 master_doc = 'index'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = []
+# html_static_path = ['_static']
+# html_css_files = ['css/readthedocs.css']
 
 
 def builder_inited_handler(app):
