@@ -1,6 +1,8 @@
 Import:
   - configs/textdet/dbnet/metafile.yml
   - configs/textdet/maskrcnn/metafile.yml
+  - configs/textdet/drrg/metafile.yml
+  - configs/textdet/fcenet/metafile.yml
   - configs/textdet/panet/metafile.yml
   - configs/textdet/psenet/metafile.yml
   - configs/textdet/textsnake/metafile.yml
@@ -10,4 +12,5 @@ Import:
   - configs/textrecog/sar/metafile.yml
   - configs/textrecog/seg/metafile.yml
   - configs/textrecog/tps/metafile.yml
+  - configs/textrecog/satrn/metafile.yml
   - configs/kie/sdmgr/metafile.yml
