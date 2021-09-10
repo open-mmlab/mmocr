@@ -283,6 +283,115 @@ class LocalityAwareFeedforward(BaseModule):
         return x
 
 
+class PositionAttention(nn.Module):
+    """Position attention module that transcribes visual features into
+    character attention module. Serves as a part of implementation of ABINet
+    (https://arxiv.org/abs/1910.04396).
+
+    Adapted from https://github.com/FangShancheng/ABINet.
+    """
+
+    def __init__(self,
+                 max_length,
+                 in_channels=512,
+                 num_channels=64,
+                 h=8,
+                 w=32,
+                 mode='nearest',
+                 **kwargs):
+        super().__init__()
+        self.max_length = max_length
+
+        self.k_encoder = nn.Sequential(
+            self._encoder_layer(in_channels, num_channels, stride=(1, 2)),
+            self._encoder_layer(num_channels, num_channels, stride=(2, 2)),
+            self._encoder_layer(num_channels, num_channels, stride=(2, 2)),
+            self._encoder_layer(num_channels, num_channels, stride=(2, 2)))
+
+        self.k_decoder = nn.Sequential(
+            self._decoder_layer(
+                num_channels, num_channels, scale_factor=2, mode=mode),
+            self._decoder_layer(
+                num_channels, num_channels, scale_factor=2, mode=mode),
+            self._decoder_layer(
+                num_channels, num_channels, scale_factor=2, mode=mode),
+            self._decoder_layer(
+                num_channels, in_channels, size=(h, w), mode=mode))
+
+        self.pos_encoder = PositionalEncoding(in_channels, max_length)
+        self.project = nn.Linear(in_channels, in_channels)
+
+    def forward(self, x):
+        N, E, H, W = x.size()
+        k, v = x, x  # (N, E, H, W)
+
+        # Apply mini U-Net on k
+        features = []
+        for i in range(len(self.k_encoder)):
+            k = self.k_encoder[i](k)
+            features.append(k)
+        for i in range(len(self.k_decoder) - 1):
+            k = self.k_decoder[i](k)
+            k = k + features[len(self.k_decoder) - 2 - i]
+        k = self.k_decoder[-1](k)
+
+        # q = positional encoding
+        zeros = x.new_zeros((self.max_length, N, E))  # (T, N, E)
+        q = self.pos_encoder(zeros)  # (T, N, E)
+        q = q.permute(1, 0, 2)  # (N, T, E)
+        q = self.project(q)  # (N, T, E)
+
+        # Attention encoding
+        attn_scores = torch.bmm(q, k.flatten(2, 3))  # (N, T, (H*W))
+        attn_scores = attn_scores / (E**0.5)
+        attn_scores = torch.softmax(attn_scores, dim=-1)
+
+        v = v.permute(0, 2, 3, 1).view(N, -1, E)  # (N, (H*W), E)
+        attn_vecs = torch.bmm(attn_scores, v)  # (N, T, E)
+
+        return attn_vecs, attn_scores.view(N, -1, H, W)
+
+    def _encoder_layer(self,
+                       in_channels,
+                       out_channels,
+                       kernel_size=3,
+                       stride=2,
+                       padding=1):
+        return ConvModule(
+            in_channels,
+            out_channels,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            norm_cfg=dict(type='BN'),
+            act_cfg=dict(type='ReLU'))
+
+    def _decoder_layer(self,
+                       in_channels,
+                       out_channels,
+                       kernel_size=3,
+                       stride=1,
+                       padding=1,
+                       mode='nearest',
+                       scale_factor=None,
+                       size=None):
+        align_corners = None if mode == 'nearest' else True
+        return nn.Sequential(
+            nn.Upsample(
+                size=size,
+                scale_factor=scale_factor,
+                mode=mode,
+                align_corners=align_corners),
+            ConvModule(
+                in_channels,
+                out_channels,
+                kernel_size=kernel_size,
+                stride=stride,
+                padding=padding,
+                norm_cfg=dict(type='BN'),
+                act_cfg=dict(type='ReLU')))
+
+
 class PositionalEncoding(nn.Module):
 
     def __init__(self, d_hid=512, n_position=200):
