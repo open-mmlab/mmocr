@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from .abinet_language_encoder import ABIVisionEncoder
 from .base_encoder import BaseEncoder
 from .channel_reduction_encoder import ChannelReductionEncoder
 from .restransformer import ResTransformer
@@ -8,5 +9,5 @@ from .transformer_encoder import TFEncoder
 
 __all__ = [
     'SAREncoder', 'TFEncoder', 'BaseEncoder', 'ChannelReductionEncoder',
-    'SatrnEncoder', 'ResTransformer'
+    'SatrnEncoder', 'ResTransformer', 'ABIVisionEncoder'
 ]
