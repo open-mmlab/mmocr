@@ -180,7 +180,7 @@ mv /path/to/label.txt .
 
   ln -s /path/to/SynthAdd SynthAdd
   ```
-:::{tips}
+:::{tip}
 运行以下命令，可以把 `.txt` 格式的标注文件转换成 `.lmdb` 格式：
 ```bash
 python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>

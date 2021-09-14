@@ -182,7 +182,7 @@ cd /path/to/mmocr/data/mixture
 
 ln -s /path/to/SynthAdd SynthAdd
 ```
-:::{tips}
+:::{tip}
 To convert label file with `txt` format to `lmdb` format,
 ```bash
 python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
