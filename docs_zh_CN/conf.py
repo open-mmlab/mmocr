@@ -81,7 +81,7 @@ html_theme_options = {
     'menu': [
         {
             'name':
-            '入门',
+            '教程',
             'url':
             'https://colab.research.google.com/github/'
             'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'
@@ -92,7 +92,7 @@ html_theme_options = {
         },
         {
             'name':
-            '上游项目',
+            '上游',
             'children': [
                 {
                     'name': 'MMCV',
@@ -149,7 +149,7 @@ html_theme_options = {
             'OpenMMLab',
             'children': [
                 {
-                    'name': '首页',
+                    'name': '官网',
                     'url': 'https://openmmlab.com/'
                 },
                 {
