@@ -1,10 +1,10 @@
-## Deployment
+# Deployment
 
 We provide deployment tools under `tools/deployment` directory.
 
-### Convert to ONNX (experimental)
+## Convert to ONNX (experimental)
 
-We provide a script to convert model to [ONNX](https://github.com/onnx/onnx) format. The converted model could be visualized by tools like [Netron](https://github.com/lutzroeder/netron). Besides, we also support comparing the output results between Pytorch and ONNX model.
+We provide a script to convert the model to [ONNX](https://github.com/onnx/onnx) format. The converted model could be visualized by tools like [Netron](https://github.com/lutzroeder/netron). Besides, we also support comparing the output results between Pytorch and ONNX model.
 
 ```bash
 python tools/deployment/pytorch2onnx.py
@@ -23,21 +23,25 @@ python tools/deployment/pytorch2onnx.py
 
 Description of arguments:
 
-- `model_config` : The path of a model config file.
-- `model_ckpt` : The path of a model checkpoint file.
-- `model_type` : The model type of the config file, options: `recog`, `det`.
-- `image_path` : The path to input image file.
-- `--output-file`: The path of output ONNX model. If not specified, it will be set to `tmp.onnx`.
-- `--device-id`: Which gpu to use. If not specified, it will be set to 0.
-- `--opset-version` : ONNX opset version, default to 11.
-- `--verify`: Determines whether to verify the correctness of an exported model. If not specified, it will be set to `False`.
-- `--verbose`: Determines whether to print the architecture of the exported model. If not specified, it will be set to `False`.
-- `--show`: Determines whether to visualize outputs of ONNXRuntime and pytorch. If not specified, it will be set to `False`.
-- `--dynamic-export`: Determines whether to export ONNX model with dynamic input and output shapes. If not specified, it will be set to `False`.
+| ARGS      | Type                  |  Description                                                 |
+| -------------- | --------------------- |  ----------------------------------------------------------- |
+| `model_config` | str | The path to a model config file. |
+| `model_ckpt` | str | The path to a model checkpoint file. |
+| `model_type` | 'recog', 'det' | The model type of the config file. |
+| `image_path` | str | The path to input image file. |
+| `--output-file`| str | The path to output ONNX model. Defaults to `tmp.onnx`. |
+| `--device-id`| int | Which GPU to use. Defaults to 0. |
+| `--opset-version` | int | ONNX opset version. Defaults to 11. |
+| `--verify`| bool | Determines whether to verify the correctness of an exported model. Defaults to `False`. |
+| `--verbose`| bool | Determines whether to print the architecture of the exported model. Defaults to `False`. |
+| `--show`| bool | Determines whether to visualize outputs of ONNXRuntime and PyTorch. Defaults to `False`. |
+| `--dynamic-export`| bool | Determines whether to export ONNX model with dynamic input and output shapes. Defaults to `False`. |
 
-**Note**: This tool is still experimental. Some customized operators are not supported for now. And we only support `detection` and `recognition` for now.
+:::{note}
+This tool is still experimental. For now, some customized operators are not supported, and we only support a subset of detection and recognition algorithms.
+:::
 
-#### List of supported models exportable to ONNX
+### List of supported models exportable to ONNX
 
 The table below lists the models that are guaranteed to be exportable to ONNX and runnable in ONNX Runtime.
 
@@ -50,13 +54,13 @@ The table below lists the models that are guaranteed to be exportable to ONNX an
 |  PANet | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |      |
 |  CRNN  |             [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)            |       Y       |        Y        | CRNN only accepts input with height 32 |
 
-**Notes**:
-
+:::{note}
 - *All models above are tested with Pytorch==1.8.1 and onnxruntime==1.7.0*
-- If you meet any problem with the listed models above, please create an issue and it would be taken care of soon. For models not included in the list, please try to solve them by yourself.
+- If you meet any problem with the listed models above, please create an issue and it would be taken care of soon.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
+:::
 
-### Convert ONNX to TensorRT (experimental)
+## Convert ONNX to TensorRT (experimental)
 
 We also provide a script to convert [ONNX](https://github.com/onnx/onnx) model to [TensorRT](https://github.com/NVIDIA/TensorRT) format. Besides, we support comparing the output results between ONNX and TensorRT model.
 
@@ -79,22 +83,26 @@ python tools/deployment/onnx2tensorrt.py
 
 Description of arguments:
 
-- `model_config` : The path of a model config file.
-- `model_type` :The model type of the config file, options:
-- `image_path` : The path to input image file.
-- `onnx_file` : The path to input ONNX file.
-- `--trt-file` : The path of output TensorRT model. If not specified, it will be set to `tmp.trt`.
-- `--max-shape` : Maximum shape of model input.
-- `--min-shape` : Minimum shape of model input.
-- `--workspace-size`: Max workspace size in GiB. If not specified, it will be set to 1 GiB.
-- `--fp16`: Determines whether to export TensorRT with fp16 mode. If not specified, it will be set to `False`.
-- `--verify`: Determines whether to verify the correctness of an exported model. If not specified, it will be set to `False`.
-- `--show`: Determines whether to show the output of ONNX and TensorRT. If not specified, it will be set to `False`.
-- `--verbose`: Determines whether to verbose logging messages while creating TensorRT engine. If not specified, it will be set to `False`.
+| ARGS      | Type                  |  Description                                                 |
+| -------------- | --------------------- |  ----------------------------------------------------------- |
+| `model_config` | str | The path to a model config file. |
+| `model_type` | 'recog', 'det' | The model type of the config file. |
+| `image_path` | str | The path to input image file. |
+| `onnx_file` | str | The path to input ONNX file. |
+| `--trt-file` | str | The path of output TensorRT model. Defaults to `tmp.trt`. |
+| `--max-shape` | int * 4 | Maximum shape of model input. |
+| `--min-shape` | int * 4 | Minimum shape of model input. |
+| `--workspace-size`| int | Max workspace size in GiB. Defaults to 1. |
+| `--fp16`| bool | Determines whether to export TensorRT with fp16 mode. Defaults to `False`. |
+| `--verify`| bool | Determines whether to verify the correctness of an exported model. Defaults to `False`. |
+| `--show`| bool | Determines whether to show the output of ONNX and TensorRT. Defaults to `False`. |
+| `--verbose`| bool | Determines whether to verbose logging messages while creating TensorRT engine. Defaults to `False`. |
 
-**Note**: This tool is still experimental. Some customized operators are not supported for now. We only support `detection` and `recognition` for now.
+:::{note}
+This tool is still experimental. For now, some customized operators are not supported, and we only support a subset of detection and recognition algorithms.
+:::
 
-#### List of supported models exportable to TensorRT
+### List of supported models exportable to TensorRT
 
 The table below lists the models that are guaranteed to be exportable to TensorRT engine and runnable in TensorRT.
 
@@ -107,21 +115,21 @@ The table below lists the models that are guaranteed to be exportable to TensorR
 |  PANet | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |      |
 |  CRNN  |             [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)            |       Y       |        Y        | CRNN only accepts input with height 32 |
 
-**Notes**:
-
+:::{note}
 - *All models above are tested with Pytorch==1.8.1,  onnxruntime==1.7.0 and tensorrt==7.2.1.6*
-- If you meet any problem with the listed models above, please create an issue and it would be taken care of soon. For models not included in the list, please try to solve them by yourself.
+- If you meet any problem with the listed models above, please create an issue and it would be taken care of soon.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
+:::
 
 
-### Evaluate ONNX and TensorRT Models (experimental)
+## Evaluate ONNX and TensorRT Models (experimental)
 
 We provide methods to evaluate TensorRT and ONNX models in `tools/deployment/deploy_test.py`.
 
-#### Prerequisite
-To evaluate ONNX and TensorRT models, onnx, onnxruntime and TensorRT should be installed first. Install `mmcv-full` with ONNXRuntime custom ops and TensorRT plugins follow [ONNXRuntime in mmcv](https://mmcv.readthedocs.io/en/latest/onnxruntime_op.html) and [TensorRT plugin in mmcv](https://github.com/open-mmlab/mmcv/blob/master/docs/tensorrt_plugin.md).
+### Prerequisite
+To evaluate ONNX and TensorRT models, ONNX, ONNXRuntime and TensorRT should be installed first. Install `mmcv-full` with ONNXRuntime custom ops and TensorRT plugins follow [ONNXRuntime in mmcv](https://mmcv.readthedocs.io/en/latest/onnxruntime_op.html) and [TensorRT plugin in mmcv](https://github.com/open-mmlab/mmcv/blob/master/docs/tensorrt_plugin.md).
 
-#### Usage
+### Usage
 
 ```bash
 python tools/deploy_test.py \
@@ -133,16 +141,18 @@ python tools/deploy_test.py \
     --device ${DEVICE}
 ```
 
-#### Description of all arguments
+### Description of all arguments
 
-- `model_config`: The path of a model config file.
-- `model_file`: The path of a TensorRT or an ONNX model file.
-- `model_type`: Detection or recognition model to deploy. Choose `recog` or `det`.
-- `backend`: The backend for testing, choose TensorRT or ONNXRuntime.
-- `--eval`: The evaluation metrics. `acc` for recognition models, `hmean-iou` for detection models.
-- `--device`: Device for evaluation, `cuda:0` as default.
+| ARGS      | Type                  |  Description                                                 |
+| -------------- | --------------------- |  ----------------------------------------------------------- |
+| `model_config` | str | The path to a model config file. |
+| `model_file` | str | The path to a TensorRT or an ONNX model file. |
+| `model_type` | 'recog', 'det' | Detection or recognition model to deploy. |
+| `backend` | 'TensorRT', 'ONNXRuntime' | The backend for testing. |
+| `--eval` | 'acc', 'hmean-iou' | The evaluation metrics. 'acc' for recognition models, 'hmean-iou' for detection models. |
+| `--device` | str | Device for evaluation. Defaults to `cuda:0`. |
 
-#### Results and Models
+## Results and Models
 
 
 <table class="tg">
@@ -292,8 +302,9 @@ python tools/deploy_test.py \
 </tbody>
 </table>
 
-**Notes**:
-- TensorRT upsampling operation is a little different from pytorch. For DBNet and PANet, we suggest replacing upsampling operations with neast mode to operations with bilinear mode. [Here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpem_ffm.py#L33) for PANet, [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L111) and [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L121) for DBNet. As is shown in the above table, networks with tag * means the upsampling mode is changed.
-- Note that, changing upsampling mode reduces less performance compared with using nearst mode. However, the weights of networks are trained through nearst mode. To persue best performance, using bilinear mode for both training and TensorRT deployment is recommanded.
-- All ONNX and TensorRT models are evaluated with dynamic shape on the datasets and images are preprocessed according to the original config file.
-- This tool is still experimental, and we only support `detection` and `recognition` for now.
+:::{note}
+- TensorRT upsampling operation is a little different from PyTorch. For DBNet and PANet, we suggest replacing upsampling operations with the nearest mode to operations with bilinear mode. [Here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpem_ffm.py#L33) for PANet, [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L111) and [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L121) for DBNet. As is shown in the above table, networks with tag * mean the upsampling mode is changed.
+- Note that changing upsampling mode reduces less performance compared with using the nearest mode. However, the weights of networks are trained through the nearest mode. To pursue the best performance, using bilinear mode for both training and TensorRT deployment is recommended.
+- All ONNX and TensorRT models are evaluated with dynamic shapes on the datasets, and images are preprocessed according to the original config file.
+- This tool is still experimental, and we only support a subset of detection and recognition algorithms for now.
+:::
