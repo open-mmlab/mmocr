@@ -22,7 +22,7 @@
 - PyTorch 1.6.0
 - torchvision 0.7.0
 
-MMOCR 基于 Pytorch 和 MMDetection 项目实现。
+MMOCR 基于 PyTorch 和 MMDetection 项目实现。
 
 ## 详细安装步骤
 
@@ -33,12 +33,12 @@ conda create -n open-mmlab python=3.7 -y
 conda activate open-mmlab
 ```
 
-b. 按照 Pytorch 官网教程安装 Pytorch 和 torchvision [参见官方链接](https://pytorch.org/), 例如,
+b. 按照 PyTorch 官网教程安装 PyTorch 和 torchvision [参见官方链接](https://pytorch.org/), 例如,
 
 ```shell
 conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.1 -c pytorch
 ```
-注意：确定 CUDA 编译版本和运行版本一致。你可以在 [Pytorch](https://pytorch.org/) 官网检查预编译 Pytorch 所支持的 CUDA 版本。
+注意：确定 CUDA 编译版本和运行版本一致。你可以在 [PyTorch](https://pytorch.org/) 官网检查预编译 PyTorch 所支持的 CUDA 版本。
 
 
 c. 安装 mmcv，推荐以下方式进行安装。
@@ -47,16 +47,16 @@ c. 安装 mmcv，推荐以下方式进行安装。
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
 ```
 
-请将上述 url 中 ``{cu_version}`` 和 ``{torch_version}``替换成你环境中对应的 CUDA 版本和 Pytorch 版本。例如，如果想要安装最新版基于 ``CUDA 11`` 和 ``PyTorch 1.7.0`` 的最新版 ``mmcv-full``，请输入以下命令:
+请将上述 url 中 ``{cu_version}`` 和 ``{torch_version}``替换成你环境中对应的 CUDA 版本和 PyTorch 版本。例如，如果想要安装最新版基于 ``CUDA 11`` 和 ``PyTorch 1.7.0`` 的最新版 ``mmcv-full``，请输入以下命令:
 
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
 ```
 注意：使用 mmocr 0.2.0 及更高版本需要安装 mmcv 1.3.4 或更高版本。
-如果安装时进行了编译过程，请再次确认安装的 mmcv-full 版本与环境中CUDA版本，Pytorch 版本匹配。即使是 Pytorch 1.7.0 和 1.7.1，mmcv-full 的安装版本也是有区别的。
+如果安装时进行了编译过程，请再次确认安装的 mmcv-full 版本与环境中CUDA版本，PyTorch 版本匹配。即使是 PyTorch 1.7.0 和 1.7.1，mmcv-full 的安装版本也是有区别的。
 
 
-如有需要，可以在[此处](https://github.com/open-mmlab/mmcv#installation)检查 mmcv 与 CUDA 和 Pytorch 的版本对应关系。
+如有需要，可以在[此处](https://github.com/open-mmlab/mmcv#installation)检查 mmcv 与 CUDA 和 PyTorch 的版本对应关系。
 
 **重要:** 如果你已经安装过 mmcv，你需要先运行 `pip uninstall mmcv` 删除 mmcv，再安装 mmcv-full。 如果环境中同时安装了 mmcv 和 mmcv-full, 将会出现报错 `ModuleNotFoundError`。
 
