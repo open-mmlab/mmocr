@@ -22,62 +22,62 @@
 - PyTorch 1.6.0
 - torchvision 0.7.0
 
-MMOCR基于Pytorch和mmdetection项目实现。
+MMOCR 基于 Pytorch 和 MMDetection 项目实现。
 
 ## 详细安装步骤
 
-a. 创建一个conda虚拟环境并激活（open-mmlab为自定义环境名）。
+a. 创建一个 conda 虚拟环境并激活（open-mmlab 为自定义环境名）。
 
 ```shell
 conda create -n open-mmlab python=3.7 -y
 conda activate open-mmlab
 ```
 
-b. 按照Pytorch官网教程安装Pytorch和torchvision。[official instructions](https://pytorch.org/), 例如,
+b. 按照 Pytorch 官网教程安装 Pytorch 和 torchvision [参见官方链接](https://pytorch.org/), 例如,
 
 ```shell
 conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.1 -c pytorch
 ```
-注意：确定CUDA编译版本和运行版本一致。你可以在Pytorch官网检查预编译Pytorch所支持的CUDA版本[PyTorch website](https://pytorch.org/)。
+注意：确定 CUDA 编译版本和运行版本一致。你可以在 [Pytorch](https://pytorch.org/) 官网检查预编译 Pytorch 所支持的 CUDA 版本。
 
 
-c. 安装mmcv，推荐以下方式进行安装。
+c. 安装 mmcv，推荐以下方式进行安装。
 
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
 ```
 
-请将上述url中 ``{cu_version}`` 和 ``{torch_version}``替换成你环境中对应的CUDA版本和Pytorch版本。例如，如果想要安装最新版基于``CUDA 11`` 和 ``PyTorch 1.7.0`` 的最新版``mmcv-full``，请输入以下命令:
+请将上述 url 中 ``{cu_version}`` 和 ``{torch_version}``替换成你环境中对应的 CUDA 版本和 Pytorch 版本。例如，如果想要安装最新版基于 ``CUDA 11`` 和 ``PyTorch 1.7.0`` 的最新版 ``mmcv-full``，请输入以下命令:
 
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
 ```
-注意：使用mmocr 0.2.0及更高版本需要安装mmcv 1.3.4或更高版本。
-如果安装时进行了编译过程，请再次确认安装的mmcv-full版本与环境中CUDA版本，Pytorch版本匹配。即使是Pytorch 1.7.0和1.7.1，mmcv-full的安装版本也是有区别的。
+注意：使用 mmocr 0.2.0 及更高版本需要安装 mmcv 1.3.4 或更高版本。
+如果安装时进行了编译过程，请再次确认安装的 mmcv-full 版本与环境中CUDA版本，Pytorch 版本匹配。即使是 Pytorch 1.7.0 和 1.7.1，mmcv-full 的安装版本也是有区别的。
 
 
-如有需要，可以在[installation](https://github.com/open-mmlab/mmcv#installation) 检查mmcv与CUDA和Pytorch的版本对应关系。 
+如有需要，可以在[此处](https://github.com/open-mmlab/mmcv#installation)检查 mmcv 与 CUDA 和 Pytorch 的版本对应关系。
 
-**重要:** 如果你已经安装过mmcv，你需要先运行 `pip uninstall mmcv` 删除mmcv，再安装mmcv-full. 如果环境中同时安装了mmcv和mmcv-fullIf mmcv and mmcv-full , 将会出现报错`ModuleNotFoundError`。
+**重要:** 如果你已经安装过 mmcv，你需要先运行 `pip uninstall mmcv` 删除 mmcv，再安装 mmcv-full。 如果环境中同时安装了 mmcv 和 mmcv-full, 将会出现报错 `ModuleNotFoundError`。
 
 d. 安装 [mmdet](https://github.com/open-mmlab/mmdetection.git), 我们推荐使用pip安装最新版 `mmdet`。
-在 [here](https://pypi.org/project/mmdet/) 可以查看`mmdet`版本信息.
+在 [此处](https://pypi.org/project/mmdet/) 可以查看 `mmdet` 版本信息.
 
 ```shell
 pip install mmdet
 ```
 
-或者，你也可以按照[installation](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md)中的方法安装 `mmdet` 。
+或者，你也可以按照 [安装指南](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md) 中的方法安装 `mmdet`。
 
 
-e. 克隆mmocr项目到本地.
+e. 克隆 MMOCR 项目到本地.
 
 ```shell
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
 ```
 
-f. 安装依赖软件环境并安装MMOCR。
+f. 安装依赖软件环境并安装 MMOCR。
 
 ```shell
 pip install -r requirements.txt
@@ -87,7 +87,7 @@ export PYTHONPATH=$(pwd):$PYTHONPATH
 
 ## 完整安装命令
 
-以下是conda方式安装mmocr的完整安装命令。
+以下是 conda 方式安装 mmocr 的完整安装命令。
 
 ```shell
 conda create -n open-mmlab python=3.7 -y
@@ -128,8 +128,8 @@ docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmocr/data mmocr
 
 ## 数据集准备
 
-我们推荐建立一个symlink路径映射，连接数据集路径到`mmocr/data`。 详细数据集准备方法请阅读[datasets.md](datasets.md)。
-如果你需要的文件夹路径不同，你可能需要在configs文件中修改对应的文件路径信息。
+我们推荐建立一个 symlink 路径映射，连接数据集路径到 `mmocr/data`。 详细数据集准备方法请阅读 [datasets.md](datasets.md)。
+如果你需要的文件夹路径不同，你可能需要在 configs 文件中修改对应的文件路径信息。
 
  `mmocr` 文件夹路径结构如下：
 ```
