@@ -100,7 +100,6 @@ class TransformerDecoderLayer(nn.Module):
                  mask_value=0,
                  act_layer=nn.GELU):
         super().__init__()
-        self.self_attn = MultiHeadAttention()
 
         self.norm1 = nn.LayerNorm(d_model)
         self.norm2 = nn.LayerNorm(d_model)
@@ -394,8 +393,9 @@ class PositionAttention(nn.Module):
 
 class PositionalEncoding(nn.Module):
 
-    def __init__(self, d_hid=512, n_position=200):
+    def __init__(self, d_hid=512, n_position=200, dropout=0):
         super().__init__()
+        self.dropout = nn.Dropout(p=dropout)
 
         # Not a parameter
         self.register_buffer(
@@ -418,7 +418,8 @@ class PositionalEncoding(nn.Module):
 
     def forward(self, x):
         self.device = x.device
-        return x + self.position_table[:, :x.size(1)].clone().detach()
+        x = x + self.position_table[:, :x.size(1)].clone().detach()
+        return self.dropout(x)
 
 
 class Adaptive2DPositionalEncoding(BaseModule):
