@@ -543,7 +543,15 @@ def draw_texts(img, texts, boxes=None, draw_box=True, on_ori_img=False):
     return out_img
 
 
-def draw_texts_by_pil(img, texts, boxes=None, draw_box=True, on_ori_img=False):
+def draw_texts_by_pil(img,
+                      texts,
+                      boxes=None,
+                      draw_box=True,
+                      on_ori_img=False,
+                      font_size=None,
+                      font_color=None,
+                      draw_pos=None,
+                      return_text_size=False):
     """Draw boxes and texts on empty image, especially for Chinese.
 
     Args:
@@ -568,6 +576,8 @@ def draw_texts_by_pil(img, texts, boxes=None, draw_box=True, on_ori_img=False):
     else:
         out_img = Image.new('RGB', (w, h), color=(255, 255, 255))
     out_draw = ImageDraw.Draw(out_img)
+
+    text_sizes = []
     for idx, (box, text) in enumerate(zip(boxes, texts)):
         if len(text) == 0:
             continue
@@ -576,8 +586,6 @@ def draw_texts_by_pil(img, texts, boxes=None, draw_box=True, on_ori_img=False):
         color = tuple(list(color_list[idx % len(color_list)])[::-1])
         if draw_box:
             out_draw.line(box, fill=color, width=1)
-        box_width = max(max_x - min_x, max_y - min_y)
-        font_size = int(0.9 * box_width / len(text))
         dirname, _ = os.path.split(os.path.abspath(__file__))
         font_path = os.path.join(dirname, 'font.TTF')
         if not os.path.exists(font_path):
@@ -585,12 +593,23 @@ def draw_texts_by_pil(img, texts, boxes=None, draw_box=True, on_ori_img=False):
             print(f'Downloading {url} ...')
             local_filename, _ = urllib.request.urlretrieve(url)
             shutil.move(local_filename, font_path)
+        if font_size is None:
+            box_width = max(max_x - min_x, max_y - min_y)
+            font_size = int(0.9 * box_width / len(text))
         fnt = ImageFont.truetype(font_path, font_size)
-        out_draw.text((min_x + 1, min_y + 1), text, font=fnt, fill=(0, 0, 0))
+        if draw_pos is None:
+            draw_pos = (min_x + 1, min_y + 1)
+        if font_color is None:
+            font_color = (0, 0, 0)
+        out_draw.text(draw_pos, text, font=fnt, fill=font_color)
+        text_sizes.append(fnt.getsize(text))
 
     del out_draw
 
     out_img = cv2.cvtColor(np.asarray(out_img), cv2.COLOR_RGB2BGR)
+
+    if return_text_size:
+        return out_img, text_sizes
 
     return out_img
 
@@ -640,3 +659,173 @@ def det_recog_show_result(img, end2end_res, out_file=None):
         mmcv.imwrite(out_img, out_file)
 
     return out_img
+
+
+def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
+    """Draw text and their relationship on empty images.
+
+    Args:
+        img (np.ndarray): The original image.
+        result (dic): The result of model forward prediction.
+        color_list (list[tuple(uint8)]): BGR color schemes for display.
+    Return:
+        out_img (np.ndarray): Visualized relationship image.
+    """
+
+    h, w = img.shape[:2]
+
+    vis_area_width = w // 3 * 2
+    vis_area_height = h
+    dist_key_to_value = vis_area_width // 2
+    dist_pair_to_pair = 30
+
+    bbox_x1 = dist_pair_to_pair
+    bbox_y1 = 0
+
+    new_w = vis_area_width
+    new_h = vis_area_height
+    pred_edge_img = np.ones((new_h, new_w, 3), dtype=np.uint8) * 255
+
+    nodes = result['nodes'].detach().cpu()
+    texts = result['img_metas'][0]['ori_texts']
+    num_nodes = result['nodes'].size(0)
+    edges = result['edges'].detach().cpu()[:, -1].view(num_nodes, num_nodes)
+    pairs = (torch.max(edges, edges.T) > edge_thresh).nonzero(as_tuple=True)
+    result_pairs = [(n1, n2) if nodes[n1, 1] > nodes[n1, 2] else (n2, n1)
+                    for n1, n2 in zip(*pairs) if n1 < n2]
+    result_pairs.sort()
+    keynow = -1
+    posnow = (-1, -1)
+    newline_flag = False
+
+    key_font_size = 15
+    value_font_size = 15
+    key_font_color = (0, 0, 0)
+    value_font_color = (0, 0, 255)
+    arrow_color = (0, 0, 255)
+    for pair in result_pairs:
+        key_idx = int(pair[0].item())
+        if nodes[key_idx, 1] < keynode_thresh:
+            continue
+        if key_idx != keynow:
+            bbox_y1 += 10
+            if newline_flag:
+                bbox_x1 += vis_area_width
+                pred_edge_img_t = np.ones(
+                    (new_h, new_w + vis_area_width, 3), dtype=np.uint8) * 255
+                pred_edge_img_t[:new_h, :new_w] = pred_edge_img
+                pred_edge_img = pred_edge_img_t
+                new_w += vis_area_width
+                newline_flag = False
+                bbox_y1 = 10
+        key_text = texts[key_idx]
+        key_pos = (bbox_x1, bbox_y1)
+        value_idx = pair[1].item()
+        value_text = texts[value_idx]
+        value_pos = bbox_x1 + dist_key_to_value, bbox_y1
+        if key_idx != keynow:
+            keynow = key_idx
+            pred_edge_img, text_sizes = draw_texts_by_pil(
+                pred_edge_img, [key_text],
+                draw_box=False,
+                on_ori_img=True,
+                font_size=key_font_size,
+                font_color=key_font_color,
+                draw_pos=key_pos,
+                return_text_size=True)
+            pos_right_bottom = (key_pos[0] + text_sizes[0][0],
+                                key_pos[1] + text_sizes[0][1])
+            posnow = (pos_right_bottom[0] + 5, bbox_y1 + 10)
+            pred_edge_img = cv2.arrowedLine(
+                pred_edge_img, (pos_right_bottom[0] + 5, bbox_y1 + 10),
+                (bbox_x1 + dist_key_to_value - 5, bbox_y1 + 10), arrow_color,
+                1)
+        else:
+            if newline_flag:
+                pred_edge_img_t = np.ones(
+                    (new_h + dist_pair_to_pair, new_w, 3),
+                    dtype=np.uint8) * 255
+                pred_edge_img_t[:new_h, :new_w] = pred_edge_img
+                pred_edge_img = pred_edge_img_t
+                new_h += dist_pair_to_pair
+            pred_edge_img = cv2.arrowedLine(pred_edge_img, posnow,
+                                            (bbox_x1 + dist_key_to_value - 5,
+                                             bbox_y1 + 10), arrow_color, 1)
+        pred_edge_img = draw_texts_by_pil(
+            pred_edge_img, [value_text],
+            draw_box=False,
+            on_ori_img=True,
+            font_size=value_font_size,
+            font_color=value_font_color,
+            draw_pos=value_pos,
+            return_text_size=False)
+        bbox_y1 += dist_pair_to_pair
+        if bbox_y1 + dist_pair_to_pair >= new_h:
+            newline_flag = True
+
+    return pred_edge_img
+
+
+def imshow_edge(img,
+                result,
+                boxes,
+                show=False,
+                win_name='',
+                wait_time=-1,
+                out_file=None):
+    """Display the prediction results of the nodes and edges of the KIE model.
+
+    Args:
+        img (np.ndarray): The original image.
+        result (dic): The result of model forward prediction.
+        boxes (list): The text boxes corresponding to the nodes.
+        show (bool): Whether to show the image. Default: False.
+        win_name (str): The window name. Default: ''
+        wait_time (float): Value of waitKey param. Default: 0.
+        out_file (str or None): The filename to write the image.
+            Default: None.
+
+    Return:
+        out_img (np.ndarray): Visualized result image.
+    """
+    img = mmcv.imread(img)
+    h, w = img.shape[:2]
+    color_list = gen_color()
+
+    for i, box in enumerate(boxes):
+        new_box = [[box[0], box[1]], [box[2], box[1]], [box[2], box[3]],
+                   [box[0], box[3]]]
+        Pts = np.array([new_box], np.int32)
+        cv2.polylines(
+            img, [Pts.reshape((-1, 1, 2))],
+            True,
+            color=color_list[i % len(color_list)],
+            thickness=1)
+
+    pred_img_h = h
+    pred_img_w = w
+
+    pred_edge_img = draw_edge_result(img, result)
+    pred_img_h = max(pred_img_h, pred_edge_img.shape[0])
+    pred_img_w += pred_edge_img.shape[1]
+
+    vis_img = np.zeros((pred_img_h, pred_img_w, 3), dtype=np.uint8)
+    vis_img[:h, :w] = img
+    vis_img[:, w:] = 255
+
+    height_t, width_t = pred_edge_img.shape[:2]
+    vis_img[:height_t, w:(w + width_t)] = pred_edge_img
+
+    if show:
+        mmcv.imshow(vis_img, win_name, wait_time)
+    if out_file is not None:
+        mmcv.imwrite(vis_img, out_file)
+        res_dic = {
+            'boxes': boxes,
+            'nodes': result['nodes'].detach().cpu(),
+            'edges': result['edges'].detach().cpu(),
+            'metas': result['img_metas'][0]
+        }
+        mmcv.dump(res_dic, f'{out_file}_res.pkl')
+
+    return vis_img
