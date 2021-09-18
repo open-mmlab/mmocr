@@ -92,7 +92,7 @@ html_theme_options = {
         },
         {
             'name':
-            '上游',
+            '上游库',
             'children': [
                 {
                     'name': 'MMCV',
