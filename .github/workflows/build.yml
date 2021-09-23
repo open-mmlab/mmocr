@@ -116,9 +116,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
         run: python -m pip install pip --upgrade
-      - name: Install CUDA
+      - name: Install Python-dev
+        run: apt-get update && apt-get install python${{matrix.python-version}}-dev
+        if: ${{matrix.python-version != 3.9}}
+      - name: Install system dependencies
         run: |
-          apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 python${{matrix.python-version}}-dev
+          apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6
           apt-get clean
           rm -rf /var/lib/apt/lists/*
           apt-get install -y ninja-build
@@ -189,7 +192,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
         run: python -m pip install pip --upgrade
-      - name: Install CUDA
+      - name: Install Python-dev
+        run: apt-get update && apt-get install python${{matrix.python-version}}-dev
+        if: ${{matrix.python-version != 3.9}}
+      - name: Install system dependencies
         run: |
           apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6
           apt-get clean
