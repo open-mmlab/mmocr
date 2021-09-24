@@ -136,18 +136,19 @@ def points2polygon(points):
     return plg(point_mat)
 
 
-def poly_intersection(poly_det, poly_gt, invalid='allow', return_poly=False):
+def poly_intersection(poly_det, poly_gt, invalid_ret=None, return_poly=False):
     """Calculate the intersection area between two polygon.
 
     Args:
         poly_det (Polygon): A polygon predicted by detector.
         poly_gt (Polygon): A gt polygon.
-        invalid (float | `allow`): The return value when invalid polygon
-            exists. `allow` allows the computation to proceed with invalid
-            polygons by cleaning the their self-touching or self-crossing
-            parts.
+        invalid_ret (None|float|int): The return value when the invalid polygon
+            exists. If it is not specified, the function allows the computation
+            to proceed with invalid polygons by cleaning the their
+            self-touching or self-crossing parts.
         return_poly (bool): Whether to return the polygon of the intersection
             area.
+
     Returns:
         intersection_area (float): The intersection area between two polygons.
         poly_obj (Polygon, optional): The Polygon object of the intersection
@@ -155,8 +156,10 @@ def poly_intersection(poly_det, poly_gt, invalid='allow', return_poly=False):
     """
     assert isinstance(poly_det, plg)
     assert isinstance(poly_gt, plg)
+    assert invalid_ret is None or isinstance(invalid_ret, float) or isinstance(
+        invalid_ret, int)
 
-    if invalid == 'allow':
+    if invalid_ret is None:
         if not poly_det.is_valid:
             poly_det = poly_det.buffer(0)
         if not poly_gt.is_valid:
@@ -170,34 +173,36 @@ def poly_intersection(poly_det, poly_gt, invalid='allow', return_poly=False):
             return poly_obj.area
     else:
         if return_poly:
-            return invalid, None
+            return invalid_ret, None
         else:
-            return invalid
+            return invalid_ret
 
 
-def poly_union(poly_det, poly_gt, invalid='allow', return_poly=False):
+def poly_union(poly_det, poly_gt, invalid_ret=None, return_poly=False):
     """Calculate the union area between two polygon.
     Args:
         poly_det (Polygon): A polygon predicted by detector.
         poly_gt (Polygon): A gt polygon.
-        invalid (float | `allow`): The return value when invalid polygon
-            exists. `allow` allows the computation to proceed with invalid
-            polygons by cleaning the their self-touching or self-crossing
-            parts.
+        invalid_ret (None|float|int): The return value when the invalid polygon
+            exists. If it is not specified, the function allows the computation
+            to proceed with invalid polygons by cleaning the their
+            self-touching or self-crossing parts.
         return_poly (bool): Whether to return the polygon of the intersection
             area.
 
     Returns:
         union_area (float): The union area between two polygons.
-        poly_obj (Polygon | MultiPolygon, optional): The Polygon or
-            MultiPolygon object of the union of the inputs. The type of object
-            depends on whether they intersect or not. Set as `None` if the
-            input is invalid.
+        poly_obj (Polygon|MultiPolygon, optional): The Polygon or MultiPolygon
+            object of the union of the inputs. The type of object depends on
+            whether they intersect or not. Set as `None` if the input is
+            invalid.
     """
     assert isinstance(poly_det, plg)
     assert isinstance(poly_gt, plg)
+    assert invalid_ret is None or isinstance(invalid_ret, float) or isinstance(
+        invalid_ret, int)
 
-    if invalid == 'allow':
+    if invalid_ret is None:
         if not poly_det.is_valid:
             poly_det = poly_det.buffer(0)
         if not poly_gt.is_valid:
@@ -211,9 +216,9 @@ def poly_union(poly_det, poly_gt, invalid='allow', return_poly=False):
             return poly_obj.area
     else:
         if return_poly:
-            return invalid, None
+            return invalid_ret, None
         else:
-            return invalid
+            return invalid_ret
 
 
 def boundary_iou(src, target, zero_division=0):
