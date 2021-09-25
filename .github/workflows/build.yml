@@ -85,7 +85,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7]
-        torch: [1.6.0+cu101, 1.7.0+cu101, 1.8.0+cu101, 1.9.0+cu101]
+        torch: [1.6.0+cu101, 1.7.0+cu101, 1.8.0+cu101]
         include:
           - torch: 1.6.0+cu101
             torch_version: 1.6.0
@@ -128,10 +128,6 @@ jobs:
       - name: Install Pillow
         run: python -m pip install Pillow==6.2.2
         if: ${{matrix.torchvision < 0.5}}
-      # - name: Install TurboJpeg lib
-      #   run: apt-get install -y libturbojpeg
-      - name: Install soundfile lib
-        run: apt-get install -y libsndfile1
       - name: Install librosa and soundfile
         run: python -m pip install librosa soundfile
       - name: Install lmdb
