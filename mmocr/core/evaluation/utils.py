@@ -136,6 +136,19 @@ def points2polygon(points):
     return plg(point_mat)
 
 
+def poly_make_valid(poly):
+    """Convert a potentially invalid polygon to a valid one by eliminating
+    self-crossing or self-touching parts.
+
+    Args:
+        poly (Polygon): A polygon needed to be converted.
+
+    Returns:
+        A valid polygon.
+    """
+    return poly if poly.is_valid else poly.buffer(0)
+
+
 def poly_intersection(poly_det, poly_gt, invalid_ret=None, return_poly=False):
     """Calculate the intersection area between two polygon.
 
@@ -156,26 +169,19 @@ def poly_intersection(poly_det, poly_gt, invalid_ret=None, return_poly=False):
     """
     assert isinstance(poly_det, plg)
     assert isinstance(poly_gt, plg)
-    assert invalid_ret is None or isinstance(invalid_ret, float) or isinstance(
-        invalid_ret, int)
+    assert invalid_ret is None or isinstance(invalid_ret, float) or \
+        isinstance(invalid_ret, int)
 
     if invalid_ret is None:
-        if not poly_det.is_valid:
-            poly_det = poly_det.buffer(0)
-        if not poly_gt.is_valid:
-            poly_gt = poly_gt.buffer(0)
+        poly_det = poly_make_valid(poly_det)
+        poly_gt = poly_make_valid(poly_gt)
 
+    poly_obj = None
+    area = invalid_ret
     if poly_det.is_valid and poly_gt.is_valid:
         poly_obj = poly_det.intersection(poly_gt)
-        if return_poly:
-            return poly_obj.area, poly_obj
-        else:
-            return poly_obj.area
-    else:
-        if return_poly:
-            return invalid_ret, None
-        else:
-            return invalid_ret
+        area = poly_obj.area
+    return (area, poly_obj) if return_poly else area
 
 
 def poly_union(poly_det, poly_gt, invalid_ret=None, return_poly=False):
@@ -199,26 +205,19 @@ def poly_union(poly_det, poly_gt, invalid_ret=None, return_poly=False):
     """
     assert isinstance(poly_det, plg)
     assert isinstance(poly_gt, plg)
-    assert invalid_ret is None or isinstance(invalid_ret, float) or isinstance(
-        invalid_ret, int)
+    assert invalid_ret is None or isinstance(invalid_ret, float) or \
+        isinstance(invalid_ret, int)
 
     if invalid_ret is None:
-        if not poly_det.is_valid:
-            poly_det = poly_det.buffer(0)
-        if not poly_gt.is_valid:
-            poly_gt = poly_gt.buffer(0)
+        poly_det = poly_make_valid(poly_det)
+        poly_gt = poly_make_valid(poly_gt)
 
+    poly_obj = None
+    area = invalid_ret
     if poly_det.is_valid and poly_gt.is_valid:
         poly_obj = poly_det.union(poly_gt)
-        if return_poly:
-            return poly_obj.area, poly_obj
-        else:
-            return poly_obj.area
-    else:
-        if return_poly:
-            return invalid_ret, None
-        else:
-            return invalid_ret
+        area = poly_obj.area
+    return (area, poly_obj) if return_poly else area
 
 
 def boundary_iou(src, target, zero_division=0):
