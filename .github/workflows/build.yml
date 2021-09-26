@@ -82,6 +82,9 @@ jobs:
     runs-on: ubuntu-18.04
     container:
       image: pytorch/pytorch:1.6.0-cuda10.1-cudnn7-devel
+      env:
+        LANG: en_US.UTF-8
+        PYTHONENCODING: utf-8
     strategy:
       matrix:
         python-version: [3.7]
@@ -119,10 +122,6 @@ jobs:
       - name: Install Python-dev
         run: apt-get update && apt-get install -y python${{matrix.python-version}}-dev
         if: ${{matrix.python-version != 3.9}}
-      - name: Use UTF-8 encoding
-        run: |
-          export LANG="en_US.UTF-8"
-          export PYTHONENCODING="utf-8"
       - name: Install system dependencies
         run: |
           apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6
