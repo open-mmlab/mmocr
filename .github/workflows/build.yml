@@ -83,8 +83,7 @@ jobs:
     container:
       image: pytorch/pytorch:1.6.0-cuda10.1-cudnn7-devel
       env:
-        LANG: en_US.UTF-8
-        PYTHONENCODING: utf-8
+        LANG: C.UTF-8
     strategy:
       matrix:
         python-version: [3.7]
