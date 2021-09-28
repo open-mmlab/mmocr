@@ -55,7 +55,7 @@ python tools/deployment/pytorch2onnx.py
 |  CRNN  |             [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)            |       Y       |        Y        | CRNN 仅接受高度为32的输入 |
 
 :::{note}
-- *以上所有模型测试基于PyTorch==1.8.1，onnxruntime==1.7.0进行*
+- *以上所有模型测试基于 PyTorch==1.8.1，onnxruntime==1.7.0 进行*
 - 如果你在上述模型中遇到问题，请创建一个issue，我们会尽快处理。
 - 因为这个特性是试验性的，可能变动很快，请尽量使用最新版的 `mmcv` 和 `mmocr` 尝试。
 :::
