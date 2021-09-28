@@ -26,7 +26,7 @@ MMOCR depends on PyTorch and mmdetection.
 
 ## Step-by-Step Installation Instructions
 
-a. Create a conda virtual environment and activate it.
+a. Create a Conda virtual environment and activate it.
 
 ```shell
 conda create -n open-mmlab python=3.7 -y
@@ -40,41 +40,45 @@ conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.1 -c pytorch
 ```
 
 :::{note}
-Make sure that your compilation CUDA version and runtime CUDA version match.
+Make sure that your compilation CUDA version and runtime CUDA version matches.
 You can check the supported CUDA version for precompiled packages on the [PyTorch website](https://pytorch.org/).
 :::
 
 
-c. Install mmcv, we recommend you to install the pre-build mmcv as below.
+c. Install [mmcv](https://github.com/open-mmlab/mmcv), we recommend you to install the pre-build mmcv as below.
 
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
 ```
 
-Please replace ``{cu_version}`` and ``{torch_version}`` in the url to your desired one. For example, to install the latest ``mmcv-full`` with ``CUDA 11`` and ``PyTorch 1.7.0``, use the following command:
+Please replace ``{cu_version}`` and ``{torch_version}`` in the url with your desired one. For example, to install the latest ``mmcv-full`` with CUDA 11 and PyTorch 1.7.0, use the following command:
 
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
 ```
+:::{note}
 Note that mmocr 0.2.1 or later requires mmcv 1.3.8 or later.
 
-If it compiles during installation, then please check that the cuda version and pytorch version **exactly** matches the version in the mmcv-full installation command. For example, pytorch 1.7.0 and 1.7.1 are treated differently.
+If it compiles during installation, then please check that the CUDA version and PyTorch version **exactly** matches the version in the `mmcv-full` installation command. For example, PyTorch 1.7.0 and 1.7.1 are treated differently.
 
-See official [installation](https://github.com/open-mmlab/mmcv#installation) for different versions of MMCV compatible to different PyTorch and CUDA versions.
+See official [installation guide](https://github.com/open-mmlab/mmcv#installation) for different versions of MMCV compatible to different PyTorch and CUDA versions.
+:::
 
-**Important:** You need to run `pip uninstall mmcv` first if you have mmcv installed. If mmcv and mmcv-full are both installed, there will be `ModuleNotFoundError`.
+:::{warning}
+You need to run `pip uninstall mmcv` first if you have `mmcv` installed. If `mmcv` and `mmcv-full` are both installed, there will be `ModuleNotFoundError`.
+:::
 
-d. Install [mmdet](https://github.com/open-mmlab/mmdetection.git), we recommend you to install the latest `mmdet` with pip.
+d. Install [mmdet](https://github.com/open-mmlab/mmdetection), we recommend you to install the latest `mmdet` with pip.
 See [here](https://pypi.org/project/mmdet/) for different versions of `mmdet`.
 
 ```shell
 pip install mmdet
 ```
 
-Optionally you can choose to install `mmdet` following the official [installation](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md).
+Optionally you can choose to install `mmdet` following the official [installation guide](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md).
 
 
-e. Clone the mmocr repository.
+e. Clone the MMOCR repository.
 
 ```shell
 git clone https://github.com/open-mmlab/mmocr.git
@@ -91,7 +95,7 @@ export PYTHONPATH=$(pwd):$PYTHONPATH
 
 ## Full Set-up Script
 
-Here is the full script for setting up mmocr with conda.
+Here is the full script for setting up MMOCR with Conda.
 
 ```shell
 conda create -n open-mmlab python=3.7 -y

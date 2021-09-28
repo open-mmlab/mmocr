@@ -76,7 +76,8 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_theme = 'pytorch_sphinx_theme'
 html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
-    # 'logo_url': 'https://mmocr.readthedocs.io/en/latest/',
+    'logo_url':
+    'https://mmocr.readthedocs.io/en/latest/',
     'menu': [
         {
             'name':
@@ -118,10 +119,6 @@ html_theme_options = {
                     'url': 'https://github.com/open-mmlab/mmclassification',
                 },
                 {
-                    'name': 'MMSegmentation',
-                    'url': 'https://github.com/open-mmlab/mmsegmentation',
-                },
-                {
                     'name': 'MMDetection3D',
                     'url': 'https://github.com/open-mmlab/mmdetection3d',
                 },
@@ -130,20 +127,20 @@ html_theme_options = {
                     'url': 'https://github.com/open-mmlab/mmediting',
                 },
                 {
-                    'name': 'MMDetection3D',
-                    'url': 'https://github.com/open-mmlab/mmdetection3d',
+                    'name': 'MMGeneration',
+                    'url': 'https://github.com/open-mmlab/mmgeneration',
                 },
                 {
                     'name': 'MMPose',
                     'url': 'https://github.com/open-mmlab/mmpose',
                 },
                 {
-                    'name': 'MMTracking',
-                    'url': 'https://github.com/open-mmlab/mmtracking',
+                    'name': 'MMSegmentation',
+                    'url': 'https://github.com/open-mmlab/mmsegmentation',
                 },
                 {
-                    'name': 'MMGeneration',
-                    'url': 'https://github.com/open-mmlab/mmgeneration',
+                    'name': 'MMTracking',
+                    'url': 'https://github.com/open-mmlab/mmtracking',
                 },
             ]
         },
@@ -158,6 +155,14 @@ html_theme_options = {
                 {
                     'name': 'GitHub',
                     'url': 'https://github.com/open-mmlab/'
+                },
+                {
+                    'name': 'Twitter',
+                    'url': 'https://twitter.com/OpenMMLab'
+                },
+                {
+                    'name': 'Zhihu',
+                    'url': 'https://zhihu.com/people/openmmlab'
                 },
             ]
         },
