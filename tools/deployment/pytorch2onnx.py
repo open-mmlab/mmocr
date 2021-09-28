@@ -144,11 +144,11 @@ def pytorch2onnx(model: nn.Module,
                  verify: bool = False,
                  dynamic_export: bool = False,
                  device_id: int = 0):
-    """Export Pytorch model to ONNX model and verify the outputs are same
-    between Pytorch and ONNX.
+    """Export PyTorch model to ONNX model and verify the outputs are same
+    between PyTorch and ONNX.
 
     Args:
-        model (nn.Module): Pytorch model we want to export.
+        model (nn.Module): PyTorch model we want to export.
         model_type (str): Model type, detection or recognition model.
         img_path (str): We need to use this input to execute the model.
         opset_version (int): The onnx op version. Default: 11.
@@ -156,7 +156,7 @@ def pytorch2onnx(model: nn.Module,
         show (bool): Whether visialize final results. Default: False.
         output_file (string): The path to where we store the output ONNX model.
             Default: `tmp.onnx`.
-        verify (bool): Whether compare the outputs between Pytorch and ONNX.
+        verify (bool): Whether compare the outputs between PyTorch and ONNX.
             Default: False.
         dynamic_export (bool): Whether apply dynamic export.
             Default: False.
@@ -286,7 +286,7 @@ def pytorch2onnx(model: nn.Module,
                         atol=1e-4):
                     same_diff = 'different'
                     break
-        print('The outputs are {} between Pytorch and ONNX'.format(same_diff))
+        print('The outputs are {} between PyTorch and ONNX'.format(same_diff))
 
         if show:
             onnx_img = onnx_model.show_result(

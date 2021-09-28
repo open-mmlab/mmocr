@@ -4,7 +4,7 @@ We provide deployment tools under `tools/deployment` directory.
 
 ## Convert to ONNX (experimental)
 
-We provide a script to convert the model to [ONNX](https://github.com/onnx/onnx) format. The converted model could be visualized by tools like [Netron](https://github.com/lutzroeder/netron). Besides, we also support comparing the output results between Pytorch and ONNX model.
+We provide a script to convert the model to [ONNX](https://github.com/onnx/onnx) format. The converted model could be visualized by tools like [Netron](https://github.com/lutzroeder/netron). Besides, we also support comparing the output results between PyTorch and ONNX model.
 
 ```bash
 python tools/deployment/pytorch2onnx.py
@@ -55,7 +55,7 @@ The table below lists the models that are guaranteed to be exportable to ONNX an
 |  CRNN  |             [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)            |       Y       |        Y        | CRNN only accepts input with height 32 |
 
 :::{note}
-- *All models above are tested with Pytorch==1.8.1 and onnxruntime==1.7.0*
+- *All models above are tested with PyTorch==1.8.1 and onnxruntime==1.7.0*
 - If you meet any problem with the listed models above, please create an issue and it would be taken care of soon.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
 :::
@@ -116,7 +116,7 @@ The table below lists the models that are guaranteed to be exportable to TensorR
 |  CRNN  |             [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)            |       Y       |        Y        | CRNN only accepts input with height 32 |
 
 :::{note}
-- *All models above are tested with Pytorch==1.8.1,  onnxruntime==1.7.0 and tensorrt==7.2.1.6*
+- *All models above are tested with PyTorch==1.8.1,  onnxruntime==1.7.0 and tensorrt==7.2.1.6*
 - If you meet any problem with the listed models above, please create an issue and it would be taken care of soon.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
 :::
