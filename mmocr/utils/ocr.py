@@ -281,11 +281,11 @@ class MMOCR:
             },
             'SATRN': {
                 'config': 'satrn/satrn_academic.py',
-                'ckpt': 'satrn/satrn_academic_20210809-59c8c92d.pth'
+                'ckpt': 'satrn/satrn_academic_20211009-cb8b1580.pth'
             },
             'SATRN_sm': {
                 'config': 'satrn/satrn_small.py',
-                'ckpt': 'satrn/satrn_small_20210811-2badf6fc.pth'
+                'ckpt': 'satrn/satrn_small_20211009-2cf13355.pth'
             },
             'SEG': {
                 'config': 'seg/seg_r31_1by16_fpnocr_academic.py',
