@@ -23,6 +23,7 @@ class ABILoss(nn.Module):
                  enc_weight=1.0,
                  dec_weight=1.0,
                  fusion_weight=1.0,
+                 ignore_index=-100,
                  **kwargs):
         assert isinstance(one_hot, bool)
         assert isinstance(enc_weight, float) or isinstance(enc_weight, int)
@@ -31,7 +32,7 @@ class ABILoss(nn.Module):
             isinstance(fusion_weight, int)
         super().__init__()
         self.ce = SoftCELoss(reduction='mean') if one_hot else \
-            CELoss(reduction='mean')
+            CELoss(reduction='mean', ignore_index=ignore_index)
         self.enc_weight = enc_weight
         self.dec_weight = dec_weight
         self.fusion_weight = fusion_weight

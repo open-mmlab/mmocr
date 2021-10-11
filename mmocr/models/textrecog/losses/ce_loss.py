@@ -1,5 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from mmocr.models.builder import LOSSES
 
@@ -14,21 +16,34 @@ class CELoss(nn.Module):
             ignored and does not contribute to the input gradient.
         reduction (str): Specifies the reduction to apply to the output,
             should be one of the following: ('none', 'mean', 'sum').
+        ignore_first_char (bool): Whether to ignore the first token in target (
+            usually the start token). If `True`, the last token of the output
+            sequence will also be removed to be aligned with the target length.
     """
 
-    def __init__(self, ignore_index=-1, reduction='none'):
+    def __init__(self,
+                 ignore_index=-1,
+                 reduction='none',
+                 ignore_first_char=False):
         super().__init__()
         assert isinstance(ignore_index, int)
         assert isinstance(reduction, str)
         assert reduction in ['none', 'mean', 'sum']
+        assert isinstance(ignore_first_char, bool)
 
         self.loss_ce = nn.CrossEntropyLoss(
             ignore_index=ignore_index, reduction=reduction)
+        self.ignore_first_char = ignore_first_char
 
     def format(self, outputs, targets_dict):
         targets = targets_dict['padded_targets']
+        if self.ignore_first_char:
+            targets = targets[:, 1:].contiguous()
+            outputs = outputs[:, :-1, :]
 
-        return outputs.permute(0, 2, 1).contiguous(), targets
+        outputs = outputs.permute(0, 2, 1).contiguous()
+
+        return outputs, targets
 
     def forward(self, outputs, targets_dict, img_metas=None):
         outputs, targets = self.format(outputs, targets_dict)
@@ -36,6 +51,41 @@ class CELoss(nn.Module):
         loss_ce = self.loss_ce(outputs, targets.to(outputs.device))
         losses = dict(loss_ce=loss_ce)
 
+        return losses
+
+
+@LOSSES.register_module()
+class SoftCELoss(nn.Module):
+    """Implementation of soft cross entropy loss.
+
+    Args:
+        reduction (str): Specifies the reduction to apply to the output,
+            should be one of the following: ('none', 'mean', 'sum').
+    """
+
+    def __init__(self, reduction='mean', use_softmax=True):
+        assert reduction in ['none', 'mean', 'sum']
+
+        super().__init__()
+        self.reduction = reduction
+        self.use_softmax = use_softmax
+
+    def format(self, outputs, targets_dict):
+        targets = targets_dict['padded_targets']
+        return outputs.permute(0, 2, 1), targets
+
+    def forward(self, outputs, targets_dict, img_metas=None):
+        outputs, targets = self.format(outputs, targets_dict)
+        if self.use_softmax:
+            log_prob = F.log_softmax(outputs, dim=-1)
+        else:
+            log_prob = torch.log(outputs)
+        loss = -(targets * log_prob).sum(dim=-1)
+        if self.reduction == 'mean':
+            loss = loss.mean()
+        elif self.reduction == 'sum':
+            loss = loss.sum()
+        losses = dict(loss_soft_ce=loss)
         return losses
 
 
