@@ -13,7 +13,8 @@ class BaseAlignment(BaseModule):
                  d_model=512,
                  max_seq_len=40,
                  num_chars=90,
-                 init_cfg=None):
+                 init_cfg=None,
+                 **kwargs):
         super().__init__(init_cfg=init_cfg)
 
         self.max_seq_len = max_seq_len + 1  # additional stop token
@@ -38,4 +39,4 @@ class BaseAlignment(BaseModule):
         logits = self.cls(output)  # (N, T, C)
         # pt_lengths = self._get_length(logits)
 
-        return logits
+        return {'logits': logits}
