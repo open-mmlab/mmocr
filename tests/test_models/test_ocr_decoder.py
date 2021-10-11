@@ -116,8 +116,8 @@ def test_transformer_decoder():
 
 def test_abivision_decoder():
     decoder = ABIVisionDecoder(max_seq_len=25)
-    logits = torch.randn(1, 26, 90)
+    logits = torch.randn(2, 25, 90)
     result = decoder(
         feat=None, out_enc=logits, targets_dict=None, img_metas=None)
-    assert result['feature'].shape == torch.Size([1, 26, 512])
-    assert result['logits'].shape == torch.Size([1, 26, 90])
+    assert result['feature'].shape == torch.Size([2, 25, 512])
+    assert result['logits'].shape == torch.Size([2, 25, 90])

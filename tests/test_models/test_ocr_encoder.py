@@ -71,10 +71,11 @@ def test_restransformer():
     assert model(x).shape == torch.Size([1, 512, 8, 32])
 
 
-def test_abivisionencoder():
-    model = ABIVisionEncoder(in_channels=128, num_channels=16, max_seq_len=10)
-    x = torch.randn(1, 128, 8, 32)
+def test_abivision_encoder():
+    model = ABIVisionEncoder(
+        in_channels=128, num_channels=16, max_seq_len=10, use_result=None)
+    x = torch.randn(2, 128, 8, 32)
     result = model(x)
-    assert result['feature'].shape == torch.Size([1, 11, 128])
-    assert result['logits'].shape == torch.Size([1, 11, 90])
-    assert result['attn_scores'].shape == torch.Size([1, 11, 8, 32])
+    assert result['feature'].shape == torch.Size([2, 10, 128])
+    assert result['logits'].shape == torch.Size([2, 10, 90])
+    assert result['attn_scores'].shape == torch.Size([2, 10, 8, 32])

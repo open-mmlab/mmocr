@@ -335,9 +335,8 @@ class PositionAttention(nn.Module):
         k = self.k_decoder[-1](k)
 
         # q = positional encoding
-        zeros = x.new_zeros((self.max_length, N, E))  # (T, N, E)
+        zeros = x.new_zeros((N, self.max_length, E))  # (N, T, E)
         q = self.pos_encoder(zeros)  # (T, N, E)
-        q = q.permute(1, 0, 2)  # (N, T, E)
         q = self.project(q)  # (N, T, E)
 
         # Attention encoding

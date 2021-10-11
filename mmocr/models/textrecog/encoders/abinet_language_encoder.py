@@ -17,11 +17,12 @@ class ABIVisionEncoder(BaseEncoder):
                  attn_mode='nearest',
                  max_seq_len=40,
                  num_chars=90,
-                 init_cfg=dict(type='Xavier', layer='Conv2d')):
+                 init_cfg=dict(type='Xavier', layer='Conv2d'),
+                 **kwargs):
         super().__init__(init_cfg=init_cfg)
 
         self.attention = PositionAttention(
-            max_length=max_seq_len + 1,  # additional stop token
+            max_length=max_seq_len,
             in_channels=in_channels,
             num_channels=num_channels,
             mode=attn_mode,
@@ -33,9 +34,10 @@ class ABIVisionEncoder(BaseEncoder):
     def forward(self, feat, img_metas=None):
         attn_vecs, attn_scores = self.attention(feat)
         logits = self.cls(attn_vecs)
-
-        return {
+        result = {
             'feature': attn_vecs,
             'logits': logits,
             'attn_scores': attn_scores
         }
+
+        return result

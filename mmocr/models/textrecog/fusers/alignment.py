@@ -37,6 +37,5 @@ class BaseAlignment(BaseModule):
         output = f_att * v_feature + (1 - f_att) * l_feature
 
         logits = self.cls(output)  # (N, T, C)
-        # pt_lengths = self._get_length(logits)
 
         return {'logits': logits}

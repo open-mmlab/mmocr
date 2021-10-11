@@ -31,7 +31,7 @@ class ABIVisionDecoder(BaseDecoder):
         self.detach_tokens = detach_tokens
 
         self.d_model = d_model
-        self.max_seq_len = max_seq_len + 1  # additional stop token
+        self.max_seq_len = max_seq_len
 
         self.proj = nn.Linear(num_chars, d_model, False)
         self.token_encoder = PositionalEncoding(
@@ -75,12 +75,13 @@ class ABIVisionDecoder(BaseDecoder):
         if self.detach_tokens:
             tokens = tokens.detach()
         embed = self.proj(tokens)  # (N, T, E)
-        embed = embed.permute(1, 0, 2)  # (T, N, E)
         embed = self.token_encoder(embed)  # (T, N, E)
         padding_mask = self._get_padding_mask(lengths, self.max_seq_len)
 
         zeros = embed.new_zeros(*embed.shape)
         query = self.pos_encoder(zeros)
+        query = query.permute(1, 0, 2)
+        embed = embed.permute(1, 0, 2)
         location_mask = self._get_location_mask(self.max_seq_len,
                                                 tokens.device)
         output = query
