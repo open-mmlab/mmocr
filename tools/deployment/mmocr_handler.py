@@ -6,7 +6,7 @@ import mmcv
 import torch
 from ts.torch_handler.base_handler import BaseHandler
 
-from mmocr.apis import inference_detector, init_detector
+from mmocr.apis import init_detector, model_inference
 
 
 class MMOCRHandler(BaseHandler):
@@ -41,7 +41,7 @@ class MMOCRHandler(BaseHandler):
         return images
 
     def inference(self, data, *args, **kwargs):
-        results = inference_detector(self.model, data)
+        results = model_inference(self.model, data)
         return results
 
     def postprocess(self, data):
@@ -49,22 +49,16 @@ class MMOCRHandler(BaseHandler):
         output = []
         for image_index, image_result in enumerate(data):
             output.append([])
-            if isinstance(image_result, tuple):
-                bbox_result, segm_result = image_result
-                if isinstance(segm_result, tuple):
-                    segm_result = segm_result[0]  # ms rcnn
-            else:
-                bbox_result, segm_result = image_result, None
-
-            for class_index, class_result in enumerate(bbox_result):
-                class_name = self.model.CLASSES[class_index]
-                for bbox in class_result:
-                    bbox_coords = bbox[:-1].tolist()
-                    score = float(bbox[-1])
-                    if score >= self.threshold:
-                        output[image_index].append({
-                            class_name: bbox_coords,
-                            'score': score
-                        })
-
+            if image_result.get('boundary_result', None):
+                for bbox in image_result['boundary_result']:
+                    output[image_index].append({
+                        'bbox': [round(x) for x in bbox[:-1]],
+                        'score':
+                        float(bbox[-1])
+                    })
+            if image_result.get('text', None):
+                output[image_index].append({
+                    'text': image_result['text'],
+                    'score': image_result['score']
+                })
         return output
