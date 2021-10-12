@@ -49,8 +49,10 @@ def main(args):
                                               serve_results[key]):
             if isinstance(model_result[0], (int, float)):
                 assert np.allclose(model_result, serve_result)
-            if isinstance(serve_result[0], str):
+            elif isinstance(model_result[0], str):
                 assert model_result == serve_result
+            else:
+                raise TypeError
 
 
 if __name__ == '__main__':
