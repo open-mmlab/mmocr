@@ -115,9 +115,9 @@ class DBLoss(nn.Module):
             downsample_ratio (float): The downsample ratio for the
                 ground truths.
             gt_shrink (list[BitmapMasks]): The mask list with each element
-                being the shrinked text mask for one img.
+                being the shrunk text mask for one img.
             gt_shrink_mask (list[BitmapMasks]): The effective mask list with
-                each element being the shrinked effective mask for one img.
+                each element being the shrunk effective mask for one img.
             gt_thr (list[BitmapMasks]): The mask list with each element
                 being the threshold text mask for one img.
             gt_thr_mask (list[BitmapMasks]): The effective mask list with

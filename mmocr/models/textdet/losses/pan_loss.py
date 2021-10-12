@@ -96,7 +96,7 @@ class PANLoss(nn.Module):
             gt_kernels (list[BitmapMasks]): The kernel list with each element
                 being the text kernel mask for one img.
             gt_mask (list[BitmapMasks]): The effective mask list
-                with each element being the effective mask fo one img.
+                with each element being the effective mask for one img.
             downsample_ratio (float): The downsample ratio between preds
                 and the input img.
 

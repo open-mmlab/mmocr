@@ -155,7 +155,7 @@ def parse_args():
             Path.cwd()))) and (args.det_config != ''
                                or args.recog_config != ''):
         warnings.warn(
-            'config_dir will be overrided by det-config or recog-config.',
+            'config_dir will be overridden by det-config or recog-config.',
             UserWarning)
     return args
 
@@ -642,7 +642,7 @@ class MMOCR:
             img_list = [args.img]
 
         # Read all image(s) in advance to reduce wasted time
-        # re-reading the images for vizualisation output
+        # re-reading the images for visualization output
         args.arrays = [mmcv.imread(x) for x in img_list]
 
         # Create a list of filenames (used for output images and result files)

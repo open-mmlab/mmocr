@@ -113,7 +113,7 @@ git fetch upstream
 
 # update the main branch of your fork
 git checkout main
-git rebase upsteam/main
+git rebase upstream/main
 git push origin main
 
 # update the <your_feature_branch> branch

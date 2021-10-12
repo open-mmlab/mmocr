@@ -74,23 +74,23 @@ def _prepare_input_img(imgs, test_pipeline: Iterable[dict]):
     test_pipeline = replace_ImageToTensor(test_pipeline)
     test_pipeline = Compose(test_pipeline)
 
-    datas = []
+    data = []
     for img in imgs:
         # prepare data
         # add information into dict
-        data = dict(img_info=dict(filename=img), img_prefix=None)
+        datum = dict(img_info=dict(filename=img), img_prefix=None)
 
         # build the data pipeline
-        data = test_pipeline(data)
+        datum = test_pipeline(datum)
         # get tensor from list to stack for batch mode (text detection)
-        datas.append(data)
+        data.append(datum)
 
-    if isinstance(datas[0]['img'], list) and len(datas) > 1:
+    if isinstance(data[0]['img'], list) and len(data) > 1:
         raise Exception('aug test does not support '
                         f'inference with batch size '
-                        f'{len(datas)}')
+                        f'{len(data)}')
 
-    data = collate(datas, samples_per_gpu=len(imgs))
+    data = collate(data, samples_per_gpu=len(imgs))
 
     # process img_metas
     if isinstance(data['img_metas'], list):
@@ -280,7 +280,7 @@ if __name__ == '__main__':
     assert args.workspace_size >= 0, 'Workspace size less than 0.'
     for max_value, min_value in zip(args.max_shape, args.min_shape):
         assert max_value >= min_value, \
-            'max_shape sould be larger than min shape'
+            'max_shape should be larger than min shape'
 
     input_config = {
         'min_shape': args.min_shape,

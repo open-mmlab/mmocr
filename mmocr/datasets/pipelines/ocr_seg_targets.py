@@ -10,14 +10,14 @@ from mmocr.models.builder import build_convertor
 
 @PIPELINES.register_module()
 class OCRSegTargets:
-    """Generate gt shrinked kernels for segmentation based OCR framework.
+    """Generate gt shrunk kernels for segmentation based OCR framework.
 
     Args:
         label_convertor (dict): Dictionary to construct label_convertor
             to convert char to index.
-        attn_shrink_ratio (float): The area shrinked ratio
+        attn_shrink_ratio (float): The area shrunk ratio
             between attention kernels and gt text masks.
-        seg_shrink_ratio (float): The area shrinked ratio
+        seg_shrink_ratio (float): The area shrunk ratio
             between segmentation kernels and gt text masks.
         box_type (str): Character box type, should be either
             'char_rects' or 'char_quads', with 'char_rects'
@@ -51,7 +51,7 @@ class OCRSegTargets:
         Args:
             char_quad (list[float]): Char box with format
                 [x1, y1, x2, y2, x3, y3, x4, y4].
-            shrink_ratio (float): The area shrinked ratio
+            shrink_ratio (float): The area shrunk ratio
                 between gt kernels and gt text masks.
         """
         points = [[char_quad[0], char_quad[1]], [char_quad[2], char_quad[3]],
@@ -92,7 +92,7 @@ class OCRSegTargets:
         Args:
             char_rect (list[float]): Char box with format
                 [x_min, y_min, x_max, y_max].
-            shrink_ratio (float): The area shrinked ratio
+            shrink_ratio (float): The area shrunk ratio
                 between gt kernels and gt text masks.
         """
         x_min, y_min, x_max, y_max = char_rect
