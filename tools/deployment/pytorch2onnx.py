@@ -127,7 +127,7 @@ def pytorch2onnx(model: nn.Module,
         show (bool): Whether visialize final results. Default: False.
         output_file (string): The path to where we store the output ONNX model.
             Default: `tmp.onnx`.
-        verify (bool): Whether compare the outputs between Pytorch and ONNX.
+        verify (bool): Whether compare the outputs between PyTorch and ONNX.
             Default: False.
         dynamic_export (bool): Whether apply dynamic export.
             Default: False.
