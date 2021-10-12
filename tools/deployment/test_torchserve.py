@@ -49,7 +49,7 @@ def main(args):
                                               serve_results[key]):
             if isinstance(model_result[0], (int, float)):
                 assert np.allclose(model_result, serve_result)
-            if isinstance(serve_results[0], str):
+            if isinstance(serve_result[0], str):
                 assert model_result == serve_result
 
 
