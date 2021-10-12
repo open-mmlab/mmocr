@@ -41,24 +41,10 @@ class MMOCRHandler(BaseHandler):
         return images
 
     def inference(self, data, *args, **kwargs):
+
         results = model_inference(self.model, data)
         return results
 
     def postprocess(self, data):
         # Format output following the example OCRHandler format
-        output = []
-        for image_index, image_result in enumerate(data):
-            output.append([])
-            if image_result.get('boundary_result', None):
-                for bbox in image_result['boundary_result']:
-                    output[image_index].append({
-                        'bbox': [round(x) for x in bbox[:-1]],
-                        'score':
-                        float(bbox[-1])
-                    })
-            if image_result.get('text', None):
-                output[image_index].append({
-                    'text': image_result['text'],
-                    'score': image_result['score']
-                })
-        return output
+        return data
