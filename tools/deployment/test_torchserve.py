@@ -29,26 +29,28 @@ def main(args):
     model = init_detector(args.config, args.checkpoint, device=args.device)
     # test a single image
     model_results = model_inference(model, args.img)
-    model.show_results(
+    model.show_result(
         args.img,
         model_results,
-        title='model_results',
+        win_name='model_results',
         score_thr=args.score_thr)
     url = 'http://' + args.inference_addr + '/predictions/' + args.model_name
     with open(args.img, 'rb') as image:
         response = requests.post(url, image)
     serve_results = response.json()
-    model.show_results(
+    model.show_result(
         args.img,
         serve_results,
-        title='serve_results',
+        win_name='serve_results',
         score_thr=args.score_thr)
     assert serve_results.keys() == model_results.keys()
     for key in serve_results.keys():
-        if isinstance(serve_results[0], (int, float)):
-            assert np.allclose(model_results[key], serve_results[key])
-        if isinstance(serve_results[0], str):
-            assert model_results[key] == serve_results[key]
+        for model_result, serve_result in zip(model_results[key],
+                                              serve_results[key]):
+            if isinstance(model_result[0], (int, float)):
+                assert np.allclose(model_result, serve_result)
+            if isinstance(serve_results[0], str):
+                assert model_result == serve_result
 
 
 if __name__ == '__main__':
