@@ -37,35 +37,6 @@ def _convert_batchnorm(module):
     return module_output
 
 
-def _update_input_img(img_list, img_meta_list, update_ori_shape=False):
-    """update img and its meta list."""
-    N, C, H, W = img_list[0].shape
-    img_meta = img_meta_list[0][0]
-    img_shape = (H, W, C)
-    if update_ori_shape:
-        ori_shape = img_shape
-    else:
-        ori_shape = img_meta['ori_shape']
-    pad_shape = img_shape
-    new_img_meta_list = [[{
-        'img_shape':
-        img_shape,
-        'ori_shape':
-        ori_shape,
-        'pad_shape':
-        pad_shape,
-        'filename':
-        img_meta['filename'],
-        'scale_factor':
-        np.array(
-            (img_shape[1] / ori_shape[1], img_shape[0] / ori_shape[0]) * 2),
-        'flip':
-        False,
-    } for _ in range(N)]]
-
-    return img_list, new_img_meta_list
-
-
 def _prepare_data(cfg, imgs):
     """Inference image(s) with the detector.
 
@@ -156,7 +127,7 @@ def pytorch2onnx(model: nn.Module,
         show (bool): Whether visialize final results. Default: False.
         output_file (string): The path to where we store the output ONNX model.
             Default: `tmp.onnx`.
-        verify (bool): Whether compare the outputs between PyTorch and ONNX.
+        verify (bool): Whether compare the outputs between Pytorch and ONNX.
             Default: False.
         dynamic_export (bool): Whether apply dynamic export.
             Default: False.
@@ -176,8 +147,6 @@ def pytorch2onnx(model: nn.Module,
         imgs = imgs[0]
 
     img_list = [img[None, :].to(device) for img in imgs]
-    # update img_meta
-    img_list, img_metas = _update_input_img(img_list, img_metas)
 
     origin_forward = model.forward
     if (model_type == 'det'):
@@ -243,9 +212,6 @@ def pytorch2onnx(model: nn.Module,
                 nn.functional.interpolate(_, scale_factor=scale_factor)
                 for _ in img_list
             ]
-
-            # update img_meta
-            img_list, img_metas = _update_input_img(img_list, img_metas)
 
         # check the numerical value
         # get pytorch output
