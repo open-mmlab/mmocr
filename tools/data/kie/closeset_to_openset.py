@@ -18,6 +18,9 @@ def convert(closeset_line, merge_bg_others=False, ignore_idx=0, others_idx=25):
         ignore_idx (int): Index for ``ignore`` class.
         others_idx (int): Index for ``others`` class.
     """
+    closeset_key_inds = list(range(2, others_idx, 2))
+    closeset_value_inds = list(range(1, others_idx, 2))
+
     openset_node_label_mapping = {'bg': 0, 'key': 1, 'value': 2, 'others': 3}
     if merge_bg_others:
         openset_node_label_mapping = {
@@ -51,12 +54,12 @@ def convert(closeset_line, merge_bg_others=False, ignore_idx=0, others_idx=25):
             edge = label_to_edge.get(label, None)
             if edge is not None:
                 anno['edge'] = edge
-                if label % 2 == 0:
+                if label in closeset_key_inds:
                     anno['label'] = openset_node_label_mapping['key']
-                else:
+                elif label in closeset_value_inds:
                     anno['label'] = openset_node_label_mapping['value']
             else:
-                if label % 2 == 0:
+                if label in closeset_key_inds:
                     edge_minus_1 = label_to_edge.get(label - 1, None)
                     if edge_minus_1 is not None:
                         anno['edge'] = edge_minus_1
@@ -65,7 +68,7 @@ def convert(closeset_line, merge_bg_others=False, ignore_idx=0, others_idx=25):
                         edge_idx += 1
                     anno['label'] = openset_node_label_mapping['key']
                     label_to_edge[label] = anno['edge']
-                else:
+                elif label in closeset_value_inds:
                     edge_plus_1 = label_to_edge.get(label + 1, None)
                     if edge_plus_1 is not None:
                         anno['edge'] = edge_plus_1
