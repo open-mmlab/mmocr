@@ -7,7 +7,26 @@ import mmcv
 from mmocr.utils import list_from_file, list_to_file
 
 
-def convert(closeset_line, merge_bg_others=False):
+def convert(closeset_line, merge_bg_others=False, ignore_idx=0, others_idx=25):
+    """Convert line-json str of closeset to line-json str of openset. Note that
+    this function is designed for closeset-wildreceipt to openset-wildreceipt.
+    It may not be suitable to your own dataset.
+
+    Args:
+        merge_bg_others (bool): If True, give the same label to "background"
+            class and "others" class.
+        ignore_idx (int): Index for ``ignore`` class.
+        others_idx (int): Index for ``others`` class.
+    """
+    openset_node_label_mapping = {'bg': 0, 'key': 1, 'value': 2, 'others': 3}
+    if merge_bg_others:
+        openset_node_label_mapping = {
+            'bg': 0,
+            'key': 1,
+            'value': 2,
+            'others': 0
+        }
+
     closeset_obj = json.loads(closeset_line)
     openset_obj = {
         'file_name': closeset_obj['file_name'],
@@ -20,14 +39,12 @@ def convert(closeset_line, merge_bg_others=False):
     label_to_edge = {}
     for anno in closeset_obj['annotations']:
         label = anno['label']
-        if label == 0:
+        if label == ignore_idx:
+            anno['label'] = openset_node_label_mapping['bg']
             anno['edge'] = edge_idx
             edge_idx += 1
-        elif label == 25:
-            if merge_bg_others:
-                anno['label'] = 0
-            else:
-                anno['label'] = 3
+        elif label == others_idx:
+            anno['label'] = openset_node_label_mapping['others']
             anno['edge'] = edge_idx
             edge_idx += 1
         else:
@@ -35,9 +52,9 @@ def convert(closeset_line, merge_bg_others=False):
             if edge is not None:
                 anno['edge'] = edge
                 if label % 2 == 0:
-                    anno['label'] = 1
+                    anno['label'] = openset_node_label_mapping['key']
                 else:
-                    anno['label'] = 2
+                    anno['label'] = openset_node_label_mapping['value']
             else:
                 if label % 2 == 0:
                     edge_minus_1 = label_to_edge.get(label - 1, None)
@@ -46,7 +63,7 @@ def convert(closeset_line, merge_bg_others=False):
                     else:
                         anno['edge'] = edge_idx
                         edge_idx += 1
-                    anno['label'] = 1
+                    anno['label'] = openset_node_label_mapping['key']
                     label_to_edge[label] = anno['edge']
                 else:
                     edge_plus_1 = label_to_edge.get(label + 1, None)
@@ -55,7 +72,7 @@ def convert(closeset_line, merge_bg_others=False):
                     else:
                         anno['edge'] = edge_idx
                         edge_idx += 1
-                    anno['label'] = 2
+                    anno['label'] = openset_node_label_mapping['value']
                     label_to_edge[label] = anno['edge']
 
     openset_obj['annotations'] = closeset_obj['annotations']
@@ -81,7 +98,7 @@ def parse_args():
     parser.add_argument(
         '--merge',
         action='store_true',
-        help='Merge "background" and "others" in closeset '
+        help='Merge two classes: "background" and "others" in closeset '
         'to one class in openset.')
     parser.add_argument(
         '--n_proc', type=int, default=10, help='Number of process.')

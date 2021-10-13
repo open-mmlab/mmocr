@@ -666,8 +666,10 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
 
     Args:
         img (np.ndarray): The original image.
-        result (dic): The result of model forward prediction.
-        color_list (list[tuple(uint8)]): BGR color schemes for display.
+        result (dict): The result of model forward prediction.
+        edge_thresh (float): Score threshold for edge classification.
+        keynode_thresh (float): Score threshold for node
+            (``key``) classification.
     Return:
         out_img (np.ndarray): Visualized relationship image.
     """

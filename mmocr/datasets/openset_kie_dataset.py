@@ -24,9 +24,9 @@ class OpensetKIEDataset(KIEDataset):
         test_mode (bool, optional): If True, try...except will
             be turned off in __getitem__.
         norm (float): Norm to map value from one range to another.
-        link_type (str): one-to-one | one-to-many | many-to-one | many-to-many
-            | none.
-            For many-to-many, one key box can have many values and vice versa.
+        link_type (str): ``one-to-one`` | ``one-to-many`` |
+            ``many-to-one`` | ``many-to-many``. For ``many-to-many``,
+            one key box can have many values and vice versa.
         reference_loader (None | dict):  Dictionary to construct loader
             to load reference annotation infos, which is used in evaluation.
             When testing, loader could load ocr results by sdk, while
@@ -34,19 +34,19 @@ class OpensetKIEDataset(KIEDataset):
             When None, it is the same as loader.
     """
 
-    def __init__(
-        self,
-        ann_file,
-        loader,
-        dict_file,
-        img_prefix='',
-        pipeline=None,
-        norm=10.,
-        link_type='one-to-one',
-        edge_thr=0.5,
-        test_mode=True,
-        reference_loader=None,
-    ):
+    def __init__(self,
+                 ann_file,
+                 loader,
+                 dict_file,
+                 img_prefix='',
+                 pipeline=None,
+                 norm=10.,
+                 link_type='one-to-one',
+                 edge_thr=0.5,
+                 test_mode=True,
+                 reference_loader=None,
+                 key_node_idx=1,
+                 value_node_idx=2):
         super().__init__(ann_file, loader, dict_file, img_prefix, pipeline,
                          norm, False, test_mode)
         assert link_type in [
@@ -55,6 +55,8 @@ class OpensetKIEDataset(KIEDataset):
         self.link_type = link_type
         self.data_dict = {x['file_name']: x for x in self.data_infos}
         self.edge_thr = edge_thr
+        self.key_node_idx = key_node_idx
+        self.value_node_idx = value_node_idx
 
         if reference_loader is None:
             self.reference_dict = self.data_dict
@@ -81,9 +83,6 @@ class OpensetKIEDataset(KIEDataset):
                  metric='openset_f1',
                  metric_options=None,
                  **kwargs):
-        # allow some kwargs to pass through
-        assert set(kwargs).issubset(['logger'])
-
         # Protect ``metric_options`` since it uses mutable value as default
         metric_options = copy.deepcopy(metric_options)
 
@@ -104,17 +103,17 @@ class OpensetKIEDataset(KIEDataset):
 
         return self.compute_openset_f1(preds, gts)
 
-    @staticmethod
-    def _decode_pairs_gt(labels, edge_ids):
+    def _decode_pairs_gt(self, labels, edge_ids):
         """Find all pairs in gt.
 
         The first index in the pair (n1, n2) is key.
         """
         gt_pairs = []
         for i, label in enumerate(labels):
-            if label == 1:
+            if label == self.key_node_idx:
                 for j, edge_id in enumerate(edge_ids):
-                    if edge_id == edge_ids[i] and labels[j] == 2:
+                    if edge_id == edge_ids[i] and labels[
+                            j] == self.value_node_idx:
                         gt_pairs.append((i, j))
 
         return gt_pairs

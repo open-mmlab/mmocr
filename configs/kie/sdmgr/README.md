@@ -30,11 +30,10 @@
 | :-------: | :----------: | :--------: | :--------: | :--------: | :--------: |
 | [sdmgr_novisual](/configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_openset.py) |     Textual      |   0.786 | 0.926  | 0.935 | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_openset_20210917-d236b3ea.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/20210917_050824.log.json) |
 
-Note
 
 :::{note}
 1. In the case of openset, the number of node categories is unknown or unfixed, and more node category can be added.
-2. To show that our method can handle openset problem, we modify the ground truth of `WildReceipt` to `WildReceiptOpenset`. The `nodes` are just classified into 4 classs: `background, key, value, others`, while adding `edge` labels for each box.
+2. To show that our method can handle openset problem, we modify the ground truth of `WildReceipt` to `WildReceiptOpenset`. The `nodes` are just classified into 4 classes: `background, key, value, others`, while adding `edge` labels for each box.
 3. The model is used to predict whether two nodes are a pair connecting by a valid edge.
 
 :::
