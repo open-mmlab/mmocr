@@ -95,27 +95,27 @@ def _prepare_data(cfg, imgs):
     cfg.data.test.pipeline = replace_ImageToTensor(cfg.data.test.pipeline)
     test_pipeline = Compose(cfg.data.test.pipeline)
 
-    datas = []
+    data = []
     for img in imgs:
         # prepare data
         if is_ndarray:
             # directly add img
-            data = dict(img=img)
+            datum = dict(img=img)
         else:
             # add information into dict
-            data = dict(img_info=dict(filename=img), img_prefix=None)
+            datum = dict(img_info=dict(filename=img), img_prefix=None)
 
         # build the data pipeline
-        data = test_pipeline(data)
+        datum = test_pipeline(datum)
         # get tensor from list to stack for batch mode (text detection)
-        datas.append(data)
+        data.append(datum)
 
-    if isinstance(datas[0]['img'], list) and len(datas) > 1:
+    if isinstance(data[0]['img'], list) and len(data) > 1:
         raise Exception('aug test does not support '
                         f'inference with batch size '
-                        f'{len(datas)}')
+                        f'{len(data)}')
 
-    data = collate(datas, samples_per_gpu=len(imgs))
+    data = collate(data, samples_per_gpu=len(imgs))
 
     # process img_metas
     if isinstance(data['img_metas'], list):
@@ -346,7 +346,7 @@ def main():
     parser.add_argument(
         '--dynamic-export',
         action='store_true',
-        help='Whether dynamicly export onnx model.',
+        help='Whether dynamically export onnx model.',
         default=False)
     args = parser.parse_args()
 
