@@ -212,6 +212,8 @@ def pytorch2onnx(model: nn.Module,
                 nn.functional.interpolate(_, scale_factor=scale_factor)
                 for _ in img_list
             ]
+            img_metas[0]['scale_factor'] = img_metas[0]['scale_factor'] * (
+                scale_factor * 2)
 
         # check the numerical value
         # get pytorch output

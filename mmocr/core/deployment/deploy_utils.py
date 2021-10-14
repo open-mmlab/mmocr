@@ -43,11 +43,8 @@ class ONNXRuntimeDetector(TextDetectorMixin, SingleStageTextDetector):
                  cfg: Any,
                  device_id: int,
                  show_score: bool = False):
-        SingleStageTextDetector.__init__(self, cfg.model.backbone,
-                                         cfg.model.neck, cfg.model.bbox_head,
-                                         cfg.model.train_cfg,
-                                         cfg.model.test_cfg,
-                                         cfg.model.pretrained)
+        cfg.model.pop('type')
+        SingleStageTextDetector.__init__(self, **(cfg.model))
         TextDetectorMixin.__init__(self, show_score)
         import onnxruntime as ort
         # get the custom op path
