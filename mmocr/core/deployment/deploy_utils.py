@@ -204,8 +204,7 @@ class TensorRTDetector(TextDetectorMixin, SingleStageTextDetector):
         SingleStageTextDetector.__init__(self, cfg.model.backbone,
                                          cfg.model.neck, cfg.model.bbox_head,
                                          cfg.model.train_cfg,
-                                         cfg.model.test_cfg,
-                                         cfg.model.pretrained)
+                                         cfg.model.test_cfg)
         TextDetectorMixin.__init__(self, show_score)
         from mmcv.tensorrt import TRTWrapper, load_tensorrt_plugin
         try:
@@ -263,8 +262,7 @@ class TensorRTRecognizer(EncodeDecodeRecognizer):
                                         cfg.model.backbone, cfg.model.encoder,
                                         cfg.model.decoder, cfg.model.loss,
                                         cfg.model.label_convertor,
-                                        cfg.train_cfg, cfg.test_cfg, 40,
-                                        cfg.model.pretrained)
+                                        cfg.train_cfg, cfg.test_cfg, 40)
         from mmcv.tensorrt import TRTWrapper, load_tensorrt_plugin
         try:
             load_tensorrt_plugin()

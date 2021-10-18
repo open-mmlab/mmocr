@@ -184,7 +184,8 @@ def pytorch2onnx(model: nn.Module,
             },
             'output': {
                 0: 'batch',
-                3: 'width'
+                1: 'seq_len',
+                2: 'num_classes'
             }
         }
     with torch.no_grad():
@@ -212,8 +213,10 @@ def pytorch2onnx(model: nn.Module,
                 nn.functional.interpolate(_, scale_factor=scale_factor)
                 for _ in img_list
             ]
-            img_metas[0]['scale_factor'] = img_metas[0]['scale_factor'] * (
-                scale_factor * 2)
+            if model_type == 'det':
+                img_metas[0][0][
+                    'scale_factor'] = img_metas[0][0]['scale_factor'] * (
+                        scale_factor * 2)
 
         # check the numerical value
         # get pytorch output
