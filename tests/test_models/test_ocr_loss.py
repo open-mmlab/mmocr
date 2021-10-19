@@ -3,7 +3,8 @@ import pytest
 import torch
 
 from mmocr.models.common.losses import DiceLoss
-from mmocr.models.textrecog.losses import CELoss, CTCLoss, SARLoss, TFLoss
+from mmocr.models.textrecog.losses import (ABILoss, CELoss, CTCLoss, SARLoss,
+                                           TFLoss)
 
 
 def test_ctc_loss():
@@ -89,3 +90,25 @@ def test_dice_loss():
     mask = torch.rand(1, 1, 1, 1)
     loss = dice_loss(pred, gt, mask)
     assert isinstance(loss, torch.Tensor)
+
+
+def test_abi_loss():
+    loss = ABILoss()
+    outputs = dict(
+        out_enc=dict(logits=torch.randn(1, 10, 90)),
+        out_decs=[
+            dict(logits=torch.randn(1, 10, 90)),
+            dict(logits=torch.randn(1, 10, 90))
+        ],
+        out_fusers=[
+            dict(logits=torch.randn(1, 10, 90)),
+            dict(logits=torch.randn(1, 10, 90))
+        ])
+    targets_dict = {
+        'padded_targets': torch.LongTensor([[1, 2, 3, 4, 0, 0, 0, 0, 0, 0]])
+    }
+    result = loss(outputs, targets_dict)
+    assert isinstance(result, dict)
+    assert isinstance(result['loss_visual'], torch.Tensor)
+    assert isinstance(result['loss_lang'], torch.Tensor)
+    assert isinstance(result['loss_fusion'], torch.Tensor)
