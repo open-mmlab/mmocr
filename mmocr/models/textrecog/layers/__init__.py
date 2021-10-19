@@ -6,8 +6,8 @@ from .position_aware_layer import PositionAwareLayer
 from .robust_scanner_fusion_layer import RobustScannerFusionLayer
 from .transformer_layer import (Adaptive2DPositionalEncoding,
                                 MultiHeadAttention, PositionalEncoding,
-                                PositionwiseFeedForward, SatrnEncoderLayer,
-                                TransformerDecoderLayer,
+                                PositionAttention, PositionwiseFeedForward,
+                                SatrnEncoderLayer, TransformerDecoderLayer,
                                 TransformerEncoderLayer, get_pad_mask,
                                 get_subsequent_mask)
 
@@ -16,5 +16,6 @@ __all__ = [
     'Adaptive2DPositionalEncoding', 'PositionwiseFeedForward', 'BasicBlock',
     'Bottleneck', 'RobustScannerFusionLayer', 'DotProductAttentionLayer',
     'PositionAwareLayer', 'get_pad_mask', 'get_subsequent_mask',
-    'TransformerDecoderLayer', 'TransformerEncoderLayer', 'SatrnEncoderLayer'
+    'TransformerDecoderLayer', 'TransformerEncoderLayer', 'SatrnEncoderLayer',
+    'PositionAttention'
 ]

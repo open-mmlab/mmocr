@@ -6,6 +6,7 @@ from mmocr.models.textrecog.layers import (BasicBlock, Bottleneck,
                                            TransformerDecoderLayer,
                                            get_pad_mask, get_subsequent_mask)
 from mmocr.models.textrecog.layers.conv_layer import conv3x3
+from mmocr.models.textrecog.layers.transformer_layer import PositionAttention
 
 
 def test_conv_layer():
@@ -55,3 +56,11 @@ def test_transformer_layer():
     # test get_subsequent_mask
     out_mask = get_subsequent_mask(seq)
     assert out_mask.shape == torch.Size([1, 30, 30])
+
+
+def test_position_attention():
+    layer = PositionAttention(32, 512, 64, 8, 32)
+    x = torch.randn(2, 512, 8, 32)
+    attn_vecs, attn_scores = layer(x)
+    assert attn_vecs.shape == torch.Size([2, 32, 512])
+    assert attn_scores.shape == torch.Size([2, 32, 8, 32])
