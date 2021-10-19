@@ -4,7 +4,8 @@ import math
 import pytest
 import torch
 
-from mmocr.models.textrecog.decoders import (BaseDecoder, ParallelSARDecoder,
+from mmocr.models.textrecog.decoders import (ABILanguageDecoder, BaseDecoder,
+                                             ParallelSARDecoder,
                                              ParallelSARDecoderWithBS,
                                              SequentialSARDecoder, TFDecoder)
 from mmocr.models.textrecog.decoders.sar_decoder_with_bs import DecodeNode
@@ -111,3 +112,12 @@ def test_transformer_decoder():
 
     out_test = decoder(None, out_enc, tgt_dict, img_metas, False)
     assert out_test.shape == torch.Size([1, 5, 36])
+
+
+def test_abi_language_decoder():
+    decoder = ABILanguageDecoder(max_seq_len=25)
+    logits = torch.randn(2, 25, 90)
+    result = decoder(
+        feat=None, out_enc=logits, targets_dict=None, img_metas=None)
+    assert result['feature'].shape == torch.Size([2, 25, 512])
+    assert result['logits'].shape == torch.Size([2, 25, 90])
