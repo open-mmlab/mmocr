@@ -2,8 +2,9 @@
 import pytest
 import torch
 
-from mmocr.models.textrecog.encoders import (BaseEncoder, SAREncoder,
-                                             SatrnEncoder, TFEncoder)
+from mmocr.models.textrecog.encoders import (BaseEncoder, ResTransformer,
+                                             SAREncoder, SatrnEncoder,
+                                             TFEncoder)
 
 
 def test_sar_encoder():
@@ -62,3 +63,9 @@ def test_base_encoder():
     feat = torch.randn(1, 256, 4, 40)
     out_enc = encoder(feat)
     assert out_enc.shape == torch.Size([1, 256, 4, 40])
+
+
+def test_restransformer():
+    model = ResTransformer()
+    x = torch.randn(10, 3, 32, 128)
+    assert model(x).shape == torch.Size([10, 512, 8, 32])
