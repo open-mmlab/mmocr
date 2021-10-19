@@ -8,8 +8,8 @@ from .ce_loss import CELoss
 
 @LOSSES.register_module()
 class ABILoss(nn.Module):
-    """Implemenetation of ABINet multiloss that allows mixing different types
-    of losses with weights.
+    """Implementation of ABINet multiloss that allows mixing different types of
+    losses with weights.
 
     Args:
         enc_weight (float): The weight of encoder loss. Defaults to 1.0.
@@ -43,7 +43,7 @@ class ABILoss(nn.Module):
         """
         Args:
             outputs (list[Tensor]): Each tensor has shape (N, T, C) where N is
-                the batch size, T is the sequence lenght and C is the number of
+                the batch size, T is the sequence length and C is the number of
                 classes.
             targets_dicts (dict): The dictionary with at least `padded_targets`
                 defined.
