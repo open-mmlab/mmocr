@@ -2,6 +2,11 @@
 import torch.nn as nn
 
 
+def conv1x1(in_planes, out_planes, stride=1):
+    return nn.Conv2d(
+        in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
+
+
 def conv3x3(in_planes, out_planes, stride=1):
     return nn.Conv2d(
         in_planes,
@@ -15,12 +20,23 @@ def conv3x3(in_planes, out_planes, stride=1):
 class BasicBlock(nn.Module):
     expansion = 1
 
-    def __init__(self, inplanes, planes, stride=1, downsample=False):
+    def __init__(self,
+                 inplanes,
+                 planes,
+                 stride=1,
+                 use_conv1x1=False,
+                 downsample=False):
         super().__init__()
-        self.conv1 = conv3x3(inplanes, planes, stride)
+        if use_conv1x1:
+            self.conv1 = conv1x1(inplanes, planes)
+        else:
+            self.conv1 = conv3x3(inplanes, planes, stride)
         self.bn1 = nn.BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)
-        self.conv2 = conv3x3(planes, planes)
+        if use_conv1x1:
+            self.conv2 = conv3x3(planes, planes, stride)
+        else:
+            self.conv2 = conv3x3(planes, planes)
         self.bn2 = nn.BatchNorm2d(planes)
         self.downsample = downsample
         if downsample:

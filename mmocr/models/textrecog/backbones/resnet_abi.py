@@ -53,10 +53,11 @@ class ResNetABI(BaseModule):
         self.bn1 = nn.BatchNorm2d(channels[0])
         self.relu1 = nn.ReLU(inplace=True)
 
-        self.layers = [
+        self.layers = Sequential(*[
             self._make_layer(channels[i], channels[i + 1], arch_settings[i],
-                             strides[i]) for i in range(1, len(arch_settings))
-        ]
+                             strides[i + 1])
+            for i in range(len(arch_settings))
+        ])
 
     def _make_layer(self, input_channels, output_channels, blocks, stride=1):
         layers = []
@@ -65,11 +66,13 @@ class ResNetABI(BaseModule):
             BasicBlock(
                 input_channels,
                 output_channels,
+                use_conv1x1=True,
                 stride=stride,
                 downsample=downsample))
         input_channels = output_channels
         for _ in range(1, blocks):
-            layers.append(BasicBlock(input_channels, output_channels))
+            layers.append(
+                BasicBlock(input_channels, output_channels, use_conv1x1=True))
 
         return Sequential(*layers)
 
