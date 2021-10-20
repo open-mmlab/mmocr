@@ -47,8 +47,16 @@ def test_ce_loss():
     losses = ce_loss(outputs, targets_dict)
     assert isinstance(losses, dict)
     assert 'loss_ce' in losses
-    print(losses['loss_ce'].size())
     assert losses['loss_ce'].size(1) == 10
+
+    ce_loss = CELoss(ignore_first_char=True)
+    outputs = torch.rand(1, 10, 37)
+    targets_dict = {
+        'padded_targets': torch.LongTensor([[1, 2, 3, 4, 0, 0, 0, 0, 0, 0]])
+    }
+    new_output, new_target = ce_loss.format(outputs, targets_dict)
+    assert new_output.shape == torch.Size([1, 37, 9])
+    assert new_target.shape == torch.Size([1, 9])
 
 
 def test_sar_loss():
@@ -93,7 +101,7 @@ def test_dice_loss():
 
 
 def test_abi_loss():
-    loss = ABILoss()
+    loss = ABILoss(one_hot=False)
     outputs = dict(
         out_enc=dict(logits=torch.randn(1, 10, 90)),
         out_decs=[

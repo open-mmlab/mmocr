@@ -34,7 +34,10 @@ class ABILoss(nn.Module):
         assert isinstance(fusion_weight, float) or \
             isinstance(fusion_weight, int)
         super().__init__()
-        self.ce = CELoss(reduction='mean', ignore_index=ignore_index)
+        self.ce = CELoss(
+            reduction='mean',
+            ignore_index=ignore_index,
+            ignore_first_char=True)
         self.enc_weight = enc_weight
         self.dec_weight = dec_weight
         self.fusion_weight = fusion_weight
