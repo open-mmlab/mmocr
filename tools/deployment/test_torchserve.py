@@ -34,6 +34,7 @@ def main(args):
         args.img,
         model_results,
         win_name='model_results',
+        show=True,
         score_thr=args.score_thr)
     url = 'http://' + args.inference_addr + '/predictions/' + args.model_name
     with open(args.img, 'rb') as image:
@@ -42,6 +43,7 @@ def main(args):
     model.show_result(
         args.img,
         serve_results,
+        show=True,
         win_name='serve_results',
         score_thr=args.score_thr)
     assert serve_results.keys() == model_results.keys()
