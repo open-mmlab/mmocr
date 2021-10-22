@@ -1,7 +1,7 @@
 # Model Serving
 
 `MMOCR` provides some utilities that facilitate the model serving process.
-Here is a quick walkthrough of necessary steps that enable models to serve through an API.
+Here is a quick walkthrough of necessary steps that let the models to serve through an API.
 
 ## Install TorchServe
 
@@ -10,7 +10,7 @@ You can follow the steps on the [official website](https://github.com/pytorch/se
 
 ## Convert model from MMOCR to TorchServe
 
-We provide a handy tool to convert any `.pth` models into `.mar` models
+We provide a handy tool to convert any `.pth` model into `.mar` model
 for TorchServe.
 
 ```shell
@@ -37,7 +37,7 @@ python tools/deployment/mmocr2torchserve.py \
 
 ### From your Local Machine
 
-Getting your models prepared, the next step is to start the service with just one line:
+Getting your models prepared, the next step is to start the service with a one-line command:
 
 ```bash
 # To load all the models in ./checkpoints
