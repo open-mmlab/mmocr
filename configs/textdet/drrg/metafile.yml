@@ -22,4 +22,4 @@ Models:
         Dataset: CTW1500
         Metrics:
           hmean-iou: 0.840
-    Weights: https://download.openmmlab.com/mmocr/textdet/drrg/drrg_r50_fpn_unet_1200e_ctw1500-1abf4f67.pth
+    Weights: https://download.openmmlab.com/mmocr/textdet/drrg/drrg_r50_fpn_unet_1200e_ctw1500_20211022-fb30b001.pth
