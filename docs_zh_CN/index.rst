@@ -13,6 +13,7 @@
    training.md
    testing.md
    deployment.md
+   model_serving.md
 
 .. toctree::
    :maxdepth: 2
