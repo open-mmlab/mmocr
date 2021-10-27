@@ -192,16 +192,23 @@ class MMOCR:
                 'dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20210325-91cef9af.pth'
             },
             'DRRG': {
-                'config': 'drrg/drrg_r50_fpn_unet_1200e_ctw1500.py',
-                'ckpt': 'drrg/drrg_r50_fpn_unet_1200e_ctw1500-1abf4f67.pth'
+                'config':
+                'drrg/drrg_r50_fpn_unet_1200e_ctw1500.py',
+                'ckpt':
+                'drrg/drrg_r50_fpn_unet_1200e_ctw1500_20211022-fb30b001.pth'
             },
             'FCE_IC15': {
-                'config': 'fcenet/fcenet_r50_fpn_1500e_icdar2015.py',
-                'ckpt': 'fcenet/fcenet_r50_fpn_1500e_icdar2015-d435c061.pth'
+                'config':
+                'fcenet/fcenet_r50_fpn_1500e_icdar2015.py',
+                'ckpt':
+                'fcenet/fcenet_r50_fpn_1500e_icdar2015_20211022-daefb6ed.pth'
             },
             'FCE_CTW_DCNv2': {
-                'config': 'fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500.py',
-                'ckpt': 'fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500-05d740bb.pth'
+                'config':
+                'fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500.py',
+                'ckpt':
+                'fcenet/' +
+                'fcenet_r50dcnv2_fpn_1500e_ctw1500_20211022-e326d7ec.pth'
             },
             'MaskRCNN_CTW': {
                 'config':

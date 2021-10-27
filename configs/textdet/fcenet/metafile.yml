@@ -22,4 +22,15 @@ Models:
         Dataset: CTW1500
         Metrics:
           hmean-iou: 0.851
-    Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500-05d740bb.pth
+    Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500_20211022-e326d7ec.pth
+  - Name: fcenet_r50_fpn_1500e_icdar2015
+    In Collection: FCENet
+    Config: configs/textdet/fcenet/fcenet_r50_fpn_1500e_icdar2015.py
+    Metadata:
+      Training Data: ICDAR2015
+    Results:
+      - Task: Text Detection
+        Dataset: ICDAR2015
+        Metrics:
+          hmean-iou: 0.849
+    Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_r50_fpn_1500e_icdar2015_20211022-daefb6ed.pth
