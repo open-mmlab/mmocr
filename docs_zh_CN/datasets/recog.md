@@ -61,6 +61,17 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
+│   ├── OpenVINO
+│   │   ├── image_1
+│   │   ├── image_2
+│   │   ├── image_5
+│   │   ├── image_f
+│   │   ├── image_val
+│   │   ├── train_1_label.txt
+│   │   ├── train_2_label.txt
+│   │   ├── train_5_label.txt
+│   │   ├── train_f_label.txt
+│   │   ├── val_label.txt
 ```
 
 |  数据集名称   |                                        数据图片                                         |                                                                                                                                            标注文件                                                                                                                                                 |                                             标注文件                                             |
@@ -79,6 +90,7 @@
 |  SynthAdd  |  [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x)   |                                                                                                           [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)                                                                                                            |                                                    -                                                    |       |
 |  TextOCR  |  [下载地址](https://textvqa.org/textocr/dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
 |  Totaltext  |  [下载地址](https://github.com/cs-chan/Total-Text-Dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
+|  OpenVINO  |  [下载地址](https://github.com/cvdfoundation/open-images-dataset)   |                                                                                          [下载地址](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                           |[下载地址](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)|       |
 
 (*) 注：由于官方的下载地址已经无法访问，我们提供了一个非官方的地址以供参考，但我们无法保证数据的准确性。
 
@@ -232,4 +244,34 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   - 第二步：用以下命令生成经剪裁后的标注文件 `train_label.txt` 和 `test_label.txt` （剪裁后的图像会被保存在目录 `data/totaltext/dst_imgs/`）：
   ```bash
   python tools/data/textrecog/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
+  ```
+
+### OpenVINO
+  - 第零步：安装 [awscli](https://aws.amazon.com/cli/)。
+  - 第一步：下载 [Open Images](https://github.com/cvdfoundation/open-images-dataset#download-images-with-bounding-boxes-annotations) 的子数据集 `train_1`、 `train_2`、 `train_5`、 `train_f` 及 `validation` 至 `openvino/`。
+  ```bash
+  mkdir openvino && cd openvino
+
+  # 下载 Open Images 的子数据集
+  for s in 1 2 5 f; do
+    aws s3 --no-sign-request cp s3://open-images-dataset/tar/train_${s}.tar.gz .
+  done
+  aws s3 --no-sign-request cp s3://open-images-dataset/tar/validation.tar.gz .
+
+  # 下载标注文件
+  for s in 1 2 5 f; do
+    wget https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text/text_spotting_openimages_v5_train_${s}.json
+  done
+  wget https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text/text_spotting_openimages_v5_validation.json
+
+  # 解压数据集
+  mkdir -p openimages_v5/val
+  for s in 1 2 5 f; do
+    tar zxf train_${s}.tar.gz -C openimages_v5
+  done
+  tar zxf validation.tar.gz -C openimages_v5/val
+  ```
+  - 第二步： 运行以下的命令，以用4个进程生成标注 `train_{1,2,5,f}_label.txt` 和 `val_label.txt` 并裁剪原图：
+  ```bash
+  python tools/data/textrecog/openvino_converter.py /path/to/openvino 4
   ```
