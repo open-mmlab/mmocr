@@ -4,7 +4,7 @@ We provide deployment tools under `tools/deployment` directory.
 
 ## Convert to ONNX (experimental)
 
-We provide a script to convert the model to [ONNX](https://github.com/onnx/onnx) format. The converted model could be visualized by tools like [Netron](https://github.com/lutzroeder/netron). Besides, we also support comparing the output results between Pytorch and ONNX model.
+We provide a script to convert the model to [ONNX](https://github.com/onnx/onnx) format. The converted model could be visualized by tools like [Netron](https://github.com/lutzroeder/netron). Besides, we also support comparing the output results between PyTorch and ONNX model.
 
 ```bash
 python tools/deployment/pytorch2onnx.py
@@ -23,19 +23,19 @@ python tools/deployment/pytorch2onnx.py
 
 Description of arguments:
 
-| ARGS      | Type                  |  Description                                                 |
-| -------------- | --------------------- |  ----------------------------------------------------------- |
-| `model_config` | str | The path to a model config file. |
-| `model_ckpt` | str | The path to a model checkpoint file. |
-| `model_type` | 'recog', 'det' | The model type of the config file. |
-| `image_path` | str | The path to input image file. |
-| `--output-file`| str | The path to output ONNX model. Defaults to `tmp.onnx`. |
-| `--device-id`| int | Which GPU to use. Defaults to 0. |
-| `--opset-version` | int | ONNX opset version. Defaults to 11. |
-| `--verify`| bool | Determines whether to verify the correctness of an exported model. Defaults to `False`. |
-| `--verbose`| bool | Determines whether to print the architecture of the exported model. Defaults to `False`. |
-| `--show`| bool | Determines whether to visualize outputs of ONNXRuntime and PyTorch. Defaults to `False`. |
-| `--dynamic-export`| bool | Determines whether to export ONNX model with dynamic input and output shapes. Defaults to `False`. |
+| ARGS               | Type           | Description                                                                                        |
+| ------------------ | -------------- | -------------------------------------------------------------------------------------------------- |
+| `model_config`     | str            | The path to a model config file.                                                                   |
+| `model_ckpt`       | str            | The path to a model checkpoint file.                                                               |
+| `model_type`       | 'recog', 'det' | The model type of the config file.                                                                 |
+| `image_path`       | str            | The path to input image file.                                                                      |
+| `--output-file`    | str            | The path to output ONNX model. Defaults to `tmp.onnx`.                                             |
+| `--device-id`      | int            | Which GPU to use. Defaults to 0.                                                                   |
+| `--opset-version`  | int            | ONNX opset version. Defaults to 11.                                                                |
+| `--verify`         | bool           | Determines whether to verify the correctness of an exported model. Defaults to `False`.            |
+| `--verbose`        | bool           | Determines whether to print the architecture of the exported model. Defaults to `False`.           |
+| `--show`           | bool           | Determines whether to visualize outputs of ONNXRuntime and PyTorch. Defaults to `False`.           |
+| `--dynamic-export` | bool           | Determines whether to export ONNX model with dynamic input and output shapes. Defaults to `False`. |
 
 :::{note}
 This tool is still experimental. For now, some customized operators are not supported, and we only support a subset of detection and recognition algorithms.
@@ -45,17 +45,17 @@ This tool is still experimental. For now, some customized operators are not supp
 
 The table below lists the models that are guaranteed to be exportable to ONNX and runnable in ONNX Runtime.
 
-|  Model |                                                                      Config                                                                      | Dynamic Shape | Batch Inference | Note |
-|:------:|:------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|:---------------:|:----:|
-|  DBNet |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |       Y       |        N        |      |
-| PSENet |      [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)     |       Y       |        Y        |      |
-| PSENet |    [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)   |       Y       |        Y        |      |
-|  PANet |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |       Y       |        Y        |      |
-|  PANet | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |      |
-|  CRNN  |             [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)            |       Y       |        Y        | CRNN only accepts input with height 32 |
+| Model  |                                                                      Config                                                                      | Dynamic Shape | Batch Inference |                  Note                  |
+| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :-----------: | :-------------: | :------------------------------------: |
+| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |       Y       |        N        |                                        |
+| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |       Y       |        Y        |                                        |
+| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |       Y       |        Y        |                                        |
+| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |       Y       |        Y        |                                        |
+| PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |                                        |
+|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |       Y       |        Y        | CRNN only accepts input with height 32 |
 
 :::{note}
-- *All models above are tested with Pytorch==1.8.1 and onnxruntime==1.7.0*
+- *All models above are tested with PyTorch==1.8.1 and onnxruntime-gpu == 1.8.1*
 - If you meet any problem with the listed models above, please create an issue and it would be taken care of soon.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
 :::
@@ -83,20 +83,20 @@ python tools/deployment/onnx2tensorrt.py
 
 Description of arguments:
 
-| ARGS      | Type                  |  Description                                                 |
-| -------------- | --------------------- |  ----------------------------------------------------------- |
-| `model_config` | str | The path to a model config file. |
-| `model_type` | 'recog', 'det' | The model type of the config file. |
-| `image_path` | str | The path to input image file. |
-| `onnx_file` | str | The path to input ONNX file. |
-| `--trt-file` | str | The path of output TensorRT model. Defaults to `tmp.trt`. |
-| `--max-shape` | int * 4 | Maximum shape of model input. |
-| `--min-shape` | int * 4 | Minimum shape of model input. |
-| `--workspace-size`| int | Max workspace size in GiB. Defaults to 1. |
-| `--fp16`| bool | Determines whether to export TensorRT with fp16 mode. Defaults to `False`. |
-| `--verify`| bool | Determines whether to verify the correctness of an exported model. Defaults to `False`. |
-| `--show`| bool | Determines whether to show the output of ONNX and TensorRT. Defaults to `False`. |
-| `--verbose`| bool | Determines whether to verbose logging messages while creating TensorRT engine. Defaults to `False`. |
+| ARGS               | Type           | Description                                                                                         |
+| ------------------ | -------------- | --------------------------------------------------------------------------------------------------- |
+| `model_config`     | str            | The path to a model config file.                                                                    |
+| `model_type`       | 'recog', 'det' | The model type of the config file.                                                                  |
+| `image_path`       | str            | The path to input image file.                                                                       |
+| `onnx_file`        | str            | The path to input ONNX file.                                                                        |
+| `--trt-file`       | str            | The path of output TensorRT model. Defaults to `tmp.trt`.                                           |
+| `--max-shape`      | int * 4        | Maximum shape of model input.                                                                       |
+| `--min-shape`      | int * 4        | Minimum shape of model input.                                                                       |
+| `--workspace-size` | int            | Max workspace size in GiB. Defaults to 1.                                                           |
+| `--fp16`           | bool           | Determines whether to export TensorRT with fp16 mode. Defaults to `False`.                          |
+| `--verify`         | bool           | Determines whether to verify the correctness of an exported model. Defaults to `False`.             |
+| `--show`           | bool           | Determines whether to show the output of ONNX and TensorRT. Defaults to `False`.                    |
+| `--verbose`        | bool           | Determines whether to verbose logging messages while creating TensorRT engine. Defaults to `False`. |
 
 :::{note}
 This tool is still experimental. For now, some customized operators are not supported, and we only support a subset of detection and recognition algorithms.
@@ -106,17 +106,17 @@ This tool is still experimental. For now, some customized operators are not supp
 
 The table below lists the models that are guaranteed to be exportable to TensorRT engine and runnable in TensorRT.
 
-|  Model |                                                                      Config                                                                      | Dynamic Shape | Batch Inference | Note |
-|:------:|:------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|:---------------:|:----:|
-|  DBNet |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |       Y       |        N        |      |
-| PSENet |      [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)     |       Y       |        Y        |      |
-| PSENet |    [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)   |       Y       |        Y        |      |
-|  PANet |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |       Y       |        Y        |      |
-|  PANet | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |      |
-|  CRNN  |             [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)            |       Y       |        Y        | CRNN only accepts input with height 32 |
+| Model  |                                                                      Config                                                                      | Dynamic Shape | Batch Inference |                  Note                  |
+| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :-----------: | :-------------: | :------------------------------------: |
+| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |       Y       |        N        |                                        |
+| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |       Y       |        Y        |                                        |
+| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |       Y       |        Y        |                                        |
+| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |       Y       |        Y        |                                        |
+| PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |                                        |
+|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |       Y       |        Y        | CRNN only accepts input with height 32 |
 
 :::{note}
-- *All models above are tested with Pytorch==1.8.1,  onnxruntime==1.7.0 and tensorrt==7.2.1.6*
+- *All models above are tested with PyTorch==1.8.1,  onnxruntime-gpu==1.8.1 and tensorrt==7.2.1.6*
 - If you meet any problem with the listed models above, please create an issue and it would be taken care of soon.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
 :::
@@ -143,14 +143,14 @@ python tools/deploy_test.py \
 
 ### Description of all arguments
 
-| ARGS      | Type                  |  Description                                                 |
-| -------------- | --------------------- |  ----------------------------------------------------------- |
-| `model_config` | str | The path to a model config file. |
-| `model_file` | str | The path to a TensorRT or an ONNX model file. |
-| `model_type` | 'recog', 'det' | Detection or recognition model to deploy. |
-| `backend` | 'TensorRT', 'ONNXRuntime' | The backend for testing. |
-| `--eval` | 'acc', 'hmean-iou' | The evaluation metrics. 'acc' for recognition models, 'hmean-iou' for detection models. |
-| `--device` | str | Device for evaluation. Defaults to `cuda:0`. |
+| ARGS           | Type                      | Description                                                                             |
+| -------------- | ------------------------- | --------------------------------------------------------------------------------------- |
+| `model_config` | str                       | The path to a model config file.                                                        |
+| `model_file`   | str                       | The path to a TensorRT or an ONNX model file.                                           |
+| `model_type`   | 'recog', 'det'            | Detection or recognition model to deploy.                                               |
+| `backend`      | 'TensorRT', 'ONNXRuntime' | The backend for testing.                                                                |
+| `--eval`       | 'acc', 'hmean-iou'        | The evaluation metrics. 'acc' for recognition models, 'hmean-iou' for detection models. |
+| `--device`     | str                       | Device for evaluation. Defaults to `cuda:0`.                                            |
 
 ## Results and Models
 

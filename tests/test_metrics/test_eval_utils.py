@@ -133,11 +133,17 @@ def test_poly_intersection():
     # test invalid polygons
     assert utils.poly_intersection(poly2, poly2) == 0
     assert utils.poly_intersection(poly3, poly3, invalid_ret=1) == 1
+    # The return value depends on the implementation of the package
+    assert utils.poly_intersection(poly3, poly3, invalid_ret=None) == 0.25
 
     # test poly return
     _, poly = utils.poly_intersection(poly, poly4, return_poly=True)
     assert isinstance(poly, Polygon)
-    _, poly = utils.poly_intersection(poly2, poly3, return_poly=True)
+    _, poly = utils.poly_intersection(
+        poly3, poly3, invalid_ret=None, return_poly=True)
+    assert isinstance(poly, Polygon)
+    _, poly = utils.poly_intersection(
+        poly2, poly3, invalid_ret=1, return_poly=True)
     assert poly is None
 
 
@@ -153,10 +159,12 @@ def test_poly_union():
     points1 = [2, 2, 2, 3, 3, 3, 3, 2]
     points2 = [0, 0, 0, 0, 0, 0, 0, 0]  # Invalid polygon
     points3 = [0, 0, 0, 1, 1, 0, 1, 1]  # Self-intersected polygon
+    points4 = [0.5, 0.5, 1, 0, 1, 1, 0.5, 0.5]
     poly = utils.points2polygon(points)
     poly1 = utils.points2polygon(points1)
     poly2 = utils.points2polygon(points2)
     poly3 = utils.points2polygon(points3)
+    poly4 = utils.points2polygon(points4)
 
     assert utils.poly_union(poly, poly1) == 2
 
@@ -167,10 +175,17 @@ def test_poly_union():
     assert utils.poly_union(poly2, poly2) == 0
     assert utils.poly_union(poly3, poly3, invalid_ret=1) == 1
 
+    # The return value depends on the implementation of the package
+    assert utils.poly_union(poly3, poly3, invalid_ret=None) == 0.25
+    assert utils.poly_union(poly2, poly3) == 0.25
+    assert utils.poly_union(poly3, poly4) == 0.5
+
     # test poly return
     _, poly = utils.poly_union(poly, poly1, return_poly=True)
     assert isinstance(poly, MultiPolygon)
-    _, poly = utils.poly_union(poly2, poly3, return_poly=True)
+    _, poly = utils.poly_union(poly3, poly3, return_poly=True)
+    assert isinstance(poly, Polygon)
+    _, poly = utils.poly_union(poly2, poly3, invalid_ret=0, return_poly=True)
     assert poly is None
 
 

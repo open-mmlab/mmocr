@@ -16,6 +16,10 @@ repos:
     rev: v0.30.0
     hooks:
       - id: yapf
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.1.0
+    hooks:
+      - id: codespell
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.1.0
     hooks:

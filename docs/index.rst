@@ -13,6 +13,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    training.md
    testing.md
    deployment.md
+   model_serving.md
 
 .. toctree::
    :maxdepth: 2
