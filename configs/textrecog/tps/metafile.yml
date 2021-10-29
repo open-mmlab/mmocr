@@ -24,27 +24,27 @@ Models:
     Metadata:
       Training Data: Syn90k
     Results:
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
           word_acc: 80.8
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: SVT
         Metrics:
           word_acc: 81.3
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
           word_acc: 85.0
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
           word_acc: 59.6
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: SVTP
         Metrics:
           word_acc: 68.1
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: CT80
         Metrics:
           word_acc: 53.8
