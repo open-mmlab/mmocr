@@ -13,8 +13,8 @@ Collections:
       - CRNNDecoder
       - CTCLoss
   Paper:
-    - https://arxiv.org/pdf/1507.05717.pdf
-    - https://arxiv.org/pdf/1603.03915.pdf
+    URL: https://arxiv.org/pdf/1603.03915.pdf
+    Title: 'Robust Scene Text Recognition with Automatic Rectification'
   README: configs/textrecog/tps/README.md
 
 Models:

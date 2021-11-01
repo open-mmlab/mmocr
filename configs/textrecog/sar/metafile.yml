@@ -11,7 +11,9 @@ Collections:
       - ResNet31OCR
       - SAREncoder
       - ParallelSARDecoder
-  Paper: https://arxiv.org/pdf/1811.00751.pdf
+  Paper:
+    URL: https://arxiv.org/pdf/1811.00751.pdf
+    Title: 'Show, Attend and Read:A Simple and Strong Baseline for Irregular Text Recognition'
   README: configs/textrecog/sar/README.md
 
 Models:

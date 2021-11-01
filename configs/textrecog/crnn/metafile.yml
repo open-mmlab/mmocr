@@ -10,7 +10,9 @@ Collections:
     Architecture:
       - VeryDeepVgg
       - CRNNDecoder
-  Paper: https://arxiv.org/pdf/1507.05717.pdf
+  Paper:
+    URL: https://arxiv.org/pdf/1507.05717.pdf
+    Title: 'An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition'
   README: configs/textrecog/crnn/README.md
 
 Models:

@@ -8,7 +8,9 @@ Collections:
     Architecture:
       - ResNet
       - FPN_UNet
-  Paper: https://arxiv.org/abs/2003.07493.pdf
+  Paper:
+    URL: https://arxiv.org/abs/2003.07493.pdf
+    Title: 'Deep Relational Reasoning Graph Network for Arbitrary Shape Text Detection'
   README: configs/textdet/drrg/README.md
 
 Models:

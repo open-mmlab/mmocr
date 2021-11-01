@@ -11,7 +11,9 @@ Collections:
       - ShallowCNN
       - SatrnEncoder
       - TFDecoder
-  Paper: https://arxiv.org/pdf/1910.04396.pdf
+  Paper:
+    URL: https://arxiv.org/pdf/1910.04396.pdf
+    Title: 'On Recognizing Texts of Arbitrary Shapes with 2D Self-Attention'
   README: configs/textrecog/satrn/README.md
 
 Models:

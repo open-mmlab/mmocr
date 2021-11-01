@@ -8,7 +8,9 @@ Collections:
     Architecture:
       - ResNet with DCNv2
       - FPN
-  Paper: https://arxiv.org/abs/2002.02709.pdf
+  Paper:
+    URL: https://arxiv.org/abs/2002.02709.pdf
+    Title: 'FourierNet: Compact mask representation for instance segmentation using differentiable shape decoders'
   README: configs/textdet/fcenet/README.md
 
 Models:
