@@ -16,6 +16,7 @@ from .transforms import (ColorJitter, RandomCropFlip, RandomCropInstances,
                          RandomCropPolyInstances, RandomRotatePolyInstances,
                          RandomRotateTextDet, RandomScaling, ScaleAspectJitter,
                          SquareResizePad)
+from .transforms_abinet import ABINetTransforms
 
 __all__ = [
     'LoadTextAnnotations', 'NormalizeOCR', 'OnlineCropOCR', 'ResizeOCR',
@@ -27,5 +28,5 @@ __all__ = [
     'PilToOpencv', 'KIEFormatBundle', 'SquareResizePad', 'TextSnakeTargets',
     'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets',
     'RandomScaling', 'RandomCropFlip', 'NerTransform', 'ToTensorNER',
-    'ResizeNoImg'
+    'ResizeNoImg', 'ABINetTransforms'
 ]

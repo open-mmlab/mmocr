@@ -12,6 +12,15 @@ class DBLoss(nn.Module):
     """The class for implementing DBNet loss.
 
     This is partially adapted from https://github.com/MhLiao/DB.
+
+    Args:
+        alpha (float): The binary loss coef.
+        beta (float): The threshold loss coef.
+        reduction (str): The way to reduce the loss.
+        negative_ratio (float): The ratio of positives to negatives.
+        eps (float): Epsilon in the threshold loss function.
+        bbce_loss (bool): Whether to use balanced bce for probability loss.
+            If False, dice loss will be used instead.
     """
 
     def __init__(self,
@@ -21,17 +30,6 @@ class DBLoss(nn.Module):
                  negative_ratio=3.0,
                  eps=1e-6,
                  bbce_loss=False):
-        """Initialization.
-
-        Args:
-            alpha (float): The binary loss coef.
-            beta (float): The threshold loss coef.
-            reduction (str): The way to reduce the loss.
-            negative_ratio (float): The ratio of positives to negatives.
-            eps (float): Epsilon in the threshold loss function.
-            bbce_loss (bool): Whether to use balanced bce for probability loss.
-                If False, dice loss will be used instead.
-        """
         super().__init__()
         assert reduction in ['mean',
                              'sum'], " reduction must in ['mean','sum']"
@@ -52,7 +50,7 @@ class DBLoss(nn.Module):
             target_sz (tuple(int, int)): The target tensor size of KxHxW
                 with K being the number of kernels.
 
-        Returns
+        Returns:
             result_tensors (list[tensor]): The list of kernel tensors. Each
                 element is for one kernel level.
         """

@@ -88,6 +88,15 @@ class FPNC(BaseModule):
 
     @auto_fp16()
     def forward(self, inputs):
+        """
+        Args:
+            inputs (list[Tensor]): Each tensor has the shape of
+                (batch_size, hidden_size, h, w). It usually expects 4 tensors
+                (representing C2-C5 features) from ResNet.
+
+        Returns:
+            A tensor of shape (batch_size, hidden_size, h, w)
+        """
         assert len(inputs) == len(self.in_channels)
         # build laterals
         laterals = [
