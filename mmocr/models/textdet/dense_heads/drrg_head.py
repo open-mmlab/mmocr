@@ -14,10 +14,8 @@ from .head_mixin import HeadMixin
 
 @HEADS.register_module()
 class DRRGHead(HeadMixin, BaseModule):
-    """The class for DRRG head: Deep Relational Reasoning Graph Network for
-    Arbitrary Shape Text Detection.
-
-    [https://arxiv.org/abs/2003.07493]
+    """The class for DRRG head: `Deep Relational Reasoning Graph Network for
+    Arbitrary Shape Text Detection <https://arxiv.org/abs/2003.07493>`_.
 
     Args:
         k_at_hops (tuple(int)): The number of i-hop neighbors, i = 1, 2.
