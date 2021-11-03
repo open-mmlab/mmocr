@@ -549,7 +549,7 @@ def draw_texts_by_pil(img,
                       draw_box=True,
                       on_ori_img=False,
                       font_size=None,
-                      font_color=None,
+                      fill_color=None,
                       draw_pos=None,
                       return_text_size=False):
     """Draw boxes and texts on empty image, especially for Chinese.
@@ -560,9 +560,16 @@ def draw_texts_by_pil(img,
         boxes (list[list[float]]): Detected bounding boxes.
         draw_box (bool): Whether draw box or not. If False, draw text only.
         on_ori_img (bool): If True, draw box and text on input image,
-            else, on a new empty image.
-    Return:
-        out_img (np.ndarray): Visualized text image.
+            else on a new empty image.
+        font_size (int or None): The size to creates a font object for a font.
+        fill_color (tuple(int) or None): Fill color for text.
+        draw_pos (tuple(int) or None): Start point to draw text.
+        return_text_size (bool): If True, return the list of text size.
+
+    Returns:
+        (np.ndarray, list[tuple]): Return a tuple ``(out_img, text_sizes)``, \
+            where ``out_img`` is the output image with texts drawn on it and \
+            ``text_sizes`` are the size of drawing texts.
     """
 
     color_list = gen_color()
@@ -599,9 +606,9 @@ def draw_texts_by_pil(img,
         fnt = ImageFont.truetype(font_path, font_size)
         if draw_pos is None:
             draw_pos = (min_x + 1, min_y + 1)
-        if font_color is None:
-            font_color = (0, 0, 0)
-        out_draw.text(draw_pos, text, font=fnt, fill=font_color)
+        if fill_color is None:
+            fill_color = (0, 0, 0)
+        out_draw.text(draw_pos, text, font=fnt, fill=fill_color)
         text_sizes.append(fnt.getsize(text))
 
     del out_draw
@@ -666,12 +673,16 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
 
     Args:
         img (np.ndarray): The original image.
-        result (dict): The result of model forward prediction.
+        result (dict): The result of model forward_test, including:
+            - img_metas (list[dict]): List of meta information dictionary.
+            - nodes (Tensor): Node prediction with size: \
+                number_node * node_classes.
+            - edges (Tensor): Edge prediction with size: number_edge * 2.
         edge_thresh (float): Score threshold for edge classification.
         keynode_thresh (float): Score threshold for node
             (``key``) classification.
-    Return:
-        out_img (np.ndarray): Visualized relationship image.
+    Returns:
+        np.ndarray: The image with key, value and relation drawn on it.
     """
 
     h, w = img.shape[:2]
@@ -692,12 +703,27 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
     texts = result['img_metas'][0]['ori_texts']
     num_nodes = result['nodes'].size(0)
     edges = result['edges'].detach().cpu()[:, -1].view(num_nodes, num_nodes)
+
+    # (i, j) will be a valid pair
+    # either edge_score(node_i->node_j) > edge_thresh
+    # or edge_score(node_j->node_i) > edge_thresh
     pairs = (torch.max(edges, edges.T) > edge_thresh).nonzero(as_tuple=True)
+    """
+    1. "for n1, n2 in zip(*pairs) if n1 < n2":
+        Only (n1, n2) will be included if n1 < n2 but not (n2, n1), to
+        avoid duplication.
+    2. "(n1, n2) if nodes[n1, 1] > nodes[n1, 2]":
+        nodes[n1, 1] is the score that this node is predicted as key,
+        nodes[n1, 2] is the score that this node is predicted as value.
+        If nodes[n1, 1] > nodes[n1, 2], n1 will be the index of key,
+        so that n2 will be the index of value.
+    """
     result_pairs = [(n1, n2) if nodes[n1, 1] > nodes[n1, 2] else (n2, n1)
                     for n1, n2 in zip(*pairs) if n1 < n2]
+
     result_pairs.sort()
-    keynow = -1
-    posnow = (-1, -1)
+    key_current_idx = -1
+    pos_current = (-1, -1)
     newline_flag = False
 
     key_font_size = 15
@@ -709,14 +735,16 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
         key_idx = int(pair[0].item())
         if nodes[key_idx, 1] < keynode_thresh:
             continue
-        if key_idx != keynow:
+        if key_idx != key_current_idx:
+            # move y-coords down for a new key
             bbox_y1 += 10
+            # enlarge blank area to show key-value info
             if newline_flag:
                 bbox_x1 += vis_area_width
-                pred_edge_img_t = np.ones(
+                tmp_img = np.ones(
                     (new_h, new_w + vis_area_width, 3), dtype=np.uint8) * 255
-                pred_edge_img_t[:new_h, :new_w] = pred_edge_img
-                pred_edge_img = pred_edge_img_t
+                tmp_img[:new_h, :new_w] = pred_edge_img
+                pred_edge_img = tmp_img
                 new_w += vis_area_width
                 newline_flag = False
                 bbox_y1 = 10
@@ -724,9 +752,10 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
         key_pos = (bbox_x1, bbox_y1)
         value_idx = pair[1].item()
         value_text = texts[value_idx]
-        value_pos = bbox_x1 + dist_key_to_value, bbox_y1
-        if key_idx != keynow:
-            keynow = key_idx
+        value_pos = (bbox_x1 + dist_key_to_value, bbox_y1)
+        if key_idx != key_current_idx:
+            # draw text for a new key
+            key_current_idx = key_idx
             pred_edge_img, text_sizes = draw_texts_by_pil(
                 pred_edge_img, [key_text],
                 draw_box=False,
@@ -737,22 +766,23 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
                 return_text_size=True)
             pos_right_bottom = (key_pos[0] + text_sizes[0][0],
                                 key_pos[1] + text_sizes[0][1])
-            posnow = (pos_right_bottom[0] + 5, bbox_y1 + 10)
+            pos_current = (pos_right_bottom[0] + 5, bbox_y1 + 10)
             pred_edge_img = cv2.arrowedLine(
                 pred_edge_img, (pos_right_bottom[0] + 5, bbox_y1 + 10),
                 (bbox_x1 + dist_key_to_value - 5, bbox_y1 + 10), arrow_color,
                 1)
         else:
+            # draw arrow from key to value
             if newline_flag:
-                pred_edge_img_t = np.ones(
-                    (new_h + dist_pair_to_pair, new_w, 3),
-                    dtype=np.uint8) * 255
-                pred_edge_img_t[:new_h, :new_w] = pred_edge_img
-                pred_edge_img = pred_edge_img_t
+                tmp_img = np.ones((new_h + dist_pair_to_pair, new_w, 3),
+                                  dtype=np.uint8) * 255
+                tmp_img[:new_h, :new_w] = pred_edge_img
+                pred_edge_img = tmp_img
                 new_h += dist_pair_to_pair
-            pred_edge_img = cv2.arrowedLine(pred_edge_img, posnow,
+            pred_edge_img = cv2.arrowedLine(pred_edge_img, pos_current,
                                             (bbox_x1 + dist_key_to_value - 5,
                                              bbox_y1 + 10), arrow_color, 1)
+        # draw text for value
         pred_edge_img = draw_texts_by_pil(
             pred_edge_img, [value_text],
             draw_box=False,
@@ -779,7 +809,11 @@ def imshow_edge(img,
 
     Args:
         img (np.ndarray): The original image.
-        result (dic): The result of model forward prediction.
+        result (dict): The result of model forward_test, including:
+            - img_metas (list[dict]): List of meta information dictionary.
+            - nodes (Tensor): Node prediction with size: \
+                number_node * node_classes.
+            - edges (Tensor): Edge prediction with size: number_edge * 2.
         boxes (list): The text boxes corresponding to the nodes.
         show (bool): Whether to show the image. Default: False.
         win_name (str): The window name. Default: ''
@@ -787,8 +821,8 @@ def imshow_edge(img,
         out_file (str or None): The filename to write the image.
             Default: None.
 
-    Return:
-        out_img (np.ndarray): Visualized result image.
+    Returns:
+        np.ndarray: The image with key, value and relation drawn on it.
     """
     img = mmcv.imread(img)
     h, w = img.shape[:2]

@@ -18,6 +18,10 @@ def convert(closeset_line, merge_bg_others=False, ignore_idx=0, others_idx=25):
         ignore_idx (int): Index for ``ignore`` class.
         others_idx (int): Index for ``others`` class.
     """
+    # Two labels at the same index of the following two lists
+    # make up a key-value pair. For example, in wildreceipt,
+    # closeset_key_inds[0] maps to "Store_name_key"
+    # and closeset_value_inds[0] maps to "Store_addr_value".
     closeset_key_inds = list(range(2, others_idx, 2))
     closeset_value_inds = list(range(1, others_idx, 2))
 
@@ -59,24 +63,21 @@ def convert(closeset_line, merge_bg_others=False, ignore_idx=0, others_idx=25):
                 elif label in closeset_value_inds:
                     anno['label'] = openset_node_label_mapping['value']
             else:
+                tmp_key = 'key'
                 if label in closeset_key_inds:
-                    edge_minus_1 = label_to_edge.get(label - 1, None)
-                    if edge_minus_1 is not None:
-                        anno['edge'] = edge_minus_1
-                    else:
-                        anno['edge'] = edge_idx
-                        edge_idx += 1
-                    anno['label'] = openset_node_label_mapping['key']
-                    label_to_edge[label] = anno['edge']
+                    label_with_same_edge = label - 1
                 elif label in closeset_value_inds:
-                    edge_plus_1 = label_to_edge.get(label + 1, None)
-                    if edge_plus_1 is not None:
-                        anno['edge'] = edge_plus_1
-                    else:
-                        anno['edge'] = edge_idx
-                        edge_idx += 1
-                    anno['label'] = openset_node_label_mapping['value']
-                    label_to_edge[label] = anno['edge']
+                    label_with_same_edge = label + 1
+                    tmp_key = 'value'
+                edge_counterpart = label_to_edge.get(label_with_same_edge,
+                                                     None)
+                if edge_counterpart is not None:
+                    anno['edge'] = edge_counterpart
+                else:
+                    anno['edge'] = edge_idx
+                    edge_idx += 1
+                anno['label'] = openset_node_label_mapping[tmp_key]
+                label_to_edge[label] = anno['edge']
 
     openset_obj['annotations'] = closeset_obj['annotations']
 

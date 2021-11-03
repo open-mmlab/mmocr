@@ -5,7 +5,6 @@ import torch
 from mmdet.datasets.builder import DATASETS
 
 from mmocr.datasets import KIEDataset
-from mmocr.datasets.builder import build_loader
 
 
 @DATASETS.register_module()
@@ -27,11 +26,12 @@ class OpensetKIEDataset(KIEDataset):
         link_type (str): ``one-to-one`` | ``one-to-many`` |
             ``many-to-one`` | ``many-to-many``. For ``many-to-many``,
             one key box can have many values and vice versa.
-        reference_loader (None | dict):  Dictionary to construct loader
-            to load reference annotation infos, which is used in evaluation.
-            When testing, loader could load ocr results by sdk, while
-            reference_loader load ocr results by human annotation.
-            When None, it is the same as loader.
+        edge_thr (float): Score threshold for a valid edge.
+        test_mode (bool, optional): If True, try...except will
+            be turned off in __getitem__.
+        key_node_idx (int): Index of key in node classes.
+        value_node_idx (int): Index of value in node classes.
+        node_classes (int): Number of node classes.
     """
 
     def __init__(self,
@@ -44,9 +44,9 @@ class OpensetKIEDataset(KIEDataset):
                  link_type='one-to-one',
                  edge_thr=0.5,
                  test_mode=True,
-                 reference_loader=None,
                  key_node_idx=1,
-                 value_node_idx=2):
+                 value_node_idx=2,
+                 node_classes=4):
         super().__init__(ann_file, loader, dict_file, img_prefix, pipeline,
                          norm, False, test_mode)
         assert link_type in [
@@ -57,14 +57,7 @@ class OpensetKIEDataset(KIEDataset):
         self.edge_thr = edge_thr
         self.key_node_idx = key_node_idx
         self.value_node_idx = value_node_idx
-
-        if reference_loader is None:
-            self.reference_dict = self.data_dict
-        else:
-            self.reference_dict = {
-                x['file_name']: x
-                for x in build_loader(reference_loader)
-            }
+        self.node_classes = node_classes
 
     def pre_pipeline(self, results):
         super().pre_pipeline(results)
@@ -197,7 +190,7 @@ class OpensetKIEDataset(KIEDataset):
 
         Assemble boxes and labels into bboxes.
         """
-        annos = self.reference_dict[filename]['annotations']
+        annos = self.data_dict[filename]['annotations']
         labels = torch.Tensor([x['label'] for x in annos])
         texts = [x['text'] for x in annos]
         edge_ids = [x['edge'] for x in annos]
@@ -221,15 +214,19 @@ class OpensetKIEDataset(KIEDataset):
         """Compute openset macro-f1 and micro-f1 score.
 
         Args:
-            results (dict): Prediction results of network.
+            preds: (list[dict]): List of prediction results, including
+                keys: ``filename``, ``pairs``, etc.
+            gts: (list[dict]): List of ground-truth infos, including
+                keys: ``filename``, ``pairs``, etc.
 
         Returns:
-            dict: evaluation result.
+            dict: Evaluation result with keys: ``node_openset_micro_f1``, \
+                ``node_openset_macro_f1``, ``edge_openset_f1``.
         """
 
         total_edge_hit_num, total_edge_gt_num, total_edge_pred_num = 0, 0, 0
         total_node_hit_num, total_node_gt_num, total_node_pred_num = {}, {}, {}
-        node_inds = [0, 1, 2, 3]
+        node_inds = list(range(self.node_classes))
         for node_idx in node_inds:
             total_node_hit_num[node_idx] = 0
             total_node_gt_num[node_idx] = 0
