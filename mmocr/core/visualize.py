@@ -561,15 +561,17 @@ def draw_texts_by_pil(img,
         draw_box (bool): Whether draw box or not. If False, draw text only.
         on_ori_img (bool): If True, draw box and text on input image,
             else on a new empty image.
-        font_size (int or None): The size to creates a font object for a font.
-        fill_color (tuple(int) or None): Fill color for text.
-        draw_pos (tuple(int) or None): Start point to draw text.
+        font_size (int, optional): Size to create a font object for a font.
+        fill_color (tuple(int), optional): Fill color for text.
+        draw_pos (tuple(int), optional): Start point to draw text.
         return_text_size (bool): If True, return the list of text size.
 
     Returns:
-        (np.ndarray, list[tuple]): Return a tuple ``(out_img, text_sizes)``, \
-            where ``out_img`` is the output image with texts drawn on it and \
-            ``text_sizes`` are the size of drawing texts.
+        (np.ndarray, list[tuple]) or np.ndarray: Return a tuple
+        ``(out_img, text_sizes)``, where ``out_img`` is the output image
+        with texts drawn on it and ``text_sizes`` are the size of drawing
+        texts. If ``return_text_size`` is False, only the output image will be
+        returned.
     """
 
     color_list = gen_color()
@@ -675,12 +677,13 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
         img (np.ndarray): The original image.
         result (dict): The result of model forward_test, including:
             - img_metas (list[dict]): List of meta information dictionary.
-            - nodes (Tensor): Node prediction with size: \
+            - nodes (Tensor): Node prediction with size:
                 number_node * node_classes.
             - edges (Tensor): Edge prediction with size: number_edge * 2.
         edge_thresh (float): Score threshold for edge classification.
         keynode_thresh (float): Score threshold for node
             (``key``) classification.
+
     Returns:
         np.ndarray: The image with key, value and relation drawn on it.
     """
@@ -708,16 +711,15 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
     # either edge_score(node_i->node_j) > edge_thresh
     # or edge_score(node_j->node_i) > edge_thresh
     pairs = (torch.max(edges, edges.T) > edge_thresh).nonzero(as_tuple=True)
-    """
-    1. "for n1, n2 in zip(*pairs) if n1 < n2":
-        Only (n1, n2) will be included if n1 < n2 but not (n2, n1), to
-        avoid duplication.
-    2. "(n1, n2) if nodes[n1, 1] > nodes[n1, 2]":
-        nodes[n1, 1] is the score that this node is predicted as key,
-        nodes[n1, 2] is the score that this node is predicted as value.
-        If nodes[n1, 1] > nodes[n1, 2], n1 will be the index of key,
-        so that n2 will be the index of value.
-    """
+
+    # 1. "for n1, n2 in zip(*pairs) if n1 < n2":
+    #     Only (n1, n2) will be included if n1 < n2 but not (n2, n1), to
+    #     avoid duplication.
+    # 2. "(n1, n2) if nodes[n1, 1] > nodes[n1, 2]":
+    #     nodes[n1, 1] is the score that this node is predicted as key,
+    #     nodes[n1, 2] is the score that this node is predicted as value.
+    #     If nodes[n1, 1] > nodes[n1, 2], n1 will be the index of key,
+    #     so that n2 will be the index of value.
     result_pairs = [(n1, n2) if nodes[n1, 1] > nodes[n1, 2] else (n2, n1)
                     for n1, n2 in zip(*pairs) if n1 < n2]
 

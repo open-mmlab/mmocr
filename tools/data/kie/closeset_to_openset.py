@@ -13,6 +13,8 @@ def convert(closeset_line, merge_bg_others=False, ignore_idx=0, others_idx=25):
     It may not be suitable to your own dataset.
 
     Args:
+        closeset_line (str): The string to be deserialized to
+            the closeset dictionary object.
         merge_bg_others (bool): If True, give the same label to "background"
             class and "others" class.
         ignore_idx (int): Index for ``ignore`` class.
@@ -27,12 +29,7 @@ def convert(closeset_line, merge_bg_others=False, ignore_idx=0, others_idx=25):
 
     openset_node_label_mapping = {'bg': 0, 'key': 1, 'value': 2, 'others': 3}
     if merge_bg_others:
-        openset_node_label_mapping = {
-            'bg': 0,
-            'key': 1,
-            'value': 2,
-            'others': 0
-        }
+        openset_node_label_mapping['others'] = openset_node_label_mapping['bg']
 
     closeset_obj = json.loads(closeset_line)
     openset_obj = {
@@ -65,9 +62,11 @@ def convert(closeset_line, merge_bg_others=False, ignore_idx=0, others_idx=25):
             else:
                 tmp_key = 'key'
                 if label in closeset_key_inds:
-                    label_with_same_edge = label - 1
+                    label_with_same_edge = closeset_value_inds[
+                        closeset_key_inds.index(label)]
                 elif label in closeset_value_inds:
-                    label_with_same_edge = label + 1
+                    label_with_same_edge = closeset_key_inds[
+                        closeset_value_inds.index(label)]
                     tmp_key = 'value'
                 edge_counterpart = label_to_edge.get(label_with_same_edge,
                                                      None)

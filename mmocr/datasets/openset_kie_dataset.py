@@ -14,14 +14,12 @@ class OpensetKIEDataset(KIEDataset):
 
     Args:
         ann_file (str): Annotation file path.
-        pipeline (list[dict]): Processing pipeline.
-        dict_file (str): Character dict file path.
         loader (dict): Dictionary to construct loader
             to load annotation infos.
+        dict_file (str): Character dict file path.
         img_prefix (str, optional): Image prefix to generate full
             image path.
-        test_mode (bool, optional): If True, try...except will
-            be turned off in __getitem__.
+        pipeline (list[dict]): Processing pipeline.
         norm (float): Norm to map value from one range to another.
         link_type (str): ``one-to-one`` | ``one-to-many`` |
             ``many-to-one`` | ``many-to-many``. For ``many-to-many``,
