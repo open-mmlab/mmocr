@@ -120,7 +120,7 @@ class OpensetKIEDataset(KIEDataset):
         """Find all pairs in prediction.
 
         The first index in the pair (n1, n2) is more likely to be a key
-        accroding to prediction in nodes.
+        according to prediction in nodes.
         """
         edges = torch.max(edges, edges.T)
         if link_type in ['none', 'many-to-many']:
