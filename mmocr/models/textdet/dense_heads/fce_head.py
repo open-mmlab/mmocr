@@ -11,11 +11,10 @@ from .head_mixin import HeadMixin
 
 @HEADS.register_module()
 class FCEHead(HeadMixin, BaseModule):
-    """The class for implementing FCENet head.
-    FCENet(CVPR2021): Fourier Contour Embedding for Arbitrary-shaped Text
-    Detection.
+    r"""The class for implementing FCENet head.
 
-    [https://arxiv.org/abs/2104.10442]
+    FCENet(CVPR2021): `Fourier Contour Embedding for Arbitrary-shaped Text
+    Detection <https://arxiv.org/abs/2104.10442>`_
 
     Args:
         in_channels (int): The number of input channels.
@@ -26,9 +25,9 @@ class FCEHead(HeadMixin, BaseModule):
         score_thr (float) : The threshold to filter out the final
             candidates.
         nms_thr (float) : The threshold of nms.
-        alpha (float) : The parameter to calculate final scores. Score_{final}
-            = (Score_{text region} ^ alpha)
-            * (Score{text center region} ^ beta)
+        alpha (float) : The parameter to calculate final scores.
+            :math:`Score_{final} = (Score_{text\_region} ^ \alpha)
+            * (Score_{text\_center\_region} ^ \beta)`
         beta (float) :The parameter to calculate final scores.
     """
 
@@ -92,6 +91,17 @@ class FCEHead(HeadMixin, BaseModule):
             padding=1)
 
     def forward(self, feats):
+        """
+        Args:
+            feats (list[Tensor]): Each tensor has the shape of :math:`(N, C_i,
+                W_i, H_i)`.
+
+        Returns:
+            list[[Tensor, Tensor]]: Each pair of tensors corresponds to the
+            classification result and regression result computed from the input
+            tensor with the same index. They have the shapes of :math:`(N,
+            C_{cls,i}, H_i, W_i)` and :math:`(N, C_{out,i}, H_i, W_i)`.
+        """
         cls_res, reg_res = multi_apply(self.forward_single, feats)
         level_num = len(cls_res)
         preds = [[cls_res[i], reg_res[i]] for i in range(level_num)]
