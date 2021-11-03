@@ -11,7 +11,9 @@ Collections:
       - ResNet31OCR
       - ChannelReductionEncoder
       - RobustScannerDecoder
-  Paper: https://arxiv.org/pdf/2007.07542.pdf
+  Paper:
+    URL: https://arxiv.org/pdf/2007.07542.pdf
+    Title: 'RobustScanner: Dynamically Enhancing Positional Clues for Robust Text Recognition'
   README: configs/textrecog/robust_scanner/README.md
 
 Models:

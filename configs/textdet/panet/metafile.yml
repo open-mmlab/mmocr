@@ -8,7 +8,9 @@ Collections:
     Architecture:
       - ResNet
       - FPEM_FFM
-  Paper: https://arxiv.org/pdf/1803.01534.pdf
+  Paper:
+    URL: https://arxiv.org/pdf/1803.01534.pdf
+    Title: 'Path Aggregation Network for Instance Segmentation'
   README: configs/textdet/panet/README.md
 
 Models:

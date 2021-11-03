@@ -11,7 +11,9 @@ Collections:
       - ResNet31OCR
       - TFEncoder
       - TFDecoder
-  Paper: https://arxiv.org/pdf/1806.00926.pdf
+  Paper:
+    URL: https://arxiv.org/pdf/1806.00926.pdf
+    Title: 'NRTR: A No-Recurrence Sequence-to-Sequence Model For Scene Text Recognition'
   README: configs/textrecog/nrtr/README.md
 
 Models:

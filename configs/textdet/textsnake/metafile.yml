@@ -8,7 +8,9 @@ Collections:
     Architecture:
       - ResNet
       - FPN_UNet
-  Paper: https://arxiv.org/abs/1807.01544.pdf
+  Paper:
+    URL: https://arxiv.org/abs/1807.01544.pdf
+    Title: 'TextSnake: A Flexible Representation for Detecting Text of Arbitrary Shapes'
   README: configs/textdet/textsnake/README.md
 
 Models:
