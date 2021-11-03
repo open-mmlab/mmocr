@@ -25,27 +25,27 @@ Models:
         - SynthText
         - Syn90k
     Results:
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
           word_acc: 93.9
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: SVT
         Metrics:
           word_acc: 80.0
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
           word_acc: 93.5
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
           word_acc: 74.5
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: SVTP
         Metrics:
           word_acc: 78.5
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: CT80
         Metrics:
           word_acc: 86.5
@@ -59,27 +59,27 @@ Models:
         - SynthText
         - Syn90k
     Results:
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
           word_acc: 94.7
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: SVT
         Metrics:
           word_acc: 87.5
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
           word_acc: 93.3
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
           word_acc: 75.1
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: SVTP
         Metrics:
           word_acc: 78.9
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: CT80
         Metrics:
           word_acc: 87.9
