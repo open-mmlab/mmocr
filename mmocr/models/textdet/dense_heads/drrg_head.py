@@ -39,6 +39,8 @@ class DRRGHead(HeadMixin, BaseModule):
         local_graph_thr (float): The threshold to filter identical local
             graphs.
         link_thr(float): The threshold for connected components search.
+        loss (dict): The config of loss that DRRGHead uses.
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,

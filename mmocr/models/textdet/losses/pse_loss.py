@@ -40,15 +40,15 @@ class PSELoss(PANLoss):
 
         Args:
             score_maps (tensor): The output tensor with size of Nx6xHxW.
+            downsample_ratio (float): The downsample ratio between score_maps
+                and the input img.
             gt_kernels (list[BitmapMasks]): The kernel list with each element
                 being the text kernel mask for one img.
             gt_mask (list[BitmapMasks]): The effective mask list
                 with each element being the effective mask for one img.
-            downsample_ratio (float): The downsample ratio between score_maps
-                and the input img.
 
         Returns:
-            results (dict): The loss.
+            dict:  A loss dict with ``loss_text`` and ``loss_kernel``.
         """
 
         assert check_argument.is_type_list(gt_kernels, BitmapMasks)

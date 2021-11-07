@@ -66,8 +66,7 @@ class DBHead(HeadMixin, BaseModule):
             inputs (Tensor): Shape (batch_size, hidden_size, h, w).
 
         Returns:
-            A tensor of the same shape as input, (batch_size, hidden_size, h,
-                w).
+            Tensor: A tensor of the same shape as input.
         """
         prob_map = self.binarize(inputs)
         thr_map = self.threshold(inputs)

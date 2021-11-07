@@ -10,11 +10,10 @@ from mmocr.models.builder import LOSSES
 
 @LOSSES.register_module()
 class FCELoss(nn.Module):
-    """The class for implementing FCENet loss
-    FCENet(CVPR2021): Fourier Contour Embedding for Arbitrary-shaped
-        Text Detection
+    """The class for implementing FCENet loss.
 
-    [https://arxiv.org/abs/2104.10442]
+    FCENet(CVPR2021): `Fourier Contour Embedding for Arbitrary-shaped Text
+    Detection <https://arxiv.org/abs/2104.10442>`_
 
     Args:
         fourier_degree (int) : The maximum Fourier transform degree k.
