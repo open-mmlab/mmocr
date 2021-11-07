@@ -13,7 +13,22 @@ class FPNC(BaseModule):
     Differentiable Binarization.
 
     This was partially adapted from https://github.com/MhLiao/DB and
-    https://github.com/WenmuZhou/DBNet.pytorch
+    https://github.com/WenmuZhou/DBNet.pytorch.
+
+    Args:
+        in_channels (list[int]): A list of numbers of input channels.
+        lateral_channels (int): Number of channels for lateral layers.
+        out_channels (int): Number of output channels.
+        bias_on_lateral (bool): Whether to use bias on lateral convolutional
+            layers.
+        bn_re_on_lateral (bool): Whether to use BatchNorm and ReLU
+            on lateral convolutional layers.
+        bias_on_smooth (bool): Whether to use bias on smoothing layer.
+        bn_re_on_smooth (bool): Whether to use BatchNorm and ReLU on smoothing
+            layer.
+        conv_after_concat (bool): Whether to add a convolution layer after
+            the concatenation of predictions.
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,
@@ -91,11 +106,12 @@ class FPNC(BaseModule):
         """
         Args:
             inputs (list[Tensor]): Each tensor has the shape of
-                (batch_size, hidden_size, h, w). It usually expects 4 tensors
-                (representing C2-C5 features) from ResNet.
+                :math:`(N, C_i, H_i, W_i)`. It usually expects 4 tensors
+                (C2-C5 features) from ResNet.
 
         Returns:
-            A tensor of shape (batch_size, hidden_size, h, w)
+            Tensor: A tensor of shape :math:`(N, C_{out}, H_0, W_0)` where
+            :math:`C_{out}` is ``out_channels``.
         """
         assert len(inputs) == len(self.in_channels)
         # build laterals
