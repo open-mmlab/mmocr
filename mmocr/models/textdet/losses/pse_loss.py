@@ -8,10 +8,18 @@ from . import PANLoss
 
 @LOSSES.register_module()
 class PSELoss(PANLoss):
-    """The class for implementing PSENet loss: Shape Robust Text Detection with
-    Progressive Scale Expansion Network [https://arxiv.org/abs/1806.02559].
+    r"""The class for implementing PSENet loss. This is partially adapted from
+    https://github.com/whai362/PSENet.
 
-    This is partially adapted from https://github.com/whai362/PSENet.
+    PSENet: `Shape Robust Text Detection with
+    Progressive Scale Expansion Network <https://arxiv.org/abs/1806.02559>`_.
+
+    Args:
+        alpha (float): Text loss coefficient, and :math:`1-\alpha` is the
+            kernel loss coefficient.
+        ohem_ratio (float): The negative/positive ratio in ohem.
+        reduction (str): The way to reduce the loss. Available options are
+            "mean" and "sum".
     """
 
     def __init__(self,
@@ -19,17 +27,9 @@ class PSELoss(PANLoss):
                  ohem_ratio=3,
                  reduction='mean',
                  kernel_sample_type='adaptive'):
-        """Initialization.
-
-        Args:
-            alpha (float): alpha: The text loss coef;
-                (1-alpha): the kernel loss coef.
-            ohem_ratio (float): The negative/positive ratio in ohem.
-            reduction (str): The way to reduce the loss.
-        """
         super().__init__()
-        assert reduction in ['mean',
-                             'sum'], " reduction must in ['mean','sum']"
+        assert reduction in ['mean', 'sum'
+                             ], "reduction must be either of ['mean','sum']"
         self.alpha = alpha
         self.ohem_ratio = ohem_ratio
         self.reduction = reduction

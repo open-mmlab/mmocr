@@ -21,6 +21,7 @@ class PANHead(HeadMixin, BaseModule):
         downsample_ratio (float): Downsample ratio.
         loss (dict): Configuration dictionary for loss type. Supported loss
             types are "PANLoss" and "PSELoss".
+        train_cfg, test_cfg (dict): Depreciated.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
@@ -70,8 +71,8 @@ class PANHead(HeadMixin, BaseModule):
                 :math:`C_{in}` is ``input_channels``.
 
         Returns:
-            Tensor: A tensor of shape (N, C_{out}, W, H) where :math:`C_{out}`
-            is ``output_channels``.
+            Tensor: A tensor of shape :math:`(N, C_{out}, W, H)` where
+            :math:`C_{out}` is ``output_channels``.
         """
         if isinstance(inputs, tuple):
             outputs = torch.cat(inputs, dim=1)

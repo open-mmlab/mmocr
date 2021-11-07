@@ -19,8 +19,8 @@ class TextSnakeHead(HeadMixin, BaseModule):
         text_repr_type (str): Use polygon or quad to represent. Available
             options are "poly" or "quad".
         loss (dict): Configuration dictionary for loss type.
-        init_cfg (dict or list[dict], optional): Initialization configs.
         train_cfg, test_cfg: Depreciated.
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,
