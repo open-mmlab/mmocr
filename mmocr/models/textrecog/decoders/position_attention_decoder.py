@@ -12,6 +12,26 @@ from .base_decoder import BaseDecoder
 
 @DECODERS.register_module()
 class PositionAttentionDecoder(BaseDecoder):
+    """Position attention decoder for RobustScanner.
+
+    RobustScanner: `RobustScanner: Dynamically Enhancing Positional Clues for
+    Robust Text Recognition <https://arxiv.org/abs/2007.07542>`_
+
+    Args:
+        num_classes (int): Number of output classes :math:`C`.
+        rnn_layers (int): Number of RNN layers.
+        dim_input (int): Dimension :math:`D_i` of input vector ``feat``.
+        dim_model (int): Dimension :math:`D_m` of the model. Should also be the
+            same as encoder output vector ``out_enc``.
+        max_seq_len (int): Maximum output sequence length :math:`T`.
+        mask (bool): Whether to mask input features according to
+            ``img_meta['valid_ratio']``.
+        return_feature (bool): Return feature or logits as the result.
+        encode_value (bool): Whether to use the output of encoder ``out_enc``
+            as `value` of attention layer. If False, the original feature
+            ``feat`` will be used.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+    """
 
     def __init__(self,
                  num_classes=None,
@@ -53,6 +73,23 @@ class PositionAttentionDecoder(BaseDecoder):
         return position_index
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
+        """
+        Args:
+            feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.
+            out_enc (Tensor): Encoder output of shape
+                :math:`(N, D_m, H, W)`.
+            targets_dict (dict): A dict with the key ``padded_targets``, a
+                tensor of shape :math:`(N, T)`. Each element is the index of a
+                character.
+            img_metas (dict): A dict that contains meta information of input
+                images. Preferably with the key ``valid_ratio``.
+
+        Returns:
+            Tensor: A raw logit tensor of shape :math:`(N, T, C-1)` if
+            ``return_feature=False``. Otherwise it will be the hidden feature
+            before the prediction projection layer, whose shape is
+            :math:`(N, T, D_m)`.
+        """
         valid_ratios = [
             img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
         ] if self.mask else None
@@ -97,6 +134,20 @@ class PositionAttentionDecoder(BaseDecoder):
         return self.prediction(attn_out)
 
     def forward_test(self, feat, out_enc, img_metas):
+        """
+        Args:
+            feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.
+            out_enc (Tensor): Encoder output of shape
+                :math:`(N, D_m, H, W)`.
+            img_metas (dict): A dict that contains meta information of input
+                images. Preferably with the key ``valid_ratio``.
+
+        Returns:
+            Tensor: A raw logit tensor of shape :math:`(N, T, C-1)` if
+            ``return_feature=False``. Otherwise it would be the hidden feature
+            before the prediction projection layer, whose shape is
+            :math:`(N, T, D_m)`.
+        """
         valid_ratios = [
             img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
         ] if self.mask else None

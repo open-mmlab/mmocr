@@ -61,6 +61,9 @@ class SARLoss(CELoss):
             ignored and does not contribute to the input gradient.
         reduction (str): Specifies the reduction to apply to the output,
             should be one of the following: ("none", "mean", "sum").
+
+    Warning:
+        SARLoss assumes that the first input token is always `<SOS>`.
     """
 
     def __init__(self, ignore_index=0, reduction='mean', **kwargs):

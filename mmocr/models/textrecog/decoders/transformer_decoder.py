@@ -98,9 +98,9 @@ class TFDecoder(BaseDecoder):
             feat (None): Unused.
             out_enc (Tensor): Encoder output of shape :math:`(N, D_m, H, W)`
                 where :math:`D_m` is ``d_model``.
-            targets_dict (dict): A dict with the key ``padded_targets``.
-                ``padded_targets`` (Tensor): A tensor of shape :math:`(N, T)`.
-                Each element is the index of a character.
+            targets_dict (dict): A dict with the key ``padded_targets``, a
+                tensor of shape :math:`(N, T)`. Each element is the index of a
+                character.
             img_metas (dict): A dict that contains meta information of input
                 images. Preferably with the key ``valid_ratio``.
 
