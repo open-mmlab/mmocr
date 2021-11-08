@@ -8,9 +8,10 @@ from mmocr.models.builder import BACKBONES
 
 @BACKBONES.register_module()
 class ShallowCNN(BaseModule):
-    """Implement Shallow CNN block for SATRN, see `SATRN.
+    """Implement Shallow CNN block for SATRN.
 
-    <https://arxiv.org/pdf/1910.04396.pdf>`_
+    SATRN: `On Recognizing Texts of Arbitrary Shapes with 2D Self-Attention
+    <https://arxiv.org/pdf/1910.04396.pdf>`_.
 
     Args:
         base_channels (int): Number of channels of input image tensor
