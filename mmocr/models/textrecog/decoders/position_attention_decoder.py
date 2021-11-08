@@ -31,6 +31,12 @@ class PositionAttentionDecoder(BaseDecoder):
             as `value` of attention layer. If False, the original feature
             ``feat`` will be used.
         init_cfg (dict or list[dict], optional): Initialization configs.
+
+    Warning:
+        This decoder will not predict the final class which is assumed to be
+        `<PAD>`. Therefore, its output size is always :math:`C - 1`. `<PAD>`
+        is also ignored by loss as specified in
+        :obj:`mmocr.models.textrecog.recognizer.EncodeDecodeRecognizer`.
     """
 
     def __init__(self,
