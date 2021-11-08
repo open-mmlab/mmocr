@@ -15,7 +15,25 @@ from .base_decoder import BaseDecoder
 
 @DECODERS.register_module()
 class TFDecoder(BaseDecoder):
-    """Transformer Decoder block with self attention mechanism."""
+    """Transformer Decoder block with self attention mechanism.
+
+    Args:
+        n_layers (int): Number of attention layers.
+        d_embedding (int): Language embedding dimension.
+        n_head (int): Number of parallel attention heads.
+        d_k (int): Dimension of the key vector.
+        d_v (int): Dimension of the value vector.
+        d_model (int): Dimension :math:`D_m` of the input from previous model.
+        d_inner (int): Hidden dimension of feedforward layers.
+        n_position (int): Length of the positional encoding vector. Must be
+            greater than ``max_seq_len``.
+        dropout (float): Dropout rate.
+        num_classes (int): Number of output classes :math:`C`.
+        max_seq_len (int): Maximum output sequence length :math:`T`.
+        start_idx (int): The index of `<SOS>`.
+        padding_idx (int): The index of `<PAD>`.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+    """
 
     def __init__(self,
                  n_layers=6,
@@ -75,6 +93,20 @@ class TFDecoder(BaseDecoder):
         return output
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
+        r"""
+        Args:
+            feat (None): Unused.
+            out_enc (Tensor): Encoder output of shape :math:`(N, D_m, H, W)`
+                where :math:`D_m` is ``d_model``.
+            targets_dict (dict): A dict with the key ``padded_targets``.
+                ``padded_targets`` (Tensor): A tensor of shape :math:`(N, T)`.
+                Each element is the index of a character.
+            img_metas (dict): A dict that contains meta information of input
+                images. Preferably with the key ``valid_ratio``.
+
+        Returns:
+            Tensor: The raw logit tensor. Shape :math:`(N, T, C)`.
+        """
         valid_ratios = None
         if img_metas is not None:
             valid_ratios = [

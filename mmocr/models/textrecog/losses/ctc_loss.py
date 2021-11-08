@@ -46,18 +46,17 @@ class CTCLoss(nn.Module):
             targets_dict (dict): A dict with 3 keys ``target_lengths``,
                 ``flatten_targets`` and ``targets``.
 
-                ``target_lengths`` (Tensor)
-                    A tensor of shape :math:`(N)`. Each item is the length of a
-                    word.
+                - | ``target_lengths`` (Tensor): A tensor of shape :math:`(N)`.
+                    Each item is the length of a word.
 
-                ``flatten_targets`` (Tensor)
-                    Used if ``self.flatten=True`` (default). A tensor of shape
+                - | ``flatten_targets`` (Tensor): Used if ``self.flatten=True``
+                    (default). A tensor of shape
                     (sum(targets_dict['target_lengths'])). Each item is the
                     index of a character.
 
-                ``targets`` (Tensor)
-                    Used if ``self.flatten=False``. A tensor of :math:`(N, T)`.
-                    Empty slots are padded with ``self.blank``.
+                - | ``targets`` (Tensor): Used if ``self.flatten=False``. A
+                    tensor of :math:`(N, T)`. Empty slots are padded with
+                    ``self.blank``.
 
             img_metas (dict): A dict that contains meta information of input
                 images. Preferably with the key ``valid_ratio``.
