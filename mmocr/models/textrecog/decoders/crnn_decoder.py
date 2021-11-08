@@ -42,7 +42,7 @@ class CRNNDecoder(BaseDecoder):
             feat (Tensor): A Tensor of shape :math:`(N, H, 1, W)`.
 
         Returns:
-            Tensor: The raw logit tensor. Shape :math:`N, W, C` where
+            Tensor: The raw logit tensor. Shape :math:`(N, W, C)` where
             :math:`C` is ``num_classes``.
         """
         assert feat.size(2) == 1, 'feature height must be 1'
@@ -64,7 +64,7 @@ class CRNNDecoder(BaseDecoder):
             feat (Tensor): A Tensor of shape :math:`(N, H, 1, W)`.
 
         Returns:
-            Tensor: The raw logit tensor. Shape :math:`N, W, C` where
+            Tensor: The raw logit tensor. Shape :math:`(N, W, C)` where
             :math:`C` is ``num_classes``.
         """
         return self.forward_train(feat, out_enc, None, img_metas)
