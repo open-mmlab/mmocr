@@ -6,7 +6,7 @@ from mmdet.core import bbox2roi
 from torch import nn
 from torch.nn import functional as F
 
-from mmocr.core import imshow_edge_node
+from mmocr.core import imshow_edge, imshow_edge_node
 from mmocr.models.builder import DETECTORS, build_roi_extractor
 from mmocr.models.common.detectors import SingleStageDetector
 from mmocr.utils import list_from_file
@@ -36,7 +36,8 @@ class SDMGR(SingleStageDetector):
                  train_cfg=None,
                  test_cfg=None,
                  class_list=None,
-                 init_cfg=None):
+                 init_cfg=None,
+                 openset=False):
         super().__init__(
             backbone, neck, bbox_head, train_cfg, test_cfg, init_cfg=init_cfg)
         self.visual_modality = visual_modality
@@ -49,6 +50,7 @@ class SDMGR(SingleStageDetector):
         else:
             self.extractor = None
         self.class_list = class_list
+        self.openset = openset
 
     def forward_train(self, img, img_metas, relations, texts, gt_bboxes,
                       gt_labels):
@@ -136,15 +138,25 @@ class SDMGR(SingleStageDetector):
         if out_file is not None:
             show = False
 
-        img = imshow_edge_node(
-            img,
-            result,
-            boxes,
-            idx_to_cls=idx_to_cls,
-            show=show,
-            win_name=win_name,
-            wait_time=wait_time,
-            out_file=out_file)
+        if self.openset:
+            img = imshow_edge(
+                img,
+                result,
+                boxes,
+                show=show,
+                win_name=win_name,
+                wait_time=wait_time,
+                out_file=out_file)
+        else:
+            img = imshow_edge_node(
+                img,
+                result,
+                boxes,
+                idx_to_cls=idx_to_cls,
+                show=show,
+                win_name=win_name,
+                wait_time=wait_time,
+                out_file=out_file)
 
         if not (show or out_file):
             warnings.warn('show==False and out_file is not specified, only '
