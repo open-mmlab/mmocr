@@ -23,21 +23,16 @@ from .base_preprocessor import BasePreprocessor
 
 @PREPROCESSOR.register_module()
 class TPSPreprocessor(BasePreprocessor):
-    """Rectification Network of RARE, namely TPS based STN in.
-
-    <https://arxiv.org/pdf/1603.03915.pdf>`_.
+    """Rectification Network of RARE, namely TPS based STN in
+    https://arxiv.org/pdf/1603.03915.pdf.
 
     Args:
         num_fiducial (int): Number of fiducial points of TPS-STN.
-        img_size (tuple(int, int)): Size (height, width) of the input image.
-        rectified_img_size (tuple(int, int))::
-            Size (height, width) of the rectified image.
+        img_size (tuple(int, int)): Size :math:`(H, W)` of the input image.
+        rectified_img_size (tuple(int, int)): Size :math:`(H_r, W_r)` of
+            the rectified image.
         num_img_channel (int): Number of channels of the input image.
-
-    Output:
-        batch_rectified_img: Rectified image with size
-            [batch_size x num_img_channel x rectified_img_height
-            x rectified_img_width]
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,
@@ -63,6 +58,14 @@ class TPSPreprocessor(BasePreprocessor):
                                            self.rectified_img_size)
 
     def forward(self, batch_img):
+        """
+        Args:
+            batch_img (Tensor): Images to be rectified with size
+                :math:`(N, C, H, W)`.
+
+        Returns:
+            Tensor: Rectified image with size :math:`(N, C, H_r, W_r)`.
+        """
         batch_C_prime = self.LocalizationNetwork(
             batch_img)  # batch_size x K x 2
         build_P_prime = self.GridGenerator.build_P_prime(
@@ -138,12 +141,12 @@ class LocalizationNetwork(nn.Module):
     def forward(self, batch_img):
         """
         Args:
-            batch_img (tensor): Batch Input Image
-                [batch_size x num_img_channel x img_height x img_width]
+            batch_img (Tensor): Batch input image of shape
+                :math:`(N, C, H, W)`.
 
-        Output:
-            batch_C_prime : Predicted coordinates of fiducial points for
-            input batch [batch_size x num_fiducial x 2]
+        Returns:
+            Tensor: Predicted coordinates of fiducial points for input batch.
+            The shape is :math:`(N, F, 2)` where :math:`F` is ``num_fiducial``.
         """
         batch_size = batch_img.size(0)
         features = self.conv(batch_img).view(batch_size, -1)
@@ -159,7 +162,7 @@ class GridGenerator(nn.Module):
     Args:
         num_fiducial (int): Number of fiducial points of TPS-STN.
         rectified_img_size (tuple(int, int)):
-            Size (height, width) of the rectified image.
+            Size :math:`(H_r, W_r)` of the rectified image.
     """
 
     def __init__(self, num_fiducial, rectified_img_size):

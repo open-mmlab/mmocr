@@ -14,15 +14,16 @@ from .base_encoder import BaseEncoder
 class SAREncoder(BaseEncoder):
     """Implementation of encoder module in `SAR.
 
-    <https://arxiv.org/abs/1811.00751>`_
+    <https://arxiv.org/abs/1811.00751>`_.
 
     Args:
         enc_bi_rnn (bool): If True, use bidirectional RNN in encoder.
         enc_do_rnn (float): Dropout probability of RNN layer in encoder.
         enc_gru (bool): If True, use GRU, else LSTM in encoder.
-        d_model (int): Dim of channels from backbone.
-        d_enc (int): Dim of encoder RNN layer.
+        d_model (int): Dim :math:`D_i` of channels from backbone.
+        d_enc (int): Dim :math:`D_m` of encoder RNN layer.
         mask (bool): If True, mask padding in RNN sequence.
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,
@@ -68,6 +69,15 @@ class SAREncoder(BaseEncoder):
         self.linear = nn.Linear(encoder_rnn_out_size, encoder_rnn_out_size)
 
     def forward(self, feat, img_metas=None):
+        """
+        Args:
+            feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.
+            img_metas (dict): A dict that contains meta information of input
+                images. Preferably with the key ``valid_ratio``.
+
+        Returns:
+            Tensor: A tensor of shape :math:`(N, D_m)`.
+        """
         if img_metas is not None:
             assert utils.is_type_list(img_metas, dict)
             assert len(img_metas) == feat.size(0)
