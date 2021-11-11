@@ -380,7 +380,8 @@ def test_textsnake(cfg_file):
 
     one_meta = img_metas[0]
     result = detector.bbox_head.get_boundary(maps, [one_meta], False)
-    assert len(result) == 1
+    assert 'boundary_result' in result
+    assert 'filename' in result
 
     # Test show result
     results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}
@@ -519,7 +520,7 @@ def test_drrg(cfg_file):
         detector.bbox_head.out_conv.bias.data.fill_(0.)
         outs = detector.bbox_head.single_test(maps)
         boundaries = detector.bbox_head.get_boundary(*outs, img_metas, True)
-    assert len(boundaries)
+    assert len(boundaries) == 1
 
     # Test show result
     results = {'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 0.9]]}
