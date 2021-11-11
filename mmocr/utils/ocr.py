@@ -189,7 +189,7 @@ class MMOCR:
                 'dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py',
                 'ckpt':
                 'dbnet/'
-                'dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20210325-91cef9af.pth'
+                'dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20211025-9fe3b590.pth'
             },
             'DRRG': {
                 'config':
