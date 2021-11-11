@@ -17,6 +17,18 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
+   :caption: Configuration System
+
+   dataset_types.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Tutorials
+
+   tutorials/kie_closeset_openset.md
+
+.. toctree::
+   :maxdepth: 2
    :caption: Model Zoo
 
    modelzoo.md
@@ -33,12 +45,6 @@ You can switch between English and Chinese in the lower-left corner of the layou
    datasets/recog.md
    datasets/kie.md
    datasets/ner.md
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Configuration System
-
-   dataset_types.md
 
 .. toctree::
    :maxdepth: 2
