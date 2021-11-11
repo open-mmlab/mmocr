@@ -37,4 +37,3 @@
 3. The model is used to predict whether two nodes are a pair connecting by a valid edge.
 4. You can learn more about the key differences between CloseSet and OpenSet annotations in our [tutorial](tutorials/kie_closeset_openset.md).
 :::
-:::
