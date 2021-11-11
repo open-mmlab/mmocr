@@ -86,9 +86,9 @@ def main():
     out_txt_dir = osp.join(args.out_dir, 'out_txt_dir')
     mmcv.mkdir_or_exist(out_txt_dir)
 
-    total_img_num = sum([1 for _ in open(args.img_list)])
-    progressbar = ProgressBar(task_num=total_img_num)
-    for line in list_from_file(args.img_list):
+    lines = list_from_file(args.img_list)
+    progressbar = ProgressBar(task_num=len(lines))
+    for line in lines:
         progressbar.update()
         img_path = osp.join(args.img_root, line.strip())
         if not osp.exists(img_path):
