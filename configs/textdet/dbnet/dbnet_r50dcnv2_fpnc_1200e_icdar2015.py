@@ -29,12 +29,9 @@ model = dict(
 
 dataset_type = 'IcdarDataset'
 data_root = 'data/icdar2015/'
-# img_norm_cfg = dict(
-#    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-# from official dbnet code
 img_norm_cfg = dict(
     mean=[122.67891434, 116.66876762, 104.00698793],
-    std=[255, 255, 255],
+    std=[58.395, 57.12, 57.375],
     to_rgb=False)
 # for visualizing img, pls uncomment it.
 # img_norm_cfg = dict(mean=[0, 0, 0], std=[1, 1, 1], to_rgb=True)
