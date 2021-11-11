@@ -17,6 +17,18 @@
 
 .. toctree::
    :maxdepth: 2
+   :caption: 配置系统
+
+   dataset_types.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 教程
+
+   tutorials/kie_closeset_openset.md
+
+.. toctree::
+   :maxdepth: 2
    :caption: 模型库
 
    modelzoo.md
@@ -33,12 +45,6 @@
    datasets/recog.md
    datasets/kie.md
    datasets/ner.md
-
-.. toctree::
-   :maxdepth: 2
-   :caption: 配置系统
-
-   dataset_types.md
 
 .. toctree::
    :maxdepth: 2

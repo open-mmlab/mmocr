@@ -35,5 +35,5 @@
 1. In the case of openset, the number of node categories is unknown or unfixed, and more node category can be added.
 2. To show that our method can handle openset problem, we modify the ground truth of `WildReceipt` to `WildReceiptOpenset`. The `nodes` are just classified into 4 classes: `background, key, value, others`, while adding `edge` labels for each box.
 3. The model is used to predict whether two nodes are a pair connecting by a valid edge.
-
+4. You can learn more about the key differences between CloseSet and OpenSet annotations in our [tutorial](tutorials/kie_closeset_openset.md).
 :::
