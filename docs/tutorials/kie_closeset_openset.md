@@ -35,7 +35,7 @@ You can merge `background` to `others` if telling background apart is not import
 
 ### Converting WildReceipt from CloseSet to OpenSet
 
-We provide a [conversion script](datasets/kie.md) that converts WildRecipt-like dataset to OpenSet format. This script links every `key`-`value` pairs following the rules above. Here's an example illustration: (For better understanding, all the node labels are presented as texts)
+We provide a [conversion script](../datasets/kie.md) that converts WildRecipt-like dataset to OpenSet format. This script links every `key`-`value` pairs following the rules above. Here's an example illustration: (For better understanding, all the node labels are presented as texts)
 
 |box_content | closeset_node_label| closeset_edge_label | openset_node_label | openset_edge_label |
 | :----: | :---: | :----: | :---: | :---: |

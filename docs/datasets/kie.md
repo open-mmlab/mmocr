@@ -32,5 +32,5 @@ python tools/data/kie/closeset_to_openset.py data/wildreceipt/train.txt data/wil
 python tools/data/kie/closeset_to_openset.py data/wildreceipt/test.txt data/wildreceipt/openset_test.txt
 ```
 :::{note}
-You can learn more about the key differences between CloseSet and OpenSet annotations in our [tutorial](tutorials/kie_closeset_openset.md).
+You can learn more about the key differences between CloseSet and OpenSet annotations in our [tutorial](../tutorials/kie_closeset_openset.md).
 :::
