@@ -51,7 +51,7 @@
    :caption: 杂项
 
    tools.md
-   ../docs/changelog.md
+   changelog.md
 
 .. toctree::
    :caption: API 参考
