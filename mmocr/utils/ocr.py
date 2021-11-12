@@ -273,6 +273,12 @@ class MMOCR:
                 'config': 'sar/sar_r31_parallel_decoder_academic.py',
                 'ckpt': 'sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth'
             },
+            'SAR_CN': {
+                'config':
+                'sar/sar_r31_parallel_decoder_chinese.py',
+                'ckpt':
+                'sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth'
+            },
             'NRTR_1/16-1/8': {
                 'config': 'nrtr/nrtr_r31_1by16_1by8_academic.py',
                 'ckpt': 'nrtr/nrtr_r31_academic_20210406-954db95e.pth'
