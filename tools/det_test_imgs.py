@@ -5,9 +5,8 @@ from argparse import ArgumentParser
 
 import mmcv
 from mmcv.utils import ProgressBar
-from mmdet.apis import inference_detector
 
-from mmocr.apis import init_detector
+from mmocr.apis import init_detector, model_inference
 from mmocr.models import build_detector  # noqa: F401
 from mmocr.utils import list_from_file, list_to_file
 
@@ -95,7 +94,7 @@ def main():
         if not osp.exists(img_path):
             raise FileNotFoundError(img_path)
         # Test a single image
-        result = inference_detector(model, img_path)
+        result = model_inference(model, img_path)
         img_name = osp.basename(img_path)
         # save result
         save_results(result, out_txt_dir, img_name, score_thr=args.score_thr)
