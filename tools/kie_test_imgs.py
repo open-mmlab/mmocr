@@ -18,6 +18,11 @@ from mmocr.models import build_detector
 
 
 def save_results(model, img_meta, gt_bboxes, result, out_dir):
+    assert 'filename' in img_meta, ('Please add "filename" '
+                                    'to "meta_keys" in config.')
+    assert 'ori_texts' in img_meta, ('Please add "ori_texts" '
+                                     'to "meta_keys" in config.')
+
     out_json_file = osp.join(out_dir,
                              osp.basename(img_meta['filename']) + '.json')
 
@@ -38,8 +43,8 @@ def save_results(model, img_meta, gt_bboxes, result, out_dir):
             pred.argmax(-1).cpu().item()),
         'conf':
         pred.max(-1)[0].cpu().item()
-    } for text, box, pred in zip(result['img_metas'][0]['ori_texts'],
-                                 gt_bboxes, result['nodes'])]
+    } for text, box, pred in zip(img_meta['ori_texts'], gt_bboxes,
+                                 result['nodes'])]
 
     mmcv.dump(json_result, out_json_file)
 
