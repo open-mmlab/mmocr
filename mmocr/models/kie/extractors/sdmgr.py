@@ -6,7 +6,7 @@ from mmdet.core import bbox2roi
 from torch import nn
 from torch.nn import functional as F
 
-from mmocr.core import imshow_edge, imshow_edge_node
+from mmocr.core import imshow_edge, imshow_node
 from mmocr.models.builder import DETECTORS, build_roi_extractor
 from mmocr.models.common.detectors import SingleStageDetector
 from mmocr.utils import list_from_file
@@ -148,7 +148,7 @@ class SDMGR(SingleStageDetector):
                 wait_time=wait_time,
                 out_file=out_file)
         else:
-            img = imshow_edge_node(
+            img = imshow_node(
                 img,
                 result,
                 boxes,
