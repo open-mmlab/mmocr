@@ -66,7 +66,7 @@ class KIEDataset(BaseDataset):
     def pre_pipeline(self, results):
         results['img_prefix'] = self.img_prefix
         results['bbox_fields'] = []
-        results['ori_texts'] = results['ann_info']['texts']
+        results['ori_texts'] = results['ann_info']['ori_texts']
         results['filename'] = osp.join(self.img_prefix,
                                        results['img_info']['filename'])
         results['ori_filename'] = results['img_info']['filename']
@@ -181,6 +181,7 @@ class KIEDataset(BaseDataset):
     def list_to_numpy(self, ann_infos):
         """Convert bboxes, relations, texts and labels to ndarray."""
         boxes, text_inds = ann_infos['boxes'], ann_infos['text_inds']
+        texts = ann_infos['texts']
         boxes = np.array(boxes, np.int32)
         relations, bboxes = self.compute_relation(boxes)
 
@@ -202,6 +203,7 @@ class KIEDataset(BaseDataset):
             bboxes=bboxes,
             relations=relations,
             texts=padded_text_inds,
+            ori_texts=texts,
             labels=labels)
 
     def pad_text_indices(self, text_inds):
