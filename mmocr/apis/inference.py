@@ -137,6 +137,8 @@ def model_inference(model,
                 img_prefix=None,
                 ann_info=ann,
                 bbox_fields=[])
+        if ann is not None:
+            data.update(dict(**ann))
 
         # build the data pipeline
         data = test_pipeline(data)
