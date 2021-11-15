@@ -381,14 +381,14 @@ def imshow_text_label(img,
     return img
 
 
-def imshow_edge_node(img,
-                     result,
-                     boxes,
-                     idx_to_cls={},
-                     show=False,
-                     win_name='',
-                     wait_time=-1,
-                     out_file=None):
+def imshow_node(img,
+                result,
+                boxes,
+                idx_to_cls={},
+                show=False,
+                win_name='',
+                wait_time=-1,
+                out_file=None):
 
     img = mmcv.imread(img)
     h, w = img.shape[:2]
@@ -437,7 +437,7 @@ def imshow_edge_node(img,
 
     vis_img = np.ones((h, w * 3, 3), dtype=np.uint8) * 255
     vis_img[:, :w] = img
-    vis_img[:, w:] = cv2.cvtColor(np.asarray(pred_img), cv2.COLOR_RGB2BGR)
+    vis_img[:, w:] = pred_img
 
     if show:
         mmcv.imshow(vis_img, win_name, wait_time)
@@ -563,7 +563,7 @@ def draw_texts_by_pil(img,
             else on a new empty image.
         font_size (int, optional): Size to create a font object for a font.
         fill_color (tuple(int), optional): Fill color for text.
-        draw_pos (tuple(int), optional): Start point to draw text.
+        draw_pos (list[tuple(int)], optional): Start point to draw each text.
         return_text_size (bool): If True, return the list of text size.
 
     Returns:
@@ -578,7 +578,12 @@ def draw_texts_by_pil(img,
     h, w = img.shape[:2]
     if boxes is None:
         boxes = [[0, 0, w, 0, w, h, 0, h]]
-    assert len(boxes) == len(texts)
+    if draw_pos is None:
+        draw_pos = [None for _ in texts]
+    assert len(boxes) == len(texts) == len(draw_pos)
+
+    if fill_color is None:
+        fill_color = (0, 0, 0)
 
     if on_ori_img:
         out_img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
@@ -587,7 +592,7 @@ def draw_texts_by_pil(img,
     out_draw = ImageDraw.Draw(out_img)
 
     text_sizes = []
-    for idx, (box, text) in enumerate(zip(boxes, texts)):
+    for idx, (box, text, ori_point) in enumerate(zip(boxes, texts, draw_pos)):
         if len(text) == 0:
             continue
         min_x, max_x = min(box[0::2]), max(box[0::2])
@@ -602,15 +607,14 @@ def draw_texts_by_pil(img,
             print(f'Downloading {url} ...')
             local_filename, _ = urllib.request.urlretrieve(url)
             shutil.move(local_filename, font_path)
-        if font_size is None:
+        tmp_font_size = font_size
+        if tmp_font_size is None:
             box_width = max(max_x - min_x, max_y - min_y)
-            font_size = int(0.9 * box_width / len(text))
-        fnt = ImageFont.truetype(font_path, font_size)
-        if draw_pos is None:
-            draw_pos = (min_x + 1, min_y + 1)
-        if fill_color is None:
-            fill_color = (0, 0, 0)
-        out_draw.text(draw_pos, text, font=fnt, fill=fill_color)
+            tmp_font_size = int(0.9 * box_width / len(text))
+        fnt = ImageFont.truetype(font_path, tmp_font_size)
+        if ori_point is None:
+            ori_point = (min_x + 1, min_y + 1)
+        out_draw.text(ori_point, text, font=fnt, fill=fill_color)
         text_sizes.append(fnt.getsize(text))
 
     del out_draw
@@ -764,7 +768,7 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
                 on_ori_img=True,
                 font_size=key_font_size,
                 font_color=key_font_color,
-                draw_pos=key_pos,
+                draw_pos=[key_pos],
                 return_text_size=True)
             pos_right_bottom = (key_pos[0] + text_sizes[0][0],
                                 key_pos[1] + text_sizes[0][1])
@@ -791,7 +795,7 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
             on_ori_img=True,
             font_size=value_font_size,
             font_color=value_font_color,
-            draw_pos=value_pos,
+            draw_pos=[value_pos],
             return_text_size=False)
         bbox_y1 += dist_pair_to_pair
         if bbox_y1 + dist_pair_to_pair >= new_h:
