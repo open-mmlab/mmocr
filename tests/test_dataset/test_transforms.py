@@ -269,7 +269,7 @@ def test_random_crop_poly_instances(mock_randint, mock_sample):
 
     # test sample_crop_box(img_size, results)
     mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 0, 0, 15]
-    crop_box = rcpi.sample_crop_box((30, 30), results)
+    crop_box = rcpi._sample_crop_box((30, 30), results)
     assert np.allclose(np.array(crop_box), np.array([0, 0, 30, 15]))
 
     # test __call__
