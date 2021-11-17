@@ -313,16 +313,28 @@ python tools/deploy_test.py \
 ## C++ Inference example with OpenCV
 The example below is tested with Visual Studio 2019 as console application, CPU inference only.
 
-**Prerequisites**
+### Prerequisites
+
 1. Project should use OpenCV (tested with version 4.5.4), ONNX Runtime NuGet package (version 1.9.0).
-2. It's needed to export downloaded (`pth`) Dbnet_r18 detector and Starn_small recognizer models with the following python commands (adjust your paths):
-- `python3.9 ../mmocr/tools/deployment/pytorch2onnx.py --verify --output-file detector.onnx ../mmocr/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py ./dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth --dynamic-export det ./sample_big_image_eg_1920x1080.png`
-- `../mmocr/tools/deployment/pytorch2onnx.py --opset 14 --verify --output-file recognizer.onnx ../mmocr/configs/textrecog/satrn/satrn_small.py ./satrn_small_20211009-2cf13355.pth recog ./sample_small_image_eg_200x50.png`
-> Be aware, while exported `detector.onnx` file is relatively small (about 50 Mb), `recognizer.onnx` is pretty big (more than 600 Mb). Also, Dbnet_r18 can use ONNX opset 11, Satrn_small can be exported with opset 14. 
+2. Download *DBNet_r18* detector and *SATRN_small* recognizer models from our [Model Zoo](modelzoo.md), and export them with the following python commands (you may change the paths accordingly):
 
-*Be sure, that verifications of both models are successful - look through the export messages*.
+```bash
+python3.9 ../mmocr/tools/deployment/pytorch2onnx.py --verify --output-file detector.onnx ../mmocr/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py ./dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth --dynamic-export det ./sample_big_image_eg_1920x1080.png
 
-3. Example usage of exported models with C++ is in the code below (don't forget to change paths to \*.onnx files). It's applicable to these two models only, other models have another preprocessing and postprocessing logics.
+python3.9 ../mmocr/tools/deployment/pytorch2onnx.py --opset 14 --verify --output-file recognizer.onnx ../mmocr/configs/textrecog/satrn/satrn_small.py ./satrn_small_20211009-2cf13355.pth recog ./sample_small_image_eg_200x50.png
+```
+
+:::{note}
+- Be aware, while exported `detector.onnx` file is relatively small (about 50 Mb), `recognizer.onnx` is pretty big (more than 600 Mb).
+- *DBNet_r18* can use ONNX opset 11, *SATRN_small* can be exported with opset 14.
+:::
+
+:::{warning}
+Be sure, that verifications of both models are successful - look through the export messages.
+:::
+
+### Example
+Example usage of exported models with C++ is in the code below (don't forget to change paths to \*.onnx files). It's applicable to these two models only, other models have another preprocessing and postprocessing logics.
 
 ```C++
 #include <iostream>
@@ -337,8 +349,8 @@ The example below is tested with Visual Studio 2019 as console application, CPU 
 
 // DB_r18
 class Detector {
-public: 
-	Detector(const std::string& model_path) {		
+public:
+	Detector(const std::string& model_path) {
 		session = Ort::Session{ env, std::wstring(model_path.begin(), model_path.end()).c_str(), Ort::SessionOptions{nullptr} };
 	}
 
@@ -392,12 +404,12 @@ public:
 		return results;
 	}
 
-private:	
+private:
 	Ort::Env env;
 	Ort::Session session{ nullptr };
 
-	const int width = 1312, height = 736;	
-	
+	const int width = 1312, height = 736;
+
 	cv::Rect expand_box(const cv::Rect& original, int addition = 5) {
 		cv::Rect box(original);
 		box.x = std::max(0, box.x - addition);
@@ -430,11 +442,11 @@ private:
 	}
 };
 
-// Satrn_small
+// SATRN_small
 class Recognizer {
 public:
 	Recognizer(const std::string& model_path) {
-		session = Ort::Session{ env, std::wstring(model_path.begin(), model_path.end()).c_str(), Ort::SessionOptions{nullptr} };		
+		session = Ort::Session{ env, std::wstring(model_path.begin(), model_path.end()).c_str(), Ort::SessionOptions{nullptr} };
 	}
 
 	std::string inference(const cv::Mat& original) {
@@ -473,7 +485,7 @@ public:
 					character_index = inner;
 				}
 			}
-			max_indices.push_back(character_index);			
+			max_indices.push_back(character_index);
 		}
 
 		std::string recognized;
@@ -486,7 +498,7 @@ public:
 				break; // eos
 			}
 			recognized += dictionary[max_indices[index]];
-		}		
+		}
 
 		return recognized;
 	}
@@ -503,7 +515,7 @@ int main(int argc, const char* argv[]) {
 	if (argc < 2) {
 		std::cout << "Usage: this_executable.exe c:/path/to/image.png" << std::endl;
 		return 0;
-	}	
+	}
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	std::cout << "Loading models..." << std::endl;
@@ -514,14 +526,14 @@ int main(int argc, const char* argv[]) {
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 	std::cout << "Loading models done in " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " ms" << std::endl;
 
-	cv::Mat image = cv::imread(argv[1], cv::IMREAD_COLOR);	
+	cv::Mat image = cv::imread(argv[1], cv::IMREAD_COLOR);
 
 	begin = std::chrono::steady_clock::now();
 	std::vector<cv::Rect> detections = detector.inference(image);
 	for (int index = 0; index < detections.size(); ++index) {
 		cv::Mat roi = image(detections[index]);
 		std::string text = recognizer.inference(roi);
-		cv::rectangle(image, detections[index], cv::Scalar(255, 255, 255), 2);				
+		cv::rectangle(image, detections[index], cv::Scalar(255, 255, 255), 2);
 		cv::putText(image, text, cv::Point(detections[index].x, detections[index].y - 10), cv::FONT_HERSHEY_COMPLEX, 0.4, cv::Scalar(255, 255, 255));
 	}
 
@@ -540,7 +552,6 @@ The output should look something like this.
 Loading models...
 Loading models done in 5715 ms
 Inference time (with drawing): 3349 ms
-
 ```
 
 And the sample result should look something like this.
