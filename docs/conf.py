@@ -155,6 +155,10 @@ html_theme_options = {
                     'name': 'MMTracking',
                     'url': 'https://mmtracking.readthedocs.io/en/latest/',
                 },
+                {
+                    'name': 'MMFlow',
+                    'url': 'https://mmflow.readthedocs.io/en/latest/',
+                },
             ]
         },
         {
