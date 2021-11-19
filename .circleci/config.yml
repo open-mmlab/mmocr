@@ -20,6 +20,7 @@ jobs:
           # command: apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python${{matrix.python-version}}-dev
           command: |
             DEBIAN_FRONTEND=noninteractive sudo apt-get install -y --no-install-recommends python3.9-dev
+            sudo apt install python-is-python3
       - run:
           name: Upgrade pip
           command: python -m pip install pip --upgrade
