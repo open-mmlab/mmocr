@@ -7,20 +7,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
-      # - uses: actions/checkout@v2
-      # - name: Set up Python ${{ matrix.python-version }}
-      #   uses: actions/setup-python@v2
-      #   with:
-      #     python-version: ${{ matrix.python-version }}
-      # Add ppa source repo for python3.9.
-      - checkout
-      - run:
-          name: "Add python3.9 source"
+          name: Add python3.9 source
           command: |
-            apt-get update && apt-get install -y software-properties-common
-            add-apt-repository -y ppa:deadsnakes/ppa
+            sudo apt-get update
+            sudo apt-get install -y software-properties-common
+            sudo add-apt-repository -y ppa:deadsnakes/ppa
       # Install python-dev for some packages which require libpython3.Xm.
       # Github's setup-python cannot install python3.9-dev, so we have to use apt install.
       # Set DEBIAN_FRONTEND=noninteractive to avoid some interactions.
@@ -30,13 +21,14 @@ jobs:
       - run:
           name: Install Python-dev
           # command: apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python${{matrix.python-version}}-dev
-          command: apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python3.9-dev
+          command: |
+            sudo apt-get update
+            DEBIAN_FRONTEND=noninteractive sudo apt-get install -y --no-install-recommends python3.9-dev
       - run:
           name: Install system dependencies
           command: |
-            apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6
-            apt-get clean
-            apt-get install -y curl
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 curl
       - run:
           name: Install librosa and soundfile
           command: python -m pip install librosa soundfile
