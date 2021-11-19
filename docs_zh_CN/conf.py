@@ -115,6 +115,10 @@ html_theme_options = {
                     'url': 'https://mmcv.readthedocs.io/zh_CN/latest/',
                 },
                 {
+                    'name': 'MIM',
+                    'url': 'https://openmim.readthedocs.io/en/latest/',
+                },
+                {
                     'name': 'MMAction2',
                     'url': 'https://mmaction2.readthedocs.io/zh_CN/latest/',
                 },
@@ -156,6 +160,10 @@ html_theme_options = {
                 {
                     'name': 'MMTracking',
                     'url': 'https://mmtracking.readthedocs.io/zh_CN/latest/',
+                },
+                {
+                    'name': 'MMFlow',
+                    'url': 'https://mmflow.readthedocs.io/en/latest/',
                 },
             ]
         },
