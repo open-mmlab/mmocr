@@ -1,6 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import math
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -112,44 +110,15 @@ class NRTRDecoder(BaseDecoder):
         Returns:
             Tensor: The raw logit tensor. Shape :math:`(N, T, C)`.
         """
-        valid_ratios = None
-        if img_metas is not None:
-            valid_ratios = [
-                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-            ]
-        n, c, h, w = out_enc.size()
-        src_mask = None
-        if valid_ratios is not None:
-            src_mask = out_enc.new_zeros((n, h, w))
-            for i, valid_ratio in enumerate(valid_ratios):
-                valid_width = min(w, math.ceil(w * valid_ratio))
-                src_mask[i, :, :valid_width] = 1
-            src_mask = src_mask.view(n, h * w)
-        out_enc = out_enc.view(n, c, h * w).permute(0, 2, 1)
-        out_enc = out_enc.contiguous()
         targets = targets_dict['padded_targets'].to(out_enc.device)
-        attn_output = self._attention(targets, out_enc, src_mask=src_mask)
+        attn_output = self._attention(targets, out_enc, src_mask=None)
         outputs = self.classifier(attn_output)
+
         return outputs
 
     def forward_test(self, feat, out_enc, img_metas):
-        valid_ratios = None
-        if img_metas is not None:
-            valid_ratios = [
-                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-            ]
-        n, c, h, w = out_enc.size()
-        src_mask = None
-        if valid_ratios is not None:
-            src_mask = out_enc.new_zeros((n, h, w))
-            for i, valid_ratio in enumerate(valid_ratios):
-                valid_width = min(w, math.ceil(w * valid_ratio))
-                src_mask[i, :, :valid_width] = 1
-            src_mask = src_mask.view(n, h * w)
-        out_enc = out_enc.view(n, c, h * w).permute(0, 2, 1)
-        out_enc = out_enc.contiguous()
-
-        init_target_seq = torch.full((n, self.max_seq_len + 1),
+        bsz = out_enc.size(0)
+        init_target_seq = torch.full((bsz, self.max_seq_len + 1),
                                      self.padding_idx,
                                      device=out_enc.device,
                                      dtype=torch.long)
@@ -159,8 +128,8 @@ class NRTRDecoder(BaseDecoder):
         outputs = []
         for step in range(0, self.max_seq_len):
             decoder_output = self._attention(
-                init_target_seq, out_enc, src_mask=src_mask)
-            # bsz * seq_len * 512
+                init_target_seq, out_enc, src_mask=None)
+            # bsz * seq_len * C
             step_result = F.softmax(
                 self.classifier(decoder_output[:, step, :]), dim=-1)
             # bsz * num_classes

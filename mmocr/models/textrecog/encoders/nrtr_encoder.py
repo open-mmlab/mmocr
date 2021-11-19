@@ -1,6 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import math
-
 import torch.nn as nn
 from mmcv.runner import ModuleList
 
@@ -33,25 +31,10 @@ class NRTREncoder(BaseEncoder):
         self.layer_norm = nn.LayerNorm(d_model)
 
     def forward(self, feat, img_metas=None):
-        valid_ratios = [1.0 for _ in range(feat.size(0))]
-        if img_metas is not None:
-            valid_ratios = [
-                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-            ]
-        n, c, h, w = feat.size()
-        mask = feat.new_zeros((n, h, w))
-        for i, valid_ratio in enumerate(valid_ratios):
-            valid_width = min(w, math.ceil(w * valid_ratio))
-            mask[i, :, :valid_width] = 1
-        mask = mask.view(n, h * w)
-        feat = feat.view(n, c, h * w)
 
-        output = feat.permute(0, 2, 1).contiguous()
+        output = feat
         for enc_layer in self.layer_stack:
-            output = enc_layer(output, mask)
+            output = enc_layer(output)
         output = self.layer_norm(output)
-
-        output = output.permute(0, 2, 1).contiguous()
-        output = output.view(n, self.d_model, h, w)
 
         return output
