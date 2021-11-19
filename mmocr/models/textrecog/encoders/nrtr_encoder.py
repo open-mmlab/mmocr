@@ -5,12 +5,12 @@ import torch.nn as nn
 from mmcv.runner import ModuleList
 
 from mmocr.models.builder import ENCODERS
-from mmocr.models.textrecog.layers import TransformerEncoderLayer
+from mmocr.models.common import TFEncoderLayer
 from .base_encoder import BaseEncoder
 
 
 @ENCODERS.register_module()
-class TFEncoder(BaseEncoder):
+class NRTREncoder(BaseEncoder):
     """Encode 2d feature map to 1d sequence."""
 
     def __init__(self,
@@ -26,7 +26,7 @@ class TFEncoder(BaseEncoder):
         super().__init__(init_cfg=init_cfg)
         self.d_model = d_model
         self.layer_stack = ModuleList([
-            TransformerEncoderLayer(
+            TFEncoderLayer(
                 d_model, d_inner, n_head, d_k, d_v, dropout=dropout)
             for _ in range(n_layers)
         ])

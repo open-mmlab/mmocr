@@ -7,14 +7,13 @@ import torch.nn.functional as F
 from mmcv.runner import ModuleList
 
 from mmocr.models.builder import DECODERS
-from mmocr.models.textrecog.layers.transformer_layer import (
-    PositionalEncoding, TransformerDecoderLayer, get_pad_mask,
-    get_subsequent_mask)
+from mmocr.models.common import (PositionalEncoding, TFDecoderLayer,
+                                 get_pad_mask, get_subsequent_mask)
 from .base_decoder import BaseDecoder
 
 
 @DECODERS.register_module()
-class TFDecoder(BaseDecoder):
+class NRTRDecoder(BaseDecoder):
     """Transformer Decoder block with self attention mechanism.
 
     Args:
@@ -71,7 +70,7 @@ class TFDecoder(BaseDecoder):
         self.dropout = nn.Dropout(p=dropout)
 
         self.layer_stack = ModuleList([
-            TransformerDecoderLayer(
+            TFDecoderLayer(
                 d_model, d_inner, n_head, d_k, d_v, dropout=dropout)
             for _ in range(n_layers)
         ])
