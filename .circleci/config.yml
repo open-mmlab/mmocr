@@ -16,14 +16,13 @@ jobs:
       # Github's setup-python cannot install python3.9-dev, so we have to use apt install.
       # Set DEBIAN_FRONTEND=noninteractive to avoid some interactions.
       - run:
-          name: Upgrade pip
-          command: python -m pip install pip --upgrade
-      - run:
           name: Install Python-dev
           # command: apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python${{matrix.python-version}}-dev
           command: |
-            sudo apt-get update
             DEBIAN_FRONTEND=noninteractive sudo apt-get install -y --no-install-recommends python3.9-dev
+      - run:
+          name: Upgrade pip
+          command: python -m pip install pip --upgrade
       - run:
           name: Install system dependencies
           command: |
