@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import math
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -95,6 +97,22 @@ class NRTRDecoder(BaseDecoder):
 
         return output
 
+    def _get_mask(self, logit, img_metas):
+        valid_ratios = None
+        if img_metas is not None:
+            valid_ratios = [
+                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+            ]
+        N, T, _ = logit.size()
+        mask = None
+        if valid_ratios is not None:
+            mask = logit.new_zeros((N, T))
+            for i, valid_ratio in enumerate(valid_ratios):
+                valid_width = min(T, math.ceil(T * valid_ratio))
+                mask[i, :valid_width] = 1
+
+        return mask
+
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
         r"""
         Args:
@@ -110,15 +128,17 @@ class NRTRDecoder(BaseDecoder):
         Returns:
             Tensor: The raw logit tensor. Shape :math:`(N, T, C)`.
         """
+        src_mask = self._get_mask(out_enc, img_metas)
         targets = targets_dict['padded_targets'].to(out_enc.device)
-        attn_output = self._attention(targets, out_enc, src_mask=None)
+        attn_output = self._attention(targets, out_enc, src_mask=src_mask)
         outputs = self.classifier(attn_output)
 
         return outputs
 
     def forward_test(self, feat, out_enc, img_metas):
-        bsz = out_enc.size(0)
-        init_target_seq = torch.full((bsz, self.max_seq_len + 1),
+        src_mask = self._get_mask(out_enc, img_metas)
+        N = out_enc.size(0)
+        init_target_seq = torch.full((N, self.max_seq_len + 1),
                                      self.padding_idx,
                                      device=out_enc.device,
                                      dtype=torch.long)
@@ -128,7 +148,7 @@ class NRTRDecoder(BaseDecoder):
         outputs = []
         for step in range(0, self.max_seq_len):
             decoder_output = self._attention(
-                init_target_seq, out_enc, src_mask=None)
+                init_target_seq, out_enc, src_mask=src_mask)
             # bsz * seq_len * C
             step_result = F.softmax(
                 self.classifier(decoder_output[:, step, :]), dim=-1)
