@@ -87,7 +87,7 @@ class MultiHeadAttention(nn.Module):
         attn_out, _ = self.attention(q, k, v, mask=mask)
 
         attn_out = attn_out.transpose(1, 2).contiguous().view(
-            batch_size, len_k, self.dim_v)
+            batch_size, len_q, self.dim_v)
 
         attn_out = self.fc(attn_out)
         attn_out = self.proj_drop(attn_out)

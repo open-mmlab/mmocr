@@ -23,8 +23,8 @@ model = dict(
         channels=[32, 64, 128, 256, 512, 512],
         stage4_pool_cfg=dict(kernel_size=(2, 1), stride=(2, 1)),
         last_stage_pool=False),
-    encoder=dict(type='TFEncoder'),
-    decoder=dict(type='TFDecoder'),
+    encoder=dict(type='NRTREncoder'),
+    decoder=dict(type='NRTRDecoder'),
     loss=dict(type='TFLoss'),
     label_convertor=label_convertor,
     max_seq_len=40)
