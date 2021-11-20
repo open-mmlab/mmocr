@@ -46,6 +46,7 @@ jobs:
           name: Install mmocr dependencies
           # python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch${{matrix.torch_version}}/index.html
           command: |
+            python3 -m pip install wheel
             python3 -m pip install mmcv-full
             python3 -m pip install mmdet
             python3 -m pip install -r requirements.txt
