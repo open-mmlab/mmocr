@@ -49,6 +49,10 @@ class NRTREncoder(BaseEncoder):
         return mask
 
     def forward(self, feat, img_metas=None):
+        n, c, h, w = feat.size()
+
+        feat = feat.view(n, c, h * w).permute(0, 2, 1).contiguous()
+
         mask = self._get_mask(feat, img_metas)
 
         output = feat

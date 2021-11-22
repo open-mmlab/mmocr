@@ -34,6 +34,8 @@ class NRTRModalityTransform(BaseModule):
         self.relu_2 = nn.ReLU(True)
         self.bn_2 = nn.BatchNorm2d(64)
 
+        self.linear = nn.Linear(512, 512)
+
     def forward(self, x):
         x = self.conv_1(x)
         x = self.relu_1(x)
@@ -45,6 +47,10 @@ class NRTRModalityTransform(BaseModule):
 
         n, c, h, w = x.size()
 
-        x = x.permute(0, 3, 2, 1).contiguous().view(n, w, h * c)
+        x = x.permute(0, 3, 2, 1).view(n, w, h * c).contiguous()
+
+        x = self.linear(x)
+
+        x = x.permute(0, 2, 1).view(n, -1, 1, w)
 
         return x
