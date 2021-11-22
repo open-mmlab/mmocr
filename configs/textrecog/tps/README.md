@@ -1,8 +1,18 @@
 # CRNN with TPS based STN
 
-## Introduction
+<!-- [ABSTRACT] -->
+Image-based sequence recognition has been a long-standing research topic in computer vision. In this paper, we investigate the problem of scene text recognition, which is among the most important and challenging tasks in image-based sequence recognition. A novel neural network architecture, which integrates feature extraction, sequence modeling and transcription into a unified framework, is proposed. Compared with previous systems for scene text recognition, the proposed architecture possesses four distinctive properties: (1) It is end-to-end trainable, in contrast to most of the existing algorithms whose components are separately trained and tuned. (2) It naturally handles sequences in arbitrary lengths, involving no character segmentation or horizontal scale normalization. (3) It is not confined to any predefined lexicon and achieves remarkable performances in both lexicon-free and lexicon-based scene text recognition tasks. (4) It generates an effective yet much smaller model, which is more practical for real-world application scenarios. The experiments on standard benchmarks, including the IIIT-5K, Street View Text and ICDAR datasets, demonstrate the superiority of the proposed algorithm over the prior arts. Moreover, the proposed algorithm performs well in the task of image-based music score recognition, which evidently verifies the generality of it.
 
-[ALGORITHM]
+<!-- [IMAGE] -->
+<div align=center>
+<img src="https://user-images.githubusercontent.com/22607038/142797788-6b1cd78d-1dd6-4e02-be32-3dbd257c4992.png"/>
+</div>
+
+## Citation
+
+Main paper
+
+<!-- [ALGORITHM] -->
 
 ```bibtex
 @article{shi2016end,
@@ -13,7 +23,9 @@
 }
 ```
 
-[PREPROCESSOR]
+Preprocessor
+
+<!-- [PREPROCESSOR] -->
 
 ```bibtex
 @article{shi2016robust,

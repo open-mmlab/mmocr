@@ -14,6 +14,8 @@ Key information extraction from document images is of paramount importance in of
 
 ## Citation
 
+<!-- [ALGORITHM] -->
+
 ```bibtex
 @misc{sun2021spatial,
       title={Spatial Dual-Modality Graph Reasoning for Key Information Extraction},

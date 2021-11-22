@@ -1,8 +1,13 @@
 # SegOCR Simple Baseline.
 
-## Introduction
+## Abstract
 
-[ALGORITHM]
+<!-- [ABSTRACT] -->
+Just a simple Seg-based baseline for text recognition tasks.
+
+## Citation
+
+<!-- [ALGORITHM] -->
 
 ```bibtex
 @unpublished{key,
