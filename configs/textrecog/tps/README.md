@@ -12,8 +12,6 @@ Image-based sequence recognition has been a long-standing research topic in comp
 
 Main paper
 
-<!-- [ALGORITHM] -->
-
 ```bibtex
 @article{shi2016end,
   title={An end-to-end trainable neural network for image-based sequence recognition and its application to scene text recognition},
