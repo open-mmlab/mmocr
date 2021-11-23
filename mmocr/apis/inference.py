@@ -129,7 +129,11 @@ def model_inference(model,
         # prepare data
         if is_ndarray:
             # directly add img
-            data = dict(img=img, ann_info=ann, bbox_fields=[])
+            data = dict(
+                img=img,
+                ann_info=ann,
+                img_info=dict(width=img.shape[1], height=img.shape[0]),
+                bbox_fields=[])
         else:
             # add information into dict
             data = dict(
