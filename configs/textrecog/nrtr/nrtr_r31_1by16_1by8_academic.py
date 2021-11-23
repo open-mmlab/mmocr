@@ -13,7 +13,11 @@ train_pipeline = {{_base_.train_pipeline}}
 test_pipeline = {{_base_.test_pipeline}}
 
 label_convertor = dict(
+<<<<<<< HEAD
     type='AttnConvertor', dict_type='DICT90', with_unknown=True)
+=======
+    type='AttnConvertor', dict_type='DICT36', with_unknown=True)
+>>>>>>> f5cc0a4 (update config)
 
 model = dict(
     type='NRTR',
@@ -32,8 +36,11 @@ model = dict(
 data = dict(
     samples_per_gpu=128,
     workers_per_gpu=4,
+<<<<<<< HEAD
     val_dataloader=dict(samples_per_gpu=1),
     test_dataloader=dict(samples_per_gpu=1),
+=======
+>>>>>>> f5cc0a4 (update config)
     train=dict(
         type='UniformConcatDataset',
         datasets=train_list,

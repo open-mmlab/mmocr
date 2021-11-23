@@ -17,6 +17,10 @@ train_pipeline = [
             'filename', 'ori_shape', 'resize_shape', 'text', 'valid_ratio'
         ]),
 ]
+<<<<<<< HEAD
+=======
+
+>>>>>>> f5cc0a4 (update config)
 test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
@@ -28,8 +32,12 @@ test_pipeline = [
                 height=32,
                 min_width=32,
                 max_width=160,
+<<<<<<< HEAD
                 keep_aspect_ratio=True,
                 width_downsample_ratio=0.25),
+=======
+                keep_aspect_ratio=True),
+>>>>>>> f5cc0a4 (update config)
             dict(type='ToTensorOCR'),
             dict(type='NormalizeOCR', **img_norm_cfg),
             dict(

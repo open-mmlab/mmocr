@@ -85,7 +85,6 @@ class TFDecoderLayer(nn.Module):
                  act_cfg=dict(type='GELU'),
                  operation_order=None):
         super().__init__()
-        self.self_attn = MultiHeadAttention()
 
         self.norm1 = nn.LayerNorm(d_model)
         self.norm2 = nn.LayerNorm(d_model)
@@ -94,7 +93,7 @@ class TFDecoderLayer(nn.Module):
         self.self_attn = MultiHeadAttention(
             n_head, d_model, d_k, d_v, dropout=dropout, qkv_bias=qkv_bias)
 
-        self.enc_dec_attn = MultiHeadAttention(
+        self.enc_attn = MultiHeadAttention(
             n_head, d_model, d_k, d_v, dropout=dropout, qkv_bias=qkv_bias)
 
         self.mlp = PositionwiseFeedForward(
@@ -121,8 +120,8 @@ class TFDecoderLayer(nn.Module):
             dec_attn_out += dec_input
             dec_attn_out = self.norm1(dec_attn_out)
 
-            enc_dec_attn_out = self.enc_dec_attn(dec_attn_out, enc_output,
-                                                 enc_output, dec_enc_attn_mask)
+            enc_dec_attn_out = self.enc_attn(dec_attn_out, enc_output,
+                                             enc_output, dec_enc_attn_mask)
             enc_dec_attn_out += dec_attn_out
             enc_dec_attn_out = self.norm2(enc_dec_attn_out)
 
@@ -137,8 +136,8 @@ class TFDecoderLayer(nn.Module):
             dec_attn_out += dec_input
 
             enc_dec_attn_in = self.norm2(dec_attn_out)
-            enc_dec_attn_out = self.enc_dec_attn(enc_dec_attn_in, enc_output,
-                                                 enc_output, dec_enc_attn_mask)
+            enc_dec_attn_out = self.enc_attn(enc_dec_attn_in, enc_output,
+                                             enc_output, dec_enc_attn_mask)
             enc_dec_attn_out += dec_attn_out
 
             mlp_out = self.mlp(self.norm3(enc_dec_attn_out))
