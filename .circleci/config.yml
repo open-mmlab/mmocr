@@ -5,7 +5,7 @@ jobs:
     parameters:
       python:
         type: string
-        default: "3.7.0"
+        default: "3.7.4"
       torch:
         type: string
       torchvision:
@@ -22,9 +22,6 @@ jobs:
       - run:
           name: Configure Python
           command: |
-            pyenv install << parameters.python >>
-            pyenv global << parameters.python >>
-            python -m pip install --upgrade pip
             python -m pip install wheel
       - run:
           name: Install PyTorch
