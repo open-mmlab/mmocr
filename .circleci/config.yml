@@ -17,8 +17,8 @@ jobs:
           name: Configure Python
           command: |
             pyenv global 3.7.0
-            python -v
-            python3 -v
+            python -V
+            python3 -V
             dfasdfdafdf
             python -m pip install wheel
       - run:
