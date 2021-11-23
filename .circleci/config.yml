@@ -39,7 +39,7 @@ jobs:
       - run:
           name: Run unittests
           command: |
-            pytest tests/
+            python -m pytest tests/
 
       # - run:
       #     name: Run tests
