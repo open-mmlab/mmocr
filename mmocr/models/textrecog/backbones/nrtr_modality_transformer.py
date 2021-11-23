@@ -47,10 +47,10 @@ class NRTRModalityTransform(BaseModule):
 
         n, c, h, w = x.size()
 
-        x = x.permute(0, 3, 2, 1).view(n, w, h * c).contiguous()
+        x = x.permute(0, 3, 2, 1).contiguous().view(n, w, h * c)
 
         x = self.linear(x)
 
-        x = x.permute(0, 2, 1).view(n, -1, 1, w)
+        x = x.permute(0, 2, 1).contiguous().view(n, -1, 1, w)
 
         return x
