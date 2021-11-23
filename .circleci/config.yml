@@ -3,6 +3,8 @@ version: 2.1
 jobs:
   build_cpu:
     parameters:
+      # The python version must match available image tags in
+      # https://circleci.com/developer/images/image/cimg/python
       python:
         type: string
         default: "3.7.4"
@@ -18,7 +20,7 @@ jobs:
           name: Install Libraries
           command: |
             sudo apt-get update
-            sudo apt-get install -y git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libgl1-mesa-glx
+            sudo apt-get install -y ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libgl1-mesa-glx libjpeg-dev zlib1g-dev
       - run:
           name: Configure Python
           command: |
