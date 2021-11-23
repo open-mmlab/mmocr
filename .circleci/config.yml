@@ -11,7 +11,7 @@ jobs:
       torchvision:
         type: string
     docker:
-      - image: cimg/python<< parameters.python >>
+      - image: cimg/python:<< parameters.python >>
     steps:
       - checkout
       - run:
