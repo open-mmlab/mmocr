@@ -17,6 +17,9 @@ jobs:
           name: Configure Python
           command: |
             pyenv global 3.7.0
+            python -v
+            python3 -v
+            dfasdfdafdf
             python -m pip install wheel
       - run:
           name: Install PyTorch
