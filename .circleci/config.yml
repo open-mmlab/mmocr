@@ -22,8 +22,9 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libgl1-mesa-glx libjpeg-dev zlib1g-dev libtinfo-dev libncurses5
       - run:
-          name: Configure Python
+          name: Configure Python & pip
           command: |
+            python -m pip install --upgrade pip
             python -m pip install wheel
       - run:
           name: Install PyTorch
@@ -59,7 +60,7 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libgl1-mesa-glx
       - run:
-          name: Configure Python
+          name: Configure Python & pip
           command: |
             pyenv global 3.7.0
             python -m pip install --upgrade pip
