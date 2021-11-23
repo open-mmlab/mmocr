@@ -49,7 +49,7 @@ jobs:
       - run:
           name: Install PyTorch
           # command: python -m pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
-          command: python3 -m pip install torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+          command: python3 -m pip install torch==1.7.1+cu101 torchvision==0.8.2+cu101 -f https://download.pytorch.org/whl/torch_stable.html
           #command: python3 -m pip install torch==1.8.0+cu101 torchvision==0.9.0+cu191 -f https://download.pytorch.org/whl/torch_stable.html
       - run:
           name: Install mmocr dependencies
