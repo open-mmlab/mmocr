@@ -110,6 +110,7 @@ jobs:
 workflows:
   unit_tests:
     jobs:
+      - lint
       - build_cpu:
           name: build_cpu_th1.6
           torch: 1.6.0
