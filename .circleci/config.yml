@@ -1,6 +1,25 @@
 version: 2.1
 
 jobs:
+  lint:
+    docker:
+      - image: cimg/python:3.7.4
+    steps:
+      - checkout
+      - run:
+          name: Install pre-commit hook
+          command: |
+            python -m pip install pre-commit
+            pre-commit install
+      - run:
+          name: Linting
+          command: python -m pre-commit run --all-files
+      - run:
+          name: Check docstring coverage
+          command: |
+            pip install interrogate
+            interrogate -v --ignore-init-method --ignore-module --ignore-nested-functions --ignore-regex "__repr__" --fail-under 50 mmocr
+
   build_cpu:
     parameters:
       # The python version must match available image tags in
@@ -85,7 +104,8 @@ jobs:
       - run:
           name: Run unittests
           command: |
-            python -m pytest tests/
+            python -m pip install pytest-xdist
+            python -m pytest -n auto tests/
 
 workflows:
   unit_tests:
@@ -94,25 +114,35 @@ workflows:
           name: build_cpu_th1.6
           torch: 1.6.0
           torchvision: 0.7.0
+          requires:
+            - lint
       - build_cpu:
           name: build_cpu_th1.7
           torch: 1.7.0
           torchvision: 0.8.1
+          requires:
+            - lint
       - build_cpu:
           name: build_cpu_th1.8_py3.9
           torch: 1.8.0
           torchvision: 0.9.0
           python: "3.9.0"
+          requires:
+            - lint
       - build_cpu:
           name: build_cpu_th1.9_py3.8
           torch: 1.9.0
           torchvision: 0.10.0
           python: "3.8.0"
+          requires:
+            - lint
       - build_cpu:
           name: build_cpu_th1.9_py3.9
           torch: 1.9.0
           torchvision: 0.10.0
           python: "3.9.0"
+          requires:
+            - lint
       - build_cu101:
           requires:
             - build_cpu_th1.6
