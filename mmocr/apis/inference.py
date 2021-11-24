@@ -71,8 +71,13 @@ def disable_text_recog_aug_test(cfg, set_types=None):
     warnings.simplefilter('once')
     warning_msg = 'Remove "MultiRotateAugOCR" to support batch ' + \
         'inference since samples_per_gpu > 1.'
+    recog_dataset_types = [
+        'OCRDataset', 'OCRSegDataset', 'UniformConcatDataset'
+    ]
     for set_type in set_types:
         dataset_type = cfg.data[set_type].type
+        if dataset_type not in recog_dataset_types:
+            continue
         if dataset_type != 'UniformConcatDataset':
             raise Exception(f'Please use "UniformConcatDataset" '
                             f'instead of {dataset_type}.')

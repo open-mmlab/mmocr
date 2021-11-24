@@ -82,7 +82,4 @@ class SatrnEncoder(BaseEncoder):
             output = enc_layer(output, h, w, mask)
         output = self.layer_norm(output)
 
-        output = output.permute(0, 2, 1).contiguous()
-        output = output.view(n, self.d_model, h, w)
-
         return output

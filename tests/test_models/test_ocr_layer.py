@@ -1,10 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 
-from mmocr.models.textrecog.layers import (BasicBlock, Bottleneck,
-                                           PositionalEncoding,
-                                           TransformerDecoderLayer,
-                                           get_pad_mask, get_subsequent_mask)
+from mmocr.models.common import (PositionalEncoding, TFDecoderLayer,
+                                 get_pad_mask, get_subsequent_mask)
+from mmocr.models.textrecog.layers import BasicBlock, Bottleneck
 from mmocr.models.textrecog.layers.conv_layer import conv3x3
 
 
@@ -34,7 +33,7 @@ def test_conv_layer():
 
 def test_transformer_layer():
     # test decoder_layer
-    decoder_layer = TransformerDecoderLayer()
+    decoder_layer = TFDecoderLayer()
     in_dec = torch.rand(1, 30, 512)
     out_enc = torch.rand(1, 128, 512)
     out_dec = decoder_layer(in_dec, out_enc)

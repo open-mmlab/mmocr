@@ -4,9 +4,10 @@ import math
 import pytest
 import torch
 
-from mmocr.models.textrecog.decoders import (BaseDecoder, ParallelSARDecoder,
+from mmocr.models.textrecog.decoders import (BaseDecoder, NRTRDecoder,
+                                             ParallelSARDecoder,
                                              ParallelSARDecoderWithBS,
-                                             SequentialSARDecoder, TFDecoder)
+                                             SequentialSARDecoder)
 from mmocr.models.textrecog.decoders.sar_decoder_with_bs import DecodeNode
 
 
@@ -97,11 +98,11 @@ def test_parallel_sar_decoder_with_beam_search():
 
 
 def test_transformer_decoder():
-    decoder = TFDecoder(num_classes=37, padding_idx=36, max_seq_len=5)
+    decoder = NRTRDecoder(num_classes=37, padding_idx=36, max_seq_len=5)
     decoder.init_weights()
     decoder.train()
 
-    out_enc = torch.rand(1, 512, 1, 25)
+    out_enc = torch.rand(1, 25, 512)
     tgt_dict = {'padded_targets': torch.LongTensor([[1, 1, 1, 1, 36]])}
     img_metas = [{'valid_ratio': 1.0}]
     tgt_dict['padded_targets'] = tgt_dict['padded_targets']
