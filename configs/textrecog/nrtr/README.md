@@ -67,10 +67,19 @@ Backbone
 | :-------------------------------------------------------------: | :----------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 |                                                                 |              | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |
 | [NRTR](/configs/textrecog/nrtr/nrtr_modality_transform_academic.py) | Modality-transform |  89.7  |     87.9     | 92.4 |     | 69.0 |      73.3      | 73.2 |      [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/) \| [log](https://download.openmmlab.com/mmocr/textrecog/nrtr/)
-| [NRTR](/configs/textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py) | R31-1/16-1/8 |  93.9  |     90.0     | 93.5 |     | 74.5 |      78.5      | 86.5 |      [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/) \| [log](https://download.openmmlab.com/mmocr/textrecog/nrtr/)      |
-| [NRTR](/configs/textrecog/nrtr/nrtr_r31_1by8_1by4_academic.py)  | R31-1/8-1/4  |  94.7  |     87.5     | 93.3 |     | 75.1 |      78.9      | 87.9 | [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/) \| [log](https://download.openmmlab.com/mmocr/textrecog/nrtr/) |
+| [NRTR](/configs/textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py) | R31-1/16-1/8 |  94.7  |     87.3     | 94.3 |     | 73.5 |      78.9      | 85.1 |      [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/) \| [log](https://download.openmmlab.com/mmocr/textrecog/nrtr/)      |
+| [NRTR](/configs/textrecog/nrtr/nrtr_r31_1by8_1by4_academic.py)  | R31-1/8-1/4  |  95.2  |     90.0     | 94.0 |     | 74.1 |      79.4      | 88.2 | [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/) \| [log](https://download.openmmlab.com/mmocr/textrecog/nrtr/) |
 
 **Notes:**
 
--   `R31-1/16-1/8` means the height of feature from backbone is 1/16 of input image, where 1/8 for width.
--   `R31-1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.
+- For backbone `Modality-transform`,
+  - The output consists of 38 classes, including 26 lowercase letters, 10 digital numbers, 1 unknown token and 1 end-of-sequence token.
+  - The encoder-block number is 12.
+- For backbone `R31-1/16-1/8`:
+  - The output consists of 92 classes, including 26 lowercase letters, 26 uppercase letters, 28 symbols, 10 digital numbers, 1 unknown token and 1 end-of-sequence token.
+  - The encoder-block number is 6.
+  - `1/16-1/8` means the height of feature from backbone is 1/16 of input image, where 1/8 for width.
+- For backbone `R31-1/8-1/4`:
+  - The output consists of 92 classes, including 26 lowercase letters, 26 uppercase letters, 28 symbols, 10 digital numbers, 1 unknown token and 1 end-of-sequence token.
+  - The encoder-block number is 6.
+  - `1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.

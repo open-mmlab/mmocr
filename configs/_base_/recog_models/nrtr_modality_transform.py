@@ -4,7 +4,7 @@ label_convertor = dict(
 model = dict(
     type='NRTR',
     backbone=dict(type='NRTRModalityTransform'),
-    encoder=dict(type='NRTREncoder'),
+    encoder=dict(type='NRTREncoder', n_layers=12),
     decoder=dict(type='NRTRDecoder'),
     loss=dict(type='TFLoss'),
     label_convertor=label_convertor,
