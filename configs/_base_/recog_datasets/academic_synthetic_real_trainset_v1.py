@@ -1,5 +1,3 @@
-dataset_type = 'OCRDataset'
-
 train_prefix = 'data/mixture'
 
 train_img_prefix1 = f'{train_prefix}/icdar_2011'
@@ -21,7 +19,7 @@ train_ann_file7 = f'{train_prefix}/SynthText/shuffle_labels.txt',
 train_ann_file8 = f'{train_prefix}/Syn90k/shuffle_labels.txt'
 
 train1 = dict(
-    type=dataset_type,
+    type='OCRDataset',
     img_prefix=train_img_prefix1,
     ann_file=train_ann_file1,
     loader=dict(
@@ -52,7 +50,7 @@ train5['img_prefix'] = train_img_prefix5
 train5['ann_file'] = train_ann_file5
 
 train6 = dict(
-    type=dataset_type,
+    type='OCRDataset',
     img_prefix=train_img_prefix6,
     ann_file=train_ann_file6,
     loader=dict(

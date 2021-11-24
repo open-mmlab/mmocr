@@ -1,23 +1,21 @@
-dataset_type = 'OCRDataset'
+test_root = 'data/mixture'
 
-data_root = 'data/mixture'
+test_img_prefix1 = f'{test_root}/IIIT5K/'
+test_img_prefix2 = f'{test_root}/svt/'
+test_img_prefix3 = f'{test_root}/icdar_2013/'
+test_img_prefix4 = f'{test_root}/icdar_2015/'
+test_img_prefix5 = f'{test_root}/svtp/'
+test_img_prefix6 = f'{test_root}/ct80/'
 
-test_img_prefix1 = f'{data_root}/IIIT5K/'
-test_img_prefix2 = f'{data_root}/svt/'
-test_img_prefix3 = f'{data_root}/icdar_2013/'
-test_img_prefix4 = f'{data_root}/icdar_2015/'
-test_img_prefix5 = f'{data_root}/svtp/'
-test_img_prefix6 = f'{data_root}/ct80/'
-
-test_ann_file1 = f'{data_root}/IIIT5K/test_label.txt'
-test_ann_file2 = f'{data_root}/svt/test_label.txt'
-test_ann_file3 = f'{data_root}/icdar_2013/test_label_1015.txt'
-test_ann_file4 = f'{data_root}/icdar_2015/test_label.txt'
-test_ann_file5 = f'{data_root}/svtp/test_label.txt'
-test_ann_file6 = f'{data_root}/ct80/test_label.txt'
+test_ann_file1 = f'{test_root}/IIIT5K/test_label.txt'
+test_ann_file2 = f'{test_root}/svt/test_label.txt'
+test_ann_file3 = f'{test_root}/icdar_2013/test_label_1015.txt'
+test_ann_file4 = f'{test_root}/icdar_2015/test_label.txt'
+test_ann_file5 = f'{test_root}/svtp/test_label.txt'
+test_ann_file6 = f'{test_root}/ct80/test_label.txt'
 
 test1 = dict(
-    type=dataset_type,
+    type='OCRDataset',
     img_prefix=test_img_prefix1,
     ann_file=test_ann_file1,
     loader=dict(

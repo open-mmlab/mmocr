@@ -1,11 +1,10 @@
-dataset_type = 'OCRDataset'
+train_root = 'data/mixture/Syn90k'
 
-root = 'data/mixture/Syn90k'
-train_img_prefix = f'{root}/mnt/ramdisk/max/90kDICT32px'
-train_ann_file = f'{root}/label.lmdb'
+train_img_prefix = f'{train_root}/mnt/ramdisk/max/90kDICT32px'
+train_ann_file = f'{train_root}/label.lmdb'
 
 train = dict(
-    type=dataset_type,
+    type='OCRDataset',
     img_prefix=train_img_prefix,
     ann_file=train_ann_file,
     loader=dict(
