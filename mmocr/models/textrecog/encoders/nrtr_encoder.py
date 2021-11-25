@@ -11,7 +11,22 @@ from .base_encoder import BaseEncoder
 
 @ENCODERS.register_module()
 class NRTREncoder(BaseEncoder):
-    """Encode 2d feature map to 1d sequence."""
+    """Transformer Encoder block with self attention mechanism.
+
+    Args:
+        n_layers (int): The number of sub-encoder-layers
+            in the encoder (default=6).
+        n_head (int): The number of heads in the
+            multiheadattention models (default=8).
+        d_k (int): Total number of features in key.
+        d_v (int): Total number of features in value.
+        d_model (int): The number of expected features
+            in the decoder inputs (default=512).
+        d_inner (int): The dimension of the feedforward
+            network model (default=256).
+        dropout (float): Dropout layer on attn_output_weights.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+    """
 
     def __init__(self,
                  n_layers=6,

@@ -11,6 +11,17 @@ class TFEncoderLayer(BaseModule):
     """Transformer Encoder Layer.
 
     Args:
+        d_model (int): The number of expected features
+            in the decoder inputs (default=512).
+        d_inner (int): The dimension of the feedforward
+            network model (default=256).
+        n_head (int): The number of heads in the
+            multiheadattention models (default=8).
+        d_k (int): Total number of features in key.
+        d_v (int): Total number of features in value.
+        dropout (float): Dropout layer on attn_output_weights.
+        qkv_bias (bool): Add bias in projection layer. Default: False.
+        act_cfg (dict): Activation cfg for feedforward module.
         operation_order (tuple[str]): The execution order of operation
             in transformer. Such as ('self_attn', 'norm', 'ffn', 'norm')
             or ('norm', 'self_attn', 'norm', 'ffn').
@@ -67,6 +78,17 @@ class TFDecoderLayer(nn.Module):
     """Transformer Decoder Layer.
 
     Args:
+        d_model (int): The number of expected features
+            in the decoder inputs (default=512).
+        d_inner (int): The dimension of the feedforward
+            network model (default=256).
+        n_head (int): The number of heads in the
+            multiheadattention models (default=8).
+        d_k (int): Total number of features in key.
+        d_v (int): Total number of features in value.
+        dropout (float): Dropout layer on attn_output_weights.
+        qkv_bias (bool): Add bias in projection layer. Default: False.
+        act_cfg (dict): Activation cfg for feedforward module.
         operation_order (tuple[str]): The execution order of operation
             in transformer. Such as ('self_attn', 'norm', 'enc_dec_attn',
             'norm', 'ffn', 'norm') or ('norm', 'self_attn', 'norm',

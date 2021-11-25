@@ -11,7 +11,7 @@ class ScaledDotProductAttention(nn.Module):
 
     Args:
         temperature (float): The scale factor for softmax input.
-        attn_dropout (float): Dropout probability.
+        attn_dropout (float): Dropout layer on attn_output_weights.
     """
 
     def __init__(self, temperature, attn_dropout=0.1):
@@ -37,11 +37,13 @@ class MultiHeadAttention(nn.Module):
 
     Args:
         n_head (int): The number of heads in the
-            multi-head attention models (default=8).
-        d_model (int): The number of expected features in the
-            encoder/decoder inputs (default=512).
-        d_k (int): The dimension of key in attention block.
-        d_v (int): The dimension of value in attention block.
+            multiheadattention models (default=8).
+        d_model (int): The number of expected features
+            in the decoder inputs (default=512).
+        d_k (int): Total number of features in key.
+        d_v (int): Total number of features in value.
+        dropout (float): Dropout layer on attn_output_weights.
+        qkv_bias (bool): Add bias in projection layer. Default: False.
     """
 
     def __init__(self,
@@ -96,7 +98,16 @@ class MultiHeadAttention(nn.Module):
 
 
 class PositionwiseFeedForward(nn.Module):
-    """Two-layer feed-forward module."""
+    """Two-layer feed-forward module.
+
+    Args:
+        d_in (int): The dimension of the input for feedforward
+            network model.
+        d_hid (int): The dimension of the feedforward
+            network model.
+        dropout (float): Dropout layer on feedforward output.
+        act_cfg (dict): Activation cfg for feedforward module.
+    """
 
     def __init__(self, d_in, d_hid, dropout=0.1, act_cfg=dict(type='Relu')):
         super().__init__()
