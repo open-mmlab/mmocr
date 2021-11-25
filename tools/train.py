@@ -111,10 +111,6 @@ def main():
             cfg.data.train.pipeline[0].update(
                 file_client_args=mc['mc_file_client_args'])
 
-    # import modules from string list.
-    if cfg.get('custom_imports', None):
-        from mmcv.utils import import_modules_from_strings
-        import_modules_from_strings(**cfg['custom_imports'])
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
