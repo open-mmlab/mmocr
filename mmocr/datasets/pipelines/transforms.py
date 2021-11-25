@@ -1,10 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import inspect
 import math
+import random
 
 import cv2
 import mmcv
 import numpy as np
 import torchvision.transforms as transforms
+from mmcv.utils import build_from_cfg
 from mmdet.core import BitmapMasks, PolygonMasks
 from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines.transforms import Resize
@@ -368,6 +371,56 @@ class AffineJitter:
     def __repr__(self):
         repr_str = self.__class__.__name__
         return repr_str
+
+
+@PIPELINES.register_module()
+class TorchVision:
+    """A wrapper of torchvision trasnforms. It applies specific transform to
+    ``img`` and updates ``img_shape`` accordingly.
+
+    Warning:
+        This transform only affects the image but not its associated
+        annotations, such as word bounding boxes and polygon masks. Therefore,
+        it may only be applicable to text recognition tasks.
+
+    Args:
+        op (str): The name of any transform class in
+            :func:`torchvision.transforms`.
+        **kwargs: Arguments that will be passed to initializer of torchvision
+            transform.
+
+    :Required Keys:
+        - | ``img`` (ndarray): The input image.
+
+    :Affected Keys:
+        :Modified:
+            - | ``img`` (ndarray): The modified image.
+        :Added:
+            - | ``img_shape`` (tuple(int)): Size of the modified image.
+    """
+
+    def __init__(self, op, **kwargs):
+        assert type(op) is str
+
+        if mmcv.is_str(op):
+            obj_cls = getattr(transforms, op)
+        elif inspect.isclass(op):
+            obj_cls = op
+        else:
+            raise TypeError(
+                f'type must be a str or valid type, but got {type(type)}')
+        self.transform = obj_cls(**kwargs)
+
+    def __call__(self, results):
+        # BGR -> RGB
+        img = results['img'][..., ::-1]
+        img = Image.fromarray(img)
+        img = self.transform(img)
+        img = np.asarray(img)
+        img = img[..., ::-1]
+        results['img'] = img
+        results['img_shape'] = img.shape
+        return results
 
 
 @PIPELINES.register_module()
@@ -967,3 +1020,99 @@ class RandomCropFlip:
         h_axis = np.where(h_array == 0)[0]
         w_axis = np.where(w_array == 0)[0]
         return h_axis, w_axis
+
+
+@PIPELINES.register_module()
+class PyramidRescale:
+    """Resize the image to the base shape, downsample it with gaussian pyramid,
+    and rescale it back to original size.
+
+    Adapted from https://github.com/FangShancheng/ABINet.
+
+    Args:
+        factor (int): The decay factor from base size, or the number of
+            downsampling operations from the base layer.
+        base_shape (tuple(int)): The shape of the base layer of the pyramid.
+        randomize_factor (bool): If True, the final factor would be a random
+            integer in [0, factor].
+
+    :Required Keys:
+        - | ``img`` (ndarray): The input image.
+
+    :Affected Keys:
+        :Modified:
+            - | ``img`` (ndarray): The modified image.
+    """
+
+    def __init__(self, factor=4, base_shape=(128, 512), randomize_factor=True):
+        self.factor = factor if not randomize_factor else np.random.randint(
+            0, factor + 1)
+        self.base_shape = base_shape
+
+    def __call__(self, results):
+        if self.factor == 0:
+            return results
+        img = results['img']
+        src_h, src_w = img.shape[:2]
+        scale_img = mmcv.resize(img, (self.base_w, self.base_h))
+        for _ in range(self.factor):
+            scale_img = cv2.pyrDown(scale_img)
+        scale_img = mmcv.resize(scale_img, (src_w, src_h))
+        return scale_img
+
+
+@PIPELINES.register_module()
+class OneOf:
+    """Randomly select and apply one of the transforms, each with the equal
+    chance.
+
+    Warning:
+        Different from albumentations, this wrapper only runs the selected
+        transform, but doesn't guarantee the transform can always be applied to
+        the input if the transform comes with a probability to run.
+
+    Args:
+        transforms (list[dict]): Candidate transforms to be applied.
+    """
+
+    def __init__(self, transforms):
+        self.transforms = []
+        for t in transforms:
+            if isinstance(t, dict):
+                self.transforms.append(build_from_cfg(t, PIPELINES))
+            elif callable(t):
+                self.transforms.append(t)
+            else:
+                raise TypeError('transform must be callable or a dict')
+
+    def __call__(self, results):
+        return random.choice(self.transforms)(results)
+
+
+@PIPELINES.register_module()
+class RunWithProb:
+    """Run a transform or a sequence of transforms with probability p.
+
+    Args:
+        transforms (dict or list[dict]): Transform(s) to be applied.
+        p (float): Probability of running transform(s).
+    """
+
+    def __init__(self, transforms, p):
+        assert type(p) is float
+        if isinstance(transforms, dict):
+            transforms = [transforms]
+
+        self.transforms = []
+        for t in transforms:
+            if isinstance(t, dict):
+                self.transforms.append(build_from_cfg(t, PIPELINES))
+            elif callable(t):
+                self.transforms.append(t)
+            else:
+                raise TypeError('transform must be callable or a dict')
+        self.p = p
+
+    def __call__(self, results):
+        return results if np.random.uniform() > self.p else self.transforms(
+            results)
