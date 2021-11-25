@@ -17,40 +17,6 @@ Collections:
   README: configs/textrecog/nrtr/README.md
 
 Models:
-  - Name: nrtr_modality_transform_academic
-    In Collection: NRTR
-    Config: configs/textrecog/nrtr/nrtr_modality_transform_academic.py
-    Metadata:
-      Training Data:
-        - SynthText
-        - Syn90k
-    Results:
-      - Task: Text Recognition
-        Dataset: IIIT5K
-        Metrics:
-          word_acc: 95.0
-      - Task: Text Recognition
-        Dataset: SVT
-        Metrics:
-          word_acc: 89.2
-      - Task: Text Recognition
-        Dataset: ICDAR2013
-        Metrics:
-          word_acc: 93.4
-      - Task: Text Recognition
-        Dataset: ICDAR2015
-        Metrics:
-          word_acc: 72.5
-      - Task: Text Recognition
-        Dataset: SVTP
-        Metrics:
-          word_acc: 77.7
-      - Task: Text Recognition
-        Dataset: CT80
-        Metrics:
-          word_acc: 86.8
-    Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_modality_transform_academic_20211124-d9d3c1fe.pth
-
   - Name: nrtr_r31_1by16_1by8_academic
     In Collection: NRTR
     Config: configs/textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py
