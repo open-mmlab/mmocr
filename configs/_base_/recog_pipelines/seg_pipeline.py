@@ -26,6 +26,7 @@ train_pipeline = [
         type='OCRSegTargets',
         label_convertor=gt_label_convertor,
         box_type='char_quads'),
+    dict(type='RandomRotateTextDet', rotate_ratio=0.5, max_angle=15),
     dict(type='ColorJitter', brightness=0.4, contrast=0.4, saturation=0.4),
     dict(type='ToTensorOCR'),
     dict(type='FancyPCA'),
@@ -38,12 +39,13 @@ train_pipeline = [
     dict(
         type='Collect',
         keys=['img', 'gt_kernels'],
-        meta_keys=['filename', 'ori_shape', 'img_shape'])
+        meta_keys=['filename', 'ori_shape', 'resize_shape'])
 ]
 
 test_img_norm_cfg = dict(
     mean=[x * 255 for x in img_norm_cfg['mean']],
     std=[x * 255 for x in img_norm_cfg['std']])
+
 test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
@@ -59,36 +61,3 @@ test_pipeline = [
         keys=['img'],
         meta_keys=['filename', 'ori_shape', 'resize_shape'])
 ]
-
-prefix = 'tests/data/ocr_char_ann_toy_dataset/'
-train = dict(
-    type='OCRSegDataset',
-    img_prefix=prefix + 'imgs',
-    ann_file=prefix + 'instances_train.txt',
-    loader=dict(
-        type='HardDiskLoader',
-        repeat=100,
-        parser=dict(
-            type='LineJsonParser', keys=['file_name', 'annotations', 'text'])),
-    pipeline=train_pipeline,
-    test_mode=True)
-
-test = dict(
-    type='OCRDataset',
-    img_prefix=prefix + 'imgs',
-    ann_file=prefix + 'instances_test.txt',
-    loader=dict(
-        type='HardDiskLoader',
-        repeat=1,
-        parser=dict(
-            type='LineStrParser',
-            keys=['filename', 'text'],
-            keys_idx=[0, 1],
-            separator=' ')),
-    pipeline=test_pipeline,
-    test_mode=True)
-
-data = dict(
-    samples_per_gpu=8, workers_per_gpu=1, train=train, val=test, test=test)
-
-evaluation = dict(interval=1, metric='acc')
