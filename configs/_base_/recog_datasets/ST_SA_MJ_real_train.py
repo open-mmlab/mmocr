@@ -1,10 +1,14 @@
+# Text Recognition Training set, including:
+# Synthetic Datasets: SynthText, SynthAdd, Syn90k
+# Real Dataset: IC11, IC13, IC15, COCO-Test, IIIT5k
+
 train_prefix = 'data/mixture'
 
 train_img_prefix1 = f'{train_prefix}/icdar_2011'
 train_img_prefix2 = f'{train_prefix}/icdar_2013'
 train_img_prefix3 = f'{train_prefix}/icdar_2015'
 train_img_prefix4 = f'{train_prefix}/coco_text'
-train_img_prefix5 = f'{train_prefix}/III5K'
+train_img_prefix5 = f'{train_prefix}/IIIT5K'
 train_img_prefix6 = f'{train_prefix}/SynthText_Add'
 train_img_prefix7 = f'{train_prefix}/SynthText'
 train_img_prefix8 = f'{train_prefix}/Syn90k'
@@ -13,7 +17,7 @@ train_ann_file1 = f'{train_prefix}/icdar_2011/train_label.txt',
 train_ann_file2 = f'{train_prefix}/icdar_2013/train_label.txt',
 train_ann_file3 = f'{train_prefix}/icdar_2015/train_label.txt',
 train_ann_file4 = f'{train_prefix}/coco_text/train_label.txt',
-train_ann_file5 = f'{train_prefix}/III5K/train_label.txt',
+train_ann_file5 = f'{train_prefix}/IIIT5K/train_label.txt',
 train_ann_file6 = f'{train_prefix}/SynthText_Add/label.txt',
 train_ann_file7 = f'{train_prefix}/SynthText/shuffle_labels.txt',
 train_ann_file8 = f'{train_prefix}/Syn90k/shuffle_labels.txt'

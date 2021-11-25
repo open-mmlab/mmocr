@@ -1,9 +1,22 @@
 _base_ = [
-    '../../_base_/default_runtime.py', '../../_base_/recog_models/crnn.py',
+    '../../_base_/default_runtime.py',
     '../../_base_/recog_pipelines/crnn_pipeline.py',
-    '../../_base_/recog_datasets/toy_dataset.py',
-    '../../_base_/schedules/schedule_adadelta_fix_5e.py'
+    '../../_base_/recog_datasets/toy_data.py',
+    '../../_base_/schedules/schedule_adadelta_5e.py'
 ]
+
+label_convertor = dict(
+    type='CTCConvertor', dict_type='DICT36', with_unknown=True, lower=True)
+
+model = dict(
+    type='CRNNNet',
+    preprocessor=None,
+    backbone=dict(type='VeryDeepVgg', leaky_relu=False, input_channels=1),
+    encoder=None,
+    decoder=dict(type='CRNNDecoder', in_channels=512, rnn_flag=True),
+    loss=dict(type='CTCLoss'),
+    label_convertor=label_convertor,
+    pretrained=None)
 
 train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}

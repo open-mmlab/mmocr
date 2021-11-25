@@ -1,3 +1,6 @@
+# Text Recognition Training set, including:
+# Synthetic Datasets: Syn90k
+
 train_root = 'data/mixture/Syn90k'
 
 train_img_prefix = f'{train_root}/mnt/ramdisk/max/90kDICT32px'

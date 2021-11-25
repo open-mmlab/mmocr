@@ -1,9 +1,9 @@
 _base_ = [
     '../../_base_/default_runtime.py', '../../_base_/recog_models/crnn_tps.py',
     '../../_base_/recog_pipelines/crnn_tps_pipeline.py',
-    '../../_base_/recog_datasets/academic_synthetic_trainset_v2.py',
-    '../../_base_/recog_datasets/academic_testset.py',
-    '../../_base_/schedules/schedule_adadelta_fix_5e.py'
+    '../../_base_/recog_datasets/MJ_train.py',
+    '../../_base_/recog_datasets/academic_test.py',
+    '../../_base_/schedules/schedule_adadelta_5e.py'
 ]
 
 train_list = {{_base_.train_list}}

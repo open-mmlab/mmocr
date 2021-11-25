@@ -1,3 +1,7 @@
+# Text Recognition Testing set, including:
+# Regular Datasets: IIIT5K, SVT, IC13
+# Irregular Datasets: IC15, SVTP, CT80
+
 test_root = 'data/mixture'
 
 test_img_prefix1 = f'{test_root}/IIIT5K/'

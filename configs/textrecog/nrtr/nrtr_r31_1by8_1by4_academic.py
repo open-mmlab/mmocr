@@ -2,8 +2,8 @@ _base_ = [
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_6e.py',
     '../../_base_/recog_pipelines/nrtr_pipeline.py',
-    '../../_base_/recog_datasets/academic_synthetic_trainset_v1.py',
-    '../../_base_/recog_datasets/academic_testset.py'
+    '../../_base_/recog_datasets/ST_MJ_train.py',
+    '../../_base_/recog_datasets/academic_test.py'
 ]
 
 train_list = {{_base_.train_list}}

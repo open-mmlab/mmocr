@@ -1,3 +1,6 @@
+# Text Recognition Training set, including:
+# Synthetic Datasets: SynthText (with character level boxes)
+
 train_img_root = 'data/mixture'
 
 train_img_prefix = f'{train_img_root}/SynthText'

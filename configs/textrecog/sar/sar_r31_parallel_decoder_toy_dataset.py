@@ -2,7 +2,7 @@ _base_ = [
     '../../_base_/default_runtime.py', '../../_base_/recog_models/sar.py',
     '../../_base_/schedules/schedule_adam_step_5e.py',
     '../../_base_/recog_pipelines/sar_pipeline.py',
-    '../../_base_/recog_datasets/toy_dataset.py'
+    '../../_base_/recog_datasets/toy_data.py'
 ]
 
 train_list = {{_base_.train_list}}
