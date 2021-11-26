@@ -1,10 +1,9 @@
+import copy
+
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 
-train_cfg = None
-test_cfg = None
-
-train_pipeline = [
+train_pipeline_ctw1500 = [
     dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadTextAnnotations',
@@ -35,7 +34,8 @@ train_pipeline = [
         visualize=dict(flag=False, boundary_key='gt_kernels')),
     dict(type='Collect', keys=['img', 'gt_kernels', 'gt_mask'])
 ]
-test_pipeline = [
+
+test_pipeline_ctw1500 = [
     dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
@@ -50,48 +50,33 @@ test_pipeline = [
         ])
 ]
 
-dataset_type = 'TextDetDataset'
-img_prefix = 'tests/data/toy_dataset/imgs'
-train_anno_file = 'tests/data/toy_dataset/instances_test.txt'
-train1 = dict(
-    type=dataset_type,
-    img_prefix=img_prefix,
-    ann_file=train_anno_file,
-    loader=dict(
-        type='HardDiskLoader',
-        repeat=4,
-        parser=dict(
-            type='LineJsonParser',
-            keys=['file_name', 'height', 'width', 'annotations'])),
-    pipeline=train_pipeline,
-    test_mode=False)
+# for icdar2015
+train_pipeline_icdar2015 = copy.deepcopy(train_pipeline_ctw1500)
+for pipeline in train_pipeline_icdar2015:
+    if pipeline['type'] == 'ScaleAspectJitter':
+        pipeline['img_scale'] = [(3000, 736)]
+    if pipeline['type'] == 'PANetTargets':
+        pipeline['shrink_ratio'] = (1.0, 0.5)
+        pipeline['max_shrink'] = 20
+    if pipeline['type'] == 'RandomCropInstances':
+        pipeline['target_size'] = (736, 736)
 
-data_root = 'tests/data/toy_dataset'
-train2 = dict(
-    type='IcdarDataset',
-    ann_file=data_root + '/instances_test.json',
-    img_prefix=data_root + '/imgs',
-    pipeline=train_pipeline)
+test_pipeline_icdar2015 = copy.deepcopy(test_pipeline_ctw1500)
+for pipeline in test_pipeline_icdar2015:
+    if pipeline['type'] == 'MultiScaleFlipAug':
+        pipeline['img_scale'] = (1333, 736)
 
-test_anno_file = 'tests/data/toy_dataset/instances_test.txt'
-test = dict(
-    type=dataset_type,
-    img_prefix=img_prefix,
-    ann_file=test_anno_file,
-    loader=dict(
-        type='HardDiskLoader',
-        repeat=1,
-        parser=dict(
-            type='LineJsonParser',
-            keys=['file_name', 'height', 'width', 'annotations'])),
-    pipeline=test_pipeline,
-    test_mode=True)
+# for icdar2017
+train_pipeline_icdar2017 = copy.deepcopy(train_pipeline_ctw1500)
+for pipeline in train_pipeline_icdar2017:
+    if pipeline['type'] == 'ScaleAspectJitter':
+        pipeline['img_scale'] = [(3000, 800)]
+    if pipeline['type'] == 'PANetTargets':
+        pipeline['shrink_ratio'] = (1.0, 0.5)
+    if pipeline['type'] == 'RandomCropInstances':
+        pipeline['target_size'] = (800, 800)
 
-data = dict(
-    samples_per_gpu=2,
-    workers_per_gpu=2,
-    train=dict(type='ConcatDataset', datasets=[train1, train2]),
-    val=dict(type='ConcatDataset', datasets=[test]),
-    test=dict(type='ConcatDataset', datasets=[test]))
-
-evaluation = dict(interval=1, metric='hmean-iou')
+test_pipeline_icdar2017 = copy.deepcopy(test_pipeline_ctw1500)
+for pipeline in test_pipeline_icdar2017:
+    if pipeline['type'] == 'MultiScaleFlipAug':
+        pipeline['img_scale'] = (1333, 800)
