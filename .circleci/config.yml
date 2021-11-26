@@ -4,7 +4,6 @@ jobs:
   lint:
     docker:
       - image: cimg/python:3.7.4
-    resource_class: large
     steps:
       - checkout
       - run:
@@ -34,6 +33,7 @@ jobs:
         type: string
     docker:
       - image: cimg/python:<< parameters.python >>
+    resource_class: large
     steps:
       - checkout
       - run:
