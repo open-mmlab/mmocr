@@ -50,7 +50,7 @@ jobs:
           name: Install PyTorch
           command: |
             python -V
-            python -m pip install torch==<< parameters.torch >> torchvision==<< parameters.torchvision >> -f https://download.pytorch.org/whl/torch_stable.html
+            python -m pip install torch==<< parameters.torch >>+cpu torchvision==<< parameters.torchvision >>+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - run:
           name: Install mmocr dependencies
           command: |
