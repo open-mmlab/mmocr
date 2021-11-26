@@ -1,4 +1,5 @@
-import copy
+# avoid duplicate keys in _base_
+from copy import deepcopy as model_copy
 
 model = dict(
     type='PSENet',
@@ -26,5 +27,5 @@ model = dict(
     train_cfg=None,
     test_cfg=None)
 
-model_quad = copy.deepcopy(model)
+model_quad = model_copy(model)
 model_quad['bbox_head']['text_repr_type'] = 'quad'

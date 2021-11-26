@@ -1,4 +1,5 @@
-import copy
+# avoid duplicate keys in _base_
+from copy import deepcopy as pipeline_copy
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -51,7 +52,7 @@ test_pipeline_ctw1500 = [
 ]
 
 # for icdar2015
-train_pipeline_icdar2015 = copy.deepcopy(train_pipeline_ctw1500)
+train_pipeline_icdar2015 = pipeline_copy(train_pipeline_ctw1500)
 for pipeline in train_pipeline_icdar2015:
     if pipeline['type'] == 'ScaleAspectJitter':
         pipeline['img_scale'] = [(3000, 736)]
@@ -61,13 +62,13 @@ for pipeline in train_pipeline_icdar2015:
     if pipeline['type'] == 'RandomCropInstances':
         pipeline['target_size'] = (736, 736)
 
-test_pipeline_icdar2015 = copy.deepcopy(test_pipeline_ctw1500)
+test_pipeline_icdar2015 = pipeline_copy(test_pipeline_ctw1500)
 for pipeline in test_pipeline_icdar2015:
     if pipeline['type'] == 'MultiScaleFlipAug':
         pipeline['img_scale'] = (1333, 736)
 
 # for icdar2017
-train_pipeline_icdar2017 = copy.deepcopy(train_pipeline_ctw1500)
+train_pipeline_icdar2017 = pipeline_copy(train_pipeline_ctw1500)
 for pipeline in train_pipeline_icdar2017:
     if pipeline['type'] == 'ScaleAspectJitter':
         pipeline['img_scale'] = [(3000, 800)]
@@ -76,7 +77,7 @@ for pipeline in train_pipeline_icdar2017:
     if pipeline['type'] == 'RandomCropInstances':
         pipeline['target_size'] = (800, 800)
 
-test_pipeline_icdar2017 = copy.deepcopy(test_pipeline_ctw1500)
+test_pipeline_icdar2017 = pipeline_copy(test_pipeline_ctw1500)
 for pipeline in test_pipeline_icdar2017:
     if pipeline['type'] == 'MultiScaleFlipAug':
         pipeline['img_scale'] = (1333, 800)

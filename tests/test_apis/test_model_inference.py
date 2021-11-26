@@ -2,6 +2,7 @@
 import os
 
 import pytest
+from mmcv import Config
 from mmcv.image import imread
 
 from mmocr.apis.inference import init_detector, model_inference
@@ -11,7 +12,13 @@ from mmocr.models import build_detector  # noqa: F401
 
 def build_model(config_file):
     device = 'cpu'
-    model = init_detector(config_file, checkpoint=None, device=device)
+
+    cfg = Config.fromfile(config_file)
+    if cfg.model.get('backbone', False):
+        if cfg.model.backbone.type == 'mmdet.ResNet':
+            cfg.model.backbone.norm_cfg = dict(type='BN', requires_grad=True)
+
+    model = init_detector(cfg, checkpoint=None, device=device)
 
     if model.cfg.data.test['type'] == 'ConcatDataset':
         model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][

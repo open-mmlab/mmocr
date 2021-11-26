@@ -1,4 +1,5 @@
-import copy
+# avoid duplicate keys in _base_
+from copy import deepcopy as pipeline_copy
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -59,13 +60,13 @@ test_pipeline_icdar2015 = [
 ]
 
 # for ctw1500
-train_pipeline_ctw1500 = copy.deepcopy(train_pipeline_icdar2015)
+train_pipeline_ctw1500 = pipeline_copy(train_pipeline_icdar2015)
 for pipeline in train_pipeline_ctw1500:
     if pipeline['type'] == 'FCENetTargets':
         pipeline['level_proportion_range'] = ((0, 0.25), (0.2, 0.65), (0.55,
                                                                        1.0))
 
-test_pipeline_ctw1500 = copy.deepcopy(test_pipeline_icdar2015)
+test_pipeline_ctw1500 = pipeline_copy(test_pipeline_icdar2015)
 for pipeline in test_pipeline_ctw1500:
     if pipeline['type'] == 'MultiScaleFlipAug':
         pipeline['img_scale'] = (1080, 736)

@@ -1,4 +1,5 @@
-import copy
+# avoid duplicate keys in _base_
+from copy import deepcopy as pipeline_copy
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -49,12 +50,12 @@ img_norm_cfg_r50dcnv2 = dict(
     std=[58.395, 57.12, 57.375],
     to_rgb=True)
 
-train_pipeline_r50dcnv2 = copy.deepcopy(train_pipeline)
+train_pipeline_r50dcnv2 = pipeline_copy(train_pipeline)
 for pipeline in train_pipeline_r50dcnv2:
     if pipeline['type'] == 'Normalize':
         pipeline.update(**img_norm_cfg_r50dcnv2)
 
-test_pipeline_4068_1024 = copy.deepcopy(test_pipeline_1333_736)
+test_pipeline_4068_1024 = pipeline_copy(test_pipeline_1333_736)
 for pipeline in test_pipeline_4068_1024:
     if pipeline['type'] == 'MultiScaleFlipAug':
         pipeline['img_scale'] = (4068, 1024)

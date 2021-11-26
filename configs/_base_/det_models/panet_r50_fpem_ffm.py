@@ -1,25 +1,20 @@
 model = dict(
-    type='PSENet',
+    type='PANet',
+    pretrained='torchvision://resnet50',
     backbone=dict(
         type='mmdet.ResNet',
         depth=50,
         num_stages=4,
         out_indices=(0, 1, 2, 3),
-        frozen_stages=-1,
+        frozen_stages=1,
         norm_cfg=dict(type='BN', requires_grad=True),
-        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
         norm_eval=True,
         style='caffe'),
-    neck=dict(
-        type='FPNF',
-        in_channels=[256, 512, 1024, 2048],
-        out_channels=256,
-        fusion_type='concat'),
+    neck=dict(type='FPEM_FFM', in_channels=[256, 512, 1024, 2048]),
     bbox_head=dict(
-        type='PSEHead',
-        text_repr_type='quad',
-        in_channels=[256],
-        out_channels=7,
-        loss=dict(type='PSELoss')),
+        type='PANHead',
+        in_channels=[128, 128, 128, 128],
+        out_channels=6,
+        loss=dict(type='PANLoss', speedup_bbox_thr=32)),
     train_cfg=None,
     test_cfg=None)
