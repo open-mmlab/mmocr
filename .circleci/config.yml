@@ -4,17 +4,16 @@ jobs:
   lint:
     docker:
       - image: cimg/python:3.7.4
-    resource_class: large
     steps:
       - checkout
       - run:
           name: Install pre-commit hook
           command: |
-            python -m pip install pre-commit
+            pip install pre-commit
             pre-commit install
       - run:
           name: Linting
-          command: python -m pre-commit run --all-files
+          command: pre-commit run --all-files
       - run:
           name: Check docstring coverage
           command: |
@@ -34,6 +33,7 @@ jobs:
         type: string
     docker:
       - image: cimg/python:<< parameters.python >>
+    resource_class: large
     steps:
       - checkout
       - run:
@@ -105,8 +105,7 @@ jobs:
       - run:
           name: Run unittests
           command: |
-            python -m pip install pytest-xdist
-            python -m pytest -n auto tests/
+            python -m pytest tests/
 
 workflows:
   unit_tests:
