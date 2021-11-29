@@ -510,6 +510,8 @@ class MMOCR:
         img_meta = data['img_metas'].data
         gt_bboxes = data['gt_bboxes'].data.numpy().tolist()
         if img_tensor.dtype == torch.uint8:
+            # The img tensor is the raw input not being normalized
+            # (For SDMGR non-visual)
             img = img_tensor.cpu().numpy().transpose(1, 2, 0)
         else:
             img = tensor2imgs(
