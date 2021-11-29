@@ -118,23 +118,22 @@ class BaseTextDetTargets:
             pco = pyclipper.PyclipperOffset()
             pco.AddPath(instance, pyclipper.JT_ROUND,
                         pyclipper.ET_CLOSEDPOLYGON)
-            shrinked = np.array(pco.Execute(-distance))
+            shrunk = np.array(pco.Execute(-distance))
 
-            # check shrinked == [] or empty ndarray
-            if len(shrinked) == 0 or shrinked.size == 0:
+            # check shrunk == [] or empty ndarray
+            if len(shrunk) == 0 or shrunk.size == 0:
                 if ignore_tags is not None:
                     ignore_tags[text_ind] = True
                 continue
             try:
-                shrinked = np.array(shrinked[0]).reshape(-1, 2)
+                shrunk = np.array(shrunk[0]).reshape(-1, 2)
 
             except Exception as e:
-                print_log(f'{shrinked} with error {e}')
+                print_log(f'{shrunk} with error {e}')
                 if ignore_tags is not None:
                     ignore_tags[text_ind] = True
                 continue
-            cv2.fillPoly(text_kernel, [shrinked.astype(np.int32)],
-                         text_ind + 1)
+            cv2.fillPoly(text_kernel, [shrunk.astype(np.int32)], text_ind + 1)
         return text_kernel, ignore_tags
 
     def generate_effective_mask(self, mask_size: tuple, polygons_ignore):

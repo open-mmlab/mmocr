@@ -1,6 +1,3 @@
-API Reference
-=============
-
 mmocr.apis
 -------------
 .. automodule:: mmocr.apis

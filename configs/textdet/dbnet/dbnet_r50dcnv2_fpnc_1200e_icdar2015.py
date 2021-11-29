@@ -13,7 +13,7 @@ model = dict(
         frozen_stages=-1,
         norm_cfg=dict(type='BN', requires_grad=True),
         norm_eval=False,
-        style='caffe',
+        style='pytorch',
         dcn=dict(type='DCNv2', deform_groups=1, fallback_on_stride=False),
         init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
         stage_with_dcn=(False, True, True, True)),
@@ -29,13 +29,10 @@ model = dict(
 
 dataset_type = 'IcdarDataset'
 data_root = 'data/icdar2015/'
-# img_norm_cfg = dict(
-#    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-# from official dbnet code
 img_norm_cfg = dict(
     mean=[122.67891434, 116.66876762, 104.00698793],
-    std=[255, 255, 255],
-    to_rgb=False)
+    std=[58.395, 57.12, 57.375],
+    to_rgb=True)
 # for visualizing img, pls uncomment it.
 # img_norm_cfg = dict(mean=[0, 0, 0], std=[1, 1, 1], to_rgb=True)
 

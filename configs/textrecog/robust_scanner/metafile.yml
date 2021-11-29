@@ -11,7 +11,9 @@ Collections:
       - ResNet31OCR
       - ChannelReductionEncoder
       - RobustScannerDecoder
-  Paper: https://arxiv.org/pdf/2007.07542.pdf
+  Paper:
+    URL: https://arxiv.org/pdf/2007.07542.pdf
+    Title: 'RobustScanner: Dynamically Enhancing Positional Clues for Robust Text Recognition'
   README: configs/textrecog/robust_scanner/README.md
 
 Models:
@@ -29,27 +31,27 @@ Models:
         - SynthAdd
         - Syn90k
     Results:
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
           word_acc: 95.1
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: SVT
         Metrics:
           word_acc: 89.2
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
           word_acc: 93.1
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
           word_acc: 77.8
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: SVTP
         Metrics:
           word_acc: 80.3
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: CT80
         Metrics:
           word_acc: 90.3

@@ -12,9 +12,12 @@ class FPNOCR(BaseModule):
     """FPN-like Network for segmentation based text recognition.
 
     Args:
-        in_channels (list[int]): Number of input channels for each scale.
-        out_channels (int): Number of output channels for each scale.
+        in_channels (list[int]): Number of input channels :math:`C_i` for each
+            scale.
+        out_channels (int): Number of output channels :math:`C_{out}` for each
+            scale.
         last_stage_only (bool): If True, output last stage only.
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,
@@ -55,6 +58,18 @@ class FPNOCR(BaseModule):
         return F.interpolate(x, scale_factor=2, mode='bilinear')
 
     def forward(self, inputs):
+        """
+        Args:
+            inputs (list[Tensor]): A list of n tensors. Each tensor has the
+                shape of :math:`(N, C_i, H_i, W_i)`. It usually expects 4
+                tensors (C2-C5 features) from ResNet.
+
+        Returns:
+            tuple(Tensor): A tuple of n-1 tensors. Each has the of shape
+            :math:`(N, C_{out}, H_{n-2-i}, W_{n-2-i})`. If
+            ``last_stage_only=True`` (default), the size of the
+            tuple is 1 and only the last element will be returned.
+        """
         lateral_features = [
             l_conv(inputs[i]) for i, l_conv in enumerate(self.lateral_convs)
         ]

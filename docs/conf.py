@@ -15,6 +15,8 @@ import os
 import subprocess
 import sys
 
+import pytorch_sphinx_theme
+
 sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
@@ -36,14 +38,15 @@ release = __version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode',
-    'recommonmark',
-    'sphinx_markdown_tables',
+    'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode',
+    'sphinx_markdown_tables', 'sphinx_copybutton', 'myst_parser'
 ]
 
 autodoc_mock_imports = ['mmcv._ext']
+
+# Ignore >>> when copying code
+copybutton_prompt_text = r'>>> |\.\.\. '
+copybutton_prompt_is_regexp = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -69,7 +72,127 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+# html_theme = 'sphinx_rtd_theme'
+html_theme = 'pytorch_sphinx_theme'
+html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
+html_theme_options = {
+    'logo_url':
+    'https://mmocr.readthedocs.io/en/latest/',
+    'menu': [
+        {
+            'name':
+            'Tutorial',
+            'url':
+            'https://colab.research.google.com/github/'
+            'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'
+        },
+        {
+            'name': 'GitHub',
+            'url': 'https://github.com/open-mmlab/mmocr'
+        },
+        {
+            'name':
+            'Upstream',
+            'children': [
+                {
+                    'name': 'MMCV',
+                    'url': 'https://github.com/open-mmlab/mmcv',
+                    'description': 'Foundational library for computer vision'
+                },
+                {
+                    'name': 'MMDetection',
+                    'url': 'https://github.com/open-mmlab/mmdetection',
+                    'description': 'Object detection toolbox and benchmark'
+                },
+            ]
+        },
+        {
+            'name':
+            'Docs',
+            'children': [
+                {
+                    'name': 'MMCV',
+                    'url': 'https://mmcv.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MIM',
+                    'url': 'https://openmim.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMAction2',
+                    'url': 'https://mmaction2.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMClassification',
+                    'url':
+                    'https://mmclassification.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMDetection',
+                    'url': 'https://mmdetection.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMDetection3D',
+                    'url': 'https://mmdetection3d.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMEditing',
+                    'url': 'https://mmediting.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMGeneration',
+                    'url': 'https://mmgeneration.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMOCR',
+                    'url': 'https://mmocr.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMPose',
+                    'url': 'https://mmpose.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMSegmentation',
+                    'url': 'https://mmsegmentation.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMTracking',
+                    'url': 'https://mmtracking.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMFlow',
+                    'url': 'https://mmflow.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMFewShot',
+                    'url': 'https://mmfewshot.readthedocs.io/en/latest/',
+                },
+            ]
+        },
+        {
+            'name':
+            'OpenMMLab',
+            'children': [
+                {
+                    'name': 'Homepage',
+                    'url': 'https://openmmlab.com/'
+                },
+                {
+                    'name': 'GitHub',
+                    'url': 'https://github.com/open-mmlab/'
+                },
+                {
+                    'name': 'Twitter',
+                    'url': 'https://twitter.com/OpenMMLab'
+                },
+                {
+                    'name': 'Zhihu',
+                    'url': 'https://zhihu.com/people/openmmlab'
+                },
+            ]
+        },
+    ]
+}
 
 language = 'en'
 
@@ -80,6 +203,9 @@ master_doc = 'index'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
+
+# Enable ::: for my_st
+myst_enable_extensions = ['colon_fence']
 
 
 def builder_inited_handler(app):

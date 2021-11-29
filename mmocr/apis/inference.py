@@ -35,12 +35,12 @@ def init_detector(config, checkpoint=None, device='cuda:0', cfg_options=None):
                         f'but got {type(config)}')
     if cfg_options is not None:
         config.merge_from_dict(cfg_options)
-    config.model.pretrained = None
+    if config.model.get('pretrained'):
+        config.model.pretrained = None
     config.model.train_cfg = None
     model = build_detector(config.model, test_cfg=config.get('test_cfg'))
     if checkpoint is not None:
-        map_loc = 'cpu' if device == 'cpu' else None
-        checkpoint = load_checkpoint(model, checkpoint, map_location=map_loc)
+        checkpoint = load_checkpoint(model, checkpoint, map_location='cpu')
         if 'CLASSES' in checkpoint.get('meta', {}):
             model.CLASSES = checkpoint['meta']['CLASSES']
         else:
@@ -137,6 +137,8 @@ def model_inference(model,
                 img_prefix=None,
                 ann_info=ann,
                 bbox_fields=[])
+        if ann is not None:
+            data.update(dict(**ann))
 
         # build the data pipeline
         data = test_pipeline(data)

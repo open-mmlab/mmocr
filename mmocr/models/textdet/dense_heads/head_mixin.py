@@ -59,7 +59,9 @@ class HeadMixin:
             boundaries = self.resize_boundary(
                 boundaries,
                 1.0 / self.downsample_ratio / img_metas[0]['scale_factor'])
-        results = dict(boundary_result=boundaries)
+        results = dict(
+            boundary_result=boundaries, filename=img_metas[0]['filename'])
+
         return results
 
     def loss(self, pred_maps, **kwargs):

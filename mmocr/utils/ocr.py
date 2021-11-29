@@ -155,7 +155,7 @@ def parse_args():
             Path.cwd()))) and (args.det_config != ''
                                or args.recog_config != ''):
         warnings.warn(
-            'config_dir will be overrided by det-config or recog-config.',
+            'config_dir will be overridden by det-config or recog-config.',
             UserWarning)
     return args
 
@@ -189,19 +189,26 @@ class MMOCR:
                 'dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py',
                 'ckpt':
                 'dbnet/'
-                'dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20210325-91cef9af.pth'
+                'dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20211025-9fe3b590.pth'
             },
             'DRRG': {
-                'config': 'drrg/drrg_r50_fpn_unet_1200e_ctw1500.py',
-                'ckpt': 'drrg/drrg_r50_fpn_unet_1200e_ctw1500-1abf4f67.pth'
+                'config':
+                'drrg/drrg_r50_fpn_unet_1200e_ctw1500.py',
+                'ckpt':
+                'drrg/drrg_r50_fpn_unet_1200e_ctw1500_20211022-fb30b001.pth'
             },
             'FCE_IC15': {
-                'config': 'fcenet/fcenet_r50_fpn_1500e_icdar2015.py',
-                'ckpt': 'fcenet/fcenet_r50_fpn_1500e_icdar2015-d435c061.pth'
+                'config':
+                'fcenet/fcenet_r50_fpn_1500e_icdar2015.py',
+                'ckpt':
+                'fcenet/fcenet_r50_fpn_1500e_icdar2015_20211022-daefb6ed.pth'
             },
             'FCE_CTW_DCNv2': {
-                'config': 'fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500.py',
-                'ckpt': 'fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500-05d740bb.pth'
+                'config':
+                'fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500.py',
+                'ckpt':
+                'fcenet/' +
+                'fcenet_r50dcnv2_fpn_1500e_ctw1500_20211022-e326d7ec.pth'
             },
             'MaskRCNN_CTW': {
                 'config':
@@ -266,6 +273,12 @@ class MMOCR:
                 'config': 'sar/sar_r31_parallel_decoder_academic.py',
                 'ckpt': 'sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth'
             },
+            'SAR_CN': {
+                'config':
+                'sar/sar_r31_parallel_decoder_chinese.py',
+                'ckpt':
+                'sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth'
+            },
             'NRTR_1/16-1/8': {
                 'config': 'nrtr/nrtr_r31_1by16_1by8_academic.py',
                 'ckpt': 'nrtr/nrtr_r31_academic_20210406-954db95e.pth'
@@ -281,11 +294,11 @@ class MMOCR:
             },
             'SATRN': {
                 'config': 'satrn/satrn_academic.py',
-                'ckpt': 'satrn/satrn_academic_20210809-59c8c92d.pth'
+                'ckpt': 'satrn/satrn_academic_20211009-cb8b1580.pth'
             },
             'SATRN_sm': {
                 'config': 'satrn/satrn_small.py',
-                'ckpt': 'satrn/satrn_small_20210811-2badf6fc.pth'
+                'ckpt': 'satrn/satrn_small_20211009-2cf13355.pth'
             },
             'SEG': {
                 'config': 'seg/seg_r31_1by16_fpnocr_academic.py',
@@ -642,7 +655,7 @@ class MMOCR:
             img_list = [args.img]
 
         # Read all image(s) in advance to reduce wasted time
-        # re-reading the images for vizualisation output
+        # re-reading the images for visualization output
         args.arrays = [mmcv.imread(x) for x in img_list]
 
         # Create a list of filenames (used for output images and result files)

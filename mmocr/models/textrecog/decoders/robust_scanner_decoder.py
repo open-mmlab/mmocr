@@ -10,6 +10,34 @@ from .base_decoder import BaseDecoder
 
 @DECODERS.register_module()
 class RobustScannerDecoder(BaseDecoder):
+    """Decoder for RobustScanner.
+
+    RobustScanner: `RobustScanner: Dynamically Enhancing Positional Clues for
+    Robust Text Recognition <https://arxiv.org/abs/2007.07542>`_
+
+    Args:
+        num_classes (int): Number of output classes :math:`C`.
+        dim_input (int): Dimension :math:`D_i` of input vector ``feat``.
+        dim_model (int): Dimension :math:`D_m` of the model. Should also be the
+            same as encoder output vector ``out_enc``.
+        max_seq_len (int): Maximum output sequence length :math:`T`.
+        start_idx (int): The index of `<SOS>`.
+        mask (bool): Whether to mask input features according to
+            ``img_meta['valid_ratio']``.
+        padding_idx (int): The index of `<PAD>`.
+        encode_value (bool): Whether to use the output of encoder ``out_enc``
+            as `value` of attention layer. If False, the original feature
+            ``feat`` will be used.
+        hybrid_decoder (dict): Configuration dict for hybrid decoder.
+        position_decoder (dict): Configuration dict for position decoder.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+
+    Warning:
+        This decoder will not predict the final class which is assumed to be
+        `<PAD>`. Therefore, its output size is always :math:`C - 1`. `<PAD>`
+        is also ignored by loss as specified in
+        :obj:`mmocr.models.textrecog.recognizer.EncodeDecodeRecognizer`.
+    """
 
     def __init__(self,
                  num_classes=None,
@@ -65,6 +93,20 @@ class RobustScannerDecoder(BaseDecoder):
                                     pred_num_classes)
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
+        """
+        Args:
+            feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.
+            out_enc (Tensor): Encoder output of shape
+                :math:`(N, D_m, H, W)`.
+            targets_dict (dict): A dict with the key ``padded_targets``, a
+                tensor of shape :math:`(N, T)`. Each element is the index of a
+                character.
+            img_metas (dict): A dict that contains meta information of input
+                images. Preferably with the key ``valid_ratio``.
+
+        Returns:
+            Tensor: A raw logit tensor of shape :math:`(N, T, C-1)`.
+        """
         hybrid_glimpse = self.hybrid_decoder.forward_train(
             feat, out_enc, targets_dict, img_metas)
         position_glimpse = self.position_decoder.forward_train(
@@ -77,6 +119,18 @@ class RobustScannerDecoder(BaseDecoder):
         return out
 
     def forward_test(self, feat, out_enc, img_metas):
+        """
+        Args:
+            feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.
+            out_enc (Tensor): Encoder output of shape
+                :math:`(N, D_m, H, W)`.
+            img_metas (dict): A dict that contains meta information of input
+                images. Preferably with the key ``valid_ratio``.
+
+        Returns:
+            Tensor: The output logit sequence tensor of shape
+            :math:`(N, T, C-1)`.
+        """
         seq_len = self.max_seq_len
         batch_size = feat.size(0)
 

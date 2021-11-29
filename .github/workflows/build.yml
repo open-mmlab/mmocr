@@ -28,14 +28,12 @@ jobs:
           interrogate -v --ignore-init-method --ignore-module --ignore-nested-functions --ignore-regex "__repr__" --fail-under 50 mmocr
 
   build_cpu:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
         python-version: [3.7]
-        torch: [1.5.0, 1.6.0, 1.7.0, 1.8.0, 1.9.0]
+        torch: [1.6.0, 1.7.0, 1.8.0, 1.9.0]
         include:
-          - torch: 1.5.0
-            torchvision: 0.6.0
           - torch: 1.6.0
             torchvision: 0.7.0
           - torch: 1.7.0
@@ -44,6 +42,15 @@ jobs:
             torchvision: 0.9.0
           - torch: 1.9.0
             torchvision: 0.10.0
+          - torch: 1.8.0
+            torchvision: 0.9.0
+            python-version: 3.9
+          - torch: 1.9.0
+            torchvision: 0.10.0
+            python-version: 3.8
+          - torch: 1.9.0
+            torchvision: 0.10.0
+            python-version: 3.9
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -73,19 +80,15 @@ jobs:
 
   build_cu101:
     runs-on: ubuntu-18.04
-
-    env:
-      CUDA: 10.1.105-1
-      CUDA_SHORT: 10.1
-      UBUNTU_VERSION: ubuntu1804
+    container:
+      image: pytorch/pytorch:1.6.0-cuda10.1-cudnn7-devel
+      env:
+        LANG: C.UTF-8
     strategy:
       matrix:
         python-version: [3.7]
-        torch: [1.5.0+cu101, 1.6.0+cu101, 1.7.0+cu101, 1.8.0+cu101]
+        torch: [1.6.0+cu101, 1.7.0+cu101, 1.8.0+cu101]
         include:
-          - torch: 1.5.0+cu101
-            torch_version: 1.5.0
-            torchvision: 0.6.0+cu101
           - torch: 1.6.0+cu101
             torch_version: 1.6.0
             torchvision: 0.7.0+cu101
@@ -103,51 +106,53 @@ jobs:
             torch_version: 1.8.0
             torchvision: 0.9.0+cu101
             python-version: 3.8
+          - torch: 1.8.0+cu101
+            torch_version: 1.8.0
+            torchvision: 0.9.0+cu101
+            python-version: 3.9
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Upgrade pip
-        run: pip install pip --upgrade
-      - name: Install CUDA
+      # Add ppa source repo for python3.9.
+      - name: Add python3.9 source
         run: |
-          export INSTALLER=cuda-repo-${UBUNTU_VERSION}_${CUDA}_amd64.deb
-          wget http://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/${INSTALLER}
-          sudo dpkg -i ${INSTALLER}
-          wget https://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/7fa2af80.pub
-          sudo apt-key add 7fa2af80.pub
-          sudo apt update -qq
-          sudo apt install -y cuda-${CUDA_SHORT/./-} cuda-cufft-dev-${CUDA_SHORT/./-}
-          sudo apt clean
-          export CUDA_HOME=/usr/local/cuda-${CUDA_SHORT}
-          export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${CUDA_HOME}/include:${LD_LIBRARY_PATH}
-          export PATH=${CUDA_HOME}/bin:${PATH}
-          sudo apt-get install -y ninja-build
+          apt-get update && apt-get install -y software-properties-common
+          add-apt-repository -y ppa:deadsnakes/ppa
+        if: ${{matrix.python-version == '3.9'}}
+      # Install python-dev for some packages which require libpython3.Xm.
+      # Github's setup-python cannot install python3.9-dev, so we have to use apt install.
+      # Set DEBIAN_FRONTEND=noninteractive to avoid some interactions.
+      - name: Upgrade pip
+        run: python -m pip install pip --upgrade
+      - name: Install Python-dev
+        run: apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends python${{matrix.python-version}}-dev
+      - name: Install system dependencies
+        run: |
+          apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6
+          apt-get clean
+          apt-get install -y curl
       - name: Install Pillow
-        run: pip install Pillow==6.2.2
+        run: python -m pip install Pillow==6.2.2
         if: ${{matrix.torchvision < 0.5}}
-      - name: Install TurboJpeg lib
-        run: sudo apt-get install -y libturbojpeg
-      - name: Install soundfile lib
-        run: sudo apt-get install -y libsndfile1
       - name: Install librosa and soundfile
-        run: pip install librosa soundfile
+        run: python -m pip install librosa soundfile
       - name: Install lmdb
-        run: pip install lmdb
+        run: python -m pip install lmdb
       - name: Install PyTorch
-        run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
+        run: python -m pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmocr dependencies
         run: |
-          pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch${{matrix.torch_version}}/index.html
-          pip install mmdet
-          pip install -r requirements.txt
+          python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch${{matrix.torch_version}}/index.html
+          python -m pip install mmdet
+          python -m pip install -r requirements.txt
       - name: Build and install
         run: |
           rm -rf .eggs
           python setup.py check -m -s
-          TORCH_CUDA_ARCH_LIST=7.0 pip install -e .
+          TORCH_CUDA_ARCH_LIST=7.0 python -m pip install -e .
       - name: Run unittests and generate coverage report
         run: |
           coverage run --branch --source mmocr -m pytest tests/
@@ -155,7 +160,7 @@ jobs:
           coverage report -m
       # Only upload coverage report for python3.7 && pytorch1.5
       - name: Upload coverage to Codecov
-        if: ${{matrix.torch == '1.5.0+cu101' && matrix.python-version == '3.7'}}
+        if: ${{matrix.torch == '1.6.0+cu101' && matrix.python-version == '3.7'}}
         uses: codecov/codecov-action@v1.0.14
         with:
           file: ./coverage.xml
@@ -166,10 +171,8 @@ jobs:
 
   build_cu102:
     runs-on: ubuntu-18.04
-    env:
-      CUDA: 10.2.89-1
-      CUDA_SHORT: 10.2
-      UBUNTU_VERSION: ubuntu1804
+    container:
+      image: pytorch/pytorch:1.6.0-cuda10.1-cudnn7-devel
     strategy:
       matrix:
         python-version: [3.7]
@@ -178,6 +181,14 @@ jobs:
           - torch: 1.9.0+cu102
             torch_version: 1.9.0
             torchvision: 0.10.0+cu102
+          - torch: 1.9.0+cu102
+            torch_version: 1.9.0
+            torchvision: 0.10.0+cu102
+            python-version: 3.8
+          - torch: 1.9.0+cu102
+            torch_version: 1.9.0
+            torchvision: 0.10.0+cu102
+            python-version: 3.9
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -185,44 +196,39 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
-        run: pip install pip --upgrade
-      - name: Install CUDA
+        run: python -m pip install pip --upgrade
+      - name: Install Python-dev
+        run: apt-get update && apt-get install -y python${{matrix.python-version}}-dev
+        if: ${{matrix.python-version != 3.9}}
+      - name: Install system dependencies
         run: |
-          export INSTALLER=cuda-repo-${UBUNTU_VERSION}_${CUDA}_amd64.deb
-          wget http://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/${INSTALLER}
-          sudo dpkg -i ${INSTALLER}
-          wget https://developer.download.nvidia.com/compute/cuda/repos/${UBUNTU_VERSION}/x86_64/7fa2af80.pub
-          sudo apt-key add 7fa2af80.pub
-          sudo apt update -qq
-          sudo apt install -y cuda-${CUDA_SHORT/./-} cuda-cufft-dev-${CUDA_SHORT/./-}
-          sudo apt clean
-          export CUDA_HOME=/usr/local/cuda-${CUDA_SHORT}
-          export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${CUDA_HOME}/include:${LD_LIBRARY_PATH}
-          export PATH=${CUDA_HOME}/bin:${PATH}
-          sudo apt-get install -y ninja-build
+          apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6
+          apt-get clean
+          rm -rf /var/lib/apt/lists/*
+          apt-get install -y ninja-build
       - name: Install Pillow
-        run: pip install Pillow==6.2.2
+        run: python -m pip install Pillow==6.2.2
         if: ${{matrix.torchvision < 0.5}}
-      - name: Install TurboJpeg lib
-        run: sudo apt-get install -y libturbojpeg
+      # - name: Install TurboJpeg lib
+      #   run: apt-get install -y libturbojpeg
       - name: Install soundfile lib
-        run: sudo apt-get install -y libsndfile1
+        run: apt-get install -y libsndfile1
       - name: Install librosa and soundfile
-        run: pip install librosa soundfile
+        run: python -m pip install librosa soundfile
       - name: Install lmdb
-        run: pip install lmdb
+        run: python -m pip install lmdb
       - name: Install PyTorch
-        run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
+        run: python -m pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install mmocr dependencies
         run: |
-          pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/torch${{matrix.torch_version}}/index.html
-          pip install mmdet
-          pip install -r requirements.txt
+          python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/torch${{matrix.torch_version}}/index.html
+          python -m pip install mmdet
+          python -m pip install -r requirements.txt
       - name: Build and install
         run: |
           rm -rf .eggs
           python setup.py check -m -s
-          TORCH_CUDA_ARCH_LIST=7.0 pip install -e .
+          TORCH_CUDA_ARCH_LIST=7.0 python -m pip install -e .
       - name: Run unittests and generate coverage report
         run: |
           coverage run --branch --source mmocr -m pytest tests/

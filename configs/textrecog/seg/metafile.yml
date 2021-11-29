@@ -20,19 +20,19 @@ Models:
     Metadata:
       Training Data: SynthText
     Results:
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
           word_acc: 90.9
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: SVT
         Metrics:
           word_acc: 81.8
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
           word_acc: 90.7
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: CT80
         Metrics:
           word_acc: 80.9

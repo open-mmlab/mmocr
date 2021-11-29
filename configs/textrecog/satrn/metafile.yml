@@ -1,0 +1,86 @@
+Collections:
+- Name: SATRN
+  Metadata:
+    Training Data: OCRDataset
+    Training Techniques:
+      - Adam
+    Training Resources: 8x Tesla V100
+    Epochs: 6
+    Batch Size: 512
+    Architecture:
+      - ShallowCNN
+      - SatrnEncoder
+      - TFDecoder
+  Paper:
+    URL: https://arxiv.org/pdf/1910.04396.pdf
+    Title: 'On Recognizing Texts of Arbitrary Shapes with 2D Self-Attention'
+  README: configs/textrecog/satrn/README.md
+
+Models:
+  - Name: satrn_academic
+    In Collection: SATRN
+    Config: configs/textrecog/satrn/satrn_academic.py
+    Metadata:
+      Training Data:
+        - SynthText
+        - Syn90k
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 96.1
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 93.5
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 95.7
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 84.1
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 88.5
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 90.3
+    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_academic_20211009-cb8b1580.pth
+
+  - Name: satrn_small
+    In Collection: SATRN
+    Config: configs/textrecog/satrn/satrn_small.py
+    Metadata:
+      Training Data:
+        - SynthText
+        - Syn90k
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 94.7
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 91.3
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 95.4
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 81.9
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 85.9
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 86.5
+    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_small_20211009-2cf13355.pth

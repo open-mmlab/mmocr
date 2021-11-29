@@ -22,7 +22,13 @@ test_pipeline = [
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size_divisor=32),
     dict(type='KIEFormatBundle'),
-    dict(type='Collect', keys=['img', 'relations', 'texts', 'gt_bboxes'])
+    dict(
+        type='Collect',
+        keys=['img', 'relations', 'texts', 'gt_bboxes'],
+        meta_keys=[
+            'img_norm_cfg', 'img_shape', 'ori_filename', 'filename',
+            'ori_texts'
+        ])
 ]
 
 dataset_type = 'KIEDataset'
