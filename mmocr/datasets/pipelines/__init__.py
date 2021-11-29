@@ -12,10 +12,11 @@ from .ocr_transforms import (FancyPCA, NormalizeOCR, OnlineCropOCR,
 from .test_time_aug import MultiRotateAugOCR
 from .textdet_targets import (DBNetTargets, FCENetTargets, PANetTargets,
                               TextSnakeTargets)
-from .transforms import (ColorJitter, RandomCropFlip, RandomCropInstances,
-                         RandomCropPolyInstances, RandomRotatePolyInstances,
-                         RandomRotateTextDet, RandomScaling, ScaleAspectJitter,
-                         SquareResizePad)
+from .transform_wrappers import OneOf, RunWithProb, TorchVision
+from .transforms import (ColorJitter, PyramidRescale, RandomCropFlip,
+                         RandomCropInstances, RandomCropPolyInstances,
+                         RandomRotatePolyInstances, RandomRotateTextDet,
+                         RandomScaling, ScaleAspectJitter, SquareResizePad)
 
 __all__ = [
     'LoadTextAnnotations', 'NormalizeOCR', 'OnlineCropOCR', 'ResizeOCR',
@@ -27,5 +28,5 @@ __all__ = [
     'PilToOpencv', 'KIEFormatBundle', 'SquareResizePad', 'TextSnakeTargets',
     'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets',
     'RandomScaling', 'RandomCropFlip', 'NerTransform', 'ToTensorNER',
-    'ResizeNoImg'
+    'ResizeNoImg', 'PyramidRescale', 'OneOf', 'TorchVision', 'RunWithProb'
 ]
