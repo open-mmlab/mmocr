@@ -6,6 +6,8 @@ _base_ = [
     '../../_base_/det_pipelines/panet_pipeline.py'
 ]
 
+model = {{_base_.model_poly}}
+
 train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}
 

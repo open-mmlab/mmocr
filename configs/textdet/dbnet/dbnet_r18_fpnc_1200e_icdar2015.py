@@ -9,7 +9,7 @@ _base_ = [
 train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}
 
-train_pipeline = {{_base_.train_pipeline}}
+train_pipeline_r18 = {{_base_.train_pipeline_r18}}
 test_pipeline_1333_736 = {{_base_.test_pipeline_1333_736}}
 
 data = dict(
@@ -20,7 +20,7 @@ data = dict(
     train=dict(
         type='UniformConcatDataset',
         datasets=train_list,
-        pipeline=train_pipeline),
+        pipeline=train_pipeline_r18),
     val=dict(
         type='UniformConcatDataset',
         datasets=test_list,

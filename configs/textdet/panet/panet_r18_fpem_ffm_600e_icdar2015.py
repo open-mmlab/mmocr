@@ -6,13 +6,13 @@ _base_ = [
     '../../_base_/det_pipelines/panet_pipeline.py'
 ]
 
+model = {{_base_.model_quad}}
+
 train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}
 
 train_pipeline_icdar2015 = {{_base_.train_pipeline_icdar2015}}
 test_pipeline_icdar2015 = {{_base_.test_pipeline_icdar2015}}
-
-model = {{_base_.model_quad}}
 
 data = dict(
     samples_per_gpu=8,
