@@ -516,11 +516,8 @@ class MMOCR:
         else:
             img = tensor2imgs(
                 img_tensor.unsqueeze(0), **img_meta.get('img_norm_cfg', {}))[0]
-        if 'img_shape' in img_meta:
-            h, w, _ = img_meta['img_shape']
-            img_show = img[:h, :w, :]
-        else:
-            img_show = img
+        h, w, _ = img_meta.get('img_shape', img.shape)
+        img_show = img[:h, :w, :]
         model.show_result(
             img_show, result, gt_bboxes, show=show, out_file=out_file)
 
