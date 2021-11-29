@@ -599,11 +599,10 @@ class MMOCR:
                         min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y
                     ]
                 ann_info = kie_dataset._parse_anno_info(annotations)
-                if 'ori_boxes' not in ann_info:
-                    ann_info['ori_bboxes'] = ann_info['bboxes']
-                if 'gt_bboxes' not in ann_info:
-                    ann_info['gt_bboxes'] = ann_info['bboxes']
-                    # img_meta
+                ann_info['ori_bboxes'] = ann_info.get('ori_bboxes',
+                                                      ann_info['bboxes'])
+                ann_info['gt_bboxes'] = ann_info.get('gt_bboxes',
+                                                     ann_info['bboxes'])
                 kie_result, data = model_inference(
                     kie_model,
                     arr,
