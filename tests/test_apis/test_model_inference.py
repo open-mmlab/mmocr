@@ -102,3 +102,17 @@ def test_model_batch_inference_recog(cfg_file):
     results = model_inference(model, [img, img], batch_mode=True)
 
     assert len(results) == 2
+
+
+@pytest.mark.parametrize(
+    'cfg_file',
+    ['../configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2017.py'])
+def test_model_batch_inference_empty_detection(cfg_file):
+    tmp_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    config_file = os.path.join(tmp_dir, cfg_file)
+    model = build_model(config_file)
+
+    empty_detection = []
+    results = model_inference(model, empty_detection, batch_mode=True)
+
+    assert len(results) == 0
