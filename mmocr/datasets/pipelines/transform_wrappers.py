@@ -4,7 +4,7 @@ import random
 
 import mmcv
 import numpy as np
-import torchvision.transforms as transforms
+import torchvision.transforms as torchvision_transforms
 from mmcv.utils import build_from_cfg
 from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines import Compose
@@ -12,7 +12,7 @@ from PIL import Image
 
 
 @PIPELINES.register_module()
-class OneOf:
+class OneOfWrapper:
     """Randomly select and apply one of the transforms, each with the equal
     chance.
 
@@ -27,7 +27,7 @@ class OneOf:
 
     def __init__(self, transforms):
         assert isinstance(transforms, list) or isinstance(transforms, tuple)
-        assert len(transforms) > 0
+        assert len(transforms) > 0, 'Need at least one transform.'
         self.transforms = []
         for t in transforms:
             if isinstance(t, dict):
@@ -47,7 +47,7 @@ class OneOf:
 
 
 @PIPELINES.register_module()
-class RunWithProb:
+class RandomWrapper:
     """Run a transform or a sequence of transforms with probability p.
 
     Args:
@@ -72,7 +72,7 @@ class RunWithProb:
 
 
 @PIPELINES.register_module()
-class TorchVision:
+class TorchVisionWrapper:
     """A wrapper of torchvision trasnforms. It applies specific transform to
     ``img`` and updates ``img_shape`` accordingly.
 
@@ -101,7 +101,7 @@ class TorchVision:
         assert type(op) is str
 
         if mmcv.is_str(op):
-            obj_cls = getattr(transforms, op)
+            obj_cls = getattr(torchvision_transforms, op)
         elif inspect.isclass(op):
             obj_cls = op
         else:

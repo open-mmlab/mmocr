@@ -351,7 +351,23 @@ def test_pyramid_rescale():
     img = np.random.randint(0, 256, size=(128, 100, 3), dtype=np.uint8)
     x = {'img': copy.deepcopy(img)}
     f = transforms.PyramidRescale()
-    with pytest.raises(AssertionError):
-        f({})
     results = f(x)
     assert results['img'].shape == (128, 100, 3)
+
+    # Test invalid inputs
+    with pytest.raises(AssertionError):
+        transforms.PyramidRescale(base_shape=(128))
+    with pytest.raises(AssertionError):
+        transforms.PyramidRescale(base_shape=128)
+    with pytest.raises(AssertionError):
+        transforms.PyramidRescale(factor=[])
+    with pytest.raises(AssertionError):
+        transforms.PyramidRescale(randomize_factor=[])
+    with pytest.raises(AssertionError):
+        f({})
+
+    # Test factor = 0
+    f_derandomized = transforms.PyramidRescale(
+        factor=0, randomize_factor=False)
+    results = f_derandomized({'img': copy.deepcopy(img)})
+    assert np.all(results['img'] == img)

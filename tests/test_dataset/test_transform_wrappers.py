@@ -5,7 +5,8 @@ import unittest.mock as mock
 import numpy as np
 import pytest
 
-from mmocr.datasets.pipelines import OneOf, RunWithProb, TorchVision
+from mmocr.datasets.pipelines import (OneOfWrapper, RandomWrapper,
+                                      TorchVisionWrapper)
 from mmocr.datasets.pipelines.transforms import ColorJitter
 
 
@@ -13,10 +14,10 @@ def test_torchvision_wrapper():
     x = {'img': np.ones((128, 100, 3), dtype=np.uint8)}
     # object not found error
     with pytest.raises(Exception):
-        TorchVision(op='NonExist')
+        TorchVisionWrapper(op='NonExist')
     with pytest.raises(TypeError):
-        TorchVision()
-    f = TorchVision('Grayscale')
+        TorchVisionWrapper()
+    f = TorchVisionWrapper('Grayscale')
     with pytest.raises(AssertionError):
         f({})
     results = f(x)
@@ -26,10 +27,10 @@ def test_torchvision_wrapper():
 
 @mock.patch('random.choice')
 def test_oneof(rand_choice):
-    color_jitter = dict(type='TorchVision', op='ColorJitter')
-    gray_scale = dict(type='TorchVision', op='Grayscale')
+    color_jitter = dict(type='TorchVisionWrapper', op='ColorJitter')
+    gray_scale = dict(type='TorchVisionWrapper', op='Grayscale')
     x = {'img': np.random.randint(0, 256, size=(128, 100, 3), dtype=np.uint8)}
-    f = OneOf([color_jitter, gray_scale])
+    f = OneOfWrapper([color_jitter, gray_scale])
     # Use color_jitter at the first call
     rand_choice.side_effect = lambda x: x[0]
     results = f(x)
@@ -40,24 +41,24 @@ def test_oneof(rand_choice):
     assert results['img'].shape == (128, 100)
 
     # Passing object
-    f = OneOf([ColorJitter(), gray_scale])
+    f = OneOfWrapper([ColorJitter(), gray_scale])
     # Use color_jitter at the first call
     results = f(x)
     assert results['img'].shape == (128, 100)
 
     # Test invalid inputs
     with pytest.raises(AssertionError):
-        f = OneOf(None)
+        f = OneOfWrapper(None)
     with pytest.raises(AssertionError):
-        f = OneOf([])
+        f = OneOfWrapper([])
     with pytest.raises(AssertionError):
-        f = OneOf({})
+        f = OneOfWrapper({})
 
 
 @mock.patch('numpy.random.uniform')
 def test_runwithprob(np_random_uniform):
     np_random_uniform.side_effect = [0.1, 0.9]
-    f = RunWithProb([dict(type='TorchVision', op='Grayscale')], 0.5)
+    f = RandomWrapper([dict(type='TorchVisionWrapper', op='Grayscale')], 0.5)
     img = np.random.randint(0, 256, size=(128, 100, 3), dtype=np.uint8)
     results = f({'img': copy.deepcopy(img)})
     assert results['img'].shape == (128, 100)

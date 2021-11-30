@@ -992,6 +992,10 @@ class PyramidRescale:
     """
 
     def __init__(self, factor=4, base_shape=(128, 512), randomize_factor=True):
+        assert isinstance(factor, int)
+        assert isinstance(base_shape, list) or isinstance(base_shape, tuple)
+        assert len(base_shape) == 2
+        assert isinstance(randomize_factor, bool)
         self.factor = factor if not randomize_factor else np.random.randint(
             0, factor + 1)
         self.base_w, self.base_h = base_shape
