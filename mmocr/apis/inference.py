@@ -88,8 +88,8 @@ def disable_text_recog_aug_test(cfg, set_types=None):
                 cfg.data[set_type].pipeline = [
                     uniform_pipeline[0], *uniform_pipeline[1].transforms
                 ]
-        else:
-            for dataset in cfg.data[set_type].datasets:
+        for dataset in cfg.data[set_type].datasets:
+            if dataset.pipeline is not None:
                 if dataset.pipeline[1].type == 'MultiRotateAugOCR':
                     warnings.warn(warning_msg)
                     dataset.pipeline = [

@@ -2,7 +2,8 @@
 import torch
 
 from mmocr.models.common import (PositionalEncoding, TFDecoderLayer,
-                                 get_pad_mask, get_subsequent_mask)
+                                 TFEncoderLayer, get_pad_mask,
+                                 get_subsequent_mask)
 from mmocr.models.textrecog.layers import BasicBlock, Bottleneck
 from mmocr.models.textrecog.layers.conv_layer import conv3x3
 
@@ -39,6 +40,12 @@ def test_transformer_layer():
     out_dec = decoder_layer(in_dec, out_enc)
     assert out_dec.shape == torch.Size([1, 30, 512])
 
+    decoder_layer = TFDecoderLayer(
+        operation_order=('self_attn', 'norm', 'enc_dec_attn', 'norm', 'ffn',
+                         'norm'))
+    out_dec = decoder_layer(in_dec, out_enc)
+    assert out_dec.shape == torch.Size([1, 30, 512])
+
     # test positional_encoding
     pos_encoder = PositionalEncoding()
     x = torch.rand(1, 30, 512)
@@ -54,3 +61,14 @@ def test_transformer_layer():
     # test get_subsequent_mask
     out_mask = get_subsequent_mask(seq)
     assert out_mask.shape == torch.Size([1, 30, 30])
+
+    # test encoder_layer
+    encoder_layer = TFEncoderLayer()
+    in_enc = torch.rand(1, 20, 512)
+    out_enc = encoder_layer(in_enc)
+    assert out_dec.shape == torch.Size([1, 30, 512])
+
+    encoder_layer = TFEncoderLayer(
+        operation_order=('self_attn', 'norm', 'ffn', 'norm'))
+    out_enc = encoder_layer(in_enc)
+    assert out_dec.shape == torch.Size([1, 30, 512])

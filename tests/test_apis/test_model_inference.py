@@ -1,10 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
 import os
 
 import pytest
+from mmcv import Config
 from mmcv.image import imread
 
-from mmocr.apis.inference import init_detector, model_inference
+from mmocr.apis.inference import (disable_text_recog_aug_test, init_detector,
+                                  model_inference)
 from mmocr.datasets import build_dataset  # noqa: F401
 from mmocr.models import build_detector  # noqa: F401
 
@@ -119,3 +122,23 @@ def test_model_batch_inference_empty_detection(cfg_file):
             match='empty imgs provided, please check and try again'):
 
         model_inference(model, empty_detection, batch_mode=True)
+
+
+@pytest.mark.parametrize('cfg_file', [
+    '../configs/textrecog/sar/sar_r31_parallel_decoder_academic.py',
+])
+def test_disable_text_recog_aug_test(cfg_file):
+    tmp_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    config_file = os.path.join(tmp_dir, cfg_file)
+
+    cfg = Config.fromfile(config_file)
+    cfg1 = copy.deepcopy(cfg)
+    cfg1.data.test = cfg1.data.test.datasets[0]
+    with pytest.raises(
+            Exception,
+            match='Please use "UniformConcatDataset" instead of OCRDataset.'):
+        disable_text_recog_aug_test(cfg1, set_types=['test'])
+
+    cfg2 = copy.deepcopy(cfg)
+    cfg2.data.test.pipeline = None
+    disable_text_recog_aug_test(cfg2, set_types=['test'])
