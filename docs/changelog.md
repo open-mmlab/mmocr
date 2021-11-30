@@ -83,6 +83,16 @@ For detailed config naming convention, see our [docs]().
 ### Refactor
 * Refactor textrecog config structure by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/617
 
+## New Contributors
+* @alexander-soare made their first contribution in https://github.com/open-mmlab/mmocr/pull/469
+* @A465539338 made their first contribution in https://github.com/open-mmlab/mmocr/pull/364
+* @fatfishZhao made their first contribution in https://github.com/open-mmlab/mmocr/pull/506
+* @baudm made their first contribution in https://github.com/open-mmlab/mmocr/pull/497
+* @ShoupingShan made their first contribution in https://github.com/open-mmlab/mmocr/pull/581
+* @apiaccess21 made their first contribution in https://github.com/open-mmlab/mmocr/pull/593
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v0.3.0...v0.4.0
+
 ## v0.3.0 (25/8/2021)
 
 ### Highlights
