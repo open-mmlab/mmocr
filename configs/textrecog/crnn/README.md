@@ -23,7 +23,7 @@ Image-based sequence recognition has been a long-standing research topic in comp
 }
 ```
 
-## Results and Models
+## Dataset
 
 ### Train Dataset
 
