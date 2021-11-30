@@ -71,7 +71,7 @@ class NRTRDecoder(BaseDecoder):
 
         self.layer_stack = ModuleList([
             TFDecoderLayer(
-                d_model, d_inner, n_head, d_k, d_v, dropout=dropout)
+                d_model, d_inner, n_head, d_k, d_v, dropout=dropout, **kwargs)
             for _ in range(n_layers)
         ])
         self.layer_norm = nn.LayerNorm(d_model, eps=1e-6)

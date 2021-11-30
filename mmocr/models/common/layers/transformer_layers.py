@@ -36,7 +36,7 @@ class TFEncoderLayer(BaseModule):
                  d_v=64,
                  dropout=0.1,
                  qkv_bias=False,
-                 act_cfg=dict(type='GELU'),
+                 act_cfg=dict(type='mmcv.GELU'),
                  operation_order=None):
         super().__init__()
         self.attn = MultiHeadAttention(
@@ -104,7 +104,7 @@ class TFDecoderLayer(nn.Module):
                  d_v=64,
                  dropout=0.1,
                  qkv_bias=False,
-                 act_cfg=dict(type='GELU'),
+                 act_cfg=dict(type='mmcv.GELU'),
                  operation_order=None):
         super().__init__()
 

@@ -2,7 +2,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from mmcv.cnn import build_activation_layer
+
+from mmocr.models.builder import build_activation_layer
 
 
 class ScaledDotProductAttention(nn.Module):
