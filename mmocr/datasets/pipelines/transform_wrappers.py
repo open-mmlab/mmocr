@@ -22,7 +22,7 @@ class OneOf:
         the input if the transform comes with a probability to run.
 
     Args:
-        transforms (list[dict]): Candidate transforms to be applied.
+        transforms (list[dict|callable]): Candidate transforms to be applied.
     """
 
     def __init__(self, transforms):
@@ -51,12 +51,12 @@ class RunWithProb:
     """Run a transform or a sequence of transforms with probability p.
 
     Args:
-        transforms (list[dict]): Transform(s) to be applied.
-        p (float): Probability of running transform(s).
+        transforms (list[dict|callable]): Transform(s) to be applied.
+        p (int|float): Probability of running transform(s).
     """
 
     def __init__(self, transforms, p):
-        assert type(p) is float
+        assert 0 <= p <=1
         self.transforms = Compose(transforms)
         self.p = p
 
