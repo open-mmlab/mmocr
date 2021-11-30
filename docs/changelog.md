@@ -1,5 +1,88 @@
 # Changelog
 
+## v0.4.0 (01/12/2021)
+
+### Highlights
+
+1. We release a new text recognition model - ABINet (CVPR 2021, Oral). With delicate model design and fancy and useful data augmentation transforms, ABINet is able to achieve xx and is the best text recognition model in MMOCR.
+2. We are also working hard to fulfill the requests from our community.
+[OpenSet KIE]() is one of the achievement, which extends the application of SDMGR from text node classification to node-pair relation extraction. We also provide
+a demo script to convert WildReceipt to open set domain, though it cannot
+take the full advantage of OpenSet format. For more information, please read our
+[tutorial]().
+3. Now you can expose APIs of model calls through TorchServe.
+
+### Big Changes
+
+Some refactor processes are still going on. We reorganized the `config/` directory by extracting reusable sections in each configs into the `_base_`. Now the directory tree looks as follows:
+
+```
+
+```
+
+Such refactor makes the overall structural clearer and facilitates fair
+comparison across models. Despite the seemingly significant hierarchical difference, these changes would not break the backward compatibility since the names of model configs remain the same.
+
+For detailed config naming convention, see our [docs]().
+
+### Feature
+* Support openset kie by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/498
+* Add converter for the Open Images v5 text annotations by Krylov et al. by @baudm in https://github.com/open-mmlab/mmocr/pull/497
+* Support Chinese for kie show result by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/464
+* Add TorchServe support for text detection and recognition by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/522
+* Save filename in text detection test results by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/570
+* Add codespell pre-commit hook and fix typos by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/520
+* Avoid duplicate placeholder docs in CN by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/582
+* Save results to json file for kie. by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/589
+* Add SAR_CN to ocr.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/579
+
+### Docs
+* C++ example section by @apiaccess21 in https://github.com/open-mmlab/mmocr/pull/593
+* install.md Chinese section by @A465539338 in https://github.com/open-mmlab/mmocr/pull/364
+* Add Chinese Translation of deployment.md. by @fatfishZhao in https://github.com/open-mmlab/mmocr/pull/506
+* Fix a model link and add the metafile for SATRN by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/473
+* Improve docs style by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/474
+* Enhancement & sync Chinese docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/492
+* TorchServe docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/539
+* Update docs menu by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/564
+* Docs for KIE CloseSet & OpenSet by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/573
+* Fix broken links by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/576
+* Docstring for text recognition models by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/562
+* Add MMFlow & MIM by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/597
+* Add MMFewShot by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/621
+
+### Enhancement
+* Use bounding box around polygon instead of within polygon by @alexander-soare in https://github.com/open-mmlab/mmocr/pull/469
+* Add CITATION.cff by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/476
+* Add py3.9 CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/475
+* update model-index.yml by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/484
+* Use container in CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/502
+* CircleCI Setup by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/611
+* Remove unnecessary custom_import from train.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/603
+
+### Bug Fixes
+* Modify algorithm "sar" weights path in metafile by @ShoupingShan in https://github.com/open-mmlab/mmocr/pull/581
+* Fix Cuda CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/472
+* Fix image export in test.py for KIE models by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/486
+* Allow invalid polygons in intersection and union by default  by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/471
+* Update checkpoints' links for SATRN by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/518
+* Fix converting to onnx bug because of changing key from img_shape to resize_shape by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/523
+* Fix PyTorch 1.6 incompatible checkpoints by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/540
+* Fix paper field in metafiles by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/550
+* Unify recognition task names in metafiles by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/548
+* Fix py3.9 CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/563
+* Always map location to cpu when loading checkpoint by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/567
+* Fix wrong model builder in recog_test_imgs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/574
+* Improve dbnet r50 by fixing img std by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/578
+* Fix resource warning: unclosed file by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/577
+* Fix bug that same start_point for different texts in draw_texts_by_pil by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/587
+* Keep original texts for kie by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/588
+* Fix random seed by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/600
+* Fix DBNet_r50 config by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/625
+
+### Refactor
+* Refactor textrecog config structure by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/617
+
 ## v0.3.0 (25/8/2021)
 
 ### Highlights
