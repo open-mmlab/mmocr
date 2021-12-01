@@ -113,6 +113,9 @@ def test_model_batch_inference_empty_detection(cfg_file):
     model = build_model(config_file)
 
     empty_detection = []
-    results = model_inference(model, empty_detection, batch_mode=True)
 
-    assert len(results) == 0
+    with pytest.raises(
+            Exception,
+            match='empty imgs provided, please check and try again'):
+
+        model_inference(model, empty_detection, batch_mode=True)

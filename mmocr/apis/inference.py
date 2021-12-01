@@ -98,10 +98,8 @@ def model_inference(model,
 
     if isinstance(imgs, (list, tuple)):
         is_batch = True
-        if not len(imgs):
-            if not return_data:
-                return []
-            return [], []
+        if len(imgs) == 0:
+            raise Exception('empty imgs provided, please check and try again')
         if not isinstance(imgs[0], (np.ndarray, str)):
             raise AssertionError('imgs must be strings or numpy arrays')
 
