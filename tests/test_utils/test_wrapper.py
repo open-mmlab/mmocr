@@ -3,10 +3,10 @@ import numpy as np
 import pytest
 import torch
 
-from mmocr.models.textdet.postprocess.wrapper import (comps2boundaries,
-                                                      db_decode, fcenet_decode,
-                                                      poly_nms,
-                                                      textsnake_decode)
+from mmocr.models.textdet.postprocess import (DBPostprocessor,
+                                              FCEPostprocessor,
+                                              TextSnakePostprocessor)
+from mmocr.models.textdet.postprocess.wrapper import comps2boundaries, poly_nms
 
 
 def test_db_boxes_from_bitmaps():
@@ -15,8 +15,8 @@ def test_db_boxes_from_bitmaps():
                       [0.8, 0.8, 0.8, 0.8, 0], [0.8, 0.8, 0.8, 0.8, 0],
                       [0.8, 0.8, 0.8, 0.8, 0]]])
     preds = torch.FloatTensor(pred).requires_grad_(True)
-
-    boxes = db_decode(preds, text_repr_type='quad', min_text_width=0)
+    db_decode = DBPostprocessor(text_repr_type='quad', min_text_width=0)
+    boxes = db_decode(preds)
     assert len(boxes) == 1
 
 
@@ -26,13 +26,9 @@ def test_fcenet_decode():
     preds = []
     preds.append(torch.ones(1, 4, 10, 10))
     preds.append(torch.ones(1, 4 * k + 2, 10, 10))
-
-    boundaries = fcenet_decode(
-        preds=preds,
-        fourier_degree=k,
-        num_reconstr_points=50,
-        scale=1,
-        nms_thr=0.01)
+    fcenet_decode = FCEPostprocessor(
+        fourier_degree=k, num_reconstr_points=50, nms_thr=0.01)
+    boundaries = fcenet_decode(preds=preds, scale=1)
 
     assert isinstance(boundaries, list)
 
@@ -80,7 +76,7 @@ def test_textsnake_decode():
     maps[:, 4, 75:85, 60:160] = 10.
     # test decoding with text center region of small area
     maps[:, 0:2, 150:152, 5:7] = 10.
-
+    textsnake_decode = TextSnakePostprocessor()
     results = textsnake_decode(torch.squeeze(maps))
     assert len(results) == 1
 
@@ -106,11 +102,11 @@ def test_db_decode():
     expect_result_poly = [[
         8, 2, 8, 6, 6, 8, 2, 8, 1, 6, 1, 2, 2, 1, 6, 1, 0.800000011920929
     ]]
-    with pytest.raises(ValueError):
-        db_decode(preds=pred, text_repr_type='dummpy')
-    result_quad = db_decode(
-        preds=pred, text_repr_type='quad', min_text_width=1)
-    result_poly = db_decode(
-        preds=pred, text_repr_type='poly', min_text_width=1)
+    with pytest.raises(AssertionError):
+        DBPostprocessor(text_repr_type='dummpy')
+    db_decode = DBPostprocessor(text_repr_type='quad', min_text_width=1)
+    result_quad = db_decode(preds=pred)
+    db_decode = DBPostprocessor(text_repr_type='poly', min_text_width=1)
+    result_poly = db_decode(preds=pred)
     assert result_quad == expect_result_quad
     assert result_poly == expect_result_poly

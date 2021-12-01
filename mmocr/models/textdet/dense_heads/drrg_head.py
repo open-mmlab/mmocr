@@ -7,13 +7,12 @@ from mmcv.runner import BaseModule
 
 from mmocr.models.builder import HEADS, build_loss
 from mmocr.models.textdet.modules import GCN, LocalGraphs, ProposalLocalGraphs
-from mmocr.models.textdet.postprocess import decode
 from mmocr.utils import check_argument
-from .head_mixin import HeadMixin
+from .base_head import BaseHead
 
 
 @HEADS.register_module()
-class DRRGHead(HeadMixin, BaseModule):
+class DRRGHead(BaseHead, BaseModule):
     """The class for DRRG head: `Deep Relational Reasoning Graph Network for
     Arbitrary Shape Text Detection <https://arxiv.org/abs/2003.07493>`_.
 
@@ -38,7 +37,6 @@ class DRRGHead(HeadMixin, BaseModule):
             text center region.
         local_graph_thr (float): The threshold to filter identical local
             graphs.
-        link_thr(float): The threshold for connected components search.
         loss (dict): The config of loss that DRRGHead uses.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
@@ -60,8 +58,8 @@ class DRRGHead(HeadMixin, BaseModule):
                  center_region_thr=0.2,
                  center_region_area_thr=50,
                  local_graph_thr=0.7,
-                 link_thr=0.85,
                  loss=dict(type='DRRGLoss'),
+                 postprocessor=dict(type='DrrgPostprocessor', link_thr=0.85),
                  train_cfg=None,
                  test_cfg=None,
                  init_cfg=dict(
@@ -69,7 +67,8 @@ class DRRGHead(HeadMixin, BaseModule):
                      override=dict(name='out_conv'),
                      mean=0,
                      std=0.01)):
-        super().__init__(init_cfg=init_cfg)
+        BaseModule.__init__(self, init_cfg=init_cfg)
+        BaseHead.__init__(self, loss, postprocessor)
 
         assert isinstance(in_channels, int)
         assert isinstance(k_at_hops, tuple)
@@ -87,7 +86,6 @@ class DRRGHead(HeadMixin, BaseModule):
         assert isinstance(center_region_thr, float)
         assert isinstance(center_region_area_thr, int)
         assert isinstance(local_graph_thr, float)
-        assert isinstance(link_thr, float)
 
         self.in_channels = in_channels
         self.out_channels = 6
@@ -107,7 +105,6 @@ class DRRGHead(HeadMixin, BaseModule):
         self.center_region_thr = center_region_thr
         self.center_region_area_thr = center_region_area_thr
         self.local_graph_thr = local_graph_thr
-        self.link_thr = link_thr
         self.loss_module = build_loss(loss)
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
@@ -235,12 +232,8 @@ class DRRGHead(HeadMixin, BaseModule):
 
         boundaries = []
         if edges is not None:
-            boundaries = decode(
-                decoding_type='drrg',
-                edges=edges,
-                scores=scores,
-                text_comps=text_comps,
-                link_thr=self.link_thr)
+            boundaries = self.postprocessor(edges, scores, text_comps)
+
         if rescale:
             boundaries = self.resize_boundary(
                 boundaries,

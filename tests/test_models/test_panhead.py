@@ -14,23 +14,16 @@ def test_panhead():
 
     # test invalid arguments
     with pytest.raises(AssertionError):
-        panheader = pan_head.PANHead(128, out_channels, text_repr_type,
-                                     downsample_ratio, loss)
+        panheader = pan_head.PANHead(128, out_channels, downsample_ratio, loss)
     with pytest.raises(AssertionError):
         panheader = pan_head.PANHead(in_channels, [out_channels],
-                                     text_repr_type, downsample_ratio, loss)
-    with pytest.raises(AssertionError):
-        panheader = pan_head.PANHead(in_channels, out_channels, 'test',
-                                     text_repr_type, downsample_ratio, loss)
-    with pytest.raises(AssertionError):
-        panheader = pan_head.PANHead(in_channels, out_channels, 'test',
                                      downsample_ratio, loss)
     with pytest.raises(AssertionError):
         panheader = pan_head.PANHead(in_channels, out_channels, text_repr_type,
                                      1.1, loss)
 
-    panheader = pan_head.PANHead(in_channels, out_channels, text_repr_type,
-                                 downsample_ratio, loss)
+    panheader = pan_head.PANHead(in_channels, out_channels, downsample_ratio,
+                                 loss)
 
     # test resize_boundary
     boundaries = [[0, 0, 0, 1, 1, 1, 0, 1, 0.9],

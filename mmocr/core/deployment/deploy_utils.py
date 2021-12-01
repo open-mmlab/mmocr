@@ -7,10 +7,9 @@ import numpy as np
 import torch
 from mmdet.models.builder import DETECTORS
 
+from mmocr.models.textdet.detectors.base_detector import BaseDetector
 from mmocr.models.textdet.detectors.single_stage_text_detector import \
     SingleStageTextDetector
-from mmocr.models.textdet.detectors.text_detector_mixin import \
-    TextDetectorMixin
 from mmocr.models.textrecog.recognizer.encode_decode_recognizer import \
     EncodeDecodeRecognizer
 
@@ -35,7 +34,7 @@ def inference_with_session(sess, io_binding, input_name, output_names,
 
 
 @DETECTORS.register_module()
-class ONNXRuntimeDetector(TextDetectorMixin, SingleStageTextDetector):
+class ONNXRuntimeDetector(BaseDetector, SingleStageTextDetector):
     """The class for evaluating onnx file of detection."""
 
     def __init__(self,
@@ -45,7 +44,7 @@ class ONNXRuntimeDetector(TextDetectorMixin, SingleStageTextDetector):
                  show_score: bool = False):
         cfg.model.pop('type')
         SingleStageTextDetector.__init__(self, **(cfg.model))
-        TextDetectorMixin.__init__(self, show_score)
+        BaseDetector.__init__(self, show_score)
         import onnxruntime as ort
         # get the custom op path
         ort_custom_op_path = ''
@@ -189,7 +188,7 @@ class ONNXRuntimeRecognizer(EncodeDecodeRecognizer):
 
 
 @DETECTORS.register_module()
-class TensorRTDetector(TextDetectorMixin, SingleStageTextDetector):
+class TensorRTDetector(BaseDetector, SingleStageTextDetector):
     """The class for evaluating TensorRT file of detection."""
 
     def __init__(self,
@@ -199,7 +198,7 @@ class TensorRTDetector(TextDetectorMixin, SingleStageTextDetector):
                  show_score: bool = False):
         cfg.model.pop('type')
         SingleStageTextDetector.__init__(self, **(cfg.model))
-        TextDetectorMixin.__init__(self, show_score)
+        BaseDetector.__init__(self, show_score)
         from mmcv.tensorrt import TRTWrapper, load_tensorrt_plugin
         try:
             load_tensorrt_plugin()

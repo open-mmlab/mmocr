@@ -3,49 +3,47 @@ import torch
 import torch.nn as nn
 from mmcv.runner import BaseModule, Sequential
 
-from mmocr.models.builder import HEADS, build_loss
-from .head_mixin import HeadMixin
+from mmocr.models.builder import HEADS
+from .base_head import BaseHead
 
 
 @HEADS.register_module()
-class DBHead(HeadMixin, BaseModule):
+class DBHead(BaseHead, BaseModule):
     """The class for DBNet head.
 
     This was partially adapted from https://github.com/MhLiao/DB
 
     Args:
         in_channels (int): The number of input channels of the db head.
-        decoding_type (str): The type of decoder for dbnet.
-        text_repr_type (str): Boundary encoding type 'poly' or 'quad'.
+        with_bias (bool): Whether add bias in Conv2d layer.
         downsample_ratio (float): The downsample ratio of ground truths.
-        loss (dict): The type of loss for dbnet.
+        loss (dict): Config of loss for dbnet.
+        postprocessor (dict): Config of postprocessor for dbnet.
     """
 
-    def __init__(self,
-                 in_channels,
-                 with_bias=False,
-                 decoding_type='db',
-                 text_repr_type='poly',
-                 downsample_ratio=1.0,
-                 loss=dict(type='DBLoss'),
-                 train_cfg=None,
-                 test_cfg=None,
-                 init_cfg=[
-                     dict(type='Kaiming', layer='Conv'),
-                     dict(
-                         type='Constant', layer='BatchNorm', val=1., bias=1e-4)
-                 ]):
-        super().__init__(init_cfg=init_cfg)
+    def __init__(
+            self,
+            in_channels,
+            with_bias=False,
+            downsample_ratio=1.0,
+            loss=dict(type='DBLoss'),
+            postprocessor=dict(type='DBPostprocessor', text_repr_type='quad'),
+            init_cfg=[
+                dict(type='Kaiming', layer='Conv'),
+                dict(type='Constant', layer='BatchNorm', val=1., bias=1e-4)
+            ],
+            train_cfg=None,
+            test_cfg=None):
+
+        BaseModule.__init__(self, init_cfg=init_cfg)
+        BaseHead.__init__(self, loss, postprocessor)
 
         assert isinstance(in_channels, int)
 
         self.in_channels = in_channels
-        self.text_repr_type = text_repr_type
-        self.loss_module = build_loss(loss)
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
         self.downsample_ratio = downsample_ratio
-        self.decoding_type = decoding_type
 
         self.binarize = Sequential(
             nn.Conv2d(

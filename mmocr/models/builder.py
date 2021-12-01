@@ -12,6 +12,7 @@ CONVERTORS = Registry('convertor')
 ENCODERS = Registry('encoder')
 DECODERS = Registry('decoder')
 PREPROCESSOR = Registry('preprocessor')
+POSTPROCESSOR = Registry('postprocessor')
 
 UPSAMPLE_LAYERS = Registry('upsample layer', parent=MMCV_UPSAMPLE_LAYERS)
 BACKBONES = Registry('models', parent=MMDET_BACKBONES)
@@ -48,6 +49,11 @@ def build_decoder(cfg):
 def build_preprocessor(cfg):
     """Build preprocessor for scene text recognizer."""
     return build_from_cfg(cfg, PREPROCESSOR)
+
+
+def build_postprocessor(cfg):
+    """Build postprocessor for scene text detector."""
+    return build_from_cfg(cfg, POSTPROCESSOR)
 
 
 def build_roi_extractor(cfg):
