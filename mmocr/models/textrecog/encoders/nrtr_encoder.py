@@ -64,6 +64,15 @@ class NRTREncoder(BaseEncoder):
         return mask
 
     def forward(self, feat, img_metas=None):
+        r"""
+        Args:
+            feat (Tensor): Backbone output of shape :math:`(N, C, H, W)`.
+            img_metas (dict): A dict that contains meta information of input
+                images. Preferably with the key ``valid_ratio``.
+
+        Returns:
+            Tensor: The encoder output tensor. Shape :math:`(N, T, C)`.
+        """
         n, c, h, w = feat.size()
 
         feat = feat.view(n, c, h * w).permute(0, 2, 1).contiguous()

@@ -7,8 +7,7 @@ import torch.nn.functional as F
 from mmcv.runner import ModuleList
 
 from mmocr.models.builder import DECODERS
-from mmocr.models.common import (PositionalEncoding, TFDecoderLayer,
-                                 get_pad_mask, get_subsequent_mask)
+from mmocr.models.common import PositionalEncoding, TFDecoderLayer
 from .base_decoder import BaseDecoder
 
 
@@ -79,13 +78,29 @@ class NRTRDecoder(BaseDecoder):
         pred_num_class = num_classes - 1  # ignore padding_idx
         self.classifier = nn.Linear(d_model, pred_num_class)
 
+    @staticmethod
+    def get_pad_mask(seq, pad_idx):
+
+        return (seq != pad_idx).unsqueeze(-2)
+
+    @staticmethod
+    def get_subsequent_mask(seq):
+        """For masking out the subsequent info."""
+        len_s = seq.size(1)
+        subsequent_mask = 1 - torch.triu(
+            torch.ones((len_s, len_s), device=seq.device), diagonal=1)
+        subsequent_mask = subsequent_mask.unsqueeze(0).bool()
+
+        return subsequent_mask
+
     def _attention(self, trg_seq, src, src_mask=None):
         trg_embedding = self.trg_word_emb(trg_seq)
         trg_pos_encoded = self.position_enc(trg_embedding)
         tgt = self.dropout(trg_pos_encoded)
 
-        trg_mask = get_pad_mask(
-            trg_seq, pad_idx=self.padding_idx) & get_subsequent_mask(trg_seq)
+        trg_mask = self.get_pad_mask(
+            trg_seq,
+            pad_idx=self.padding_idx) & self.get_subsequent_mask(trg_seq)
         output = tgt
         for dec_layer in self.layer_stack:
             output = dec_layer(
@@ -117,7 +132,7 @@ class NRTRDecoder(BaseDecoder):
         r"""
         Args:
             feat (None): Unused.
-            out_enc (Tensor): Encoder output of shape :math:`(N, D_m, H, W)`
+            out_enc (Tensor): Encoder output of shape :math:`(N, T, D_m)`
                 where :math:`D_m` is ``d_model``.
             targets_dict (dict): A dict with the key ``padded_targets``, a
                 tensor of shape :math:`(N, T)`. Each element is the index of a

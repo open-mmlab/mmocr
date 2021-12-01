@@ -2,8 +2,7 @@
 import torch
 
 from mmocr.models.common import (PositionalEncoding, TFDecoderLayer,
-                                 TFEncoderLayer, get_pad_mask,
-                                 get_subsequent_mask)
+                                 TFEncoderLayer)
 from mmocr.models.textrecog.layers import BasicBlock, Bottleneck
 from mmocr.models.textrecog.layers.conv_layer import conv3x3
 
@@ -51,16 +50,6 @@ def test_transformer_layer():
     x = torch.rand(1, 30, 512)
     out = pos_encoder(x)
     assert out.size() == x.size()
-
-    # test get pad mask
-    seq = torch.rand(1, 30)
-    pad_idx = 0
-    out = get_pad_mask(seq, pad_idx)
-    assert out.shape == torch.Size([1, 1, 30])
-
-    # test get_subsequent_mask
-    out_mask = get_subsequent_mask(seq)
-    assert out_mask.shape == torch.Size([1, 30, 30])
 
     # test encoder_layer
     encoder_layer = TFEncoderLayer()

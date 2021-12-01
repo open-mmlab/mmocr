@@ -61,7 +61,7 @@ class SatrnEncoder(BaseEncoder):
                 images. Preferably with the key ``valid_ratio``.
 
         Returns:
-            Tensor: A tensor of shape :math:`(N, D_m, H, W)`.
+            Tensor: A tensor of shape :math:`(N, T, D_m)`.
         """
         valid_ratios = [1.0 for _ in range(feat.size(0))]
         if img_metas is not None:

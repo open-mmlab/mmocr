@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import torch
 import torch.nn as nn
 from mmcv.runner import BaseModule
 
@@ -166,18 +165,3 @@ class TFDecoderLayer(nn.Module):
             mlp_out += enc_dec_attn_out
 
         return mlp_out
-
-
-def get_pad_mask(seq, pad_idx):
-
-    return (seq != pad_idx).unsqueeze(-2)
-
-
-def get_subsequent_mask(seq):
-    """For masking out the subsequent info."""
-    len_s = seq.size(1)
-    subsequent_mask = 1 - torch.triu(
-        torch.ones((len_s, len_s), device=seq.device), diagonal=1)
-    subsequent_mask = subsequent_mask.unsqueeze(0).bool()
-
-    return subsequent_mask

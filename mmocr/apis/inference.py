@@ -72,29 +72,42 @@ def disable_text_recog_aug_test(cfg, set_types=None):
     warning_msg = 'Remove "MultiRotateAugOCR" to support batch ' + \
         'inference since samples_per_gpu > 1.'
     recog_dataset_types = [
-        'OCRDataset', 'OCRSegDataset', 'UniformConcatDataset'
+        'OCRDataset', 'OCRSegDataset', 'ConcatDataset', 'UniformConcatDataset'
     ]
     for set_type in set_types:
         dataset_type = cfg.data[set_type].type
         if dataset_type not in recog_dataset_types:
             continue
-        if dataset_type != 'UniformConcatDataset':
-            raise Exception(f'Please use "UniformConcatDataset" '
-                            f'instead of {dataset_type}.')
-        uniform_pipeline = cfg.data[set_type].pipeline
-        if uniform_pipeline is not None:
-            if uniform_pipeline[1].type == 'MultiRotateAugOCR':
+        if dataset_type in ['OCRDataset', 'OCRSegDataset']:
+            if cfg.data[set_type].pipeline[1].type == 'MultiRotateAugOCR':
                 warnings.warn(warning_msg)
                 cfg.data[set_type].pipeline = [
-                    uniform_pipeline[0], *uniform_pipeline[1].transforms
+                    cfg.data[set_type].pipeline[0],
+                    *cfg.data[set_type].pipeline[1].transforms
                 ]
-        for dataset in cfg.data[set_type].datasets:
-            if dataset.pipeline is not None:
+        elif dataset_type == 'ConcatDataset':
+            for dataset in cfg.data[set_type].datasets:
                 if dataset.pipeline[1].type == 'MultiRotateAugOCR':
                     warnings.warn(warning_msg)
                     dataset.pipeline = [
                         dataset.pipeline[0], *dataset.pipeline[1].transforms
                     ]
+        elif dataset_type == 'UniformConcatDataset':
+            uniform_pipeline = cfg.data[set_type].pipeline
+            if uniform_pipeline is not None:
+                if uniform_pipeline[1].type == 'MultiRotateAugOCR':
+                    warnings.warn(warning_msg)
+                    cfg.data[set_type].pipeline = [
+                        uniform_pipeline[0], *uniform_pipeline[1].transforms
+                    ]
+            for dataset in cfg.data[set_type].datasets:
+                if dataset.pipeline is not None:
+                    if dataset.pipeline[1].type == 'MultiRotateAugOCR':
+                        warnings.warn(warning_msg)
+                        dataset.pipeline = [
+                            dataset.pipeline[0],
+                            *dataset.pipeline[1].transforms
+                        ]
 
     return cfg
 

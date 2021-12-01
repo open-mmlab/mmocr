@@ -133,12 +133,15 @@ def test_disable_text_recog_aug_test(cfg_file):
 
     cfg = Config.fromfile(config_file)
     cfg1 = copy.deepcopy(cfg)
-    cfg1.data.test = cfg1.data.test.datasets[0]
-    with pytest.raises(
-            Exception,
-            match='Please use "UniformConcatDataset" instead of OCRDataset.'):
-        disable_text_recog_aug_test(cfg1, set_types=['test'])
+    test = cfg1.data.test.datasets[0]
+    test.pipeline = cfg1.data.test.pipeline
+    cfg1.data.test = test
+    disable_text_recog_aug_test(cfg1, set_types=['test'])
 
     cfg2 = copy.deepcopy(cfg)
     cfg2.data.test.pipeline = None
+    disable_text_recog_aug_test(cfg2, set_types=['test'])
+
+    cfg2 = copy.deepcopy(cfg)
+    cfg2.data.test = Config(dict(type='ConcatDataset', datasets=[test]))
     disable_text_recog_aug_test(cfg2, set_types=['test'])
