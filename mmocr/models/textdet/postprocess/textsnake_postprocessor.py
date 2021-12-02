@@ -16,7 +16,6 @@ class TextSnakePostprocessor(BasePostprocessor):
     adapted from https://github.com/princewang1994/TextSnake.pytorch.
 
     Args:
-        preds (tensor): The head output tensor of size 6xHxW.
         text_repr_type (str): The boundary encoding type 'poly' or 'quad'.
         min_text_region_confidence (float): The confidence threshold of text
             region in TextSnake.

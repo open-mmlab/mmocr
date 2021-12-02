@@ -17,7 +17,6 @@ class PSEPostprocessor(BasePostprocessor):
 
     Args:
         text_repr_type (str): The boundary encoding type 'poly' or 'quad'.
-        min_text_confidence (float): The minimal text confidence.
         min_kernel_confidence (float): The minimal kernel confidence.
         min_text_avg_confidence (float): The minimal text average confidence.
         min_kernel_area (int): The minimal text kernel area.

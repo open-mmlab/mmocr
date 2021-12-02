@@ -15,15 +15,15 @@ class FCEPostprocessor(BasePostprocessor):
         fourier_degree (int): The maximum Fourier transform degree k.
         num_reconstr_points (int): The points number of the polygon
             reconstructed from predicted Fourier coefficients.
+        text_repr_type (str): Boundary encoding type 'poly' or 'quad'.
         scale (int): The down-sample scale of the prediction.
-        alpha (float) : The parameter to calculate final scores. Score_{final}
+        alpha (float): The parameter to calculate final scores. Score_{final}
                 = (Score_{text region} ^ alpha)
                 * (Score_{text center region}^ beta)
-        beta (float) : The parameter to calculate final score.
-        text_repr_type (str):  Boundary encoding type 'poly' or 'quad'.
-        score_thr (float) : The threshold used to filter out the final
+        beta (float): The parameter to calculate final score.
+        score_thr (float): The threshold used to filter out the final
             candidates.
-        nms_thr (float) :  The threshold of nms.
+        nms_thr (float): The threshold of nms.
     """
 
     def __init__(self,

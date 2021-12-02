@@ -14,7 +14,6 @@ class DBPostprocessor(BasePostprocessor):
     from https://github.com/MhLiao/DB.
 
     Args:
-        preds (Tensor): The head output tensor of size nxHxW.
         text_repr_type (str): The boundary encoding type 'poly' or 'quad'.
         mask_thr (float): The mask threshold value for binarization.
         min_text_score (float): The threshold value for converting binary map
