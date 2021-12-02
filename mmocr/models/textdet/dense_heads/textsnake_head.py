@@ -18,7 +18,10 @@ class TextSnakeHead(BaseHead, BaseModule):
 
     Args:
         in_channels (int): Number of input channels.
+        out_channels (int): Number of output channels.
+        downsample_ratio (float): Downsample ratio.
         loss (dict): Configuration dictionary for loss type.
+        postprocessor (dict): Config of postprocessor for TextSnake.
         train_cfg, test_cfg: Depreciated.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """

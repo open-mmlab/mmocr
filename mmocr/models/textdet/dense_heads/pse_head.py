@@ -13,6 +13,7 @@ class PSEHead(PANHead):
         downsample_ratio (float): Downsample ratio.
         loss (dict): Configuration dictionary for loss type. Supported loss
             types are "PANLoss" and "PSELoss".
+        postprocessor (dict): Config of postprocessor for PSENet.
         train_cfg, test_cfg (dict): Depreciated.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
