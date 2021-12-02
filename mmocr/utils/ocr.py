@@ -281,12 +281,13 @@ class MMOCR:
             },
             'NRTR_1/16-1/8': {
                 'config': 'nrtr/nrtr_r31_1by16_1by8_academic.py',
-                'ckpt': 'nrtr/nrtr_r31_academic_20210406-954db95e.pth'
+                'ckpt':
+                'nrtr/nrtr_r31_1by16_1by8_academic_20211124-f60cebf4.pth'
             },
             'NRTR_1/8-1/4': {
                 'config': 'nrtr/nrtr_r31_1by8_1by4_academic.py',
                 'ckpt':
-                'nrtr/nrtr_r31_1by8_1by4_academic_20210406-ce16e7cc.pth'
+                'nrtr/nrtr_r31_1by8_1by4_academic_20211123-e1fdb322.pth'
             },
             'RobustScanner': {
                 'config': 'robust_scanner/robustscanner_r31_academic.py',
