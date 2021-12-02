@@ -14,11 +14,22 @@ from mmocr.utils import check_argument
 
 @LOSSES.register_module()
 class PANLoss(nn.Module):
-    """The class for implementing PANet loss: Efficient and Accurate Arbitrary-
-    Shaped Text Detection with Pixel Aggregation Network.
+    """The class for implementing PANet loss. This was partially adapted from
+    https://github.com/WenmuZhou/PAN.pytorch.
 
-    [https://arxiv.org/abs/1908.05900]. This was partially adapted from
-    https://github.com/WenmuZhou/PAN.pytorch
+    PANet: `Efficient and Accurate Arbitrary-
+    Shaped Text Detection with Pixel Aggregation Network
+    <https://arxiv.org/abs/1908.05900>`_.
+
+    Args:
+        alpha (float): The kernel loss coef.
+        beta (float): The aggregation and discriminative loss coef.
+        delta_aggregation (float): The constant for aggregation loss.
+        delta_discrimination (float): The constant for discriminative loss.
+        ohem_ratio (float): The negative/positive ratio in ohem.
+        reduction (str): The way to reduce the loss.
+        speedup_bbox_thr (int):  Speed up if speedup_bbox_thr > 0
+            and < bbox num.
     """
 
     def __init__(self,
@@ -29,18 +40,6 @@ class PANLoss(nn.Module):
                  ohem_ratio=3,
                  reduction='mean',
                  speedup_bbox_thr=-1):
-        """Initialization.
-
-        Args:
-            alpha (float): The kernel loss coef.
-            beta (float): The aggregation and discriminative loss coef.
-            delta_aggregation (float): The constant for aggregation loss.
-            delta_discrimination (float): The constant for discriminative loss.
-            ohem_ratio (float): The negative/positive ratio in ohem.
-            reduction (str): The way to reduce the loss.
-            speedup_bbox_thr (int):  Speed up if speedup_bbox_thr >0
-                and <bbox num.
-        """
         super().__init__()
         assert reduction in ['mean', 'sum'], "reduction must in ['mean','sum']"
         self.alpha = alpha
@@ -57,11 +56,12 @@ class PANLoss(nn.Module):
         Args:
             bitmasks (list[BitmapMasks]): The BitmapMasks list. Each item is
                 for one img.
-            target_sz (tuple(int, int)): The target tensor size HxW.
+            target_sz (tuple(int, int)): The target tensor of size
+                :math:`(H, W)`.
 
-        Returns
-            results (list[tensor]): The list of kernel tensors. Each
-                element is for one kernel level.
+        Returns:
+            list[Tensor]: The list of kernel tensors. Each element stands for
+            one kernel level.
         """
         assert check_argument.is_type_list(bitmasks, BitmapMasks)
         assert isinstance(target_sz, tuple)
@@ -92,16 +92,17 @@ class PANLoss(nn.Module):
         """Compute PANet loss.
 
         Args:
-            preds (tensor): The output tensor with size of Nx6xHxW.
+            preds (Tensor): The output tensor of size :math:`(N, 6, H, W)`.
+            downsample_ratio (float): The downsample ratio between preds
+                and the input img.
             gt_kernels (list[BitmapMasks]): The kernel list with each element
                 being the text kernel mask for one img.
             gt_mask (list[BitmapMasks]): The effective mask list
                 with each element being the effective mask for one img.
-            downsample_ratio (float): The downsample ratio between preds
-                and the input img.
 
         Returns:
-            results (dict): The loss dictionary.
+            dict:  A loss dict with ``loss_text``, ``loss_kernel``,
+            ``loss_aggregation`` and ``loss_discrimination``.
         """
 
         assert check_argument.is_type_list(gt_kernels, BitmapMasks)
@@ -160,15 +161,16 @@ class PANLoss(nn.Module):
         """Compute the aggregation and discrimnative losses.
 
         Args:
-            gt_texts (tensor): The ground truth text mask of size Nx1xHxW.
-            gt_kernels (tensor): The ground truth text kernel mask of
-                size Nx1xHxW.
-            inst_embeds(tensor): The text instance embedding tensor
-                of size Nx4xHxW.
+            gt_texts (Tensor): The ground truth text mask of size
+                :math:`(N, 1, H, W)`.
+            gt_kernels (Tensor): The ground truth text kernel mask of
+                size :math:`(N, 1, H, W)`.
+            inst_embeds(Tensor): The text instance embedding tensor
+                of size :math:`(N, 1, H, W)`.
 
         Returns:
-             loss_aggrs (tensor): The aggregation loss before reduction.
-             loss_discrs (tensor): The discriminative loss before reduction.
+            (Tensor, Tensor): A tuple of aggregation loss and discriminative
+            loss before reduction.
         """
 
         batch_size = gt_texts.size()[0]
@@ -272,12 +274,13 @@ class PANLoss(nn.Module):
         """Sample the top-k maximal negative samples and all positive samples.
 
         Args:
-            text_score (Tensor): The text score with size of HxW.
-            gt_text (Tensor): The ground truth text mask of HxW.
-            gt_mask (Tensor): The effective region mask of HxW.
+            text_score (Tensor): The text score of size :math:`(H, W)`.
+            gt_text (Tensor): The ground truth text mask of size
+                :math:`(H, W)`.
+            gt_mask (Tensor): The effective region mask of size :math:`(H, W)`.
 
         Returns:
-            sampled_mask (Tensor): The sampled pixel mask of size HxW.
+            Tensor: The sampled pixel mask of size :math:`(H, W)`.
         """
         assert isinstance(text_score, torch.Tensor)
         assert isinstance(gt_text, torch.Tensor)
@@ -306,12 +309,12 @@ class PANLoss(nn.Module):
         """OHEM sampling for a batch of imgs.
 
         Args:
-            text_scores (Tensor): The text scores of size NxHxW.
-            gt_texts (Tensor): The gt text masks of size NxHxW.
-            gt_mask (Tensor): The gt effective mask of size NxHxW.
+            text_scores (Tensor): The text scores of size :math:`(H, W)`.
+            gt_texts (Tensor): The gt text masks of size :math:`(H, W)`.
+            gt_mask (Tensor): The gt effective mask of size :math:`(H, W)`.
 
         Returns:
-            sampled_masks (Tensor): The sampled mask of size NxHxW.
+            Tensor: The sampled mask of size :math:`(H, W)`.
         """
         assert isinstance(text_scores, torch.Tensor)
         assert isinstance(gt_texts, torch.Tensor)

@@ -12,6 +12,15 @@ class DBLoss(nn.Module):
     """The class for implementing DBNet loss.
 
     This is partially adapted from https://github.com/MhLiao/DB.
+
+    Args:
+        alpha (float): The binary loss coef.
+        beta (float): The threshold loss coef.
+        reduction (str): The way to reduce the loss.
+        negative_ratio (float): The ratio of positives to negatives.
+        eps (float): Epsilon in the threshold loss function.
+        bbce_loss (bool): Whether to use balanced bce for probability loss.
+            If False, dice loss will be used instead.
     """
 
     def __init__(self,
@@ -21,17 +30,6 @@ class DBLoss(nn.Module):
                  negative_ratio=3.0,
                  eps=1e-6,
                  bbce_loss=False):
-        """Initialization.
-
-        Args:
-            alpha (float): The binary loss coef.
-            beta (float): The threshold loss coef.
-            reduction (str): The way to reduce the loss.
-            negative_ratio (float): The ratio of positives to negatives.
-            eps (float): Epsilon in the threshold loss function.
-            bbce_loss (bool): Whether to use balanced bce for probability loss.
-                If False, dice loss will be used instead.
-        """
         super().__init__()
         assert reduction in ['mean',
                              'sum'], " reduction must in ['mean','sum']"
@@ -47,14 +45,14 @@ class DBLoss(nn.Module):
         """Convert Bitmasks to tensor.
 
         Args:
-            bitmasks (list[BitMasks]): The BitMasks list. Each item is for
-                one img.
-            target_sz (tuple(int, int)): The target tensor size of KxHxW
-                with K being the number of kernels.
+            bitmasks (list[BitmapMasks]): The BitmapMasks list. Each item is
+                for one img.
+            target_sz (tuple(int, int)): The target tensor of size
+                :math:`(H, W)`.
 
-        Returns
-            result_tensors (list[tensor]): The list of kernel tensors. Each
-                element is for one kernel level.
+        Returns:
+            list[Tensor]: The list of kernel tensors. Each element stands for
+            one kernel level.
         """
         assert isinstance(bitmasks, list)
         assert isinstance(target_sz, tuple)
@@ -111,7 +109,7 @@ class DBLoss(nn.Module):
         """Compute DBNet loss.
 
         Args:
-            preds (tensor): The output tensor with size of Nx3xHxW.
+            preds (Tensor): The output tensor with size :math:`(N, 3, H, W)`.
             downsample_ratio (float): The downsample ratio for the
                 ground truths.
             gt_shrink (list[BitmapMasks]): The mask list with each element
@@ -124,8 +122,8 @@ class DBLoss(nn.Module):
                 each element being the threshold effective mask for one img.
 
         Returns:
-            results(dict): The dict for dbnet losses with loss_prob,
-                loss_db and loss_thresh.
+            dict: The dict for dbnet losses with "loss_prob", "loss_db" and
+            "loss_thresh".
         """
         assert isinstance(downsample_ratio, float)
 

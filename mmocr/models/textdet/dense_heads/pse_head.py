@@ -5,7 +5,19 @@ from . import PANHead
 
 @HEADS.register_module()
 class PSEHead(PANHead):
-    """The class for PANet head."""
+    """The class for PSENet head.
+
+    Args:
+        in_channels (list[int]): A list of 4 numbers of input channels.
+        out_channels (int): Number of output channels.
+        text_repr_type (str): Use polygon or quad to represent. Available
+            options are "poly" or "quad".
+        downsample_ratio (float): Downsample ratio.
+        loss (dict): Configuration dictionary for loss type. Supported loss
+            types are "PANLoss" and "PSELoss".
+        train_cfg, test_cfg (dict): Depreciated.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+    """
 
     def __init__(
             self,

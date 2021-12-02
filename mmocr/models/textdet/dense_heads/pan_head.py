@@ -11,7 +11,19 @@ from . import HeadMixin
 
 @HEADS.register_module()
 class PANHead(HeadMixin, BaseModule):
-    """The class for PANet head."""
+    """The class for PANet head.
+
+    Args:
+        in_channels (list[int]): A list of 4 numbers of input channels.
+        out_channels (int): Number of output channels.
+        text_repr_type (str): Use polygon or quad to represent. Available
+            options are "poly" or "quad".
+        downsample_ratio (float): Downsample ratio.
+        loss (dict): Configuration dictionary for loss type. Supported loss
+            types are "PANLoss" and "PSELoss".
+        train_cfg, test_cfg (dict): Depreciated.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+    """
 
     def __init__(
         self,
@@ -52,6 +64,16 @@ class PANHead(HeadMixin, BaseModule):
             kernel_size=1)
 
     def forward(self, inputs):
+        r"""
+        Args:
+            inputs (list[Tensor] | Tensor): Each tensor has the shape of
+                :math:`(N, C_i, W, H)`, where :math:`\sum_iC_i=C_{in}` and
+                :math:`C_{in}` is ``input_channels``.
+
+        Returns:
+            Tensor: A tensor of shape :math:`(N, C_{out}, W, H)` where
+            :math:`C_{out}` is ``output_channels``.
+        """
         if isinstance(inputs, tuple):
             outputs = torch.cat(inputs, dim=1)
         else:

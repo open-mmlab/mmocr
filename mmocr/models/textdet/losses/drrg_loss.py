@@ -10,24 +10,31 @@ from mmocr.utils import check_argument
 
 @LOSSES.register_module()
 class DRRGLoss(nn.Module):
-    """The class for implementing DRRG loss: Deep Relational Reasoning Graph
-    Network for Arbitrary Shape Text Detection.
-
-    [https://arxiv.org/abs/1908.05900] This is partially adapted from
+    """The class for implementing DRRG loss. This is partially adapted from
     https://github.com/GXYM/DRRG licensed under the MIT license.
+
+    DRRG: `Deep Relational Reasoning Graph Network for Arbitrary Shape Text
+    Detection <https://arxiv.org/abs/1908.05900>`_.
+
+    Args:
+        ohem_ratio (float): The negative/positive ratio in ohem.
     """
 
     def __init__(self, ohem_ratio=3.0):
-        """Initialization.
-
-        Args:
-            ohem_ratio (float): The negative/positive ratio in OHEM.
-        """
         super().__init__()
         self.ohem_ratio = ohem_ratio
 
     def balance_bce_loss(self, pred, gt, mask):
+        """Balanced Binary-CrossEntropy Loss.
 
+        Args:
+            pred (Tensor): Shape of :math:`(1, H, W)`.
+            gt (Tensor): Shape of :math:`(1, H, W)`.
+            mask (Tensor): Shape of :math:`(1, H, W)`.
+
+        Returns:
+            Tensor: Balanced bce loss.
+        """
         assert pred.shape == gt.shape == mask.shape
         assert torch.all(pred >= 0) and torch.all(pred <= 1)
         assert torch.all(gt >= 0) and torch.all(gt <= 1)
@@ -55,7 +62,17 @@ class DRRGLoss(nn.Module):
         return balance_loss
 
     def gcn_loss(self, gcn_data):
+        """CrossEntropy Loss from gcn module.
 
+        Args:
+            gcn_data (tuple(Tensor, Tensor)): The first is the
+                prediction with shape :math:`(N, 2)` and the
+                second is the gt label with shape :math:`(m, n)`
+                where :math:`m * n = N`.
+
+        Returns:
+            Tensor: CrossEntropy loss.
+        """
         gcn_pred, gt_labels = gcn_data
         gt_labels = gt_labels.view(-1).to(gcn_pred.device)
         loss = F.cross_entropy(gcn_pred, gt_labels)
@@ -68,11 +85,12 @@ class DRRGLoss(nn.Module):
         Args:
             bitmasks (list[BitmapMasks]): The BitmapMasks list. Each item is
                 for one img.
-            target_sz (tuple(int, int)): The target tensor size HxW.
+            target_sz (tuple(int, int)): The target tensor of size
+                :math:`(H, W)`.
 
-        Returns
-            results (list[tensor]): The list of kernel tensors. Each
-                element is for one kernel level.
+        Returns:
+            list[Tensor]: The list of kernel tensors. Each element stands for
+            one kernel level.
         """
         assert check_argument.is_type_list(bitmasks, BitmapMasks)
         assert isinstance(target_sz, tuple)
@@ -102,7 +120,27 @@ class DRRGLoss(nn.Module):
     def forward(self, preds, downsample_ratio, gt_text_mask,
                 gt_center_region_mask, gt_mask, gt_top_height_map,
                 gt_bot_height_map, gt_sin_map, gt_cos_map):
+        """Compute Drrg loss.
 
+        Args:
+            preds (tuple(Tensor)): The first is the prediction map
+                with shape :math:`(N, C_{out}, H, W)`.
+                The second is prediction from GCN module, with
+                shape :math:`(N, 2)`.
+                The third is ground-truth label with shape :math:`(N, 8)`.
+            downsample_ratio (float): The downsample ratio.
+            gt_text_mask (list[BitmapMasks]): Text mask.
+            gt_center_region_mask (list[BitmapMasks]): Center region mask.
+            gt_mask (list[BitmapMasks]): Effective mask.
+            gt_top_height_map (list[BitmapMasks]): Top height map.
+            gt_bot_height_map (list[BitmapMasks]): Bottom height map.
+            gt_sin_map (list[BitmapMasks]): Sinusoid map.
+            gt_cos_map (list[BitmapMasks]): Cosine map.
+
+        Returns:
+            dict:  A loss dict with ``loss_text``, ``loss_center``,
+            ``loss_height``, ``loss_sin``, ``loss_cos``, and ``loss_gcn``.
+        """
         assert isinstance(preds, tuple)
         assert isinstance(downsample_ratio, float)
         assert check_argument.is_type_list(gt_text_mask, BitmapMasks)
