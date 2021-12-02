@@ -148,11 +148,11 @@ class DRRGHead(HeadMixin, BaseModule):
         Returns:
             tuple: Returns (pred_maps, (gcn_pred, gt_labels)).
 
-                - | pred_maps (Tensor): Prediction map with shape \
+                - | pred_maps (Tensor): Prediction map with shape
                     :math:`(N, C_{out}, H, W)`.
-                - | gcn_pred (Tensor): Prediction from GCN module, with \
+                - | gcn_pred (Tensor): Prediction from GCN module, with
                     shape :math:`(N, 2)`.
-                - | gt_labels (Tensor): Ground-truth label with shape \
+                - | gt_labels (Tensor): Ground-truth label with shape
                     :math:`(N, 8)`.
         """
         pred_maps = self.out_conv(inputs)
@@ -172,13 +172,13 @@ class DRRGHead(HeadMixin, BaseModule):
         Returns:
             tuple: Returns (edge, score, text_comps).
 
-                - | edge (ndarray): The edge array of shape :math:`(N, 2)` \
-                    where each row is a pair of text component indices \
+                - | edge (ndarray): The edge array of shape :math:`(N, 2)`
+                    where each row is a pair of text component indices
                     that makes up an edge in graph.
-                - | score (ndarray): The score array of shape :math:`(N,)`, \
+                - | score (ndarray): The score array of shape :math:`(N,)`,
                     corresponding to the edge above.
-                - | text_comps (ndarray): The text components of shape \
-                    :math:`(N, 9)` where each row corresponds to one box and \
+                - | text_comps (ndarray): The text components of shape
+                    :math:`(N, 9)` where each row corresponds to one box and
                     its score: (x1, y1, x2, y2, x3, y3, x4, y4, score).
         """
         pred_maps = self.out_conv(feat_maps)
