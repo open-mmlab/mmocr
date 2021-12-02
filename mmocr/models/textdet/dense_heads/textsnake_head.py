@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
+
 import torch.nn as nn
 from mmcv.runner import BaseModule
 
@@ -34,7 +36,14 @@ class TextSnakeHead(BaseHead, BaseModule):
                      type='Normal',
                      override=dict(name='out_conv'),
                      mean=0,
-                     std=0.01)):
+                     std=0.01),
+                 **kwargs):
+        old_keys = ['text_repr_type', 'decoding_type']
+        for key in old_keys:
+            if kwargs.get(key, None):
+                warnings.warn(
+                    f'{key} is deprecated, please specify '
+                    f'it in postprocessor config dict', UserWarning)
         BaseModule.__init__(self, init_cfg=init_cfg)
         BaseHead.__init__(self, loss, postprocessor)
 

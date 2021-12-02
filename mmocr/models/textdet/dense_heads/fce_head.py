@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
+
 import torch.nn as nn
 from mmcv.runner import BaseModule
 from mmdet.core import multi_apply
@@ -24,29 +26,39 @@ class FCEHead(BaseHead, BaseModule):
         postprocessor (dict): Config of postprocessor for FCENet.
     """
 
-    def __init__(
-        self,
-        in_channels,
-        scales,
-        fourier_degree=5,
-        nms_thr=0.1,
-        loss=dict(type='FCELoss', num_sample=50),
-        postprocessor=dict(
-            type='FCEPostprocessor',
-            text_repr_type='poly',
-            num_reconstr_points=50,
-            alpha=1.0,
-            beta=2.0,
-            score_thr=0.3),
-        train_cfg=None,
-        test_cfg=None,
-        init_cfg=dict(
-            type='Normal',
-            mean=0,
-            std=0.01,
-            override=[dict(name='out_conv_cls'),
-                      dict(name='out_conv_reg')])):
-
+    def __init__(self,
+                 in_channels,
+                 scales,
+                 fourier_degree=5,
+                 nms_thr=0.1,
+                 loss=dict(type='FCELoss', num_sample=50),
+                 postprocessor=dict(
+                     type='FCEPostprocessor',
+                     text_repr_type='poly',
+                     num_reconstr_points=50,
+                     alpha=1.0,
+                     beta=2.0,
+                     score_thr=0.3),
+                 train_cfg=None,
+                 test_cfg=None,
+                 init_cfg=dict(
+                     type='Normal',
+                     mean=0,
+                     std=0.01,
+                     override=[
+                         dict(name='out_conv_cls'),
+                         dict(name='out_conv_reg')
+                     ]),
+                 **kwargs):
+        old_keys = [
+            'text_repr_type', 'decoding_type', 'num_reconstr_points', 'alpha',
+            'beta', 'score_thr'
+        ]
+        for key in old_keys:
+            if kwargs.get(key, None):
+                warnings.warn(
+                    f'{key} is deprecated, please specify '
+                    f'it in postprocessor config dict', UserWarning)
         BaseModule.__init__(self, init_cfg=init_cfg)
         loss['fourier_degree'] = fourier_degree
         postprocessor['fourier_degree'] = fourier_degree

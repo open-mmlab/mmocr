@@ -23,9 +23,6 @@ class DBPostprocessor(BasePostprocessor):
             predicted.
         unclip_ratio (float): The unclip ratio for text regions dilation.
         max_candidates (int): The maximum candidate number.
-
-    Returns:
-        boundaries: (list[list[float]]): The predicted text boundaries.
     """
 
     def __init__(self,
@@ -43,6 +40,13 @@ class DBPostprocessor(BasePostprocessor):
         self.max_candidates = max_candidates
 
     def __call__(self, preds):
+        """
+        Args:
+            preds (Tensor): Prediction map with shape :math:`(C, H, W)`.
+
+        Returns:
+            list[list[float]]: The predicted text boundaries.
+        """
         assert preds.dim() == 3
 
         prob_map = preds[0, :, :]

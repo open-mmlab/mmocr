@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -37,7 +39,8 @@ class DRRGHead(BaseHead, BaseModule):
             text center region.
         local_graph_thr (float): The threshold to filter identical local
             graphs.
-        loss (dict): The config of loss that DRRGHead uses.
+        loss (dict): The config of loss that DRRGHead uses..
+        postprocessor (dict): Config of postprocessor for Drrg.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
@@ -66,7 +69,14 @@ class DRRGHead(BaseHead, BaseModule):
                      type='Normal',
                      override=dict(name='out_conv'),
                      mean=0,
-                     std=0.01)):
+                     std=0.01),
+                 **kwargs):
+        old_keys = ['text_repr_type', 'decoding_type', 'link_thr']
+        for key in old_keys:
+            if kwargs.get(key, None):
+                warnings.warn(
+                    f'{key} is deprecated, please specify '
+                    f'it in postprocessor config dict', UserWarning)
         BaseModule.__init__(self, init_cfg=init_cfg)
         BaseHead.__init__(self, loss, postprocessor)
 

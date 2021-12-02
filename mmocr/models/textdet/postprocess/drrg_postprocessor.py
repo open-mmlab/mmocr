@@ -21,7 +21,7 @@ class DrrgPostprocessor(BasePostprocessor):
         Args:
             edges (ndarray): The edge array of shape N * 2, each row is a node
                 index pair that makes up an edge in graph.
-            scores (ndarray): The edge score array.
+            scores (ndarray): The edge score array of shape (N,).
             text_comps (ndarray): The text components.
 
         Returns:

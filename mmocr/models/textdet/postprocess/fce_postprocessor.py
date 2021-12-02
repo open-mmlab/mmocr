@@ -24,9 +24,6 @@ class FCEPostprocessor(BasePostprocessor):
         score_thr (float) : The threshold used to filter out the final
             candidates.
         nms_thr (float) :  The threshold of nms.
-
-    Returns:
-        list[list[float]]: The instance boundary and confidence.
     """
 
     def __init__(self,
@@ -46,6 +43,15 @@ class FCEPostprocessor(BasePostprocessor):
         self.nms_thr = nms_thr
 
     def __call__(self, preds, scale):
+        """
+        Args:
+            preds (list[Tensor]): Classification prediction and regression
+                prediction.
+            scale (float): Scale of current layer.
+
+        Returns:
+            list[list[float]]: The instance boundary and confidence.
+        """
         assert isinstance(preds, list)
         assert len(preds) == 2
 

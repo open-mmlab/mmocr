@@ -26,10 +26,6 @@ class TextSnakePostprocessor(BasePostprocessor):
         disk_overlap_thr (float): The radius overlap threshold for merging
             disks.
         radius_shrink_ratio (float): The shrink ratio of ordered disks radii.
-
-    Returns:
-        boundaries (list[list[float]]): The instance boundary and its
-            instance confidence list.
     """
 
     def __init__(self,
@@ -48,6 +44,13 @@ class TextSnakePostprocessor(BasePostprocessor):
         self.radius_shrink_ratio = radius_shrink_ratio
 
     def __call__(self, preds):
+        """
+        Args:
+            preds (Tensor): Prediction map with shape :math:`(C, H, W)`.
+
+        Returns:
+            list[list[float]]: The instance boundary and its confidence.
+        """
         assert preds.dim() == 3
 
         preds[:2, :, :] = torch.sigmoid(preds[:2, :, :])

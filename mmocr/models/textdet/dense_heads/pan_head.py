@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -38,6 +40,13 @@ class PANHead(BaseHead, BaseModule):
                      std=0.01,
                      override=dict(name='out_conv')),
                  **kwargs):
+        old_keys = ['text_repr_type', 'decoding_type']
+        for key in old_keys:
+            if kwargs.get(key, None):
+                warnings.warn(
+                    f'{key} is deprecated, please specify '
+                    f'it in postprocessor config dict', UserWarning)
+
         BaseModule.__init__(self, init_cfg=init_cfg)
         BaseHead.__init__(self, loss, postprocessor)
 

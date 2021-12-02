@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
+
 import torch
 import torch.nn as nn
 from mmcv.runner import BaseModule, Sequential
@@ -33,8 +35,14 @@ class DBHead(BaseHead, BaseModule):
                 dict(type='Constant', layer='BatchNorm', val=1., bias=1e-4)
             ],
             train_cfg=None,
-            test_cfg=None):
-
+            test_cfg=None,
+            **kwargs):
+        old_keys = ['text_repr_type', 'decoding_type']
+        for key in old_keys:
+            if kwargs.get(key, None):
+                warnings.warn(
+                    f'{key} is deprecated, please specify '
+                    f'it in postprocessor config dict', UserWarning)
         BaseModule.__init__(self, init_cfg=init_cfg)
         BaseHead.__init__(self, loss, postprocessor)
 

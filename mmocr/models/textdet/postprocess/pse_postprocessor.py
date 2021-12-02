@@ -22,9 +22,6 @@ class PSEPostprocessor(BasePostprocessor):
         min_text_avg_confidence (float): The minimal text average confidence.
         min_kernel_area (int): The minimal text kernel area.
         min_text_area (int): The minimal text instance region area.
-
-    Returns:
-        list[list[float]]: The instance boundary and its confidence.
     """
 
     def __init__(self,
@@ -46,6 +43,13 @@ class PSEPostprocessor(BasePostprocessor):
         self.min_text_area = min_text_area
 
     def __call__(self, preds):
+        """
+        Args:
+            preds (Tensor): Prediction map with shape :math:`(C, H, W)`.
+
+        Returns:
+            list[list[float]]: The instance boundary and its confidence.
+        """
         assert preds.dim() == 3
 
         preds = torch.sigmoid(preds)  # text confidence
