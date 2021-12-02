@@ -124,7 +124,7 @@ class DRRGLoss(nn.Module):
 
         Args:
             preds (tuple(Tensor)): The first is the prediction map
-                with shape :math:`(N, C_out, H, W)`.
+                with shape :math:`(N, C_{out}, H, W)`.
                 The second is prediction from GCN module, with
                 shape :math:`(N, 2)`.
                 The third is ground-truth label with shape :math:`(N, 8)`.

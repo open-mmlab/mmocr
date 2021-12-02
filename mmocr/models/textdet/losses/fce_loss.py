@@ -30,17 +30,18 @@ class FCELoss(nn.Module):
 
     def forward(self, preds, _, p3_maps, p4_maps, p5_maps):
         """Compute FCENet loss.
+
         Args:
             preds (list[list[Tensor]]): The outer list indicates images
                 in a batch, and the inner list indicates the classification
                 prediction map (with shape :math:`(N, C, H, W)`) and
                 regression map (with shape :math:`(N, C, H, W)`).
             p3_maps (list[ndarray]): List of leval 3 ground truth target map
-                with shape :math:`(C, H, w)`.
+                with shape :math:`(C, H, W)`.
             p4_maps (list[ndarray]): List of leval 4 ground truth target map
-                with shape :math:`(C, H, w)`.
+                with shape :math:`(C, H, W)`.
             p5_maps (list[ndarray]): List of leval 5 ground truth target map
-                with shape :math:`(C, H, w)`.
+                with shape :math:`(C, H, W)`.
 
         Returns:
             dict:  A loss dict with ``loss_text``, ``loss_center``,
