@@ -94,7 +94,7 @@ class FCEHead(HeadMixin, BaseModule):
         """
         Args:
             feats (list[Tensor]): Each tensor has the shape of :math:`(N, C_i,
-                W_i, H_i)`.
+                H_i, W_i)`.
 
         Returns:
             list[[Tensor, Tensor]]: Each pair of tensors corresponds to the
