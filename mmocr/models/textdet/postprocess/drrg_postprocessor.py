@@ -12,7 +12,7 @@ class DrrgPostprocessor(BasePostprocessor):
         link_thr (float): The edge score threshold.
     """
 
-    def __init__(self, link_thr):
+    def __init__(self, link_thr, **kwargs):
         assert isinstance(link_thr, float)
         self.link_thr = link_thr
 

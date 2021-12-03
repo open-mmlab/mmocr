@@ -33,7 +33,8 @@ class TextSnakePostprocessor(BasePostprocessor):
                  min_center_region_confidence=0.2,
                  min_center_area=30,
                  disk_overlap_thr=0.03,
-                 radius_shrink_ratio=1.03):
+                 radius_shrink_ratio=1.03,
+                 **kwargs):
         super().__init__(text_repr_type)
         assert text_repr_type == 'poly'
         self.min_text_region_confidence = min_text_region_confidence

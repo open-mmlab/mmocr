@@ -30,7 +30,8 @@ class DBPostprocessor(BasePostprocessor):
                  min_text_score=0.3,
                  min_text_width=5,
                  unclip_ratio=1.5,
-                 max_candidates=3000):
+                 max_candidates=3000,
+                 **kwargs):
         super().__init__(text_repr_type)
         self.mask_thr = mask_thr
         self.min_text_score = min_text_score

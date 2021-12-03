@@ -33,7 +33,8 @@ class FCEPostprocessor(BasePostprocessor):
                  alpha=1.0,
                  beta=2.0,
                  score_thr=0.3,
-                 nms_thr=0.1):
+                 nms_thr=0.1,
+                 **kwargs):
         super().__init__(text_repr_type)
         self.fourier_degree = fourier_degree
         self.num_reconstr_points = num_reconstr_points

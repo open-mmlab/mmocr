@@ -43,6 +43,7 @@ class TextSnakeHead(BaseHead, BaseModule):
                  **kwargs):
         old_keys = ['text_repr_type', 'decoding_type']
         for key in old_keys:
+            postprocessor.update(dict(key=kwargs.get(key)))
             if kwargs.get(key, None):
                 warnings.warn(
                     f'{key} is deprecated, please specify '

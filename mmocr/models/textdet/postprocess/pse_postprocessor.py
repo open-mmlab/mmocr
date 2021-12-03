@@ -28,7 +28,8 @@ class PSEPostprocessor(BasePostprocessor):
                  min_kernel_confidence=0.5,
                  min_text_avg_confidence=0.85,
                  min_kernel_area=0,
-                 min_text_area=16):
+                 min_text_area=16,
+                 **kwargs):
         super().__init__(text_repr_type)
 
         assert 0 <= min_kernel_confidence <= 1

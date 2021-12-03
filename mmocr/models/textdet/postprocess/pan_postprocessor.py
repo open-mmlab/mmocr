@@ -27,7 +27,8 @@ class PANPostprocessor(BasePostprocessor):
                  min_text_confidence=0.5,
                  min_kernel_confidence=0.5,
                  min_text_avg_confidence=0.85,
-                 min_text_area=16):
+                 min_text_area=16,
+                 **kwargs):
         super().__init__(text_repr_type)
 
         self.min_text_confidence = min_text_confidence
