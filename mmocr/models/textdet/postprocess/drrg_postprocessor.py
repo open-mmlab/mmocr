@@ -5,7 +5,7 @@ from .wrapper import (clusters2labels, comps2boundaries, connected_components,
 
 
 @POSTPROCESSOR.register_module()
-class DrrgPostprocessor(BasePostprocessor):
+class DRRGPostprocessor(BasePostprocessor):
     """Merge text components and construct boundaries of text instances.
 
     Args:

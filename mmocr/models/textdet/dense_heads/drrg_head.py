@@ -62,7 +62,7 @@ class DRRGHead(BaseHead, BaseModule):
                  center_region_area_thr=50,
                  local_graph_thr=0.7,
                  loss=dict(type='DRRGLoss'),
-                 postprocessor=dict(type='DrrgPostprocessor', link_thr=0.85),
+                 postprocessor=dict(type='DRRGPostprocessor', link_thr=0.85),
                  train_cfg=None,
                  test_cfg=None,
                  init_cfg=dict(
