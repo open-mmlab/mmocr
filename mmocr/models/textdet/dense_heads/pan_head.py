@@ -47,7 +47,9 @@ class PANHead(BaseHead, BaseModule):
                 postprocessor.update(dict(key=kwargs.get(key)))
                 warnings.warn(
                     f'{key} is deprecated, please specify '
-                    f'it in postprocessor config dict', UserWarning)
+                    'it in postprocessor config dict. See '
+                    'https://github.com/open-mmlab/mmocr/pull/640',
+                    ' for details.', UserWarning)
 
         BaseModule.__init__(self, init_cfg=init_cfg)
         BaseHead.__init__(self, loss, postprocessor)
