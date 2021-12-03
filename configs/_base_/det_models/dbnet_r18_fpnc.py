@@ -14,8 +14,8 @@ model = dict(
         type='FPNC', in_channels=[64, 128, 256, 512], lateral_channels=256),
     bbox_head=dict(
         type='DBHead',
-        text_repr_type='quad',
         in_channels=256,
-        loss=dict(type='DBLoss', alpha=5.0, beta=10.0, bbce_loss=True)),
+        loss=dict(type='DBLoss', alpha=5.0, beta=10.0, bbce_loss=True),
+        postprocessor=dict(type='DBPostprocessor', text_repr_type='quad')),
     train_cfg=None,
     test_cfg=None)

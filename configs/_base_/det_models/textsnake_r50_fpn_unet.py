@@ -15,7 +15,8 @@ model = dict(
     bbox_head=dict(
         type='TextSnakeHead',
         in_channels=32,
-        text_repr_type='poly',
-        loss=dict(type='TextSnakeLoss')),
+        loss=dict(type='TextSnakeLoss'),
+        postprocessor=dict(
+            type='TextSnakePostprocessor', text_repr_type='poly')),
     train_cfg=None,
     test_cfg=None)
