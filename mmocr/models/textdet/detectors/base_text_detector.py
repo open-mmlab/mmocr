@@ -6,7 +6,7 @@ import mmcv
 from mmocr.core import imshow_pred_boundary
 
 
-class BaseDetector:
+class BaseTextDetector:
     """Base class for text detector, only to show results.
 
     Args:

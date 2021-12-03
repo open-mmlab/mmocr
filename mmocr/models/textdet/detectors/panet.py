@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmocr.models.builder import DETECTORS
-from .base_detector import BaseDetector
+from .base_text_detector import BaseTextDetector
 from .single_stage_text_detector import SingleStageTextDetector
 
 
 @DETECTORS.register_module()
-class PANet(BaseDetector, SingleStageTextDetector):
+class PANet(BaseTextDetector, SingleStageTextDetector):
     """The class for implementing PANet text detector:
 
     Efficient and Accurate Arbitrary-Shaped Text Detection with Pixel
@@ -24,4 +24,4 @@ class PANet(BaseDetector, SingleStageTextDetector):
         SingleStageTextDetector.__init__(self, backbone, neck, bbox_head,
                                          train_cfg, test_cfg, pretrained,
                                          init_cfg)
-        BaseDetector.__init__(self, show_score)
+        BaseTextDetector.__init__(self, show_score)

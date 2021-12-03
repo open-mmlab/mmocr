@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmocr.models.builder import DETECTORS
-from .base_detector import BaseDetector
+from .base_text_detector import BaseTextDetector
 from .single_stage_text_detector import SingleStageTextDetector
 
 
 @DETECTORS.register_module()
-class FCENet(BaseDetector, SingleStageTextDetector):
+class FCENet(BaseTextDetector, SingleStageTextDetector):
     """The class for implementing FCENet text detector
     FCENet(CVPR2021): Fourier Contour Embedding for Arbitrary-shaped Text
         Detection
@@ -25,7 +25,7 @@ class FCENet(BaseDetector, SingleStageTextDetector):
         SingleStageTextDetector.__init__(self, backbone, neck, bbox_head,
                                          train_cfg, test_cfg, pretrained,
                                          init_cfg)
-        BaseDetector.__init__(self, show_score)
+        BaseTextDetector.__init__(self, show_score)
 
     def simple_test(self, img, img_metas, rescale=False):
         x = self.extract_feat(img)
