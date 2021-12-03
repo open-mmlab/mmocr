@@ -56,12 +56,19 @@ class FCEHead(BaseHead, BaseModule):
         ]
         for key in old_keys:
             if kwargs.get(key, None):
-                postprocessor.update(dict(key=kwargs.get(key)))
+                postprocessor[key] = kwargs.get(key)
                 warnings.warn(
                     f'{key} is deprecated, please specify '
                     'it in postprocessor config dict. See '
-                    'https://github.com/open-mmlab/mmocr/pull/640',
+                    'https://github.com/open-mmlab/mmocr/pull/640'
                     ' for details.', UserWarning)
+        if kwargs.get('num_sample', None):
+            loss['num_sample'] = kwargs.get('num_sample')
+            warnings.warn(
+                'num_sample is deprecated, please specify '
+                'it in loss config dict. See '
+                'https://github.com/open-mmlab/mmocr/pull/640'
+                ' for details.', UserWarning)
         BaseModule.__init__(self, init_cfg=init_cfg)
         loss['fourier_degree'] = fourier_degree
         postprocessor['fourier_degree'] = fourier_degree

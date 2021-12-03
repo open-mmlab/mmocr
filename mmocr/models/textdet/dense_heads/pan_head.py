@@ -44,11 +44,11 @@ class PANHead(BaseHead, BaseModule):
         old_keys = ['text_repr_type', 'decoding_type']
         for key in old_keys:
             if kwargs.get(key, None):
-                postprocessor.update(dict(key=kwargs.get(key)))
+                postprocessor[key] = kwargs.get(key)
                 warnings.warn(
                     f'{key} is deprecated, please specify '
                     'it in postprocessor config dict. See '
-                    'https://github.com/open-mmlab/mmocr/pull/640',
+                    'https://github.com/open-mmlab/mmocr/pull/640'
                     ' for details.', UserWarning)
 
         BaseModule.__init__(self, init_cfg=init_cfg)
