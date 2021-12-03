@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os
@@ -508,9 +509,14 @@ class MMOCR:
         img_tensor = data['img'].data
         img_meta = data['img_metas'].data
         gt_bboxes = data['gt_bboxes'].data.numpy().tolist()
-        img = tensor2imgs(img_tensor.unsqueeze(0),
-                          **img_meta['img_norm_cfg'])[0]
-        h, w, _ = img_meta['img_shape']
+        if img_tensor.dtype == torch.uint8:
+            # The img tensor is the raw input not being normalized
+            # (For SDMGR non-visual)
+            img = img_tensor.cpu().numpy().transpose(1, 2, 0)
+        else:
+            img = tensor2imgs(
+                img_tensor.unsqueeze(0), **img_meta.get('img_norm_cfg', {}))[0]
+        h, w, _ = img_meta.get('img_shape', img.shape)
         img_show = img[:h, :w, :]
         model.show_result(
             img_show, result, gt_bboxes, show=show, out_file=out_file)
@@ -593,6 +599,10 @@ class MMOCR:
                         min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y
                     ]
                 ann_info = kie_dataset._parse_anno_info(annotations)
+                ann_info['ori_bboxes'] = ann_info.get('ori_bboxes',
+                                                      ann_info['bboxes'])
+                ann_info['gt_bboxes'] = ann_info.get('gt_bboxes',
+                                                     ann_info['bboxes'])
                 kie_result, data = model_inference(
                     kie_model,
                     arr,
