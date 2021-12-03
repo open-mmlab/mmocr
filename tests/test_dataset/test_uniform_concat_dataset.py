@@ -27,9 +27,19 @@ def test_dataset_warpper():
     train2 = {key: value for key, value in train1.items()}
     train2['pipeline'] = pipeline2
 
+    # test pipeline is 1d list
     uniform_concat_dataset = UniformConcatDataset(
         datasets=[train1, train2], pipeline=pipeline1)
 
     assert len(uniform_concat_dataset) == 2 * len(list_from_file(ann_file))
     assert len(uniform_concat_dataset.datasets[0].pipeline.transforms) != len(
         uniform_concat_dataset.datasets[1].pipeline.transforms)
+
+    # test pipeline is None
+    tmp_dataset = UniformConcatDataset(datasets=[train2], pipeline=None)
+    assert len(tmp_dataset.datasets[0].pipeline.transforms) == len(pipeline2)
+
+    # test pipeline is 2d list
+    tmp_dataset = UniformConcatDataset(
+        datasets=[train1, train2], pipeline=[pipeline1, pipeline2])
+    assert len(tmp_dataset.datasets[0].pipeline.transforms) == len(pipeline1)
