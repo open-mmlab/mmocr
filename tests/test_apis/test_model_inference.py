@@ -8,17 +8,16 @@ from mmcv.image import imread
 from mmocr.apis.inference import init_detector, model_inference
 from mmocr.datasets import build_dataset  # noqa: F401
 from mmocr.models import build_detector  # noqa: F401
+from mmocr.utils import revert_sync_batchnorm
 
 
 def build_model(config_file):
     device = 'cpu'
 
     cfg = Config.fromfile(config_file)
-    if cfg.model.get('backbone', False):
-        if cfg.model.backbone.type == 'mmdet.ResNet':
-            cfg.model.backbone.norm_cfg = dict(type='BN', requires_grad=True)
 
     model = init_detector(cfg, checkpoint=None, device=device)
+    model = revert_sync_batchnorm(model)
 
     if model.cfg.data.test['type'] == 'ConcatDataset':
         model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
