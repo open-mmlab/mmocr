@@ -2,7 +2,6 @@
 import os
 
 import pytest
-from mmcv import Config
 from mmcv.image import imread
 
 from mmocr.apis.inference import init_detector, model_inference
@@ -13,10 +12,7 @@ from mmocr.utils import revert_sync_batchnorm
 
 def build_model(config_file):
     device = 'cpu'
-
-    cfg = Config.fromfile(config_file)
-
-    model = init_detector(cfg, checkpoint=None, device=device)
+    model = init_detector(config_file, checkpoint=None, device=device)
     model = revert_sync_batchnorm(model)
 
     if model.cfg.data.test['type'] == 'ConcatDataset':
