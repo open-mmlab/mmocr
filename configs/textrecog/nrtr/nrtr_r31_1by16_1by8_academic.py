@@ -23,8 +23,8 @@ model = dict(
         channels=[32, 64, 128, 256, 512, 512],
         stage4_pool_cfg=dict(kernel_size=(2, 1), stride=(2, 1)),
         last_stage_pool=True),
-    encoder=dict(type='TFEncoder'),
-    decoder=dict(type='TFDecoder'),
+    encoder=dict(type='NRTREncoder'),
+    decoder=dict(type='NRTRDecoder'),
     loss=dict(type='TFLoss'),
     label_convertor=label_convertor,
     max_seq_len=40)
@@ -32,8 +32,6 @@ model = dict(
 data = dict(
     samples_per_gpu=128,
     workers_per_gpu=4,
-    val_dataloader=dict(samples_per_gpu=1),
-    test_dataloader=dict(samples_per_gpu=1),
     train=dict(
         type='UniformConcatDataset',
         datasets=train_list,
