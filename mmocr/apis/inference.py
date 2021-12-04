@@ -80,21 +80,16 @@ def disable_text_recog_aug_test(cfg, set_types=None):
                     cfg.data[set_type].pipeline[0],
                     *cfg.data[set_type].pipeline[1].transforms
                 ]
-        elif dataset_type == 'ConcatDataset':
-            for dataset in cfg.data[set_type].datasets:
-                if dataset.pipeline[1].type == 'MultiRotateAugOCR':
-                    warnings.warn(warning_msg)
-                    dataset.pipeline = [
-                        dataset.pipeline[0], *dataset.pipeline[1].transforms
-                    ]
-        elif dataset_type == 'UniformConcatDataset':
-            uniform_pipeline = cfg.data[set_type].pipeline
-            if uniform_pipeline is not None:
-                if uniform_pipeline[1].type == 'MultiRotateAugOCR':
-                    warnings.warn(warning_msg)
-                    cfg.data[set_type].pipeline = [
-                        uniform_pipeline[0], *uniform_pipeline[1].transforms
-                    ]
+        elif dataset_type in ['ConcatDataset', 'UniformConcatDataset']:
+            if dataset_type == 'UniformConcatDataset':
+                uniform_pipeline = cfg.data[set_type].pipeline
+                if uniform_pipeline is not None:
+                    if uniform_pipeline[1].type == 'MultiRotateAugOCR':
+                        warnings.warn(warning_msg)
+                        cfg.data[set_type].pipeline = [
+                            uniform_pipeline[0],
+                            *uniform_pipeline[1].transforms
+                        ]
             for dataset in cfg.data[set_type].datasets:
                 if dataset.pipeline is not None:
                     if dataset.pipeline[1].type == 'MultiRotateAugOCR':
