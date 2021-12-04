@@ -102,7 +102,6 @@ def _get_detector_cfg(fname):
 
 @pytest.mark.parametrize('cfg_file', [
     'textrecog/sar/sar_r31_parallel_decoder_academic.py',
-    'textrecog/sar/sar_r31_parallel_decoder_chinese.py',
     'textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py',
     'textrecog/sar/sar_r31_sequential_decoder_academic.py',
     'textrecog/crnn/crnn_toy_dataset.py',
