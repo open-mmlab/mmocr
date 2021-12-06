@@ -9,22 +9,25 @@ from mmocr.models.textrecog.layers import BasicBlock
 
 @BACKBONES.register_module()
 class ResNetABI(BaseModule):
-    """Implement ResNet backbone for text recognition, modified from
-      `ResNet <https://arxiv.org/pdf/1512.03385.pdf>`_ and
-      `<https://github.com/FangShancheng/ABINet>`_
+    """Implement ResNet backbone for text recognition, modified from `ResNet.
+
+    <https://arxiv.org/pdf/1512.03385.pdf>`_ and
+    `<https://github.com/FangShancheng/ABINet>`_
+
     Args:
         base_channels (int): Number of channels of input image tensor.
-        layers (list[int]): List of BasicBlock number for each stage.
-        channels (list[int]): List of out_channels of Conv2d layer.
+        stem_channels (int): Number of stem channels.
+        arch_settings  (list[int]): List of BasicBlock number for each stage.
+        strides (Sequence[int]): Strides of the first block of each stage.
         out_indices (None | Sequence[int]): Indices of output stages.
         last_stage_pool (bool): If True, add `MaxPool2d` layer to last stage.
     """
 
     def __init__(self,
                  base_channels=3,
+                 stem_channels=32,
                  arch_settings=[3, 4, 6, 6, 3],
-                 channels=[32, 32, 64, 128, 256, 512],
-                 strides=[1, 2, 1, 2, 1, 1],
+                 strides=[2, 1, 2, 1, 1],
                  out_indices=None,
                  last_stage_pool=False,
                  init_cfg=[
@@ -33,11 +36,10 @@ class ResNetABI(BaseModule):
                  ]):
         super().__init__(init_cfg=init_cfg)
         assert isinstance(base_channels, int)
+        assert isinstance(stem_channels, int)
         assert utils.is_type_list(arch_settings, int)
-        assert utils.is_type_list(channels, int)
         assert utils.is_type_list(strides, int)
-        assert len(arch_settings) == len(channels) - 1
-        assert len(arch_settings) == len(strides) - 1
+        assert len(arch_settings) == len(strides)
         assert out_indices is None or isinstance(out_indices, (list, tuple))
         assert isinstance(last_stage_pool, bool)
 
@@ -45,23 +47,30 @@ class ResNetABI(BaseModule):
         self.last_stage_pool = last_stage_pool
 
         self.conv1 = nn.Conv2d(
-            base_channels,
-            channels[0],
-            kernel_size=3,
-            stride=strides[0],
-            padding=1)
-        self.bn1 = nn.BatchNorm2d(channels[0])
+            base_channels, stem_channels, kernel_size=3, stride=1, padding=1)
+        self.bn1 = nn.BatchNorm2d(stem_channels)
         self.relu1 = nn.ReLU(inplace=True)
 
-        self.layers = Sequential(*[
-            self._make_layer(channels[i], channels[i + 1], arch_settings[i],
-                             strides[i + 1])
-            for i in range(len(arch_settings))
-        ])
+        self.layers = [
+            self._make_layer(stem_channels, stem_channels, arch_settings[0],
+                             strides[0])
+        ]
+        for i in range(1, len(arch_settings)):
+            self.layers.append(
+                self._make_layer(stem_channels * 2**(i - 1),
+                                 stem_channels * 2**i, arch_settings[i],
+                                 strides[i]))
+        self.layers = Sequential(*self.layers)
 
     def _make_layer(self, input_channels, output_channels, blocks, stride=1):
         layers = []
-        downsample = stride != 1 or input_channels != output_channels
+        downsample = None
+        if stride != 1 or input_channels != output_channels:
+            downsample = nn.Sequential(
+                nn.Conv2d(
+                    input_channels, output_channels, 1, stride, bias=False),
+                nn.BatchNorm2d(output_channels),
+            )
         layers.append(
             BasicBlock(
                 input_channels,

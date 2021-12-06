@@ -58,10 +58,7 @@ def test_resnet_abi():
         ResNetABI(3, arch_settings=5)
 
     with pytest.raises(AssertionError):
-        ResNetABI(3, channels=5)
-
-    with pytest.raises(AssertionError):
-        ResNetABI(arch_settings=[3, 4, 6, 6], channels=[32, 32, 64, 128, 256])
+        ResNetABI(3, stem_channels=None)
 
     with pytest.raises(AssertionError):
         ResNetABI(arch_settings=[3, 4, 6, 6], strides=[1, 2, 1, 2, 1])
