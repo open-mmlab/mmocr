@@ -18,7 +18,7 @@ You can perform end-to-end OCR on our demo image with one simple line of command
 python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
 ```
 
-Its detection result will be printed out and a new window will pop up with result visualization. More demo and full instructions can be found in [Inference](inference.md).
+Its detection result will be printed out and a new window will pop up with result visualization. More demo and full instructions can be found in [Demo](demo.md).
 
 ## Training
 

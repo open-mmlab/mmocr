@@ -92,7 +92,7 @@ Here we list some configs that are frequently used during training for quick ref
 ```python
 total_epochs = 1200
 data = dict(
-    # Note: User can configure general settings of train, val and test dataloader by specifying them here. However, their values can be overrided in dataloader's config.
+    # Note: User can configure general settings of train, val and test dataloader by specifying them here. However, their values can be overridden in dataloader's config.
     samples_per_gpu=8, # Batch size per GPU
     workers_per_gpu=4, # Number of workers to process data for each GPU
     train_dataloader=dict(samples_per_gpu=10, drop_last=True),   # Batch size = 10, workers_per_gpu = 4

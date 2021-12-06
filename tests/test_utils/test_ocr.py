@@ -301,8 +301,17 @@ def test_readtext(mock_kiedataset):
     recog_res = mmocr_recog.readtext(toy_imgs)
     batch_recog_res = mmocr_recog.readtext(
         toy_imgs, batch_mode=True, single_batch_size=2)
-    assert full_batch_recog_res == recog_res
-    assert batch_recog_res == recog_res
+    full_batch_recog_res.sort(key=lambda x: x['text'])
+    batch_recog_res.sort(key=lambda x: x['text'])
+    recog_res.sort(key=lambda x: x['text'])
+    assert np.all([
+        np.allclose(full_batch_recog_res[i]['score'], recog_res[i]['score'])
+        for i in range(len(full_batch_recog_res))
+    ])
+    assert np.all([
+        np.allclose(batch_recog_res[i]['score'], recog_res[i]['score'])
+        for i in range(len(full_batch_recog_res))
+    ])
 
     # Test export
     with tempfile.TemporaryDirectory() as tmpdirname:

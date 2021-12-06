@@ -15,11 +15,11 @@ class HeadMixin:
 
         Args:
             boundaries (list[list[float]]): The boundary list. Each boundary
-            with size 2k+1 with k>=4.
-            scale_factor(ndarray): The scale factor of size (4,).
+                has :math:`2k+1` elements with :math:`k>=4`.
+            scale_factor (ndarray): The scale factor of size :math:`(4,)`.
 
         Returns:
-            boundaries (list[list[float]]): The scaled boundaries.
+            list[list[float]]: The scaled boundaries.
         """
         assert check_argument.is_2dlist(boundaries)
         assert isinstance(scale_factor, np.ndarray)
@@ -44,7 +44,8 @@ class HeadMixin:
                 if true, and keep the score_maps resolution if false.
 
         Returns:
-            results (dict): The result dict.
+            dict: A dict where boundary results are stored in
+            ``boundary_result``.
         """
 
         assert check_argument.is_type_list(img_metas, dict)
@@ -59,17 +60,20 @@ class HeadMixin:
             boundaries = self.resize_boundary(
                 boundaries,
                 1.0 / self.downsample_ratio / img_metas[0]['scale_factor'])
-        results = dict(boundary_result=boundaries)
+        results = dict(
+            boundary_result=boundaries, filename=img_metas[0]['filename'])
+
         return results
 
     def loss(self, pred_maps, **kwargs):
         """Compute the loss for text detection.
 
         Args:
-            pred_maps (tensor): The input score maps of NxCxHxW.
+            pred_maps (Tensor): The input score maps of shape
+                :math:`(NxCxHxW)`.
 
         Returns:
-            losses (dict): The dict for losses.
+            dict: The dict for losses.
         """
         losses = self.loss_module(pred_maps, self.downsample_ratio, **kwargs)
         return losses

@@ -24,7 +24,7 @@ def process_checkpoint(in_file, out_file):
     # add the code here.
     if 'meta' in checkpoint:
         checkpoint['meta'] = {'CLASSES': 0}
-    torch.save(checkpoint, out_file)
+    torch.save(checkpoint, out_file, _use_new_zipfile_serialization=False)
     sha = subprocess.check_output(['sha256sum', out_file]).decode()
     final_file = out_file.rstrip('.pth') + '-{}.pth'.format(sha[:8])
     subprocess.Popen(['mv', out_file, final_file])

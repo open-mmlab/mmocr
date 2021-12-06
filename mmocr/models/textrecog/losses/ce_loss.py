@@ -13,7 +13,7 @@ class CELoss(nn.Module):
         ignore_index (int): Specifies a target value that is
             ignored and does not contribute to the input gradient.
         reduction (str): Specifies the reduction to apply to the output,
-            should be one of the following: ('none', 'mean', 'sum').
+            should be one of the following: ("none", "mean", "sum").
     """
 
     def __init__(self, ignore_index=-1, reduction='none'):
@@ -31,6 +31,17 @@ class CELoss(nn.Module):
         return outputs.permute(0, 2, 1).contiguous(), targets
 
     def forward(self, outputs, targets_dict, img_metas=None):
+        """
+        Args:
+            outputs (Tensor): A raw logit tensor of shape :math:`(N, T, C)`.
+            targets_dict (dict): A dict with a key ``padded_targets``, which is
+                a tensor of shape :math:`(N, T)`. Each element is the index of
+                a character.
+            img_metas (None): Unused.
+
+        Returns:
+            dict: A loss dict with the key ``loss_ce``.
+        """
         outputs, targets = self.format(outputs, targets_dict)
 
         loss_ce = self.loss_ce(outputs, targets.to(outputs.device))
@@ -49,7 +60,10 @@ class SARLoss(CELoss):
         ignore_index (int): Specifies a target value that is
             ignored and does not contribute to the input gradient.
         reduction (str): Specifies the reduction to apply to the output,
-            should be one of the following: ('none', 'mean', 'sum').
+            should be one of the following: ("none", "mean", "sum").
+
+    Warning:
+        SARLoss assumes that the first input token is always `<SOS>`.
     """
 
     def __init__(self, ignore_index=0, reduction='mean', **kwargs):
@@ -70,7 +84,18 @@ class SARLoss(CELoss):
 
 @LOSSES.register_module()
 class TFLoss(CELoss):
-    """Implementation of loss module for transformer."""
+    """Implementation of loss module for transformer.
+
+    Args:
+        ignore_index (int, optional): The character index to be ignored in
+            loss computation.
+        reduction (str): Type of reduction to apply to the output,
+            should be one of the following: ("none", "mean", "sum").
+        flatten (bool): Whether to flatten the vectors for loss computation.
+
+    Warning:
+        TFLoss assumes that the first input token is always `<SOS>`.
+    """
 
     def __init__(self,
                  ignore_index=-1,

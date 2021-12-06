@@ -10,7 +10,9 @@ Collections:
     Architecture:
       - VeryDeepVgg
       - CRNNDecoder
-  Paper: https://arxiv.org/pdf/1507.05717.pdf
+  Paper:
+    URL: https://arxiv.org/pdf/1507.05717.pdf
+    Title: 'An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition'
   README: configs/textrecog/crnn/README.md
 
 Models:
@@ -20,15 +22,15 @@ Models:
     Metadata:
       Training Data: Syn90k
     Results:
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
           word_acc: 80.5
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: SVT
         Metrics:
           word_acc: 81.5
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
           word_acc: 86.5

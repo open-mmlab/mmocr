@@ -9,7 +9,9 @@ Collections:
     Architecture:
       - ResNet
       - FPNC
-  Paper: https://arxiv.org/pdf/1911.08947.pdf
+  Paper:
+    URL: https://arxiv.org/pdf/1911.08947.pdf
+    Title: 'Real-time Scene Text Detection with Differentiable Binarization'
   README: configs/textdet/dbnet/README.md
 
 Models:
@@ -34,5 +36,5 @@ Models:
       - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
-          hmean-iou: 0.830
-    Weights: https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20210325-91cef9af.pth
+          hmean-iou: 0.840
+    Weights: https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20211025-9fe3b590.pth

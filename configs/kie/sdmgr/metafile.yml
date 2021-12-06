@@ -8,7 +8,9 @@ Collections:
     Architecture:
       - UNet
       - SDMGRHead
-  Paper: https://arxiv.org/abs/2103.14470.pdf
+  Paper:
+    URL: https://arxiv.org/abs/2103.14470.pdf
+    Title: 'Spatial Dual-Modality Graph Reasoning for Key Information Extraction'
   README: configs/kie/sdmgr/README.md
 
 Models:

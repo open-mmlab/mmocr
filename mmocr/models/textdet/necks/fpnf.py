@@ -10,13 +10,20 @@ from mmocr.models.builder import NECKS
 @NECKS.register_module()
 class FPNF(BaseModule):
     """FPN-like fusion module in Shape Robust Text Detection with Progressive
-    Scale Expansion Network."""
+    Scale Expansion Network.
+
+    Args:
+        in_channels (list[int]): A list of number of input channels.
+        out_channels (int): The number of output channels.
+        fusion_type (str): Type of the final feature fusion layer. Available
+            options are "concat" and "add".
+        init_cfg (dict or list[dict], optional): Initialization configs.
+    """
 
     def __init__(self,
                  in_channels=[256, 512, 1024, 2048],
                  out_channels=256,
                  fusion_type='concat',
-                 upsample_ratio=1,
                  init_cfg=dict(
                      type='Xavier', layer='Conv2d', distribution='uniform')):
         super().__init__(init_cfg=init_cfg)
@@ -71,10 +78,19 @@ class FPNF(BaseModule):
             norm_cfg=norm_cfg,
             act_cfg=act_cfg,
             inplace=False)
-        self.upsample_ratio = upsample_ratio
 
     @auto_fp16()
     def forward(self, inputs):
+        """
+        Args:
+            inputs (list[Tensor]): Each tensor has the shape of
+                :math:`(N, C_i, H_i, W_i)`. It usually expects 4 tensors
+                (C2-C5 features) from ResNet.
+
+        Returns:
+            Tensor: A tensor of shape :math:`(N, C_{out}, H_0, W_0)` where
+            :math:`C_{out}` is ``out_channels``.
+        """
         assert len(inputs) == len(self.in_channels)
 
         # build laterals

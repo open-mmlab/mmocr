@@ -14,10 +14,8 @@ from .head_mixin import HeadMixin
 
 @HEADS.register_module()
 class DRRGHead(HeadMixin, BaseModule):
-    """The class for DRRG head: Deep Relational Reasoning Graph Network for
-    Arbitrary Shape Text Detection.
-
-    [https://arxiv.org/abs/2003.07493]
+    """The class for DRRG head: `Deep Relational Reasoning Graph Network for
+    Arbitrary Shape Text Detection <https://arxiv.org/abs/2003.07493>`_.
 
     Args:
         k_at_hops (tuple(int)): The number of i-hop neighbors, i = 1, 2.
@@ -41,6 +39,8 @@ class DRRGHead(HeadMixin, BaseModule):
         local_graph_thr (float): The threshold to filter identical local
             graphs.
         link_thr(float): The threshold for connected components search.
+        loss (dict): The config of loss that DRRGHead uses.
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,
@@ -139,7 +139,22 @@ class DRRGHead(HeadMixin, BaseModule):
         self.gcn = GCN(node_feat_len)
 
     def forward(self, inputs, gt_comp_attribs):
+        """
+        Args:
+            inputs (Tensor): Shape of :math:`(N, C, H, W)`.
+            gt_comp_attribs (list[ndarray]): The padded text component
+                attributes. Shape: (num_component, 8).
 
+        Returns:
+            tuple: Returns (pred_maps, (gcn_pred, gt_labels)).
+
+                - | pred_maps (Tensor): Prediction map with shape
+                    :math:`(N, C_{out}, H, W)`.
+                - | gcn_pred (Tensor): Prediction from GCN module, with
+                    shape :math:`(N, 2)`.
+                - | gt_labels (Tensor): Ground-truth label with shape
+                    :math:`(N, 8)`.
+        """
         pred_maps = self.out_conv(inputs)
         feat_maps = torch.cat([inputs, pred_maps], dim=1)
         node_feats, adjacent_matrices, knn_inds, gt_labels = self.graph_train(
@@ -150,7 +165,22 @@ class DRRGHead(HeadMixin, BaseModule):
         return pred_maps, (gcn_pred, gt_labels)
 
     def single_test(self, feat_maps):
+        r"""
+        Args:
+            feat_maps (Tensor): Shape of :math:`(N, C, H, W)`.
 
+        Returns:
+            tuple: Returns (edge, score, text_comps).
+
+                - | edge (ndarray): The edge array of shape :math:`(N, 2)`
+                    where each row is a pair of text component indices
+                    that makes up an edge in graph.
+                - | score (ndarray): The score array of shape :math:`(N,)`,
+                    corresponding to the edge above.
+                - | text_comps (ndarray): The text components of shape
+                    :math:`(N, 9)` where each row corresponds to one box and
+                    its score: (x1, y1, x2, y2, x3, y3, x4, y4, score).
+        """
         pred_maps = self.out_conv(feat_maps)
         feat_maps = torch.cat([feat_maps, pred_maps], dim=1)
 
@@ -197,7 +227,7 @@ class DRRGHead(HeadMixin, BaseModule):
                 resolution.
 
         Returns:
-            results (dict): The result dict.
+            dict: The result dict containing key `boundary_result`.
         """
 
         assert check_argument.is_type_list(img_metas, dict)

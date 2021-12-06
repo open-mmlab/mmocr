@@ -12,6 +12,13 @@ class DBHead(HeadMixin, BaseModule):
     """The class for DBNet head.
 
     This was partially adapted from https://github.com/MhLiao/DB
+
+    Args:
+        in_channels (int): The number of input channels of the db head.
+        decoding_type (str): The type of decoder for dbnet.
+        text_repr_type (str): Boundary encoding type 'poly' or 'quad'.
+        downsample_ratio (float): The downsample ratio of ground truths.
+        loss (dict): The type of loss for dbnet.
     """
 
     def __init__(self,
@@ -28,15 +35,6 @@ class DBHead(HeadMixin, BaseModule):
                      dict(
                          type='Constant', layer='BatchNorm', val=1., bias=1e-4)
                  ]):
-        """Initialization.
-
-        Args:
-            in_channels (int): The number of input channels of the db head.
-            decoding_type (str): The type of decoder for dbnet.
-            text_repr_type (str): Boundary encoding type 'poly' or 'quad'.
-            downsample_ratio (float): The downsample ratio of ground truths.
-            loss (dict): The type of loss for dbnet.
-        """
         super().__init__(init_cfg=init_cfg)
 
         assert isinstance(in_channels, int)
@@ -63,6 +61,13 @@ class DBHead(HeadMixin, BaseModule):
         return torch.reciprocal(1.0 + torch.exp(-k * (prob_map - thr_map)))
 
     def forward(self, inputs):
+        """
+        Args:
+            inputs (Tensor): Shape (batch_size, hidden_size, h, w).
+
+        Returns:
+            Tensor: A tensor of the same shape as input.
+        """
         prob_map = self.binarize(inputs)
         thr_map = self.threshold(inputs)
         binary_map = self.diff_binarize(prob_map, thr_map, k=50)
