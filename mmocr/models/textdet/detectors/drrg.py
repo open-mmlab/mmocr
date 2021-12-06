@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmocr.models.builder import DETECTORS
-from .base_text_detector import BaseTextDetector
 from .single_stage_text_detector import SingleStageTextDetector
+from .text_detector_mixin import TextDetectorMixin
 
 
 @DETECTORS.register_module()
-class DRRG(BaseTextDetector, SingleStageTextDetector):
+class DRRG(TextDetectorMixin, SingleStageTextDetector):
     """The class for implementing DRRG text detector. Deep Relational Reasoning
     Graph Network for Arbitrary Shape Text Detection.
 
@@ -24,7 +24,7 @@ class DRRG(BaseTextDetector, SingleStageTextDetector):
         SingleStageTextDetector.__init__(self, backbone, neck, bbox_head,
                                          train_cfg, test_cfg, pretrained,
                                          init_cfg)
-        BaseTextDetector.__init__(self, show_score)
+        TextDetectorMixin.__init__(self, show_score)
 
     def forward_train(self, img, img_metas, **kwargs):
         """

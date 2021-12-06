@@ -10,11 +10,11 @@ from mmcv.runner import BaseModule
 from mmocr.models.builder import HEADS, build_loss
 from mmocr.models.textdet.modules import GCN, LocalGraphs, ProposalLocalGraphs
 from mmocr.utils import check_argument
-from .base_head import BaseHead
+from .head_mixin import HeadMixin
 
 
 @HEADS.register_module()
-class DRRGHead(BaseHead, BaseModule):
+class DRRGHead(HeadMixin, BaseModule):
     """The class for DRRG head: `Deep Relational Reasoning Graph Network for
     Arbitrary Shape Text Detection <https://arxiv.org/abs/2003.07493>`_.
 
@@ -81,7 +81,7 @@ class DRRGHead(BaseHead, BaseModule):
                     'https://github.com/open-mmlab/mmocr/pull/640'
                     ' for details.', UserWarning)
         BaseModule.__init__(self, init_cfg=init_cfg)
-        BaseHead.__init__(self, loss, postprocessor)
+        HeadMixin.__init__(self, loss, postprocessor)
 
         assert isinstance(in_channels, int)
         assert isinstance(k_at_hops, tuple)

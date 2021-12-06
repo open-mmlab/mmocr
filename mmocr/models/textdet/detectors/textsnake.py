@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmocr.models.builder import DETECTORS
-from .base_text_detector import BaseTextDetector
 from .single_stage_text_detector import SingleStageTextDetector
+from .text_detector_mixin import TextDetectorMixin
 
 
 @DETECTORS.register_module()
-class TextSnake(BaseTextDetector, SingleStageTextDetector):
+class TextSnake(TextDetectorMixin, SingleStageTextDetector):
     """The class for implementing TextSnake text detector: TextSnake: A
     Flexible Representation for Detecting Text of Arbitrary Shapes.
 
@@ -24,4 +24,4 @@ class TextSnake(BaseTextDetector, SingleStageTextDetector):
         SingleStageTextDetector.__init__(self, backbone, neck, bbox_head,
                                          train_cfg, test_cfg, pretrained,
                                          init_cfg)
-        BaseTextDetector.__init__(self, show_score)
+        TextDetectorMixin.__init__(self, show_score)

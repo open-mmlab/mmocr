@@ -8,11 +8,11 @@ from mmcv.runner import BaseModule
 
 from mmocr.models.builder import HEADS
 from mmocr.utils import check_argument
-from .base_head import BaseHead
+from .head_mixin import HeadMixin
 
 
 @HEADS.register_module()
-class PANHead(BaseHead, BaseModule):
+class PANHead(HeadMixin, BaseModule):
     """The class for PANet head.
 
     Args:
@@ -52,7 +52,7 @@ class PANHead(BaseHead, BaseModule):
                     ' for details.', UserWarning)
 
         BaseModule.__init__(self, init_cfg=init_cfg)
-        BaseHead.__init__(self, loss, postprocessor)
+        HeadMixin.__init__(self, loss, postprocessor)
 
         assert check_argument.is_type_list(in_channels, int)
         assert isinstance(out_channels, int)

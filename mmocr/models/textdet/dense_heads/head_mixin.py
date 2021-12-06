@@ -6,7 +6,7 @@ from mmocr.utils import check_argument
 
 
 @HEADS.register_module()
-class BaseHead:
+class HeadMixin:
     """Base head class for text detection, including loss calcalation and
     postprocess.
 

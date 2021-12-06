@@ -6,11 +6,11 @@ import torch.nn as nn
 from mmcv.runner import BaseModule, Sequential
 
 from mmocr.models.builder import HEADS
-from .base_head import BaseHead
+from .head_mixin import HeadMixin
 
 
 @HEADS.register_module()
-class DBHead(BaseHead, BaseModule):
+class DBHead(HeadMixin, BaseModule):
     """The class for DBNet head.
 
     This was partially adapted from https://github.com/MhLiao/DB
@@ -47,7 +47,7 @@ class DBHead(BaseHead, BaseModule):
                     'https://github.com/open-mmlab/mmocr/pull/640'
                     ' for details.', UserWarning)
         BaseModule.__init__(self, init_cfg=init_cfg)
-        BaseHead.__init__(self, loss, postprocessor)
+        HeadMixin.__init__(self, loss, postprocessor)
 
         assert isinstance(in_channels, int)
 

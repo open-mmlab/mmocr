@@ -7,11 +7,11 @@ from mmdet.core import multi_apply
 
 from mmocr.models.builder import HEADS
 from ..postprocess.wrapper import poly_nms
-from .base_head import BaseHead
+from .head_mixin import HeadMixin
 
 
 @HEADS.register_module()
-class FCEHead(BaseHead, BaseModule):
+class FCEHead(HeadMixin, BaseModule):
     """The class for implementing FCENet head.
 
     FCENet(CVPR2021): `Fourier Contour Embedding for Arbitrary-shaped Text
@@ -73,7 +73,7 @@ class FCEHead(BaseHead, BaseModule):
         loss['fourier_degree'] = fourier_degree
         postprocessor['fourier_degree'] = fourier_degree
         postprocessor['nms_thr'] = nms_thr
-        BaseHead.__init__(self, loss, postprocessor)
+        HeadMixin.__init__(self, loss, postprocessor)
 
         assert isinstance(in_channels, int)
 
