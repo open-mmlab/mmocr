@@ -86,6 +86,13 @@ class ResNetABI(BaseModule):
         return Sequential(*layers)
 
     def forward(self, x):
+        """
+        Args:
+            x (Tensor): Image tensor of shape :math:`(N, 3, H, W)`.
+
+        Returns:
+            Tensor: Feature tensor. Its shape depends on ResNetABI's config.
+        """
 
         x = self.conv1(x)
         x = self.bn1(x)
