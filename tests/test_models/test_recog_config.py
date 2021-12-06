@@ -102,11 +102,19 @@ def _get_detector_cfg(fname):
 
 @pytest.mark.parametrize('cfg_file', [
     'textrecog/sar/sar_r31_parallel_decoder_academic.py',
+    'textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py',
+    'textrecog/sar/sar_r31_sequential_decoder_academic.py',
+    'textrecog/crnn/crnn_toy_dataset.py',
     'textrecog/crnn/crnn_academic_dataset.py',
     'textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py',
+    'textrecog/nrtr/nrtr_modality_transform_academic.py',
+    'textrecog/nrtr/nrtr_modality_transform_toy_dataset.py',
+    'textrecog/nrtr/nrtr_r31_1by8_1by4_academic.py',
     'textrecog/robust_scanner/robustscanner_r31_academic.py',
     'textrecog/seg/seg_r31_1by16_fpnocr_academic.py',
-    'textrecog/satrn/satrn_academic.py'
+    'textrecog/seg/seg_r31_1by16_fpnocr_toy_dataset.py',
+    'textrecog/satrn/satrn_academic.py', 'textrecog/satrn/satrn_small.py',
+    'textrecog/tps/crnn_tps_academic_dataset.py'
 ])
 def test_recognizer_pipeline(cfg_file):
     model = _get_detector_cfg(cfg_file)

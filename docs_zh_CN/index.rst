@@ -5,11 +5,27 @@
 
 .. toctree::
    :maxdepth: 2
+   :caption: 开始
 
    install.md
    getting_started.md
    demo.md
+   training.md
+   testing.md
    deployment.md
+   model_serving.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 配置系统
+
+   dataset_types.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 教程
+
+   tutorials/kie_closeset_openset.md
 
 .. toctree::
    :maxdepth: 2
@@ -25,12 +41,16 @@
    :maxdepth: 2
    :caption: 数据集
 
-   datasets.md
+   datasets/det.md
+   datasets/recog.md
+   datasets/kie.md
+   datasets/ner.md
 
 .. toctree::
    :maxdepth: 2
-   :caption: 记录
+   :caption: 杂项
 
+   tools.md
    changelog.md
 
 .. toctree::

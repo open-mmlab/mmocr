@@ -8,10 +8,19 @@ from . import HeadMixin
 
 @HEADS.register_module()
 class TextSnakeHead(HeadMixin, BaseModule):
-    """The class for TextSnake head: TextSnake: A Flexible Representation for
-    Detecting Text of Arbitrary Shapes.
+    """The class for TextSnake head.
 
-    [https://arxiv.org/abs/1807.01544]
+    TextSnake: `A Flexible Representation for Detecting Text of Arbitrary
+    Shapes <https://arxiv.org/abs/1807.01544>`_.
+
+    Args:
+        in_channels (int): Number of input channels.
+        decoding_type (str): Decoding type. It usually should not be changed.
+        text_repr_type (str): Use polygon or quad to represent. Available
+            options are "poly" or "quad".
+        loss (dict): Configuration dictionary for loss type.
+        train_cfg, test_cfg: Depreciated.
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,
@@ -46,5 +55,14 @@ class TextSnakeHead(HeadMixin, BaseModule):
             padding=0)
 
     def forward(self, inputs):
+        """
+        Args:
+            inputs (Tensor): Shape :math:`(N, C_{in}, H, W)`, where
+                :math:`C_{in}` is ``in_channels``. :math:`H` and :math:`W`
+                should be the same as the input of backbone.
+
+        Returns:
+            Tensor: A tensor of shape :math:`(N, 5, H, W)`.
+        """
         outputs = self.out_conv(inputs)
         return outputs

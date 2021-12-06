@@ -37,35 +37,6 @@ def _convert_batchnorm(module):
     return module_output
 
 
-def _update_input_img(img_list, img_meta_list, update_ori_shape=False):
-    """update img and its meta list."""
-    N, C, H, W = img_list[0].shape
-    img_meta = img_meta_list[0][0]
-    img_shape = (H, W, C)
-    if update_ori_shape:
-        ori_shape = img_shape
-    else:
-        ori_shape = img_meta['ori_shape']
-    pad_shape = img_shape
-    new_img_meta_list = [[{
-        'img_shape':
-        img_shape,
-        'ori_shape':
-        ori_shape,
-        'pad_shape':
-        pad_shape,
-        'filename':
-        img_meta['filename'],
-        'scale_factor':
-        np.array(
-            (img_shape[1] / ori_shape[1], img_shape[0] / ori_shape[0]) * 2),
-        'flip':
-        False,
-    } for _ in range(N)]]
-
-    return img_list, new_img_meta_list
-
-
 def _prepare_data(cfg, imgs):
     """Inference image(s) with the detector.
 
@@ -95,27 +66,27 @@ def _prepare_data(cfg, imgs):
     cfg.data.test.pipeline = replace_ImageToTensor(cfg.data.test.pipeline)
     test_pipeline = Compose(cfg.data.test.pipeline)
 
-    datas = []
+    data = []
     for img in imgs:
         # prepare data
         if is_ndarray:
             # directly add img
-            data = dict(img=img)
+            datum = dict(img=img)
         else:
             # add information into dict
-            data = dict(img_info=dict(filename=img), img_prefix=None)
+            datum = dict(img_info=dict(filename=img), img_prefix=None)
 
         # build the data pipeline
-        data = test_pipeline(data)
+        datum = test_pipeline(datum)
         # get tensor from list to stack for batch mode (text detection)
-        datas.append(data)
+        data.append(datum)
 
-    if isinstance(datas[0]['img'], list) and len(datas) > 1:
+    if isinstance(data[0]['img'], list) and len(data) > 1:
         raise Exception('aug test does not support '
                         f'inference with batch size '
-                        f'{len(datas)}')
+                        f'{len(data)}')
 
-    data = collate(datas, samples_per_gpu=len(imgs))
+    data = collate(data, samples_per_gpu=len(imgs))
 
     # process img_metas
     if isinstance(data['img_metas'], list):
@@ -144,11 +115,11 @@ def pytorch2onnx(model: nn.Module,
                  verify: bool = False,
                  dynamic_export: bool = False,
                  device_id: int = 0):
-    """Export Pytorch model to ONNX model and verify the outputs are same
-    between Pytorch and ONNX.
+    """Export PyTorch model to ONNX model and verify the outputs are same
+    between PyTorch and ONNX.
 
     Args:
-        model (nn.Module): Pytorch model we want to export.
+        model (nn.Module): PyTorch model we want to export.
         model_type (str): Model type, detection or recognition model.
         img_path (str): We need to use this input to execute the model.
         opset_version (int): The onnx op version. Default: 11.
@@ -156,7 +127,7 @@ def pytorch2onnx(model: nn.Module,
         show (bool): Whether visialize final results. Default: False.
         output_file (string): The path to where we store the output ONNX model.
             Default: `tmp.onnx`.
-        verify (bool): Whether compare the outputs between Pytorch and ONNX.
+        verify (bool): Whether compare the outputs between PyTorch and ONNX.
             Default: False.
         dynamic_export (bool): Whether apply dynamic export.
             Default: False.
@@ -176,8 +147,6 @@ def pytorch2onnx(model: nn.Module,
         imgs = imgs[0]
 
     img_list = [img[None, :].to(device) for img in imgs]
-    # update img_meta
-    img_list, img_metas = _update_input_img(img_list, img_metas)
 
     origin_forward = model.forward
     if (model_type == 'det'):
@@ -215,7 +184,8 @@ def pytorch2onnx(model: nn.Module,
             },
             'output': {
                 0: 'batch',
-                3: 'width'
+                1: 'seq_len',
+                2: 'num_classes'
             }
         }
     with torch.no_grad():
@@ -243,9 +213,10 @@ def pytorch2onnx(model: nn.Module,
                 nn.functional.interpolate(_, scale_factor=scale_factor)
                 for _ in img_list
             ]
-
-            # update img_meta
-            img_list, img_metas = _update_input_img(img_list, img_metas)
+            if model_type == 'det':
+                img_metas[0][0][
+                    'scale_factor'] = img_metas[0][0]['scale_factor'] * (
+                        scale_factor * 2)
 
         # check the numerical value
         # get pytorch output
@@ -286,7 +257,7 @@ def pytorch2onnx(model: nn.Module,
                         atol=1e-4):
                     same_diff = 'different'
                     break
-        print('The outputs are {} between Pytorch and ONNX'.format(same_diff))
+        print('The outputs are {} between PyTorch and ONNX'.format(same_diff))
 
         if show:
             onnx_img = onnx_model.show_result(
@@ -346,7 +317,7 @@ def main():
     parser.add_argument(
         '--dynamic-export',
         action='store_true',
-        help='Whether dynamicly export onnx model.',
+        help='Whether dynamically export onnx model.',
         default=False)
     args = parser.parse_args()
 

@@ -1,7 +1,15 @@
 _base_ = [
     '../../_base_/default_runtime.py',
-    '../../_base_/recog_datasets/seg_toy_dataset.py'
+    '../../_base_/recog_datasets/seg_toy_data.py',
+    '../../_base_/recog_models/seg.py',
+    '../../_base_/recog_pipelines/seg_pipeline.py',
 ]
+
+train_list = {{_base_.train_list}}
+test_list = {{_base_.test_list}}
+
+train_pipeline = {{_base_.train_pipeline}}
+test_pipeline = {{_base_.test_pipeline}}
 
 # optimizer
 optimizer = dict(type='Adam', lr=1e-4)
@@ -10,26 +18,22 @@ optimizer_config = dict(grad_clip=None)
 lr_config = dict(policy='step', step=[3, 4])
 total_epochs = 5
 
-label_convertor = dict(
-    type='SegConvertor', dict_type='DICT36', with_unknown=True, lower=True)
+data = dict(
+    samples_per_gpu=8,
+    workers_per_gpu=1,
+    train=dict(
+        type='UniformConcatDataset',
+        datasets=train_list,
+        pipeline=train_pipeline),
+    val=dict(
+        type='UniformConcatDataset',
+        datasets=test_list,
+        pipeline=test_pipeline),
+    test=dict(
+        type='UniformConcatDataset',
+        datasets=test_list,
+        pipeline=test_pipeline))
 
-model = dict(
-    type='SegRecognizer',
-    backbone=dict(
-        type='ResNet31OCR',
-        layers=[1, 2, 5, 3],
-        channels=[32, 64, 128, 256, 512, 512],
-        out_indices=[0, 1, 2, 3],
-        stage4_pool_cfg=dict(kernel_size=2, stride=2),
-        last_stage_pool=True),
-    neck=dict(
-        type='FPNOCR', in_channels=[128, 256, 512, 512], out_channels=256),
-    head=dict(
-        type='SegHead',
-        in_channels=256,
-        upsample_param=dict(scale_factor=2.0, mode='nearest')),
-    loss=dict(
-        type='SegLoss', seg_downsample_ratio=1.0, seg_with_loss_weight=False),
-    label_convertor=label_convertor)
+evaluation = dict(interval=1, metric='acc')
 
 find_unused_parameters = True

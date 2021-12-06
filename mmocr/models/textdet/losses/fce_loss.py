@@ -10,11 +10,10 @@ from mmocr.models.builder import LOSSES
 
 @LOSSES.register_module()
 class FCELoss(nn.Module):
-    """The class for implementing FCENet loss
-    FCENet(CVPR2021): Fourier Contour Embedding for Arbitrary-shaped
-        Text Detection
+    """The class for implementing FCENet loss.
 
-    [https://arxiv.org/abs/2104.10442]
+    FCENet(CVPR2021): `Fourier Contour Embedding for Arbitrary-shaped Text
+    Detection <https://arxiv.org/abs/2104.10442>`_
 
     Args:
         fourier_degree (int) : The maximum Fourier transform degree k.
@@ -30,6 +29,24 @@ class FCELoss(nn.Module):
         self.ohem_ratio = ohem_ratio
 
     def forward(self, preds, _, p3_maps, p4_maps, p5_maps):
+        """Compute FCENet loss.
+
+        Args:
+            preds (list[list[Tensor]]): The outer list indicates images
+                in a batch, and the inner list indicates the classification
+                prediction map (with shape :math:`(N, C, H, W)`) and
+                regression map (with shape :math:`(N, C, H, W)`).
+            p3_maps (list[ndarray]): List of leval 3 ground truth target map
+                with shape :math:`(C, H, W)`.
+            p4_maps (list[ndarray]): List of leval 4 ground truth target map
+                with shape :math:`(C, H, W)`.
+            p5_maps (list[ndarray]): List of leval 5 ground truth target map
+                with shape :math:`(C, H, W)`.
+
+        Returns:
+            dict:  A loss dict with ``loss_text``, ``loss_center``,
+            ``loss_reg_x`` and ``loss_reg_y``.
+        """
         assert isinstance(preds, list)
         assert p3_maps[0].shape[0] == 4 * self.fourier_degree + 5,\
             'fourier degree not equal in FCEhead and FCEtarget'

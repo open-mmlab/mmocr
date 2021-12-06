@@ -8,7 +8,8 @@ from mmocr.models.builder import BACKBONES
 @BACKBONES.register_module()
 class VeryDeepVgg(BaseModule):
     """Implement VGG-VeryDeep backbone for text recognition, modified from
-      `VGG-VeryDeep <https://arxiv.org/pdf/1409.1556.pdf>`_
+    `VGG-VeryDeep <https://arxiv.org/pdf/1409.1556.pdf>`_
+
     Args:
         leaky_relu (bool): Use leakyRelu or not.
         input_channels (int): Number of channels of input image tensor.
@@ -66,6 +67,13 @@ class VeryDeepVgg(BaseModule):
         return self.channels[-1]
 
     def forward(self, x):
+        """
+        Args:
+            x (Tensor): Images of shape :math:`(N, C, H, W)`.
+
+        Returns:
+            Tensor: The feature Tensor of shape :math:`(N, 512, H/32, (W/4+1)`.
+        """
         output = self.cnn(x)
 
         return output

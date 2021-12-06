@@ -11,13 +11,13 @@ from . import BaseTextDetTargets
 
 @PIPELINES.register_module()
 class DBNetTargets(BaseTextDetTargets):
-    """Generate gt shrinked text, gt threshold map, and their effective region
+    """Generate gt shrunk text, gt threshold map, and their effective region
     masks to learn DBNet: Real-time Scene Text Detection with Differentiable
     Binarization [https://arxiv.org/abs/1911.08947]. This was partially adapted
     from https://github.com/MhLiao/DB.
 
     Args:
-        shrink_ratio (float): The area shrinked ratio between text
+        shrink_ratio (float): The area shrunk ratio between text
             kernels and their text masks.
         thr_min (float): The minimum value of the threshold map.
         thr_max (float): The maximum value of the threshold map.

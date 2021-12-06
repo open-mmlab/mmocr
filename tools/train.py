@@ -14,7 +14,7 @@ from mmcv.runner import get_dist_info, init_dist, set_random_seed
 from mmcv.utils import get_git_hash
 
 from mmocr import __version__
-from mmocr.apis import train_detector
+from mmocr.apis import init_random_seed, train_detector
 from mmocr.datasets import build_dataset
 from mmocr.models import build_detector
 from mmocr.utils import collect_env, get_root_logger
@@ -111,10 +111,6 @@ def main():
             cfg.data.train.pipeline[0].update(
                 file_client_args=mc['mc_file_client_args'])
 
-    # import modules from string list.
-    if cfg.get('custom_imports', None):
-        from mmcv.utils import import_modules_from_strings
-        import_modules_from_strings(**cfg['custom_imports'])
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
@@ -171,12 +167,12 @@ def main():
     logger.info(f'Config:\n{cfg.pretty_text}')
 
     # set random seeds
-    if args.seed is not None:
-        logger.info(f'Set random seed to {args.seed}, '
-                    f'deterministic: {args.deterministic}')
-        set_random_seed(args.seed, deterministic=args.deterministic)
-    cfg.seed = args.seed
-    meta['seed'] = args.seed
+    seed = init_random_seed(args.seed)
+    logger.info(f'Set random seed to {seed}, '
+                f'deterministic: {args.deterministic}')
+    set_random_seed(seed, deterministic=args.deterministic)
+    cfg.seed = seed
+    meta['seed'] = seed
     meta['exp_name'] = osp.basename(args.config)
 
     model = build_detector(

@@ -8,7 +8,9 @@ Collections:
     Architecture:
       - ResNet
       - FPNF
-  Paper: https://arxiv.org/abs/1806.02559.pdf
+  Paper:
+    URL: https://arxiv.org/abs/1806.02559.pdf
+    Title: 'Shape Robust Text Detection with Progressive Scale Expansion Network'
   README: configs/textdet/psenet/README.md
 
 Models:

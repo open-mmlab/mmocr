@@ -8,6 +8,7 @@ from .kie_dataset import KIEDataset
 from .ner_dataset import NerDataset
 from .ocr_dataset import OCRDataset
 from .ocr_seg_dataset import OCRSegDataset
+from .openset_kie_dataset import OpensetKIEDataset
 from .pipelines import CustomFormatBundle, DBNetTargets, FCENetTargets
 from .text_det_dataset import TextDetDataset
 from .uniform_concat_dataset import UniformConcatDataset
@@ -18,7 +19,7 @@ __all__ = [
     'DATASETS', 'IcdarDataset', 'build_dataloader', 'build_dataset',
     'BaseDataset', 'OCRDataset', 'TextDetDataset', 'CustomFormatBundle',
     'DBNetTargets', 'OCRSegDataset', 'KIEDataset', 'FCENetTargets',
-    'NerDataset', 'UniformConcatDataset'
+    'NerDataset', 'UniformConcatDataset', 'OpensetKIEDataset'
 ]
 
 __all__ += utils.__all__

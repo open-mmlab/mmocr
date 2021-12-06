@@ -8,7 +8,9 @@ Collections:
     Architecture:
       - ResNet
       - FPN_UNet
-  Paper: https://arxiv.org/abs/2003.07493.pdf
+  Paper:
+    URL: https://arxiv.org/abs/2003.07493.pdf
+    Title: 'Deep Relational Reasoning Graph Network for Arbitrary Shape Text Detection'
   README: configs/textdet/drrg/README.md
 
 Models:
@@ -22,4 +24,4 @@ Models:
         Dataset: CTW1500
         Metrics:
           hmean-iou: 0.840
-    Weights: https://download.openmmlab.com/mmocr/textdet/drrg/drrg_r50_fpn_unet_1200e_ctw1500-1abf4f67.pth
+    Weights: https://download.openmmlab.com/mmocr/textdet/drrg/drrg_r50_fpn_unet_1200e_ctw1500_20211022-fb30b001.pth
