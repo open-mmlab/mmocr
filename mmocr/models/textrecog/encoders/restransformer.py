@@ -5,7 +5,7 @@ from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmcv.runner import BaseModule, ModuleList
 
 from mmocr.models.builder import BACKBONES, build_backbone
-from mmocr.models.textrecog.layers import PositionalEncoding
+from mmocr.models.common.modules import PositionalEncoding
 
 
 @BACKBONES.register_module()
