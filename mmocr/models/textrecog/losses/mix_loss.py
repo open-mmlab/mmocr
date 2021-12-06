@@ -60,8 +60,16 @@ class ABILoss(nn.Module):
     def forward(self, outputs, targets_dict, img_metas=None):
         """
         Args:
-            outputs:
-            loss_weights:
+            outputs (dict[dict[dict]]): A dictionary with at least one of
+                `out_enc`, `out_decs` and `out_fusers` keys, each with `logits`
+                of shape :math:`(N, T, C)`. In particular, `out_decs` is a list
+                of dict representing the intermediate features computed at each
+                language model iteration step.
+            targets_dict (dict): Target dict with key `padded_targets`.
+
+        Returns:
+            dict: The loss dict with key `loss_visual`, `loss_lang` and
+            `loss_fusion`.
         """
         enc_loss = self.ce(outputs['out_enc']['logits'],
                            targets_dict)['loss_ce'] * self.enc_weight
