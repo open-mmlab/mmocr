@@ -4,8 +4,7 @@ import copy
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmcv.runner import BaseModule, ModuleList
 
-from mmocr.models.builder import BACKBONES
-from mmocr.models.textrecog.backbones.resnet_abi import ResNetABI
+from mmocr.models.builder import BACKBONES, build_backbone
 from mmocr.models.textrecog.layers import PositionalEncoding
 
 
@@ -15,11 +14,15 @@ class ResTransformer(BaseModule):
     `<https://github.com/FangShancheng/ABINet>`.
 
     Args:
-        base_channels (int): Number of channels of input image tensor.
-        layers (list[int]): List of BasicBlock number for each stage.
-        channels (list[int]): List of out_channels of Conv2d layer.
-        out_indices (None | Sequence[int]): Indices of output stages.
-        last_stage_pool (bool): If True, add `MaxPool2d` layer to last stage.
+        n_layers (int): Number of attention layers.
+        n_head (int): Number of parallel attention heads.
+        d_model (int): Dimension :math:`D_m` of the input from previous model.
+        d_inner (int): Hidden dimension of feedforward layers.
+        dropout (float): Dropout rate.
+        max_len (int): Maximum output sequence length :math:`T`.
+        res_backbone (dict): Backbone config of ResTransformer. Defaults to
+            dict(type='ResNetABI').
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,
@@ -29,12 +32,13 @@ class ResTransformer(BaseModule):
                  d_inner=2048,
                  dropout=0.1,
                  max_len=8 * 32,
+                 res_backbone=dict(type='ResNetABI'),
                  init_cfg=None):
         super().__init__(init_cfg=init_cfg)
 
         assert d_model % n_head == 0, 'd_model must be divisible by n_head'
 
-        self.resnet = ResNetABI()
+        self.resnet = build_backbone(res_backbone)
         self.pos_encoder = PositionalEncoding(d_model, n_position=max_len)
         encoder_layer = BaseTransformerLayer(
             operation_order=('self_attn', 'norm', 'ffn', 'norm'),
@@ -57,6 +61,13 @@ class ResTransformer(BaseModule):
             [copy.deepcopy(encoder_layer) for _ in range(n_layers)])
 
     def forward(self, images):
+        """
+        Args:
+            images (Tensor): Image tensor of shape :math:`(N, 3, H, W)`.
+
+        Returns:
+            Tensor: Features of shape :math:`(N, C, H, W)`.
+        """
         feature = self.resnet(images)
         n, c, h, w = feature.shape
         feature = feature.view(n, c, -1).transpose(1, 2)  # (n, h*w, c)
