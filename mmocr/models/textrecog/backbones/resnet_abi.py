@@ -15,8 +15,9 @@ class ResNetABI(BaseModule):
     `<https://github.com/FangShancheng/ABINet>`_
 
     Args:
-        base_channels (int): Number of channels of input image tensor.
+        in_channels (int): Number of channels of input image tensor.
         stem_channels (int): Number of stem channels.
+        base_channels (int): Number of base channels.
         arch_settings  (list[int]): List of BasicBlock number for each stage.
         strides (Sequence[int]): Strides of the first block of each stage.
         out_indices (None | Sequence[int]): Indices of output stages.
@@ -24,8 +25,9 @@ class ResNetABI(BaseModule):
     """
 
     def __init__(self,
-                 base_channels=3,
+                 in_channels=3,
                  stem_channels=32,
+                 base_channels=32,
                  arch_settings=[3, 4, 6, 6, 3],
                  strides=[2, 1, 2, 1, 1],
                  out_indices=None,
@@ -35,7 +37,7 @@ class ResNetABI(BaseModule):
                      dict(type='Constant', val=1, layer='BatchNorm2d')
                  ]):
         super().__init__(init_cfg=init_cfg)
-        assert isinstance(base_channels, int)
+        assert isinstance(in_channels, int)
         assert isinstance(stem_channels, int)
         assert utils.is_type_list(arch_settings, int)
         assert utils.is_type_list(strides, int)
@@ -47,22 +49,27 @@ class ResNetABI(BaseModule):
         self.last_stage_pool = last_stage_pool
 
         self.conv1 = nn.Conv2d(
-            base_channels, stem_channels, kernel_size=3, stride=1, padding=1)
+            in_channels, stem_channels, kernel_size=3, stride=1, padding=1)
         self.bn1 = nn.BatchNorm2d(stem_channels)
         self.relu1 = nn.ReLU(inplace=True)
 
         self.layers = [
-            self._make_layer(stem_channels, stem_channels, arch_settings[0],
-                             strides[0])
+            self._make_layer(BasicBlock, stem_channels, base_channels,
+                             arch_settings[0], strides[0])
         ]
         for i in range(1, len(arch_settings)):
             self.layers.append(
-                self._make_layer(stem_channels * 2**(i - 1),
-                                 stem_channels * 2**i, arch_settings[i],
+                self._make_layer(BasicBlock, base_channels * 2**(i - 1),
+                                 base_channels * 2**i, arch_settings[i],
                                  strides[i]))
         self.layers = Sequential(*self.layers)
 
-    def _make_layer(self, input_channels, output_channels, blocks, stride=1):
+    def _make_layer(self,
+                    block,
+                    input_channels,
+                    output_channels,
+                    blocks,
+                    stride=1):
         layers = []
         downsample = None
         if stride != 1 or input_channels != output_channels:
@@ -72,7 +79,8 @@ class ResNetABI(BaseModule):
                 nn.BatchNorm2d(output_channels),
             )
         layers.append(
-            BasicBlock(
+            # BasicBlock(
+            block(
                 input_channels,
                 output_channels,
                 use_conv1x1=True,
@@ -81,7 +89,8 @@ class ResNetABI(BaseModule):
         input_channels = output_channels
         for _ in range(1, blocks):
             layers.append(
-                BasicBlock(input_channels, output_channels, use_conv1x1=True))
+                block(input_channels, output_channels, use_conv1x1=True))
+            # BasicBlock(input_channels, output_channels, use_conv1x1=True))
 
         return Sequential(*layers)
 
