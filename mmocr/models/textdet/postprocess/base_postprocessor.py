@@ -1,3 +1,6 @@
+# Copyright (c) OpenMMLab. All rights reserved.
+
+
 class BasePostprocessor:
 
     def __init__(self, text_repr_type='poly'):

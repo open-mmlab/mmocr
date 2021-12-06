@@ -6,7 +6,7 @@ from mmcv.runner import BaseModule
 from mmdet.core import multi_apply
 
 from mmocr.models.builder import HEADS
-from ..postprocess.wrapper import poly_nms
+from ..postprocess.utils import poly_nms
 from .head_mixin import HeadMixin
 
 

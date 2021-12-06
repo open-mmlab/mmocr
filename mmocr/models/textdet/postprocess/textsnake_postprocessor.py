@@ -7,7 +7,7 @@ from skimage.morphology import skeletonize
 
 from mmocr.models.builder import POSTPROCESSOR
 from .base_postprocessor import BasePostprocessor
-from .wrapper import centralize, fill_hole, merge_disks
+from .utils import centralize, fill_hole, merge_disks
 
 
 @POSTPROCESSOR.register_module()

@@ -5,7 +5,7 @@ import numpy as np
 from mmocr.core import points2boundary
 from mmocr.models.builder import POSTPROCESSOR
 from .base_postprocessor import BasePostprocessor
-from .wrapper import box_score_fast, unclip
+from .utils import box_score_fast, unclip
 
 
 @POSTPROCESSOR.register_module()

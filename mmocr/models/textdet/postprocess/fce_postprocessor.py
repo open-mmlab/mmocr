@@ -4,7 +4,7 @@ import numpy as np
 
 from mmocr.models.builder import POSTPROCESSOR
 from .base_postprocessor import BasePostprocessor
-from .wrapper import fill_hole, fourier2poly, poly_nms
+from .utils import fill_hole, fourier2poly, poly_nms
 
 
 @POSTPROCESSOR.register_module()
