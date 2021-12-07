@@ -16,8 +16,6 @@ class ABILoss(nn.Module):
         dec_weight (float): The weight of decoder loss. Defaults to 1.0.
         fusion_weight (float): The weight of fuser (aligner) loss.
             Defaults to 1.0.
-        ignore_index (int): Specifies a target label that is ignored and
-            does not contribute to the input gradient.
         num_classes (int): Number of unique output language tokens.
 
     Returns:
@@ -28,7 +26,6 @@ class ABILoss(nn.Module):
                  enc_weight=1.0,
                  dec_weight=1.0,
                  fusion_weight=1.0,
-                 ignore_index=-100,
                  num_classes=37,
                  **kwargs):
         assert isinstance(enc_weight, float) or isinstance(enc_weight, int)

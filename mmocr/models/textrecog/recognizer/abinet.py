@@ -63,7 +63,6 @@ class ABINet(EncodeDecodeRecognizer):
 
         # Loss
         assert loss is not None
-        loss.update(ignore_index=self.label_convertor.padding_idx)
         self.loss = build_loss(loss)
 
         self.train_cfg = train_cfg

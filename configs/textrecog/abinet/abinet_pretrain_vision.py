@@ -32,38 +32,25 @@ model = dict(
         num_chars=num_chars,
         max_seq_len=max_seq_len,
         init_cfg=dict(type='Xavier', layer='Conv2d')),
-    decoder=dict(
-        type='ABILanguageDecoder',
-        d_model=512,
-        n_head=8,
-        d_inner=2048,
-        n_layers=4,
-        dropout=0.1,
-        detach_tokens=True,
-        use_self_attn=False,
-        pad_idx=num_chars - 1,
-        num_chars=num_chars,
-        max_seq_len=max_seq_len,
-        init_cfg=None),
-    fuser=dict(
-        type='BaseAlignment',
-        d_model=512,
-        num_chars=num_chars,
-        init_cfg=None,
-        max_seq_len=max_seq_len,
-    ),
     loss=dict(
         type='ABILoss', enc_weight=1.0, dec_weight=1.0, fusion_weight=1.0),
     label_convertor=label_convertor,
     max_seq_len=max_seq_len,
-    iter_size=3)
+    iter_size=1)
 
 # optimizer
-optimizer = dict(type='Adam', lr=4e-4)
-optimizer_config = dict(grad_clip=None)
+optimizer = dict(type='Adam', lr=1e-4)
+optimizer_config = dict(grad_clip=dict(max_norm=20))
 # learning policy
-lr_config = dict(policy='step', step=[5, 6])
-total_epochs = 6
+lr_config = dict(
+    policy='step',
+    step=[16, 18],
+    warmup='linear',
+    warmup_iters=1,
+    warmup_ratio=0.001,
+    warmup_by_epoch=True,
+)
+total_epochs = 20
 
 img_norm_cfg = dict(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 train_pipeline = [
