@@ -49,7 +49,7 @@ def warp_img(src_img,
         src_img (np.array): Image before cropping.
         box (list[float | int]): Coordinates of quadrangle.
     """
-    assert utils.is_type_list(box, float) or utils.is_type_list(box, int)
+    assert utils.is_type_list(box, (float, int))
     assert len(box) == 8
 
     h, w = src_img.shape[:2]
@@ -84,11 +84,7 @@ def warp_img(src_img,
     return dst_img
 
 
-def crop_img(src_img,
-             box,
-             long_edge_pad_ratio=0.4,
-             short_edge_pad_ratio=0.2,
-             debug=False):
+def crop_img(src_img, box, long_edge_pad_ratio=0.4, short_edge_pad_ratio=0.2):
     """Crop text region with their bounding box.
 
     Args:
@@ -99,7 +95,7 @@ def crop_img(src_img,
         short_edge_pad_ratio (float): Box pad ratio for short edge
             corresponding to font size.
     """
-    assert utils.is_type_list(box, float) or utils.is_type_list(box, int)
+    assert utils.is_type_list(box, (float, int))
     assert len(box) == 8
     assert 0. <= long_edge_pad_ratio < 1.0
     assert 0. <= short_edge_pad_ratio < 1.0

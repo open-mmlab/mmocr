@@ -14,10 +14,8 @@ def sort_vertex(points_x, points_y):
         sorted_points_x (list[float]): x of sorted four vertices.
         sorted_points_y (list[float]): y of sorted four vertices.
     """
-    assert utils.is_type_list(points_x, float) or utils.is_type_list(
-        points_x, int)
-    assert utils.is_type_list(points_y, float) or utils.is_type_list(
-        points_y, int)
+    assert utils.is_type_list(points_x, (float, int))
+    assert utils.is_type_list(points_y, (float, int))
     assert len(points_x) == 4
     assert len(points_y) == 4
     vertices = np.stack((points_x, points_y), axis=-1).astype(np.float32)
