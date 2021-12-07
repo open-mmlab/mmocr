@@ -8,9 +8,8 @@ from itertools import compress
 
 import mmcv
 from mmcv.utils import ProgressBar
-from mmdet.apis import init_detector
 
-from mmocr.apis import model_inference
+from mmocr.apis import init_detector, model_inference
 from mmocr.core.evaluation.ocr_metric import eval_ocr_metric
 from mmocr.datasets import build_dataset  # noqa: F401
 from mmocr.models import build_detector  # noqa: F401
@@ -73,10 +72,11 @@ def main():
     wrong_vis_dir = osp.join(args.out_dir, 'wrong')
     mmcv.mkdir_or_exist(wrong_vis_dir)
     img_paths, pred_labels, gt_labels = [], [], []
-    total_img_num = sum([1 for _ in open(args.img_list)])
-    progressbar = ProgressBar(task_num=total_img_num)
+
+    lines = list_from_file(args.img_list)
+    progressbar = ProgressBar(task_num=len(lines))
     num_gt_label = 0
-    for line in list_from_file(args.img_list):
+    for line in lines:
         progressbar.update()
         item_list = line.strip().split()
         img_file = item_list[0]

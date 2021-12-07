@@ -10,7 +10,9 @@ Collections:
       - ResNet
       - FPN
       - RPN
-  Paper: https://arxiv.org/pdf/1703.06870.pdf
+  Paper:
+    URL: https://arxiv.org/pdf/1703.06870.pdf
+    Title: 'Mask R-CNN'
   README: configs/textdet/maskrcnn/README.md
 
 Models:

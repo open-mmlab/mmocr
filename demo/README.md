@@ -70,7 +70,12 @@ results = ocr.readtext(%INPUT_FOLDER_PATH%, output = %OUTPUT_FOLDER_PATH%, batch
 ```shell
 python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
 ```
-*Note: When calling the script from the command line, the script assumes configs are saved in the `configs/` folder. User can customize the directory by specifying the value of `config_dir`. *
+
+:::{note}
+
+When calling the script from the command line, the script assumes configs are saved in the `configs/` folder. User can customize the directory by specifying the value of `config_dir`.
+
+:::
 
 - Python interface:
 ```python
@@ -94,10 +99,16 @@ results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, imshow=True)
 **Instruction:** Perform end-to-end ocr (det + recog) inference first with PS_CTW detection model and SAR recognition model, then run KIE inference with SDMGR model on the ocr result and show the visualization.
 
 - CL interface:
+
 ```shell
 python mmocr/utils/ocr.py demo/demo_kie.jpeg  --det PS_CTW --recog SAR --kie SDMGR --print-result --imshow
 ```
-*Note: When calling the script from the command line, the script assumes configs are saved in the `configs/` folder. User can customize the directory by specifying the value of `config_dir`. *
+
+:::{note}
+
+Note: When calling the script from the command line, the script assumes configs are saved in the `configs/` folder. User can customize the directory by specifying the value of `config_dir`.
+
+:::
 
 - Python interface:
 ```python
@@ -132,7 +143,11 @@ The API has an extensive list of arguments that you can use. The following table
 
 [1]: `kie` is only effective when both text detection and recognition models are specified.
 
-**Note:** User can use default pretrained models by specifying `det` and/or `recog`, which is equivalent to specifying their corresponding `*_config` and `*_ckpt`. However, manually specifying `*_config` and `*_ckpt` will always override values set by `det` and/or `recog`. Similar rules also apply to `kie`, `kie_config` and `kie_ckpt`.
+:::{note}
+
+User can use default pretrained models by specifying `det` and/or `recog`, which is equivalent to specifying their corresponding `*_config` and `*_ckpt`. However, manually specifying `*_config` and `*_ckpt` will always override values set by `det` and/or `recog`. Similar rules also apply to `kie`, `kie_config` and `kie_ckpt`.
+
+:::
 
 ### readtext():
 
@@ -191,11 +206,21 @@ means that `batch_mode` and `print_result` are set to `True`)
 | ------------- | :--------------------------------------------------------------------------------------------------------------------------------: | :------------------: |
 | CRNN          | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |         :x:          |
 | SAR           | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition) |  :heavy_check_mark:  |
+| SAR_CN *          | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition) |  :heavy_check_mark:  |
 | NRTR_1/16-1/8 | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr) |  :heavy_check_mark:  |
 | NRTR_1/8-1/4  | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr) |  :heavy_check_mark:  |
 | RobustScanner | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#robustscanner-dynamically-enhancing-positional-clues-for-robust-text-recognition) |  :heavy_check_mark:  |
+| SATRN | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn) |  :heavy_check_mark:  |
+| SATRN_sm | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn) |  :heavy_check_mark:  |
 | SEG           | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline) |         :x:          |
 | CRNN_TPS      | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#crnn-with-tps-based-stn) |  :heavy_check_mark:  |
+
+:::{warning}
+
+SAR_CN is the only model that supports Chinese character recognition and it requires
+a Chinese dictionary. Please download the dictionary from [here](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#chinese-dataset) for a successful run.
+
+:::
 
 **Key information extraction:**
 

@@ -108,39 +108,70 @@ html_theme_options = {
         },
         {
             'name':
-            '算法库',
+            '文档',
             'children': [
                 {
+                    'name': 'MMCV',
+                    'url': 'https://mmcv.readthedocs.io/zh_CN/latest/',
+                },
+                {
+                    'name': 'MIM',
+                    'url': 'https://openmim.readthedocs.io/en/latest/',
+                },
+                {
                     'name': 'MMAction2',
-                    'url': 'https://github.com/open-mmlab/mmaction2',
+                    'url': 'https://mmaction2.readthedocs.io/zh_CN/latest/',
                 },
                 {
                     'name': 'MMClassification',
-                    'url': 'https://github.com/open-mmlab/mmclassification',
+                    'url':
+                    'https://mmclassification.readthedocs.io/zh_CN/latest/',
+                },
+                {
+                    'name': 'MMDetection',
+                    'url': 'https://mmdetection.readthedocs.io/zh_CN/latest/',
                 },
                 {
                     'name': 'MMDetection3D',
-                    'url': 'https://github.com/open-mmlab/mmdetection3d',
+                    'url':
+                    'https://mmdetection3d.readthedocs.io/zh_CN/latest/',
                 },
                 {
                     'name': 'MMEditing',
-                    'url': 'https://github.com/open-mmlab/mmediting',
+                    'url': 'https://mmediting.readthedocs.io/zh_CN/latest/',
                 },
                 {
                     'name': 'MMGeneration',
-                    'url': 'https://github.com/open-mmlab/mmgeneration',
+                    'url': 'https://mmgeneration.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMOCR',
+                    'url': 'https://mmocr.readthedocs.io/zh_CN/latest/',
                 },
                 {
                     'name': 'MMPose',
-                    'url': 'https://github.com/open-mmlab/mmpose',
+                    'url': 'https://mmpose.readthedocs.io/zh_CN/latest/',
                 },
                 {
                     'name': 'MMSegmentation',
-                    'url': 'https://github.com/open-mmlab/mmsegmentation',
+                    'url':
+                    'https://mmsegmentation.readthedocs.io/zh_CN/latest/',
                 },
                 {
                     'name': 'MMTracking',
-                    'url': 'https://github.com/open-mmlab/mmtracking',
+                    'url': 'https://mmtracking.readthedocs.io/zh_CN/latest/',
+                },
+                {
+                    'name': 'MMFlow',
+                    'url': 'https://mmflow.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMFewShot',
+                    'url': 'https://mmfewshot.readthedocs.io/zh_CN/latest/',
+                },
+                {
+                    'name': 'MMHuman3D',
+                    'url': 'https://mmhuman3d.readthedocs.io/en/latest/',
                 },
             ]
         },
@@ -184,6 +215,7 @@ myst_enable_extensions = ['colon_fence']
 
 
 def builder_inited_handler(app):
+    subprocess.run(['./cp_origin_docs.sh'])
     subprocess.run(['./merge_docs.sh'])
     subprocess.run(['./stats.py'])
 

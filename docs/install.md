@@ -12,7 +12,7 @@
 - [MMCV](https://mmcv.readthedocs.io/en/latest/#installation) >= 1.3.8
 - [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation) >= 2.14.0
 
-We have tested the following versions of OS and softwares:
+We have tested the following versions of OS and software:
 
 - OS: Ubuntu 16.04
 - CUDA: 10.1

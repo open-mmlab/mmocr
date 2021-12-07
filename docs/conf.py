@@ -108,39 +108,68 @@ html_theme_options = {
         },
         {
             'name':
-            'Projects',
+            'Docs',
             'children': [
                 {
+                    'name': 'MMCV',
+                    'url': 'https://mmcv.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MIM',
+                    'url': 'https://openmim.readthedocs.io/en/latest/',
+                },
+                {
                     'name': 'MMAction2',
-                    'url': 'https://github.com/open-mmlab/mmaction2',
+                    'url': 'https://mmaction2.readthedocs.io/en/latest/',
                 },
                 {
                     'name': 'MMClassification',
-                    'url': 'https://github.com/open-mmlab/mmclassification',
+                    'url':
+                    'https://mmclassification.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMDetection',
+                    'url': 'https://mmdetection.readthedocs.io/en/latest/',
                 },
                 {
                     'name': 'MMDetection3D',
-                    'url': 'https://github.com/open-mmlab/mmdetection3d',
+                    'url': 'https://mmdetection3d.readthedocs.io/en/latest/',
                 },
                 {
                     'name': 'MMEditing',
-                    'url': 'https://github.com/open-mmlab/mmediting',
+                    'url': 'https://mmediting.readthedocs.io/en/latest/',
                 },
                 {
                     'name': 'MMGeneration',
-                    'url': 'https://github.com/open-mmlab/mmgeneration',
+                    'url': 'https://mmgeneration.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMOCR',
+                    'url': 'https://mmocr.readthedocs.io/en/latest/',
                 },
                 {
                     'name': 'MMPose',
-                    'url': 'https://github.com/open-mmlab/mmpose',
+                    'url': 'https://mmpose.readthedocs.io/en/latest/',
                 },
                 {
                     'name': 'MMSegmentation',
-                    'url': 'https://github.com/open-mmlab/mmsegmentation',
+                    'url': 'https://mmsegmentation.readthedocs.io/en/latest/',
                 },
                 {
                     'name': 'MMTracking',
-                    'url': 'https://github.com/open-mmlab/mmtracking',
+                    'url': 'https://mmtracking.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMFlow',
+                    'url': 'https://mmflow.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMFewShot',
+                    'url': 'https://mmfewshot.readthedocs.io/en/latest/',
+                },
+                {
+                    'name': 'MMHuman3D',
+                    'url': 'https://mmhuman3d.readthedocs.io/en/latest/',
                 },
             ]
         },

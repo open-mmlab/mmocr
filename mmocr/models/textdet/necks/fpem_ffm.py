@@ -7,7 +7,12 @@ from mmocr.models.builder import NECKS
 
 
 class FPEM(BaseModule):
-    """FPN-like feature fusion module in PANet."""
+    """FPN-like feature fusion module in PANet.
+
+    Args:
+        in_channels (int): Number of input channels.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+    """
 
     def __init__(self, in_channels=128, init_cfg=None):
         super().__init__(init_cfg=init_cfg)
@@ -19,15 +24,23 @@ class FPEM(BaseModule):
         self.down_add3 = SeparableConv2d(in_channels, in_channels, 2)
 
     def forward(self, c2, c3, c4, c5):
+        """
+        Args:
+            c2, c3, c4, c5 (Tensor): Each has the shape of
+                :math:`(N, C_i, H_i, W_i)`.
+
+        Returns:
+            list[Tensor]: A list of 4 tensors of the same shape as input.
+        """
         # upsample
-        c4 = self.up_add1(self._upsample_add(c5, c4))
+        c4 = self.up_add1(self._upsample_add(c5, c4))  # c4 shape
         c3 = self.up_add2(self._upsample_add(c4, c3))
         c2 = self.up_add3(self._upsample_add(c3, c2))
 
         # downsample
         c3 = self.down_add1(self._upsample_add(c3, c2))
         c4 = self.down_add2(self._upsample_add(c4, c3))
-        c5 = self.down_add3(self._upsample_add(c5, c4))
+        c5 = self.down_add3(self._upsample_add(c5, c4))  # c4 / 2
         return c2, c3, c4, c5
 
     def _upsample_add(self, x, y):
@@ -61,7 +74,16 @@ class SeparableConv2d(BaseModule):
 
 @NECKS.register_module()
 class FPEM_FFM(BaseModule):
-    """This code is from https://github.com/WenmuZhou/PAN.pytorch."""
+    """This code is from https://github.com/WenmuZhou/PAN.pytorch.
+
+    Args:
+        in_channels (list[int]): A list of 4 numbers of input channels.
+        conv_out (int): Number of output channels.
+        fpem_repeat (int): Number of FPEM layers before FFM operations.
+        align_corners (bool): The interpolation behaviour in FFM operation,
+            used in :func:`torch.nn.functional.interpolate`.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+    """
 
     def __init__(self,
                  in_channels,
@@ -98,6 +120,18 @@ class FPEM_FFM(BaseModule):
             self.fpems.append(FPEM(conv_out))
 
     def forward(self, x):
+        """
+        Args:
+            x (list[Tensor]): A list of four tensors of shape
+                :math:`(N, C_i, H_i, W_i)`, representing C2, C3, C4, C5
+                features respectively. :math:`C_i` should matches the number in
+                ``in_channels``.
+
+        Returns:
+            list[Tensor]: Four tensors of shape
+            :math:`(N, C_{out}, H_0, W_0)` where :math:`C_{out}` is
+            ``conv_out``.
+        """
         c2, c3, c4, c5 = x
         # reduce channel
         c2 = self.reduce_conv_c2(c2)

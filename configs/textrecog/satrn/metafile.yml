@@ -11,7 +11,9 @@ Collections:
       - ShallowCNN
       - SatrnEncoder
       - TFDecoder
-  Paper: https://arxiv.org/pdf/1910.04396.pdf
+  Paper:
+    URL: https://arxiv.org/pdf/1910.04396.pdf
+    Title: 'On Recognizing Texts of Arbitrary Shapes with 2D Self-Attention'
   README: configs/textrecog/satrn/README.md
 
 Models:
@@ -23,31 +25,31 @@ Models:
         - SynthText
         - Syn90k
     Results:
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
           word_acc: 96.1
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: SVT
         Metrics:
           word_acc: 93.5
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
           word_acc: 95.7
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
           word_acc: 84.1
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: SVTP
         Metrics:
           word_acc: 88.5
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: CT80
         Metrics:
           word_acc: 90.3
-    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_academic_20210809-59c8c92d.pth
+    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_academic_20211009-cb8b1580.pth
 
   - Name: satrn_small
     In Collection: SATRN
@@ -57,28 +59,28 @@ Models:
         - SynthText
         - Syn90k
     Results:
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
           word_acc: 94.7
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: SVT
         Metrics:
           word_acc: 91.3
-      - Task: Regular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
           word_acc: 95.4
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
           word_acc: 81.9
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: SVTP
         Metrics:
           word_acc: 85.9
-      - Task: Irregular Text Recognition
+      - Task: Text Recognition
         Dataset: CT80
         Metrics:
           word_acc: 86.5
-    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_small_20210811-2badf6fc.pth
+    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_small_20211009-2cf13355.pth

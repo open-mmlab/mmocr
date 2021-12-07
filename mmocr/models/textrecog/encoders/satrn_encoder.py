@@ -14,6 +14,18 @@ class SatrnEncoder(BaseEncoder):
     """Implement encoder for SATRN, see `SATRN.
 
     <https://arxiv.org/abs/1910.04396>`_.
+
+    Args:
+        n_layers (int): Number of attention layers.
+        n_head (int): Number of parallel attention heads.
+        d_k (int): Dimension of the key vector.
+        d_v (int): Dimension of the value vector.
+        d_model (int): Dimension :math:`D_m` of the input from previous model.
+        n_position (int): Length of the positional encoding vector. Must be
+            greater than ``max_seq_len``.
+        d_inner (int): Hidden dimension of feedforward layers.
+        dropout (float): Dropout rate.
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,
@@ -42,6 +54,15 @@ class SatrnEncoder(BaseEncoder):
         self.layer_norm = nn.LayerNorm(d_model)
 
     def forward(self, feat, img_metas=None):
+        """
+        Args:
+            feat (Tensor): Feature tensor of shape :math:`(N, D_m, H, W)`.
+            img_metas (dict): A dict that contains meta information of input
+                images. Preferably with the key ``valid_ratio``.
+
+        Returns:
+            Tensor: A tensor of shape :math:`(N, T, D_m)`.
+        """
         valid_ratios = [1.0 for _ in range(feat.size(0))]
         if img_metas is not None:
             valid_ratios = [
@@ -60,8 +81,5 @@ class SatrnEncoder(BaseEncoder):
         for enc_layer in self.layer_stack:
             output = enc_layer(output, h, w, mask)
         output = self.layer_norm(output)
-
-        output = output.permute(0, 2, 1).contiguous()
-        output = output.view(n, self.d_model, h, w)
 
         return output

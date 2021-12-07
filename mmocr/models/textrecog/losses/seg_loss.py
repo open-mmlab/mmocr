@@ -60,6 +60,16 @@ class SegLoss(nn.Module):
         return loss_seg
 
     def forward(self, out_neck, out_head, gt_kernels):
+        """
+        Args:
+            out_neck (None): Unused.
+            out_head (Tensor): The output from head whose shape
+                is :math:`(N, C, H, W)`.
+            gt_kernels (BitmapMasks): The ground truth masks.
+
+        Returns:
+            dict: A loss dictionary with the key ``loss_seg``.
+        """
 
         losses = {}
 

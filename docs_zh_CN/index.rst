@@ -13,6 +13,19 @@
    training.md
    testing.md
    deployment.md
+   model_serving.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 配置系统
+
+   dataset_types.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 教程
+
+   tutorials/kie_closeset_openset.md
 
 .. toctree::
    :maxdepth: 2
@@ -35,16 +48,10 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: 配置系统
-
-   dataset_types.md
-
-.. toctree::
-   :maxdepth: 2
    :caption: 杂项
 
    tools.md
-   ../docs/changelog.md
+   changelog.md
 
 .. toctree::
    :caption: API 参考

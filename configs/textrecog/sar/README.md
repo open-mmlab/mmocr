@@ -1,8 +1,18 @@
 # Show, Attend and Read: A Simple and Strong Baseline for Irregular Text Recognition
 
-## Introduction
+## Abstract
 
-[ALGORITHM]
+<!-- [ABSTRACT] -->
+Recognizing irregular text in natural scene images is challenging due to the large variance in text appearance, such as curvature, orientation and distortion. Most existing approaches rely heavily on sophisticated model designs and/or extra fine-grained annotations, which, to some extent, increase the difficulty in algorithm implementation and data collection. In this work, we propose an easy-to-implement strong baseline for irregular scene text recognition, using off-the-shelf neural network components and only word-level annotations. It is composed of a 31-layer ResNet, an LSTM-based encoder-decoder framework and a 2-dimensional attention module. Despite its simplicity, the proposed method is robust and achieves state-of-the-art performance on both regular and irregular scene text recognition benchmarks.
+
+<!-- [IMAGE] -->
+<div align=center>
+<img src="https://user-images.githubusercontent.com/22607038/142798157-ac68907f-5a8a-473f-a29f-f0532b7fdba0.png"/>
+</div>
+
+## Citation
+
+<!-- [ALGORITHM] -->
 
 ```bibtex
 @inproceedings{li2019show,

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os
@@ -155,7 +156,7 @@ def parse_args():
             Path.cwd()))) and (args.det_config != ''
                                or args.recog_config != ''):
         warnings.warn(
-            'config_dir will be overrided by det-config or recog-config.',
+            'config_dir will be overridden by det-config or recog-config.',
             UserWarning)
     return args
 
@@ -189,19 +190,26 @@ class MMOCR:
                 'dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py',
                 'ckpt':
                 'dbnet/'
-                'dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20210325-91cef9af.pth'
+                'dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20211025-9fe3b590.pth'
             },
             'DRRG': {
-                'config': 'drrg/drrg_r50_fpn_unet_1200e_ctw1500.py',
-                'ckpt': 'drrg/drrg_r50_fpn_unet_1200e_ctw1500-1abf4f67.pth'
+                'config':
+                'drrg/drrg_r50_fpn_unet_1200e_ctw1500.py',
+                'ckpt':
+                'drrg/drrg_r50_fpn_unet_1200e_ctw1500_20211022-fb30b001.pth'
             },
             'FCE_IC15': {
-                'config': 'fcenet/fcenet_r50_fpn_1500e_icdar2015.py',
-                'ckpt': 'fcenet/fcenet_r50_fpn_1500e_icdar2015-d435c061.pth'
+                'config':
+                'fcenet/fcenet_r50_fpn_1500e_icdar2015.py',
+                'ckpt':
+                'fcenet/fcenet_r50_fpn_1500e_icdar2015_20211022-daefb6ed.pth'
             },
             'FCE_CTW_DCNv2': {
-                'config': 'fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500.py',
-                'ckpt': 'fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500-05d740bb.pth'
+                'config':
+                'fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500.py',
+                'ckpt':
+                'fcenet/' +
+                'fcenet_r50dcnv2_fpn_1500e_ctw1500_20211022-e326d7ec.pth'
             },
             'MaskRCNN_CTW': {
                 'config':
@@ -266,14 +274,21 @@ class MMOCR:
                 'config': 'sar/sar_r31_parallel_decoder_academic.py',
                 'ckpt': 'sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth'
             },
+            'SAR_CN': {
+                'config':
+                'sar/sar_r31_parallel_decoder_chinese.py',
+                'ckpt':
+                'sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth'
+            },
             'NRTR_1/16-1/8': {
                 'config': 'nrtr/nrtr_r31_1by16_1by8_academic.py',
-                'ckpt': 'nrtr/nrtr_r31_academic_20210406-954db95e.pth'
+                'ckpt':
+                'nrtr/nrtr_r31_1by16_1by8_academic_20211124-f60cebf4.pth'
             },
             'NRTR_1/8-1/4': {
                 'config': 'nrtr/nrtr_r31_1by8_1by4_academic.py',
                 'ckpt':
-                'nrtr/nrtr_r31_1by8_1by4_academic_20210406-ce16e7cc.pth'
+                'nrtr/nrtr_r31_1by8_1by4_academic_20211123-e1fdb322.pth'
             },
             'RobustScanner': {
                 'config': 'robust_scanner/robustscanner_r31_academic.py',
@@ -495,9 +510,14 @@ class MMOCR:
         img_tensor = data['img'].data
         img_meta = data['img_metas'].data
         gt_bboxes = data['gt_bboxes'].data.numpy().tolist()
-        img = tensor2imgs(img_tensor.unsqueeze(0),
-                          **img_meta['img_norm_cfg'])[0]
-        h, w, _ = img_meta['img_shape']
+        if img_tensor.dtype == torch.uint8:
+            # The img tensor is the raw input not being normalized
+            # (For SDMGR non-visual)
+            img = img_tensor.cpu().numpy().transpose(1, 2, 0)
+        else:
+            img = tensor2imgs(
+                img_tensor.unsqueeze(0), **img_meta.get('img_norm_cfg', {}))[0]
+        h, w, _ = img_meta.get('img_shape', img.shape)
         img_show = img[:h, :w, :]
         model.show_result(
             img_show, result, gt_bboxes, show=show, out_file=out_file)
@@ -580,6 +600,10 @@ class MMOCR:
                         min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y
                     ]
                 ann_info = kie_dataset._parse_anno_info(annotations)
+                ann_info['ori_bboxes'] = ann_info.get('ori_bboxes',
+                                                      ann_info['bboxes'])
+                ann_info['gt_bboxes'] = ann_info.get('gt_bboxes',
+                                                     ann_info['bboxes'])
                 kie_result, data = model_inference(
                     kie_model,
                     arr,
@@ -642,7 +666,7 @@ class MMOCR:
             img_list = [args.img]
 
         # Read all image(s) in advance to reduce wasted time
-        # re-reading the images for vizualisation output
+        # re-reading the images for visualization output
         args.arrays = [mmcv.imread(x) for x in img_list]
 
         # Create a list of filenames (used for output images and result files)

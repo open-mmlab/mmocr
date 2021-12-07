@@ -484,14 +484,14 @@ def select_top_boundary(boundaries_list, scores_list, score_thr):
 
     Args:
         boundaries_list (list[list[list[float]]]): List of boundaries.
-            The 1st, 2rd, and 3rd indices are for image, text and
+            The 1st, 2nd, and 3rd indices are for image, text and
             vertice, respectively.
         scores_list (list(list[float])): List of lists of scores.
         score_thr (float): The score threshold to filter out bboxes.
 
     Returns:
         selected_bboxes (list[list[list[float]]]): List of boundaries.
-            The 1st, 2rd, and 3rd indices are for image, text and vertice,
+            The 1st, 2nd, and 3rd indices are for image, text and vertice,
             respectively.
     """
     assert isinstance(boundaries_list, list)

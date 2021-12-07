@@ -125,6 +125,8 @@ def eval_hmean(results,
         best_result = dict(hmean=-1)
         for iter in range(3, 10):
             thr = iter * 0.1
+            if thr < score_thr:
+                continue
             top_preds = select_top_boundary(preds, pred_scores, thr)
             if metric == 'hmean-iou':
                 result, img_result = hmean_iou.eval_hmean_iou(
@@ -138,9 +140,9 @@ def eval_hmean(results,
                 output_ranklist(img_result, img_infos, rank_list)
 
             print_log(
-                'thr {0:.1f}, recall：{1[recall]:.3f}, '
+                'thr {0:.2f}, recall: {1[recall]:.3f}, '
                 'precision: {1[precision]:.3f}, '
-                'hmean:{1[hmean]:.3f}'.format(thr, result),
+                'hmean: {1[hmean]:.3f}'.format(thr, result),
                 logger=logger)
             if result['hmean'] > best_result['hmean']:
                 best_result = result

@@ -61,6 +61,17 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
+│   ├── OpenVINO
+│   │   ├── image_1
+│   │   ├── image_2
+│   │   ├── image_5
+│   │   ├── image_f
+│   │   ├── image_val
+│   │   ├── train_1_label.txt
+│   │   ├── train_2_label.txt
+│   │   ├── train_5_label.txt
+│   │   ├── train_f_label.txt
+│   │   ├── val_label.txt
 ```
 
 |  Dataset   |                                        images                                         |                                                                                                                                            annotation file                                                                                                                                             |                                             annotation file                                             |
@@ -79,6 +90,7 @@
 |  SynthAdd  |  [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x)   |                                                                                                           [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)                                                                                                            |                                                    -                                                    |       |
 |  TextOCR  |  [homepage](https://textvqa.org/textocr/dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
 |  Totaltext  |  [homepage](https://github.com/cs-chan/Total-Text-Dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
+|  OpenVINO  |  [Open Images](https://github.com/cvdfoundation/open-images-dataset)   |                                                                                          [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                           |[annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)|       |
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
 
@@ -234,4 +246,34 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   - Step2: Generate cropped images, `train_label.txt` and `test_label.txt` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`):
   ```bash
   python tools/data/textrecog/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
+  ```
+
+### OpenVINO
+  - Step0: Install [awscli](https://aws.amazon.com/cli/).
+  - Step1: Download [Open Images](https://github.com/cvdfoundation/open-images-dataset#download-images-with-bounding-boxes-annotations) subsets `train_1`, `train_2`, `train_5`, `train_f`, and `validation` to `openvino/`.
+  ```bash
+  mkdir openvino && cd openvino
+
+  # Download Open Images subsets
+  for s in 1 2 5 f; do
+    aws s3 --no-sign-request cp s3://open-images-dataset/tar/train_${s}.tar.gz .
+  done
+  aws s3 --no-sign-request cp s3://open-images-dataset/tar/validation.tar.gz .
+
+  # Download annotations
+  for s in 1 2 5 f; do
+    wget https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text/text_spotting_openimages_v5_train_${s}.json
+  done
+  wget https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text/text_spotting_openimages_v5_validation.json
+
+  # Extract images
+  mkdir -p openimages_v5/val
+  for s in 1 2 5 f; do
+    tar zxf train_${s}.tar.gz -C openimages_v5
+  done
+  tar zxf validation.tar.gz -C openimages_v5/val
+  ```
+  - Step2: Generate `train_{1,2,5,f}_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
+  ```bash
+  python tools/data/textrecog/openvino_converter.py /path/to/openvino 4
   ```
