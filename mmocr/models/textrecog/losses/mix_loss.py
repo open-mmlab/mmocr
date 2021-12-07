@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from mmocr.models.builder import LOSSES
-from .ce_loss import CELoss
 
 
 @LOSSES.register_module()
@@ -18,6 +18,7 @@ class ABILoss(nn.Module):
             Defaults to 1.0.
         ignore_index (int): Specifies a target label that is ignored and
             does not contribute to the input gradient.
+        num_classes (int): Number of unique output language tokens.
 
     Returns:
         A dictionary whose key/value pairs are the losses of three modules.
@@ -28,21 +29,30 @@ class ABILoss(nn.Module):
                  dec_weight=1.0,
                  fusion_weight=1.0,
                  ignore_index=-100,
+                 num_classes=37,
                  **kwargs):
         assert isinstance(enc_weight, float) or isinstance(enc_weight, int)
         assert isinstance(dec_weight, float) or isinstance(dec_weight, int)
         assert isinstance(fusion_weight, float) or \
             isinstance(fusion_weight, int)
         super().__init__()
-        self.ce = CELoss(
-            reduction='mean',
-            ignore_index=ignore_index,
-            ignore_first_char=True)
         self.enc_weight = enc_weight
         self.dec_weight = dec_weight
         self.fusion_weight = fusion_weight
+        self.num_classes = num_classes
 
-    def _loss_over_iters(self, outputs, targets_dict):
+    def _flatten(self, logits, target_lens):
+        flatten_logits = torch.cat(
+            [s[:target_lens[i]] for i, s in enumerate((logits))])
+        return flatten_logits
+
+    def ce(self, logits, targets):
+        targets_one_hot = F.one_hot(targets, self.num_classes)
+        log_prob = F.log_softmax(logits, dim=-1)
+        loss = -(targets_one_hot.to(log_prob.device) * log_prob).sum(dim=-1)
+        return loss.mean()
+
+    def _loss_over_iters(self, outputs, targets):
         """
         Args:
             outputs (list[Tensor]): Each tensor has shape (N, T, C) where N is
@@ -53,32 +63,49 @@ class ABILoss(nn.Module):
         """
         iter_num = len(outputs)
         dec_outputs = torch.cat(outputs, dim=0)
-        new_targets_dict = dict(
-            padded_targets=targets_dict['padded_targets'].repeat(iter_num, 1))
-        return self.ce(dec_outputs, new_targets_dict)
+        flatten_targets_iternum = targets.repeat(iter_num)
+        return self.ce(dec_outputs, flatten_targets_iternum)
 
     def forward(self, outputs, targets_dict, img_metas=None):
         """
         Args:
-            outputs (dict[dict[dict]]): A dictionary with at least one of
-                `out_enc`, `out_decs` and `out_fusers` keys, each with `logits`
-                of shape :math:`(N, T, C)`. In particular, `out_decs` is a list
-                of dict representing the intermediate features computed at each
-                language model iteration step.
-            targets_dict (dict): Target dict with key `padded_targets`.
+            outputs (dict): The output dictionary with at least one of
+                ``out_enc``, ``out_dec`` and ``out_fusers`` specified.
+            targets_dict (dict): The target dictionary containing the key
+                ``padded_targets``, which represents target sequences in
+                shape (batch_size, sequence_length).
 
         Returns:
-            dict: The loss dict with key `loss_visual`, `loss_lang` and
-            `loss_fusion`.
+            A loss dictionary with ``loss_visual``, ``loss_lang`` and
+            ``loss_fusion``. Each should either be the loss tensor or ``0`` if
+            the output of its corresponding module is not given.
         """
-        enc_loss = self.ce(outputs['out_enc']['logits'],
-                           targets_dict)['loss_ce'] * self.enc_weight
-        dec_logits = [o['logits'] for o in outputs['out_decs']]
-        dec_loss = self._loss_over_iters(
-            dec_logits, targets_dict)['loss_ce'] * self.dec_weight
-        fusion_logits = [o['logits'] for o in outputs['out_fusers']]
-        fusion_loss = self._loss_over_iters(
-            fusion_logits, targets_dict)['loss_ce'] * self.fusion_weight
-        losses = dict(
-            loss_visual=enc_loss, loss_lang=dec_loss, loss_fusion=fusion_loss)
+        assert 'out_enc' in outputs or \
+            'out_dec' in outputs or 'out_fusers' in outputs
+        losses = {}
+
+        target_lens = [len(t) for t in targets_dict['targets']]
+        flatten_targets = torch.cat([t for t in targets_dict['targets']])
+
+        if outputs.get('out_enc', None):
+            enc_input = self._flatten(outputs['out_enc']['logits'],
+                                      target_lens)
+            enc_loss = self.ce(enc_input, flatten_targets) * self.enc_weight
+            losses['loss_visual'] = enc_loss
+        if outputs.get('out_decs', None):
+            dec_logits = [
+                self._flatten(o['logits'], target_lens)
+                for o in outputs['out_decs']
+            ]
+            dec_loss = self._loss_over_iters(dec_logits,
+                                             flatten_targets) * self.dec_weight
+            losses['loss_lang'] = dec_loss
+        if outputs.get('out_fusers', None):
+            fusion_logits = [
+                self._flatten(o['logits'], target_lens)
+                for o in outputs['out_fusers']
+            ]
+            fusion_loss = self._loss_over_iters(
+                fusion_logits, flatten_targets) * self.fusion_weight
+            losses['loss_fusion'] = fusion_loss
         return losses

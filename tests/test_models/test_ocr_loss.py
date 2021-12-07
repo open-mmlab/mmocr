@@ -101,22 +101,33 @@ def test_dice_loss():
 
 
 def test_abi_loss():
-    loss = ABILoss(one_hot=False)
+    loss = ABILoss(num_classes=90)
     outputs = dict(
-        out_enc=dict(logits=torch.randn(1, 10, 90)),
+        out_enc=dict(logits=torch.randn(2, 10, 90)),
         out_decs=[
-            dict(logits=torch.randn(1, 10, 90)),
-            dict(logits=torch.randn(1, 10, 90))
+            dict(logits=torch.randn(2, 10, 90)),
+            dict(logits=torch.randn(2, 10, 90))
         ],
         out_fusers=[
-            dict(logits=torch.randn(1, 10, 90)),
-            dict(logits=torch.randn(1, 10, 90))
+            dict(logits=torch.randn(2, 10, 90)),
+            dict(logits=torch.randn(2, 10, 90))
         ])
     targets_dict = {
-        'padded_targets': torch.LongTensor([[1, 2, 3, 4, 0, 0, 0, 0, 0, 0]])
+        'padded_targets': torch.LongTensor([[1, 2, 3, 4, 0, 0, 0, 0, 0, 0]]),
+        'targets':
+        [torch.LongTensor([1, 2, 3, 4]),
+         torch.LongTensor([1, 2, 3])]
     }
     result = loss(outputs, targets_dict)
     assert isinstance(result, dict)
     assert isinstance(result['loss_visual'], torch.Tensor)
     assert isinstance(result['loss_lang'], torch.Tensor)
     assert isinstance(result['loss_fusion'], torch.Tensor)
+
+    outputs.pop('out_enc')
+    loss(outputs, targets_dict)
+    outputs.pop('out_decs')
+    loss(outputs, targets_dict)
+    outputs.pop('out_fusers')
+    with pytest.raises(AssertionError):
+        loss(outputs, targets_dict)
