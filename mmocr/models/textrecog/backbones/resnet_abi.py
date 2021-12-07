@@ -20,7 +20,8 @@ class ResNetABI(BaseModule):
         base_channels (int): Number of base channels.
         arch_settings  (list[int]): List of BasicBlock number for each stage.
         strides (Sequence[int]): Strides of the first block of each stage.
-        out_indices (None | Sequence[int]): Indices of output stages.
+        out_indices (None | Sequence[int]): Indices of output stages. If not
+            specified, only the last stage will be returned.
         last_stage_pool (bool): If True, add `MaxPool2d` layer to last stage.
     """
 
@@ -47,52 +48,53 @@ class ResNetABI(BaseModule):
 
         self.out_indices = out_indices
         self.last_stage_pool = last_stage_pool
+        self.block = BasicBlock
+        self.inplanes = stem_channels
 
+        self._make_stem_layer(in_channels, stem_channels)
+
+        self.res_layers = []
+        planes = base_channels
+        for i, num_blocks in enumerate(arch_settings):
+            stride = strides[i]
+            res_layer = self._make_layer(
+                block=self.block,
+                inplanes=self.inplanes,
+                planes=planes,
+                blocks=num_blocks,
+                stride=stride)
+            self.inplanes = planes * self.block.expansion
+            planes *= 2
+            layer_name = f'layer{i + 1}'
+            self.add_module(layer_name, res_layer)
+            self.res_layers.append(layer_name)
+
+    def _make_layer(self, block, inplanes, planes, blocks, stride=1):
+        layers = []
+        downsample = None
+        if stride != 1 or inplanes != planes:
+            downsample = nn.Sequential(
+                nn.Conv2d(inplanes, planes, 1, stride, bias=False),
+                nn.BatchNorm2d(planes),
+            )
+        layers.append(
+            block(
+                inplanes,
+                planes,
+                use_conv1x1=True,
+                stride=stride,
+                downsample=downsample))
+        inplanes = planes
+        for _ in range(1, blocks):
+            layers.append(block(inplanes, planes, use_conv1x1=True))
+
+        return Sequential(*layers)
+
+    def _make_stem_layer(self, in_channels, stem_channels):
         self.conv1 = nn.Conv2d(
             in_channels, stem_channels, kernel_size=3, stride=1, padding=1)
         self.bn1 = nn.BatchNorm2d(stem_channels)
         self.relu1 = nn.ReLU(inplace=True)
-
-        self.layers = [
-            self._make_layer(BasicBlock, stem_channels, base_channels,
-                             arch_settings[0], strides[0])
-        ]
-        for i in range(1, len(arch_settings)):
-            self.layers.append(
-                self._make_layer(BasicBlock, base_channels * 2**(i - 1),
-                                 base_channels * 2**i, arch_settings[i],
-                                 strides[i]))
-        self.layers = Sequential(*self.layers)
-
-    def _make_layer(self,
-                    block,
-                    input_channels,
-                    output_channels,
-                    blocks,
-                    stride=1):
-        layers = []
-        downsample = None
-        if stride != 1 or input_channels != output_channels:
-            downsample = nn.Sequential(
-                nn.Conv2d(
-                    input_channels, output_channels, 1, stride, bias=False),
-                nn.BatchNorm2d(output_channels),
-            )
-        layers.append(
-            # BasicBlock(
-            block(
-                input_channels,
-                output_channels,
-                use_conv1x1=True,
-                stride=stride,
-                downsample=downsample))
-        input_channels = output_channels
-        for _ in range(1, blocks):
-            layers.append(
-                block(input_channels, output_channels, use_conv1x1=True))
-            # BasicBlock(input_channels, output_channels, use_conv1x1=True))
-
-        return Sequential(*layers)
 
     def forward(self, x):
         """
@@ -100,7 +102,9 @@ class ResNetABI(BaseModule):
             x (Tensor): Image tensor of shape :math:`(N, 3, H, W)`.
 
         Returns:
-            Tensor: Feature tensor. Its shape depends on ResNetABI's config.
+            Tensor or list[Tensor]: Feature tensor. Its shape depends on
+            ResNetABI's config. It can be a list of feature outputs at specific
+            layers if ``out_indices`` is specified.
         """
 
         x = self.conv1(x)
@@ -108,11 +112,10 @@ class ResNetABI(BaseModule):
         x = self.relu1(x)
 
         outs = []
-        for i in range(len(self.layers)):
-            x = self.layers[i](x)
-            outs.append(x)
+        for i, layer_name in enumerate(self.res_layers):
+            res_layer = getattr(self, layer_name)
+            x = res_layer(x)
+            if self.out_indices and i in self.out_indices:
+                outs.append(x)
 
-        if self.out_indices is not None:
-            return tuple([outs[i] for i in self.out_indices])
-
-        return x
+        return tuple(outs) if self.out_indices else x
