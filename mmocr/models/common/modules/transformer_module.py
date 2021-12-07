@@ -129,9 +129,12 @@ class PositionwiseFeedForward(nn.Module):
 class PositionalEncoding(nn.Module):
     """Fixed positional encoding with sine and cosine functions."""
 
-    def __init__(self, d_hid=512, n_position=200):
+    def __init__(self, d_hid=512, n_position=200, dropout=0):
         super().__init__()
+        self.dropout = nn.Dropout(p=dropout)
+
         # Not a parameter
+        # Position table of shape (1, n_position, d_hid)
         self.register_buffer(
             'position_table',
             self._get_sinusoid_encoding_table(n_position, d_hid))
@@ -151,5 +154,10 @@ class PositionalEncoding(nn.Module):
         return sinusoid_table.unsqueeze(0)
 
     def forward(self, x):
+        """
+        Args:
+            x (Tensor): Tensor of shape (batch_size, pos_len, d_hid, ...)
+        """
         self.device = x.device
-        return x + self.position_table[:, :x.size(1)].clone().detach()
+        x = x + self.position_table[:, :x.size(1)].clone().detach()
+        return self.dropout(x)
