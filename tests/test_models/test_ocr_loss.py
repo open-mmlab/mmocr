@@ -3,7 +3,8 @@ import pytest
 import torch
 
 from mmocr.models.common.losses import DiceLoss
-from mmocr.models.textrecog.losses import CELoss, CTCLoss, SARLoss, TFLoss
+from mmocr.models.textrecog.losses import (ABILoss, CELoss, CTCLoss, SARLoss,
+                                           TFLoss)
 
 
 def test_ctc_loss():
@@ -46,8 +47,16 @@ def test_ce_loss():
     losses = ce_loss(outputs, targets_dict)
     assert isinstance(losses, dict)
     assert 'loss_ce' in losses
-    print(losses['loss_ce'].size())
     assert losses['loss_ce'].size(1) == 10
+
+    ce_loss = CELoss(ignore_first_char=True)
+    outputs = torch.rand(1, 10, 37)
+    targets_dict = {
+        'padded_targets': torch.LongTensor([[1, 2, 3, 4, 0, 0, 0, 0, 0, 0]])
+    }
+    new_output, new_target = ce_loss.format(outputs, targets_dict)
+    assert new_output.shape == torch.Size([1, 37, 9])
+    assert new_target.shape == torch.Size([1, 9])
 
 
 def test_sar_loss():
@@ -89,3 +98,25 @@ def test_dice_loss():
     mask = torch.rand(1, 1, 1, 1)
     loss = dice_loss(pred, gt, mask)
     assert isinstance(loss, torch.Tensor)
+
+
+def test_abi_loss():
+    loss = ABILoss(one_hot=False)
+    outputs = dict(
+        out_enc=dict(logits=torch.randn(1, 10, 90)),
+        out_decs=[
+            dict(logits=torch.randn(1, 10, 90)),
+            dict(logits=torch.randn(1, 10, 90))
+        ],
+        out_fusers=[
+            dict(logits=torch.randn(1, 10, 90)),
+            dict(logits=torch.randn(1, 10, 90))
+        ])
+    targets_dict = {
+        'padded_targets': torch.LongTensor([[1, 2, 3, 4, 0, 0, 0, 0, 0, 0]])
+    }
+    result = loss(outputs, targets_dict)
+    assert isinstance(result, dict)
+    assert isinstance(result['loss_visual'], torch.Tensor)
+    assert isinstance(result['loss_lang'], torch.Tensor)
+    assert isinstance(result['loss_fusion'], torch.Tensor)
