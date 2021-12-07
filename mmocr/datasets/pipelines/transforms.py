@@ -967,3 +967,54 @@ class RandomCropFlip:
         h_axis = np.where(h_array == 0)[0]
         w_axis = np.where(w_array == 0)[0]
         return h_axis, w_axis
+
+
+@PIPELINES.register_module()
+class PyramidRescale:
+    """Resize the image to the base shape, downsample it with gaussian pyramid,
+    and rescale it back to original size.
+
+    Adapted from https://github.com/FangShancheng/ABINet.
+
+    Args:
+        factor (int): The decay factor from base size, or the number of
+            downsampling operations from the base layer.
+        base_shape (tuple(int)): The shape of the base layer of the pyramid.
+        randomize_factor (bool): If True, the final factor would be a random
+            integer in [0, factor].
+
+    :Required Keys:
+        - | ``img`` (ndarray): The input image.
+
+    :Affected Keys:
+        :Modified:
+            - | ``img`` (ndarray): The modified image.
+    """
+
+    def __init__(self, factor=4, base_shape=(128, 512), randomize_factor=True):
+        assert isinstance(factor, int)
+        assert isinstance(base_shape, list) or isinstance(base_shape, tuple)
+        assert len(base_shape) == 2
+        assert isinstance(randomize_factor, bool)
+        self.factor = factor if not randomize_factor else np.random.randint(
+            0, factor + 1)
+        self.base_w, self.base_h = base_shape
+
+    def __call__(self, results):
+        assert 'img' in results
+        if self.factor == 0:
+            return results
+        img = results['img']
+        src_h, src_w = img.shape[:2]
+        scale_img = mmcv.imresize(img, (self.base_w, self.base_h))
+        for _ in range(self.factor):
+            scale_img = cv2.pyrDown(scale_img)
+        scale_img = mmcv.imresize(scale_img, (src_w, src_h))
+        results['img'] = scale_img
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(factor={self.factor}, '
+        repr_str += f'basew={self.basew}, baseh={self.baseh})'
+        return repr_str
