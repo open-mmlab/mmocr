@@ -1,8 +1,8 @@
 from .transformer_module import (MultiHeadAttention, PositionalEncoding,
-                                 PositionwiseFeedForward,
+                                 PositionAttention, PositionwiseFeedForward,
                                  ScaledDotProductAttention)
 
 __all__ = [
     'ScaledDotProductAttention', 'MultiHeadAttention',
-    'PositionwiseFeedForward', 'PositionalEncoding'
+    'PositionwiseFeedForward', 'PositionalEncoding', 'PositionAttention'
 ]
