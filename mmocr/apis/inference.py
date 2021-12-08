@@ -68,12 +68,36 @@ def disable_text_recog_aug_test(cfg, set_types=None):
     assert set_types is None or isinstance(set_types, list)
     if set_types is None:
         set_types = ['val', 'test']
+    warnings.simplefilter('once')
+    warning_msg = 'Remove "MultiRotateAugOCR" to support batch ' + \
+        'inference since samples_per_gpu > 1.'
     for set_type in set_types:
-        if cfg.data[set_type].pipeline[1].type == 'MultiRotateAugOCR':
-            cfg.data[set_type].pipeline = [
-                cfg.data[set_type].pipeline[0],
-                *cfg.data[set_type].pipeline[1].transforms
-            ]
+        dataset_type = cfg.data[set_type].type
+        if dataset_type in ['OCRDataset', 'OCRSegDataset']:
+            if cfg.data[set_type].pipeline[1].type == 'MultiRotateAugOCR':
+                warnings.warn(warning_msg)
+                cfg.data[set_type].pipeline = [
+                    cfg.data[set_type].pipeline[0],
+                    *cfg.data[set_type].pipeline[1].transforms
+                ]
+        elif dataset_type in ['ConcatDataset', 'UniformConcatDataset']:
+            if dataset_type == 'UniformConcatDataset':
+                uniform_pipeline = cfg.data[set_type].pipeline
+                if uniform_pipeline is not None:
+                    if uniform_pipeline[1].type == 'MultiRotateAugOCR':
+                        warnings.warn(warning_msg)
+                        cfg.data[set_type].pipeline = [
+                            uniform_pipeline[0],
+                            *uniform_pipeline[1].transforms
+                        ]
+            for dataset in cfg.data[set_type].datasets:
+                if dataset.pipeline is not None:
+                    if dataset.pipeline[1].type == 'MultiRotateAugOCR':
+                        warnings.warn(warning_msg)
+                        dataset.pipeline = [
+                            dataset.pipeline[0],
+                            *dataset.pipeline[1].transforms
+                        ]
 
     return cfg
 
@@ -131,7 +155,11 @@ def model_inference(model,
         # prepare data
         if is_ndarray:
             # directly add img
-            data = dict(img=img, ann_info=ann, bbox_fields=[])
+            data = dict(
+                img=img,
+                ann_info=ann,
+                img_info=dict(width=img.shape[1], height=img.shape[0]),
+                bbox_fields=[])
         else:
             # add information into dict
             data = dict(

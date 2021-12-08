@@ -767,7 +767,7 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
                 draw_box=False,
                 on_ori_img=True,
                 font_size=key_font_size,
-                font_color=key_font_color,
+                fill_color=key_font_color,
                 draw_pos=[key_pos],
                 return_text_size=True)
             pos_right_bottom = (key_pos[0] + text_sizes[0][0],
@@ -794,7 +794,7 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
             draw_box=False,
             on_ori_img=True,
             font_size=value_font_size,
-            font_color=value_font_color,
+            fill_color=value_font_color,
             draw_pos=[value_pos],
             return_text_size=False)
         bbox_y1 += dist_pair_to_pair
