@@ -4,11 +4,11 @@ import copy
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmcv.runner import BaseModule, ModuleList
 
-from mmocr.models.builder import BACKBONES, build_backbone
+from mmocr.models.builder import ENCODERS
 from mmocr.models.common.modules import PositionalEncoding
 
 
-@BACKBONES.register_module()
+@ENCODERS.register_module()
 class ResTransformer(BaseModule):
     """Implement ResTransformer backbone for text recognition, modified from
     `<https://github.com/FangShancheng/ABINet>`.
@@ -20,8 +20,6 @@ class ResTransformer(BaseModule):
         d_inner (int): Hidden dimension of feedforward layers.
         dropout (float): Dropout rate.
         max_len (int): Maximum output sequence length :math:`T`.
-        res_backbone (dict): Backbone config of ResTransformer. Defaults to
-            dict(type='ResNetABI').
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
@@ -32,13 +30,11 @@ class ResTransformer(BaseModule):
                  d_inner=2048,
                  dropout=0.1,
                  max_len=8 * 32,
-                 res_backbone=dict(type='ResNetABI'),
                  init_cfg=None):
         super().__init__(init_cfg=init_cfg)
 
         assert d_model % n_head == 0, 'd_model must be divisible by n_head'
 
-        self.resnet = build_backbone(res_backbone)
         self.pos_encoder = PositionalEncoding(d_model, n_position=max_len)
         encoder_layer = BaseTransformerLayer(
             operation_order=('self_attn', 'norm', 'ffn', 'norm'),
@@ -60,15 +56,14 @@ class ResTransformer(BaseModule):
         self.transformer = ModuleList(
             [copy.deepcopy(encoder_layer) for _ in range(n_layers)])
 
-    def forward(self, images):
+    def forward(self, feature):
         """
         Args:
-            images (Tensor): Image tensor of shape :math:`(N, 3, H, W)`.
+            feature (Tensor): Feature tensor of shape :math:`(N, D_m, H, W)`.
 
         Returns:
-            Tensor: Features of shape :math:`(N, C, H, W)`.
+            Tensor: Features of shape :math:`(N, D_m, H, W)`.
         """
-        feature = self.resnet(images)
         n, c, h, w = feature.shape
         feature = feature.view(n, c, -1).transpose(1, 2)  # (n, h*w, c)
         feature = self.pos_encoder(feature)  # (n, h*w, c)

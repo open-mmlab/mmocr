@@ -1,13 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 
-from mmocr.models.builder import ENCODERS
+from mmocr.models.builder import DECODERS
 from mmocr.models.common.modules import PositionAttention
-from .base_encoder import BaseEncoder
+from .base_decoder import BaseDecoder
 
 
-@ENCODERS.register_module()
-class ABIVisionEncoder(BaseEncoder):
+@DECODERS.register_module()
+class ABIVisionDecoder(BaseDecoder):
     """Converts visual features into text characters.
 
     Implementation of VisionEncoder in
@@ -52,18 +52,24 @@ class ABIVisionEncoder(BaseEncoder):
         )
         self.cls = nn.Linear(in_channels, num_chars)
 
-    def forward(self, feat, img_metas=None):
+    def forward_train(self,
+                      feat,
+                      out_enc=None,
+                      targets_dict=None,
+                      img_metas=None):
         """
         Args:
             feat (Tensor): Image features of shape (N, E, H, W).
 
         Returns:
-            A dict with keys ``feature``, ``logits`` and ``attn_scores``.
-            feature (Tensor): Shape (N, T, E). Raw visual features for language
-                decoder.
-            logits (Tensor): Shape (N, T, C). The raw logits for characters.
-            attn_scores (Tensor): Shape (N, T, H, W). Intermediate result for
-                vision-language aligner.
+            dict: A dict with keys ``feature``, ``logits`` and ``attn_scores``.
+
+            - | feature (Tensor): Shape (N, T, E). Raw visual features for
+                language decoder.
+            - | logits (Tensor): Shape (N, T, C). The raw logits for
+                characters.
+            - | attn_scores (Tensor): Shape (N, T, H, W). Intermediate result
+                for vision-language aligner.
         """
         attn_vecs, attn_scores = self.attention(feat)
         logits = self.cls(attn_vecs)
@@ -72,5 +78,7 @@ class ABIVisionEncoder(BaseEncoder):
             'logits': logits,
             'attn_scores': attn_scores
         }
-
         return result
+
+    def forward_test(self, feat, out_enc=None, img_metas=None):
+        return self.forward_train(feat, out_enc=out_enc, img_metas=img_metas)

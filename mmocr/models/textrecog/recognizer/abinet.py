@@ -127,11 +127,6 @@ class ABINet(EncodeDecodeRecognizer):
                 text_logits = out_fuser['logits']
                 out_fusers.append(out_fuser)
 
-        # label_indexes, label_scores = self.label_convertor.tensor2idx(
-        #     out_decs[-1]['logits'], img_metas)
-        # label_strings = self.label_convertor.idx2str(label_indexes)
-        # print(label_strings)
-
         outputs = dict(
             out_enc=out_enc, out_decs=out_decs, out_fusers=out_fusers)
 

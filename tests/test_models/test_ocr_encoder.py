@@ -2,7 +2,7 @@
 import pytest
 import torch
 
-from mmocr.models.textrecog.encoders import (ABIVisionEncoder, BaseEncoder,
+from mmocr.models.textrecog.encoders import (ABIVisionModel, BaseEncoder,
                                              NRTREncoder, ResTransformer,
                                              SAREncoder, SatrnEncoder)
 
@@ -67,15 +67,15 @@ def test_base_encoder():
 
 def test_restransformer():
     model = ResTransformer()
-    x = torch.randn(10, 3, 32, 128)
+    x = torch.randn(10, 512, 8, 32)
     assert model(x).shape == torch.Size([10, 512, 8, 32])
 
 
-def test_abi_vision_encoder():
-    model = ABIVisionEncoder(
-        in_channels=128, num_channels=16, max_seq_len=10, use_result=None)
-    x = torch.randn(2, 128, 8, 32)
+def test_abi_vision_model():
+    model = ABIVisionModel(
+        decoder=dict(type='ABIVisionDecoder', max_seq_len=10, use_result=None))
+    x = torch.randn(1, 512, 8, 32)
     result = model(x)
-    assert result['feature'].shape == torch.Size([2, 10, 128])
-    assert result['logits'].shape == torch.Size([2, 10, 90])
-    assert result['attn_scores'].shape == torch.Size([2, 10, 8, 32])
+    assert result['feature'].shape == torch.Size([1, 10, 512])
+    assert result['logits'].shape == torch.Size([1, 10, 90])
+    assert result['attn_scores'].shape == torch.Size([1, 10, 8, 32])
