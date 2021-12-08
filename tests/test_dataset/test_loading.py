@@ -33,10 +33,14 @@ def test_loadtextannotation():
 
     loader = LoadTextAnnotations(with_bbox, with_label, with_mask, with_seg,
                                  poly2mask)
+    results['ori_shape'] = (640, 640, 3)
     output = loader._load_masks(results)
     assert len(output['gt_masks_ignore']) == 4
     assert np.allclose(output['gt_masks_ignore'].masks[0],
                        [[499, 94, 531, 94, 531, 124, 499, 124]])
+    loader = LoadTextAnnotations(with_bbox, with_label, with_mask, with_seg,
+                                 True)
+    output = loader._load_masks(results)
 
 
 def test_load_img_from_numpy():
@@ -47,3 +51,13 @@ def test_load_img_from_numpy():
 
     assert output['img'].shape[2] == 3
     assert len(output['img'].shape) == 3
+
+    result = {'img': np.ones((32, 100, 1), dtype=np.uint8)}
+    load = LoadImageFromNdarray(color_type='color')
+    output = load(result)
+    assert output['img'].shape[2] == 3
+
+    result = {'img': np.ones((32, 100, 3), dtype=np.uint8)}
+    load = LoadImageFromNdarray(color_type='grayscale', to_float32=True)
+    output = load(result)
+    assert output['img'].shape[2] == 1
