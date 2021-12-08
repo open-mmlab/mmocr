@@ -15,9 +15,9 @@ from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
                          wrap_fp16_model)
 from mmdet.apis import multi_gpu_test
 from mmdet.core import encode_mask_results
-from mmdet.datasets import replace_ImageToTensor
 
-from mmocr.apis.inference import disable_text_recog_aug_test
+from mmocr.apis.utils import (disable_text_recog_aug_test,
+                              replace_image_to_tensor)
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
 from mmocr.utils import revert_sync_batchnorm
@@ -224,26 +224,11 @@ def main():
                 cfg.model.neck.rfp_backbone.pretrained = None
 
     # in case the test dataset is concatenated
-    samples_per_gpu = 1
-    if isinstance(cfg.data.test, dict):
-        samples_per_gpu = (cfg.data.get('test_dataloader', {})).get(
-            'samples_per_gpu', cfg.data.get('samples_per_gpu', 1))
-        if samples_per_gpu > 1:
-            # Support batch_size > 1 in test for text recognition
-            # by disable MultiRotateAugOCR since it is useless for most case
-            cfg = disable_text_recog_aug_test(cfg)
-            if cfg.data.test.get('pipeline', None) is not None:
-                # Replace 'ImageToTensor' to 'DefaultFormatBundle'
-                cfg.data.test.pipeline = replace_ImageToTensor(
-                    cfg.data.test.pipeline)
-    elif isinstance(cfg.data.test, list):
-        for ds_cfg in cfg.data.test:
-            ds_cfg.test_mode = True
-        samples_per_gpu = max(
-            [ds_cfg.pop('samples_per_gpu', 1) for ds_cfg in cfg.data.test])
-        if samples_per_gpu > 1:
-            for ds_cfg in cfg.data.test:
-                ds_cfg.pipeline = replace_ImageToTensor(ds_cfg.pipeline)
+    samples_per_gpu = (cfg.data.get('test_dataloader', {})).get(
+        'samples_per_gpu', cfg.data.get('samples_per_gpu', 1))
+    if samples_per_gpu > 1:
+        disable_text_recog_aug_test(cfg)
+        replace_image_to_tensor(cfg)
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
