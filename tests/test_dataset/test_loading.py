@@ -31,6 +31,9 @@ def test_loadtextannotation():
     with_seg = False
     poly2mask = False
 
+    # If no 'ori_shape' in result but use_img_shape=True,
+    # result['img_info']['height'] and result['img_info']['width']
+    # will be used to generate mask.
     loader = LoadTextAnnotations(
         with_bbox,
         with_label,
@@ -42,6 +45,8 @@ def test_loadtextannotation():
     assert len(output['gt_masks_ignore']) == 4
     assert np.allclose(output['gt_masks_ignore'].masks[0],
                        [[499, 94, 531, 94, 531, 124, 499, 124]])
+    # If 'ori_shape' in result and use_img_shape=True,
+    # result['ori_shape'] will be used to generate mask.
     loader = LoadTextAnnotations(
         with_bbox,
         with_label,
