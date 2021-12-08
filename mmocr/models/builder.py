@@ -8,6 +8,10 @@ from mmcv.utils import Registry, build_from_cfg
 from mmdet.models.builder import BACKBONES as MMDET_BACKBONES
 
 RECOGNIZERS = Registry('recognizer')
+MAJPRMODALITY = Registry('recognizer')
+EXTRAMODALITY = Registry('recognizer')
+FUSION = Registry('recognizer')
+
 CONVERTORS = Registry('convertor')
 ENCODERS = Registry('encoder')
 DECODERS = Registry('decoder')
@@ -27,6 +31,24 @@ ACTIVATION_LAYERS = Registry('activation layer', parent=MMCV_ACTIVATION_LAYERS)
 def build_recognizer(cfg, train_cfg=None, test_cfg=None):
     """Build recognizer."""
     return build_from_cfg(cfg, RECOGNIZERS,
+                          dict(train_cfg=train_cfg, test_cfg=test_cfg))
+
+
+def build_major_modality(cfg, train_cfg=None, test_cfg=None):
+    """Build base modality."""
+    return build_from_cfg(cfg, MAJPRMODALITY,
+                          dict(train_cfg=train_cfg, test_cfg=test_cfg))
+
+
+def build_extra_modality(cfg, train_cfg=None, test_cfg=None):
+    """Build extra modality."""
+    return build_from_cfg(cfg, EXTRAMODALITY,
+                          dict(train_cfg=train_cfg, test_cfg=test_cfg))
+
+
+def build_fusion(cfg, train_cfg=None, test_cfg=None):
+    """Build fusion."""
+    return build_from_cfg(cfg, FUSION,
                           dict(train_cfg=train_cfg, test_cfg=test_cfg))
 
 
