@@ -31,15 +31,25 @@ def test_loadtextannotation():
     with_seg = False
     poly2mask = False
 
-    loader = LoadTextAnnotations(with_bbox, with_label, with_mask, with_seg,
-                                 poly2mask)
-    results['ori_shape'] = (640, 640, 3)
+    loader = LoadTextAnnotations(
+        with_bbox,
+        with_label,
+        with_mask,
+        with_seg,
+        poly2mask,
+        use_img_shape=True)
     output = loader._load_masks(results)
     assert len(output['gt_masks_ignore']) == 4
     assert np.allclose(output['gt_masks_ignore'].masks[0],
                        [[499, 94, 531, 94, 531, 124, 499, 124]])
-    loader = LoadTextAnnotations(with_bbox, with_label, with_mask, with_seg,
-                                 True)
+    loader = LoadTextAnnotations(
+        with_bbox,
+        with_label,
+        with_mask,
+        with_seg,
+        poly2mask=True,
+        use_img_shape=True)
+    results['ori_shape'] = (640, 640, 3)
     output = loader._load_masks(results)
 
 
