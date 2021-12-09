@@ -9,8 +9,8 @@ from mmocr.models.common.modules import PositionalEncoding
 
 
 @ENCODERS.register_module()
-class ResTransformer(BaseModule):
-    """Implement ResTransformer backbone for text recognition, modified from
+class TransformerEncoder(BaseModule):
+    """Implement transformer encoder for text recognition, modified from
     `<https://github.com/FangShancheng/ABINet>`.
 
     Args:

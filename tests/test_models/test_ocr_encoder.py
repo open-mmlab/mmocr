@@ -3,8 +3,8 @@ import pytest
 import torch
 
 from mmocr.models.textrecog.encoders import (ABIVisionModel, BaseEncoder,
-                                             NRTREncoder, ResTransformer,
-                                             SAREncoder, SatrnEncoder)
+                                             NRTREncoder, SAREncoder,
+                                             SatrnEncoder, TransformerEncoder)
 
 
 def test_sar_encoder():
@@ -34,7 +34,7 @@ def test_sar_encoder():
     assert out_enc.shape == torch.Size([1, 512])
 
 
-def test_transformer_encoder():
+def test_nrtr_encoder():
     tf_encoder = NRTREncoder()
     tf_encoder.init_weights()
     tf_encoder.train()
@@ -65,8 +65,8 @@ def test_base_encoder():
     assert out_enc.shape == torch.Size([1, 256, 4, 40])
 
 
-def test_restransformer():
-    model = ResTransformer()
+def test_transformer_encoder():
+    model = TransformerEncoder()
     x = torch.randn(10, 512, 8, 32)
     assert model(x).shape == torch.Size([10, 512, 8, 32])
 

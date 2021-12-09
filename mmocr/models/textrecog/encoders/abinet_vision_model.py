@@ -18,7 +18,7 @@ class ABIVisionModel(BaseEncoder):
     """
 
     def __init__(self,
-                 encoder=dict(type='ResTransformer'),
+                 encoder=dict(type='TransformerEncoder'),
                  decoder=dict(type='ABIVisionDecoder'),
                  init_cfg=dict(type='Xavier', layer='Conv2d'),
                  **kwargs):
