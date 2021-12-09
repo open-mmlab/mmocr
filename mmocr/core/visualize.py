@@ -47,7 +47,7 @@ def show_feature(features, names, to_uint8, out_file=None):
         out_file (str): The output file name. If set to None,
             the output image will be shown without saving.
     """
-    assert utils.is_ndarray_list(features)
+    assert utils.is_type_list(features, np.ndarray)
     assert utils.is_type_list(names, str)
     assert utils.is_type_list(to_uint8, int)
     assert utils.is_none_or_type(out_file, str)
@@ -76,8 +76,7 @@ def show_img_boundary(img, boundary):
         boundary (list[float or int]): The input boundary.
     """
     assert isinstance(img, np.ndarray)
-    assert utils.is_type_list(boundary, int) or utils.is_type_list(
-        boundary, float)
+    assert utils.is_type_list(boundary, (int, float))
 
     cv2.polylines(
         img, [np.array(boundary).astype(np.int32).reshape(-1, 1, 2)],
