@@ -29,7 +29,6 @@ class HeadMixin:
             boundaries (list[list[float]]): The boundary list. Each boundary
                 has :math:`2k+1` elements with :math:`k>=4`.
             scale_factor (ndarray): The scale factor of size :math:`(4,)`.
-                with size 2k + 1 with k >= 4.
 
         Returns:
             list[list[float]]: The scaled boundaries.

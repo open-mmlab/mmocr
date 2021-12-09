@@ -42,7 +42,7 @@ class OCRMaskRCNN(TextDetectorMixin, MaskRCNN):
            results (tuple): The result tuple. The first element is
                segmentation while the second is its scores.
         Returns:
-           results (dict): A result dict containing 'boundary_result'.
+           dict: A result dict containing 'boundary_result'.
         """
 
         assert isinstance(results, tuple)
