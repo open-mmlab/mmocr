@@ -56,7 +56,7 @@ class RandomWrapper:
     """
 
     def __init__(self, transforms, p):
-        assert 0 <= p <=1
+        assert 0 <= p <= 1
         self.transforms = Compose(transforms)
         self.p = p
 
