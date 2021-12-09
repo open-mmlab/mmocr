@@ -3,7 +3,13 @@
 
 def is_3dlist(x):
     """check x is 3d-list([[[1], []]]) or 2d empty list([[], []]) or 1d empty
-    list([])"""
+    list([]).
+
+    Notice:
+        The reason that it contains 1d or 2d empty list is because
+        some arguments from gt annotation file or model prediction
+        may be empty, but usually, it should be 3d-list.
+    """
     if not isinstance(x, list):
         return False
     if len(x) == 0:
@@ -16,7 +22,13 @@ def is_3dlist(x):
 
 
 def is_2dlist(x):
-    """check x is 2d-list([[1], []]) or 1d empty list([])."""
+    """check x is 2d-list([[1], []]) or 1d empty list([]).
+
+    Notice:
+        The reason that it contains 1d empty list is because
+        some arguments from gt annotation file or model prediction
+        may be empty, but usually, it should be 2d-list.
+    """
     if not isinstance(x, list):
         return False
     if len(x) == 0:
