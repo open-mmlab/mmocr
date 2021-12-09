@@ -7,7 +7,7 @@ from mmocr.models.builder import FUSERS
 
 
 @FUSERS.register_module()
-class BaseAlignment(BaseModule):
+class ABIFuser(BaseModule):
     """Mix and align visual feature and linguistic feature Implementation of
     language model of `ABINet <https://arxiv.org/abs/1910.04396>`_.
 

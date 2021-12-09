@@ -1,4 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .alignment import BaseAlignment
+from .abi_fuser import ABIFuser
 
-__all__ = ['BaseAlignment']
+__all__ = ['ABIFuser']
