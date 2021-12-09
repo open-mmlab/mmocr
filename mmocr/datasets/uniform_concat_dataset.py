@@ -3,7 +3,7 @@ import copy
 
 from mmdet.datasets import DATASETS, ConcatDataset, build_dataset
 
-from mmocr.utils import is_2dlist
+from mmocr.utils import is_2dlist, is_type_list
 
 
 @DATASETS.register_module()
@@ -37,17 +37,17 @@ class UniformConcatDataset(ConcatDataset):
         if pipeline is not None:
             assert len(
                 pipeline
-            ) > 0, 'pipeline must be list[dict] or list[list[dict]],'
-            if is_2dlist(pipeline):
+            ) > 0, 'pipeline must be list[dict] or list[list[dict]].'
+            if is_type_list(pipeline, dict):
+                self._apply_pipeline(datasets, pipeline, force_apply)
+                new_datasets = datasets
+            elif is_2dlist(pipeline):
                 assert is_2dlist(datasets)
                 assert len(datasets) == len(pipeline)
                 for sub_datasets, tmp_pipeline in zip(datasets, pipeline):
                     self._apply_pipeline(sub_datasets, tmp_pipeline,
                                          force_apply)
                     new_datasets.extend(sub_datasets)
-            elif isinstance(pipeline, list):
-                self._apply_pipeline(datasets, pipeline, force_apply)
-                new_datasets = datasets
         else:
             if is_2dlist(datasets):
                 for sub_datasets in datasets:
