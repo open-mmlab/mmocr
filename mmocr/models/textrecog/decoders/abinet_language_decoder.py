@@ -148,13 +148,34 @@ class ABILanguageDecoder(BaseDecoder):
         return out
 
     @staticmethod
-    def _get_location_mask(sz, device=None):
-        mask = torch.eye(sz, device=device)
+    def _get_location_mask(seq_len, device=None):
+        """Generate location masks given input sequence length.
+
+        Args:
+            seq_len (int): The length of input sequence to transformer.
+            device (torch.device or str, optional): The device on which the
+                masks will be placed.
+
+        Returns:
+            Tensor: A mask tensor of shape (seq_len, seq_len) with -infs on
+            diagonal and zeros elsewhere.
+        """
+        mask = torch.eye(seq_len, device=device)
         mask = mask.float().masked_fill(mask == 1, float('-inf'))
         return mask
 
     @staticmethod
     def _get_padding_mask(length, max_length):
+        """Generate padding masks.
+
+        Args:
+            length (Tensor): Shape :math:`(N,)`.
+            max_length (int): The maximum sequence length :math:`T`.
+
+        Returns:
+            Tensor: A bool tensor of shape :math:`(N, T)` with Trues on
+            elements located over the length, or Falses elsewhere.
+        """
         length = length.unsqueeze(-1)
         grid = torch.arange(0, max_length, device=length.device).unsqueeze(0)
         return grid >= length
