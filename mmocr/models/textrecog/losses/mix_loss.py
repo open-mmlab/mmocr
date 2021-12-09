@@ -43,7 +43,7 @@ class ABILoss(nn.Module):
             [s[:target_lens[i]] for i, s in enumerate((logits))])
         return flatten_logits
 
-    def ce(self, logits, targets):
+    def _ce_loss(self, logits, targets):
         targets_one_hot = F.one_hot(targets, self.num_classes)
         log_prob = F.log_softmax(logits, dim=-1)
         loss = -(targets_one_hot.to(log_prob.device) * log_prob).sum(dim=-1)
@@ -61,7 +61,7 @@ class ABILoss(nn.Module):
         iter_num = len(outputs)
         dec_outputs = torch.cat(outputs, dim=0)
         flatten_targets_iternum = targets.repeat(iter_num)
-        return self.ce(dec_outputs, flatten_targets_iternum)
+        return self._ce_loss(dec_outputs, flatten_targets_iternum)
 
     def forward(self, outputs, targets_dict, img_metas=None):
         """
@@ -87,7 +87,8 @@ class ABILoss(nn.Module):
         if outputs.get('out_enc', None):
             enc_input = self._flatten(outputs['out_enc']['logits'],
                                       target_lens)
-            enc_loss = self.ce(enc_input, flatten_targets) * self.enc_weight
+            enc_loss = self._ce_loss(enc_input,
+                                     flatten_targets) * self.enc_weight
             losses['loss_visual'] = enc_loss
         if outputs.get('out_decs', None):
             dec_logits = [
