@@ -2,7 +2,7 @@ import warnings
 
 from mmdet.datasets import replace_ImageToTensor
 
-from mmocr.utils import is_2dlist
+from mmocr.utils import is_2dlist, is_type_list
 
 
 def update_pipeline(cfg, idx=None):
@@ -21,24 +21,21 @@ def replace_image_to_tensor(cfg, set_types=None):
     for set_type in set_types:
         assert set_type in ['val', 'test']
         uniform_pipeline = cfg.data[set_type].get('pipeline', None)
-        if uniform_pipeline is not None:
-            if is_2dlist(uniform_pipeline):
-                for idx, _ in enumerate(uniform_pipeline):
-                    update_pipeline(cfg.data[set_type], idx)
+        if is_type_list(uniform_pipeline, dict):
+            update_pipeline(cfg.data[set_type])
+        elif is_2dlist(uniform_pipeline):
+            for idx, _ in enumerate(uniform_pipeline):
+                update_pipeline(cfg.data[set_type], idx)
+
+        for dataset in cfg.data[set_type].get('datasets', []):
+            if isinstance(dataset, list):
+                for each_dataset in dataset:
+                    update_pipeline(each_dataset)
             else:
-                update_pipeline(cfg.data[set_type])
-
-        dataset_type = cfg.data[set_type].type
-        if dataset_type in ['ConcatDataset', 'UniformConcatDataset']:
-            for dataset in cfg.data[set_type].datasets:
-                if isinstance(dataset, list):
-                    for each_dataset in dataset:
-                        update_pipeline(each_dataset)
-                else:
-                    update_pipeline(dataset)
+                update_pipeline(dataset)
 
 
-def remove_aug_test(cfg, idx=None):
+def update_pipeline_recog(cfg, idx=None):
     warning_msg = 'Remove "MultiRotateAugOCR" to support batch ' + \
         'inference since samples_per_gpu > 1.'
     if idx is None:
@@ -65,20 +62,24 @@ def disable_text_recog_aug_test(cfg, set_types=None):
         set_types = ['val', 'test']
     warnings.simplefilter('once')
     for set_type in set_types:
+        assert set_type in ['val', 'test']
         dataset_type = cfg.data[set_type].type
-        if dataset_type in ['OCRDataset', 'OCRSegDataset']:
-            remove_aug_test(cfg.data[set_type])
-        elif dataset_type in ['ConcatDataset', 'UniformConcatDataset']:
-            uniform_pipeline = cfg.data[set_type].get('pipeline', None)
-            if uniform_pipeline is not None:
-                if is_2dlist(uniform_pipeline):
-                    for idx, _ in enumerate(uniform_pipeline):
-                        remove_aug_test(cfg.data[set_type].pipeline, idx)
-                else:
-                    remove_aug_test(cfg.data[set_type])
-            for dataset in cfg.data[set_type].datasets:
-                if isinstance(dataset, list):
-                    for each_dataset in dataset:
-                        remove_aug_test(each_dataset)
-                else:
-                    remove_aug_test(dataset)
+        if dataset_type not in [
+                'ConcatDataset', 'UniformConcatDataset', 'OCRDataset',
+                'OCRSegDataset'
+        ]:
+            continue
+
+        uniform_pipeline = cfg.data[set_type].get('pipeline', None)
+        if is_type_list(uniform_pipeline, dict):
+            update_pipeline_recog(cfg.data[set_type])
+        elif is_2dlist(uniform_pipeline):
+            for idx, _ in enumerate(uniform_pipeline):
+                update_pipeline_recog(cfg.data[set_type].pipeline, idx)
+
+        for dataset in cfg.data[set_type].get('datasets', []):
+            if isinstance(dataset, list):
+                for each_dataset in dataset:
+                    update_pipeline_recog(each_dataset)
+            else:
+                update_pipeline_recog(dataset)

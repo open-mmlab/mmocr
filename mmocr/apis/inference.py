@@ -96,7 +96,7 @@ def model_inference(model,
 
     device = next(model.parameters()).device  # model device
 
-    if cfg.data.test.pipeline is None:
+    if cfg.data.test.get('pipeline', None) is None:
         cfg.data.test.pipeline = cfg.data.test.datasets[0].pipeline
     if is_2dlist(cfg.data.test.pipeline):
         cfg.data.test.pipeline = cfg.data.test.pipeline[0]
