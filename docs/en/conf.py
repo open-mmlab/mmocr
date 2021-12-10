@@ -17,7 +17,7 @@ import sys
 
 import pytorch_sphinx_theme
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../../'))
 
 # -- Project information -----------------------------------------------------
 
@@ -26,7 +26,7 @@ copyright = '2020-2030, OpenMMLab'
 author = 'OpenMMLab'
 
 # The full version, including alpha/beta/rc tags
-version_file = '../mmocr/version.py'
+version_file = '../../mmocr/version.py'
 with open(version_file, 'r') as f:
     exec(compile(f.read(), version_file, 'exec'))
 __version__ = locals()['__version__']
@@ -77,11 +77,11 @@ html_theme = 'pytorch_sphinx_theme'
 html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
     'logo_url':
-    'https://mmocr.readthedocs.io/zh_CN/latest',
+    'https://mmocr.readthedocs.io/en/latest/',
     'menu': [
         {
             'name':
-            '教程',
+            'Tutorial',
             'url':
             'https://colab.research.google.com/github/'
             'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'
@@ -92,27 +92,27 @@ html_theme_options = {
         },
         {
             'name':
-            '上游库',
+            'Upstream',
             'children': [
                 {
                     'name': 'MMCV',
                     'url': 'https://github.com/open-mmlab/mmcv',
-                    'description': '基础视觉库'
+                    'description': 'Foundational library for computer vision'
                 },
                 {
                     'name': 'MMDetection',
                     'url': 'https://github.com/open-mmlab/mmdetection',
-                    'description': '目标检测工具箱'
+                    'description': 'Object detection toolbox and benchmark'
                 },
             ]
         },
     ],
     # Specify the language of shared menu
     'menu_lang':
-    'cn',
+    'en'
 }
 
-language = 'zh_CN'
+language = 'en'
 
 master_doc = 'index'
 
@@ -127,7 +127,6 @@ myst_enable_extensions = ['colon_fence']
 
 
 def builder_inited_handler(app):
-    subprocess.run(['./cp_origin_docs.sh'])
     subprocess.run(['./merge_docs.sh'])
     subprocess.run(['./stats.py'])
 
