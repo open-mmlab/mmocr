@@ -156,11 +156,21 @@ def test_gen_textsnake_targets(mock_show_feature):
     assert np.allclose(target_generator.resample_step, 4.0)
     assert np.allclose(target_generator.center_region_shrink_ratio, 0.3)
 
+    # test vector_angle
+    vec1 = np.array([[-1, 0], [0, 1]])
+    vec2 = np.array([[1, 0], [0, 1]])
+    angles = target_generator.vector_angle(vec1, vec2)
+    assert np.allclose(angles, np.array([np.pi, 0]), atol=1e-3)
+
     # test find_head_tail for quadrangle
     polygon = np.array([[1.0, 1.0], [5.0, 1.0], [5.0, 3.0], [1.0, 3.0]])
     head_inds, tail_inds = target_generator.find_head_tail(polygon, 2.0)
     assert np.allclose(head_inds, [3, 0])
     assert np.allclose(tail_inds, [1, 2])
+    polygon = np.array([[1.0, 1.0], [1.0, 3.0], [5.0, 3.0], [5.0, 1.0]])
+    head_inds, tail_inds = target_generator.find_head_tail(polygon, 2.0)
+    assert np.allclose(head_inds, [0, 1])
+    assert np.allclose(tail_inds, [2, 3])
 
     # test find_head_tail for polygon
     polygon = np.array([[0., 10.], [3., 3.], [10., 0.], [17., 3.], [20., 10.],
