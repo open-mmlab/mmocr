@@ -205,7 +205,8 @@ class TextSnakeTargets(BaseTextDetTargets):
             line (ndarray): The points composing a discrete curve.
 
         Returns:
-            edges_length (ndarray): The length of each edge on the discrete curve.
+            edges_length (ndarray): The length of each edge on the discrete
+                curve.
             total_length (float): The total length of the discrete curve.
         """
 
