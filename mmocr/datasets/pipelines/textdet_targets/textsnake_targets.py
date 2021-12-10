@@ -32,30 +32,33 @@ class TextSnakeTargets(BaseTextDetTargets):
         self.orientation_thr = orientation_thr
         self.resample_step = resample_step
         self.center_region_shrink_ratio = center_region_shrink_ratio
+        self.eps = 1e-8
 
     def vector_angle(self, vec1, vec2):
         if vec1.ndim > 1:
-            unit_vec1 = vec1 / (norm(vec1, axis=-1) + 1e-8).reshape((-1, 1))
+            unit_vec1 = vec1 / (norm(vec1, axis=-1) + self.eps).reshape(
+                (-1, 1))
         else:
-            unit_vec1 = vec1 / (norm(vec1, axis=-1) + 1e-8)
+            unit_vec1 = vec1 / (norm(vec1, axis=-1) + self.eps)
         if vec2.ndim > 1:
-            unit_vec2 = vec2 / (norm(vec2, axis=-1) + 1e-8).reshape((-1, 1))
+            unit_vec2 = vec2 / (norm(vec2, axis=-1) + self.eps).reshape(
+                (-1, 1))
         else:
-            unit_vec2 = vec2 / (norm(vec2, axis=-1) + 1e-8)
+            unit_vec2 = vec2 / (norm(vec2, axis=-1) + self.eps)
         return np.arccos(
             np.clip(np.sum(unit_vec1 * unit_vec2, axis=-1), -1.0, 1.0))
 
     def vector_slope(self, vec):
         assert len(vec) == 2
-        return abs(vec[1] / (vec[0] + 1e-8))
+        return abs(vec[1] / (vec[0] + self.eps))
 
     def vector_sin(self, vec):
         assert len(vec) == 2
-        return vec[1] / (norm(vec) + 1e-8)
+        return vec[1] / (norm(vec) + self.eps)
 
     def vector_cos(self, vec):
         assert len(vec) == 2
-        return vec[0] / (norm(vec) + 1e-8)
+        return vec[0] / (norm(vec) + self.eps)
 
     def find_head_tail(self, points, orientation_thr):
         """Find the head edge and tail edge of a text polygon.
@@ -97,7 +100,7 @@ class TextSnakeTargets(BaseTextDetTargets):
             edge_dist = np.maximum(
                 norm(pad_points[1:] - poly_center, axis=-1),
                 norm(pad_points[:-1] - poly_center, axis=-1))
-            dist_score = edge_dist / (np.max(edge_dist) + 1e-12)
+            dist_score = edge_dist / (np.max(edge_dist) + self.eps)
             position_score = np.zeros(len(edge_vec))
             score = 0.5 * theta_sum_score + 0.15 * adjacent_theta_score
             score += 0.35 * dist_score
@@ -205,9 +208,12 @@ class TextSnakeTargets(BaseTextDetTargets):
             line (ndarray): The points composing a discrete curve.
 
         Returns:
-            edges_length (ndarray): The length of each edge on the discrete
-                curve.
-            total_length (float): The total length of the discrete curve.
+            tuple: Returns (edges_length, total_length).
+
+                - | edge_length (ndarray): The length of each edge on the
+                    discrete curve.
+                - | total_length (float): The total length of the discrete
+                    curve.
         """
 
         assert line.ndim == 2
@@ -246,7 +252,7 @@ class TextSnakeTargets(BaseTextDetTargets):
                 edge_ind += 1
             t_l, t_r = t_org[edge_ind], t_org[edge_ind + 1]
             weight = np.array([t_r - t, t - t_l], dtype=np.float32) / (
-                t_r - t_l + 1e-8)
+                t_r - t_l + self.eps)
             p_coords = np.dot(weight, line[[edge_ind, edge_ind + 1]])
             points.append(p_coords)
         points.append(line[-1])
