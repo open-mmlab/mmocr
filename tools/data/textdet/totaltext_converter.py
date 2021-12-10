@@ -344,10 +344,6 @@ def load_img_info(files):
     img_file, gt_file = files
     # read imgs with ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
-    # read imgs with orientations as dataloader does when training and testing
-    img_color = mmcv.imread(img_file, 'color')
-    # make sure imgs have no orientation info, or annotation gt is wrong.
-    assert img.shape[0:2] == img_color.shape[0:2]
 
     split_name = osp.basename(osp.dirname(img_file))
     img_info = dict(
