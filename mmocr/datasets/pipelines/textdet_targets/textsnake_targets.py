@@ -242,9 +242,8 @@ class TextSnakeTargets(BaseTextDetTargets):
         edge_ind = 0
         points = [line[0]]
         for t in t_equidistant:
-            if edge_ind < len(edges_length) - 1:
-                if t > t_org[edge_ind + 1]:
-                    edge_ind += 1
+            while edge_ind < len(edges_length) - 1 and t > t_org[edge_ind + 1]:
+                edge_ind += 1
             t_l, t_r = t_org[edge_ind], t_org[edge_ind + 1]
             weight = np.array([t_r - t, t - t_l], dtype=np.float32) / (
                 t_r - t_l + 1e-8)

@@ -170,6 +170,17 @@ def test_gen_textsnake_targets(mock_show_feature):
     assert np.allclose(head_inds, [9, 0])
     assert np.allclose(tail_inds, [4, 5])
 
+    # test resample_line
+    line = np.array([[0, 0], [0, 1], [0, 3], [0, 4], [0, 7], [0, 8]])
+    resampled_line = target_generator.resample_line(line, 3)
+    assert len(resampled_line) == 3
+    assert np.allclose(resampled_line, np.array([[0, 0], [0, 4], [0, 8]]))
+    line = np.array([[0, 0], [0, 0]])
+    resampled_line = target_generator.resample_line(line, 4)
+    assert len(resampled_line) == 4
+    assert np.allclose(resampled_line,
+                       np.array([[0, 0], [0, 0], [0, 0], [0, 0]]))
+
     # test generate_text_region_mask
     img_size = (3, 10)
     text_polys = [[np.array([0, 0, 1, 0, 1, 1, 0, 1])],
