@@ -27,6 +27,7 @@ def build_model(config_file):
 
 @pytest.mark.parametrize('cfg_file', [
     '../configs/textrecog/sar/sar_r31_parallel_decoder_academic.py',
+    '../configs/textrecog/abinet/abinet_academic.py',
     '../configs/textrecog/crnn/crnn_academic_dataset.py',
     '../configs/textrecog/seg/seg_r31_1by16_fpnocr_academic.py',
     '../configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2017.py'
