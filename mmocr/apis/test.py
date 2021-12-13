@@ -38,6 +38,20 @@ def tensor2grayimgs(tensor, mean=(127), std=(127), **kwargs):
 
 
 def retrieval_img_tensor_and_meta(data):
+    """Retrieval img_tensor, img_metas and img_norm_cfg.
+
+    Args:
+        data (dict): One batch data from data_loader.
+
+    Returns:
+        tuple: Returns (img_tensor, img_metas, img_norm_cfg)).
+
+            - | img_tensor (Tensor): Input image tensor with shape
+                :math:`(N, C, H, W)`.
+            - | img_metas (list[dict]): The metadata of images.
+            - | img_norm_cfg (dict): Config for image normalization.
+    """
+
     if isinstance(data['img'], torch.Tensor):
         # for textrecog with batch_size > 1
         # and not use 'DefaultFormatBundle' in pipeline
