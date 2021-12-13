@@ -56,8 +56,8 @@ model = dict(
     iter_size=1)
 
 data = dict(
-    samples_per_gpu=256,
-    workers_per_gpu=6,
+    samples_per_gpu=192,
+    workers_per_gpu=8,
     val_dataloader=dict(samples_per_gpu=1),
     test_dataloader=dict(samples_per_gpu=1),
     train=dict(
