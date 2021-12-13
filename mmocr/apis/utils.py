@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
 import warnings
 
 from mmdet.datasets import replace_ImageToTensor
@@ -19,6 +20,8 @@ def replace_image_to_tensor(cfg, set_types=None):
     assert set_types is None or isinstance(set_types, list)
     if set_types is None:
         set_types = ['val', 'test']
+
+    cfg = copy.deepcopy(cfg)
     for set_type in set_types:
         assert set_type in ['val', 'test']
         uniform_pipeline = cfg.data[set_type].get('pipeline', None)
@@ -34,6 +37,8 @@ def replace_image_to_tensor(cfg, set_types=None):
                     update_pipeline(each_dataset)
             else:
                 update_pipeline(dataset)
+
+    return cfg
 
 
 def update_pipeline_recog(cfg, idx=None):
@@ -61,6 +66,8 @@ def disable_text_recog_aug_test(cfg, set_types=None):
     assert set_types is None or isinstance(set_types, list)
     if set_types is None:
         set_types = ['val', 'test']
+
+    cfg = copy.deepcopy(cfg)
     warnings.simplefilter('once')
     for set_type in set_types:
         assert set_type in ['val', 'test']
@@ -84,3 +91,5 @@ def disable_text_recog_aug_test(cfg, set_types=None):
                     update_pipeline_recog(each_dataset)
             else:
                 update_pipeline_recog(dataset)
+
+    return cfg

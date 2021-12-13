@@ -125,8 +125,8 @@ def train_detector(model,
         if val_samples_per_gpu > 1:
             # Support batch_size > 1 in test for text recognition
             # by disable MultiRotateAugOCR since it is useless for most case
-            disable_text_recog_aug_test(cfg)
-            replace_image_to_tensor(cfg)
+            cfg = disable_text_recog_aug_test(cfg)
+            cfg = replace_image_to_tensor(cfg)
 
         val_dataset = build_dataset(cfg.data.val, dict(test_mode=True))
 

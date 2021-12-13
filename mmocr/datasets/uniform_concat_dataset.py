@@ -35,9 +35,9 @@ class UniformConcatDataset(ConcatDataset):
                  **kwargs):
         new_datasets = []
         if pipeline is not None:
-            assert len(
-                pipeline
-            ) > 0, 'pipeline must be list[dict] or list[list[dict]].'
+            assert isinstance(
+                pipeline,
+                list), 'pipeline must be list[dict] or list[list[dict]].'
             if is_type_list(pipeline, dict):
                 self._apply_pipeline(datasets, pipeline, force_apply)
                 new_datasets = datasets

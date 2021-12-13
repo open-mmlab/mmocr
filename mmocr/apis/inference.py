@@ -92,7 +92,7 @@ def model_inference(model,
     cfg = model.cfg
 
     if batch_mode:
-        disable_text_recog_aug_test(cfg, set_types=['test'])
+        cfg = disable_text_recog_aug_test(cfg, set_types=['test'])
 
     device = next(model.parameters()).device  # model device
 

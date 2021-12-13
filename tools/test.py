@@ -227,8 +227,8 @@ def main():
     samples_per_gpu = (cfg.data.get('test_dataloader', {})).get(
         'samples_per_gpu', cfg.data.get('samples_per_gpu', 1))
     if samples_per_gpu > 1:
-        disable_text_recog_aug_test(cfg)
-        replace_image_to_tensor(cfg)
+        cfg = disable_text_recog_aug_test(cfg)
+        cfg = replace_image_to_tensor(cfg)
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
