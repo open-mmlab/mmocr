@@ -1,12 +1,14 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
+
 import numpy as np
 import torch
 import torch.nn as nn
 from mmcv.runner import BaseModule
 
-from mmocr.models.builder import HEADS, build_loss
+from mmocr.models.builder import HEADS
 from mmocr.utils import check_argument
-from . import HeadMixin
+from .head_mixin import HeadMixin
 
 
 @HEADS.register_module()
@@ -16,47 +18,52 @@ class PANHead(HeadMixin, BaseModule):
     Args:
         in_channels (list[int]): A list of 4 numbers of input channels.
         out_channels (int): Number of output channels.
-        text_repr_type (str): Use polygon or quad to represent. Available
-            options are "poly" or "quad".
         downsample_ratio (float): Downsample ratio.
         loss (dict): Configuration dictionary for loss type. Supported loss
             types are "PANLoss" and "PSELoss".
+        postprocessor (dict): Config of postprocessor for PANet.
         train_cfg, test_cfg (dict): Depreciated.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
-    def __init__(
-        self,
-        in_channels,
-        out_channels,
-        text_repr_type='poly',  # 'poly' or 'quad'
-        downsample_ratio=0.25,
-        loss=dict(type='PANLoss'),
-        train_cfg=None,
-        test_cfg=None,
-        init_cfg=dict(
-            type='Normal', mean=0, std=0.01, override=dict(name='out_conv'))):
-        super().__init__(init_cfg=init_cfg)
+    def __init__(self,
+                 in_channels,
+                 out_channels,
+                 downsample_ratio=0.25,
+                 loss=dict(type='PANLoss'),
+                 postprocessor=dict(
+                     type='PANPostprocessor', text_repr_type='poly'),
+                 train_cfg=None,
+                 test_cfg=None,
+                 init_cfg=dict(
+                     type='Normal',
+                     mean=0,
+                     std=0.01,
+                     override=dict(name='out_conv')),
+                 **kwargs):
+        old_keys = ['text_repr_type', 'decoding_type']
+        for key in old_keys:
+            if kwargs.get(key, None):
+                postprocessor[key] = kwargs.get(key)
+                warnings.warn(
+                    f'{key} is deprecated, please specify '
+                    'it in postprocessor config dict. See '
+                    'https://github.com/open-mmlab/mmocr/pull/640'
+                    ' for details.', UserWarning)
+
+        BaseModule.__init__(self, init_cfg=init_cfg)
+        HeadMixin.__init__(self, loss, postprocessor)
 
         assert check_argument.is_type_list(in_channels, int)
         assert isinstance(out_channels, int)
-        assert text_repr_type in ['poly', 'quad']
+
         assert 0 <= downsample_ratio <= 1
 
-        self.loss_module = build_loss(loss)
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.text_repr_type = text_repr_type
+        self.downsample_ratio = downsample_ratio
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
-        self.downsample_ratio = downsample_ratio
-        if loss['type'] == 'PANLoss':
-            self.decoding_type = 'pan'
-        elif loss['type'] == 'PSELoss':
-            self.decoding_type = 'pse'
-        else:
-            type = loss['type']
-            raise NotImplementedError(f'unsupported loss type {type}.')
 
         self.out_conv = nn.Conv2d(
             in_channels=np.sum(np.array(in_channels)),
@@ -79,4 +86,5 @@ class PANHead(HeadMixin, BaseModule):
         else:
             outputs = inputs
         outputs = self.out_conv(outputs)
+
         return outputs

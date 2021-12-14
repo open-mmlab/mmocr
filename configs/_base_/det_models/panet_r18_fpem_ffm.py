@@ -13,10 +13,10 @@ model_poly = dict(
     neck=dict(type='FPEM_FFM', in_channels=[64, 128, 256, 512]),
     bbox_head=dict(
         type='PANHead',
-        text_repr_type='poly',
         in_channels=[128, 128, 128, 128],
         out_channels=6,
-        loss=dict(type='PANLoss')),
+        loss=dict(type='PANLoss'),
+        postprocessor=dict(type='PANPostprocessor', text_repr_type='poly')),
     train_cfg=None,
     test_cfg=None)
 
@@ -35,9 +35,9 @@ model_quad = dict(
     neck=dict(type='FPEM_FFM', in_channels=[64, 128, 256, 512]),
     bbox_head=dict(
         type='PANHead',
-        text_repr_type='quad',
         in_channels=[128, 128, 128, 128],
         out_channels=6,
-        loss=dict(type='PANLoss')),
+        loss=dict(type='PANLoss'),
+        postprocessor=dict(type='PANPostprocessor', text_repr_type='quad')),
     train_cfg=None,
     test_cfg=None)

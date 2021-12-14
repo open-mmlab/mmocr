@@ -1,14 +1,26 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 
-from mmocr.models.builder import HEADS
-from mmocr.models.textdet.postprocess import decode
+from mmocr.models.builder import HEADS, build_loss, build_postprocessor
 from mmocr.utils import check_argument
 
 
 @HEADS.register_module()
 class HeadMixin:
-    """The head minxin for dbnet and pannet heads."""
+    """Base head class for text detection, including loss calcalation and
+    postprocess.
+
+    Args:
+        loss (dict): Config to build loss.
+        postprocessor (dict): Config to build postprocessor.
+    """
+
+    def __init__(self, loss, postprocessor):
+        assert isinstance(loss, dict)
+        assert isinstance(postprocessor, dict)
+
+        self.loss_module = build_loss(loss)
+        self.postprocessor = build_postprocessor(postprocessor)
 
     def resize_boundary(self, boundaries, scale_factor):
         """Rescale boundaries via scale_factor.
@@ -52,21 +64,20 @@ class HeadMixin:
         assert isinstance(rescale, bool)
 
         score_maps = score_maps.squeeze()
-        boundaries = decode(
-            decoding_type=self.decoding_type,
-            preds=score_maps,
-            text_repr_type=self.text_repr_type)
+        boundaries = self.postprocessor(score_maps)
+
         if rescale:
             boundaries = self.resize_boundary(
                 boundaries,
                 1.0 / self.downsample_ratio / img_metas[0]['scale_factor'])
+
         results = dict(
             boundary_result=boundaries, filename=img_metas[0]['filename'])
 
         return results
 
     def loss(self, pred_maps, **kwargs):
-        """Compute the loss for text detection.
+        """Compute the loss for scene text detection.
 
         Args:
             pred_maps (Tensor): The input score maps of shape
@@ -76,4 +87,5 @@ class HeadMixin:
             dict: The dict for losses.
         """
         losses = self.loss_module(pred_maps, self.downsample_ratio, **kwargs)
+
         return losses
