@@ -108,6 +108,15 @@ def single_gpu_test(model,
                                    'currently not supported.')
                 gt_bboxes = data['gt_bboxes'].data[0]
                 img_metas = data['img_metas'].data[0]
+                must_keys = ['img_norm_cfg', 'ori_filename']
+                for key in must_keys:
+                    if key not in img_metas[0]:
+                        raise KeyError(
+                            f'Please add {key} to the "meta_keys" in config.')
+                if len(img_metas[0]['img_norm_cfg']['mean']) != 3:
+                    raise Exception(
+                        'Only model with visual is supported here to show '
+                        'results. Please use tools/kie_test_imgs.py instead.')
                 imgs = tensor2imgs(img_tensor, **img_metas[0]['img_norm_cfg'])
                 for i, img in enumerate(imgs):
                     h, w, _ = img_metas[i]['img_shape']

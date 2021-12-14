@@ -1,9 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
+import json
 import os
 import os.path as osp
 import tempfile
 
+import mmcv
+import numpy as np
 import pytest
 import torch
 from mmcv import Config
@@ -12,7 +15,7 @@ from mmcv.parallel import MMDataParallel
 from mmocr.apis.test import single_gpu_test
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import check_argument, revert_sync_batchnorm
+from mmocr.utils import check_argument, list_to_file, revert_sync_batchnorm
 
 
 def build_model(cfg):
@@ -88,4 +91,71 @@ def test_single_gpu_test_det(cfg_file):
     with tempfile.TemporaryDirectory() as tmpdirname:
         out_dir = osp.join(tmpdirname, 'tmp')
         results = single_gpu_test(model, data_loader, out_dir=out_dir)
+        assert check_argument.is_type_list(results, dict)
+
+
+def gene_sdmgr_model_dataloader(cfg, dirname, curr_dir):
+    json_obj = {
+        'file_name':
+        '1.jpg',
+        'height':
+        348,
+        'width':
+        348,
+        'annotations': [{
+            'box': [114.0, 19.0, 230.0, 19.0, 230.0, 1.0, 114.0, 1.0],
+            'text':
+            'CHOEUN',
+            'label':
+            1
+        }]
+    }
+    ann_file = osp.join(dirname, 'test.txt')
+    list_to_file(ann_file, [json.dumps(json_obj, ensure_ascii=False)])
+
+    img = np.ones((348, 348, 3), dtype=np.uint8)
+    img_file = osp.join(dirname, '1.jpg')
+    mmcv.imwrite(img, img_file)
+
+    test = copy.deepcopy(cfg.data.test)
+    test.ann_file = ann_file
+    test.img_prefix = dirname
+    test.dict_file = osp.join(curr_dir, 'data/kie_toy_dataset/dict.txt')
+    cfg.data.test = test
+    cfg.model.class_list = osp.join(curr_dir,
+                                    'data/kie_toy_dataset/class_list.txt')
+
+    dataset = build_dataset(cfg.data.test)
+
+    loader_cfg = {
+        **dict((k, cfg.data[k]) for k in [
+                   'workers_per_gpu', 'samples_per_gpu'
+               ] if k in cfg.data)
+    }
+    test_loader_cfg = {
+        **loader_cfg,
+        **dict(shuffle=False, drop_last=False),
+        **cfg.data.get('test_dataloader', {})
+    }
+
+    data_loader = build_dataloader(dataset, **test_loader_cfg)
+    model = build_model(cfg)
+
+    return model, data_loader
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
+@pytest.mark.parametrize(
+    'cfg_file', ['../configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py'])
+def test_single_gpu_test_kie(cfg_file):
+    curr_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    config_file = os.path.join(curr_dir, cfg_file)
+    cfg = Config.fromfile(config_file)
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        out_dir = osp.join(tmpdirname, 'tmp')
+        model, data_loader = gene_sdmgr_model_dataloader(
+            cfg, out_dir, curr_dir)
+        results = single_gpu_test(
+            model, data_loader, out_dir=out_dir, is_kie=True)
         assert check_argument.is_type_list(results, dict)
