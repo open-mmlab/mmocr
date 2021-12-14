@@ -411,7 +411,7 @@ class MMOCR:
                  merge=False,
                  merge_xdist=20,
                  **kwargs):
-        args = locals()
+        args = locals().copy()
         [args.pop(x, None) for x in ['kwargs', 'self']]
         args = Namespace(**args)
 
