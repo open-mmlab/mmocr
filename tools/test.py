@@ -12,12 +12,10 @@ from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
                          wrap_fp16_model)
 from mmdet.apis import multi_gpu_test
-from mmdet.core import encode_mask_results
-
-from mmocr.apis.utils import (disable_text_recog_aug_test,
-                              replace_image_to_tensor)
 
 from mmocr.apis.test import single_gpu_test
+from mmocr.apis.utils import (disable_text_recog_aug_test,
+                              replace_image_to_tensor)
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
 from mmocr.utils import revert_sync_batchnorm
