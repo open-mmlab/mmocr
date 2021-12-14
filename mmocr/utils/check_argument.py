@@ -1,49 +1,48 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import numpy as np
 
 
 def is_3dlist(x):
+    """check x is 3d-list([[[1], []]]) or 2d empty list([[], []]) or 1d empty
+    list([]).
 
+    Notice:
+        The reason that it contains 1d or 2d empty list is because
+        some arguments from gt annotation file or model prediction
+        may be empty, but usually, it should be 3d-list.
+    """
     if not isinstance(x, list):
         return False
-    if len(x) > 0:
-        if isinstance(x[0], list):
-            if len(x[0]) > 0:
-                return isinstance(x[0][0], list)
-            return True
-        return False
+    if len(x) == 0:
+        return True
+    for sub_x in x:
+        if not is_2dlist(sub_x):
+            return False
 
     return True
 
 
 def is_2dlist(x):
+    """check x is 2d-list([[1], []]) or 1d empty list([]).
 
+    Notice:
+        The reason that it contains 1d empty list is because
+        some arguments from gt annotation file or model prediction
+        may be empty, but usually, it should be 2d-list.
+    """
     if not isinstance(x, list):
         return False
-    if len(x) > 0:
-        return bool(isinstance(x[0], list))
+    if len(x) == 0:
+        return True
 
-    return True
-
-
-def is_ndarray_list(x):
-
-    if not isinstance(x, list):
-        return False
-    if len(x) > 0:
-        return isinstance(x[0], np.ndarray)
-
-    return True
+    return all(isinstance(item, list) for item in x)
 
 
 def is_type_list(x, type):
 
     if not isinstance(x, list):
         return False
-    if len(x) > 0:
-        return isinstance(x[0], type)
 
-    return True
+    return all(isinstance(item, type) for item in x)
 
 
 def is_none_or_type(x, type):

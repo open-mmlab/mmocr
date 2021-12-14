@@ -36,7 +36,7 @@ Documentation: https://mmocr.readthedocs.io/en/latest/.
 
 - **Modular Design**
 
-  The modular design of MMOCR enables users to define their own optimizers, data preprocessors, and model components such as backbones, necks and heads as well as losses. Please refer to [getting_started.md](docs/getting_started.md) for how to construct a customized model.
+  The modular design of MMOCR enables users to define their own optimizers, data preprocessors, and model components such as backbones, necks and heads as well as losses. Please refer to [Getting Started](https://mmocr.readthedocs.io/en/latest/getting_started.html) for how to construct a customized model.
 
 - **Numerous Utilities**
 
@@ -111,11 +111,11 @@ v0.3.0 was released in 2021-8-25.
 
 ## Installation
 
-Please refer to [install.md](docs/install.md) for installation.
+Please refer to our [Install Guide](https://mmocr.readthedocs.io/en/latest/install.html).
 
 ## Get Started
 
-Please see [getting_started.md](docs/getting_started.md) for the basic usage of MMOCR.
+Please see [Getting Started](https://mmocr.readthedocs.io/en/latest/getting_started.html) for the basic usage of MMOCR.
 
 ## Contributing
 
