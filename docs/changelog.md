@@ -1,31 +1,70 @@
 # Changelog
 
-## v0.4.0 (01/12/2021)
+## v0.4.0 (15/12/2021)
 
 ### Highlights
 
-1. We release a new text recognition model - ABINet (CVPR 2021, Oral). With delicate model design and fancy and useful data augmentation transforms, ABINet is able to achieve xx and is the best text recognition model in MMOCR.
+1. We release a new text recognition model - [ABINet](https://arxiv.org/pdf/2103.06495.pdf) (CVPR 2021, Oral). With it dedicated model design and useful data augmentation transforms, ABINet can achieve the best performance on irregular text recognition tasks. [Check it out!](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#read-like-humans-autonomous-bidirectional-and-iterative-language-modeling-for-scene-text-recognition)
 2. We are also working hard to fulfill the requests from our community.
-[OpenSet KIE]() is one of the achievement, which extends the application of SDMGR from text node classification to node-pair relation extraction. We also provide
+[OpenSet KIE](https://mmocr.readthedocs.io/en/latest/kie_models.html#wildreceiptopenset) is one of the achievement, which extends the application of SDMGR from text node classification to node-pair relation extraction. We also provide
 a demo script to convert WildReceipt to open set domain, though it cannot
 take the full advantage of OpenSet format. For more information, please read our
-[tutorial]().
-3. Now you can expose APIs of model calls through TorchServe.
+[tutorial](https://mmocr.readthedocs.io/en/latest/tutorials/kie_closeset_openset.html).
+3. APIs of models can be exposed through TorchServe. [Docs](https://mmocr.readthedocs.io/en/latest/model_serving.html)
 
-### Big Changes
+### Breaking Changes & Migration Guide
 
-Some refactor processes are still going on. We reorganized the `config/` directory by extracting reusable sections in each configs into the `_base_`. Now the directory tree looks as follows:
+#### Postprocessor
+
+Some refactor processes are still going on. For all text detection models, we unified their `decode` implementations into a new module category, `POSTPROCESSOR`, which is responsible for decoding different raw outputs into boundary instances. In all text detection configs, the `text_repr_type` argument in `bbox_head` is deprecated and will be removed in the future release.
+
+**Migration Guide**: Find a similar line from detection model's config:
+```
+text_repr_type=xxx,
+```
+And replace it with
+```
+postprocessor=dict(type='{MODEL_NAME}Postprocessor', text_repr_type=xxx)),
+```
+Take a snippet of PANet's config as an example. Before the change, its config for `bbox_head` looks like:
+```
+    bbox_head=dict(
+        type='PANHead',
+        text_repr_type='poly',
+        in_channels=[128, 128, 128, 128],
+        out_channels=6,
+        loss=dict(type='PANLoss')),
+```
+Afterwards:
+```
+    bbox_head=dict(
+    type='PANHead',
+    in_channels=[128, 128, 128, 128],
+    out_channels=6,
+    loss=dict(type='PANLoss'),
+    postprocessor=dict(type='PANPostprocessor', text_repr_type='poly')),
+```
+There are other postprocessors and each takes different arguments. Interested users can find their interfaces or implementations in `mmocr/models/textdet/postprocess` or through our [api docs](https://mmocr.readthedocs.io/en/latest/api.html#textdet-postprocess).
+
+#### New Config Structure
+
+We reorganized the `configs/` directory by extracting reusable sections into `configs/_base_`. Now the directory tree of `configs/_base_` is organized as follows:
 
 ```
-
+_base_
+├── det_datasets
+├── det_models
+├── det_pipelines
+├── recog_datasets
+├── recog_models
+├── recog_pipelines
+└── schedules
 ```
 
-Such refactor makes the overall structural clearer and facilitates fair
-comparison across models. Despite the seemingly significant hierarchical difference, these changes would not break the backward compatibility since the names of model configs remain the same.
+The majority of model configs are composed of base configs as of now, which makes the overall structural clearer and facilitates fair
+comparison across models. Despite the seemingly significant hierarchical difference, **these changes would not break the backward compatibility** as the names of model configs remain the same.
 
-For detailed config naming convention, see our [docs]().
-
-### Feature
+### New Features
 * Support openset kie by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/498
 * Add converter for the Open Images v5 text annotations by Krylov et al. by @baudm in https://github.com/open-mmlab/mmocr/pull/497
 * Support Chinese for kie show result by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/464
@@ -35,6 +74,13 @@ For detailed config naming convention, see our [docs]().
 * Avoid duplicate placeholder docs in CN by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/582
 * Save results to json file for kie. by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/589
 * Add SAR_CN to ocr.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/579
+* mim extension for windows by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/641
+
+### Refactoring
+* Refactor textrecog config structure by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/617
+* Refactor text detection config by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/626
+* refactor transformer modules by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/618
+* refactor textdet postprocess by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/640
 
 ### Docs
 * C++ example section by @apiaccess21 in https://github.com/open-mmlab/mmocr/pull/593
@@ -50,8 +96,15 @@ For detailed config naming convention, see our [docs]().
 * Docstring for text recognition models by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/562
 * Add MMFlow & MIM by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/597
 * Add MMFewShot by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/621
+* Update model readme by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/604
+* Add input size check to model_inference by @mpena-vina in https://github.com/open-mmlab/mmocr/pull/633
+* Docstring for textdet models by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/561
+* Add MMHuman3D in readme by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/644
+* Use shared menu from theme instead by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/655
+* Refactor docs structure by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/662
+* Docs fix by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/664
 
-### Enhancement
+### Enhancements
 * Use bounding box around polygon instead of within polygon by @alexander-soare in https://github.com/open-mmlab/mmocr/pull/469
 * Add CITATION.cff by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/476
 * Add py3.9 CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/475
@@ -59,6 +112,13 @@ For detailed config naming convention, see our [docs]().
 * Use container in CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/502
 * CircleCI Setup by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/611
 * Remove unnecessary custom_import from train.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/603
+* Change the upper version of mmcv to 1.5.0 by @zhouzaida in https://github.com/open-mmlab/mmocr/pull/628
+* Update CircleCI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/631
+* Pass custom_hooks to MMCV by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/609
+* Skip CI when some specific files were changed by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/642
+* Add markdown linter in pre-commit hook by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/643
+* Use shape from loaded image by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/652
+* Cancel previous runs that are not completed by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/666
 
 ### Bug Fixes
 * Modify algorithm "sar" weights path in metafile by @ShoupingShan in https://github.com/open-mmlab/mmocr/pull/581
@@ -79,9 +139,12 @@ For detailed config naming convention, see our [docs]().
 * Keep original texts for kie by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/588
 * Fix random seed by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/600
 * Fix DBNet_r50 config by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/625
-
-### Refactor
-* Refactor textrecog config structure by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/617
+* Change SBC case to DBC case by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/632
+* Fix kie demo by @innerlee in https://github.com/open-mmlab/mmocr/pull/610
+* fix type check by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/650
+* Remove depreciated image validator in totaltext converter by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/661
+* Fix change locals() dict by @Fei-Wang in https://github.com/open-mmlab/mmocr/pull/663
+* fix #614: textsnake targets by @HolyCrap96 in https://github.com/open-mmlab/mmocr/pull/660
 
 ## New Contributors
 * @alexander-soare made their first contribution in https://github.com/open-mmlab/mmocr/pull/469
@@ -90,8 +153,11 @@ For detailed config naming convention, see our [docs]().
 * @baudm made their first contribution in https://github.com/open-mmlab/mmocr/pull/497
 * @ShoupingShan made their first contribution in https://github.com/open-mmlab/mmocr/pull/581
 * @apiaccess21 made their first contribution in https://github.com/open-mmlab/mmocr/pull/593
+* @zhouzaida made their first contribution in https://github.com/open-mmlab/mmocr/pull/628
+* @mpena-vina made their first contribution in https://github.com/open-mmlab/mmocr/pull/633
+* @Fei-Wang made their first contribution in https://github.com/open-mmlab/mmocr/pull/663
 
-**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v0.3.0...v0.4.0
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v0.3.0...0.4.0
 
 ## v0.3.0 (25/8/2021)
 
