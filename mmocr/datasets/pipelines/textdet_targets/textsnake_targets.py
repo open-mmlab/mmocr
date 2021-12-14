@@ -32,30 +32,33 @@ class TextSnakeTargets(BaseTextDetTargets):
         self.orientation_thr = orientation_thr
         self.resample_step = resample_step
         self.center_region_shrink_ratio = center_region_shrink_ratio
+        self.eps = 1e-8
 
     def vector_angle(self, vec1, vec2):
         if vec1.ndim > 1:
-            unit_vec1 = vec1 / (norm(vec1, axis=-1) + 1e-8).reshape((-1, 1))
+            unit_vec1 = vec1 / (norm(vec1, axis=-1) + self.eps).reshape(
+                (-1, 1))
         else:
-            unit_vec1 = vec1 / (norm(vec1, axis=-1) + 1e-8)
+            unit_vec1 = vec1 / (norm(vec1, axis=-1) + self.eps)
         if vec2.ndim > 1:
-            unit_vec2 = vec2 / (norm(vec2, axis=-1) + 1e-8).reshape((-1, 1))
+            unit_vec2 = vec2 / (norm(vec2, axis=-1) + self.eps).reshape(
+                (-1, 1))
         else:
-            unit_vec2 = vec2 / (norm(vec2, axis=-1) + 1e-8)
+            unit_vec2 = vec2 / (norm(vec2, axis=-1) + self.eps)
         return np.arccos(
             np.clip(np.sum(unit_vec1 * unit_vec2, axis=-1), -1.0, 1.0))
 
     def vector_slope(self, vec):
         assert len(vec) == 2
-        return abs(vec[1] / (vec[0] + 1e-8))
+        return abs(vec[1] / (vec[0] + self.eps))
 
     def vector_sin(self, vec):
         assert len(vec) == 2
-        return vec[1] / (norm(vec) + 1e-8)
+        return vec[1] / (norm(vec) + self.eps)
 
     def vector_cos(self, vec):
         assert len(vec) == 2
-        return vec[0] / (norm(vec) + 1e-8)
+        return vec[0] / (norm(vec) + self.eps)
 
     def find_head_tail(self, points, orientation_thr):
         """Find the head edge and tail edge of a text polygon.
@@ -97,7 +100,7 @@ class TextSnakeTargets(BaseTextDetTargets):
             edge_dist = np.maximum(
                 norm(pad_points[1:] - poly_center, axis=-1),
                 norm(pad_points[:-1] - poly_center, axis=-1))
-            dist_score = edge_dist / np.max(edge_dist)
+            dist_score = edge_dist / (np.max(edge_dist) + self.eps)
             position_score = np.zeros(len(edge_vec))
             score = 0.5 * theta_sum_score + 0.15 * adjacent_theta_score
             score += 0.35 * dist_score
@@ -198,6 +201,29 @@ class TextSnakeTargets(BaseTextDetTargets):
 
         return head_edge, tail_edge, top_sideline, bot_sideline
 
+    def cal_curve_length(self, line):
+        """Calculate the length of each edge on the discrete curve and the sum.
+
+        Args:
+            line (ndarray): The points composing a discrete curve.
+
+        Returns:
+            tuple: Returns (edges_length, total_length).
+
+                - | edge_length (ndarray): The length of each edge on the
+                    discrete curve.
+                - | total_length (float): The total length of the discrete
+                    curve.
+        """
+
+        assert line.ndim == 2
+        assert len(line) >= 2
+
+        edges_length = np.sqrt((line[1:, 0] - line[:-1, 0])**2 +
+                               (line[1:, 1] - line[:-1, 1])**2)
+        total_length = np.sum(edges_length)
+        return edges_length, total_length
+
     def resample_line(self, line, n):
         """Resample n points on a line.
 
@@ -213,34 +239,24 @@ class TextSnakeTargets(BaseTextDetTargets):
         assert line.shape[0] >= 2
         assert line.shape[1] == 2
         assert isinstance(n, int)
-        assert n > 0
+        assert n > 2
 
-        length_list = [
-            norm(line[i + 1] - line[i]) for i in range(len(line) - 1)
-        ]
-        total_length = sum(length_list)
-        length_cumsum = np.cumsum([0.0] + length_list)
-        delta_length = total_length / (float(n) + 1e-8)
-
-        current_edge_ind = 0
-        resampled_line = [line[0]]
-
-        for i in range(1, n):
-            current_line_len = i * delta_length
-
-            while current_line_len >= length_cumsum[current_edge_ind + 1]:
-                current_edge_ind += 1
-            current_edge_end_shift = current_line_len - length_cumsum[
-                current_edge_ind]
-            end_shift_ratio = current_edge_end_shift / length_list[
-                current_edge_ind]
-            current_point = line[current_edge_ind] + (
-                line[current_edge_ind + 1] -
-                line[current_edge_ind]) * end_shift_ratio
-            resampled_line.append(current_point)
-
-        resampled_line.append(line[-1])
-        resampled_line = np.array(resampled_line)
+        edges_length, total_length = self.cal_curve_length(line)
+        t_org = np.insert(np.cumsum(edges_length), 0, 0)
+        unit_t = total_length / (n - 1)
+        t_equidistant = np.arange(1, n - 1, dtype=np.float32) * unit_t
+        edge_ind = 0
+        points = [line[0]]
+        for t in t_equidistant:
+            while edge_ind < len(edges_length) - 1 and t > t_org[edge_ind + 1]:
+                edge_ind += 1
+            t_l, t_r = t_org[edge_ind], t_org[edge_ind + 1]
+            weight = np.array([t_r - t, t - t_l], dtype=np.float32) / (
+                t_r - t_l + self.eps)
+            p_coords = np.dot(weight, line[[edge_ind, edge_ind + 1]])
+            points.append(p_coords)
+        points.append(line[-1])
+        resampled_line = np.vstack(points)
 
         return resampled_line
 
@@ -266,17 +282,11 @@ class TextSnakeTargets(BaseTextDetTargets):
         assert sideline2.shape[0] >= 2
         assert isinstance(resample_step, float)
 
-        length1 = sum([
-            norm(sideline1[i + 1] - sideline1[i])
-            for i in range(len(sideline1) - 1)
-        ])
-        length2 = sum([
-            norm(sideline2[i + 1] - sideline2[i])
-            for i in range(len(sideline2) - 1)
-        ])
+        _, length1 = self.cal_curve_length(sideline1)
+        _, length2 = self.cal_curve_length(sideline2)
 
-        total_length = (length1 + length2) / 2
-        resample_point_num = max(int(float(total_length) / resample_step), 1)
+        avg_length = (length1 + length2) / 2
+        resample_point_num = max(int(float(avg_length) / resample_step) + 1, 3)
 
         resampled_line1 = self.resample_line(sideline1, resample_point_num)
         resampled_line2 = self.resample_line(sideline2, resample_point_num)
