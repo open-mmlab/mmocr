@@ -7,14 +7,12 @@ import torch.nn.functional as F
 from mmcv.runner import ModuleList
 
 from mmocr.models.builder import DECODERS
-from mmocr.models.textrecog.layers.transformer_layer import (
-    PositionalEncoding, TransformerDecoderLayer, get_pad_mask,
-    get_subsequent_mask)
+from mmocr.models.common import PositionalEncoding, TFDecoderLayer
 from .base_decoder import BaseDecoder
 
 
 @DECODERS.register_module()
-class TFDecoder(BaseDecoder):
+class NRTRDecoder(BaseDecoder):
     """Transformer Decoder block with self attention mechanism.
 
     Args:
@@ -71,8 +69,8 @@ class TFDecoder(BaseDecoder):
         self.dropout = nn.Dropout(p=dropout)
 
         self.layer_stack = ModuleList([
-            TransformerDecoderLayer(
-                d_model, d_inner, n_head, d_k, d_v, dropout=dropout)
+            TFDecoderLayer(
+                d_model, d_inner, n_head, d_k, d_v, dropout=dropout, **kwargs)
             for _ in range(n_layers)
         ])
         self.layer_norm = nn.LayerNorm(d_model, eps=1e-6)
@@ -80,13 +78,29 @@ class TFDecoder(BaseDecoder):
         pred_num_class = num_classes - 1  # ignore padding_idx
         self.classifier = nn.Linear(d_model, pred_num_class)
 
+    @staticmethod
+    def get_pad_mask(seq, pad_idx):
+
+        return (seq != pad_idx).unsqueeze(-2)
+
+    @staticmethod
+    def get_subsequent_mask(seq):
+        """For masking out the subsequent info."""
+        len_s = seq.size(1)
+        subsequent_mask = 1 - torch.triu(
+            torch.ones((len_s, len_s), device=seq.device), diagonal=1)
+        subsequent_mask = subsequent_mask.unsqueeze(0).bool()
+
+        return subsequent_mask
+
     def _attention(self, trg_seq, src, src_mask=None):
         trg_embedding = self.trg_word_emb(trg_seq)
         trg_pos_encoded = self.position_enc(trg_embedding)
         tgt = self.dropout(trg_pos_encoded)
 
-        trg_mask = get_pad_mask(
-            trg_seq, pad_idx=self.padding_idx) & get_subsequent_mask(trg_seq)
+        trg_mask = self.get_pad_mask(
+            trg_seq,
+            pad_idx=self.padding_idx) & self.get_subsequent_mask(trg_seq)
         output = tgt
         for dec_layer in self.layer_stack:
             output = dec_layer(
@@ -98,11 +112,27 @@ class TFDecoder(BaseDecoder):
 
         return output
 
+    def _get_mask(self, logit, img_metas):
+        valid_ratios = None
+        if img_metas is not None:
+            valid_ratios = [
+                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+            ]
+        N, T, _ = logit.size()
+        mask = None
+        if valid_ratios is not None:
+            mask = logit.new_zeros((N, T))
+            for i, valid_ratio in enumerate(valid_ratios):
+                valid_width = min(T, math.ceil(T * valid_ratio))
+                mask[i, :valid_width] = 1
+
+        return mask
+
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
         r"""
         Args:
             feat (None): Unused.
-            out_enc (Tensor): Encoder output of shape :math:`(N, D_m, H, W)`
+            out_enc (Tensor): Encoder output of shape :math:`(N, T, D_m)`
                 where :math:`D_m` is ``d_model``.
             targets_dict (dict): A dict with the key ``padded_targets``, a
                 tensor of shape :math:`(N, T)`. Each element is the index of a
@@ -113,44 +143,17 @@ class TFDecoder(BaseDecoder):
         Returns:
             Tensor: The raw logit tensor. Shape :math:`(N, T, C)`.
         """
-        valid_ratios = None
-        if img_metas is not None:
-            valid_ratios = [
-                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-            ]
-        n, c, h, w = out_enc.size()
-        src_mask = None
-        if valid_ratios is not None:
-            src_mask = out_enc.new_zeros((n, h, w))
-            for i, valid_ratio in enumerate(valid_ratios):
-                valid_width = min(w, math.ceil(w * valid_ratio))
-                src_mask[i, :, :valid_width] = 1
-            src_mask = src_mask.view(n, h * w)
-        out_enc = out_enc.view(n, c, h * w).permute(0, 2, 1)
-        out_enc = out_enc.contiguous()
+        src_mask = self._get_mask(out_enc, img_metas)
         targets = targets_dict['padded_targets'].to(out_enc.device)
         attn_output = self._attention(targets, out_enc, src_mask=src_mask)
         outputs = self.classifier(attn_output)
+
         return outputs
 
     def forward_test(self, feat, out_enc, img_metas):
-        valid_ratios = None
-        if img_metas is not None:
-            valid_ratios = [
-                img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
-            ]
-        n, c, h, w = out_enc.size()
-        src_mask = None
-        if valid_ratios is not None:
-            src_mask = out_enc.new_zeros((n, h, w))
-            for i, valid_ratio in enumerate(valid_ratios):
-                valid_width = min(w, math.ceil(w * valid_ratio))
-                src_mask[i, :, :valid_width] = 1
-            src_mask = src_mask.view(n, h * w)
-        out_enc = out_enc.view(n, c, h * w).permute(0, 2, 1)
-        out_enc = out_enc.contiguous()
-
-        init_target_seq = torch.full((n, self.max_seq_len + 1),
+        src_mask = self._get_mask(out_enc, img_metas)
+        N = out_enc.size(0)
+        init_target_seq = torch.full((N, self.max_seq_len + 1),
                                      self.padding_idx,
                                      device=out_enc.device,
                                      dtype=torch.long)
@@ -161,7 +164,7 @@ class TFDecoder(BaseDecoder):
         for step in range(0, self.max_seq_len):
             decoder_output = self._attention(
                 init_target_seq, out_enc, src_mask=src_mask)
-            # bsz * seq_len * 512
+            # bsz * seq_len * C
             step_result = F.softmax(
                 self.classifier(decoder_output[:, step, :]), dim=-1)
             # bsz * num_classes

@@ -37,7 +37,7 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 -**模块化设计**
 
   MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处理器，模型组件如主干模块，颈部模块和头部模块，以及损失函数。有关如何构建自定义模型的信
-息，请参考[快速入门](docs/getting_started.md)。
+息，请参考[快速入门](https://mmocr.readthedocs.io/zh_CN/latest/getting_started.html)。
 
 -**众多实用工具**
 
@@ -111,11 +111,11 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 
 ## 安装
 
-请参考[安装文档](docs/install.md)进行安装。
+请参考[安装文档](https://mmocr.readthedocs.io/zh_CN/latest/install.html)进行安装。
 
 ## 快速入门
 
-请参考[快速入门](docs/getting_started.md)文档学习 MMOCR 的基本使用。
+请参考[快速入门](https://mmocr.readthedocs.io/zh_CN/latest/getting_started.html)文档学习 MMOCR 的基本使用。
 
 ## 贡献指南
 
@@ -141,6 +141,7 @@ MMOCR 是一款由来自不同高校和企业的研发人员共同参与贡献�
 - [MMGeneration](https://github.com/open-mmlab/mmgeneration): OpenMMLab 图片视频生成模型工具箱
 - [MMFlow](https://github.com/open-mmlab/mmflow): OpenMMLab 光流估计工具箱与测试基准
 - [MMFewShot](https://github.com/open-mmlab/mmfewshot): OpenMMLab 少样本学习工具箱与测试基准
+- [MMHuman3D](https://github.com/open-mmlab/mmhuman3d): OpenMMLab 人体参数化模型工具箱与测试基准
 
 ## 欢迎加入 OpenMMLab 社区
 

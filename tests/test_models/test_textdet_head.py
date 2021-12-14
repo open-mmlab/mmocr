@@ -24,7 +24,6 @@ def test_drrg_head():
     assert np.allclose(drrg_head.center_region_thr, 0.2)
     assert drrg_head.center_region_area_thr == 50
     assert np.allclose(drrg_head.local_graph_thr, 0.7)
-    assert np.allclose(drrg_head.link_thr, 0.85)
 
     # test forward train
     num_rois = 16

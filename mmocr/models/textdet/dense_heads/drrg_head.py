@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -7,17 +9,14 @@ from mmcv.runner import BaseModule
 
 from mmocr.models.builder import HEADS, build_loss
 from mmocr.models.textdet.modules import GCN, LocalGraphs, ProposalLocalGraphs
-from mmocr.models.textdet.postprocess import decode
 from mmocr.utils import check_argument
 from .head_mixin import HeadMixin
 
 
 @HEADS.register_module()
 class DRRGHead(HeadMixin, BaseModule):
-    """The class for DRRG head: Deep Relational Reasoning Graph Network for
-    Arbitrary Shape Text Detection.
-
-    [https://arxiv.org/abs/2003.07493]
+    """The class for DRRG head: `Deep Relational Reasoning Graph Network for
+    Arbitrary Shape Text Detection <https://arxiv.org/abs/2003.07493>`_.
 
     Args:
         k_at_hops (tuple(int)): The number of i-hop neighbors, i = 1, 2.
@@ -40,7 +39,9 @@ class DRRGHead(HeadMixin, BaseModule):
             text center region.
         local_graph_thr (float): The threshold to filter identical local
             graphs.
-        link_thr(float): The threshold for connected components search.
+        loss (dict): The config of loss that DRRGHead uses..
+        postprocessor (dict): Config of postprocessor for Drrg.
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,
@@ -60,16 +61,27 @@ class DRRGHead(HeadMixin, BaseModule):
                  center_region_thr=0.2,
                  center_region_area_thr=50,
                  local_graph_thr=0.7,
-                 link_thr=0.85,
                  loss=dict(type='DRRGLoss'),
+                 postprocessor=dict(type='DRRGPostprocessor', link_thr=0.85),
                  train_cfg=None,
                  test_cfg=None,
                  init_cfg=dict(
                      type='Normal',
                      override=dict(name='out_conv'),
                      mean=0,
-                     std=0.01)):
-        super().__init__(init_cfg=init_cfg)
+                     std=0.01),
+                 **kwargs):
+        old_keys = ['text_repr_type', 'decoding_type', 'link_thr']
+        for key in old_keys:
+            if kwargs.get(key, None):
+                postprocessor[key] = kwargs.get(key)
+                warnings.warn(
+                    f'{key} is deprecated, please specify '
+                    'it in postprocessor config dict. See '
+                    'https://github.com/open-mmlab/mmocr/pull/640'
+                    ' for details.', UserWarning)
+        BaseModule.__init__(self, init_cfg=init_cfg)
+        HeadMixin.__init__(self, loss, postprocessor)
 
         assert isinstance(in_channels, int)
         assert isinstance(k_at_hops, tuple)
@@ -87,7 +99,6 @@ class DRRGHead(HeadMixin, BaseModule):
         assert isinstance(center_region_thr, float)
         assert isinstance(center_region_area_thr, int)
         assert isinstance(local_graph_thr, float)
-        assert isinstance(link_thr, float)
 
         self.in_channels = in_channels
         self.out_channels = 6
@@ -107,7 +118,6 @@ class DRRGHead(HeadMixin, BaseModule):
         self.center_region_thr = center_region_thr
         self.center_region_area_thr = center_region_area_thr
         self.local_graph_thr = local_graph_thr
-        self.link_thr = link_thr
         self.loss_module = build_loss(loss)
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
@@ -139,7 +149,22 @@ class DRRGHead(HeadMixin, BaseModule):
         self.gcn = GCN(node_feat_len)
 
     def forward(self, inputs, gt_comp_attribs):
+        """
+        Args:
+            inputs (Tensor): Shape of :math:`(N, C, H, W)`.
+            gt_comp_attribs (list[ndarray]): The padded text component
+                attributes. Shape: (num_component, 8).
 
+        Returns:
+            tuple: Returns (pred_maps, (gcn_pred, gt_labels)).
+
+                - | pred_maps (Tensor): Prediction map with shape
+                    :math:`(N, C_{out}, H, W)`.
+                - | gcn_pred (Tensor): Prediction from GCN module, with
+                    shape :math:`(N, 2)`.
+                - | gt_labels (Tensor): Ground-truth label with shape
+                    :math:`(N, 8)`.
+        """
         pred_maps = self.out_conv(inputs)
         feat_maps = torch.cat([inputs, pred_maps], dim=1)
         node_feats, adjacent_matrices, knn_inds, gt_labels = self.graph_train(
@@ -150,7 +175,22 @@ class DRRGHead(HeadMixin, BaseModule):
         return pred_maps, (gcn_pred, gt_labels)
 
     def single_test(self, feat_maps):
+        r"""
+        Args:
+            feat_maps (Tensor): Shape of :math:`(N, C, H, W)`.
 
+        Returns:
+            tuple: Returns (edge, score, text_comps).
+
+                - | edge (ndarray): The edge array of shape :math:`(N, 2)`
+                    where each row is a pair of text component indices
+                    that makes up an edge in graph.
+                - | score (ndarray): The score array of shape :math:`(N,)`,
+                    corresponding to the edge above.
+                - | text_comps (ndarray): The text components of shape
+                    :math:`(N, 9)` where each row corresponds to one box and
+                    its score: (x1, y1, x2, y2, x3, y3, x4, y4, score).
+        """
         pred_maps = self.out_conv(feat_maps)
         feat_maps = torch.cat([feat_maps, pred_maps], dim=1)
 
@@ -197,7 +237,7 @@ class DRRGHead(HeadMixin, BaseModule):
                 resolution.
 
         Returns:
-            results (dict): The result dict.
+            dict: The result dict containing key `boundary_result`.
         """
 
         assert check_argument.is_type_list(img_metas, dict)
@@ -205,12 +245,8 @@ class DRRGHead(HeadMixin, BaseModule):
 
         boundaries = []
         if edges is not None:
-            boundaries = decode(
-                decoding_type='drrg',
-                edges=edges,
-                scores=scores,
-                text_comps=text_comps,
-                link_thr=self.link_thr)
+            boundaries = self.postprocessor(edges, scores, text_comps)
+
         if rescale:
             boundaries = self.resize_boundary(
                 boundaries,

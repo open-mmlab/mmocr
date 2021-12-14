@@ -1,10 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 
-from mmocr.models.textrecog.layers import (BasicBlock, Bottleneck,
-                                           PositionalEncoding,
-                                           TransformerDecoderLayer,
-                                           get_pad_mask, get_subsequent_mask)
+from mmocr.models.common import (PositionalEncoding, TFDecoderLayer,
+                                 TFEncoderLayer)
+from mmocr.models.textrecog.layers import BasicBlock, Bottleneck
 from mmocr.models.textrecog.layers.conv_layer import conv3x3
 
 
@@ -34,9 +33,15 @@ def test_conv_layer():
 
 def test_transformer_layer():
     # test decoder_layer
-    decoder_layer = TransformerDecoderLayer()
+    decoder_layer = TFDecoderLayer()
     in_dec = torch.rand(1, 30, 512)
     out_enc = torch.rand(1, 128, 512)
+    out_dec = decoder_layer(in_dec, out_enc)
+    assert out_dec.shape == torch.Size([1, 30, 512])
+
+    decoder_layer = TFDecoderLayer(
+        operation_order=('self_attn', 'norm', 'enc_dec_attn', 'norm', 'ffn',
+                         'norm'))
     out_dec = decoder_layer(in_dec, out_enc)
     assert out_dec.shape == torch.Size([1, 30, 512])
 
@@ -46,12 +51,13 @@ def test_transformer_layer():
     out = pos_encoder(x)
     assert out.size() == x.size()
 
-    # test get pad mask
-    seq = torch.rand(1, 30)
-    pad_idx = 0
-    out = get_pad_mask(seq, pad_idx)
-    assert out.shape == torch.Size([1, 1, 30])
+    # test encoder_layer
+    encoder_layer = TFEncoderLayer()
+    in_enc = torch.rand(1, 20, 512)
+    out_enc = encoder_layer(in_enc)
+    assert out_dec.shape == torch.Size([1, 30, 512])
 
-    # test get_subsequent_mask
-    out_mask = get_subsequent_mask(seq)
-    assert out_mask.shape == torch.Size([1, 30, 30])
+    encoder_layer = TFEncoderLayer(
+        operation_order=('self_attn', 'norm', 'ffn', 'norm'))
+    out_enc = encoder_layer(in_enc)
+    assert out_dec.shape == torch.Size([1, 30, 512])

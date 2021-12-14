@@ -61,7 +61,7 @@ class SatrnEncoder(BaseEncoder):
                 images. Preferably with the key ``valid_ratio``.
 
         Returns:
-            Tensor: A tensor of shape :math:`(N, D_m, H, W)`.
+            Tensor: A tensor of shape :math:`(N, T, D_m)`.
         """
         valid_ratios = [1.0 for _ in range(feat.size(0))]
         if img_metas is not None:
@@ -81,8 +81,5 @@ class SatrnEncoder(BaseEncoder):
         for enc_layer in self.layer_stack:
             output = enc_layer(output, h, w, mask)
         output = self.layer_norm(output)
-
-        output = output.permute(0, 2, 1).contiguous()
-        output = output.view(n, self.d_model, h, w)
 
         return output

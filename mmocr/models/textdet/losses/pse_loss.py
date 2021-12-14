@@ -8,10 +8,18 @@ from . import PANLoss
 
 @LOSSES.register_module()
 class PSELoss(PANLoss):
-    """The class for implementing PSENet loss: Shape Robust Text Detection with
-    Progressive Scale Expansion Network [https://arxiv.org/abs/1806.02559].
+    r"""The class for implementing PSENet loss. This is partially adapted from
+    https://github.com/whai362/PSENet.
 
-    This is partially adapted from https://github.com/whai362/PSENet.
+    PSENet: `Shape Robust Text Detection with
+    Progressive Scale Expansion Network <https://arxiv.org/abs/1806.02559>`_.
+
+    Args:
+        alpha (float): Text loss coefficient, and :math:`1-\alpha` is the
+            kernel loss coefficient.
+        ohem_ratio (float): The negative/positive ratio in ohem.
+        reduction (str): The way to reduce the loss. Available options are
+            "mean" and "sum".
     """
 
     def __init__(self,
@@ -19,17 +27,9 @@ class PSELoss(PANLoss):
                  ohem_ratio=3,
                  reduction='mean',
                  kernel_sample_type='adaptive'):
-        """Initialization.
-
-        Args:
-            alpha (float): alpha: The text loss coef;
-                (1-alpha): the kernel loss coef.
-            ohem_ratio (float): The negative/positive ratio in ohem.
-            reduction (str): The way to reduce the loss.
-        """
         super().__init__()
-        assert reduction in ['mean',
-                             'sum'], " reduction must in ['mean','sum']"
+        assert reduction in ['mean', 'sum'
+                             ], "reduction must be either of ['mean','sum']"
         self.alpha = alpha
         self.ohem_ratio = ohem_ratio
         self.reduction = reduction
@@ -40,15 +40,15 @@ class PSELoss(PANLoss):
 
         Args:
             score_maps (tensor): The output tensor with size of Nx6xHxW.
+            downsample_ratio (float): The downsample ratio between score_maps
+                and the input img.
             gt_kernels (list[BitmapMasks]): The kernel list with each element
                 being the text kernel mask for one img.
             gt_mask (list[BitmapMasks]): The effective mask list
                 with each element being the effective mask for one img.
-            downsample_ratio (float): The downsample ratio between score_maps
-                and the input img.
 
         Returns:
-            results (dict): The loss.
+            dict:  A loss dict with ``loss_text`` and ``loss_kernel``.
         """
 
         assert check_argument.is_type_list(gt_kernels, BitmapMasks)

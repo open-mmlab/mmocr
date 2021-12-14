@@ -21,12 +21,6 @@ def test_is_2dlist():
     assert utils.is_2dlist([[1]])
 
 
-def test_is_ndarray_list():
-    assert utils.is_ndarray_list([])
-    assert utils.is_ndarray_list([np.ndarray([1])])
-    assert not utils.is_ndarray_list([1])
-
-
 def test_is_type_list():
     assert utils.is_type_list([], int)
     assert utils.is_type_list([], float)

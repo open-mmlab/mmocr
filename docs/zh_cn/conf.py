@@ -17,7 +17,7 @@ import sys
 
 import pytorch_sphinx_theme
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../../'))
 
 # -- Project information -----------------------------------------------------
 
@@ -26,7 +26,7 @@ copyright = '2020-2030, OpenMMLab'
 author = 'OpenMMLab'
 
 # The full version, including alpha/beta/rc tags
-version_file = '../mmocr/version.py'
+version_file = '../../mmocr/version.py'
 with open(version_file, 'r') as f:
     exec(compile(f.read(), version_file, 'exec'))
 __version__ = locals()['__version__']
@@ -77,11 +77,11 @@ html_theme = 'pytorch_sphinx_theme'
 html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
     'logo_url':
-    'https://mmocr.readthedocs.io/en/latest/',
+    'https://mmocr.readthedocs.io/zh_CN/latest',
     'menu': [
         {
             'name':
-            'Tutorial',
+            '教程',
             'url':
             'https://colab.research.google.com/github/'
             'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'
@@ -92,109 +92,27 @@ html_theme_options = {
         },
         {
             'name':
-            'Upstream',
+            '上游库',
             'children': [
                 {
                     'name': 'MMCV',
                     'url': 'https://github.com/open-mmlab/mmcv',
-                    'description': 'Foundational library for computer vision'
+                    'description': '基础视觉库'
                 },
                 {
                     'name': 'MMDetection',
                     'url': 'https://github.com/open-mmlab/mmdetection',
-                    'description': 'Object detection toolbox and benchmark'
+                    'description': '目标检测工具箱'
                 },
             ]
         },
-        {
-            'name':
-            'Docs',
-            'children': [
-                {
-                    'name': 'MMCV',
-                    'url': 'https://mmcv.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MIM',
-                    'url': 'https://openmim.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMAction2',
-                    'url': 'https://mmaction2.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMClassification',
-                    'url':
-                    'https://mmclassification.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMDetection',
-                    'url': 'https://mmdetection.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMDetection3D',
-                    'url': 'https://mmdetection3d.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMEditing',
-                    'url': 'https://mmediting.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMGeneration',
-                    'url': 'https://mmgeneration.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMOCR',
-                    'url': 'https://mmocr.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMPose',
-                    'url': 'https://mmpose.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMSegmentation',
-                    'url': 'https://mmsegmentation.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMTracking',
-                    'url': 'https://mmtracking.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMFlow',
-                    'url': 'https://mmflow.readthedocs.io/en/latest/',
-                },
-                {
-                    'name': 'MMFewShot',
-                    'url': 'https://mmfewshot.readthedocs.io/en/latest/',
-                },
-            ]
-        },
-        {
-            'name':
-            'OpenMMLab',
-            'children': [
-                {
-                    'name': 'Homepage',
-                    'url': 'https://openmmlab.com/'
-                },
-                {
-                    'name': 'GitHub',
-                    'url': 'https://github.com/open-mmlab/'
-                },
-                {
-                    'name': 'Twitter',
-                    'url': 'https://twitter.com/OpenMMLab'
-                },
-                {
-                    'name': 'Zhihu',
-                    'url': 'https://zhihu.com/people/openmmlab'
-                },
-            ]
-        },
-    ]
+    ],
+    # Specify the language of shared menu
+    'menu_lang':
+    'cn',
 }
 
-language = 'en'
+language = 'zh_CN'
 
 master_doc = 'index'
 
@@ -209,6 +127,7 @@ myst_enable_extensions = ['colon_fence']
 
 
 def builder_inited_handler(app):
+    subprocess.run(['./cp_origin_docs.sh'])
     subprocess.run(['./merge_docs.sh'])
     subprocess.run(['./stats.py'])
 

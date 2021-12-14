@@ -10,19 +10,17 @@ from mmocr.utils import check_argument
 
 @LOSSES.register_module()
 class TextSnakeLoss(nn.Module):
-    """The class for implementing TextSnake loss:
-    TextSnake: A Flexible Representation for Detecting Text of Arbitrary Shapes
-    [https://arxiv.org/abs/1807.01544].
-    This is partially adapted from
-    https://github.com/princewang1994/TextSnake.pytorch.
+    """The class for implementing TextSnake loss. This is partially adapted
+    from https://github.com/princewang1994/TextSnake.pytorch.
+
+    TextSnake: `A Flexible Representation for Detecting Text of Arbitrary
+    Shapes <https://arxiv.org/abs/1807.01544>`_.
+
+    Args:
+        ohem_ratio (float): The negative/positive ratio in ohem.
     """
 
     def __init__(self, ohem_ratio=3.0):
-        """Initialization.
-
-        Args:
-            ohem_ratio (float): The negative/positive ratio in ohem.
-        """
         super().__init__()
         self.ohem_ratio = ohem_ratio
 
@@ -58,11 +56,12 @@ class TextSnakeLoss(nn.Module):
         Args:
             bitmasks (list[BitmapMasks]): The BitmapMasks list. Each item is
                 for one img.
-            target_sz (tuple(int, int)): The target tensor size HxW.
+            target_sz (tuple(int, int)): The target tensor of size
+                :math:`(H, W)`.
 
-        Returns
-            results (list[tensor]): The list of kernel tensors. Each
-                element is for one kernel level.
+        Returns:
+            list[Tensor]: The list of kernel tensors. Each element stands for
+            one kernel level.
         """
         assert check_argument.is_type_list(bitmasks, BitmapMasks)
         assert isinstance(target_sz, tuple)
@@ -92,6 +91,25 @@ class TextSnakeLoss(nn.Module):
     def forward(self, pred_maps, downsample_ratio, gt_text_mask,
                 gt_center_region_mask, gt_mask, gt_radius_map, gt_sin_map,
                 gt_cos_map):
+        """
+        Args:
+            pred_maps (Tensor): The prediction map of shape
+                :math:`(N, 5, H, W)`, where each dimension is the map of
+                "text_region", "center_region", "sin_map", "cos_map", and
+                "radius_map" respectively.
+            downsample_ratio (float): Downsample ratio.
+            gt_text_mask (list[BitmapMasks]): Gold text masks.
+            gt_center_region_mask (list[BitmapMasks]): Gold center region
+                masks.
+            gt_mask (list[BitmapMasks]): Gold general masks.
+            gt_radius_map (list[BitmapMasks]): Gold radius maps.
+            gt_sin_map (list[BitmapMasks]): Gold sin maps.
+            gt_cos_map (list[BitmapMasks]): Gold cos maps.
+
+        Returns:
+            dict:  A loss dict with ``loss_text``, ``loss_center``,
+            ``loss_radius``, ``loss_sin`` and ``loss_cos``.
+        """
 
         assert isinstance(downsample_ratio, float)
         assert check_argument.is_type_list(gt_text_mask, BitmapMasks)
