@@ -95,7 +95,7 @@ def single_gpu_test(model,
     results = []
     dataset = data_loader.dataset
     prog_bar = mmcv.ProgressBar(len(dataset))
-    for i, data in enumerate(data_loader):
+    for data in data_loader:
         with torch.no_grad():
             result = model(return_loss=False, rescale=True, **data)
 
@@ -143,7 +143,7 @@ def single_gpu_test(model,
                     imgs = tensor2imgs(img_tensor, **img_norm_cfg)
                 assert len(imgs) == len(img_metas)
 
-                for i, (img, img_meta) in enumerate(zip(imgs, img_metas)):
+                for j, (img, img_meta) in enumerate(zip(imgs, img_metas)):
                     if img_tensor.size(1) == 3:
                         h, w, _ = img_meta['img_shape']
                         img_show = img[:h, :w, :]
@@ -162,7 +162,7 @@ def single_gpu_test(model,
 
                     model.module.show_result(
                         img_show,
-                        result[i],
+                        result[j],
                         show=show,
                         out_file=out_file,
                         score_thr=show_score_thr)
