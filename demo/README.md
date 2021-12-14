@@ -204,6 +204,7 @@ means that `batch_mode` and `print_result` are set to `True`)
 
 | Name          |                                                             Reference                                                              | `batch_mode` inference support |
 | ------------- | :--------------------------------------------------------------------------------------------------------------------------------: | :------------------: |
+| ABINet          | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#read-like-humans-autonomous-bidirectional-and-iterative-language-modeling-for-scene-text-recognition) |         :heavy_check_mark:          |
 | CRNN          | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |         :x:          |
 | SAR           | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition) |  :heavy_check_mark:  |
 | SAR_CN *          | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition) |  :heavy_check_mark:  |

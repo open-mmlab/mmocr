@@ -302,6 +302,10 @@ class MMOCR:
                 'config': 'satrn/satrn_small.py',
                 'ckpt': 'satrn/satrn_small_20211009-2cf13355.pth'
             },
+            'ABINet': {
+                'config': 'abinet/abinet_academic.py',
+                'ckpt': 'abinet/abinet_academic-7e48d01e.pth'
+            },
             'SEG': {
                 'config': 'seg/seg_r31_1by16_fpnocr_academic.py',
                 'ckpt': 'seg/seg_r31_1by16_fpnocr_academic-72235b11.pth'
