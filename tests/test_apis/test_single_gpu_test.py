@@ -8,6 +8,7 @@ import tempfile
 import mmcv
 import numpy as np
 import pytest
+import torch
 from mmcv import Config
 from mmcv.parallel import MMDataParallel
 
@@ -31,7 +32,7 @@ def gene_sample_dataloader(cfg, curr_dir, img_prefix='', ann_file=''):
     test = copy.deepcopy(cfg.data.test.datasets[0])
     test.img_prefix = img_prefix
     test.ann_file = ann_file
-
+    cfg.data.workers_per_gpu = 1
     cfg.data.test.datasets = [test]
     dataset = build_dataset(cfg.data.test)
 
@@ -51,6 +52,7 @@ def gene_sample_dataloader(cfg, curr_dir, img_prefix='', ann_file=''):
     return data_loader
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
 @pytest.mark.parametrize('cfg_file', [
     '../configs/textrecog/sar/sar_r31_parallel_decoder_academic.py',
     '../configs/textrecog/crnn/crnn_academic_dataset.py',
@@ -72,6 +74,7 @@ def test_single_gpu_test_recog(cfg_file):
         assert check_argument.is_type_list(results, dict)
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
 @pytest.mark.parametrize(
     'cfg_file',
     ['../configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2017.py'])
@@ -118,6 +121,7 @@ def gene_sdmgr_model_dataloader(cfg, dirname, curr_dir):
     test.ann_file = ann_file
     test.img_prefix = dirname
     test.dict_file = osp.join(curr_dir, 'data/kie_toy_dataset/dict.txt')
+    cfg.data.workers_per_gpu = 1
     cfg.data.test = test
     cfg.model.class_list = osp.join(curr_dir,
                                     'data/kie_toy_dataset/class_list.txt')
@@ -141,6 +145,7 @@ def gene_sdmgr_model_dataloader(cfg, dirname, curr_dir):
     return model, data_loader
 
 
+@pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
 @pytest.mark.parametrize(
     'cfg_file', ['../configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py'])
 def test_single_gpu_test_kie(cfg_file):
