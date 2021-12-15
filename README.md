@@ -107,7 +107,7 @@ If you find this project useful in your research, please consider cite:
 
 ## Changelog
 
-v0.3.0 was released in 2021-8-25.
+v0.4.0 was released in 2021-12-15.
 
 
 ## Installation
