@@ -15,7 +15,7 @@ def build_model(config_file):
     model = init_detector(config_file, checkpoint=None, device=device)
     model = revert_sync_batchnorm(model)
 
-    if model.cfg.data.test['type'] == 'ConcatDataset':
+    if model.cfg.data.test.get('pipeline', None) is None:
         model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
             0].pipeline
 
