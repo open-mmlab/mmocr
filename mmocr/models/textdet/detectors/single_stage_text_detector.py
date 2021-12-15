@@ -7,10 +7,7 @@ from mmocr.models.common.detectors import SingleStageDetector
 
 @DETECTORS.register_module()
 class SingleStageTextDetector(SingleStageDetector):
-    """The class for implementing single stage text detector.
-
-    It is the parent class of PANet, PSENet, and DBNet.
-    """
+    """The class for implementing single stage text detector."""
 
     def __init__(self,
                  backbone,

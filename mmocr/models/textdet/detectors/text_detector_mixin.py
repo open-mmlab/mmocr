@@ -3,39 +3,18 @@ import warnings
 
 import mmcv
 
-from mmocr.core import imshow_pred_boundary, seg2boundary
+from mmocr.core import imshow_pred_boundary
 
 
 class TextDetectorMixin:
-    """The class for implementing text detector auxiliary methods."""
+    """Base class for text detector, only to show results.
+
+    Args:
+        show_score (bool): Whether to show text instance score.
+    """
 
     def __init__(self, show_score):
         self.show_score = show_score
-
-    def get_boundary(self, results):
-        """Convert segmentation into text boundaries.
-
-        Args:
-           results (tuple): The result tuple. The first element is
-               segmentation while the second is its scores.
-
-        Returns:
-           results (dict): A result dict containing 'boundary_result'.
-        """
-
-        assert isinstance(results, tuple)
-
-        instance_num = len(results[1][0])
-        boundaries = []
-        for i in range(instance_num):
-            seg = results[1][0][i]
-            score = results[0][0][i][-1]
-            boundary = seg2boundary(seg, self.text_repr_type, score)
-            if boundary is not None:
-                boundaries.append(boundary)
-
-        results = dict(boundary_result=boundaries)
-        return results
 
     def show_result(self,
                     img,

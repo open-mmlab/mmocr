@@ -17,10 +17,10 @@ model_poly = dict(
         fusion_type='concat'),
     bbox_head=dict(
         type='PSEHead',
-        text_repr_type='poly',
         in_channels=[256],
         out_channels=7,
-        loss=dict(type='PSELoss')),
+        loss=dict(type='PSELoss'),
+        postprocessor=dict(type='PSEPostprocessor', text_repr_type='poly')),
     train_cfg=None,
     test_cfg=None)
 
@@ -43,9 +43,9 @@ model_quad = dict(
         fusion_type='concat'),
     bbox_head=dict(
         type='PSEHead',
-        text_repr_type='quad',
         in_channels=[256],
         out_channels=7,
-        loss=dict(type='PSELoss')),
+        loss=dict(type='PSELoss'),
+        postprocessor=dict(type='PSEPostprocessor', text_repr_type='quad')),
     train_cfg=None,
     test_cfg=None)

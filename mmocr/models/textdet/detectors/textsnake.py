@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmocr.models.builder import DETECTORS
-from . import SingleStageTextDetector, TextDetectorMixin
+from .single_stage_text_detector import SingleStageTextDetector
+from .text_detector_mixin import TextDetectorMixin
 
 
 @DETECTORS.register_module()

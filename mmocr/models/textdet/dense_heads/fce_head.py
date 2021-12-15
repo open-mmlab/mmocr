@@ -1,17 +1,18 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
+
 import torch.nn as nn
 from mmcv.runner import BaseModule
 from mmdet.core import multi_apply
 
-from mmocr.models.builder import HEADS, build_loss
-from mmocr.models.textdet.postprocess import decode
-from ..postprocess.wrapper import poly_nms
+from mmocr.models.builder import HEADS
+from ..postprocess.utils import poly_nms
 from .head_mixin import HeadMixin
 
 
 @HEADS.register_module()
 class FCEHead(HeadMixin, BaseModule):
-    r"""The class for implementing FCENet head.
+    """The class for implementing FCENet head.
 
     FCENet(CVPR2021): `Fourier Contour Embedding for Arbitrary-shaped Text
     Detection <https://arxiv.org/abs/2104.10442>`_
@@ -20,58 +21,68 @@ class FCEHead(HeadMixin, BaseModule):
         in_channels (int): The number of input channels.
         scales (list[int]) : The scale of each layer.
         fourier_degree (int) : The maximum Fourier transform degree k.
-        num_sample (int) : The sampling points number of regression
-            loss. If it is too small, FCEnet tends to be overfitting.
-        score_thr (float) : The threshold to filter out the final
-            candidates.
         nms_thr (float) : The threshold of nms.
-        alpha (float) : The parameter to calculate final scores.
-            :math:`Score_{final} = (Score_{text\_region} ^ \alpha)
-            * (Score_{text\_center\_region} ^ \beta)`
-        beta (float) :The parameter to calculate final scores.
+        loss (dict): Config of loss for FCENet.
+        postprocessor (dict): Config of postprocessor for FCENet.
     """
 
-    def __init__(
-        self,
-        in_channels,
-        scales,
-        fourier_degree=5,
-        num_sample=50,
-        num_reconstr_points=50,
-        decoding_type='fcenet',
-        loss=dict(type='FCELoss'),
-        score_thr=0.3,
-        nms_thr=0.1,
-        alpha=1.0,
-        beta=1.0,
-        text_repr_type='poly',
-        train_cfg=None,
-        test_cfg=None,
-        init_cfg=dict(
-            type='Normal',
-            mean=0,
-            std=0.01,
-            override=[dict(name='out_conv_cls'),
-                      dict(name='out_conv_reg')])):
+    def __init__(self,
+                 in_channels,
+                 scales,
+                 fourier_degree=5,
+                 nms_thr=0.1,
+                 loss=dict(type='FCELoss', num_sample=50),
+                 postprocessor=dict(
+                     type='FCEPostprocessor',
+                     text_repr_type='poly',
+                     num_reconstr_points=50,
+                     alpha=1.0,
+                     beta=2.0,
+                     score_thr=0.3),
+                 train_cfg=None,
+                 test_cfg=None,
+                 init_cfg=dict(
+                     type='Normal',
+                     mean=0,
+                     std=0.01,
+                     override=[
+                         dict(name='out_conv_cls'),
+                         dict(name='out_conv_reg')
+                     ]),
+                 **kwargs):
+        old_keys = [
+            'text_repr_type', 'decoding_type', 'num_reconstr_points', 'alpha',
+            'beta', 'score_thr'
+        ]
+        for key in old_keys:
+            if kwargs.get(key, None):
+                postprocessor[key] = kwargs.get(key)
+                warnings.warn(
+                    f'{key} is deprecated, please specify '
+                    'it in postprocessor config dict. See '
+                    'https://github.com/open-mmlab/mmocr/pull/640'
+                    ' for details.', UserWarning)
+        if kwargs.get('num_sample', None):
+            loss['num_sample'] = kwargs.get('num_sample')
+            warnings.warn(
+                'num_sample is deprecated, please specify '
+                'it in loss config dict. See '
+                'https://github.com/open-mmlab/mmocr/pull/640'
+                ' for details.', UserWarning)
+        BaseModule.__init__(self, init_cfg=init_cfg)
+        loss['fourier_degree'] = fourier_degree
+        postprocessor['fourier_degree'] = fourier_degree
+        postprocessor['nms_thr'] = nms_thr
+        HeadMixin.__init__(self, loss, postprocessor)
 
-        super().__init__(init_cfg=init_cfg)
         assert isinstance(in_channels, int)
 
         self.downsample_ratio = 1.0
         self.in_channels = in_channels
         self.scales = scales
         self.fourier_degree = fourier_degree
-        self.sample_num = num_sample
-        self.num_reconstr_points = num_reconstr_points
-        loss['fourier_degree'] = fourier_degree
-        loss['num_sample'] = num_sample
-        self.decoding_type = decoding_type
-        self.loss_module = build_loss(loss)
-        self.score_thr = score_thr
+
         self.nms_thr = nms_thr
-        self.alpha = alpha
-        self.beta = beta
-        self.text_repr_type = text_repr_type
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
         self.out_channels_cls = 4
@@ -135,14 +146,4 @@ class FCEHead(HeadMixin, BaseModule):
         assert len(score_map) == 2
         assert score_map[1].shape[1] == 4 * self.fourier_degree + 2
 
-        return decode(
-            decoding_type=self.decoding_type,
-            preds=score_map,
-            fourier_degree=self.fourier_degree,
-            num_reconstr_points=self.num_reconstr_points,
-            scale=scale,
-            alpha=self.alpha,
-            beta=self.beta,
-            text_repr_type=self.text_repr_type,
-            score_thr=self.score_thr,
-            nms_thr=self.nms_thr)
+        return self.postprocessor(score_map, scale)

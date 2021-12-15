@@ -9,7 +9,6 @@ import numpy as np
 import pytest
 import torch
 
-import mmocr.core.evaluation.utils as utils
 from mmocr.utils import revert_sync_batchnorm
 
 
@@ -168,16 +167,6 @@ def test_ocr_mask_rcnn(cfg_file):
             result = detector.forward([one_img], [[one_meta]],
                                       return_loss=False)
             batch_results.append(result)
-
-    # Test get_boundary
-    results = ([[[1]]], [[
-        np.array([[1, 1, 0, 0, 0], [1, 1, 0, 0, 0], [0, 0, 0, 0, 0],
-                  [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]])
-    ]])
-
-    boundaries = detector.get_boundary(results)
-    assert utils.boundary_iou(boundaries['boundary_result'][0][:-1],
-                              [1, 1, 0, 1, 0, 0, 1, 0]) == 1
 
     # Test show_result
 

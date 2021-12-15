@@ -22,9 +22,12 @@ model = dict(
         type='FCEHead',
         in_channels=256,
         scales=(8, 16, 32),
-        loss=dict(type='FCELoss'),
-        alpha=1.2,
-        beta=1.0,
-        text_repr_type='quad',
         fourier_degree=5,
-    ))
+        loss=dict(type='FCELoss', num_sample=50),
+        postprocessor=dict(
+            type='FCEPostprocessor',
+            text_repr_type='quad',
+            num_reconstr_points=50,
+            alpha=1.2,
+            beta=1.0,
+            score_thr=0.3)))
