@@ -16,7 +16,7 @@ take the full advantage of OpenSet format. For more information, please read our
 
 #### Postprocessor
 
-Some refactor processes are still going on. For all text detection models, we unified their `decode` implementations into a new module category, `POSTPROCESSOR`, which is responsible for decoding different raw outputs into boundary instances. In all text detection configs, the `text_repr_type` argument in `bbox_head` is deprecated and will be removed in the future release.
+Some refactoring processes are still going on. For all text detection models, we unified their `decode` implementations into a new module category, `POSTPROCESSOR`, which is responsible for decoding different raw outputs into boundary instances. In all text detection configs, the `text_repr_type` argument in `bbox_head` is deprecated and will be removed in the future release.
 
 **Migration Guide**: Find a similar line from detection model's config:
 ```
@@ -61,7 +61,7 @@ _base_
 └── schedules
 ```
 
-The majority of model configs are composed of base configs as of now, which makes the overall structural clearer and facilitates fair
+Most of model configs are making full use of base configs now, which makes the overall structural clearer and facilitates fair
 comparison across models. Despite the seemingly significant hierarchical difference, **these changes would not break the backward compatibility** as the names of model configs remain the same.
 
 ### New Features
@@ -75,6 +75,8 @@ comparison across models. Despite the seemingly significant hierarchical differe
 * Save results to json file for kie. by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/589
 * Add SAR_CN to ocr.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/579
 * mim extension for windows by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/641
+* Support muitiple pipelines for different datasets by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/657
+* ABINet Framework by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/651
 
 ### Refactoring
 * Refactor textrecog config structure by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/617
