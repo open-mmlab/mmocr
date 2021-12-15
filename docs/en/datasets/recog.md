@@ -1,4 +1,4 @@
- Text Recognition
+# Text Recognition
 
 ## Overview
 
