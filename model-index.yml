@@ -6,6 +6,7 @@ Import:
   - configs/textdet/panet/metafile.yml
   - configs/textdet/psenet/metafile.yml
   - configs/textdet/textsnake/metafile.yml
+  - configs/textrecog/abinet/metafile.yml
   - configs/textrecog/crnn/metafile.yml
   - configs/textrecog/nrtr/metafile.yml
   - configs/textrecog/robust_scanner/metafile.yml

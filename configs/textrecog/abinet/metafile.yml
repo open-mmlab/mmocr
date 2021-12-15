@@ -1,0 +1,87 @@
+Collections:
+- Name: ABINet
+  Metadata:
+    Training Data: OCRDataset
+    Training Techniques:
+      - Adam
+    Epochs: 20
+    Batch Size: 1536
+    Training Resources: 8x Tesla V100
+    Architecture:
+      - ResNetABI
+      - ABIVisionModel
+      - ABILanguageDecoder
+      - ABIFuser
+  Paper:
+    URL: https://arxiv.org/pdf/2103.06495.pdf
+    Title: 'Read Like Humans: Autonomous, Bidirectional and Iterative Language Modeling for Scene Text Recognition'
+  README: configs/textrecog/abinet/README.md
+
+Models:
+  - Name: abinet_vision_only_academic
+    In Collection: ABINet
+    Config: configs/textrecog/abinet/abinet_vision_only_academic.py
+    Metadata:
+      Training Data:
+        - SynthText
+        - Syn90k
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 94.7
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 91.7
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 93.6
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 83.0
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 85.1
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 86.5
+    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_vision_only_academic-e6b9ea89.pth
+
+  - Name: abinet_academic
+    In Collection: ABINet
+    Config: configs/textrecog/abinet/abinet_academic.py
+    Metadata:
+      Training Data:
+        - SynthText
+        - Syn90k
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 95.7
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 94.6
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 95.7
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 85.1
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 90.4
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 90.3
+    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_academic-f718abf6.pth

@@ -29,6 +29,23 @@ data = dict(
         pipeline=train_pipeline))
 ```
 
+Also, it support apply different `pipeline` to different `datasets`,
+
+```python
+train_list1 = [train1, train2]
+train_list2 = [train3, train4]
+
+data = dict(
+    ...
+    train=dict(
+        type='UniformConcatDataset',
+        datasets=[train_list1, train_list2],
+        pipeline=[train_pipeline1, train_pipeline2]))
+```
+
+Here, `train_pipeline1` will be applied to `train1` and `train2`, and
+`train_pipeline2` will be applied to `train3` and `train4`.
+
 ## Text Detection Task
 
 ### TextDetDataset

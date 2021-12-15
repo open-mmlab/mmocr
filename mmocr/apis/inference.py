@@ -12,6 +12,8 @@ from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
 
 from mmocr.models import build_detector
+from mmocr.utils import is_2dlist
+from .utils import disable_text_recog_aug_test
 
 
 def init_detector(config, checkpoint=None, device='cuda:0', cfg_options=None):
@@ -54,54 +56,6 @@ def init_detector(config, checkpoint=None, device='cuda:0', cfg_options=None):
     return model
 
 
-def disable_text_recog_aug_test(cfg, set_types=None):
-    """Remove aug_test from test pipeline of text recognition.
-    Args:
-        cfg (mmcv.Config): Input config.
-        set_types (list[str]): Type of dataset source. Should be
-            None or sublist of ['test', 'val']
-
-    Returns:
-        cfg (mmcv.Config): Output config removing
-            `MultiRotateAugOCR` in test pipeline.
-    """
-    assert set_types is None or isinstance(set_types, list)
-    if set_types is None:
-        set_types = ['val', 'test']
-    warnings.simplefilter('once')
-    warning_msg = 'Remove "MultiRotateAugOCR" to support batch ' + \
-        'inference since samples_per_gpu > 1.'
-    for set_type in set_types:
-        dataset_type = cfg.data[set_type].type
-        if dataset_type in ['OCRDataset', 'OCRSegDataset']:
-            if cfg.data[set_type].pipeline[1].type == 'MultiRotateAugOCR':
-                warnings.warn(warning_msg)
-                cfg.data[set_type].pipeline = [
-                    cfg.data[set_type].pipeline[0],
-                    *cfg.data[set_type].pipeline[1].transforms
-                ]
-        elif dataset_type in ['ConcatDataset', 'UniformConcatDataset']:
-            if dataset_type == 'UniformConcatDataset':
-                uniform_pipeline = cfg.data[set_type].pipeline
-                if uniform_pipeline is not None:
-                    if uniform_pipeline[1].type == 'MultiRotateAugOCR':
-                        warnings.warn(warning_msg)
-                        cfg.data[set_type].pipeline = [
-                            uniform_pipeline[0],
-                            *uniform_pipeline[1].transforms
-                        ]
-            for dataset in cfg.data[set_type].datasets:
-                if dataset.pipeline is not None:
-                    if dataset.pipeline[1].type == 'MultiRotateAugOCR':
-                        warnings.warn(warning_msg)
-                        dataset.pipeline = [
-                            dataset.pipeline[0],
-                            *dataset.pipeline[1].transforms
-                        ]
-
-    return cfg
-
-
 def model_inference(model,
                     imgs,
                     ann=None,
@@ -141,6 +95,11 @@ def model_inference(model,
         cfg = disable_text_recog_aug_test(cfg, set_types=['test'])
 
     device = next(model.parameters()).device  # model device
+
+    if cfg.data.test.get('pipeline', None) is None:
+        cfg.data.test.pipeline = cfg.data.test.datasets[0].pipeline
+    if is_2dlist(cfg.data.test.pipeline):
+        cfg.data.test.pipeline = cfg.data.test.pipeline[0]
 
     if is_ndarray:
         cfg = cfg.copy()

@@ -2,8 +2,8 @@
 import pytest
 import torch
 
-from mmocr.models.textrecog.backbones import (ResNet31OCR, ShallowCNN,
-                                              VeryDeepVgg)
+from mmocr.models.textrecog.backbones import (ResNet31OCR, ResNetABI,
+                                              ShallowCNN, VeryDeepVgg)
 
 
 def test_resnet31_ocr_backbone():
@@ -47,3 +47,26 @@ def test_shallow_cnn_ocr_backbone():
     imgs = torch.randn(1, 1, 32, 100)
     feat = model(imgs)
     assert feat.shape == torch.Size([1, 512, 8, 25])
+
+
+def test_resnet_abi():
+    """Test resnet backbone."""
+    with pytest.raises(AssertionError):
+        ResNetABI(2.5)
+
+    with pytest.raises(AssertionError):
+        ResNetABI(3, arch_settings=5)
+
+    with pytest.raises(AssertionError):
+        ResNetABI(3, stem_channels=None)
+
+    with pytest.raises(AssertionError):
+        ResNetABI(arch_settings=[3, 4, 6, 6], strides=[1, 2, 1, 2, 1])
+
+    # Test forwarding
+    model = ResNetABI()
+    model.train()
+
+    imgs = torch.randn(1, 3, 32, 160)
+    feat = model(imgs)
+    assert feat.shape == torch.Size([1, 512, 8, 40])

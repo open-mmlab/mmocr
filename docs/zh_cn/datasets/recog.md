@@ -43,6 +43,7 @@
 │   │   ├── label.lmdb
 │   │   ├── mnt
 │   ├── SynthText
+│   │   ├── alphanumeric_labels.txt
 │   │   ├── shuffle_labels.txt
 │   │   ├── instances_train.txt
 │   │   ├── label.txt
@@ -86,7 +87,7 @@
 |    svt     |[下载地址](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset) |                                                                                                                                                   -                                                                                                                                                    |         [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)          |       |
 |    svtp    |                              [非官方下载地址*](https://github.com/Jyouhou/Case-Sensitive-Scene-Text-Recognition-Datasets)                                           |                                                                                                                                                   -                                                                                                                                                    |         [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)         |       |
 |  MJSynth (Syn90k) |               [下载地址](https://www.robots.ox.ac.uk/~vgg/data/text/)                |                                                       [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt)                                                       |                                                    -                                                    |       |
-| SynthText (Synth800k) |           [下载地址](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)              | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) |                                                    -                                                    |       |
+| SynthText (Synth800k) |           [下载地址](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)              |[alphanumeric_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/alphanumeric_labels.txt) \| [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) |                                                    -                                                    |       |
 |  SynthAdd  |  [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x)   |                                                                                                           [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)                                                                                                            |                                                    -                                                    |       |
 |  TextOCR  |  [下载地址](https://textvqa.org/textocr/dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
 |  Totaltext  |  [下载地址](https://github.com/cs-chan/Total-Text-Dataset)   |                                                                                                           -                                                                                                           |                                                    -                                                    |       |
@@ -148,8 +149,11 @@ python tools/data/textrecog/svt_converter.py <download_svt_dir_path>
   ```
 
 ### SynthText (Synth800k)
-  - 第一步： 从 [下载地址](https://www.robots.ox.ac.uk/~vgg/data/scenetext/) 下载 `SynthText.zip`
-  - 第二步：
+  - 第一步：下载 `SynthText.zip`: [下载地址](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)
+
+  - 第二步：请根据你的实际需要，从下列标注中选择最适合的下载：[label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) （7,266,686个标注）； [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) （2,400,000个随机采样的标注）；[alphanumeric_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/alphanumeric_labels.txt) （7,239,272个仅包含数字和字母的标注）；[instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) （7,266,686个字符级别的标注）。
+
+  - 第三步：
 
   ```bash
   mkdir SynthText && cd SynthText
@@ -158,14 +162,16 @@ python tools/data/textrecog/svt_converter.py <download_svt_dir_path>
   mv SynthText synthtext
 
   mv /path/to/shuffle_labels.txt .
-mv /path/to/label.txt .
+  mv /path/to/label.txt .
+  mv /path/to/alphanumeric_labels.txt .
+  mv /path/to/instances_train.txt .
 
   # 创建软链接
   cd /path/to/mmocr/data/mixture
   ln -s /path/to/SynthText SynthText
   ```
-  - 第三步：
-  生成裁剪后的图像和标注：
+
+  - 第四步：生成裁剪后的图像和标注：
 
   ```bash
   cd /path/to/mmocr
