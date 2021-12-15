@@ -17,7 +17,7 @@ from mmocr import __version__
 from mmocr.apis import init_random_seed, train_detector
 from mmocr.datasets import build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import collect_env, get_root_logger
+from mmocr.utils import collect_env, get_root_logger, is_2dlist
 
 
 def parse_args():
@@ -186,6 +186,8 @@ def main():
         val_dataset = copy.deepcopy(cfg.data.val)
         if cfg.data.train.get('pipeline', None) is None:
             train_pipeline = cfg.data.train['datasets'][0].pipeline
+        elif is_2dlist(cfg.data.train.pipeline):
+            train_pipeline = cfg.data.train.pipeline[0]
         else:
             train_pipeline = cfg.data.train.pipeline
 

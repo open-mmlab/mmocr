@@ -29,9 +29,6 @@ def main():
     device = torch.device(args.device)
 
     model = init_detector(args.config, args.checkpoint, device=device)
-    if model.cfg.data.test.get('pipeline', None) is None:
-        model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
-            0].pipeline
 
     camera = cv2.VideoCapture(args.camera_id)
 

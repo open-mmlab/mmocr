@@ -18,9 +18,6 @@ def main():
 
     # build the model from a config file and a checkpoint file
     model = init_detector(args.config, args.checkpoint, device=args.device)
-    if model.cfg.data.test.get('pipeline', None) is None:
-        model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
-            0].pipeline
 
     # test a single text
     input_sentence = input('Please enter a sentence you want to test: ')

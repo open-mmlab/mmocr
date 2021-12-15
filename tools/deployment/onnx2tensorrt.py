@@ -16,6 +16,7 @@ from mmdet.datasets.pipelines import Compose
 from mmocr.core.deployment import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
                                    TensorRTDetector, TensorRTRecognizer)
 from mmocr.datasets.pipelines.crop import crop_img  # noqa: F401
+from mmocr.utils import is_2dlist
 
 
 def get_GiB(x: int):
@@ -261,6 +262,8 @@ if __name__ == '__main__':
     if cfg.data.test.get('pipeline', None) is None:
         cfg.data.test.pipeline = \
             cfg.data.test['datasets'][0].pipeline
+    if is_2dlist(cfg.data.test.pipeline):
+        cfg.data.test.pipeline = cfg.data.test.pipeline[0]
     onnx2tensorrt(
         args.onnx_file,
         args.model_type,
