@@ -304,7 +304,7 @@ class MMOCR:
             },
             'ABINet': {
                 'config': 'abinet/abinet_academic.py',
-                'ckpt': 'abinet/abinet_academic-7e48d01e.pth'
+                'ckpt': 'abinet/abinet_academic-f718abf6.pth'
             },
             'SEG': {
                 'config': 'seg/seg_r31_1by16_fpnocr_academic.py',

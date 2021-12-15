@@ -50,7 +50,7 @@ Models:
         Dataset: CT80
         Metrics:
           word_acc: 86.5
-    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_vision_only_academic-8ff216d2.pth
+    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_vision_only_academic-e6b9ea89.pth
 
   - Name: abinet_academic
     In Collection: ABINet
@@ -63,25 +63,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 95.6
+          word_acc: 95.7
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 93.7
+          word_acc: 94.6
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 95.5
+          word_acc: 95.7
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 84.6
+          word_acc: 85.1
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 90.1
+          word_acc: 90.4
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 90.0
-    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_academic-7e48d01e.pth
+          word_acc: 90.3
+    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_academic-f718abf6.pth
