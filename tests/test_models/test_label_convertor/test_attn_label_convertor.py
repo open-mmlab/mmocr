@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 import torch
 
-from mmocr.models.textrecog.convertors import AttnConvertor
+from mmocr.models.textrecog.convertors import ABIConvertor, AttnConvertor
 
 
 def _create_dummy_dict_file(dict_file):
@@ -74,5 +74,32 @@ def test_attn_label_convertor():
         label_convertor.idx2str('hell')
     output_strings = label_convertor.idx2str(input_indexes)
     assert output_strings[0] == 'hell'
+
+    tmp_dir.cleanup()
+
+
+def test_abi_label_convertor():
+    tmp_dir = tempfile.TemporaryDirectory()
+    # create dummy data
+    dict_file = osp.join(tmp_dir.name, 'fake_dict.txt')
+    _create_dummy_dict_file(dict_file)
+
+    label_convertor = ABIConvertor(dict_file=dict_file, max_seq_len=10)
+
+    label_convertor.end_idx
+    # test encode str to tensor
+    strings = ['hell']
+    targets_dict = label_convertor.str2tensor(strings)
+    assert torch.allclose(targets_dict['targets'][0],
+                          torch.LongTensor([0, 1, 2, 2, 8]))
+    assert torch.allclose(targets_dict['padded_targets'][0],
+                          torch.LongTensor([8, 0, 1, 2, 2, 8, 9, 9, 9, 9]))
+
+    strings = ['hellhellhell']
+    targets_dict = label_convertor.str2tensor(strings)
+    assert torch.allclose(targets_dict['targets'][0],
+                          torch.LongTensor([0, 1, 2, 2, 0, 1, 2, 2, 0, 8]))
+    assert torch.allclose(targets_dict['padded_targets'][0],
+                          torch.LongTensor([8, 0, 1, 2, 2, 0, 1, 2, 2, 0]))
 
     tmp_dir.cleanup()

@@ -21,6 +21,7 @@ DETECTORS = BACKBONES
 ROI_EXTRACTORS = BACKBONES
 HEADS = BACKBONES
 NECKS = BACKBONES
+FUSERS = BACKBONES
 
 ACTIVATION_LAYERS = Registry('activation layer', parent=MMCV_ACTIVATION_LAYERS)
 
@@ -79,6 +80,11 @@ def build_head(cfg):
 def build_neck(cfg):
     """Build neck."""
     return NECKS.build(cfg)
+
+
+def build_fuser(cfg):
+    """Build fuser."""
+    return FUSERS.build(cfg)
 
 
 def build_upsample_layer(cfg, *args, **kwargs):

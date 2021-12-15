@@ -1,55 +1,36 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
+from mmcv.cnn.resnet import BasicBlock as MMCV_BasicBlock
+from mmcv.cnn.resnet import conv3x3
 
 
-def conv3x3(in_planes, out_planes, stride=1):
+def conv1x1(in_planes, out_planes, stride=1):
     return nn.Conv2d(
-        in_planes,
-        out_planes,
-        kernel_size=3,
-        stride=stride,
-        padding=1,
-        bias=False)
+        in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
 
 
-class BasicBlock(nn.Module):
-    expansion = 1
+class BasicBlock(MMCV_BasicBlock):
 
-    def __init__(self, inplanes, planes, stride=1, downsample=False):
-        super().__init__()
-        self.conv1 = conv3x3(inplanes, planes, stride)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.relu = nn.ReLU(inplace=True)
-        self.conv2 = conv3x3(planes, planes)
-        self.bn2 = nn.BatchNorm2d(planes)
-        self.downsample = downsample
-        if downsample:
-            self.downsample = nn.Sequential(
-                nn.Conv2d(
-                    inplanes, planes * self.expansion, 1, stride, bias=False),
-                nn.BatchNorm2d(planes * self.expansion),
-            )
-        else:
-            self.downsample = nn.Sequential()
-        self.stride = stride
-
-    def forward(self, x):
-        residual = x
-
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-
-        if self.downsample:
-            residual = self.downsample(x)
-
-        out += residual
-        out = self.relu(out)
-
-        return out
+    def __init__(self,
+                 inplanes,
+                 planes,
+                 stride=1,
+                 dilation=1,
+                 downsample=None,
+                 use_conv1x1=False,
+                 style='pytorch',
+                 with_cp=False):
+        super().__init__(
+            inplanes,
+            planes,
+            stride=stride,
+            dilation=dilation,
+            downsample=downsample,
+            style=style,
+            with_cp=with_cp)
+        if use_conv1x1:
+            self.conv1 = conv1x1(inplanes, planes)
+            self.conv2 = conv3x3(planes, planes, stride)
 
 
 class Bottleneck(nn.Module):
