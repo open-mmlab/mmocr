@@ -741,6 +741,7 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
     key_font_color = (0, 0, 0)
     value_font_color = (0, 0, 255)
     arrow_color = (0, 0, 255)
+    score_color = (0, 255, 0)
     for pair, pair_score in zip(result_pairs, result_pairs_score):
         key_idx = pair[0]
         if nodes[key_idx, 1] < keynode_thresh:
@@ -781,14 +782,9 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
                 pred_edge_img, (pos_right_bottom[0] + 5, bbox_y1 + 10),
                 (bbox_x1 + dist_key_to_value - 5, bbox_y1 + 10), arrow_color,
                 1)
-            score_font_size = int(key_font_size * 0.3)
             score_pos_x = int(
                 (pos_right_bottom[0] + bbox_x1 + dist_key_to_value) / 2.)
-            score_pos_y = bbox_y1 + 10 - score_font_size
-            score_color = (0, 255, 0)
-            cv2.putText(pred_edge_img, '{:.2f}'.format(pair_score),
-                        (score_pos_x, score_pos_y), cv2.FONT_HERSHEY_COMPLEX,
-                        0.4, score_color)
+            score_pos_y = bbox_y1 + 10 - int(key_font_size * 0.3)
         else:
             # draw arrow from key to value
             if newline_flag:
@@ -803,10 +799,10 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
             score_pos_x = int(
                 (pos_current[0] + bbox_x1 + dist_key_to_value - 5) / 2.)
             score_pos_y = int((pos_current[1] + bbox_y1 + 10) / 2.)
-            score_color = (0, 255, 0)
-            cv2.putText(pred_edge_img, '{:.2f}'.format(pair_score),
-                        (score_pos_x, score_pos_y), cv2.FONT_HERSHEY_COMPLEX,
-                        0.4, score_color)
+        # draw edge score
+        cv2.putText(pred_edge_img, '{:.2f}'.format(pair_score),
+                    (score_pos_x, score_pos_y), cv2.FONT_HERSHEY_COMPLEX, 0.4,
+                    score_color)
         # draw text for value
         pred_edge_img = draw_texts_by_pil(
             pred_edge_img, [value_text],
