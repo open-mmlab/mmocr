@@ -329,8 +329,12 @@ def main():
     if hasattr(model, 'module'):
         model = model.module
     if model.cfg.data.test.get('pipeline', None) is None:
-        model.cfg.data.test.pipeline = \
-            model.cfg.data.test['datasets'][0].pipeline
+        if is_2dlist(model.cfg.data.test.datasets):
+            model.cfg.data.test.pipeline = \
+                model.cfg.data.test.datasets[0][0].pipeline
+        else:
+            model.cfg.data.test.pipeline = \
+                model.cfg.data.test['datasets'][0].pipeline
     if is_2dlist(model.cfg.data.test.pipeline):
         model.cfg.data.test.pipeline = model.cfg.data.test.pipeline[0]
 
