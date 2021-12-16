@@ -714,6 +714,7 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
     # either edge_score(node_i->node_j) > edge_thresh
     # or edge_score(node_j->node_i) > edge_thresh
     pairs = (torch.max(edges, edges.T) > edge_thresh).nonzero(as_tuple=True)
+    pairs = (pairs[0].numpy().tolist(), pairs[1].numpy().tolist())
 
     # 1. "for n1, n2 in zip(*pairs) if n1 < n2":
     #     Only (n1, n2) will be included if n1 < n2 but not (n2, n1), to
@@ -727,6 +728,10 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
                     for n1, n2 in zip(*pairs) if n1 < n2]
 
     result_pairs.sort()
+    result_pairs_score = [
+        torch.max(edges[n1, n2], edges[n2, n1]) for n1, n2 in result_pairs
+    ]
+
     key_current_idx = -1
     pos_current = (-1, -1)
     newline_flag = False
@@ -736,8 +741,8 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
     key_font_color = (0, 0, 0)
     value_font_color = (0, 0, 255)
     arrow_color = (0, 0, 255)
-    for pair in result_pairs:
-        key_idx = int(pair[0].item())
+    for pair, pair_score in zip(result_pairs, result_pairs_score):
+        key_idx = pair[0]
         if nodes[key_idx, 1] < keynode_thresh:
             continue
         if key_idx != key_current_idx:
@@ -755,7 +760,7 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
                 bbox_y1 = 10
         key_text = texts[key_idx]
         key_pos = (bbox_x1, bbox_y1)
-        value_idx = pair[1].item()
+        value_idx = pair[1]
         value_text = texts[value_idx]
         value_pos = (bbox_x1 + dist_key_to_value, bbox_y1)
         if key_idx != key_current_idx:
@@ -776,6 +781,14 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
                 pred_edge_img, (pos_right_bottom[0] + 5, bbox_y1 + 10),
                 (bbox_x1 + dist_key_to_value - 5, bbox_y1 + 10), arrow_color,
                 1)
+            score_font_size = int(key_font_size * 0.3)
+            score_pos_x = int(
+                (pos_right_bottom[0] + bbox_x1 + dist_key_to_value) / 2.)
+            score_pos_y = bbox_y1 + 10 - score_font_size
+            score_color = (0, 255, 0)
+            cv2.putText(pred_edge_img, '{:.2f}'.format(pair_score),
+                        (score_pos_x, score_pos_y), cv2.FONT_HERSHEY_COMPLEX,
+                        0.4, score_color)
         else:
             # draw arrow from key to value
             if newline_flag:
@@ -787,6 +800,13 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
             pred_edge_img = cv2.arrowedLine(pred_edge_img, pos_current,
                                             (bbox_x1 + dist_key_to_value - 5,
                                              bbox_y1 + 10), arrow_color, 1)
+            score_pos_x = int(
+                (pos_current[0] + bbox_x1 + dist_key_to_value - 5) / 2.)
+            score_pos_y = int((pos_current[1] + bbox_y1 + 10) / 2.)
+            score_color = (0, 255, 0)
+            cv2.putText(pred_edge_img, '{:.2f}'.format(pair_score),
+                        (score_pos_x, score_pos_y), cv2.FONT_HERSHEY_COMPLEX,
+                        0.4, score_color)
         # draw text for value
         pred_edge_img = draw_texts_by_pil(
             pred_edge_img, [value_text],
