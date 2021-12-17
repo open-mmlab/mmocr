@@ -8,43 +8,17 @@ from mmcv.image import tensor2imgs
 from mmcv.parallel import DataContainer
 from mmdet.core import encode_mask_results
 
-
-def tensor2grayimgs(tensor, mean=(127), std=(127), **kwargs):
-    """Convert tensor to 1-channel gray images.
-
-    Args:
-        tensor (torch.Tensor): Tensor that contains multiple images, shape (
-            N, C, H, W).
-        mean (tuple[float], optional): Mean of images. Defaults to (127).
-        std (tuple[float], optional): Standard deviation of images.
-            Defaults to (127).
-
-    Returns:
-        list[np.ndarray]: A list that contains multiple images.
-    """
-
-    assert torch.is_tensor(tensor) and tensor.ndim == 4
-    assert tensor.size(1) == len(mean) == len(std) == 1
-
-    num_imgs = tensor.size(0)
-    mean = np.array(mean, dtype=np.float32)
-    std = np.array(std, dtype=np.float32)
-    imgs = []
-    for img_id in range(num_imgs):
-        img = tensor[img_id, ...].cpu().numpy().transpose(1, 2, 0)
-        img = mmcv.imdenormalize(img, mean, std, to_bgr=False).astype(np.uint8)
-        imgs.append(np.ascontiguousarray(img))
-    return imgs
+from .utils import tensor2grayimgs
 
 
-def retrieval_img_tensor_and_meta(data):
+def retrieve_img_tensor_and_meta(data):
     """Retrieval img_tensor, img_metas and img_norm_cfg.
 
     Args:
         data (dict): One batch data from data_loader.
 
     Returns:
-        tuple: Returns (img_tensor, img_metas, img_norm_cfg)).
+        tuple: Returns (img_tensor, img_metas, img_norm_cfg).
 
             - | img_tensor (Tensor): Input image tensor with shape
                 :math:`(N, C, H, W)`.
@@ -108,16 +82,26 @@ def single_gpu_test(model,
                                    'currently not supported.')
                 gt_bboxes = data['gt_bboxes'].data[0]
                 img_metas = data['img_metas'].data[0]
-                must_keys = ['img_norm_cfg', 'ori_filename']
+                must_keys = ['img_norm_cfg', 'ori_filename', 'img_shape']
                 for key in must_keys:
                     if key not in img_metas[0]:
                         raise KeyError(
                             f'Please add {key} to the "meta_keys" in config.')
-                if len(img_metas[0]['img_norm_cfg']['mean']) != 3:
-                    raise Exception(
-                        'Only model with visual is supported here to show '
-                        'results. Please use tools/kie_test_imgs.py instead.')
-                imgs = tensor2imgs(img_tensor, **img_metas[0]['img_norm_cfg'])
+                # for no visual model
+                if np.prod(img_tensor.shape) == 0:
+                    imgs = []
+                    for img_meta in img_metas:
+                        try:
+                            img = mmcv.imread(img_meta['filename'])
+                        except Exception as e:
+                            print(f'Load image with error: {e}, '
+                                  'use empty image instead.')
+                            img = np.ones(
+                                img_meta['img_shape'], dtype=np.uint8)
+                        imgs.append(img)
+                else:
+                    imgs = tensor2imgs(img_tensor,
+                                       **img_metas[0]['img_norm_cfg'])
                 for i, img in enumerate(imgs):
                     h, w, _ = img_metas[i]['img_shape']
                     img_show = img[:h, :w, :]
@@ -135,7 +119,7 @@ def single_gpu_test(model,
                         out_file=out_file)
             else:
                 img_tensor, img_metas, img_norm_cfg = \
-                    retrieval_img_tensor_and_meta(data)
+                    retrieve_img_tensor_and_meta(data)
 
                 if img_tensor.size(1) == 1:
                     imgs = tensor2grayimgs(img_tensor, **img_norm_cfg)

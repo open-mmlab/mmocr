@@ -27,6 +27,17 @@ def build_model(cfg):
 
 
 def gene_sample_dataloader(cfg, curr_dir, img_prefix='', ann_file=''):
+    must_keys = ['img_norm_cfg', 'ori_filename', 'img_shape', 'ori_shape']
+    test_pipeline = cfg.data.test.pipeline
+    for key in must_keys:
+        if test_pipeline[1].type == 'MultiRotateAugOCR':
+            collect_pipeline = test_pipeline[1]['transforms'][-1]
+        else:
+            collect_pipeline = test_pipeline[-1]
+        if 'meta_keys' not in collect_pipeline:
+            continue
+        collect_pipeline['meta_keys'].append(key)
+
     img_prefix = osp.join(curr_dir, img_prefix)
     ann_file = osp.join(curr_dir, ann_file)
     test = copy.deepcopy(cfg.data.test.datasets[0])
@@ -94,7 +105,7 @@ def test_single_gpu_test_det(cfg_file):
         assert check_argument.is_type_list(results, dict)
 
 
-def gene_sdmgr_model_dataloader(cfg, dirname, curr_dir):
+def gene_sdmgr_model_dataloader(cfg, dirname, curr_dir, empty_img=False):
     json_obj = {
         'file_name':
         '1.jpg',
@@ -113,9 +124,10 @@ def gene_sdmgr_model_dataloader(cfg, dirname, curr_dir):
     ann_file = osp.join(dirname, 'test.txt')
     list_to_file(ann_file, [json.dumps(json_obj, ensure_ascii=False)])
 
-    img = np.ones((348, 348, 3), dtype=np.uint8)
-    img_file = osp.join(dirname, '1.jpg')
-    mmcv.imwrite(img, img_file)
+    if not empty_img:
+        img = np.ones((348, 348, 3), dtype=np.uint8)
+        img_file = osp.join(dirname, '1.jpg')
+        mmcv.imwrite(img, img_file)
 
     test = copy.deepcopy(cfg.data.test)
     test.ann_file = ann_file
@@ -155,6 +167,35 @@ def test_single_gpu_test_kie(cfg_file):
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         out_dir = osp.join(tmpdirname, 'tmp')
+        model, data_loader = gene_sdmgr_model_dataloader(
+            cfg, out_dir, curr_dir)
+        results = single_gpu_test(
+            model, data_loader, out_dir=out_dir, is_kie=True)
+        assert check_argument.is_type_list(results, dict)
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason='requires cuda')
+@pytest.mark.parametrize(
+    'cfg_file', ['../configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt.py'])
+def test_single_gpu_test_kie_novisual(cfg_file):
+    curr_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    config_file = os.path.join(curr_dir, cfg_file)
+    cfg = Config.fromfile(config_file)
+    meta_keys = list(cfg.data.test.pipeline[-1]['meta_keys'])
+    must_keys = ['img_norm_cfg', 'ori_filename', 'img_shape']
+    for key in must_keys:
+        meta_keys.append(key)
+
+    cfg.data.test.pipeline[-1]['meta_keys'] = tuple(meta_keys)
+
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        out_dir = osp.join(tmpdirname, 'tmp')
+        model, data_loader = gene_sdmgr_model_dataloader(
+            cfg, out_dir, curr_dir, empty_img=True)
+        results = single_gpu_test(
+            model, data_loader, out_dir=out_dir, is_kie=True)
+        assert check_argument.is_type_list(results, dict)
+
         model, data_loader = gene_sdmgr_model_dataloader(
             cfg, out_dir, curr_dir)
         results = single_gpu_test(
