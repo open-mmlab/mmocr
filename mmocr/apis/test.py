@@ -128,16 +128,11 @@ def single_gpu_test(model,
                 assert len(imgs) == len(img_metas)
 
                 for j, (img, img_meta) in enumerate(zip(imgs, img_metas)):
-                    if img_tensor.size(1) == 3:
-                        h, w, _ = img_meta['img_shape']
-                        img_show = img[:h, :w, :]
-                        ori_h, ori_w = img_meta['ori_shape'][:-1]
-                    elif img_tensor.size(1) == 1:
-                        h, w = img_meta['img_shape']
-                        img_show = img[:h, :w]
-                        ori_h, ori_w = img_meta['ori_shape']
-
-                    img_show = mmcv.imresize(img_show, (ori_w, ori_h))
+                    img_shape, ori_shape = img_meta['img_shape'], img_meta[
+                        'ori_shape']
+                    img_show = img[:img_shape[0], :img_shape[1]]
+                    img_show = mmcv.imresize(img_show,
+                                             (ori_shape[1], ori_shape[0]))
 
                     if out_dir:
                         out_file = osp.join(out_dir, img_meta['ori_filename'])

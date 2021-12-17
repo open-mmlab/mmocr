@@ -26,7 +26,7 @@ def build_model(cfg):
     return model
 
 
-def gene_sample_dataloader(cfg, curr_dir, img_prefix='', ann_file=''):
+def generate_sample_dataloader(cfg, curr_dir, img_prefix='', ann_file=''):
     must_keys = ['img_norm_cfg', 'ori_filename', 'img_shape', 'ori_shape']
     test_pipeline = cfg.data.test.pipeline
     for key in must_keys:
@@ -77,7 +77,8 @@ def test_single_gpu_test_recog(cfg_file):
     model = build_model(cfg)
     img_prefix = 'data/ocr_toy_dataset/imgs'
     ann_file = 'data/ocr_toy_dataset/label.txt'
-    data_loader = gene_sample_dataloader(cfg, curr_dir, img_prefix, ann_file)
+    data_loader = generate_sample_dataloader(cfg, curr_dir, img_prefix,
+                                             ann_file)
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         out_dir = osp.join(tmpdirname, 'tmp')
@@ -97,7 +98,8 @@ def test_single_gpu_test_det(cfg_file):
     model = build_model(cfg)
     img_prefix = 'data/toy_dataset/imgs'
     ann_file = 'data/toy_dataset/instances_test.json'
-    data_loader = gene_sample_dataloader(cfg, curr_dir, img_prefix, ann_file)
+    data_loader = generate_sample_dataloader(cfg, curr_dir, img_prefix,
+                                             ann_file)
 
     with tempfile.TemporaryDirectory() as tmpdirname:
         out_dir = osp.join(tmpdirname, 'tmp')
