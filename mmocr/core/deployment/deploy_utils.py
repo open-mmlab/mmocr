@@ -43,7 +43,8 @@ class ONNXRuntimeDetector(TextDetectorMixin, SingleStageTextDetector):
                  cfg: Any,
                  device_id: int,
                  show_score: bool = False):
-        cfg.model.pop('type')
+        if 'type' in cfg.model:
+            cfg.model.pop('type')
         SingleStageTextDetector.__init__(self, **(cfg.model))
         TextDetectorMixin.__init__(self, show_score)
         import onnxruntime as ort
@@ -117,7 +118,8 @@ class ONNXRuntimeRecognizer(EncodeDecodeRecognizer):
                  cfg: Any,
                  device_id: int,
                  show_score: bool = False):
-        cfg.model.pop('type')
+        if 'type' in cfg.model:
+            cfg.model.pop('type')
         EncodeDecodeRecognizer.__init__(self, **(cfg.model))
         import onnxruntime as ort
         # get the custom op path
@@ -154,7 +156,16 @@ class ONNXRuntimeRecognizer(EncodeDecodeRecognizer):
         raise NotImplementedError('This method is not implemented.')
 
     def aug_test(self, imgs, img_metas, **kwargs):
-        raise NotImplementedError('This method is not implemented.')
+        if isinstance(imgs, list):
+            for idx, each_img in enumerate(imgs):
+                if each_img.dim() == 3:
+                    imgs[idx] = each_img.unsqueeze(0)
+            imgs = imgs[0]  # avoid aug_test
+            img_metas = img_metas[0]
+        else:
+            if len(img_metas) == 1 and isinstance(img_metas[0], list):
+                img_metas = img_metas[0]
+        return self.simple_test(imgs, img_metas=img_metas)
 
     def extract_feat(self, imgs):
         raise NotImplementedError('This method is not implemented.')
@@ -197,7 +208,8 @@ class TensorRTDetector(TextDetectorMixin, SingleStageTextDetector):
                  cfg: Any,
                  device_id: int,
                  show_score: bool = False):
-        cfg.model.pop('type')
+        if 'type' in cfg.model:
+            cfg.model.pop('type')
         SingleStageTextDetector.__init__(self, **(cfg.model))
         TextDetectorMixin.__init__(self, show_score)
         from mmcv.tensorrt import TRTWrapper, load_tensorrt_plugin
@@ -252,7 +264,8 @@ class TensorRTRecognizer(EncodeDecodeRecognizer):
                  cfg: Any,
                  device_id: int,
                  show_score: bool = False):
-        cfg.model.pop('type')
+        if 'type' in cfg.model:
+            cfg.model.pop('type')
         EncodeDecodeRecognizer.__init__(self, **(cfg.model))
         from mmcv.tensorrt import TRTWrapper, load_tensorrt_plugin
         try:
@@ -271,7 +284,16 @@ class TensorRTRecognizer(EncodeDecodeRecognizer):
         raise NotImplementedError('This method is not implemented.')
 
     def aug_test(self, imgs, img_metas, **kwargs):
-        raise NotImplementedError('This method is not implemented.')
+        if isinstance(imgs, list):
+            for idx, each_img in enumerate(imgs):
+                if each_img.dim() == 3:
+                    imgs[idx] = each_img.unsqueeze(0)
+            imgs = imgs[0]  # avoid aug_test
+            img_metas = img_metas[0]
+        else:
+            if len(img_metas) == 1 and isinstance(img_metas[0], list):
+                img_metas = img_metas[0]
+        return self.simple_test(imgs, img_metas=img_metas)
 
     def extract_feat(self, imgs):
         raise NotImplementedError('This method is not implemented.')
