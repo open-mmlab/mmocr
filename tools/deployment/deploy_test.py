@@ -6,6 +6,7 @@ from mmcv.parallel import MMDataParallel
 from mmcv.runner import get_dist_info
 from mmdet.apis import single_gpu_test
 
+from mmocr.apis.inference import disable_text_recog_aug_test
 from mmocr.core.deployment import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
                                    TensorRTDetector, TensorRTRecognizer)
 from mmocr.datasets import build_dataloader, build_dataset
@@ -63,6 +64,7 @@ def main():
 
     # build the dataloader
     samples_per_gpu = 1
+    cfg = disable_text_recog_aug_test(cfg)
     dataset = build_dataset(cfg.data.test)
     data_loader = build_dataloader(
         dataset,
