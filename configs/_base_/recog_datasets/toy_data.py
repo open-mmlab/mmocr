@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 dataset_type = 'OCRDataset'
 
 root = 'tests/data/ocr_toy_dataset'

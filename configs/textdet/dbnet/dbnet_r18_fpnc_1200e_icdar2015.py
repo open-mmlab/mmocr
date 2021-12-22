@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 _base_ = [
     '../../_base_/runtime_10e.py',
     '../../_base_/schedules/schedule_sgd_1200e.py',

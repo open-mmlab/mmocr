@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 dataset_type = 'IcdarDataset'
 data_root = 'data/icdar2017'
 

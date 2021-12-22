@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 model = dict(
     type='DRRG',
     backbone=dict(

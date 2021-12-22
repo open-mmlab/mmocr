@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 num_chars = 37
 max_seq_len = 26
 

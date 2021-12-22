@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 # Text Recognition Training set, including:
 # Synthetic Datasets: SynthText, Syn90k
 # Both annotations are filtered so that

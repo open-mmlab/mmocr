@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 img_norm_cfg = dict(mean=[127], std=[127])
 
 train_pipeline = [

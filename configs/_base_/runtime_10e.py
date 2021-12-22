@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 checkpoint_config = dict(interval=10)
 # yapf:disable
 log_config = dict(

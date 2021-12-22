@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 root = 'tests/data/toy_dataset'
 
 # dataset with type='TextDetDataset'

@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 model_poly = dict(
     type='PSENet',
     backbone=dict(

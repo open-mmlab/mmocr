@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 prefix = 'tests/data/ocr_char_ann_toy_dataset/'
 
 train = dict(

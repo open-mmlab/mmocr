@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 train_pipeline = [
     dict(type='LoadImageFromFile'),

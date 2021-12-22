@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 _base_ = [
     '../../_base_/runtime_10e.py',
     '../../_base_/det_models/ocr_mask_rcnn_r50_fpn_ohem_poly.py',

@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 # Text Recognition Training set, including:
 # Synthetic Datasets: SynthText, SynthAdd, Syn90k
 # Real Dataset: IC11, IC13, IC15, COCO-Test, IIIT5k

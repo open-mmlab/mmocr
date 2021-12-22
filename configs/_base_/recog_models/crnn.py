@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 label_convertor = dict(
     type='CTCConvertor', dict_type='DICT36', with_unknown=False, lower=True)
 

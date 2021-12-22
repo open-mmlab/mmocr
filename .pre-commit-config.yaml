@@ -20,6 +20,12 @@ repos:
     rev: v2.1.0
     hooks:
       - id: codespell
+  - repo: https://github.com/open-mmlab/pre-commit-hooks
+    rev: v0.1.0  # Use the ref you want to point at
+    hooks:
+      # - id: check-algo-readme
+      - id: check-copyright
+        args: ["configs", "mmocr", "tests"]  # replace the dir_to_check with your expected directory to check
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.1.0
     hooks:

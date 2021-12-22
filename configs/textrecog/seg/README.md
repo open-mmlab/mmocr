@@ -7,7 +7,7 @@ Just a simple Seg-based baseline for text recognition tasks.
 
 ## Citation
 
-<!-- [ALGORITHM] -->
+<!-- [OTHERS] -->
 
 ```bibtex
 @unpublished{key,
