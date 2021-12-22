@@ -17,7 +17,7 @@ from mmocr import __version__
 from mmocr.apis import init_random_seed, train_detector
 from mmocr.datasets import build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import collect_env, get_root_logger
+from mmocr.utils import collect_env, get_root_logger, is_2dlist
 
 
 def parse_args():
@@ -72,11 +72,6 @@ def parse_args():
         default='none',
         help='Options for job launcher.')
     parser.add_argument('--local_rank', type=int, default=0)
-    parser.add_argument(
-        '--mc-config',
-        type=str,
-        default='',
-        help='Memory cache config for image loading speed-up during training.')
 
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
@@ -99,17 +94,6 @@ def main():
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
-
-    # update mc config
-    if args.mc_config:
-        mc = Config.fromfile(args.mc_config)
-        if isinstance(cfg.data.train, list):
-            for i in range(len(cfg.data.train)):
-                cfg.data.train[i].pipeline[0].update(
-                    file_client_args=mc['mc_file_client_args'])
-        else:
-            cfg.data.train.pipeline[0].update(
-                file_client_args=mc['mc_file_client_args'])
 
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
@@ -184,12 +168,17 @@ def main():
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
         val_dataset = copy.deepcopy(cfg.data.val)
-        if cfg.data.train['type'] == 'ConcatDataset':
-            train_pipeline = cfg.data.train['datasets'][0].pipeline
+        if cfg.data.train.get('pipeline', None) is None:
+            if is_2dlist(cfg.data.train.datasets):
+                train_pipeline = cfg.data.train.datasets[0][0].pipeline
+            else:
+                train_pipeline = cfg.data.train.datasets[0].pipeline
+        elif is_2dlist(cfg.data.train.pipeline):
+            train_pipeline = cfg.data.train.pipeline[0]
         else:
             train_pipeline = cfg.data.train.pipeline
 
-        if val_dataset['type'] == 'ConcatDataset':
+        if val_dataset['type'] in ['ConcatDataset', 'UniformConcatDataset']:
             for dataset in val_dataset['datasets']:
                 dataset.pipeline = train_pipeline
         else:

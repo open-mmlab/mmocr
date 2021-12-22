@@ -396,9 +396,6 @@ class MMOCR:
         for model in list(filter(None, [self.recog_model, self.detect_model])):
             if hasattr(model, 'module'):
                 model = model.module
-            if model.cfg.data.test['type'] == 'ConcatDataset':
-                model.cfg.data.test.pipeline = \
-                    model.cfg.data.test['datasets'][0].pipeline
 
     def readtext(self,
                  img,

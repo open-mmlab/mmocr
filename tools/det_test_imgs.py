@@ -76,9 +76,6 @@ def main():
     model = init_detector(args.config, args.checkpoint, device=args.device)
     if hasattr(model, 'module'):
         model = model.module
-    if model.cfg.data.test['type'] == 'ConcatDataset':
-        model.cfg.data.test.pipeline = model.cfg.data.test['datasets'][
-            0].pipeline
 
     # Start Inference
     out_vis_dir = osp.join(args.out_dir, 'out_vis_dir')

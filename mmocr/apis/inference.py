@@ -97,7 +97,10 @@ def model_inference(model,
     device = next(model.parameters()).device  # model device
 
     if cfg.data.test.get('pipeline', None) is None:
-        cfg.data.test.pipeline = cfg.data.test.datasets[0].pipeline
+        if is_2dlist(cfg.data.test.datasets):
+            cfg.data.test.pipeline = cfg.data.test.datasets[0][0].pipeline
+        else:
+            cfg.data.test.pipeline = cfg.data.test.datasets[0].pipeline
     if is_2dlist(cfg.data.test.pipeline):
         cfg.data.test.pipeline = cfg.data.test.pipeline[0]
 
@@ -205,6 +208,13 @@ def text_model_inference(model, input_sentence):
     assert isinstance(input_sentence, str)
 
     cfg = model.cfg
+    if cfg.data.test.get('pipeline', None) is None:
+        if is_2dlist(cfg.data.test.datasets):
+            cfg.data.test.pipeline = cfg.data.test.datasets[0][0].pipeline
+        else:
+            cfg.data.test.pipeline = cfg.data.test.datasets[0].pipeline
+    if is_2dlist(cfg.data.test.pipeline):
+        cfg.data.test.pipeline = cfg.data.test.pipeline[0]
     test_pipeline = Compose(cfg.data.test.pipeline)
     data = {'text': input_sentence, 'label': {}}
 

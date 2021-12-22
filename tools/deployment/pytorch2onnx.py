@@ -14,6 +14,7 @@ from torch import nn
 from mmocr.apis import init_detector
 from mmocr.core.deployment import ONNXRuntimeDetector, ONNXRuntimeRecognizer
 from mmocr.datasets.pipelines.crop import crop_img  # noqa: F401
+from mmocr.utils import is_2dlist
 
 
 def _convert_batchnorm(module):
@@ -327,9 +328,15 @@ def main():
     model = init_detector(args.model_config, args.model_ckpt, device=device)
     if hasattr(model, 'module'):
         model = model.module
-    if model.cfg.data.test['type'] == 'ConcatDataset':
-        model.cfg.data.test.pipeline = \
-            model.cfg.data.test['datasets'][0].pipeline
+    if model.cfg.data.test.get('pipeline', None) is None:
+        if is_2dlist(model.cfg.data.test.datasets):
+            model.cfg.data.test.pipeline = \
+                model.cfg.data.test.datasets[0][0].pipeline
+        else:
+            model.cfg.data.test.pipeline = \
+                model.cfg.data.test['datasets'][0].pipeline
+    if is_2dlist(model.cfg.data.test.pipeline):
+        model.cfg.data.test.pipeline = model.cfg.data.test.pipeline[0]
 
     pytorch2onnx(
         model,
