@@ -121,6 +121,7 @@ class ResizeOCR:
             pad_shape = img_resize.shape
 
         results['img'] = img_resize
+        results['img_shape'] = resize_shape
         results['resize_shape'] = resize_shape
         results['pad_shape'] = pad_shape
         results['valid_ratio'] = valid_ratio
