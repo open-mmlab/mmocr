@@ -20,104 +20,119 @@ mmocr.utils
 
 mmocr.models
 ---------------
-common_backbones
-^^^^^^^^^^^
+Common Backbones
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.common.backbones
     :members:
 
 .. automodule:: mmocr.models.common.losses
     :members:
 
-textdet_dense_heads
-^^^^^^^^^^^
-.. automodule:: mmocr.models.textdet.dense_heads
-    :members:
-
-textdet_necks
-^^^^^^^^^^^
-.. automodule:: mmocr.models.textdet.necks
-    :members:
-
-textdet_detectors
-^^^^^^^^^^^
+Text Detection Detectors
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textdet.detectors
     :members:
 
-textdet_losses
-^^^^^^^^^^^
+Text Detection Heads
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.models.textdet.dense_heads
+    :members:
+
+Text Detection Necks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.models.textdet.necks
+    :members:
+
+Text Detection Losses
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textdet.losses
     :members:
 
-textdet_postprocess
-^^^^^^^^^^^
+Text Detection Postprocessors
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textdet.postprocess
     :members:
 
-textrecog_recognizer
-^^^^^^^^^^^
+Text Recognition Recognizer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textrecog.recognizer
     :members:
 
-textrecog_backbones
-^^^^^^^^^^^
+Text Recognition Backbones
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textrecog.backbones
     :members:
 
-textrecog_necks
-^^^^^^^^^^^
+Text Recognition Necks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textrecog.necks
     :members:
 
-textrecog_heads
-^^^^^^^^^^^
+Text Recognition Heads
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textrecog.heads
     :members:
 
-textrecog_convertors
-^^^^^^^^^^^
-.. automodule:: mmocr.models.textrecog.convertors
-    :members:
 
-textrecog_encoders
-^^^^^^^^^^^
-.. automodule:: mmocr.models.textrecog.encoders
-    :members:
-
-textrecog_decoders
-^^^^^^^^^^^
-.. automodule:: mmocr.models.textrecog.decoders
-    :members:
-
-textrecog_losses
-^^^^^^^^^^^
-.. automodule:: mmocr.models.textrecog.losses
-    :members:
-
-textrecog_backbones
-^^^^^^^^^^^
+Text Recognition Backbones
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textrecog.backbones
     :members:
 
-textrecog_layers
-^^^^^^^^^^^
+Text Recognition Layers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textrecog.layers
     :members:
 
-kie_extractors
-^^^^^^^^^^^
+Text Recognition Convertors
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.models.textrecog.convertors
+    :members:
+
+Text Recognition Encoders
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.models.textrecog.encoders
+    :members:
+
+Text Recognition Decoders
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.models.textrecog.decoders
+    :members:
+
+Text Recognition Losses
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.models.textrecog.losses
+    :members:
+
+KIE Extractors
+^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.kie.extractors
     :members:
 
-kie_heads
+KIE Heads
 ^^^^^^^^^^^
 .. automodule:: mmocr.models.kie.heads
     :members:
 
-kie_losses
+KIE Losses
 ^^^^^^^^^^^
 .. automodule:: mmocr.models.kie.losses
     :members:
 
+NER Encoders
+^^^^^^^^^^^^
+.. automodule:: mmocr.models.ner.encoders
+    :members:
+
+NER Decoders
+^^^^^^^^^^^^
+.. automodule:: mmocr.models.ner.decoders
+    :members:
+
+NER Losses
+^^^^^^^^^^^
+.. automodule:: mmocr.models.ner.losses
+    :members:
 
 mmocr.datasets
 -----------------

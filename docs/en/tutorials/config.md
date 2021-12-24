@@ -82,10 +82,9 @@ From these configs' names we can roughly know this config trains dbnet_r18_fpnc 
 
 Please refer to [mmcv](https://mmcv.readthedocs.io/en/latest/understand_mmcv/config.html) for detailed documentation.
 
-
 ## Config File Structure
 
-### model
+### Model
 
 The parameter `"model"` is a python dictionary in the configuration file, which mainly includes information such as network structure and loss function.
 
@@ -97,19 +96,27 @@ The 'type' in the configuration file is not a constructed parameter, but a class
 We can also use models from MMDetection by adding `mmdet.` prefix to type name, or from other OpenMMLab projects in a similar way if their backbones are registered in registries.
 ```
 
-- `type`: Model name.
-- `backbone`: Backbone configs. [Common Backbones](https://mmocr.readthedocs.io/en/latest/api.html#common-backbones), [TextRecog Backbones](https://mmocr.readthedocs.io/en/latest/api.html#textrecog-backbones)
-- `neck`: Neck network name. Refer to [TextDet Necks](https://mmocr.readthedocs.io/en/latest/api.html#textdet-necks), [TextRecog Necks](https://mmocr.readthedocs.io/en/latest/api.html#textrecog-necks).
-- `bbox_head`: Head network name. Applicable to text detection, key information models and part of text recognition models. [TextDet Heads](https://mmocr.readthedocs.io/en/latest/api.html#textdet-dense-heads), [TextRecog Heads](https://mmocr.readthedocs.io/en/latest/api.html#textrecog-heads), [KIE Heads](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.kie.heads).
-  - `loss`: Loss function type. [TextDet Losses](https://mmocr.readthedocs.io/en/latest/api.html#textdet-losses), [KIE Losses](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.kie.losses)
-  - `postprocessor`: (TextDet only) Postprocess type. [TextDet Postprocessors](https://mmocr.readthedocs.io/en/latest/api.html#textdet-postprocess)
-- `encoder`: Encoder configs. Applicable to text recognition models. [TextRecog Encoders](https://mmocr.readthedocs.io/en/latest/api.html#textrecog-encoders)
-- `decoder`: Decoder configs. Applicable to text recognition models. [TextRecog Decoders](https://mmocr.readthedocs.io/en/latest/api.html#textrecog-decoders)
-- `loss`: Loss configs. Applicable to some text recognition models.  [TextRecog Losses](https://mmocr.readthedocs.io/en/latest/api.html#textrecog-losses)
-- `label_convertor`: Convert outputs between text, index and tensor. Applicable to text recognition models. [Label Convertors](https://mmocr.readthedocs.io/en/latest/api.html#textrecog-convertors)
-- `max_seq_len`: The maximum sequence length of recognition results.Applicable to text recognition models.
+#### Shared Section
 
-### data & pipeline
+- `type`: Model name.
+
+#### Text Detection / Text Recognition / Key Information Extraction Model
+
+- `backbone`: Backbone configs. [Common Backbones](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.common.backbones), [TextRecog Backbones](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.textrecog.backbones)
+- `neck`: Neck network name. [TextDet Necks](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.textdet.necks), [TextRecog Necks](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.textrecog.necks).
+- `bbox_head`: Head network name. Applicable to text detection, key information models and *some* text recognition models. [TextDet Heads](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.textdet.dense_heads), [TextRecog Heads](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.textrecog.heads), [KIE Heads](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.kie.heads).
+  - `loss`: Loss function type. [TextDet Losses](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.textdet.losses), [KIE Losses](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.kie.losses)
+  - `postprocessor`: (TextDet only) Postprocess type. [TextDet Postprocessors](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.textdet.postprocess)
+
+#### Text Recognition / Named Entity Extraction Model
+
+- `encoder`: Encoder configs. [TextRecog Encoders](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.textrecog.encoders)
+- `decoder`: Decoder configs. Applicable to text recognition models. [TextRecog Decoders](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.textrecog.decoders)
+- `loss`: Loss configs. Applicable to some text recognition models.  [TextRecog Losses](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.textrecog.losses)
+- `label_convertor`: Convert outputs between text, index and tensor. Applicable to text recognition models. [Label Convertors](https://mmocr.readthedocs.io/en/latest/api.html#module-mmocr.models.textrecog.convertors)
+- `max_seq_len`: The maximum sequence length of recognition results. Applicable to text recognition models.
+
+### Data & Pipeline
 
 The parameter `"data"` is a python dictionary in the configuration file, which mainly includes information to construct dataloader:
 
@@ -201,8 +208,10 @@ evaluation = dict(       # The config to build the evaluation hook, refer to htt
     metric='hmean-iou')   # Metrics used during evaluation
 ```
 
-### training schedule
+### Training Schedule
+
 Mainly include optimizer settings, `optimizer hook` settings, learning rate schedule and `runner` settings:
+
 - `optimizer`: optimizer setting , support all optimizers in `pytorch`, refer to related [mmcv](https://mmcv.readthedocs.io/en/latest/_modules/mmcv/runner/optimizer/default_constructor.html#DefaultOptimizerConstructor) documentation.
 - `optimizer_config`: `optimizer hook` configuration file, such as setting gradient limit, refer to related [mmcv](https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/optimizer.py#L8) code.
 - `lr_config`: Learning rate scheduler, supports "CosineAnnealing", "Step", "Cyclic", etc. Refer to related [mmcv](https://mmcv.readthedocs.io/en/latest/_modules/mmcv/runner/hooks/lr_updater.html#LrUpdaterHook) documentation for more options.
@@ -223,7 +232,7 @@ runner = dict(type='EpochBasedRunner',   # Type of runner to use (i.e. IterBased
             max_epochs=100)    # Runner that runs the workflow in total max_epochs. For IterBasedRunner use `max_iters`
 ```
 
-### runtime setting
+### Runtime Setting
 
 This part mainly includes saving the checkpoint strategy, log configuration, training parameters, breakpoint weight path, working directory, etc..
 
