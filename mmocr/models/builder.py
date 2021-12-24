@@ -7,7 +7,6 @@ from mmcv.cnn import UPSAMPLE_LAYERS as MMCV_UPSAMPLE_LAYERS
 from mmcv.utils import Registry, build_from_cfg
 from mmdet.models.builder import BACKBONES as MMDET_BACKBONES
 
-RECOGNIZERS = Registry('recognizer')
 CONVERTORS = Registry('convertor')
 ENCODERS = Registry('encoder')
 DECODERS = Registry('decoder')
