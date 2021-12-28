@@ -17,14 +17,10 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
-   :caption: Configuration System
-
-   dataset_types.md
-
-.. toctree::
-   :maxdepth: 2
    :caption: Tutorials
 
+   tutorials/config.md
+   tutorials/dataset_types.md
    tutorials/kie_closeset_openset.md
 
 .. toctree::
