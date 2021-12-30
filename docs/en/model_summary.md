@@ -2,7 +2,7 @@
 
 MMOCR has implemented many models that support various tasks. Depending on the type of tasks, these models have different architectural designs and, therefore, might be a bit confusing for beginners to master. We release a primary design doc to clearly illustrate the basic task-specific architectures and provide quick pointers to docstrings of model components to aid users' understanding.
 
-## Text Detection Architecture
+## Text Detection Models
 
 <div align="center">
     <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/resources/textdet.jpg"/><br>
@@ -65,7 +65,7 @@ We use the same architecture as in MMDetection. See MMDetection's [config docume
 - Loss: [TextSnakeLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.losses.TextSnakeLoss)
 - Postprocessor: [TextSnakePostprocessor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.postprocess.TextSnakePostprocessor)
 
-## Text Recognition Architecture
+## Text Recognition Models
 
 **Most of** the implemented recognizers use the following architecture:
 
@@ -157,3 +157,22 @@ Fuser fuses the feature output from encoder and decoder before generating the fi
 :::{note}
 SegOCR's architecture is an exception - it is closer to text detection models.
 :::
+
+## Key Information Extraction Models
+
+<div align="center">
+    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/resources/kie.jpg"/><br>
+</div>
+<br>
+
+The architecture of key information extraction (KIE) models is similar to text detection models, except for the extra feature extractor. As a downstream task of OCR, KIE models are required to run with bounding box annotations indicating the locations of text instances, from which an ROI extractor extracts the cropped features for `bbox_head` to discover relations among them.
+
+The output containing edges and nodes information from `bbox_head` is sufficient for test and inference. Computation of loss also relies on such information.
+
+### SDMGR
+
+- Backbone: [UNet](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.common.backbones.UNet)
+- Neck: None
+- Extractor: [mmdet.SingleRoIExtractor](https://mmdetection.readthedocs.io/en/latest/api.html#mmdet.models.roi_heads.SingleRoIExtractor)
+- Bbox_head: [SDMGRHead](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.kie.heads.SDMGRHead)
+- Loss: [SDMGRLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.kie.losses.SDMGRLoss)
