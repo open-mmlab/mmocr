@@ -80,7 +80,7 @@ countstr = '\n'.join(
     [f'   - {t}: {c}' for t, c in zip(papertypes, papercounts)])
 
 modelzoo = f"""
-# 概览
+# 统计数据
 
 * 模型权重文件数量： {len(allckpts)}
 * 配置文件数量： {len(allconfigs)}
