@@ -80,7 +80,7 @@ countstr = '\n'.join(
     [f'   - {t}: {c}' for t, c in zip(papertypes, papercounts)])
 
 modelzoo = f"""
-# Overview
+# Statistics
 
 * Number of checkpoints: {len(allckpts)}
 * Number of configs: {len(allconfigs)}

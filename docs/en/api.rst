@@ -73,6 +73,10 @@ Text Recognition Heads
 .. automodule:: mmocr.models.textrecog.heads
     :members:
 
+Text Recognition Preprocessors
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.models.textrecog.preprocessor
+    :members:
 
 Text Recognition Backbones
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -97,6 +101,11 @@ Text Recognition Encoders
 Text Recognition Decoders
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textrecog.decoders
+    :members:
+
+Text Recognition Fusers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.models.textrecog.fusers
     :members:
 
 Text Recognition Losses

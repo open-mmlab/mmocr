@@ -28,6 +28,7 @@
    :caption: 模型库
 
    modelzoo.md
+   model_summary.md
    textdet_models.md
    textrecog_models.md
    kie_models.md
