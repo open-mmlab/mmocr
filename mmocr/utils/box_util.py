@@ -116,3 +116,15 @@ def stitch_boxes_into_lines(boxes, max_x_dist=10, min_y_overlap_ratio=0.8):
             merged_boxes.append(merged_box)
 
     return merged_boxes
+
+
+def boundary_to_bbox(boundary_results):
+    bboxes = []
+    for boundary_result in boundary_results:
+        min_x = min(boundary_result[0:-1:2])
+        min_y = min(boundary_result[1:-1:2])
+        max_x = max(boundary_result[0:-1:2])
+        max_y = max(boundary_result[1:-1:2])
+        box = [min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y]
+        bboxes.append(box)
+    return bboxes
