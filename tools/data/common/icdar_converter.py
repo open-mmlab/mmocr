@@ -44,12 +44,14 @@ def collect_files(img_dir, gt_dir):
     return files
 
 
-def collect_annotations(files, dataset, nproc=1):
+def collect_annotations(files, dataset, latin_only, nproc=1):
     """Collect the annotation information.
 
     Args:
         files(list): The list of tuples (image_file, groundtruth_file)
         dataset(str): The dataset name, icdar2015 or icdar2017
+        latin_only (bool): For ICDAR2017: if True, set instances with non-Latin
+            texts to ### ("do not care")
         nproc(int): The number of process to collect annotations
 
     Returns:
@@ -60,7 +62,8 @@ def collect_annotations(files, dataset, nproc=1):
     assert dataset
     assert isinstance(nproc, int)
 
-    load_img_info_with_dataset = partial(load_img_info, dataset=dataset)
+    load_img_info_with_dataset = partial(
+        load_img_info, dataset=dataset, latin_only=latin_only)
     if nproc > 1:
         images = mmcv.track_parallel_progress(
             load_img_info_with_dataset, files, nproc=nproc)
@@ -70,15 +73,17 @@ def collect_annotations(files, dataset, nproc=1):
     return images
 
 
-def load_img_info(files, dataset):
+def load_img_info(files, dataset, latin_only):
     """Load the information of one image.
 
     Args:
-        files(tuple): The tuple of (img_file, groundtruth_file)
-        dataset(str): Dataset name, icdar2015 or icdar2017
+        files (tuple): The tuple of (img_file, groundtruth_file)
+        dataset (str): Dataset name, icdar2015 or icdar2017
+        latin_only (bool): For ICDAR2017: if True, set instances with non-Latin
+            texts to ### ("do not care")
 
     Returns:
-        img_info(dict): The dict of the img and annotation information
+        img_info (dict): The dict of the img and annotation information
     """
     assert isinstance(files, tuple)
     assert isinstance(dataset, str)
@@ -106,12 +111,15 @@ def load_img_info(files, dataset):
         coordinates = np.array(xy).reshape(-1, 2)
         polygon = Polygon(coordinates)
         iscrowd = 0
-        # set iscrowd to 1 to ignore 1.
-        if (dataset == 'icdar2015'
-                and strs[8] == '###') or (dataset == 'icdar2017'
-                                          and strs[9] == '###'):
+        text = '###'
+        if dataset == 'icdar2015':
+            text = strs[8]
+        elif dataset == 'icdar2017':
+            if latin_only and strs[8] == 'Latin' or not latin_only:
+                text = strs[9]
+        # set iscrowd to 1 to skip the instance
+        if text == '###':
             iscrowd = 1
-            print('ignore text')
 
         area = polygon.area
         # convert to COCO style XYWH format
@@ -123,6 +131,7 @@ def load_img_info(files, dataset):
             category_id=category_id,
             bbox=bbox,
             area=area,
+            text=text,
             segmentation=[xy])
         anno_info.append(anno)
     split_name = osp.basename(osp.dirname(img_file))
@@ -138,16 +147,22 @@ def load_img_info(files, dataset):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Convert Icdar2015 or Icdar2017 annotations to COCO format'
-    )
-    parser.add_argument('icdar_path', help='icdar root path')
-    parser.add_argument('-o', '--out-dir', help='output path')
+        description='Convert ICDAR2015 or ICDAR2017 (MLT) annotations to COCO'
+        'format')
+    parser.add_argument('icdar_path', help='ICDAR root path')
+    parser.add_argument('-o', '--out-dir', help='Output path')
     parser.add_argument(
         '-d', '--dataset', required=True, help='icdar2017 or icdar2015')
     parser.add_argument(
         '--split-list',
         nargs='+',
-        help='a list of splits. e.g., "--split-list training test"')
+        help='A list of splits. e.g., "--split-list training test"')
+    parser.add_argument(
+        '--latin-only',
+        action='store_true',
+        default=False,
+        help='For ICDAR2017: if True, set instances with non-Latin texts'
+        'to ### ("do not care")')
 
     parser.add_argument(
         '--nproc', default=1, type=int, help='number of process')
@@ -175,7 +190,7 @@ def main():
             files = collect_files(
                 osp.join(img_dir, split), osp.join(gt_dir, split))
             image_infos = collect_annotations(
-                files, args.dataset, nproc=args.nproc)
+                files, args.dataset, args.latin_only, nproc=args.nproc)
             convert_annotations(image_infos, osp.join(out_dir, json_name))
 
 

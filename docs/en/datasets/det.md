@@ -39,7 +39,7 @@ The structure of the text detection dataset directory is organized as follows.
 |      |                                                                                      |                                                training                                                |               validation                |                                            testing                                             |       |
 |  CTW1500  | [homepage](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                    -                    |                    -                    |                    -                    |
 | ICDAR2015 | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)     | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
-| ICDAR2017 | [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
+| ICDAR2017 (MLT) | [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
 | Synthtext | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  | instances_training.lmdb ([data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb), [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb)) |                    -                    | - |
 | TextOCR | [homepage](https://textvqa.org/textocr/dataset)  | - |                    -                    | -
 | Totaltext | [homepage](https://github.com/cs-chan/Total-Text-Dataset)  | - |                    -                    | -
@@ -47,7 +47,7 @@ The structure of the text detection dataset directory is organized as follows.
 ## Important Note
 
 :::{note}
-**For users who want to train models on CTW1500, ICDAR 2015/2017, and Totaltext dataset,** there might be some images containing orientation info in EXIF data. The default OpenCV
+**For users who want to train models on CTW1500, ICDAR 2015/2017 (MLT), and Totaltext dataset,** there might be some images containing orientation info in EXIF data. The default OpenCV
 backend used in MMCV would read them and apply the rotation on the images.  However, their gold annotations are made on the raw pixels, and such
 inconsistency results in false examples in the training set. Therefore, users should use `dict(type='LoadImageFromFile', color_type='color_ignore_orientation')` in pipelines to change MMCV's default loading behaviour. (see [DBNet's config](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py) for example)
 :::
@@ -70,11 +70,38 @@ mv Challenge4_Test_Task1_GT annotations/test
 - Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) and move them to `icdar2015`
 - Or, generate `instances_training.json` and `instances_test.json` with following command:
 ```bash
-python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
+python tools/data/common/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
 ```
 
-### ICDAR 2017
-- Follow similar steps as [ICDAR 2015](#icdar-2015).
+### ICDAR 2017 (MLT)
+
+- Step0: Read [Important Note](#important-note)
+- Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
+- Step2:
+
+```bash
+mkdir icdar2017 && cd icdar2017
+mkdir imgs && mkdir annotations
+# For images,
+for s in $(seq 1 8); do
+    unzip -q ch8_training_images_${s}.zip -d imgs/training
+done
+unzip -q ch8_validation_images.zip -d imgs/validation
+# For annotations,
+unzip -q ch8_training_localization_transcription_gt_v2.zip -d annotations/training
+unzip -q ch8_validation_localization_transcription_gt_v2.zip -d annotations/validation
+```
+
+- Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_test.json) and move them to `icdar2017`.
+- Or, generate `instances_training.json` and `instances_test.json` with following command:
+
+```bash
+python tools/data/common/icdar_converter.py /path/to/icdar2017 -o /path/to/icdar2017 -d icdar2017 --split-list training validation --nproc 8
+```
+
+:::{warning}
+If you are using this script to prepare data for alphanumeric-only text spotter, please specify `--latin-only` to keep Latin character instances and replace all non-Latin texts with "###" (don't care).
+:::
 
 ### CTW1500
 - Step0: Read [Important Note](#important-note)

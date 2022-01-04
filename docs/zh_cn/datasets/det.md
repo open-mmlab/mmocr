@@ -39,7 +39,7 @@
 |           |                                                                                      |                                                训练集 (training)                                                |               验证集 (validation)                |                                           测试集 (testing)                                             |       |
 |  CTW1500  | [下载地址](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                    -                    |                    -                    |                    -                    |
 | ICDAR2015 | [下载地址](https://rrc.cvc.uab.es/?ch=4&com=downloads)     | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                    -                    | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
-| ICDAR2017 | [下载地址](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
+| ICDAR2017 (MLT) | [下载地址](https://rrc.cvc.uab.es/?ch=8&com=downloads)     | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) | - |       |       |
 | Synthtext | [下载地址](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  | instances_training.lmdb ([data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb), [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb)) |                    -                    | - |
 | TextOCR | [下载地址](https://textvqa.org/textocr/dataset)  | - |                    -                    | -
 | Totaltext | [下载地址](https://github.com/cs-chan/Total-Text-Dataset)  | - |                    -                    | -
@@ -54,6 +54,8 @@
 ## 准备步骤
 
 ### ICDAR 2015
+
+- 首先：阅读[重要提醒](#重要提醒)
 - 第一步：从[下载地址](https://rrc.cvc.uab.es/?ch=4&com=downloads)下载 `ch4_training_images.zip`、`ch4_test_images.zip`、`ch4_training_localization_transcription_gt.zip`、`Challenge4_Test_Task1_GT.zip` 四个文件，分别对应训练集数据、测试集数据、训练集标注、测试集标注。
 - 第二步：运行以下命令，移动数据集到对应文件夹
 ```bash
@@ -71,8 +73,35 @@ mv Challenge4_Test_Task1_GT annotations/test
 python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
 ```
 
-### ICDAR 2017
-- 与上述步骤类似。
+### ICDAR 2017 (MLT)
+
+- 首先：阅读[重要提醒](#重要提醒)
+- 第一步： 下载 `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` [下载地址](https://rrc.cvc.uab.es/?ch=4&com=downloads)
+- 第二步：
+
+```bash
+mkdir icdar2017 && cd icdar2017
+mkdir imgs && mkdir annotations
+# 解压图片
+for s in $(seq 1 8); do
+    unzip -q ch8_training_images_${s}.zip -d imgs/training
+done
+unzip -q ch8_validation_images.zip -d imgs/validation
+# 解压标注
+unzip -q ch8_training_localization_transcription_gt_v2.zip -d annotations/training
+unzip -q ch8_validation_localization_transcription_gt_v2.zip -d annotations/validation
+```
+
+- 第三部： 下载 [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_test.json) 并移动它们至 `icdar2017`.
+- 或者用以下命令生成 `instances_training.json` 和 `instances_test.json`：
+
+```bash
+python tools/data/common/icdar_converter.py /path/to/icdar2017 -o /path/to/icdar2017 -d icdar2017 --split-list training validation --nproc 8
+```
+
+:::{warning}
+如果你在使用这个脚本处理仅识别英文和数字的 text spotter，请注明 `--latin-only` 参数以仅保留拉丁字母并把非拉丁字母文本标注为 "###" (don't care)。
+:::
 
 ### CTW1500
 - 第一步：执行以下命令，从 [下载地址](https://github.com/Yuliang-Liu/Curve-Text-Detector) 下载 `train_images.zip`，`test_images.zip`，`train_labels.zip`，`test_labels.zip` 四个文件并配置到对应目录：
