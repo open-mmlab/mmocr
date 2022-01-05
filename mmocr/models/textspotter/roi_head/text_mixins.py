@@ -34,8 +34,8 @@ class RecTestMixin:
                     for scale_factor in scale_factors
                 ]
             _bboxes = [
-                det_bboxes[i][:, :4] *
-                scale_factors[i] if rescale else det_bboxes[i][:, :4]
+                det_bboxes[i][:, :] *
+                scale_factors[i] if rescale else det_bboxes[i][:, :]
                 for i in range(len(det_bboxes))
             ]
             recognition_rois = bbox2roi(_bboxes)
