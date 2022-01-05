@@ -118,24 +118,32 @@ def stitch_boxes_into_lines(boxes, max_x_dist=10, min_y_overlap_ratio=0.8):
     return merged_boxes
 
 
-def bezier_to_polygon(bezier_points):
+def bezier_to_polygon(bezier_points, num_sample=20):
     """Convert bezier point to polygon.
 
     Args:
         bezier_points (ndarray): A :math:`(2, 4, 2)` array of 8 Bezeir points
             or its equalivance. The first 4 points control the curve at one
             side and the last four control the other side.
+        num_sample (int): The number of sample points at the a side of Bezeir
+            boundary.
 
     Returns:
-        list[ndarray]: A list of 40 points representing the polygon extracted
-        from Bezier curves.
+        list[ndarray]: A list of 2*num_sample points representing the polygon
+        extracted from Bezier curves.
+
+    Warning:
+        The points are not guaranteed to be ordered either closewise or
+        counter-closewise.
     """
+    assert num_sample > 0
+
     bezier_points = np.asarray(bezier_points)
     assert np.prod(
         bezier_points.shape) == 16, 'Need 8 Bezier control points to continue!'
 
     bezier = bezier_points.reshape(2, 4, 2).transpose(0, 2, 1).reshape(4, 4)
-    u = np.linspace(0, 1, 20)
+    u = np.linspace(0, 1, num_sample)
 
     points = np.outer((1 - u) ** 3, bezier[:, 0]) \
         + np.outer(3 * u * ((1 - u) ** 2), bezier[:, 1]) \
