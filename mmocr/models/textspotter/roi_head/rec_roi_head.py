@@ -142,8 +142,8 @@ class RecRoIHead(StandardRoIHead, BBoxTestMixin, MaskTestMixin, RecTestMixin):
             segm_results = self.simple_test_mask(
                 x, img_metas, det_bboxes, det_labels, rescale=rescale)
             args.update(segm_results=segm_results)
-        recognition_results = self.simple_test_recognition(
-            x, img_metas, proposal_list, rescale, **args)
+        recognition_results = self.simple_test_rec(x, img_metas, proposal_list,
+                                                   rescale, **args)
         return recognition_results
 
     def forward_train(self,
