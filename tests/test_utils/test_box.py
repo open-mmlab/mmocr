@@ -96,6 +96,15 @@ def test_bezier_to_polygon():
                        [48.13326724012247, 258.2824376731302],
                        [43.24435923604024, 260.5714127423822], [38.0, 263.0]])
     assert np.allclose(pts, target)
+
+    bezier_points = [0, 0, 0, 1, 0, 2, 0, 3, 1, 0, 1, 1, 1, 2, 1, 3]
+    pts = bezier_to_polygon(bezier_points, num_sample=3)
+    target = np.array([[0, 0], [0, 1.5], [0, 3], [1, 0], [1, 1.5], [1, 3]])
+    assert np.allclose(pts, target)
+
+    with pytest.raises(AssertionError):
+        bezier_to_polygon(bezier_points, num_sample=-1)
+
     bezier_points = [0, 1]
     with pytest.raises(AssertionError):
         bezier_to_polygon(bezier_points)
