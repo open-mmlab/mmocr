@@ -6,6 +6,7 @@ numba>=0.45.1
 numpy
 opencv-python-headless<=4.5.4.60
 pyclipper
+pycocotools<=2.0.2
 rapidfuzz
 scikit-image
 six
