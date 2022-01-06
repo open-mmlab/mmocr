@@ -3,7 +3,7 @@ _base_ = [
     '../../_base_/schedules/schedule_adam_step_5e.py'
 ]
 
-dict_file = 'data/chineseocr/labels/dict_printed_chinese_english_digits.txt'
+dict_file = './dict_printed_chinese_english_digits.txt'
 label_convertor = dict(
     type='AttnConvertor', dict_file=dict_file, with_unknown=True)
 
