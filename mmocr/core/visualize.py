@@ -602,7 +602,7 @@ def draw_texts_by_pil(img,
         dirname, _ = os.path.split(os.path.abspath(__file__))
         font_path = os.path.join(dirname, 'font.TTF')
         if not os.path.exists(font_path):
-            url = ('http://download.openmmlab.com/mmocr/data/font.TTF')
+            url = ('https://download.openmmlab.com/mmocr/data/font.TTF')
             print(f'Downloading {url} ...')
             local_filename, _ = urllib.request.urlretrieve(url)
             shutil.move(local_filename, font_path)
