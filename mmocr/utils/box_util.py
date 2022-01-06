@@ -1,5 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import functools
+
 import numpy as np
+
+from mmocr.utils.check_argument import is_2dlist, is_type_list
 
 
 def is_on_same_line(box_a, box_b, min_y_overlap_ratio=0.8):
@@ -133,8 +137,8 @@ def bezier_to_polygon(bezier_points, num_sample=20):
         extracted from Bezier curves.
 
     Warning:
-        The points are not guaranteed to be ordered either closewise or
-        counter-closewise.
+        The points are not guaranteed to be ordered. Please use
+        :func:`mmocr.utils.sort_points` to sort points if necessary.
     """
     assert num_sample > 0
 
@@ -153,3 +157,43 @@ def bezier_to_polygon(bezier_points, num_sample=20):
     # Convert points to polygon
     points = np.concatenate((points[:, :2], points[:, 2:]), axis=0)
     return points.tolist()
+
+
+def sort_points(points):
+    """Sort arbitory points in clockwise order. The idea is adapted from
+    https://stackoverflow.com/a/6989383.
+
+    Args:
+        points (list[ndarray] or ndarray or list[list]): A list of unsorted
+            boundary points.
+
+    Returns:
+        list[ndarray]: A list of points sorted in clockwise order.
+    """
+
+    assert is_type_list(points, np.ndarray) or isinstance(points, np.ndarray) \
+        or is_2dlist(points)
+
+    points = np.array(points)
+    center = np.mean(points, axis=0)
+
+    def cmp(a, b):
+        oa = a - center
+        ob = b - center
+
+        # Some corner cases
+        if oa[0] >= 0 and ob[0] < 0:
+            return 1
+        if oa[0] < 0 and ob[0] >= 0:
+            return -1
+
+        prod = np.cross(oa, ob)
+        if prod > 0:
+            return 1
+        if prod < 0:
+            return -1
+
+        # a, b are on the same line from the center
+        return 1 if (oa**2).sum() < (ob**2).sum() else -1
+
+    return sorted(points, key=functools.cmp_to_key(cmp))
