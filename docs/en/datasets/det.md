@@ -32,6 +32,10 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
+├── CurvedSynText150k
+│   ├── syntext_word_eng
+│   ├── emcs_imgs
+│   └── instances_training.json
 ```
 
 |Dataset|Images|                                                                                      |  Annotation Files                                                                                                      |                         |                                                                                                |
@@ -43,6 +47,7 @@ The structure of the text detection dataset directory is organized as follows.
 | Synthtext | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)  | instances_training.lmdb ([data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb), [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb)) |                    -                    | - |
 | TextOCR | [homepage](https://textvqa.org/textocr/dataset)  | - |                    -                    | -
 | Totaltext | [homepage](https://github.com/cs-chan/Total-Text-Dataset)  | - |                    -                    | -
+| CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) | [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json) |        -         |    -    |
 
 ## Important Note
 
@@ -148,4 +153,28 @@ mv Polygon/Test ../annotations/test
 - Step2: Generate `instances_training.json` and `instances_test.json` with the following command:
 ```bash
 python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
+```
+
+### CurvedSynText150k
+
+- Step1: Download [syntext1.zip](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) and [syntext2.zip](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) to `CurvedSynText150k/`.
+- Step2:
+
+```bash
+unzip -q syntext1.zip
+mv train.json train1.json
+unzip images.zip
+rm images.zip
+
+unzip -q syntext2.zip
+mv train.json train2.json
+unzip images.zip
+rm images.zip
+```
+
+- Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json) to `CurvedSynText150k/`
+- Or, generate `instances_training.json` with following command:
+
+```bash
+python tools/data/common/curvedsyntext_converter.py PATH/TO/CurvedSynText150k --nproc 4
 ```
