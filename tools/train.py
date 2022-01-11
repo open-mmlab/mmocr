@@ -7,6 +7,7 @@ import os.path as osp
 import time
 import warnings
 
+import cv2
 import mmcv
 import torch
 from mmcv import Config, DictAction
@@ -18,6 +19,8 @@ from mmocr.apis import init_random_seed, train_detector
 from mmocr.datasets import build_dataset
 from mmocr.models import build_detector
 from mmocr.utils import collect_env, get_root_logger, is_2dlist
+
+cv2.setNumThreads(0)
 
 
 def parse_args():
