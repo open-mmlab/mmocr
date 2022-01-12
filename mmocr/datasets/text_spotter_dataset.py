@@ -26,7 +26,7 @@ class TextSpotterDataset(IcdarDataset):
         gt_masks_ignore = []
         gt_masks_ann = []
         gt_texts = []
-        gt_ignore_texts = []
+        gt_texts_ignore = []
 
         for ann in ann_info:
             if ann.get('ignore', False):
@@ -41,12 +41,12 @@ class TextSpotterDataset(IcdarDataset):
                 gt_bboxes_ignore.append(bbox)
                 gt_masks_ignore.append(ann.get(
                     'segmentation', None))  # to float32 for latter processing
-                gt_ignore_texts.append('###')
+                gt_texts_ignore.append('###')
             else:
                 gt_bboxes.append(bbox)
                 gt_labels.append(self.cat2label[ann['category_id']])
                 gt_masks_ann.append(ann.get('segmentation', None))
-                gt_texts.append(ann.get('text_label'))
+                gt_texts.append(ann.get('text'))
         if gt_bboxes:
             gt_bboxes = np.array(gt_bboxes, dtype=np.float32)
             gt_labels = np.array(gt_labels, dtype=np.int64)
@@ -69,6 +69,6 @@ class TextSpotterDataset(IcdarDataset):
             masks=gt_masks_ann,
             seg_map=seg_map,
             gt_texts=gt_texts,
-            gt_ignore_texts=gt_ignore_texts)
+            gt_texts_ignore=gt_texts_ignore)
 
         return ann
