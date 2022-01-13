@@ -241,7 +241,7 @@ def get_contours_txt(gt_path):
         if tmp_line != '':
             contours, words = process_line(tmp_line, contours, words)
 
-        words = [word.replace('#', '###') for word in words]
+        words = ['###' if word == '#' else word for word in words]
 
     return contours, words
 
