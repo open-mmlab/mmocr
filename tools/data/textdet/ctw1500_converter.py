@@ -200,11 +200,7 @@ def parse_args():
 
     parser.add_argument(
         '--nproc', default=1, type=int, help='number of process')
-    args = parser.parse_args([
-        '/home/PJLAB/liukuikun/workspace/openmmlab/datasets/ctw1500', '-o',
-        '/home/PJLAB/liukuikun/workspace/openmmlab/datasets/ctw1500_coco',
-        '--split-list', 'test', 'training'
-    ])
+    args = parser.parse_args()
     return args
 
 
