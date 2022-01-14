@@ -87,7 +87,7 @@ def get_contours_mat(gt_path):
     contours = []
     words = []
     data = scio.loadmat(gt_path)
-    # 'gt' in latest version; 'polygt' in old version
+    # 'gt' for the latest version; 'polygt' for the legacy version
     data_polygt = data.get('polygt', data['gt'])
 
     for i, lines in enumerate(data_polygt):
