@@ -1,7 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.utils import Registry, build_from_cfg
 
-from .box_util import is_on_same_line, stitch_boxes_into_lines
+from .box_util import (boundary_to_bbox, is_on_same_line,
+                       stitch_boxes_into_lines)
 from .check_argument import (equal_len, is_2dlist, is_3dlist, is_none_or_type,
                              is_type_list, valid_boundary)
 from .collect_env import collect_env
@@ -19,5 +20,5 @@ __all__ = [
     'valid_boundary', 'lmdb_converter', 'drop_orientation',
     'convert_annotations', 'is_not_png', 'list_to_file', 'list_from_file',
     'is_on_same_line', 'stitch_boxes_into_lines', 'StringStrip',
-    'revert_sync_batchnorm'
+    'revert_sync_batchnorm', 'boundary_to_bbox'
 ]
