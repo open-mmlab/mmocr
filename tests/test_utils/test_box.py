@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from mmocr.utils import (bezier_to_polygon, is_on_same_line, sort_points,
+from mmocr.utils import (bezier_to_polygon, is_on_same_line,
                          stitch_boxes_into_lines)
 
 
@@ -108,21 +108,3 @@ def test_bezier_to_polygon():
     bezier_points = [0, 1]
     with pytest.raises(AssertionError):
         bezier_to_polygon(bezier_points)
-
-
-def test_sort_points():
-    points = np.array([[1, 1], [0, 0], [1, -1], [2, -2], [0, 2], [1, 1],
-                       [0, 1], [-1, 1], [-1, -1]])
-    target = np.array([[-1, -1], [0, 0], [-1, 1], [0, 1], [0, 2], [1, 1],
-                       [1, 1], [2, -2], [1, -1]])
-    assert np.allclose(target, sort_points(points))
-
-    points = np.array([[1, 1], [1, -1], [-1, 1], [-1, -1]])
-    target = np.array([[-1, -1], [-1, 1], [1, 1], [1, -1]])
-    assert np.allclose(target, sort_points(points))
-
-    points = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
-    assert np.allclose(target, sort_points(points))
-
-    with pytest.raises(AssertionError):
-        sort_points([1, 2])
