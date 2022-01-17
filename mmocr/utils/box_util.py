@@ -123,14 +123,14 @@ def stitch_boxes_into_lines(boxes, max_x_dist=10, min_y_overlap_ratio=0.8):
 
 
 def bezier_to_polygon(bezier_points, num_sample=20):
-    """Sample points from the boundary of a polygon enclosed by two Bezier
-    curves, which are controlled by ``bezier_points``.
+    """Convert bezier point to polygon.
 
     Args:
         bezier_points (ndarray): A :math:`(2, 4, 2)` array of 8 Bezeir points
             or its equalivance. The first 4 points control the curve at one
             side and the last four control the other side.
-        num_sample (int): The number of sample points at each Bezeir curve.
+        num_sample (int): The number of sample points at the a side of Bezeir
+            boundary.
 
     Returns:
         list[ndarray]: A list of 2*num_sample points representing the polygon
@@ -160,7 +160,7 @@ def bezier_to_polygon(bezier_points, num_sample=20):
 
 
 def sort_points(points):
-    """Sort arbitory points in clockwise order. Reference:
+    """Sort arbitory points in clockwise order. The idea is adapted from
     https://stackoverflow.com/a/6989383.
 
     Args:
