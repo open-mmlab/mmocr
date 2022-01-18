@@ -98,12 +98,14 @@ def load_txt_info(gt_file, img_info):
         # convert to COCO style XYWH format
         min_x, min_y, max_x, max_y = polygon.bounds
         bbox = [min_x, min_y, max_x - min_x, max_y - min_y]
+        text = strs[28][4:]
 
         anno = dict(
             iscrowd=iscrowd,
             category_id=category_id,
             bbox=bbox,
             area=area,
+            text=text,
             segmentation=[xy])
         anno_info.append(anno)
     img_info.update(anno_info=anno_info)
@@ -120,7 +122,7 @@ def load_xml_info(gt_file, img_info):
             w = box.attrib['width']
             x = box.attrib['left']
             y = box.attrib['top']
-            # label = box[0].text
+            text = box[0].text
             segs = box[1].text
             pts = segs.strip().split(',')
             pts = [int(x) for x in pts]
@@ -141,6 +143,7 @@ def load_xml_info(gt_file, img_info):
                 category_id=category_id,
                 bbox=bbox,
                 area=area,
+                text=text,
                 segmentation=[pts])
             anno_info.append(anno)
 

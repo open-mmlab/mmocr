@@ -87,7 +87,8 @@ def get_contours_mat(gt_path):
     contours = []
     words = []
     data = scio.loadmat(gt_path)
-    data_polygt = data['polygt']
+    # 'gt' for the latest version; 'polygt' for the legacy version
+    data_polygt = data.get('polygt', data['gt'])
 
     for i, lines in enumerate(data_polygt):
         X = np.array(lines[1])
@@ -129,9 +130,9 @@ def load_mat_info(img_info, gt_file):
     assert isinstance(img_info, dict)
     assert isinstance(gt_file, str)
 
-    contours, words = get_contours_mat(gt_file)
+    contours, texts = get_contours_mat(gt_file)
     anno_info = []
-    for contour in contours:
+    for contour, text in zip(contours, texts):
         if contour.shape[0] == 2:
             continue
         category_id = 1
@@ -149,6 +150,7 @@ def load_mat_info(img_info, gt_file):
             category_id=category_id,
             bbox=bbox,
             area=area,
+            text=text,
             segmentation=[contour])
         anno_info.append(anno)
 
@@ -239,11 +241,7 @@ def get_contours_txt(gt_path):
         if tmp_line != '':
             contours, words = process_line(tmp_line, contours, words)
 
-        for word in words:
-
-            if word == '#':
-                word = '###'
-                continue
+        words = ['###' if word == '#' else word for word in words]
 
     return contours, words
 
@@ -259,9 +257,9 @@ def load_txt_info(gt_file, img_info):
         img_info(dict): The dict of the img and annotation information
     """
 
-    contours, words = get_contours_txt(gt_file)
+    contours, texts = get_contours_txt(gt_file)
     anno_info = []
-    for contour in contours:
+    for contour, text in zip(contours, texts):
         if contour.shape[0] == 2:
             continue
         category_id = 1
@@ -279,6 +277,7 @@ def load_txt_info(gt_file, img_info):
             category_id=category_id,
             bbox=bbox,
             area=area,
+            text=text,
             segmentation=[contour])
         anno_info.append(anno)
 
