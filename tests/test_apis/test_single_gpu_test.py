@@ -13,6 +13,7 @@ from mmcv import Config
 from mmcv.parallel import MMDataParallel
 
 from mmocr.apis.test import single_gpu_test
+from mmocr.apis.utils import replace_image_to_tensor
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
 from mmocr.utils import check_argument, list_to_file, revert_sync_batchnorm
@@ -94,6 +95,7 @@ def test_single_gpu_test_det(cfg_file):
     curr_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     config_file = os.path.join(curr_dir, cfg_file)
     cfg = Config.fromfile(config_file)
+    cfg = replace_image_to_tensor(cfg)
 
     model = build_model(cfg)
     img_prefix = 'data/toy_dataset/imgs'
