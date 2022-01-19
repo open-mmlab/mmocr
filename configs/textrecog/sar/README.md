@@ -44,8 +44,8 @@ Recognizing irregular text in natural scene images is challenging due to the lar
 |                               Methods                               |  Backbone   |       Decoder        |        | Regular Text |       |       |       | Irregular Text |       |                                                                                              download                                                                                              |
 | :-----------------------------------------------------------------: | :---------: | :------------------: | :----: | :----------: | :---: | :---: | :---: | :------------: | :---: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 |                                                                     |             |                      | IIIT5K |     SVT      | IC13  |       | IC15  |      SVTP      | CT80  |
-| [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_academic.py)  | R31-1/8-1/4 |  ParallelSARDecoder  |  95.0  |     89.6     | 93.7  |       | 79.0  |      82.2      | 88.9  |  [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210327_154129.log.json)  |
-| [SAR](configs/textrecog/sar/sar_r31_sequential_decoder_academic.py) | R31-1/8-1/4 | SequentialSARDecoder |  95.2  |     88.7     | 92.4  |       | 78.2  |      81.9      | 89.6  | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_sequential_decoder_academic-d06c9a8e.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210330_105728.log.json) |
+| [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_academic.py)  | R31-1/8-1/4 |  ParallelSARDecoder  |  95.2(95.2)  |     89.5(89.5)     | 93.7(93.9)  |       | 79.2(76.8)  |      81.9(81.4)      | 89.6(89.2)  |  [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210327_154129.log.json)  |
+| [SAR](configs/textrecog/sar/sar_r31_sequential_decoder_academic.py) | R31-1/8-1/4 | SequentialSARDecoder |  95.2(95.3)  |     88.3(88.3)     | 92.6(92.9)  |       | 78.7(76.1)  |      81.9(81.2)      | 90.3(89.6)  | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_sequential_decoder_academic-d06c9a8e.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210330_105728.log.json) |
 
 ## Chinese Dataset
 
@@ -55,9 +55,12 @@ Recognizing irregular text in natural scene images is challenging due to the lar
 | :---------------------------------------------------------------: | :---------: | :----------------: | :---: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_chinese.py) | R31-1/8-1/4 | ParallelSARDecoder |       | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210506_225557.log.json) \| [dict](https://download.openmmlab.com/mmocr/textrecog/sar/dict_printed_chinese_english_digits.txt) |
 
+
 :::{note}
 
--   `R31-1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.
+- Accuracy in bracket (e.g. `(89.2)`) does not use `MultiRotateAugtest`, while `rotate_degrees=[0]`.
+- Accuracy outside (e.g. `89.6`) is under `MultiRotateAugtest`, while `rotate_degrees=[0, 90, 270]`.
+- `R31-1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.
 -   We did not use beam search during decoding.
 -   We implemented two kinds of decoder. Namely, `ParallelSARDecoder` and `SequentialSARDecoder`.
     -   `ParallelSARDecoder`: Parallel decoding during training with `LSTM` layer. It would be faster.

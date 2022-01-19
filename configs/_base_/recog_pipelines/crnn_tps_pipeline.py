@@ -1,4 +1,4 @@
-img_norm_cfg = dict(mean=[127], std=[127])
+img_norm_cfg = dict(mean=[127], std=[127], to_rgb=False)
 
 train_pipeline = [
     dict(type='LoadImageFromFile', color_type='grayscale'),

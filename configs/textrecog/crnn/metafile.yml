@@ -25,13 +25,13 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 80.5
+          word_acc: 80.7
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 81.5
+          word_acc: 81.1
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 86.5
+          word_acc: 87.0
     Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth

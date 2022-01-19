@@ -28,27 +28,27 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 94.7
+          word_acc: 94.8
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 87.3
+          word_acc: 88.7
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 94.3
+          word_acc: 94.1
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 73.5
+          word_acc: 72.5
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 78.9
+          word_acc: 77.7
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 85.1
+          word_acc: 87.5
     Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_r31_1by16_1by8_academic_20211124-f60cebf4.pth
 
   - Name: nrtr_r31_1by8_1by4_academic
@@ -62,25 +62,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 95.2
+          word_acc: 95.1
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 90.0
+          word_acc: 89.6
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 94.0
+          word_acc: 94.1
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 74.1
+          word_acc: 73.6
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 79.4
+          word_acc: 79.2
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 88.2
+          word_acc: 87.9
     Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_r31_1by8_1by4_academic_20211123-e1fdb322.pth

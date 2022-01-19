@@ -29,7 +29,7 @@ model = dict(
     label_convertor=label_convertor,
     max_seq_len=30)
 
-img_norm_cfg = dict(mean=[127, 127, 127], std=[127, 127, 127])
+img_norm_cfg = dict(mean=[127, 127, 127], std=[127, 127, 127], to_rgb=False)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(

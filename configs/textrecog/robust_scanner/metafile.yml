@@ -38,15 +38,15 @@ Models:
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 89.2
+          word_acc: 88.7
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 93.1
+          word_acc: 93.2
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 77.8
+          word_acc: 78.1
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
@@ -54,5 +54,5 @@ Models:
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 90.3
+          word_acc: 89.9
     Weights: https://download.openmmlab.com/mmocr/textrecog/robustscanner/robustscanner_r31_academic-5f05874f.pth
