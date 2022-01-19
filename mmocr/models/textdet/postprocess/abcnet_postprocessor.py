@@ -2,137 +2,59 @@
 import torch
 # from mmcv.runner import force_fp32
 from mmcv.ops import batched_nms
+from mmdet.core import build_bbox_coder, multi_apply
 from mmdet.core.anchor.point_generator import MlvlPointGenerator
 from mmdet.core.utils import filter_scores_and_topk, select_single_mlvl
 
+from mmocr.models.builder import POSTPROCESSOR
+from mmocr.utils.box_util import bezier_to_polygon
 from .base_postprocessor import BaseTextDetPostProcessor
 
 
+@POSTPROCESSOR.register_module()
 class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
 
-    def __init__(self, prior_generator, text_repr_type='poly'):
+    def __init__(self,
+                 num_classes=1,
+                 use_sigmoid_cls=True,
+                 strides=(4, 8, 16, 32, 64),
+                 bbox_coder=dict(type='DistancePointBBoxCoder'),
+                 text_repr_type='poly'):
         super().__init__(text_repr_type=text_repr_type)
-        self.prior_generator = MlvlPointGenerator()
+        self.prior_generator = MlvlPointGenerator(strides)
+        self.bbox_coder = build_bbox_coder(bbox_coder)
+        self.use_sigmoid_cls = use_sigmoid_cls
+        if self.use_sigmoid_cls:
+            self.cls_out_channels = num_classes
+        else:
+            self.cls_out_channels = num_classes + 1
 
     # @force_fp32(apply_to=('cls_scores', 'bbox_preds'))
+
     def filter_and_location(self,
-                            cls_scores,
-                            bbox_preds,
-                            score_factors=None,
-                            img_metas=None,
+                            det_results,
+                            img_meta=None,
                             cfg=None,
-                            rescale=False,
-                            with_nms=True,
                             **kwargs):
+        cls_scores = det_results.get('cls_scores')
+        bbox_preds = det_results.get('bbox_preds')
+        centerness_preds = det_results.get('centerness_preds')
+        bezier_preds = det_results.get('bezier_preds')
+        mlvl_priors = det_results.get('mlvl_priors')
 
-        assert len(cls_scores) == len(bbox_preds)
-        assert len(cls_scores) == len(score_factors)
-
-        num_levels = len(cls_scores)
-
-        featmap_sizes = [cls_scores[i].shape[-2:] for i in range(num_levels)]
-        mlvl_priors = self.prior_generator.grid_priors(
-            featmap_sizes,
-            dtype=cls_scores[0].dtype,
-            device=cls_scores[0].device)
-
-        result_list = []
-
-        for img_id in range(len(img_metas)):
-            img_meta = img_metas[img_id]
-            cls_score_list = select_single_mlvl(cls_scores, img_id)
-            bbox_pred_list = select_single_mlvl(bbox_preds, img_id)
-            score_factor_list = select_single_mlvl(score_factors, img_id)
-
-            results = self._get_bboxes_single(cls_score_list, bbox_pred_list,
-                                              score_factor_list, mlvl_priors,
-                                              img_meta, cfg, rescale, with_nms,
-                                              **kwargs)
-            result_list.append(results)
-        return result_list
-
-    def _get_bboxes_single(self,
-                           cls_score_list,
-                           bbox_pred_list,
-                           score_factor_list,
-                           mlvl_priors,
-                           img_meta,
-                           cfg,
-                           rescale=False,
-                           with_nms=True,
-                           **kwargs):
-
-        cfg = self.test_cfg if cfg is None else cfg
-        img_shape = img_meta['img_shape']
-        nms_pre = cfg.get('nms_pre', -1)
-
-        mlvl_bboxes = []
-        mlvl_scores = []
-        mlvl_labels = []
-        mlvl_score_factors = []
-
-        for level_idx, (cls_score, bbox_pred, score_factor, priors) in \
-                enumerate(zip(cls_score_list, bbox_pred_list,
-                              score_factor_list, mlvl_priors)):
-
-            assert cls_score.size()[-2:] == bbox_pred.size()[-2:]
-
-            bbox_pred = bbox_pred.permute(1, 2, 0).reshape(-1, 4)
-            score_factor = score_factor.permute(1, 2, 0).reshape(-1).sigmoid()
-            cls_score = cls_score.permute(1, 2,
-                                          0).reshape(-1, self.cls_out_channels)
-            if self.use_sigmoid_cls:
-                scores = cls_score.sigmoid()
-            else:
-                # remind that we set FG labels to [0, num_class-1]
-                # since mmdet v2.0
-                # BG cat_id: num_class
-                scores = cls_score.softmax(-1)[:, :-1]
-
-            # After https://github.com/open-mmlab/mmdetection/pull/6268/,
-            # this operation keeps fewer bboxes under the same `nms_pre`.
-            # There is no difference in performance for most models. If you
-            # find a slight drop in performance, you can set a larger
-            # `nms_pre` than before.
-            results = filter_scores_and_topk(
-                scores, cfg.score_thr, nms_pre,
-                dict(
-                    bbox_pred=bbox_pred,
-                    priors=priors,
-                    score_factor=score_factor,
-                ))
-            scores, labels, keep_idxs, filtered_results = results
-
-            bbox_pred = filtered_results['bbox_pred']
-            priors = filtered_results['priors']
-            score_factor = score_factor[keep_idxs]
-
-            bboxes = self.bbox_coder.decode(
-                priors, bbox_pred, max_shape=img_shape)
-
-            mlvl_bboxes.append(bboxes)
-            mlvl_scores.append(scores)
-            mlvl_labels.append(labels)
-            mlvl_score_factors.append(score_factor)
-
-        return self._bbox_post_process(mlvl_scores, mlvl_labels, mlvl_bboxes,
-                                       img_meta['scale_factor'], cfg, rescale,
-                                       with_nms, mlvl_score_factors, **kwargs)
-
-    def _bbox_post_process(self,
-                           mlvl_scores,
-                           mlvl_labels,
-                           mlvl_bboxes,
-                           scale_factor,
-                           cfg,
-                           mlvl_score_factors=None,
-                           **kwargs):
-
-        assert len(mlvl_scores) == len(mlvl_bboxes) == len(mlvl_labels)
+        parameters = dict(
+            img_shape=img_meta['img_shape'],
+            nms_pre=cfg.get('nms_pre', -1),
+            score_thr=cfg.get('score_thr'))
+        (mlvl_bboxes, mlvl_scores, mlvl_labels, mlvl_score_factors,
+         mlvl_beziers) = multi_apply(self._single_level, cls_scores,
+                                     bbox_preds, centerness_preds,
+                                     bezier_preds, mlvl_priors, parameters)
 
         mlvl_bboxes = torch.cat(mlvl_bboxes)
         mlvl_scores = torch.cat(mlvl_scores)
         mlvl_labels = torch.cat(mlvl_labels)
+        mlvl_beziers = torch.cat(mlvl_beziers)
 
         if mlvl_score_factors is not None:
             # TODO： Add sqrt operation in order to be consistent with
@@ -146,6 +68,75 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
 
         det_bboxes, keep_idxs = batched_nms(mlvl_bboxes, mlvl_scores,
                                             mlvl_labels, cfg.nms)
-        det_bboxes = det_bboxes[:cfg.max_per_img]
-        det_labels = mlvl_labels[keep_idxs][:cfg.max_per_img]
-        return det_bboxes, det_labels
+        results = dict(
+            bboxes=det_bboxes[:cfg.max_per_img],
+            labels=mlvl_labels[keep_idxs][:cfg.max_per_img],
+            bezier=mlvl_beziers[keep_idxs][:cfg.max_per_img])
+
+        return results
+
+    def split_results(self, pred_results, img_metas, **kwargs):
+
+        results = []
+        cls_scores = pred_results.get('cls_scores')
+        bbox_preds = pred_results.get('bbox_preds')
+        centerness_preds = pred_results.get('centerness_preds')
+        bezier_preds = pred_results.get('bezier_preds')
+        num_levels = len(cls_scores)
+        featmap_sizes = [cls_scores[i].shape[-2:] for i in range(num_levels)]
+        mlvl_priors = self.prior_generator.grid_priors(
+            featmap_sizes,
+            dtype=cls_scores[0].dtype,
+            device=cls_scores[0].device)
+        for img_id in range(len(img_metas)):
+            single_results = dict(
+                cls_scores=select_single_mlvl(cls_scores, img_id),
+                bbox_preds=select_single_mlvl(bbox_preds, img_id),
+                centerness_preds=select_single_mlvl(centerness_preds, img_id),
+                bezier_preds=select_single_mlvl(bezier_preds, img_id),
+                mlvl_priors=mlvl_priors)
+            results.append(single_results)
+        return results
+
+    def reconstruct_text_instance(self, results, **kwargs):
+        bezier_points = results['bezier'].reshape(-1, 2, 4, 2)
+        results['polygon'] = list(map(bezier_to_polygon, bezier_points))
+        return results
+
+    def _single_level(self, score_thr, nms_pre, img_shape, cls_score,
+                      bbox_pred, centerness_pred, bezier_pred, priors):
+        assert cls_score.size()[-2:] == bbox_pred.size()[-2:]
+        bbox_pred = bbox_pred.permute(1, 2, 0).reshape(-1, 4)
+        bezier_pred = bezier_pred.permute(1, 2, 0).reshape(-1, 2)
+        centerness_pred = centerness_pred.permute(1, 2,
+                                                  0).reshape(-1).sigmoid()
+        cls_score = cls_score.permute(1, 2, 0).reshape(-1,
+                                                       self.cls_out_channels)
+        if self.use_sigmoid_cls:
+            scores = cls_score.sigmoid()
+        else:
+            # remind that we set FG labels to [0, num_class-1]
+            # since mmdet v2.0
+            # BG cat_id: num_class
+            scores = cls_score.softmax(-1)[:, :-1]
+
+        # After https://github.com/open-mmlab/mmdetection/pull/6268/,
+        # this operation keeps fewer bboxes under the same `nms_pre`.
+        # There is no difference in performance for most models. If you
+        # find a slight drop in performance, you can set a larger
+        # `nms_pre` than before.
+        results = filter_scores_and_topk(
+            scores, score_thr, nms_pre,
+            dict(bbox_pred=bbox_pred, priors=priors))
+        scores, labels, keep_idxs, filtered_results = results
+
+        bbox_pred = filtered_results['bbox_pred']
+        priors = filtered_results['priors']
+        centerness_pred = centerness_pred[keep_idxs]
+        bezier_pred = bezier_pred[keep_idxs]
+
+        bboxes = self.bbox_coder.decode(priors, bbox_pred, max_shape=img_shape)
+        bezier_pred = priors + bezier_pred
+        bezier_pred[:0].clamp_(min=0, max=img_shape[1])
+        bezier_pred[:1].clamp_(min=0, max=img_shape[0])
+        return bboxes, scores, labels, centerness_pred, bezier_pred

@@ -25,37 +25,68 @@ class BaseTextDetPostProcessor(nn.Module):
     """the results must has the same format as.
 
     #polygon'size is batch_size * poly_num_per_img * point_num
-    dict(polygon=list[list[list[float]]],
-         polygon_score=list[list[float]])
+    [dict(
+         filename=filename,
+         polygon=list[list[list[float]]],
+         polygon_score=list[list[float]])]
     """
 
     def __init__(self, text_repr_type='poly'):
         assert text_repr_type in ['poly', 'quad']
 
-    def __call__(self,
-                 pred,
-                 property=['polygon'],
-                 scale_factor=None,
-                 rescale=False,
-                 filter_and_location=True,
-                 reconstruct=True,
-                 extra_property=None,
-                 rescale_extra_property=False):
-        if type(pred) is not dict:
-            results = dict(detect_output=pred)
+    def forward(self,
+                pred_results,
+                property=['polygon'],
+                img_metas=None,
+                rescale=False,
+                filter_and_location=True,
+                reconstruct=True,
+                extra_property=None,
+                rescale_extra_property=False,
+                **kwargs):
+        if len(img_metas) == 1:
+            img_metas = [img_metas]
+        pred_results = self.split_results(pred_results, img_metas)
+        forward_single = partial(
+            self._forward_single,
+            property=property,
+            rescale=rescale,
+            filter_and_location=filter_and_location,
+            reconstruct=reconstruct,
+            extra_property=extra_property,
+            rescale_extra_property=rescale_extra_property,
+            kwargs=kwargs)
+        results = list(map(forward_single, pred_results, img_metas))
+
+        return results
+
+    def _forward_single(self,
+                        pred_result,
+                        img_meta=None,
+                        rescale=False,
+                        property=None,
+                        filter_and_location=True,
+                        reconstruct=True,
+                        extra_property=None,
+                        rescale_extra_property=False,
+                        **kwargs):
+
         if filter_and_location:
-            results = self.filter_and_location(pred)
+            results = self.filter_and_location(pred_result, img_meta, **kwargs)
 
         if reconstruct:
-            results = self.reconstruct_text_instance(results)
+            results = self.reconstruct_text_instance(results, **kwargs)
 
         if rescale:
-            results = self.rescale_results(results, scale_factor, property)
+            results = self.rescale_results(results,
+                                           img_meta[0]['scale_factor'],
+                                           property)
 
         if rescale_extra_property and extra_property is not None:
             for key in extra_property:
                 assert key in results
-            results = self.rescale_results(results, scale_factor,
+            results = self.rescale_results(results,
+                                           img_meta[0]['scale_factor'],
                                            extra_property)
         return results
 
@@ -77,8 +108,16 @@ class BaseTextDetPostProcessor(nn.Module):
                        1, -1))).flatten().tolist()
         return polygon
 
-    def filter_and_location(self, results):
+    def filter_and_location(self, results, img_meta, **kwargs):
         return results
 
-    def reconstruct_text_instance(self, results):
+    def reconstruct_text_instance(self, results, **kwargs):
         return results
+
+    def split_results(self, pred_results, img_metas, **kwargs):
+        """convert pred_results to the follow format:
+
+        list(dict()) the list' size is batch size dict contain single image
+        pred result
+        """
+        return pred_results
