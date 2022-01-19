@@ -1,22 +1,10 @@
-# SegOCR Simple Baseline.
-
-## Abstract
-
-<!-- [ABSTRACT] -->
-Just a simple Seg-based baseline for text recognition tasks.
-
-## Citation
+# SegOCR
 
 <!-- [ALGORITHM] -->
+## Abstract
 
-```bibtex
-@unpublished{key,
-  title={SegOCR Simple Baseline.},
-  author={},
-  note={Unpublished Manuscript},
-  year={2021}
-}
-```
+Just a simple Seg-based baseline for text recognition tasks.
+
 
 ## Dataset
 
@@ -46,3 +34,14 @@ Just a simple Seg-based baseline for text recognition tasks.
 
 -   `R31-1/16` means the size (both height and width ) of feature from backbone is 1/16 of input image.
 -   `1x` means the size (both height and width) of feature from head is the same with input image.
+
+## Citation
+
+```bibtex
+@unpublished{key,
+  title={SegOCR Simple Baseline.},
+  author={},
+  note={Unpublished Manuscript},
+  year={2021}
+}
+```
