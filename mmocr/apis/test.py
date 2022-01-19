@@ -28,6 +28,10 @@ def retrieve_img_tensor_and_meta(data):
     img_tensor = data['img'][0].data[0]
     img_metas = data['img_metas'][0].data[0]
 
+    # For textdet pipeline using "ImageToTensor" but not "DefaultFormatBundle"
+    if img_tensor.ndim == 3:
+        img_tensor = img_tensor.unsqueeze(0)
+
     must_keys = ['img_norm_cfg', 'ori_filename', 'img_shape', 'ori_shape']
     for key in must_keys:
         if key not in img_metas[0]:
