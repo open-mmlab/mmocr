@@ -61,12 +61,16 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
             img_metas (list[dict] | list[list[dict]]):
                 The outer list indicates images in a batch.
         """
-        if isinstance(imgs, list):
-            assert len(imgs) > 0
+        num_augs = len(imgs)
+        if num_augs != len(img_metas):
+            raise ValueError(f'num of augmentations ({len(imgs)}) '
+                             f'!= num of image meta ({len(img_metas)})')
+        if num_augs == 1:
+            return self.simple_test(imgs[0], img_metas[0], **kwargs)
+        else:
             assert imgs[0].size(0) == 1, ('aug test does not support '
                                           f'inference with batch size '
                                           f'{imgs[0].size(0)}')
-            assert len(imgs) == len(img_metas)
             return self.aug_test(imgs, img_metas, **kwargs)
 
         return self.simple_test(imgs, img_metas, **kwargs)

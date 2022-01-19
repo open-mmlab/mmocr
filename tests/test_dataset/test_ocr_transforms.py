@@ -97,14 +97,14 @@ def test_online_crop(mock_random):
 
 
 def test_fancy_pca():
-    input_tensor = torch.rand(3, 32, 100)
+    input_arr = np.ones((32, 100, 3))
 
     rci = transforms.FancyPCA()
 
-    results = {'img': input_tensor}
+    results = {'img': input_arr}
     results = rci(results)
 
-    assert results['img'].shape == torch.Size([3, 32, 100])
+    assert results['img'].shape == (32, 100, 3)
 
 
 @mock.patch('%s.transforms.np.random.uniform' % __name__)

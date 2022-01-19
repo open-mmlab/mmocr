@@ -25,7 +25,7 @@ def test_disable_text_recog_aug_test(cfg_file):
     test1.pipeline = cfg1.data.test.pipeline
     cfg1.data.test = test1
     cfg1 = disable_text_recog_aug_test(cfg1, set_types=['test'])
-    assert cfg1.data.test.pipeline[1].type != 'MultiRotateAugOCR'
+    assert cfg1.data.test.pipeline[1].rotate_degrees == [0]
 
     # cfg.data.test.type is 'UniformConcatDataset'
     # and cfg.data.test.pipeline is list[dict]
@@ -34,8 +34,8 @@ def test_disable_text_recog_aug_test(cfg_file):
     test2.pipeline = cfg2.data.test.pipeline
     cfg2.data.test.datasets = [test2]
     cfg2 = disable_text_recog_aug_test(cfg2, set_types=['test'])
-    assert cfg2.data.test.pipeline[1].type != 'MultiRotateAugOCR'
-    assert cfg2.data.test.datasets[0].pipeline[1].type != 'MultiRotateAugOCR'
+    assert cfg2.data.test.pipeline[1].rotate_degrees == [0]
+    assert cfg2.data.test.datasets[0].pipeline[1].rotate_degrees == [0]
 
     # cfg.data.test.type is 'ConcatDataset'
     cfg3 = copy.deepcopy(cfg)
@@ -43,7 +43,7 @@ def test_disable_text_recog_aug_test(cfg_file):
     test3.pipeline = cfg3.data.test.pipeline
     cfg3.data.test = Config(dict(type='ConcatDataset', datasets=[test3]))
     cfg3 = disable_text_recog_aug_test(cfg3, set_types=['test'])
-    assert cfg3.data.test.datasets[0].pipeline[1].type != 'MultiRotateAugOCR'
+    assert cfg3.data.test.datasets[0].pipeline[1].rotate_degrees == [0]
 
     # cfg.data.test.type is 'UniformConcatDataset'
     # and cfg.data.test.pipeline is list[list[dict]]
@@ -55,8 +55,8 @@ def test_disable_text_recog_aug_test(cfg_file):
         cfg4.data.test.pipeline, cfg4.data.test.pipeline
     ]
     cfg4 = disable_text_recog_aug_test(cfg4, set_types=['test'])
-    assert cfg4.data.test.datasets[0][0].pipeline[1].type != \
-        'MultiRotateAugOCR'
+    assert cfg4.data.test.datasets[0][0].pipeline[1].rotate_degrees == \
+        [0]
 
     # cfg.data.test.type is 'UniformConcatDataset'
     # and cfg.data.test.pipeline is None
@@ -66,7 +66,7 @@ def test_disable_text_recog_aug_test(cfg_file):
     cfg5.data.test.datasets = [test5]
     cfg5.data.test.pipeline = None
     cfg5 = disable_text_recog_aug_test(cfg5, set_types=['test'])
-    assert cfg5.data.test.datasets[0].pipeline[1].type != 'MultiRotateAugOCR'
+    assert cfg5.data.test.datasets[0].pipeline[1].rotate_degrees == [0]
 
 
 @pytest.mark.parametrize('cfg_file', [

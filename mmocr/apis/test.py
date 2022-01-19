@@ -5,7 +5,6 @@ import mmcv
 import numpy as np
 import torch
 from mmcv.image import tensor2imgs
-from mmcv.parallel import DataContainer
 from mmdet.core import encode_mask_results
 
 from .utils import tensor2grayimgs
@@ -26,24 +25,8 @@ def retrieve_img_tensor_and_meta(data):
             - | img_norm_cfg (dict): Config for image normalization.
     """
 
-    if isinstance(data['img'], torch.Tensor):
-        # for textrecog with batch_size > 1
-        # and not use 'DefaultFormatBundle' in pipeline
-        img_tensor = data['img']
-        img_metas = data['img_metas'].data[0]
-    elif isinstance(data['img'], list):
-        if isinstance(data['img'][0], torch.Tensor):
-            # for textrecog with aug_test and batch_size = 1
-            img_tensor = data['img'][0]
-        elif isinstance(data['img'][0], DataContainer):
-            # for textdet with 'MultiScaleFlipAug'
-            # and 'DefaultFormatBundle' in pipeline
-            img_tensor = data['img'][0].data[0]
-        img_metas = data['img_metas'][0].data[0]
-    elif isinstance(data['img'], DataContainer):
-        # for textrecog with 'DefaultFormatBundle' in pipeline
-        img_tensor = data['img'].data[0]
-        img_metas = data['img_metas'].data[0]
+    img_tensor = data['img'][0].data[0]
+    img_metas = data['img_metas'][0].data[0]
 
     must_keys = ['img_norm_cfg', 'ori_filename', 'img_shape', 'ori_shape']
     for key in must_keys:
@@ -52,9 +35,6 @@ def retrieve_img_tensor_and_meta(data):
                 f'Please add {key} to the "meta_keys" in the pipeline')
 
     img_norm_cfg = img_metas[0]['img_norm_cfg']
-    if max(img_norm_cfg['mean']) <= 1:
-        img_norm_cfg['mean'] = [255 * x for x in img_norm_cfg['mean']]
-        img_norm_cfg['std'] = [255 * x for x in img_norm_cfg['std']]
 
     return img_tensor, img_metas, img_norm_cfg
 

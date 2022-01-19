@@ -22,8 +22,8 @@ class MultiRotateAugOCR:
                 min_width=32,
                 max_width=160,
                 keep_aspect_ratio=True),
-            dict(type='ToTensorOCR'),
-            dict(type='NormalizeOCR', **img_norm_cfg),
+            dict(type='Normalize', **img_norm_cfg),
+            dict(type='DefaultFormatBundle'),
             dict(
                 type='Collect',
                 keys=['img'],
@@ -45,25 +45,23 @@ class MultiRotateAugOCR:
 
     Args:
         transforms (list[dict]): Transformation applied for each augmentation.
-        rotate_degrees (list[int] | None): Degrees of anti-clockwise rotation.
+        rotate_degrees (list[int]): Degrees of anti-clockwise rotation. Each
+            should be an integral multiple of 90 degree while :math:`0` means
+            no rotation. Default to [0].
         force_rotate (bool): If True, rotate image by 'rotate_degrees'
-            while ignore image aspect ratio.
+            while ignore image aspect ratio, else, for image whose
+            width > height, no rotation will be used.
     """
 
-    def __init__(self, transforms, rotate_degrees=None, force_rotate=False):
+    def __init__(self, transforms, rotate_degrees=[0], force_rotate=False):
         self.transforms = Compose(transforms)
         self.force_rotate = force_rotate
-        if rotate_degrees is not None:
-            self.rotate_degrees = rotate_degrees if isinstance(
-                rotate_degrees, list) else [rotate_degrees]
-            assert mmcv.is_list_of(self.rotate_degrees, int)
-            for degree in self.rotate_degrees:
-                assert 0 <= degree < 360
-                assert degree % 90 == 0
-            if 0 not in self.rotate_degrees:
-                self.rotate_degrees.append(0)
-        else:
-            self.rotate_degrees = [0]
+        self.rotate_degrees = rotate_degrees if isinstance(
+            rotate_degrees, list) else [rotate_degrees]
+        assert mmcv.is_list_of(self.rotate_degrees, int)
+        for degree in self.rotate_degrees:
+            assert 0 <= degree < 360
+            assert degree % 90 == 0
 
     def __call__(self, results):
         """Call function to apply test time augment transformation to results.
@@ -84,14 +82,18 @@ class MultiRotateAugOCR:
         aug_data = []
         for degree in set(rotate_degrees):
             _results = results.copy()
+            img = _results['img']
             if degree == 0:
                 pass
             elif degree == 90:
-                _results['img'] = np.rot90(_results['img'], 1)
+                img = np.rot90(img, 1)
             elif degree == 180:
-                _results['img'] = np.rot90(_results['img'], 2)
+                img = np.rot90(img, 2)
             elif degree == 270:
-                _results['img'] = np.rot90(_results['img'], 3)
+                img = np.rot90(img, 3)
+            _results['img'] = img
+            _results['img_shape'] = img.shape
+            _results['ori_shape'] = img.shape
             data = self.transforms(_results)
             aug_data.append(data)
         # list of dict to dict of list

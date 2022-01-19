@@ -18,18 +18,20 @@ train_pipeline = [
 test_pipeline = [
     dict(type='LoadImageFromFile', color_type='grayscale'),
     dict(
-        type='ResizeOCR',
-        height=32,
-        min_width=32,
-        max_width=None,
-        keep_aspect_ratio=True),
-    dict(type='Normalize', **img_norm_cfg),
-    dict(type='DefaultFormatBundle'),
-    dict(
-        type='Collect',
-        keys=['img'],
-        meta_keys=[
-            'filename', 'resize_shape', 'valid_ratio', 'img_norm_cfg',
-            'ori_filename', 'img_shape', 'ori_shape'
-        ]),
+        type='MultiRotateAugOCR',
+        rotate_degrees=[0],
+        transforms=[
+            dict(
+                type='ResizeOCR',
+                height=32,
+                min_width=32,
+                max_width=None,
+                keep_aspect_ratio=True),
+            dict(type='Normalize', **img_norm_cfg),
+            dict(type='DefaultFormatBundle'),
+            dict(
+                type='Collect',
+                keys=['img'],
+                meta_keys=['filename', 'resize_shape', 'valid_ratio']),
+        ])
 ]

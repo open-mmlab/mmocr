@@ -2,6 +2,7 @@
 import os
 import platform
 
+import numpy as np
 import pytest
 from mmcv.image import imread
 
@@ -76,16 +77,14 @@ def test_model_batch_inference_raises_exception_error_aug_test_recog(cfg_file):
     config_file = os.path.join(tmp_dir, cfg_file)
     model = build_model(config_file)
 
-    with pytest.raises(
-            Exception,
-            match='aug test does not support inference with batch size'):
-        sample_img_path = os.path.join(tmp_dir, '../demo/demo_text_det.jpg')
-        model_inference(model, [sample_img_path, sample_img_path])
+    sample_img_path = os.path.join(tmp_dir, '../demo/demo_text_recog.jpg')
+    model_inference(model, [sample_img_path, sample_img_path])
 
     with pytest.raises(
             Exception,
             match='aug test does not support inference with batch size'):
         img = imread(sample_img_path)
+        img = np.rot90(img, 1)
         model_inference(model, [img, img])
 
 

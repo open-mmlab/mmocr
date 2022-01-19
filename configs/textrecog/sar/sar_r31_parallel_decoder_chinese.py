@@ -29,7 +29,7 @@ model = dict(
     label_convertor=label_convertor,
     max_seq_len=30)
 
-img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+img_norm_cfg = dict(mean=[127, 127, 127], std=[127, 127, 127])
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
@@ -39,8 +39,8 @@ train_pipeline = [
         max_width=256,
         keep_aspect_ratio=True,
         width_downsample_ratio=0.25),
-    dict(type='ToTensorOCR'),
-    dict(type='NormalizeOCR', **img_norm_cfg),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='DefaultFormatBundle'),
     dict(
         type='Collect',
         keys=['img'],
@@ -52,7 +52,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiRotateAugOCR',
-        rotate_degrees=[0, 90, 270],
+        rotate_degrees=[0],
         transforms=[
             dict(
                 type='ResizeOCR',
@@ -61,8 +61,8 @@ test_pipeline = [
                 max_width=256,
                 keep_aspect_ratio=True,
                 width_downsample_ratio=0.25),
-            dict(type='ToTensorOCR'),
-            dict(type='NormalizeOCR', **img_norm_cfg),
+            dict(type='Normalize', **img_norm_cfg),
+            dict(type='DefaultFormatBundle'),
             dict(
                 type='Collect',
                 keys=['img'],

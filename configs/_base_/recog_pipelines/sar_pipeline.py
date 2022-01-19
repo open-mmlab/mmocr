@@ -1,4 +1,5 @@
-img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+img_norm_cfg = dict(mean=[127, 127, 127], std=[127, 127, 127])
+
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
@@ -8,8 +9,8 @@ train_pipeline = [
         max_width=160,
         keep_aspect_ratio=True,
         width_downsample_ratio=0.25),
-    dict(type='ToTensorOCR'),
-    dict(type='NormalizeOCR', **img_norm_cfg),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='DefaultFormatBundle'),
     dict(
         type='Collect',
         keys=['img'],
@@ -30,8 +31,8 @@ test_pipeline = [
                 max_width=160,
                 keep_aspect_ratio=True,
                 width_downsample_ratio=0.25),
-            dict(type='ToTensorOCR'),
-            dict(type='NormalizeOCR', **img_norm_cfg),
+            dict(type='Normalize', **img_norm_cfg),
+            dict(type='DefaultFormatBundle'),
             dict(
                 type='Collect',
                 keys=['img'],

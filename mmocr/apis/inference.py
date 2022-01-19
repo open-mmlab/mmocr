@@ -141,11 +141,6 @@ def model_inference(model,
                     data[key] = value[0]
         datas.append(data)
 
-    if isinstance(datas[0]['img'], list) and len(datas) > 1:
-        raise Exception('aug test does not support '
-                        f'inference with batch size '
-                        f'{len(datas)}')
-
     data = collate(datas, samples_per_gpu=len(imgs))
 
     # process img_metas

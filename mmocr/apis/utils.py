@@ -45,17 +45,19 @@ def replace_image_to_tensor(cfg, set_types=None):
 
 
 def update_pipeline_recog(cfg, idx=None):
-    warning_msg = 'Remove "MultiRotateAugOCR" to support batch ' + \
+    warning_msg = 'Set "rotate_degrees=[0]" to support batch ' + \
         'inference since samples_per_gpu > 1.'
     if idx is None:
         if cfg.get('pipeline',
                    None) and cfg.pipeline[1].type == 'MultiRotateAugOCR':
-            warnings.warn(warning_msg)
-            cfg.pipeline = [cfg.pipeline[0], *cfg.pipeline[1].transforms]
+            if cfg.pipeline[1].get('rotate_degrees', [0]) != [0]:
+                warnings.warn(warning_msg)
+                cfg.pipeline[1]['rotate_degrees'] = [0]
     else:
         if cfg[idx][1].type == 'MultiRotateAugOCR':
-            warnings.warn(warning_msg)
-            cfg[idx] = [cfg[idx][0], *cfg[idx][1].transforms]
+            if cfg[idx][1].get('rotate_degrees', [0]) != [0]:
+                warnings.warn(warning_msg)
+                cfg[idx][1]['rotate_degrees'] = [0]
 
 
 def disable_text_recog_aug_test(cfg, set_types=None):
