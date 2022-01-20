@@ -40,7 +40,7 @@ Scene text recognition has attracted a great many researches due to its importan
 | [NRTR](/configs/textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py) | R31-1/16-1/8 |  94.7  |     87.3     | 94.3  |       | 73.5  |      78.9      | 85.1  | [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_r31_1by16_1by8_academic_20211124-f60cebf4.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/nrtr/20211124_002420.log.json) |
 | [NRTR](/configs/textrecog/nrtr/nrtr_r31_1by8_1by4_academic.py)  | R31-1/8-1/4  |  95.2  |     90.0     | 94.0  |       | 74.1  |      79.4      | 88.2  | [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_r31_1by8_1by4_academic_20211123-e1fdb322.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/nrtr/20211123_232151.log.json)  |
 
-**Notes:**
+:::{note}
 
 - For backbone `R31-1/16-1/8`:
   - The output consists of 92 classes, including 26 lowercase letters, 26 uppercase letters, 28 symbols, 10 digital numbers, 1 unknown token and 1 end-of-sequence token.
