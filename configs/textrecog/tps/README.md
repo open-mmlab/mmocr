@@ -10,6 +10,10 @@ Image-based sequence recognition has been a long-standing research topic in comp
 <img src="https://user-images.githubusercontent.com/22607038/142797788-6b1cd78d-1dd6-4e02-be32-3dbd257c4992.png"/>
 </div>
 
+:::{note}
+We use STN from this paper as the preprocessor and CRNN as the recognition network.
+:::
+
 ## Dataset
 
 ### Train Dataset
@@ -37,19 +41,6 @@ Image-based sequence recognition has been a long-standing research topic in comp
 | [CRNN-STN](/configs/textrecog/tps/crnn_tps_academic_dataset.py) |  80.8  |     81.3     | 85.0  |       | 59.6  |      68.1      | 53.8  | [model](https://download.openmmlab.com/mmocr/textrecog/tps/crnn_tps_academic_dataset_20210510-d221a905.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/tps/20210510_204353.log.json) |
 
 ## Citation
-
-Main paper
-
-```bibtex
-@article{shi2016end,
-  title={An end-to-end trainable neural network for image-based sequence recognition and its application to scene text recognition},
-  author={Shi, Baoguang and Bai, Xiang and Yao, Cong},
-  journal={IEEE transactions on pattern analysis and machine intelligence},
-  year={2016}
-}
-```
-
-Preprocessor
 
 ```bibtex
 @article{shi2016robust,

@@ -1,6 +1,6 @@
 # NRTR
 
->[Show, attend and read: A simple and strong baseline for irregular text recognition](https://arxiv.org/abs/1811.00751)
+>[NRTR: A No-Recurrence Sequence-to-Sequence Model For Scene Text Recognition](https://arxiv.org/abs/1806.00926)
 
 <!-- [ALGORITHM] -->
 
@@ -61,19 +61,5 @@ Scene text recognition has attracted a great many researches due to its importan
   pages={781--786},
   year={2019},
   organization={IEEE}
-}
-```
-
-Backbone
-
-```bibtex
-@inproceedings{li2019show,
-  title={Show, attend and read: A simple and strong baseline for irregular text recognition},
-  author={Li, Hui and Wang, Peng and Shen, Chunhua and Zhang, Guyu},
-  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
-  volume={33},
-  number={01},
-  pages={8610--8617},
-  year={2019}
 }
 ```

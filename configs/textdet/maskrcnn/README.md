@@ -10,9 +10,6 @@ We present a conceptually simple, flexible, and general framework for object ins
 <img src="https://user-images.githubusercontent.com/22607038/142795605-dfdd5f69-e9cd-4b69-9c6b-6d8bded18e89.png"/>
 </div>
 
-## Introduction
-In tuning parameters, we refer to the paper of [Pyramid Mask Text Detector](https://arxiv.org/abs/1903.11800)
-
 ## Results and models
 
 ### CTW1500
@@ -32,6 +29,10 @@ In tuning parameters, we refer to the paper of [Pyramid Mask Text Detector](http
 |                                  Method                                   | Pretrained Model |  Training set   |   Test set    | #epochs | Test size | Recall | Precision | Hmean |                                                                                                                     Download                                                                                                                      |
 | :-----------------------------------------------------------------------: | :--------------: | :-------------: | :-----------: | :-----: | :-------: | :----: | :-------: | :---: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | [MaskRCNN](/configs/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017.py) |     ImageNet     | ICDAR2017 Train | ICDAR2017 Val |   160   |   1600    | 0.754  |   0.827   | 0.789 | [model](https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017_20210218-c6ec3ebb.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017_20210218-c6ec3ebb.log.json) |
+
+:::{note}
+We tuned parameters with the techniques in [Pyramid Mask Text Detector](https://arxiv.org/abs/1903.11800)
+:::
 
 ## Citation
 
