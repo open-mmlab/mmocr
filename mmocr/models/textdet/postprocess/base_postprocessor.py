@@ -101,11 +101,12 @@ class BaseTextDetPostProcessor(nn.Module):
         return results
 
     def _rescale_single_result(self, polygon, scale_factor):
-        point_num = len(polygon)
-        assert point_num % 2 == 0
-        polygon = (np.array(polygon) *
-                   (np.tile(scale_factor[:2], int(point_num / 2)).reshape(
-                       1, -1))).flatten().tolist()
+        polygon = np.array(polygon)
+        poly_shape = polygon.shape
+        reshape_polygon = polygon.reshape(1, -1)
+        single_instance_point_num = reshape_polygon.shape[-1] / 2
+        scale_factor = np.repeat(scale_factor[:2], single_instance_point_num)
+        polygon = (reshape_polygon * scale_factor).reshape(poly_shape).tolist()
         return polygon
 
     def filter_and_location(self, results, img_meta, **kwargs):

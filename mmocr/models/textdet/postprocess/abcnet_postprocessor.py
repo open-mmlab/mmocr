@@ -107,7 +107,7 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
                       bbox_pred, centerness_pred, bezier_pred, priors):
         assert cls_score.size()[-2:] == bbox_pred.size()[-2:]
         bbox_pred = bbox_pred.permute(1, 2, 0).reshape(-1, 4)
-        bezier_pred = bezier_pred.permute(1, 2, 0).reshape(-1, 2)
+        bezier_pred = bezier_pred.permute(1, 2, 0).reshape(-1, 8, 2)
         centerness_pred = centerness_pred.permute(1, 2,
                                                   0).reshape(-1).sigmoid()
         cls_score = cls_score.permute(1, 2, 0).reshape(-1,
