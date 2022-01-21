@@ -31,31 +31,23 @@ class BaseTextDetPostProcessor(nn.Module):
          polygon_score=list[list[float]])]
     """
 
-    def __init__(self, text_repr_type='poly'):
+    def __init__(self,
+                 text_repr_type='poly',
+                 train_cfg=None,
+                 test_cfg=None,
+                 **kwargs):
         assert text_repr_type in ['poly', 'quad']
+        self.train_cfg = train_cfg
+        self.test_cfg = test_cfg
 
-    def forward(self,
-                pred_results,
-                property=['polygon'],
-                img_metas=None,
-                rescale=False,
-                filter_and_location=True,
-                reconstruct=True,
-                extra_property=None,
-                rescale_extra_property=False,
-                **kwargs):
+    def forward(self, pred_results, img_metas=None, **kwargs):
+
+        cfg = self.train_cfg if self.training else self.test_cfg
+        cfg.update(kwargs)
         if len(img_metas) == 1:
             img_metas = [img_metas]
         pred_results = self.split_results(pred_results, img_metas)
-        forward_single = partial(
-            self._forward_single,
-            property=property,
-            rescale=rescale,
-            filter_and_location=filter_and_location,
-            reconstruct=reconstruct,
-            extra_property=extra_property,
-            rescale_extra_property=rescale_extra_property,
-            kwargs=kwargs)
+        forward_single = partial(self._forward_single, **cfg)
         results = list(map(forward_single, pred_results, img_metas))
 
         return results
@@ -77,7 +69,9 @@ class BaseTextDetPostProcessor(nn.Module):
         if reconstruct:
             results = self.reconstruct_text_instance(results, **kwargs)
 
-        if rescale:
+        if rescale and property is not None:
+            for key in property:
+                assert key in results
             results = self.rescale_results(results,
                                            img_meta[0]['scale_factor'],
                                            property)

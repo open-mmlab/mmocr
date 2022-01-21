@@ -1,19 +1,27 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from functools import partial
 
 import numpy as np
+import torch.nn as nn
 
 from mmocr.models.builder import build_postprocessor
 
 
-class BaseTwoStageTextSpotterPostProcessor(object):
+class BaseTwoStageTextSpotterPostProcessor(nn.Module):
 
     def __init__(self,
-                 task_type,
                  det_postprocessor=None,
                  recog_postprocessor=None,
-                 rescale=True):
-        assert task_type in ['textdet', 'textrecog', 'textspotter']
+                 train_cfg=None,
+                 test_cfg=None):
+        self.train_cfg = train_cfg
+        self.test_cfg = test_cfg
         if det_postprocessor:
+            det_train_cfg = train_cfg.pop('det_postprocessor', None)
+            det_test_cfg = test_cfg.pop('det_postprocessor', None)
+
+            det_postprocessor.update(
+                dict(train_cfg=det_train_cfg, test_cfg=det_test_cfg))
             self.det_postprocessor = build_postprocessor(det_postprocessor)
         else:
             self.det_postprocessor = None
@@ -27,12 +35,14 @@ class BaseTwoStageTextSpotterPostProcessor(object):
                 det_pred_results,
                 recog_pred_results,
                 img_metas=None,
-                rescale=True,
-                property=None,
-                rescale_extra_property=False,
-                extra_property=None):
+                **kwargs):
+        cfg = self.train_cfg if self.training else self.test_cfg
+        cfg.update(kwargs)
         if self.det_postprocessor is not None:
-            det_results = self.det_postprocessor(det_pred_results)
+            det_results = self.det_postprocessor(
+                det_pred_results=det_pred_results,
+                img_metas=img_metas,
+                **kwargs)
         else:
             assert type(det_pred_results) is list
             det_results = det_pred_results
@@ -46,12 +56,7 @@ class BaseTwoStageTextSpotterPostProcessor(object):
             scale_factors = [meta[0]['scale_factor'] for meta in img_metas]
         else:
             scale_factors = [img_metas[0]['scale_factor']]
-        forward_single = partial(
-            self._forward_single,
-            property=property,
-            rescale=rescale,
-            extra_property=extra_property,
-            rescale_extra_property=rescale_extra_property)
+        forward_single = partial(self._forward_single, **cfg)
         results = list(
             map(forward_single, det_results, recog_results, scale_factors))
 
@@ -88,7 +93,8 @@ class BaseTwoStageTextSpotterPostProcessor(object):
                         rescale=True,
                         property=None,
                         rescale_extra_property=False,
-                        extra_property=None):
+                        extra_property=None,
+                        **kwargs):
 
         if rescale:
             det_pred_result = self.rescale_results(det_pred_result,

@@ -19,8 +19,15 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
                  use_sigmoid_cls=True,
                  strides=(4, 8, 16, 32, 64),
                  bbox_coder=dict(type='DistancePointBBoxCoder'),
-                 text_repr_type='poly'):
-        super().__init__(text_repr_type=text_repr_type)
+                 text_repr_type='poly',
+                 train_cfg=None,
+                 test_cfg=None,
+                 **kwargs):
+        super().__init__(
+            text_repr_type=text_repr_type,
+            train_cfg=train_cfg,
+            test_cfg=test_cfg,
+            **kwargs)
         self.prior_generator = MlvlPointGenerator(strides)
         self.bbox_coder = build_bbox_coder(bbox_coder)
         self.use_sigmoid_cls = use_sigmoid_cls
@@ -34,7 +41,10 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
     def filter_and_location(self,
                             det_results,
                             img_meta=None,
-                            cfg=None,
+                            nms_pre=-1,
+                            score_thr=0,
+                            max_per_img=100,
+                            nms=dict(type='IoULoss', loss_weight=1.0),
                             **kwargs):
         cls_scores = det_results.get('cls_scores')
         bbox_preds = det_results.get('bbox_preds')
@@ -44,8 +54,8 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
 
         parameters = dict(
             img_shape=img_meta['img_shape'],
-            nms_pre=cfg.get('nms_pre', -1),
-            score_thr=cfg.get('score_thr'))
+            nms_pre=nms_pre,
+            score_thr=score_thr)
         (mlvl_bboxes, mlvl_scores, mlvl_labels, mlvl_score_factors,
          mlvl_beziers) = multi_apply(self._single_level, cls_scores,
                                      bbox_preds, centerness_preds,
@@ -67,11 +77,11 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
             return det_bboxes, mlvl_labels
 
         det_bboxes, keep_idxs = batched_nms(mlvl_bboxes, mlvl_scores,
-                                            mlvl_labels, cfg.nms)
+                                            mlvl_labels, nms)
         results = dict(
-            bboxes=det_bboxes[:cfg.max_per_img],
-            labels=mlvl_labels[keep_idxs][:cfg.max_per_img],
-            bezier=mlvl_beziers[keep_idxs][:cfg.max_per_img])
+            bboxes=det_bboxes[:max_per_img],
+            labels=mlvl_labels[keep_idxs][:max_per_img],
+            bezier=mlvl_beziers[keep_idxs][:max_per_img])
 
         return results
 
