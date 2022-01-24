@@ -52,9 +52,10 @@ def build_preprocessor(cfg):
     return build_from_cfg(cfg, PREPROCESSOR)
 
 
-def build_postprocessor(cfg):
-    """Build postprocessor for scene text detector."""
-    return build_from_cfg(cfg, POSTPROCESSOR)
+def build_postprocessor(cfg, train_cfg=None, test_cfg=None):
+    """Build postprocessor for ocr."""
+    return build_from_cfg(cfg, POSTPROCESSOR,
+                          dict(train_cfg=train_cfg, test_cfg=test_cfg))
 
 
 def build_roi_extractor(cfg):

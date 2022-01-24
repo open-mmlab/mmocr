@@ -1,23 +1,36 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-
-from mmocr.models.builder import DETECTORS
-from mmocr.models.common.detectors import SingleStageDetector
+from mmocr.models.builder import DETECTORS, build_loss, build_postprocessor
+from .single_stage_text_detector import SingleStageTextDetector
+from .text_detector_mixin import TextDetectorMixin
 
 
 @DETECTORS.register_module()
-class SingleStageTextDetector(SingleStageDetector):
-    """The class for implementing single stage text detector."""
+class ABCNet(TextDetectorMixin, SingleStageTextDetector):
+    """The class for implementing ABCNet text detector: ABCNet: Real-time Scene
+    Text Spotting with Adaptive Bezier-Curve Network.
+
+    [https://arxiv.org/abs/2002.10200].
+    """
 
     def __init__(self,
                  backbone,
                  neck,
                  bbox_head,
+                 loss,
+                 postprocessor,
                  train_cfg=None,
                  test_cfg=None,
                  pretrained=None,
+                 show_score=False,
                  init_cfg=None):
-        SingleStageDetector.__init__(self, backbone, neck, bbox_head,
-                                     train_cfg, test_cfg, pretrained, init_cfg)
+        SingleStageTextDetector.__init__(self, backbone, neck, bbox_head,
+                                         train_cfg, test_cfg, pretrained,
+                                         init_cfg)
+        TextDetectorMixin.__init__(self, show_score)
+        postprocessor.update(train_cfg=train_cfg)
+        postprocessor.update(test_cfg=test_cfg)
+        self.postprocessor = build_postprocessor(postprocessor)
+        self.loss = build_loss(loss)
 
     def forward_train(self, img, img_metas, **kwargs):
         """
@@ -40,6 +53,5 @@ class SingleStageTextDetector(SingleStageDetector):
     def simple_test(self, img, img_metas, rescale=False):
         x = self.extract_feat(img)
         outs = self.bbox_head(x)
-        results = self.postprocess(outs, img_metas)
-
-        return results
+        outputs = self.postprocessor(outs, img_metas)
+        return outputs
