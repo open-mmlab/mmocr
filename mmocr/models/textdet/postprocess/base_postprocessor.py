@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
 from functools import partial
 
 import numpy as np
@@ -66,6 +67,8 @@ class BaseTextDetPostProcessor(nn.Module):
 
         if filter_and_location:
             results = self.filter_and_location(pred_result, img_meta, **kwargs)
+        else:
+            results = copy.deepcopy(pred_result)
 
         if reconstruct:
             results = self.reconstruct_text_instance(results, **kwargs)

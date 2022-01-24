@@ -74,8 +74,12 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
 
         if mlvl_bboxes.numel() == 0:
             det_bboxes = torch.cat([mlvl_bboxes, mlvl_scores[:, None]], -1)
-            return det_bboxes, mlvl_labels
-
+            results = dict(
+                bboxes=torch.cat([mlvl_bboxes, mlvl_scores[:, None]],
+                                 -1).detach().cpu().numpy(),
+                labels=mlvl_labels.detach().cpu().numpy(),
+                bezier=mlvl_beziers.detach().cpu().numpy())
+            return results
         det_bboxes, keep_idxs = batched_nms(mlvl_bboxes, mlvl_scores,
                                             mlvl_labels, nms)
         results = dict(
