@@ -44,7 +44,7 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
                             nms_pre=-1,
                             score_thr=0,
                             max_per_img=100,
-                            nms=dict(type='IoULoss', loss_weight=1.0),
+                            nms=dict(type='nms', iou_threshold=0.5),
                             **kwargs):
         cls_scores = det_results.get('cls_scores')
         bbox_preds = det_results.get('bbox_preds')
@@ -53,13 +53,13 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         mlvl_priors = det_results.get('mlvl_priors')
 
         parameters = dict(
-            img_shape=img_meta['img_shape'],
+            img_shape=img_meta[0]['img_shape'],
             nms_pre=nms_pre,
             score_thr=score_thr)
         (mlvl_bboxes, mlvl_scores, mlvl_labels, mlvl_score_factors,
          mlvl_beziers) = multi_apply(self._single_level, cls_scores,
                                      bbox_preds, centerness_preds,
-                                     bezier_preds, mlvl_priors, parameters)
+                                     bezier_preds, mlvl_priors, **parameters)
 
         mlvl_bboxes = torch.cat(mlvl_bboxes)
         mlvl_scores = torch.cat(mlvl_scores)
@@ -79,9 +79,10 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         det_bboxes, keep_idxs = batched_nms(mlvl_bboxes, mlvl_scores,
                                             mlvl_labels, nms)
         results = dict(
-            bboxes=det_bboxes[:max_per_img],
-            labels=mlvl_labels[keep_idxs][:max_per_img],
-            bezier=mlvl_beziers[keep_idxs][:max_per_img])
+            bboxes=det_bboxes[:max_per_img].detach().cpu().numpy(),
+            labels=mlvl_labels[keep_idxs][:max_per_img].detach().cpu().numpy(),
+            bezier=mlvl_beziers[keep_idxs]
+            [:max_per_img].detach().cpu().numpy())
 
         return results
 
@@ -113,8 +114,8 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         results['polygon'] = list(map(bezier_to_polygon, bezier_points))
         return results
 
-    def _single_level(self, score_thr, nms_pre, img_shape, cls_score,
-                      bbox_pred, centerness_pred, bezier_pred, priors):
+    def _single_level(self, cls_score, bbox_pred, centerness_pred, bezier_pred,
+                      priors, score_thr, nms_pre, img_shape):
         assert cls_score.size()[-2:] == bbox_pred.size()[-2:]
         bbox_pred = bbox_pred.permute(1, 2, 0).reshape(-1, 4)
         bezier_pred = bezier_pred.permute(1, 2, 0).reshape(-1, 8, 2)
@@ -146,7 +147,7 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         bezier_pred = bezier_pred[keep_idxs]
 
         bboxes = self.bbox_coder.decode(priors, bbox_pred, max_shape=img_shape)
-        bezier_pred = priors + bezier_pred
-        bezier_pred[:0].clamp_(min=0, max=img_shape[1])
-        bezier_pred[:1].clamp_(min=0, max=img_shape[0])
+        bezier_pred = priors[:, None, :] + bezier_pred
+        bezier_pred[:, :, :0].clamp_(min=0, max=img_shape[1])
+        bezier_pred[:, :, :1].clamp_(min=0, max=img_shape[0])
         return bboxes, scores, labels, centerness_pred, bezier_pred
