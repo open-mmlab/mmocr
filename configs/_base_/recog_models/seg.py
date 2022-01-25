@@ -17,5 +17,5 @@ model = dict(
         in_channels=256,
         upsample_param=dict(scale_factor=2.0, mode='nearest')),
     loss=dict(
-        type='SegLoss', seg_downsample_ratio=1.0, seg_with_loss_weight=True),
+        type='SegLoss', seg_downsample_ratio=1.0, seg_with_loss_weight=False),
     label_convertor=label_convertor)
