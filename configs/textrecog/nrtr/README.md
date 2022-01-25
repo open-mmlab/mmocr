@@ -50,6 +50,7 @@ Scene text recognition has attracted a great many researches due to its importan
   - The output consists of 92 classes, including 26 lowercase letters, 26 uppercase letters, 28 symbols, 10 digital numbers, 1 unknown token and 1 end-of-sequence token.
   - The encoder-block number is 6.
   - `1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.
+:::
 
 ## Citation
 

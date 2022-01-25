@@ -30,6 +30,7 @@ Scene text detection, an important step of scene text reading systems, has witne
 
 :::{note}
 We've upgraded our IoU backend from `Polygon3` to `shapely`. There are some performance differences for some models due to the backends' different logics to handle invalid polygons (more info [here](https://github.com/open-mmlab/mmocr/issues/465)). **New evaluation result is presented in brackets** and new logs will be uploaded soon.
+:::
 
 ## Citation
 

@@ -24,6 +24,13 @@ for f in files:
     with open(f, 'r') as content_file:
         content = content_file.read()
 
+    # Remove the blackquote notation from the paper link under the title
+    # for better layout in readthedocs
+    expr = r'(^## \s*?.*?\s+?)>\s*?(\[.*?\]\(.*?\))'
+    content = re.sub(expr, r'\1\2', content, flags=re.MULTILINE)
+    with open(f, 'w') as content_file:
+        content_file.write(content)
+
     # title
     title = content.split('\n')[0].replace('#', '')
 
