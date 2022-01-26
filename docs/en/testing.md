@@ -17,7 +17,7 @@ python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 ```
 
 :::{note}
-By default, MMOCR prefers GPU(s) to CPU. If you want to test a model on CPU, please empty `CUDA_VISIBLE_DEVICES` to make GPU(s) invisible to the program. Note that running CPU tests requires **MMCV >= 1.4.4**.
+By default, MMOCR prefers GPU(s) to CPU. If you want to test a model on CPU, please empty `CUDA_VISIBLE_DEVICES` or set it to -1 to make GPU(s) invisible to the program. Note that running CPU tests requires **MMCV >= 1.4.4**.
 
 ```bash
 CUDA_VISIBLE_DEVICES= python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
