@@ -2,8 +2,7 @@
 
 ## Training on a Single Machine
 
-
-You can use `tools/train.py` to train a model in a single machine with one or more GPUs.
+You can use `tools/train.py` to train a model on a single machine with CPU and optionally GPU(s).
 
 Here is the full usage of the script:
 
@@ -11,6 +10,14 @@ Here is the full usage of the script:
 python tools/train.py ${CONFIG_FILE} [ARGS]
 ```
 
+:::{note}
+By default, MMOCR prefers GPU(s) to CPU. If you want to train a model on CPU, please empty `CUDA_VISIBLE_DEVICES` or set it to -1 to make GPU(s) invisible to the program. Note that CPU training requires **MMCV >= 1.4.4**.
+
+```bash
+CUDA_VISIBLE_DEVICES= python tools/train.py ${CONFIG_FILE} [ARGS]
+```
+
+:::
 
 | ARGS              | Type                              | Description                                                                                                                                                                                                                                                                                                                                                                            |
 | ----------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -27,7 +34,6 @@ python tools/train.py ${CONFIG_FILE} [ARGS]
 | `--launcher`      | 'none', 'pytorch', 'slurm', 'mpi' | Options for job launcher.                                                                                                                                                                                                                                                                                                                                                              |
 | `--local_rank`    | int                               | Used for distributed training.                                                                                                                                                                                                                                                                                                                                                         |
 | `--mc-config`     | str                               | Memory cache config for image loading speed-up during training.                                                                                                                                                                                                                                                                                                                        |
-
 
 ## Training on Multiple Machines
 

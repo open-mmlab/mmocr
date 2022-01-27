@@ -20,7 +20,8 @@ test_pipeline = [
     dict(
         type='Collect',
         keys=['img', 'relations', 'texts', 'gt_bboxes'],
-        meta_keys=('filename', 'ori_texts'))
+        meta_keys=('filename', 'ori_texts', 'img_norm_cfg', 'ori_filename',
+                   'img_shape'))
 ]
 
 dataset_type = 'KIEDataset'
