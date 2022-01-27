@@ -124,7 +124,7 @@ If you find this project useful in your research, please consider cite:
 
 ## Changelog
 
-v0.4.0 was released in 2022-01-27.
+v0.4.1 was released in 2022-01-27.
 
 ## Installation
 
