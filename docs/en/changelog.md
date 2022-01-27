@@ -1,5 +1,59 @@
 # Changelog
 
+## v0.4.1 (27/01/2022)
+
+### Highlights
+
+1. Visualizing edge weights in OpenSet KIE is now supported! https://github.com/open-mmlab/mmocr/pull/677
+2. Some configurations have been optimized to significantly speed up the training and testing processes! Don't worry - you can still tune these parameters in case these modifications do not work. https://github.com/open-mmlab/mmocr/pull/757
+3. Now you can use CPU to train/debug your model! https://github.com/open-mmlab/mmocr/pull/752
+4. We have fixed a severe bug that causes users unable to call `mmocr.apis.test` with our pre-built wheels. https://github.com/open-mmlab/mmocr/pull/667
+
+### New Features & Enhancements
+
+* Show edge score for openset kie by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/677
+* Download flake8 from github as pre-commit hooks by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/695
+* Deprecate the support for 'python setup.py test' by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/722
+* Disable multi-processing feature of cv2 to speed up data loading by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/721
+* Extend ctw1500 converter to support text fields by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/729
+* Extend totaltext converter to support text fields by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/728
+* Speed up training by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/739
+* Add setup multi-processing both in train and test.py by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/757
+* Support CPU training/testing by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/752
+* Support specify gpu for testing and training with gpu-id instead of gpu-ids and gpus  by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/756
+* Remove unnecessary custom_import from test.py  by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/758
+
+### Bug Fixes
+
+* Fix satrn onnxruntime test by @AllentDan in https://github.com/open-mmlab/mmocr/pull/679
+* Support both ConcatDataset and UniformConcatDataset by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/675
+* Fix bugs of show_results in single_gpu_test by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/667
+* Fix a bug for sar decoder when bi-rnn is used by @MhLiao in https://github.com/open-mmlab/mmocr/pull/690
+* Fix opencv version to avoid some bugs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/694
+* Fix py39 ci error by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/707
+* Update visualize.py by @TommyZihao in https://github.com/open-mmlab/mmocr/pull/715
+* Fix link of config by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/726
+* Use yaml.safe_load instead of load by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/753
+* Add necessary keys to test_pipelines to enable test-time visualization by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/754
+
+### Docs
+
+* Fix recog.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/674
+* Add config tutorial by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/683
+* Add MMSelfSup/MMRazor/MMDeploy in readme by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/692
+* Add recog & det model summary by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/693
+* Update docs link by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/710
+* add pull request template.md by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/711
+* Add website links to readme by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/731
+* update readme according to standard by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/742
+
+### New Contributors
+
+* @MhLiao made their first contribution in https://github.com/open-mmlab/mmocr/pull/690
+* @TommyZihao made their first contribution in https://github.com/open-mmlab/mmocr/pull/715
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v0.4.0...v0.4.1
+
 ## v0.4.0 (15/12/2021)
 
 ### Highlights
@@ -148,7 +202,7 @@ comparison across models. Despite the seemingly significant hierarchical differe
 * Fix change locals() dict by @Fei-Wang in https://github.com/open-mmlab/mmocr/pull/663
 * fix #614: textsnake targets by @HolyCrap96 in https://github.com/open-mmlab/mmocr/pull/660
 
-## New Contributors
+### New Contributors
 * @alexander-soare made their first contribution in https://github.com/open-mmlab/mmocr/pull/469
 * @A465539338 made their first contribution in https://github.com/open-mmlab/mmocr/pull/364
 * @fatfishZhao made their first contribution in https://github.com/open-mmlab/mmocr/pull/506
