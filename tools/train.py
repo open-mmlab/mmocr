@@ -2,14 +2,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import copy
-import multiprocessing as mp
 import os
 import os.path as osp
-import platform
 import time
 import warnings
 
-import cv2
 import mmcv
 import torch
 from mmcv import Config, DictAction
@@ -20,7 +17,8 @@ from mmocr import __version__
 from mmocr.apis import init_random_seed, train_detector
 from mmocr.datasets import build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import collect_env, get_root_logger, is_2dlist
+from mmocr.utils import (collect_env, get_root_logger, is_2dlist,
+                         setup_multi_processes)
 
 
 def parse_args():
@@ -39,14 +37,20 @@ def parse_args():
     group_gpus.add_argument(
         '--gpus',
         type=int,
-        help='Number of gpus to use '
+        help='(Deprecated, please use --gpu-id) number of gpus to use '
         '(only applicable to non-distributed training).')
     group_gpus.add_argument(
         '--gpu-ids',
         type=int,
         nargs='+',
-        help='ids of gpus to use '
-        '(only applicable to non-distributed training).')
+        help='(Deprecated, please use --gpu-id) ids of gpus to use '
+        '(only applicable to non-distributed training)')
+    group_gpus.add_argument(
+        '--gpu-id',
+        type=int,
+        default=0,
+        help='id of gpu to use '
+        '(only applicable to non-distributed training)')
     parser.add_argument('--seed', type=int, default=None, help='Random seed.')
     parser.add_argument(
         '--deterministic',
@@ -91,17 +95,6 @@ def parse_args():
     return args
 
 
-def setup_multi_processes(cfg):
-    # set multi-process start method as `fork` to speed up the training
-    if platform.system() != 'Windows':
-        mp_start_method = cfg.get('mp_start_method', 'fork')
-        mp.set_start_method(mp_start_method)
-
-    # disable opencv multithreading to avoid system being overloaded
-    opencv_num_threads = cfg.get('opencv_num_threads', 0)
-    cv2.setNumThreads(opencv_num_threads)
-
-
 def main():
     args = parse_args()
 
@@ -127,10 +120,19 @@ def main():
         cfg.load_from = args.load_from
     if args.resume_from is not None:
         cfg.resume_from = args.resume_from
+    if args.gpus is not None:
+        cfg.gpu_ids = range(1)
+        warnings.warn('`--gpus` is deprecated because we only support '
+                      'single GPU mode in non-distributed training. '
+                      'Use `gpus=1` now.')
     if args.gpu_ids is not None:
-        cfg.gpu_ids = args.gpu_ids
-    else:
-        cfg.gpu_ids = range(1) if args.gpus is None else range(args.gpus)
+        cfg.gpu_ids = args.gpu_ids[0:1]
+        warnings.warn('`--gpu-ids` is deprecated, please use `--gpu-id`. '
+                      'Because we only support single GPU mode in '
+                      'non-distributed training. Use the first GPU '
+                      'in `gpu_ids` now.')
+    if args.gpus is None and args.gpu_ids is None:
+        cfg.gpu_ids = [args.gpu_id]
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':

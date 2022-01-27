@@ -180,7 +180,7 @@ def process_line(line, contours, words):
     ann_dict = re.sub('([0-9]) +([ 0-9])', r'\1,\2', ann_dict)
     ann_dict = re.sub('([0-9]) -([0-9])', r'\1,-\2', ann_dict)
     ann_dict = ann_dict.replace("[u',']", "[u'#']")
-    ann_dict = yaml.load(ann_dict)
+    ann_dict = yaml.safe_load(ann_dict)
 
     X = np.array([ann_dict['x']])
     Y = np.array([ann_dict['y']])

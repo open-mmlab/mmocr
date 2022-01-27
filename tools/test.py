@@ -18,7 +18,7 @@ from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import revert_sync_batchnorm
+from mmocr.utils import revert_sync_batchnorm, setup_multi_processes
 
 
 def parse_args():
@@ -32,6 +32,12 @@ def parse_args():
         action='store_true',
         help='Whether to fuse conv and bn, this will slightly increase'
         'the inference speed.')
+    parser.add_argument(
+        '--gpu-id',
+        type=int,
+        default=0,
+        help='id of gpu to use '
+        '(only applicable to non-distributed testing)')
     parser.add_argument(
         '--format-only',
         action='store_true',
@@ -123,10 +129,8 @@ def main():
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
-    # import modules from string list.
-    if cfg.get('custom_imports', None):
-        from mmcv.utils import import_modules_from_strings
-        import_modules_from_strings(**cfg['custom_imports'])
+    setup_multi_processes(cfg)
+
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
@@ -151,6 +155,7 @@ def main():
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
+        cfg.gpu_ids = [args.gpu_id]
         distributed = False
     else:
         distributed = True
@@ -194,7 +199,7 @@ def main():
         model = fuse_conv_bn(model)
 
     if not distributed:
-        model = MMDataParallel(model, device_ids=[0])
+        model = MMDataParallel(model, device_ids=cfg.gpu_ids)
         is_kie = cfg.model.type in ['SDMGR']
         outputs = single_gpu_test(model, data_loader, args.show, args.show_dir,
                                   is_kie, args.show_score_thr)
