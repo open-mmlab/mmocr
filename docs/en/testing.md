@@ -27,20 +27,21 @@ CUDA_VISIBLE_DEVICES= python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [AR
 
 
 
-| ARGS      | Type                  |  Description                                                 |
-| -------------- | --------------------- |  ----------------------------------------------------------- |
-| `--out`          | str                   |  Output result file in pickle format. |
-| `--fuse-conv-bn`   | bool                   |  Path to the custom config of the selected det model.        |
-| `--format-only`        | bool |  Format the output results without performing evaluation. It is useful when you want to format the results to a specific format and submit them to the test server.|
-| `--eval` | 'hmean-ic13', 'hmean-iou', 'acc' |  The evaluation metrics, which depends on the task. For text detection, the metric should be either 'hmean-ic13' or 'hmean-iou'. For text recognition, the metric should be 'acc'. |
-| `--show`       | bool                   |  Whether to show results. |
-| `--show-dir`       | str                   |  Directory where the output images will be saved. |
-| `--show-score-thr`      | float                   |  Score threshold (default: 0.3). |
-| `--gpu-collect`       | bool                   |  Whether to use gpu to collect results. |
-| `--tmpdir`       | str                   |  The tmp directory used for collecting results from multiple workers, available when gpu-collect is not specified.                |
-| `--cfg-options`       | str                   |          Override some settings in the used config, the key-value pair in xxx=yyy format will be merged into the config file. If the value to be overwritten is a list, it should be of the form of either key="[a,b]" or key=a,b. The argument also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]". Note that the quotation marks are necessary and that no white space is allowed.|
-| `--eval-options`       | str                   |Custom options for evaluation, the key-value pair in xxx=yyy format will be kwargs for dataset.evaluate() function.|
-| `--launcher`       | 'none', 'pytorch', 'slurm', 'mpi' |  Options for job launcher. |
+| ARGS               | Type                              | Description                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------ | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--out`            | str                               | Output result file in pickle format.                                                                                                                                                                                                                                                                                                                                                   |
+| `--fuse-conv-bn`   | bool                              | Path to the custom config of the selected det model.                                                                                                                                                                                                                                                                                                                                   |
+| `--format-only`    | bool                              | Format the output results without performing evaluation. It is useful when you want to format the results to a specific format and submit them to the test server.                                                                                                                                                                                                                     |
+| `--gpu-id`         | int                               | GPU id to use. Only applicable to non-distributed training.                                                                                                                                                                                                                                                                                                                            |
+| `--eval`           | 'hmean-ic13', 'hmean-iou', 'acc'  | The evaluation metrics, which depends on the task. For text detection, the metric should be either 'hmean-ic13' or 'hmean-iou'. For text recognition, the metric should be 'acc'.                                                                                                                                                                                                      |
+| `--show`           | bool                              | Whether to show results.                                                                                                                                                                                                                                                                                                                                                               |
+| `--show-dir`       | str                               | Directory where the output images will be saved.                                                                                                                                                                                                                                                                                                                                       |
+| `--show-score-thr` | float                             | Score threshold (default: 0.3).                                                                                                                                                                                                                                                                                                                                                        |
+| `--gpu-collect`    | bool                              | Whether to use gpu to collect results.                                                                                                                                                                                                                                                                                                                                                 |
+| `--tmpdir`         | str                               | The tmp directory used for collecting results from multiple workers, available when gpu-collect is not specified.                                                                                                                                                                                                                                                                      |
+| `--cfg-options`    | str                               | Override some settings in the used config, the key-value pair in xxx=yyy format will be merged into the config file. If the value to be overwritten is a list, it should be of the form of either key="[a,b]" or key=a,b. The argument also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]". Note that the quotation marks are necessary and that no white space is allowed. |
+| `--eval-options`   | str                               | Custom options for evaluation, the key-value pair in xxx=yyy format will be kwargs for dataset.evaluate() function.                                                                                                                                                                                                                                                                    |
+| `--launcher`       | 'none', 'pytorch', 'slurm', 'mpi' | Options for job launcher.                                                                                                                                                                                                                                                                                                                                                              |
 
 
 ## Testing with Multiple GPUs
@@ -54,10 +55,10 @@ You can use the following command to test a dataset with multiple GPUs.
 ```
 
 
-| Arguments      | Type                  |  Description                                                 |
-| -------------- | --------------------- |  ----------------------------------------------------------- |
-| `PORT`          | int                   |  The master port that will be used by the machine with rank 0. Defaults to 29500. |
-| `PY_ARGS`   | str                   |  Arguments to be parsed by `tools/test.py`.         |
+| Arguments | Type | Description                                                                      |
+| --------- | ---- | -------------------------------------------------------------------------------- |
+| `PORT`    | int  | The master port that will be used by the machine with rank 0. Defaults to 29500. |
+| `PY_ARGS` | str  | Arguments to be parsed by `tools/test.py`.                                       |
 
 
 For example,
@@ -75,12 +76,12 @@ If you run MMOCR on a cluster managed with [Slurm](https://slurm.schedmd.com/), 
 [GPUS=${GPUS}] [GPUS_PER_NODE=${GPUS_PER_NODE}] [SRUN_ARGS=${SRUN_ARGS}] ./tools/slurm_test.sh ${PARTITION} ${JOB_NAME} ${CONFIG_FILE} ${CHECKPOINT_FILE} [PY_ARGS]
 ```
 
-| Arguments      | Type                  |  Description                                                 |
-| -------------- | --------------------- |  ----------------------------------------------------------- |
-| `GPUS`          | int                   |  The number of GPUs to be used by this task. Defaults to 8. |
-| `GPUS_PER_NODE`   | int                   |  The number of GPUs to be allocated per node. Defaults to 8. |
-| `SRUN_ARGS`        | str                   |  Arguments to be parsed by srun. Available options can be found [here](https://slurm.schedmd.com/srun.html). |
-| `PY_ARGS`   | str                   |  Arguments to be parsed by `tools/test.py`.         |
+| Arguments       | Type | Description                                                                                                 |
+| --------------- | ---- | ----------------------------------------------------------------------------------------------------------- |
+| `GPUS`          | int  | The number of GPUs to be used by this task. Defaults to 8.                                                  |
+| `GPUS_PER_NODE` | int  | The number of GPUs to be allocated per node. Defaults to 8.                                                 |
+| `SRUN_ARGS`     | str  | Arguments to be parsed by srun. Available options can be found [here](https://slurm.schedmd.com/srun.html). |
+| `PY_ARGS`       | str  | Arguments to be parsed by `tools/test.py`.                                                                  |
 
 
 Here is an example of using 8 GPUs to test an example model on the 'dev' partition with job name 'test_job'.
