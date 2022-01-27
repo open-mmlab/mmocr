@@ -5,7 +5,8 @@
 ### Highlights
 
 1. Visualizing edge weights in OpenSet KIE is now supported! https://github.com/open-mmlab/mmocr/pull/677
-2. Some configurations have been optimized and the entire training and testing processes are significantly faster! Don't worry - we still expose these parameters for you to tune in case these modifications do not work.
+2. Some configurations have been optimized to significantly speed up the training and testing processes! Don't worry - you can still tune these parameters in case these modifications do not work. https://github.com/open-mmlab/mmocr/pull/757 
+3. Now you can use CPU to train/debug your model! https://github.com/open-mmlab/mmocr/pull/752
 3. We have fixed a severe bug that causes users unable to call `mmocr.apis.test` with our pre-built wheels. https://github.com/open-mmlab/mmocr/pull/667
 
 ### New Features & Enhancements
@@ -17,6 +18,9 @@
 * Extend ctw1500 converter to support text fields by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/729
 * Extend totaltext converter to support text fields by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/728
 * Speed up training by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/739
+* Add setup multi-processing both in train and test.py by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/757
+* Support CPU training/testing by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/752
+* Support specify gpu for testing and training with gpu-id instead of gpu-ids and gpus  by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/756
 
 ### Bug Fixes
 
@@ -28,6 +32,8 @@
 * Fix py39 ci error by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/707
 * Update visualize.py by @TommyZihao in https://github.com/open-mmlab/mmocr/pull/715
 * Fix link of config by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/726
+* Use yaml.safe_load instead of load by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/753
+* Add necessary keys to test_pipelines to enable test-time visualization by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/754
 
 ### Docs
 
