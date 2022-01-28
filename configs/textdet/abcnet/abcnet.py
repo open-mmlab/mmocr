@@ -3,7 +3,9 @@ _base_ = [
     '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/det_datasets/icdar2015.py',
 ]
-
+num_classes = 1
+strides = [8, 16, 32, 64, 128]
+bbox_coder = dict(type='DistancePointBBoxCoder')
 # model settings
 model = dict(
     type='ABCNet',
@@ -29,20 +31,24 @@ model = dict(
         relu_before_extra_convs=True),
     bbox_head=dict(
         type='FCOSHead',
-        num_classes=80,
+        num_classes=num_classes,
         in_channels=256,
         stacked_convs=4,
         feat_channels=256,
-        strides=[8, 16, 32, 64, 128],
+        strides=strides,
         with_bezier=False),
+    postprocessor=dict(
+        type='ABCNetTextDetProcessor',
+        strides=strides,
+        bbox_coder=bbox_coder,
+    ),
     loss=dict(
-        num_classes=80,
-        strides=(4, 8, 16, 32, 64),
-        stacked_convs=4,
-        feat_channels=256,
+        type='FCOSLoss',
+        num_classes=num_classes,
+        strides=strides,
         center_sampling=False,
         center_sample_radius=1.5,
-        bbox_coder=dict(type='DistancePointBBoxCoder'),
+        bbox_coder=bbox_coder,
         with_bezier=False,
         norm_on_bbox=False,
         use_sigmoid_cls=True,
@@ -55,17 +61,18 @@ model = dict(
         loss_bbox=dict(type='mmdet.IoULoss', loss_weight=1.0),
         loss_centerness=dict(
             type='mmdet.CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0)),
-
     # training and testing settings
     train_cfg=None,
     test_cfg=dict(
         rescale=True,
-        property=['bezier', 'polygon', 'bbox'],
+        property=['polygon', 'bboxes', 'bezier'],
+        filter_and_location=True,
+        reconstruct=True,
+        extra_property=None,
+        rescale_extra_property=False,
         nms_pre=1000,
-        min_bbox_size=0,
-        score_thr=0.05,
-        nms=dict(type='nms', iou_threshold=0.5),
-        max_per_img=100))
+        score_thr=0.3,
+        strides=(8, 16, 32, 64, 128)))
 img_norm_cfg = dict(
     mean=[102.9801, 115.9465, 122.7717], std=[1.0, 1.0, 1.0], to_rgb=False)
 train_pipeline = [

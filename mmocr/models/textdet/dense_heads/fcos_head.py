@@ -82,7 +82,9 @@ class FCOSHead(HeadMixin, BaseModule):
                          type='Normal',
                          name='conv_cls',
                          std=0.01,
-                         bias_prob=0.01))):
+                         bias_prob=0.01)),
+                 train_cfg=None,
+                 test_cfg=None):
         BaseModule.__init__(self, init_cfg=init_cfg)
         self.num_classes = num_classes
         self.in_channels = in_channels
