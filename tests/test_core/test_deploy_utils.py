@@ -23,7 +23,7 @@ def test_detector_wrapper():
     try:
         import onnxruntime as ort  # noqa: F401
         import tensorrt as trt
-        from mmcv.tensorrt import (onnx2trt, save_trt_engine)
+        from mmcv.tensorrt import onnx2trt, save_trt_engine
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 
@@ -129,7 +129,7 @@ def test_recognizer_wrapper():
     try:
         import onnxruntime as ort  # noqa: F401
         import tensorrt as trt
-        from mmcv.tensorrt import (onnx2trt, save_trt_engine)
+        from mmcv.tensorrt import onnx2trt, save_trt_engine
     except ImportError:
         pytest.skip('ONNXRuntime or TensorRT is not available.')
 

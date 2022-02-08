@@ -12,7 +12,6 @@ from .openset_kie_dataset import OpensetKIEDataset
 from .pipelines import CustomFormatBundle, DBNetTargets, FCENetTargets
 from .text_det_dataset import TextDetDataset
 from .uniform_concat_dataset import UniformConcatDataset
-
 from .utils import *  # NOQA
 
 __all__ = [

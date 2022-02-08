@@ -3,7 +3,6 @@ from argparse import ArgumentParser
 
 from mmocr.apis import init_detector
 from mmocr.apis.inference import text_model_inference
-
 from mmocr.datasets import build_dataset  # NOQA
 from mmocr.models import build_detector  # NOQA
 

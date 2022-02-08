@@ -1,17 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from . import (backbones, convertors, decoders, encoders, fusers, heads,
                losses, necks, preprocessor, recognizer)
-
 from .backbones import *  # NOQA
 from .convertors import *  # NOQA
 from .decoders import *  # NOQA
 from .encoders import *  # NOQA
+from .fusers import *  # NOQA
 from .heads import *  # NOQA
 from .losses import *  # NOQA
 from .necks import *  # NOQA
 from .preprocessor import *  # NOQA
 from .recognizer import *  # NOQA
-from .fusers import *  # NOQA
 
 __all__ = (
     backbones.__all__ + convertors.__all__ + decoders.__all__ +
