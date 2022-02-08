@@ -3,7 +3,6 @@ import copy
 import warnings
 
 from mmcv import Config
-
 from mmocr.utils import is_2dlist, is_type_list
 
 
