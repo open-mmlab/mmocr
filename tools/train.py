@@ -18,7 +18,7 @@ from mmocr.apis import init_random_seed, train_detector
 from mmocr.datasets import build_dataset
 from mmocr.models import build_detector
 from mmocr.utils import (collect_env, get_root_logger, is_2dlist,
-                         setup_multi_processes)
+                         setup_multi_processes, unify_recog_pipeline)
 
 
 def parse_args():
@@ -99,6 +99,7 @@ def main():
     args = parse_args()
 
     cfg = Config.fromfile(args.config)
+    cfg = unify_recog_pipeline(cfg)
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
 

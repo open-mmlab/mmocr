@@ -18,7 +18,8 @@ from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import revert_sync_batchnorm, setup_multi_processes
+from mmocr.utils import (revert_sync_batchnorm, setup_multi_processes,
+                         unify_recog_pipeline)
 
 
 def parse_args():
@@ -127,6 +128,7 @@ def main():
         raise ValueError('The output file must be a pkl file.')
 
     cfg = Config.fromfile(args.config)
+    cfg = unify_recog_pipeline(cfg)
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
     setup_multi_processes(cfg)
