@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import copy
 from functools import partial
 
 import numpy as np
@@ -58,43 +57,26 @@ class BaseTextDetPostProcessor(nn.Module):
                         pred_result,
                         img_meta=None,
                         rescale=False,
-                        property=None,
-                        filter_and_location=True,
-                        reconstruct=True,
-                        extra_property=None,
-                        rescale_extra_property=False,
+                        rescale_fields=[],
                         **kwargs):
 
-        if filter_and_location:
-            results = self.filter_and_location(pred_result, img_meta, **kwargs)
-        else:
-            results = copy.deepcopy(pred_result)
+        results = self.get_text_instance(pred_result, img_meta, **kwargs)
 
-        if reconstruct:
-            results = self.reconstruct_text_instance(results, **kwargs)
-
-        if rescale and property is not None:
-            for key in property:
-                assert key in results
+        if rescale and rescale_fields:
+            assert isinstance(rescale_fields, list)
+            assert set(rescale_fields).issubset(set(results.keys()))
             results = self.rescale_results(results,
                                            img_meta[0]['scale_factor'],
-                                           property)
-
-        if rescale_extra_property and extra_property is not None:
-            for key in extra_property:
-                assert key in results
-            results = self.rescale_results(results,
-                                           img_meta[0]['scale_factor'],
-                                           extra_property)
+                                           rescale_fields)
         return results
 
-    def rescale_results(self, results, scale_factor, property=None):
+    def rescale_results(self, results, scale_factor, rescale_fields=None):
         """Rescale results via scale_factor."""
         assert isinstance(scale_factor, np.ndarray)
         assert scale_factor.shape[0] == 4
-        for key in property:
-            _rescale_single_result = partial(
-                self._rescale_single_result, scale_factor=scale_factor)
+        _rescale_single_result = partial(
+            self._rescale_single_result, scale_factor=scale_factor)
+        for key in rescale_fields:
             results[key] = list(map(_rescale_single_result, results[key]))
         return results
 
@@ -107,11 +89,8 @@ class BaseTextDetPostProcessor(nn.Module):
         polygon = (reshape_polygon * scale_factor).reshape(poly_shape).tolist()
         return polygon
 
-    def filter_and_location(self, results, img_meta, **kwargs):
-        return results
-
-    def reconstruct_text_instance(self, results, **kwargs):
-        return results
+    def get_text_instance(self, pred_result, **kwargs):
+        raise NotImplementedError
 
     def split_results(self, pred_results, img_metas, **kwargs):
         """convert pred_results to the follow format:

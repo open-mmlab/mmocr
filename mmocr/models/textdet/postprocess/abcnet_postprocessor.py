@@ -1,4 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
+
+import numpy as np
 import torch
 # from mmcv.runner import force_fp32
 from mmcv.ops import batched_nms
@@ -37,6 +40,32 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
             self.cls_out_channels = num_classes + 1
 
     # @force_fp32(apply_to=('cls_scores', 'bbox_preds'))
+    def get_text_instance(
+            self,
+            pred_result,
+            img_meta,
+            filter_and_location=True,
+            reconstruct=True,
+            nms_pre=-1,
+            score_thr=0,
+            max_per_img=100,
+            nms=dict(type='nms', iou_threshold=0.5),
+    ):
+        if filter_and_location:
+            results = self.filter_and_location(
+                pred_result,
+                img_meta,
+                nms_pre,
+                score_thr,
+                max_per_img,
+                nms,
+            )
+        else:
+            results = copy.deepcopy(pred_result)
+
+        if reconstruct:
+            results = self.reconstruct_text_instance(results)
+        return results
 
     def filter_and_location(self,
                             det_results,
@@ -44,8 +73,7 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
                             nms_pre=-1,
                             score_thr=0,
                             max_per_img=100,
-                            nms=dict(type='nms', iou_threshold=0.5),
-                            **kwargs):
+                            nms=dict(type='nms', iou_threshold=0.5)):
         cls_scores = det_results.get('cls_scores')
         bbox_preds = det_results.get('bbox_preds')
         centerness_preds = det_results.get('centerness_preds')
@@ -75,15 +103,17 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         if mlvl_bboxes.numel() == 0:
             det_bboxes = torch.cat([mlvl_bboxes, mlvl_scores[:, None]], -1)
             results = dict(
-                bboxes=torch.cat([mlvl_bboxes, mlvl_scores[:, None]],
-                                 -1).detach().cpu().numpy(),
+                bboxes=mlvl_bboxes.detach().cpu().numpy(),
+                scores=mlvl_scores[:, None].detach().cpu().numpy(),
                 labels=mlvl_labels.detach().cpu().numpy(),
                 bezier=mlvl_beziers.detach().cpu().numpy())
             return results
         det_bboxes, keep_idxs = batched_nms(mlvl_bboxes, mlvl_scores,
                                             mlvl_labels, nms)
+        det_bboxes, scores = np.split(det_bboxes, [-1], axis=1)
         results = dict(
             bboxes=det_bboxes[:max_per_img].detach().cpu().numpy(),
+            scores=scores[:max_per_img].detach().cpu().numpy(),
             labels=mlvl_labels[keep_idxs][:max_per_img].detach().cpu().numpy(),
             bezier=mlvl_beziers[keep_idxs]
             [:max_per_img].detach().cpu().numpy())
@@ -113,7 +143,7 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
             results.append(single_results)
         return results
 
-    def reconstruct_text_instance(self, results, **kwargs):
+    def reconstruct_text_instance(self, results):
         bezier_points = results['bezier'].reshape(-1, 2, 4, 2)
         results['polygon'] = list(map(bezier_to_polygon, bezier_points))
         return results
