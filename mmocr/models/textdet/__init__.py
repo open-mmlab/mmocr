@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from . import dense_heads, detectors, losses, necks, postprocess
-
 from .dense_heads import *  # NOQA
 from .detectors import *  # NOQA
 from .losses import *  # NOQA

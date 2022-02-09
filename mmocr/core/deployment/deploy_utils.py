@@ -48,6 +48,7 @@ class ONNXRuntimeDetector(TextDetectorMixin, SingleStageTextDetector):
         SingleStageTextDetector.__init__(self, **(cfg.model))
         TextDetectorMixin.__init__(self, show_score)
         import onnxruntime as ort
+
         # get the custom op path
         ort_custom_op_path = ''
         try:
@@ -122,6 +123,7 @@ class ONNXRuntimeRecognizer(EncodeDecodeRecognizer):
             cfg.model.pop('type')
         EncodeDecodeRecognizer.__init__(self, **(cfg.model))
         import onnxruntime as ort
+
         # get the custom op path
         ort_custom_op_path = ''
         try:

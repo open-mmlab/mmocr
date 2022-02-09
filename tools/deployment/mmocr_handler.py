@@ -7,7 +7,6 @@ import torch
 from ts.torch_handler.base_handler import BaseHandler
 
 from mmocr.apis import init_detector, model_inference
-
 from mmocr.datasets.pipelines import *  # NOQA
 
 

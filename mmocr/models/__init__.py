@@ -4,7 +4,6 @@ from .builder import (BACKBONES, CONVERTORS, DECODERS, DETECTORS, ENCODERS,
                       HEADS, LOSSES, NECKS, PREPROCESSOR, build_backbone,
                       build_convertor, build_decoder, build_detector,
                       build_encoder, build_loss, build_preprocessor)
-
 from .common import *  # NOQA
 from .kie import *  # NOQA
 from .ner import *  # NOQA
