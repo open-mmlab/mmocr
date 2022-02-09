@@ -44,6 +44,7 @@ class BaseTextDetPostProcessor(nn.Module):
     def forward(self, pred_results, img_metas=None, **kwargs):
 
         cfg = self.train_cfg if self.training else self.test_cfg
+        assert cfg is not None
         cfg.update(kwargs)
         if len(img_metas) == 1:
             img_metas = [img_metas]

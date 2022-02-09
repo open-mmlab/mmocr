@@ -21,6 +21,7 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
                  num_classes=1,
                  use_sigmoid_cls=True,
                  strides=(4, 8, 16, 32, 64),
+                 norm_by_strides=True,
                  bbox_coder=dict(type='DistancePointBBoxCoder'),
                  text_repr_type='poly',
                  train_cfg=None,
@@ -31,6 +32,8 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
             train_cfg=train_cfg,
             test_cfg=test_cfg,
             **kwargs)
+        self.strides = strides
+        self.norm_by_strides = norm_by_strides
         self.prior_generator = MlvlPointGenerator(strides)
         self.bbox_coder = build_bbox_coder(bbox_coder)
         self.use_sigmoid_cls = use_sigmoid_cls
@@ -79,7 +82,6 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         centerness_preds = det_results.get('centerness_preds')
         bezier_preds = det_results.get('bezier_preds')
         mlvl_priors = det_results.get('mlvl_priors')
-
         parameters = dict(
             img_shape=img_meta[0]['img_shape'],
             nms_pre=nms_pre,
@@ -87,7 +89,8 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         (mlvl_bboxes, mlvl_scores, mlvl_labels, mlvl_score_factors,
          mlvl_beziers) = multi_apply(self._single_level, cls_scores,
                                      bbox_preds, centerness_preds,
-                                     bezier_preds, mlvl_priors, **parameters)
+                                     bezier_preds, mlvl_priors, self.strides,
+                                     **parameters)
 
         mlvl_bboxes = torch.cat(mlvl_bboxes)
         mlvl_scores = torch.cat(mlvl_scores)
@@ -149,8 +152,11 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         return results
 
     def _single_level(self, cls_score, bbox_pred, centerness_pred, bezier_pred,
-                      priors, score_thr, nms_pre, img_shape):
+                      priors, stride, score_thr, nms_pre, img_shape):
         assert cls_score.size()[-2:] == bbox_pred.size()[-2:]
+        if self.norm_by_strides:
+            bbox_pred = bbox_pred * stride
+            bezier_pred = bezier_pred * stride
         bbox_pred = bbox_pred.permute(1, 2, 0).reshape(-1, 4)
         bezier_pred = bezier_pred.permute(1, 2, 0).reshape(-1, 8, 2)
         centerness_pred = centerness_pred.permute(1, 2,
