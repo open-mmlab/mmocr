@@ -2,6 +2,8 @@
 import copy
 import warnings
 
+from mmcv import Config
+
 from mmocr.utils import is_2dlist, is_type_list
 
 
@@ -57,10 +59,11 @@ def add_aug_test(pipelines):
         new_transforms = update_transforms(pipelines)
     new_pipelines = [pipelines[0]]
     new_pipelines.append(
-        dict(
-            type='MultiRotateAugOCR',
-            rotate_degrees=rotate_degrees,
-            transforms=new_transforms))
+        Config(
+            dict(
+                type='MultiRotateAugOCR',
+                rotate_degrees=rotate_degrees,
+                transforms=new_transforms)))
 
     return new_pipelines
 
@@ -92,7 +95,7 @@ def update_transforms(transforms):
             std = [x if x > 1 else x * 255 for x in transform['std']]
             normalize = dict(
                 type='Normalize', mean=mean, std=std, to_rgb=False)
-            new_transforms.append(normalize)
-            new_transforms.append(dict(type='DefaultFormatBundle'))
+            new_transforms.append(Config(normalize))
+            new_transforms.append(Config(dict(type='DefaultFormatBundle')))
 
     return new_transforms
