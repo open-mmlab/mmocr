@@ -7,6 +7,7 @@ The API can be called through command line (CL) or by calling it from another py
 ---
 
 ## Example 1: Text Detection
+
 <div align="center">
     <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/resources/text_det_pred.jpg"/><br>
 </div>
@@ -15,11 +16,13 @@ The API can be called through command line (CL) or by calling it from another py
 **Instruction:** Perform detection inference on an image with the TextSnake recognition model, export the result in a json file (default) and save the visualization file.
 
 - CL interface:
+
 ```shell
 python mmocr/utils/ocr.py demo/demo_text_det.jpg --output demo/det_out.jpg --det TextSnake --recog None --export demo/
 ```
 
 - Python interface:
+
 ```python
 from mmocr.utils.ocr import MMOCR
 
@@ -29,7 +32,6 @@ ocr = MMOCR(det='TextSnake', recog=None)
 # Inference
 results = ocr.readtext('demo/demo_text_det.jpg', output='demo/det_out.jpg', export='demo/')
 ```
-
 
 ## Example 2: Text Recognition
 
@@ -42,11 +44,13 @@ results = ocr.readtext('demo/demo_text_det.jpg', output='demo/det_out.jpg', expo
 *Batch size is set to 10 to prevent out of memory CUDA runtime errors.*
 
 - CL interface:
+
 ```shell
 python mmocr/utils/ocr.py %INPUT_FOLDER_PATH% --det None --recog CRNN_TPS --batch-mode --single-batch-size 10 --output %OUPUT_FOLDER_PATH%
 ```
 
 - Python interface:
+
 ```python
 from mmocr.utils.ocr import MMOCR
 
@@ -67,6 +71,7 @@ results = ocr.readtext(%INPUT_FOLDER_PATH%, output = %OUTPUT_FOLDER_PATH%, batch
 **Instruction:** Perform ocr (det + recog) inference on the demo/demo_text_det.jpg image with the PANet_IC15 (default) detection model and SAR (default) recognition model, print the result in the terminal and show the visualization.
 
 - CL interface:
+
 ```shell
 python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
 ```
@@ -78,6 +83,7 @@ When calling the script from the command line, the script assumes configs are sa
 :::
 
 - Python interface:
+
 ```python
 from mmocr.utils.ocr import MMOCR
 
@@ -87,6 +93,7 @@ ocr = MMOCR()
 # Inference
 results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, imshow=True)
 ```
+
 ---
 
 ## Example 4: Text Detection + Recognition + Key Information Extraction
@@ -111,6 +118,7 @@ Note: When calling the script from the command line, the script assumes configs 
 :::
 
 - Python interface:
+
 ```python
 from mmocr.utils.ocr import MMOCR
 
@@ -120,9 +128,11 @@ ocr = MMOCR(det='PS_CTW', recog='SAR', kie='SDMGR')
 # Inference
 results = ocr.readtext('demo/demo_kie.jpeg', print_result=True, imshow=True)
 ```
+
 ---
 
 ## API Arguments
+
 The API has an extensive list of arguments that you can use. The following tables are for the python interface.
 
 **MMOCR():**
@@ -139,7 +149,7 @@ The API has an extensive list of arguments that you can use. The following table
 | `recog_ckpt`   | str                   | None          | Path to the custom checkpoint file of the selected recog model |
 | `kie_config`   | str                   | None          | Path to the custom config file of the selected kie model |
 | `kie_ckpt`     | str                   | None          | Path to the custom checkpoint file of the selected kie model |
-| `device`       | str                   | cuda:0        | Device used for inference: 'cuda:0' or 'cpu'                |
+| `device`       | str                   | None        | Device used for inference, accepting all allowed strings by `torch.device`. E.g., 'cuda:0' or 'cpu'. |
 
 [1]: `kie` is only effective when both text detection and recognition models are specified.
 
@@ -149,7 +159,7 @@ User can use default pretrained models by specifying `det` and/or `recog`, which
 
 :::
 
-### readtext():
+### readtext()
 
 | Arguments           | Type                    | Default      | Description                                                            |
 | ------------------- | ----------------------- | ------------ | ---------------------------------------------------------------------- |
