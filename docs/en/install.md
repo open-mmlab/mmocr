@@ -9,8 +9,19 @@
 - CUDA 10.1
 - NCCL 2
 - GCC 5.4.0 or higher
-- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation) >= 1.3.8
-- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation) >= 2.14.0
+- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation)
+- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation)
+
+MMOCR has different version requirements on MMCV and MMDetection at each release to guarantee the implementation correctness. Please refer to the table below and ensure the package versions fit the requirement.
+
+| MMOCR | MMCV | MMDetection |
+| - | - | - |
+| master | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 3.0.0 |
+| 0.4.0, 0.4.1 | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 2.20.0 |
+| 0.3.0 | 1.3.8 <= mmcv <= 1.4.0 | 2.14.0 <= mmdet <= 2.20.0 |
+| 0.2.1 | 1.3.8 <= mmcv <= 1.4.0 | 2.13.0 <= mmdet <= 2.20.0 |
+| 0.2.0 | 1.3.4 <= mmcv <= 1.4.0 | 2.11.0 <= mmdet <= 2.13.0 |
+| 0.1.0 | 1.2.6 <= mmcv <= 1.3.4 | 2.9.0 <= mmdet <= 2.11.0 |
 
 We have tested the following versions of OS and software:
 
@@ -44,7 +55,6 @@ Make sure that your compilation CUDA version and runtime CUDA version matches.
 You can check the supported CUDA version for precompiled packages on the [PyTorch website](https://pytorch.org/).
 :::
 
-
 c. Install [mmcv](https://github.com/open-mmlab/mmcv), we recommend you to install the pre-build mmcv as below.
 
 ```shell
@@ -56,18 +66,19 @@ Please replace ``{cu_version}`` and ``{torch_version}`` in the url with your des
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
 ```
+
 :::{note}
 mmcv-full is only compiled on PyTorch 1.x.0 because the compatibility usually holds between 1.x.0 and 1.x.1. If your PyTorch version is 1.x.1, you can install mmcv-full compiled with PyTorch 1.x.0 and it usually works well.
 
-    ```
-    # We can ignore the micro version of PyTorch
-    pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7/index.html
-    ```
+```bash
+# We can ignore the micro version of PyTorch
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7/index.html
+```
+
 :::
 :::{note}
-Note that mmocr 0.2.1 or later requires mmcv 1.3.8 or later.
 
-If it compiles during installation, then please check that the CUDA version and PyTorch version **exactly** matches the version in the `mmcv-full` installation command. For example, PyTorch 1.7.0 and 1.7.1 are treated differently.
+If it compiles during installation, then please check that the CUDA version and PyTorch version **exactly** matches the version in the `mmcv-full` installation command.
 
 See official [installation guide](https://github.com/open-mmlab/mmcv#installation) for different versions of MMCV compatible to different PyTorch and CUDA versions.
 :::
@@ -84,7 +95,6 @@ pip install mmdet
 ```
 
 Optionally you can choose to install `mmdet` following the official [installation guide](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md).
-
 
 e. Clone the MMOCR repository.
 
@@ -148,6 +158,7 @@ It is recommended to symlink the dataset root to `mmocr/data`. Please refer to [
 If your folder structure is different, you may need to change the corresponding paths in config files.
 
 The `mmocr` folder is organized as follows:
+
 ```
 ├── configs/
 ├── demo/

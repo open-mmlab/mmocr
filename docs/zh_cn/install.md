@@ -9,8 +9,19 @@
 - CUDA 10.1
 - NCCL 2
 - GCC 5.4.0 或更高版本
-- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation) >= 1.3.8
-- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation) >= 2.14.0
+- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation)
+- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation)
+
+为了确保代码实现的正确性，MMOCR 每个版本都有可能改变对 MMCV 和 MMDetection 版本的依赖。请根据以下表格确保版本之间的相互匹配。
+
+| MMOCR | MMCV | MMDetection |
+| - | - | - |
+| master | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 3.0.0 |
+| 0.4.0, 0.4.1 | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 2.20.0 |
+| 0.3.0 | 1.3.8 <= mmcv <= 1.4.0 | 2.14.0 <= mmdet <= 2.20.0 |
+| 0.2.1 | 1.3.8 <= mmcv <= 1.4.0 | 2.13.0 <= mmdet <= 2.20.0 |
+| 0.2.0 | 1.3.4 <= mmcv <= 1.4.0 | 2.11.0 <= mmdet <= 2.13.0 |
+| 0.1.0 | 1.2.6 <= mmcv <= 1.3.4 | 2.9.0 <= mmdet <= 2.11.0 |
 
 我们已经测试了以下操作系统和软件版本:
 
@@ -38,10 +49,10 @@ b. 按照 PyTorch 官网教程安装 PyTorch 和 torchvision ([参见官方链�
 ```shell
 conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.1 -c pytorch
 ```
+
 :::{note}
 请确定 CUDA 编译版本和运行版本一致。你可以在 [PyTorch](https://pytorch.org/) 官网检查预编译 PyTorch 所支持的 CUDA 版本。
 :::
-
 
 c. 安装 [mmcv](https://github.com/open-mmlab/mmcv)，推荐以下方式进行安装。
 
@@ -54,18 +65,19 @@ pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
 ```
+
 :::{note}
 PyTorch 在 1.x.0 和 1.x.1 之间通常是兼容的，故 mmcv-full 只提供 1.x.0 的编译包。如果你的 PyTorch 版本是 1.x.1，你可以放心地安装在 1.x.0 版本编译的 mmcv-full。
 
-```
+```bash
 # 我们可以忽略 PyTorch 的小版本号
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7/index.html
 ```
-:::
-:::{note}
-使用 mmocr 0.2.0 及更高版本需要安装 mmcv 1.3.4 或更高版本。
 
-如果安装时进行了编译过程，请再次确认安装的 `mmcv-full` 版本与环境中 CUDA 和 PyTorch 的版本匹配。即使是 PyTorch 1.7.0 和 1.7.1，`mmcv-full` 的安装版本也是有区别的。
+:::
+
+:::{note}
+如果安装时进行了编译过程，请再次确认安装的 `mmcv-full` 版本与环境中 CUDA 和 PyTorch 的版本匹配。
 
 如有需要，可以在[此处](https://github.com/open-mmlab/mmcv#installation)检查 mmcv 与 CUDA 和 PyTorch 的版本对应关系。
 :::
@@ -82,7 +94,6 @@ pip install mmdet
 ```
 
 或者，你也可以按照 [安装指南](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md) 中的方法安装 `mmdet`。
-
 
 e. 克隆 MMOCR 项目到本地.
 
@@ -146,6 +157,7 @@ docker run --gpus all --shm-size=8g -it -v {实际数据目录}:/mmocr/data mmoc
 如果你需要的文件夹路径不同，你可能需要在 configs 文件中修改对应的文件路径信息。
 
  `mmocr` 文件夹路径结构如下：
+
 ```
 ├── configs/
 ├── demo/
