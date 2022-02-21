@@ -6,6 +6,8 @@ import os.path as osp
 from functools import partial
 
 import mmcv
+import numpy as np
+from PIL import Image
 
 from mmocr.utils.fileio import list_to_file
 
@@ -24,7 +26,7 @@ def parse_args():
 def process_img(args, src_image_root, dst_image_root):
     # Dirty hack for multi-processing
     img_idx, img_info, anns = args
-    src_img = mmcv.imread(osp.join(src_image_root, img_info['file_name']))
+    src_img = Image.open(osp.join(src_image_root, img_info['file_name']))
     labels = []
     for ann_idx, ann in enumerate(anns):
         text_label = ann['utf8_string']
@@ -36,12 +38,35 @@ def process_img(args, src_image_root, dst_image_root):
         x, y, w, h = ann['bbox']
         x, y = max(0, math.floor(x)), max(0, math.floor(y))
         w, h = math.ceil(w), math.ceil(h)
-        dst_img = src_img[y:y + h, x:x + w]
+        dst_img = src_img.crop((x, y, x + w, y + h))
+
+        points = np.asarray(ann['points']).reshape(-1, 2)
+        dist = ((points - np.asarray([x, y])) ** 2).sum(axis=1)
+        left_midpoint = (points[0] + points[-1]) / 2
+        right_corner_points = ((points - left_midpoint) ** 2).sum(axis=1).argsort()[-2:]
+        right_midpoint = points[right_corner_points].sum(axis=0) / 2
+        d_x, d_y = abs(right_midpoint - left_midpoint)
+
+        if dist[0] + dist[-1] <= dist[right_corner_points].sum():
+            if d_x >= d_y:
+                rot = 0
+            else:
+                rot = 90
+        else:
+            if d_x >= d_y:
+                rot = 180
+            else:
+                rot = -90
+        if rot:
+            dst_img = dst_img.rotate(rot, expand=True)
+
         dst_img_name = f'img_{img_idx}_{ann_idx}.jpg'
         dst_img_path = osp.join(dst_image_root, dst_img_name)
-        mmcv.imwrite(dst_img, dst_img_path)
+        # Preserve JPEG quality
+        dst_img.save(dst_img_path, qtables=src_img.quantization)
         labels.append(f'{osp.basename(dst_image_root)}/{dst_img_name}'
                       f' {text_label}')
+    src_img.close()
     return labels
 
 
