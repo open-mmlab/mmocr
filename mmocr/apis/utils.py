@@ -45,17 +45,17 @@ def replace_image_to_tensor(cfg, set_types=None):
 
 
 def update_pipeline_recog(cfg, idx=None):
-    warning_msg = 'Set "rotate_degrees=[0]" to support batch ' + \
-        'inference since samples_per_gpu > 1.'
+    warning_msg = 'Set "rotate_degrees=[0]" (just one degree) to support ' + \
+        'batch inference since samples_per_gpu > 1.'
     if idx is None:
         if cfg.get('pipeline',
                    None) and cfg.pipeline[1].type == 'MultiRotateAugOCR':
-            if cfg.pipeline[1].get('rotate_degrees', [0]) != [0]:
+            if len(cfg.pipeline[1].get('rotate_degrees', [0])) != 1:
                 warnings.warn(warning_msg)
                 cfg.pipeline[1]['rotate_degrees'] = [0]
     else:
         if cfg[idx][1].type == 'MultiRotateAugOCR':
-            if cfg[idx][1].get('rotate_degrees', [0]) != [0]:
+            if len(cfg[idx][1].get('rotate_degrees', [0])) != 1:
                 warnings.warn(warning_msg)
                 cfg[idx][1]['rotate_degrees'] = [0]
 
