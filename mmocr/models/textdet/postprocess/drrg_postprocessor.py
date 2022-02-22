@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmocr.models.builder import POSTPROCESSOR
 from .base_postprocessor import BasePostprocessor
 from .utils import (clusters2labels, comps2boundaries, connected_components,
