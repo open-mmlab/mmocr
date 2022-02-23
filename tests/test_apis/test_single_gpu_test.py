@@ -43,7 +43,7 @@ def generate_sample_dataloader(cfg, curr_dir, img_prefix='', ann_file=''):
     test = copy.deepcopy(cfg.data.test.datasets[0])
     test.img_prefix = img_prefix
     test.ann_file = ann_file
-    cfg.data.workers_per_gpu = 1
+    cfg.data.workers_per_gpu = 0
     cfg.data.test.datasets = [test]
     dataset = build_dataset(cfg.data.test)
 

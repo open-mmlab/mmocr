@@ -105,8 +105,10 @@ def test_ocr_init(mock_loading, mock_config, mock_build_detector,
             mock_config.assert_called_with(gt_cfg[-1])
             mock_build_detector.assert_called_once()
             mock_loading.assert_called_once()
+        device = torch.cuda.current_device() if \
+            torch.cuda.is_available() else 'cpu'
         calls = [
-            mock.call(gt_cfg[i], gt_ckpt[i], device='cuda:0') for i in i_range
+            mock.call(gt_cfg[i], gt_ckpt[i], device=device) for i in i_range
         ]
         mock_init_detector.assert_has_calls(calls)
 
@@ -165,8 +167,10 @@ def test_ocr_init_customize_config(mock_loading, mock_config,
             mock_config.assert_called_with(gt_cfg[-1])
             mock_build_detector.assert_called_once()
             mock_loading.assert_called_once()
+        device = torch.cuda.current_device() if \
+            torch.cuda.is_available() else 'cpu'
         calls = [
-            mock.call(gt_cfg[i], gt_ckpt[i], device='cuda:0') for i in i_range
+            mock.call(gt_cfg[i], gt_ckpt[i], device=device) for i in i_range
         ]
         mock_init_detector.assert_has_calls(calls)
 

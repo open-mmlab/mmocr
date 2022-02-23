@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from .transformer_module import (MultiHeadAttention, PositionalEncoding,
                                  PositionwiseFeedForward,
                                  ScaledDotProductAttention)
