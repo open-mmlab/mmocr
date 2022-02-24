@@ -5,9 +5,9 @@ from mmocr.datasets.builder import LOADERS, build_parser
 from mmocr.utils import list_from_file
 
 
-class BaseAnnFileLoader:
-    """Base annotation file loader to load annotations from ann_file, and parse
-    raw annotation to dict format with certain parser.
+class Loader:
+    """A basic annotation file loader to load annotations from ann_file, and
+    parse raw annotation to dict format with certain parser.
 
     Args:
         ann_file (str): Annotation file path.
@@ -50,7 +50,7 @@ class BaseAnnFileLoader:
 
 
 @LOADERS.register_module()
-class HardDiskLoader(BaseAnnFileLoader):
+class HardDiskLoader(Loader):
     """Load annotation file from hard disk to RAM."""
 
     def _load(self, ann_file):
@@ -58,7 +58,7 @@ class HardDiskLoader(BaseAnnFileLoader):
 
 
 @LOADERS.register_module()
-class LmdbLoader(BaseAnnFileLoader):
+class LmdbLoader(Loader):
     """Load annotation file with lmdb storage backend."""
 
     def _load(self, ann_file):
