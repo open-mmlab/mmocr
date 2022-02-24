@@ -13,6 +13,7 @@ ENCODERS = Registry('encoder')
 DECODERS = Registry('decoder')
 PREPROCESSOR = Registry('preprocessor')
 POSTPROCESSOR = Registry('postprocessor')
+ASSIGNERS = Registry('assigner')
 
 UPSAMPLE_LAYERS = Registry('upsample layer', parent=MMCV_UPSAMPLE_LAYERS)
 BACKBONES = Registry('models', parent=MMDET_BACKBONES)

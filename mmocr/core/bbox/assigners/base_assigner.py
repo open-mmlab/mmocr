@@ -16,7 +16,7 @@ class BaseAssigner(metaclass=ABCMeta):
                 gt_labels=None):
         """Assign boxes to ground truth boxes."""
 
-    def assign(self, pred_results, gt_results):
+    def assign(self, pred_results, img_metas):
         gt_inds = self._assign(pred_results[self.assign_key],
-                               gt_results['gt_' + self.assign_key])
+                               img_metas[self.assign_key])
         return gt_inds
