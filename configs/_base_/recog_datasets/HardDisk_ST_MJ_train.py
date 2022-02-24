@@ -4,14 +4,14 @@
 train_root = '/comp_robot/workspace/qixianbiao/datasets/mixture'
 
 train_img_prefix1 = f'{train_root}/Syn90k/mnt/ramdisk/max/90kDICT32px'
-train_ann_file1 = f'{train_root}/Syn90k/label.lmdb'
+train_ann_file1 = f'{train_root}/Syn90k/label.txt'
 
 train1 = dict(
     type='OCRDataset',
     img_prefix=train_img_prefix1,
     ann_file=train_ann_file1,
     loader=dict(
-        type='LmdbLoader',
+        type='HardDiskLoader',
         repeat=1,
         parser=dict(
             type='LineStrParser',
@@ -23,7 +23,7 @@ train1 = dict(
 
 train_img_prefix2 = f'{train_root}/SynthText/' + \
     'synthtext/SynthText_patch_horizontal'
-train_ann_file2 = f'{train_root}/SynthText/label.lmdb'
+train_ann_file2 = f'{train_root}/SynthText/label.txt',
 
 train2 = {key: value for key, value in train1.items()}
 train2['img_prefix'] = train_img_prefix2
