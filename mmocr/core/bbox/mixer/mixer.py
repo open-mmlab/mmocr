@@ -21,7 +21,7 @@ class Mixer:
         self.pred_keys = pred_keys
         self.add_gt = add_gt
 
-    def __call__(self, img_metas, pred_results, gt_inds):
+    def __call__(self, img_metas, pred_results, gt_inds=None):
         """
         Args:
             img_metas (dict): The original "img_metas".
@@ -37,7 +37,8 @@ class Mixer:
 
         self.new_img_metas = {}
         self.img_metas = img_metas
-        self._extract_pred(pred_results, gt_inds)
+        if gt_inds is not None:
+            self._extract_pred(pred_results, gt_inds)
         if self.add_gt:
             self._merge_img_metas(self.img_metas)
         return self.new_img_metas
