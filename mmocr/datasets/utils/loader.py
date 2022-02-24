@@ -1,20 +1,19 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import os.path as osp
+import mmcv
 
 from mmocr.datasets.builder import LOADERS, build_parser
 from mmocr.utils import list_from_file
 
 
-@LOADERS.register_module()
-class Loader:
-    """Load annotation from annotation file, and parse instance information to
-    dict format with parser.
+class BaseAnnFileLoader:
+    """Base annotation file loader to load annotations from ann_file, and parse
+    raw annotation to dict format with certain parser.
 
     Args:
         ann_file (str): Annotation file path.
         parser (dict): Dictionary to construct parser
             to parse original annotation infos.
-        repeat (int): Repeated times of annotations.
+        repeat (int|float): Repeated times of dataset.
     """
 
     def __init__(self, ann_file, parser, repeat=1):
@@ -22,14 +21,13 @@ class Loader:
         assert isinstance(repeat, int)
         assert isinstance(parser, dict)
         assert repeat > 0
-        assert osp.exists(ann_file), f'{ann_file} is not exist'
 
         self.ori_data_infos = self._load(ann_file)
         self.parser = build_parser(parser)
         self.repeat = repeat
 
     def __len__(self):
-        return len(self.ori_data_infos) * self.repeat
+        return int(len(self.ori_data_infos) * self.repeat)
 
     def _load(self, ann_file):
         """Load annotation file."""
@@ -52,19 +50,15 @@ class Loader:
 
 
 @LOADERS.register_module()
-class HardDiskLoader(Loader):
-    """Load annotation file from hard disk to RAM.
-
-    Args:
-        ann_file (str): Annotation file path.
-    """
+class HardDiskLoader(BaseAnnFileLoader):
+    """Load annotation file from hard disk to RAM."""
 
     def _load(self, ann_file):
         return list_from_file(ann_file)
 
 
 @LOADERS.register_module()
-class LmdbLoader(Loader):
+class LmdbLoader(BaseAnnFileLoader):
     """Load annotation file with lmdb storage backend."""
 
     def _load(self, ann_file):
@@ -107,7 +101,11 @@ class LmdbAnnFileBackend:
         return self.total_number
 
     def _get_env(self):
-        import lmdb
+        try:
+            import lmdb
+        except ImportError:
+            raise ImportError(
+                'Please install lmdb to enable LmdbAnnFileBackend.')
         return lmdb.open(
             self.lmdb_path,
             max_readers=1,
