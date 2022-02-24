@@ -104,7 +104,7 @@ class Mixer:
                     stack_list.append(src_img_metas[key][src_inds])
                 else:
                     stack_list.append(src_img_metas[key])
-                self.new_img_metas[key] = torch.vstack(stack_list)
+                self.new_img_metas[key] = torch.cat(stack_list, dim=0)
             else:
                 raise NotImplementedError(f'Merging {type(src_img_metas[key])}'
                                           'is not supported yet')
