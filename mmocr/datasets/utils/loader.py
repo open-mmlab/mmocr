@@ -18,7 +18,7 @@ class Loader:
 
     def __init__(self, ann_file, parser, repeat=1):
         assert isinstance(ann_file, str)
-        assert isinstance(repeat, int)
+        assert isinstance(repeat, (int, float))
         assert isinstance(parser, dict)
         assert repeat > 0
 

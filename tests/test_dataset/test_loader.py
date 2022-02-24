@@ -43,8 +43,6 @@ def test_loader():
         Loader(ann_file, parser, repeat=0)
     with pytest.raises(AssertionError):
         Loader(ann_file, [], repeat=1)
-    with pytest.raises(AssertionError):
-        Loader('sample.txt', parser, repeat=1)
     with pytest.raises(NotImplementedError):
         loader = Loader(ann_file, parser, repeat=1)
         print(loader)
