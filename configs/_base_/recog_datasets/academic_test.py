@@ -2,7 +2,7 @@
 # Regular Datasets: IIIT5K, SVT, IC13
 # Irregular Datasets: IC15, SVTP, CT80
 
-test_root = '/comp_robot/workspace/qixianbiao/datasets/mixture'
+test_root = 'data/mixture'
 
 test_img_prefix1 = f'{test_root}/IIIT5K/'
 test_img_prefix2 = f'{test_root}/svt/'

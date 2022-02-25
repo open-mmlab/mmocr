@@ -1,7 +1,7 @@
 # Text Recognition Training set, including:
 # Synthetic Datasets: SynthText, Syn90k
 
-train_root = '/comp_robot/workspace/qixianbiao/datasets/mixture'
+train_root = 'data/mixture'
 
 train_img_prefix1 = f'{train_root}/Syn90k'
 train_ann_file1 = f'{train_root}/Syn90k/shuffle_labels.txt'
