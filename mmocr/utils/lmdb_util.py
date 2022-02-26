@@ -25,7 +25,8 @@ def lmdb_converter(img_list_file, output, batch_size=1000, coding='utf-8'):
                 return
     print('create database %s' % output)
     Path(output).mkdir(parents=True, exist_ok=False)
-    env = lmdb.open(output, map_size=1099511627776)
+    # map_size should be small for windows
+    env = lmdb.open(output, map_size=1024000)
 
     # build lmdb
     beg_time = time.strftime('%H:%M:%S')
