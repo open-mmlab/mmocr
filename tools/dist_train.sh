@@ -19,8 +19,4 @@ if [ ${GPUS} == 1 ]; then
 else
     python -m torch.distributed.launch --nproc_per_node=$GPUS --master_port=$PORT \
         $(dirname "$0")/train.py $CONFIG --work-dir=${WORK_DIR} --launcher pytorch ${@:4}
-<<<<<<< HEAD
 fi
-=======
-fi
->>>>>>> 197de40... fix #794: add MASTER
