@@ -3,6 +3,10 @@ from .abinet import ABINet
 from .base import BaseRecognizer
 from .crnn import CRNNNet
 from .encode_decode_recognizer import EncodeDecodeRecognizer
+<<<<<<< HEAD
+=======
+from .master import MASTER
+>>>>>>> 197de40... fix #794: add MASTER
 from .nrtr import NRTR
 from .robust_scanner import RobustScanner
 from .sar import SARNet
@@ -11,5 +15,9 @@ from .seg_recognizer import SegRecognizer
 
 __all__ = [
     'BaseRecognizer', 'EncodeDecodeRecognizer', 'CRNNNet', 'SARNet', 'NRTR',
+<<<<<<< HEAD
     'SegRecognizer', 'RobustScanner', 'SATRN', 'ABINet'
+=======
+    'SegRecognizer', 'RobustScanner', 'SATRN', 'ABINet', 'MASTER'
+>>>>>>> 197de40... fix #794: add MASTER
 ]

@@ -3,6 +3,10 @@ from .abinet_language_decoder import ABILanguageDecoder
 from .abinet_vision_decoder import ABIVisionDecoder
 from .base_decoder import BaseDecoder
 from .crnn_decoder import CRNNDecoder
+<<<<<<< HEAD
+=======
+from .master_decoder import MasterDecoder
+>>>>>>> 197de40... fix #794: add MASTER
 from .nrtr_decoder import NRTRDecoder
 from .position_attention_decoder import PositionAttentionDecoder
 from .robust_scanner_decoder import RobustScannerDecoder
@@ -14,5 +18,10 @@ __all__ = [
     'CRNNDecoder', 'ParallelSARDecoder', 'SequentialSARDecoder',
     'ParallelSARDecoderWithBS', 'NRTRDecoder', 'BaseDecoder',
     'SequenceAttentionDecoder', 'PositionAttentionDecoder',
+<<<<<<< HEAD
     'RobustScannerDecoder', 'ABILanguageDecoder', 'ABIVisionDecoder'
+=======
+    'RobustScannerDecoder', 'ABILanguageDecoder', 'ABIVisionDecoder',
+    'MasterDecoder'
+>>>>>>> 197de40... fix #794: add MASTER
 ]
