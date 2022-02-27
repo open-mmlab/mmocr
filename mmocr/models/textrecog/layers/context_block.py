@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 
+
 class ContextBlock(nn.Module):
 
     def __init__(self,
@@ -27,7 +28,10 @@ class ContextBlock(nn.Module):
         self.single_header_inplanes = int(inplanes / headers)
 
         if pooling_type == 'att':
-            self.conv_mask = nn.Conv2d(self.single_header_inplanes, 1, kernel_size=1)
+            self.conv_mask = nn.Conv2d(
+                                        self.single_header_inplanes,
+                                        1, kernel_size=1
+            )
             self.softmax = nn.Softmax(dim=2)
         else:
             self.avg_pool = nn.AdaptiveAvgPool2d(1)
@@ -45,7 +49,11 @@ class ContextBlock(nn.Module):
                 nn.ReLU(inplace=True),
                 nn.Conv2d(self.planes, self.inplanes, kernel_size=1))
             # for concat
-            self.cat_conv = nn.Conv2d(2 * self.inplanes, self.inplanes, kernel_size=1)
+            self.cat_conv = nn.Conv2d(
+                                        2 * self.inplanes,
+                                        self.inplanes,
+                                        kernel_size=1
+            )
         elif fusion_type == 'channel_mul':
             self.channel_mul_conv = nn.Sequential(
                 nn.Conv2d(self.inplanes, self.planes, kernel_size=1),
@@ -57,23 +65,36 @@ class ContextBlock(nn.Module):
         batch, channel, height, width = x.size()
         if self.pooling_type == 'att':
             # [N*headers, C', H , W] C = headers * C'
-            x = x.view(batch * self.headers, self.single_header_inplanes, height, width)
+            x = x.view(
+                        batch * self.headers,
+                        self.single_header_inplanes,
+                        height,
+                        width
+            )
             input_x = x
 
             # [N*headers, C', H * W] C = headers * C'
             # input_x = input_x.view(batch, channel, height * width)
-            input_x = input_x.view(batch * self.headers, self.single_header_inplanes, height * width)
+            input_x = input_x.view(
+                                    batch * self.headers,
+                                    self.single_header_inplanes,
+                                    height * width
+            )
 
             # [N*headers, 1, C', H * W]
             input_x = input_x.unsqueeze(1)
             # [N*headers, 1, H, W]
             context_mask = self.conv_mask(x)
             # [N*headers, 1, H * W]
-            context_mask = context_mask.view(batch * self.headers, 1, height * width)
+            context_mask = context_mask.view(
+                                                batch * self.headers,
+                                                1, height * width
+            )
 
             # scale variance
             if self.att_scale and self.headers > 1:
-                context_mask = context_mask / torch.sqrt(self.single_header_inplanes)
+                context_mask = context_mask / \
+                               torch.sqrt(self.single_header_inplanes)
 
             # [N*headers, 1, H * W]
             context_mask = self.softmax(context_mask)
@@ -84,7 +105,12 @@ class ContextBlock(nn.Module):
             context = torch.matmul(input_x, context_mask)
 
             # [N, headers * C', 1, 1]
-            context = context.view(batch, self.headers * self.single_header_inplanes, 1, 1)
+            context = context.view(
+                                    batch,
+                                    self.headers * self.single_header_inplanes,
+                                    1,
+                                    1
+            )
         else:
             # [N, C, 1, 1]
             context = self.avg_pool(x)
@@ -113,7 +139,10 @@ class ContextBlock(nn.Module):
             _, C1, _, _ = channel_concat_term.shape
             N, C2, H, W = out.shape
 
-            out = torch.cat([out, channel_concat_term.expand(-1, -1, H, W)], dim=1)
+            out = torch.cat(
+                            [out, channel_concat_term.expand(-1, -1, H, W)],
+                            dim=1
+            )
             out = self.cat_conv(out)
             out = nn.functional.layer_norm(out, [self.inplanes, H, W])
             out = nn.functional.relu(out)

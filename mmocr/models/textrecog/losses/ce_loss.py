@@ -149,7 +149,7 @@ class MASTERTFLoss(CELoss):
 
     def format(self, outputs, targets_dict):
         # MASTER already cut the last in decoder.
-        #outputs = outputs[:, :-1, :].contiguous()
+        # outputs = outputs[:, :-1, :].contiguous()
         targets = targets_dict['padded_targets']
         targets = targets[:, 1:].contiguous()
         if self.flatten:

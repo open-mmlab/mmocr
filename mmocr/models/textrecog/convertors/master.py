@@ -83,8 +83,10 @@ class MasterConvertor(BaseConvertor):
                                                     torch.Tensor([5,4,6,3,7])]
                 padded_targets (Tensor(bsz * max_seq_len))
         """
-        # ordinary OCR task strings is list of str, but table master is list of list.
-        assert utils.is_type_list(strings, str) or utils.is_type_list(strings, list)
+        # ordinary OCR task strings is list of str,
+        # but table master is list of list.
+        assert utils.is_type_list(strings, str) \
+               or utils.is_type_list(strings, list)
 
         tensors, padded_targets = [], []
         indexes = self.str2idx(strings)

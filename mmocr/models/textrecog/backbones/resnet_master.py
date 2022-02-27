@@ -10,17 +10,28 @@ from mmocr.models.textrecog.layers import ContextBlock
 
 def conv3x3(in_planes, out_planes, stride=1):
     """ 3x3 convolution with padding """
-    return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride, padding=1, bias=False)
+    return nn.Conv2d(in_planes,
+                     out_planes,
+                     kernel_size=3,
+                     stride=stride,
+                     padding=1,
+                     bias=False)
+
 
 def conv1x1(in_planes, out_planes, stride=1):
     """ 1x1 convolution """
-    return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
+    return nn.Conv2d(in_planes,
+                     out_planes,
+                     kernel_size=1,
+                     stride=stride,
+                     bias=False)
 
 
 class _BasicBlock(nn.Module):
     expansion = 1
 
-    def __init__(self, inplanes, planes, stride=1, downsample=None, gcb_config=None):
+    def __init__(self, inplanes, planes, stride=1,
+                        downsample=None, gcb_config=None):
         super(_BasicBlock, self).__init__()
         self.conv1 = conv3x3(inplanes, planes, stride)
         self.bn1 = nn.BatchNorm2d(planes, momentum=0.9)
@@ -65,11 +76,13 @@ class _BasicBlock(nn.Module):
 
         return out
 
+
 def get_gcb_config(gcb_config, layer):
     if gcb_config is None or not gcb_config['layers'][layer]:
         return None
     else:
         return gcb_config
+
 
 @BACKBONES.register_module()
 class ResNetMASTER(BaseModule):
@@ -83,54 +96,85 @@ class ResNetMASTER(BaseModule):
         gcb_config (dict): Global context block setting dict.
     """
 
-
     def __init__(self, layers, input_dim=3, gcb_config=None):
         assert len(layers) >= 4
 
         super(ResNetMASTER, self).__init__()
         self.inplanes = 128
-        self.conv1 = nn.Conv2d(input_dim, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(input_dim, 64,
+                               kernel_size=3,
+                               stride=1, padding=1,
+                               bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.relu1 = nn.ReLU(inplace=True)
 
-        self.conv2 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv2 = nn.Conv2d(64, 128,
+                               kernel_size=3,
+                               stride=1, padding=1,
+                               bias=False)
         self.bn2 = nn.BatchNorm2d(128)
         self.relu2 = nn.ReLU(inplace=True)
 
         self.maxpool1 = nn.MaxPool2d(kernel_size=2, stride=2)
 
-        self.layer1 = self._make_layer(_BasicBlock, 256, layers[0], stride=1, gcb_config=get_gcb_config(gcb_config, 0))
+        self.layer1 = self._make_layer(
+                                    _BasicBlock, 256,
+                                    layers[0], stride=1,
+                                    gcb_config=get_gcb_config(gcb_config, 0)
+        )
 
-        self.conv3 = nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv3 = nn.Conv2d(256, 256,
+                               kernel_size=3, stride=1,
+                               padding=1, bias=False)
         self.bn3 = nn.BatchNorm2d(256)
         self.relu3 = nn.ReLU(inplace=True)
 
         self.maxpool2 = nn.MaxPool2d(kernel_size=2, stride=2)
 
-        self.layer2 = self._make_layer(_BasicBlock, 256, layers[1], stride=1, gcb_config=get_gcb_config(gcb_config, 1))
+        self.layer2 = self._make_layer(
+                                    _BasicBlock, 256,
+                                    layers[1], stride=1,
+                                    gcb_config=get_gcb_config(gcb_config, 1)
+        )
 
-        self.conv4 = nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv4 = nn.Conv2d(256, 256,
+                               kernel_size=3, stride=1,
+                               padding=1, bias=False)
         self.bn4 = nn.BatchNorm2d(256)
         self.relu4 = nn.ReLU(inplace=True)
 
-        self.maxpool3 = nn.MaxPool2d(kernel_size=(2,1), stride=(2,1))
+        self.maxpool3 = nn.MaxPool2d(kernel_size=(2, 1), stride=(2, 1))
 
-        self.layer3 = self._make_layer(_BasicBlock, 512, layers[2], stride=1, gcb_config=get_gcb_config(gcb_config, 2))
+        self.layer3 = self._make_layer(
+                                    _BasicBlock, 512,
+                                    layers[2], stride=1,
+                                    gcb_config=get_gcb_config(gcb_config, 2)
+        )
 
-        self.conv5 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv5 = nn.Conv2d(512, 512,
+                               kernel_size=3, stride=1,
+                               padding=1, bias=False)
         self.bn5 = nn.BatchNorm2d(512)
         self.relu5 = nn.ReLU(inplace=True)
 
-        self.layer4 = self._make_layer(_BasicBlock, 512, layers[3], stride=1, gcb_config=get_gcb_config(gcb_config, 3))
+        self.layer4 = self._make_layer(
+                                    _BasicBlock, 512, layers[3], stride=1,
+                                    gcb_config=get_gcb_config(gcb_config, 3)
+        )
 
-        self.conv6 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv6 = nn.Conv2d(512, 512,
+                               kernel_size=3, stride=1,
+                               padding=1, bias=False)
         self.bn6 = nn.BatchNorm2d(512)
         self.relu6 = nn.ReLU(inplace=True)
 
     def init_weights(self, pretrained=None):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                nn.init.kaiming_normal_(m.weight,
+                                        mode='fan_out',
+                                        nonlinearity='relu'
+                )
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
@@ -144,7 +188,15 @@ class ResNetMASTER(BaseModule):
             )
 
         layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample, gcb_config=gcb_config))
+        layers.append(
+                        block(
+                                self.inplanes,
+                                planes,
+                                stride,
+                                downsample,
+                                gcb_config=gcb_config
+                        )
+        )
         self.inplanes = planes * block.expansion
         for _ in range(1, blocks):
             layers.append(block(self.inplanes, planes))

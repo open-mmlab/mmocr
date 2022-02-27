@@ -18,7 +18,7 @@ model = dict(
             fusion_type="channel_add",
             layers=[False, True, True, True],
         ),
-        layers=[1,2,5,3]),
+        layers=[1, 2, 5, 3]),
     encoder=dict(
         type='PositionalEncoder',
         d_model=512,
