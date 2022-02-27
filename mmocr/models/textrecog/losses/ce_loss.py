@@ -131,8 +131,6 @@ class TFLoss(CELoss):
             outputs = outputs.permute(0, 2, 1).contiguous()
 
         return outputs, targets
-<<<<<<< HEAD
-=======
 
 
 @LOSSES.register_module()
@@ -161,4 +159,3 @@ class MASTERTFLoss(CELoss):
             outputs = outputs.permute(0, 2, 1).contiguous()
 
         return outputs, targets
->>>>>>> 197de40... fix #794: add MASTER
