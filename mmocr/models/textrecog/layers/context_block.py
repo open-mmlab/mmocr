@@ -15,7 +15,8 @@ class ContextBlock(nn.Module):
         assert pooling_type in ['avg', 'att']
 
         assert fusion_type in ['channel_add', 'channel_mul', 'channel_concat']
-        assert inplanes % headers == 0 and inplanes >= 8  # inplanes must be divided by headers evenly
+        # inplanes must be divided by headers evenly
+        assert inplanes % headers == 0 and inplanes >= 8
 
         self.headers = headers
         self.inplanes = inplanes
@@ -101,7 +102,8 @@ class ContextBlock(nn.Module):
 
             # [N*headers, 1, H * W, 1]
             context_mask = context_mask.unsqueeze(-1)
-            # [N*headers, 1, C', 1] = [N*headers, 1, C', H * W] * [N*headers, 1, H * W, 1]
+            # [N*headers, 1, C', 1] =
+            # [N*headers, 1, C', H * W] * [N*headers, 1, H * W, 1]
             context = torch.matmul(input_x, context_mask)
 
             # [N, headers * C', 1, 1]

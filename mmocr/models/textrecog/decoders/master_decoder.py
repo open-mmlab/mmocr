@@ -63,8 +63,8 @@ def self_attention(query, key, value, mask=None, dropout=None):
     d_k = value.size(-1)
     score = torch.matmul(query, key.transpose(-2, -1) / math.sqrt(d_k))
     if mask is not None:
-        #  score = score.masked_fill(mask == 0, -1e9) # b, h, L, L
-        score = score.masked_fill(mask == 0, -6.55e4) # for fp16
+        #  score = score.masked_fill(mask == 0, -1e9)  # b, h, L, L
+        score = score.masked_fill(mask == 0, -6.55e4)  # for fp16
     p_attn = F.softmax(score, dim=-1)
     if dropout is not None:
         p_attn = dropout(p_attn)
@@ -87,8 +87,13 @@ class MultiHeadAttention(nn.Module):
         nbatches = query.size(0)
         # 1) Do all the linear projections in batch from d_model => h x d_k
         query, key, value = \
-            [linear(x).view(nbatches, -1, self.headers, self.d_k).transpose(1, 2)
-             for linear, x in zip(self.linears, (query, key, value))]
+            [linear(x).view(nbatches,
+                            -1,
+                            self.headers,
+                            self.d_k
+                            ).transpose(1, 2)
+             for linear, x in zip(self.linears, (query, key, value))
+             ]
         # 2) Apply attention on all the projected vectors in batch
         x, self.attn = self_attention(
                                         query, key, value,
@@ -116,7 +121,10 @@ class DecoderLayer(nn.Module):
 
     def forward(self, x, feature, src_mask, tgt_mask):
         x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, tgt_mask))
-        x = self.sublayer[1](x, lambda x: self.src_attn(x, feature, feature, src_mask))
+        x = self.sublayer[1](x,
+                             lambda x:
+                             self.src_attn(x, feature, feature, src_mask)
+                             )
         return self.sublayer[2](x, self.feed_forward)
 
 
@@ -167,7 +175,12 @@ class MasterDecoder(BaseDecoder):
         trg_pad_mask = (tgt != self.PAD).unsqueeze(1).unsqueeze(3).byte()
 
         tgt_len = tgt.size(1)
-        trg_sub_mask = torch.tril(torch.ones((tgt_len, tgt_len), dtype=torch.uint8, device=src.device))
+        trg_sub_mask = torch.tril(
+            torch.ones(
+                        (tgt_len, tgt_len),
+                        dtype=torch.uint8,
+                        device=src.device)
+        )
 
         tgt_mask = trg_pad_mask & trg_sub_mask
         return None, tgt_mask
@@ -187,7 +200,7 @@ class MasterDecoder(BaseDecoder):
         for i in range(self.max_length+1):
             _, target_mask = self.make_mask(feature, input)
             out = self.decode(input, feature, None, target_mask)
-            #out = self.decoder(input, feature, None, target_mask)
+            #  out = self.decoder(input, feature, None, target_mask)
             output = out
             prob = F.softmax(out, dim=-1)
             _, next_word = torch.max(prob, dim=-1)
@@ -205,7 +218,7 @@ class MasterDecoder(BaseDecoder):
             padded_targets = targets_dict.to(device)
 
         src_mask = None
-        _, tgt_mask = self.make_mask(out_enc, padded_targets[:,:-1])
+        _, tgt_mask = self.make_mask(out_enc, padded_targets[:, :-1])
         return self.decode(padded_targets[:, :-1], out_enc, src_mask, tgt_mask)
 
     def forward_test(self, feat, out_enc, img_metas):

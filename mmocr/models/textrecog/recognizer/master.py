@@ -32,7 +32,7 @@ class MASTER(EncodeDecodeRecognizer):
 
     def init_weights(self, pretrained=None):
         for p in self.parameters():
-            if p.dim()>1:
+            if p.dim() > 1:
                 nn.init.xavier_uniform_(p)
 
     def forward_train(self, img, img_metas):
