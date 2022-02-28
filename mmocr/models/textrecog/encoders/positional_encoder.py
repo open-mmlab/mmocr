@@ -28,8 +28,8 @@ class PositionalEncoder(BaseEncoder):
         # Compute the positional encodings once in log space.
         pe = torch.zeros(max_len, d_model)
         position = torch.arange(0, max_len).unsqueeze(1).float()
-        div_term = torch.exp(torch.arange(0, d_model, 2).float()
-                             * -math.log(10000.0) / d_model)
+        div_term = torch.exp(
+            torch.arange(0, d_model, 2).float() * -math.log(10000.0) / d_model)
         pe[:, 0::2] = torch.sin(position * div_term)
         pe[:, 1::2] = torch.cos(position * div_term)
         pe = pe.unsqueeze(0)
@@ -38,7 +38,7 @@ class PositionalEncoder(BaseEncoder):
     def forward(self, feat, **kwargs):
         if len(feat.shape) > 3:
             b, c, h, w = feat.shape
-            feat = feat.view(b, c, h*w)  # flatten 2D feature map
+            feat = feat.view(b, c, h * w)  # flatten 2D feature map
             feat = feat.permute((0, 2, 1))
         feat = feat + self.pe[:, :feat.size(1)]  # pe 1*5000*512
         return self.dropout(feat)
