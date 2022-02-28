@@ -20,26 +20,14 @@ model = dict(
         ),
         layers=[1, 2, 5, 3]),
     encoder=dict(
-        type='PositionalEncoder',
-        d_model=512,
-        dropout=0.2,
-        max_len=5000),
+        type='PositionalEncoder', d_model=512, dropout=0.2, max_len=5000),
     decoder=dict(
         type='MasterDecoder',
         N=3,
         decoder=dict(
-            self_attn=dict(
-                headers=8,
-                d_model=512,
-                dropout=0.),
-            src_attn=dict(
-                headers=8,
-                d_model=512,
-                dropout=0.),
-            feed_forward=dict(
-                d_model=512,
-                d_ff=2024,
-                dropout=0.),
+            self_attn=dict(headers=8, d_model=512, dropout=0.),
+            src_attn=dict(headers=8, d_model=512, dropout=0.),
+            feed_forward=dict(d_model=512, d_ff=2024, dropout=0.),
             size=512,
             dropout=0.),
         d_model=512),
