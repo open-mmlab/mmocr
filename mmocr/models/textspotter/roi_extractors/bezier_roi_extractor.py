@@ -3,6 +3,7 @@ import torch
 from mmcv.runner import force_fp32
 from mmdet.models.roi_heads.roi_extractors import SingleRoIExtractor
 
+from build.lib.mmocr.utils.check_argument import is_type_list
 from mmocr.models.builder import ROI_EXTRACTORS
 
 
@@ -57,15 +58,22 @@ class BezierRoIExtractor(SingleRoIExtractor):
         return target_lvls
 
     @force_fp32(apply_to=('feats', ), out_fp16=True)
-    def forward(self, feats, bezier_rois):
+    def forward(self, feats, bezier_regions, roi_inds):
         """Forward function.
 
         Args:
             feats (tuple(Tensor)): Multi-level features. Each level of the
             feature has the shape of :math:`(N, C, H, W)`.
-            bezier_rois (Tensor): The tensor representing RoIs of shape
-                :math:`(N, 17)`, where the first element is batch_id and the
+            bezier_regions (Tensor): The tensor representing RoIs of shape
+                :math:`(N_r, 16)`, where the first element is batch_id and the
                 others are Bezier control points representing the RoI.
+            roi_inds (list[int] or torch.LongTensor): An integer vector of
+                length :math:`(N_r)` that maps each Bezier region to the
+                feature tensor.
         """
+        if is_type_list(roi_inds, int):
+            roi_inds = bezier_regions.new_tensor(roi_inds, dtype=torch.long)
+
+        bezier_rois = torch.cat([roi_inds.unsqueeze(1), bezier_regions], dim=1)
 
         return super(BezierRoIExtractor, self).forward(feats, bezier_rois)
