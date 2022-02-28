@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
-from mmcv.runner import BaseModule, Sequential
+from mmcv.runner import BaseModule
 
-import mmocr.utils as utils
+
 from mmocr.models.builder import BACKBONES
-from mmocr.models.textrecog.layers import BasicBlock
+
 from mmocr.models.textrecog.layers import ContextBlock
 
 
@@ -30,8 +30,14 @@ def conv1x1(in_planes, out_planes, stride=1):
 class _BasicBlock(nn.Module):
     expansion = 1
 
-    def __init__(self, inplanes, planes, stride=1,
-                        downsample=None, gcb_config=None):
+    def __init__(
+                    self,
+                    inplanes,
+                    planes,
+                    stride=1,
+                    downsample=None,
+                    gcb_config=None
+    ):
         super(_BasicBlock, self).__init__()
         self.conv1 = conv3x3(inplanes, planes, stride)
         self.bn1 = nn.BatchNorm2d(planes, momentum=0.9)
@@ -168,13 +174,13 @@ class ResNetMASTER(BaseModule):
         self.bn6 = nn.BatchNorm2d(512)
         self.relu6 = nn.ReLU(inplace=True)
 
-    def init_weights(self, pretrained=None):
+    def init_weights(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 nn.init.kaiming_normal_(m.weight,
                                         mode='fan_out',
                                         nonlinearity='relu'
-                )
+                                        )
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
