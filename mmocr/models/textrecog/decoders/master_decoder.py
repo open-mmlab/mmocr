@@ -7,8 +7,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from mmocr.models.builder import DECODERS
-from .base_decoder import BaseDecoder
 from ..encoders.positional_encoder import PositionalEncoder
+from .base_decoder import BaseDecoder
 
 
 class Embeddings(nn.Module):
