@@ -167,7 +167,8 @@ results = ocr.readtext('demo/demo_kie.jpeg', print_result=True, imshow=True)
 
 :::{注意}
 
-User can use default pretrained models by specifying `det` and/or `recog`, which is equivalent to specifying their corresponding `*_config` and `*_ckpt`. However, manually specifying `*_config` and `*_ckpt` will always override values set by `det` and/or `recog`. Similar rules also apply to `kie`, `kie_config` and `kie_ckpt`.
+
+用户能够使用默认的预训练模型，通过指定 `det` 和/或 `recog` 参数的方式，这种方式等同于指定 `*_config` 和 `*_ckpt` 对应的参数。然而，手动指定 `*_config` 和 `*_ckpt` 的参数会被 `det` 和/或 `recog` 的值覆盖。同样的规则也适用于 `kie`， `kie_config` 和 `kie_ckpt`。
 
 :::
 
@@ -175,23 +176,23 @@ User can use default pretrained models by specifying `det` and/or `recog`, which
 
 | Arguments           | Type                    | Default      | Description                                                            |
 | ------------------- | ----------------------- | ------------ | ---------------------------------------------------------------------- |
-| `img`               | str/list/tuple/np.array | **required** | img, folder path, np array or list/tuple (with img paths or np arrays) |
-| `output`           | str                     | None         | Output result visualization - img path or folder path                  |
-| `batch_mode`        | bool                    | False        | Whether use batch mode for inference [1]                                  |
-| `det_batch_size`    | int                     | 0            | Batch size for text detection (0 for max size)                         |
-| `recog_batch_size`  | int                     | 0            | Batch size for text recognition (0 for max size)                       |
-| `single_batch_size` | int                     | 0            | Batch size for only detection or recognition                           |
-| `export`            | str                     | None         | Folder where the results of each image are exported                    |
-| `export_format`     | str                     | json         | Format of the exported result file(s)                                  |
-| `details`           | bool                    | False        | Whether include the text boxes coordinates and confidence values       |
-| `imshow`            | bool                    | False        | Whether to show the result visualization on screen                     |
-| `print_result`      | bool                    | False        | Whether to show the result for each image                              |
-| `merge`             | bool                    | False        | Whether to merge neighboring boxes [2]                              |
-| `merge_xdist`       | float                   | 20           | The maximum x-axis distance to merge boxes                              |
+| `img`               | str/list/tuple/np.array | **required** | 图像，文件夹路径，np array 或 list/tuple （包含图片路径或 np arrays） |
+| `output`           | str                     | None         | 输出结果可视化 - 图片路径或文件夹路径                  |
+| `batch_mode`        | bool                    | False        | 是否使用批处理模式推理 [1]                                  |
+| `det_batch_size`    | int                     | 0            | 文本检测的批处理尺寸（设置为 0 使用最大值）                         |
+| `recog_batch_size`  | int                     | 0            | 文本识别的批处理尺寸（设置为0使用最大值）                       |
+| `single_batch_size` | int                     | 0            | 仅检测或识别使用的批处理尺寸                           |
+| `export`            | str                     | None         | 放置结果图片的文件夹                    |
+| `export_format`     | str                     | json         | 结果文件保存的格式                                  |
+| `details`           | bool                    | False        | 是否包含文本框和置信度       |
+| `imshow`            | bool                    | False        | 是否在屏幕展示可视化结果                     |
+| `print_result`      | bool                    | False        | 是否展示每个图片的结果                              |
+| `merge`             | bool                    | False        | 是否对相邻框进行合并 [2]                              |
+| `merge_xdist`       | float                   | 20           | 合并相邻框的最大 x 轴距离                              |
 
-[1]: Make sure that the model is compatible with batch mode.
+[1]: 确保模型适合批处理模式。
 
-[2]: Only effective when the script is running in det + recog mode.
+[2]: 只有同时运行检测+识别模式，脚本才有效。
 
 All arguments are the same for the cli, all you need to do is add 2 hyphens at the beginning of the argument and replace underscores by hyphens.
 (*Example:* `det_batch_size` becomes `--det-batch-size`)
