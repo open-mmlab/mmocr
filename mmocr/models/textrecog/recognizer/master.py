@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 
 from mmocr.models.builder import DETECTORS
@@ -6,7 +7,6 @@ from .encode_decode_recognizer import EncodeDecodeRecognizer
 
 @DETECTORS.register_module()
 class MASTER(EncodeDecodeRecognizer):
-    # need to inherit BaseRecognizer or EncodeDecodeRecognizer in mmocr
     def __init__(self,
                  preprocessor=None,
                  backbone=None,

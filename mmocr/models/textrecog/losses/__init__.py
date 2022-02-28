@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .ce_loss import CELoss, SARLoss, TFLoss, MASTERTFLoss
+from .ce_loss import CELoss, MASTERTFLoss, SARLoss, TFLoss
 from .ctc_loss import CTCLoss
 from .mix_loss import ABILoss
 from .seg_loss import SegLoss
