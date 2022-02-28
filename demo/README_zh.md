@@ -14,7 +14,6 @@
 </div>
 <br>
 
-**Instruction:** Perform detection inference on an image with the TextSnake recognition model, export the result in a json file (default) and save the visualization file.
 
 **说明：** 使用 TextSnake 识别模型对图像上的文本进行检测推理，通过 json 格式的文件（默认）导出结果，并保存可视化文件。
 
@@ -44,8 +43,7 @@ results = ocr.readtext('demo/demo_text_det.jpg', output='demo/det_out.jpg', expo
 </div>
 <br>
 
-**Instruction:** Perform batched recognition inference on a folder with hundreds of image with the CRNN_TPS recognition model and save the visualization results in another folder.
-*Batch size is set to 10 to prevent out of memory CUDA runtime errors.*
+
 
 **说明：** 使用 CRNN_TPS 识别模型对文件夹下成百上千张图片进行批量识别推理。*批处理的尺寸设置为 10，以防内存溢出引起的 CUDA 运行时错误。*
 
@@ -111,7 +109,7 @@ results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, imshow=True)
 </div>
 <br>
 
-**Instruction:** Perform end-to-end ocr (det + recog) inference first with PS_CTW detection model and SAR recognition model, then run KIE inference with SDMGR model on the ocr result and show the visualization.
+
 **说明：** 首先，使用 PS_CTW 检测模型和 SAR 识别模型，执行端到端 ocr （检测+识别）推理，然后对之前的结果使用 SDMGR 模型提取关键信息（KIE），并展示可视化结果。
 
 
@@ -144,7 +142,7 @@ results = ocr.readtext('demo/demo_kie.jpeg', print_result=True, imshow=True)
 ## API 参数
 
 
-该 API 有多种可使用的参数。下表时 python 接口的参数。
+该 API 有多种可使用的参数。下表是 python 接口的参数。
 
 
 **MMOCR():**
@@ -189,76 +187,75 @@ results = ocr.readtext('demo/demo_kie.jpeg', print_result=True, imshow=True)
 | `print_result`      | bool                    | False        | 是否展示每个图片的结果                              |
 | `merge`             | bool                    | False        | 是否对相邻框进行合并 [2]                              |
 | `merge_xdist`       | float                   | 20           | 合并相邻框的最大 x 轴距离                              |
+  
+[1]: 确保 模型适合批处理模式。
 
-[1]: 确保模型适合批处理模式。
+[2]: 只有 同时运行检测+识别模式，脚本才有效。
 
-[2]: 只有同时运行检测+识别模式，脚本才有效。
+所有的参数在命令行和配置文件中保持一致，你只需要在参数前简单添加两个连接符，并且将下划线替换为连接符即可。  
+（*例如：* `det_batch_size` 变成了 `--det-batch-size`）
 
-All arguments are the same for the cli, all you need to do is add 2 hyphens at the beginning of the argument and replace underscores by hyphens.
-(*Example:* `det_batch_size` becomes `--det-batch-size`)
-
-For bool type arguments, putting the argument in the command stores it as true.
-(*Example:* `python mmocr/utils/ocr.py demo/demo_text_det.jpg --batch_mode --print_result`
-means that `batch_mode` and `print_result` are set to `True`)
+对于布尔类型参数，将其置于命令中就会使其值为真。  
+（*例如：* `python mmocr/utils/ocr.py demo/demo_text_det.jpg --batch_mode --print_result` 意为 `batch_mode` 和 `print_result` 的参数值设置为 `True`）
 
 ---
 
-## Models
+## 模型
 
-**Text detection:**
+**文本检测：**
 
-| Name          |                                                                        Reference                                                                         | `batch_mode` inference support |
+| 名称          |                                                                        参考                                                                         | `batch_mode` 推理支持 |
 | ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------: |
-| DB_r18        |            [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |         :x:          |
-| DB_r50        |            [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |         :x:          |
-| DRRG          |                                         [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#drrg)                                          |         :x:          |
-| FCE_IC15      |             [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |         :x:          |
-| FCE_CTW_DCNv2 |             [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |         :x:          |
-| MaskRCNN_CTW  |                                      [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |         :x:          |
-| MaskRCNN_IC15 |                                      [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |         :x:          |
-| MaskRCNN_IC17 |                                      [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |         :x:          |
-| PANet_CTW     | [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |  :heavy_check_mark:  |
-| PANet_IC15    | [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |  :heavy_check_mark:  |
-| PS_CTW        |                                        [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |         :x:          |
-| PS_IC15       |                                        [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |         :x:          |
-| TextSnake     |                                       [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#textsnake)                                       |  :heavy_check_mark:  |
+| DB_r18        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |         :x:          |
+| DB_r50        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |         :x:          |
+| DRRG          |                                         [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#drrg)                                          |         :x:          |
+| FCE_IC15      |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |         :x:          |
+| FCE_CTW_DCNv2 |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |         :x:          |
+| MaskRCNN_CTW  |                                      [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |         :x:          |
+| MaskRCNN_IC15 |                                      [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |         :x:          |
+| MaskRCNN_IC17 |                                      [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |         :x:          |
+| PANet_CTW     | [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |  :heavy_check_mark:  |
+| PANet_IC15    | [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |  :heavy_check_mark:  |
+| PS_CTW        |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |         :x:          |
+| PS_IC15       |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |         :x:          |
+| TextSnake     |                                       [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#textsnake)                                       |  :heavy_check_mark:  |
 
-**Text recognition:**
+**文本识别：**
 
-| Name          |                                                             Reference                                                              | `batch_mode` inference support |
+| 名称          |                                                             参考                                                              | `batch_mode` 推理支持 |
 | ------------- | :--------------------------------------------------------------------------------------------------------------------------------: | :------------------: |
-| ABINet          | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#read-like-humans-autonomous-bidirectional-and-iterative-language-modeling-for-scene-text-recognition) |         :heavy_check_mark:          |
-| CRNN          | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |         :x:          |
-| SAR           | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition) |  :heavy_check_mark:  |
-| SAR_CN *          | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition) |  :heavy_check_mark:  |
-| NRTR_1/16-1/8 | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr) |  :heavy_check_mark:  |
-| NRTR_1/8-1/4  | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr) |  :heavy_check_mark:  |
-| RobustScanner | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#robustscanner-dynamically-enhancing-positional-clues-for-robust-text-recognition) |  :heavy_check_mark:  |
-| SATRN | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn) |  :heavy_check_mark:  |
-| SATRN_sm | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn) |  :heavy_check_mark:  |
-| SEG           | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline) |         :x:          |
-| CRNN_TPS      | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#crnn-with-tps-based-stn) |  :heavy_check_mark:  |
+| ABINet          | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#read-like-humans-autonomous-bidirectional-and-iterative-language-modeling-for-scene-text-recognition) |         :heavy_check_mark:          |
+| CRNN          | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |         :x:          |
+| SAR           | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition) |  :heavy_check_mark:  |
+| SAR_CN *          | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition) |  :heavy_check_mark:  |
+| NRTR_1/16-1/8 | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr) |  :heavy_check_mark:  |
+| NRTR_1/8-1/4  | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr) |  :heavy_check_mark:  |
+| RobustScanner | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#robustscanner-dynamically-enhancing-positional-clues-for-robust-text-recognition) |  :heavy_check_mark:  |
+| SATRN | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn) |  :heavy_check_mark:  |
+| SATRN_sm | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn) |  :heavy_check_mark:  |
+| SEG           | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline) |         :x:          |
+| CRNN_TPS      | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#crnn-with-tps-based-stn) |  :heavy_check_mark:  |
 
-:::{warning}
+:::{警告}
 
-SAR_CN is the only model that supports Chinese character recognition and it requires
-a Chinese dictionary. Please download the dictionary from [here](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#chinese-dataset) for a successful run.
+SAR——CN 是唯一支持中文字符识别的模型，并且它需要一个中文字典。以便推理能成功运行，请先从 [这里](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#chinese-dataset) 下载辞典。
 
 :::
 
-**Key information extraction:**
+**关键信息提取：**
 
-| Name          |                                                                        Reference                                                                         | `batch_mode` support |
+| 名称          |                                                                        参考                                                                         | `batch_mode` 支持 |
 | ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------: |
-| SDMGR         |            [link](https://mmocr.readthedocs.io/en/latest/kie_models.html#spatial-dual-modality-graph-reasoning-for-key-information-extraction)            |         :heavy_check_mark:          |
+| SDMGR         |            [链接](https://mmocr.readthedocs.io/en/latest/kie_models.html#spatial-dual-modality-graph-reasoning-for-key-information-extraction)            |         :heavy_check_mark:          |
 ---
 
-## Additional info
+## 附加
 
-- To perform det + recog inference (end2end ocr), both the `det` and `recog` arguments must be defined.
-- To perform only detection set the `recog` argument to `None`.
-- To perform only recognition set the `det` argument to `None`.
+- 执行检测+识别的推理（端到段 ocr），需要同时定义 `det` 和 `recog` 参数
+- 如果只需要执行检测那么 `recog` 参数设置为 `None`。
+- 如果只需要执行识别那么 `det` 参数设置为 `None`。
 - `details` argument only works with end2end ocr.
-- `det_batch_size` and `recog_batch_size` arguments define the number of images you want to forward to the model at the same time. For maximum speed, set this to the highest number you can. The max batch size is limited by the model complexity and the GPU VRAM size.
+- `details` 参数仅在端到端的 ocr 模型有效。
+- `det_batch_size` 和 `recog_batch_size` 参数定义了你在同一时间想要传递给模型的图片数量。为了提高推理速度，应该尽可能设置能达到的最大值。而最大的批处理尺寸受模型复杂度和 GPU 的显存大小限制。
 
-If you have any suggestions for new features, feel free to open a thread or even PR :)
+如果你对新特性有任何建议，请随时开一个主题讨论，也可以向我们提一个 PR :)
