@@ -15,7 +15,7 @@ model = dict(
             ratio=0.0625,
             headers=1,
             att_scale=False,
-            fusion_type="channel_add",
+            fusion_type='channel_add',
             layers=[False, True, True, True],
         ),
         layers=[1, 2, 5, 3]),

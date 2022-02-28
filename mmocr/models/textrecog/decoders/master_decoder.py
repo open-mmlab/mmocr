@@ -1,13 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import math
 import copy
+import math
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 from mmocr.models.builder import DECODERS
-
 from .base_decoder import BaseDecoder
 from ..encoders.positional_encoder import PositionalEncoder
 
@@ -109,7 +108,7 @@ class MultiHeadAttention(nn.Module):
 
 class DecoderLayer(nn.Module):
     """
-    Decoder is made of self attention, srouce attention and feed forward.
+    Decoder is made of self attention, source attention and feed forward.
     """
     def __init__(self, size, self_attn, src_attn, feed_forward, dropout):
         super(DecoderLayer, self).__init__()

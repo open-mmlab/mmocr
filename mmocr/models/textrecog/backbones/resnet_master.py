@@ -2,9 +2,7 @@
 import torch.nn as nn
 from mmcv.runner import BaseModule
 
-
 from mmocr.models.builder import BACKBONES
-
 from mmocr.models.textrecog.layers import ContextBlock
 
 
