@@ -56,7 +56,11 @@ model = dict(
         max_seq_len=max_seq_len,
     ),
     loss=dict(
-        type='ABILoss', enc_weight=1.0, dec_weight=1.0, fusion_weight=1.0),
+        type='ABILoss',
+        enc_weight=1.0,
+        dec_weight=1.0,
+        fusion_weight=1.0,
+        num_classes=num_chars),
     label_convertor=label_convertor,
     max_seq_len=max_seq_len,
     iter_size=3)
