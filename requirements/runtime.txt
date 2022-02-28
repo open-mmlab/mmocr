@@ -11,3 +11,4 @@ rapidfuzz
 scikit-image
 six
 terminaltables
+tesserocr
