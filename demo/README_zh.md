@@ -76,7 +76,7 @@ results = ocr.readtext(%INPUT_FOLDER_PATH%, output = %OUTPUT_FOLDER_PATH%, batch
 python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
 ```
 
-:::{注意}
+:::{note}
 
 当从命令行调用脚本时，配置文件默认保存在 `configs`目录下，用户也可以设定通过设定 `config_dir` 来自定义配置文件读取
 
