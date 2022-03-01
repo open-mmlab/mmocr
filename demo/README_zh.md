@@ -111,7 +111,7 @@ results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, imshow=True)
 python mmocr/utils/ocr.py demo/demo_kie.jpeg  --det PS_CTW --recog SAR --kie SDMGR --print-result --imshow
 ```
 
-:::{注意}
+:::{note}
 
 当用户从命令行执行脚本时，会默认配置文件都保存在 `configs/` 目录下。用户可以通过指定 `config_dir` 的值来自定义读取配置文件的文件夹。
 
@@ -153,7 +153,7 @@ results = ocr.readtext('demo/demo_kie.jpeg', print_result=True, imshow=True)
 
 [1]: `kie` 当且仅当同时指定了文本检测和识别模型时才有效。
 
-:::{注意}
+:::{note}
 
 mmocr 为了方便使用提供了预置的模型配置和对应的预训练权重，用户可以通过指定 `det` 和/或 `recog` 值来指定使用，这种方法等同于分别单独指定其对应的 `*_config` 和 `*_ckpt`。需要注意的是，手动指定 `*_config` 和 `*_ckpt` 会覆盖 `det` 和/或 `recog` 指定模型预置的配置和权重值。 同理 `kie`， `kie_config` 和 `kie_ckpt` 的参数设定逻辑相同。
 
@@ -225,7 +225,7 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 | [SEG](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline) |         :x:          |
 | [CRNN_TPS](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#crnn-with-tps-based-stn) |  :heavy_check_mark:  |
 
-:::{注意}
+:::{note}
 
 SAR_CN 是唯一支持中文字符识别的模型，并且它需要一个中文字典。以便推理能成功运行，请先从 [这里](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#chinese-dataset) 下载辞典。
 
