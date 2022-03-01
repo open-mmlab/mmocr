@@ -16,7 +16,7 @@ class IcdarDataset(CocoDataset):
 
     Args:
         ann_file_backend (str): Storage backend for annotation file,
-            should be one in ['disk', 'petrel', 'http']. Default to 'disk'
+            should be one in ['disk', 'petrel', 'http']. Default to 'disk'.
     """
     CLASSES = ('text')
 

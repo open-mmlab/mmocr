@@ -1,6 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import os
+import os.path as osp
+import shutil
+
 import mmcv
 
+from mmocr import digit_version
 from mmocr.datasets.builder import LOADERS, build_parser
 from mmocr.utils import list_from_file
 
