@@ -2,6 +2,7 @@
 import io
 import json
 import os
+import platform
 import random
 import sys
 import tempfile
@@ -225,6 +226,7 @@ def MMOCR_testobj(mock_loading, mock_init_detector, **kwargs):
     return MMOCR(**kwargs, device=device)
 
 
+@pytest.mark.skipif(platform.system == 'Windows', reason='skip on windows')
 @mock.patch('mmocr.utils.ocr.KIEDataset')
 def test_readtext(mock_kiedataset):
     # Fixing the weights of models to prevent them from

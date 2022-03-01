@@ -25,7 +25,7 @@ def main():
         '--lmdb_map_size',
         '-l',
         default='109951162776',
-        help='reserved size for lmdb loading , default 109951162776 bytes')
+        help='maximum size database may grow to , default 109951162776 bytes')
     opt = parser.parse_args()
 
     lmdb_converter(

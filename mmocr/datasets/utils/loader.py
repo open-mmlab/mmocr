@@ -68,12 +68,12 @@ class LmdbLoader(Loader):
     """Load annotation file with lmdb storage backend."""
 
     def _load(self, ann_file):
-        self.lmdb_anno_obj = LmdbAnnFileBackend(ann_file)
+        lmdb_anno_obj = LmdbAnnFileBackend(ann_file)
 
-        return self.lmdb_anno_obj
+        return lmdb_anno_obj
 
     def close(self):
-        self.lmdb_anno_obj.close()
+        self.ori_data_infos.close()
 
 
 class LmdbAnnFileBackend:

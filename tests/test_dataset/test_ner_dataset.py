@@ -112,7 +112,3 @@ def test_ner_dataset():
     assert len(all_entities[0][0]) == 3
 
     tmp_dir.cleanup()
-
-
-if __name__ == '__main__':
-    test_ner_dataset()
