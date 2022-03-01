@@ -7,6 +7,7 @@ import torch
 
 from mmocr.datasets.ner_dataset import NerDataset
 from mmocr.models.ner.convertors.ner_convertor import NerConvertor
+from mmocr.utils import list_to_file
 
 
 def _create_dummy_ann_file(ann_file):
@@ -22,14 +23,12 @@ def _create_dummy_ann_file(ann_file):
         }
     }
 
-    with open(ann_file, 'w') as fw:
-        fw.write(json.dumps(data, ensure_ascii=False) + '\n')
+    list_to_file(ann_file, [json.dumps(data, ensure_ascii=False)])
 
 
 def _create_dummy_vocab_file(vocab_file):
-    with open(vocab_file, 'w') as fw:
-        for char in list(map(chr, range(ord('a'), ord('z') + 1))):
-            fw.write(char + '\n')
+    for char in list(map(chr, range(ord('a'), ord('z') + 1))):
+        list_to_file(vocab_file, [json.dumps(char + '\n', ensure_ascii=False)])
 
 
 def _create_dummy_loader():
@@ -113,3 +112,7 @@ def test_ner_dataset():
     assert len(all_entities[0][0]) == 3
 
     tmp_dir.cleanup()
+
+
+if __name__ == '__main__':
+    test_ner_dataset()

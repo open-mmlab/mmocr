@@ -38,10 +38,18 @@ def test_list_from_file():
             for lineend in ['\n', '\r\n']:
                 for i, lines in enumerate(lists):
                     filename = f'{tmpdirname}/{i}.txt'
-                    with open(filename, 'w', encoding=encoding) as f:
+                    with open(
+                            filename, 'w', encoding=encoding,
+                            newline='\n') as f:
                         f.writelines(f'{line}{lineend}' for line in lines)
                     lines2 = list_from_file(filename, encoding=encoding)
                     lines = list(map(str, lines))
+                    print('lines:{}, lines2:{}, encoding:{}'.format(
+                        lines, lines2, encoding))
                     assert len(lines) == len(lines2)
                     assert all(line1 == line2
                                for line1, line2 in zip(lines, lines2))
+
+
+if __name__ == '__main__':
+    test_list_from_file()
