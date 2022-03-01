@@ -78,7 +78,7 @@ python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
 
 :::{注意}
 
-当从命令行调用脚本时，脚本会假设配置文件都保存在 `configs/` 目录下。用户可以通过指定 `config_dir` 的值来自定义读取配置文件的文件夹。
+当从命令行调用脚本时，配置文件默认保存在 `configs`目录下，用户也可以设定通过设定 `config_dir` 来自定义配置文件读取
 
 :::
 
@@ -184,7 +184,7 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 以上所有参数在命令行同样适用，只需要在参数前简单添加两个连接符，并且将下参数中的下划线替换为连接符即可。  
 （*例如：* `det_batch_size` 变成了 `--det-batch-size`）
 
-对于布尔类型参数，将其置于命令中就会存储其值为真。  
+对于布尔类型参数，添加在命令中默认为true。  
 （*例如：* `python mmocr/utils/ocr.py demo/demo_text_det.jpg --batch_mode --print_result` 意为 `batch_mode` 和 `print_result` 的参数值设置为 `True`）
 
 ---
@@ -225,7 +225,7 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 | [SEG](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline) |         :x:          |
 | [CRNN_TPS](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#crnn-with-tps-based-stn) |  :heavy_check_mark:  |
 
-:::{提醒}
+:::{注意}
 
 SAR_CN 是唯一支持中文字符识别的模型，并且它需要一个中文字典。以便推理能成功运行，请先从 [这里](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#chinese-dataset) 下载辞典。
 
