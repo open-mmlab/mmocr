@@ -1,6 +1,6 @@
 # 演示
 
-mmocr 为示例和应用，以 [ocr.py](https://github.com/open-mmlab/mmocr/blob/main/mmocr/utils/ocr.py) 脚本形式，提供了方便使用的 API。
+MMOCR 为示例和应用，以 [ocr.py](https://github.com/open-mmlab/mmocr/blob/main/mmocr/utils/ocr.py) 脚本形式，提供了方便使用的 API。
 
 该 API 可以通过命令行执行，也可以在 python 脚本内调用。
 
