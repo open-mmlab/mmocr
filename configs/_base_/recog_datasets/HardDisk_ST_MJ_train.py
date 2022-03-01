@@ -1,5 +1,5 @@
 # Text Recognition Training set, including:
-# Synthetic Datasets: SynthText, Syn90k
+# Synthetic Datasets: SynthText, Syn90k, label.txt
 
 train_root = 'data/mixture'
 
