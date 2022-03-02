@@ -72,6 +72,9 @@ class LmdbLoader(Loader):
 
         return lmdb_anno_obj
 
+    def close(self):
+        self.ori_data_infos.close()
+
 
 class LmdbAnnFileBackend:
     """Lmdb storage backend for annotation file.
@@ -113,3 +116,6 @@ class LmdbAnnFileBackend:
             readahead=False,
             meminit=False,
         )
+
+    def close(self):
+        self.env.close()

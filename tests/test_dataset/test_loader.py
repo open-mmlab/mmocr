@@ -73,9 +73,9 @@ def test_loader():
     # test lmdb loader and line str parser
     _create_dummy_line_str_file(ann_file)
     lmdb_file = osp.join(tmp_dir.name, 'fake_data.lmdb')
-    lmdb_converter(ann_file, lmdb_file)
+    lmdb_converter(ann_file, lmdb_file, lmdb_map_size=102400)
 
     lmdb_loader = LmdbLoader(lmdb_file, parser, repeat=1)
     assert lmdb_loader[0] == {'filename': 'sample1.jpg', 'text': 'hello'}
-
+    lmdb_loader.close()
     tmp_dir.cleanup()
