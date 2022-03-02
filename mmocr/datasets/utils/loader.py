@@ -69,6 +69,10 @@ class AnnFileLoader:
             return data
         raise StopIteration
 
+    def close(self):
+        """For ann_file with lmdb format only."""
+        self.ori_data_infos.close()
+
 
 @LOADERS.register_module()
 class HardDiskLoader(AnnFileLoader):
