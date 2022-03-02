@@ -42,7 +42,6 @@ results = ocr.readtext('demo/demo_text_det.jpg', output='demo/det_out.jpg', expo
 
 **注：** 使用 CRNN_TPS 识别模型对多张图片进行批量识别。*批处理的尺寸设置为 10，以防内存溢出引起的 CUDA 运行时错误。*
 
-
 - 命令行执行：
 
 ```shell
@@ -78,7 +77,7 @@ python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
 
 :::{note}
 
-当从命令行调用脚本时，配置文件默认保存在 `configs`目录下，用户也可以设定通过设定 `config_dir` 来自定义配置文件读取
+当用户从命令行执行脚本时，默认配置文件都会保存在 `configs/` 目录下。用户可以通过指定 `config_dir` 的值来自定义读取配置文件的文件夹。
 
 :::
 
@@ -113,7 +112,7 @@ python mmocr/utils/ocr.py demo/demo_kie.jpeg  --det PS_CTW --recog SAR --kie SDM
 
 :::{note}
 
-当用户从命令行执行脚本时，会默认配置文件都保存在 `configs/` 目录下。用户可以通过指定 `config_dir` 的值来自定义读取配置文件的文件夹。
+当用户从命令行执行脚本时，默认配置文件都会保存在 `configs/` 目录下。用户可以通过指定 `config_dir` 的值来自定义读取配置文件的文件夹。
 
 :::
 
@@ -139,9 +138,9 @@ results = ocr.readtext('demo/demo_kie.jpeg', print_result=True, imshow=True)
 
 | 参数      | 类型                  | 默认值       | 描述                                                 |
 | -------------- | --------------------- | ------------- | ----------------------------------------------------------- |
-| `det`          | 参考 [models](#models) | PANet_IC15    | 文本检测算法                                    |
-| `recog`        | 参考 [models](#models) | SAR           | 文本识别算法                                  |
-| `kie` [1]      | 参考 [models](#models) | None          | 关键信息提取算法                                  |
+| `det`          | 参考 **模型** 章节 | PANet_IC15    | 文本检测算法                                    |
+| `recog`        | 参考 **模型** 章节 | SAR           | 文本识别算法                                  |
+| `kie` [1]      | 参考 **模型** 章节 | None          | 关键信息提取算法                                  |
 | `config_dir`   | str                   | configs/      | 用于存放所有配置文件的文件夹路径  |
 | `det_config`   | str                   | None          | 指定检测模型的自定义配置文件路径         |
 | `det_ckpt`     | str                   | None          | 指定检测模型的自定义参数文件路径         |
