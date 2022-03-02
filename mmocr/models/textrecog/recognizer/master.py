@@ -7,6 +7,7 @@ from .encode_decode_recognizer import EncodeDecodeRecognizer
 
 @DETECTORS.register_module()
 class MASTER(EncodeDecodeRecognizer):
+
     def __init__(self,
                  preprocessor=None,
                  backbone=None,
@@ -18,17 +19,9 @@ class MASTER(EncodeDecodeRecognizer):
                  test_cfg=None,
                  max_seq_len=40,
                  pretrained=None):
-        super(MASTER, self).__init__(
-                                        preprocessor,
-                                        backbone,
-                                        encoder,
-                                        decoder,
-                                        loss,
-                                        label_convertor,
-                                        train_cfg,
-                                        test_cfg,
-                                        max_seq_len,
-                                        pretrained)
+        super(MASTER, self).__init__(preprocessor, backbone, encoder, decoder,
+                                     loss, label_convertor, train_cfg,
+                                     test_cfg, max_seq_len, pretrained)
 
     def init_weights(self, pretrained=None):
         for p in self.parameters():

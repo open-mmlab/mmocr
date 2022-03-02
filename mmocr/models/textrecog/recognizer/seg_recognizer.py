@@ -1,13 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 
-from mmocr.models.builder import (DETECTORS, build_backbone, build_convertor,
+from mmocr.models.builder import (RECOGNIZERS, build_backbone, build_convertor,
                                   build_head, build_loss, build_neck,
                                   build_preprocessor)
 from .base import BaseRecognizer
 
 
-@DETECTORS.register_module()
+@RECOGNIZERS.register_module()
 class SegRecognizer(BaseRecognizer):
     """Base class for segmentation based recognizer."""
 
