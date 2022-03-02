@@ -1,42 +1,58 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import os
-import os.path as osp
-import shutil
+import warnings
 
-import mmcv
-
-from mmocr import digit_version
 from mmocr.datasets.builder import LOADERS, build_parser
-from mmocr.utils import list_from_file
+from .backend import (HardDiskAnnFileBackend, HTTPAnnFileBackend,
+                      PetrelAnnFileBackend)
 
 
-class Loader:
-    """A basic annotation file loader to load annotations from ann_file, and
-    parse raw annotation to dict format with certain parser.
+class AnnFileLoader:
+    """Annotation file loader to load annotations from ann_file, and parse raw
+    annotation to dict format with certain parser.
 
     Args:
         ann_file (str): Annotation file path.
         parser (dict): Dictionary to construct parser
             to parse original annotation infos.
         repeat (int|float): Repeated times of dataset.
+        file_storage_backend (str): The storage backend type for annotation
+            file. Options are "disk", "http" and "petrel". Default: "disk".
+        file_format (str): The format of annotation file. Options are
+            "txt" and "lmdb". Default: "txt".
     """
 
-    def __init__(self, ann_file, parser, repeat=1):
+    _backends = {
+        'disk': HardDiskAnnFileBackend,
+        'petrel': PetrelAnnFileBackend,
+        'http': HTTPAnnFileBackend
+    }
+
+    def __init__(self,
+                 ann_file,
+                 parser,
+                 repeat=1,
+                 file_storage_backend='disk',
+                 file_format='txt'):
         assert isinstance(ann_file, str)
         assert isinstance(repeat, (int, float))
         assert isinstance(parser, dict)
         assert repeat > 0
+        assert file_storage_backend in ['disk', 'http', 'petrel']
+        assert file_format in ['txt', 'lmdb']
 
-        self.ori_data_infos = self._load(ann_file)
         self.parser = build_parser(parser)
         self.repeat = repeat
+        self.ann_file_backend = self._backends[file_storage_backend](
+            file_format)
+        self.ori_data_infos = self._load(ann_file)
 
     def __len__(self):
         return int(len(self.ori_data_infos) * self.repeat)
 
     def _load(self, ann_file):
         """Load annotation file."""
-        raise NotImplementedError
+
+        return self.ann_file_backend(ann_file)
 
     def __getitem__(self, index):
         """Retrieve anno info of one instance with dict format."""
@@ -55,70 +71,32 @@ class Loader:
 
 
 @LOADERS.register_module()
-class HardDiskLoader(Loader):
-    """Load annotation file from hard disk to RAM."""
+class HardDiskLoader(AnnFileLoader):
+    """Load txt format annotation file from hard disks."""
 
-    def _load(self, ann_file):
-        return list_from_file(ann_file)
+    def __init__(self, ann_file, parser, repeat=1):
+        warnings.warn(
+            'HardDiskLoader is deprecated, please use '
+            'AnnFileLoader instead.', UserWarning)
+        super().__init__(
+            ann_file,
+            parser,
+            repeat,
+            file_storage_backend='disk',
+            file_format='txt')
 
 
 @LOADERS.register_module()
-class LmdbLoader(Loader):
-    """Load annotation file with lmdb storage backend."""
+class LmdbLoader(AnnFileLoader):
+    """Load lmdb format annotation file from hard disks."""
 
-    def _load(self, ann_file):
-        lmdb_anno_obj = LmdbAnnFileBackend(ann_file)
-
-        return lmdb_anno_obj
-
-    def close(self):
-        self.ori_data_infos.close()
-
-
-class LmdbAnnFileBackend:
-    """Lmdb storage backend for annotation file.
-
-    Args:
-        lmdb_path (str): Lmdb file path.
-    """
-
-    def __init__(self, lmdb_path, coding='utf8'):
-        self.lmdb_path = lmdb_path
-        self.coding = coding
-        env = self._get_env()
-        with env.begin(write=False) as txn:
-            self.total_number = int(
-                txn.get('total_number'.encode(self.coding)).decode(
-                    self.coding))
-
-    def __getitem__(self, index):
-        """Retrieval one line from lmdb file by index."""
-        # only attach env to self when __getitem__ is called
-        # because env object cannot be pickle
-        if not hasattr(self, 'env'):
-            self.env = self._get_env()
-
-        with self.env.begin(write=False) as txn:
-            line = txn.get(str(index).encode(self.coding)).decode(self.coding)
-        return line
-
-    def __len__(self):
-        return self.total_number
-
-    def _get_env(self):
-        try:
-            import lmdb
-        except ImportError:
-            raise ImportError(
-                'Please install lmdb to enable LmdbAnnFileBackend.')
-        return lmdb.open(
-            self.lmdb_path,
-            max_readers=1,
-            readonly=True,
-            lock=False,
-            readahead=False,
-            meminit=False,
-        )
-
-    def close(self):
-        self.env.close()
+    def __init__(self, ann_file, parser, repeat=1):
+        warnings.warn(
+            'LmdbLoader is deprecated, please use '
+            'AnnFileLoader instead.', UserWarning)
+        super().__init__(
+            ann_file,
+            parser,
+            repeat,
+            file_storage_backend='disk',
+            file_format='lmdb')
