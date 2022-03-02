@@ -24,15 +24,16 @@ class Embeddings(nn.Module):
 
 
 def clones(module, N):
-    """ Produce N identical layers """
+    """Produce N identical layers."""
     return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
 
 
 class SubLayerConnection(nn.Module):
-    """
-    A residual connection followed by a layer norm.
+    """A residual connection followed by a layer norm.
+
     Note for code simplicity the norm is first as opposed to last.
     """
+
     def __init__(self, size, dropout):
         super(SubLayerConnection, self).__init__()
         self.norm = nn.LayerNorm(size)
@@ -55,9 +56,7 @@ class FeedForward(nn.Module):
 
 
 def self_attention(query, key, value, mask=None, dropout=None):
-    """
-    Compute 'Scale Dot Product Attention'
-    """
+    """Compute 'Scale Dot Product Attention'."""
 
     d_k = value.size(-1)
     score = torch.matmul(query, key.transpose(-2, -1) / math.sqrt(d_k))
@@ -95,21 +94,15 @@ class MultiHeadAttention(nn.Module):
              ]
         # 2) Apply attention on all the projected vectors in batch
         x, self.attn = self_attention(
-                                        query, key, value,
-                                        mask=mask,
-                                        dropout=self.dropout
-                                    )
-        x = x.transpose(1, 2).contiguous().view(
-                                                    nbatches, -1,
-                                                    self.headers * self.d_k
-        )
+            query, key, value, mask=mask, dropout=self.dropout)
+        x = x.transpose(1, 2).contiguous().view(nbatches, -1,
+                                                self.headers * self.d_k)
         return self.linears[-1](x)
 
 
 class DecoderLayer(nn.Module):
-    """
-    Decoder is made of self attention, source attention and feed forward.
-    """
+    """Decoder is made of self attention, source attention and feed forward."""
+
     def __init__(self, size, self_attn, src_attn, feed_forward, dropout):
         super(DecoderLayer, self).__init__()
         self.size = size
@@ -120,10 +113,8 @@ class DecoderLayer(nn.Module):
 
     def forward(self, x, feature, src_mask, tgt_mask):
         x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, tgt_mask))
-        x = self.sublayer[1](x,
-                             lambda x:
-                             self.src_attn(x, feature, feature, src_mask)
-                             )
+        x = self.sublayer[1](
+            x, lambda x: self.src_attn(x, feature, feature, src_mask))
         return self.sublayer[2](x, self.feed_forward)
 
 
@@ -143,15 +134,16 @@ class MasterDecoder(BaseDecoder):
         max_seq_len (int): Maximum sequence length for decoding.
     """
 
-    def __init__(self,
-                 N,
-                 decoder,
-                 d_model,
-                 num_classes,
-                 start_idx,
-                 padding_idx,
-                 max_seq_len,
-                 ):
+    def __init__(
+        self,
+        N,
+        decoder,
+        d_model,
+        num_classes,
+        start_idx,
+        padding_idx,
+        max_seq_len,
+    ):
         super(MasterDecoder, self).__init__()
         self.layers = clones(DecoderLayer(**decoder), N)
         self.norm = nn.LayerNorm(decoder.size)
@@ -165,8 +157,8 @@ class MasterDecoder(BaseDecoder):
         self.max_length = max_seq_len
 
     def make_mask(self, src, tgt):
-        """
-        Make mask for self attention.
+        """Make mask for self attention.
+
         :param src: [b, c, h, l_src]
         :param tgt: [b, l_tgt]
         :return:
@@ -175,11 +167,9 @@ class MasterDecoder(BaseDecoder):
 
         tgt_len = tgt.size(1)
         trg_sub_mask = torch.tril(
-            torch.ones(
-                        (tgt_len, tgt_len),
-                        dtype=torch.uint8,
-                        device=src.device)
-        )
+            torch.ones((tgt_len, tgt_len),
+                       dtype=torch.uint8,
+                       device=src.device))
 
         tgt_mask = trg_pad_mask & trg_sub_mask
         return None, tgt_mask
@@ -196,7 +186,7 @@ class MasterDecoder(BaseDecoder):
     def greedy_forward(self, SOS, feature, mask):
         input = SOS
         output = None
-        for i in range(self.max_length+1):
+        for i in range(self.max_length + 1):
             _, target_mask = self.make_mask(feature, input)
             out = self.decode(input, feature, None, target_mask)
             #  out = self.decoder(input, feature, None, target_mask)
