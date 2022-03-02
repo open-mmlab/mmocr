@@ -2,6 +2,7 @@
 import os
 import os.path as osp
 import shutil
+import warnings
 
 import mmcv
 
@@ -75,9 +76,10 @@ class HardDiskAnnFileBackend:
 class PetrelAnnFileBackend:
     """Load annotation file with petrel storage backend."""
 
-    def __init__(self, file_format='txt'):
+    def __init__(self, file_format='txt', save_dir='tmp_dir'):
         assert file_format in ['txt', 'lmdb']
         self.file_format = file_format
+        self.save_dir = save_dir
 
     def __call__(self, ann_file):
         file_client = mmcv.FileClient(backend='petrel')
@@ -93,13 +95,21 @@ class PetrelAnnFileBackend:
             ann_file_rel_path = ann_file.split('s3://')[-1]
             ann_file_dir = osp.dirname(ann_file_rel_path)
             ann_file_name = osp.basename(ann_file_rel_path)
-            local_dir = osp.join('tmp_dir', ann_file_dir, ann_file_name)
-            os.makedirs(local_dir, exist_ok=True)
-
-            for each_file in files:
-                tmp_file_path = file_client.join_path(ann_file, each_file)
-                with file_client.get_local_path(tmp_file_path) as local_path:
-                    shutil.copy(local_path, osp.join(local_dir, each_file))
+            local_dir = osp.join(self.save_dir, ann_file_dir, ann_file_name)
+            if osp.exists(local_dir):
+                warnings.warn(
+                    f'local_ann_file: {local_dir} is already existed and '
+                    'will be used. If it is not the correct ann_file '
+                    'corresponding to {ann_file}, please remove it or '
+                    'change "save_dir" first then try again.')
+            else:
+                os.makedirs(local_dir, exist_ok=True)
+                print(f'Fetching {ann_file} to {local_dir}...')
+                for each_file in files:
+                    tmp_file_path = file_client.join_path(ann_file, each_file)
+                    with file_client.get_local_path(
+                            tmp_file_path) as local_path:
+                        shutil.copy(local_path, osp.join(local_dir, each_file))
 
             return LmdbAnnFileBackend(local_dir)
 

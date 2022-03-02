@@ -32,7 +32,8 @@ class AnnFileLoader:
                  parser,
                  repeat=1,
                  file_storage_backend='disk',
-                 file_format='txt'):
+                 file_format='txt',
+                 **kwargs):
         assert isinstance(ann_file, str)
         assert isinstance(repeat, (int, float))
         assert isinstance(parser, dict)
@@ -43,7 +44,7 @@ class AnnFileLoader:
         self.parser = build_parser(parser)
         self.repeat = repeat
         self.ann_file_backend = self._backends[file_storage_backend](
-            file_format)
+            file_format, **kwargs)
         self.ori_data_infos = self._load(ann_file)
 
     def __len__(self):
