@@ -226,7 +226,9 @@ def MMOCR_testobj(mock_loading, mock_init_detector, **kwargs):
     return MMOCR(**kwargs, device=device)
 
 
-@pytest.mark.skipif(platform.system == 'Windows', reason='skip on windows')
+@pytest.mark.skipif(
+    platform.system() == 'Windows',
+    reason='Win container on Github Action does not have enough RAM to run')
 @mock.patch('mmocr.utils.ocr.KIEDataset')
 def test_readtext(mock_kiedataset):
     # Fixing the weights of models to prevent them from

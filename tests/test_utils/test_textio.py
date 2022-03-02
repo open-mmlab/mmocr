@@ -35,15 +35,14 @@ def test_list_to_file():
 def test_list_from_file():
     with tempfile.TemporaryDirectory() as tmpdirname:
         for encoding in ['utf-8', 'utf-8-sig']:
-            for lineend in ['\n']:
-                for i, lines in enumerate(lists):
-                    filename = f'{tmpdirname}/{i}.txt'
-                    with open(filename, 'w', encoding=encoding) as f:
-                        f.writelines(f'{line}{lineend}' for line in lines)
-                    lines2 = list_from_file(filename, encoding=encoding)
-                    lines = list(map(str, lines))
-                    print('lines:{}, lines2:{}, encoding:{}'.format(
-                        lines, lines2, encoding))
-                    assert len(lines) == len(lines2)
-                    assert all(line1 == line2
-                               for line1, line2 in zip(lines, lines2))
+            for i, lines in enumerate(lists):
+                filename = f'{tmpdirname}/{i}.txt'
+                with open(filename, 'w', encoding=encoding) as f:
+                    f.writelines(f'{line}\n' for line in lines)
+                lines2 = list_from_file(filename, encoding=encoding)
+                lines = list(map(str, lines))
+                print('lines:{}, lines2:{}, encoding:{}'.format(
+                    lines, lines2, encoding))
+                assert len(lines) == len(lines2)
+                assert all(line1 == line2
+                           for line1, line2 in zip(lines, lines2))
