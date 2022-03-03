@@ -316,7 +316,7 @@ mv dataset/training_data/annotations annotations/training && mv dataset/testing_
 rm dataset.zip && rm -rf dataset
 ```
 
-- Step2: Generate `instances_training.json` and `instances_test.json` with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
+- Step2: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
 
 ```bash
 python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
