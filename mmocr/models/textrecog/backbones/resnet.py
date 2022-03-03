@@ -210,7 +210,6 @@ class ResNet45_aster(ResNetOCR):
             Tensor or list[Tensor]: Feature tensor. Its shape depends on
             ResNetABI's config. It can be a list of feature outputs at specific
             layers if ``out_indices`` is specified.
-            output (Tensor): shape :math: `(N, 512, H/32, W/4)`
         """
         x = self.stem_layers(x)
 
@@ -236,7 +235,7 @@ class ResNet31(ResNetOCR):
         arch_layers (list[int]): List of Block number for each stage.
         arch_channels (list[int]): List of channels for each stage.
         use_conv1x1 (bool): Using 1x1 convolution in each stage
-        strides (Sequence[int]): Strides of the first block of each stage.
+        strides (Sequence[tuple]): Strides of the first block of each stage.
         out_indices (None | Sequence[int]): Indices of output stages. If not
             specified, only the last stage will be returned.
         stage4_pool_cfg (dict): Dictionary to construct and configure
@@ -295,8 +294,6 @@ class ResNet31(ResNetOCR):
             Tensor or list[Tensor]: Feature tensor. Its shape depends on
             ResNetABI's config. It can be a list of feature outputs at specific
             layers if ``out_indices`` is specified.
-
-            output (Tensor): shape :math: `(N, 512, H/32, W/4)`
         """
         x = self.stem_layers(x)
 
