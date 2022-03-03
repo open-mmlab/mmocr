@@ -17,14 +17,14 @@ class LmdbAnnFileBackend:
         lmdb_path (str): Lmdb file path.
     """
 
-    def __init__(self, lmdb_path, coding='utf8'):
+    def __init__(self, lmdb_path, encoding='utf8'):
         self.lmdb_path = lmdb_path
-        self.coding = coding
+        self.encoding = encoding
         env = self._get_env()
         with env.begin(write=False) as txn:
             self.total_number = int(
-                txn.get('total_number'.encode(self.coding)).decode(
-                    self.coding))
+                txn.get('total_number'.encode(self.encoding)).decode(
+                    self.encoding))
 
     def __getitem__(self, index):
         """Retrieval one line from lmdb file by index."""
@@ -34,7 +34,8 @@ class LmdbAnnFileBackend:
             self.env = self._get_env()
 
         with self.env.begin(write=False) as txn:
-            line = txn.get(str(index).encode(self.coding)).decode(self.coding)
+            line = txn.get(str(index).encode(self.encoding)).decode(
+                self.encoding)
         return line
 
     def __len__(self):
