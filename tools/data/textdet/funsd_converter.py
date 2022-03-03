@@ -42,6 +42,7 @@ def collect_annotations(files, nproc=1):
     Args:
         files(list): The list of tuples (image_file, groundtruth_file)
         nproc(int): The number of process to collect annotations
+
     Returns:
         images(list): The list of image information dicts
     """
@@ -62,6 +63,7 @@ def load_img_info(files):
 
     Args:
         files(tuple): The tuple of (img_file, groundtruth_file)
+
     Returns:
         img_info(dict): The dict of the img and annotation information
     """
@@ -91,10 +93,11 @@ def load_json_info(gt_file, img_info):
     """Collect the annotation information.
 
     Args:
-        files(list): The list of tuples (image_file, groundtruth_file)
-        nproc(int): The number of process to collect annotations
+        gt_file(str): The path to ground-truth
+        img_info(dict): The dict of the img and annotation information
+
     Returns:
-        images(list): The list of image information dicts
+        img_info(dict): The dict of the img and annotation information
     """
 
     annotation = mmcv.load(gt_file)

@@ -125,7 +125,7 @@ def generate_ann(root_path, split, image_infos):
     """Generate cropped annotations and label txt file.
 
     Args:
-        root_path(str): The relative path of the totaltext file
+        root_path(str): The root path of the dataset
         split(str): The split of dataset. Namely: training or test
         image_infos(list[dict]): A list of dicts of the img and
         annotation information
