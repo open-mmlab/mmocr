@@ -15,6 +15,7 @@ def collect_files(img_dir, gt_dir):
     Args:
         img_dir(str): The image directory
         gt_dir(str): The groundtruth directory
+
     Returns:
         files(list): The list of tuples (img_file, groundtruth_file)
     """
