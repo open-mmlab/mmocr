@@ -94,11 +94,11 @@ def load_json_info(gt_file, img_info):
     """Collect the annotation information.
 
     Args:
-        files(list): The list of tuples (image_file, groundtruth_file)
-        nproc(int): The number of process to collect annotations
+        gt_file(str): The path to ground-truth
+        img_info(dict): The dict of the img and annotation information
 
     Returns:
-        images(list): The list of image information dicts
+        img_info(dict): The dict of the img and annotation information
     """
 
     annotation = mmcv.load(gt_file)
@@ -125,7 +125,7 @@ def load_json_info(gt_file, img_info):
     return img_info
 
 
-def generate_ann(root_path, split, image_infos):
+def generate_ann(root_path, split, image_infos, preserve_vertical):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -133,6 +133,7 @@ def generate_ann(root_path, split, image_infos):
         split(str): The split of dataset. Namely: training or test
         image_infos(list[dict]): A list of dicts of the img and
         annotation information
+        preserve_vertical(bool): Whether to preserve vertical texts
     """
 
     dst_image_root = osp.join(root_path, 'dst_imgs', split)
@@ -152,9 +153,13 @@ def generate_ann(root_path, split, image_infos):
         for anno in image_info['anno_info']:
             word = anno['word']
             dst_img = crop_img(image, anno['bbox'])
+            h, w, _ = dst_img.shape
 
             # Skip invalid annotations
             if min(dst_img.shape) == 0:
+                continue
+            # Skip vertical texts
+            if not preserve_vertical and h / w > 2:
                 continue
 
             dst_img_name = f'{src_img_root}_{index}.png'
@@ -170,6 +175,11 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description='Generate training and test set of FUNSD ')
     parser.add_argument('root_path', help='Root dir path of FUNSD')
+    parser.add_argument(
+        '--preserve-vertical',
+        help='Preserve samples containing vertical texts',
+        required=True,
+        type=bool)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
     args = parser.parse_args()
@@ -187,7 +197,7 @@ def main():
                 osp.join(root_path, 'imgs'),
                 osp.join(root_path, 'annotations', split))
             image_infos = collect_annotations(files, nproc=args.nproc)
-            generate_ann(root_path, split, image_infos)
+            generate_ann(root_path, split, image_infos, args.preserve_vertical)
 
 
 if __name__ == '__main__':

@@ -319,5 +319,5 @@ rm dataset.zip && rm -rf dataset
 - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
 
 ```bash
-python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
+python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --preserve-vertical False --nproc 4
 ```
