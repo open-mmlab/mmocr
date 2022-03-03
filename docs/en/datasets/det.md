@@ -204,7 +204,7 @@ mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
 mkdir annotations
 mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
 
-rm dataset.zip && rm -rf dataset && rm -rf __MACOSX
+rm dataset.zip && rm -rf dataset
 ```
 
 - Step2: Generate `instances_training.json` and `instances_test.json` with following command:

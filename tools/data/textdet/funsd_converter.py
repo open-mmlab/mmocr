@@ -147,9 +147,10 @@ def main():
             files = collect_files(
                 osp.join(root_path, 'imgs'),
                 osp.join(root_path, 'annotations', split))
-        image_infos = collect_annotations(files, nproc=args.nproc)
-        convert_annotations(
-            image_infos, osp.join(root_path, 'instances_' + split + '.json'))
+            image_infos = collect_annotations(files, nproc=args.nproc)
+            convert_annotations(
+                image_infos, osp.join(root_path,
+                                      'instances_' + split + '.json'))
 
 
 if __name__ == '__main__':

@@ -16,6 +16,7 @@ def collect_files(img_dir, gt_dir):
     Args:
         img_dir(str): The image directory
         gt_dir(str): The groundtruth directory
+
     Returns:
         files(list): The list of tuples (img_file, groundtruth_file)
     """
@@ -42,6 +43,7 @@ def collect_annotations(files, nproc=1):
     Args:
         files(list): The list of tuples (image_file, groundtruth_file)
         nproc(int): The number of process to collect annotations
+
     Returns:
         images(list): The list of image information dicts
     """
@@ -62,6 +64,7 @@ def load_img_info(files):
 
     Args:
         files(tuple): The tuple of (img_file, groundtruth_file)
+
     Returns:
         img_info(dict): The dict of the img and annotation information
     """
@@ -93,6 +96,7 @@ def load_json_info(gt_file, img_info):
     Args:
         files(list): The list of tuples (image_file, groundtruth_file)
         nproc(int): The number of process to collect annotations
+
     Returns:
         images(list): The list of image information dicts
     """
@@ -182,8 +186,8 @@ def main():
             files = collect_files(
                 osp.join(root_path, 'imgs'),
                 osp.join(root_path, 'annotations', split))
-        image_infos = collect_annotations(files, nproc=args.nproc)
-        generate_ann(root_path, split, image_infos)
+            image_infos = collect_annotations(files, nproc=args.nproc)
+            generate_ann(root_path, split, image_infos)
 
 
 if __name__ == '__main__':
