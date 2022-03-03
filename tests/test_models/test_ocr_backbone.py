@@ -3,9 +3,8 @@ import pytest
 import torch
 
 from mmocr.models.textrecog.backbones import (ResNet31, ResNet31OCR,
-                                              ResNet45_abi, ResNet45_aster,
-                                              ResNetABI, ShallowCNN,
-                                              VeryDeepVgg, resnet_abi)
+                                              ResNet45_abi, ResNetABI,
+                                              ShallowCNN, VeryDeepVgg)
 
 
 def test_resnet31_ocr_backbone():
