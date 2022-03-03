@@ -7,7 +7,8 @@ import os.path as osp
 import mmcv
 import numpy as np
 
-from mmocr.utils import convert_annotations
+from mmocr.datasets.pipelines.crop import crop_img
+from mmocr.utils.fileio import list_to_file
 
 
 def collect_files(img_dir, gt_dir, split, ratio):
@@ -22,6 +23,7 @@ def collect_files(img_dir, gt_dir, split, ratio):
     Returns:
         files(list): The list of tuples (img_file, groundtruth_file)
     """
+
     assert isinstance(img_dir, str)
     assert img_dir
     assert isinstance(gt_dir, str)
@@ -41,7 +43,7 @@ def collect_files(img_dir, gt_dir, split, ratio):
     idx = math.floor(len(files) * (1 - 1 / ratio))
     if split == 'training':
         files = files[0:idx]
-    elif split == 'test':
+    elif split == 'val':
         files = files[idx:len(files)]
     else:
         raise NotImplementedError
@@ -57,9 +59,11 @@ def collect_annotations(files, nproc=1):
     Args:
         files(list): The list of tuples (image_file, groundtruth_file)
         nproc(int): The number of process to collect annotations
+
     Returns:
         images(list): The list of image information dicts
     """
+
     assert isinstance(files, list)
     assert isinstance(nproc, int)
 
@@ -77,9 +81,11 @@ def load_img_info(files):
 
     Args:
         files(tuple): The tuple of (img_file, groundtruth_file)
+
     Returns:
         img_info(dict): The dict of the img and annotation information
     """
+
     assert isinstance(files, tuple)
 
     img_file, gt_file = files
@@ -107,10 +113,10 @@ def load_txt_info(gt_file, img_info):
 
     Args:
         gt_file(list): The list of tuples (image_file, groundtruth_file)
-        img_info(int): The number of process to collect annotations
+        img_info(int): The dict of the img and annotation information
 
     Returns:
-        images(list): The list of image information dicts
+        img_info(list): The dict of the img and annotation information
     """
 
     with open(gt_file, 'r') as f:
@@ -118,19 +124,10 @@ def load_txt_info(gt_file, img_info):
         for ann in f.readlines():
 
             # annotation format [x1, y1, x2, y2, x3, y3, x4, y4, transcript]
-            ann_box = np.array(ann.split(',')[0:8]).astype(int).tolist()
-            x = max(0, min(ann_box[0::2]))
-            y = max(0, min(ann_box[1::2]))
-            w, h = max(ann_box[0::2]) - x, max(ann_box[1::2]) - y
-            bbox = [x, y, w, h]
-            segmentation = ann_box
+            bbox = np.array(ann.split(',')[0:8]).astype(int).tolist()
+            word = ann.split(',')[-1].replace('\n', '')
 
-            anno = dict(
-                iscrowd=0,
-                category_id=1,
-                bbox=bbox,
-                area=w * h,
-                segmentation=[segmentation])
+            anno = dict(bbox=bbox, word=word)
             anno_info.append(anno)
 
     img_info.update(anno_info=anno_info)
@@ -138,15 +135,56 @@ def load_txt_info(gt_file, img_info):
     return img_info
 
 
+def generate_ann(root_path, split, image_infos):
+    """Generate cropped annotations and label txt file.
+
+    Args:
+        root_path(str): The root path of the dataset
+        split(str): The split of dataset. Namely: training or test
+        image_infos(list[dict]): A list of dicts of the img and
+        annotation information
+    """
+
+    dst_image_root = osp.join(root_path, 'dst_imgs', split)
+    if split == 'training':
+        dst_label_file = osp.join(root_path, 'train_label.txt')
+    elif split == 'val':
+        dst_label_file = osp.join(root_path, 'val_label.txt')
+    os.makedirs(dst_image_root, exist_ok=True)
+
+    lines = []
+    for image_info in image_infos:
+        index = 1
+        src_img_path = osp.join(root_path, 'imgs', image_info['file_name'])
+        image = mmcv.imread(src_img_path)
+        src_img_root = image_info['file_name'].split('.')[0]
+
+        for anno in image_info['anno_info']:
+            word = anno['word']
+            dst_img = crop_img(image, anno['bbox'])
+
+            # Skip invalid annotations
+            if min(dst_img.shape) == 0 or len(word) == 0:
+                continue
+
+            dst_img_name = f'{src_img_root}_{index}.png'
+            index += 1
+            dst_img_path = osp.join(dst_image_root, dst_img_name)
+            mmcv.imwrite(dst_img, dst_img_path)
+            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                         f'{word}')
+    list_to_file(dst_label_file, lines)
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of SROIE ')
+        description='Generate training and val set of SROIE')
     parser.add_argument('root_path', help='Root dir path of SROIE')
     parser.add_argument(
-        '--train_val_ratio',
+        '--train-val-ratio',
         default=4,
         type=int,
-        help='Ratio used to split train and val splits')
+        help='Ratio used to split training and val splits')
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of process')
     args = parser.parse_args()
@@ -164,9 +202,8 @@ def main():
                 osp.join(root_path, 'imgs'), osp.join(root_path,
                                                       'annotations'), split,
                 args.train_val_ratio)
-        image_infos = collect_annotations(files, nproc=args.nproc)
-        convert_annotations(
-            image_infos, osp.join(root_path, 'instances_' + split + '.json'))
+            image_infos = collect_annotations(files, nproc=args.nproc)
+            generate_ann(root_path, split, image_infos)
 
 
 if __name__ == '__main__':

@@ -36,6 +36,11 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── syntext_word_eng
 │   ├── emcs_imgs
 │   └── instances_training.json
+├── sroie
+│   ├── annotations
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -48,6 +53,8 @@ The structure of the text detection dataset directory is organized as follows.
 |      TextOCR      |                                                                                                                [homepage](https://textvqa.org/textocr/dataset)                                                                                                                 |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |     Totaltext     |                                                                                                           [homepage](https://github.com/cs-chan/Total-Text-Dataset)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
+|       SROIE       |                                                                                                                   [homepage](https://rrc.cvc.uab.es/?ch=13)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+
 
 ## Important Note
 
@@ -189,6 +196,7 @@ python tools/data/common/curvedsyntext_converter.py PATH/TO/CurvedSynText150k --
 mkdir sroie && cd sroie
 mkdir imgs
 
+unzip -q 0325updated.task1train\(626p\).zip
 mv 0325updated.task1train\(626p\)/*.jpg imgs && mv 0325updated.task1train\(626p\) annotations
 
 rm 0325updated.task1train\(626p\).zip
@@ -197,5 +205,5 @@ rm 0325updated.task1train\(626p\).zip
 - Step3: Generate `instances_training.json` and `instances_val.json` with the following command:
 
 ```bash
-python tools/data/common/sroie_converter.py PATH/TO/sroie --nproc 4
+python tools/data/textdet/sroie_converter.py PATH/TO/sroie --nproc 4
 ```
