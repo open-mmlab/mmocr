@@ -4,7 +4,8 @@ import math
 import pytest
 import torch
 
-from mmocr.models.textrecog.decoders import (ABILanguageDecoder,
+from mmocr.models.textrecog.decoders import (ABCRecogDecoder,
+                                             ABILanguageDecoder,
                                              ABIVisionDecoder, BaseDecoder,
                                              NRTRDecoder, ParallelSARDecoder,
                                              ParallelSARDecoderWithBS,
@@ -132,3 +133,24 @@ def test_abi_vision_decoder():
     assert result['feature'].shape == torch.Size([2, 10, 128])
     assert result['logits'].shape == torch.Size([2, 10, 90])
     assert result['attn_scores'].shape == torch.Size([2, 10, 8, 32])
+
+
+def test_abc_decoder():
+    in_channels = 16
+    num_classes = 2
+    max_len = 10
+    N = 3
+
+    model = ABCRecogDecoder(in_channels, num_classes, max_len)
+    out_enc = torch.randn(N, max_len, in_channels)
+    targets_dict = dict(
+        padded_targets=torch.LongTensor([[1, 0, 0, 1], [0, 1, 0, 1],
+                                         [1, 1, 1, 1]]))
+
+    model.train()
+    result = model(None, out_enc, targets_dict)
+    assert result.shape == torch.Size([N, 4, num_classes])
+
+    model.eval()
+    result = model(None, out_enc, train_mode=False)
+    assert result.shape == torch.Size([N, max_len, num_classes])
