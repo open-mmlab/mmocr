@@ -17,10 +17,9 @@ class ResNetOCR(BaseModule):
         stem_channels (list[int]): List of channels in each layer of stem.e.g.
         [64, 128] stands for 64 channels in the first layer and 128 channels
         in the second layer of stem
-        block (class): block type in resnet stages. e.g. BasicBlock
-        , BasicBlock_31, BasicBlock_master
         arch_layers (list[int]): List of Block number for each stage.
         arch_channels (list[int]): List of channels for each stage.
+        use_conv1x1 (bool): Using 1x1 convolution in each stage
         strides (Sequence[int]): Strides of the first block of each stage.
         out_indices (None | Sequence[int]): Indices of output stages. If not
             specified, only the last stage will be returned.
@@ -124,6 +123,20 @@ class ResNetOCR(BaseModule):
 
 @BACKBONES.register_module()
 class ResNet45_abi(ResNetOCR):
+    """Implement ResNet45 for ABINet
+    Args:
+        in_channels (int): Number of channels of input image tensor.
+
+        stem_channels (list[int]): List of channels in each layer of stem.e.g.
+        [64, 128] stands for 64 channels in the first layer and 128 channels
+        in the second layer of stem
+        arch_layers (list[int]): List of Block number for each stage.
+        arch_channels (list[int]): List of channels for each stage.
+        use_conv1x1 (bool): Using 1x1 convolution in each stage
+        strides (Sequence[int]): Strides of the first block of each stage.
+        out_indices (None | Sequence[int]): Indices of output stages. If not
+            specified, only the last stage will be returned.
+    """
 
     def __init__(self,
                  in_channels=3,
@@ -162,6 +175,20 @@ class ResNet45_abi(ResNetOCR):
 
 @BACKBONES.register_module()
 class ResNet45_aster(ResNetOCR):
+    """Implement ResNet45 for ABINet
+    Args:
+        in_channels (int): Number of channels of input image tensor.
+
+        stem_channels (list[int]): List of channels in each layer of stem.e.g.
+        [64, 128] stands for 64 channels in the first layer and 128 channels
+        in the second layer of stem
+        arch_layers (list[int]): List of Block number for each stage.
+        arch_channels (list[int]): List of channels for each stage.
+        use_conv1x1 (bool): Using 1x1 convolution in each stage
+        strides (Sequence[int]): Strides of the first block of each stage.
+        out_indices (None | Sequence[int]): Indices of output stages. If not
+            specified, only the last stage will be returned.
+    """
 
     def __init__(self,
                  in_channels=3,
@@ -199,6 +226,23 @@ class ResNet45_aster(ResNetOCR):
 
 @BACKBONES.register_module()
 class ResNet31(ResNetOCR):
+    """Implement ResNet45 for ABINet
+    Args:
+        in_channels (int): Number of channels of input image tensor.
+
+        stem_channels (list[int]): List of channels in each layer of stem.e.g.
+        [64, 128] stands for 64 channels in the first layer and 128 channels
+        in the second layer of stem
+        arch_layers (list[int]): List of Block number for each stage.
+        arch_channels (list[int]): List of channels for each stage.
+        use_conv1x1 (bool): Using 1x1 convolution in each stage
+        strides (Sequence[int]): Strides of the first block of each stage.
+        out_indices (None | Sequence[int]): Indices of output stages. If not
+            specified, only the last stage will be returned.
+        stage4_pool_cfg (dict): Dictionary to construct and configure
+            pooling layer in stage 4.
+        last_stage_pool (bool): If True, add `MaxPool2d` layer to last stage.
+    """
 
     def __init__(self,
                  in_channels=3,
