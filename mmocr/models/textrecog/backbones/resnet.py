@@ -1,7 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import torch
 import torch.nn as nn
-from matplotlib.container import StemContainer
 from mmcv.runner import BaseModule, Sequential
 
 import mmocr.utils as utils
@@ -18,13 +16,12 @@ class ResNetOCR(BaseModule):
 
         stem_channels (list[int]): List of channels in each layer of stem.e.g.
         [64, 128] stands for 64 channels in the first layer and 128 channels
-        in the second layer of stem.      
-        block (class): block type in resnet stages. e.g. BasicBlock 
-        , BasicBlock_31, BasicBlock_master       
+        in the second layer of stem
+        block (class): block type in resnet stages. e.g. BasicBlock
+        , BasicBlock_31, BasicBlock_master
         arch_layers (list[int]): List of Block number for each stage.
         arch_channels (list[int]): List of channels for each stage.
         strides (Sequence[int]): Strides of the first block of each stage.
-        
         out_indices (None | Sequence[int]): Indices of output stages. If not
             specified, only the last stage will be returned.
     """
@@ -186,7 +183,6 @@ class ResNet45_aster(ResNetOCR):
             Tensor or list[Tensor]: Feature tensor. Its shape depends on
             ResNetABI's config. It can be a list of feature outputs at specific
             layers if ``out_indices`` is specified.
-
             output (Tensor): shape :math: `(N, 512, H/32, W/4)`
         """
         x = self.stem_layers(x)
@@ -275,14 +271,3 @@ class ResNet31(ResNetOCR):
                 outs.append(x)
 
         return tuple(outs) if self.out_indices else x
-
-
-if __name__ == "__main__":
-    from mmocr.models.textrecog.backbones import ResNetABI
-    from mmocr.models.textrecog.backbones.resnet31_ocr import ResNet31OCR
-    model3 = ResNet31()
-    model4 = ResNet31OCR()
-    x = torch.zeros(1, 3, 32, 100)
-    print((model3(x) - model4(x)).sum())
-    if (model3(x) - model4(x)).sum() == 0:
-        print('yes')
