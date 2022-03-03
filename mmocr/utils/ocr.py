@@ -708,6 +708,14 @@ class MMOCR:
 
         return args
 
+    def tesseract_det_inference(self,
+                                img,
+                                imshow=False,
+                                print_result=False):
+        from PIL import Image
+        from tesserocr import PyTessBaseAPI, RIL
+        # self.detect_model =
+
 
 # Create an inference pipeline with parsed arguments
 def main():
