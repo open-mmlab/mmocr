@@ -2,8 +2,10 @@
 import pytest
 import torch
 
-from mmocr.models.textrecog.backbones import (ResNet31OCR, ResNetABI,
-                                              ShallowCNN, VeryDeepVgg)
+from mmocr.models.textrecog.backbones import (ResNet31, ResNet31OCR,
+                                              ResNet45_abi, ResNet45_aster,
+                                              ResNetABI, ShallowCNN,
+                                              VeryDeepVgg, resnet_abi)
 
 
 def test_resnet31_ocr_backbone():
@@ -70,3 +72,20 @@ def test_resnet_abi():
     imgs = torch.randn(1, 3, 32, 160)
     feat = model(imgs)
     assert feat.shape == torch.Size([1, 512, 8, 40])
+
+
+def test_resnet():
+    """Test all ResNet backbones"""
+
+    imgs = torch.randn(1, 3, 32, 100)
+    # Test if ResNet31 equals to ResNet31OCR
+    model1 = ResNet31()
+    model2 = ResNet31OCR()
+
+    assert (model1(imgs) - model2(imgs)).sum() == 0
+
+    # Test if ResNet45_abi equals to ResNet_abi
+    model3 = ResNet45_abi()
+    model4 = ResNetABI()
+
+    assert (model3(imgs) - model4(imgs)).sum() == 0
