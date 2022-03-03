@@ -48,6 +48,7 @@ class FCOSHead(HeadMixin, BaseModule):
             classification branch.
         with_bezier (bool): If specified as True, the detection head accepts
             Bezier inputs and outputs.
+        use_scale (bool): Whether to use scale for the regression branch.
         conv_cfg (dict): Config dict for convolution layer. Default: None.
         norm_cfg (dict): dictionary to construct and config norm layer.
             Default: norm_cfg=dict(type='GN', num_groups=32, requires_grad=True).
@@ -72,8 +73,9 @@ class FCOSHead(HeadMixin, BaseModule):
                  centerness_on_reg=False,
                  use_sigmoid_cls=True,
                  with_bezier=False,
+                 use_scale=True,
                  conv_cfg=None,
-                 norm_cfg=None,
+                 norm_cfg=dict(type='GN', num_groups=32, requires_grad=True),
                  init_cfg=dict(
                      type='Normal',
                      layer='Conv2d',
@@ -99,6 +101,7 @@ class FCOSHead(HeadMixin, BaseModule):
         self.conv_cfg = conv_cfg
         self.norm_cfg = norm_cfg
         self.with_bezier = with_bezier
+        self.use_scale = use_scale
         self.use_sigmoid_cls = use_sigmoid_cls
         if self.use_sigmoid_cls:
             self.cls_out_channels = num_classes
@@ -220,7 +223,10 @@ class FCOSHead(HeadMixin, BaseModule):
             centerness = self.conv_centerness(cls_feat)
         # scale the bbox_pred of different level
         # float to avoid overflow when enabling FP16
-        bbox_pred = scale(bbox_pred).float()
+        if self.use_scale:
+            bbox_pred = scale(bbox_pred).float()
+        else:
+            bbox_pred = bbox_pred.float()
         if self.norm_on_bbox:
             bbox_pred = F.relu(bbox_pred)
             if not self.training:

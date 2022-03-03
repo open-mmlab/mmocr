@@ -32,6 +32,7 @@ class LoadTextAnnotations(LoadAnnotations):
                  with_label=True,
                  with_mask=False,
                  with_seg=False,
+                 with_extra_fields=False,
                  poly2mask=True,
                  use_img_shape=False):
         super().__init__(
@@ -41,7 +42,19 @@ class LoadTextAnnotations(LoadAnnotations):
             with_seg=with_seg,
             poly2mask=poly2mask)
 
+        self.with_extra_fields = with_extra_fields
         self.use_img_shape = use_img_shape
+
+        if self.with_extra_fields:
+            self.included_fields = set()
+            if self.with_bbox:
+                self.included_fields.add('bboxes')
+            if self.with_label:
+                self.included_fields.add('labels')
+            if self.with_mask:
+                self.included_fields.add('masks')
+            if self.with_seg:
+                self.included_fields.add('seg_map')
 
     def process_polygons(self, polygons):
         """Convert polygons to list of ndarray and filter invalid polygons.
@@ -95,6 +108,46 @@ class LoadTextAnnotations(LoadAnnotations):
 
         results['gt_masks'] = gt_masks
         results['mask_fields'].append('gt_masks')
+        return results
+
+    def _load_extra_fields(self, results):
+        """Private function to load label annotations.
+
+        Args:
+            results (dict): Result dict from :obj:`mmdet.CustomDataset`.
+
+        Returns:
+            dict: The dict contains loaded label annotations.
+        """
+
+        for key, item in results['ann_info'].items():
+            if key not in self.included_fields:
+                results['gt_' + key] = item
+        return results
+
+    def __call__(self, results):
+        """Call function to load multiple types annotations.
+
+        Args:
+            results (dict): Result dict from :obj:`mmdet.CustomDataset`.
+
+        Returns:
+            dict: The dict contains loaded bounding box, label, mask and
+                semantic segmentation annotations.
+        """
+
+        if self.with_bbox:
+            results = self._load_bboxes(results)
+            if results is None:
+                return None
+        if self.with_label:
+            results = self._load_labels(results)
+        if self.with_mask:
+            results = self._load_masks(results)
+        if self.with_seg:
+            results = self._load_semantic_seg(results)
+        if self.with_extra_fields:
+            results = self._load_extra_fields(results)
         return results
 
 

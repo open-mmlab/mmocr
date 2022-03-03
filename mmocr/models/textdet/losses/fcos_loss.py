@@ -61,6 +61,7 @@ class FCOSLoss(nn.Module):
 
         self.num_classes = num_classes
         self.with_bezier = with_bezier
+        self.strides = strides
         self.prior_generator = MlvlPointGenerator(strides)
         self.num_base_priors = self.prior_generator.num_base_priors[0]
         self.regress_ranges = regress_ranges
@@ -81,15 +82,16 @@ class FCOSLoss(nn.Module):
         apply_to=('cls_scores', 'bbox_preds', 'bezier_preds', 'centernesses'))
     def forward(
         self,
-        cls_scores,
-        bbox_preds,
-        centernesses,
+        # cls_scores,
+        # bbox_preds,
+        # centernesses,
+        # bezier_preds=None,
+        preds,
+        img_metas,
         gt_bboxes,
         gt_labels,
-        img_metas,
         gt_bboxes_ignore=None,
-        bezier_preds=None,
-        gt_beziers=None,
+        gt_bezier_pts=None,
     ):
         """Compute loss of the head.
 
@@ -114,6 +116,10 @@ class FCOSLoss(nn.Module):
         Returns:
             dict[str, Tensor]: A dictionary of loss components.
         """
+        if self.with_bezier:
+            cls_scores, bbox_preds, centernesses, bezier_preds = preds
+        else:
+            cls_scores, bbox_preds, centernesses = preds
         assert len(cls_scores) == len(bbox_preds) == len(centernesses)
         if self.with_bezier:
             assert len(bezier_preds) == len(centernesses)
@@ -123,7 +129,7 @@ class FCOSLoss(nn.Module):
             dtype=bbox_preds[0].dtype,
             device=bbox_preds[0].device)
         labels, bbox_targets, bezier_targets = self.get_targets(
-            all_level_points, gt_bboxes, gt_labels, gt_beziers)
+            all_level_points, gt_bboxes, gt_labels, gt_bezier_pts)
 
         num_imgs = cls_scores[0].size(0)
         # flatten cls_scores, bbox_preds and centerness
@@ -182,6 +188,7 @@ class FCOSLoss(nn.Module):
                 pos_points, pos_bbox_preds)
             pos_decoded_target_preds = self.bbox_coder.decode(
                 pos_points, pos_bbox_targets)
+
             loss_bbox = self.loss_bbox(
                 pos_decoded_bbox_preds,
                 pos_decoded_target_preds,

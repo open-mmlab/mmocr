@@ -5,7 +5,7 @@ from .text_detector_mixin import TextDetectorMixin
 
 
 @DETECTORS.register_module()
-class ABCNet(TextDetectorMixin, SingleStageTextDetector):
+class FCOS(TextDetectorMixin, SingleStageTextDetector):
     """The class for implementing ABCNet text detector: ABCNet: Real-time Scene
     Text Spotting with Adaptive Bezier-Curve Network.
 
@@ -47,7 +47,7 @@ class ABCNet(TextDetectorMixin, SingleStageTextDetector):
         """
         x = self.extract_feat(img)
         preds = self.bbox_head(x)
-        losses = self.loss(preds, **kwargs)
+        losses = self.loss(preds, img_metas, **kwargs)
         return losses
 
     def simple_test(self, img, img_metas, rescale=False):

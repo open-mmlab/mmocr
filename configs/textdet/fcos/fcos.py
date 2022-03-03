@@ -1,14 +1,16 @@
 _base_ = [
+    # '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/runtime_10e.py',
-    '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/det_datasets/icdar2015.py',
 ]
 num_classes = 1
 strides = [8, 16, 32, 64, 128]
 bbox_coder = dict(type='DistancePointBBoxCoder')
-# model settings
+with_bezier = False
+norm_on_bbox = True
+use_sigmoid_cls = True
 model = dict(
-    type='ABCNet',
+    type='FCOS',
     backbone=dict(
         type='mmdet.ResNet',
         depth=50,
@@ -20,7 +22,7 @@ model = dict(
         style='caffe',
         init_cfg=dict(
             type='Pretrained',
-            checkpoint='open-mmlab://detectron/resnet50_caffe')),
+            checkpoint='open-mmlab://detectron2/resnet50_caffe')),
     neck=dict(
         type='mmdet.FPN',
         in_channels=[256, 512, 1024, 2048],
@@ -34,9 +36,14 @@ model = dict(
         num_classes=num_classes,
         in_channels=256,
         stacked_convs=4,
+        norm_on_bbox=norm_on_bbox,
+        use_sigmoid_cls=use_sigmoid_cls,
+        centerness_on_reg=True,
+        dcn_on_last_conv=True,
         feat_channels=256,
+        use_scale=False,
         strides=strides,
-        with_bezier=False),
+        with_bezier=with_bezier),
     postprocessor=dict(
         type='ABCNetTextDetProcessor',
         strides=strides,
@@ -46,19 +53,19 @@ model = dict(
         type='FCOSLoss',
         num_classes=num_classes,
         strides=strides,
-        center_sampling=False,
+        center_sampling=True,
         center_sample_radius=1.5,
         bbox_coder=bbox_coder,
-        with_bezier=False,
-        norm_on_bbox=False,
-        use_sigmoid_cls=True,
+        with_bezier=with_bezier,
+        norm_on_bbox=norm_on_bbox,
+        use_sigmoid_cls=use_sigmoid_cls,
         loss_cls=dict(
             type='mmdet.FocalLoss',
-            use_sigmoid=True,
+            use_sigmoid=use_sigmoid_cls,
             gamma=2.0,
             alpha=0.25,
             loss_weight=1.0),
-        loss_bbox=dict(type='mmdet.IoULoss', loss_weight=1.0),
+        loss_bbox=dict(type='mmdet.GIoULoss', loss_weight=1.0),
         loss_centerness=dict(
             type='mmdet.CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0)),
     # training and testing settings
@@ -74,16 +81,28 @@ model = dict(
         score_thr=0.3,
         strides=(8, 16, 32, 64, 128)))
 img_norm_cfg = dict(
-    mean=[102.9801, 115.9465, 122.7717], std=[1.0, 1.0, 1.0], to_rgb=False)
+    mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations', with_bbox=True),
+    dict(
+        type='LoadTextAnnotations',
+        with_bbox=True,
+        # with_mask=True,
+        # poly2mask=True,
+        with_extra_fields=True),
     dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
-    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
+    dict(
+        type='Collect',
+        keys=[
+            'img',
+            'gt_bboxes',
+            'gt_labels',
+            # 'gt_bezier_pts',
+        ]),
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile'),
@@ -97,25 +116,50 @@ test_pipeline = [
             dict(type='Normalize', **img_norm_cfg),
             dict(type='Pad', size_divisor=32),
             dict(type='ImageToTensor', keys=['img']),
-            dict(type='Collect', keys=['img']),
+            dict(
+                type='Collect',
+                keys=[
+                    'img',
+                    'gt_bboxes',
+                    'gt_labels',
+                    # 'gt_bezier_pts',
+                ]),
         ])
 ]
+
+train_list = {{_base_.train_list}}
+test_list = {{_base_.test_list}}
+
 data = dict(
     samples_per_gpu=2,
     workers_per_gpu=2,
-    train=dict(pipeline=train_pipeline),
-    val=dict(pipeline=test_pipeline),
-    test=dict(pipeline=test_pipeline))
+    train=dict(
+        type='UniformConcatDataset',
+        datasets=train_list,
+        pipeline=train_pipeline),
+    val=dict(
+        type='UniformConcatDataset',
+        datasets=test_list,
+        pipeline=test_pipeline),
+    test=dict(
+        type='UniformConcatDataset',
+        datasets=test_list,
+        pipeline=test_pipeline))
 # optimizer
 optimizer = dict(
-    lr=0.01, paramwise_cfg=dict(bias_lr_mult=2., bias_decay_mult=0.))
-optimizer_config = dict(
-    _delete_=True, grad_clip=dict(max_norm=35, norm_type=2))
+    type='SGD',
+    lr=0.01,
+    momentum=0.9,
+    weight_decay=0.0001,
+    paramwise_cfg=dict(bias_lr_mult=2., bias_decay_mult=0.))
+# optimizer_config = dict(grad_clip=dict(max_norm=30, norm_type=2))
+optimizer_config = dict(grad_clip=None)
 # learning policy
 lr_config = dict(
     policy='step',
-    warmup='constant',
+    warmup='linear',
     warmup_iters=500,
     warmup_ratio=1.0 / 3,
     step=[8, 11])
-runner = dict(type='EpochBasedRunner', max_epochs=12)
+# runner = dict(type='EpochBasedRunner', max_epochs=12)
+total_epochs = 12

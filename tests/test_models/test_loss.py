@@ -181,22 +181,20 @@ def test_fcos_loss(with_bezier):
         torch.rand(1, 1, s // feat_size, s // feat_size)
         for feat_size in [4, 8, 16, 32, 64]
     ]
-    if with_bezier:
-        cls_scores, bbox_preds, centerness, bezier_preds = head.forward(feat)
-    else:
-        cls_scores, bbox_preds, centerness = head.forward(feat)
+    preds = head.forward(feat)
     # Test that empty ground truth encourages the network to predict background
     gt_bboxes = [torch.empty((0, 4))]
     gt_labels = [torch.LongTensor([])]
     gt_bboxes_ignore = None
     if with_bezier:
         gt_beziers = [torch.empty((0, 16))]
-        empty_gt_losses = loss(cls_scores, bbox_preds, centerness, gt_bboxes,
-                               gt_labels, img_metas, gt_bboxes_ignore,
-                               bezier_preds, gt_beziers)
+        empty_gt_losses = loss(preds, gt_bboxes, gt_labels, img_metas,
+                               gt_bboxes_ignore, gt_beziers)
+        cls_scores, bbox_preds, centerness, bezier_preds = preds
     else:
-        empty_gt_losses = loss(cls_scores, bbox_preds, centerness, gt_bboxes,
-                               gt_labels, img_metas, gt_bboxes_ignore)
+        empty_gt_losses = loss(preds, gt_bboxes, gt_labels, img_metas,
+                               gt_bboxes_ignore)
+        cls_scores, bbox_preds, centerness = preds
     # When there is no truth, the cls loss should be nonzero but there should
     # be no box loss.
     empty_cls_loss = empty_gt_losses['loss_cls']

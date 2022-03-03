@@ -32,7 +32,7 @@ def list_from_file(filename, encoding='utf-8'):
         list[str]: A list of strings.
     """
     item_list = []
-    with open(filename, 'r', encoding=encoding) as f:
+    with open(filename, 'rt', encoding=encoding) as f:
         for line in f:
             item_list.append(line.rstrip('\n\r'))
     return item_list

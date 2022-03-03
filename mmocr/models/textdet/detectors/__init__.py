@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .abcnet import ABCNet
 from .dbnet import DBNet
 from .drrg import DRRG
 from .fcenet import FCENet
+from .fcos import FCOS
 from .ocr_mask_rcnn import OCRMaskRCNN
 from .panet import PANet
 from .psenet import PSENet
@@ -12,5 +12,5 @@ from .textsnake import TextSnake
 
 __all__ = [
     'TextDetectorMixin', 'SingleStageTextDetector', 'OCRMaskRCNN', 'DBNet',
-    'PANet', 'PSENet', 'TextSnake', 'FCENet', 'DRRG', 'ABCNet'
+    'PANet', 'PSENet', 'TextSnake', 'FCENet', 'DRRG', 'FCOS'
 ]

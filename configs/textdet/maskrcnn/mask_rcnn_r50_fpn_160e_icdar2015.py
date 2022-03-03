@@ -13,8 +13,10 @@ train_pipeline = {{_base_.train_pipeline}}
 test_pipeline_icdar2015 = {{_base_.test_pipeline_icdar2015}}
 
 data = dict(
-    samples_per_gpu=8,
-    workers_per_gpu=4,
+    # samples_per_gpu=8,
+    # workers_per_gpu=4,
+    samples_per_gpu=1,
+    workers_per_gpu=1,
     val_dataloader=dict(samples_per_gpu=1),
     test_dataloader=dict(samples_per_gpu=1),
     train=dict(
