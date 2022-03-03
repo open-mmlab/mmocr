@@ -27,7 +27,7 @@ class LmdbAnnFileBackend:
                     self.encoding))
 
     def __getitem__(self, index):
-        """Retrieval one line from lmdb file by index."""
+        """Retrieve one line from lmdb file by index."""
         # only attach env to self when __getitem__ is called
         # because env object cannot be pickle
         if not hasattr(self, 'env'):
