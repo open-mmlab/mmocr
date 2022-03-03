@@ -12,6 +12,8 @@ import torch
 from mmcv.image.misc import tensor2imgs
 from mmcv.runner import load_checkpoint
 from mmcv.utils.config import Config
+from PIL import Image
+from tesserocr import PyTessBaseAPI, RIL
 
 from mmocr.apis import init_detector
 from mmocr.apis.inference import model_inference
@@ -262,7 +264,8 @@ class MMOCR:
                 'textsnake/textsnake_r50_fpn_unet_1200e_ctw1500.py',
                 'ckpt':
                 'textsnake/textsnake_r50_fpn_unet_1200e_ctw1500-27f65b64.pth'
-            }
+            },
+            'Tesseract': {}
         }
 
         textrecog_models = {
@@ -350,7 +353,9 @@ class MMOCR:
                     ' with text detection and recognition algorithms.')
 
         self.detect_model = None
-        if self.td:
+        if self.td and self.td == 'Tesseract':
+            self.detect_model = self.td
+        elif self.td:
             # Build detection model
             if not det_config:
                 det_config = os.path.join(config_dir, 'textdet/',
@@ -399,6 +404,44 @@ class MMOCR:
         for model in list(filter(None, [self.recog_model, self.detect_model])):
             if hasattr(model, 'module'):
                 model = model.module
+
+    @staticmethod
+    def tesseract_det_inference(imgs):
+        """Inference image(s) with the tesseract detector
+
+        Args:
+            imgs (str/ndarray or list[str/ndarray] or tuple[str/ndarray]):
+                Either image files or loaded images.
+        Returns:
+            result (dict): Predicted results.
+        """
+        if isinstance(imgs, (list, tuple)):
+            is_batch = True
+            if len(imgs) == 0:
+                raise Exception('empty imgs provided, please check and try again')
+            if not isinstance(imgs[0], (np.ndarray, str)):
+                raise AssertionError('imgs must be strings or numpy arrays')
+
+        elif isinstance(imgs, (np.ndarray, str)):
+            imgs = [imgs]
+            is_batch = False
+        else:
+            raise AssertionError('imgs must be strings or numpy arrays')
+
+        boundaries = []
+
+        # todo: handle tessdata error
+        # get boundaries using tesseract, may encounter unknown errors
+        with PyTessBaseAPI(path='C:/Users/garva/source/tessdata-4.1.0') as api:
+            for img in imgs:
+                image = Image.fromarray(img)
+                api.SetImage(image)
+                boxes = api.GetComponentImages(RIL.TEXTLINE, True)
+                for _, box, _, _ in boxes:
+                    p0 = (box['x'], box['y'])  # upper-left
+                    p1 = (box[''])
+
+        return [{'boundary_result': [[222, 333], [333, 444]]}]
 
     def readtext(self,
                  img,
@@ -633,6 +676,10 @@ class MMOCR:
 
     # Separate det/recog inference pipeline
     def single_inference(self, model, arrays, batch_mode, batch_size=0):
+        # todo: support batch mode for tesseract
+        if model == 'Tesseract':
+            return self.tesseract_det_inference(arrays)
+
         result = []
         if batch_mode:
             if batch_size == 0:
@@ -707,14 +754,6 @@ class MMOCR:
             args.export = [None] * num_res
 
         return args
-
-    def tesseract_det_inference(self,
-                                img,
-                                imshow=False,
-                                print_result=False):
-        from PIL import Image
-        from tesserocr import PyTessBaseAPI, RIL
-        # self.detect_model =
 
 
 # Create an inference pipeline with parsed arguments
