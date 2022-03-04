@@ -29,7 +29,8 @@ class AttentionGRUCell(nn.Module):
 
     Args:
         num_channels (int): Number of channels of hidden vectors :math:`E`.
-        out_channels (int): Number of channels of output vector :math:`C`.
+        out_channels (int): Number of channels of output vector, usually the
+            vocab size :math:`C`.
         dropout (float): Dropout rate for the embedding vector.
     """
 
@@ -87,8 +88,8 @@ class AttentionGRUCell(nn.Module):
         output = F.log_softmax(self.out(output[0]), dim=1)  # (N, C)
         return output, hidden, attn_weights
 
-    def init_hidden(self, batch_size):
+    def init_hidden(self, batch_size, device=None):
         """Returns a zero hidden vector of shape :math:`(1, N, E)` where N is
         ``batch_size``."""
-        result = torch.zeros(1, batch_size, self.hidden_size)
+        result = torch.zeros((1, batch_size, self.hidden_size), device=device)
         return result

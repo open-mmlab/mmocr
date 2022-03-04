@@ -14,15 +14,16 @@ class ABCRecogDecoder(BaseDecoder):
 
     Args:
         num_channels (int): Number of channels of hidden vectors :math:`E`.
-        teacher_forcing (float): The prbobability of enabling the teacher
-            forcing strategy during training.
-        max_seq_len (int): Maximum text sequence length :math:`T`.
         num_chars (int): Number of text characters :math:`C`.
+        max_seq_len (int): Maximum text sequence length :math:`T`.
+        teacher_forcing (float): The probability of enabling the teacher
+            forcing strategy during training.
+        dropout (float): Dropout rate.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(self,
-                 in_channels=None,
+                 num_channels=None,
                  num_chars=None,
                  max_seq_len=None,
                  teacher_forcing=0.5,
@@ -33,14 +34,15 @@ class ABCRecogDecoder(BaseDecoder):
         self.num_chars = num_chars
         self.max_seq_len = max_seq_len
         self.teacher_forcing = teacher_forcing
-        self.attention_cell = AttentionGRUCell(in_channels, num_chars, dropout)
+        self.attention_cell = AttentionGRUCell(num_channels, num_chars,
+                                               dropout)
 
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
         """
         Args:
             feat (Tensor): Unused.
             out_enc (Tensor): Encoder output of shape
-                :math:`(N, T_e, C)`.
+                :math:`(N, T_e, E)`.
             targets_dict (dict): A dict with the key ``padded_targets``, a
                 tensor of shape :math:`(N, T)`. Each element is the index of a
                 character.
@@ -49,14 +51,15 @@ class ABCRecogDecoder(BaseDecoder):
         Returns:
             Tensor: A raw logit tensor of shape :math:`(N, T, C)`.
         """
-        return self._decode(out_enc, targets_dict['padded_targets'])
+        return self._decode(out_enc,
+                            targets_dict['padded_targets'].to(out_enc.device))
 
     def forward_test(self, feat, out_enc, img_metas):
         """
         Args:
             feat (Tensor): Unused.
             out_enc (Tensor): Encoder output of shape
-                :math:`(N, T_e, C)`.
+                :math:`(N, T_e, E)`.
             img_metas (dict): Unused.
 
         Returns:
@@ -68,7 +71,7 @@ class ABCRecogDecoder(BaseDecoder):
         """
         Args:
             out_enc (Tensor): Encoder output of shape
-                :math:`(N, T_e, C)`.
+                :math:`(N, T_e, E)`.
             targets_dict (dict): A tensor of shape :math:`(N, T)`. Each element
                 is the index of a character.
 
@@ -88,17 +91,18 @@ class ABCRecogDecoder(BaseDecoder):
                                     dtype=torch.long,
                                     device=out_enc.device)
 
-        decoder_hidden = self.attention_cell.init_hidden(N)
-        results = []
+        decoder_hidden = self.attention_cell.init_hidden(
+            N, device=out_enc.device)
+        results = torch.empty((N, T, self.num_chars), device=out_enc.device)
         for i in range(T):
             decoder_output, decoder_hidden, _ = self.attention_cell(
                 decoder_input, decoder_hidden, out_enc)
-            results.append(decoder_output)
-            teacher_focing = False if testing else \
+            results[:, i, :] = decoder_output
+            teacher_forcing = False if testing else \
                 random.random() < self.teacher_forcing
-            if teacher_focing:
+            if teacher_forcing:
                 decoder_input = target[:, i]
             else:
                 _, top_idxs = decoder_output.data.topk(1)
                 decoder_input = top_idxs
-        return torch.stack(results, dim=1)
+        return results
