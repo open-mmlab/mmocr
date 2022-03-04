@@ -14,13 +14,13 @@ def collect_files(img_dir, gt_dir, split, ratio):
     """Collect all images and their corresponding groundtruth files.
 
     Args:
-        img_dir(str): The image directory
-        gt_dir(str): The groundtruth directory
-        split(str): The split of dataset. Namely: training or test
-        ratio(int): The ratio of the training and test splits
+        img_dir (str): The image directory
+        gt_dir (str): The groundtruth directory
+        split (str): The split of dataset. Namely: training or val
+        ratio (int): The ratio of the training and val splits
 
     Returns:
-        files(list): The list of tuples (img_file, groundtruth_file)
+        files (list): The list of tuples (img_file, groundtruth_file)
     """
 
     assert isinstance(img_dir, str)
@@ -56,11 +56,11 @@ def collect_annotations(files, nproc=1):
     """Collect the annotation information.
 
     Args:
-        files(list): The list of tuples (image_file, groundtruth_file)
-        nproc(int): The number of process to collect annotations
+        files (list): The list of tuples (image_file, groundtruth_file)
+        nproc (int): The number of process to collect annotations
 
     Returns:
-        images(list): The list of image information dicts
+        images (list): The list of image information dicts
     """
 
     assert isinstance(files, list)
@@ -79,10 +79,10 @@ def load_img_info(files):
     """Load the information of one image.
 
     Args:
-        files(tuple): The tuple of (img_file, groundtruth_file)
+        files (tuple): The tuple of (img_file, groundtruth_file)
 
     Returns:
-        img_info(dict): The dict of the img and annotation information
+        img_info (dict): The dict of the img and annotation information
     """
 
     assert isinstance(files, tuple)
@@ -111,11 +111,11 @@ def load_txt_info(gt_file, img_info):
     """Collect the annotation information.
 
     Args:
-        gt_file(list): The list of tuples (image_file, groundtruth_file)
-        img_info(int): The dict of the img and annotation information
+        gt_file (list): The list of tuples (image_file, groundtruth_file)
+        img_info (int): The dict of the img and annotation information
 
     Returns:
-        img_info(list): The dict of the img and annotation information
+        img_info (list): The dict of the img and annotation information
     """
 
     with open(gt_file, 'r') as f:
