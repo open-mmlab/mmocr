@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import math
 import os
 import os.path as osp
 
@@ -11,14 +10,12 @@ from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.utils.fileio import list_to_file
 
 
-def collect_files(img_dir, gt_dir, split, ratio):
+def collect_files(img_dir, gt_dir):
     """Collect all images and their corresponding groundtruth files.
 
     Args:
         img_dir (str): The image directory
         gt_dir (str): The groundtruth directory
-        split (str): The split of dataset. Namely: training or test
-        ratio (int): The ratio of the training and test splits
 
     Returns:
         files (list): The list of tuples (img_file, groundtruth_file)
@@ -31,22 +28,14 @@ def collect_files(img_dir, gt_dir, split, ratio):
 
     ann_list, imgs_list = [], []
     for gt_file in os.listdir(gt_dir):
-        # Filtering repeated files
-        if '(' in gt_file:
+        # Filtering repeated and missing images
+        if '(' in gt_file or gt_file == 'X51006619570.txt':
             continue
         ann_list.append(osp.join(gt_dir, gt_file))
         imgs_list.append(osp.join(img_dir, gt_file.replace('.txt', '.jpg')))
 
     files = list(zip(sorted(imgs_list), sorted(ann_list)))
     assert len(files), f'No images found in {img_dir}'
-
-    idx = math.floor(len(files) * (1 - 1 / ratio))
-    if split == 'training':
-        files = files[0:idx]
-    elif split == 'val':
-        files = files[idx:len(files)]
-    else:
-        raise NotImplementedError
 
     print(f'Loaded {len(files)} images from {img_dir}')
 
@@ -119,13 +108,17 @@ def load_txt_info(gt_file, img_info):
         img_info (list): The dict of the img and annotation information
     """
 
-    with open(gt_file, 'r') as f:
+    with open(gt_file, 'r', encoding='unicode_escape') as f:
         anno_info = []
         for ann in f.readlines():
 
             # annotation format [x1, y1, x2, y2, x3, y3, x4, y4, transcript]
-            bbox = np.array(ann.split(',')[0:8]).astype(int).tolist()
-            word = ann.split(',')[-1].replace('\n', '')
+            try:
+                bbox = np.array(ann.split(',')[0:8]).astype(int).tolist()
+            except ValueError:
+                # skip invalid annotation line
+                continue
+            word = ann.split(',')[-1].replace('\n', '').strip()
 
             anno = dict(bbox=bbox, word=word)
             anno_info.append(anno)
@@ -148,14 +141,15 @@ def generate_ann(root_path, split, image_infos):
     dst_image_root = osp.join(root_path, 'dst_imgs', split)
     if split == 'training':
         dst_label_file = osp.join(root_path, 'train_label.txt')
-    elif split == 'val':
-        dst_label_file = osp.join(root_path, 'val_label.txt')
+    elif split == 'test':
+        dst_label_file = osp.join(root_path, 'test_label.txt')
     os.makedirs(dst_image_root, exist_ok=True)
 
     lines = []
     for image_info in image_infos:
         index = 1
-        src_img_path = osp.join(root_path, 'imgs', image_info['file_name'])
+        src_img_path = osp.join(root_path, 'imgs', split,
+                                image_info['file_name'])
         image = mmcv.imread(src_img_path)
         src_img_root = image_info['file_name'].split('.')[0]
 
@@ -178,13 +172,8 @@ def generate_ann(root_path, split, image_infos):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and val set of SROIE')
+        description='Generate training and test set of SROIE')
     parser.add_argument('root_path', help='Root dir path of SROIE')
-    parser.add_argument(
-        '--train-val-ratio',
-        default=4,
-        type=int,
-        help='Ratio used to split training and val splits')
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of process')
     args = parser.parse_args()
@@ -195,13 +184,12 @@ def main():
     args = parse_args()
     root_path = args.root_path
 
-    for split in ['training', 'val']:
+    for split in ['training', 'test']:
         print(f'Processing {split} set...')
         with mmcv.Timer(print_tmpl='It takes {}s to convert SROIE annotation'):
             files = collect_files(
-                osp.join(root_path, 'imgs'), osp.join(root_path,
-                                                      'annotations'), split,
-                args.train_val_ratio)
+                osp.join(root_path, 'imgs', split),
+                osp.join(root_path, 'annotations', split))
             image_infos = collect_annotations(files, nproc=args.nproc)
             generate_ann(root_path, split, image_infos)
 

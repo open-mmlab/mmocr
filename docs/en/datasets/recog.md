@@ -330,20 +330,25 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 
 ### SROIE
 
-- Step1: Download `0325updated.task1train(626p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
+- Step1: Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p)-20220304T064017Z-001`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
 - Step2:
 
 ```bash
 mkdir sroie && cd sroie
-mkdir imgs
+mkdir imgs && mkdir annotations && mkdir imgs/training
 
-unzip -q 0325updated.task1train\(626p\).zip
-mv 0325updated.task1train\(626p\)/*.jpg imgs && mv 0325updated.task1train\(626p\) annotations
+unzip -q 0325updated.task1train\(626p\).zip && unzip -q task1\&2_test\(361p\)-20220304T064017Z-001.zip && unzip -q text.task1\&2-test（361p\).zip
 
-rm 0325updated.task1train\(626p\).zip
+# For images
+mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv task1_2_test\(361p\)/ imgs/test
+
+# For annotations
+mv 0325updated.task1train\(626p\) annotations/training && mv text.task1_2-test（361p\)/ annotations/test
+
+rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\)-20220304T064017Z-001.zip && rm text.task1\&2-test（361p\).zip
 ```
 
-- Step3: Generate `train_label.txt` and `val_label.txt` and crop images using 4 processes with the following command:
+- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with the following command:
 
 ```bash
 python tools/data/textrecog/sroie_converter.py PATH/TO/sroie --nproc 4
