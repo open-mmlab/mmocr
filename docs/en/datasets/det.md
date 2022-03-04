@@ -36,6 +36,11 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── syntext_word_eng
 │   ├── emcs_imgs
 │   └── instances_training.json
+|── funsd
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
 ├── sroie
 │   ├── annotations
 │   ├── imgs
@@ -53,6 +58,7 @@ The structure of the text detection dataset directory is organized as follows.
 |      TextOCR      |                                                                                                                [homepage](https://textvqa.org/textocr/dataset)                                                                                                                 |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |     Totaltext     |                                                                                                           [homepage](https://github.com/cs-chan/Total-Text-Dataset)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
+|       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |       SROIE       |                                                                                                                   [homepage](https://rrc.cvc.uab.es/?ch=13)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
 
@@ -186,6 +192,32 @@ rm images.zip
 python tools/data/common/curvedsyntext_converter.py PATH/TO/CurvedSynText150k --nproc 4
 ```
 
+### FUNSD
+
+- Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
+
+```bash
+mkdir funsd && cd funsd
+
+# Download FUNSD dataset
+wget https://guillaumejaume.github.io/FUNSD/dataset.zip
+unzip -q dataset.zip
+
+# For images
+mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
+
+# For annotations
+mkdir annotations
+mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
+
+rm dataset.zip && rm -rf dataset
+```
+
+- Step2: Generate `instances_training.json` and `instances_test.json` with following command:
+
+```bash
+python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
+```
 
 ### SROIE
 

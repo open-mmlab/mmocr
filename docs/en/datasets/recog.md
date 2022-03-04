@@ -73,6 +73,12 @@
 │   │   ├── train_5_label.txt
 │   │   ├── train_f_label.txt
 │   │   ├── val_label.txt
+│   ├── funsd
+│   │   ├── imgs
+│   │   ├── dst_imgs
+│   │   ├── annotations
+│   │   ├── train_label.txt
+│   │   ├── test_label.txt
 │   ├── sroie
 │   │   ├── imgs
 │   │   ├── dst_imgs
@@ -98,6 +104,7 @@
 |        TextOCR        |                            [homepage](https://textvqa.org/textocr/dataset)                            |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
 |       Totaltext       |                       [homepage](https://github.com/cs-chan/Total-Text-Dataset)                       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
 |       OpenVINO        |                  [Open Images](https://github.com/cvdfoundation/open-images-dataset)                  |                                                                                                                                               [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                                                               | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |   |
+|         FUNSD         |                          [homepage](https://guillaumejaume.github.io/FUNSD/)                          |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
 |         SROIE         |                               [homepage](https://rrc.cvc.uab.es/?ch=13)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
@@ -293,6 +300,33 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   ```bash
   python tools/data/textrecog/openvino_converter.py /path/to/openvino 4
   ```
+  
+### FUNSD
+
+- Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
+
+```bash
+mkdir funsd && cd funsd
+
+# Download FUNSD dataset
+wget https://guillaumejaume.github.io/FUNSD/dataset.zip
+unzip -q dataset.zip
+
+# For images
+mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
+
+# For annotations
+mkdir annotations
+mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
+
+rm dataset.zip && rm -rf dataset
+```
+
+- Step2: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
+
+```bash
+python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
+```
 
 ### SROIE
 
