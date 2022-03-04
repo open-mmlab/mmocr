@@ -212,3 +212,30 @@ rm dataset.zip && rm -rf dataset
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
+
+### NAF
+
+- Step1: Download [labeled_images.tar.gz](https://github.com/herobd/NAF_dataset/releases/tag/v1.0) to `naf/`.
+
+```bash
+mkdir naf && cd naf
+
+# Download NAF dataset
+wget https://github.com/herobd/NAF_dataset/releases/download/v1.0/labeled_images.tar.gz
+tar -zxf labeled_images.tar.gz
+
+# For images
+mkdir annotations && mv labeled_images imgs
+
+# For annotations
+git clone https://github.com/herobd/NAF_dataset.git
+mv NAF_dataset/train_valid_test_split.json annotations/ && mv NAF_dataset/groups annotations/
+
+rm -rf NAF_dataset && rm labeled_images.tar.gz
+```
+
+- Step2: Generate `instances_training.json`, `instances_val.json`, and `instances_test.json` with following command:
+
+```bash
+python tools/data/textdet/naf_converter.py PATH/TO/naf --nproc 4
+```
