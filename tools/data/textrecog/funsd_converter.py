@@ -14,11 +14,11 @@ def collect_files(img_dir, gt_dir):
     """Collect all images and their corresponding groundtruth files.
 
     Args:
-        img_dir(str): The image directory
-        gt_dir(str): The groundtruth directory
+        img_dir (str): The image directory
+        gt_dir (str): The groundtruth directory
 
     Returns:
-        files(list): The list of tuples (img_file, groundtruth_file)
+        files (list): The list of tuples (img_file, groundtruth_file)
     """
     assert isinstance(img_dir, str)
     assert img_dir
@@ -41,11 +41,11 @@ def collect_annotations(files, nproc=1):
     """Collect the annotation information.
 
     Args:
-        files(list): The list of tuples (image_file, groundtruth_file)
-        nproc(int): The number of process to collect annotations
+        files (list): The list of tuples (image_file, groundtruth_file)
+        nproc (int): The number of process to collect annotations
 
     Returns:
-        images(list): The list of image information dicts
+        images (list): The list of image information dicts
     """
     assert isinstance(files, list)
     assert isinstance(nproc, int)
@@ -63,10 +63,10 @@ def load_img_info(files):
     """Load the information of one image.
 
     Args:
-        files(tuple): The tuple of (img_file, groundtruth_file)
+        files (tuple): The tuple of (img_file, groundtruth_file)
 
     Returns:
-        img_info(dict): The dict of the img and annotation information
+        img_info (dict): The dict of the img and annotation information
     """
     assert isinstance(files, tuple)
 
@@ -94,11 +94,11 @@ def load_json_info(gt_file, img_info):
     """Collect the annotation information.
 
     Args:
-        gt_file(str): The path to ground-truth
-        img_info(dict): The dict of the img and annotation information
+        gt_file (str): The path to ground-truth
+        img_info (dict): The dict of the img and annotation information
 
     Returns:
-        img_info(dict): The dict of the img and annotation information
+        img_info (dict): The dict of the img and annotation information
     """
 
     annotation = mmcv.load(gt_file)
