@@ -428,20 +428,27 @@ class MMOCR:
         else:
             raise AssertionError('imgs must be strings or numpy arrays')
 
-        boundaries = []
-
         # todo: handle tessdata error
         # get boundaries using tesseract, may encounter unknown errors
+        result = []
         with PyTessBaseAPI(path='C:/Users/garva/source/tessdata-4.1.0') as api:
             for img in imgs:
                 image = Image.fromarray(img)
                 api.SetImage(image)
                 boxes = api.GetComponentImages(RIL.TEXTLINE, True)
+                boundaries = []
                 for _, box, _, _ in boxes:
-                    p0 = (box['x'], box['y'])  # upper-left
-                    p1 = (box[''])
+                    min_x = box['x']
+                    min_y = box['y']
+                    max_x = box['x'] + box['w']
+                    max_y = box['y'] + box['h']
+                    boundary = [
+                        min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y, 0.1
+                    ]
+                    boundaries.append(boundary)
+                result.append({'boundary_result': boundaries})
 
-        return [{'boundary_result': [[222, 333], [333, 444]]}]
+        return result
 
     def readtext(self,
                  img,
