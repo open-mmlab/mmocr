@@ -432,7 +432,8 @@ class MMOCR:
                     max_x = box['x'] + box['w']
                     max_y = box['y'] + box['h']
                     boundary = [
-                        min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y, 0.1
+                        min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y,
+                        1.0
                     ]
                     boundaries.append(boundary)
                 result.append({'boundary_result': boundaries})
