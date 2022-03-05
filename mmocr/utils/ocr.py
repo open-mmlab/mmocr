@@ -411,8 +411,7 @@ class MMOCR:
         """Inference image(s) with the tesseract detector
 
         Args:
-            imgs (str/ndarray or list[str/ndarray] or tuple[str/ndarray]):
-                Either image files or loaded images.
+            imgs list[str/ndarray]: images to inference.
         Returns:
             result (dict): Predicted results.
         """
