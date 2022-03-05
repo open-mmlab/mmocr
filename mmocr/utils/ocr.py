@@ -21,6 +21,7 @@ from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.kie_dataset import KIEDataset
 from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.models import build_detector
+from mmocr.utils import is_type_list
 from mmocr.utils.box_util import stitch_boxes_into_lines
 from mmocr.utils.fileio import list_from_file
 from mmocr.utils.model import revert_sync_batchnorm
@@ -415,23 +416,11 @@ class MMOCR:
         Returns:
             result (dict): Predicted results.
         """
-        if isinstance(imgs, (list, tuple)):
-            is_batch = True
-            if len(imgs) == 0:
-                raise Exception('empty imgs provided, please check and try again')
-            if not isinstance(imgs[0], (np.ndarray, str)):
-                raise AssertionError('imgs must be strings or numpy arrays')
+        assert is_type_list(imgs, np.ndarray)
 
-        elif isinstance(imgs, (np.ndarray, str)):
-            imgs = [imgs]
-            is_batch = False
-        else:
-            raise AssertionError('imgs must be strings or numpy arrays')
-
-        # todo: handle tessdata error
-        # get boundaries using tesseract, may encounter unknown errors
+        # Get detection result using tesseract, may encounter tessdata errors
         result = []
-        with PyTessBaseAPI(path='C:/Users/garva/source/tessdata-4.1.0') as api:
+        with PyTessBaseAPI() as api:
             for img in imgs:
                 image = Image.fromarray(img)
                 api.SetImage(image)
@@ -447,7 +436,6 @@ class MMOCR:
                     ]
                     boundaries.append(boundary)
                 result.append({'boundary_result': boundaries})
-
         return result
 
     def readtext(self,
