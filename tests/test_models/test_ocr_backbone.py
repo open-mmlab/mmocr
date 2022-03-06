@@ -2,9 +2,10 @@
 import pytest
 import torch
 
-from mmocr.models.textrecog.backbones import (ResNet31, ResNet31OCR,
-                                              ResNet45_abi, ResNetABI,
-                                              ShallowCNN, VeryDeepVgg)
+from mmocr.models.textrecog.backbones import (ResNet31OCR, ResNetABI,
+                                              ResNetOCR, ShallowCNN,
+                                              VeryDeepVgg)
+from mmocr.models.textrecog.stages import BasicStage, Stage_31
 
 
 def test_resnet31_ocr_backbone():
@@ -76,15 +77,46 @@ def test_resnet_abi():
 def test_resnet():
     """Test all ResNet backbones"""
 
-    imgs = torch.randn(1, 3, 32, 100)
-    # Test if ResNet31 equals to ResNet31OCR
-    model1 = ResNet31()
-    model2 = ResNet31OCR()
+    resnet45_aster = ResNetOCR(
+        in_channels=3,
+        stem_channels=32,
+        stage=BasicStage,
+        arch_layers=[3, 4, 6, 6, 3],
+        arch_channels=[32, 64, 128, 256, 512],
+        use_conv1x1=False,
+        strides=[(2, 2), (2, 2), (2, 1), (2, 1), (2, 1)],
+        out_indices=None)
 
-    assert (model1(imgs) - model2(imgs)).sum() == 0
+    resnet45_abi = ResNetOCR(
+        in_channels=3,
+        stem_channels=32,
+        stage=BasicStage,
+        arch_layers=[3, 4, 6, 6, 3],
+        arch_channels=[32, 64, 128, 256, 512],
+        use_conv1x1=True,
+        strides=[(2, 2), (1, 1), (2, 2), (1, 1), (1, 1)],
+        out_indices=None)
 
-    # Test if ResNet45_abi equals to ResNet_abi
-    model3 = ResNet45_abi()
-    model4 = ResNetABI()
+    resnet31 = ResNetOCR(
+        in_channels=3,
+        stem_channels=[64, 128],
+        stage=Stage_31,
+        arch_layers=[1, 2, 5, 3],
+        arch_channels=[256, 256, 512, 512],
+        use_conv1x1=False,
+        strides=[(1, 1), (1, 1), (1, 1), (1, 1)],
+        out_indices=None,
+        pool_cfg=[
+            dict(kernel_size=(2, 2), stride=(2, 2)),
+            dict(kernel_size=(2, 2), stride=(2, 2)),
+            dict(kernel_size=(2, 1), stride=(2, 1)), None
+        ])
 
-    assert (model3(imgs) - model4(imgs)).sum() == 0
+    img = torch.rand(1, 3, 32, 100)
+    assert resnet45_abi(img).shape == torch.Size([1, 512, 8, 25])
+    assert resnet45_aster(img).shape == torch.Size([1, 512, 1, 25])
+    assert resnet31(img).shape == torch.Size([1, 512, 4, 25])
+
+
+if __name__ == "__main__":
+    test_resnet()
