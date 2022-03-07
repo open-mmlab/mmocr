@@ -84,7 +84,7 @@ def load_img_info(files):
     img_file, gt_file = files
     assert osp.basename(gt_file).split('.')[0] == osp.basename(img_file).split(
         '.')[0]
-    # read imgs while ignoring orientations
+    # Read imgs while ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
 
     img_info = dict(
@@ -179,7 +179,7 @@ def generate_ann(root_path, split, image_infos, preserve_vertical,
 
         for anno in image_info['anno_info']:
             word = anno['word']
-            word = word.strip('\u202a')  # remove unicode control character
+            word = word.strip('\u202a')  # Remove unicode control character
             dst_img = crop_img(image, anno['bbox'])
             h, w, _ = dst_img.shape
 

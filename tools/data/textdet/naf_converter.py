@@ -82,7 +82,7 @@ def load_img_info(files):
     img_file, gt_file = files
     assert osp.basename(gt_file).split('.')[0] == osp.basename(img_file).split(
         '.')[0]
-    # read imgs while ignoring orientations
+    # Read imgs while ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
 
     img_info = dict(
