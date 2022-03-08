@@ -47,9 +47,9 @@ class MultiRotateAugOCR:
         transforms (list[dict]): Transformation applied for each augmentation.
         rotate_degrees (list[int]): Degrees of anti-clockwise rotation. Each
             should be an integral multiple of 90 degree while :math:`0` means
-            no rotation. Default to [0].
+            no rotation. Defaults to [0].
         force_rotate (bool): If True, rotate image by 'rotate_degrees'
-            while ignore image aspect ratio, else, for image whose
+            while ignoring image aspect ratio, else, for image whose
             width > height, no rotation will be used.
     """
 
@@ -83,14 +83,8 @@ class MultiRotateAugOCR:
         for degree in set(rotate_degrees):
             _results = results.copy()
             img = _results['img']
-            if degree == 0:
-                pass
-            elif degree == 90:
-                img = np.rot90(img, 1)
-            elif degree == 180:
-                img = np.rot90(img, 2)
-            elif degree == 270:
-                img = np.rot90(img, 3)
+            if degree > 0:
+                img = np.rot90(img, degree // 90)
             _results['img'] = img
             _results['img_shape'] = img.shape
             _results['ori_shape'] = img.shape
