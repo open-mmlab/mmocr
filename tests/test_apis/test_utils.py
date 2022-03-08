@@ -5,8 +5,7 @@ import os
 import pytest
 from mmcv import Config
 
-from mmocr.apis.utils import (disable_text_recog_aug_test,
-                              replace_image_to_tensor)
+from mmocr.utils import disable_text_recog_aug_test, replace_image_to_tensor
 
 
 @pytest.mark.parametrize('cfg_file', [

@@ -14,11 +14,10 @@ from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
 from mmdet.apis import multi_gpu_test
 
 from mmocr.apis.test import single_gpu_test
-from mmocr.apis.utils import (disable_text_recog_aug_test,
-                              replace_image_to_tensor)
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import (revert_sync_batchnorm, setup_multi_processes,
+from mmocr.utils import (disable_text_recog_aug_test, replace_image_to_tensor,
+                         revert_sync_batchnorm, setup_multi_processes,
                          unify_recog_pipeline)
 
 
