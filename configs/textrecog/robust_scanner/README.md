@@ -45,10 +45,10 @@ The attention-based encoder-decoder framework has recently achieved impressive r
 |                                                                                 |      | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |
 | [RobustScanner](configs/textrecog/robust_scanner/robustscanner_r31_academic.py) |  16  |  95.1(95.3)  |     88.7(88.7)     | 93.2(93.3) |     | 78.1(75.8) |      80.3(79.8)      | 89.9(89.9) | [model](https://download.openmmlab.com/mmocr/textrecog/robustscanner/robustscanner_r31_academic-5f05874f.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/robustscanner/20210401_170932.log.json) |
 
-**Notes:**
+:::{notes}
 
-- Accuracy in bracket (e.g. `(75.8)`) does not use `MultiRotateAugtest`, while `rotate_degrees=[0]`.
-- Accuracy outside (e.g. `78.1`) is under `MultiRotateAugtest`, while `rotate_degrees=[0, 90, 270]`.
+- Accuracy in bracket (e.g. `(75.8)`) is under `MultiRotateAugtest` with `rotate_degrees=[0]`, which means no multiple rotate augmentation.
+- Accuracy outside (e.g. `78.1`) is under `MultiRotateAugtest` with `rotate_degrees=[0, 90, 270]`.
 
 
 ## References

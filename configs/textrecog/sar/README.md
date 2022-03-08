@@ -58,8 +58,8 @@ Recognizing irregular text in natural scene images is challenging due to the lar
 
 :::{note}
 
-- Accuracy in bracket (e.g. `(89.2)`) does not use `MultiRotateAugtest`, while `rotate_degrees=[0]`.
-- Accuracy outside (e.g. `89.6`) is under `MultiRotateAugtest`, while `rotate_degrees=[0, 90, 270]`.
+- Accuracy in bracket (e.g. `(89.2)`) is under `MultiRotateAugtest` with `rotate_degrees=[0]`, which means no multiple rotate augmentation.
+- Accuracy outside (e.g. `89.6`) is under `MultiRotateAugtest` with `rotate_degrees=[0, 90, 270]`.
 - `R31-1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.
 -   We did not use beam search during decoding.
 -   We implemented two kinds of decoder. Namely, `ParallelSARDecoder` and `SequentialSARDecoder`.
