@@ -28,7 +28,6 @@ def test_resize_ocr():
     # test call with input_img2
     results = {'img_shape': input_img2.shape, 'img': input_img2}
     results = rci(results)
-    assert len(results['img_shape']) == 3
     assert len(results['img']) == 3
     assert len(results['img_shape']) == 3
     assert np.allclose([64, 32, 3], results['img_shape'][0])
