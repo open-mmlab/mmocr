@@ -13,7 +13,12 @@ from mmcv.image.misc import tensor2imgs
 from mmcv.runner import load_checkpoint
 from mmcv.utils.config import Config
 from PIL import Image
-from tesserocr import PyTessBaseAPI, RIL
+
+try:
+    import tesserocr
+    from tesserocr import RIL, PyTessBaseAPI
+except ImportError:
+    tesserocr = None
 
 from mmocr.apis import init_detector
 from mmocr.apis.inference import model_inference
@@ -355,6 +360,10 @@ class MMOCR:
 
         self.detect_model = None
         if self.td and self.td == 'Tesseract':
+            if tesserocr is None:
+                raise ImportError('Please install tesserocr first. '
+                                  'Check out the installation guide at'
+                                  'https://github.com/sirfz/tesserocr')
             self.detect_model = self.td
         elif self.td:
             # Build detection model
@@ -408,17 +417,18 @@ class MMOCR:
 
     @staticmethod
     def tesseract_det_inference(imgs):
-        """Inference image(s) with the tesseract detector
+        """Inference image(s) with the tesseract detector.
 
         Args:
             imgs list[str/ndarray]: images to inference.
+
         Returns:
             result (dict): Predicted results.
         """
         assert is_type_list(imgs, np.ndarray)
 
         # Get detection result using tesseract, may encounter tessdata errors
-        result = []
+        results = []
         with PyTessBaseAPI() as api:
             for img in imgs:
                 image = Image.fromarray(img)
@@ -435,8 +445,8 @@ class MMOCR:
                         1.0
                     ]
                     boundaries.append(boundary)
-                result.append({'boundary_result': boundaries})
-        return result
+                results.append({'boundary_result': boundaries})
+        return results
 
     def readtext(self,
                  img,
