@@ -14,7 +14,6 @@ DECODERS = Registry('decoder')
 PREPROCESSOR = Registry('preprocessor')
 POSTPROCESSOR = Registry('postprocessor')
 
-STAGES = Registry('stages')
 UPSAMPLE_LAYERS = Registry('upsample layer', parent=MMCV_UPSAMPLE_LAYERS)
 BACKBONES = Registry('models', parent=MMDET_BACKBONES)
 LOSSES = BACKBONES
@@ -86,11 +85,6 @@ def build_neck(cfg):
 def build_fuser(cfg):
     """Build fuser."""
     return FUSERS.build(cfg)
-
-
-def build_stage(cfg):
-    """Build ResNet stage"""
-    return STAGES.build(cfg)
 
 
 def build_upsample_layer(cfg, *args, **kwargs):

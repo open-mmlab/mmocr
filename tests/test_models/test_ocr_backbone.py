@@ -2,10 +2,8 @@
 import pytest
 import torch
 
-from mmocr.models.textrecog.backbones import (ResNet31OCR, ResNetABI,
-                                              ResNetOCR, ShallowCNN,
-                                              VeryDeepVgg)
-from mmocr.models.textrecog.stages import BasicStage, Stage_31
+from mmocr.models.textrecog.backbones import (ResNet, ResNet31OCR, ResNetABI,
+                                              ShallowCNN, VeryDeepVgg)
 
 
 def test_resnet31_ocr_backbone():
@@ -75,48 +73,53 @@ def test_resnet_abi():
 
 
 def test_resnet():
-    """Test all ResNet backbones"""
+    """Test all ResNet backbones."""
 
-    resnet45_aster = ResNetOCR(
-        in_channels=3,
-        stem_channels=32,
-        stage=BasicStage,
-        arch_layers=[3, 4, 6, 6, 3],
-        arch_channels=[32, 64, 128, 256, 512],
-        use_conv1x1=False,
-        strides=[(2, 2), (2, 2), (2, 1), (2, 1), (2, 1)],
-        out_indices=None)
-
-    resnet45_abi = ResNetOCR(
-        in_channels=3,
-        stem_channels=32,
-        stage=BasicStage,
-        arch_layers=[3, 4, 6, 6, 3],
-        arch_channels=[32, 64, 128, 256, 512],
-        use_conv1x1=True,
-        strides=[(2, 2), (1, 1), (2, 2), (1, 1), (1, 1)],
-        out_indices=None)
-
-    resnet31 = ResNetOCR(
+    resnet45_aster = ResNet(
         in_channels=3,
         stem_channels=[64, 128],
-        stage=Stage_31,
+        block_cfgs=dict(type='BasicBlock', use_conv1x1='True'),
+        arch_layers=[3, 4, 6, 6, 3],
+        arch_channels=[32, 64, 128, 256, 512],
+        strides=[(2, 2), (2, 2), (2, 1), (2, 1), (2, 1)])
+
+    resnet45_abi = ResNet(
+        in_channels=3,
+        stem_channels=32,
+        block_cfgs=dict(type='BasicBlock', use_conv1x1='True'),
+        arch_layers=[3, 4, 6, 6, 3],
+        arch_channels=[32, 64, 128, 256, 512],
+        strides=[2, 1, 2, 1, 1])
+
+    resnet_31 = ResNet(
+        in_channels=3,
+        stem_channels=[64, 128],
+        block_cfgs=dict(type='BasicBlock'),
         arch_layers=[1, 2, 5, 3],
         arch_channels=[256, 256, 512, 512],
-        use_conv1x1=False,
-        strides=[(1, 1), (1, 1), (1, 1), (1, 1)],
-        out_indices=None,
-        pool_cfg=[
-            dict(kernel_size=(2, 2), stride=(2, 2)),
-            dict(kernel_size=(2, 2), stride=(2, 2)),
-            dict(kernel_size=(2, 1), stride=(2, 1)), None
+        strides=[1, 1, 1, 1],
+        stage_plugins=[
+            dict(
+                cfg=dict(type='Maxpooling', strides=(2, 2)),
+                stages=(True, True, False, False),
+                position='before_stage'),
+            dict(
+                cfg=dict(type='Maxpooling', strides=(2, 1)),
+                stages=(False, False, True, False),
+                position='before_stage'),
+            dict(
+                cfg=dict(
+                    type='Conv', args=dict(kernel_size=3, stride=1,
+                                           padding=1)),
+                stages=(True, True, False, False),
+                position='after_stage')
         ])
-
     img = torch.rand(1, 3, 32, 100)
-    assert resnet45_abi(img).shape == torch.Size([1, 512, 8, 25])
+
     assert resnet45_aster(img).shape == torch.Size([1, 512, 1, 25])
-    assert resnet31(img).shape == torch.Size([1, 512, 4, 25])
+    assert resnet45_abi(img).shape == torch.Size([1, 512, 8, 25])
+    assert resnet_31(img).shape == torch.Size([1, 512, 4, 25])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     test_resnet()
