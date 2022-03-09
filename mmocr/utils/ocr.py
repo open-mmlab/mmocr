@@ -2,6 +2,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os
+import subprocess
+import sys
 import warnings
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
@@ -322,7 +324,8 @@ class MMOCR:
             'CRNN_TPS': {
                 'config': 'tps/crnn_tps_academic_dataset.py',
                 'ckpt': 'tps/crnn_tps_academic_dataset_20210510-d221a905.pth'
-            }
+            },
+            'Tesseract': {}
         }
 
         kie_models = {
@@ -379,7 +382,9 @@ class MMOCR:
             self.detect_model = revert_sync_batchnorm(self.detect_model)
 
         self.recog_model = None
-        if self.tr:
+        if self.tr and self.tr == 'Tesseract':
+            self.recog_model = self.tr
+        elif self.tr:
             # Build recognition model
             if not recog_config:
                 recog_config = os.path.join(
@@ -420,33 +425,53 @@ class MMOCR:
         """Inference image(s) with the tesseract detector.
 
         Args:
-            imgs list[str/ndarray]: images to inference.
+            imgs (list[ndarray]): images to inference.
 
         Returns:
             result (dict): Predicted results.
         """
         assert is_type_list(imgs, np.ndarray)
 
-        # Get detection result using tesseract, may encounter tessdata errors
+        # very very gross way to find tessdata :(
+        if sys.platform == 'linux':
+            api = PyTessBaseAPI()
+        elif sys.platform == 'win32':
+            try:
+                p = subprocess.Popen(
+                    'where tesseract', stdout=subprocess.PIPE, shell=True)
+                s = p.communicate()[0].decode('utf-8').split('\\')
+                path = s[:-1] + ['tessdata']
+                tessdata_path = '/'.join(path)
+                api = PyTessBaseAPI(path=tessdata_path)
+            except RuntimeError:
+                raise RuntimeError('Please install tesseract first. '
+                                   'Check out the installation guide at'
+                                   'https://github.com/sirfz/tesserocr')
+        else:
+            raise NotImplementedError
+
+        # Get detection result using tesseract
         results = []
-        with PyTessBaseAPI() as api:
-            for img in imgs:
-                image = Image.fromarray(img)
-                api.SetImage(image)
-                boxes = api.GetComponentImages(RIL.TEXTLINE, True)
-                boundaries = []
-                for _, box, _, _ in boxes:
-                    min_x = box['x']
-                    min_y = box['y']
-                    max_x = box['x'] + box['w']
-                    max_y = box['y'] + box['h']
-                    boundary = [
-                        min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y,
-                        1.0
-                    ]
-                    boundaries.append(boundary)
-                results.append({'boundary_result': boundaries})
+        for img in imgs:
+            image = Image.fromarray(img)
+            api.SetImage(image)
+            boxes = api.GetComponentImages(RIL.TEXTLINE, True)
+            boundaries = []
+            for _, box, _, _ in boxes:
+                min_x = box['x']
+                min_y = box['y']
+                max_x = box['x'] + box['w']
+                max_y = box['y'] + box['h']
+                boundary = [
+                    min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y, 1.0
+                ]
+                boundaries.append(boundary)
+            results.append({'boundary_result': boundaries})
         return results
+
+    @staticmethod
+    def tesseract_recog_inference():
+        pass
 
     def readtext(self,
                  img,
