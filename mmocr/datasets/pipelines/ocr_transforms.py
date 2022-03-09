@@ -223,6 +223,17 @@ class FancyPCA:
 
     It alters the intensities of RGB values along the principal components of
     ImageNet dataset.
+
+    Args:
+        eig_vec (torch.Tensor): The eigen vector with shape :math:`(3, 3)`.
+        eig_val (torch.Tensor): The eigen value with shape :math:`(1, 3)`.
+     :Required Keys:
+        - | ``img`` (ndarray): The input image, with type np.uint8 and
+            value in 0-255.
+     :Affected Keys:
+        :Modified:
+            - | ``img`` (ndarray): The output image after the transform,
+                with type np.uint8 and value in 0-255.
     """
 
     def __init__(self, eig_vec=None, eig_val=None):
