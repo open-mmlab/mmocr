@@ -2,7 +2,7 @@
 
 ## Training on a Single GPU
 
-You can use `tools/train.py` to train a model on a single machine with CPU and optionally GPU.
+You can use `tools/train.py` to train a model on a single machine with a CPU and optionally a GPU.
 
 Here is the full usage of the script:
 
