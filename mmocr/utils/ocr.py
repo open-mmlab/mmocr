@@ -432,7 +432,7 @@ class MMOCR:
         """
         assert is_type_list(imgs, np.ndarray)
 
-        # very very gross way to find tessdata :(
+        # Very very gross way to find tessdata :(
         if sys.platform == 'linux':
             api = PyTessBaseAPI()
         elif sys.platform == 'win32':
@@ -467,11 +467,51 @@ class MMOCR:
                 ]
                 boundaries.append(boundary)
             results.append({'boundary_result': boundaries})
+
+        # close tesserocr api and return
+        api.End()
         return results
 
     @staticmethod
-    def tesseract_recog_inference():
-        pass
+    def tesseract_recog_inference(img):
+        """Inference image with the tesseract recognizer.
+
+        Args:
+            img (ndarray): images to inference.
+
+        Returns:
+            result (dict): Predicted results.
+        """
+        assert isinstance(img, np.ndarray)
+
+        # I wish I can write a context manager wrapper
+        # to simplify this mess
+        if sys.platform == 'linux':
+            api = PyTessBaseAPI()
+        elif sys.platform == 'win32':
+            try:
+                p = subprocess.Popen(
+                    'where tesseract', stdout=subprocess.PIPE, shell=True)
+                s = p.communicate()[0].decode('utf-8').split('\\')
+                path = s[:-1] + ['tessdata']
+                tessdata_path = '/'.join(path)
+                api = PyTessBaseAPI(path=tessdata_path)
+            except RuntimeError:
+                raise RuntimeError('Please install tesseract first. '
+                                   'Check out the installation guide at'
+                                   'https://github.com/sirfz/tesserocr')
+        else:
+            raise NotImplementedError
+
+        image = Image.fromarray(img)
+        api.SetImage(image)
+        api.SetRectangle(0, 0, img.shape[1], img.shape[0])
+        text = api.GetUTF8Text()
+        conf = api.MeanTextConf()
+
+        # close tesserocr api and return
+        api.End()
+        return {'text': text, 'score': conf}
 
     def readtext(self,
                  img,
@@ -640,7 +680,10 @@ class MMOCR:
                 if self.args.batch_mode:
                     box_imgs.append(box_img)
                 else:
-                    recog_result = model_inference(recog_model, box_img)
+                    if recog_model == 'Tesseract':
+                        recog_result = self.tesseract_recog_inference(box_img)
+                    else:
+                        recog_result = model_inference(recog_model, box_img)
                     text = recog_result['text']
                     text_score = recog_result['score']
                     if isinstance(text_score, list):
