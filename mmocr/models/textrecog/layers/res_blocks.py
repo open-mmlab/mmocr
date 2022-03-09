@@ -21,17 +21,16 @@ def conv1x1(in_planes, out_planes):
 
 class BasicBlock_New(nn.Module):
 
-    def __init__(
-        self,
-        cfg,
-        inplanes,
-        planes,
-        stride=1,
-        downsample=None,
-    ):
+    def __init__(self,
+                 inplanes,
+                 planes,
+                 stride=1,
+                 downsample=None,
+                 use_conv1x1=False,
+                 plugins=None):
         super(BasicBlock_New, self).__init__()
 
-        if 'use_conv1x1' in cfg and cfg['use_conv1x1'] is True:
+        if use_conv1x1:
             self.conv1 = conv1x1(inplanes, planes)
             self.conv2 = conv3x3(planes, planes, stride)
         else:
@@ -39,8 +38,8 @@ class BasicBlock_New(nn.Module):
             self.conv2 = conv3x3(planes, planes)
 
         self.plugin = None
-        if 'plugins' in cfg and cfg['plugins'] is not None:
-            self.plugin = self._make_block_plugins(cfg['plugins'])
+        if plugins:
+            self.plugin = self._make_block_plugins(plugins)
         self.planes = planes
         self.bn1 = nn.BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)
@@ -88,22 +87,23 @@ class BasicBlock_New(nn.Module):
             list[dict]: Plugins for current stage
         """
 
-        exist_position = []
+        occupied_position = []
         for plugin in plugins:
             plugin = plugin.copy()
             position = plugin.pop('position', None)
-            assert position in exist_position
-            self.plugin_before_conv1 = None
-            self.plugin_before_conv2 = None
-            self.plugin_after_conv2 = None
+            assert position in occupied_position
+            self.plugin_after_input = None
+            self.plugin_after_conv1 = None
+            self.plugin_after_shortcut = None
             if position == 'before_conv1':
-                self.plugin_before_conv1 = self._creat_plugin(plugin['cfg'])
+                self.plugin_after_input = self._creat_plugin(plugin['cfg'])
             elif position == 'before_conv2':
-                self.plugin_before_conv2 = self._creat_plugin(plugin['cfg'])
+                self.plugin_after_conv1 = self._creat_plugin(plugin['cfg'])
             elif position == 'after_conv2':
-                self.plugin_after_conv2 = self._creat_plugin(plugin['cfg'])
+                self.plugin_after_shortcut = self._creat_plugin(plugin['cfg'])
             else:
                 raise Exception('uncorrect plugin position')
+            occupied_position.append(position)
 
     def forward(self, x):
         residual = x

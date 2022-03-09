@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
+from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule, Sequential
 
 import mmocr.utils as utils
@@ -14,17 +15,17 @@ class ResNet(BaseModule):
 
     Args:
         in_channels (int): Number of channels of input image tensor.
-        stem_channels (list[int]): List of channels in each layer of stem.e.g.
-        [64, 128] stands for 64 channels in the first layer and 128 channels
-        in the second layer of stem
-        block_cfgs (dict): config of block
+        stem_channels (list[int]): List of channels in each stem layer. E.g.,
+            [64, 128] stands for 64 and 128 channels in the first and second
+            stem layers.
+        block_cfgs (dict): Configs of block
         arch_layers (list[int]): List of Block number for each stage.
         arch_channels (list[int]): List of channels for each stage.
         strides (Sequence[int] | Sequence[tuple]): Strides of the first block
-        of each stage.
+            of each stage.
         out_indices (None | Sequence[int]): Indices of output stages. If not
             specified, only the last stage will be returned.
-        stage_plugins (dict): configs of stage plugins
+        stage_plugins (dict): Configs of stage plugins
     """
 
     def __init__(self,
@@ -83,76 +84,68 @@ class ResNet(BaseModule):
     def _make_layer(self, block_cfgs, inplanes, planes, blocks, stride):
         layers = []
         downsample = None
-        if isinstance(stride, tuple):
-            if stride[0] != 1 or stride[1] != 1 or inplanes != planes:
-                downsample = nn.Sequential(
-                    nn.Conv2d(inplanes, planes, 1, stride, bias=False),
-                    nn.BatchNorm2d(planes),
-                )
-        else:
-            if stride != 1 or inplanes != planes:
-                downsample = nn.Sequential(
-                    nn.Conv2d(inplanes, planes, 1, stride, bias=False),
-                    nn.BatchNorm2d(planes),
-                )
+        block_cfgs = block_cfgs.copy()
+        if isinstance(stride, int):
+            stride = (stride, stride)
+
+        if stride[0] != 1 or stride[1] != 1 or inplanes != planes:
+            downsample = ConvModule(
+                inplanes,
+                planes,
+                1,
+                stride,
+                norm_cfg=dict(type='BN'),
+                act_cfg=None)
 
         if block_cfgs['type'] == 'BasicBlock':
             block = BasicBlock_New
+            block_cfgs.pop('type')
         else:
             raise Exception('{} not implement yet'.format(block['type']))
 
         layers.append(
             block(
-                block_cfgs,
                 inplanes,
                 planes,
                 stride=stride,
                 downsample=downsample,
-            ))
+                **block_cfgs))
         inplanes = planes
         for _ in range(1, blocks):
-            layers.append(block(block_cfgs, inplanes, planes))
+            layers.append(block(inplanes, planes, **block_cfgs))
 
         return Sequential(*layers)
 
     def _make_stem_layer(self, in_channels, stem_channels):
         if isinstance(stem_channels, int):
-            self.stem_layers = nn.Sequential(
-                nn.Conv2d(
-                    in_channels,
-                    stem_channels,
-                    kernel_size=3,
-                    stride=1,
-                    padding=1,
-                ), nn.BatchNorm2d(stem_channels), nn.ReLU(inplace=True))
-            self.inplanes = stem_channels
-        else:
-            stem_layers = []
-            for i, channels in enumerate(stem_channels):
-                stem_layer = nn.Sequential(
-                    nn.Conv2d(
-                        in_channels,
-                        channels,
-                        kernel_size=3,
-                        stride=1,
-                        padding=1,
-                    ), nn.BatchNorm2d(channels), nn.ReLU(inplace=True))
-                in_channels = channels
-                stem_layers.append(stem_layer)
-            self.stem_layers = Sequential(*stem_layers)
-            self.inplanes = stem_channels[-1]
+            stem_channels = [stem_channels]
+        stem_layers = []
+        for _, channels in enumerate(stem_channels):
+            stem_layer = ConvModule(
+                in_channels,
+                channels,
+                kernel_size=3,
+                stride=1,
+                padding=1,
+                bias=True,
+                norm_cfg=dict(type='BN'),
+                act_cfg=dict(type='ReLU'))
+            in_channels = channels
+            stem_layers.append(stem_layer)
+        self.stem_layers = Sequential(*stem_layers)
+        self.inplanes = stem_channels[-1]
 
-    def _creat_plugin(self, plugin_cfg, stage_idx):
+    def _create_plugin(self, plugin_cfg, stage_idx):
         if plugin_cfg['type'] == 'Maxpooling':
             return nn.MaxPool2d(plugin_cfg['strides'])
         elif plugin_cfg['type'] == 'Conv':
-            return nn.Sequential(
-                nn.Conv2d(
-                    self.arch_channels[stage_idx],
-                    self.arch_channels[stage_idx],
-                    **plugin_cfg['args'],
-                    bias=False), nn.BatchNorm2d(self.arch_channels[stage_idx]),
-                nn.ReLU(inplace=True))
+            return ConvModule(
+                self.arch_channels[stage_idx],
+                self.arch_channels[stage_idx],
+                **plugin_cfg['args'],
+                bias=False,
+                norm_cfg=dict(type='BN'),
+                act_cfg=dict(type='ReLU'))
         else:
             raise Exception('plugin {} not implemented yet'.format(
                 plugin_cfg['type']))
@@ -206,9 +199,11 @@ class ResNet(BaseModule):
             assert stages is None or len(stages) == self.num_stages
             if stages[stage_idx]:
                 if position == 'before_stage':
-                    plugin_ahead = self._creat_plugin(plugin['cfg'], stage_idx)
+                    plugin_ahead = self._create_plugin(plugin['cfg'],
+                                                       stage_idx)
                 elif position == 'after_stage':
-                    plugin_after = self._creat_plugin(plugin['cfg'], stage_idx)
+                    plugin_after = self._create_plugin(plugin['cfg'],
+                                                       stage_idx)
                 else:
                     raise Exception('uncorrect plugin position')
         plugin_ahead_name = f'layer{stage_idx+1}_plugin_ahead'
