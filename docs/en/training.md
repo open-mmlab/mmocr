@@ -1,8 +1,8 @@
 # Training
 
-## Training on a Single Machine
+## Training on a Single GPU
 
-You can use `tools/train.py` to train a model on a single machine with CPU and optionally GPU(s).
+You can use `tools/train.py` to train a model on a single machine with a CPU and optionally a GPU.
 
 Here is the full usage of the script:
 
@@ -11,7 +11,7 @@ python tools/train.py ${CONFIG_FILE} [ARGS]
 ```
 
 :::{note}
-By default, MMOCR prefers GPU(s) to CPU. If you want to train a model on CPU, please empty `CUDA_VISIBLE_DEVICES` or set it to -1 to make GPU(s) invisible to the program. Note that CPU training requires **MMCV >= 1.4.4**.
+By default, MMOCR prefers GPU to CPU. If you want to train a model on CPU, please empty `CUDA_VISIBLE_DEVICES` or set it to -1 to make GPU invisible to the program. Note that CPU training requires **MMCV >= 1.4.4**.
 
 ```bash
 CUDA_VISIBLE_DEVICES= python tools/train.py ${CONFIG_FILE} [ARGS]
@@ -35,7 +35,7 @@ CUDA_VISIBLE_DEVICES= python tools/train.py ${CONFIG_FILE} [ARGS]
 | `--local_rank`    | int                               | Used for distributed training.                                                                                                                                                                                                                                                                                                                                                         |
 | `--mc-config`     | str                               | Memory cache config for image loading speed-up during training.                                                                                                                                                                                                                                                                                                                        |
 
-## Training on Multiple Machines
+## Training on Multiple GPUs
 
 MMOCR implements **distributed** training with `MMDistributedDataParallel`. (Please refer to [datasets.md](datasets.md) to prepare your datasets)
 
@@ -48,7 +48,9 @@ MMOCR implements **distributed** training with `MMDistributedDataParallel`. (Ple
 | `PORT`    | int  | The master port that will be used by the machine with rank 0. Defaults to 29500. **Note:** If you are launching multiple distrbuted training jobs on a single machine, you need to specify different ports for each job to avoid port conflicts. |
 | `PY_ARGS` | str  | Arguments to be parsed by `tools/train.py`.                                                                                                                                                                                                      |
 
+## Training on Multiple Machines
 
+MMOCR relies on torch.distributed package for distributed training. Thus, as a basic usage, one can launch distributed training via PyTorch’s [launch utility](https://pytorch.org/docs/stable/distributed.html#launch-utility).
 
 ## Training with Slurm
 
@@ -73,14 +75,17 @@ Here is an example of using 8 GPUs to train a text detection model on the dev pa
 ```
 
 ### Running Multiple Training Jobs on a Single Machine
+
 If you are launching multiple training jobs on a single machine with Slurm, you may need to modify the port in configs to avoid communication conflicts.
 
 For example, in `config1.py`,
+
 ```python
 dist_params = dict(backend='nccl', port=29500)
 ```
 
 In `config2.py`,
+
 ```python
 dist_params = dict(backend='nccl', port=29501)
 ```
