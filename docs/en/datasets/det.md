@@ -212,3 +212,23 @@ rm dataset.zip && rm -rf dataset
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
+
+### DeText
+
+- Step1: Download `ch9_training_images.zip`, `ch9_training_localization_transcription_gt.zip`, `ch9_validation_images.zip`, and `ch9_validation_localization_transcription_gt.zip` from **Task 3: End to End** on the [homepage](https://rrc.cvc.uab.es/?ch=9).
+```bash
+mkdir detext && cd detext
+mkdir imgs && mkdir annotations && mkdir imgs/training && mkdir imgs/val && mkdir annotations/training && mkdir annotations/val
+
+# Extract images and annotations
+unzip -q ch9_training_images.zip -d imgs/training && unzip -q ch9_training_localization_transcription_gt.zip -d annotations/training && unzip -q ch9_validation_images.zip -d imgs/val && unzip -q ch9_validation_localization_transcription_gt.zip -d annotations/val
+
+# Remove zips
+rm ch9_training_images.zip && rm ch9_training_localization_transcription_gt.zip && rm ch9_validation_images.zip && rm ch9_validation_localization_transcription_gt.zip
+```
+
+- Step2: Generate `instances_training.json` and `instances_val.json` with following command:
+
+```bash
+python tools/data/textdet/detext_converter.py PATH/TO/detext --nproc 4
+```
