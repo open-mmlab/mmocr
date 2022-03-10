@@ -16,7 +16,7 @@
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 ```
 
-:::{注}
+:::{note}
 默认情况下，MMOCR 更喜欢 GPU 而非 CPU。如果您想在 CPU 上测试模型，请清空 `CUDA_VISIBLE_DEVICES` 或者将其设置为 -1 以使程序对 GPU(s) 不可见。需要注意的是，运行 CPU 测试需要 **MMCV >= 1.4.4**。
 
 ```bash
