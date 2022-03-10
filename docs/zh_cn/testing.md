@@ -4,7 +4,7 @@
 
 ## 使用单GPU进行测试
 
-您可以使用 `tools/test.py` 执行单 CPU/GPU 推理。例如，要在 IC15 上评估 DBNet: ( 可以从[Model Zoo]( modelzoo.md )下载预训练模型 )：
+您可以使用 `tools/test.py` 执行单 CPU/GPU 推理。例如，要在 IC15 上评估 DBNet: ( 可以从[Model Zoo]( ../../../#model-zoo )下载预训练模型 )：
 
 ```shell
 ./tools/dist_test.sh configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth --eval hmean-iou
