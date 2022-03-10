@@ -65,6 +65,7 @@ def load_img_info(files):
 
     Args:
         files (tuple): The tuple of (img_file, groundtruth_file)
+        
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
