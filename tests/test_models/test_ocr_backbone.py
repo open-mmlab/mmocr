@@ -98,20 +98,24 @@ def test_resnet():
         arch_layers=[1, 2, 5, 3],
         arch_channels=[256, 256, 512, 512],
         strides=[1, 1, 1, 1],
-        stage_plugins=[
+        plugins=[
             dict(
-                cfg=dict(type='Maxpooling', strides=(2, 2)),
+                cfg=dict(type='Maxpool2d', kernel_size=2, stride=(2, 2)),
                 stages=(True, True, False, False),
                 position='before_stage'),
             dict(
-                cfg=dict(type='Maxpooling', strides=(2, 1)),
+                cfg=dict(type='Maxpool2d', kernel_size=(2, 1), stride=(2, 1)),
                 stages=(False, False, True, False),
                 position='before_stage'),
             dict(
                 cfg=dict(
-                    type='Conv', args=dict(kernel_size=3, stride=1,
-                                           padding=1)),
-                stages=(True, True, False, False),
+                    type='ConvModule',
+                    kernel_size=3,
+                    stride=1,
+                    padding=1,
+                    norm_cfg=dict(type='BN'),
+                    act_cfg=dict(type='ReLU')),
+                stages=(True, True, True, True),
                 position='after_stage')
         ])
     img = torch.rand(1, 3, 32, 100)
@@ -119,7 +123,6 @@ def test_resnet():
     assert resnet45_aster(img).shape == torch.Size([1, 512, 1, 25])
     assert resnet45_abi(img).shape == torch.Size([1, 512, 8, 25])
     assert resnet_31(img).shape == torch.Size([1, 512, 4, 25])
-    print(resnet45_abi)
 
 
 if __name__ == '__main__':

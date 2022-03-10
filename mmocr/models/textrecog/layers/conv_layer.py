@@ -1,36 +1,146 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
-from mmcv.cnn.resnet import BasicBlock as MMCV_BasicBlock
-from mmcv.cnn.resnet import conv3x3
+from mmcv.cnn import build_plugin_layer
 
 
-def conv1x1(in_planes, out_planes, stride=1):
+def conv3x3(in_planes, out_planes, stride=1):
+    """3x3 convolution with padding."""
     return nn.Conv2d(
-        in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
+        in_planes,
+        out_planes,
+        kernel_size=3,
+        stride=stride,
+        padding=1,
+        bias=False)
 
 
-class BasicBlock(MMCV_BasicBlock):
+def conv1x1(in_planes, out_planes):
+    """1x1 convolution with padding."""
+    return nn.Conv2d(
+        in_planes, out_planes, kernel_size=1, stride=1, padding=0, bias=False)
+
+
+class BasicBlock(nn.Module):
 
     def __init__(self,
                  inplanes,
                  planes,
                  stride=1,
-                 dilation=1,
                  downsample=None,
                  use_conv1x1=False,
-                 style='pytorch',
-                 with_cp=False):
-        super().__init__(
-            inplanes,
-            planes,
-            stride=stride,
-            dilation=dilation,
-            downsample=downsample,
-            style=style,
-            with_cp=with_cp)
+                 plugins=None):
+        super(BasicBlock, self).__init__()
+
         if use_conv1x1:
             self.conv1 = conv1x1(inplanes, planes)
             self.conv2 = conv3x3(planes, planes, stride)
+        else:
+            self.conv1 = conv3x3(inplanes, planes, stride)
+            self.conv2 = conv3x3(planes, planes)
+
+        self.with_plugins = False
+        if plugins:
+            if isinstance(plugins, dict):
+                plugins = [plugins]
+            self.with_plugins = True
+            # collect plugins for conv1/conv2/
+            self.before_conv1_plugin = [
+                plugin['cfg'] for plugin in plugins
+                if plugin['position'] == 'before_conv1'
+            ]
+            self.after_conv1_plugin = [
+                plugin['cfg'] for plugin in plugins
+                if plugin['position'] == 'after_conv1'
+            ]
+            self.after_conv2_plugin = [
+                plugin['cfg'] for plugin in plugins
+                if plugin['position'] == 'after_conv2'
+            ]
+            self.after_shortcut_plugin = [
+                plugin['cfg'] for plugin in plugins
+                if plugin['position'] == 'after_shortcut'
+            ]
+
+        self.planes = planes
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.relu = nn.ReLU(inplace=True)
+        self.bn2 = nn.BatchNorm2d(planes)
+        self.downsample = downsample
+        self.stride = stride
+
+        if self.with_plugins:
+            self.before_conv1_plugin_names = self.make_block_plugins(
+                inplanes, self.before_conv1_plugin)
+            self.after_conv1_plugin_names = self.make_block_plugins(
+                planes, self.after_conv1_plugin)
+            self.after_conv2_plugin_names = self.make_block_plugins(
+                planes, self.after_conv2_plugin)
+            self.after_shortcut_plugin_names = self.make_block_plugins(
+                planes, self.after_shortcut_plugin)
+
+    def make_block_plugins(self, in_channels, plugins):
+        """make plugins for block.
+
+        Args:
+            in_channels (int): Input channels of plugin.
+            plugins (list[dict]): List of plugins cfg to build.
+
+        Returns:
+            list[str]: List of the names of plugin.
+        """
+        assert isinstance(plugins, list)
+        plugin_names = []
+        for plugin in plugins:
+            plugin = plugin.copy()
+            name, layer = build_plugin_layer(
+                plugin,
+                in_channels=in_channels,
+                out_channels=in_channels,
+                postfix='_' + plugin.pop('postfix', ''))
+            assert not hasattr(self, name), f'duplicate plugin {name}'
+            self.add_module(name, layer)
+            plugin_names.append(name)
+        return plugin_names
+
+    def forward_plugin(self, x, plugin_names):
+        out = x
+        for name in plugin_names:
+            out = getattr(self, name)(x)
+        return out
+
+    def forward(self, x):
+        residual = x
+
+        if self.with_plugins:
+            out = self.forward_plugin(x, self.before_conv1_plugin_names)
+            residual = self.forward_plugin(residual,
+                                           self.before_conv1_plugin_names)
+        else:
+            out = x
+
+        out = self.conv1(out)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        if self.with_plugins:
+            out = self.forward_plugin(out, self.after_conv1_plugin_names)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        if self.with_plugins:
+            out = self.forward_plugin(out, self.after_conv2_plugin_names)
+
+        if self.downsample is not None:
+            residual = self.downsample(x)
+
+        out += residual
+        out = self.relu(out)
+
+        if self.with_plugins:
+            out = self.forward_plugin(out, self.after_shortcut_plugin_names)
+
+        return out
 
 
 class Bottleneck(nn.Module):

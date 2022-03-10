@@ -1,11 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import torch.nn as nn
-from mmcv.cnn import ConvModule
+from mmcv.cnn import ConvModule, build_plugin_layer
 from mmcv.runner import BaseModule, Sequential
 
 import mmocr.utils as utils
 from mmocr.models.builder import BACKBONES
-from mmocr.models.textrecog.layers import BasicBlock_New
+from mmocr.models.textrecog.layers import BasicBlock
 
 
 @BACKBONES.register_module()
@@ -26,6 +25,7 @@ class ResNet(BaseModule):
         out_indices (None | Sequence[int]): Indices of output stages. If not
             specified, only the last stage will be returned.
         stage_plugins (dict): Configs of stage plugins
+        init_cfg (dict or list[dict], optional): Initialization config dict.
     """
 
     def __init__(self,
@@ -36,7 +36,7 @@ class ResNet(BaseModule):
                  arch_channels,
                  strides,
                  out_indices=None,
-                 stage_plugins=None,
+                 plugins=None,
                  init_cfg=[
                      dict(type='Xavier', layer='Conv2d'),
                      dict(type='Constant', val=1, layer='BatchNorm2d'),
@@ -58,7 +58,7 @@ class ResNet(BaseModule):
         self.use_plugins = False
         self.arch_channels = arch_channels
         self.res_layers = []
-        if stage_plugins is not None:
+        if plugins is not None:
             self.plugin_ahead_names = []
             self.plugin_after_names = []
             self.use_plugins = True
@@ -67,7 +67,7 @@ class ResNet(BaseModule):
             channel = arch_channels[i]
 
             if self.use_plugins:
-                self._make_stage_plugins(stage_plugins, i)
+                self._make_stage_plugins(plugins, stage_idx=i)
 
             res_layer = self._make_layer(
                 block_cfgs=block_cfgs,
@@ -84,7 +84,7 @@ class ResNet(BaseModule):
     def _make_layer(self, block_cfgs, inplanes, planes, blocks, stride):
         layers = []
         downsample = None
-        block_cfgs = block_cfgs.copy()
+        block_cfgs_ = block_cfgs.copy()
         if isinstance(stride, int):
             stride = (stride, stride)
 
@@ -97,9 +97,9 @@ class ResNet(BaseModule):
                 norm_cfg=dict(type='BN'),
                 act_cfg=None)
 
-        if block_cfgs['type'] == 'BasicBlock':
-            block = BasicBlock_New
-            block_cfgs.pop('type')
+        if block_cfgs_['type'] == 'BasicBlock':
+            block = BasicBlock
+            block_cfgs_.pop('type')
         else:
             raise Exception('{} not implement yet'.format(block['type']))
 
@@ -109,10 +109,10 @@ class ResNet(BaseModule):
                 planes,
                 stride=stride,
                 downsample=downsample,
-                **block_cfgs))
+                **block_cfgs_))
         inplanes = planes
         for _ in range(1, blocks):
-            layers.append(block(inplanes, planes, **block_cfgs))
+            layers.append(block(inplanes, planes, **block_cfgs_))
 
         return Sequential(*layers)
 
@@ -127,28 +127,13 @@ class ResNet(BaseModule):
                 kernel_size=3,
                 stride=1,
                 padding=1,
-                bias=True,
+                bias=False,
                 norm_cfg=dict(type='BN'),
                 act_cfg=dict(type='ReLU'))
             in_channels = channels
             stem_layers.append(stem_layer)
         self.stem_layers = Sequential(*stem_layers)
         self.inplanes = stem_channels[-1]
-
-    def _create_plugin(self, plugin_cfg, stage_idx):
-        if plugin_cfg['type'] == 'Maxpooling':
-            return nn.MaxPool2d(plugin_cfg['strides'])
-        elif plugin_cfg['type'] == 'Conv':
-            return ConvModule(
-                self.arch_channels[stage_idx],
-                self.arch_channels[stage_idx],
-                **plugin_cfg['args'],
-                bias=False,
-                norm_cfg=dict(type='BN'),
-                act_cfg=dict(type='ReLU'))
-        else:
-            raise Exception('plugin {} not implemented yet'.format(
-                plugin_cfg['type']))
 
     def _make_stage_plugins(self, plugins, stage_idx):
         """Make plugins for ResNet ``stage_idx`` th stage.
@@ -176,11 +161,7 @@ class ResNet(BaseModule):
 
         .. code-block:: none
 
-            Maxpooling-> Basicbloks * blocks[i] -> Conv
-
-        Suppose 'stage_idx=1', the structure of blocks in the stage would be:
-
-        If stages is missing, the plugin would be applied to all stages.
+            Maxpooling-> Basicblocks * blocks[stage_idx - 1] -> Conv
 
         Args:
             plugins (list[dict]): List of plugins cfg to build. The postfix is
@@ -190,8 +171,9 @@ class ResNet(BaseModule):
         Returns:
             list[dict]: Plugins for current stage
         """
-        plugin_ahead = None
-        plugin_after = None
+        in_channels = self.arch_channels[stage_idx]
+        self.plugin_ahead_names.append(None)
+        self.plugin_after_names.append(None)
         for plugin in plugins:
             plugin = plugin.copy()
             stages = plugin.pop('stages', None)
@@ -199,19 +181,29 @@ class ResNet(BaseModule):
             assert stages is None or len(stages) == self.num_stages
             if stages[stage_idx]:
                 if position == 'before_stage':
-                    plugin_ahead = self._create_plugin(plugin['cfg'],
-                                                       stage_idx)
+                    name, layer = build_plugin_layer(
+                        plugin['cfg'],
+                        f'_before_stage_{stage_idx+1}',
+                        in_channels=in_channels,
+                        out_channels=in_channels)
+                    self.plugin_ahead_names[stage_idx] = name
+                    self.add_module(name, layer)
                 elif position == 'after_stage':
-                    plugin_after = self._create_plugin(plugin['cfg'],
-                                                       stage_idx)
+                    name, layer = build_plugin_layer(
+                        plugin['cfg'],
+                        f'_after_stage_{stage_idx+1}',
+                        in_channels=in_channels,
+                        out_channels=in_channels)
+                    self.plugin_after_names[stage_idx] = name
+                    self.add_module(name, layer)
                 else:
-                    raise Exception('uncorrect plugin position')
-        plugin_ahead_name = f'layer{stage_idx+1}_plugin_ahead'
-        plugin_after_name = f'layer{stage_idx+1}_plugin_after'
-        self.plugin_ahead_names.append(plugin_ahead_name)
-        self.plugin_after_names.append(plugin_after_name)
-        self.add_module(plugin_ahead_name, plugin_ahead)
-        self.add_module(plugin_after_name, plugin_after)
+                    raise ValueError('uncorrect plugin position')
+
+    def forward_plugin(self, x, plugin_name):
+        out = x
+        if plugin_name:
+            out = getattr(self, plugin_name)(x)
+        return out
 
     def forward(self, x):
         """Args:p x (Tensor): Image tensor of shae :math:`(N, 3, H, W)`.
@@ -233,13 +225,9 @@ class ResNet(BaseModule):
                 if self.out_indices and i in self.out_indices:
                     outs.append(x)
             else:
-                plugin_ahead = getattr(self, self.plugin_ahead_names[i])
-                plugin_after = getattr(self, self.plugin_after_names[i])
-                if plugin_ahead:
-                    x = plugin_ahead(x)
+                x = self.forward_plugin(x, self.plugin_ahead_names[i])
                 x = res_layer(x)
-                if plugin_after:
-                    x = plugin_after(x)
+                x = self.forward_plugin(x, self.plugin_after_names[i])
                 if self.out_indices and i in self.out_indices:
                     outs.append(x)
 
