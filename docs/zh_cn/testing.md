@@ -64,3 +64,45 @@ MMOCR 使用 `MMDistributedDataParallel` 实现 **分布式**测试。
 ```shell
 ./tools/dist_test.sh configs/example_config.py work_dirs/example_exp/example_model_20200202.pth 1 --eval hmean-iou
 ```
+
+## 使用 Slurm 进行测试
+
+如果您在使用 [Slurm](https://slurm.schedmd.com/) 管理的集群上运行 MMOCR， 则可以使用脚本 `tools/slurm_test.sh`。
+
+```shell
+[GPUS=${GPUS}] [GPUS_PER_NODE=${GPUS_PER_NODE}] [SRUN_ARGS=${SRUN_ARGS}] ./tools/slurm_test.sh ${PARTITION} ${JOB_NAME} ${CONFIG_FILE} ${CHECKPOINT_FILE} [PY_ARGS]
+```
+
+| 参数       | 类型 | 描述                                                                                                 |
+| --------------- | ---- | ----------------------------------------------------------------------------------------------------------- |
+| `GPUS`          | int  | 此任务要使用的 GPU 数量。默认为 8。                                                  |
+| `GPUS_PER_NODE` | int  | 每个节点要分配的 GPU 数量。默认为 8。                                                |
+| `SRUN_ARGS`     | str  | srun 解析的参数。可以在[此处](https://slurm.schedmd.com/srun.html)找到可用选项。|
+| `PY_ARGS`       | str  | 由 `tools/test.py` 解析的参数。                                                                  |
+
+下面是一个使用 8 个 GPU 在作业名为 "test_job" 的 "dev" 分区上测试示例模型的示例。
+
+```shell
+GPUS=8 ./tools/slurm_test.sh dev test_job configs/example_config.py work_dirs/example_exp/example_model_20200202.pth --eval hmean-iou
+```
+
+## 批量测试
+
+默认情况下， MMOCR 模型逐张图像进行测试。为了更快地推断，您可以在配置中更改
+`data.val_dataloader.samples_per_gpu` and `data.test_dataloader.samples_per_gpu` 。
+
+例如，
+```
+data = dict(
+    ...
+    val_dataloader=dict(samples_per_gpu=16),
+    test_dataloader=dict(samples_per_gpu=16),
+    ...
+)
+```
+
+将使用 16 张图像作为一个批大小测试模型。
+
+:::{警告}
+由于数据预处理管道的不同行为，批量测试可能会导致模型性能下降。
+:::
