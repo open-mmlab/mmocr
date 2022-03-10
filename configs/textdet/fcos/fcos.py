@@ -44,7 +44,17 @@ model = dict(
         dcn_on_last_conv=False,
         conv_bias=True,
         use_scale=False,
-        with_bezier=with_bezier),
+        with_bezier=with_bezier,
+        init_cfg=dict(
+            type='Normal',
+            layer='Conv2d',
+            std=0.01,
+            override=dict(
+                type='Normal',
+                name='conv_cls',
+                std=0.01,
+                bias=--4.59511985013459),  # -log((1-p)/p) where p=0.01
+        )),
     postprocessor=dict(
         type='ABCNetTextDetProcessor',
         strides=strides,
@@ -153,8 +163,7 @@ optimizer = dict(
     momentum=0.9,
     weight_decay=0.0001,
     paramwise_cfg=dict(bias_lr_mult=2., bias_decay_mult=0.))
-# optimizer_config = dict(grad_clip=dict(max_norm=30, norm_type=2))
-optimizer_config = dict(grad_clip=None)
+optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 # learning policy
 lr_config = dict(
     policy='step',
