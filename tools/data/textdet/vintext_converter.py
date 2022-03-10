@@ -184,8 +184,8 @@ def generate_ann(root_path, split, image_infos, preserve_vertical):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of FUNSD ')
-    parser.add_argument('root_path', help='Root dir path of FUNSD')
+        description='Generate training and test set of VinText ')
+    parser.add_argument('root_path', help='Root dir path of VinText')
     parser.add_argument(
         '--preserve-vertical',
         help='Preserve samples containing vertical texts',
@@ -201,7 +201,8 @@ def main():
     root_path = args.root_path
     for split in ['training', 'test', 'unseen_test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert FUNSD annotation'):
+        with mmcv.Timer(
+                print_tmpl='It takes {}s to convert VinText annotation'):
             files = collect_files(
                 osp.join(root_path, 'imgs', split),
                 osp.join(root_path, 'annotations'))

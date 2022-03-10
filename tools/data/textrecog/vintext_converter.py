@@ -65,6 +65,7 @@ def load_img_info(files):
 
     Args:
         files (tuple): The tuple of (img_file, groundtruth_file)
+
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
@@ -96,6 +97,7 @@ def load_txt_info(gt_file, img_info):
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
+
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
@@ -183,15 +185,15 @@ def generate_ann(root_path, split, image_infos, preserve_vertical,
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of FUNSD ')
-    parser.add_argument('root_path', help='Root dir path of FUNSD')
+        description='Generate training and test set of VinText ')
+    parser.add_argument('root_path', help='Root dir path of VinText')
     parser.add_argument(
         '--preserve-vertical',
         help='Preserve samples containing vertical texts',
         action='store_true')
     parser.add_argument(
         '--filter_nonlatin',
-        help='filter out non-latin instances',
+        help='Filter out non-latin instances',
         action='store_true')
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
@@ -204,7 +206,8 @@ def main():
     root_path = args.root_path
     for split in ['training', 'test', 'unseen_test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert FUNSD annotation'):
+        with mmcv.Timer(
+                print_tmpl='It takes {}s to convert VinText annotation'):
             files = collect_files(
                 osp.join(root_path, 'imgs', split),
                 osp.join(root_path, 'annotations'))
