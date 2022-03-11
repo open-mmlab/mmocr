@@ -172,8 +172,8 @@ class ResNet(BaseModule):
             list[dict]: Plugins for current stage
         """
         in_channels = self.arch_channels[stage_idx]
-        self.plugin_ahead_names.append(None)
-        self.plugin_after_names.append(None)
+        self.plugin_ahead_names.append([])
+        self.plugin_after_names.append([])
         for plugin in plugins:
             plugin = plugin.copy()
             stages = plugin.pop('stages', None)
@@ -186,7 +186,7 @@ class ResNet(BaseModule):
                         f'_before_stage_{stage_idx+1}',
                         in_channels=in_channels,
                         out_channels=in_channels)
-                    self.plugin_ahead_names[stage_idx] = name
+                    self.plugin_ahead_names[stage_idx].append(name)
                     self.add_module(name, layer)
                 elif position == 'after_stage':
                     name, layer = build_plugin_layer(
@@ -194,15 +194,15 @@ class ResNet(BaseModule):
                         f'_after_stage_{stage_idx+1}',
                         in_channels=in_channels,
                         out_channels=in_channels)
-                    self.plugin_after_names[stage_idx] = name
+                    self.plugin_after_names[stage_idx].append(name)
                     self.add_module(name, layer)
                 else:
                     raise ValueError('uncorrect plugin position')
 
     def forward_plugin(self, x, plugin_name):
         out = x
-        if plugin_name:
-            out = getattr(self, plugin_name)(x)
+        for name in plugin_name:
+            out = getattr(self, name)(x)
         return out
 
     def forward(self, x):

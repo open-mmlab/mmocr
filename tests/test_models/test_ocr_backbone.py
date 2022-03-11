@@ -122,11 +122,7 @@ def test_resnet():
     resnet_master = ResNet(
         in_channels=3,
         stem_channels=[64, 128],
-        block_cfgs=dict(
-            type='BasicBlock',
-            plugins=dict(
-                cfg=dict(type='GCAModule', kernel_size=3, stride=1, padding=1),
-                position='after_shortcut')),
+        block_cfgs=dict(type='BasicBlock'),
         arch_layers=[1, 2, 5, 3],
         arch_channels=[256, 256, 512, 512],
         strides=[1, 1, 1, 1],
@@ -139,6 +135,10 @@ def test_resnet():
                 cfg=dict(type='Maxpool2d', kernel_size=(2, 1), stride=(2, 1)),
                 stages=(False, False, True, False),
                 position='before_stage'),
+            dict(
+                cfg=dict(type='GCAModule', kernel_size=3, stride=1, padding=1),
+                stages=[True, True, True, True],
+                position='after_stage'),
             dict(
                 cfg=dict(
                     type='ConvModule',
@@ -156,7 +156,3 @@ def test_resnet():
     assert resnet45_abi(img).shape == torch.Size([1, 512, 8, 25])
     assert resnet_31(img).shape == torch.Size([1, 512, 4, 25])
     assert resnet_master(img).shape == torch.Size([1, 512, 4, 25])
-
-
-if __name__ == '__main__':
-    test_resnet()
