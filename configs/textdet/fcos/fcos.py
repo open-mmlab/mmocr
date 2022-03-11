@@ -53,7 +53,7 @@ model = dict(
                 type='Normal',
                 name='conv_cls',
                 std=0.01,
-                bias=--4.59511985013459),  # -log((1-p)/p) where p=0.01
+                bias=-4.59511985013459),  # -log((1-p)/p) where p=0.01
         )),
     postprocessor=dict(
         type='ABCNetTextDetProcessor',
