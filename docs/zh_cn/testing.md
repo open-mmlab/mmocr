@@ -80,7 +80,7 @@ MMOCR 使用 `MMDistributedDataParallel` 实现 **分布式**测试。
 | `SRUN_ARGS`     | str  | srun 解析的参数。可以在[此处](https://slurm.schedmd.com/srun.html)找到可用选项。|
 | `PY_ARGS`       | str  | 由 `tools/test.py` 解析的参数。                                                                  |
 
-下面是一个使用 8 个 GPU 在作业名为 "test_job" 的 "dev" 分区上测试示例模型的示例。
+下面是一个在 "dev" 分区上运行任务的示例。该任务名为 "test_job"，其调用了 8 个 GPU 对示例模型进行评估 。
 
 ```shell
 GPUS=8 ./tools/slurm_test.sh dev test_job configs/example_config.py work_dirs/example_exp/example_model_20200202.pth --eval hmean-iou
