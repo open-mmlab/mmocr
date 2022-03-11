@@ -88,8 +88,8 @@ GPUS=8 ./tools/slurm_test.sh dev test_job configs/example_config.py work_dirs/ex
 
 ## 批量测试
 
-默认情况下， MMOCR 模型逐张图像进行测试。为了更快地推断，您可以在配置中更改
-`data.val_dataloader.samples_per_gpu` and `data.test_dataloader.samples_per_gpu` 。
+默认情况下，MMOCR 仅对逐张图像进行测试。为了令推理更快，您可以在配置中更改
+`data.val_dataloader.samples_per_gpu` 和 `data.test_dataloader.samples_per_gpu` 字段。
 
 例如，
 ```
