@@ -35,7 +35,7 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 
 主分支目前支持 **PyTorch 1.6 以上**的版本。
 
-文档：https://mmocr.readthedocs.io/en/latest/ 。
+文档：https://mmocr.readthedocs.io/zh_CN/latest/
 
 <div align="left">
   <img src="resources/illustration.jpg"/>
