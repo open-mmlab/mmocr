@@ -18,7 +18,7 @@ def parse_args():
     return args
 
 
-def collect_textocr_info(root_path, annotation_filename, print_every=1000):
+def collect_imgur_info(root_path, annotation_filename, print_every=1000):
 
     annotation_path = osp.join(root_path, 'annotations', annotation_filename)
     if not osp.exists(annotation_path):
@@ -139,7 +139,7 @@ def main():
     for split in ['train', 'val', 'test']:
         print(f'Processing {split} set...')
         with mmcv.Timer(print_tmpl='It takes {}s to convert IMGUR annotation'):
-            anno_infos = collect_textocr_info(
+            anno_infos = collect_imgur_info(
                 root_path, f'imgur5k_annotations_{split}.json')
             convert_annotations(anno_infos,
                                 osp.join(root_path, f'instances_{split}.json'))
