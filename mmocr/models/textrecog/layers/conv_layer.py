@@ -22,6 +22,8 @@ def conv1x1(in_planes, out_planes):
 
 class BasicBlock(nn.Module):
 
+    expansion = 1
+
     def __init__(self,
                  inplanes,
                  planes,
@@ -33,10 +35,10 @@ class BasicBlock(nn.Module):
 
         if use_conv1x1:
             self.conv1 = conv1x1(inplanes, planes)
-            self.conv2 = conv3x3(planes, planes, stride)
+            self.conv2 = conv3x3(planes, planes * self.expansion, stride)
         else:
             self.conv1 = conv3x3(inplanes, planes, stride)
-            self.conv2 = conv3x3(planes, planes)
+            self.conv2 = conv3x3(planes, planes * self.expansion)
 
         self.with_plugins = False
         if plugins:
@@ -64,7 +66,7 @@ class BasicBlock(nn.Module):
         self.planes = planes
         self.bn1 = nn.BatchNorm2d(planes)
         self.relu = nn.ReLU(inplace=True)
-        self.bn2 = nn.BatchNorm2d(planes)
+        self.bn2 = nn.BatchNorm2d(planes * self.expansion)
         self.downsample = downsample
         self.stride = stride
 

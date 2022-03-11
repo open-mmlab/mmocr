@@ -101,7 +101,7 @@ class ResNet(BaseModule):
             block = BasicBlock
             block_cfgs_.pop('type')
         else:
-            raise Exception('{} not implement yet'.format(block['type']))
+            raise ValueError('{} not implement yet'.format(block['type']))
 
         layers.append(
             block(
