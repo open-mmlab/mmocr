@@ -2,7 +2,7 @@
 
 此文档介绍在数据集上测试预训练模型的方法。
 
-## 使用单GPU进行测试
+## 使用单 GPU 进行测试
 
 您可以使用 `tools/test.py` 执行单 CPU/GPU 推理。例如，要在 IC15 上评估 DBNet: ( 可以从 [Model Zoo]( ../../README_zh-CN.md#模型库) 下载预训练模型 )：
 
