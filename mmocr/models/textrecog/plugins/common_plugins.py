@@ -25,3 +25,28 @@ class Maxpool2d(nn.Module):
             Tensor: The tensor after Maxpooling layer.
         """
         return self.model(x)
+
+
+@PLUGIN_LAYERS.register_module()
+class GCAModule(nn.Module):
+    """GCAModule in MASTER
+    Args:
+        in_channels: Channels of input tensor
+        out_channels: Channels of output tensor
+    """
+
+    def __init__(self, in_channels, out_channels, kernel_size, stride,
+                 padding):
+        super(GCAModule, self).__init__()
+        self.model = nn.Conv2d(in_channels, out_channels, kernel_size, stride,
+                               padding)
+
+    def forward(self, x):
+        """
+        Args:
+            x (Tensor): Input feature map
+
+        Returns:
+            Tensor: The tensor after Maxpooling layer.
+        """
+        return self.model(x)

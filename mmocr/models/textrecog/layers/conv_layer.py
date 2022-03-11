@@ -98,7 +98,7 @@ class BasicBlock(nn.Module):
                 plugin,
                 in_channels=in_channels,
                 out_channels=in_channels,
-                postfix='_' + plugin.pop('postfix', ''))
+                postfix=plugin.pop('postfix', ''))
             assert not hasattr(self, name), f'duplicate plugin {name}'
             self.add_module(name, layer)
             plugin_names.append(name)
