@@ -448,7 +448,7 @@ class MMOCR:
             raise NotImplementedError
         return api
 
-    def tesseract_det_inference(self, imgs):
+    def tesseract_det_inference(self, imgs, **kwargs):
         """Inference image(s) with the tesseract detector.
 
         Args:
@@ -490,7 +490,7 @@ class MMOCR:
         else:
             return results
 
-    def tesseract_recog_inference(self, imgs):
+    def tesseract_recog_inference(self, imgs, **kwargs):
         """Inference image(s) with the tesseract recognizer.
 
         Args:
@@ -696,7 +696,7 @@ class MMOCR:
                 else:
                     if recog_model == 'Tesseract_recog':
                         recog_result = self.single_inference(
-                            recog_model, box_img, batch_mode=False)
+                            recog_model, box_img, batch_mode=True)
                     else:
                         recog_result = model_inference(recog_model, box_img)
                     text = recog_result['text']
@@ -764,27 +764,29 @@ class MMOCR:
 
     # Separate det/recog inference pipeline
     def single_inference(self, model, arrays, batch_mode, batch_size=0):
-        # todo: support batch mode for tesseract
-        if model == 'Tesseract_det':
-            return self.tesseract_det_inference(arrays)
-        elif model == 'Tesseract_recog':
-            return self.tesseract_recog_inference(arrays)
+
+        def inference(m, a, **kwargs):
+            if model == 'Tesseract_det':
+                return self.tesseract_det_inference(a)
+            elif model == 'Tesseract_recog':
+                return self.tesseract_recog_inference(a)
+            else:
+                return model_inference(m, a, **kwargs)
 
         result = []
         if batch_mode:
             if batch_size == 0:
-                result = model_inference(model, arrays, batch_mode=True)
+                result = inference(model, arrays, batch_mode=True)
             else:
                 n = batch_size
                 arr_chunks = [
                     arrays[i:i + n] for i in range(0, len(arrays), n)
                 ]
                 for chunk in arr_chunks:
-                    result.extend(
-                        model_inference(model, chunk, batch_mode=True))
+                    result.extend(inference(model, chunk, batch_mode=True))
         else:
             for arr in arrays:
-                result.append(model_inference(model, arr, batch_mode=False))
+                result.append(inference(model, arr, batch_mode=False))
         return result
 
     # Arguments pre-processing function
