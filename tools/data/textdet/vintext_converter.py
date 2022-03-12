@@ -5,9 +5,7 @@ import os.path as osp
 
 import mmcv
 
-from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.utils import convert_annotations
-from mmocr.utils.fileio import list_to_file
 
 
 def collect_files(img_dir, gt_dir):
@@ -131,55 +129,6 @@ def load_txt_info(gt_file, img_info):
     img_info.update(anno_info=anno_info)
 
     return img_info
-
-
-def generate_ann(root_path, split, image_infos, preserve_vertical):
-    """Generate cropped annotations and label txt file.
-
-    Args:
-        root_path (str): The root path of the dataset
-        split (str): The split of dataset. Namely: training or test
-        image_infos (list[dict]): A list of dicts of the img and
-            annotation information
-        preserve_vertical (bool): Whether to preserve vertical texts
-    """
-
-    dst_image_root = osp.join(root_path, 'dst_imgs', split)
-    if split == 'training':
-        dst_label_file = osp.join(root_path, 'train_label.txt')
-    elif split == 'test':
-        dst_label_file = osp.join(root_path, 'test_label.txt')
-    elif split == 'unseen_test':
-        dst_label_file = osp.join(root_path, 'unseen_test_label.txt')
-    os.makedirs(dst_image_root, exist_ok=True)
-
-    lines = []
-    for image_info in image_infos:
-        index = 1
-        src_img_path = osp.join(root_path, 'imgs', split,
-                                image_info['file_name'])
-        image = mmcv.imread(src_img_path)
-        src_img_root = image_info['file_name'].split('.')[0]
-
-        for anno in image_info['anno_info']:
-            word = anno['word']
-            dst_img = crop_img(image, anno['bbox'])
-            h, w, _ = dst_img.shape
-
-            # Skip invalid annotations
-            if min(dst_img.shape) == 0:
-                continue
-            # Skip vertical texts
-            if not preserve_vertical and h / w > 2:
-                continue
-
-            dst_img_name = f'{src_img_root}_{index}.png'
-            index += 1
-            dst_img_path = osp.join(dst_image_root, dst_img_name)
-            mmcv.imwrite(dst_img, dst_img_path)
-            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                         f'{word}')
-    list_to_file(dst_label_file, lines)
 
 
 def parse_args():
