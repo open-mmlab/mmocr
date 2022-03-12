@@ -2,6 +2,7 @@
 import argparse
 import os
 import os.path as osp
+import warnings
 from typing import Iterable
 
 import cv2
@@ -241,6 +242,18 @@ if __name__ == '__main__':
 
     assert is_tensorrt_plugin_loaded(), 'TensorRT plugin should be compiled.'
     args = parse_args()
+
+    # Following strings of text style are from colorama package
+    bright_style, reset_style = '\x1b[1m', '\x1b[0m'
+    red_text, blue_text = '\x1b[31m', '\x1b[34m'
+    white_background = '\x1b[107m'
+
+    msg = white_background + bright_style + red_text
+    msg += 'DeprecationWarning: This tool will be deprecated in future. '
+    msg += blue_text + 'Welcome to use the unified model deployment toolbox '
+    msg += 'MMDeploy: https://github.com/open-mmlab/mmdeploy'
+    msg += reset_style
+    warnings.warn(msg)
 
     # check arguments
     assert osp.exists(args.model_config), 'Config {} not found.'.format(
