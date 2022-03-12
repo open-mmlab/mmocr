@@ -15,7 +15,7 @@ from .base_postprocessor import BaseTextDetPostProcessor
 
 
 @POSTPROCESSOR.register_module()
-class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
+class FCOSPostprocessor(BaseTextDetPostProcessor):
 
     def __init__(self,
                  num_classes=1,
@@ -24,6 +24,7 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
                  norm_by_strides=True,
                  bbox_coder=dict(type='DistancePointBBoxCoder'),
                  text_repr_type='poly',
+                 with_bezier=False,
                  train_cfg=None,
                  test_cfg=None,
                  **kwargs):
@@ -37,6 +38,7 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         self.prior_generator = MlvlPointGenerator(strides)
         self.bbox_coder = build_bbox_coder(bbox_coder)
         self.use_sigmoid_cls = use_sigmoid_cls
+        self.with_bezier = with_bezier
         if self.use_sigmoid_cls:
             self.cls_out_channels = num_classes
         else:
@@ -46,7 +48,7 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
     def get_text_instance(
             self,
             pred_result,
-            img_meta,
+            img_metas,
             filter_and_location=True,
             reconstruct=True,
             nms_pre=-1,
@@ -57,7 +59,7 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         if filter_and_location:
             results = self.filter_and_location(
                 pred_result,
-                img_meta,
+                img_metas,
                 nms_pre,
                 score_thr,
                 max_per_img,
@@ -72,30 +74,37 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
 
     def filter_and_location(self,
                             det_results,
-                            img_meta=None,
+                            img_metas=None,
                             nms_pre=-1,
                             score_thr=0,
                             max_per_img=100,
                             nms=dict(type='nms', iou_threshold=0.5)):
         cls_scores = det_results.get('cls_scores')
+        centernesses = det_results.get('centernesses')
         bbox_preds = det_results.get('bbox_preds')
-        centerness_preds = det_results.get('centerness_preds')
-        bezier_preds = det_results.get('bezier_preds')
-        mlvl_priors = det_results.get('mlvl_priors')
+        num_levels = len(cls_scores)
+        bezier_preds = det_results.get('bezier_preds',
+                                       [None for _ in range(num_levels)])
+        featmap_sizes = [cls_scores[i].shape[-2:] for i in range(num_levels)]
+        mlvl_priors = self.prior_generator.grid_priors(
+            featmap_sizes,
+            dtype=cls_scores[0].dtype,
+            device=cls_scores[0].device)
         parameters = dict(
-            img_shape=img_meta[0]['img_shape'],
+            img_shape=img_metas['img_shape'],
             nms_pre=nms_pre,
             score_thr=score_thr)
+
         (mlvl_bboxes, mlvl_scores, mlvl_labels, mlvl_score_factors,
          mlvl_beziers) = multi_apply(self._single_level, cls_scores,
-                                     bbox_preds, centerness_preds,
-                                     bezier_preds, mlvl_priors, self.strides,
-                                     **parameters)
+                                     bbox_preds, centernesses, bezier_preds,
+                                     mlvl_priors, self.strides, **parameters)
 
         mlvl_bboxes = torch.cat(mlvl_bboxes)
         mlvl_scores = torch.cat(mlvl_scores)
         mlvl_labels = torch.cat(mlvl_labels)
-        mlvl_beziers = torch.cat(mlvl_beziers)
+        if self.with_bezier:
+            mlvl_beziers = torch.cat(mlvl_beziers)
 
         if mlvl_score_factors is not None:
             # TODO： Add sqrt operation in order to be consistent with
@@ -108,8 +117,9 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
             results = dict(
                 bboxes=mlvl_bboxes.detach().cpu().numpy(),
                 scores=mlvl_scores[:, None].detach().cpu().numpy(),
-                labels=mlvl_labels.detach().cpu().numpy(),
-                bezier=mlvl_beziers.detach().cpu().numpy())
+                labels=mlvl_labels.detach().cpu().numpy())
+            if self.with_bezier:
+                results['beziers'] = mlvl_beziers.detach().cpu().numpy()
             return results
         det_bboxes, keep_idxs = batched_nms(mlvl_bboxes, mlvl_scores,
                                             mlvl_labels, nms)
@@ -117,9 +127,10 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         results = dict(
             bboxes=det_bboxes[:max_per_img].detach().cpu().numpy(),
             scores=scores[:max_per_img].detach().cpu().numpy(),
-            labels=mlvl_labels[keep_idxs][:max_per_img].detach().cpu().numpy(),
-            bezier=mlvl_beziers[keep_idxs]
-            [:max_per_img].detach().cpu().numpy())
+            labels=mlvl_labels[keep_idxs][:max_per_img].detach().cpu().numpy())
+        if self.with_bezier:
+            results['beziers'] = mlvl_beziers[keep_idxs][:max_per_img].detach(
+            ).cpu().numpy()
 
         return results
 
@@ -128,8 +139,9 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         results = []
         cls_scores = pred_results.get('cls_scores')
         bbox_preds = pred_results.get('bbox_preds')
-        centerness_preds = pred_results.get('centerness_preds')
-        bezier_preds = pred_results.get('bezier_preds')
+        centernesses = pred_results.get('centernesses')
+        if self.with_bezier:
+            bezier_preds = pred_results.get('bezier_preds')
         num_levels = len(cls_scores)
         featmap_sizes = [cls_scores[i].shape[-2:] for i in range(num_levels)]
         mlvl_priors = self.prior_generator.grid_priors(
@@ -140,36 +152,43 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
             single_results = dict(
                 cls_scores=select_single_mlvl(cls_scores, img_id),
                 bbox_preds=select_single_mlvl(bbox_preds, img_id),
-                centerness_preds=select_single_mlvl(centerness_preds, img_id),
-                bezier_preds=select_single_mlvl(bezier_preds, img_id),
+                centernesses=select_single_mlvl(centernesses, img_id),
                 mlvl_priors=mlvl_priors)
+            if self.with_bezier:
+                single_results['bezier_preds'] = select_single_mlvl(
+                    bezier_preds, img_id)
             results.append(single_results)
         return results
 
     def reconstruct_text_instance(self, results):
-        bezier_points = results['bezier'].reshape(-1, 2, 4, 2)
-        results['polygon'] = list(map(bezier_to_polygon, bezier_points))
+        if self.with_bezier:
+            bezier_points = results['bezier_preds'].reshape(-1, 2, 4, 2)
+            results['polygon'] = list(map(bezier_to_polygon, bezier_points))
+        else:
+            results['polygon'] = results['bboxes']
         return results
 
-    def _single_level(self, cls_score, bbox_pred, centerness_pred, bezier_pred,
+    def _single_level(self, cls_scores, bbox_preds, centernesses, bezier_preds,
                       priors, stride, score_thr, nms_pre, img_shape):
-        assert cls_score.size()[-2:] == bbox_pred.size()[-2:]
+        assert cls_scores.size()[-2:] == bbox_preds.size()[-2:]
+        '''
         if self.norm_by_strides:
             bbox_pred = bbox_pred * stride
             bezier_pred = bezier_pred * stride
-        bbox_pred = bbox_pred.permute(1, 2, 0).reshape(-1, 4)
-        bezier_pred = bezier_pred.permute(1, 2, 0).reshape(-1, 8, 2)
-        centerness_pred = centerness_pred.permute(1, 2,
-                                                  0).reshape(-1).sigmoid()
-        cls_score = cls_score.permute(1, 2, 0).reshape(-1,
-                                                       self.cls_out_channels)
+        '''
+        bbox_preds = bbox_preds.permute(1, 2, 0).reshape(-1, 4)
+        if self.with_bezier:
+            bezier_preds = bezier_preds.permute(1, 2, 0).reshape(-1, 8, 2)
+        centernesses = centernesses.permute(1, 2, 0).reshape(-1).sigmoid()
+        cls_scores = cls_scores.permute(1, 2,
+                                        0).reshape(-1, self.cls_out_channels)
         if self.use_sigmoid_cls:
-            scores = cls_score.sigmoid()
+            scores = cls_scores.sigmoid()
         else:
             # remind that we set FG labels to [0, num_class-1]
             # since mmdet v2.0
             # BG cat_id: num_class
-            scores = cls_score.softmax(-1)[:, :-1]
+            scores = cls_scores.softmax(-1)[:, :-1]
 
         # After https://github.com/open-mmlab/mmdetection/pull/6268/,
         # this operation keeps fewer bboxes under the same `nms_pre`.
@@ -178,16 +197,19 @@ class ABCNetTextDetProcessor(BaseTextDetPostProcessor):
         # `nms_pre` than before.
         results = filter_scores_and_topk(
             scores, score_thr, nms_pre,
-            dict(bbox_pred=bbox_pred, priors=priors))
+            dict(bbox_preds=bbox_preds, priors=priors))
         scores, labels, keep_idxs, filtered_results = results
 
-        bbox_pred = filtered_results['bbox_pred']
+        bbox_preds = filtered_results['bbox_preds']
         priors = filtered_results['priors']
-        centerness_pred = centerness_pred[keep_idxs]
-        bezier_pred = bezier_pred[keep_idxs]
+        centernesses = centernesses[keep_idxs]
+        if self.with_bezier:
+            bezier_preds = bezier_preds[keep_idxs]
 
-        bboxes = self.bbox_coder.decode(priors, bbox_pred, max_shape=img_shape)
-        bezier_pred = priors[:, None, :] + bezier_pred
-        bezier_pred[:, :, :0].clamp_(min=0, max=img_shape[1])
-        bezier_pred[:, :, :1].clamp_(min=0, max=img_shape[0])
-        return bboxes, scores, labels, centerness_pred, bezier_pred
+        bboxes = self.bbox_coder.decode(
+            priors, bbox_preds, max_shape=img_shape)
+        if self.with_bezier:
+            bezier_preds = priors[:, None, :] + bezier_preds
+            bezier_preds[:, :, :0].clamp_(min=0, max=img_shape[1])
+            bezier_preds[:, :, :1].clamp_(min=0, max=img_shape[0])
+        return bboxes, scores, labels, centernesses, bezier_preds

@@ -1,7 +1,8 @@
 _base_ = [
     # '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/runtime_10e.py',
-    '../../_base_/det_datasets/icdar2015.py',
+    '../../_base_/det_datasets/toy_data.py',
+    # '../../_base_/det_datasets/icdar2015.py',
 ]
 num_classes = 1
 strides = [8, 16, 32, 64, 128]
@@ -56,9 +57,11 @@ model = dict(
                 bias=-4.59511985013459),  # -log((1-p)/p) where p=0.01
         )),
     postprocessor=dict(
-        type='ABCNetTextDetProcessor',
+        type='FCOSPostprocessor',
+        use_sigmoid_cls=use_sigmoid_cls,
         strides=strides,
         bbox_coder=bbox_coder,
+        with_bezier=with_bezier,
     ),
     loss=dict(
         type='FCOSLoss',
@@ -83,14 +86,12 @@ model = dict(
     train_cfg=None,
     test_cfg=dict(
         rescale=True,
-        property=['polygon', 'bboxes', 'bezier'],
+        # rescale_fields=['polygon', 'bboxes', 'bezier'],
+        rescale_fields=['polygon', 'bboxes'],
         filter_and_location=True,
         reconstruct=True,
-        extra_property=None,
-        rescale_extra_property=False,
         nms_pre=1000,
-        score_thr=0.3,
-        strides=(8, 16, 32, 64, 128)))
+        score_thr=0.3))
 img_norm_cfg = dict(
     mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
 train_pipeline = [
@@ -117,6 +118,12 @@ train_pipeline = [
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile'),
+    dict(
+        type='LoadTextAnnotations',
+        with_bbox=True,
+        # with_mask=True,
+        # poly2mask=True,
+        with_extra_fields=True),
     dict(
         type='MultiScaleFlipAug',
         img_scale=(1333, 800),

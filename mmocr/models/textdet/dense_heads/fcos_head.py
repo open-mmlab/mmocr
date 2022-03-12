@@ -185,8 +185,16 @@ class FCOSHead(HeadMixin, BaseModule):
                 centernesses (list[Tensor]): centerness for each scale level, \
                     each is a 4D-tensor, the channel number is num_points * 1.
         """
-        return multi_apply(self.forward_single, feats, self.scales,
-                           self.strides)
+        tmp_results = multi_apply(self.forward_single, feats, self.scales,
+                                  self.strides)
+        result = {
+            'cls_scores': tmp_results[0],
+            'bbox_preds': tmp_results[1],
+            'centernesses': tmp_results[2]
+        }
+        if self.with_bezier:
+            result['bezier_preds'] = tmp_results[3]
+        return result
 
     def forward_single(self, x, scale, stride):
         """Forward features of a single scale level.

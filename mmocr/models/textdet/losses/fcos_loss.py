@@ -116,10 +116,11 @@ class FCOSLoss(nn.Module):
         Returns:
             dict[str, Tensor]: A dictionary of loss components.
         """
+        cls_scores = preds['cls_scores']
+        bbox_preds = preds['bbox_preds']
+        centernesses = preds['centernesses']
         if self.with_bezier:
-            cls_scores, bbox_preds, centernesses, bezier_preds = preds
-        else:
-            cls_scores, bbox_preds, centernesses = preds
+            bezier_preds = preds['bezier_preds']
         assert len(cls_scores) == len(bbox_preds) == len(centernesses)
         if self.with_bezier:
             assert len(bezier_preds) == len(centernesses)

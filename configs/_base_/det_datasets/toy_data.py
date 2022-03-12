@@ -34,6 +34,7 @@ test = dict(
     pipeline=None,
     test_mode=True)
 
-train_list = [train1, train2]
+# train_list = [train1, train2]
+train_list = [train2]
 
 test_list = [test]

@@ -4,7 +4,7 @@ import pickle
 import mmcv
 import torch
 
-from mmocr.models.textdet.postprocess import ABCNetTextDetProcessor
+from mmocr.models.textdet.postprocess import FCOSPostprocessor
 
 
 def test_abcnet_textdet_processor():
@@ -26,7 +26,7 @@ def test_abcnet_textdet_processor():
                 nms_pre=1000,
                 score_thr=0.3,
                 strides=(8, 16, 32, 64, 128))))
-    postprocess = ABCNetTextDetProcessor(**cfg)
+    postprocess = FCOSPostprocessor(**cfg)
     with open('data/outputs_dict.pickle', 'rb') as f:
         outputs_dict = pickle.load(f)
 

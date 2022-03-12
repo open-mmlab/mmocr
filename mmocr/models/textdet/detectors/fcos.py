@@ -50,8 +50,9 @@ class FCOS(TextDetectorMixin, SingleStageTextDetector):
         losses = self.loss(preds, img_metas, **kwargs)
         return losses
 
-    def simple_test(self, img, img_metas, rescale=False):
+    def simple_test(self, img, img_metas, rescale=False, **kwargs):
         x = self.extract_feat(img)
         outs = self.bbox_head(x)
         outputs = self.postprocessor(outs, img_metas)
+        # outputs['boundary_result']
         return outputs

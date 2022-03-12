@@ -56,18 +56,17 @@ class BaseTextDetPostProcessor(nn.Module):
 
     def _forward_single(self,
                         pred_result,
-                        img_meta=None,
+                        img_metas=None,
                         rescale=False,
                         rescale_fields=[],
                         **kwargs):
 
-        results = self.get_text_instance(pred_result, img_meta, **kwargs)
+        results = self.get_text_instance(pred_result, img_metas, **kwargs)
 
         if rescale and rescale_fields:
             assert isinstance(rescale_fields, list)
             assert set(rescale_fields).issubset(set(results.keys()))
-            results = self.rescale_results(results,
-                                           img_meta[0]['scale_factor'],
+            results = self.rescale_results(results, img_metas['scale_factor'],
                                            rescale_fields)
         return results
 
