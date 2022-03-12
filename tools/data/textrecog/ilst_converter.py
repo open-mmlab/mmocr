@@ -218,11 +218,8 @@ def generate_ann(root_path, image_infos, preserve_vertical, filter_nonlatin,
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of VinText ')
-    parser.add_argument(
-        '--root_path',
-        default='data/IIIT-ILST/',
-        help='Root dir path of VinText')
+        description='Generate training and test set of ILST ')
+    parser.add_argument('root_path', help='Root dir path of ILST')
     parser.add_argument(
         '--preserve-vertical',
         help='Preserve samples containing vertical texts',

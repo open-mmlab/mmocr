@@ -163,11 +163,8 @@ def split_train_test_list(full_list, test_ratio, shuffle=True):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of VinText ')
-    parser.add_argument(
-        '--root_path',
-        default='data/IIIT-ILST/',
-        help='Root dir path of VinText')
+        description='Generate training and test set of ILST ')
+    parser.add_argument('root_path', help='Root dir path of ILST')
     parser.add_argument(
         '--preserve-vertical',
         help='Preserve samples containing vertical texts',
@@ -189,7 +186,7 @@ def parse_args():
 def main():
     args = parse_args()
     root_path = args.root_path
-    with mmcv.Timer(print_tmpl='It takes {}s to convert VinText annotation'):
+    with mmcv.Timer(print_tmpl='It takes {}s to convert ILST annotation'):
         files = collect_files(
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
         image_infos = collect_annotations(files, nproc=args.nproc)
