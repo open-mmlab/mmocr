@@ -1,0 +1,256 @@
+# Copyright (c) OpenMMLab. All rights reserved.
+import argparse
+import os
+import os.path as osp
+import random
+import string
+import xml.etree.ElementTree as ET
+
+import mmcv
+
+from mmocr.datasets.pipelines.crop import crop_img
+from mmocr.utils.fileio import list_to_file
+
+
+def collect_files(img_dir, gt_dir):
+    """Collect all images and their corresponding groundtruth files.
+
+    Args:
+        img_dir (str): The image directory
+        gt_dir (str): The groundtruth directory
+
+    Returns:
+        files (list): The list of tuples (img_file, groundtruth_file)
+    """
+    assert isinstance(img_dir, str)
+    assert img_dir
+    assert isinstance(gt_dir, str)
+    assert gt_dir
+
+    ann_list, imgs_list = [], []
+    for gt_file in os.listdir(gt_dir):
+
+        ann_list.append(osp.join(gt_dir, gt_file))
+        imgs_list.append(osp.join(img_dir, gt_file.replace('.xml', '.jpg')))
+
+    files = list(zip(imgs_list, ann_list))
+    assert len(files), f'No images found in {img_dir}'
+    print(f'Loaded {len(files)} images from {img_dir}')
+
+    return files
+
+
+def collect_annotations(files, nproc=1):
+    """Collect the annotation information.
+
+    Args:
+        files (list): The list of tuples (image_file, groundtruth_file)
+        nproc (int): The number of process to collect annotations
+
+    Returns:
+        images (list): The list of image information dicts
+    """
+    assert isinstance(files, list)
+    assert isinstance(nproc, int)
+
+    if nproc > 1:
+        images = mmcv.track_parallel_progress(
+            load_img_info, files, nproc=nproc)
+    else:
+        images = mmcv.track_progress(load_img_info, files)
+
+    return images
+
+
+def load_img_info(files):
+    """Load the information of one image.
+
+    Args:
+        files (tuple): The tuple of (img_file, groundtruth_file)
+
+    Returns:
+        img_info (dict): The dict of the img and annotation information
+    """
+    assert isinstance(files, tuple)
+
+    img_file, gt_file = files
+    assert osp.basename(gt_file).split('.')[0] == osp.basename(img_file).split(
+        '.')[0]
+    # read imgs while ignoring orientations
+    img = mmcv.imread(img_file, 'unchanged')
+
+    img_info = dict(
+        file_name=osp.join(osp.basename(img_file)),
+        height=img.shape[0],
+        width=img.shape[1],
+        segm_file=osp.join(osp.basename(gt_file)))
+
+    if osp.splitext(gt_file)[1] == '.xml':
+        img_info = load_xml_info(gt_file, img_info)
+    else:
+        raise NotImplementedError
+
+    return img_info
+
+
+def load_xml_info(gt_file, img_info):
+    """Collect the annotation information.
+
+    Args:
+        gt_file (str): The path to ground-truth
+        img_info (dict): The dict of the img and annotation information
+
+    Returns:
+        img_info (dict): The dict of the img and annotation information
+    """
+    obj = ET.parse(gt_file)
+    root = obj.getroot()
+    anno_info = []
+    for object in root.iter('object'):
+        word = object.find('name').text
+        x1 = int(object.find('bndbox').find('xmin').text)
+        y1 = int(object.find('bndbox').find('ymin').text)
+        x2 = int(object.find('bndbox').find('xmax').text)
+        y2 = int(object.find('bndbox').find('ymax').text)
+
+        x = max(0, min(x1, x2))
+        y = max(0, min(y1, y2))
+        w, h = abs(x2 - x1), abs(y2 - y1)
+        bbox = [x, y, x + w, y, x + w, y + h, x, y + h]
+        anno = dict(bbox=bbox, word=word)
+        anno_info.append(anno)
+
+    img_info.update(anno_info=anno_info)
+
+    return img_info
+
+
+def judge_latin(word):
+    for char in word:
+        if char not in string.ascii_letters:
+            return False
+    return True
+
+
+def split_train_test_list(full_list, test_ratio, shuffle=True):
+    """Split list by test_ratio
+
+    Args:
+        full_list (list): List to be splited
+        test_ratio (float): Ratio for test set
+        shuffle (bool): Whether to random sample test set
+
+    return:
+        list(list, list): train_list and test_list
+    """
+
+    n_total = len(full_list)
+    offset = int(n_total * test_ratio)
+    if n_total == 0 or offset < 1:
+        return [], full_list
+    if shuffle:
+        random.shuffle(full_list)
+    test_list = full_list[:offset]
+    train_list = full_list[offset:]
+    return [train_list, test_list]
+
+
+def generate_ann(root_path, image_infos, preserve_vertical, filter_nonlatin,
+                 test_ratio):
+    """Generate cropped annotations and label txt file.
+
+    Args:
+        root_path (str): The root path of the dataset
+        split (str): The split of dataset. Namely: training or test
+        image_infos (list[dict]): A list of dicts of the img and
+            annotation information
+        preserve_vertical (bool): Whether to preserve vertical texts
+        filter_nonlatin (bool): Filter out non-latin instances
+        test_ratio (float): Ratio of test set from the whole dataset
+    """
+
+    assert test_ratio <= 1.
+
+    if test_ratio:
+        image_infos = split_train_test_list(image_infos, test_ratio)
+        splits = ['train', 'test']
+
+    else:
+        image_infos = [image_infos]
+        splits = ['train']
+
+    for i, split in enumerate(splits):
+        dst_image_root = osp.join(root_path, 'dst_imgs', split)
+        dst_label_file = osp.join(root_path, f'{split}_label.txt')
+        os.makedirs(dst_image_root, exist_ok=True)
+
+        lines = []
+        for image_info in image_infos[i]:
+            index = 1
+            src_img_path = osp.join(root_path, 'imgs', image_info['file_name'])
+            image = mmcv.imread(src_img_path)
+            src_img_root = image_info['file_name'].split('.')[0]
+
+            for anno in image_info['anno_info']:
+                word = anno['word']
+                dst_img = crop_img(image, anno['bbox'])
+                h, w, _ = dst_img.shape
+
+                # Skip invalid annotations
+                if min(dst_img.shape) == 0:
+                    continue
+                # Skip vertical texts
+                if not preserve_vertical and h / w > 2:
+                    continue
+                # Ignore non-latin words
+                if filter_nonlatin:
+                    if not judge_latin(word):
+                        continue
+
+                dst_img_name = f'{src_img_root}_{index}.png'
+                index += 1
+                dst_img_path = osp.join(dst_image_root, dst_img_name)
+                mmcv.imwrite(dst_img, dst_img_path)
+                lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                             f'{word}')
+    list_to_file(dst_label_file, lines)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description='Generate training and test set of VinText ')
+    parser.add_argument(
+        '--root_path',
+        default='data/IIIT-ILST/',
+        help='Root dir path of VinText')
+    parser.add_argument(
+        '--preserve-vertical',
+        help='Preserve samples containing vertical texts',
+        action='store_true')
+    parser.add_argument(
+        '--filter_nonlatin',
+        help='Filter out non-latin instances',
+        action='store_true')
+    parser.add_argument(
+        '--test_ratio',
+        help='Ratio of test set from the whole dataset',
+        default=0.)
+    parser.add_argument(
+        '--nproc', default=1, type=int, help='Number of processes')
+    args = parser.parse_args()
+    return args
+
+
+def main():
+    args = parse_args()
+    root_path = args.root_path
+    with mmcv.Timer(print_tmpl='It takes {}s to convert VinText annotation'):
+        files = collect_files(
+            osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
+        image_infos = collect_annotations(files, nproc=args.nproc)
+        generate_ann(root_path, image_infos, args.preserve_vertical,
+                     args.filter_nonlatin, args.test_ratio)
+
+
+if __name__ == '__main__':
+    main()
