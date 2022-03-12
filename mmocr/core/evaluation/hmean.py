@@ -123,8 +123,10 @@ def eval_hmean(results,
             msg = '\n' + msg
         print_log(msg, logger=logger)
         best_result = dict(hmean=-1)
-        for iter in range(3, 10):
-            thr = iter * 0.1
+        thr = score_thr
+        while thr < 1:
+            # for iter in range(0, 10):
+            #     thr = iter * 0.1
             if thr < score_thr:
                 continue
             top_preds = select_top_boundary(preds, pred_scores, thr)
@@ -146,6 +148,7 @@ def eval_hmean(results,
                 logger=logger)
             if result['hmean'] > best_result['hmean']:
                 best_result = result
+            thr += 0.1
         eval_results[metric + ':recall'] = best_result['recall']
         eval_results[metric + ':precision'] = best_result['precision']
         eval_results[metric + ':hmean'] = best_result['hmean']

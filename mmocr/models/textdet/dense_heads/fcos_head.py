@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
-import torch.nn.functional as F
 from mmcv.cnn import ConvModule, Scale
 from mmcv.runner import BaseModule
 from mmdet.core import multi_apply
@@ -236,7 +235,10 @@ class FCOSHead(HeadMixin, BaseModule):
         else:
             bbox_pred = bbox_pred.float()
         if self.norm_on_bbox:
-            bbox_pred = F.relu(bbox_pred)
+            # bbox_pred needed for gradient computation has been modified
+            # by F.relu(bbox_pred) when run with PyTorch 1.10. So replace
+            # F.relu(bbox_pred) with bbox_pred.clamp(min=0)
+            bbox_pred = bbox_pred.clamp(min=0)
             if not self.training:
                 bbox_pred *= stride
                 if self.with_bezier:

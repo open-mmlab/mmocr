@@ -13,10 +13,8 @@ train_pipeline = {{_base_.train_pipeline}}
 test_pipeline_ctw1500 = {{_base_.test_pipeline_ctw1500}}
 
 data = dict(
-    # samples_per_gpu=8,
-    # workers_per_gpu=4,
-    samples_per_gpu=1,
-    workers_per_gpu=1,
+    samples_per_gpu=8,
+    workers_per_gpu=4,
     val_dataloader=dict(samples_per_gpu=1),
     test_dataloader=dict(samples_per_gpu=1),
     train=dict(

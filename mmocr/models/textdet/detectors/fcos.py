@@ -1,4 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from copy import deepcopy
+
 from mmocr.models.builder import DETECTORS, build_loss, build_postprocessor
 from .single_stage_text_detector import SingleStageTextDetector
 from .text_detector_mixin import TextDetectorMixin
@@ -54,5 +56,11 @@ class FCOS(TextDetectorMixin, SingleStageTextDetector):
         x = self.extract_feat(img)
         outs = self.bbox_head(x)
         outputs = self.postprocessor(outs, img_metas)
-        # outputs['boundary_result']
+        for i, single_output in enumerate(outputs):
+            single_output['boundary_result'] = deepcopy(
+                single_output['polygons'])
+            for j in range(len(single_output['boundary_result'])):
+                single_output['boundary_result'][j].append(
+                    single_output['scores'][j][0])
+            single_output['filename'] = img_metas[i]['filename']
         return outputs

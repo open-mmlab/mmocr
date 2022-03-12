@@ -197,3 +197,21 @@ def sort_points(points):
         return 1 if (oa**2).sum() < (ob**2).sum() else -1
 
     return sorted(points, key=functools.cmp_to_key(cmp))
+
+
+def bbox_to_polygon(pts):
+    """Convert bounding boxes to polygons.
+
+    Args:
+        pts (ndarray): A 1-d array bounding box annotated
+            in the format of [x1, y1, x2, y2].
+
+    Returns:
+        list[float]: A 1-d array polygon in the format of
+            [x1, y1, x2, y1, x2, y2, x1, y2], in the
+            clockwise order.
+    """
+    if not is_type_list(pts, float):
+        pts = np.asarray(pts)
+    x1, y1, x2, y2 = pts
+    return [x1, y1, x2, y1, x2, y2, x1, y2]

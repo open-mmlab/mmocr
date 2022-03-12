@@ -1,8 +1,8 @@
 _base_ = [
     # '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/runtime_10e.py',
-    '../../_base_/det_datasets/toy_data.py',
-    # '../../_base_/det_datasets/icdar2015.py',
+    # '../../_base_/det_datasets/toy_data.py',
+    '../../_base_/det_datasets/icdar2015.py',
 ]
 num_classes = 1
 strides = [8, 16, 32, 64, 128]
@@ -87,11 +87,12 @@ model = dict(
     test_cfg=dict(
         rescale=True,
         # rescale_fields=['polygon', 'bboxes', 'bezier'],
-        rescale_fields=['polygon', 'bboxes'],
+        rescale_fields=['polygons', 'bboxes'],
         filter_and_location=True,
         reconstruct=True,
         nms_pre=1000,
-        score_thr=0.3))
+        nms=dict(type='nms', iou_threshold=0.5),
+        score_thr=0.05))
 img_norm_cfg = dict(
     mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
 train_pipeline = [
@@ -119,12 +120,6 @@ train_pipeline = [
 test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
-        type='LoadTextAnnotations',
-        with_bbox=True,
-        # with_mask=True,
-        # poly2mask=True,
-        with_extra_fields=True),
-    dict(
         type='MultiScaleFlipAug',
         img_scale=(1333, 800),
         flip=False,
@@ -138,8 +133,8 @@ test_pipeline = [
                 type='Collect',
                 keys=[
                     'img',
-                    'gt_bboxes',
-                    'gt_labels',
+                    # 'gt_bboxes',
+                    # 'gt_labels',
                     # 'gt_bezier_pts',
                 ]),
         ])
@@ -150,7 +145,7 @@ test_list = {{_base_.test_list}}
 
 data = dict(
     samples_per_gpu=2,
-    workers_per_gpu=2,
+    workers_per_gpu=8,
     train=dict(
         type='UniformConcatDataset',
         datasets=train_list,

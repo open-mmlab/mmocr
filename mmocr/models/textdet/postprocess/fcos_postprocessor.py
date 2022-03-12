@@ -10,7 +10,7 @@ from mmdet.core.anchor.point_generator import MlvlPointGenerator
 from mmdet.core.utils import filter_scores_and_topk, select_single_mlvl
 
 from mmocr.models.builder import POSTPROCESSOR
-from mmocr.utils.box_util import bezier_to_polygon
+from mmocr.utils.box_util import bbox_to_polygon, bezier_to_polygon
 from .base_postprocessor import BaseTextDetPostProcessor
 
 
@@ -113,7 +113,6 @@ class FCOSPostprocessor(BaseTextDetPostProcessor):
             mlvl_scores = mlvl_scores * mlvl_score_factors
 
         if mlvl_bboxes.numel() == 0:
-            det_bboxes = torch.cat([mlvl_bboxes, mlvl_scores[:, None]], -1)
             results = dict(
                 bboxes=mlvl_bboxes.detach().cpu().numpy(),
                 scores=mlvl_scores[:, None].detach().cpu().numpy(),
@@ -163,9 +162,9 @@ class FCOSPostprocessor(BaseTextDetPostProcessor):
     def reconstruct_text_instance(self, results):
         if self.with_bezier:
             bezier_points = results['bezier_preds'].reshape(-1, 2, 4, 2)
-            results['polygon'] = list(map(bezier_to_polygon, bezier_points))
+            results['polygons'] = list(map(bezier_to_polygon, bezier_points))
         else:
-            results['polygon'] = results['bboxes']
+            results['polygons'] = list(map(bbox_to_polygon, results['bboxes']))
         return results
 
     def _single_level(self, cls_scores, bbox_preds, centernesses, bezier_preds,

@@ -10,7 +10,7 @@ from mmocr.core.evaluation.hmean import eval_hmean
 
 @DATASETS.register_module()
 class IcdarDataset(CocoDataset):
-    CLASSES = ('text')
+    CLASSES = ('text', )
 
     def __init__(self,
                  ann_file,
@@ -119,7 +119,7 @@ class IcdarDataset(CocoDataset):
                  results,
                  metric='hmean-iou',
                  logger=None,
-                 score_thr=0.3,
+                 score_thr=0.05,
                  rank_list=None,
                  **kwargs):
         """Evaluate the hmean metric.
