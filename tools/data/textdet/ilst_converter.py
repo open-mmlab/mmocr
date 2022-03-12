@@ -192,10 +192,10 @@ def main():
         image_infos = collect_annotations(files, nproc=args.nproc)
         if args.test_ratio:
             image_infos = split_train_test_list(image_infos, args.test_ratio)
-            splits = ['train', 'test']
+            splits = ['training', 'test']
         else:
             image_infos = [image_infos]
-            splits = ['train']
+            splits = ['training']
         for i, split in enumerate(splits):
             convert_annotations(
                 image_infos[i],

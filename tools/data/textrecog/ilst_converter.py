@@ -173,11 +173,11 @@ def generate_ann(root_path, image_infos, preserve_vertical, filter_nonlatin,
 
     if test_ratio:
         image_infos = split_train_test_list(image_infos, test_ratio)
-        splits = ['train', 'test']
+        splits = ['training', 'test']
 
     else:
         image_infos = [image_infos]
-        splits = ['train']
+        splits = ['training']
 
     for i, split in enumerate(splits):
         dst_image_root = osp.join(root_path, 'dst_imgs', split)
@@ -241,7 +241,7 @@ def parse_args():
 def main():
     args = parse_args()
     root_path = args.root_path
-    with mmcv.Timer(print_tmpl='It takes {}s to convert VinText annotation'):
+    with mmcv.Timer(print_tmpl='It takes {}s to convert ILST annotation'):
         files = collect_files(
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
         image_infos = collect_annotations(files, nproc=args.nproc)
