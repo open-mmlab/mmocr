@@ -1,6 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import copy
-
 import numpy as np
 import torch
 # from mmcv.runner import force_fp32
@@ -44,47 +42,68 @@ class FCOSPostprocessor(BaseTextDetPostProcessor):
         else:
             self.cls_out_channels = num_classes + 1
 
+    def split_results(self, pred_results, img_metas, **kwargs):
+
+        results = []
+        cls_scores = pred_results.get('cls_scores')
+        bbox_preds = pred_results.get('bbox_preds')
+        centernesses = pred_results.get('centernesses')
+        if self.with_bezier:
+            bezier_preds = pred_results.get('bezier_preds')
+        num_levels = len(cls_scores)
+        featmap_sizes = [cls_scores[i].shape[-2:] for i in range(num_levels)]
+        mlvl_priors = self.prior_generator.grid_priors(
+            featmap_sizes,
+            dtype=cls_scores[0].dtype,
+            device=cls_scores[0].device)
+        for img_id in range(len(img_metas)):
+            single_results = dict(
+                cls_scores=select_single_mlvl(cls_scores, img_id),
+                bbox_preds=select_single_mlvl(bbox_preds, img_id),
+                centernesses=select_single_mlvl(centernesses, img_id),
+                mlvl_priors=mlvl_priors)
+            if self.with_bezier:
+                single_results['bezier_preds'] = select_single_mlvl(
+                    bezier_preds, img_id)
+            results.append(single_results)
+        return results
+
     # @force_fp32(apply_to=('cls_scores', 'bbox_preds'))
-    def get_text_instance(
+    def get_text_instances(
             self,
-            pred_result,
-            img_metas,
-            filter_and_location=True,
-            reconstruct=True,
+            pred_results,
+            img_meta,
             nms_pre=-1,
             score_thr=0,
             max_per_img=100,
             nms=dict(type='nms', iou_threshold=0.5),
     ):
-        if filter_and_location:
-            results = self.filter_and_location(
-                pred_result,
-                img_metas,
-                nms_pre,
-                score_thr,
-                max_per_img,
-                nms,
-            )
-        else:
-            results = copy.deepcopy(pred_result)
-
-        if reconstruct:
-            results = self.reconstruct_text_instance(results)
+        """Get text instance predictions of one image."""
+        results = self.get_preds(
+            pred_results,
+            img_meta,
+            nms_pre,
+            score_thr,
+            max_per_img,
+            nms,
+        )
+        results = self.reconstruct_text_instances(results)
         return results
 
-    def filter_and_location(self,
-                            det_results,
-                            img_metas=None,
-                            nms_pre=-1,
-                            score_thr=0,
-                            max_per_img=100,
-                            nms=dict(type='nms', iou_threshold=0.5)):
-        cls_scores = det_results.get('cls_scores')
-        centernesses = det_results.get('centernesses')
-        bbox_preds = det_results.get('bbox_preds')
+    def get_preds(self,
+                  pred_results,
+                  img_metas=None,
+                  nms_pre=-1,
+                  score_thr=0,
+                  max_per_img=100,
+                  nms=dict(type='nms', iou_threshold=0.5)):
+        """Extract and filter predictions from all levels."""
+        cls_scores = pred_results.get('cls_scores')
+        centernesses = pred_results.get('centernesses')
+        bbox_preds = pred_results.get('bbox_preds')
         num_levels = len(cls_scores)
-        bezier_preds = det_results.get('bezier_preds',
-                                       [None for _ in range(num_levels)])
+        bezier_preds = pred_results.get('bezier_preds',
+                                        [None for _ in range(num_levels)])
         featmap_sizes = [cls_scores[i].shape[-2:] for i in range(num_levels)]
         mlvl_priors = self.prior_generator.grid_priors(
             featmap_sizes,
@@ -96,9 +115,9 @@ class FCOSPostprocessor(BaseTextDetPostProcessor):
             score_thr=score_thr)
 
         (mlvl_bboxes, mlvl_scores, mlvl_labels, mlvl_score_factors,
-         mlvl_beziers) = multi_apply(self._single_level, cls_scores,
+         mlvl_beziers) = multi_apply(self._get_preds_single_level, cls_scores,
                                      bbox_preds, centernesses, bezier_preds,
-                                     mlvl_priors, self.strides, **parameters)
+                                     mlvl_priors, **parameters)
 
         mlvl_bboxes = torch.cat(mlvl_bboxes)
         mlvl_scores = torch.cat(mlvl_scores)
@@ -133,33 +152,7 @@ class FCOSPostprocessor(BaseTextDetPostProcessor):
 
         return results
 
-    def split_results(self, pred_results, img_metas, **kwargs):
-
-        results = []
-        cls_scores = pred_results.get('cls_scores')
-        bbox_preds = pred_results.get('bbox_preds')
-        centernesses = pred_results.get('centernesses')
-        if self.with_bezier:
-            bezier_preds = pred_results.get('bezier_preds')
-        num_levels = len(cls_scores)
-        featmap_sizes = [cls_scores[i].shape[-2:] for i in range(num_levels)]
-        mlvl_priors = self.prior_generator.grid_priors(
-            featmap_sizes,
-            dtype=cls_scores[0].dtype,
-            device=cls_scores[0].device)
-        for img_id in range(len(img_metas)):
-            single_results = dict(
-                cls_scores=select_single_mlvl(cls_scores, img_id),
-                bbox_preds=select_single_mlvl(bbox_preds, img_id),
-                centernesses=select_single_mlvl(centernesses, img_id),
-                mlvl_priors=mlvl_priors)
-            if self.with_bezier:
-                single_results['bezier_preds'] = select_single_mlvl(
-                    bezier_preds, img_id)
-            results.append(single_results)
-        return results
-
-    def reconstruct_text_instance(self, results):
+    def reconstruct_text_instances(self, results):
         if self.with_bezier:
             bezier_points = results['bezier_preds'].reshape(-1, 2, 4, 2)
             results['polygons'] = list(map(bezier_to_polygon, bezier_points))
@@ -167,14 +160,10 @@ class FCOSPostprocessor(BaseTextDetPostProcessor):
             results['polygons'] = list(map(bbox_to_polygon, results['bboxes']))
         return results
 
-    def _single_level(self, cls_scores, bbox_preds, centernesses, bezier_preds,
-                      priors, stride, score_thr, nms_pre, img_shape):
+    def _get_preds_single_level(self, cls_scores, bbox_preds, centernesses,
+                                bezier_preds, priors, score_thr, nms_pre,
+                                img_shape):
         assert cls_scores.size()[-2:] == bbox_preds.size()[-2:]
-        '''
-        if self.norm_by_strides:
-            bbox_pred = bbox_pred * stride
-            bezier_pred = bezier_pred * stride
-        '''
         bbox_preds = bbox_preds.permute(1, 2, 0).reshape(-1, 4)
         if self.with_bezier:
             bezier_preds = bezier_preds.permute(1, 2, 0).reshape(-1, 8, 2)

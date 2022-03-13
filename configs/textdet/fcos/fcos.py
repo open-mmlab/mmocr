@@ -85,11 +85,8 @@ model = dict(
     # training and testing settings
     train_cfg=None,
     test_cfg=dict(
-        rescale=True,
         # rescale_fields=['polygon', 'bboxes', 'bezier'],
         rescale_fields=['polygons', 'bboxes'],
-        filter_and_location=True,
-        reconstruct=True,
         nms_pre=1000,
         nms=dict(type='nms', iou_threshold=0.5),
         score_thr=0.05))

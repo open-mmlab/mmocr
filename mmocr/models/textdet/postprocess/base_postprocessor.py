@@ -56,40 +56,51 @@ class BaseTextDetPostProcessor(nn.Module):
 
     def _forward_single(self,
                         pred_result,
-                        img_metas=None,
-                        rescale=False,
+                        img_meta=None,
                         rescale_fields=[],
                         **kwargs):
 
-        results = self.get_text_instance(pred_result, img_metas, **kwargs)
+        results = self.get_text_instances(pred_result, img_meta, **kwargs)
 
-        if rescale and rescale_fields:
+        if len(rescale_fields) > 0:
             assert isinstance(rescale_fields, list)
             assert set(rescale_fields).issubset(set(results.keys()))
-            results = self.rescale_results(results, img_metas['scale_factor'],
-                                           rescale_fields)
+            results = self.rescale(results, img_meta['scale_factor'],
+                                   rescale_fields)
         return results
 
-    def rescale_results(self, results, scale_factor, rescale_fields=None):
-        """Rescale results via scale_factor."""
+    def rescale(self, results, scale_factor, rescale_fields=None):
+        """Rescale results via scale_factor.
+
+        Args:
+            scale_factor (tuple(int)): (w_scale, h_scale, w_scale, h_scale)
+        """
         assert isinstance(scale_factor, np.ndarray)
         assert scale_factor.shape[0] == 4
         _rescale_single_result = partial(
-            self._rescale_single_result, scale_factor=scale_factor)
+            self.rescale_polygons, scale_factor=scale_factor)
         for key in rescale_fields:
             results[key] = list(map(_rescale_single_result, results[key]))
         return results
 
-    def _rescale_single_result(self, polygon, scale_factor):
-        polygon = np.array(polygon)
-        poly_shape = polygon.shape
-        reshape_polygon = polygon.reshape(1, -1)
-        single_instance_point_num = reshape_polygon.shape[-1] / 2
-        scale_factor = np.repeat(scale_factor[:2], single_instance_point_num)
-        polygon = (reshape_polygon * scale_factor).reshape(poly_shape).tolist()
-        return polygon
+    def rescale_polygons(self, polygons, scale_factor):
+        """Rescale polygons via scale_factor.
 
-    def get_text_instance(self, pred_result, **kwargs):
+        Args:
+            polygons (list[float] or list[list[float]]): Polygon(s) in the
+                shape of (2k,) or (N, 2k). Each polygon is written in
+                [x1, y1, x2, y2, ...].
+            scale_factor (tuple(int)): (w_scale, h_scale, w_scale, h_scale)
+        """
+        polygons = np.array(polygons)
+        poly_shape = polygons.shape
+        reshape_polygon = polygons.reshape(-1, 2)
+        polygons = (reshape_polygon /
+                    scale_factor[:2][None]).reshape(poly_shape)
+        return polygons.tolist()
+
+    def get_text_instances(self, pred_results, **kwargs):
+        """Get text instance predictions of one image."""
         raise NotImplementedError
 
     def split_results(self, pred_results, img_metas, **kwargs):
