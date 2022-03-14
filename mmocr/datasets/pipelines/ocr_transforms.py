@@ -227,10 +227,11 @@ class FancyPCA:
     Args:
         eig_vec (torch.Tensor): The eigen vector with shape :math:`(3, 3)`.
         eig_val (torch.Tensor): The eigen value with shape :math:`(1, 3)`.
-     :Required Keys:
+    :Required Keys:
         - | ``img`` (ndarray): The input image, with type np.uint8 and
             value in 0-255.
-     :Affected Keys:
+
+    :Affected Keys:
         :Modified:
             - | ``img`` (ndarray): The output image after the transform,
                 with type np.uint8 and value in 0-255.

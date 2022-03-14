@@ -83,8 +83,7 @@ class MultiRotateAugOCR:
         for degree in set(rotate_degrees):
             _results = results.copy()
             img = _results['img']
-            if degree > 0:
-                img = np.rot90(img, degree // 90)
+            img = np.rot90(img, degree // 90)
             _results['img'] = img
             _results['img_shape'] = img.shape
             _results['ori_shape'] = img.shape
