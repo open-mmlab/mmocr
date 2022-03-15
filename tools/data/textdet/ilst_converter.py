@@ -2,7 +2,6 @@
 import argparse
 import os
 import os.path as osp
-import random
 import string
 import xml.etree.ElementTree as ET
 
@@ -138,13 +137,12 @@ def judge_latin(word):
     return True
 
 
-def split_train_test_list(full_list, test_ratio, shuffle=True):
+def split_train_test_list(full_list, test_ratio):
     """Split list by test_ratio
 
     Args:
         full_list (list): List to be splited
         test_ratio (float): Ratio for test set
-        shuffle (bool): Whether to random sample test set
 
     return:
         list(list, list): train_list and test_list
@@ -154,8 +152,6 @@ def split_train_test_list(full_list, test_ratio, shuffle=True):
     offset = int(n_total * test_ratio)
     if n_total == 0 or offset < 1:
         return [], full_list
-    if shuffle:
-        random.shuffle(full_list)
     test_list = full_list[:offset]
     train_list = full_list[offset:]
     return [train_list, test_list]
@@ -165,10 +161,6 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description='Generate training and test set of ILST ')
     parser.add_argument('root_path', help='Root dir path of ILST')
-    parser.add_argument(
-        '--preserve-vertical',
-        help='Preserve samples containing vertical texts',
-        action='store_true')
     parser.add_argument(
         '--filter_nonlatin',
         help='Filter out non-latin instances',
