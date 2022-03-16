@@ -1,3 +1,7 @@
+# num_chars depends on the configuration of label_convertor. The actual
+# dictionary size is 36 + 1 (<BOS/EOS>).
+# TODO: Automatically update num_chars based on the configuration of
+# label_convertor
 num_chars = 37
 max_seq_len = 26
 
