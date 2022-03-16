@@ -111,14 +111,10 @@ class BasicBlock(nn.Module):
         return out
 
     def forward(self, x):
-        residual = x
-
+        out = x
         if self.with_plugins:
-            out = self.forward_plugin(x, self.before_conv1_plugin_names)
-            residual = self.forward_plugin(residual,
-                                           self.before_conv1_plugin_names)
-        else:
-            out = x
+            out = self.forward_plugin(out, self.before_conv1_plugin_names)
+        residual = out
 
         out = self.conv1(out)
         out = self.bn1(out)
