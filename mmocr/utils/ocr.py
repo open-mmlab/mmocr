@@ -272,7 +272,7 @@ class MMOCR:
                 'ckpt':
                 'textsnake/textsnake_r50_fpn_unet_1200e_ctw1500-27f65b64.pth'
             },
-            'Tesseract_det': {}
+            'Tesseract': {}
         }
 
         textrecog_models = {
@@ -324,7 +324,7 @@ class MMOCR:
                 'config': 'tps/crnn_tps_academic_dataset.py',
                 'ckpt': 'tps/crnn_tps_academic_dataset_20210510-d221a905.pth'
             },
-            'Tesseract_recog': {}
+            'Tesseract': {}
         }
 
         kie_models = {
@@ -361,12 +361,12 @@ class MMOCR:
                     ' with text detection and recognition algorithms.')
 
         self.detect_model = None
-        if self.td and self.td == 'Tesseract_det':
+        if self.td and self.td == 'Tesseract':
             if tesserocr is None:
                 raise ImportError('Please install tesserocr first. '
-                                  'Check out the installation guide at'
+                                  'Check out the installation guide at '
                                   'https://github.com/sirfz/tesserocr')
-            self.detect_model = self.td
+            self.detect_model = 'Tesseract_det'
         elif self.td:
             # Build detection model
             if not det_config:
@@ -381,12 +381,12 @@ class MMOCR:
             self.detect_model = revert_sync_batchnorm(self.detect_model)
 
         self.recog_model = None
-        if self.tr and self.tr == 'Tesseract_recog':
+        if self.tr and self.tr == 'Tesseract':
             if tesserocr is None:
                 raise ImportError('Please install tesserocr first. '
-                                  'Check out the installation guide at'
+                                  'Check out the installation guide at '
                                   'https://github.com/sirfz/tesserocr')
-            self.recog_model = self.tr
+            self.recog_model = 'Tesseract_recog'
         elif self.tr:
             # Build recognition model
             if not recog_config:
