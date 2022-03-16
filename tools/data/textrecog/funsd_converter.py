@@ -125,7 +125,7 @@ def load_json_info(gt_file, img_info):
     return img_info
 
 
-def generate_ann(root_path, split, image_infos, preserve_vertical):
+def generate_ann(root_path, split, image_infos, preserve_vertical, save_type):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -134,13 +134,14 @@ def generate_ann(root_path, split, image_infos, preserve_vertical):
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
+        save_type (str): Using json or txt to save annotations
     """
 
     dst_image_root = osp.join(root_path, 'dst_imgs', split)
     if split == 'training':
-        dst_label_file = osp.join(root_path, 'train_label.txt')
+        dst_label_file = osp.join(root_path, 'train_label.' + save_type)
     elif split == 'test':
-        dst_label_file = osp.join(root_path, 'test_label.txt')
+        dst_label_file = osp.join(root_path, 'test_label.' + save_type)
     os.makedirs(dst_image_root, exist_ok=True)
 
     lines = []
@@ -166,9 +167,17 @@ def generate_ann(root_path, split, image_infos, preserve_vertical):
             index += 1
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
-            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                         f'{word}')
-    list_to_file(dst_label_file, lines)
+            if save_type == 'txt':
+                lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                             f'{word}')
+            elif save_type == 'json':
+                lines.append({
+                    'filename':
+                    f'{osp.basename(dst_image_root)}/{dst_img_name}',
+                    'text': word
+                })
+
+    list_to_file(dst_label_file, lines, save_type)
 
 
 def parse_args():
@@ -181,6 +190,11 @@ def parse_args():
         action='store_true')
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
+    parser.add_argument(
+        '--save_type',
+        default='json',
+        help='Using json or txt file to save annotations',
+        choices=['json', 'txt'])
     args = parser.parse_args()
     return args
 
@@ -196,7 +210,8 @@ def main():
                 osp.join(root_path, 'imgs'),
                 osp.join(root_path, 'annotations', split))
             image_infos = collect_annotations(files, nproc=args.nproc)
-            generate_ann(root_path, split, image_infos, args.preserve_vertical)
+            generate_ann(root_path, split, image_infos, args.preserve_vertical,
+                         args.save_type)
 
 
 if __name__ == '__main__':

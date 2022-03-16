@@ -1,19 +1,24 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import json
 import os
 
 import mmcv
 
 
-def list_to_file(filename, lines):
+def list_to_file(filename, lines, file_type):
     """Write a list of strings to a text file.
 
     Args:
         filename (str): The output filename. It will be created/overwritten.
         lines (list(str)): Data to be written.
+        file_type (str) : Using json or txt to save annotations
     """
+    assert filename.split('.')[-1] == file_type
     mmcv.mkdir_or_exist(os.path.dirname(filename))
     with open(filename, 'w', encoding='utf-8') as fw:
         for line in lines:
+            if file_type == 'json':
+                line = json.dumps(line)
             fw.write(f'{line}\n')
 
 
