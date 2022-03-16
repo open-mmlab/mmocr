@@ -5,7 +5,7 @@ import os
 import mmcv
 
 
-def list_to_file(filename, lines, file_type):
+def list_to_file(filename, lines, file_type='txt'):
     """Write a list of strings to a text file.
 
     Args:
