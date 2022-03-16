@@ -134,7 +134,7 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, save_type):
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
-        save_type (str): Using json or txt to save annotations
+        save_type (str): Using jsonl or txt to save annotations
     """
 
     dst_image_root = osp.join(root_path, 'dst_imgs', split)
@@ -170,7 +170,7 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, save_type):
             if save_type == 'txt':
                 lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
                              f'{word}')
-            elif save_type == 'json':
+            elif save_type == 'jsonl':
                 lines.append({
                     'filename':
                     f'{osp.basename(dst_image_root)}/{dst_img_name}',
@@ -192,9 +192,9 @@ def parse_args():
         '--nproc', default=1, type=int, help='Number of processes')
     parser.add_argument(
         '--save_type',
-        default='json',
+        default='jsonl',
         help='Using json or txt file to save annotations',
-        choices=['json', 'txt'])
+        choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
 

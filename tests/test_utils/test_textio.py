@@ -55,8 +55,9 @@ dicts = [
 ]
 
 
-def test_list_to_file_txt():
+def test_list_to_file():
     with tempfile.TemporaryDirectory() as tmpdirname:
+        # test txt
         for i, lines in enumerate(lists):
             filename = f'{tmpdirname}/{i}.txt'
             list_to_file(filename, lines, 'txt')
@@ -67,13 +68,10 @@ def test_list_to_file_txt():
             lines = list(map(str, lines))
             assert len(lines) == len(lines2)
             assert all(line1 == line2 for line1, line2 in zip(lines, lines2))
-
-
-def test_list_to_file_json():
-    with tempfile.TemporaryDirectory() as tmpdirname:
+        # test jsonl
         for i, lines in enumerate(dicts):
-            filename = f'{tmpdirname}/{i}.json'
-            list_to_file(filename, lines, 'json')
+            filename = f'{tmpdirname}/{i}.jsonl'
+            list_to_file(filename, lines, 'jsonl')
             lines2 = [
                 json.loads(line.rstrip('\r\n'))['text']
                 for line in open(filename, 'r', encoding='utf-8').readlines()
@@ -84,17 +82,23 @@ def test_list_to_file_json():
             assert all(line1 == line2 for line1, line2 in zip(lines, lines2))
 
 
-def test_list_from_file_txt():
+def test_list_from_file():
     with tempfile.TemporaryDirectory() as tmpdirname:
-        for encoding in ['utf-8', 'utf-8-sig']:
-            for i, lines in enumerate(lists):
-                filename = f'{tmpdirname}/{i}.txt'
-                with open(filename, 'w', encoding=encoding) as f:
-                    f.writelines(f'{line}\n' for line in lines)
-                lines2 = list_from_file(filename, encoding=encoding)
-                lines = list(map(str, lines))
-                print('lines:{}, lines2:{}, encoding:{}'.format(
-                    lines, lines2, encoding))
-                assert len(lines) == len(lines2)
-                assert all(line1 == line2
-                           for line1, line2 in zip(lines, lines2))
+        # test txt file
+        for i, lines in enumerate(lists):
+            filename = f'{tmpdirname}/{i}.txt'
+            with open(filename, 'w', encoding='utf-8') as f:
+                f.writelines(f'{line}\n' for line in lines)
+            lines2 = list_from_file(filename, encoding='utf-8')
+            lines = list(map(str, lines))
+            assert len(lines) == len(lines2)
+            assert all(line1 == line2 for line1, line2 in zip(lines, lines2))
+        # test jsonl file
+        for i, lines in enumerate(dicts):
+            filename = f'{tmpdirname}/{i}.jsonl'
+            with open(filename, 'w', encoding='utf-8') as f:
+                f.writelines(f'{line}\n' for line in lines)
+            lines2 = list_from_file(filename, encoding='utf-8')
+            lines = list(map(str, lines))
+            assert len(lines) == len(lines2)
+            assert all(line1 == line2 for line1, line2 in zip(lines, lines2))
