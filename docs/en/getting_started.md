@@ -42,22 +42,18 @@ Once you have prepared required academic dataset following our instruction, the 
 ```python
 dataset_type = 'IcdarDataset'
 data_root = 'data/icdar2015'
-data = dict(
-    train=dict(
-        type=dataset_type,
-        ann_file=data_root + '/instances_training.json',
-        img_prefix=data_root + '/imgs',
-        pipeline=train_pipeline)
-    val=dict(
-        type=dataset_type,
-        ann_file=data_root + '/instances_test.json',
-        img_prefix=data_root + '/imgs',
-        pipeline=test_pipeline),
-    test=dict(
-        type=dataset_type,
-        ann_file=data_root + '/instances_test.json',
-        img_prefix=data_root + '/imgs',
-        pipeline=test_pipeline))
+train = dict(
+    type=dataset_type,
+    ann_file=f'{data_root}/instances_training.json',
+    img_prefix=f'{data_root}/imgs',
+    pipeline=None)
+test = dict(
+    type=dataset_type,
+    ann_file=f'{data_root}/instances_test.json',
+    img_prefix=f'{data_root}/imgs',
+    pipeline=None)
+train_list = [train]
+test_list = [test]
 ```
 You would need to check if `data/icdar2015` is right. Then you can start training with the command:
 ```shell
