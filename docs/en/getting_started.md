@@ -38,7 +38,7 @@ python tools/train.py configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset
 
 ### Training with Academic Dataset
 
-Once you have prepared required academic dataset following our instruction, the only last thing to check is if the model's config points MMOCR to the correct dataset path. Suppose we want to train DBNet on ICDAR 2015, and part of `configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py` looks like the following:
+Once you have prepared required academic dataset following our instruction, the only last thing to check is if the model's config points MMOCR to the correct dataset path. Suppose we want to train DBNet on ICDAR 2015, and part of `configs/_base_/det_datasets/icdar2015.py` looks like the following:
 ```python
 dataset_type = 'IcdarDataset'
 data_root = 'data/icdar2015'
