@@ -9,9 +9,7 @@ from mmocr.models.textrecog.layers import BasicBlock
 
 @BACKBONES.register_module()
 class ResNet(BaseModule):
-    """Implement general ResNet backbone for text recognition
-       Supporting: ResNet31, ResNet45, ResNet31_Master
-
+    """
     Args:
         in_channels (int): Number of channels of input image tensor.
         stem_channels (list[int]): List of channels in each stem layer. E.g.,
