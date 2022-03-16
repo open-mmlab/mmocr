@@ -51,7 +51,23 @@ MMOCR implements **distributed** training with `MMDistributedDataParallel`. (Ple
 
 ## Training on Multiple Machines
 
-MMOCR relies on torch.distributed package for distributed training. Thus, as a basic usage, one can launch distributed training via PyTorch’s [launch utility](https://pytorch.org/docs/stable/distributed.html#launch-utility).
+You can launch a task on multiple machines connected to the same network.
+
+Say that you want to launch a job on two machines. On the first machine:
+
+```shell
+NNODES=2 NODE_RANK=0 PORT=${MASTER_PORT} MASTER_ADDR=${MASTER_ADDR} ./tools/dist_train.sh ${CONFIG_FILE} ${WORK_DIR} ${GPU_NUM} [PY_ARGS]
+```
+
+On the second machine:
+
+```shell
+NNODES=2 NODE_RANK=1 PORT=${MASTER_PORT} MASTER_ADDR=${MASTER_ADDR} ./tools/dist_train.sh ${CONFIG_FILE} ${WORK_DIR} ${GPU_NUM} [PY_ARGS]
+```
+
+:::{note}
+The speed of the network could be the bottleneck of training.
+:::
 
 ## Training with Slurm
 

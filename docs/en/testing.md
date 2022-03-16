@@ -2,7 +2,7 @@
 
 We introduce the way to test pretrained models on datasets here.
 
-## Testing with Single GPU
+## Testing on a Single GPU
 
 You can use `tools/test.py` to perform single CPU/GPU inference. For example, to evaluate DBNet on IC15: (You can download pretrained models from [Model Zoo](modelzoo.md)):
 
@@ -44,7 +44,7 @@ CUDA_VISIBLE_DEVICES= python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [AR
 | `--launcher`       | 'none', 'pytorch', 'slurm', 'mpi' | Options for job launcher.                                                                                                                                                                                                                                                                                                                                                              |
 
 
-## Testing with Multiple GPUs
+## Testing on Multiple GPUs
 
 MMOCR implements **distributed** testing with `MMDistributedDataParallel`.
 
@@ -66,6 +66,26 @@ For example,
 ```shell
 ./tools/dist_test.sh configs/example_config.py work_dirs/example_exp/example_model_20200202.pth 1 --eval hmean-iou
 ```
+
+## Testing on Multiple Machines
+
+You can also launch a task on multiple machines connected to the same network.
+
+Say that you want to launch a job on two machines. On the first machine:
+
+```shell
+NNODES=2 NODE_RANK=0 PORT=${MASTER_PORT} MASTER_ADDR=${MASTER_ADDR} ./tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [PY_ARGS]
+```
+
+On the second machine:
+
+```shell
+NNODES=2 NODE_RANK=1 PORT=${MASTER_PORT} MASTER_ADDR=${MASTER_ADDR} ./tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [PY_ARGS]
+```
+
+:::{note}
+The speed of the network could be the bottleneck of testing.
+:::
 
 ## Testing with Slurm
 
