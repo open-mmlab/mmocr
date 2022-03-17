@@ -197,8 +197,8 @@ def parse_args():
         '--nproc', default=1, type=int, help='Number of processes')
     parser.add_argument(
         '--format',
-        default='txt',
-        help='Using json or string to format annotations',
+        default='jsonl',
+        help='Use json or string to format annotations',
         choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
