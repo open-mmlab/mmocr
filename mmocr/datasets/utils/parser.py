@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
+import warnings
 
 from mmocr.datasets.builder import PARSERS
 from mmocr.utils import StringStrip
@@ -35,6 +36,11 @@ class LineStrParser:
         map_index = index % len(data_ret)
         line_str = data_ret[map_index]
         line_str = self.strip_cls(line_str)
+        if len(line_str.split(' ')) > 2:
+            msg = 'More than two blank spaces were detected.'
+            msg += 'Please use LineJsonParser to handle'
+            msg += 'annotations with blanks.'
+            warnings.warn(msg)
         line_str = line_str.split(self.separator)
         if len(line_str) <= max(self.keys_idx):
             raise Exception(
