@@ -136,11 +136,9 @@ class ResNet(BaseModule):
     def _make_stage_plugins(self, plugins, stage_idx):
         """Make plugins for ResNet ``stage_idx`` th stage.
 
-        Currently we support to insert ``nn.Maxpooling``,
-        ``nn.conv2d``into the backbone. This is designed for ResNet31
-        architecture likes
-
-        An example of plugins format could be:
+        Currently we support inserting ``nn.Maxpooling``,
+        ``mmcv.cnn.Convmodule``into the backbone. Originally designed
+        for ResNet31-like architectures.
 
         Examples:
             >>> plugins=[
@@ -150,20 +148,24 @@ class ResNet(BaseModule):
             ...     dict(cfg=dict(type="Maxpooling", arg=(2,1)),
             ...          stages=(False, False, True, Flase),
             ...          position='before_stage'),
-            ...     dict(cfg=dict(type="Conv", args=(3,1,1)),
+            ...     dict(cfg=dict(
+            ...              type='ConvModule',
+            ...              kernel_size=3,
+            ...              stride=1,
+            ...              padding=1,
+            ...              norm_cfg=dict(type='BN'),
+            ...              act_cfg=dict(type='ReLU')),
             ...          stages=(True, True, True, True),
-            ...          position=('after_stage')
-            ... ]
+            ...          position='after_stage')]
 
         Suppose ``stage_idx=1``, the structure of stage would be:
 
         .. code-block:: none
 
-            Maxpooling-> Basicblocks * blocks[stage_idx - 1] -> Conv
+            Maxpooling -> A set of Basicblocks -> ConvModule
 
         Args:
-            plugins (list[dict]): List of plugins cfg to build. The postfix is
-                required if multiple same type plugins are inserted.
+            plugins (list[dict]): List of plugins cfg to build.
             stage_idx (int): Index of stage to build
 
         Returns:
@@ -204,14 +206,12 @@ class ResNet(BaseModule):
         return out
 
     def forward(self, x):
-        """Args:p x (Tensor): Image tensor of shae :math:`(N, 3, H, W)`.
+        """
+        Args: x (Tensor): Image tensor of shae :math:`(N, 3, H, W)`.
 
         Returns:
-            Tensor or list[Tensor]: Feature tensor. Its shape depends on
-            ResNetABI's config. It can be a list of feature outputs at specific
-            layers if ``out_indices`` is specified.
-
-            output (Tensor): shape :math: `(N, 512, H/4, W/4)`
+            Tensor or list[Tensor]: Feature tensor. It can be a list of
+            feature outputs at specific layers if ``out_indices`` is specified.
         """
         x = self.stem_layers(x)
 

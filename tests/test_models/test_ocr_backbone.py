@@ -123,7 +123,3 @@ def test_resnet():
     assert resnet45_aster(img).shape == torch.Size([1, 512, 1, 25])
     assert resnet45_abi(img).shape == torch.Size([1, 512, 8, 25])
     assert resnet_31(img).shape == torch.Size([1, 512, 4, 25])
-
-
-if __name__ == '__main__':
-    test_resnet()
