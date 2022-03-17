@@ -177,7 +177,10 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
                         'filename':
                         f'{osp.basename(dst_image_root)}/{dst_img_name}',
                         'text': word
-                    }))
+                    }),
+                    ensure_ascii=False)
+            else:
+                raise NotImplementedError
 
     list_to_file(dst_label_file, lines)
 

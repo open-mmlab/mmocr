@@ -60,7 +60,7 @@ def test_list_to_file():
         # test txt
         for i, lines in enumerate(lists):
             filename = f'{tmpdirname}/{i}.txt'
-            list_to_file(filename, lines, 'txt')
+            list_to_file(filename, lines)
             lines2 = [
                 line.rstrip('\r\n')
                 for line in open(filename, 'r', encoding='utf-8').readlines()
@@ -71,13 +71,13 @@ def test_list_to_file():
         # test jsonl
         for i, lines in enumerate(dicts):
             filename = f'{tmpdirname}/{i}.jsonl'
-            list_to_file(filename, lines, 'jsonl')
+            list_to_file(filename, [json.dumps(line) for line in lines])
             lines2 = [
-                json.loads(line.rstrip('\r\n'))['text']
+                json.loads(line.rstrip('\r\n'))["text"]
                 for line in open(filename, 'r', encoding='utf-8').readlines()
             ][0]
 
-            lines = list(lines[0]['text'])
+            lines = list(lines[0]["text"])
             assert len(lines) == len(lines2)
             assert all(line1 == line2 for line1, line2 in zip(lines, lines2))
 
@@ -102,3 +102,8 @@ def test_list_from_file():
             lines = list(map(str, lines))
             assert len(lines) == len(lines2)
             assert all(line1 == line2 for line1, line2 in zip(lines, lines2))
+
+
+if __name__ == '__main__':
+    test_list_to_file()
+    test_list_from_file()
