@@ -190,7 +190,7 @@ def parse_args():
         description='Generate training and test set of FUNSD ')
     parser.add_argument('root_path', help='Root dir path of FUNSD')
     parser.add_argument(
-        '--preserve-vertical',
+        '--preserve_vertical',
         help='Preserve samples containing vertical texts',
         action='store_true')
     parser.add_argument(
