@@ -47,11 +47,30 @@ MMOCR implements **distributed** training with `MMDistributedDataParallel`. (Ple
 | Arguments | Type | Description                                                                                                                                                                                                                                      |
 | --------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `PORT`    | int  | The master port that will be used by the machine with rank 0. Defaults to 29500. **Note:** If you are launching multiple distrbuted training jobs on a single machine, you need to specify different ports for each job to avoid port conflicts. |
+| `CONFIG_FILE`          | str  | The path to config.                                                  |
+| `CHECKPOINT_FILE`          | str  | The path to the checkpoint.                                                  |
+| `GPU_NUM`          | int  | The number of GPUs to be used per node. Defaults to 8.                                                  |
 | `PY_ARGS` | str  | Arguments to be parsed by `tools/train.py`.                                                                                                                                                                                                      |
 
 ## Training on Multiple Machines
 
 You can launch a task on multiple machines connected to the same network.
+
+```shell
+NNODES=${NNODES} NODE_RANK=${NODE_RANK} PORT=${MASTER_PORT} MASTER_ADDR=${MASTER_ADDR} ./tools/dist_train.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [PY_ARGS]
+```
+
+| Arguments       | Type | Description                                                                                                 |
+| --------------- | ---- | ----------------------------------------------------------------------------------------------------------- |
+| `NNODES`          | int  | The number of nodes.
+| `NODE_RANK`          | int  | The rank of current node.
+| `PORT`    | int  | The master port that will be used by rank 0 node. Defaults to 29500. |
+| `MASTER_ADDR`    | int  | The address of rank 0 node. Defaults to "127.0.0.1". |
+| `CONFIG_FILE`          | str  | The path to config.                                                  |
+| `CHECKPOINT_FILE`          | str  | The path to the checkpoint.                                                  |
+| `GPU_NUM`          | int  | The number of GPUs to be used per node. Defaults to 8.                                                  |
+| `PY_ARGS`       | str  | Arguments to be parsed by `tools/train.py`.                                                                  |
+
 
 Say that you want to launch a job on two machines. On the first machine:
 
@@ -68,6 +87,8 @@ NNODES=2 NODE_RANK=1 PORT=${MASTER_PORT} MASTER_ADDR=${MASTER_ADDR} ./tools/dist
 :::{note}
 The speed of the network could be the bottleneck of training.
 :::
+
+MMOCR relies on torch.distributed package for distributed training. Find more information at PyTorch’s [launch utility](https://pytorch.org/docs/stable/distributed.html#launch-utility).
 
 ## Training with Slurm
 
