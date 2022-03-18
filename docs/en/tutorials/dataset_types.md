@@ -171,7 +171,7 @@ The `LineStrParser` will split the above annotation line to pieces (e.g. ['test/
 % A json line annotation file that contains blank spaces
 {"filename": "test/img 1.jpg", "text": "Hello World!"}
 {"filename": "test/img 2.jpg", "text": "Hello Open MMLab!"}
-{"filename": "test/img 2.jpg", "text": "Hello MMOCR!"}
+{"filename": "test/img 3.jpg", "text": "Hello MMOCR!"}
 ```
 
 After converting the annotation format, you just need to set the parser arguments as:
