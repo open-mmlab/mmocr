@@ -71,7 +71,6 @@ NNODES=${NNODES} NODE_RANK=${NODE_RANK} PORT=${MASTER_PORT} MASTER_ADDR=${MASTER
 | `GPU_NUM`          | int  | The number of GPUs to be used per node. Defaults to 8.                                                  |
 | `PY_ARGS`       | str  | Arguments to be parsed by `tools/train.py`.                                                                  |
 
-
 Say that you want to launch a job on two machines. On the first machine:
 
 ```shell
