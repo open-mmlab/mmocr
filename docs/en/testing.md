@@ -78,11 +78,15 @@ NNODES=${NNODES} NODE_RANK=${NODE_RANK} PORT=${MASTER_PORT} MASTER_ADDR=${MASTER
 | `NNODES`          | int  | The number of nodes.
 | `NODE_RANK`          | int  | The rank of current node.
 | `PORT`    | int  | The master port that will be used by rank 0 node. Defaults to 29500. |
-| `MASTER_ADDR`    | int  | The address of rank 0 node. Defaults to "127.0.0.1". |
+| `MASTER_ADDR`    | str  | The address of rank 0 node. Defaults to "127.0.0.1". |
 | `CONFIG_FILE`          | str  | The path to config.                                                  |
 | `CHECKPOINT_FILE`          | str  | The path to the checkpoint.                                                  |
 | `GPU_NUM`          | int  | The number of GPUs to be used per node. Defaults to 8.                                                  |
 | `PY_ARGS`       | str  | Arguments to be parsed by `tools/test.py`.                                                                  |
+
+:::{note}
+MMOCR relies on torch.distributed package for distributed testing. Find more information at PyTorch’s [launch utility](https://pytorch.org/docs/stable/distributed.html#launch-utility).
+:::
 
 Say that you want to launch a job on two machines. On the first machine:
 
@@ -99,8 +103,6 @@ NNODES=2 NODE_RANK=1 PORT=${MASTER_PORT} MASTER_ADDR=${MASTER_ADDR} ./tools/dist
 :::{note}
 The speed of the network could be the bottleneck of testing.
 :::
-
-MMOCR relies on torch.distributed package for distributed training. Find more information at PyTorch’s [launch utility](https://pytorch.org/docs/stable/distributed.html#launch-utility).
 
 ## Testing with Slurm
 
