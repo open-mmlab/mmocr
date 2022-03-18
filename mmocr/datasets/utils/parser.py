@@ -37,9 +37,14 @@ class LineStrParser:
         line_str = data_ret[map_index]
         line_str = self.strip_cls(line_str)
         if len(line_str.split(' ')) > 2:
-            msg = 'More than two blank spaces were detected.'
-            msg += 'Please use LineJsonParser to handle'
-            msg += 'annotations with blanks.'
+            msg = 'More than two blank spaces were detected. '
+            msg += 'Please use LineJsonParser to handle '
+            msg += 'annotations with blanks. '
+            msg += 'Check Doc '
+            msg += 'https://mmocr.readthedocs.io/en/latest/'
+            msg += 'tutorials/dataset_types.html'
+            msg += '#for-dataset-contains-blank-spaces'
+            msg += ' for details.'
             warnings.warn(msg)
         line_str = line_str.split(self.separator)
         if len(line_str) <= max(self.keys_idx):

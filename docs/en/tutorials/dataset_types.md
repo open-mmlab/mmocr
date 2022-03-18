@@ -154,6 +154,34 @@ train = dict(
     test_mode=False)
 ```
 
+### For dataset contains blank spaces
+
+It is noteworthy that the `LineStrParser` should **NOT** be used to parse the annotation files containing multiple blank spaces (in file name or recognition transcriptions). The users have to convert the `plain txt` annotations to `json lines` to enable space recognition. For example:
+
+```txt
+% A plain txt annotation file that contains blank spaces
+test/img 1.jpg Hello World!
+test/img 2.jpg Hello Open MMLab!
+test/img 3.jpg Hello MMOCR!
+```
+
+The `LineStrParser` will split the above annotation line to pieces (e.g. ['test/img', '1.jpg', 'Hello', 'World!']) that cannot be matched to the `keys` (e.g. ['filename', 'text']). Therefore, we need to convert it to a json line format by `json.dumps` (check [here](https://github.com/open-mmlab/mmocr/blob/main/tools/data/textrecog/funsd_converter.py#L175-L180) to see how to dump `jsonl`), and then the annotation file will look like as follows:
+
+```txt
+% A json line annotation file that contains blank spaces
+{"filename": "test/img 1.jpg", "text": "Hello World!"}
+{"filename": "test/img 2.jpg", "text": "Hello Open MMLab!"}
+{"filename": "test/img 2.jpg", "text": "Hello MMOCR!"}
+```
+
+After converting the annotation format, you just need to set the parser arguments as:
+
+```python
+parser=dict(
+    type='LineJsonParser',
+    keys=['filename', 'text']))
+```
+
 ### OCRSegDataset
 
 *Dataset for segmentation-based recognizer*
