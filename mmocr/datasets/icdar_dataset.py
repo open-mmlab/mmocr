@@ -1,15 +1,23 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import mmcv
 import numpy as np
 from mmdet.datasets.api_wrappers import COCO
 from mmdet.datasets.builder import DATASETS
 from mmdet.datasets.coco import CocoDataset
 
 import mmocr.utils as utils
+from mmocr import digit_version
 from mmocr.core.evaluation.hmean import eval_hmean
 
 
 @DATASETS.register_module()
 class IcdarDataset(CocoDataset):
+    """Dataset for text detection while ann_file in coco format.
+
+    Args:
+        ann_file_backend (str): Storage backend for annotation file,
+            should be one in ['disk', 'petrel', 'http']. Default to 'disk'.
+    """
     CLASSES = ('text')
 
     def __init__(self,
@@ -22,9 +30,12 @@ class IcdarDataset(CocoDataset):
                  proposal_file=None,
                  test_mode=False,
                  filter_empty_gt=True,
-                 select_first_k=-1):
+                 select_first_k=-1,
+                 ann_file_backend='disk'):
         # select first k images for fast debugging.
         self.select_first_k = select_first_k
+        assert ann_file_backend in ['disk', 'petrel', 'http']
+        self.ann_file_backend = ann_file_backend
 
         super().__init__(ann_file, pipeline, classes, data_root, img_prefix,
                          seg_prefix, proposal_file, test_mode, filter_empty_gt)
@@ -38,8 +49,16 @@ class IcdarDataset(CocoDataset):
         Returns:
             list[dict]: Annotation info from COCO api.
         """
-
-        self.coco = COCO(ann_file)
+        if self.ann_file_backend == 'disk':
+            self.coco = COCO(ann_file)
+        else:
+            mmcv_version = digit_version(mmcv.__version__)
+            if mmcv_version < digit_version('1.3.16'):
+                raise Exception('Please update mmcv to 1.3.16 or higher '
+                                'to enable "get_local_path" of "FileClient".')
+            file_client = mmcv.FileClient(backend=self.ann_file_backend)
+            with file_client.get_local_path(ann_file) as local_path:
+                self.coco = COCO(local_path)
         self.cat_ids = self.coco.get_cat_ids(cat_names=self.CLASSES)
         self.cat2label = {cat_id: i for i, cat_id in enumerate(self.cat_ids)}
         self.img_ids = self.coco.get_img_ids()

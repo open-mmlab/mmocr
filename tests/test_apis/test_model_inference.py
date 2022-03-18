@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os
+import platform
 
 import pytest
 from mmcv.image import imread
@@ -18,6 +19,9 @@ def build_model(config_file):
     return model
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows',
+    reason='Win container on Github Action does not have enough RAM to run')
 @pytest.mark.parametrize('cfg_file', [
     '../configs/textrecog/sar/sar_r31_parallel_decoder_academic.py',
     '../configs/textrecog/abinet/abinet_academic.py',
@@ -41,6 +45,9 @@ def test_model_inference(cfg_file):
     model_inference(model, img)
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows',
+    reason='Win container on Github Action does not have enough RAM to run')
 @pytest.mark.parametrize(
     'cfg_file',
     ['../configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2017.py'])

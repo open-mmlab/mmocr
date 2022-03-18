@@ -5,7 +5,11 @@ import tempfile
 
 import pytest
 
-from mmocr.datasets.utils.loader import HardDiskLoader, LmdbLoader, Loader
+from mmocr.datasets.utils.backend import (HardDiskAnnFileBackend,
+                                          HTTPAnnFileBackend,
+                                          PetrelAnnFileBackend)
+from mmocr.datasets.utils.loader import (AnnFileLoader, HardDiskLoader,
+                                         LmdbLoader)
 from mmocr.utils import lmdb_converter
 
 
@@ -40,14 +44,9 @@ def test_loader():
         separator=' ')
 
     with pytest.raises(AssertionError):
-        Loader(ann_file, parser, repeat=0)
+        AnnFileLoader(ann_file, parser, repeat=0)
     with pytest.raises(AssertionError):
-        Loader(ann_file, [], repeat=1)
-    with pytest.raises(AssertionError):
-        Loader('sample.txt', parser, repeat=1)
-    with pytest.raises(NotImplementedError):
-        loader = Loader(ann_file, parser, repeat=1)
-        print(loader)
+        AnnFileLoader(ann_file, [], repeat=1)
 
     # test text loader and line str parser
     text_loader = HardDiskLoader(ann_file, parser, repeat=1)
@@ -73,9 +72,17 @@ def test_loader():
     # test lmdb loader and line str parser
     _create_dummy_line_str_file(ann_file)
     lmdb_file = osp.join(tmp_dir.name, 'fake_data.lmdb')
-    lmdb_converter(ann_file, lmdb_file)
+    lmdb_converter(ann_file, lmdb_file, lmdb_map_size=102400)
 
     lmdb_loader = LmdbLoader(lmdb_file, parser, repeat=1)
     assert lmdb_loader[0] == {'filename': 'sample1.jpg', 'text': 'hello'}
+    lmdb_loader.close()
+
+    with pytest.raises(AssertionError):
+        HardDiskAnnFileBackend(file_format='json')
+    with pytest.raises(AssertionError):
+        PetrelAnnFileBackend(file_format='json')
+    with pytest.raises(AssertionError):
+        HTTPAnnFileBackend(file_format='json')
 
     tmp_dir.cleanup()

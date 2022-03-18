@@ -3,13 +3,13 @@ import warnings
 
 import torch
 
-from mmocr.models.builder import (DETECTORS, build_backbone, build_convertor,
+from mmocr.models.builder import (RECOGNIZERS, build_backbone, build_convertor,
                                   build_decoder, build_encoder, build_fuser,
                                   build_loss, build_preprocessor)
 from .encode_decode_recognizer import EncodeDecodeRecognizer
 
 
-@DETECTORS.register_module()
+@RECOGNIZERS.register_module()
 class ABINet(EncodeDecodeRecognizer):
     """Implementation of `Read Like Humans: Autonomous, Bidirectional and
     Iterative LanguageModeling for Scene Text Recognition.

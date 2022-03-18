@@ -21,10 +21,19 @@ def main():
         '-c',
         default='utf8',
         help='bytes coding scheme, default utf8')
+    parser.add_argument(
+        '--lmdb_map_size',
+        '-l',
+        default='109951162776',
+        help='maximum size database may grow to , default 109951162776 bytes')
     opt = parser.parse_args()
 
     lmdb_converter(
-        opt.imglist, opt.output, batch_size=opt.batch_size, coding=opt.coding)
+        opt.imglist,
+        opt.output,
+        batch_size=opt.batch_size,
+        coding=opt.coding,
+        lmdb_map_size=opt.lmdb_map_size)
 
 
 if __name__ == '__main__':
