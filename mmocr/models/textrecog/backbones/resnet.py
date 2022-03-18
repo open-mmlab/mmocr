@@ -207,7 +207,7 @@ class ResNet(BaseModule):
 
     def forward(self, x):
         """
-        Args: x (Tensor): Image tensor of shae :math:`(N, 3, H, W)`.
+        Args: x (Tensor): Image tensor of shape :math:`(N, 3, H, W)`.
 
         Returns:
             Tensor or list[Tensor]: Feature tensor. It can be a list of
