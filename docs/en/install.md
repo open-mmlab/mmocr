@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Linux | Windows
+- Linux | Windows | macOS
 - Python 3.7
 - PyTorch 1.6 or higher
 - torchvision 0.7.0

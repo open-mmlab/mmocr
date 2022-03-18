@@ -2,7 +2,7 @@
 
 ## 环境依赖
 
-- Linux | Windows
+- Linux | Windows | macOS
 - Python 3.7
 - PyTorch 1.6 或更高版本
 - torchvision 0.7.0
