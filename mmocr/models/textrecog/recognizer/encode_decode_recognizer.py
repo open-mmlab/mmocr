@@ -49,10 +49,10 @@ class EncodeDecodeRecognizer(BaseRecognizer):
 
         # Decoder module
         assert decoder is not None
-        decoder.update(num_classes=self.label_convertor.num_classes())
-        decoder.update(start_idx=self.label_convertor.start_idx)
-        decoder.update(padding_idx=self.label_convertor.padding_idx)
-        decoder.update(max_seq_len=max_seq_len)
+        # decoder.update(num_classes=self.label_convertor.num_classes())
+        # decoder.update(start_idx=self.label_convertor.start_idx)
+        # decoder.update(padding_idx=self.label_convertor.padding_idx)
+        # decoder.update(max_seq_len=max_seq_len)
         self.decoder = build_decoder(decoder)
 
         # Loss

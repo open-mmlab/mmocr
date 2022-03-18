@@ -41,7 +41,7 @@ class ResNetABI(BaseModule):
         assert isinstance(in_channels, int)
         assert isinstance(stem_channels, int)
         assert utils.is_type_list(arch_settings, int)
-        assert utils.is_type_list(strides, int)
+        # assert utils.is_type_list(strides, int)
         assert len(arch_settings) == len(strides)
         assert out_indices is None or isinstance(out_indices, (list, tuple))
         assert isinstance(last_stage_pool, bool)
@@ -72,7 +72,7 @@ class ResNetABI(BaseModule):
     def _make_layer(self, block, inplanes, planes, blocks, stride=1):
         layers = []
         downsample = None
-        if stride != 1 or inplanes != planes:
+        if stride != [1, 1] or inplanes != planes:
             downsample = nn.Sequential(
                 nn.Conv2d(inplanes, planes, 1, stride, bias=False),
                 nn.BatchNorm2d(planes),

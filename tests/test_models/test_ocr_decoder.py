@@ -8,7 +8,8 @@ from mmocr.models.textrecog.decoders import (ABILanguageDecoder,
                                              ABIVisionDecoder, BaseDecoder,
                                              NRTRDecoder, ParallelSARDecoder,
                                              ParallelSARDecoderWithBS,
-                                             SequentialSARDecoder)
+                                             SequentialSARDecoder,
+                                             ASTERDecoder)
 from mmocr.models.textrecog.decoders.sar_decoder_with_bs import DecodeNode
 
 
@@ -53,6 +54,13 @@ def test_sequential_sar_decoder():
     decoder = SequentialSARDecoder(
         num_classes=37, padding_idx=36, max_seq_len=5)
     decoder.init_weights()
+
+def test_aster_decoder():
+    model = ASTERDecoder(in_planes=512, num_classes=97, s_Dim=512, Atten_Dim=512)
+    x = torch.randn(1, 25, 512)
+    result = model(x)
+    assert result == torch.Size([1, 512])
+
     decoder.train()
 
     feat, out_enc, tgt_dict, img_metas = _create_dummy_input()
