@@ -24,26 +24,33 @@ class BaseConvertor:
                    '*+,-./:;<=>?@[\\]_`~')
 
     def __init__(self, dict_type='DICT90', dict_file=None, dict_list=None):
-        assert dict_type in ('DICT36', 'DICT90')
         assert dict_file is None or isinstance(dict_file, str)
         assert dict_list is None or isinstance(dict_list, list)
         self.idx2char = []
         if dict_file is not None:
-            for line in list_from_file(dict_file):
-                line = line.strip()
+            for line_num, line in enumerate(list_from_file(dict_file)):
+                line = line.strip('\r\n')
+                if len(line) > 1:
+                    raise ValueError('Expect each line has 0 or 1 character, '
+                                     f'got {len(line)} characters '
+                                     f'at line {line_num + 1}')
                 if line != '':
                     self.idx2char.append(line)
         elif dict_list is not None:
-            self.idx2char = dict_list
+            self.idx2char = list(dict_list)
         else:
             if dict_type == 'DICT36':
                 self.idx2char = list(self.DICT36)
-            else:
+            elif dict_type == 'DICT90':
                 self.idx2char = list(self.DICT90)
+            else:
+                raise NotImplementedError(f'Dict type {dict_type} is not '
+                                          'supported')
 
-        self.char2idx = {}
-        for idx, char in enumerate(self.idx2char):
-            self.char2idx[char] = idx
+        assert len(set(self.idx2char)) == len(self.idx2char), \
+            'Invalid dictionary: Has duplicated characters.'
+
+        self.char2idx = {char: idx for idx, char in enumerate(self.idx2char)}
 
     def num_classes(self):
         """Number of output classes."""
