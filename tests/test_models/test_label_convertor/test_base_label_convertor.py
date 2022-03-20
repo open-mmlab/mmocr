@@ -40,13 +40,13 @@ def test_base_label_convertor():
     # Test loading an illegal dictionary
     # Duplciated characters
     with open(dict_file, 'w') as fw:
-        fw.write('a\nb\r\n\n \n\na')
+        fw.write('a\nb\n\n \n\na')
     with pytest.raises(AssertionError):
         label_convertor = BaseConvertor(dict_file=dict_file)
 
     # Too many characters per line
     with open(dict_file, 'w') as fw:
-        fw.write('a\nb\r\nc \n')
+        fw.write('a\nb\nc \n')
     with pytest.raises(
             ValueError,
             match='Expect each line has 0 or 1 character, got 2'
