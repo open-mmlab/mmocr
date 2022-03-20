@@ -17,20 +17,30 @@ def test_base_label_convertor():
     dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
 
     # Test loading a dictionary from file
-    with open(dict_file, 'w') as fw:
-        fw.write('a\nb\r\n\n \n\r\n')
+
+    # Test the capability of handling different line separator style
+    # Set newline='' to preserve the line separators as given in the test file
+    # *nix style line separator
+    with open(dict_file, 'w', newline='') as fw:
+        fw.write('a\nb\n\n \n\n')
+    label_convertor = BaseConvertor(dict_file=dict_file)
+    assert label_convertor.idx2char == ['a', 'b', ' ']
+    # Windows style line separator
+    with open(dict_file, 'w', newline='') as fw:
+        fw.write('a\r\nb\r\n\r\n \r\n\r\n')
     label_convertor = BaseConvertor(dict_file=dict_file)
     assert label_convertor.idx2char == ['a', 'b', ' ']
 
+    # Ensure it won't parse line separator as a space character
     with open(dict_file, 'w') as fw:
-        fw.write('a\nb\r\n\n\nc\r\n')
+        fw.write('a\nb\n\n\nc\n\n')
     label_convertor = BaseConvertor(dict_file=dict_file)
     assert label_convertor.idx2char == ['a', 'b', 'c']
 
-    # Test loading an illegal dictionaries
+    # Test loading an illegal dictionary
     # Duplciated characters
     with open(dict_file, 'w') as fw:
-        fw.write('a\nb\r\n\n \n\r\na')
+        fw.write('a\nb\r\n\n \n\na')
     with pytest.raises(AssertionError):
         label_convertor = BaseConvertor(dict_file=dict_file)
 
