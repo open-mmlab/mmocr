@@ -27,6 +27,7 @@ from mmocr.datasets.kie_dataset import KIEDataset
 from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.models import build_detector
 from mmocr.models.textdet.detectors import TextDetectorMixin
+from mmocr.models.textrecog.recognizer import BaseRecognizer
 from mmocr.utils import is_type_list
 from mmocr.utils.box_util import stitch_boxes_into_lines
 from mmocr.utils.fileio import list_from_file
@@ -601,8 +602,11 @@ class MMOCR:
             if export:
                 mmcv.dump(res, export, indent=4)
             if output or self.args.imshow:
-                if model in ['Tesseract_det', 'Tesseract_recog']:
+                if model == 'Tesseract_det':
                     res_img = TextDetectorMixin(show_score=False).show_result(
+                        arr, res, out_file=output)
+                elif model == 'Tesseract_recog':
+                    res_img = BaseRecognizer.show_result(
                         arr, res, out_file=output)
                 else:
                     res_img = model.show_result(arr, res, out_file=output)
