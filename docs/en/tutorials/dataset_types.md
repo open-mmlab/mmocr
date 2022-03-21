@@ -182,6 +182,13 @@ parser=dict(
     keys=['filename', 'text']))
 ```
 
+Besides, you need to specify a dict that contains blank space to enablel blank recognition. Particularly, MMOCR provides two [built-in dicts](https://github.com/open-mmlab/mmocr/blob/main/mmocr/models/textrecog/convertors/base.py) `DICT37` and `DICT91` that contain blank space. For example, change the default `dict_type` in `configs/_base_/recog_models/crnn.py` to `DICT37`.
+
+```python
+label_convertor = dict(
+    type='CTCConvertor', dict_type='DICT37', with_unknown=False, lower=True) # ['DICT36', 'DICT37', 'DICT90', 'DICT91']
+```
+
 ### OCRSegDataset
 
 *Dataset for segmentation-based recognizer*
