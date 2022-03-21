@@ -221,7 +221,7 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 
 ### SROIE
 
-- Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p)-20220304T064017Z-001`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
+- Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
 - Step2:
 
 ```bash
@@ -236,7 +236,7 @@ mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv task1_2_test\(361p\)
 # For annotations
 mv 0325updated.task1train\(626p\) annotations/training && mv text.task1_2-test（361p\)/ annotations/test
 
-rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\)-20220304T064017Z-001.zip && rm text.task1\&2-test（361p\).zip
+rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
 ```
 
 - Step3: Generate `instances_training.json` and `instances_test.json` with the following command:
