@@ -61,8 +61,8 @@ def test_base_label_convertor():
         label_convertor = BaseConvertor(dict_file=dict_file)
 
     # Test creating a dictionary from dict_type
-    label_convertor = BaseConvertor(dict_type='DICT36')
-    assert len(label_convertor.idx2char) == 36
+    label_convertor = BaseConvertor(dict_type='DICT37')
+    assert len(label_convertor.idx2char) == 37
     with pytest.raises(
             NotImplementedError, match='Dict type DICT100 is not supported'):
         label_convertor = BaseConvertor(dict_type='DICT100')

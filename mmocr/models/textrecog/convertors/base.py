@@ -18,10 +18,16 @@ class BaseConvertor:
     unknown_idx = None
     lower = False
 
-    DICT36 = tuple('0123456789abcdefghijklmnopqrstuvwxyz')
-    DICT90 = tuple('0123456789abcdefghijklmnopqrstuvwxyz'
-                   'ABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()'
-                   '*+,-./:;<=>?@[\\]_`~')
+    dicts = dict(
+        DICT36=tuple('0123456789abcdefghijklmnopqrstuvwxyz'),
+        DICT90=tuple('0123456789abcdefghijklmnopqrstuvwxyz'
+                     'ABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()'
+                     '*+,-./:;<=>?@[\\]_`~'),
+        # With space character
+        DICT37=tuple('0123456789abcdefghijklmnopqrstuvwxyz '),
+        DICT91=tuple('0123456789abcdefghijklmnopqrstuvwxyz'
+                     'ABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()'
+                     '*+,-./:;<=>?@[\\]_`~ '))
 
     def __init__(self, dict_type='DICT90', dict_file=None, dict_list=None):
         assert dict_file is None or isinstance(dict_file, str)
@@ -39,10 +45,8 @@ class BaseConvertor:
         elif dict_list is not None:
             self.idx2char = list(dict_list)
         else:
-            if dict_type == 'DICT36':
-                self.idx2char = list(self.DICT36)
-            elif dict_type == 'DICT90':
-                self.idx2char = list(self.DICT90)
+            if dict_type in self.dicts:
+                self.idx2char = list(self.dicts[dict_type])
             else:
                 raise NotImplementedError(f'Dict type {dict_type} is not '
                                           'supported')
