@@ -217,7 +217,7 @@ def parse_args():
     parser.add_argument(
         '--test_ratio',
         help='Ratio of test set from the whole dataset',
-        default=0.)
+        default=0.2)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
     parser.add_argument(

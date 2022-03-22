@@ -79,6 +79,12 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
+│   ├── BID
+│   │   ├── imgs
+│   │   ├── dst_imgs
+│   │   ├── annotations
+│   │   ├── train_label.txt
+│   │   ├── test_label.txt
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -99,6 +105,7 @@
 |       Totaltext       |                       [homepage](https://github.com/cs-chan/Total-Text-Dataset)                       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
 |       OpenVINO        |                  [Open Images](https://github.com/cvdfoundation/open-images-dataset)                  |                                                                                                                                               [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                                                               | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |  |
 |         FUNSD         |                          [homepage](https://guillaumejaume.github.io/FUNSD/)                          |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
+|          BID          |          [homepage](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
 
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
@@ -320,4 +327,31 @@ rm dataset.zip && rm -rf dataset
 
 ```bash
 python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
+```
+
+
+### BID
+
+- Step1: Download [dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
+- Step2: Run the following codes to preprocess the dataset
+```bash
+mv BID\ Dataset.zip BID_Dataset.zip
+mkdir data && mv BID.zip data/
+cd data
+unzip -q BID_Dataset.zip && rm BID_Dataset.zip
+mv BID\ Dataset BID_Dataset
+cd BID_Dataset
+mv CNH_Aberta/*in.jpg imgs && mv CNH_Aberta/*txt annotations && rm -rf CNH_Aberta
+mv CNH_Frente/*in.jpg imgs && mv CNH_Frente/*txt annotations && rm -rf CNH_Frente
+mv CNH_Verso/*in.jpg imgs && mv CNH_Verso/*txt annotations && rm -rf CNH_Verso
+mv CPF_Frente/*in.jpg imgs && mv CPF_Frente/*txt annotations && rm -rf CPF_Frente
+mv CPF_Verso/*in.jpg imgs && mv CPF_Verso/*txt annotations && rm -rf CPF_Verso
+mv RG_Aberto/*in.jpg imgs && mv RG_Aberto/*txt annotations && rm -rf RG_Aberto
+mv RG_Frente/*in.jpg imgs && mv RG_Frente/*txt annotations && rm -rf RG_Frente
+mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
+cd ../../
+```
+- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Besides, the orginal dataset doesn't have test set. And specific `--test_ratio` to split the dataset.
+```bash
+python tools/data/textrecog/ilst_converter.py data/IIIT-ILST --nproc 4 --test_rat
 ```

@@ -41,6 +41,11 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
+|── BID
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -54,6 +59,8 @@ The structure of the text detection dataset directory is organized as follows.
 |     Totaltext     |                                                                                                           [homepage](https://github.com/cs-chan/Total-Text-Dataset)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
 |       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|        BID        |                                                                                               [homepage](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                                                                                |
+
 
 
 ## Important Note
@@ -211,4 +218,29 @@ rm dataset.zip && rm -rf dataset
 
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
+```
+### BID
+
+- Step1: Download [dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
+- Step2: Run the following codes to preprocess the dataset
+```bash
+mv BID\ Dataset.zip BID_Dataset.zip
+mkdir data && mv BID.zip data/
+cd data
+unzip -q BID_Dataset.zip && rm BID_Dataset.zip
+mv BID\ Dataset BID_Dataset
+cd BID_Dataset
+mv CNH_Aberta/*in.jpg imgs && mv CNH_Aberta/*txt annotations && rm -rf CNH_Aberta
+mv CNH_Frente/*in.jpg imgs && mv CNH_Frente/*txt annotations && rm -rf CNH_Frente
+mv CNH_Verso/*in.jpg imgs && mv CNH_Verso/*txt annotations && rm -rf CNH_Verso
+mv CPF_Frente/*in.jpg imgs && mv CPF_Frente/*txt annotations && rm -rf CPF_Frente
+mv CPF_Verso/*in.jpg imgs && mv CPF_Verso/*txt annotations && rm -rf CPF_Verso
+mv RG_Aberto/*in.jpg imgs && mv RG_Aberto/*txt annotations && rm -rf RG_Aberto
+mv RG_Frente/*in.jpg imgs && mv RG_Frente/*txt annotations && rm -rf RG_Frente
+mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
+cd ../../
+```
+- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Besides, the orginal dataset doesn't have test set. And specific `--test_ratio` to split the dataset.
+```bash
+python tools/data/textrecog/ilst_converter.py data/IIIT-ILST --nproc 4 --test_rat
 ```
