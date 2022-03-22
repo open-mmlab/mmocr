@@ -79,6 +79,12 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
+│   ├── ILST
+│   │   ├── imgs
+│   │   ├── dst_imgs
+│   │   ├── annotations
+│   │   ├── train_label.txt
+│   │   ├── test_label.txt
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -99,6 +105,7 @@
 |       Totaltext       |                       [homepage](https://github.com/cs-chan/Total-Text-Dataset)                       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
 |       OpenVINO        |                  [Open Images](https://github.com/cvdfoundation/open-images-dataset)                  |                                                                                                                                               [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                                                               | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |  |
 |         FUNSD         |                          [homepage](https://guillaumejaume.github.io/FUNSD/)                          |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
+|         ILST          |             [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst)              |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
 
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
@@ -320,4 +327,32 @@ rm dataset.zip && rm -rf dataset
 
 ```bash
 python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
+```
+### ILST
+- Step1: Download dataset from [here](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)
+- Step2: Run the following codes
+```bash
+unzip -q IIIT-ILST.zip && rm IIIT-ILST.zip
+cd IIIT-ILST
+# rename files
+cd Devanagari && for i in `ls`; do mv -f $i `echo "devanagari_"$i`; done && cd ..
+cd Malayalam && for i in `ls`; do mv -f $i `echo "malayalam_"$i`; done && cd ..
+cd Telugu && for i in `ls`; do mv -f $i `echo "telugu_"$i`; done && cd ..
+# transfer image path
+mkdir imgs && mkdir annotations
+mv Malayalam/{*jpg,*jpeg} imgs/ && mv Malayalam/*xml annotations/
+mv Devanagari/*jpg imgs/ && mv Devanagari/*xml annotations/
+mv Telugu/*jpeg imgs/ && mv Telugu/*xml annotations/
+# unify postfix
+cd imgs
+ls -1 *.jpeg | xargs -n 1 bash -c 'convert "$0" "${0%.jpeg}.jpg"'
+rm *jpeg
+# remove unnecessary files
+cd ..
+rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm READEME.txt
+cd ../../
+```
+- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Besides, the orginal dataset doesn't have test set. And specific `--test_ratio` to split the dataset.
+```bash
+python tools/data/textrecog/ilst_converter.py data/IIIT-ILST --nproc 4 --test_ratio 0.2
 ```

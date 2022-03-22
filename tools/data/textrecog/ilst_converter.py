@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+import json
 import os
 import os.path as osp
 import string
@@ -151,8 +152,8 @@ def split_train_test_list(full_list, test_ratio):
     return [train_list, test_list]
 
 
-def generate_ann(root_path, image_infos, preserve_vertical, filter_nonlatin,
-                 test_ratio):
+def generate_ann(root_path, image_infos, preserve_vertical, test_ratio,
+                 format):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -161,8 +162,8 @@ def generate_ann(root_path, image_infos, preserve_vertical, filter_nonlatin,
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
-        filter_nonlatin (bool): Filter out non-latin instances
         test_ratio (float): Ratio of test set from the whole dataset
+        format (str): Using jsonl(dict) or str to format annotations
     """
 
     assert test_ratio <= 1.
@@ -198,17 +199,26 @@ def generate_ann(root_path, image_infos, preserve_vertical, filter_nonlatin,
                 # Skip vertical texts
                 if not preserve_vertical and h / w > 2:
                     continue
-                # Ignore non-latin words
-                if filter_nonlatin:
-                    if not judge_latin(word):
-                        continue
 
                 dst_img_name = f'{src_img_root}_{index}.png'
                 index += 1
                 dst_img_path = osp.join(dst_image_root, dst_img_name)
                 mmcv.imwrite(dst_img, dst_img_path)
-                lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                             f'{word}')
+                if format == 'txt':
+                    lines.append(
+                        f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                        f'{word}')
+                elif format == 'jsonl':
+                    lines.append(
+                        json.dumps(
+                            {
+                                'filename': f'{osp.basename(dst_image_root)} \
+                                  /{dst_img_name}',
+                                'text': word
+                            },
+                            ensure_ascii=False))
+                else:
+                    raise NotImplementedError
     list_to_file(dst_label_file, lines)
 
 
@@ -221,15 +231,16 @@ def parse_args():
         help='Preserve samples containing vertical texts',
         action='store_true')
     parser.add_argument(
-        '--filter_nonlatin',
-        help='Filter out non-latin instances',
-        action='store_true')
-    parser.add_argument(
         '--test_ratio',
         help='Ratio of test set from the whole dataset',
         default=0.)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
+    parser.add_argument(
+        '--format',
+        default='jsonl',
+        help='Use jsonl or string to format annotations',
+        choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
 
@@ -242,7 +253,7 @@ def main():
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
         image_infos = collect_annotations(files, nproc=args.nproc)
         generate_ann(root_path, image_infos, args.preserve_vertical,
-                     args.filter_nonlatin, args.test_ratio)
+                     float(args.test_ratio), args.format)
 
 
 if __name__ == '__main__':
