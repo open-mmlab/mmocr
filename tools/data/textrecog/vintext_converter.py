@@ -135,11 +135,11 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
     """
     dst_image_root = osp.join(root_path, 'dst_imgs', split)
     if split == 'training':
-        dst_label_file = osp.join(root_path, 'train_label.txt')
+        dst_label_file = osp.join(root_path, f'train_label.{format}')
     elif split == 'test':
-        dst_label_file = osp.join(root_path, 'test_label.txt')
+        dst_label_file = osp.join(root_path, f'test_label.{format}')
     elif split == 'unseen_test':
-        dst_label_file = osp.join(root_path, 'unseen_test_label.txt')
+        dst_label_file = osp.join(root_path, f'unseen_test_label.{format}')
     os.makedirs(dst_image_root, exist_ok=True)
 
     lines = []
@@ -167,14 +167,13 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
             if format == 'txt':
-                lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                lines.append(f'{dst_image_root}/{dst_img_name} '
                              f'{word}')
             elif format == 'jsonl':
                 lines.append(
                     json.dumps(
                         {
-                            'filename': f'{osp.basename(dst_image_root)} \
-                                /{dst_img_name}',
+                            'filename': f'{dst_image_root}/{dst_img_name}',
                             'text': word
                         },
                         ensure_ascii=False))
@@ -193,6 +192,11 @@ def parse_args():
         action='store_true')
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
+    parser.add_argument(
+        '--format',
+        default='jsonl',
+        help='Use jsonl or string to format annotations',
+        choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
 
@@ -209,7 +213,7 @@ def main():
                 osp.join(root_path, 'annotations'))
             image_infos = collect_annotations(files, nproc=args.nproc)
             generate_ann(root_path, split, image_infos, args.preserve_vertical,
-                         args.filter_nonlatin)
+                         args.format)
 
 
 if __name__ == '__main__':

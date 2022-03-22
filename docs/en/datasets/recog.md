@@ -331,7 +331,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
 
 ### VinText
-- step1: Run the following codes to automatically download dataset
+- Step1: Run the following codes to automatically download dataset
 ```bash
 mkdir vintext && cd vintext
 # Download dataset from google drive
@@ -348,7 +348,7 @@ rm general_dict.txt && rm vn_dictionary.txt
 # Generate for detection
 cd ../../..
 ```
-- step2: Generate train_label.txt and test_label.txt and crop images using 4 processes with following command (add --preserve-vertical if you wish to preserve the images containing vertical texts):
+- Step2: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with the following command (add `--preserve_vertical` if you wish to preserve the images containing vertical texts).
 ```bash
 python tools/data/textrecog/vintext_converter.py data/vintext/vietnamese --nproc 4
 ```
