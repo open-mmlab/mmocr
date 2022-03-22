@@ -8,7 +8,8 @@ class BaseConvertor:
     """Convert between text, index and tensor for text recognize pipeline.
 
     Args:
-        dict_type (str): Type of dict, should be either 'DICT36' or 'DICT90'.
+        dict_type (str): Type of dict, options are 'DICT36', 'DICT37', 'DICT90'
+            and 'DICT91'.
         dict_file (None|str): Character dict file path. If not none,
             the dict_file is of higher priority than dict_type.
         dict_list (None|list[str]): Character list. If not none, the list
