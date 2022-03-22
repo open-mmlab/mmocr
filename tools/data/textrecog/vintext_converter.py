@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+import json
 import os
 import os.path as osp
-import string
 
 import mmcv
 
@@ -122,15 +122,7 @@ def load_txt_info(gt_file, img_info):
     return img_info
 
 
-def judge_latin(word):
-    for char in word:
-        if char not in string.ascii_letters:
-            return False
-    return True
-
-
-def generate_ann(root_path, split, image_infos, preserve_vertical,
-                 filter_nonlatin):
+def generate_ann(root_path, split, image_infos, preserve_vertical, format):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -139,7 +131,7 @@ def generate_ann(root_path, split, image_infos, preserve_vertical,
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
-        filter_nonlatin (bool): Filter out non-latin instances
+        format (str): Using jsonl(dict) or str to format annotations
     """
     dst_image_root = osp.join(root_path, 'dst_imgs', split)
     if split == 'training':
@@ -169,17 +161,25 @@ def generate_ann(root_path, split, image_infos, preserve_vertical,
             # Skip vertical texts
             if not preserve_vertical and h / w > 2:
                 continue
-            # Ignore non-latin words
-            if filter_nonlatin:
-                if not judge_latin(word):
-                    continue
 
             dst_img_name = f'{src_img_root}_{index}.png'
             index += 1
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
-            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                         f'{word}')
+            if format == 'txt':
+                lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                             f'{word}')
+            elif format == 'jsonl':
+                lines.append(
+                    json.dumps(
+                        {
+                            'filename': f'{osp.basename(dst_image_root)} \
+                                /{dst_img_name}',
+                            'text': word
+                        },
+                        ensure_ascii=False))
+            else:
+                raise NotImplementedError
     list_to_file(dst_label_file, lines)
 
 
@@ -188,12 +188,8 @@ def parse_args():
         description='Generate training and test set of VinText ')
     parser.add_argument('root_path', help='Root dir path of VinText')
     parser.add_argument(
-        '--preserve-vertical',
+        '--preserve_vertical',
         help='Preserve samples containing vertical texts',
-        action='store_true')
-    parser.add_argument(
-        '--filter_nonlatin',
-        help='Filter out non-latin instances',
         action='store_true')
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
