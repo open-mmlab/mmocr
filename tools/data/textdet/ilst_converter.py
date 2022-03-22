@@ -2,7 +2,6 @@
 import argparse
 import os
 import os.path as osp
-import string
 import xml.etree.ElementTree as ET
 
 import mmcv
@@ -130,13 +129,6 @@ def load_xml_info(gt_file, img_info):
     return img_info
 
 
-def judge_latin(word):
-    for char in word:
-        if char not in string.ascii_letters:
-            return False
-    return True
-
-
 def split_train_test_list(full_list, test_ratio):
     """Split list by test_ratio
 
@@ -162,10 +154,6 @@ def parse_args():
         description='Generate training and test set of ILST ')
     parser.add_argument('root_path', help='Root dir path of ILST')
     parser.add_argument(
-        '--filter_nonlatin',
-        help='Filter out non-latin instances',
-        action='store_true')
-    parser.add_argument(
         '--test_ratio',
         help='Ratio of test set from the whole dataset',
         default=0.2)
@@ -183,7 +171,8 @@ def main():
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
         image_infos = collect_annotations(files, nproc=args.nproc)
         if args.test_ratio:
-            image_infos = split_train_test_list(image_infos, args.test_ratio)
+            image_infos = split_train_test_list(image_infos,
+                                                float(args.test_ratio))
             splits = ['training', 'test']
         else:
             image_infos = [image_infos]
