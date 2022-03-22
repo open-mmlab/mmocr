@@ -99,7 +99,6 @@ def main():
     args = parse_args()
 
     cfg = Config.fromfile(args.config)
-    cfg = unify_recog_pipeline(cfg)
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
 
@@ -177,6 +176,9 @@ def main():
     cfg.seed = seed
     meta['seed'] = seed
     meta['exp_name'] = osp.basename(args.config)
+
+    # unify config
+    cfg = unify_recog_pipeline(cfg)
 
     model = build_detector(
         cfg.model,

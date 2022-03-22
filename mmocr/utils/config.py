@@ -99,10 +99,14 @@ def disable_text_recog_aug_test(cfg, set_types=None):
 
 
 def unify_recog_pipeline(cfg):
+    import inspect
+
+    import mmocr.models.textrecog.recognizer
     recog_model_type = [
-        'CRNNNet', 'SARNet', 'NRTR', 'SegRecognizer', 'RobustScanner', 'SATRN',
-        'ABINet'
+        recog_model[0] for recog_model in inspect.getmembers(
+            mmocr.models.textrecog.recognizer, inspect.isclass)
     ]
+
     is_recog = cfg.model.type in recog_model_type
     if not is_recog:
         return cfg
