@@ -42,9 +42,8 @@ class LineStrParser:
             msg += 'annotations with blanks. '
             msg += 'Check Doc '
             msg += 'https://mmocr.readthedocs.io/en/latest/'
-            msg += 'tutorials/dataset_types.html'
-            msg += '#for-dataset-contains-blank-spaces'
-            msg += ' for details.'
+            msg += 'tutorials/blank_recog.html '
+            msg += 'for details.'
             warnings.warn(msg)
         line_str = line_str.split(self.separator)
         if len(line_str) <= max(self.keys_idx):
