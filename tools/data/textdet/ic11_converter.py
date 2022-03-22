@@ -98,14 +98,14 @@ def load_img_info(files):
         segm_file=osp.join(osp.basename(gt_file)))
 
     if osp.splitext(gt_file)[1] == '.txt':
-        img_info = load_txt_info(gt_file, img_info, img)
+        img_info = load_txt_info(gt_file, img_info)
     else:
         raise NotImplementedError
 
     return img_info
 
 
-def load_txt_info(gt_file, img_info, img):
+def load_txt_info(gt_file, img_info):
     """Collect the annotation information.
 
     The annotation format is as the following:
