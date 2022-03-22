@@ -41,6 +41,13 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
+|── vintext
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_test.json
+│   ├── instances_unseen_test.json
+│   └── instances_training.json
+
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -54,6 +61,8 @@ The structure of the text detection dataset directory is organized as follows.
 |     Totaltext     |                                                                                                           [homepage](https://github.com/cs-chan/Total-Text-Dataset)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
 |       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|      VinText      |                                                                                                            [homepage](https://github.com/VinAIResearch/dict-guided)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+
 
 
 ## Important Note
@@ -211,4 +220,27 @@ rm dataset.zip && rm -rf dataset
 
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
+```
+
+### VinText
+- step1: Run the following codes to automatically download dataset
+```bash
+mkdir vintext && cd vintext
+# Download dataset from google drive
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1UUQhNvzgpZy7zXBFQp0Qox-BBjunZ0ml' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1UUQhNvzgpZy7zXBFQp0Qox-BBjunZ0ml" -O vintext.zip && rm -rf /tmp/cookies.txt
+# Extract images and annotations
+unzip -q vintext.zip && rm vintext.zip
+cd vietnamese
+# Rename files 
+mv labels annotations && mv test_image test && mv train_images  training && mv unseen_test_images  unseen_test
+mkdir imgs
+mv training imgs/ && mv test imgs/ && mv unseen_test imgs/
+# Delete unecessary files
+rm general_dict.txt && rm vn_dictionary.txt
+# Generate for detection
+cd ../../..
+```
+- step2: Generate train_label.txt and test_label.txt and crop images using 4 processes with following command (add --preserve-vertical if you wish to preserve the images containing vertical texts):
+```bash
+python tools/data/textdet/vintext_converter.py data/vintext/vietnamese --nproc 4
 ```
