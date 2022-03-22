@@ -59,7 +59,7 @@ The structure of the text detection dataset directory is organized as follows.
 |     Totaltext     |                                                                                                           [homepage](https://github.com/cs-chan/Total-Text-Dataset)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
 |       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
-|        BID        |                                                                                               [homepage](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                                                                                |
+|        BID        |                                                                                               [homepage](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
 
 
@@ -222,7 +222,7 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ### BID
 
 - Step1: Download [dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
-- Step2: Run the following codes to preprocess the dataset
+- Step2: Run the following commands to preprocess the dataset
 ```bash
 mv BID\ Dataset.zip BID_Dataset.zip
 mkdir data && mv BID.zip data/
@@ -240,7 +240,7 @@ mv RG_Frente/*in.jpg imgs && mv RG_Frente/*txt annotations && rm -rf RG_Frente
 mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
 cd ../../
 ```
-- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Besides, the orginal dataset doesn't have test set. And specific `--test_ratio` to split the dataset.
+- Step3: - Step3: Generate `instances_test.json` and `instances_training.json`. Since the original dataset doesn't have a test set, you may specify `--test_ratio` to split the dataset. E.g., if test_ratio is 0.2, then 20% of the data are left out as the test set in this example.
 ```bash
-python tools/data/textrecog/ilst_converter.py data/IIIT-ILST --nproc 4 --test_rat
+python tools/data/textrecog/bid_converter.py data/BID_Dataset --nproc 4 --test_rat
 ```

@@ -333,7 +333,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ### BID
 
 - Step1: Download [dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
-- Step2: Run the following codes to preprocess the dataset
+- Step2: Run the following commands to preprocess the dataset
 ```bash
 mv BID\ Dataset.zip BID_Dataset.zip
 mkdir data && mv BID.zip data/
@@ -351,7 +351,7 @@ mv RG_Frente/*in.jpg imgs && mv RG_Frente/*txt annotations && rm -rf RG_Frente
 mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
 cd ../../
 ```
-- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Besides, the orginal dataset doesn't have test set. And specific `--test_ratio` to split the dataset.
+- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with the following command (add `--preserve_vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a test set, you may specify `--test_ratio` to split the dataset. E.g., if test_ratio is 0.2, then 20% of the data are left out as the test set in this example.
 ```bash
-python tools/data/textrecog/ilst_converter.py data/IIIT-ILST --nproc 4 --test_rat
+python tools/data/textrecog/bid_converter.py data/BID_Dataset --nproc 4 --test_ratio 0.2
 ```
