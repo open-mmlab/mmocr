@@ -178,7 +178,7 @@ def generate_ann(root_path, image_infos, preserve_vertical, test_ratio,
 
     for i, split in enumerate(splits):
         dst_image_root = osp.join(root_path, 'dst_imgs', split)
-        dst_label_file = osp.join(root_path, f'{split}_label.txt')
+        dst_label_file = osp.join(root_path, f'{split}_label.{format}')
         os.makedirs(dst_image_root, exist_ok=True)
 
         lines = []
@@ -212,14 +212,13 @@ def generate_ann(root_path, image_infos, preserve_vertical, test_ratio,
                     lines.append(
                         json.dumps(
                             {
-                                'filename': f'{osp.basename(dst_image_root)} \
-                                  /{dst_img_name}',
+                                'filename': f'{dst_image_root}/{dst_img_name}',
                                 'text': word
                             },
                             ensure_ascii=False))
                 else:
                     raise NotImplementedError
-    list_to_file(dst_label_file, lines)
+        list_to_file(dst_label_file, lines)
 
 
 def parse_args():
@@ -233,7 +232,7 @@ def parse_args():
     parser.add_argument(
         '--test_ratio',
         help='Ratio of test set from the whole dataset',
-        default=0.)
+        default=0.2)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
     parser.add_argument(
@@ -252,6 +251,7 @@ def main():
         files = collect_files(
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
         image_infos = collect_annotations(files, nproc=args.nproc)
+        image_infos = image_infos[:100]
         generate_ann(root_path, image_infos, args.preserve_vertical,
                      float(args.test_ratio), args.format)
 

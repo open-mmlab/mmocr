@@ -349,7 +349,7 @@ ls -1 *.jpeg | xargs -n 1 bash -c 'convert "$0" "${0%.jpeg}.jpg"'
 rm *jpeg
 # remove unnecessary files
 cd ..
-rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm READEME.txt
+rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm README.txt
 cd ../../
 ```
 - Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Besides, the orginal dataset doesn't have test set. And specific `--test_ratio` to split the dataset.

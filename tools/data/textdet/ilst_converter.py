@@ -77,10 +77,10 @@ def load_img_info(files):
     img = mmcv.imread(img_file, 'unchanged')
 
     img_info = dict(
-        file_name=osp.join(osp.basename(img_file)),
+        file_name=img_file,
         height=img.shape[0],
         width=img.shape[1],
-        segm_file=osp.join(osp.basename(gt_file)))
+        segm_file=gt_file)
 
     if osp.splitext(gt_file)[1] == '.xml':
         img_info = load_xml_info(gt_file, img_info)
@@ -152,7 +152,8 @@ def split_train_test_list(full_list, test_ratio):
 def parse_args():
     parser = argparse.ArgumentParser(
         description='Generate training and test set of ILST ')
-    parser.add_argument('root_path', help='Root dir path of ILST')
+    parser.add_argument(
+        '--root_path', default='data/IIIT-ILST', help='Root dir path of ILST')
     parser.add_argument(
         '--test_ratio',
         help='Ratio of test set from the whole dataset',
