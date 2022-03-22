@@ -152,6 +152,7 @@ def split_train_test_list(full_list, test_ratio):
 def parse_args():
     parser = argparse.ArgumentParser(
         description='Generate training and test set of ILST ')
+    parser.add_argument('root_path', help='Root dir path of ILST')
     parser.add_argument(
         '--test_ratio',
         help='Ratio of test set from the whole dataset',

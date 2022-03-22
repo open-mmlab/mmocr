@@ -330,7 +330,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
 ### ILST
 - Step1: Download dataset from [here](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)
-- Step2: Run the following codes
+- Step2: Run the following commands
 ```bash
 unzip -q IIIT-ILST.zip && rm IIIT-ILST.zip
 cd IIIT-ILST
@@ -352,7 +352,7 @@ cd ..
 rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm READEME.txt
 cd ../../
 ```
-- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Besides, the orginal dataset doesn't have test set. And specific `--test_ratio` to split the dataset.
+- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with the following command (add `--preserve_vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a test set, you may specify `--test_ratio` to split the dataset. E.g., if test_ratio is 0.2, then 20% of the data are left out as the test set in this example.
 ```bash
 python tools/data/textrecog/ilst_converter.py data/IIIT-ILST --nproc 4 --test_ratio 0.2
 ```

@@ -212,14 +212,14 @@ def generate_ann(root_path, image_infos, preserve_vertical, test_ratio,
                     lines.append(
                         json.dumps(
                             {
-                                'filename': f'{osp.basename(dst_image_root)} \
-                                  /{dst_img_name}',
+                                'filename':
+                                f'{dst_image_root} /{dst_img_name}',
                                 'text': word
                             },
                             ensure_ascii=False))
                 else:
                     raise NotImplementedError
-    list_to_file(dst_label_file, lines)
+        list_to_file(dst_label_file, lines)
 
 
 def parse_args():
@@ -252,7 +252,6 @@ def main():
         files = collect_files(
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
         image_infos = collect_annotations(files, nproc=args.nproc)
-        image_infos = image_infos[:100]
         generate_ann(root_path, image_infos, args.preserve_vertical,
                      float(args.test_ratio), args.format)
 
