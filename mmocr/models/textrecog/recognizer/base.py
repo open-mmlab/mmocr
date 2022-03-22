@@ -178,8 +178,8 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
 
         return outputs
 
-    @staticmethod
-    def show_result(img,
+    def show_result(self,
+                    img,
                     result,
                     gt_label='',
                     win_name='',
