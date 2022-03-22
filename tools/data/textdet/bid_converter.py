@@ -154,7 +154,6 @@ def main():
     with mmcv.Timer(print_tmpl='It takes {}s to convert BID annotation'):
         files = collect_files(
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
-        files = files[:300]
         image_infos = collect_annotations(files, nproc=args.nproc)
         if args.test_ratio:
             image_infos = split_train_test_list(image_infos,
