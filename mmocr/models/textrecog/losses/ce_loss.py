@@ -79,7 +79,7 @@ class SARLoss(CELoss):
         SARLoss assumes that the first input token is always `<SOS>`.
     """
 
-    def __init__(self, ignore_index=-1, reduction='mean', **kwargs):
+    def __init__(self, ignore_index=0, reduction='mean', **kwargs):
         super().__init__(ignore_index, reduction)
 
     def format(self, outputs, targets_dict):
