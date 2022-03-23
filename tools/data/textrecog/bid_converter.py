@@ -72,10 +72,10 @@ def load_img_info(files):
     img = mmcv.imread(img_file, 'unchanged')
 
     img_info = dict(
-        file_name=osp.join(osp.basename(img_file)),
+        file_name=osp.basename(img_file),
         height=img.shape[0],
         width=img.shape[1],
-        segm_file=osp.join(osp.basename(gt_file)))
+        segm_file=osp.basename(gt_file))
 
     if osp.splitext(gt_file)[1] == '.txt':
         img_info = load_txt_info(gt_file, img_info)
@@ -188,18 +188,17 @@ def generate_ann(root_path, image_infos, preserve_vertical, test_ratio,
                 index += 1
                 dst_img_path = osp.join(dst_image_root, dst_img_name)
                 mmcv.imwrite(dst_img, dst_img_path)
+                filename = f'{osp.basename(dst_image_root)}/{dst_img_name}'
                 if format == 'txt':
-                    lines.append(
-                        f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                        f'{word}')
+                    lines.append(f'{filename} '
+                                 f'{word}')
                 elif format == 'jsonl':
                     lines.append(
-                        json.dumps(
-                            {
-                                'filename': f'{dst_image_root}/{dst_img_name}',
-                                'text': word
-                            },
-                            ensure_ascii=False))
+                        json.dumps({
+                            'filename': filename,
+                            'text': word
+                        },
+                                   ensure_ascii=False))
                 else:
                     raise NotImplementedError
         list_to_file(dst_label_file, lines)
