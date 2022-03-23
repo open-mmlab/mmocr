@@ -77,10 +77,10 @@ def load_img_info(files):
     img = mmcv.imread(img_file, 'unchanged')
 
     img_info = dict(
-        file_name=img_file,
+        file_name=osp.basename(img_file),
         height=img.shape[0],
         width=img.shape[1],
-        segm_file=gt_file)
+        segm_file=osp.basename(gt_file))
 
     if osp.splitext(gt_file)[1] == '.xml':
         img_info = load_xml_info(gt_file, img_info)
