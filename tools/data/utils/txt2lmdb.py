@@ -24,8 +24,7 @@ def main():
     parser.add_argument(
         '--lmdb_map_size',
         '-l',
-        type=int,
-        default=109951162776,
+        default='109951162776',
         help='maximum size database may grow to , default 109951162776 bytes')
     opt = parser.parse_args()
 
