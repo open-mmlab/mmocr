@@ -166,17 +166,17 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
             index += 1
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
+            filename = f'{osp.basename(dst_image_root)}/{dst_img_name}'
             if format == 'txt':
-                lines.append(f'{dst_image_root}/{dst_img_name} '
+                lines.append(f'{filename} '
                              f'{word}')
             elif format == 'jsonl':
                 lines.append(
-                    json.dumps(
-                        {
-                            'filename': f'{dst_image_root}/{dst_img_name}',
-                            'text': word
-                        },
-                        ensure_ascii=False))
+                    json.dumps({
+                        'filename': filename,
+                        'text': word
+                    },
+                               ensure_ascii=False))
             else:
                 raise NotImplementedError
     list_to_file(dst_label_file, lines)
