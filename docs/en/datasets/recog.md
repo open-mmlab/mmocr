@@ -348,7 +348,7 @@ unzip -q Challenge1_Test_Task3_Images.zip -d crops/test
 mv Challenge1_Test_Task3_GT.txt annotations && mv train/gt.txt annotations/Challenge1_Train_Task3_GT.txt
 ```
 
-- Step2: Convert original annotations to `train_label.txt` and `test_label.txt` with the following command:
+- Step2: Convert original annotations to `Train_label.jsonl` and `Test_label.jsonl` with the following command:
 
 ```bash
 python tools/data/textrecog/ic11_converter.py PATH/TO/icdar2011
