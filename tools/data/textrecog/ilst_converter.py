@@ -148,24 +148,24 @@ def judge_latin(word):
     return True
 
 
-def split_train_test_list(full_list, test_ratio):
-    """Split list by test_ratio
+def split_train_val_list(full_list, val_ratio):
+    """Split list by val_ratio
 
     Args:
-        full_list (list): List to be split
-        test_ratio (float): Ratio for test set
+        full_list (list): list to be splited
+        val_ratio (float): split ratio for val set
 
     return:
         list(list, list): train_list and test_list
     """
 
     n_total = len(full_list)
-    offset = int(n_total * test_ratio)
+    offset = int(n_total * val_ratio)
     if n_total == 0 or offset < 1:
         return [], full_list
-    test_list = full_list[:offset]
+    val_list = full_list[:offset]
     train_list = full_list[offset:]
-    return [train_list, test_list]
+    return [train_list, val_list]
 
 
 def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
@@ -184,7 +184,7 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
     assert val_ratio <= 1.
 
     if val_ratio:
-        image_infos = split_train_test_list(image_infos, val_ratio)
+        image_infos = split_train_val_list(image_infos, val_ratio)
         splits = ['training', 'val']
 
     else:
