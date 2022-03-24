@@ -152,11 +152,11 @@ def split_train_val_list(full_list, val_ratio):
     """Split list by val_ratio
 
     Args:
-        full_list (list): list to be splited
-        val_ratio (float): split ratio for val set
+        full_list (list): List to be splited
+        val_ratio (float): Split ratio for val set
 
     return:
-        list(list, list): train_list and test_list
+        list(list, list): Train_list and test_list
     """
 
     n_total = len(full_list)
