@@ -94,6 +94,15 @@ def load_img_info(files):
 def load_txt_info(gt_file, img_info):
     """Collect the annotation information.
 
+    The annotation format is as the following:
+    x1,y1,x2,y2,x3,y3,x4,y4,text
+    118,15,147,15,148,46,118,46,LƯỢNG
+    149,9,165,9,165,43,150,43,TỐT
+    167,9,180,9,179,43,167,42,ĐỂ
+    181,12,193,12,193,43,181,43,CÓ
+    195,13,215,14,215,46,196,46,VIỆC
+    217,13,237,14,239,47,217,46,LÀM,
+
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
