@@ -7,7 +7,8 @@ from mmocr.utils.fileio import list_to_file
 
 
 def convert_annotations(root_path, split, format):
-    """Convert original annotations to mmocr format
+    """Convert original annotations to mmocr format.
+
     The annotation format is as the following:
         word_1.png, "flying"
         word_2.png, "today"
@@ -26,7 +27,6 @@ def convert_annotations(root_path, split, format):
     Args:
         root_path (str): The root path of the dataset
         split (str): The split of dataset. Namely: training or test
-
     """
     assert isinstance(root_path, str)
     assert isinstance(split, str)
@@ -34,7 +34,7 @@ def convert_annotations(root_path, split, format):
     lines = []
     with open(
             osp.join(root_path, 'annotations',
-                     f'Challenge1_{split}_Task3_GT.txt'),
+                     f'Challenge1_{split}_Task3_GT.{format}'),
             'r',
             encoding='"utf-8-sig') as f:
         annos = f.readlines()
@@ -43,6 +43,7 @@ def convert_annotations(root_path, split, format):
         # text may contain comma ','
         dst_img_name, word = anno.split(', "')
         word = word.replace('"\n', '')
+
         if format == 'txt':
             lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
                          f'{word}')
