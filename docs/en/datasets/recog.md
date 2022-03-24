@@ -321,3 +321,27 @@ rm dataset.zip && rm -rf dataset
 ```bash
 python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
+
+### IMGUR
+
+- Step1: Run `download_imgur5k.py` to download images. You can merge [PR#5](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset/pull/5) in your local repository to enable a **much faster** parallel execution of image download.
+```bash
+mkdir imgur && cd imgur
+
+git clone https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset.git
+
+# Download images from imgur.com. This may take SEVERAL HOURS!
+python ./IMGUR5K-Handwriting-Dataset/download_imgur5k.py --dataset_info_dir ./IMGUR5K-Handwriting-Dataset/dataset_info/ --output_dir ./imgs
+
+# For annotations
+mkdir annotations
+mv ./IMGUR5K-Handwriting-Dataset/dataset_info/*.json annotations
+
+rm -rf IMGUR5K-Handwriting-Dataset
+```
+
+- Step2: Generate `train_label.txt`, `val_label.txt` and `test_label.txt` and crop images with the following command:
+
+```bash
+python tools/data/textrecog/imgur_converter.py PATH/TO/imgur
+```

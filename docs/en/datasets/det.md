@@ -41,6 +41,12 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
+|── imgur
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
+│   └── instances_val.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -54,6 +60,7 @@ The structure of the text detection dataset directory is organized as follows.
 |     Totaltext     |                                                                                                           [homepage](https://github.com/cs-chan/Total-Text-Dataset)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
 |       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|       IMGUR       |                                                                                                  [homepage](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset)                                                                                                   |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
 
 ## Important Note
@@ -211,4 +218,28 @@ rm dataset.zip && rm -rf dataset
 
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
+```
+
+### IMGUR
+
+- Step1: Run `download_imgur5k.py` to download images. You can merge [PR#5](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset/pull/5) in your local repository to enable a **much faster** parallel execution of image download.
+```bash
+mkdir imgur && cd imgur
+
+git clone https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset.git
+
+# Download images from imgur.com. This may take SEVERAL HOURS!
+python ./IMGUR5K-Handwriting-Dataset/download_imgur5k.py --dataset_info_dir ./IMGUR5K-Handwriting-Dataset/dataset_info/ --output_dir ./imgs
+
+# For annotations
+mkdir annotations
+mv ./IMGUR5K-Handwriting-Dataset/dataset_info/*.json annotations
+
+rm -rf IMGUR5K-Handwriting-Dataset
+```
+
+- Step2: Generate `instances_train.json`, `instance_val.json` and `instances_test.json` with the following command:
+
+```bash
+python tools/data/textdet/imgur_converter.py PATH/TO/imgur
 ```
