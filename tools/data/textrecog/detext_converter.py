@@ -141,8 +141,8 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
         dst_label_file = osp.join(root_path, f'train_label.{format}')
     elif split == 'val':
         dst_label_file = osp.join(root_path, f'val_label.{format}')
-    os.makedirs(dst_image_root, exist_ok=True)
-    os.makedirs(ignore_image_root, exist_ok=True)
+    mmcv.mkdir_or_exist(dst_image_root)
+    mmcv.mkdir_or_exist(ignore_image_root)
 
     lines = []
     for image_info in image_infos:
