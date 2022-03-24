@@ -196,7 +196,7 @@ def parse_args():
         description='Generate training and test set of VinText ')
     parser.add_argument('root_path', help='Root dir path of VinText')
     parser.add_argument(
-        '--preserve_vertical',
+        '--preserve-vertical',
         help='Preserve samples containing vertical texts',
         action='store_true')
     parser.add_argument(
