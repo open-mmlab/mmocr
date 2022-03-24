@@ -241,11 +241,11 @@ def parse_args():
         description='Generate training and test set of ILST ')
     parser.add_argument('root_path', help='Root dir path of ILST')
     parser.add_argument(
-        '--preserve_vertical',
+        '--preserve-vertical',
         help='Preserve samples containing vertical texts',
         action='store_true')
     parser.add_argument(
-        '--val_ratio', help='Split ratio for val set', default=0.2, type=float)
+        '--val-ratio', help='Split ratio for val set', default=0.2, type=float)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
     parser.add_argument(
