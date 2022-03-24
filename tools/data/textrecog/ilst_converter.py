@@ -96,6 +96,22 @@ def load_img_info(files):
 def load_xml_info(gt_file, img_info):
     """Collect the annotation information.
 
+    The annotation format is as the following:
+    <annotations>
+    ...
+        <object>
+            <name>SMT</name>
+            <pose>Unspecified</pose>
+            <truncated>0</truncated>
+            <difficult>0</difficult>
+            <bndbox>
+                <xmin>157</xmin>
+                <ymin>294</ymin>
+                <xmax>237</xmax>
+                <ymax>357</ymax>
+            </bndbox>
+        <object>
+
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
@@ -152,8 +168,7 @@ def split_train_test_list(full_list, test_ratio):
     return [train_list, test_list]
 
 
-def generate_ann(root_path, image_infos, preserve_vertical, test_ratio,
-                 format):
+def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -162,15 +177,15 @@ def generate_ann(root_path, image_infos, preserve_vertical, test_ratio,
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
-        test_ratio (float): Ratio of test set from the whole dataset
+        val_atio (float): Split ratio for val set
         format (str): Using jsonl(dict) or str to format annotations
     """
 
-    assert test_ratio <= 1.
+    assert val_ratio <= 1.
 
-    if test_ratio:
-        image_infos = split_train_test_list(image_infos, test_ratio)
-        splits = ['training', 'test']
+    if val_ratio:
+        image_infos = split_train_test_list(image_infos, val_ratio)
+        splits = ['training', 'val']
 
     else:
         image_infos = [image_infos]
@@ -230,9 +245,7 @@ def parse_args():
         help='Preserve samples containing vertical texts',
         action='store_true')
     parser.add_argument(
-        '--test_ratio',
-        help='Ratio of test set from the whole dataset',
-        default=0.2)
+        '--val_ratio', help='Split ratio for val set', default=0.2, type=float)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
     parser.add_argument(
@@ -252,7 +265,7 @@ def main():
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
         image_infos = collect_annotations(files, nproc=args.nproc)
         generate_ann(root_path, image_infos, args.preserve_vertical,
-                     float(args.test_ratio), args.format)
+                     args.val_ratio, args.format)
 
 
 if __name__ == '__main__':

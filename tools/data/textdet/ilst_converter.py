@@ -93,6 +93,22 @@ def load_img_info(files):
 def load_xml_info(gt_file, img_info):
     """Collect the annotation information.
 
+    The annotation format is as the following:
+    <annotations>
+    ...
+        <object>
+            <name>SMT</name>
+            <pose>Unspecified</pose>
+            <truncated>0</truncated>
+            <difficult>0</difficult>
+            <bndbox>
+                <xmin>157</xmin>
+                <ymin>294</ymin>
+                <xmax>237</xmax>
+                <ymax>357</ymax>
+            </bndbox>
+        <object>
+
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
@@ -129,24 +145,24 @@ def load_xml_info(gt_file, img_info):
     return img_info
 
 
-def split_train_test_list(full_list, test_ratio):
-    """Split list by test_ratio
+def split_train_val_list(full_list, val_ratio):
+    """Split list by val_ratio
 
     Args:
-        full_list (list): List to be splited
-        test_ratio (float): Ratio for test set
+        full_list (list): list to be splited
+        val_ratio (float): split ratio for val set
 
     return:
         list(list, list): train_list and test_list
     """
 
     n_total = len(full_list)
-    offset = int(n_total * test_ratio)
+    offset = int(n_total * val_ratio)
     if n_total == 0 or offset < 1:
         return [], full_list
-    test_list = full_list[:offset]
+    val_list = full_list[:offset]
     train_list = full_list[offset:]
-    return [train_list, test_list]
+    return [train_list, val_list]
 
 
 def parse_args():
@@ -154,9 +170,7 @@ def parse_args():
         description='Generate training and test set of ILST ')
     parser.add_argument('root_path', help='Root dir path of ILST')
     parser.add_argument(
-        '--test_ratio',
-        help='Ratio of test set from the whole dataset',
-        default=0.2)
+        '--val_ratio', help='Split ratio for val set', default=0.2, type=float)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
     args = parser.parse_args()
@@ -170,10 +184,9 @@ def main():
         files = collect_files(
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
         image_infos = collect_annotations(files, nproc=args.nproc)
-        if args.test_ratio:
-            image_infos = split_train_test_list(image_infos,
-                                                float(args.test_ratio))
-            splits = ['training', 'test']
+        if args.val_ratio:
+            image_infos = split_train_val_list(image_infos, args.val_ratio)
+            splits = ['training', 'val']
         else:
             image_infos = [image_infos]
             splits = ['training']
