@@ -87,9 +87,18 @@ def load_img_info(files):
 
 def load_txt_info(gt_file, img_info):
     """Collect the annotation information.
+
+    The annotation format is as the following:
+    x, y, w, h, text
+    977, 152, 16, 49, NOME
+    962, 143, 12, 323, APPINHANESI BLAZEK PASSOTTO
+    906, 446, 12, 94, 206940361
+    905, 641, 12, 44, SPTC
+
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
+
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
@@ -119,26 +128,27 @@ def load_txt_info(gt_file, img_info):
     return img_info
 
 
-def split_train_test_list(full_list, test_ratio):
-    """Split list by test_ratio
+def split_train_val_list(full_list, val_ratio):
+    """Split list by val_ratio
+
     Args:
-        full_list (list): List to be split
-        test_ratio (float): Ratio for test set
+        full_list (list): List to be splited
+        val_ratio (float): Split ratio for val set
+
     return:
-        list(list, list): train_list and test_list
+        list(list, list): Train_list and test_list
     """
 
     n_total = len(full_list)
-    offset = int(n_total * test_ratio)
+    offset = int(n_total * val_ratio)
     if n_total == 0 or offset < 1:
         return [], full_list
-    test_list = full_list[:offset]
+    val_list = full_list[:offset]
     train_list = full_list[offset:]
-    return [train_list, test_list]
+    return [train_list, val_list]
 
 
-def generate_ann(root_path, image_infos, preserve_vertical, test_ratio,
-                 format):
+def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
     """Generate cropped annotations and label txt file.
     Args:
         root_path (str): The root path of the dataset
@@ -146,14 +156,14 @@ def generate_ann(root_path, image_infos, preserve_vertical, test_ratio,
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
-        test_ratio (float): Ratio of test set from the whole dataset
+        val_atio (float): Split ratio for val set
         format (str): Using jsonl(dict) or str to format annotations
     """
 
-    assert test_ratio <= 1.
+    assert val_ratio <= 1.
 
-    if test_ratio:
-        image_infos = split_train_test_list(image_infos, test_ratio)
+    if val_ratio:
+        image_infos = split_train_val_list(image_infos, val_ratio)
         splits = ['training', 'test']
 
     else:
@@ -213,9 +223,7 @@ def parse_args():
         help='Preserve samples containing vertical texts',
         action='store_true')
     parser.add_argument(
-        '--test_ratio',
-        help='Ratio of test set from the whole dataset',
-        default=0.2)
+        '--val_ratio', help='Split ratio for val set', default=0.2, type=float)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
     parser.add_argument(
@@ -235,7 +243,7 @@ def main():
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
         image_infos = collect_annotations(files, nproc=args.nproc)
         generate_ann(root_path, image_infos, args.preserve_vertical,
-                     float(args.test_ratio), args.format)
+                     args.val_ratio, args.format)
 
 
 if __name__ == '__main__':

@@ -173,13 +173,12 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
                              f'{word}')
             elif format == 'jsonl':
                 lines.append(
-                    json.dumps(
-                        {
-                            'filename':
-                            f'{osp.basename(dst_image_root)}/{dst_img_name}',
-                            'text': word
-                        },
-                        ensure_ascii=False))
+                    json.dumps({
+                        'filename':
+                        f'{osp.basename(dst_image_root)}/{dst_img_name}',
+                        'text': word
+                    }),
+                    ensure_ascii=False)
             else:
                 raise NotImplementedError
 
