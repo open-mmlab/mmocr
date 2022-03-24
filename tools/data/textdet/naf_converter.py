@@ -92,15 +92,24 @@ def load_img_info(files):
         segm_file=osp.join(osp.basename(gt_file)))
 
     if osp.splitext(gt_file)[1] == '.json':
-        img_info = load_json_info(gt_file, img_info, img)
+        img_info = load_json_info(gt_file, img_info)
     else:
         raise NotImplementedError
 
     return img_info
 
 
-def load_json_info(gt_file, img_info, img):
+def load_json_info(gt_file, img_info):
     """Collect the annotation information.
+
+    Annotation Format
+    {
+        'textBBs': [{
+            'poly_points': [[435,1406], [466,1406], [466,1439], [435,1439]],
+            "type": "text",
+            "id": "t1",
+        }], ...
+    }
 
     Args:
         gt_file (str): The path to ground-truth

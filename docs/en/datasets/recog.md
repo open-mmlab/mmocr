@@ -80,9 +80,7 @@
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
 │   ├── naf
-│   │   ├── imgs
-│   │   ├── dst_imgs
-│   │   ├── annotations
+│   │   ├── crops
 │   │   ├── train_label.txt
 │   │   ├── val_label.txt
 │   │   ├── test_label.txt
@@ -354,5 +352,6 @@ rm -rf NAF_dataset && rm labeled_images.tar.gz
 - Step2: Generate `train_label.txt`, `val_label.txt`, and `test_label.txt` with following command:
 
 ```bash
+# Add --preserve-vertical or --preserve-special-symbols to preserve vertical texts or samples with special symbols
 python tools/data/textrecog/naf_converter.py PATH/TO/naf --nproc 4
 ```

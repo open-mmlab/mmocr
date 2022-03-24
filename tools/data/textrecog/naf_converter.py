@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+import json
 import os.path as osp
 
 import mmcv
@@ -104,6 +105,23 @@ def load_img_info(files):
 def load_json_info(gt_file, img_info):
     """Collect the annotation information.
 
+    Annotation Format
+    {
+        'filedBBs': [{
+            'poly_points': [[435,1406], [466,1406], [466,1439], [435,1439]],
+            "type": "fieldCheckBox",
+            "id": "f0",
+            "isBlank": 1, # 0:text,1:handwriting,2:print,3:blank,4:signature,
+        }], ...
+        "transcriptions":{
+            "f38": "CASE NUMBER",
+            "f29": "July 1, 1949",
+            "t20": "RANK",
+            "t19": "COMPANY",
+            ...
+        }
+    }
+
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
@@ -148,7 +166,7 @@ def load_json_info(gt_file, img_info):
 
 
 def generate_ann(root_path, split, image_infos, preserve_vertical,
-                 preserve_special_symbols):
+                 preserve_special_symbols, format):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -157,18 +175,21 @@ def generate_ann(root_path, split, image_infos, preserve_vertical,
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
+        format (str): Annotation format, should be either 'txt' or 'jsonl'
     """
 
-    dst_image_root = osp.join(root_path, 'dst_imgs', split)
+    dst_image_root = osp.join(root_path, 'crops', split)
+    ignore_image_root = osp.join(root_path, 'ignores', split)
     if split == 'training':
-        dst_label_file = osp.join(root_path, 'train_label.txt')
+        dst_label_file = osp.join(root_path, f'train_label.{format}')
     elif split == 'val':
-        dst_label_file = osp.join(root_path, 'val_label.txt')
+        dst_label_file = osp.join(root_path, f'val_label.{format}')
     elif split == 'test':
-        dst_label_file = osp.join(root_path, 'test_label.txt')
+        dst_label_file = osp.join(root_path, f'test_label.{format}')
     else:
         raise NotImplementedError
     mmcv.mkdir_or_exist(dst_image_root)
+    mmcv.mkdir_or_exist(ignore_image_root)
 
     lines = []
     for image_info in image_infos:
@@ -180,26 +201,37 @@ def generate_ann(root_path, split, image_infos, preserve_vertical,
         for anno in image_info['anno_info']:
             word = anno['word']
             word = word.strip('\u202a')  # Remove unicode control character
-            dst_img = crop_img(image, anno['bbox'])
+            dst_img = crop_img(image, anno['bbox'], 0, 0)
             h, w, _ = dst_img.shape
-
-            # Skip invalid annotations
-            if min(dst_img.shape) == 0:
-                continue
-            # Skip vertical texts
-            if not preserve_vertical and h / w > 2:
-                continue
-            # Skip non-ASCII characters
-            if not preserve_special_symbols and len(word) != len(
-                    word.encode()):
-                continue
 
             dst_img_name = f'{src_img_root}_{index}.png'
             index += 1
-            dst_img_path = osp.join(dst_image_root, dst_img_name)
+            # Skip invalid annotations
+            if min(dst_img.shape) == 0:
+                continue
+            # Skip vertical texts or Skip non-ASCII characters
+            # (Do Not Filter For Test Split)
+            if (not preserve_vertical and h / w > 2
+                ) or (not preserve_special_symbols
+                      and len(word) != len(word.encode())) and split != 'test':
+                dst_img_path = osp.join(ignore_image_root, dst_img_name)
+            else:
+                dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
-            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                         f'{word}')
+
+            if format == 'txt':
+                lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                             f'{word}')
+            elif format == 'jsonl':
+                lines.append(
+                    json.dumps({
+                        'filename':
+                        f'{osp.basename(dst_image_root)}/{dst_img_name}',
+                        'text': word
+                    }))
+            else:
+                raise NotImplementedError
+
     list_to_file(dst_label_file, lines)
 
 
@@ -215,6 +247,11 @@ def parse_args():
         '--preserve-special-symbols',
         help='Preserve non-ASCII characters such as tick and section sign',
         action='store_true')
+    parser.add_argument(
+        '--format',
+        default='jsonl',
+        help='Use jsonl or string to format annotations',
+        choices=['jsonl', 'txt'])
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of process')
     args = parser.parse_args()
@@ -236,7 +273,7 @@ def main():
                 osp.join(root_path, 'annotations'), split_info[split])
             image_infos = collect_annotations(files, nproc=args.nproc)
             generate_ann(root_path, split, image_infos, args.preserve_vertical,
-                         args.preserve_special_symbols)
+                         args.preserve_special_symbols, args.format)
 
 
 if __name__ == '__main__':
