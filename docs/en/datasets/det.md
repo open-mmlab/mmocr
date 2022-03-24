@@ -41,6 +41,11 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
+|── kaist
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_val.json (optional)
+│   └── instances_training.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -54,7 +59,7 @@ The structure of the text detection dataset directory is organized as follows.
 |     Totaltext     |                                                                                                           [homepage](https://github.com/cs-chan/Total-Text-Dataset)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
 |       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
-
+|       KAIST       |                                                                                               [homepage](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
 ## Important Note
 
@@ -211,4 +216,33 @@ rm dataset.zip && rm -rf dataset
 
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
+```
+
+### KAIST
+
+- Step1: Complete download [KAIST_all.zip](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) to `kaist/`.
+
+
+```bash
+mkdir kaist && cd kaist
+mkdir imgs && mkdir annotations
+
+# Download KAIST dataset
+wget http://www.iapr-tc11.org/dataset/KAIST_SceneText/KAIST_all.zip
+unzip -q KAIST_all.zip
+
+rm KAIST_all.zip
+```
+
+- Step2: Extract zips:
+
+```bash
+python tools/data/common/extract_kaist.py PATH/TO/kaist
+```
+
+- Step3: Generate `instances_training.json` and `instances_val.json` (optional) with following command:
+
+```bash
+# Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
+python tools/data/textdet/kaist_converter.py PATH/TO/kaist --nproc 4
 ```
