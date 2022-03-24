@@ -327,7 +327,7 @@ rm dataset.zip && rm -rf dataset
 python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
 
-### Recognition ICDAR 2013 (Focused Scene Text)
+### ICDAR 2013 (Focused Scene Text)
 - Step1: Download `Challenge2_Training_Task3_Images_GT.zip`, `Challenge2_Test_Task3_Images.zip`, and `Challenge2_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.3: Word Recognition (2013 edition)`.
 
 ```bash
