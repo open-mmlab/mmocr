@@ -369,3 +369,33 @@ def test_readtext(mock_kiedataset):
     with mock.patch('mmocr.utils.ocr.stitch_boxes_into_lines') as mock_merge:
         mmocr_det_recog.readtext(toy_imgs, merge=True)
         assert mock_merge.call_count == len(toy_imgs)
+
+
+@pytest.mark.parametrize('det, recog', [('Tesseract', 'SEG'),
+                                        ('Tesseract', 'Tesseract'),
+                                        ('PANet_IC15', 'Tesseract'),
+                                        (None, 'Tesseract')])
+@mock.patch('mmocr.utils.ocr.init_detector')
+def test_tesseract_wrapper(mock_init_detector, det, recog):
+    try:
+        import tesserocr
+    except ImportError:
+        tesserocr = None
+
+    if tesserocr is None:
+        return
+
+    def init_detector_skip_ckpt(config, ckpt, device):
+        return init_detector(config, device=device)
+
+    mock_init_detector.side_effect = init_detector_skip_ckpt
+    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    mmocr = MMOCR(det=det, recog=recog, device=device)
+
+    img_path = 'demo/demo_kie.jpeg'
+
+    # Test imshow
+    with mock.patch('mmocr.utils.ocr.mmcv.imshow') as mock_imshow:
+        mmocr.readtext(img_path, imshow=True)
+        mock_imshow.assert_called_once()
+        mock_imshow.reset_mock()
