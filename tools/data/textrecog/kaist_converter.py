@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+import json
 import math
 import os
 import os.path as osp
@@ -138,7 +139,7 @@ def load_xml_info(gt_file, img_info):
     return img_info
 
 
-def generate_ann(root_path, split, image_infos, preserve_vertical):
+def generate_ann(root_path, split, image_infos, preserve_vertical, format):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -149,12 +150,14 @@ def generate_ann(root_path, split, image_infos, preserve_vertical):
         preserve_vertical (bool): Whether to preserve vertical texts
     """
 
-    dst_image_root = osp.join(root_path, 'dst_imgs', split)
+    dst_image_root = osp.join(root_path, 'crops', split)
+    ignore_image_root = osp.join(root_path, 'ignores', split)
     if split == 'training':
-        dst_label_file = osp.join(root_path, 'train_label.txt')
+        dst_label_file = osp.join(root_path, f'train_label.{format}')
     elif split == 'val':
-        dst_label_file = osp.join(root_path, 'val_label.txt')
-    os.makedirs(dst_image_root, exist_ok=True)
+        dst_label_file = osp.join(root_path, f'val_label.{format}')
+    mmcv.mkdir_or_exist(dst_image_root)
+    mmcv.mkdir_or_exist(ignore_image_root)
 
     lines = []
     for image_info in image_infos:
@@ -168,19 +171,31 @@ def generate_ann(root_path, split, image_infos, preserve_vertical):
             dst_img = crop_img(image, anno['bbox'], 0, 0)
             h, w, _ = dst_img.shape
 
+            dst_img_name = f'{src_img_root}_{index}.png'
+            index += 1
             # Skip invalid annotations
             if min(dst_img.shape) == 0:
                 continue
-            # Skip vertical texts
+            # Filter out vertical texts
             if not preserve_vertical and h / w > 2:
-                continue
-
-            dst_img_name = f'{src_img_root}_{index}.png'
-            index += 1
-            dst_img_path = osp.join(dst_image_root, dst_img_name)
+                dst_img_path = osp.join(ignore_image_root, dst_img_name)
+            else:
+                dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
-            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                         f'{word}')
+
+            if format == 'txt':
+                lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                             f'{word}')
+            elif format == 'jsonl':
+                lines.append(
+                    json.dumps({
+                        'filename':
+                        f'{osp.basename(dst_image_root)}/{dst_img_name}',
+                        'text': word
+                    }))
+            else:
+                raise NotImplementedError
+
     list_to_file(dst_label_file, lines)
 
 
@@ -189,11 +204,16 @@ def parse_args():
         description='Generate training and val set of KAIST ')
     parser.add_argument('root_path', help='Root dir path of KAIST')
     parser.add_argument(
-        '--val_ratio', help='Split ratio for val set', default=0., type=float)
+        '--val-ratio', help='Split ratio for val set', default=0., type=float)
     parser.add_argument(
-        '--preserve_vertical',
+        '--preserve-vertical',
         help='Preserve samples containing vertical texts',
         action='store_true')
+    parser.add_argument(
+        '--format',
+        default='jsonl',
+        help='Use jsonl or string to format annotations',
+        choices=['jsonl', 'txt'])
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of process')
     args = parser.parse_args()
@@ -212,14 +232,16 @@ def main():
     trn_infos = collect_annotations(trn_files, nproc=args.nproc)
     with mmcv.Timer(
             print_tmpl='It takes {}s to convert KAIST Training annotation'):
-        generate_ann(root_path, 'training', trn_infos, args.preserve_vertical)
+        generate_ann(root_path, 'training', trn_infos, args.preserve_vertical,
+                     args.format)
 
     # Val set
     if len(val_files) > 0:
         val_infos = collect_annotations(val_files, nproc=args.nproc)
         with mmcv.Timer(
                 print_tmpl='It takes {}s to convert KAIST Val annotation'):
-            generate_ann(root_path, 'val', val_infos, args.preserve_vertical)
+            generate_ann(root_path, 'val', val_infos, args.preserve_vertical,
+                         args.format)
 
 
 if __name__ == '__main__':
