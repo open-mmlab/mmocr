@@ -43,6 +43,7 @@ def convert_annotations(root_path, split, format):
         # text may contain comma ','
         dst_img_name, word = anno.split(', "')
         word = word.replace('"\n', '')
+
         if format == 'txt':
             lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
                          f'{word}')
@@ -56,7 +57,7 @@ def convert_annotations(root_path, split, format):
         else:
             raise NotImplementedError
 
-    list_to_file(osp.join(root_path, f'{split}_label.txt'), lines)
+    list_to_file(osp.join(root_path, f'{split}_label.{format}'), lines)
 
 
 def parse_args():
