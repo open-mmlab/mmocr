@@ -80,9 +80,8 @@
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
 │   ├── kaist
-│   │   ├── imgs
-│   │   ├── dst_imgs
-│   │   ├── annotations
+│   │   ├── crops
+│   │   ├── ignores
 │   │   ├── train_label.jsonl
 │   │   ├── val_label.jsonl
 ```

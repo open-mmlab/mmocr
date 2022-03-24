@@ -108,6 +108,27 @@ def load_img_info(files):
 def load_xml_info(gt_file, img_info):
     """Collect the annotation information.
 
+    Annotation Format
+    <image>
+        <imageName>DSC02306.JPG</imageName>
+        <resolution x="640" y="480" />
+        <words>
+            <word x="61" y="140" width="566" height="107">
+                <character x="61" y="147" width="75" height="94" char="C" />
+                <character x="173" y="147" width="77" height="93" char="L" />
+                <character x="251" y="146" width="83" height="96" char="A" />
+                <character x="335" y="146" width="75" height="97" char="V" />
+                <character x="409" y="140" width="52" height="105" char="I" />
+                <character x="464" y="147" width="76" height="96" char="T" />
+                <character x="538" y="154" width="89" height="93" char="A" />
+            </word>
+        </words>
+        <illumination>no</illumination>
+        <difficulty>2</difficulty>
+        <tag>
+        </tag>
+    </image>
+
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
@@ -143,7 +164,7 @@ def parse_args():
         description='Generate training and val set of KAIST ')
     parser.add_argument('root_path', help='Root dir path of KAIST')
     parser.add_argument(
-        '--val-ratio', help='Split ratio for val set', default=0., type=float)
+        '--val-ratio', help='Split ratio for val set', default=0.2, type=float)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of process')
     args = parser.parse_args()
