@@ -15,7 +15,6 @@ def collect_files(img_dir, gt_dir):
     Args:
         img_dir (str): The image directory
         gt_dir (str): The groundtruth directory
-        split(str): The split of dataset. Namely: training or val
 
     Returns:
         files (list): The list of tuples (img_file, groundtruth_file)
@@ -91,6 +90,9 @@ def load_img_info(files):
 def load_txt_info(gt_file, img_info):
     """Collect the annotation information.
 
+    # Annotation Format
+    # x1, y1, x2, y2, x3, y3, x4, y4, transcript
+
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
@@ -103,7 +105,6 @@ def load_txt_info(gt_file, img_info):
         anno_info = []
         annotations = f.readlines()
         for ann in annotations:
-            # annotation format [x1, y1, x2, y2, x3, y3, x4, y4, transcript]
             try:
                 ann_box = np.array(ann.split(',')[0:8]).astype(int).tolist()
             except ValueError:

@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+import json
 import os
 import os.path as osp
 
@@ -16,7 +17,6 @@ def collect_files(img_dir, gt_dir):
     Args:
         img_dir (str): The image directory
         gt_dir (str): The groundtruth directory
-        split(str): The split of dataset. Namely: training or val
 
     Returns:
         files (list): The list of tuples (img_file, groundtruth_file)
@@ -123,7 +123,7 @@ def load_txt_info(gt_file, img_info):
     return img_info
 
 
-def generate_ann(root_path, split, image_infos, preserve_vertical):
+def generate_ann(root_path, split, image_infos, preserve_vertical, format):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -132,14 +132,17 @@ def generate_ann(root_path, split, image_infos, preserve_vertical):
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
+        format (str): Annotation format, should be either 'txt' or 'jsonl'
     """
 
-    dst_image_root = osp.join(root_path, 'dst_imgs', split)
+    dst_image_root = osp.join(root_path, 'crops', split)
+    ignore_image_root = osp.join(root_path, 'ignores', split)
     if split == 'training':
-        dst_label_file = osp.join(root_path, 'train_label.txt')
+        dst_label_file = osp.join(root_path, f'train_label.{format}')
     elif split == 'val':
-        dst_label_file = osp.join(root_path, 'val_label.txt')
+        dst_label_file = osp.join(root_path, f'val_label.{format}')
     os.makedirs(dst_image_root, exist_ok=True)
+    os.makedirs(ignore_image_root, exist_ok=True)
 
     lines = []
     for image_info in image_infos:
@@ -151,22 +154,34 @@ def generate_ann(root_path, split, image_infos, preserve_vertical):
 
         for anno in image_info['anno_info']:
             word = anno['word']
-            dst_img = crop_img(image, anno['bbox'])
+            dst_img = crop_img(image, anno['bbox'], 0, 0)
             h, w, _ = dst_img.shape
-
-            # Skip invalid annotations
-            if min(dst_img.shape) == 0 or len(word) == 0:
-                continue
-            # Skip vertical texts
-            if not preserve_vertical and h / w > 2:
-                continue
 
             dst_img_name = f'{src_img_root}_{index}.png'
             index += 1
-            dst_img_path = osp.join(dst_image_root, dst_img_name)
+            # Skip invalid annotations
+            if min(dst_img.shape) == 0 or len(word) == 0:
+                continue
+            # Filter out vertical texts
+            if preserve_vertical and h / w > 2:
+                dst_img_path = osp.join(ignore_image_root, dst_img_name)
+            else:
+                dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
-            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                         f'{word}')
+
+            if format == 'txt':
+                lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                             f'{word}')
+            elif format == 'jsonl':
+                lines.append(
+                    json.dumps({
+                        'filename':
+                        f'{osp.basename(dst_image_root)}/{dst_img_name}',
+                        'text': word
+                    }))
+            else:
+                raise NotImplementedError
+
     list_to_file(dst_label_file, lines)
 
 
@@ -175,9 +190,14 @@ def parse_args():
         description='Generate training and val set of DeText ')
     parser.add_argument('root_path', help='Root dir path of DeText')
     parser.add_argument(
-        '--preserve_vertical',
+        '--preserve-vertical',
         help='Preserve samples containing vertical texts',
         action='store_true')
+    parser.add_argument(
+        '--format',
+        default='jsonl',
+        help='Use jsonl or string to format annotations',
+        choices=['jsonl', 'txt'])
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of process')
     args = parser.parse_args()
@@ -196,7 +216,8 @@ def main():
                 osp.join(root_path, 'imgs', split),
                 osp.join(root_path, 'annotations', split))
             image_infos = collect_annotations(files, nproc=args.nproc)
-            generate_ann(root_path, split, image_infos, args.preserve_vertical)
+            generate_ann(root_path, split, image_infos, args.preserve_vertical,
+                         args.format)
 
 
 if __name__ == '__main__':
