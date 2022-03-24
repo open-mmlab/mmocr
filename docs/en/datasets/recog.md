@@ -80,11 +80,9 @@
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
 │   ├── sroie
-│   │   ├── imgs
-│   │   ├── dst_imgs
-│   │   ├── annotations
-│   │   ├── train_label.txt
-│   │   ├── test_label.txt
+│   │   ├── crops
+│   │   ├── train_label.jsonl
+│   │   ├── test_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -337,18 +335,21 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 mkdir sroie && cd sroie
 mkdir imgs && mkdir annotations && mkdir imgs/training
 
+# Warnninig: The zip files downloaded from Google Drive and BaiduYun Cloud may
+# be different, the user should revise the following commands to the correct
+# file name if encounter with errors while extracting and move the files.
 unzip -q 0325updated.task1train\(626p\).zip && unzip -q task1\&2_test\(361p\).zip && unzip -q text.task1\&2-test（361p\).zip
 
 # For images
-mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv task1_2_test\(361p\)/ imgs/test
+mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv fulltext_test\(361p\) imgs/test
 
 # For annotations
-mv 0325updated.task1train\(626p\) annotations/training && mv text.task1_2-test（361p\)/ annotations/test
+mv 0325updated.task1train\(626p\) annotations/training && mv text.task1\&2-testги361p\)/ annotations/test
 
 rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
 ```
 
-- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with the following command:
+- Step3: Generate `train_label.jsonl` and `test_label.jsonl` and crop images using 4 processes with the following command:
 
 ```bash
 python tools/data/textrecog/sroie_converter.py PATH/TO/sroie --nproc 4

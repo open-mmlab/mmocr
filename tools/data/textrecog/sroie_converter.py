@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+import json
 import os
 import os.path as osp
 
@@ -100,6 +101,9 @@ def load_img_info(files):
 def load_txt_info(gt_file, img_info):
     """Collect the annotation information.
 
+    Annotation Format
+    x1, y1, x2, y2, x3, y3, x4, y4, transcript
+
     Args:
         gt_file (list): The list of tuples (image_file, groundtruth_file)
         img_info (int): The dict of the img and annotation information
@@ -111,12 +115,11 @@ def load_txt_info(gt_file, img_info):
     with open(gt_file, 'r', encoding='unicode_escape') as f:
         anno_info = []
         for ann in f.readlines():
-
-            # annotation format [x1, y1, x2, y2, x3, y3, x4, y4, transcript]
+            # skip invalid annotation line
             try:
                 bbox = np.array(ann.split(',')[0:8]).astype(int).tolist()
             except ValueError:
-                # skip invalid annotation line
+
                 continue
             word = ann.split(',')[-1].replace('\n', '').strip()
 
@@ -128,7 +131,7 @@ def load_txt_info(gt_file, img_info):
     return img_info
 
 
-def generate_ann(root_path, split, image_infos):
+def generate_ann(root_path, split, image_infos, format):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -136,13 +139,14 @@ def generate_ann(root_path, split, image_infos):
         split (str): The split of dataset. Namely: training or test
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
+        format (str): Annotation format, should be either 'jsonl' or 'txt'
     """
 
-    dst_image_root = osp.join(root_path, 'dst_imgs', split)
+    dst_image_root = osp.join(root_path, 'crops', split)
     if split == 'training':
-        dst_label_file = osp.join(root_path, 'train_label.txt')
+        dst_label_file = osp.join(root_path, f'train_label.{format}')
     elif split == 'test':
-        dst_label_file = osp.join(root_path, 'test_label.txt')
+        dst_label_file = osp.join(root_path, f'test_label.{format}')
     os.makedirs(dst_image_root, exist_ok=True)
 
     lines = []
@@ -155,7 +159,7 @@ def generate_ann(root_path, split, image_infos):
 
         for anno in image_info['anno_info']:
             word = anno['word']
-            dst_img = crop_img(image, anno['bbox'])
+            dst_img = crop_img(image, anno['bbox'], 0, 0)
 
             # Skip invalid annotations
             if min(dst_img.shape) == 0 or len(word) == 0:
@@ -165,8 +169,20 @@ def generate_ann(root_path, split, image_infos):
             index += 1
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
-            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                         f'{word}')
+
+            if format == 'txt':
+                lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
+                             f'{word}')
+            elif format == 'jsonl':
+                lines.append(
+                    json.dumps({
+                        'filename':
+                        f'{osp.basename(dst_image_root)}/{dst_img_name}',
+                        'text': word
+                    }))
+            else:
+                raise NotImplementedError
+
     list_to_file(dst_label_file, lines)
 
 
@@ -176,6 +192,11 @@ def parse_args():
     parser.add_argument('root_path', help='Root dir path of SROIE')
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of process')
+    parser.add_argument(
+        '--format',
+        default='jsonl',
+        help='Use jsonl or string to format annotations',
+        choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
 
@@ -191,7 +212,7 @@ def main():
                 osp.join(root_path, 'imgs', split),
                 osp.join(root_path, 'annotations', split))
             image_infos = collect_annotations(files, nproc=args.nproc)
-            generate_ann(root_path, split, image_infos)
+            generate_ann(root_path, split, image_infos, args.format)
 
 
 if __name__ == '__main__':
