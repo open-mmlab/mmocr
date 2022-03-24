@@ -79,6 +79,10 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
+│   ├── icdar2011
+│   │   ├── crops
+│   │   ├── train_label.jsonl
+│   │   ├── test_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -99,6 +103,7 @@
 |       Totaltext       |                       [homepage](https://github.com/cs-chan/Total-Text-Dataset)                       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
 |       OpenVINO        |                  [Open Images](https://github.com/cvdfoundation/open-images-dataset)                  |                                                                                                                                               [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                                                               | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |  |
 |         FUNSD         |                          [homepage](https://guillaumejaume.github.io/FUNSD/)                          |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
+|      ICDAR 2011       |                               [homepage](https://rrc.cvc.uab.es/?ch=1)                                |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
 
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
@@ -320,4 +325,31 @@ rm dataset.zip && rm -rf dataset
 
 ```bash
 python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
+```
+
+### Recognition ICDAR 2011 (Born-Digital Images)
+- Step1: Download `Challenge1_Training_Task3_Images_GT.zip`, `Challenge1_Test_Task3_Images.zip`, and `Challenge1_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.3: Word Recognition (2013 edition)`.
+
+```bash
+mkdir icdar2011 && cd icdar2011
+mkdir annotations
+
+# Download ICDAR 2011
+wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task3_Images_GT.zip --no-check-certificate
+wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task3_Images.zip --no-check-certificate
+wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task3_GT.txt --no-check-certificate
+
+# For images
+mkdir crops
+unzip -q Challenge1_Training_Task3_Images_GT.zip -d crops/train
+unzip -q Challenge1_Test_Task3_Images.zip -d crops/test
+
+# For annotations
+mv Challenge1_Test_Task3_GT.txt annotations && mv train/gt.txt annotations/Challenge1_Train_Task3_GT.txt
+```
+
+- Step2: Convert original annotations to `train_label.txt` and `test_label.txt` with the following command:
+
+```bash
+python tools/data/textrecog/ic11_converter.py PATH/TO/icdar2011
 ```

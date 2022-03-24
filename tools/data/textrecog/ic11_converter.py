@@ -34,7 +34,7 @@ def convert_annotations(root_path, split, format):
     lines = []
     with open(
             osp.join(root_path, 'annotations',
-                     f'Challenge1_{split}_Task3_GT.{format}'),
+                     f'Challenge1_{split}_Task3_GT.txt'),
             'r',
             encoding='"utf-8-sig') as f:
         annos = f.readlines()
@@ -57,7 +57,7 @@ def convert_annotations(root_path, split, format):
         else:
             raise NotImplementedError
 
-    list_to_file(osp.join(root_path, f'{split}_label.txt'), lines)
+    list_to_file(osp.join(root_path, f'{split}_label.{format}'), lines)
 
 
 def parse_args():
