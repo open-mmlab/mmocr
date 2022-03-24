@@ -240,7 +240,7 @@ mv RG_Frente/*in.jpg imgs && mv RG_Frente/*txt annotations && rm -rf RG_Frente
 mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
 cd ../../
 ```
-- Step3: - Step3: Generate `instances_test.json` and `instances_training.json`. Since the original dataset doesn't have a test set, you may specify `--test_ratio` to split the dataset. E.g., if test_ratio is 0.2, then 20% of the data are left out as the test set in this example.
+- Step3: - Step3: Generate `instances_test.json` and `instances_training.json`. Since the original dataset doesn't have a test set, you may specify `--test-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the test set in this example.
 ```bash
-python tools/data/textrecog/bid_converter.py data/BID_Dataset --nproc 4 --test_rat
+python tools/data/textrecog/bid_converter.py data/BID_Dataset --nproc 4 --test-ratio 0.2
 ```

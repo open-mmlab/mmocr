@@ -351,7 +351,7 @@ mv RG_Frente/*in.jpg imgs && mv RG_Frente/*txt annotations && rm -rf RG_Frente
 mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
 cd ../../
 ```
-- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with the following command (add `--preserve_vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a test set, you may specify `--test_ratio` to split the dataset. E.g., if test_ratio is 0.2, then 20% of the data are left out as the test set in this example.
+- Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a test set, you may specify `--test-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the test set in this example.
 ```bash
-python tools/data/textrecog/bid_converter.py data/BID_Dataset --nproc 4 --test_ratio 0.2
+python tools/data/textrecog/bid_converter.py data/BID_Dataset --nproc 4 --test-ratio 0.2
 ```

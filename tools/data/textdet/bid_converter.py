@@ -152,7 +152,7 @@ def parse_args():
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
     parser.add_argument(
-        '--val_ratio', help='Split ratio for val set', default=0.2, type=float)
+        '--val-ratio', help='Split ratio for val set', default=0.2, type=float)
     args = parser.parse_args()
     return args
 
