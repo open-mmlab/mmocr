@@ -343,5 +343,5 @@ rm mtwi_2018_train.zip
 ```bash
 # Annotations of MTWI test split is not publicly available
 # Split a validation set by adding --val-ratio 0.2
-python tools/data/textdet/mtwi_converter.py PATH/TO/mtwi --nproc 4
+python tools/data/textrecog/mtwi_converter.py PATH/TO/mtwi --nproc 4
 ```

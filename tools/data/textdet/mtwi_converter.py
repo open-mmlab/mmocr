@@ -4,6 +4,7 @@ import math
 import os
 import os.path as osp
 
+import cv2
 import mmcv
 from PIL import Image
 
@@ -33,11 +34,16 @@ def collect_files(img_dir, gt_dir, ratio):
         # This dataset contains some images obtained from .gif,
         # which cannot be loaded by mmcv.imread(), convert them
         # to RGB mode.
-        if mmcv.imread(img_file) is None:
-            print(f'Convert {img_file} to RGB mode.')
-            img = Image.open(img_file)
-            img = img.convert('RGB')
-            img.save(img_file)
+        try:
+            if mmcv.imread(img_file) is None:
+                print(f'Convert {img_file} to RGB mode.')
+                img = Image.open(img_file)
+                img = img.convert('RGB')
+                img.save(img_file)
+        except cv2.error:
+            print(f'Skip broken img {img_file}')
+            continue
+
         ann_list.append(osp.join(gt_dir, ann_file))
         imgs_list.append(img_file)
 
