@@ -513,7 +513,7 @@ class MMOCR:
             api.SetRectangle(0, 0, img.shape[1], img.shape[0])
             # Remove beginning and trailing spaces from Tesseract
             text = api.GetUTF8Text().strip()
-            conf = api.MeanTextConf()
+            conf = api.MeanTextConf() / 100
             results.append({'text': text, 'score': conf})
 
         # close tesserocr api

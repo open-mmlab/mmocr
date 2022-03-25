@@ -380,12 +380,12 @@ def test_readtext(mock_kiedataset):
                                   'box': [0, 0, 1, 0, 1, 1, 0, 1],
                                   'box_score': 1.0,
                                   'text': 'text',
-                                  'text_score': 1.0
+                                  'text_score': 0.5
                               }]
                           }),
                           (None, 'Tesseract', {
                               'text': 'text',
-                              'score': 1.0
+                              'score': 0.5
                           })])
 @mock.patch('mmocr.utils.ocr.init_detector')
 @mock.patch('mmocr.utils.ocr.tesserocr')
@@ -404,7 +404,7 @@ def test_tesseract_wrapper(mock_tesserocr, mock_init_detector, det, recog,
         'h': 1
     }, 0, None)]
     mock_tesseract.GetUTF8Text.return_value = 'text'
-    mock_tesseract.MeanTextConf.return_value = 1.
+    mock_tesseract.MeanTextConf.return_value = 50
     mock_tesserocr.PyTessBaseAPI.return_value = mock_tesseract
 
     mmocr = MMOCR(det=det, recog=recog, device='cpu')
