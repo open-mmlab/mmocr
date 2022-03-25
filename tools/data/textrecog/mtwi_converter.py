@@ -190,6 +190,7 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
             index += 1
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
+
             if format == 'txt':
                 lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
                              f'{word}')
@@ -212,9 +213,9 @@ def parse_args():
         description='Generate training and val set of MTWI.')
     parser.add_argument('root_path', help='Root dir path of MTWI')
     parser.add_argument(
-        '--val_ratio', help='Split ratio for val set', default=0., type=float)
+        '--val-ratio', help='Split ratio for val set', default=0.2, type=float)
     parser.add_argument(
-        '--preserve_vertical',
+        '--preserve-vertical',
         help='Preserve samples containing vertical texts',
         action='store_true')
     parser.add_argument(
@@ -248,7 +249,7 @@ def main():
         val_infos = collect_annotations(val_files, nproc=args.nproc)
         with mmcv.Timer(
                 print_tmpl='It takes {}s to convert MTWI Val annotation'):
-            generate_ann(root_path, 'val', val_infos, args.preserve_vertica,
+            generate_ann(root_path, 'val', val_infos, args.preserve_vertical,
                          args.format)
 
 

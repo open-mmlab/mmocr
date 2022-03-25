@@ -41,6 +41,11 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
+|── mtwi
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_training.json
+│   └── instances_val.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -54,6 +59,7 @@ The structure of the text detection dataset directory is organized as follows.
 |     Totaltext     |                                                                                                           [homepage](https://github.com/cs-chan/Total-Text-Dataset)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
 |       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|       MTWI        |                                                                                           [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us)                                                                                            |                                                                                                              -                                                                                                               |
 
 
 ## Important Note
@@ -211,4 +217,24 @@ rm dataset.zip && rm -rf dataset
 
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
+```
+
+### MTWI
+- Step1: Download `mtwi_2018_train.zip` from [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us).
+
+```bash
+mkdir mtwi && cd mtwi
+
+unzip -q mtwi_2018_train.zip
+mv image_train imgs && mv txt_train annotations
+
+rm mtwi_2018_train.zip
+```
+
+- Step2: Generate `instances_training.json` and `instance_val.json` (optional) with the following command:
+
+```bash
+# Annotations of MTWI test split is not publicly available
+# Set a val_ratio to separate a val split
+python tools/data/textdet/mtwi_converter.py PATH/TO/mtwi --nproc 4
 ```

@@ -79,6 +79,10 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
+│   ├── mtwi
+│   │   ├── crops
+│   │   ├── train_label.jsonl
+│   │   ├── val_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -99,7 +103,7 @@
 |       Totaltext       |                       [homepage](https://github.com/cs-chan/Total-Text-Dataset)                       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
 |       OpenVINO        |                  [Open Images](https://github.com/cvdfoundation/open-images-dataset)                  |                                                                                                                                               [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                                                               | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |  |
 |         FUNSD         |                          [homepage](https://guillaumejaume.github.io/FUNSD/)                          |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
-
+|         MTWI          |       [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us)       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
 
@@ -320,4 +324,24 @@ rm dataset.zip && rm -rf dataset
 
 ```bash
 python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
+```
+
+### MTWI
+- Step1: Download `mtwi_2018_train.zip` from [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us).
+
+```bash
+mkdir mtwi && cd mtwi
+
+unzip -q mtwi_2018_train.zip
+mv image_train imgs && mv txt_train annotations
+
+rm mtwi_2018_train.zip
+```
+
+- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+
+```bash
+# Annotations of MTWI test split is not publicly available
+# Split a validation set by adding --val-ratio 0.2
+python tools/data/textdet/mtwi_converter.py PATH/TO/mtwi --nproc 4
 ```
