@@ -351,5 +351,7 @@ rm ch9_training_images.zip && rm ch9_training_localization_transcription_gt.zip 
 - Step2: Generate `instances_training.json` and `instances_val.json` with following command:
 
 ```bash
+# Add --preserve-vertical to preserve vertical texts for training, otherwise
+# vertical images will be filtered and stored in PATH/TO/detext/ignores
 python tools/data/textrecog/detext_converter.py PATH/TO/detext --nproc 4
 ```

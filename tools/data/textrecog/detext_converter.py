@@ -163,7 +163,7 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
             if min(dst_img.shape) == 0 or len(word) == 0:
                 continue
             # Filter out vertical texts
-            if not preserve_vertical and h / w > 2:
+            if not preserve_vertical and h / w > 2 and split == 'training':
                 dst_img_path = osp.join(ignore_image_root, dst_img_name)
             else:
                 dst_img_path = osp.join(dst_image_root, dst_img_name)
