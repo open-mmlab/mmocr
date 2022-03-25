@@ -511,7 +511,8 @@ class MMOCR:
             image = Image.fromarray(img)
             api.SetImage(image)
             api.SetRectangle(0, 0, img.shape[1], img.shape[0])
-            text = api.GetUTF8Text()
+            # Remove beginning and trailing spaces from Tesseract
+            text = api.GetUTF8Text().strip()
             conf = api.MeanTextConf()
             results.append({'text': text, 'score': conf})
 
