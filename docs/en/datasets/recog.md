@@ -354,5 +354,7 @@ python tools/data/common/extract_kaist.py PATH/TO/kaist
 
 ```bash
 # Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
+# Add --preserve-vertical to preserve vertical texts for training, otherwise
+# vertical images will be filtered and stored in PATH/TO/detext/ignores
 python tools/data/textrecog/kaist_converter.py PATH/TO/kaist --nproc 4
 ```
