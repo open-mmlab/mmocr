@@ -122,6 +122,12 @@ def load_json_info(gt_file, img_info):
         }
     }
 
+    Some special characters are used in the transcription:
+    "«text»" indicates that "text" had a strikethrough
+    "¿" indicates the transcriber could not read a character
+    "§" indicates the whole line or word was illegible
+    "" (empty string) is if the field was blank
+
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
@@ -165,8 +171,7 @@ def load_json_info(gt_file, img_info):
     return img_info
 
 
-def generate_ann(root_path, split, image_infos, preserve_vertical,
-                 preserve_special_symbols, format):
+def generate_ann(root_path, split, image_infos, preserve_vertical, format):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -201,19 +206,21 @@ def generate_ann(root_path, split, image_infos, preserve_vertical,
         for anno in image_info['anno_info']:
             word = anno['word']
             word = word.strip('\u202a')  # Remove unicode control character
+            word = word.replace('»',
+                                '').replace('«',
+                                            '')  # Remove strikethrough flag
             dst_img = crop_img(image, anno['bbox'], 0, 0)
             h, w, _ = dst_img.shape
 
             dst_img_name = f'{src_img_root}_{index}.png'
             index += 1
-            # Skip invalid annotations
-            if min(dst_img.shape) == 0:
+            # Skip invalid and illegible annotations
+            if min(dst_img.shape) == 0 or '§' in word or '¿' in word or len(
+                    word) == 0:
                 continue
-            # Skip vertical texts or Skip non-ASCII characters
-            # (Do Not Filter For Test Split)
-            if (not preserve_vertical and h / w > 2
-                ) or (not preserve_special_symbols
-                      and len(word) != len(word.encode())) and split != 'test':
+            # Skip vertical texts
+            # (Do Not Filter For Val and Test Split)
+            if (not preserve_vertical and h / w > 2) and split == 'training':
                 dst_img_path = osp.join(ignore_image_root, dst_img_name)
             else:
                 dst_img_path = osp.join(dst_image_root, dst_img_name)
@@ -224,11 +231,13 @@ def generate_ann(root_path, split, image_infos, preserve_vertical,
                              f'{word}')
             elif format == 'jsonl':
                 lines.append(
-                    json.dumps({
-                        'filename':
-                        f'{osp.basename(dst_image_root)}/{dst_img_name}',
-                        'text': word
-                    }))
+                    json.dumps(
+                        {
+                            'filename':
+                            f'{osp.basename(dst_image_root)}/{dst_img_name}',
+                            'text': word
+                        },
+                        ensure_ascii=False))
             else:
                 raise NotImplementedError
 
@@ -242,10 +251,6 @@ def parse_args():
     parser.add_argument(
         '--preserve-vertical',
         help='Preserve samples containing vertical texts',
-        action='store_true')
-    parser.add_argument(
-        '--preserve-special-symbols',
-        help='Preserve non-ASCII characters such as tick and section sign',
         action='store_true')
     parser.add_argument(
         '--format',
@@ -273,7 +278,7 @@ def main():
                 osp.join(root_path, 'annotations'), split_info[split])
             image_infos = collect_annotations(files, nproc=args.nproc)
             generate_ann(root_path, split, image_infos, args.preserve_vertical,
-                         args.preserve_special_symbols, args.format)
+                         args.format)
 
 
 if __name__ == '__main__':

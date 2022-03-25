@@ -111,6 +111,12 @@ def load_json_info(gt_file, img_info):
         }], ...
     }
 
+    Some special characters are used in the transcription:
+    "«text»" indicates that "text" had a strikethrough
+    "¿" indicates the transcriber could not read a character
+    "§" indicates the whole line or word was illegible
+    "" (empty string) is if the field was blank
+
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
