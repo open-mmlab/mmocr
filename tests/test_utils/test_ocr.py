@@ -371,31 +371,52 @@ def test_readtext(mock_kiedataset):
         assert mock_merge.call_count == len(toy_imgs)
 
 
-@pytest.mark.parametrize('det, recog', [('Tesseract', 'SEG'),
-                                        ('Tesseract', 'Tesseract'),
-                                        ('PANet_IC15', 'Tesseract'),
-                                        (None, 'Tesseract')])
+@pytest.mark.parametrize('det, recog, target',
+                         [('Tesseract', None, {
+                             'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 1.0]]
+                         }),
+                          ('Tesseract', 'Tesseract', {
+                              'result': [{
+                                  'box': [0, 0, 1, 0, 1, 1, 0, 1],
+                                  'box_score': 1.0,
+                                  'text': 'text',
+                                  'text_score': 1.0
+                              }]
+                          }),
+                          (None, 'Tesseract', {
+                              'text': 'text',
+                              'score': 1.0
+                          })])
 @mock.patch('mmocr.utils.ocr.init_detector')
-def test_tesseract_wrapper(mock_init_detector, det, recog):
-    try:
-        import tesserocr
-    except ImportError:
-        tesserocr = None
-
-    if tesserocr is None:
-        return
+@mock.patch('mmocr.utils.ocr.PyTessBaseAPI')
+def test_tesseract_wrapper(mock_tesserocr_api, mock_init_detector, det, recog,
+                           target):
 
     def init_detector_skip_ckpt(config, ckpt, device):
         return init_detector(config, device=device)
 
     mock_init_detector.side_effect = init_detector_skip_ckpt
-    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-    mmocr = MMOCR(det=det, recog=recog, device=device)
+    mock_tesseract = mock.Mock()
+    mock_tesseract.GetComponentImages.return_value = [(None, {
+        'x': 0,
+        'y': 0,
+        'w': 1,
+        'h': 1
+    }, 0, None)]
+    mock_tesseract.GetUTF8Text.return_value = 'text'
+    mock_tesseract.MeanTextConf.return_value = 1.
+    mock_tesserocr_api.return_value = mock_tesseract
 
-    img_path = 'demo/demo_kie.jpeg'
+    with mock.patch('mmocr.utils.ocr.tesserocr'):
+        with mock.patch('mmocr.utils.ocr.tesserocr.RIL'):
+            mmocr = MMOCR(det=det, recog=recog, device='cpu')
 
-    # Test imshow
-    with mock.patch('mmocr.utils.ocr.mmcv.imshow') as mock_imshow:
-        mmocr.readtext(img_path, imshow=True)
-        mock_imshow.assert_called_once()
-        mock_imshow.reset_mock()
+            img_path = 'demo/demo_kie.jpeg'
+
+            # Test imshow
+            with mock.patch('mmocr.utils.ocr.mmcv.imshow') as mock_imshow:
+                result = mmocr.readtext(img_path, imshow=True, details=True)
+                for k, v in target.items():
+                    assert result[0][k] == v
+                mock_imshow.assert_called_once()
+                mock_imshow.reset_mock()
