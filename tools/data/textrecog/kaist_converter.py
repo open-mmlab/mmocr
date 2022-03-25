@@ -169,6 +169,7 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
+        format (str): Annotation format, should be either 'txt' or 'jsonl'
     """
 
     dst_image_root = osp.join(root_path, 'crops', split)
