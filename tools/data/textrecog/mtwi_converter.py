@@ -167,11 +167,13 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
     """
     print('Cropping images...')
     dst_image_root = osp.join(root_path, 'crops', split)
+    ignore_image_root = osp.join(root_path, 'ignores', split)
     if split == 'training':
         dst_label_file = osp.join(root_path, f'train_label.{format}')
     elif split == 'val':
         dst_label_file = osp.join(root_path, f'val_label.{format}')
-    os.makedirs(dst_image_root, exist_ok=True)
+    mmcv.mkdir_or_exist(dst_image_root)
+    mmcv.mkdir_or_exist(ignore_image_root)
 
     lines = []
     for image_info in image_infos:
@@ -185,16 +187,16 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
             dst_img = crop_img(image, anno['bbox'], 0, 0)
             h, w, _ = dst_img.shape
 
+            dst_img_name = f'{src_img_root}_{index}.png'
+            index += 1
             # Skip invalid annotations
             if min(dst_img.shape) == 0:
                 continue
             # Skip vertical texts
-            if not preserve_vertical and h / w > 2:
-                continue
-
-            dst_img_name = f'{src_img_root}_{index}.png'
-            index += 1
-            dst_img_path = osp.join(dst_image_root, dst_img_name)
+            if not preserve_vertical and h / w > 2 and split == 'training':
+                dst_img_path = osp.join(ignore_image_root, dst_img_name)
+            else:
+                dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
 
             if format == 'txt':
@@ -211,6 +213,7 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
                         ensure_ascii=False))
             else:
                 raise NotImplementedError
+
     list_to_file(dst_label_file, lines)
 
 

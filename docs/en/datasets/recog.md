@@ -341,7 +341,9 @@ rm mtwi_2018_train.zip
 - Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
 
 ```bash
-# Annotations of MTWI test split is not publicly available
-# Split a validation set by adding --val-ratio 0.2
+# Annotations of MTWI test split is not publicly available, split a validation
+# set by adding --val-ratio 0.2
+# Add --preserve-vertical to preserve vertical texts for training, otherwise
+# vertical images will be filtered and stored in PATH/TO/mtwi/ignores
 python tools/data/textrecog/mtwi_converter.py PATH/TO/mtwi --nproc 4
 ```
