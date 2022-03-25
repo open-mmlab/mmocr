@@ -16,7 +16,6 @@ from PIL import Image
 
 try:
     import tesserocr
-    from tesserocr import RIL, PyTessBaseAPI
 except ImportError:
     tesserocr = None
 
@@ -431,7 +430,7 @@ class MMOCR:
         import sys
 
         if sys.platform == 'linux':
-            api = PyTessBaseAPI()
+            api = tesserocr.PyTessBaseAPI()
         elif sys.platform == 'win32':
             try:
                 p = subprocess.Popen(
@@ -439,7 +438,7 @@ class MMOCR:
                 s = p.communicate()[0].decode('utf-8').split('\\')
                 path = s[:-1] + ['tessdata']
                 tessdata_path = '/'.join(path)
-                api = PyTessBaseAPI(path=tessdata_path)
+                api = tesserocr.PyTessBaseAPI(path=tessdata_path)
             except RuntimeError:
                 raise RuntimeError(
                     'Please install tesseract first.\n Check out the'
@@ -470,7 +469,7 @@ class MMOCR:
         for img in imgs:
             image = Image.fromarray(img)
             api.SetImage(image)
-            boxes = api.GetComponentImages(RIL.TEXTLINE, True)
+            boxes = api.GetComponentImages(tesserocr.RIL.TEXTLINE, True)
             boundaries = []
             for _, box, _, _ in boxes:
                 min_x = box['x']

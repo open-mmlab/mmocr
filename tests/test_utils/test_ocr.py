@@ -388,8 +388,8 @@ def test_readtext(mock_kiedataset):
                               'score': 1.0
                           })])
 @mock.patch('mmocr.utils.ocr.init_detector')
-@mock.patch('mmocr.utils.ocr.PyTessBaseAPI')
-def test_tesseract_wrapper(mock_tesserocr_api, mock_init_detector, det, recog,
+@mock.patch('mmocr.utils.ocr.tesserocr')
+def test_tesseract_wrapper(mock_tesserocr, mock_init_detector, det, recog,
                            target):
 
     def init_detector_skip_ckpt(config, ckpt, device):
@@ -405,18 +405,16 @@ def test_tesseract_wrapper(mock_tesserocr_api, mock_init_detector, det, recog,
     }, 0, None)]
     mock_tesseract.GetUTF8Text.return_value = 'text'
     mock_tesseract.MeanTextConf.return_value = 1.
-    mock_tesserocr_api.return_value = mock_tesseract
+    mock_tesserocr.PyTessBaseAPI.return_value = mock_tesseract
 
-    with mock.patch('mmocr.utils.ocr.tesserocr'):
-        with mock.patch('mmocr.utils.ocr.tesserocr.RIL'):
-            mmocr = MMOCR(det=det, recog=recog, device='cpu')
+    mmocr = MMOCR(det=det, recog=recog, device='cpu')
 
-            img_path = 'demo/demo_kie.jpeg'
+    img_path = 'demo/demo_kie.jpeg'
 
-            # Test imshow
-            with mock.patch('mmocr.utils.ocr.mmcv.imshow') as mock_imshow:
-                result = mmocr.readtext(img_path, imshow=True, details=True)
-                for k, v in target.items():
-                    assert result[0][k] == v
-                mock_imshow.assert_called_once()
-                mock_imshow.reset_mock()
+    # Test imshow
+    with mock.patch('mmocr.utils.ocr.mmcv.imshow') as mock_imshow:
+        result = mmocr.readtext(img_path, imshow=True, details=True)
+        for k, v in target.items():
+            assert result[0][k] == v
+        mock_imshow.assert_called_once()
+        mock_imshow.reset_mock()
