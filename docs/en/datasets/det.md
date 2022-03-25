@@ -41,6 +41,11 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
+|── coco_textv2
+|   ├── annotations
+│   ├── imgs
+│   └── instances_training.json
+│   ├── instances_val.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -54,7 +59,7 @@ The structure of the text detection dataset directory is organized as follows.
 |     Totaltext     |                                                                                                           [homepage](https://github.com/cs-chan/Total-Text-Dataset)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
 |       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
-
+|   COCO Text v2    |                                                                                                                 [homepage](https://bgshih.github.io/cocotext/)                                                                                                                 |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
 ## Important Note
 
@@ -211,4 +216,28 @@ rm dataset.zip && rm -rf dataset
 
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
+```
+
+### COCO Text v2
+
+- Step1: Download image [train2014.zip](http://images.cocodataset.org/zips/train2014.zip) and annotation [cocotext.v2.zip](https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip) to `coco_textv2/`.
+
+```bash
+mkdir coco_textv2 && cd coco_textv2
+mkdir annotations
+
+# Download COCO Text v2 dataset
+wget http://images.cocodataset.org/zips/train2014.zip
+wget https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip
+unzip -q train2014.zip && unzip -q cocotext.v2.zip
+
+mv train2014 imgs && mv cocotext.v2.json annotations/
+
+rm train2014.zip && rm -rf cocotext.v2.zip
+```
+
+- Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
+
+```bash
+python tools/data/textdet/cocotext_converter.py PATH/TO/coco_textv2
 ```

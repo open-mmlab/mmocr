@@ -47,6 +47,7 @@ def process_img(args, src_image_root, dst_image_root, format):
         dst_img_name = f'img_{img_idx}_{ann_idx}.jpg'
         dst_img_path = osp.join(dst_image_root, dst_img_name)
         mmcv.imwrite(dst_img, dst_img_path)
+
         if format == 'txt':
             labels.append(f'{osp.basename(dst_image_root)}/{dst_img_name}'
                           f' {text_label}')
@@ -59,6 +60,7 @@ def process_img(args, src_image_root, dst_image_root, format):
                 }))
         else:
             raise NotImplementedError
+
     return labels
 
 
@@ -100,7 +102,6 @@ def convert_cocotext(root_path, split, format, nproc, img_start_idx=0):
 
     Args:
         root_path (str): Root path to the dataset
-        src_image_path (str): Path to the source images
         split (str): Dataset split, which should be 'train' or 'val'
         format (str): Annotation format, should be either 'jsonl' or 'txt'
         nproc (int): Number of processes
