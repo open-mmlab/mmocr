@@ -26,7 +26,8 @@ def convert_annotations(root_path, split, format):
 
     Args:
         root_path (str): The root path of the dataset
-        split (str): The split of dataset. Namely: training or test
+        split (str): The split of dataset. Namely: Train or Test
+        format (str): Annotation format, should be either 'txt' or 'jsonl'
     """
     assert isinstance(root_path, str)
     assert isinstance(split, str)
