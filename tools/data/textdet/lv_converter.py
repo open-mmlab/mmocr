@@ -153,8 +153,8 @@ def load_xml_info(gt_file, img_info):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training, val and test set of LV ')
-    parser.add_argument('root_path', help='Root dir path of LV')
+        description='Generate training, val and test set of Lecture Video DB ')
+    parser.add_argument('root_path', help='Root dir path of Lecture Video DB')
     parser.add_argument(
         '--nproc', default=1, type=int, help='number of process')
     args = parser.parse_args()

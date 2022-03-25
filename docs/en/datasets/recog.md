@@ -326,3 +326,31 @@ rm dataset.zip && rm -rf dataset
 ```bash
 python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
+
+### Lecture Video DB
+
+**The LV dataset has already provided cropped images and the corresponding annotations**
+
+- Step1: Download [IIIT-CVid.zip](http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip) to `lv/`.
+
+```bash
+mkdir lv && cd lv
+
+# Download LV dataset
+wget http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip
+unzip -q IIIT-CVid.zip
+
+# For image
+mv IIIT-CVid/Crops ./
+
+# For annotation
+mv IIIT-CVid/train.txt train_label.txt && mv IIIT-CVid/val.txt val_label.txt && mv IIIT-CVid/test.txt test_label.txt
+
+rm IIIT-CVid.zip
+```
+
+- Step2: Generate `train_label.jsonl`, `val.jsonl`, and `test.jsonl` with following command:
+
+```bash
+python tools/data/textdreog/lv_converter.py PATH/TO/lv
+```
