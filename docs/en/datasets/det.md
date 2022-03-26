@@ -219,17 +219,21 @@ rm dataset.zip && rm -rf dataset
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
+
 ### BID
 
 - Step1: Download [dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
 - Step2: Run the following commands to preprocess the dataset
 ```bash
+# Rename
 mv BID\ Dataset.zip BID_Dataset.zip
-mkdir data && mv BID.zip data/
-cd data
+
+# Unzip and Rename
 unzip -q BID_Dataset.zip && rm BID_Dataset.zip
 mv BID\ Dataset BID_Dataset
 cd BID_Dataset
+
+# For images and annotations
 mv CNH_Aberta/*in.jpg imgs && mv CNH_Aberta/*txt annotations && rm -rf CNH_Aberta
 mv CNH_Frente/*in.jpg imgs && mv CNH_Frente/*txt annotations && rm -rf CNH_Frente
 mv CNH_Verso/*in.jpg imgs && mv CNH_Verso/*txt annotations && rm -rf CNH_Verso
@@ -238,9 +242,11 @@ mv CPF_Verso/*in.jpg imgs && mv CPF_Verso/*txt annotations && rm -rf CPF_Verso
 mv RG_Aberto/*in.jpg imgs && mv RG_Aberto/*txt annotations && rm -rf RG_Aberto
 mv RG_Frente/*in.jpg imgs && mv RG_Frente/*txt annotations && rm -rf RG_Frente
 mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
-cd ../../
+
+# Remove unecessary files
+rm -rf desktop.ini
 ```
 - Step3: - Step3: Generate `instances_test.json` and `instances_training.json`. Since the original dataset doesn't have a test set, you may specify `--test-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the test set in this example.
 ```bash
-python tools/data/textrecog/bid_converter.py data/BID_Dataset --nproc 4 --test-ratio 0.2
+python tools/data/textrecog/bid_converter.py PATH/TO/BID_Dataset --nproc 4 --test-ratio 0.2
 ```
