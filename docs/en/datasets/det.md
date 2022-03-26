@@ -237,7 +237,7 @@ mv Telugu/*jpeg imgs/ && mv Telugu/*xml annotations/
 # unify postfix
 cd imgs
 ls -1 *.jpeg | xargs -n 1 bash -c 'convert "$0" "${0%.jpeg}.jpg"'
-rm *jpeg
+rm -f *jpeg
 # remove unnecessary files
 cd ..
 rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm READEME.txt

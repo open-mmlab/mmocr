@@ -193,6 +193,7 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
 
     for i, split in enumerate(splits):
         dst_image_root = osp.join(root_path, 'dst_imgs', split)
+        ignore_image_root = osp.join(root_path, 'ignores', split)
         dst_label_file = osp.join(root_path, f'{split}_label.{format}')
         os.makedirs(dst_image_root, exist_ok=True)
 
@@ -208,16 +209,16 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
                 dst_img = crop_img(image, anno['bbox'])
                 h, w, _ = dst_img.shape
 
+                dst_img_name = f'{src_img_root}_{index}.png'
+                index += 1
                 # Skip invalid annotations
                 if min(dst_img.shape) == 0:
                     continue
                 # Skip vertical texts
-                if not preserve_vertical and h / w > 2:
-                    continue
-
-                dst_img_name = f'{src_img_root}_{index}.png'
-                index += 1
-                dst_img_path = osp.join(dst_image_root, dst_img_name)
+                if not preserve_vertical and h / w > 2 and split == 'training':
+                    dst_img_path = osp.join(ignore_image_root, dst_img_name)
+                else:
+                    dst_img_path = osp.join(dst_image_root, dst_img_name)
                 mmcv.imwrite(dst_img, dst_img_path)
                 filename = f'{osp.basename(dst_image_root)}/{dst_img_name}'
                 if format == 'txt':
