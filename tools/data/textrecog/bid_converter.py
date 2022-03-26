@@ -171,7 +171,7 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
         splits = ['training']
 
     for i, split in enumerate(splits):
-        dst_image_root = osp.join(root_path, 'dst_imgs', split)
+        dst_image_root = osp.join(root_path, 'crops', split)
         ignore_image_root = osp.join(root_path, 'ignores', split)
         dst_label_file = osp.join(root_path, f'{split}_label.txt')
         os.makedirs(dst_image_root, exist_ok=True)
