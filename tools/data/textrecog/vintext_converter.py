@@ -142,7 +142,7 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
         preserve_vertical (bool): Whether to preserve vertical texts
         format (str): Using jsonl(dict) or str to format annotations
     """
-    dst_image_root = osp.join(root_path, 'dst_imgs', split)
+    dst_image_root = osp.join(root_path, 'crops', split)
     ignore_image_root = osp.join(root_path, 'ignores', split)
     if split == 'training':
         dst_label_file = osp.join(root_path, f'train_label.{format}')
