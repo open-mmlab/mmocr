@@ -246,7 +246,7 @@ mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
 # Remove unecessary files
 rm -rf desktop.ini
 ```
-- Step3: - Step3: Generate `instances_test.json` and `instances_training.json`. Since the original dataset doesn't have a test set, you may specify `--test-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the test set in this example.
+- Step3: - Step3: Generate `instances_training.json` and `instances_test.json`(optional). Since the original dataset doesn't have a test set, you may specify `--test-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the test set in this example.
 ```bash
 python tools/data/textrecog/bid_converter.py PATH/TO/BID_Dataset --nproc 4 --test-ratio 0.2
 ```
