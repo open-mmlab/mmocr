@@ -241,5 +241,5 @@ cd ../../
 ```
 - Step2: Generate `instances_test.json` and `instances_training.json`
 ```bash
-python tools/data/textdet/vintext_converter.py data/vintext/vietnamese --nproc 4
+python tools/data/textdet/vintext_converter.py PATH/TO/vietnamese --nproc 4
 ```

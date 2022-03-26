@@ -350,5 +350,5 @@ cd ../../..
 ```
 - Step2: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts).
 ```bash
-python tools/data/textrecog/vintext_converter.py data/vintext/vietnamese --nproc 4
+python tools/data/textrecog/vintext_converter.py PATH/TO/vietnamese --nproc 4
 ```
