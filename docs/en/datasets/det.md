@@ -245,5 +245,5 @@ cd ../../
 ```
 - Step3: Generate `instances_test.json` and `instances_training.json`. Since the original dataset doesn't have a test set, you may specify `--test-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the test set in this example.
 ```bash
-python tools/data/textdet/ilst_converter.py data/IIIT-ILST --nproc 4 --test-ratio 0.2
+python tools/data/textdet/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --test-ratio 0.2
 ```

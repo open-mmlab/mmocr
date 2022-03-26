@@ -354,5 +354,5 @@ cd ../../
 ```
 - Step3: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a test set, you may specify `--test-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the test set in this example.
 ```bash
-python tools/data/textrecog/ilst_converter.py data/IIIT-ILST --nproc 4 --test-ratio 0.2
+python tools/data/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --test-ratio 0.2
 ```
