@@ -3,7 +3,6 @@ import argparse
 import json
 import os
 import os.path as osp
-import string
 import xml.etree.ElementTree as ET
 
 import mmcv
@@ -141,13 +140,6 @@ def load_xml_info(gt_file, img_info):
     return img_info
 
 
-def judge_latin(word):
-    for char in word:
-        if char not in string.ascii_letters:
-            return False
-    return True
-
-
 def split_train_val_list(full_list, val_ratio):
     """Split list by val_ratio
 
@@ -192,7 +184,7 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
         splits = ['training']
 
     for i, split in enumerate(splits):
-        dst_image_root = osp.join(root_path, 'dst_imgs', split)
+        dst_image_root = osp.join(root_path, 'crops', split)
         ignore_image_root = osp.join(root_path, 'ignores', split)
         dst_label_file = osp.join(root_path, f'{split}_label.{format}')
         os.makedirs(dst_image_root, exist_ok=True)

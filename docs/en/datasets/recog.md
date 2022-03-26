@@ -81,8 +81,9 @@
 │   │   ├── test_label.txt
 │   ├── ILST
 │   │   ├── imgs
-│   │   ├── dst_imgs
 │   │   ├── annotations
+│   │   ├── crops
+│   │   ├── ignores
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
 ```
