@@ -136,7 +136,7 @@ def split_train_val_list(full_list, val_ratio):
         val_ratio (float): Split ratio for val set
 
     return:
-        list(list, list): Train_list and test_list
+        list(list, list): Train_list and val_list
     """
 
     n_total = len(full_list)
@@ -156,7 +156,7 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
-        val_atio (float): Split ratio for val set
+        val_ratio (float): Split ratio for val set
         format (str): Using jsonl(dict) or str to format annotations
     """
 
@@ -164,7 +164,7 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
 
     if val_ratio:
         image_infos = split_train_val_list(image_infos, val_ratio)
-        splits = ['training', 'test']
+        splits = ['training', 'val']
 
     else:
         image_infos = [image_infos]
@@ -217,7 +217,7 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of BID ')
+        description='Generate training and val set of BID ')
     parser.add_argument('root_path', help='Root dir path of BID')
     parser.add_argument(
         '--preserve-vertical',

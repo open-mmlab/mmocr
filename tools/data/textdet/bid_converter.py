@@ -133,7 +133,7 @@ def split_train_val_list(full_list, val_ratio):
         val_ratio (float): split ratio for val set
 
     return:
-        list(list, list): train_list and test_list
+        list(list, list): train_list and val_list
     """
 
     n_total = len(full_list)
@@ -147,7 +147,7 @@ def split_train_val_list(full_list, val_ratio):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of BID ')
+        description='Generate training and val set of BID ')
     parser.add_argument('root_path', help='Root dir path of BID')
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')

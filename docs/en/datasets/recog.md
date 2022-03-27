@@ -340,8 +340,8 @@ mv BID\ Dataset.zip BID_Dataset.zip
 
 # Unzip and Rename
 unzip -q BID_Dataset.zip && rm BID_Dataset.zip
-mv BID\ Dataset BID_Dataset
-cd BID_Dataset
+mv BID\ Dataset BID
+cd BID
 
 # For images and annotations
 mv CNH_Aberta/*in.jpg imgs && mv CNH_Aberta/*txt annotations && rm -rf CNH_Aberta
@@ -356,7 +356,7 @@ mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
 # Remove unecessary files
 rm -rf desktop.ini
 ```
-- Step3: Generate `train_label.jsonl` and `test_label.jsonl`(optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a test set, you may specify `--test-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the test set in this example.
+- Step3: Generate `train_label.jsonl` and `val_label.jsonl`(optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 ```bash
-python tools/data/textrecog/bid_converter.py dPATH/TO/BID_Dataset --nproc 4 --test-ratio 0.2
+python tools/data/textrecog/bid_converter.py dPATH/TO/BID --nproc 4 --val-ratio 0.2
 ```
