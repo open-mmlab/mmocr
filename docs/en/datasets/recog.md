@@ -79,7 +79,7 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
-│   ├── ILST
+│   ├── IIIT-ILST
 │   │   ├── imgs
 │   │   ├── annotations
 │   │   ├── crops
@@ -353,7 +353,7 @@ cd ..
 rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm READEME.txt
 cd ../../
 ```
-- Step3: Generate `train_label.jsonl` and `test_label.jsonl`(optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a test set, you may specify `--test-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the test set in this example.
+- Step3: Generate `train_label.jsonl` and `val_label.jsonl`(optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 ```bash
-python tools/data/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --test-ratio 0.2
+python tools/data/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --val-ratio 0.2
 ```

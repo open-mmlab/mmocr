@@ -153,7 +153,7 @@ def split_train_val_list(full_list, val_ratio):
         val_ratio (float): Split ratio for val set
 
     return:
-        list(list, list): Train_list and test_list
+        list(list, list): Train_list and val_list
     """
 
     n_total = len(full_list)
@@ -167,7 +167,7 @@ def split_train_val_list(full_list, val_ratio):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of ILST ')
+        description='Generate training and val set of ILST ')
     parser.add_argument('root_path', help='Root dir path of ILST')
     parser.add_argument(
         '--val-ratio', help='Split ratio for val set', default=0.2, type=float)

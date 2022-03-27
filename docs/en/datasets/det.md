@@ -41,7 +41,7 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-|── ILST
+|── IIIT-ILST
 |   ├── annotations
 │   ├── imgs
 │   ├── instances_test.json
@@ -243,7 +243,7 @@ cd ..
 rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm READEME.txt
 cd ../../
 ```
-- Step3: Generate `instances_test.json` and `instances_training.json`(optional). Since the original dataset doesn't have a test set, you may specify `--test-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the test set in this example.
+- Step3: Generate `instances_val.json` and `instances_training.json`(optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 ```bash
-python tools/data/textdet/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --test-ratio 0.2
+python tools/data/textdet/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --val-ratio 0.2
 ```
