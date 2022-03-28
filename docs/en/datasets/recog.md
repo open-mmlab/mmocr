@@ -83,7 +83,7 @@
 │   │   ├── crops
 │   │   ├── ignores
 │   │   ├── train_label.jsonl
-│   │   ├── test_label.jsonl
+│   │   ├── val_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |

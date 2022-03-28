@@ -44,7 +44,7 @@ The structure of the text detection dataset directory is organized as follows.
 |── BID
 |   ├── annotations
 │   ├── imgs
-│   ├── instances_test.json
+│   ├── instances_val.json
 │   └── instances_training.json
 ```
 
