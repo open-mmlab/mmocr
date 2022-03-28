@@ -27,10 +27,11 @@ def collect_files(img_dir, gt_dir):
     assert gt_dir
 
     ann_list, imgs_list = [], []
-    for gt_file in os.listdir(gt_dir):
-
-        ann_list.append(osp.join(gt_dir, gt_file))
-        imgs_list.append(osp.join(img_dir, gt_file.replace('.xml', '.jpg')))
+    for img_file in os.listdir(img_dir):
+        ann_path = osp.join(gt_dir, img_file.split('.')[0] + '.xml')
+        if os.path.exists(ann_path):
+            ann_list.append(ann_path)
+            imgs_list.append(osp.join(img_dir, img_file))
 
     files = list(zip(imgs_list, ann_list))
     assert len(files), f'No images found in {img_dir}'
@@ -78,11 +79,15 @@ def load_img_info(files):
     # read imgs while ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
 
-    img_info = dict(
-        file_name=osp.join(osp.basename(img_file)),
-        height=img.shape[0],
-        width=img.shape[1],
-        segm_file=osp.join(osp.basename(gt_file)))
+    try:
+        img_info = dict(
+            file_name=osp.join(osp.basename(img_file)),
+            height=img.shape[0],
+            width=img.shape[1],
+            segm_file=osp.join(osp.basename(gt_file)))
+    except AttributeError:
+        print(f'Skip broken img {img_file}')
+        return None
 
     if osp.splitext(gt_file)[1] == '.xml':
         img_info = load_xml_info(gt_file, img_info)
@@ -150,7 +155,6 @@ def split_train_val_list(full_list, val_ratio):
     return:
         list(list, list): Train_list and val_list
     """
-
     n_total = len(full_list)
     offset = int(n_total * val_ratio)
     if n_total == 0 or offset < 1:
@@ -257,6 +261,8 @@ def main():
         files = collect_files(
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
         image_infos = collect_annotations(files, nproc=args.nproc)
+        # filter broken images
+        image_infos = list(filter(None, image_infos))
         generate_ann(root_path, image_infos, args.preserve_vertical,
                      args.val_ratio, args.format)
 

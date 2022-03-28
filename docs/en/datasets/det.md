@@ -234,13 +234,8 @@ mkdir imgs && mkdir annotations
 mv Malayalam/{*jpg,*jpeg} imgs/ && mv Malayalam/*xml annotations/
 mv Devanagari/*jpg imgs/ && mv Devanagari/*xml annotations/
 mv Telugu/*jpeg imgs/ && mv Telugu/*xml annotations/
-# unify postfix
-cd imgs
-ls -1 *.jpeg | xargs -n 1 bash -c 'convert "$0" "${0%.jpeg}.jpg"'
-rm -f *jpeg
 # remove unnecessary files
-cd ..
-rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm README.txt
+rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm -rf README.txt
 ```
 - Step3: Generate `instances_training.json` and `instances_val.json`(optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 ```bash
