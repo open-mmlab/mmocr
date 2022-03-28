@@ -12,9 +12,11 @@ from mmocr.utils.fileio import list_to_file
 
 def collect_files(img_dir, gt_dir):
     """Collect all images and their corresponding groundtruth files.
+
     Args:
         img_dir (str): The image directory
         gt_dir (str): The groundtruth directory
+
     Returns:
         files (list): The list of tuples (img_file, groundtruth_file)
     """
@@ -38,9 +40,11 @@ def collect_files(img_dir, gt_dir):
 
 def collect_annotations(files, nproc=1):
     """Collect the annotation information.
+
     Args:
         files (list): The list of tuples (image_file, groundtruth_file)
         nproc (int): The number of process to collect annotations
+
     Returns:
         images (list): The list of image information dicts
     """
@@ -58,8 +62,10 @@ def collect_annotations(files, nproc=1):
 
 def load_img_info(files):
     """Load the information of one image.
+
     Args:
         files (tuple): The tuple of (img_file, groundtruth_file)
+
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
@@ -102,7 +108,6 @@ def load_txt_info(gt_file, img_info):
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
-
     with open(gt_file, 'r', encoding='latin1') as f:
         anno_info = []
         for line in f:
@@ -138,7 +143,6 @@ def split_train_val_list(full_list, val_ratio):
     return:
         list(list, list): Train_list and val_list
     """
-
     n_total = len(full_list)
     offset = int(n_total * val_ratio)
     if n_total == 0 or offset < 1:
@@ -150,6 +154,7 @@ def split_train_val_list(full_list, val_ratio):
 
 def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
     """Generate cropped annotations and label txt file.
+
     Args:
         root_path (str): The root path of the dataset
         split (str): The split of dataset. Namely: training or test
