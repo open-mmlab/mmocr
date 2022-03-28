@@ -80,12 +80,10 @@
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
 │   ├── BID
-│   │   ├── imgs
-│   │   ├── annotations
 │   │   ├── crops
 │   │   ├── ignores
-│   │   ├── train_label.txt
-│   │   ├── test_label.txt
+│   │   ├── train_label.jsonl
+│   │   ├── test_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
