@@ -82,8 +82,8 @@
 │   ├── IIIT-ILST
 │   │   ├── crops
 │   │   ├── ignores
-│   │   ├── train_label.txt
-│   │   ├── test_label.txt
+│   │   ├── train_label.jsonl
+│   │   ├── test_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -328,7 +328,7 @@ rm dataset.zip && rm -rf dataset
 python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
 ### ILST
-- Step1: Download dataset from [here](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)
+- Step1: Download `IIIT-ILST.zip` from [onedrive link](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)
 - Step2: Run the following commands
 ```bash
 unzip -q IIIT-ILST.zip && rm IIIT-ILST.zip
@@ -345,7 +345,7 @@ mv Telugu/*jpeg imgs/ && mv Telugu/*xml annotations/
 # remove unnecessary files
 rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm -rf README.txt
 ```
-- Step3: Generate `train_label.jsonl` and `val_label.jsonl`(optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 ```bash
 python tools/data/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --val-ratio 0.2
 ```

@@ -237,7 +237,7 @@ mv Telugu/*jpeg imgs/ && mv Telugu/*xml annotations/
 # remove unnecessary files
 rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm -rf README.txt
 ```
-- Step3: Generate `instances_training.json` and `instances_val.json`(optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step3: Generate `instances_training.json` and `instances_val.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 ```bash
 python tools/data/textdet/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --val-ratio 0.2
 ```
