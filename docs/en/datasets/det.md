@@ -223,23 +223,21 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
 
 ### VinText
-- Step1: Run the following codes to automatically download dataset
+- Step1: Download [vintext.zip](https://drive.google.com/drive/my-drive) to `vintext`
 ```bash
 mkdir vintext && cd vintext
 # Download dataset from google drive
 wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1UUQhNvzgpZy7zXBFQp0Qox-BBjunZ0ml' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1UUQhNvzgpZy7zXBFQp0Qox-BBjunZ0ml" -O vintext.zip && rm -rf /tmp/cookies.txt
 # Extract images and annotations
 unzip -q vintext.zip && rm vintext.zip
-cd vietnamese
+mv vietnamese/labels ./ && mv vietnamese/test_image ./ && mv vietnamese/train_images ./ && mv vietnamese/unseen_test_images ./
+rm -rf vietnamese
 # Rename files
 mv labels annotations && mv test_image test && mv train_images  training && mv unseen_test_images  unseen_test
 mkdir imgs
 mv training imgs/ && mv test imgs/ && mv unseen_test imgs/
-# Delete unnecessary files
-rm general_dict.txt && rm vn_dictionary.txt
-cd ../../
 ```
 - Step2: Generate `instances_test.json` and `instances_training.json`
 ```bash
-python tools/data/textdet/vintext_converter.py PATH/TO/vietnamese --nproc 4
+python tools/data/textdet/vintext_converter.py PATH/TO/vintext --nproc 4
 ```
