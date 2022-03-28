@@ -130,7 +130,7 @@ def cal_line_length(point1, point2):
 
 def generate_ann(root_path, split, image_infos, format):
 
-    dst_image_root = osp.join(root_path, 'dst_imgs', split)
+    dst_image_root = osp.join(root_path, 'crops', split)
     dst_label_file = osp.join(root_path, f'{split}_label.{format}')
     os.makedirs(dst_image_root, exist_ok=True)
 
