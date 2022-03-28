@@ -340,11 +340,11 @@ wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download
 # Extract images and annotations
 unzip -q vintext.zip && rm vintext.zip
 cd vietnamese
-# Rename files 
+# Rename files
 mv labels annotations && mv test_image test && mv train_images  training && mv unseen_test_images  unseen_test
 mkdir imgs
 mv training imgs/ && mv test imgs/ && mv unseen_test imgs/
-# Delete unecessary files
+# Delete unnecessary files
 rm general_dict.txt && rm vn_dictionary.txt
 # Generate for detection
 cd ../../..
