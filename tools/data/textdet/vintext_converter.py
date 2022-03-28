@@ -121,7 +121,7 @@ def load_txt_info(gt_file, img_info):
             x_min = min(bbox[0], bbox[2], bbox[4], bbox[6])
             x_max = max(bbox[0], bbox[2], bbox[4], bbox[6])
             y_min = min(bbox[1], bbox[3], bbox[5], bbox[7])
-            y_max = min(bbox[1], bbox[3], bbox[5], bbox[7])
+            y_max = max(bbox[1], bbox[3], bbox[5], bbox[7])
             w = x_max - x_min
             h = y_max - y_min
             bbox = [x_min, y_min, w, h]
