@@ -198,7 +198,7 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
 
             for anno in image_info['anno_info']:
                 word = anno['word']
-                dst_img = crop_img(image, anno['bbox'])
+                dst_img = crop_img(image, anno['bbox'], 0, 0)
                 h, w, _ = dst_img.shape
 
                 dst_img_name = f'{src_img_root}_{index}.png'
