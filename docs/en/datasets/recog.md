@@ -341,7 +341,12 @@ mv BID\ Dataset.zip BID_Dataset.zip
 # Unzip and Rename
 unzip -q BID_Dataset.zip && rm BID_Dataset.zip
 mv BID\ Dataset BID
+
+# The BID dataset has a problem of permision, and you may
+# add permision for this file
+chmod -R 777 BID
 cd BID
+mkdir imgs && mkdir annotations
 
 # For images and annotations
 mv CNH_Aberta/*in.jpg imgs && mv CNH_Aberta/*txt annotations && rm -rf CNH_Aberta
