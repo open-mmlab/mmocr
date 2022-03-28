@@ -18,12 +18,14 @@ class MASTER(EncodeDecodeRecognizer):
                  train_cfg=None,
                  test_cfg=None,
                  max_seq_len=40,
-                 pretrained=None):
+                 pretrained=None,
+                 init_cfg=None):
         super(MASTER, self).__init__(preprocessor, backbone, encoder, decoder,
                                      loss, label_convertor, train_cfg,
-                                     test_cfg, max_seq_len, pretrained)
-
-    def init_weights(self, pretrained=None):
+                                     test_cfg, max_seq_len, pretrained, init_cfg=init_cfg)
+        self.encoder.update(max_seq_len=max_seq_len)
+        
+    def init_weights(self):
         for p in self.parameters():
             if p.dim() > 1:
                 nn.init.xavier_uniform_(p)

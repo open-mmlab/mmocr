@@ -183,7 +183,7 @@ class MasterDecoder(BaseDecoder):
         x = self.norm(x)
         return self.fc(x)
 
-    def greedy_forward(self, SOS, feature, mask):
+    def greedy_forward(self, SOS, feature):
         input = SOS
         output = None
         for i in range(self.max_length + 1):
