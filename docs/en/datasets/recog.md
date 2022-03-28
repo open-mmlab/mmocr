@@ -330,7 +330,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 
 ### BID
 
-- Step1: Download [dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
+- Step1: Download [BID Dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
 - Step2: Run the following commands to preprocess the dataset
 ```bash
 # Rename
@@ -359,7 +359,7 @@ mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
 # Remove unecessary files
 rm -rf desktop.ini
 ```
-- Step3: Generate `train_label.jsonl` and `val_label.jsonl`(optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 ```bash
 python tools/data/textrecog/bid_converter.py dPATH/TO/BID --nproc 4 --val-ratio 0.2
 ```

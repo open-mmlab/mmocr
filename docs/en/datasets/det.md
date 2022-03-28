@@ -222,7 +222,7 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 
 ### BID
 
-- Step1: Download [dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
+- Step1: Download [BID Dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
 - Step2: Run the following commands to preprocess the dataset
 ```bash
 # Rename
@@ -250,7 +250,7 @@ mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
 # Remove unecessary files
 rm -rf desktop.ini
 ```
-- Step3: - Step3: Generate `instances_training.json` and `instances_val.json`(optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step3: - Step3: Generate `instances_training.json` and `instances_val.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 ```bash
 python tools/data/textrecog/bid_converter.py PATH/TO/BID --nproc 4 --val-ratio 0.2
 ```
