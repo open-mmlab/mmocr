@@ -38,26 +38,22 @@ python tools/train.py configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset
 
 ### Training with Academic Dataset
 
-Once you have prepared required academic dataset following our instruction, the only last thing to check is if the model's config points MMOCR to the correct dataset path. Suppose we want to train DBNet on ICDAR 2015, and part of `configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py` looks like the following:
+Once you have prepared required academic dataset following our instruction, the only last thing to check is if the model's config points MMOCR to the correct dataset path. Suppose we want to train DBNet on ICDAR 2015, and part of `configs/_base_/det_datasets/icdar2015.py` looks like the following:
 ```python
 dataset_type = 'IcdarDataset'
 data_root = 'data/icdar2015'
-data = dict(
-    train=dict(
-        type=dataset_type,
-        ann_file=data_root + '/instances_training.json',
-        img_prefix=data_root + '/imgs',
-        pipeline=train_pipeline)
-    val=dict(
-        type=dataset_type,
-        ann_file=data_root + '/instances_test.json',
-        img_prefix=data_root + '/imgs',
-        pipeline=test_pipeline),
-    test=dict(
-        type=dataset_type,
-        ann_file=data_root + '/instances_test.json',
-        img_prefix=data_root + '/imgs',
-        pipeline=test_pipeline))
+train = dict(
+    type=dataset_type,
+    ann_file=f'{data_root}/instances_training.json',
+    img_prefix=f'{data_root}/imgs',
+    pipeline=None)
+test = dict(
+    type=dataset_type,
+    ann_file=f'{data_root}/instances_test.json',
+    img_prefix=f'{data_root}/imgs',
+    pipeline=None)
+train_list = [train]
+test_list = [test]
 ```
 You would need to check if `data/icdar2015` is right. Then you can start training with the command:
 ```shell
