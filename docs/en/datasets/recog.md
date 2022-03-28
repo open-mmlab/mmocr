@@ -348,7 +348,7 @@ ls -1 *.jpeg | xargs -n 1 bash -c 'convert "$0" "${0%.jpeg}.jpg"'
 rm -f *jpeg
 # remove unnecessary files
 cd ..
-rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm README.txt
+rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm -rf README.txt
 cd ../../
 ```
 - Step3: Generate `train_label.jsonl` and `val_label.jsonl`(optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
