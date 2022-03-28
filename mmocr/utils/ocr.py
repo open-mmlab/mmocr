@@ -12,6 +12,12 @@ import torch
 from mmcv.image.misc import tensor2imgs
 from mmcv.runner import load_checkpoint
 from mmcv.utils.config import Config
+from PIL import Image
+
+try:
+    import tesserocr
+except ImportError:
+    tesserocr = None
 
 from mmocr.apis import init_detector
 from mmocr.apis.inference import model_inference
@@ -19,6 +25,9 @@ from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.kie_dataset import KIEDataset
 from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.models import build_detector
+from mmocr.models.textdet.detectors import TextDetectorMixin
+from mmocr.models.textrecog.recognizer import BaseRecognizer
+from mmocr.utils import is_type_list
 from mmocr.utils.box_util import stitch_boxes_into_lines
 from mmocr.utils.fileio import list_from_file
 from mmocr.utils.model import revert_sync_batchnorm
@@ -262,7 +271,8 @@ class MMOCR:
                 'textsnake/textsnake_r50_fpn_unet_1200e_ctw1500.py',
                 'ckpt':
                 'textsnake/textsnake_r50_fpn_unet_1200e_ctw1500-27f65b64.pth'
-            }
+            },
+            'Tesseract': {}
         }
 
         textrecog_models = {
@@ -313,7 +323,8 @@ class MMOCR:
             'CRNN_TPS': {
                 'config': 'tps/crnn_tps_academic_dataset.py',
                 'ckpt': 'tps/crnn_tps_academic_dataset_20210510-d221a905.pth'
-            }
+            },
+            'Tesseract': {}
         }
 
         kie_models = {
@@ -350,7 +361,13 @@ class MMOCR:
                     ' with text detection and recognition algorithms.')
 
         self.detect_model = None
-        if self.td:
+        if self.td and self.td == 'Tesseract':
+            if tesserocr is None:
+                raise ImportError('Please install tesserocr first. '
+                                  'Check out the installation guide at '
+                                  'https://github.com/sirfz/tesserocr')
+            self.detect_model = 'Tesseract_det'
+        elif self.td:
             # Build detection model
             if not det_config:
                 det_config = os.path.join(config_dir, 'textdet/',
@@ -364,7 +381,13 @@ class MMOCR:
             self.detect_model = revert_sync_batchnorm(self.detect_model)
 
         self.recog_model = None
-        if self.tr:
+        if self.tr and self.tr == 'Tesseract':
+            if tesserocr is None:
+                raise ImportError('Please install tesserocr first. '
+                                  'Check out the installation guide at '
+                                  'https://github.com/sirfz/tesserocr')
+            self.recog_model = 'Tesseract_recog'
+        elif self.tr:
             # Build recognition model
             if not recog_config:
                 recog_config = os.path.join(
@@ -399,6 +422,107 @@ class MMOCR:
         for model in list(filter(None, [self.recog_model, self.detect_model])):
             if hasattr(model, 'module'):
                 model = model.module
+
+    @staticmethod
+    def get_tesserocr_api():
+        """Get tesserocr api depending on different platform."""
+        import subprocess
+        import sys
+
+        if sys.platform == 'linux':
+            api = tesserocr.PyTessBaseAPI()
+        elif sys.platform == 'win32':
+            try:
+                p = subprocess.Popen(
+                    'where tesseract', stdout=subprocess.PIPE, shell=True)
+                s = p.communicate()[0].decode('utf-8').split('\\')
+                path = s[:-1] + ['tessdata']
+                tessdata_path = '/'.join(path)
+                api = tesserocr.PyTessBaseAPI(path=tessdata_path)
+            except RuntimeError:
+                raise RuntimeError(
+                    'Please install tesseract first.\n Check out the'
+                    ' installation guide at'
+                    ' https://github.com/UB-Mannheim/tesseract/wiki')
+        else:
+            raise NotImplementedError
+        return api
+
+    def tesseract_det_inference(self, imgs, **kwargs):
+        """Inference image(s) with the tesseract detector.
+
+        Args:
+            imgs (ndarray or list[ndarray]): image(s) to inference.
+
+        Returns:
+            result (dict): Predicted results.
+        """
+        is_batch = True
+        if isinstance(imgs, np.ndarray):
+            is_batch = False
+            imgs = [imgs]
+        assert is_type_list(imgs, np.ndarray)
+        api = self.get_tesserocr_api()
+
+        # Get detection result using tesseract
+        results = []
+        for img in imgs:
+            image = Image.fromarray(img)
+            api.SetImage(image)
+            boxes = api.GetComponentImages(tesserocr.RIL.TEXTLINE, True)
+            boundaries = []
+            for _, box, _, _ in boxes:
+                min_x = box['x']
+                min_y = box['y']
+                max_x = box['x'] + box['w']
+                max_y = box['y'] + box['h']
+                boundary = [
+                    min_x, min_y, max_x, min_y, max_x, max_y, min_x, max_y, 1.0
+                ]
+                boundaries.append(boundary)
+            results.append({'boundary_result': boundaries})
+
+        # close tesserocr api
+        api.End()
+
+        if not is_batch:
+            return results[0]
+        else:
+            return results
+
+    def tesseract_recog_inference(self, imgs, **kwargs):
+        """Inference image(s) with the tesseract recognizer.
+
+        Args:
+            imgs (ndarray or list[ndarray]): image(s) to inference.
+
+        Returns:
+            result (dict): Predicted results.
+        """
+        is_batch = True
+        if isinstance(imgs, np.ndarray):
+            is_batch = False
+            imgs = [imgs]
+        assert is_type_list(imgs, np.ndarray)
+        api = self.get_tesserocr_api()
+
+        results = []
+        for img in imgs:
+            image = Image.fromarray(img)
+            api.SetImage(image)
+            api.SetRectangle(0, 0, img.shape[1], img.shape[0])
+            # Remove beginning and trailing spaces from Tesseract
+            text = api.GetUTF8Text().strip()
+            conf = api.MeanTextConf() / 100
+            results.append({'text': text, 'score': conf})
+
+        # close tesserocr api
+        api.End()
+
+        if not is_batch:
+            return results[0]
+        else:
+            return results
 
     def readtext(self,
                  img,
@@ -478,7 +602,14 @@ class MMOCR:
             if export:
                 mmcv.dump(res, export, indent=4)
             if output or self.args.imshow:
-                res_img = model.show_result(arr, res, out_file=output)
+                if model == 'Tesseract_det':
+                    res_img = TextDetectorMixin(show_score=False).show_result(
+                        arr, res, out_file=output)
+                elif model == 'Tesseract_recog':
+                    res_img = BaseRecognizer.show_result(
+                        arr, res, out_file=output)
+                else:
+                    res_img = model.show_result(arr, res, out_file=output)
                 if self.args.imshow:
                     mmcv.imshow(res_img, 'inference results')
             if self.args.print_result:
@@ -567,7 +698,11 @@ class MMOCR:
                 if self.args.batch_mode:
                     box_imgs.append(box_img)
                 else:
-                    recog_result = model_inference(recog_model, box_img)
+                    if recog_model == 'Tesseract_recog':
+                        recog_result = self.single_inference(
+                            recog_model, box_img, batch_mode=True)
+                    else:
+                        recog_result = model_inference(recog_model, box_img)
                     text = recog_result['text']
                     text_score = recog_result['score']
                     if isinstance(text_score, list):
@@ -633,21 +768,29 @@ class MMOCR:
 
     # Separate det/recog inference pipeline
     def single_inference(self, model, arrays, batch_mode, batch_size=0):
+
+        def inference(m, a, **kwargs):
+            if model == 'Tesseract_det':
+                return self.tesseract_det_inference(a)
+            elif model == 'Tesseract_recog':
+                return self.tesseract_recog_inference(a)
+            else:
+                return model_inference(m, a, **kwargs)
+
         result = []
         if batch_mode:
             if batch_size == 0:
-                result = model_inference(model, arrays, batch_mode=True)
+                result = inference(model, arrays, batch_mode=True)
             else:
                 n = batch_size
                 arr_chunks = [
                     arrays[i:i + n] for i in range(0, len(arrays), n)
                 ]
                 for chunk in arr_chunks:
-                    result.extend(
-                        model_inference(model, chunk, batch_mode=True))
+                    result.extend(inference(model, chunk, batch_mode=True))
         else:
             for arr in arrays:
-                result.append(model_inference(model, arr, batch_mode=False))
+                result.append(inference(model, arr, batch_mode=False))
         return result
 
     # Arguments pre-processing function
