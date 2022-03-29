@@ -212,6 +212,7 @@ rm dataset.zip && rm -rf dataset
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
+
 ### MTWI
 
 - Step1: Download `mtwi_2018_train.zip` from [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us).
