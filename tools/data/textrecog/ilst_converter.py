@@ -146,7 +146,7 @@ def load_xml_info(gt_file, img_info):
 
 
 def split_train_val_list(full_list, val_ratio):
-    """Split list by val_ratio
+    """Split list by val_ratio.
 
     Args:
         full_list (list): List to be splited

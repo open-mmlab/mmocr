@@ -238,7 +238,7 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
   ```
 - After running the above codes, the directory structure should be as follows:
   ```text
-  |── IIIT-ILST   
+  |── IIIT-ILST
   |   ├── annotations
   │   ├── imgs
   │   ├── instances_val.json (optional)
