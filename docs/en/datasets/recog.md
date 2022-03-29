@@ -364,5 +364,5 @@ python tools/data/textrecog/bid_converter.py dPATH/TO/BID --nproc 4 --val-ratio 
 │   ├── crops
 │   ├── ignores
 │   ├── train_label.jsonl
-│   ├── val_label.jsonl
+│   ├── val_label.jsonl (optional)
 ```

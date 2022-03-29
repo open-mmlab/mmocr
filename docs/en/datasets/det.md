@@ -255,5 +255,5 @@ python tools/data/textrecog/bid_converter.py PATH/TO/BID --nproc 4 --val-ratio 0
 |   ├── annotations
 │   ├── imgs
 │   ├── instances_val.json
-│   └── instances_training.json
+│   └── instances_training.json (optional)
 ```
