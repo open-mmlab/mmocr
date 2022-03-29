@@ -342,7 +342,7 @@ mv training imgs/ && mv test imgs/ && mv unseen_test imgs/
 ```bash
 python tools/data/textrecog/vintext_converter.py PATH/TO/vietnamese --nproc 4
 ```
-After running the above codes, the directory structure should be as follows:
+- After running the above codes, the directory structure should be as follows:
 ```text
 ├── vintext
 │   ├── crops
