@@ -249,7 +249,7 @@ rm -rf desktop.ini
 ```bash
 python tools/data/textrecog/bid_converter.py PATH/TO/BID --nproc 4 --val-ratio 0.2
 ```
-After running the above codes, the directory structure should be as follows:
+- After running the above codes, the directory structure should be as follows:
 ```text
 |── BID
 |   ├── annotations
