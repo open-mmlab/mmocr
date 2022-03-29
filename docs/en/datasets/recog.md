@@ -355,9 +355,9 @@ python tools/data/textrecog/kaist_converter.py PATH/TO/kaist --nproc 4
 ```
 - After running the above codes, the directory structure should be as follows:
 ```text
-│   ├── kaist
-│   │   ├── crops
-│   │   ├── ignores
-│   │   ├── train_label.jsonl
-│   │   ├── val_label.jsonl (optional)
+├── kaist
+│   ├── crops
+│   ├── ignores
+│   ├── train_label.jsonl
+│   ├── val_label.jsonl (optional)
 ```
