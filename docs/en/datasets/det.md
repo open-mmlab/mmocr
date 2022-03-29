@@ -41,13 +41,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-|── vintext
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_test.json
-│   ├── instances_unseen_test.json
-│   └── instances_training.json
-
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -240,4 +233,13 @@ mv training imgs/ && mv test imgs/ && mv unseen_test imgs/
 - Step2: Generate `instances_training.json`, `instances_test.json` and `instances_unseen_test.json`
 ```bash
 python tools/data/textdet/vintext_converter.py PATH/TO/vintext --nproc 4
+```
+After running the above codes, the directory structure should be as follows:
+```text
+|── vintext
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_test.json
+│   ├── instances_unseen_test.json
+│   └── instances_training.json
 ```

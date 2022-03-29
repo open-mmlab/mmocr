@@ -79,12 +79,6 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
-│   ├── vintext
-│   │   ├── crops
-│   │   ├── ignores
-│   │   ├── train_label.jsonl
-│   │   ├── test_label.jsonl
-│   │   ├── unseen_test_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -347,4 +341,13 @@ mv training imgs/ && mv test imgs/ && mv unseen_test imgs/
 - Step2: Generate `train_label.jsonl`, `test_label.jsonl`, `unseen_test_label.jsonl`,  and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts).
 ```bash
 python tools/data/textrecog/vintext_converter.py PATH/TO/vietnamese --nproc 4
+```
+After running the above codes, the directory structure should be as follows:
+```text
+├── vintext
+│   ├── crops
+│   ├── ignores
+│   ├── train_label.jsonl
+│   ├── test_label.jsonl
+│   ├── unseen_test_label.jsonl
 ```
