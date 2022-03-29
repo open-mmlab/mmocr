@@ -47,7 +47,7 @@ mv Challenge4_Test_Task1_GT annotations/test
 python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
 ```
 
-- The resulting directory structure should be:
+- The resulting directory structure looks like the following:
 
 ```text
 ├── icdar2015
@@ -59,7 +59,7 @@ python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icda
 
 ### ICDAR 2017
 - Follow similar steps as [ICDAR 2015](#icdar-2015).
-- The resulting directory structure should be:
+- The resulting directory structure looks like the following:
 
 ```text
 ├── icdar2017
@@ -96,7 +96,7 @@ unzip test_images.zip && mv test_images test
 python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
 ```
 
-- The resulting directory structure should be:
+- The resulting directory structure looks like the following:
 
 ```text
 ├── ctw1500
@@ -108,9 +108,11 @@ python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1
 
 ### SynthText
 
-- Download [data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb) and [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb) to `synthtext/instances_training.lmdb/`.
+- Step1: Download SynthText.zip from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/ and extract its content to `synthtext/img`.
 
-- The resulting directory structure should be:
+- Step2: Download [data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb) and [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb) to `synthtext/instances_training.lmdb/`.
+
+- The resulting directory structure looks like the following:
 
 ```text
 ├── synthtext
@@ -142,7 +144,7 @@ mv train_images train
 python tools/data/textdet/textocr_converter.py /path/to/textocr
 ```
 
-- The resulting directory structure should be:
+- The resulting directory structure looks like the following:
 
 ```text
 ├── textocr
@@ -176,11 +178,12 @@ mv Polygon/Test ../annotations/test
 python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
 ```
 
-- The resulting directory structure should be:
+- The resulting directory structure looks like the following:
 
 ```text
 ├── totaltext
 │   ├── imgs
+│   ├── annotations
 │   ├── instances_test.json
 │   └── instances_training.json
 ```
@@ -209,7 +212,7 @@ rm images.zip
 python tools/data/common/curvedsyntext_converter.py PATH/TO/CurvedSynText150k --nproc 4
 ```
 
-- The resulting directory structure should be:
+- The resulting directory structure looks like the following:
 
 ```text
 ├── CurvedSynText150k
@@ -245,7 +248,7 @@ rm dataset.zip && rm -rf dataset
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
 
-- The resulting directory structure should be:
+- The resulting directory structure looks like the following:
 
 ```text
 |── funsd
@@ -277,7 +280,7 @@ rm IIIT-CVid.zip
 python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
 ```
 
-- The resulting directory structure should be:
+- The resulting directory structure looks like the following:
 
 ```text
 |── lv
