@@ -217,36 +217,39 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ### SROIE
 
 - Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
+
 - Step2:
 
-```bash
-mkdir sroie && cd sroie
-mkdir imgs && mkdir annotations && mkdir imgs/training
+  ```bash
+  mkdir sroie && cd sroie
+  mkdir imgs && mkdir annotations && mkdir imgs/training
 
-# Warnninig: The zip files downloaded from Google Drive and BaiduYun Cloud may
-# be different, the user should revise the following commands to the correct
-# file name if encounter with errors while extracting and move the files.
-unzip -q 0325updated.task1train\(626p\).zip && unzip -q task1\&2_test\(361p\).zip && unzip -q text.task1\&2-test（361p\).zip
+  # Warnninig: The zip files downloaded from Google Drive and BaiduYun Cloud may
+  # be different, the user should revise the following commands to the correct
+  # file name if encounter with errors while extracting and move the files.
+  unzip -q 0325updated.task1train\(626p\).zip && unzip -q task1\&2_test\(361p\).zip && unzip -q text.task1\&2-test（361p\).zip
 
-# For images
-mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv fulltext_test\(361p\) imgs/test
+  # For images
+  mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv fulltext_test\(361p\) imgs/test
 
-# For annotations
-mv 0325updated.task1train\(626p\) annotations/training && mv text.task1\&2-testги361p\)/ annotations/test
+  # For annotations
+  mv 0325updated.task1train\(626p\) annotations/training && mv text.task1\&2-testги361p\)/ annotations/test
 
-rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
-```
+  rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
+  ```
 
 - Step3: Generate `instances_training.json` and `instances_test.json` with the following command:
 
-```bash
-python tools/data/textdet/sroie_converter.py PATH/TO/sroie --nproc 4
-```
+  ```bash
+  python tools/data/textdet/sroie_converter.py PATH/TO/sroie --nproc 4
+  ```
+
 - After running the above codes, the directory structure should be as follows:
-```text
-├── sroie
-│   ├── annotations
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-```
+
+  ```text
+  ├── sroie
+  │   ├── annotations
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
