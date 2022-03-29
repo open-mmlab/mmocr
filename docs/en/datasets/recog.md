@@ -347,7 +347,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   # set by adding --val-ratio 0.2
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
   # vertical images will be filtered and stored in PATH/TO/rects/ignores
-  python tools/data/textrecog/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
+  python tools/data/textrecog/rects_converter.py PATH/TO/rects --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:

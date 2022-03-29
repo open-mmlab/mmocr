@@ -227,7 +227,7 @@ def parse_args():
         description='Generate training and val set of ReCTS.')
     parser.add_argument('root_path', help='Root dir path of ReCTS')
     parser.add_argument(
-        '--val-ratio', help='Split ratio for val set', default=0.2, type=float)
+        '--val-ratio', help='Split ratio for val set', default=0.0, type=float)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of process')
     parser.add_argument(
