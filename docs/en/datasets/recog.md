@@ -79,11 +79,6 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
-│   ├── imgur
-│   │   ├── crops
-│   │   ├── train_label.jsonl
-│   │   ├── test_label.jsonl
-│   │   ├── val_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -350,4 +345,12 @@ rm -rf IMGUR5K-Handwriting-Dataset
 
 ```bash
 python tools/data/textrecog/imgur_converter.py PATH/TO/imgur
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+├── imgur
+│   ├── crops
+│   ├── train_label.jsonl
+│   ├── test_label.jsonl
+│   ├── val_label.jsonl
 ```

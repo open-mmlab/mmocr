@@ -41,12 +41,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-|── imgur
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-│   └── instances_val.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -242,4 +236,13 @@ rm -rf IMGUR5K-Handwriting-Dataset
 
 ```bash
 python tools/data/textdet/imgur_converter.py PATH/TO/imgur
+```
+- After running the above codes, the directory structure should be as follows:
+```
+|── imgur
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
+│   └── instances_val.json
 ```
