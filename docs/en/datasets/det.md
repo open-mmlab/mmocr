@@ -212,31 +212,33 @@ rm dataset.zip && rm -rf dataset
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
-
 ### MTWI
+
 - Step1: Download `mtwi_2018_train.zip` from [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us).
 
-```bash
-mkdir mtwi && cd mtwi
+  ```bash
+  mkdir mtwi && cd mtwi
 
-unzip -q mtwi_2018_train.zip
-mv image_train imgs && mv txt_train annotations
+  unzip -q mtwi_2018_train.zip
+  mv image_train imgs && mv txt_train annotations
 
-rm mtwi_2018_train.zip
-```
+  rm mtwi_2018_train.zip
+  ```
 
 - Step2: Generate `instances_training.json` and `instance_val.json` (optional) with the following command:
 
-```bash
-# Annotations of MTWI test split is not publicly available
-# Set a val_ratio to separate a val split
-python tools/data/textdet/mtwi_converter.py PATH/TO/mtwi --nproc 4
-```
+  ```bash
+  # Annotations of MTWI test split is not publicly available
+  # Set a val_ratio to separate a val split
+  python tools/data/textdet/mtwi_converter.py PATH/TO/mtwi --nproc 4
+  ```
+
 - After running the above codes, the directory structure should be as follows:
-```text
-|── mtwi
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_training.json
-│   └── instances_val.json (optional)
-```
+
+  ```text
+  |── mtwi
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json (optional)
+  ```
