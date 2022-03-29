@@ -26,14 +26,14 @@ def extract(root_path):
                         except ParseError:
                             continue
                         src_img = None
-                        im_names = [
+                        img_names = [
                             file.replace('xml', suffix)
                             for suffix in ['jpg', 'JPG']
                         ]
-                        for im in im_names:
-                            im_path = osp.join(extracted_path, im)
-                            if osp.exists(im_path):
-                                src_img = im_path
+                        for im in img_names:
+                            img_path = osp.join(extracted_path, im)
+                            if osp.exists(img_path):
+                                src_img = img_path
                         if src_img:
                             shutil.move(
                                 src_ann,
