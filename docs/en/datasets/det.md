@@ -217,32 +217,35 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ### IMGUR
 
 - Step1: Run `download_imgur5k.py` to download images. You can merge [PR#5](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset/pull/5) in your local repository to enable a **much faster** parallel execution of image download.
-```bash
-mkdir imgur && cd imgur
 
-git clone https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset.git
+  ```bash
+  mkdir imgur && cd imgur
 
-# Download images from imgur.com. This may take SEVERAL HOURS!
-python ./IMGUR5K-Handwriting-Dataset/download_imgur5k.py --dataset_info_dir ./IMGUR5K-Handwriting-Dataset/dataset_info/ --output_dir ./imgs
+  git clone https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset.git
 
-# For annotations
-mkdir annotations
-mv ./IMGUR5K-Handwriting-Dataset/dataset_info/*.json annotations
+  # Download images from imgur.com. This may take SEVERAL HOURS!
+  python ./IMGUR5K-Handwriting-Dataset/download_imgur5k.py --dataset_info_dir ./IMGUR5K-Handwriting-Dataset/dataset_info/ --output_dir ./imgs
 
-rm -rf IMGUR5K-Handwriting-Dataset
-```
+  # For annotations
+  mkdir annotations
+  mv ./IMGUR5K-Handwriting-Dataset/dataset_info/*.json annotations
+
+  rm -rf IMGUR5K-Handwriting-Dataset
+  ```
 
 - Step2: Generate `instances_train.json`, `instance_val.json` and `instances_test.json` with the following command:
 
-```bash
-python tools/data/textdet/imgur_converter.py PATH/TO/imgur
-```
+  ```bash
+  python tools/data/textdet/imgur_converter.py PATH/TO/imgur
+  ```
+
 - After running the above codes, the directory structure should be as follows:
-```
-|── imgur
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-│   └── instances_val.json
-```
+
+  ```
+  |── imgur
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  │   └── instances_val.json
+  ```
