@@ -30,81 +30,81 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step0: Read [Important Note](#important-note)
 - Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
 - Step2:
-```bash
-mkdir icdar2015 && cd icdar2015
-mkdir imgs && mkdir annotations
-# For images,
-mv ch4_training_images imgs/training
-mv ch4_test_images imgs/test
-# For annotations,
-mv ch4_training_localization_transcription_gt annotations/training
-mv Challenge4_Test_Task1_GT annotations/test
-```
+  ```bash
+  mkdir icdar2015 && cd icdar2015
+  mkdir imgs && mkdir annotations
+  # For images,
+  mv ch4_training_images imgs/training
+  mv ch4_test_images imgs/test
+  # For annotations,
+  mv ch4_training_localization_transcription_gt annotations/training
+  mv Challenge4_Test_Task1_GT annotations/test
+  ```
 - Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) and move them to `icdar2015`
 - Or, generate `instances_training.json` and `instances_test.json` with the following command:
 
-```bash
-python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
-```
+  ```bash
+  python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
+  ```
 
 - The resulting directory structure looks like the following:
 
-```text
-├── icdar2015
-│   ├── imgs
-│   ├── annotations
-│   ├── instances_test.json
-│   └── instances_training.json
-```
+  ```text
+  ├── icdar2015
+  │   ├── imgs
+  │   ├── annotations
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
 
 ### ICDAR 2017
 - Follow similar steps as [ICDAR 2015](#icdar-2015).
 - The resulting directory structure looks like the following:
 
-```text
-├── icdar2017
-│   ├── imgs
-│   ├── annotations
-│   ├── instances_training.json
-│   └── instances_val.json
-```
+  ```text
+  ├── icdar2017
+  │   ├── imgs
+  │   ├── annotations
+  │   ├── instances_training.json
+  │   └── instances_val.json
+  ```
 
 ### CTW1500
 - Step0: Read [Important Note](#important-note)
 - Step1: Download `train_images.zip`, `test_images.zip`, `train_labels.zip`, `test_labels.zip` from [github](https://github.com/Yuliang-Liu/Curve-Text-Detector)
-```bash
-mkdir ctw1500 && cd ctw1500
-mkdir imgs && mkdir annotations
+  ```bash
+  mkdir ctw1500 && cd ctw1500
+  mkdir imgs && mkdir annotations
 
-# For annotations
-cd annotations
-wget -O train_labels.zip https://universityofadelaide.box.com/shared/static/jikuazluzyj4lq6umzei7m2ppmt3afyw.zip
-wget -O test_labels.zip https://cloudstor.aarnet.edu.au/plus/s/uoeFl0pCN9BOCN5/download
-unzip train_labels.zip && mv ctw1500_train_labels training
-unzip test_labels.zip -d test
-cd ..
-# For images
-cd imgs
-wget -O train_images.zip https://universityofadelaide.box.com/shared/static/py5uwlfyyytbb2pxzq9czvu6fuqbjdh8.zip
-wget -O test_images.zip https://universityofadelaide.box.com/shared/static/t4w48ofnqkdw7jyc4t11nsukoeqk9c3d.zip
-unzip train_images.zip && mv train_images training
-unzip test_images.zip && mv test_images test
-```
+  # For annotations
+  cd annotations
+  wget -O train_labels.zip https://universityofadelaide.box.com/shared/static/jikuazluzyj4lq6umzei7m2ppmt3afyw.zip
+  wget -O test_labels.zip https://cloudstor.aarnet.edu.au/plus/s/uoeFl0pCN9BOCN5/download
+  unzip train_labels.zip && mv ctw1500_train_labels training
+  unzip test_labels.zip -d test
+  cd ..
+  # For images
+  cd imgs
+  wget -O train_images.zip https://universityofadelaide.box.com/shared/static/py5uwlfyyytbb2pxzq9czvu6fuqbjdh8.zip
+  wget -O test_images.zip https://universityofadelaide.box.com/shared/static/t4w48ofnqkdw7jyc4t11nsukoeqk9c3d.zip
+  unzip train_images.zip && mv train_images training
+  unzip test_images.zip && mv test_images test
+  ```
 - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
 
-```bash
-python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
-```
+  ```bash
+  python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
+  ```
 
 - The resulting directory structure looks like the following:
 
-```text
-├── ctw1500
-│   ├── imgs
-│   ├── annotations
-│   ├── instances_training.json
-│   └── instances_val.json
-```
+  ```text
+  ├── ctw1500
+  │   ├── imgs
+  │   ├── annotations
+  │   ├── instances_training.json
+  │   └── instances_val.json
+  ```
 
 ### SynthText
 
@@ -114,178 +114,178 @@ python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1
 
 - The resulting directory structure looks like the following:
 
-```text
-├── synthtext
-│   ├── imgs
-│   └── instances_training.lmdb
-│       ├── data.mdb
-│       └── lock.mdb
-```
+  ```text
+  ├── synthtext
+  │   ├── imgs
+  │   └── instances_training.lmdb
+  │       ├── data.mdb
+  │       └── lock.mdb
+  ```
 
 ### TextOCR
 - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
 
-```bash
-mkdir textocr && cd textocr
+  ```bash
+  mkdir textocr && cd textocr
 
-# Download TextOCR dataset
-wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
-wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json
-wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
+  # Download TextOCR dataset
+  wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
+  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json
+  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
 
-# For images
-unzip -q train_val_images.zip
-mv train_images train
-```
+  # For images
+  unzip -q train_val_images.zip
+  mv train_images train
+  ```
 
 - Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
 
-```bash
-python tools/data/textdet/textocr_converter.py /path/to/textocr
-```
+  ```bash
+  python tools/data/textdet/textocr_converter.py /path/to/textocr
+  ```
 
 - The resulting directory structure looks like the following:
 
-```text
-├── textocr
-│   ├── train
-│   ├── instances_training.json
-│   └── instances_val.json
-```
+  ```text
+  ├── textocr
+  │   ├── train
+  │   ├── instances_training.json
+  │   └── instances_val.json
+  ```
 
 ### Totaltext
 - Step0: Read [Important Note](#important-note)
 - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
-```bash
-mkdir totaltext && cd totaltext
-mkdir imgs && mkdir annotations
+  ```bash
+  mkdir totaltext && cd totaltext
+  mkdir imgs && mkdir annotations
 
-# For images
-# in ./totaltext
-unzip totaltext.zip
-mv Images/Train imgs/training
-mv Images/Test imgs/test
+  # For images
+  # in ./totaltext
+  unzip totaltext.zip
+  mv Images/Train imgs/training
+  mv Images/Test imgs/test
 
-# For annotations
-unzip groundtruth_text.zip
-cd Groundtruth
-mv Polygon/Train ../annotations/training
-mv Polygon/Test ../annotations/test
+  # For annotations
+  unzip groundtruth_text.zip
+  cd Groundtruth
+  mv Polygon/Train ../annotations/training
+  mv Polygon/Test ../annotations/test
 
-```
+  ```
 - Step2: Generate `instances_training.json` and `instances_test.json` with the following command:
-```bash
-python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
-```
+  ```bash
+  python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
+  ```
 
 - The resulting directory structure looks like the following:
 
-```text
-├── totaltext
-│   ├── imgs
-│   ├── annotations
-│   ├── instances_test.json
-│   └── instances_training.json
-```
+  ```text
+  ├── totaltext
+  │   ├── imgs
+  │   ├── annotations
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
 
 ### CurvedSynText150k
 
 - Step1: Download [syntext1.zip](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) and [syntext2.zip](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) to `CurvedSynText150k/`.
 - Step2:
 
-```bash
-unzip -q syntext1.zip
-mv train.json train1.json
-unzip images.zip
-rm images.zip
+  ```bash
+  unzip -q syntext1.zip
+  mv train.json train1.json
+  unzip images.zip
+  rm images.zip
 
-unzip -q syntext2.zip
-mv train.json train2.json
-unzip images.zip
-rm images.zip
-```
+  unzip -q syntext2.zip
+  mv train.json train2.json
+  unzip images.zip
+  rm images.zip
+  ```
 
 - Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json) to `CurvedSynText150k/`
 - Or, generate `instances_training.json` with following command:
 
-```bash
-python tools/data/common/curvedsyntext_converter.py PATH/TO/CurvedSynText150k --nproc 4
-```
+  ```bash
+  python tools/data/common/curvedsyntext_converter.py PATH/TO/CurvedSynText150k --nproc 4
+  ```
 
 - The resulting directory structure looks like the following:
 
-```text
-├── CurvedSynText150k
-│   ├── syntext_word_eng
-│   ├── emcs_imgs
-│   └── instances_training.json
-```
+  ```text
+  ├── CurvedSynText150k
+  │   ├── syntext_word_eng
+  │   ├── emcs_imgs
+  │   └── instances_training.json
+  ```
 
 ### FUNSD
 
 - Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
 
-```bash
-mkdir funsd && cd funsd
+  ```bash
+  mkdir funsd && cd funsd
 
-# Download FUNSD dataset
-wget https://guillaumejaume.github.io/FUNSD/dataset.zip
-unzip -q dataset.zip
+  # Download FUNSD dataset
+  wget https://guillaumejaume.github.io/FUNSD/dataset.zip
+  unzip -q dataset.zip
 
-# For images
-mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
+  # For images
+  mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
 
-# For annotations
-mkdir annotations
-mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
+  # For annotations
+  mkdir annotations
+  mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
 
-rm dataset.zip && rm -rf dataset
-```
+  rm dataset.zip && rm -rf dataset
+  ```
 
 - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
 
-```bash
-python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
-```
+  ```bash
+  python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
+  ```
 
 - The resulting directory structure looks like the following:
 
-```text
-|── funsd
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-```
+  ```text
+  |── funsd
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
 
 ### Lecture Video DB
 
 - Step1: Download [IIIT-CVid.zip](http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip) to `lv/`.
 
-```bash
-mkdir lv && cd lv
+  ```bash
+  mkdir lv && cd lv
 
-# Download LV dataset
-wget http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip
-unzip -q IIIT-CVid.zip
+  # Download LV dataset
+  wget http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip
+  unzip -q IIIT-CVid.zip
 
-mv IIIT-CVid/Frames imgs
+  mv IIIT-CVid/Frames imgs
 
-rm IIIT-CVid.zip
-```
+  rm IIIT-CVid.zip
+  ```
 
 - Step2: Generate `instances_training.json`, `instances_val.json`, and `instances_test.json` with following command:
 
-```bash
-python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
-```
+  ```bash
+  python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
+  ```
 
 - The resulting directory structure looks like the following:
 
-```text
-|── lv
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-│   └── instances_val.json
-```
+  ```text
+  |── lv
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  │   └── instances_val.json
+  ```
