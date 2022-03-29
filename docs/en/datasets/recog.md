@@ -76,10 +76,6 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
-│   ├── icdar2011
-│   │   ├── crops
-│   │   ├── train_label.jsonl
-│   │   ├── test_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -348,4 +344,11 @@ mv Challenge1_Test_Task3_GT.txt annotations && mv train/gt.txt annotations/Chall
 
 ```bash
 python tools/data/textrecog/ic11_converter.py PATH/TO/icdar2011
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+├── icdar2011
+│   ├── crops
+│   ├── train_label.jsonl
+│   ├── test_label.jsonl
 ```
