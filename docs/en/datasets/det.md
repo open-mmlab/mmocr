@@ -241,6 +241,6 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
   |── IIIT-ILST   
   |   ├── annotations
   │   ├── imgs
-  │   ├── instances_val.json
-  │   └── instances_training.json (optional)
+  │   ├── instances_val.json (optional)
+  │   └── instances_training.json
   ```
