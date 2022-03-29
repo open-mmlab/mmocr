@@ -41,11 +41,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-|── kaist
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_val.json (optional)
-│   └── instances_training.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -245,4 +240,12 @@ python tools/data/common/extract_kaist.py PATH/TO/kaist
 ```bash
 # Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
 python tools/data/textdet/kaist_converter.py PATH/TO/kaist --nproc 4
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+|── kaist
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_training.json
+│   └── instances_val.json (optional)
 ```
