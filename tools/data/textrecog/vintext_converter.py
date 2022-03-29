@@ -118,7 +118,7 @@ def load_txt_info(gt_file, img_info):
             ann = line.split(',')
             bbox = ann[0:8]
             word = line[len(','.join(bbox)) + 1:]
-            bbox = [int(_) for _ in bbox]
+            bbox = [int(coord) for coord in bbox]
             # Ignore hard samples
             if word == '###':
                 continue

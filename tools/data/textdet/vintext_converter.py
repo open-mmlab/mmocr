@@ -116,7 +116,7 @@ def load_txt_info(gt_file, img_info):
             ann = line.split(',')
             bbox = ann[0:8]
             word = line[len(','.join(bbox)) + 1:]
-            bbox = [int(_) for _ in bbox]
+            bbox = [int(coord) for coord in bbox]
             segmentation = bbox
             x_min = min(bbox[0], bbox[2], bbox[4], bbox[6])
             x_max = max(bbox[0], bbox[2], bbox[4], bbox[6])

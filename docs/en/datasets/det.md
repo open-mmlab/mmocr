@@ -237,7 +237,7 @@ mv labels annotations && mv test_image test && mv train_images  training && mv u
 mkdir imgs
 mv training imgs/ && mv test imgs/ && mv unseen_test imgs/
 ```
-- Step2: Generate `instances_test.json` and `instances_training.json`
+- Step2: Generate `instances_training.json`, `instances_test.json` and `instances_unseen_test.json`
 ```bash
 python tools/data/textdet/vintext_converter.py PATH/TO/vintext --nproc 4
 ```
