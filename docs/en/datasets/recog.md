@@ -2,89 +2,6 @@
 
 ## Overview
 
-**The structure of the text recognition dataset directory is organized as follows.**
-
-```text
-├── mixture
-│   ├── coco_text
-│   │   ├── train_label.txt
-│   │   ├── train_words
-│   ├── icdar_2011
-│   │   ├── training_label.txt
-│   │   ├── Challenge1_Training_Task3_Images_GT
-│   ├── icdar_2013
-│   │   ├── train_label.txt
-│   │   ├── test_label_1015.txt
-│   │   ├── test_label_1095.txt
-│   │   ├── Challenge2_Training_Task3_Images_GT
-│   │   ├── Challenge2_Test_Task3_Images
-│   ├── icdar_2015
-│   │   ├── train_label.txt
-│   │   ├── test_label.txt
-│   │   ├── ch4_training_word_images_gt
-│   │   ├── ch4_test_word_images_gt
-│   ├── III5K
-│   │   ├── train_label.txt
-│   │   ├── test_label.txt
-│   │   ├── train
-│   │   ├── test
-│   ├── ct80
-│   │   ├── test_label.txt
-│   │   ├── image
-│   ├── svt
-│   │   ├── test_label.txt
-│   │   ├── image
-│   ├── svtp
-│   │   ├── test_label.txt
-│   │   ├── image
-│   ├── Syn90k
-│   │   ├── shuffle_labels.txt
-│   │   ├── label.txt
-│   │   ├── label.lmdb
-│   │   ├── mnt
-│   ├── SynthText
-│   │   ├── alphanumeric_labels.txt
-│   │   ├── shuffle_labels.txt
-│   │   ├── instances_train.txt
-│   │   ├── label.txt
-│   │   ├── label.lmdb
-│   │   ├── synthtext
-│   ├── SynthAdd
-│   │   ├── label.txt
-│   │   ├── label.lmdb
-│   │   ├── SynthText_Add
-│   ├── TextOCR
-│   │   ├── image
-│   │   ├── train_label.txt
-│   │   ├── val_label.txt
-│   ├── Totaltext
-│   │   ├── imgs
-│   │   ├── annotations
-│   │   ├── train_label.txt
-│   │   ├── test_label.txt
-│   ├── OpenVINO
-│   │   ├── image_1
-│   │   ├── image_2
-│   │   ├── image_5
-│   │   ├── image_f
-│   │   ├── image_val
-│   │   ├── train_1_label.txt
-│   │   ├── train_2_label.txt
-│   │   ├── train_5_label.txt
-│   │   ├── train_f_label.txt
-│   │   ├── val_label.txt
-│   ├── funsd
-│   │   ├── imgs
-│   │   ├── dst_imgs
-│   │   ├── annotations
-│   │   ├── train_label.txt
-│   │   ├── test_label.txt
-│   ├── lv
-│   │   ├── Crops
-│   │   ├── train_label.jsonl
-│   │   ├── test_label.jsonl
-```
-
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
 | :-------------------: | :---------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------: |
 |                       |                                                                                                       |                                                                                                                                                                                                       training                                                                                                                                                                                                        |                                                           test                                                            |
@@ -119,9 +36,8 @@
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
 
-## Preparation Steps
+## ICDAR 2011 (Born-Digital Images)
 
-### ICDAR 2011 (Born-Digital Images)
 - Step1: Download `Challenge1_Training_Task3_Images_GT.zip`, `Challenge1_Test_Task3_Images.zip`, and `Challenge1_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.3: Word Recognition (2013 edition)`.
 
   ```bash
@@ -157,7 +73,8 @@
   │   └── test_label.jsonl
   ```
 
-### ICDAR 2013 (Focused Scene Text)
+## ICDAR 2013 (Focused Scene Text)
+
 - Step1: Download `Challenge2_Training_Task3_Images_GT.zip`, `Challenge2_Test_Task3_Images.zip`, and `Challenge2_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.3: Word Recognition (2013 edition)`.
 
   ```bash
@@ -194,39 +111,116 @@
   │   └── test_label.jsonl
   ```
 
-### ICDAR 2013 [Deprecated]
+## ICDAR 2013 [Deprecated]
+
 - Step1: Download `Challenge2_Test_Task3_Images.zip` and `Challenge2_Training_Task3_Images_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads)
 - Step2: Download [test_label_1015.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt) and [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/train_label.txt)
+- After running the above codes, the directory structure
+should be as follows:
 
-### ICDAR 2015
+  ```text
+  ├── icdar_2013
+  │   ├── train_label.txt
+  │   ├── test_label_1015.txt
+  │   ├── test_label_1095.txt
+  │   ├── Challenge2_Training_Task3_Images_GT
+  │   ├── Challenge2_Test_Task3_Images
+  ```
+
+## ICDAR 2015
+
 - Step1: Download `ch4_training_word_images_gt.zip` and `ch4_test_word_images_gt.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
 - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt)
-### IIIT5K
-  - Step1: Download `IIIT5K-Word_V3.0.tar.gz` from [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html)
-  - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt)
+- After running the above codes, the directory structure
+should be as follows:
 
-### svt
-  - Step1: Download `svt.zip` form [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset)
-  - Step2: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)
-  - Step3:
+  ```text
+  ├── icdar_2015
+  │   ├── train_label.txt
+  │   ├── test_label.txt
+  │   ├── ch4_training_word_images_gt
+  │   ├── ch4_test_word_images_gt
+  ```
+
+## IIIT5K
+
+- Step1: Download `IIIT5K-Word_V3.0.tar.gz` from [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html)
+- Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt)
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── III5K
+  │   ├── train_label.txt
+  │   ├── test_label.txt
+  │   ├── train
+  │   ├── test
+  ```
+
+## svt
+
+- Step1: Download `svt.zip` form [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset)
+- Step2: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)
+- Step3:
+
   ```bash
   python tools/data/textrecog/svt_converter.py <download_svt_dir_path>
   ```
 
-### ct80
-  - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)
+- After running the above codes, the directory structure
+should be as follows:
 
-### svtp
-  - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)
+  ```text
+  ├── svt
+  │   ├── test_label.txt
+  │   ├── image
+  ```
 
-### coco_text
-  - Step1: Download from [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads)
-  - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt)
+## ct80
 
-### MJSynth (Syn90k)
-  - Step1: Download `mjsynth.tar.gz` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)
-  - Step2: Download [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt) (8,919,273 annotations) and [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) (2,400,000 randomly sampled annotations). **Please make sure you're using the right annotation to train the model by checking its dataset specs in Model Zoo.**
-  - Step3:
+- Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── ct80
+  │   ├── test_label.txt
+  │   ├── image
+  ```
+
+## svtp
+
+- Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── svtp
+  │   ├── test_label.txt
+  │   ├── image
+  ```
+
+## coco_text
+
+- Step1: Download from [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads)
+- Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt)
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── coco_text
+  │   ├── train_label.txt
+  │   ├── train_words
+  ```
+
+## MJSynth (Syn90k)
+
+- Step1: Download `mjsynth.tar.gz` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)
+- Step2: Download [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt) (8,919,273 annotations) and [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) (2,400,000 randomly sampled annotations).
+:::{note}
+Please make sure you're using the right annotation to train the model by checking its dataset specs in Model Zoo.
+:::
+- Step3:
 
   ```bash
   mkdir Syn90k && cd Syn90k
@@ -244,7 +238,19 @@
   ln -s /path/to/Syn90k Syn90k
   ```
 
-### SynthText (Synth800k)
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── Syn90k
+  │   ├── shuffle_labels.txt
+  │   ├── label.txt
+  │   ├── label.lmdb
+  │   ├── mnt
+  ```
+
+## SynthText (Synth800k)
+
 - Step1: Download `SynthText.zip` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)
 
 - Step2: According to your actual needs, download the most appropriate one from the following options: [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) (7,266,686 annotations), [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) (2,400,000 randomly sampled annotations), [alphanumeric_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/alphanumeric_labels.txt) (7,239,272 annotations with alphanumeric characters only) and [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) (7,266,686 character-level annotations).
@@ -255,63 +261,93 @@ Please make sure you're using the right annotation to train the model by checkin
 
 - Step3:
 
-```bash
-mkdir SynthText && cd SynthText
-mv /path/to/SynthText.zip .
-unzip SynthText.zip
-mv SynthText synthtext
+  ```bash
+  mkdir SynthText && cd SynthText
+  mv /path/to/SynthText.zip .
+  unzip SynthText.zip
+  mv SynthText synthtext
 
-mv /path/to/shuffle_labels.txt .
-mv /path/to/label.txt .
-mv /path/to/alphanumeric_labels.txt .
-mv /path/to/instances_train.txt .
+  mv /path/to/shuffle_labels.txt .
+  mv /path/to/label.txt .
+  mv /path/to/alphanumeric_labels.txt .
+  mv /path/to/instances_train.txt .
 
-# create soft link
-cd /path/to/mmocr/data/mixture
-ln -s /path/to/SynthText SynthText
-```
+  # create soft link
+  cd /path/to/mmocr/data/mixture
+  ln -s /path/to/SynthText SynthText
+  ```
 
-- Step4:
-Generate cropped images and labels:
+- Step4:Generate cropped images and labels:
 
-```bash
-cd /path/to/mmocr
+  ```bash
+  cd /path/to/mmocr
 
-python tools/data/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat data/mixture/SynthText/ data/mixture/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
-```
+  python tools/data/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat data/mixture/SynthText/ data/mixture/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
+  ```
 
-### SynthAdd
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── SynthText
+  │   ├── alphanumeric_labels.txt
+  │   ├── shuffle_labels.txt
+  │   ├── instances_train.txt
+  │   ├── label.txt
+  │   ├── label.lmdb
+  │   ├── synthtext
+  ```
+
+## SynthAdd
+
 - Step1: Download `SynthText_Add.zip` from [SynthAdd](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg) (code:627x))
 - Step2: Download [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)
 - Step3:
 
-```bash
-mkdir SynthAdd && cd SynthAdd
+  ```bash
+  mkdir SynthAdd && cd SynthAdd
 
-mv /path/to/SynthText_Add.zip .
+  mv /path/to/SynthText_Add.zip .
 
-unzip SynthText_Add.zip
+  unzip SynthText_Add.zip
 
-mv /path/to/label.txt .
+  mv /path/to/label.txt .
 
-# create soft link
-cd /path/to/mmocr/data/mixture
+  # create soft link
+  cd /path/to/mmocr/data/mixture
 
-ln -s /path/to/SynthAdd SynthAdd
-```
+  ln -s /path/to/SynthAdd SynthAdd
+  ```
+
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── SynthAdd
+  │   ├── label.txt
+  │   ├── label.lmdb
+  │   ├── SynthText_Add
+  ```
+
 :::{tip}
 To convert label file with `txt` format to `lmdb` format,
+
 ```bash
 python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
 ```
+
 For example,
+
 ```bash
 python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
 ```
+
 :::
 
-### TextOCR
-  - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
+## TextOCR
+
+- Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
+
   ```bash
   mkdir textocr && cd textocr
 
@@ -324,13 +360,27 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   unzip -q train_val_images.zip
   mv train_images train
   ```
-  - Step2: Generate `train_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
+
+- Step2: Generate `train_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
+
   ```bash
   python tools/data/textrecog/textocr_converter.py /path/to/textocr 4
   ```
 
-### Totaltext
-  - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── TextOCR
+  │   ├── image
+  │   ├── train_label.txt
+  │   ├── val_label.txt
+  ```
+
+## Totaltext
+
+- Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
+
   ```bash
   mkdir totaltext && cd totaltext
   mkdir imgs && mkdir annotations
@@ -348,14 +398,29 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   mv Polygon/Test ../annotations/test
 
   ```
-  - Step2: Generate cropped images, `train_label.txt` and `test_label.txt` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`):
+
+- Step2: Generate cropped images, `train_label.txt` and `test_label.txt` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`):
+
   ```bash
   python tools/data/textrecog/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
   ```
 
-### OpenVINO
-  - Step0: Install [awscli](https://aws.amazon.com/cli/).
-  - Step1: Download [Open Images](https://github.com/cvdfoundation/open-images-dataset#download-images-with-bounding-boxes-annotations) subsets `train_1`, `train_2`, `train_5`, `train_f`, and `validation` to `openvino/`.
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── Totaltext
+  │   ├── imgs
+  │   ├── annotations
+  │   ├── train_label.txt
+  │   ├── test_label.txt
+  ```
+
+## OpenVINO
+
+- Step1: Install [awscli](https://aws.amazon.com/cli/).
+- Step2: Download [Open Images](https://github.com/cvdfoundation/open-images-dataset#download-images-with-bounding-boxes-annotations) subsets `train_1`, `train_2`, `train_5`, `train_f`, and `validation` to `openvino/`.
+
   ```bash
   mkdir openvino && cd openvino
 
@@ -378,12 +443,31 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   done
   tar zxf validation.tar.gz -C openimages_v5/val
   ```
-  - Step2: Generate `train_{1,2,5,f}_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
+
+- Step3: Generate `train_{1,2,5,f}_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
+
   ```bash
   python tools/data/textrecog/openvino_converter.py /path/to/openvino 4
   ```
 
-### DeText
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── OpenVINO
+  │   ├── image_1
+  │   ├── image_2
+  │   ├── image_5
+  │   ├── image_f
+  │   ├── image_val
+  │   ├── train_1_label.txt
+  │   ├── train_2_label.txt
+  │   ├── train_5_label.txt
+  │   ├── train_f_label.txt
+  │   ├── val_label.txt
+  ```
+
+## DeText
 
 - Step1: Download `ch9_training_images.zip`, `ch9_training_localization_transcription_gt.zip`, `ch9_validation_images.zip`, and `ch9_validation_localization_transcription_gt.zip` from **Task 3: End to End** on the [homepage](https://rrc.cvc.uab.es/?ch=9).
 
@@ -422,7 +506,7 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   │   ├── test_label.jsonl
   ```
 
-### NAF
+## NAF
 
 - Step1: Download [labeled_images.tar.gz](https://github.com/herobd/NAF_dataset/releases/tag/v1.0) to `naf/`.
 
@@ -459,7 +543,8 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   │   ├── val_label.txt
   │   ├── test_label.txt
   ```
-### SROIE
+
+## SROIE
 
 - Step1: Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
 
@@ -497,62 +582,87 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   │   ├── train_label.jsonl
   │   ├── test_label.jsonl
   ```
-### Lecture Video DB
 
-**The LV dataset has already provided cropped images and the corresponding annotations**
+## Lecture Video DB
+
+:::{note}
+The LV dataset has already provided cropped images and the corresponding annotations
+:::
 
 - Step1: Download [IIIT-CVid.zip](http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip) to `lv/`.
 
-```bash
-mkdir lv && cd lv
+  ```bash
+  mkdir lv && cd lv
 
-# Download LV dataset
-wget http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip
-unzip -q IIIT-CVid.zip
+  # Download LV dataset
+  wget http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip
+  unzip -q IIIT-CVid.zip
 
-# For image
-mv IIIT-CVid/Crops ./
+  # For image
+  mv IIIT-CVid/Crops ./
 
-# For annotation
-mv IIIT-CVid/train.txt train_label.txt && mv IIIT-CVid/val.txt val_label.txt && mv IIIT-CVid/test.txt test_label.txt
+  # For annotation
+  mv IIIT-CVid/train.txt train_label.txt && mv IIIT-CVid/val.txt val_label.txt && mv IIIT-CVid/test.txt test_label.txt
 
-rm IIIT-CVid.zip
-```
+  rm IIIT-CVid.zip
+  ```
 
 - Step2: Generate `train_label.jsonl`, `val.jsonl`, and `test.jsonl` with following command:
 
-```bash
-python tools/data/textdreog/lv_converter.py PATH/TO/lv
-```
+  ```bash
+  python tools/data/textdreog/lv_converter.py PATH/TO/lv
+  ```
 
-### FUNSD
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── lv
+  │   ├── Crops
+  │   ├── train_label.jsonl
+  │   ├── test_label.jsonl
+  ```
+
+## FUNSD
 
 - Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
 
-```bash
-mkdir funsd && cd funsd
+  ```bash
+  mkdir funsd && cd funsd
 
-# Download FUNSD dataset
-wget https://guillaumejaume.github.io/FUNSD/dataset.zip
-unzip -q dataset.zip
+  # Download FUNSD dataset
+  wget https://guillaumejaume.github.io/FUNSD/dataset.zip
+  unzip -q dataset.zip
 
-# For images
-mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
+  # For images
+  mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
 
-# For annotations
-mkdir annotations
-mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
+  # For annotations
+  mkdir annotations
+  mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
 
-rm dataset.zip && rm -rf dataset
-```
+  rm dataset.zip && rm -rf dataset
+  ```
 
 - Step2: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
 
-```bash
-python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
-```
+  ```bash
+  python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
+  ```
 
-### IMGUR
+- After running the above codes, the directory structure
+should be as follows:
+
+  ```text
+  ├── funsd
+  │   ├── imgs
+  │   ├── dst_imgs
+  │   ├── annotations
+  │   ├── train_label.txt
+  │   ├── test_label.txt
+  ```
+
+## IMGUR
 
 - Step1: Run `download_imgur5k.py` to download images. You can merge [PR#5](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset/pull/5) in your local repository to enable a **much faster** parallel execution of image download.
 
@@ -587,7 +697,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   │   └── val_label.jsonl
   ```
 
-### KAIST
+## KAIST
 
 - Step1: Complete download [KAIST_all.zip](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) to `kaist/`.
 
@@ -627,7 +737,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   │   └── val_label.jsonl (optional)
   ```
 
-### MTWI
+## MTWI
 
 - Step1: Download `mtwi_2018_train.zip` from [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us).
 
@@ -659,7 +769,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   │   ├── val_label.jsonl (optional)
   ```
 
-### COCO Text v2
+## COCO Text v2
 
 - Step1: Download image [train2014.zip](http://images.cocodataset.org/zips/train2014.zip) and annotation [cocotext.v2.zip](https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip) to `coco_textv2/`.
 
@@ -695,7 +805,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   │   └── val_label.jsonl
   ```
 
-### ReCTS
+## ReCTS
 
 - Step1: Download [ReCTS.zip](https://datasets.cvc.uab.es/rrc/ReCTS.zip) to `rects/` from the [homepage](https://rrc.cvc.uab.es/?ch=12&com=downloads).
 
@@ -732,11 +842,12 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   │   └── val_label.jsonl (optional)
   ```
 
-### ILST
+## ILST
 
 - Step1: Download `IIIT-ILST.zip` from [onedrive link](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)
 
 - Step2: Run the following commands
+
   ```bash
   unzip -q IIIT-ILST.zip && rm IIIT-ILST.zip
   cd IIIT-ILST
@@ -763,6 +874,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
+
   ```text
   ├── IIIT-ILST
   │   ├── crops
@@ -774,6 +886,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ### VinText
 
 - Step1: Download [vintext.zip](https://drive.google.com/drive/my-drive) to `vintext`
+
   ```bash
   mkdir vintext && cd vintext
 
@@ -798,6 +911,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
+
   ```text
   ├── vintext
   │   ├── crops
@@ -807,11 +921,12 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   │   ├── unseen_test_label.jsonl
   ```
 
-### BID
+## BID
 
 - Step1: Download [BID Dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
 
 - Step2: Run the following commands to preprocess the dataset
+
   ```bash
   # Rename
   mv BID\ Dataset.zip BID_Dataset.zip
@@ -847,6 +962,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
+
   ```text
   ├── BID
   │   ├── crops
