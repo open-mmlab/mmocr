@@ -117,7 +117,7 @@ def load_txt_info(gt_file, img_info):
                 continue
             ann = line.split(',')
             bbox = ann[0:4]
-            bbox = [int(_) for _ in bbox]
+            bbox = [int(coord) for coord in bbox]
             x, y, w, h = bbox
             # in case ',' exists in label
             word = ','.join(ann[4:]) if len(ann[4:]) > 1 else ann[4]
@@ -157,7 +157,6 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
 
     Args:
         root_path (str): The root path of the dataset
-        split (str): The split of dataset. Namely: training or test
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
@@ -178,7 +177,7 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
     for i, split in enumerate(splits):
         dst_image_root = osp.join(root_path, 'crops', split)
         ignore_image_root = osp.join(root_path, 'ignores', split)
-        dst_label_file = osp.join(root_path, f'{split}_label.txt')
+        dst_label_file = osp.join(root_path, f'{split}_label.{format}')
         os.makedirs(dst_image_root, exist_ok=True)
 
         lines = []

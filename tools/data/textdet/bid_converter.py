@@ -114,7 +114,7 @@ def load_txt_info(gt_file, img_info):
                 continue
             ann = line.split(',')
             bbox = ann[0:4]
-            bbox = [int(_) for _ in bbox]
+            bbox = [int(coord) for coord in bbox]
             x, y, w, h = bbox
             segmentation = [x, y, x + w, y, x + w, y + h, x, y + h]
             anno = dict(
@@ -167,7 +167,6 @@ def main():
     with mmcv.Timer(print_tmpl='It takes {}s to convert BID annotation'):
         files = collect_files(
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
-        files = files[:300]
         image_infos = collect_annotations(files, nproc=args.nproc)
         if args.val_ratio:
             image_infos = split_train_val_list(image_infos, args.val_ratio)
