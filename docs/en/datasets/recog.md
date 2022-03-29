@@ -350,5 +350,5 @@ python tools/data/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --val-
 │   ├── crops
 │   ├── ignores
 │   ├── train_label.jsonl
-│   ├── val_label.jsonl
+│   ├── val_label.jsonl (optional)
 ```

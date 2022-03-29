@@ -242,5 +242,5 @@ python tools/data/textdet/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --val-ra
 |   ├── annotations
 │   ├── imgs
 │   ├── instances_val.json
-│   └── instances_training.json
+│   └── instances_training.json (optional)
 ```
