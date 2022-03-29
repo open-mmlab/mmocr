@@ -79,10 +79,6 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
-│   ├── sroie
-│   │   ├── crops
-│   │   ├── train_label.jsonl
-│   │   ├── test_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -353,4 +349,12 @@ rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text
 
 ```bash
 python tools/data/textrecog/sroie_converter.py PATH/TO/sroie --nproc 4
+```
+
+After running the above codes, the directory structure should be as follows:
+```text
+├── sroie
+│   ├── crops
+│   ├── train_label.jsonl
+│   ├── test_label.jsonl
 ```

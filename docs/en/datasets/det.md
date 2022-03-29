@@ -41,11 +41,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-├── sroie
-│   ├── annotations
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -246,4 +241,13 @@ rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text
 
 ```bash
 python tools/data/textdet/sroie_converter.py PATH/TO/sroie --nproc 4
+```
+
+After running the above codes, the directory structure should be as follows:
+```text
+├── sroie
+│   ├── annotations
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
 ```
