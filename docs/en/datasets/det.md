@@ -247,7 +247,7 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
   ```
 - Step3: - Step3: Generate `instances_training.json` and `instances_val.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
   ```bash
-  python tools/data/textrecog/bid_converter.py PATH/TO/BID --nproc 4 --val-ratio 0.2
+  python tools/data/textrecog/bid_converter.py PATH/TO/BID --nproc 4
   ```
 - After running the above codes, the directory structure should be as follows:
   ```text

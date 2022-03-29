@@ -356,7 +356,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   ```
 - Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
   ```bash
-  python tools/data/textrecog/bid_converter.py dPATH/TO/BID --nproc 4 --val-ratio 0.2
+  python tools/data/textrecog/bid_converter.py dPATH/TO/BID --nproc 4
   ```
 - After running the above codes, the directory structure should be as follows:
   ```text
