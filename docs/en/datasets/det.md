@@ -41,11 +41,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-|── mtwi
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_training.json
-│   └── instances_val.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -236,4 +231,12 @@ rm mtwi_2018_train.zip
 # Annotations of MTWI test split is not publicly available
 # Set a val_ratio to separate a val split
 python tools/data/textdet/mtwi_converter.py PATH/TO/mtwi --nproc 4
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+|── mtwi
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_training.json
+│   └── instances_val.json (optional)
 ```

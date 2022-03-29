@@ -79,10 +79,6 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
-│   ├── mtwi
-│   │   ├── crops
-│   │   ├── train_label.jsonl
-│   │   ├── val_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -346,4 +342,11 @@ rm mtwi_2018_train.zip
 # Add --preserve-vertical to preserve vertical texts for training, otherwise
 # vertical images will be filtered and stored in PATH/TO/mtwi/ignores
 python tools/data/textrecog/mtwi_converter.py PATH/TO/mtwi --nproc 4
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+├── mtwi
+│   ├── crops
+│   ├── train_label.jsonl
+│   ├── val_label.jsonl (optional)
 ```
