@@ -41,11 +41,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-|── coco_textv2
-|   ├── annotations
-│   ├── imgs
-│   └── instances_training.json
-│   ├── instances_val.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -240,4 +235,12 @@ rm train2014.zip && rm -rf cocotext.v2.zip
 
 ```bash
 python tools/data/textdet/cocotext_converter.py PATH/TO/coco_textv2
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+|── coco_textv2
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_training.json
+│   └── instances_val.json
 ```

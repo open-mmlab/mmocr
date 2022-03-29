@@ -79,10 +79,6 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
-│   ├── coco_textv2
-│   │   ├── crops
-│   │   ├── train_label.jsonl
-│   │   ├── val_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -349,4 +345,11 @@ rm train2014.zip && rm -rf cocotext.v2.zip
 
 ```bash
 python tools/data/textrecog/cocotext_converter.py PATH/TO/coco_textv2 --nproc 4
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+├── coco_textv2
+│   ├── crops
+│   ├── train_label.jsonl
+│   └── val_label.jsonl
 ```
