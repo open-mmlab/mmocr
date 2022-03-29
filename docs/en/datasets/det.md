@@ -3,51 +3,6 @@
 
 ## Overview
 
-The structure of the text detection dataset directory is organized as follows.
-
-```text
-├── ctw1500
-│   ├── annotations
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-├── icdar2015
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-├── icdar2017
-│   ├── imgs
-│   ├── instances_training.json
-│   └── instances_val.json
-├── synthtext
-│   ├── imgs
-│   └── instances_training.lmdb
-│       ├── data.mdb
-│       └── lock.mdb
-├── textocr
-│   ├── train
-│   ├── instances_training.json
-│   └── instances_val.json
-├── totaltext
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-├── CurvedSynText150k
-│   ├── syntext_word_eng
-│   ├── emcs_imgs
-│   └── instances_training.json
-|── funsd
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-|── lv
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-│   └── instances_val.json
-```
-
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
 | :---------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------: | :---: |
 |                   |                                                                                                                                                                                                                                                                                |                                                                                                           training                                                                                                           |                                          validation                                          |                                            testing                                             |       |
@@ -86,13 +41,33 @@ mv ch4_training_localization_transcription_gt annotations/training
 mv Challenge4_Test_Task1_GT annotations/test
 ```
 - Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) and move them to `icdar2015`
-- Or, generate `instances_training.json` and `instances_test.json` with following command:
+- Or, generate `instances_training.json` and `instances_test.json` with the following command:
+
 ```bash
 python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
 ```
 
+- The resulting directory structure should be:
+
+```text
+├── icdar2015
+│   ├── imgs
+│   ├── annotations
+│   ├── instances_test.json
+│   └── instances_training.json
+```
+
 ### ICDAR 2017
 - Follow similar steps as [ICDAR 2015](#icdar-2015).
+- The resulting directory structure should be:
+
+```text
+├── icdar2017
+│   ├── imgs
+│   ├── annotations
+│   ├── instances_training.json
+│   └── instances_val.json
+```
 
 ### CTW1500
 - Step0: Read [Important Note](#important-note)
@@ -121,12 +96,33 @@ unzip test_images.zip && mv test_images test
 python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
 ```
 
+- The resulting directory structure should be:
+
+```text
+├── ctw1500
+│   ├── imgs
+│   ├── annotations
+│   ├── instances_training.json
+│   └── instances_val.json
+```
+
 ### SynthText
 
 - Download [data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb) and [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb) to `synthtext/instances_training.lmdb/`.
 
+- The resulting directory structure should be:
+
+```text
+├── synthtext
+│   ├── imgs
+│   └── instances_training.lmdb
+│       ├── data.mdb
+│       └── lock.mdb
+```
+
 ### TextOCR
 - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
+
 ```bash
 mkdir textocr && cd textocr
 
@@ -139,10 +135,22 @@ wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
 unzip -q train_val_images.zip
 mv train_images train
 ```
+
 - Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
+
 ```bash
 python tools/data/textdet/textocr_converter.py /path/to/textocr
 ```
+
+- The resulting directory structure should be:
+
+```text
+├── textocr
+│   ├── train
+│   ├── instances_training.json
+│   └── instances_val.json
+```
+
 ### Totaltext
 - Step0: Read [Important Note](#important-note)
 - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
@@ -168,6 +176,15 @@ mv Polygon/Test ../annotations/test
 python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
 ```
 
+- The resulting directory structure should be:
+
+```text
+├── totaltext
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
+```
+
 ### CurvedSynText150k
 
 - Step1: Download [syntext1.zip](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) and [syntext2.zip](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) to `CurvedSynText150k/`.
@@ -190,6 +207,15 @@ rm images.zip
 
 ```bash
 python tools/data/common/curvedsyntext_converter.py PATH/TO/CurvedSynText150k --nproc 4
+```
+
+- The resulting directory structure should be:
+
+```text
+├── CurvedSynText150k
+│   ├── syntext_word_eng
+│   ├── emcs_imgs
+│   └── instances_training.json
 ```
 
 ### FUNSD
@@ -219,6 +245,16 @@ rm dataset.zip && rm -rf dataset
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
 
+- The resulting directory structure should be:
+
+```text
+|── funsd
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
+```
+
 ### Lecture Video DB
 
 - Step1: Download [IIIT-CVid.zip](http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip) to `lv/`.
@@ -239,4 +275,14 @@ rm IIIT-CVid.zip
 
 ```bash
 python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
+```
+
+- The resulting directory structure should be:
+
+```text
+|── lv
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
+│   └── instances_val.json
 ```
