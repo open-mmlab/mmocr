@@ -41,11 +41,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-|── rects
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_val.json
-│   └── instances_training.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -243,4 +238,12 @@ rm ReCTS.zip && rm -rf gt
 # Add --preserve-vertical to preserve vertical texts for training, otherwise
 # vertical images will be filtered and stored in PATH/TO/rects/ignores
 python tools/data/textdet/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+|── rects
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_val.json (optional)
+│   └── instances_training.json
 ```

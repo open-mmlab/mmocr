@@ -79,10 +79,6 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
-│   ├── rects
-│   │   ├── crops
-│   │   ├── train_label.jsonl
-│   │   ├── val_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -352,4 +348,11 @@ rm ReCTS.zip -f && rm -rf gt
 # Add --preserve-vertical to preserve vertical texts for training, otherwise
 # vertical images will be filtered and stored in PATH/TO/rects/ignores
 python tools/data/textrecog/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+├── rects
+│   ├── crops
+│   ├── train_label.jsonl
+│   └── val_label.jsonl (optional)
 ```
