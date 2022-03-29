@@ -327,37 +327,38 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 
 - Step1: Complete download [KAIST_all.zip](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) to `kaist/`.
 
+  ```bash
+  mkdir kaist && cd kaist
+  mkdir imgs && mkdir annotations
 
-```bash
-mkdir kaist && cd kaist
-mkdir imgs && mkdir annotations
+  # Download KAIST dataset
+  wget http://www.iapr-tc11.org/dataset/KAIST_SceneText/KAIST_all.zip
+  unzip -q KAIST_all.zip
 
-# Download KAIST dataset
-wget http://www.iapr-tc11.org/dataset/KAIST_SceneText/KAIST_all.zip
-unzip -q KAIST_all.zip
-
-rm KAIST_all.zip
-```
+  rm KAIST_all.zip
+  ```
 
 - Step2: Extract zips:
 
-```bash
-python tools/data/common/extract_kaist.py PATH/TO/kaist
-```
+  ```bash
+  python tools/data/common/extract_kaist.py PATH/TO/kaist
+  ```
 
 - Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with following command:
 
-```bash
-# Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
-# Add --preserve-vertical to preserve vertical texts for training, otherwise
-# vertical images will be filtered and stored in PATH/TO/kaist/ignores
-python tools/data/textrecog/kaist_converter.py PATH/TO/kaist --nproc 4
-```
+  ```bash
+  # Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
+  # Add --preserve-vertical to preserve vertical texts for training, otherwise
+  # vertical images will be filtered and stored in PATH/TO/kaist/ignores
+  python tools/data/textrecog/kaist_converter.py PATH/TO/kaist --nproc 4
+  ```
+
 - After running the above codes, the directory structure should be as follows:
-```text
-├── kaist
-│   ├── crops
-│   ├── ignores
-│   ├── train_label.jsonl
-│   ├── val_label.jsonl (optional)
-```
+
+  ```text
+  ├── kaist
+  │   ├── crops
+  │   ├── ignores
+  │   ├── train_label.jsonl
+  │   ├── val_label.jsonl (optional)
+  ```

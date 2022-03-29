@@ -217,35 +217,36 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 
 - Step1: Complete download [KAIST_all.zip](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) to `kaist/`.
 
+  ```bash
+  mkdir kaist && cd kaist
+  mkdir imgs && mkdir annotations
 
-```bash
-mkdir kaist && cd kaist
-mkdir imgs && mkdir annotations
+  # Download KAIST dataset
+  wget http://www.iapr-tc11.org/dataset/KAIST_SceneText/KAIST_all.zip
+  unzip -q KAIST_all.zip
 
-# Download KAIST dataset
-wget http://www.iapr-tc11.org/dataset/KAIST_SceneText/KAIST_all.zip
-unzip -q KAIST_all.zip
-
-rm KAIST_all.zip
-```
+  rm KAIST_all.zip
+  ```
 
 - Step2: Extract zips:
 
-```bash
-python tools/data/common/extract_kaist.py PATH/TO/kaist
-```
+  ```bash
+  python tools/data/common/extract_kaist.py PATH/TO/kaist
+  ```
 
 - Step3: Generate `instances_training.json` and `instances_val.json` (optional) with following command:
 
-```bash
-# Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
-python tools/data/textdet/kaist_converter.py PATH/TO/kaist --nproc 4
-```
+  ```bash
+  # Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
+  python tools/data/textdet/kaist_converter.py PATH/TO/kaist --nproc 4
+  ```
+
 - After running the above codes, the directory structure should be as follows:
-```text
-|── kaist
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_training.json
-│   └── instances_val.json (optional)
-```
+
+  ```text
+  |── kaist
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json (optional)
+  ```
