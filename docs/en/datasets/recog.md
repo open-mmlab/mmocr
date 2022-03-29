@@ -327,33 +327,35 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 
 - Step1: Download [ReCTS.zip](https://datasets.cvc.uab.es/rrc/ReCTS.zip) to `rects/` from the [homepage](https://rrc.cvc.uab.es/?ch=12&com=downloads).
 
-```bash
-mkdir rects && cd rects
+  ```bash
+  mkdir rects && cd rects
 
-# Download ReCTS dataset
-# You can also find Google Drive link on the dataset homepage
-wget https://datasets.cvc.uab.es/rrc/ReCTS.zip --no-check-certificate
-unzip -q ReCTS.zip
+  # Download ReCTS dataset
+  # You can also find Google Drive link on the dataset homepage
+  wget https://datasets.cvc.uab.es/rrc/ReCTS.zip --no-check-certificate
+  unzip -q ReCTS.zip
 
-mv img imgs && mv gt_unicode annotations
+  mv img imgs && mv gt_unicode annotations
 
-rm ReCTS.zip -f && rm -rf gt
-```
+  rm ReCTS.zip -f && rm -rf gt
+  ```
 
 - Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
 
-```bash
-# Annotations of ReCTS test split is not publicly available, split a validation
-# set by adding --val-ratio 0.2
-# Add --preserve-vertical to preserve vertical texts for training, otherwise
-# vertical images will be filtered and stored in PATH/TO/rects/ignores
-python tools/data/textrecog/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
-```
+  ```bash
+  # Annotations of ReCTS test split is not publicly available, split a validation
+  # set by adding --val-ratio 0.2
+  # Add --preserve-vertical to preserve vertical texts for training, otherwise
+  # vertical images will be filtered and stored in PATH/TO/rects/ignores
+  python tools/data/textrecog/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
+  ```
+
 - After running the above codes, the directory structure should be as follows:
-```text
-├── rects
-│   ├── crops
-│   ├── ignores
-│   ├── train_label.jsonl
-│   └── val_label.jsonl (optional)
-```
+
+  ```text
+  ├── rects
+  │   ├── crops
+  │   ├── ignores
+  │   ├── train_label.jsonl
+  │   └── val_label.jsonl (optional)
+  ```
