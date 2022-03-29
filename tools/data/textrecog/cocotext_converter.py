@@ -18,6 +18,10 @@ def parse_args():
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
     parser.add_argument(
+        '--preserve-vertical',
+        help='Preserve samples containing vertical texts',
+        action='store_true')
+    parser.add_argument(
         '--format',
         default='jsonl',
         help='Use jsonl or string to format annotations',
@@ -26,7 +30,8 @@ def parse_args():
     return args
 
 
-def process_img(args, src_image_root, dst_image_root, format):
+def process_img(args, src_image_root, dst_image_root, ignore_image_root,
+                preserve_vertical, split, format):
     # Dirty hack for multi-processing
     img_idx, img_info, anns = args
     src_img = mmcv.imread(osp.join(src_image_root, img_info['file_name']))
@@ -45,7 +50,11 @@ def process_img(args, src_image_root, dst_image_root, format):
         w, h = math.ceil(w), math.ceil(h)
         dst_img = src_img[y:y + h, x:x + w]
         dst_img_name = f'img_{img_idx}_{ann_idx}.jpg'
-        dst_img_path = osp.join(dst_image_root, dst_img_name)
+
+        if not preserve_vertical and h / w > 2 and split == 'train':
+            dst_img_path = osp.join(ignore_image_root, dst_img_name)
+        else:
+            dst_img_path = osp.join(dst_image_root, dst_img_name)
         mmcv.imwrite(dst_img, dst_img_path)
 
         if format == 'txt':
@@ -64,7 +73,12 @@ def process_img(args, src_image_root, dst_image_root, format):
     return labels
 
 
-def convert_cocotext(root_path, split, format, nproc, img_start_idx=0):
+def convert_cocotext(root_path,
+                     split,
+                     preserve_vertical,
+                     format,
+                     nproc,
+                     img_start_idx=0):
     """Collect the annotation information and crop the images.
 
     The annotation format is as the following:
@@ -103,6 +117,7 @@ def convert_cocotext(root_path, split, format, nproc, img_start_idx=0):
     Args:
         root_path (str): Root path to the dataset
         split (str): Dataset split, which should be 'train' or 'val'
+        preserve_vertical (bool): Whether to preserve vertical texts
         format (str): Annotation format, should be either 'jsonl' or 'txt'
         nproc (int): Number of processes
         img_start_idx (int): Index of start image
@@ -120,6 +135,7 @@ def convert_cocotext(root_path, split, format, nproc, img_start_idx=0):
     # outputs
     dst_label_file = osp.join(root_path, f'{split}_label.{format}')
     dst_image_root = osp.join(root_path, 'crops', split)
+    ignore_image_root = osp.join(root_path, 'ignores', split)
     src_image_root = osp.join(root_path, 'imgs')
     os.makedirs(dst_image_root, exist_ok=True)
 
@@ -127,6 +143,9 @@ def convert_cocotext(root_path, split, format, nproc, img_start_idx=0):
         process_img,
         src_image_root=src_image_root,
         dst_image_root=dst_image_root,
+        ignore_image_root=ignore_image_root,
+        preserve_vertical=preserve_vertical,
+        split=split,
         format=format)
     tasks = []
     for img_idx, img_info in enumerate(annotation['imgs'].values()):
@@ -151,12 +170,14 @@ def main():
     num_train_imgs = convert_cocotext(
         root_path=root_path,
         split='train',
+        preserve_vertical=args.preserve_vertical,
         format=args.format,
         nproc=args.nproc)
     print('Processing validation set...')
     convert_cocotext(
         root_path=root_path,
         split='val',
+        preserve_vertical=args.preserve_vertical,
         format=args.format,
         nproc=args.nproc,
         img_start_idx=num_train_imgs)

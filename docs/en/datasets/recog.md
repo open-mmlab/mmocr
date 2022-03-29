@@ -344,6 +344,8 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 - Step2: Generate `train_label.jsonl` and `val_label.jsonl` with the following command:
 
   ```bash
+  # Add --preserve-vertical to preserve vertical texts for training, otherwise
+  # vertical images will be filtered and stored in PATH/TO/mtwi/ignores
   python tools/data/textrecog/cocotext_converter.py PATH/TO/coco_textv2 --nproc 4
   ```
 
@@ -352,6 +354,7 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   ```text
   ├── coco_textv2
   │   ├── crops
+  │   ├── ignores
   │   ├── train_label.jsonl
   │   └── val_label.jsonl
   ```
