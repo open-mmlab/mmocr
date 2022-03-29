@@ -327,29 +327,31 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 
 - Step1: Download image [train2014.zip](http://images.cocodataset.org/zips/train2014.zip) and annotation [cocotext.v2.zip](https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip) to `coco_textv2/`.
 
-```bash
-mkdir coco_textv2 && cd coco_textv2
-mkdir annotations
+  ```bash
+  mkdir coco_textv2 && cd coco_textv2
+  mkdir annotations
 
-# Download COCO Text v2 dataset
-wget http://images.cocodataset.org/zips/train2014.zip
-wget https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip
-unzip -q train2014.zip && unzip -q cocotext.v2.zip
+  # Download COCO Text v2 dataset
+  wget http://images.cocodataset.org/zips/train2014.zip
+  wget https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip
+  unzip -q train2014.zip && unzip -q cocotext.v2.zip
 
-mv train2014 imgs && mv cocotext.v2.json annotations/
+  mv train2014 imgs && mv cocotext.v2.json annotations/
 
-rm train2014.zip && rm -rf cocotext.v2.zip
-```
+  rm train2014.zip && rm -rf cocotext.v2.zip
+  ```
 
 - Step2: Generate `train_label.jsonl` and `val_label.jsonl` with the following command:
 
-```bash
-python tools/data/textrecog/cocotext_converter.py PATH/TO/coco_textv2 --nproc 4
-```
+  ```bash
+  python tools/data/textrecog/cocotext_converter.py PATH/TO/coco_textv2 --nproc 4
+  ```
+
 - After running the above codes, the directory structure should be as follows:
-```text
-├── coco_textv2
-│   ├── crops
-│   ├── train_label.jsonl
-│   └── val_label.jsonl
-```
+
+  ```text
+  ├── coco_textv2
+  │   ├── crops
+  │   ├── train_label.jsonl
+  │   └── val_label.jsonl
+  ```

@@ -217,30 +217,32 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 
 - Step1: Download image [train2014.zip](http://images.cocodataset.org/zips/train2014.zip) and annotation [cocotext.v2.zip](https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip) to `coco_textv2/`.
 
-```bash
-mkdir coco_textv2 && cd coco_textv2
-mkdir annotations
+  ```bash
+  mkdir coco_textv2 && cd coco_textv2
+  mkdir annotations
 
-# Download COCO Text v2 dataset
-wget http://images.cocodataset.org/zips/train2014.zip
-wget https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip
-unzip -q train2014.zip && unzip -q cocotext.v2.zip
+  # Download COCO Text v2 dataset
+  wget http://images.cocodataset.org/zips/train2014.zip
+  wget https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip
+  unzip -q train2014.zip && unzip -q cocotext.v2.zip
 
-mv train2014 imgs && mv cocotext.v2.json annotations/
+  mv train2014 imgs && mv cocotext.v2.json annotations/
 
-rm train2014.zip && rm -rf cocotext.v2.zip
-```
+  rm train2014.zip && rm -rf cocotext.v2.zip
+  ```
 
 - Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
 
-```bash
-python tools/data/textdet/cocotext_converter.py PATH/TO/coco_textv2
-```
+  ```bash
+  python tools/data/textdet/cocotext_converter.py PATH/TO/coco_textv2
+  ```
+
 - After running the above codes, the directory structure should be as follows:
-```text
-|── coco_textv2
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_training.json
-│   └── instances_val.json
-```
+
+  ```text
+  |── coco_textv2
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json
+  ```
