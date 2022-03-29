@@ -319,33 +319,36 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ### ICDAR 2013 (Focused Scene Text)
 - Step1: Download `Challenge2_Training_Task3_Images_GT.zip`, `Challenge2_Test_Task3_Images.zip`, and `Challenge2_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.3: Word Recognition (2013 edition)`.
 
-```bash
-mkdir icdar2013 && cd icdar2013
-mkdir annotations
+  ```bash
+  mkdir icdar2013 && cd icdar2013
+  mkdir annotations
 
-# Download ICDAR 2013
-wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task3_Images_GT.zip --no-check-certificate
-wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_Images.zip --no-check-certificate
-wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_GT.txt --no-check-certificate
+  # Download ICDAR 2013
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task3_Images_GT.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_GT.txt --no-check-certificate
 
-# For images
-mkdir crops
-unzip -q Challenge2_Training_Task3_Images_GT.zip -d crops/train
-unzip -q Challenge2_Test_Task3_Images.zip -d crops/test
-# For annotations
-mv Challenge2_Test_Task3_GT.txt annotations && mv crops/train/gt.txt annotations/Challenge2_Train_Task3_GT.txt
+  # For images
+  mkdir crops
+  unzip -q Challenge2_Training_Task3_Images_GT.zip -d crops/train
+  unzip -q Challenge2_Test_Task3_Images.zip -d crops/test
+  # For annotations
+  mv Challenge2_Test_Task3_GT.txt annotations && mv crops/train/gt.txt annotations/Challenge2_Train_Task3_GT.txt
 
-rm Challenge2_Training_Task3_Images_GT.zip && rm Challenge2_Test_Task3_Images.zip
-```
+  rm Challenge2_Training_Task3_Images_GT.zip && rm Challenge2_Test_Task3_Images.zip
+  ```
+
 - Step 2: Generate `Train_label.jsonl` and `Test_label.jsonl` with the following command:
 
-```bash
-python tools/data/textrecog/ic13_converter.py PATH/TO/icdar2013
-```
+  ```bash
+  python tools/data/textrecog/ic13_converter.py PATH/TO/icdar2013
+  ```
+
 - After running the above codes, the directory structure should be as follows:
-```text
-├── icdar2013
-│   ├── crops
-│   ├── train_label.jsonl
-│   ├── test_label.jsonl
-```
+
+  ```text
+  ├── icdar2013
+  │   ├── crops
+  │   ├── train_label.jsonl
+  │   ├── test_label.jsonl
+  ```

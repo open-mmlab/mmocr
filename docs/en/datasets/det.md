@@ -217,34 +217,37 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ### ICDAR 2013 (Focused Scene Text)
 - Step1: Download `Challenge2_Training_Task12_Images.zip`, `Challenge2_Test_Task12_Images.zip`, `Challenge2_Training_Task1_GT.zip`, and `Challenge2_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.1: Text Localization (2013 edition)`.
 
-```bash
-mkdir icdar2013 && cd icdar2013
-mkdir imgs && mkdir annotations
+  ```bash
+  mkdir icdar2013 && cd icdar2013
+  mkdir imgs && mkdir annotations
 
-# Download ICDAR 2013
-wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task12_Images.zip --no-check-certificate
-wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task12_Images.zip --no-check-certificate
-wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task1_GT.zip --no-check-certificate
-wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task1_GT.zip --no-check-certificate
+  # Download ICDAR 2013
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task1_GT.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task1_GT.zip --no-check-certificate
 
-# For images
-unzip -q Challenge2_Training_Task12_Images.zip -d imgs/training
-unzip -q Challenge2_Test_Task12_Images.zip -d imgs/test
-# For annotations
-unzip -q Challenge2_Training_Task1_GT.zip -d annotations/training
-unzip -q Challenge2_Test_Task1_GT.zip -d annotations/test
+  # For images
+  unzip -q Challenge2_Training_Task12_Images.zip -d imgs/training
+  unzip -q Challenge2_Test_Task12_Images.zip -d imgs/test
+  # For annotations
+  unzip -q Challenge2_Training_Task1_GT.zip -d annotations/training
+  unzip -q Challenge2_Test_Task1_GT.zip -d annotations/test
 
-rm Challenge2_Training_Task12_Images.zip && rm Challenge2_Test_Task12_Images.zip && rm Challenge2_Training_Task1_GT.zip && rm Challenge2_Test_Task1_GT.zip
-```
+  rm Challenge2_Training_Task12_Images.zip && rm Challenge2_Test_Task12_Images.zip && rm Challenge2_Training_Task1_GT.zip && rm Challenge2_Test_Task1_GT.zip
+  ```
+
 - Step 2: Generate `instances_training.json` and `instances_test.json` with the following command:
 
-```bash
-python tools/data/textdet/ic13_converter.py PATH/TO/icdar2013 --nproc 4
-```
+  ```bash
+  python tools/data/textdet/ic13_converter.py PATH/TO/icdar2013 --nproc 4
+  ```
+
 - After running the above codes, the directory structure should be as follows:
-```text
-|── icdar2013
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-```
+
+  ```text
+  |── icdar2013
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
