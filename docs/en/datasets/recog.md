@@ -79,11 +79,6 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
-│   ├── naf
-│   │   ├── crops
-│   │   ├── train_label.txt
-│   │   ├── val_label.txt
-│   │   ├── test_label.txt
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -355,4 +350,12 @@ rm -rf NAF_dataset && rm labeled_images.tar.gz
 # Add --preserve-vertical to preserve vertical texts for training, otherwise
 # vertical images will be filtered and stored in PATH/TO/naf/ignores
 python tools/data/textrecog/naf_converter.py PATH/TO/naf --nproc 4
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+├── naf
+│   ├── crops
+│   ├── train_label.txt
+│   ├── val_label.txt
+│   ├── test_label.txt
 ```

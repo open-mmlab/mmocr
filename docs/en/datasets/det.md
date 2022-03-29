@@ -41,12 +41,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-|── naf
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_test.json
-│   ├── instances_val.json
-│   └── instances_training.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -244,4 +238,13 @@ rm -rf NAF_dataset && rm labeled_images.tar.gz
 
 ```bash
 python tools/data/textdet/naf_converter.py PATH/TO/naf --nproc 4
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+|── naf
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_test.json
+│   ├── instances_val.json
+│   └── instances_training.json
 ```
