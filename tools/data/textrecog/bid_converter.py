@@ -134,7 +134,7 @@ def load_txt_info(gt_file, img_info):
 
 
 def split_train_val_list(full_list, val_ratio):
-    """Split list by val_ratio
+    """Split list by val_ratio.
 
     Args:
         full_list (list): List to be splited
@@ -205,8 +205,7 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
                 mmcv.imwrite(dst_img, dst_img_path)
                 filename = f'{osp.basename(dst_image_root)}/{dst_img_name}'
                 if format == 'txt':
-                    lines.append(f'{filename} '
-                                 f'{word}')
+                    lines.append(f'{filename} ' f'{word}')
                 elif format == 'jsonl':
                     lines.append(
                         json.dumps({
