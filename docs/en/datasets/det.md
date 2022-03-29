@@ -41,6 +41,11 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
+|── rects
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_val.json
+│   └── instances_training.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -54,7 +59,7 @@ The structure of the text detection dataset directory is organized as follows.
 |     Totaltext     |                                                                                                           [homepage](https://github.com/cs-chan/Total-Text-Dataset)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
 |       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
-
+|       ReCTS       |                                                                                                                   [homepage](https://rrc.cvc.uab.es/?ch=12)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
 ## Important Note
 
@@ -211,4 +216,31 @@ rm dataset.zip && rm -rf dataset
 
 ```bash
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
+```
+
+### ReCTS
+
+- Step1: Download [ReCTS.zip](https://datasets.cvc.uab.es/rrc/ReCTS.zip) to `rects/` from the [homepage](https://rrc.cvc.uab.es/?ch=12&com=downloads).
+
+```bash
+mkdir rects && cd rects
+
+# Download ReCTS dataset
+# You can also find Google Drive link on the dataset homepage
+wget https://datasets.cvc.uab.es/rrc/ReCTS.zip --no-check-certificate
+unzip -q ReCTS.zip
+
+mv img imgs && mv gt_unicode annotations
+
+rm ReCTS.zip && rm -rf gt
+```
+
+- Step2: Generate `instances_training.json` and `instances_val.json` (optional) with following command:
+
+```bash
+# Annotations of ReCTS test split is not publicly available, split a validation
+# set by adding --val-ratio 0.2
+# Add --preserve-vertical to preserve vertical texts for training, otherwise
+# vertical images will be filtered and stored in PATH/TO/rects/ignores
+python tools/data/textdet/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
 ```
