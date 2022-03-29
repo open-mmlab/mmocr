@@ -325,30 +325,30 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ### ILST
 - Step1: Download `IIIT-ILST.zip` from [onedrive link](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)
 - Step2: Run the following commands
-```bash
-unzip -q IIIT-ILST.zip && rm IIIT-ILST.zip
-cd IIIT-ILST
-# rename files
-cd Devanagari && for i in `ls`; do mv -f $i `echo "devanagari_"$i`; done && cd ..
-cd Malayalam && for i in `ls`; do mv -f $i `echo "malayalam_"$i`; done && cd ..
-cd Telugu && for i in `ls`; do mv -f $i `echo "telugu_"$i`; done && cd ..
-# transfer image path
-mkdir imgs && mkdir annotations
-mv Malayalam/{*jpg,*jpeg} imgs/ && mv Malayalam/*xml annotations/
-mv Devanagari/*jpg imgs/ && mv Devanagari/*xml annotations/
-mv Telugu/*jpeg imgs/ && mv Telugu/*xml annotations/
-# remove unnecessary files
-rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm -rf README.txt
-```
+  ```bash
+  unzip -q IIIT-ILST.zip && rm IIIT-ILST.zip
+  cd IIIT-ILST
+  # rename files
+  cd Devanagari && for i in `ls`; do mv -f $i `echo "devanagari_"$i`; done && cd ..
+  cd Malayalam && for i in `ls`; do mv -f $i `echo "malayalam_"$i`; done && cd ..
+  cd Telugu && for i in `ls`; do mv -f $i `echo "telugu_"$i`; done && cd ..
+  # transfer image path
+  mkdir imgs && mkdir annotations
+  mv Malayalam/{*jpg,*jpeg} imgs/ && mv Malayalam/*xml annotations/
+  mv Devanagari/*jpg imgs/ && mv Devanagari/*xml annotations/
+  mv Telugu/*jpeg imgs/ && mv Telugu/*xml annotations/
+  # remove unnecessary files
+  rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm -rf README.txt
+  ```
 - Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
-```bash
-python tools/data/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --val-ratio 0.2
-```
+  ```bash
+  python tools/data/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --val-ratio 0.2
+  ```
 - After running the above codes, the directory structure should be as follows:
-```text
-├── IIIT-ILST
-│   ├── crops
-│   ├── ignores
-│   ├── train_label.jsonl
-│   ├── val_label.jsonl (optional)
-```
+  ```text
+  ├── IIIT-ILST
+  │   ├── crops
+  │   ├── ignores
+  │   ├── train_label.jsonl
+  │   ├── val_label.jsonl (optional)
+  ```
