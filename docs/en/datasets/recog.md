@@ -353,6 +353,7 @@ python tools/data/textrecog/rects_converter.py PATH/TO/rects --nproc 4 --val-rat
 ```text
 ├── rects
 │   ├── crops
+│   ├── ignores
 │   ├── train_label.jsonl
 │   └── val_label.jsonl (optional)
 ```
