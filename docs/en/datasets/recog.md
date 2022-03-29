@@ -322,33 +322,35 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ### Recognition ICDAR 2011 (Born-Digital Images)
 - Step1: Download `Challenge1_Training_Task3_Images_GT.zip`, `Challenge1_Test_Task3_Images.zip`, and `Challenge1_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.3: Word Recognition (2013 edition)`.
 
-```bash
-mkdir icdar2011 && cd icdar2011
-mkdir annotations
+  ```bash
+  mkdir icdar2011 && cd icdar2011
+  mkdir annotations
 
-# Download ICDAR 2011
-wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task3_Images_GT.zip --no-check-certificate
-wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task3_Images.zip --no-check-certificate
-wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task3_GT.txt --no-check-certificate
+  # Download ICDAR 2011
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task3_Images_GT.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task3_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task3_GT.txt --no-check-certificate
 
-# For images
-mkdir crops
-unzip -q Challenge1_Training_Task3_Images_GT.zip -d crops/train
-unzip -q Challenge1_Test_Task3_Images.zip -d crops/test
+  # For images
+  mkdir crops
+  unzip -q Challenge1_Training_Task3_Images_GT.zip -d crops/train
+  unzip -q Challenge1_Test_Task3_Images.zip -d crops/test
 
-# For annotations
-mv Challenge1_Test_Task3_GT.txt annotations && mv train/gt.txt annotations/Challenge1_Train_Task3_GT.txt
-```
+  # For annotations
+  mv Challenge1_Test_Task3_GT.txt annotations && mv train/gt.txt annotations/Challenge1_Train_Task3_GT.txt
+  ```
 
 - Step2: Convert original annotations to `Train_label.jsonl` and `Test_label.jsonl` with the following command:
 
-```bash
-python tools/data/textrecog/ic11_converter.py PATH/TO/icdar2011
-```
+  ```bash
+  python tools/data/textrecog/ic11_converter.py PATH/TO/icdar2011
+  ```
+
 - After running the above codes, the directory structure should be as follows:
-```text
-├── icdar2011
-│   ├── crops
-│   ├── train_label.jsonl
-│   ├── test_label.jsonl
-```
+
+  ```text
+  ├── icdar2011
+  │   ├── crops
+  │   ├── train_label.jsonl
+  │   ├── test_label.jsonl
+  ```

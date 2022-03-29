@@ -217,34 +217,37 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ### ICDAR 2011 (Born-Digital Images)
 - Step1: Download `Challenge1_Training_Task12_Images.zip`, `Challenge1_Training_Task1_GT.zip`, `Challenge1_Test_Task12_Images.zip`, and `Challenge1_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.1: Text Localization (2013 edition)`.
 
-```bash
-mkdir icdar2011 && cd icdar2011
-mkdir imgs && mkdir annotations
+  ```bash
+  mkdir icdar2011 && cd icdar2011
+  mkdir imgs && mkdir annotations
 
-# Download ICDAR 2011
-wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task12_Images.zip --no-check-certificate
-wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task1_GT.zip --no-check-certificate
-wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task12_Images.zip --no-check-certificate
-wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task1_GT.zip --no-check-certificate
+  # Download ICDAR 2011
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task1_GT.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task1_GT.zip --no-check-certificate
 
-# For images
-unzip -q Challenge1_Training_Task12_Images.zip -d imgs/training
-unzip -q Challenge1_Test_Task12_Images.zip -d imgs/test
-# For annotations
-unzip -q Challenge1_Training_Task1_GT.zip -d annotations/training
-unzip -q Challenge1_Test_Task1_GT.zip -d annotations/test
+  # For images
+  unzip -q Challenge1_Training_Task12_Images.zip -d imgs/training
+  unzip -q Challenge1_Test_Task12_Images.zip -d imgs/test
+  # For annotations
+  unzip -q Challenge1_Training_Task1_GT.zip -d annotations/training
+  unzip -q Challenge1_Test_Task1_GT.zip -d annotations/test
 
-rm Challenge1_Training_Task12_Images.zip && rm Challenge1_Test_Task12_Images.zip && rm Challenge1_Training_Task1_GT.zip && rm Challenge1_Test_Task1_GT.zip
-```
+  rm Challenge1_Training_Task12_Images.zip && rm Challenge1_Test_Task12_Images.zip && rm Challenge1_Training_Task1_GT.zip && rm Challenge1_Test_Task1_GT.zip
+  ```
+
 - Step 2: Generate `instances_training.json` and `instances_test.json` with the following command:
 
-```bash
-python tools/data/textdet/ic11_converter.py PATH/TO/icdar2011 --nproc 4
-```
+  ```bash
+  python tools/data/textdet/ic11_converter.py PATH/TO/icdar2011 --nproc 4
+  ```
 
-```text
-|── icdar2011
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-```
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  |── icdar2011
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
