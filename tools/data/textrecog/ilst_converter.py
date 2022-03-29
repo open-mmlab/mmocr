@@ -242,7 +242,7 @@ def parse_args():
         help='Preserve samples containing vertical texts',
         action='store_true')
     parser.add_argument(
-        '--val-ratio', help='Split ratio for val set', default=0.2, type=float)
+        '--val-ratio', help='Split ratio for val set', default=0., type=float)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
     parser.add_argument(
