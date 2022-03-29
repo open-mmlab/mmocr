@@ -327,42 +327,42 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 
 - Step1: Download [BID Dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
 - Step2: Run the following commands to preprocess the dataset
-```bash
-# Rename
-mv BID\ Dataset.zip BID_Dataset.zip
+  ```bash
+  # Rename
+  mv BID\ Dataset.zip BID_Dataset.zip
 
-# Unzip and Rename
-unzip -q BID_Dataset.zip && rm BID_Dataset.zip
-mv BID\ Dataset BID
+  # Unzip and Rename
+  unzip -q BID_Dataset.zip && rm BID_Dataset.zip
+  mv BID\ Dataset BID
 
-# The BID dataset has a problem of permision, and you may
-# add permision for this file
-chmod -R 777 BID
-cd BID
-mkdir imgs && mkdir annotations
+  # The BID dataset has a problem of permision, and you may
+  # add permision for this file
+  chmod -R 777 BID
+  cd BID
+  mkdir imgs && mkdir annotations
 
-# For images and annotations
-mv CNH_Aberta/*in.jpg imgs && mv CNH_Aberta/*txt annotations && rm -rf CNH_Aberta
-mv CNH_Frente/*in.jpg imgs && mv CNH_Frente/*txt annotations && rm -rf CNH_Frente
-mv CNH_Verso/*in.jpg imgs && mv CNH_Verso/*txt annotations && rm -rf CNH_Verso
-mv CPF_Frente/*in.jpg imgs && mv CPF_Frente/*txt annotations && rm -rf CPF_Frente
-mv CPF_Verso/*in.jpg imgs && mv CPF_Verso/*txt annotations && rm -rf CPF_Verso
-mv RG_Aberto/*in.jpg imgs && mv RG_Aberto/*txt annotations && rm -rf RG_Aberto
-mv RG_Frente/*in.jpg imgs && mv RG_Frente/*txt annotations && rm -rf RG_Frente
-mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
+  # For images and annotations
+  mv CNH_Aberta/*in.jpg imgs && mv CNH_Aberta/*txt annotations && rm -rf CNH_Aberta
+  mv CNH_Frente/*in.jpg imgs && mv CNH_Frente/*txt annotations && rm -rf CNH_Frente
+  mv CNH_Verso/*in.jpg imgs && mv CNH_Verso/*txt annotations && rm -rf CNH_Verso
+  mv CPF_Frente/*in.jpg imgs && mv CPF_Frente/*txt annotations && rm -rf CPF_Frente
+  mv CPF_Verso/*in.jpg imgs && mv CPF_Verso/*txt annotations && rm -rf CPF_Verso
+  mv RG_Aberto/*in.jpg imgs && mv RG_Aberto/*txt annotations && rm -rf RG_Aberto
+  mv RG_Frente/*in.jpg imgs && mv RG_Frente/*txt annotations && rm -rf RG_Frente
+  mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
 
-# Remove unecessary files
-rm -rf desktop.ini
-```
+  # Remove unecessary files
+  rm -rf desktop.ini
+  ```
 - Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
-```bash
-python tools/data/textrecog/bid_converter.py dPATH/TO/BID --nproc 4 --val-ratio 0.2
-```
+  ```bash
+  python tools/data/textrecog/bid_converter.py dPATH/TO/BID --nproc 4 --val-ratio 0.2
+  ```
 - After running the above codes, the directory structure should be as follows:
-```text
-├── BID
-│   ├── crops
-│   ├── ignores
-│   ├── train_label.jsonl
-│   ├── val_label.jsonl (optional)
-```
+  ```text
+  ├── BID
+  │   ├── crops
+  │   ├── ignores
+  │   ├── train_label.jsonl
+  │   ├── val_label.jsonl (optional)
+  ```
