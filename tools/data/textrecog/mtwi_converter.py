@@ -222,7 +222,7 @@ def parse_args():
         description='Generate training and val set of MTWI.')
     parser.add_argument('root_path', help='Root dir path of MTWI')
     parser.add_argument(
-        '--val-ratio', help='Split ratio for val set', default=0.2, type=float)
+        '--val-ratio', help='Split ratio for val set', default=0.0, type=float)
     parser.add_argument(
         '--preserve-vertical',
         help='Preserve samples containing vertical texts',
