@@ -41,11 +41,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-|── BID
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_val.json
-│   └── instances_training.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -253,4 +248,12 @@ rm -rf desktop.ini
 - Step3: - Step3: Generate `instances_training.json` and `instances_val.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 ```bash
 python tools/data/textrecog/bid_converter.py PATH/TO/BID --nproc 4 --val-ratio 0.2
+```
+After running the above codes, the directory structure should be as follows:
+```text
+|── BID
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_val.json
+│   └── instances_training.json
 ```
