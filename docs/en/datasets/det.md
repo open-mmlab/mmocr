@@ -11,10 +11,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-|── icdar2013
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
 ├── icdar2015
 │   ├── imgs
 │   ├── instances_test.json
@@ -244,4 +240,11 @@ rm Challenge2_Training_Task12_Images.zip && rm Challenge2_Test_Task12_Images.zip
 
 ```bash
 python tools/data/textdet/ic13_converter.py PATH/TO/icdar2013 --nproc 4
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+|── icdar2013
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
 ```

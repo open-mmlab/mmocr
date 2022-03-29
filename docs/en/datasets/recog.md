@@ -12,10 +12,6 @@
 │   ├── icdar_2011
 │   │   ├── training_label.txt
 │   │   ├── Challenge1_Training_Task3_Images_GT
-│   ├── icdar2013
-│   │   ├── crops
-│   │   ├── train_label.jsonl
-│   │   ├── test_label.jsonl
 │   ├── icdar_2015
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
@@ -345,4 +341,11 @@ rm Challenge2_Training_Task3_Images_GT.zip && rm Challenge2_Test_Task3_Images.zi
 
 ```bash
 python tools/data/textrecog/ic13_converter.py PATH/TO/icdar2013
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+├── icdar2013
+│   ├── crops
+│   ├── train_label.jsonl
+│   ├── test_label.jsonl
 ```
