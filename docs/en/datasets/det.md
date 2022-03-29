@@ -41,11 +41,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
-|── detext
-|   ├── annotations
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -242,4 +237,12 @@ rm ch9_training_images.zip && rm ch9_training_localization_transcription_gt.zip 
 
 ```bash
 python tools/data/textdet/detext_converter.py PATH/TO/detext --nproc 4
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+|── detext
+|   ├── annotations
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
 ```

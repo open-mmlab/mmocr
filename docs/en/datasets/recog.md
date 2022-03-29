@@ -79,11 +79,6 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
-│   ├── detext
-│   │   ├── crops
-│   │   ├── ignores
-│   │   ├── train_label.jsonl
-│   │   ├── test_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -354,4 +349,12 @@ rm ch9_training_images.zip && rm ch9_training_localization_transcription_gt.zip 
 # Add --preserve-vertical to preserve vertical texts for training, otherwise
 # vertical images will be filtered and stored in PATH/TO/detext/ignores
 python tools/data/textrecog/detext_converter.py PATH/TO/detext --nproc 4
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+├── detext
+│   ├── crops
+│   ├── ignores
+│   ├── train_label.jsonl
+│   ├── test_label.jsonl
 ```
