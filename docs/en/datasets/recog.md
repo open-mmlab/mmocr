@@ -324,13 +324,6 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 
 ### SROIE
 
-```text
-├── sroie
-│   ├── crops
-│   ├── train_label.jsonl
-│   ├── test_label.jsonl
-```
-
 - Step1: Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
 - Step2:
 
@@ -356,4 +349,11 @@ rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text
 
 ```bash
 python tools/data/textrecog/sroie_converter.py PATH/TO/sroie --nproc 4
+```
+- After running the above codes, the directory structure should be as follows:
+```text
+├── sroie
+│   ├── crops
+│   ├── train_label.jsonl
+│   ├── test_label.jsonl
 ```
