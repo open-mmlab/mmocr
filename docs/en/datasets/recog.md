@@ -344,7 +344,7 @@ rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm -rf README.txt
 ```bash
 python tools/data/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4 --val-ratio 0.2
 ```
-After running the above codes, the directory structure should be as follows:
+- After running the above codes, the directory structure should be as follows:
 ```text
 ├── IIIT-ILST
 │   ├── crops
