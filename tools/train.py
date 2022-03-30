@@ -54,7 +54,7 @@ def parse_args():
         '(only applicable to non-distributed training)')
     parser.add_argument('--seed', type=int, default=None, help='Random seed.')
     parser.add_argument(
-        '--diff_seed',
+        '--diff-seed',
         action='store_true',
         help='Whether or not set different seeds for different ranks')
     parser.add_argument(
