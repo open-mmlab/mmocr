@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import math
 import os
 import os.path as osp
 
@@ -9,7 +8,7 @@ import mmcv
 from mmocr.utils import convert_annotations
 
 
-def collect_files(img_dir, gt_dir):
+def collect_files(img_dir, gt_dir, split):
     """Collect all images and their corresponding groundtruth files.
 
     Args:
@@ -24,12 +23,14 @@ def collect_files(img_dir, gt_dir):
     assert isinstance(gt_dir, str)
     assert gt_dir
 
-    ann_list, imgs_list = [], []
-    for gt_file in os.listdir(gt_dir):
-        ann_list.append(osp.join(gt_dir, gt_file))
-        imgs_list.append(osp.join(img_dir, gt_file.replace('.json', '.png')))
+    ann_list, imgs_list, splits = [], [], []
+    for img in os.listdir(img_dir):
+        img_path = osp.join(img_dir, img)
+        imgs_list.append(img_path)
+        ann_list.append(osp.join(gt_dir, 'gt_' + img.split('.')[0] + '.txt'))
+        splits.append(split)
 
-    files = list(zip(sorted(imgs_list), sorted(ann_list)))
+    files = list(zip(sorted(imgs_list), sorted(ann_list), splits))
     assert len(files), f'No images found in {img_dir}'
     print(f'Loaded {len(files)} images from {img_dir}')
 
@@ -62,16 +63,14 @@ def load_img_info(files):
     """Load the information of one image.
 
     Args:
-        files (tuple): The tuple of (img_file, groundtruth_file)
+        files (tuple): The tuple of (img_file, groundtruth_file, split)
 
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
     assert isinstance(files, tuple)
 
-    img_file, gt_file = files
-    assert osp.basename(gt_file).split('.')[0] == osp.basename(img_file).split(
-        '.')[0]
+    img_file, gt_file, split = files
     # read imgs while ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
 
@@ -81,16 +80,29 @@ def load_img_info(files):
         width=img.shape[1],
         segm_file=osp.join(osp.basename(gt_file)))
 
-    if osp.splitext(gt_file)[1] == '.json':
-        img_info = load_json_info(gt_file, img_info)
+    # IC13 uses different separator in gt files
+    if split == 'training':
+        separator = ' '
+    elif split == 'test':
+        separator = ','
+    else:
+        raise NotImplementedError
+    if osp.splitext(gt_file)[1] == '.txt':
+        img_info = load_txt_info(gt_file, img_info, separator)
     else:
         raise NotImplementedError
 
     return img_info
 
 
-def load_json_info(gt_file, img_info):
+def load_txt_info(gt_file, img_info, separator):
     """Collect the annotation information.
+
+    The annotation format is as the following:
+    [train]
+    left top right bottom "transcription"
+    [test]
+    left, top, right, bottom, "transcription"
 
     Args:
         gt_file (str): The path to ground-truth
@@ -99,29 +111,25 @@ def load_json_info(gt_file, img_info):
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
-
-    annotation = mmcv.load(gt_file)
     anno_info = []
-    for form in annotation['form']:
-        for ann in form['words']:
-
-            iscrowd = 1 if len(ann['text']) == 0 else 0
-
-            x1, y1, x2, y2 = ann['box']
-            x = max(0, min(math.floor(x1), math.floor(x2)))
-            y = max(0, min(math.floor(y1), math.floor(y2)))
-            w, h = math.ceil(abs(x2 - x1)), math.ceil(abs(y2 - y1))
+    with open(gt_file, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            xmin, ymin, xmax, ymax = line.split(separator)[0:4]
+            x = max(0, int(xmin))
+            y = max(0, int(ymin))
+            w = int(xmax) - x
+            h = int(ymax) - y
             bbox = [x, y, w, h]
             segmentation = [x, y, x + w, y, x + w, y + h, x, y + h]
 
             anno = dict(
-                iscrowd=iscrowd,
+                iscrowd=0,
                 category_id=1,
                 bbox=bbox,
                 area=w * h,
                 segmentation=[segmentation])
             anno_info.append(anno)
-
     img_info.update(anno_info=anno_info)
 
     return img_info
@@ -129,8 +137,8 @@ def load_json_info(gt_file, img_info):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of FUNSD ')
-    parser.add_argument('root_path', help='Root dir path of FUNSD')
+        description='Generate training and test set of IC13')
+    parser.add_argument('root_path', help='Root dir path of IC13')
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of process')
     args = parser.parse_args()
@@ -143,10 +151,10 @@ def main():
 
     for split in ['training', 'test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert FUNSD annotation'):
+        with mmcv.Timer(print_tmpl='It takes {}s to convert IC13 annotation'):
             files = collect_files(
-                osp.join(root_path, 'imgs'),
-                osp.join(root_path, 'annotations', split))
+                osp.join(root_path, 'imgs', split),
+                osp.join(root_path, 'annotations', split), split)
             image_infos = collect_annotations(files, nproc=args.nproc)
             convert_annotations(
                 image_infos, osp.join(root_path,

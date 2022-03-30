@@ -1,12 +1,25 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import math
 import os
 import os.path as osp
 
 import mmcv
+from PIL import Image
 
 from mmocr.utils import convert_annotations
+
+
+def convert_gif(img_path):
+    """Convert the gif image to png format.
+
+    Args:
+        img_path (str): The path to the gif image
+    """
+    img = Image.open(img_path)
+    dst_path = img_path.replace('gif', 'png')
+    img.save(dst_path)
+    os.remove(img_path)
+    print(f'Convert {img_path} to {dst_path}')
 
 
 def collect_files(img_dir, gt_dir):
@@ -25,9 +38,14 @@ def collect_files(img_dir, gt_dir):
     assert gt_dir
 
     ann_list, imgs_list = [], []
-    for gt_file in os.listdir(gt_dir):
-        ann_list.append(osp.join(gt_dir, gt_file))
-        imgs_list.append(osp.join(img_dir, gt_file.replace('.json', '.png')))
+    for img in os.listdir(img_dir):
+        img_path = osp.join(img_dir, img)
+        # mmcv cannot read gif images, so convert them to png
+        if img.endswith('gif'):
+            convert_gif(img_path)
+            img_path = img_path.replace('gif', 'png')
+        imgs_list.append(img_path)
+        ann_list.append(osp.join(gt_dir, 'gt_' + img.split('.')[0] + '.txt'))
 
     files = list(zip(sorted(imgs_list), sorted(ann_list)))
     assert len(files), f'No images found in {img_dir}'
@@ -70,8 +88,6 @@ def load_img_info(files):
     assert isinstance(files, tuple)
 
     img_file, gt_file = files
-    assert osp.basename(gt_file).split('.')[0] == osp.basename(img_file).split(
-        '.')[0]
     # read imgs while ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
 
@@ -81,16 +97,19 @@ def load_img_info(files):
         width=img.shape[1],
         segm_file=osp.join(osp.basename(gt_file)))
 
-    if osp.splitext(gt_file)[1] == '.json':
-        img_info = load_json_info(gt_file, img_info)
+    if osp.splitext(gt_file)[1] == '.txt':
+        img_info = load_txt_info(gt_file, img_info)
     else:
         raise NotImplementedError
 
     return img_info
 
 
-def load_json_info(gt_file, img_info):
+def load_txt_info(gt_file, img_info):
     """Collect the annotation information.
+
+    The annotation format is as the following:
+    left, top, right, bottom, "transcription"
 
     Args:
         gt_file (str): The path to ground-truth
@@ -99,29 +118,25 @@ def load_json_info(gt_file, img_info):
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
-
-    annotation = mmcv.load(gt_file)
     anno_info = []
-    for form in annotation['form']:
-        for ann in form['words']:
-
-            iscrowd = 1 if len(ann['text']) == 0 else 0
-
-            x1, y1, x2, y2 = ann['box']
-            x = max(0, min(math.floor(x1), math.floor(x2)))
-            y = max(0, min(math.floor(y1), math.floor(y2)))
-            w, h = math.ceil(abs(x2 - x1)), math.ceil(abs(y2 - y1))
+    with open(gt_file, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            xmin, ymin, xmax, ymax = line.split(',')[0:4]
+            x = max(0, int(xmin))
+            y = max(0, int(ymin))
+            w = int(xmax) - x
+            h = int(ymax) - y
             bbox = [x, y, w, h]
             segmentation = [x, y, x + w, y, x + w, y + h, x, y + h]
 
             anno = dict(
-                iscrowd=iscrowd,
+                iscrowd=0,
                 category_id=1,
                 bbox=bbox,
                 area=w * h,
                 segmentation=[segmentation])
             anno_info.append(anno)
-
     img_info.update(anno_info=anno_info)
 
     return img_info
@@ -129,8 +144,8 @@ def load_json_info(gt_file, img_info):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of FUNSD ')
-    parser.add_argument('root_path', help='Root dir path of FUNSD')
+        description='Generate training and test set of IC11')
+    parser.add_argument('root_path', help='Root dir path of IC11')
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of process')
     args = parser.parse_args()
@@ -143,9 +158,9 @@ def main():
 
     for split in ['training', 'test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert FUNSD annotation'):
+        with mmcv.Timer(print_tmpl='It takes {}s to convert annotation'):
             files = collect_files(
-                osp.join(root_path, 'imgs'),
+                osp.join(root_path, 'imgs', split),
                 osp.join(root_path, 'annotations', split))
             image_infos = collect_annotations(files, nproc=args.nproc)
             convert_annotations(

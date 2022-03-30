@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import math
 import os
 import os.path as osp
 
@@ -25,11 +24,12 @@ def collect_files(img_dir, gt_dir):
     assert gt_dir
 
     ann_list, imgs_list = [], []
-    for gt_file in os.listdir(gt_dir):
-        ann_list.append(osp.join(gt_dir, gt_file))
-        imgs_list.append(osp.join(img_dir, gt_file.replace('.json', '.png')))
+    for img_file in os.listdir(img_dir):
+        ann_file = 'gt_' + str(int(img_file[2:6])) + '.txt'
+        ann_list.append(osp.join(gt_dir, ann_file))
+        imgs_list.append(osp.join(img_dir, img_file))
 
-    files = list(zip(sorted(imgs_list), sorted(ann_list)))
+    files = list(zip(imgs_list, ann_list))
     assert len(files), f'No images found in {img_dir}'
     print(f'Loaded {len(files)} images from {img_dir}')
 
@@ -70,27 +70,36 @@ def load_img_info(files):
     assert isinstance(files, tuple)
 
     img_file, gt_file = files
-    assert osp.basename(gt_file).split('.')[0] == osp.basename(img_file).split(
-        '.')[0]
+    assert int(osp.basename(gt_file)[3:-4]) == int(
+        osp.basename(img_file)[2:-4])
     # read imgs while ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
 
     img_info = dict(
-        file_name=osp.join(osp.basename(img_file)),
+        file_name=osp.basename(img_file),
         height=img.shape[0],
         width=img.shape[1],
-        segm_file=osp.join(osp.basename(gt_file)))
+        segm_file=osp.basename(gt_file))
 
-    if osp.splitext(gt_file)[1] == '.json':
-        img_info = load_json_info(gt_file, img_info)
+    if osp.splitext(gt_file)[1] == '.txt':
+        img_info = load_txt_info(gt_file, img_info)
     else:
         raise NotImplementedError
 
     return img_info
 
 
-def load_json_info(gt_file, img_info):
+def load_txt_info(gt_file, img_info):
     """Collect the annotation information.
+
+    The annotation format is as the following:
+    x1,y1,x2,y2,x3,y3,x4,y4,text
+    118,15,147,15,148,46,118,46,LƯỢNG
+    149,9,165,9,165,43,150,43,TỐT
+    167,9,180,9,179,43,167,42,ĐỂ
+    181,12,193,12,193,43,181,43,CÓ
+    195,13,215,14,215,46,196,46,VIỆC
+    217,13,237,14,239,47,217,46,LÀM,
 
     Args:
         gt_file (str): The path to ground-truth
@@ -100,19 +109,23 @@ def load_json_info(gt_file, img_info):
         img_info (dict): The dict of the img and annotation information
     """
 
-    annotation = mmcv.load(gt_file)
-    anno_info = []
-    for form in annotation['form']:
-        for ann in form['words']:
-
-            iscrowd = 1 if len(ann['text']) == 0 else 0
-
-            x1, y1, x2, y2 = ann['box']
-            x = max(0, min(math.floor(x1), math.floor(x2)))
-            y = max(0, min(math.floor(y1), math.floor(y2)))
-            w, h = math.ceil(abs(x2 - x1)), math.ceil(abs(y2 - y1))
-            bbox = [x, y, w, h]
-            segmentation = [x, y, x + w, y, x + w, y + h, x, y + h]
+    with open(gt_file, 'r', encoding='utf-8') as f:
+        anno_info = []
+        for line in f:
+            line = line.strip('\n')
+            ann = line.split(',')
+            bbox = ann[0:8]
+            word = line[len(','.join(bbox)) + 1:]
+            bbox = [int(coord) for coord in bbox]
+            segmentation = bbox
+            x_min = min(bbox[0], bbox[2], bbox[4], bbox[6])
+            x_max = max(bbox[0], bbox[2], bbox[4], bbox[6])
+            y_min = min(bbox[1], bbox[3], bbox[5], bbox[7])
+            y_max = max(bbox[1], bbox[3], bbox[5], bbox[7])
+            w = x_max - x_min
+            h = y_max - y_min
+            bbox = [x_min, y_min, w, h]
+            iscrowd = 1 if word == '###' else 0
 
             anno = dict(
                 iscrowd=iscrowd,
@@ -129,10 +142,10 @@ def load_json_info(gt_file, img_info):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of FUNSD ')
-    parser.add_argument('root_path', help='Root dir path of FUNSD')
+        description='Generate training and test set of VinText ')
+    parser.add_argument('root_path', help='Root dir path of VinText')
     parser.add_argument(
-        '--nproc', default=1, type=int, help='Number of process')
+        '--nproc', default=1, type=int, help='Number of processes')
     args = parser.parse_args()
     return args
 
@@ -140,13 +153,13 @@ def parse_args():
 def main():
     args = parse_args()
     root_path = args.root_path
-
-    for split in ['training', 'test']:
+    for split in ['training', 'test', 'unseen_test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert FUNSD annotation'):
+        with mmcv.Timer(
+                print_tmpl='It takes {}s to convert VinText annotation'):
             files = collect_files(
-                osp.join(root_path, 'imgs'),
-                osp.join(root_path, 'annotations', split))
+                osp.join(root_path, 'imgs', split),
+                osp.join(root_path, 'annotations'))
             image_infos = collect_annotations(files, nproc=args.nproc)
             convert_annotations(
                 image_infos, osp.join(root_path,
