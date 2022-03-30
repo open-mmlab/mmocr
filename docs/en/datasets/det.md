@@ -41,6 +41,11 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
+|── lv
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
+│   └── instances_val.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -55,6 +60,7 @@ The structure of the text detection dataset directory is organized as follows.
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
 |       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |       SROIE       |                                                                                                                   [homepage](https://rrc.cvc.uab.es/?ch=13)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+| Lecture Video DB  |                                                                                               [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
 
 ## Important Note
@@ -253,3 +259,24 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
   │   ├── instances_test.json
   │   └── instances_training.json
   ```
+### Lecture Video DB
+
+- Step1: Download [IIIT-CVid.zip](http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip) to `lv/`.
+
+```bash
+mkdir lv && cd lv
+
+# Download LV dataset
+wget http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip
+unzip -q IIIT-CVid.zip
+
+mv IIIT-CVid/Frames imgs
+
+rm IIIT-CVid.zip
+```
+
+- Step2: Generate `instances_training.json`, `instances_val.json`, and `instances_test.json` with following command:
+
+```bash
+python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
+```

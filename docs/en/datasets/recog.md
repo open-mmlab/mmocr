@@ -79,6 +79,10 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
+│   ├── lv
+│   │   ├── Crops
+│   │   ├── train_label.jsonl
+│   │   ├── test_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -100,6 +104,8 @@
 |       OpenVINO        |                  [Open Images](https://github.com/cvdfoundation/open-images-dataset)                  |                                                                                                                                               [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                                                               | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |   |
 |         FUNSD         |                          [homepage](https://guillaumejaume.github.io/FUNSD/)                          |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
 |         SROIE         |                               [homepage](https://rrc.cvc.uab.es/?ch=13)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|   Lecture Video DB    |          [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
 
@@ -360,3 +366,30 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   │   ├── train_label.jsonl
   │   ├── test_label.jsonl
   ```
+### Lecture Video DB
+
+**The LV dataset has already provided cropped images and the corresponding annotations**
+
+- Step1: Download [IIIT-CVid.zip](http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip) to `lv/`.
+
+```bash
+mkdir lv && cd lv
+
+# Download LV dataset
+wget http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip
+unzip -q IIIT-CVid.zip
+
+# For image
+mv IIIT-CVid/Crops ./
+
+# For annotation
+mv IIIT-CVid/train.txt train_label.txt && mv IIIT-CVid/val.txt val_label.txt && mv IIIT-CVid/test.txt test_label.txt
+
+rm IIIT-CVid.zip
+```
+
+- Step2: Generate `train_label.jsonl`, `val.jsonl`, and `test.jsonl` with following command:
+
+```bash
+python tools/data/textdreog/lv_converter.py PATH/TO/lv
+```

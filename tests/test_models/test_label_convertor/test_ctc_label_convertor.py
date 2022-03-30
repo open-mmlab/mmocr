@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 import torch
 
-from mmocr.models.textrecog.convertors import BaseConvertor, CTCConvertor
+from mmocr.models.textrecog.convertors import CTCConvertor
 
 
 def _create_dummy_dict_file(dict_file):
@@ -23,7 +23,7 @@ def test_ctc_label_convertor():
     _create_dummy_dict_file(dict_file)
 
     # test invalid arguments
-    with pytest.raises(AssertionError):
+    with pytest.raises(NotImplementedError):
         CTCConvertor(5)
 
     label_convertor = CTCConvertor(dict_file=dict_file, with_unknown=False)
@@ -71,10 +71,3 @@ def test_ctc_label_convertor():
     assert output_strings[0] == 'hell'
 
     tmp_dir.cleanup()
-
-
-def test_base_label_convertor():
-    with pytest.raises(NotImplementedError):
-        label_convertor = BaseConvertor()
-        label_convertor.str2tensor(None)
-        label_convertor.tensor2idx(None)
