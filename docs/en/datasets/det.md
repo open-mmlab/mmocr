@@ -46,10 +46,6 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── instances_test.json
 │   └── instances_training.json
 │   └── instances_val.json
-|── lsvt
-│   ├── imgs
-│   └── instances_training.json
-│   └── instances_val.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -247,29 +243,39 @@ rm IIIT-CVid.zip
 python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
 ```
 
-
 ### LSVT
 
 - Step1: Download [train_full_images_0.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz), [train_full_images_1.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz), and [train_full_labels.json](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json) to `lsvt/`.
 
-```bash
-mkdir lsvt && cd lsvt
+  ```bash
+  mkdir lsvt && cd lsvt
 
-# Download LSVT dataset
-wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz
-wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz
-wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json
+  # Download LSVT dataset
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json
 
-mkdir annotations
-tar -xf train_full_images_0.tar.gz && tar -xf train_full_images_1.tar.gz
-mv train_full_labels.json annotations/ && mv train_full_images_1/*.jpg train_full_images_0/
-mv train_full_images_0 imgs
+  mkdir annotations
+  tar -xf train_full_images_0.tar.gz && tar -xf train_full_images_1.tar.gz
+  mv train_full_labels.json annotations/ && mv train_full_images_1/*.jpg train_full_images_0/
+  mv train_full_images_0 imgs
 
-rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
-```
+  rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
+  ```
 
-- Step2: Generate `instances_training.json` and `instances_val.jsonl` (optional) with following command:
+- Step2: Generate `instances_training.json` and `instances_val.json` (optional) with following command:
 
-```bash
-python tools/data/textdet/lsvt_converter.py PATH/TO/lsvt
-```
+  ```bash
+  # Annotations of MTWI test split is not publicly available
+  # Set a val_ratio to separate a val split
+  python tools/data/textdet/lsvt_converter.py PATH/TO/lsvt
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  |── lsvt
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json (optional)
+  ```
