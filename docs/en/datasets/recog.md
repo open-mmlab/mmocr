@@ -380,33 +380,6 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   python tools/data/textrecog/openvino_converter.py /path/to/openvino 4
   ```
 
-### FUNSD
-
-- Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
-
-```bash
-mkdir funsd && cd funsd
-
-# Download FUNSD dataset
-wget https://guillaumejaume.github.io/FUNSD/dataset.zip
-unzip -q dataset.zip
-
-# For images
-mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
-
-# For annotations
-mkdir annotations
-mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
-
-rm dataset.zip && rm -rf dataset
-```
-
-- Step2: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
-
-```bash
-python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
-```
-
 ### DeText
 
 - Step1: Download `ch9_training_images.zip`, `ch9_training_localization_transcription_gt.zip`, `ch9_validation_images.zip`, and `ch9_validation_localization_transcription_gt.zip` from **Task 3: End to End** on the [homepage](https://rrc.cvc.uab.es/?ch=9).
@@ -547,6 +520,33 @@ rm IIIT-CVid.zip
 
 ```bash
 python tools/data/textdreog/lv_converter.py PATH/TO/lv
+```
+
+### FUNSD
+
+- Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
+
+```bash
+mkdir funsd && cd funsd
+
+# Download FUNSD dataset
+wget https://guillaumejaume.github.io/FUNSD/dataset.zip
+unzip -q dataset.zip
+
+# For images
+mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
+
+# For annotations
+mkdir annotations
+mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
+
+rm dataset.zip && rm -rf dataset
+```
+
+- Step2: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
+
+```bash
+python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
 
 ### IMGUR
