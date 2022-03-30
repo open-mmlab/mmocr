@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import json
-import math
 import os
 import os.path as osp
 
 import mmcv
+import numpy as np
 
 from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.utils.fileio import list_to_file
@@ -21,6 +21,7 @@ def collect_files(img_dir, gt_dir):
     Returns:
         files (list): The list of tuples (img_file, groundtruth_file)
     """
+
     assert isinstance(img_dir, str)
     assert img_dir
     assert isinstance(gt_dir, str)
@@ -28,11 +29,15 @@ def collect_files(img_dir, gt_dir):
 
     ann_list, imgs_list = [], []
     for gt_file in os.listdir(gt_dir):
+        # Filtering repeated and missing images
+        if '(' in gt_file or gt_file == 'X51006619570.txt':
+            continue
         ann_list.append(osp.join(gt_dir, gt_file))
-        imgs_list.append(osp.join(img_dir, gt_file.replace('.json', '.png')))
+        imgs_list.append(osp.join(img_dir, gt_file.replace('.txt', '.jpg')))
 
     files = list(zip(sorted(imgs_list), sorted(ann_list)))
     assert len(files), f'No images found in {img_dir}'
+
     print(f'Loaded {len(files)} images from {img_dir}')
 
     return files
@@ -48,6 +53,7 @@ def collect_annotations(files, nproc=1):
     Returns:
         images (list): The list of image information dicts
     """
+
     assert isinstance(files, list)
     assert isinstance(nproc, int)
 
@@ -69,6 +75,7 @@ def load_img_info(files):
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
+
     assert isinstance(files, tuple)
 
     img_file, gt_file = files
@@ -83,40 +90,38 @@ def load_img_info(files):
         width=img.shape[1],
         segm_file=osp.join(osp.basename(gt_file)))
 
-    if osp.splitext(gt_file)[1] == '.json':
-        img_info = load_json_info(gt_file, img_info)
+    if osp.splitext(gt_file)[1] == '.txt':
+        img_info = load_txt_info(gt_file, img_info)
     else:
         raise NotImplementedError
 
     return img_info
 
 
-def load_json_info(gt_file, img_info):
+def load_txt_info(gt_file, img_info):
     """Collect the annotation information.
 
+    Annotation Format
+    x1, y1, x2, y2, x3, y3, x4, y4, transcript
+
     Args:
-        gt_file (str): The path to ground-truth
-        img_info (dict): The dict of the img and annotation information
+        gt_file (list): The list of tuples (image_file, groundtruth_file)
+        img_info (int): The dict of the img and annotation information
 
     Returns:
-        img_info (dict): The dict of the img and annotation information
+        img_info (list): The dict of the img and annotation information
     """
 
-    annotation = mmcv.load(gt_file)
-    anno_info = []
-    for form in annotation['form']:
-        for ann in form['words']:
+    with open(gt_file, 'r', encoding='unicode_escape') as f:
+        anno_info = []
+        for ann in f.readlines():
+            # skip invalid annotation line
+            try:
+                bbox = np.array(ann.split(',')[0:8]).astype(int).tolist()
+            except ValueError:
 
-            # Ignore illegible samples
-            if len(ann['text']) == 0:
                 continue
-
-            x1, y1, x2, y2 = ann['box']
-            x = max(0, min(math.floor(x1), math.floor(x2)))
-            y = max(0, min(math.floor(y1), math.floor(y2)))
-            w, h = math.ceil(abs(x2 - x1)), math.ceil(abs(y2 - y1))
-            bbox = [x, y, x + w, y, x + w, y + h, x, y + h]
-            word = ann['text']
+            word = ann.split(',')[-1].replace('\n', '').strip()
 
             anno = dict(bbox=bbox, word=word)
             anno_info.append(anno)
@@ -126,7 +131,7 @@ def load_json_info(gt_file, img_info):
     return img_info
 
 
-def generate_ann(root_path, split, image_infos, preserve_vertical, format):
+def generate_ann(root_path, split, image_infos, format):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -134,40 +139,37 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
         split (str): The split of dataset. Namely: training or test
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
-        preserve_vertical (bool): Whether to preserve vertical texts
-        format (str): Using jsonl(dict) or str to format annotations
+        format (str): Annotation format, should be either 'jsonl' or 'txt'
     """
 
-    dst_image_root = osp.join(root_path, 'dst_imgs', split)
+    dst_image_root = osp.join(root_path, 'crops', split)
     if split == 'training':
-        dst_label_file = osp.join(root_path, 'train_label.txt')
+        dst_label_file = osp.join(root_path, f'train_label.{format}')
     elif split == 'test':
-        dst_label_file = osp.join(root_path, 'test_label.txt')
+        dst_label_file = osp.join(root_path, f'test_label.{format}')
     os.makedirs(dst_image_root, exist_ok=True)
 
     lines = []
     for image_info in image_infos:
         index = 1
-        src_img_path = osp.join(root_path, 'imgs', image_info['file_name'])
+        src_img_path = osp.join(root_path, 'imgs', split,
+                                image_info['file_name'])
         image = mmcv.imread(src_img_path)
         src_img_root = image_info['file_name'].split('.')[0]
 
         for anno in image_info['anno_info']:
             word = anno['word']
-            dst_img = crop_img(image, anno['bbox'])
-            h, w, _ = dst_img.shape
+            dst_img = crop_img(image, anno['bbox'], 0, 0)
 
             # Skip invalid annotations
-            if min(dst_img.shape) == 0:
-                continue
-            # Skip vertical texts
-            if not preserve_vertical and h / w > 2:
+            if min(dst_img.shape) == 0 or len(word) == 0:
                 continue
 
             dst_img_name = f'{src_img_root}_{index}.png'
             index += 1
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
+
             if format == 'txt':
                 lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
                              f'{word}')
@@ -177,8 +179,7 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
                         'filename':
                         f'{osp.basename(dst_image_root)}/{dst_img_name}',
                         'text': word
-                    }),
-                    ensure_ascii=False)
+                    }))
             else:
                 raise NotImplementedError
 
@@ -187,14 +188,10 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of FUNSD ')
-    parser.add_argument('root_path', help='Root dir path of FUNSD')
+        description='Generate training and test set of SROIE')
+    parser.add_argument('root_path', help='Root dir path of SROIE')
     parser.add_argument(
-        '--preserve_vertical',
-        help='Preserve samples containing vertical texts',
-        action='store_true')
-    parser.add_argument(
-        '--nproc', default=1, type=int, help='Number of processes')
+        '--nproc', default=1, type=int, help='Number of process')
     parser.add_argument(
         '--format',
         default='jsonl',
@@ -210,13 +207,12 @@ def main():
 
     for split in ['training', 'test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert FUNSD annotation'):
+        with mmcv.Timer(print_tmpl='It takes {}s to convert SROIE annotation'):
             files = collect_files(
-                osp.join(root_path, 'imgs'),
+                osp.join(root_path, 'imgs', split),
                 osp.join(root_path, 'annotations', split))
             image_infos = collect_annotations(files, nproc=args.nproc)
-            generate_ann(root_path, split, image_infos, args.preserve_vertical,
-                         args.format)
+            generate_ann(root_path, split, image_infos, args.format)
 
 
 if __name__ == '__main__':
