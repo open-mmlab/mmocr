@@ -97,7 +97,7 @@ def convert_lsvt(root_path,
 
     Args:
         root_path (str): The root path of the dataset
-        split (str): The split of dataset. Namely: training or test
+        split (str): The split of dataset. Namely: training or val
         ratio (float): Split ratio for val set
         preserve_vertical (bool): Whether to preserve vertical texts
         format (str): Annotation format, whether be txt or jsonl
@@ -186,7 +186,7 @@ def main():
         print('Processing validation set...')
         convert_lsvt(
             root_path=root_path,
-            split='train',
+            split='val',
             ratio=args.val_ratio,
             preserve_vertical=args.preserve_vertical,
             format=args.format,
