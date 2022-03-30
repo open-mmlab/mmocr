@@ -30,3 +30,50 @@ For example,
 ```bash
 python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
 ```
+
+
+## Log Analysis
+
+`tools/analyze_logs.py` plots loss/hmean curves given a training
+ log file. Run `pip install seaborn` first to install the dependency.
+
+ ```shell
+python tools/analyze_logs.py plot_curve [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
+ ```
+
+
+Examples:
+
+- Plot loss metric.
+
+    ```shell
+    python tools/analyze_logs.py plot_curve log.json --keys loss --legend loss
+    ```
+
+- Plot hmean-iou:hmean metric of text detection.
+
+    ```shell
+    python tools/analyze_logs.py plot_curve log.json --keys hmean-iou:hmean --legend hmean-iou:hmean
+    ```
+
+- Plot 0_1-N.E.D metric of text recognition.
+
+    ```shell
+    python tools/analyze_logs.py plot_curve log.json --keys 0_1-N.E.D --legend 0_1-N.E.D
+    ```
+
+- Compute the average training speed.
+
+    ```shell
+    python tools/analyze_logs.py cal_train_time log.json [--include-outliers]
+    ```
+
+    The output is expected to be like the following.
+
+    ```text
+    -----Analyze train time of xxx.log.json-----
+    slowest epoch 317, average time is 1.4933
+    fastest epoch 496, average time is 1.0708
+    time std over epochs is 0.0624
+    average iter time: 1.2524 s/iter
+    ```
