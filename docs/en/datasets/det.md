@@ -52,6 +52,8 @@ The structure of the text detection dataset directory is organized as follows.
 | :---------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------: | :---: |
 |                   |                                                                                                                                                                                                                                                                                |                                                                                                           training                                                                                                           |                                          validation                                          |                                            testing                                             |       |
 |      CTW1500      |                                                                                                         [homepage](https://github.com/Yuliang-Liu/Curve-Text-Detector)                                                                                                         |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|     ICDAR2011     |                                                                                                                    [homepage](https://rrc.cvc.uab.es/?ch=1)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                                                                                |
+|     ICDAR2013     |                                                                                                                    [homepage](https://rrc.cvc.uab.es/?ch=2)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |     ICDAR2015     |                                                                                                             [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)                                                                                                             |                                                            [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json)                                                            |                                              -                                               | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |
 |     ICDAR2017     |                                                                                                             [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)                                                                                                             |                                                            [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json)                                                            | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) |                                               -                                                |       |  |
 |     Synthtext     |                                                                                                          [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)                                                                                                          | instances_training.lmdb ([data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb), [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb)) |                                              -                                               |                                               -                                                |
@@ -63,6 +65,11 @@ The structure of the text detection dataset directory is organized as follows.
 |        NAF        |                                                                                                      [homepage](https://github.com/herobd/NAF_dataset/releases/tag/v1.0)                                                                                                       |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |       SROIE       |                                                                                                                   [homepage](https://rrc.cvc.uab.es/?ch=13)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | Lecture Video DB  |                                                                                               [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|       IMGUR       |                                                                                                  [homepage](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset)                                                                                                   |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|       KAIST       |                                                                                               [homepage](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|       MTWI        |                                                                                           [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us)                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|   COCO Text v2    |                                                                                                                 [homepage](https://bgshih.github.io/cocotext/)                                                                                                                 |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|       ReCTS       |                                                                                                                   [homepage](https://rrc.cvc.uab.es/?ch=12)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
 
 ## Important Note
@@ -123,6 +130,82 @@ unzip test_images.zip && mv test_images test
 ```bash
 python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
 ```
+
+### ICDAR 2011 (Born-Digital Images)
+- Step1: Download `Challenge1_Training_Task12_Images.zip`, `Challenge1_Training_Task1_GT.zip`, `Challenge1_Test_Task12_Images.zip`, and `Challenge1_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.1: Text Localization (2013 edition)`.
+
+  ```bash
+  mkdir icdar2011 && cd icdar2011
+  mkdir imgs && mkdir annotations
+
+  # Download ICDAR 2011
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task1_GT.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task1_GT.zip --no-check-certificate
+
+  # For images
+  unzip -q Challenge1_Training_Task12_Images.zip -d imgs/training
+  unzip -q Challenge1_Test_Task12_Images.zip -d imgs/test
+  # For annotations
+  unzip -q Challenge1_Training_Task1_GT.zip -d annotations/training
+  unzip -q Challenge1_Test_Task1_GT.zip -d annotations/test
+
+  rm Challenge1_Training_Task12_Images.zip && rm Challenge1_Test_Task12_Images.zip && rm Challenge1_Training_Task1_GT.zip && rm Challenge1_Test_Task1_GT.zip
+  ```
+
+- Step 2: Generate `instances_training.json` and `instances_test.json` with the following command:
+
+  ```bash
+  python tools/data/textdet/ic11_converter.py PATH/TO/icdar2011 --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  |── icdar2011
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
+
+### ICDAR 2013 (Focused Scene Text)
+- Step1: Download `Challenge2_Training_Task12_Images.zip`, `Challenge2_Test_Task12_Images.zip`, `Challenge2_Training_Task1_GT.zip`, and `Challenge2_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.1: Text Localization (2013 edition)`.
+
+  ```bash
+  mkdir icdar2013 && cd icdar2013
+  mkdir imgs && mkdir annotations
+
+  # Download ICDAR 2013
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task1_GT.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task1_GT.zip --no-check-certificate
+
+  # For images
+  unzip -q Challenge2_Training_Task12_Images.zip -d imgs/training
+  unzip -q Challenge2_Test_Task12_Images.zip -d imgs/test
+  # For annotations
+  unzip -q Challenge2_Training_Task1_GT.zip -d annotations/training
+  unzip -q Challenge2_Test_Task1_GT.zip -d annotations/test
+
+  rm Challenge2_Training_Task12_Images.zip && rm Challenge2_Test_Task12_Images.zip && rm Challenge2_Training_Task1_GT.zip && rm Challenge2_Test_Task1_GT.zip
+  ```
+
+- Step 2: Generate `instances_training.json` and `instances_test.json` with the following command:
+
+  ```bash
+  python tools/data/textdet/ic13_converter.py PATH/TO/icdar2013 --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  |── icdar2013
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
 
 ### SynthText
 
@@ -356,3 +439,179 @@ rm IIIT-CVid.zip
 ```bash
 python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
 ```
+
+### IMGUR
+
+- Step1: Run `download_imgur5k.py` to download images. You can merge [PR#5](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset/pull/5) in your local repository to enable a **much faster** parallel execution of image download.
+
+  ```bash
+  mkdir imgur && cd imgur
+
+  git clone https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset.git
+
+  # Download images from imgur.com. This may take SEVERAL HOURS!
+  python ./IMGUR5K-Handwriting-Dataset/download_imgur5k.py --dataset_info_dir ./IMGUR5K-Handwriting-Dataset/dataset_info/ --output_dir ./imgs
+
+  # For annotations
+  mkdir annotations
+  mv ./IMGUR5K-Handwriting-Dataset/dataset_info/*.json annotations
+
+  rm -rf IMGUR5K-Handwriting-Dataset
+  ```
+
+- Step2: Generate `instances_train.json`, `instance_val.json` and `instances_test.json` with the following command:
+
+  ```bash
+  python tools/data/textdet/imgur_converter.py PATH/TO/imgur
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```
+  |── imgur
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   ├── instances_training.json
+  │   └── instances_val.json
+  ```
+
+  ### KAIST
+
+- Step1: Complete download [KAIST_all.zip](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) to `kaist/`.
+
+  ```bash
+  mkdir kaist && cd kaist
+  mkdir imgs && mkdir annotations
+
+  # Download KAIST dataset
+  wget http://www.iapr-tc11.org/dataset/KAIST_SceneText/KAIST_all.zip
+  unzip -q KAIST_all.zip
+
+  rm KAIST_all.zip
+  ```
+
+- Step2: Extract zips:
+
+  ```bash
+  python tools/data/common/extract_kaist.py PATH/TO/kaist
+  ```
+
+- Step3: Generate `instances_training.json` and `instances_val.json` (optional) with following command:
+
+  ```bash
+  # Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
+  python tools/data/textdet/kaist_converter.py PATH/TO/kaist --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  |── kaist
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json (optional)
+  ```
+
+### MTWI
+
+- Step1: Download `mtwi_2018_train.zip` from [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us).
+
+  ```bash
+  mkdir mtwi && cd mtwi
+
+  unzip -q mtwi_2018_train.zip
+  mv image_train imgs && mv txt_train annotations
+
+  rm mtwi_2018_train.zip
+  ```
+
+- Step2: Generate `instances_training.json` and `instance_val.json` (optional) with the following command:
+
+  ```bash
+  # Annotations of MTWI test split is not publicly available, split a validation
+  # set by adding --val-ratio 0.2
+  python tools/data/textdet/mtwi_converter.py PATH/TO/mtwi --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  |── mtwi
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json (optional)
+  ```
+
+### COCO Text v2
+
+- Step1: Download image [train2014.zip](http://images.cocodataset.org/zips/train2014.zip) and annotation [cocotext.v2.zip](https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip) to `coco_textv2/`.
+
+  ```bash
+  mkdir coco_textv2 && cd coco_textv2
+  mkdir annotations
+
+  # Download COCO Text v2 dataset
+  wget http://images.cocodataset.org/zips/train2014.zip
+  wget https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip
+  unzip -q train2014.zip && unzip -q cocotext.v2.zip
+
+  mv train2014 imgs && mv cocotext.v2.json annotations/
+
+  rm train2014.zip && rm -rf cocotext.v2.zip
+  ```
+
+- Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
+
+  ```bash
+  python tools/data/textdet/cocotext_converter.py PATH/TO/coco_textv2
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  |── coco_textv2
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json
+  ```
+
+### ReCTS
+
+- Step1: Download [ReCTS.zip](https://datasets.cvc.uab.es/rrc/ReCTS.zip) to `rects/` from the [homepage](https://rrc.cvc.uab.es/?ch=12&com=downloads).
+
+  ```bash
+  mkdir rects && cd rects
+
+  # Download ReCTS dataset
+  # You can also find Google Drive link on the dataset homepage
+  wget https://datasets.cvc.uab.es/rrc/ReCTS.zip --no-check-certificate
+  unzip -q ReCTS.zip
+
+  mv img imgs && mv gt_unicode annotations
+
+  rm ReCTS.zip && rm -rf gt
+  ```
+
+- Step2: Generate `instances_training.json` and `instances_val.json` (optional) with following command:
+
+  ```bash
+  # Annotations of ReCTS test split is not publicly available, split a validation
+  # set by adding --val-ratio 0.2
+  # Add --preserve-vertical to preserve vertical texts for training, otherwise
+  # vertical images will be filtered and stored in PATH/TO/rects/ignores
+  python tools/data/textdet/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  |── rects
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_val.json (optional)
+  │   └── instances_training.json
+  ```
