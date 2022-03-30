@@ -883,7 +883,7 @@ should be as follows:
   │   ├── val_label.jsonl (optional)
   ```
 
-### VinText
+## VinText
 
 - Step1: Download [vintext.zip](https://drive.google.com/drive/my-drive) to `vintext`
 
