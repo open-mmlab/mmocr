@@ -356,3 +356,127 @@ rm IIIT-CVid.zip
 ```bash
 python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
 ```
+
+### ILST
+
+- Step1: Download `IIIT-ILST` from [onedrive](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)
+
+- Step2: Run the following commands
+  ```bash
+  unzip -q IIIT-ILST.zip && rm IIIT-ILST.zip
+  cd IIIT-ILST
+
+  # rename files
+  cd Devanagari && for i in `ls`; do mv -f $i `echo "devanagari_"$i`; done && cd ..
+  cd Malayalam && for i in `ls`; do mv -f $i `echo "malayalam_"$i`; done && cd ..
+  cd Telugu && for i in `ls`; do mv -f $i `echo "telugu_"$i`; done && cd ..
+
+  # transfer image path
+  mkdir imgs && mkdir annotations
+  mv Malayalam/{*jpg,*jpeg} imgs/ && mv Malayalam/*xml annotations/
+  mv Devanagari/*jpg imgs/ && mv Devanagari/*xml annotations/
+  mv Telugu/*jpeg imgs/ && mv Telugu/*xml annotations/
+
+  # remove unnecessary files
+  rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm -rf README.txt
+  ```
+
+- Step3: Generate `instances_training.json` and `instances_val.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+
+  ```bash
+  python tools/data/textdet/ilst_converter.py    PATH/TO/IIIT-ILST --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+  ```text
+  |── IIIT-ILST
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_val.json (optional)
+  │   └── instances_training.json
+  ```
+
+### VinText
+- Step1: Download [vintext.zip](https://drive.google.com/drive/my-drive) to `vintext`
+
+  ```bash
+  mkdir vintext && cd vintext
+
+  # Download dataset from google drive
+  wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1UUQhNvzgpZy7zXBFQp0Qox-BBjunZ0ml' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1UUQhNvzgpZy7zXBFQp0Qox-BBjunZ0ml" -O vintext.zip && rm -rf /tmp/cookies.txt
+
+  # Extract images and annotations
+  unzip -q vintext.zip && rm vintext.zip
+  mv vietnamese/labels ./ && mv vietnamese/test_image ./ && mv vietnamese/train_images ./ && mv vietnamese/unseen_test_images ./
+  rm -rf vietnamese
+
+  # Rename files
+  mv labels annotations && mv test_image test && mv train_images  training && mv unseen_test_images  unseen_test
+  mkdir imgs
+  mv training imgs/ && mv test imgs/ && mv unseen_test imgs/
+  ```
+
+- Step2: Generate `instances_training.json`, `instances_test.json` and `instances_unseen_test.json`
+  ```bash
+  python tools/data/textdet/vintext_converter.py PATH/TO/vintext --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+  ```text
+  |── vintext
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   ├── instances_unseen_test.json
+  │   └── instances_training.json
+  ```
+
+
+### BID
+
+- Step1: Download [BID Dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
+
+- Step2: Run the following commands to preprocess the dataset
+
+  ```bash
+  # Rename
+  mv BID\ Dataset.zip BID_Dataset.zip
+
+  # Unzip and Rename
+  unzip -q BID_Dataset.zip && rm BID_Dataset.zip
+  mv BID\ Dataset BID
+
+  # The BID dataset has a problem of permission, and you may
+  # add permission for this file
+  chmod -R 777 BID
+  cd BID
+  mkdir imgs && mkdir annotations
+
+  # For images and annotations
+  mv CNH_Aberta/*in.jpg imgs && mv CNH_Aberta/*txt annotations && rm -rf CNH_Aberta
+  mv CNH_Frente/*in.jpg imgs && mv CNH_Frente/*txt annotations && rm -rf CNH_Frente
+  mv CNH_Verso/*in.jpg imgs && mv CNH_Verso/*txt annotations && rm -rf CNH_Verso
+  mv CPF_Frente/*in.jpg imgs && mv CPF_Frente/*txt annotations && rm -rf CPF_Frente
+  mv CPF_Verso/*in.jpg imgs && mv CPF_Verso/*txt annotations && rm -rf CPF_Verso
+  mv RG_Aberto/*in.jpg imgs && mv RG_Aberto/*txt annotations && rm -rf RG_Aberto
+  mv RG_Frente/*in.jpg imgs && mv RG_Frente/*txt annotations && rm -rf RG_Frente
+  mv RG_Verso/*in.jpg imgs && mv RG_Verso/*txt annotations && rm -rf RG_Verso
+
+  # Remove unnecessary files
+  rm -rf desktop.ini
+  ```
+
+- Step3: - Step3: Generate `instances_training.json` and `instances_val.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+
+  ```bash
+  python tools/data/textrecog/bid_converter.py PATH/TO/BID --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+  ```text
+  |── BID
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json (optional)
+  ```
