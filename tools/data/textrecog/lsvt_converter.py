@@ -151,6 +151,7 @@ def convert_lsvt(root_path,
         raise NotImplementedError
 
     tasks = []
+    idx = 0
     for img_idx, prefix in enumerate(img_prefixes):
         img_file = osp.join(src_image_root, prefix + '.jpg')
         img_info = {'file_name': img_file}
@@ -158,6 +159,7 @@ def convert_lsvt(root_path,
         if not osp.exists(img_file):
             continue
         tasks.append((img_idx + img_start_idx, img_info, annotation[prefix]))
+        idx = idx + 1
 
     labels_list = mmcv.track_parallel_progress(
         process_img_with_path, tasks, keep_order=True, nproc=nproc)
@@ -166,7 +168,7 @@ def convert_lsvt(root_path,
         final_labels += label_list
     list_to_file(dst_label_file, final_labels)
 
-    return len(annotation['imgs'])
+    return idx
 
 
 def main():
