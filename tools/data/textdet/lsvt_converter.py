@@ -13,7 +13,7 @@ def parse_args():
         description='Generate training and validation set of LSVT ')
     parser.add_argument('root_path', help='Root dir path of LSVT')
     parser.add_argument(
-        '--val-ratio', help='Split ratio for val set', default=0.2, type=float)
+        '--val-ratio', help='Split ratio for val set', default=0.0, type=float)
     args = parser.parse_args()
     return args
 
@@ -122,7 +122,7 @@ def main():
         val_infos = collect_lsvt_info(root_path, 'val', args.val_ratio)
         convert_annotations(val_infos, osp.join(root_path,
                                                 'instances_val.json'))
-        print('Finish')
+    print('Finish')
 
 
 if __name__ == '__main__':

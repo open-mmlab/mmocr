@@ -3,10 +3,11 @@ import argparse
 import json
 import math
 import os.path as osp
+from functools import partial
 
 import mmcv
 
-from mmocr.utils import convert_annotations
+from mmocr.utils.fileio import list_to_file
 
 
 def parse_args():
@@ -15,22 +16,37 @@ def parse_args():
     parser.add_argument('root_path', help='Root dir path of LSVT')
     parser.add_argument(
         '--val-ratio', help='Split ratio for val set', default=0.2, type=float)
+    parser.add_argument(
+        '--nproc', default=1, type=int, help='Number of processes')
+    parser.add_argument(
+        '--preserve-vertical',
+        help='Preserve samples containing vertical texts',
+        action='store_true')
+    parser.add_argument(
+        '--format',
+        default='jsonl',
+        help='Use jsonl or string to format annotations',
+        choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
 
 
-def process_img(args, src_image_root, dst_image_root, ignore_image_root,
-                preserve_vertical, split, format):
+def process_img(args, dst_image_root, ignore_image_root, preserve_vertical,
+                split, format):
     # Dirty hack for multi-processing
     img_idx, img_info, anns = args
-    src_img = mmcv.imread(osp.join(src_image_root, img_info['file_name']))
+    src_img = mmcv.imread(img_info['file_name'])
     labels = []
     for ann_idx, ann in enumerate(anns):
-        text_label = ann['utf8_string']
+        segmentation = []
+        for x, y in ann['points']:
+            segmentation.append(max(0, x))
+            segmentation.append(max(0, y))
+        xs, ys = segmentation[::2], segmentation[1::2]
+        x, y = min(xs), min(ys)
+        w, h = max(xs) - x, max(ys) - y
+        text_label = ann['transcription']
 
-        x, y, w, h = ann['bbox']
-        x, y = max(0, math.floor(x)), max(0, math.floor(y))
-        w, h = math.ceil(w), math.ceil(h)
         dst_img = src_img[y:y + h, x:x + w]
         dst_img_name = f'img_{img_idx}_{ann_idx}.jpg'
 
@@ -56,8 +72,14 @@ def process_img(args, src_image_root, dst_image_root, ignore_image_root,
     return labels
 
 
-def collect_lsvt_info(root_path, split, ratio, print_every=1000):
-    """Collect the annotation information.
+def convert_lsvt(root_path,
+                 split,
+                 ratio,
+                 preserve_vertical,
+                 format,
+                 nproc,
+                 img_start_idx=0):
+    """Collect the annotation information and crop the images.
 
     The annotation format is as the following:
     [
@@ -74,10 +96,13 @@ def collect_lsvt_info(root_path, split, ratio, print_every=1000):
 
 
     Args:
-        root_path (str): Root path to the dataset
-        split (str): Dataset split, which should be 'train' or 'val'
+        root_path (str): The root path of the dataset
+        split (str): The split of dataset. Namely: training or test
         ratio (float): Split ratio for val set
-        print_every (int): Print log info per iteration
+        preserve_vertical (bool): Whether to preserve vertical texts
+        format (str): Annotation format, whether be txt or jsonl
+        nproc (int): The number of process to collect annotations
+        img_start_idx (int): Index of start image
 
     Returns:
         img_info (dict): The dict of the img and annotation information
@@ -90,9 +115,21 @@ def collect_lsvt_info(root_path, split, ratio, print_every=1000):
 
     annotation = mmcv.load(annotation_path)
     # outputs
-    # dst_label_file = osp.join(root_path, f'{split}_label.{format}')
-    # dst_image_root = osp.join(root_path, 'crops', split)
-    # ignore_image_root = osp.join(root_path, 'ignores', split)
+    dst_label_file = osp.join(root_path, f'{split}_label.{format}')
+    dst_image_root = osp.join(root_path, 'crops', split)
+    ignore_image_root = osp.join(root_path, 'ignores', split)
+    src_image_root = osp.join(root_path, 'imgs')
+    mmcv.mkdir_or_exist(dst_image_root)
+    mmcv.mkdir_or_exist(ignore_image_root)
+
+    process_img_with_path = partial(
+        process_img,
+        dst_image_root=dst_image_root,
+        ignore_image_root=ignore_image_root,
+        preserve_vertical=preserve_vertical,
+        split=split,
+        format=format)
+
     img_prefixes = annotation.keys()
 
     trn_files, val_files = [], []
@@ -113,58 +150,47 @@ def collect_lsvt_info(root_path, split, ratio, print_every=1000):
     else:
         raise NotImplementedError
 
-    img_infos = []
-    for i, prefix in enumerate(img_prefixes):
-        if i > 0 and i % print_every == 0:
-            print(f'{i}/{len(img_prefixes)}')
-        img_file = osp.join(root_path, 'imgs', prefix + '.jpg')
+    tasks = []
+    for img_idx, prefix in enumerate(img_prefixes):
+        img_file = osp.join(src_image_root, prefix + '.jpg')
+        img_info = {'file_name': img_file}
         # Skip not exist images
         if not osp.exists(img_file):
             continue
-        img = mmcv.imread(img_file)
+        tasks.append((img_idx + img_start_idx, img_info, annotation[prefix]))
 
-        img_info = dict(
-            file_name=osp.join(osp.basename(img_file)),
-            height=img.shape[0],
-            width=img.shape[1],
-            segm_file=osp.join(osp.basename(annotation_path)))
+    labels_list = mmcv.track_parallel_progress(
+        process_img_with_path, tasks, keep_order=True, nproc=nproc)
+    final_labels = []
+    for label_list in labels_list:
+        final_labels += label_list
+    list_to_file(dst_label_file, final_labels)
 
-        anno_info = []
-        for ann in annotation[prefix]:
-            segmentation = []
-            for x, y in ann['points']:
-                segmentation.append(max(0, x))
-                segmentation.append(max(0, y))
-            xs, ys = segmentation[::2], segmentation[1::2]
-            x, y = min(xs), min(ys)
-            w, h = max(xs) - x, max(ys) - y
-            bbox = [x, y, w, h]
-            anno = dict(
-                iscrowd=1 if ann['illegibility'] else 0,
-                category_id=1,
-                bbox=bbox,
-                area=w * h,
-                segmentation=[segmentation])
-            anno_info.append(anno)
-        img_info.update(anno_info=anno_info)
-        img_infos.append(img_info)
-
-    return img_infos
+    return len(annotation['imgs'])
 
 
 def main():
     args = parse_args()
     root_path = args.root_path
     print('Processing training set...')
-    training_infos = collect_lsvt_info(root_path, 'train', args.val_ratio)
-    convert_annotations(training_infos,
-                        osp.join(root_path, 'instances_training.json'))
+    num_train_imgs = convert_lsvt(
+        root_path=root_path,
+        split='train',
+        ratio=args.val_ratio,
+        preserve_vertical=args.preserve_vertical,
+        format=args.format,
+        nproc=args.nproc)
     if args.val_ratio > 0:
         print('Processing validation set...')
-        val_infos = collect_lsvt_info(root_path, 'val', args.val_ratio)
-        convert_annotations(val_infos, osp.join(root_path,
-                                                'instances_val.json'))
-        print('Finish')
+        convert_lsvt(
+            root_path=root_path,
+            split='train',
+            ratio=args.val_ratio,
+            preserve_vertical=args.preserve_vertical,
+            format=args.format,
+            nproc=args.nproc,
+            img_start_idx=num_train_imgs)
+    print('Finish')
 
 
 if __name__ == '__main__':

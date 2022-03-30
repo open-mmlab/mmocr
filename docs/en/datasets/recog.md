@@ -356,38 +356,42 @@ rm IIIT-CVid.zip
 python tools/data/textdreog/lv_converter.py PATH/TO/lv
 ```
 
-
 ### LSVT
 
 - Step1: Download [train_full_images_0.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz), [train_full_images_1.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz), and [train_full_labels.json](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json) to `lsvt/`.
 
-```bash
-mkdir lsvt && cd lsvt
+  ```bash
+  mkdir lsvt && cd lsvt
 
-# Download LSVT dataset
-wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz
-wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz
-wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json
+  # Download LSVT dataset
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json
 
-mkdir annotations
-tar -xf train_full_images_0.tar.gz && tar -xf train_full_images_1.tar.gz
-mv train_full_labels.json annotations/ && mv train_full_images_1/*.jpg train_full_images_0/
-mv train_full_images_0 imgs
+  mkdir annotations
+  tar -xf train_full_images_0.tar.gz && tar -xf train_full_images_1.tar.gz
+  mv train_full_labels.json annotations/ && mv train_full_images_1/*.jpg train_full_images_0/
+  mv train_full_images_0 imgs
 
-rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
-```
+  rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
+  ```
 
 - Step2: Generate `instances_training.json` and `instances_val.jsonl` (optional) with following command:
 
-```bash
-python tools/data/textdrecog/lsvt_converter.py PATH/TO/lsvt
-```
+  ```bash
+  # Annotations of LSVT test split is not publicly available, split a validation
+  # set by adding --val-ratio 0.2
+  # Add --preserve-vertical to preserve vertical texts for training, otherwise
+  # vertical images will be filtered and stored in PATH/TO/lsvt/ignores
+  python tools/data/textdrecog/lsvt_converter.py PATH/TO/lsvt --nproc 4
+  ```
 
 - After running the above codes, the directory structure should be as follows:
 
   ```text
   ├── lsvt
   │   ├── crops
+  │   ├── ignores
   │   ├── train_label.jsonl
-  │   ├── val_label.jsonl
+  │   ├── val_label.jsonl (optional)
   ```

@@ -263,11 +263,11 @@ python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
   rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
   ```
 
-- Step2: Generate `instances_training.json` and `instances_val.json` (optional) with following command:
+- Step2: Generate `instances_training.json` and `instances_val.json` (optional) with the following command:
 
   ```bash
-  # Annotations of MTWI test split is not publicly available
-  # Set a val_ratio to separate a val split
+  # Annotations of LSVT test split is not publicly available, split a validation
+  # set by adding --val-ratio 0.2
   python tools/data/textdet/lsvt_converter.py PATH/TO/lsvt
   ```
 
