@@ -118,14 +118,86 @@
 
 ## Preparation Steps
 
-### ICDAR 2013
+### ICDAR 2011 (Born-Digital Images)
+- Step1: Download `Challenge1_Training_Task3_Images_GT.zip`, `Challenge1_Test_Task3_Images.zip`, and `Challenge1_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.3: Word Recognition (2013 edition)`.
+
+  ```bash
+  mkdir icdar2011 && cd icdar2011
+  mkdir annotations
+
+  # Download ICDAR 2011
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task3_Images_GT.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task3_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task3_GT.txt --no-check-certificate
+
+  # For images
+  mkdir crops
+  unzip -q Challenge1_Training_Task3_Images_GT.zip -d crops/train
+  unzip -q Challenge1_Test_Task3_Images.zip -d crops/test
+
+  # For annotations
+  mv Challenge1_Test_Task3_GT.txt annotations && mv train/gt.txt annotations/Challenge1_Train_Task3_GT.txt
+  ```
+
+- Step2: Convert original annotations to `Train_label.jsonl` and `Test_label.jsonl` with the following command:
+
+  ```bash
+  python tools/data/textrecog/ic11_converter.py PATH/TO/icdar2011
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  ├── icdar2011
+  │   ├── crops
+  │   ├── train_label.jsonl
+  │   └── test_label.jsonl
+  ```
+
+### ICDAR 2013 (Focused Scene Text)
+- Step1: Download `Challenge2_Training_Task3_Images_GT.zip`, `Challenge2_Test_Task3_Images.zip`, and `Challenge2_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.3: Word Recognition (2013 edition)`.
+
+  ```bash
+  mkdir icdar2013 && cd icdar2013
+  mkdir annotations
+
+  # Download ICDAR 2013
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task3_Images_GT.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_GT.txt --no-check-certificate
+
+  # For images
+  mkdir crops
+  unzip -q Challenge2_Training_Task3_Images_GT.zip -d crops/train
+  unzip -q Challenge2_Test_Task3_Images.zip -d crops/test
+  # For annotations
+  mv Challenge2_Test_Task3_GT.txt annotations && mv crops/train/gt.txt annotations/Challenge2_Train_Task3_GT.txt
+
+  rm Challenge2_Training_Task3_Images_GT.zip && rm Challenge2_Test_Task3_Images.zip
+  ```
+
+- Step 2: Generate `Train_label.jsonl` and `Test_label.jsonl` with the following command:
+
+  ```bash
+  python tools/data/textrecog/ic13_converter.py PATH/TO/icdar2013
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  ├── icdar2013
+  │   ├── crops
+  │   ├── train_label.jsonl
+  │   └── test_label.jsonl
+  ```
+
+### ICDAR 2013 [Deprecated]
 - Step1: Download `Challenge2_Test_Task3_Images.zip` and `Challenge2_Training_Task3_Images_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads)
 - Step2: Download [test_label_1015.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt) and [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/train_label.txt)
 
 ### ICDAR 2015
 - Step1: Download `ch4_training_word_images_gt.zip` and `ch4_test_word_images_gt.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
 - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt)
-
 ### IIIT5K
   - Step1: Download `IIIT5K-Word_V3.0.tar.gz` from [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html)
   - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt)
@@ -512,7 +584,6 @@ python tools/data/textdreog/lv_converter.py PATH/TO/lv
   │   └── val_label.jsonl
   ```
 
-
   ### FUNSD
 
 - Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
@@ -580,82 +651,6 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   │   └── val_label.jsonl (optional)
   ```
 
-
-### ICDAR 2011 (Born-Digital Images)
-- Step1: Download `Challenge1_Training_Task3_Images_GT.zip`, `Challenge1_Test_Task3_Images.zip`, and `Challenge1_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.3: Word Recognition (2013 edition)`.
-
-  ```bash
-  mkdir icdar2011 && cd icdar2011
-  mkdir annotations
-
-  # Download ICDAR 2011
-  wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task3_Images_GT.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task3_Images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task3_GT.txt --no-check-certificate
-
-  # For images
-  mkdir crops
-  unzip -q Challenge1_Training_Task3_Images_GT.zip -d crops/train
-  unzip -q Challenge1_Test_Task3_Images.zip -d crops/test
-
-  # For annotations
-  mv Challenge1_Test_Task3_GT.txt annotations && mv train/gt.txt annotations/Challenge1_Train_Task3_GT.txt
-  ```
-
-- Step2: Convert original annotations to `Train_label.jsonl` and `Test_label.jsonl` with the following command:
-
-  ```bash
-  python tools/data/textrecog/ic11_converter.py PATH/TO/icdar2011
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  ├── icdar2011
-  │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
-  ```
-
-
-### ICDAR 2013 (Focused Scene Text)
-- Step1: Download `Challenge2_Training_Task3_Images_GT.zip`, `Challenge2_Test_Task3_Images.zip`, and `Challenge2_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.3: Word Recognition (2013 edition)`.
-
-  ```bash
-  mkdir icdar2013 && cd icdar2013
-  mkdir annotations
-
-  # Download ICDAR 2013
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task3_Images_GT.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_Images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_GT.txt --no-check-certificate
-
-  # For images
-  mkdir crops
-  unzip -q Challenge2_Training_Task3_Images_GT.zip -d crops/train
-  unzip -q Challenge2_Test_Task3_Images.zip -d crops/test
-  # For annotations
-  mv Challenge2_Test_Task3_GT.txt annotations && mv crops/train/gt.txt annotations/Challenge2_Train_Task3_GT.txt
-
-  rm Challenge2_Training_Task3_Images_GT.zip && rm Challenge2_Test_Task3_Images.zip
-  ```
-
-- Step 2: Generate `Train_label.jsonl` and `Test_label.jsonl` with the following command:
-
-  ```bash
-  python tools/data/textrecog/ic13_converter.py PATH/TO/icdar2013
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  ├── icdar2013
-  │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
-  ```
-
-
 ### MTWI
 
 - Step1: Download `mtwi_2018_train.zip` from [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us).
@@ -687,7 +682,6 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   │   ├── train_label.jsonl
   │   ├── val_label.jsonl (optional)
   ```
-
 
 ### COCO Text v2
 
@@ -724,7 +718,6 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   │   ├── train_label.jsonl
   │   └── val_label.jsonl
   ```
-
 
 ### ReCTS
 

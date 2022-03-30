@@ -131,6 +131,82 @@ unzip test_images.zip && mv test_images test
 python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
 ```
 
+### ICDAR 2011 (Born-Digital Images)
+- Step1: Download `Challenge1_Training_Task12_Images.zip`, `Challenge1_Training_Task1_GT.zip`, `Challenge1_Test_Task12_Images.zip`, and `Challenge1_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.1: Text Localization (2013 edition)`.
+
+  ```bash
+  mkdir icdar2011 && cd icdar2011
+  mkdir imgs && mkdir annotations
+
+  # Download ICDAR 2011
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task1_GT.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task1_GT.zip --no-check-certificate
+
+  # For images
+  unzip -q Challenge1_Training_Task12_Images.zip -d imgs/training
+  unzip -q Challenge1_Test_Task12_Images.zip -d imgs/test
+  # For annotations
+  unzip -q Challenge1_Training_Task1_GT.zip -d annotations/training
+  unzip -q Challenge1_Test_Task1_GT.zip -d annotations/test
+
+  rm Challenge1_Training_Task12_Images.zip && rm Challenge1_Test_Task12_Images.zip && rm Challenge1_Training_Task1_GT.zip && rm Challenge1_Test_Task1_GT.zip
+  ```
+
+- Step 2: Generate `instances_training.json` and `instances_test.json` with the following command:
+
+  ```bash
+  python tools/data/textdet/ic11_converter.py PATH/TO/icdar2011 --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  |── icdar2011
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
+
+### ICDAR 2013 (Focused Scene Text)
+- Step1: Download `Challenge2_Training_Task12_Images.zip`, `Challenge2_Test_Task12_Images.zip`, `Challenge2_Training_Task1_GT.zip`, and `Challenge2_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.1: Text Localization (2013 edition)`.
+
+  ```bash
+  mkdir icdar2013 && cd icdar2013
+  mkdir imgs && mkdir annotations
+
+  # Download ICDAR 2013
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task12_Images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task1_GT.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task1_GT.zip --no-check-certificate
+
+  # For images
+  unzip -q Challenge2_Training_Task12_Images.zip -d imgs/training
+  unzip -q Challenge2_Test_Task12_Images.zip -d imgs/test
+  # For annotations
+  unzip -q Challenge2_Training_Task1_GT.zip -d annotations/training
+  unzip -q Challenge2_Test_Task1_GT.zip -d annotations/test
+
+  rm Challenge2_Training_Task12_Images.zip && rm Challenge2_Test_Task12_Images.zip && rm Challenge2_Training_Task1_GT.zip && rm Challenge2_Test_Task1_GT.zip
+  ```
+
+- Step 2: Generate `instances_training.json` and `instances_test.json` with the following command:
+
+  ```bash
+  python tools/data/textdet/ic13_converter.py PATH/TO/icdar2013 --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  |── icdar2013
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
+
 ### SynthText
 
 - Download [data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb) and [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb) to `synthtext/instances_training.lmdb/`.
@@ -364,7 +440,6 @@ rm IIIT-CVid.zip
 python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
 ```
 
-
 ### IMGUR
 
 - Step1: Run `download_imgur5k.py` to download images. You can merge [PR#5](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset/pull/5) in your local repository to enable a **much faster** parallel execution of image download.
@@ -400,7 +475,6 @@ python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
   │   ├── instances_training.json
   │   └── instances_val.json
   ```
-
 
   ### KAIST
 
@@ -440,85 +514,6 @@ python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
   │   └── instances_val.json (optional)
   ```
 
-
-### ICDAR 2011 (Born-Digital Images)
-- Step1: Download `Challenge1_Training_Task12_Images.zip`, `Challenge1_Training_Task1_GT.zip`, `Challenge1_Test_Task12_Images.zip`, and `Challenge1_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.1: Text Localization (2013 edition)`.
-
-  ```bash
-  mkdir icdar2011 && cd icdar2011
-  mkdir imgs && mkdir annotations
-
-  # Download ICDAR 2011
-  wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task12_Images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge1_Training_Task1_GT.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task12_Images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge1_Test_Task1_GT.zip --no-check-certificate
-
-  # For images
-  unzip -q Challenge1_Training_Task12_Images.zip -d imgs/training
-  unzip -q Challenge1_Test_Task12_Images.zip -d imgs/test
-  # For annotations
-  unzip -q Challenge1_Training_Task1_GT.zip -d annotations/training
-  unzip -q Challenge1_Test_Task1_GT.zip -d annotations/test
-
-  rm Challenge1_Training_Task12_Images.zip && rm Challenge1_Test_Task12_Images.zip && rm Challenge1_Training_Task1_GT.zip && rm Challenge1_Test_Task1_GT.zip
-  ```
-
-- Step 2: Generate `instances_training.json` and `instances_test.json` with the following command:
-
-  ```bash
-  python tools/data/textdet/ic11_converter.py PATH/TO/icdar2011 --nproc 4
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  |── icdar2011
-  │   ├── imgs
-  │   ├── instances_test.json
-  │   └── instances_training.json
-  ```
-
-
-### ICDAR 2013 (Focused Scene Text)
-- Step1: Download `Challenge2_Training_Task12_Images.zip`, `Challenge2_Test_Task12_Images.zip`, `Challenge2_Training_Task1_GT.zip`, and `Challenge2_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.1: Text Localization (2013 edition)`.
-
-  ```bash
-  mkdir icdar2013 && cd icdar2013
-  mkdir imgs && mkdir annotations
-
-  # Download ICDAR 2013
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task12_Images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task12_Images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task1_GT.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task1_GT.zip --no-check-certificate
-
-  # For images
-  unzip -q Challenge2_Training_Task12_Images.zip -d imgs/training
-  unzip -q Challenge2_Test_Task12_Images.zip -d imgs/test
-  # For annotations
-  unzip -q Challenge2_Training_Task1_GT.zip -d annotations/training
-  unzip -q Challenge2_Test_Task1_GT.zip -d annotations/test
-
-  rm Challenge2_Training_Task12_Images.zip && rm Challenge2_Test_Task12_Images.zip && rm Challenge2_Training_Task1_GT.zip && rm Challenge2_Test_Task1_GT.zip
-  ```
-
-- Step 2: Generate `instances_training.json` and `instances_test.json` with the following command:
-
-  ```bash
-  python tools/data/textdet/ic13_converter.py PATH/TO/icdar2013 --nproc 4
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  |── icdar2013
-  │   ├── imgs
-  │   ├── instances_test.json
-  │   └── instances_training.json
-  ```
-
-
 ### MTWI
 
 - Step1: Download `mtwi_2018_train.zip` from [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us).
@@ -549,7 +544,6 @@ python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
   │   ├── instances_training.json
   │   └── instances_val.json (optional)
   ```
-
 
 ### COCO Text v2
 
@@ -584,7 +578,6 @@ python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
   │   ├── instances_training.json
   │   └── instances_val.json
   ```
-
 
 ### ReCTS
 
