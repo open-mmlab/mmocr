@@ -229,8 +229,8 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 - Step2: Generate `instances_training.json` and `instance_val.json` (optional) with the following command:
 
   ```bash
-  # Annotations of MTWI test split is not publicly available
-  # Set a val_ratio to separate a val split
+  # Annotations of MTWI test split is not publicly available, split a validation
+  # set by adding --val-ratio 0.2
   python tools/data/textdet/mtwi_converter.py PATH/TO/mtwi --nproc 4
   ```
 
