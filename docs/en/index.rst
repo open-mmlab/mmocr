@@ -22,6 +22,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    tutorials/config.md
    tutorials/dataset_types.md
    tutorials/kie_closeset_openset.md
+   tutorials/blank_recog.md
 
 .. toctree::
    :maxdepth: 2

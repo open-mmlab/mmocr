@@ -369,3 +369,52 @@ def test_readtext(mock_kiedataset):
     with mock.patch('mmocr.utils.ocr.stitch_boxes_into_lines') as mock_merge:
         mmocr_det_recog.readtext(toy_imgs, merge=True)
         assert mock_merge.call_count == len(toy_imgs)
+
+
+@pytest.mark.parametrize('det, recog, target',
+                         [('Tesseract', None, {
+                             'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 1.0]]
+                         }),
+                          ('Tesseract', 'Tesseract', {
+                              'result': [{
+                                  'box': [0, 0, 1, 0, 1, 1, 0, 1],
+                                  'box_score': 1.0,
+                                  'text': 'text',
+                                  'text_score': 0.5
+                              }]
+                          }),
+                          (None, 'Tesseract', {
+                              'text': 'text',
+                              'score': 0.5
+                          })])
+@mock.patch('mmocr.utils.ocr.init_detector')
+@mock.patch('mmocr.utils.ocr.tesserocr')
+def test_tesseract_wrapper(mock_tesserocr, mock_init_detector, det, recog,
+                           target):
+
+    def init_detector_skip_ckpt(config, ckpt, device):
+        return init_detector(config, device=device)
+
+    mock_init_detector.side_effect = init_detector_skip_ckpt
+    mock_tesseract = mock.Mock()
+    mock_tesseract.GetComponentImages.return_value = [(None, {
+        'x': 0,
+        'y': 0,
+        'w': 1,
+        'h': 1
+    }, 0, None)]
+    mock_tesseract.GetUTF8Text.return_value = 'text'
+    mock_tesseract.MeanTextConf.return_value = 50
+    mock_tesserocr.PyTessBaseAPI.return_value = mock_tesseract
+
+    mmocr = MMOCR(det=det, recog=recog, device='cpu')
+
+    img_path = 'demo/demo_kie.jpeg'
+
+    # Test imshow
+    with mock.patch('mmocr.utils.ocr.mmcv.imshow') as mock_imshow:
+        result = mmocr.readtext(img_path, imshow=True, details=True)
+        for k, v in target.items():
+            assert result[0][k] == v
+        mock_imshow.assert_called_once()
+        mock_imshow.reset_mock()
