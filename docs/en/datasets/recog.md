@@ -79,6 +79,10 @@
 │   │   ├── annotations
 │   │   ├── train_label.txt
 │   │   ├── test_label.txt
+│   ├── lv
+│   │   ├── Crops
+│   │   ├── train_label.jsonl
+│   │   ├── test_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -99,7 +103,10 @@
 |       Totaltext       |                       [homepage](https://github.com/cs-chan/Total-Text-Dataset)                       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
 |       OpenVINO        |                  [Open Images](https://github.com/cvdfoundation/open-images-dataset)                  |                                                                                                                                               [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                                                               | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |   |
 |         FUNSD         |                          [homepage](https://guillaumejaume.github.io/FUNSD/)                          |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
-|         ReCTS         |                               [homepage](https://rrc.cvc.uab.es/?ch=12)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|        DeText         |                               [homepage](https://rrc.cvc.uab.es/?ch=9)                                |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  |
+|          NAF          |                           [homepage](https://github.com/herobd/NAF_dataset)                           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|         SROIE         |                               [homepage](https://rrc.cvc.uab.es/?ch=13)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|   Lecture Video DB    |          [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
@@ -323,39 +330,144 @@ rm dataset.zip && rm -rf dataset
 python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
 
-### ReCTS
+### DeText
 
-- Step1: Download [ReCTS.zip](https://datasets.cvc.uab.es/rrc/ReCTS.zip) to `rects/` from the [homepage](https://rrc.cvc.uab.es/?ch=12&com=downloads).
+- Step1: Download `ch9_training_images.zip`, `ch9_training_localization_transcription_gt.zip`, `ch9_validation_images.zip`, and `ch9_validation_localization_transcription_gt.zip` from **Task 3: End to End** on the [homepage](https://rrc.cvc.uab.es/?ch=9).
 
   ```bash
-  mkdir rects && cd rects
+  mkdir detext && cd detext
+  mkdir imgs && mkdir annotations && mkdir imgs/training && mkdir imgs/val && mkdir annotations/training && mkdir annotations/val
 
-  # Download ReCTS dataset
-  # You can also find Google Drive link on the dataset homepage
-  wget https://datasets.cvc.uab.es/rrc/ReCTS.zip --no-check-certificate
-  unzip -q ReCTS.zip
+  # Download DeText
+  wget https://rrc.cvc.uab.es/downloads/ch9_training_images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/ch9_training_localization_transcription_gt.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/ch9_validation_images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/ch9_validation_localization_transcription_gt.zip --no-check-certificate
 
-  mv img imgs && mv gt_unicode annotations
+  # Extract images and annotations
+  unzip -q ch9_training_images.zip -d imgs/training && unzip -q ch9_training_localization_transcription_gt.zip -d annotations/training && unzip -q ch9_validation_images.zip -d imgs/val && unzip -q ch9_validation_localization_transcription_gt.zip -d annotations/val
 
-  rm ReCTS.zip -f && rm -rf gt
+  # Remove zips
+  rm ch9_training_images.zip && rm ch9_training_localization_transcription_gt.zip && rm ch9_validation_images.zip && rm ch9_validation_localization_transcription_gt.zip
   ```
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+- Step2: Generate `instances_training.json` and `instances_val.json` with following command:
 
   ```bash
-  # Annotations of ReCTS test split is not publicly available, split a validation
-  # set by adding --val-ratio 0.2
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
-  # vertical images will be filtered and stored in PATH/TO/rects/ignores
-  python tools/data/textrecog/rects_converter.py PATH/TO/rects --nproc 4
+  # vertical images will be filtered and stored in PATH/TO/detext/ignores
+  python tools/data/textrecog/detext_converter.py PATH/TO/detext --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  ├── rects
+  ├── detext
   │   ├── crops
   │   ├── ignores
   │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── test_label.jsonl
   ```
+
+### NAF
+
+- Step1: Download [labeled_images.tar.gz](https://github.com/herobd/NAF_dataset/releases/tag/v1.0) to `naf/`.
+
+  ```bash
+  mkdir naf && cd naf
+
+  # Download NAF dataset
+  wget https://github.com/herobd/NAF_dataset/releases/download/v1.0/labeled_images.tar.gz
+  tar -zxf labeled_images.tar.gz
+
+  # For images
+  mkdir annotations && mv labeled_images imgs
+
+  # For annotations
+  git clone https://github.com/herobd/NAF_dataset.git
+  mv NAF_dataset/train_valid_test_split.json annotations/ && mv NAF_dataset/groups annotations/
+
+  rm -rf NAF_dataset && rm labeled_images.tar.gz
+  ```
+
+- Step2: Generate `train_label.txt`, `val_label.txt`, and `test_label.txt` with following command:
+
+  ```bash
+  # Add --preserve-vertical to preserve vertical texts for training, otherwise
+  # vertical images will be filtered and stored in PATH/TO/naf/ignores
+  python tools/data/textrecog/naf_converter.py PATH/TO/naf --nproc 4
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  ├── naf
+  │   ├── crops
+  │   ├── train_label.txt
+  │   ├── val_label.txt
+  │   ├── test_label.txt
+  ```
+### SROIE
+
+- Step1: Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
+
+- Step2:
+
+  ```bash
+  mkdir sroie && cd sroie
+  mkdir imgs && mkdir annotations && mkdir imgs/training
+
+  # Warnninig: The zip files downloaded from Google Drive and BaiduYun Cloud may
+  # be different, the user should revise the following commands to the correct
+  # file name if encounter with errors while extracting and move the files.
+  unzip -q 0325updated.task1train\(626p\).zip && unzip -q task1\&2_test\(361p\).zip && unzip -q text.task1\&2-test（361p\).zip
+
+  # For images
+  mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv fulltext_test\(361p\) imgs/test
+
+  # For annotations
+  mv 0325updated.task1train\(626p\) annotations/training && mv text.task1\&2-testги361p\)/ annotations/test
+
+  rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
+  ```
+
+- Step3: Generate `train_label.jsonl` and `test_label.jsonl` and crop images using 4 processes with the following command:
+
+  ```bash
+  python tools/data/textrecog/sroie_converter.py PATH/TO/sroie --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  ├── sroie
+  │   ├── crops
+  │   ├── train_label.jsonl
+  │   ├── test_label.jsonl
+  ```
+### Lecture Video DB
+
+**The LV dataset has already provided cropped images and the corresponding annotations**
+
+- Step1: Download [IIIT-CVid.zip](http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip) to `lv/`.
+
+```bash
+mkdir lv && cd lv
+
+# Download LV dataset
+wget http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip
+unzip -q IIIT-CVid.zip
+
+# For image
+mv IIIT-CVid/Crops ./
+
+# For annotation
+mv IIIT-CVid/train.txt train_label.txt && mv IIIT-CVid/val.txt val_label.txt && mv IIIT-CVid/test.txt test_label.txt
+
+rm IIIT-CVid.zip
+```
+
+- Step2: Generate `train_label.jsonl`, `val.jsonl`, and `test.jsonl` with following command:
+
+```bash
+python tools/data/textdreog/lv_converter.py PATH/TO/lv
+```
