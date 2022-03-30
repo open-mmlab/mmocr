@@ -584,33 +584,6 @@ python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   │   └── val_label.jsonl
   ```
 
-  ### FUNSD
-
-- Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
-
-```bash
-mkdir funsd && cd funsd
-
-# Download FUNSD dataset
-wget https://guillaumejaume.github.io/FUNSD/dataset.zip
-unzip -q dataset.zip
-
-# For images
-mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
-
-# For annotations
-mkdir annotations
-mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
-
-rm dataset.zip && rm -rf dataset
-```
-
-- Step2: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
-
-```bash
-python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
-```
-
 ### KAIST
 
 - Step1: Complete download [KAIST_all.zip](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) to `kaist/`.
