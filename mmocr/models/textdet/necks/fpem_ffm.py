@@ -148,10 +148,10 @@ class FPEM_FFM(BaseModule):
                 c4_ffm = c4
                 c5_ffm = c5
             else:
-                c2_ffm += c2
-                c3_ffm += c3
-                c4_ffm += c4
-                c5_ffm += c5
+                c2_ffm = c2_ffm + c2
+                c3_ffm = c3_ffm + c3
+                c4_ffm = c4_ffm + c4
+                c5_ffm = c5_ffm + c5
 
         # FFM
         c5 = F.interpolate(
