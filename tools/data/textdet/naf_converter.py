@@ -1,7 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import math
-import os
 import os.path as osp
 
 import mmcv
@@ -9,12 +7,13 @@ import mmcv
 from mmocr.utils import convert_annotations
 
 
-def collect_files(img_dir, gt_dir):
+def collect_files(img_dir, gt_dir, split_info):
     """Collect all images and their corresponding groundtruth files.
 
     Args:
         img_dir (str): The image directory
         gt_dir (str): The groundtruth directory
+        split_info (dict): The split information for train/val/test
 
     Returns:
         files (list): The list of tuples (img_file, groundtruth_file)
@@ -23,13 +22,24 @@ def collect_files(img_dir, gt_dir):
     assert img_dir
     assert isinstance(gt_dir, str)
     assert gt_dir
+    assert isinstance(split_info, dict)
+    assert split_info
 
     ann_list, imgs_list = [], []
-    for gt_file in os.listdir(gt_dir):
-        ann_list.append(osp.join(gt_dir, gt_file))
-        imgs_list.append(osp.join(img_dir, gt_file.replace('.json', '.png')))
+    for group in split_info:
+        for img in split_info[group]:
+            image_path = osp.join(img_dir, img)
+            anno_path = osp.join(gt_dir, 'groups', group,
+                                 img.replace('jpg', 'json'))
 
-    files = list(zip(sorted(imgs_list), sorted(ann_list)))
+            # Filtering out the missing images
+            if not osp.exists(image_path) or not osp.exists(anno_path):
+                continue
+
+            imgs_list.append(image_path)
+            ann_list.append(anno_path)
+
+    files = list(zip(imgs_list, ann_list))
     assert len(files), f'No images found in {img_dir}'
     print(f'Loaded {len(files)} images from {img_dir}')
 
@@ -72,7 +82,7 @@ def load_img_info(files):
     img_file, gt_file = files
     assert osp.basename(gt_file).split('.')[0] == osp.basename(img_file).split(
         '.')[0]
-    # read imgs while ignoring orientations
+    # Read imgs while ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
 
     img_info = dict(
@@ -92,6 +102,21 @@ def load_img_info(files):
 def load_json_info(gt_file, img_info):
     """Collect the annotation information.
 
+    Annotation Format
+    {
+        'textBBs': [{
+            'poly_points': [[435,1406], [466,1406], [466,1439], [435,1439]],
+            "type": "text",
+            "id": "t1",
+        }], ...
+    }
+
+    Some special characters are used in the transcription:
+    "«text»" indicates that "text" had a strikethrough
+    "¿" indicates the transcriber could not read a character
+    "§" indicates the whole line or word was illegible
+    "" (empty string) is if the field was blank
+
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
@@ -99,23 +124,32 @@ def load_json_info(gt_file, img_info):
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
+    assert isinstance(gt_file, str)
+    assert isinstance(img_info, dict)
 
     annotation = mmcv.load(gt_file)
     anno_info = []
-    for form in annotation['form']:
-        for ann in form['words']:
 
-            iscrowd = 1 if len(ann['text']) == 0 else 0
+    # 'textBBs' contains the printed texts of the table while 'fieldBBs'
+    #  contains the text filled by human.
+    for box_type in ['textBBs', 'fieldBBs']:
+        for anno in annotation[box_type]:
+            # Skip blanks
+            if box_type == 'fieldBBs':
+                if anno['type'] == 'blank':
+                    continue
 
-            x1, y1, x2, y2 = ann['box']
-            x = max(0, min(math.floor(x1), math.floor(x2)))
-            y = max(0, min(math.floor(y1), math.floor(y2)))
-            w, h = math.ceil(abs(x2 - x1)), math.ceil(abs(y2 - y1))
+            xs, ys = [], []
+            for p in anno['poly_points']:
+                xs.append(p[0])
+                ys.append(p[1])
+            x, y = max(0, min(xs)), max(0, min(ys))
+            w, h = max(xs) - x, max(ys) - y
             bbox = [x, y, w, h]
-            segmentation = [x, y, x + w, y, x + w, y + h, x, y + h]
+            segmentation = anno['poly_points']
 
             anno = dict(
-                iscrowd=iscrowd,
+                iscrowd=0,
                 category_id=1,
                 bbox=bbox,
                 area=w * h,
@@ -129,8 +163,8 @@ def load_json_info(gt_file, img_info):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of FUNSD ')
-    parser.add_argument('root_path', help='Root dir path of FUNSD')
+        description='Generate training, val, and test set of NAF ')
+    parser.add_argument('root_path', help='Root dir path of NAF')
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of process')
     args = parser.parse_args()
@@ -140,13 +174,16 @@ def parse_args():
 def main():
     args = parse_args()
     root_path = args.root_path
-
-    for split in ['training', 'test']:
+    split_info = mmcv.load(
+        osp.join(root_path, 'annotations', 'train_valid_test_split.json'))
+    split_info['training'] = split_info.pop('train')
+    split_info['val'] = split_info.pop('valid')
+    for split in ['training', 'val', 'test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert FUNSD annotation'):
+        with mmcv.Timer(print_tmpl='It takes {}s to convert NAF annotation'):
             files = collect_files(
                 osp.join(root_path, 'imgs'),
-                osp.join(root_path, 'annotations', split))
+                osp.join(root_path, 'annotations'), split_info[split])
             image_infos = collect_annotations(files, nproc=args.nproc)
             convert_annotations(
                 image_infos, osp.join(root_path,
