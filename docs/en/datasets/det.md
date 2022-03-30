@@ -59,6 +59,7 @@ The structure of the text detection dataset directory is organized as follows.
 |     Totaltext     |                                                                                                           [homepage](https://github.com/cs-chan/Total-Text-Dataset)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
 |       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|       SROIE       |                                                                                                                   [homepage](https://rrc.cvc.uab.es/?ch=13)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 | Lecture Video DB  |                                                                                               [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
 
@@ -219,6 +220,45 @@ rm dataset.zip && rm -rf dataset
 python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
 
+### SROIE
+
+- Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
+
+- Step2:
+
+  ```bash
+  mkdir sroie && cd sroie
+  mkdir imgs && mkdir annotations && mkdir imgs/training
+
+  # Warnninig: The zip files downloaded from Google Drive and BaiduYun Cloud may
+  # be different, the user should revise the following commands to the correct
+  # file name if encounter with errors while extracting and move the files.
+  unzip -q 0325updated.task1train\(626p\).zip && unzip -q task1\&2_test\(361p\).zip && unzip -q text.task1\&2-test（361p\).zip
+
+  # For images
+  mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv fulltext_test\(361p\) imgs/test
+
+  # For annotations
+  mv 0325updated.task1train\(626p\) annotations/training && mv text.task1\&2-testги361p\)/ annotations/test
+
+  rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
+  ```
+
+- Step3: Generate `instances_training.json` and `instances_test.json` with the following command:
+
+  ```bash
+  python tools/data/textdet/sroie_converter.py PATH/TO/sroie --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  ├── sroie
+  │   ├── annotations
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
 ### Lecture Video DB
 
 - Step1: Download [IIIT-CVid.zip](http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip) to `lv/`.

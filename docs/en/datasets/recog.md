@@ -103,6 +103,7 @@
 |       Totaltext       |                       [homepage](https://github.com/cs-chan/Total-Text-Dataset)                       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
 |       OpenVINO        |                  [Open Images](https://github.com/cvdfoundation/open-images-dataset)                  |                                                                                                                                               [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                                                               | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |   |
 |         FUNSD         |                          [homepage](https://guillaumejaume.github.io/FUNSD/)                          |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
+|         SROIE         |                               [homepage](https://rrc.cvc.uab.es/?ch=13)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |   Lecture Video DB    |          [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 
 
@@ -327,6 +328,44 @@ rm dataset.zip && rm -rf dataset
 python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
 ```
 
+### SROIE
+
+- Step1: Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
+
+- Step2:
+
+  ```bash
+  mkdir sroie && cd sroie
+  mkdir imgs && mkdir annotations && mkdir imgs/training
+
+  # Warnninig: The zip files downloaded from Google Drive and BaiduYun Cloud may
+  # be different, the user should revise the following commands to the correct
+  # file name if encounter with errors while extracting and move the files.
+  unzip -q 0325updated.task1train\(626p\).zip && unzip -q task1\&2_test\(361p\).zip && unzip -q text.task1\&2-test（361p\).zip
+
+  # For images
+  mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv fulltext_test\(361p\) imgs/test
+
+  # For annotations
+  mv 0325updated.task1train\(626p\) annotations/training && mv text.task1\&2-testги361p\)/ annotations/test
+
+  rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
+  ```
+
+- Step3: Generate `train_label.jsonl` and `test_label.jsonl` and crop images using 4 processes with the following command:
+
+  ```bash
+  python tools/data/textrecog/sroie_converter.py PATH/TO/sroie --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  ├── sroie
+  │   ├── crops
+  │   ├── train_label.jsonl
+  │   ├── test_label.jsonl
+  ```
 ### Lecture Video DB
 
 **The LV dataset has already provided cropped images and the corresponding annotations**
