@@ -38,8 +38,7 @@ backend used in MMCV would read them and apply the rotation on the images.  Howe
 inconsistency results in false examples in the training set. Therefore, users should use `dict(type='LoadImageFromFile', color_type='color_ignore_orientation')` in pipelines to change MMCV's default loading behaviour. (see [DBNet's pipeline config](https://github.com/open-mmlab/mmocr/blob/main/configs/_base_/det_pipelines/dbnet_pipeline.py) for example)
 :::
 
-## Preparation Steps
-### ICDAR 2015
+## ICDAR 2015
 - Step0: Read [Important Note](#important-note)
 - Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
 - Step2:
@@ -70,7 +69,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.json
   ```
 
-### ICDAR 2017
+## ICDAR 2017
 - Follow similar steps as [ICDAR 2015](#icdar-2015).
 - The resulting directory structure looks like the following:
 
@@ -82,7 +81,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_val.json
   ```
 
-### CTW1500
+## CTW1500
 - Step0: Read [Important Note](#important-note)
 - Step1: Download `train_images.zip`, `test_images.zip`, `train_labels.zip`, `test_labels.zip` from [github](https://github.com/Yuliang-Liu/Curve-Text-Detector)
   ```bash
@@ -119,7 +118,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_val.json
   ```
 
-### ICDAR 2011 (Born-Digital Images)
+## ICDAR 2011 (Born-Digital Images)
 - Step1: Download `Challenge1_Training_Task12_Images.zip`, `Challenge1_Training_Task1_GT.zip`, `Challenge1_Test_Task12_Images.zip`, and `Challenge1_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.1: Text Localization (2013 edition)`.
 
   ```bash
@@ -157,7 +156,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.json
   ```
 
-### ICDAR 2013 (Focused Scene Text)
+## ICDAR 2013 (Focused Scene Text)
 - Step1: Download `Challenge2_Training_Task12_Images.zip`, `Challenge2_Test_Task12_Images.zip`, `Challenge2_Training_Task1_GT.zip`, and `Challenge2_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.1: Text Localization (2013 edition)`.
 
   ```bash
@@ -195,7 +194,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.json
   ```
 
-### SynthText
+## SynthText
 
 - Step1: Download SynthText.zip from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/ and extract its content to `synthtext/img`.
 
@@ -211,7 +210,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │       └── lock.mdb
   ```
 
-### TextOCR
+## TextOCR
 - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
 
   ```bash
@@ -242,7 +241,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_val.json
   ```
 
-### Totaltext
+## Totaltext
 - Step0: Read [Important Note](#important-note)
 - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
   ```bash
@@ -277,7 +276,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.json
   ```
 
-### CurvedSynText150k
+## CurvedSynText150k
 
 - Step1: Download [syntext1.zip](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) and [syntext2.zip](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) to `CurvedSynText150k/`.
 - Step2:
@@ -310,7 +309,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.json
   ```
 
-### FUNSD
+## FUNSD
 
 - Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
 
@@ -347,7 +346,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.json
   ```
 
-### DeText
+## DeText
 
 - Step1: Download `ch9_training_images.zip`, `ch9_training_localization_transcription_gt.zip`, `ch9_validation_images.zip`, and `ch9_validation_localization_transcription_gt.zip` from **Task 3: End to End** on the [homepage](https://rrc.cvc.uab.es/?ch=9).
 
@@ -384,7 +383,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.json
   ```
 
-### NAF
+## NAF
 
 - Step1: Download [labeled_images.tar.gz](https://github.com/herobd/NAF_dataset/releases/tag/v1.0) to `naf/`.
 
@@ -421,7 +420,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   ├── instances_val.json
   │   └── instances_training.json
   ```
-### SROIE
+## SROIE
 
 - Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
 
@@ -460,7 +459,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   ├── instances_test.json
   │   └── instances_training.json
   ```
-### Lecture Video DB
+## Lecture Video DB
 
 - Step1: Download [IIIT-CVid.zip](http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip) to `lv/`.
 
@@ -492,7 +491,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_val.json
   ```
 
-### IMGUR
+## IMGUR
 
 - Step1: Run `download_imgur5k.py` to download images. You can merge [PR#5](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset/pull/5) in your local repository to enable a **much faster** parallel execution of image download.
 
@@ -528,7 +527,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_val.json
   ```
 
-  ### KAIST
+## KAIST
 
 - Step1: Complete download [KAIST_all.zip](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) to `kaist/`.
 
@@ -566,7 +565,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_val.json (optional)
   ```
 
-### MTWI
+## MTWI
 
 - Step1: Download `mtwi_2018_train.zip` from [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us).
 
@@ -597,7 +596,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_val.json (optional)
   ```
 
-### COCO Text v2
+## COCO Text v2
 
 - Step1: Download image [train2014.zip](http://images.cocodataset.org/zips/train2014.zip) and annotation [cocotext.v2.zip](https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip) to `coco_textv2/`.
 
@@ -631,7 +630,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_val.json
   ```
 
-### ReCTS
+## ReCTS
 
 - Step1: Download [ReCTS.zip](https://datasets.cvc.uab.es/rrc/ReCTS.zip) to `rects/` from the [homepage](https://rrc.cvc.uab.es/?ch=12&com=downloads).
 
@@ -668,7 +667,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.json
   ```
 
-### ILST
+## ILST
 
 - Step1: Download `IIIT-ILST` from [onedrive](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)
 
@@ -707,7 +706,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.json
   ```
 
-### VinText
+## VinText
 - Step1: Download [vintext.zip](https://drive.google.com/drive/my-drive) to `vintext`
 
   ```bash
@@ -743,7 +742,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 
-### BID
+## BID
 
 - Step1: Download [BID Dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
 
