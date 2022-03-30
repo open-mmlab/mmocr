@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+import json
 import math
 import os.path as osp
 
@@ -16,6 +17,43 @@ def parse_args():
         '--val-ratio', help='Split ratio for val set', default=0.2, type=float)
     args = parser.parse_args()
     return args
+
+
+def process_img(args, src_image_root, dst_image_root, ignore_image_root,
+                preserve_vertical, split, format):
+    # Dirty hack for multi-processing
+    img_idx, img_info, anns = args
+    src_img = mmcv.imread(osp.join(src_image_root, img_info['file_name']))
+    labels = []
+    for ann_idx, ann in enumerate(anns):
+        text_label = ann['utf8_string']
+
+        x, y, w, h = ann['bbox']
+        x, y = max(0, math.floor(x)), max(0, math.floor(y))
+        w, h = math.ceil(w), math.ceil(h)
+        dst_img = src_img[y:y + h, x:x + w]
+        dst_img_name = f'img_{img_idx}_{ann_idx}.jpg'
+
+        if not preserve_vertical and h / w > 2 and split == 'train':
+            dst_img_path = osp.join(ignore_image_root, dst_img_name)
+        else:
+            dst_img_path = osp.join(dst_image_root, dst_img_name)
+        mmcv.imwrite(dst_img, dst_img_path)
+
+        if format == 'txt':
+            labels.append(f'{osp.basename(dst_image_root)}/{dst_img_name}'
+                          f' {text_label}')
+        elif format == 'jsonl':
+            labels.append(
+                json.dumps({
+                    'filename':
+                    f'{osp.basename(dst_image_root)}/{dst_img_name}',
+                    'text': text_label
+                }))
+        else:
+            raise NotImplementedError
+
+    return labels
 
 
 def collect_lsvt_info(root_path, split, ratio, print_every=1000):
@@ -51,6 +89,10 @@ def collect_lsvt_info(root_path, split, ratio, print_every=1000):
             f'{annotation_path} not exists, please check and try again.')
 
     annotation = mmcv.load(annotation_path)
+    # outputs
+    # dst_label_file = osp.join(root_path, f'{split}_label.{format}')
+    # dst_image_root = osp.join(root_path, 'crops', split)
+    # ignore_image_root = osp.join(root_path, 'ignores', split)
     img_prefixes = annotation.keys()
 
     trn_files, val_files = [], []

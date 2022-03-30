@@ -83,10 +83,6 @@
 │   │   ├── Crops
 │   │   ├── train_label.jsonl
 │   │   ├── test_label.jsonl
-│   ├── lsvt
-│   │   ├── crops
-│   │   ├── train_label.jsonl
-│   │   ├── val_label.jsonl
 ```
 
 |        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
@@ -108,6 +104,7 @@
 |       OpenVINO        |                  [Open Images](https://github.com/cvdfoundation/open-images-dataset)                  |                                                                                                                                               [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                                                               | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |   |
 |         FUNSD         |                          [homepage](https://guillaumejaume.github.io/FUNSD/)                          |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
 |   Lecture Video DB    |          [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|       LSVT       |                                                                                                                   [homepage](https://rrc.cvc.uab.es/?ch=16)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
@@ -385,3 +382,12 @@ rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_f
 ```bash
 python tools/data/textdrecog/lsvt_converter.py PATH/TO/lsvt
 ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  ├── lsvt
+  │   ├── crops
+  │   ├── train_label.jsonl
+  │   ├── val_label.jsonl
+  ```
