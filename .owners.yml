@@ -1,0 +1,11 @@
+assign:
+  strategy:
+    random
+    # daily-shift-based
+  scedule:
+    '*/1 * * * *'
+  assignees:
+    - gaotongxiao
+    - xinke-wang
+    - Mountchicken
+    - Harold-lkk

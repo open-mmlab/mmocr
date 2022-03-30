@@ -23,7 +23,7 @@ def test_attn_label_convertor():
     _create_dummy_dict_file(dict_file)
 
     # test invalid arguments
-    with pytest.raises(AssertionError):
+    with pytest.raises(NotImplementedError):
         AttnConvertor(5)
     with pytest.raises(AssertionError):
         AttnConvertor('DICT90', dict_file, '1')
