@@ -2,7 +2,6 @@
 import argparse
 import json
 import math
-import os
 import os.path as osp
 from functools import partial
 
@@ -137,7 +136,8 @@ def convert_cocotext(root_path,
     dst_image_root = osp.join(root_path, 'crops', split)
     ignore_image_root = osp.join(root_path, 'ignores', split)
     src_image_root = osp.join(root_path, 'imgs')
-    os.makedirs(dst_image_root, exist_ok=True)
+    mmcv.mkdir_or_exist(dst_image_root)
+    mmcv.mkdir_or_exist(ignore_image_root)
 
     process_img_with_path = partial(
         process_img,
