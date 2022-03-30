@@ -44,7 +44,7 @@ def main():
     parser.add_argument('config', type=str, help='Config file')
     parser.add_argument('checkpoint', type=str, help='Checkpoint file')
     parser.add_argument(
-        '--out_dir', type=str, default='./results', help='Dir to save results')
+        '--out-dir', type=str, default='./results', help='Dir to save results')
     parser.add_argument(
         '--show', action='store_true', help='show image or save')
     parser.add_argument(
