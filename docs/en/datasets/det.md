@@ -41,6 +41,11 @@ The structure of the text detection dataset directory is organized as follows.
 │   ├── imgs
 │   ├── instances_test.json
 │   └── instances_training.json
+|── lv
+│   ├── imgs
+│   ├── instances_test.json
+│   └── instances_training.json
+│   └── instances_val.json
 ```
 
 |      Dataset      |                                                                                                                                     Images                                                                                                                                     |                                                                                                                                                                                                                              |                                       Annotation Files                                       |                                                                                                |       |
@@ -55,6 +60,10 @@ The structure of the text detection dataset directory is organized as follows.
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |                                               -                                                |
 |       FUNSD       |                                                                                                              [homepage](https://guillaumejaume.github.io/FUNSD/)                                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |      DeText       |                                                                                                                    [homepage](https://rrc.cvc.uab.es/?ch=9)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|        NAF        |                                                                                                      [homepage](https://github.com/herobd/NAF_dataset/releases/tag/v1.0)                                                                                                       |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|       SROIE       |                                                                                                                   [homepage](https://rrc.cvc.uab.es/?ch=13)                                                                                                                    |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+| Lecture Video DB  |                                                                                               [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+
 
 ## Important Note
 
@@ -249,3 +258,101 @@ python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
   │   ├── instances_test.json
   │   └── instances_training.json
   ```
+
+### NAF
+
+- Step1: Download [labeled_images.tar.gz](https://github.com/herobd/NAF_dataset/releases/tag/v1.0) to `naf/`.
+
+  ```bash
+  mkdir naf && cd naf
+
+  # Download NAF dataset
+  wget https://github.com/herobd/NAF_dataset/releases/download/v1.0/labeled_images.tar.gz
+  tar -zxf labeled_images.tar.gz
+
+  # For images
+  mkdir annotations && mv labeled_images imgs
+
+  # For annotations
+  git clone https://github.com/herobd/NAF_dataset.git
+  mv NAF_dataset/train_valid_test_split.json annotations/ && mv NAF_dataset/groups annotations/
+
+  rm -rf NAF_dataset && rm labeled_images.tar.gz
+  ```
+
+- Step2: Generate `instances_training.json`, `instances_val.json`, and `instances_test.json` with following command:
+
+  ```bash
+  python tools/data/textdet/naf_converter.py PATH/TO/naf --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  |── naf
+  |   ├── annotations
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   ├── instances_val.json
+  │   └── instances_training.json
+  ```
+### SROIE
+
+- Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
+
+- Step2:
+
+  ```bash
+  mkdir sroie && cd sroie
+  mkdir imgs && mkdir annotations && mkdir imgs/training
+
+  # Warnninig: The zip files downloaded from Google Drive and BaiduYun Cloud may
+  # be different, the user should revise the following commands to the correct
+  # file name if encounter with errors while extracting and move the files.
+  unzip -q 0325updated.task1train\(626p\).zip && unzip -q task1\&2_test\(361p\).zip && unzip -q text.task1\&2-test（361p\).zip
+
+  # For images
+  mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv fulltext_test\(361p\) imgs/test
+
+  # For annotations
+  mv 0325updated.task1train\(626p\) annotations/training && mv text.task1\&2-testги361p\)/ annotations/test
+
+  rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
+  ```
+
+- Step3: Generate `instances_training.json` and `instances_test.json` with the following command:
+
+  ```bash
+  python tools/data/textdet/sroie_converter.py PATH/TO/sroie --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  ├── sroie
+  │   ├── annotations
+  │   ├── imgs
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
+### Lecture Video DB
+
+- Step1: Download [IIIT-CVid.zip](http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip) to `lv/`.
+
+```bash
+mkdir lv && cd lv
+
+# Download LV dataset
+wget http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip
+unzip -q IIIT-CVid.zip
+
+mv IIIT-CVid/Frames imgs
+
+rm IIIT-CVid.zip
+```
+
+- Step2: Generate `instances_training.json`, `instances_val.json`, and `instances_test.json` with following command:
+
+```bash
+python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
+```
