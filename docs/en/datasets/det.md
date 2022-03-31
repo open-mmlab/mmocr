@@ -29,7 +29,6 @@
 |      VinText      |                                                                                                            [homepage](https://github.com/VinAIResearch/dict-guided)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |        BID        |                                                                                               [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
-
 ## Important Note
 
 :::{note}
@@ -39,8 +38,10 @@ inconsistency results in false examples in the training set. Therefore, users sh
 :::
 
 ## CTW1500
+
 - Step0: Read [Important Note](#important-note)
 - Step1: Download `train_images.zip`, `test_images.zip`, `train_labels.zip`, `test_labels.zip` from [github](https://github.com/Yuliang-Liu/Curve-Text-Detector)
+
   ```bash
   mkdir ctw1500 && cd ctw1500
   mkdir imgs && mkdir annotations
@@ -59,6 +60,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   unzip train_images.zip && mv train_images training
   unzip test_images.zip && mv test_images test
   ```
+
 - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
 
   ```bash
@@ -76,6 +78,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 ## ICDAR 2011 (Born-Digital Images)
+
 - Step1: Download `Challenge1_Training_Task12_Images.zip`, `Challenge1_Training_Task1_GT.zip`, `Challenge1_Test_Task12_Images.zip`, and `Challenge1_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.1: Text Localization (2013 edition)`.
 
   ```bash
@@ -114,6 +117,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 ## ICDAR 2013 (Focused Scene Text)
+
 - Step1: Download `Challenge2_Training_Task12_Images.zip`, `Challenge2_Test_Task12_Images.zip`, `Challenge2_Training_Task1_GT.zip`, and `Challenge2_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.1: Text Localization (2013 edition)`.
 
   ```bash
@@ -152,9 +156,11 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 ## ICDAR 2015
+
 - Step0: Read [Important Note](#important-note)
 - Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
 - Step2:
+
   ```bash
   mkdir icdar2015 && cd icdar2015
   mkdir imgs && mkdir annotations
@@ -165,6 +171,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   mv ch4_training_localization_transcription_gt annotations/training
   mv Challenge4_Test_Task1_GT annotations/test
   ```
+
 - Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) and move them to `icdar2015`
 - Or, generate `instances_training.json` and `instances_test.json` with the following command:
 
@@ -183,6 +190,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 ## ICDAR 2017
+
 - Follow similar steps as [ICDAR 2015](#icdar-2015).
 - The resulting directory structure looks like the following:
 
@@ -196,7 +204,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
 ## SynthText
 
-- Step1: Download SynthText.zip from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/ and extract its content to `synthtext/img`.
+- Step1: Download SynthText.zip from [homepage](<https://www.robots.ox.ac.uk/~vgg/data/scenetext/> and extract its content to `synthtext/img`.
 
 - Step2: Download [data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb) and [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb) to `synthtext/instances_training.lmdb/`.
 
@@ -211,6 +219,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 ## TextOCR
+
 - Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
 
   ```bash
@@ -242,8 +251,10 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 ## Totaltext
+
 - Step0: Read [Important Note](#important-note)
 - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
+
   ```bash
   mkdir totaltext && cd totaltext
   mkdir imgs && mkdir annotations
@@ -261,7 +272,9 @@ inconsistency results in false examples in the training set. Therefore, users sh
   mv Polygon/Test ../annotations/test
 
   ```
+
 - Step2: Generate `instances_training.json` and `instances_test.json` with the following command:
+
   ```bash
   python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
   ```
@@ -420,6 +433,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   ├── instances_val.json
   │   └── instances_training.json
   ```
+
 ## SROIE
 
 - Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
@@ -459,6 +473,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   ├── instances_test.json
   │   └── instances_training.json
   ```
+
 ## Lecture Video DB
 
 - Step1: Download [IIIT-CVid.zip](http://cdn.iiit.ac.in/cdn/preon.iiit.ac.in/~kartik/IIIT-CVid.zip) to `lv/`.
@@ -672,6 +687,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step1: Download `IIIT-ILST` from [onedrive](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)
 
 - Step2: Run the following commands
+
   ```bash
   unzip -q IIIT-ILST.zip && rm IIIT-ILST.zip
   cd IIIT-ILST
@@ -698,6 +714,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 - After running the above codes, the directory structure should be as follows:
+
   ```text
   |── IIIT-ILST
   |   ├── annotations
@@ -707,6 +724,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 ## VinText
+
 - Step1: Download [vintext.zip](https://drive.google.com/drive/my-drive) to `vintext`
 
   ```bash
@@ -727,11 +745,13 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 - Step2: Generate `instances_training.json`, `instances_test.json` and `instances_unseen_test.json`
+
   ```bash
   python tools/data/textdet/vintext_converter.py PATH/TO/vintext --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
+
   ```text
   |── vintext
   |   ├── annotations
@@ -740,7 +760,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   ├── instances_unseen_test.json
   │   └── instances_training.json
   ```
-
 
 ## BID
 
@@ -783,6 +802,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 - After running the above codes, the directory structure should be as follows:
+
   ```text
   |── BID
   |   ├── annotations
