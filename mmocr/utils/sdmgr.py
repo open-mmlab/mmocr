@@ -15,7 +15,7 @@ from mmocr.datasets.pipelines.crop import crop_img
 class KeyInformationExtraction:
     def __init__(self, root_path, **kwargs):
         self.config_path = os.path.join(root_path, 'config.py')
-        self.model_path = os.path.join(root_path, 'best.pth')
+        self.model_path = os.path.join(root_path, 'best_model.pth')
         self.dict_path = os.path.join(root_path, 'dict.txt')
         self.cfg = Config.fromfile(self.config_path)
         self.model = build_detector(self.cfg.model)
