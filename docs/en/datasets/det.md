@@ -110,7 +110,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  |── icdar2011
+  │── icdar2011
   │   ├── imgs
   │   ├── instances_test.json
   │   └── instances_training.json
@@ -149,7 +149,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  |── icdar2013
+  │── icdar2013
   │   ├── imgs
   │   ├── instances_test.json
   │   └── instances_training.json
@@ -352,8 +352,8 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - The resulting directory structure looks like the following:
 
   ```text
-  |── funsd
-  |   ├── annotations
+  │── funsd
+  │   ├── annotations
   │   ├── imgs
   │   ├── instances_test.json
   │   └── instances_training.json
@@ -389,8 +389,8 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  |── detext
-  |   ├── annotations
+  │── detext
+  │   ├── annotations
   │   ├── imgs
   │   ├── instances_test.json
   │   └── instances_training.json
@@ -426,8 +426,8 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  |── naf
-  |   ├── annotations
+  │── naf
+  │   ├── annotations
   │   ├── imgs
   │   ├── instances_test.json
   │   ├── instances_val.json
@@ -499,7 +499,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - The resulting directory structure looks like the following:
 
   ```text
-  |── lv
+  │── lv
   │   ├── imgs
   │   ├── instances_test.json
   │   └── instances_training.json
@@ -534,8 +534,8 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```
-  |── imgur
-  |   ├── annotations
+  │── imgur
+  │   ├── annotations
   │   ├── imgs
   │   ├── instances_test.json
   │   ├── instances_training.json
@@ -573,8 +573,8 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  |── kaist
-  |   ├── annotations
+  │── kaist
+  │   ├── annotations
   │   ├── imgs
   │   ├── instances_training.json
   │   └── instances_val.json (optional)
@@ -604,8 +604,8 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  |── mtwi
-  |   ├── annotations
+  │── mtwi
+  │   ├── annotations
   │   ├── imgs
   │   ├── instances_training.json
   │   └── instances_val.json (optional)
@@ -638,8 +638,8 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  |── coco_textv2
-  |   ├── annotations
+  │── coco_textv2
+  │   ├── annotations
   │   ├── imgs
   │   ├── instances_training.json
   │   └── instances_val.json
@@ -675,8 +675,8 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  |── rects
-  |   ├── annotations
+  │── rects
+  │   ├── annotations
   │   ├── imgs
   │   ├── instances_val.json (optional)
   │   └── instances_training.json
@@ -716,8 +716,8 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  |── IIIT-ILST
-  |   ├── annotations
+  │── IIIT-ILST
+  │   ├── annotations
   │   ├── imgs
   │   ├── instances_val.json (optional)
   │   └── instances_training.json
@@ -731,7 +731,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   mkdir vintext && cd vintext
 
   # Download dataset from google drive
-  wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1UUQhNvzgpZy7zXBFQp0Qox-BBjunZ0ml' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1UUQhNvzgpZy7zXBFQp0Qox-BBjunZ0ml" -O vintext.zip && rm -rf /tmp/cookies.txt
+  wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1UUQhNvzgpZy7zXBFQp0Qox-BBjunZ0ml' -O- │ sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1UUQhNvzgpZy7zXBFQp0Qox-BBjunZ0ml" -O vintext.zip && rm -rf /tmp/cookies.txt
 
   # Extract images and annotations
   unzip -q vintext.zip && rm vintext.zip
@@ -753,8 +753,8 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  |── vintext
-  |   ├── annotations
+  │── vintext
+  │   ├── annotations
   │   ├── imgs
   │   ├── instances_test.json
   │   ├── instances_unseen_test.json
@@ -804,8 +804,8 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - After running the above codes, the directory structure should be as follows:
 
   ```text
-  |── BID
-  |   ├── annotations
+  │── BID
+  │   ├── annotations
   │   ├── imgs
   │   ├── instances_training.json
   │   └── instances_val.json (optional)
