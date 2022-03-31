@@ -34,15 +34,27 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
 
 ## Log Analysis
 
-`tools/analyze_logs.py` plots loss/hmean curves given a training
- log file. Run `pip install seaborn` first to install the dependency.
+You can use `tools/analyze_logs.py` to plot loss/hmean curves given a training log file. Run `pip install seaborn` first to install the dependency.
 
  ```shell
 python tools/analyze_logs.py plot_curve [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
  ```
 
+| Arguments   | Type | Description                                            |
+| ----------- | ---- | ------------------------------------------------------ |
+| `--keys`    | str  | The metric that you want to plot. Defaults to `loss`.  |
+| `--title`   | str  | Title of figure.                                       |
+| `--legend`  | str  | Legend of each plot.                                   |
+| `--backend` | str  | Backend of the plot.                                   |
+| `--style`   | str  | Style of the plot. Defaults to `dark`.                 |
+| `--out`     | str  | Path of output figure.                                 |
 
-Examples:
+**Examples:**
+
+Download the following DBNet training log as an example to run demos.
+```shell
+wget https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.log.json -O log.json
+```
 
 - Plot loss metric.
 
@@ -71,9 +83,9 @@ Examples:
     The output is expected to be like the following.
 
     ```text
-    -----Analyze train time of xxx.log.json-----
-    slowest epoch 317, average time is 1.4933
-    fastest epoch 496, average time is 1.0708
-    time std over epochs is 0.0624
-    average iter time: 1.2524 s/iter
+    -----Analyze train time of mmocrpr/demo_dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.log.json-----
+    slowest epoch 860, average time is 1.7699
+    fastest epoch 739, average time is 1.4125
+    time std over epochs is 0.0320
+    average iter time: 1.4816 s/iter
     ```
