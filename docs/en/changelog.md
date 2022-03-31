@@ -307,18 +307,18 @@ Similarly, using `AnnFileLoader` with `file_format='lmdb'` instead of `LmdbLoade
 * Refactor ResNets by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/809
 
 ### Bug Fixes
-* [Fix] Bump mmdet version to 2.20.0 in Dockerfile by @GPhilo in https://github.com/open-mmlab/mmocr/pull/763
-* [Fix] Update mmdet version limit by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/773
-* [Fix] Minimum version requirement of albumentations by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/769
-* [Fix] Disable worker in the dataloader of gpu unit test by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/780
-* [Fix] Standardize the type of torch.device in ocr.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/800
-* [Fix] Use RECOGNIZER instead of DETECTORS by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/685
-* [Fix] Add num_classes to configs of ABINet by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/805
-* [Fix] Support loading space character from dict file by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/854
-* [Fix] Description in tools/data/utils/txt2lmdb.py by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/870
-* [Fix] ignore_index in SARLoss by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/869
-* [Fix] Fix a bug that may cause inplace operation error by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/884
-* [Fix] Use hyphen instead of underscores in script args by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/890
+* Bump mmdet version to 2.20.0 in Dockerfile by @GPhilo in https://github.com/open-mmlab/mmocr/pull/763
+* Update mmdet version limit by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/773
+* Minimum version requirement of albumentations by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/769
+* Disable worker in the dataloader of gpu unit test by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/780
+* Standardize the type of torch.device in ocr.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/800
+* Use RECOGNIZER instead of DETECTORS by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/685
+* Add num_classes to configs of ABINet by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/805
+* Support loading space character from dict file by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/854
+* Description in tools/data/utils/txt2lmdb.py by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/870
+* ignore_index in SARLoss by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/869
+* Fix a bug that may cause inplace operation error by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/884
+* Use hyphen instead of underscores in script args by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/890
 
 ### Docs
 
