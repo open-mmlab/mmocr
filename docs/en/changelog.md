@@ -11,13 +11,13 @@
 
 ### Migration Guide
 
-Some refactoring processes are still going on. For text recognition models, we unified the [`ResNet-like` architectures](https://github.com/open-mmlab/mmocr/blob/main/mmocr/models/textrecog/backbones/resnet.py) which are used as backbones. By introducing stage-wise and block-wise plugins, the refactored ResNet is highly flexible to support existing models, like ResNet31 and ResNet45, and other future designs of ResNet variants.
+Some refactoring processes are still going on. For text recognition models, we unified the [`ResNet-like` architectures](https://github.com/open-mmlab/mmocr/blob/72f945457324e700f0d14796dd10a51535c01a57/mmocr/models/textrecog/backbones/resnet.py) which are used as backbones. By introducing stage-wise and block-wise plugins, the refactored ResNet is highly flexible to support existing models, like ResNet31 and ResNet45, and other future designs of ResNet variants.
 
 #### ResNet
 
 ##### Plugin
 
-- `Plugin` is a module category inherited from MMCV's implementation of `PLUGIN_LAYERS`, which can be inserted between each stage of ResNet or into a basicblock. You can find a simple implementation of plugin at [mmocr/models/textrecog/plugins/common.py](https://github.com/open-mmlab/mmocr/blob/main/mmocr/models/textrecog/plugins/common.py), or click the button below.
+- `Plugin` is a module category inherited from MMCV's implementation of `PLUGIN_LAYERS`, which can be inserted between each stage of ResNet or into a basicblock. You can find a simple implementation of plugin at [mmocr/models/textrecog/plugins/common.py](https://github.com/open-mmlab/mmocr/blob/72f945457324e700f0d14796dd10a51535c01a57/mmocr/models/textrecog/plugins/common.py), or click the button below.
 
     <details close>
     <summary><strong>Plugin Example</strong></summary>
@@ -128,11 +128,11 @@ Some refactoring processes are still going on. For text recognition models, we u
 
         </details>
 
-- In each plugin, we will pass two parameters (`in_channels`, `out_channels`) to support operations that need the information of current channels.
+  - In each plugin, we will pass two parameters (`in_channels`, `out_channels`) to support operations that need the information of current channels.
 
 ##### Block-wise Plugin (Experimental)
 
-- We also refactored the `BasicBlock` used in ResNet. Now it can be customized with block-wise plugins. Check [here](https://github.com/open-mmlab/mmocr/blob/main/mmocr/models/textrecog/layers/conv_layer.py) for more details.
+- We also refactored the `BasicBlock` used in ResNet. Now it can be customized with block-wise plugins. Check [here](https://github.com/open-mmlab/mmocr/blob/72f945457324e700f0d14796dd10a51535c01a57/mmocr/models/textrecog/layers/conv_layer.py) for more details.
 - BasicBlock is composed of two convolution layer in the main branch and a shortcut branch. We provide four ports to insert plugins.
 
     ```text
