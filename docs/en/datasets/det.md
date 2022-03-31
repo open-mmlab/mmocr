@@ -38,49 +38,6 @@ backend used in MMCV would read them and apply the rotation on the images.  Howe
 inconsistency results in false examples in the training set. Therefore, users should use `dict(type='LoadImageFromFile', color_type='color_ignore_orientation')` in pipelines to change MMCV's default loading behaviour. (see [DBNet's pipeline config](https://github.com/open-mmlab/mmocr/blob/main/configs/_base_/det_pipelines/dbnet_pipeline.py) for example)
 :::
 
-## ICDAR 2015
-- Step0: Read [Important Note](#important-note)
-- Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
-- Step2:
-  ```bash
-  mkdir icdar2015 && cd icdar2015
-  mkdir imgs && mkdir annotations
-  # For images,
-  mv ch4_training_images imgs/training
-  mv ch4_test_images imgs/test
-  # For annotations,
-  mv ch4_training_localization_transcription_gt annotations/training
-  mv Challenge4_Test_Task1_GT annotations/test
-  ```
-- Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) and move them to `icdar2015`
-- Or, generate `instances_training.json` and `instances_test.json` with the following command:
-
-  ```bash
-  python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
-  ```
-
-- The resulting directory structure looks like the following:
-
-  ```text
-  ├── icdar2015
-  │   ├── imgs
-  │   ├── annotations
-  │   ├── instances_test.json
-  │   └── instances_training.json
-  ```
-
-## ICDAR 2017
-- Follow similar steps as [ICDAR 2015](#icdar-2015).
-- The resulting directory structure looks like the following:
-
-  ```text
-  ├── icdar2017
-  │   ├── imgs
-  │   ├── annotations
-  │   ├── instances_training.json
-  │   └── instances_val.json
-  ```
-
 ## CTW1500
 - Step0: Read [Important Note](#important-note)
 - Step1: Download `train_images.zip`, `test_images.zip`, `train_labels.zip`, `test_labels.zip` from [github](https://github.com/Yuliang-Liu/Curve-Text-Detector)
@@ -192,6 +149,49 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   ├── imgs
   │   ├── instances_test.json
   │   └── instances_training.json
+  ```
+
+## ICDAR 2015
+- Step0: Read [Important Note](#important-note)
+- Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
+- Step2:
+  ```bash
+  mkdir icdar2015 && cd icdar2015
+  mkdir imgs && mkdir annotations
+  # For images,
+  mv ch4_training_images imgs/training
+  mv ch4_test_images imgs/test
+  # For annotations,
+  mv ch4_training_localization_transcription_gt annotations/training
+  mv Challenge4_Test_Task1_GT annotations/test
+  ```
+- Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) and move them to `icdar2015`
+- Or, generate `instances_training.json` and `instances_test.json` with the following command:
+
+  ```bash
+  python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
+  ```
+
+- The resulting directory structure looks like the following:
+
+  ```text
+  ├── icdar2015
+  │   ├── imgs
+  │   ├── annotations
+  │   ├── instances_test.json
+  │   └── instances_training.json
+  ```
+
+## ICDAR 2017
+- Follow similar steps as [ICDAR 2015](#icdar-2015).
+- The resulting directory structure looks like the following:
+
+  ```text
+  ├── icdar2017
+  │   ├── imgs
+  │   ├── annotations
+  │   ├── instances_training.json
+  │   └── instances_val.json
   ```
 
 ## SynthText
