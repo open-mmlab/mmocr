@@ -64,7 +64,6 @@ def plot_curve(log_dicts, args):
                     if 'val' in log_dict[epoch]['mode']:
                         xs.append(epoch)
                 ax = plt.gca()
-                ax.set_xticks(xs)
                 plt.xlabel('epoch')
                 plt.plot(xs, ys, label=legend[i * num_metrics + j], marker='o')
             else:
@@ -86,6 +85,7 @@ def plot_curve(log_dicts, args):
                 plt.xlabel('iter')
                 plt.plot(
                     xs, ys, label=legend[i * num_metrics + j], linewidth=0.5)
+            plt.grid()
             plt.legend()
         if args.title is not None:
             plt.title(args.title)
