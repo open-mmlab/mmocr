@@ -86,7 +86,7 @@ Some refactoring processes are still going on. For text recognition models, we u
             ])
     ```
 
-- You can also insert more than one plugin in each port and those plugins will be executed in order. Let's take ResNet in [MASTER](https://scholar.google.com/citations?view_op=view_citation&hl=zh-CN&user=UeltiQ4AAAAJ&sortby=pubdate&citation_for_view=UeltiQ4AAAAJ:JWITY9-sCbMC) as an example:
+- You can also insert more than one plugin in each port and those plugins will be executed in order. Let's take ResNet in [MASTER](https://arxiv.org/abs/1910.02562) as an example:
 
     <details close>
     <summary>Multiple Plugins Example</summary>
