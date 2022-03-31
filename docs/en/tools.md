@@ -65,7 +65,7 @@ Examples:
 - Compute the average training speed.
 
     ```shell
-    python tools/analyze_logs.py cal_train_time log.json [--include-outliers]
+    python tools/analyze_logs.py cal_train_time log.json --include-outliers
     ```
 
     The output is expected to be like the following.

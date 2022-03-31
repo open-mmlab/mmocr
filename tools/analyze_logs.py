@@ -61,7 +61,7 @@ def plot_curve(log_dicts, args):
                 ys = []
                 for epoch in epochs:
                     ys += log_dict[epoch][metric]
-                    if 'val' in log_dict[epoch]["mode"]:
+                    if 'val' in log_dict[epoch]['mode']:
                         xs.append(epoch)
                 ax = plt.gca()
                 ax.set_xticks(xs)
@@ -138,7 +138,7 @@ def add_time_parser(subparsers):
         '--include-outliers',
         action='store_true',
         help='include the first value of every epoch when computing '
-             'the average time')
+        'the average time')
 
 
 def parse_args():
