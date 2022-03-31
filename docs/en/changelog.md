@@ -9,18 +9,16 @@
 3. We release data converters for **16** widely used OCR datasets, including multiple scenarios such as document, handwritten, and scene text. Now it is more convenient to generate annotation files for these datasets. Check the dataset zoo ( [Det](https://mmocr.readthedocs.io/en/latest/datasets/det.html#) & [Recog](https://mmocr.readthedocs.io/en/latest/datasets/recog.html) ) to explore further information.
 4. Special thanks to @EighteenSprings @BeyondYourself @yangrisheng, who had actively participated in documentation translation!
 
-### Migration Guide
+### Migration Guide - ResNet
 
 Some refactoring processes are still going on. For text recognition models, we unified the [`ResNet-like` architectures](https://github.com/open-mmlab/mmocr/blob/72f945457324e700f0d14796dd10a51535c01a57/mmocr/models/textrecog/backbones/resnet.py) which are used as backbones. By introducing stage-wise and block-wise plugins, the refactored ResNet is highly flexible to support existing models, like ResNet31 and ResNet45, and other future designs of ResNet variants.
 
-#### ResNet
-
-##### Plugin
+#### Plugin
 
 - `Plugin` is a module category inherited from MMCV's implementation of `PLUGIN_LAYERS`, which can be inserted between each stage of ResNet or into a basicblock. You can find a simple implementation of plugin at [mmocr/models/textrecog/plugins/common.py](https://github.com/open-mmlab/mmocr/blob/72f945457324e700f0d14796dd10a51535c01a57/mmocr/models/textrecog/plugins/common.py), or click the button below.
 
     <details close>
-    <summary><strong>Plugin Example</strong></summary>
+    <summary>Plugin Example</summary>
 
     ```python
     @PLUGIN_LAYERS.register_module()
@@ -50,7 +48,7 @@ Some refactoring processes are still going on. For text recognition models, we u
 
     </details>
 
-##### Stage-wise Plugins
+#### Stage-wise Plugins
 
 - ResNet is composed of stages, and each stage is composed of blocks. E.g., ResNet18 is composed of 4 stages, and each stage is composed of basicblocks. For each stage, we provide two ports to insert stage-wise plugins by giving `plugins` parameters in ResNet.
 
@@ -91,7 +89,7 @@ Some refactoring processes are still going on. For text recognition models, we u
 - You can also insert more than one plugin in each port and those plugins will be executed in order. Let's take ResNet in [MASTER](https://scholar.google.com/citations?view_op=view_citation&hl=zh-CN&user=UeltiQ4AAAAJ&sortby=pubdate&citation_for_view=UeltiQ4AAAAJ:JWITY9-sCbMC) as an example:
 
     <details close>
-    <summary><strong>Multiple Plugins Example</strong></summary>
+    <summary>Multiple Plugins Example</summary>
 
     - ResNet in Master is based on ResNet31. And after each stage, a module named `GCAModule` will be used. The `GCAModule` is inserted before the stage-wise convolution layer in ResNet31. In conlusion, there will be two plugins at `after_stage` port in the same time.
 
@@ -130,7 +128,7 @@ Some refactoring processes are still going on. For text recognition models, we u
 
   - In each plugin, we will pass two parameters (`in_channels`, `out_channels`) to support operations that need the information of current channels.
 
-##### Block-wise Plugin (Experimental)
+#### Block-wise Plugin (Experimental)
 
 - We also refactored the `BasicBlock` used in ResNet. Now it can be customized with block-wise plugins. Check [here](https://github.com/open-mmlab/mmocr/blob/72f945457324e700f0d14796dd10a51535c01a57/mmocr/models/textrecog/layers/conv_layer.py) for more details.
 - BasicBlock is composed of two convolution layer in the main branch and a shortcut branch. We provide four ports to insert plugins.
@@ -145,7 +143,7 @@ Some refactoring processes are still going on. For text recognition models, we u
 - E.g. Build a ResNet with customized BasicBlock with an additional convolution layer before conv1:
 
     <details close>
-    <summary><strong>Block-wise Plugin Example</strong></summary>
+    <summary>Block-wise Plugin Example</summary>
 
     ```python
     resnet_31 = ResNet(
@@ -183,10 +181,10 @@ Some refactoring processes are still going on. For text recognition models, we u
 
     </details>
 
-##### Full Examples
+#### Full Examples
 
 <details close>
-<summary><strong>ResNet without plugins</strong></summary>
+<summary>ResNet without plugins</summary>
 
 - ResNet45 is used in ASTER and ABINet without any plugins.
 
@@ -210,7 +208,7 @@ Some refactoring processes are still going on. For text recognition models, we u
 
 </details>
 <details close>
-<summary><strong>ResNet with plugins</strong></summary>
+<summary>ResNet with plugins</summary>
 
 - ResNet31 is a typical architecture to use stage-wise plugins. Before the first three stages, Maxpooling layer is used. After each stage, a convolution layer with BN and ReLU is used.
 
@@ -250,7 +248,7 @@ Some refactoring processes are still going on. For text recognition models, we u
 
 </details>
 
-#### Dataset Annotation Loader
+### Migration Guide - Dataset Annotation Loader
 
 The annotation loaders, `LmdbLoader` and `HardDiskLoader`, are unified into `AnnFileLoader` for a more consistent design and wider support on different file formats and storage backends. `AnnFileLoader` can load the annotations from `disk`(default), `http` and `petrel` backend, and parse the annotation in `txt` or `lmdb` format. `LmdbLoader` and `HardDiskLoader` are deprecated, and users are recommended to modify their configs to use the new `AnnFileLoader`. Users can migrate their legacy loader `HardDiskLoader` referring to the following example:
 
