@@ -1,5 +1,358 @@
 # Changelog
 
+## 0.5.0 (31/03/2022)
+
+### Highlights
+
+1. MMOCR now supports SPACE recognition! (What a prominent feature!) Users only need to convert the recognition annotations that contain spaces from a plain `.txt` file to JSON line format `.jsonl`, and then revise a few configurations to enable the `LineJsonParser`. For more information, please read our step-by-step [tutorial](https://mmocr.readthedocs.io/en/latest/tutorials/blank_recog.html).
+2. [Tesseract](https://github.com/tesseract-ocr/tesseract) is now available in MMOCR! While MMOCR is more flexible to support various downstream tasks, users might sometimes not be satisfied with DL models and would like to turn to effective legacy solutions. Therefore, we offer this option in `mmocr.utils.ocr` by wrapping Tesseract as a detector and/or recognizer. Users can easily create an MMOCR object by `MMOCR(det=’Tesseract’, recog=’Tesseract’)`. Credit to @garvan2021
+3. We release data converters for **16** widely used OCR datasets, including multiple scenarios such as document, handwritten, and scene text. Now it is more convenient to generate annotation files for these datasets. Check the dataset zoo ( [Det](https://mmocr.readthedocs.io/en/latest/datasets/det.html#) & [Recog](https://mmocr.readthedocs.io/en/latest/datasets/recog.html) ) to explore further information.
+4. Special thanks to @EighteenSprings @BeyondYourself @yangrisheng, who had actively participated in documentation translation!
+
+### Migration Guide - ResNet
+
+Some refactoring processes are still going on. For text recognition models, we unified the [`ResNet-like` architectures](https://github.com/open-mmlab/mmocr/blob/72f945457324e700f0d14796dd10a51535c01a57/mmocr/models/textrecog/backbones/resnet.py) which are used as backbones. By introducing stage-wise and block-wise plugins, the refactored ResNet is highly flexible to support existing models, like ResNet31 and ResNet45, and other future designs of ResNet variants.
+
+#### Plugin
+
+- `Plugin` is a module category inherited from MMCV's implementation of `PLUGIN_LAYERS`, which can be inserted between each stage of ResNet or into a basicblock. You can find a simple implementation of plugin at [mmocr/models/textrecog/plugins/common.py](https://github.com/open-mmlab/mmocr/blob/72f945457324e700f0d14796dd10a51535c01a57/mmocr/models/textrecog/plugins/common.py), or click the button below.
+
+    <details close>
+    <summary>Plugin Example</summary>
+
+    ```python
+    @PLUGIN_LAYERS.register_module()
+    class Maxpool2d(nn.Module):
+        """A wrapper around nn.Maxpool2d().
+
+        Args:
+            kernel_size (int or tuple(int)): Kernel size for max pooling layer
+            stride (int or tuple(int)): Stride for max pooling layer
+            padding (int or tuple(int)): Padding for pooling layer
+        """
+
+        def __init__(self, kernel_size, stride, padding=0, **kwargs):
+            super(Maxpool2d, self).__init__()
+            self.model = nn.MaxPool2d(kernel_size, stride, padding)
+
+        def forward(self, x):
+            """
+            Args:
+                x (Tensor): Input feature map
+
+            Returns:
+                Tensor: The tensor after Maxpooling layer.
+            """
+            return self.model(x)
+    ```
+
+    </details>
+
+#### Stage-wise Plugins
+
+- ResNet is composed of stages, and each stage is composed of blocks. E.g., ResNet18 is composed of 4 stages, and each stage is composed of basicblocks. For each stage, we provide two ports to insert stage-wise plugins by giving `plugins` parameters in ResNet.
+
+    ```text
+    [port1: before stage] ---> [stage] ---> [port2: after stage]
+    ```
+
+- E.g. Using a ResNet with four stages as example. Suppose we want to insert an additional convolution layer before each stage, and an additional convolution layer at stage 1, 2, 4. Then you can define the special ResNet18 like this
+
+    ```python
+    resnet18_speical = ResNet(
+            # for simplicity, some required
+            # parameters are omitted
+            plugins=[
+                dict(
+                    cfg=dict(
+                    type='ConvModule',
+                    kernel_size=3,
+                    stride=1,
+                    padding=1,
+                    norm_cfg=dict(type='BN'),
+                    act_cfg=dict(type='ReLU')),
+                    stages=(True, True, True, True),
+                    position='before_stage')
+                dict(
+                    cfg=dict(
+                    type='ConvModule',
+                    kernel_size=3,
+                    stride=1,
+                    padding=1,
+                    norm_cfg=dict(type='BN'),
+                    act_cfg=dict(type='ReLU')),
+                    stages=(True, True, False, True),
+                    position='after_stage')
+            ])
+    ```
+
+- You can also insert more than one plugin in each port and those plugins will be executed in order. Let's take ResNet in [MASTER](https://arxiv.org/abs/1910.02562) as an example:
+
+    <details close>
+    <summary>Multiple Plugins Example</summary>
+
+    - ResNet in Master is based on ResNet31. And after each stage, a module named `GCAModule` will be used. The `GCAModule` is inserted before the stage-wise convolution layer in ResNet31. In conlusion, there will be two plugins at `after_stage` port in the same time.
+
+        ```python
+        resnet_master = ResNet(
+                        # for simplicity, some required
+                        # parameters are omitted
+                        plugins=[
+                            dict(
+                                cfg=dict(type='Maxpool2d', kernel_size=2, stride=(2, 2)),
+                                stages=(True, True, False, False),
+                                position='before_stage'),
+                            dict(
+                                cfg=dict(type='Maxpool2d', kernel_size=(2, 1), stride=(2, 1)),
+                                stages=(False, False, True, False),
+                                position='before_stage'),
+                            dict(
+                                cfg=dict(type='GCAModule', kernel_size=3, stride=1, padding=1),
+                                stages=[True, True, True, True],
+                                position='after_stage'),
+                            dict(
+                                cfg=dict(
+                                    type='ConvModule',
+                                    kernel_size=3,
+                                    stride=1,
+                                    padding=1,
+                                    norm_cfg=dict(type='BN'),
+                                    act_cfg=dict(type='ReLU')),
+                                stages=(True, True, True, True),
+                                position='after_stage')
+                        ])
+
+        ```
+
+        </details>
+
+  - In each plugin, we will pass two parameters (`in_channels`, `out_channels`) to support operations that need the information of current channels.
+
+#### Block-wise Plugin (Experimental)
+
+- We also refactored the `BasicBlock` used in ResNet. Now it can be customized with block-wise plugins. Check [here](https://github.com/open-mmlab/mmocr/blob/72f945457324e700f0d14796dd10a51535c01a57/mmocr/models/textrecog/layers/conv_layer.py) for more details.
+- BasicBlock is composed of two convolution layer in the main branch and a shortcut branch. We provide four ports to insert plugins.
+
+    ```text
+        [port1: before_conv1] ---> [conv1] --->
+        [port2: after_conv1] ---> [conv2] --->
+        [port3: after_conv2] ---> +(shortcut) ---> [port4: after_shortcut]
+    ```
+
+- In each plugin, we will pass a parameter `in_channels` to support operations that need the information of current channels.
+- E.g. Build a ResNet with customized BasicBlock with an additional convolution layer before conv1:
+
+    <details close>
+    <summary>Block-wise Plugin Example</summary>
+
+    ```python
+    resnet_31 = ResNet(
+            in_channels=3,
+            stem_channels=[64, 128],
+            block_cfgs=dict(type='BasicBlock'),
+            arch_layers=[1, 2, 5, 3],
+            arch_channels=[256, 256, 512, 512],
+            strides=[1, 1, 1, 1],
+            plugins=[
+                dict(
+                    cfg=dict(type='Maxpool2d',
+                    kernel_size=2,
+                    stride=(2, 2)),
+                    stages=(True, True, False, False),
+                    position='before_stage'),
+                dict(
+                    cfg=dict(type='Maxpool2d',
+                    kernel_size=(2, 1),
+                    stride=(2, 1)),
+                    stages=(False, False, True, False),
+                    position='before_stage'),
+                dict(
+                    cfg=dict(
+                    type='ConvModule',
+                    kernel_size=3,
+                    stride=1,
+                    padding=1,
+                    norm_cfg=dict(type='BN'),
+                    act_cfg=dict(type='ReLU')),
+                    stages=(True, True, True, True),
+                    position='after_stage')
+            ])
+    ```
+
+    </details>
+
+#### Full Examples
+
+<details close>
+<summary>ResNet without plugins</summary>
+
+- ResNet45 is used in ASTER and ABINet without any plugins.
+
+    ```python
+    resnet45_aster = ResNet(
+        in_channels=3,
+        stem_channels=[64, 128],
+        block_cfgs=dict(type='BasicBlock', use_conv1x1='True'),
+        arch_layers=[3, 4, 6, 6, 3],
+        arch_channels=[32, 64, 128, 256, 512],
+        strides=[(2, 2), (2, 2), (2, 1), (2, 1), (2, 1)])
+
+    resnet45_abi = ResNet(
+        in_channels=3,
+        stem_channels=32,
+        block_cfgs=dict(type='BasicBlock', use_conv1x1='True'),
+        arch_layers=[3, 4, 6, 6, 3],
+        arch_channels=[32, 64, 128, 256, 512],
+        strides=[2, 1, 2, 1, 1])
+    ```
+
+</details>
+<details close>
+<summary>ResNet with plugins</summary>
+
+- ResNet31 is a typical architecture to use stage-wise plugins. Before the first three stages, Maxpooling layer is used. After each stage, a convolution layer with BN and ReLU is used.
+
+    ```python
+    resnet_31 = ResNet(
+        in_channels=3,
+        stem_channels=[64, 128],
+        block_cfgs=dict(type='BasicBlock'),
+        arch_layers=[1, 2, 5, 3],
+        arch_channels=[256, 256, 512, 512],
+        strides=[1, 1, 1, 1],
+        plugins=[
+            dict(
+                cfg=dict(type='Maxpool2d',
+                kernel_size=2,
+                stride=(2, 2)),
+                stages=(True, True, False, False),
+                position='before_stage'),
+            dict(
+                cfg=dict(type='Maxpool2d',
+                kernel_size=(2, 1),
+                stride=(2, 1)),
+                stages=(False, False, True, False),
+                position='before_stage'),
+            dict(
+                cfg=dict(
+                type='ConvModule',
+                kernel_size=3,
+                stride=1,
+                padding=1,
+                norm_cfg=dict(type='BN'),
+                act_cfg=dict(type='ReLU')),
+                stages=(True, True, True, True),
+                position='after_stage')
+        ])
+    ```
+
+</details>
+
+### Migration Guide - Dataset Annotation Loader
+
+The annotation loaders, `LmdbLoader` and `HardDiskLoader`, are unified into `AnnFileLoader` for a more consistent design and wider support on different file formats and storage backends. `AnnFileLoader` can load the annotations from `disk`(default), `http` and `petrel` backend, and parse the annotation in `txt` or `lmdb` format. `LmdbLoader` and `HardDiskLoader` are deprecated, and users are recommended to modify their configs to use the new `AnnFileLoader`. Users can migrate their legacy loader `HardDiskLoader` referring to the following example:
+
+```python
+# Legacy config
+train = dict(
+    type='OCRDataset',
+    ...
+    loader=dict(
+        type='HardDiskLoader',
+        ...))
+
+# Suggested config
+train = dict(
+    type='OCRDataset',
+    ...
+    loader=dict(
+        type='AnnFileLoader',
+        file_storage_backend='disk',
+        file_format='txt',
+        ...))
+```
+
+Similarly, using `AnnFileLoader` with `file_format='lmdb'` instead of `LmdbLoader` is strongly recommended.
+
+### New Features & Enhancements
+
+* Update mmcv install by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/775
+* Upgrade isort by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/771
+* Automatically infer device for inference if not speicifed by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/781
+* Add open-mmlab precommit hooks by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/787
+* Add windows CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/790
+* Add CurvedSyntext150k Converter by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/719
+* Add FUNSD Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/808
+* Support loading annotation file with petrel/http backend by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/793
+* Support different seeds on different ranks by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/820
+* Support json in recognition converter by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/844
+* Add args and docs for multi-machine training/testing by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/849
+* Add warning info for LineStrParser by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/850
+* Deploy openmmlab-bot by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/876
+* Add Tesserocr Inference  by @garvan2021 in https://github.com/open-mmlab/mmocr/pull/814
+* Add LV Dataset Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/871
+* Add SROIE Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/810
+* Add NAF Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/815
+* Add DeText Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/818
+* Add IMGUR Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/825
+* Add ILST Converter by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/833
+* Add KAIST Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/835
+* Add IC11 (Born-digital Images) Data Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/857
+* Add IC13 (Focused Scene Text) Data Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/861
+* Add BID Converter by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/862
+* Add Vintext Converter by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/864
+* Add MTWI Data Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/867
+* Add COCO Text v2 Data Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/872
+* Add ReCTS Data Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/892
+* Refactor ResNets by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/809
+
+### Bug Fixes
+* Bump mmdet version to 2.20.0 in Dockerfile by @GPhilo in https://github.com/open-mmlab/mmocr/pull/763
+* Update mmdet version limit by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/773
+* Minimum version requirement of albumentations by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/769
+* Disable worker in the dataloader of gpu unit test by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/780
+* Standardize the type of torch.device in ocr.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/800
+* Use RECOGNIZER instead of DETECTORS by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/685
+* Add num_classes to configs of ABINet by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/805
+* Support loading space character from dict file by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/854
+* Description in tools/data/utils/txt2lmdb.py by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/870
+* ignore_index in SARLoss by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/869
+* Fix a bug that may cause inplace operation error by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/884
+* Use hyphen instead of underscores in script args by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/890
+
+### Docs
+
+* Add deprecation message for deploy tools by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/801
+* Reorganizing OpenMMLab projects in readme by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/806
+* Add demo/README_zh.md by @EighteenSprings in https://github.com/open-mmlab/mmocr/pull/802
+* Add detailed version requirement table by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/778
+* Correct misleading section title in training.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/819
+* Update README_zh-CN  document URL by @BeyondYourself in https://github.com/open-mmlab/mmocr/pull/823
+* translate testing.md. by @yangrisheng in https://github.com/open-mmlab/mmocr/pull/822
+* Fix confused description for load-from and resume-from by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/842
+* Add documents getting_started in docs/zh by @BeyondYourself in https://github.com/open-mmlab/mmocr/pull/841
+* Add the model serving translation document by @BeyondYourself in https://github.com/open-mmlab/mmocr/pull/845
+* Update docs about installation on Windows by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/852
+* Update tutorial notebook by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/853
+* Update Instructions for New Data Converters by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/900
+* Brief installation instruction in README by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/897
+* update doc for ILST, VinText, BID by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/902
+* Fix typos in readme by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/903
+* Recog dataset doc by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/893
+* Reorganize the directory structure section in det.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/894
+
+## New Contributors
+
+* @GPhilo made their first contribution in https://github.com/open-mmlab/mmocr/pull/763
+* @xinke-wang made their first contribution in https://github.com/open-mmlab/mmocr/pull/801
+* @EighteenSprings made their first contribution in https://github.com/open-mmlab/mmocr/pull/802
+* @BeyondYourself made their first contribution in https://github.com/open-mmlab/mmocr/pull/823
+* @yangrisheng made their first contribution in https://github.com/open-mmlab/mmocr/pull/822
+* @Mountchicken made their first contribution in https://github.com/open-mmlab/mmocr/pull/844
+* @garvan2021 made their first contribution in https://github.com/open-mmlab/mmocr/pull/814
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v0.4.1...v0.5.0
+
 ## v0.4.1 (27/01/2022)
 
 ### Highlights
