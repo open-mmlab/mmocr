@@ -124,7 +124,7 @@ should be as follows:
   │   ├── test_label_1015.txt
   │   ├── test_label_1095.txt
   │   ├── Challenge2_Training_Task3_Images_GT
-  │   ├── Challenge2_Test_Task3_Images
+  │   └──  Challenge2_Test_Task3_Images
   ```
 
 ## ICDAR 2015
@@ -139,7 +139,7 @@ should be as follows:
   │   ├── train_label.txt
   │   ├── test_label.txt
   │   ├── ch4_training_word_images_gt
-  │   ├── ch4_test_word_images_gt
+  │   └── ch4_test_word_images_gt
   ```
 
 ## IIIT5K
@@ -154,7 +154,7 @@ should be as follows:
   │   ├── train_label.txt
   │   ├── test_label.txt
   │   ├── train
-  │   ├── test
+  │   └── test
   ```
 
 ## svt
@@ -173,7 +173,7 @@ should be as follows:
   ```text
   ├── svt
   │   ├── test_label.txt
-  │   ├── image
+  │   └── image
   ```
 
 ## ct80
@@ -185,7 +185,7 @@ should be as follows:
   ```text
   ├── ct80
   │   ├── test_label.txt
-  │   ├── image
+  │   └── image
   ```
 
 ## svtp
@@ -197,7 +197,7 @@ should be as follows:
   ```text
   ├── svtp
   │   ├── test_label.txt
-  │   ├── image
+  │   └── image
   ```
 
 ## coco_text
@@ -210,7 +210,7 @@ should be as follows:
   ```text
   ├── coco_text
   │   ├── train_label.txt
-  │   ├── train_words
+  │   └── train_words
   ```
 
 ## MJSynth (Syn90k)
@@ -246,7 +246,7 @@ should be as follows:
   │   ├── shuffle_labels.txt
   │   ├── label.txt
   │   ├── label.lmdb
-  │   ├── mnt
+  │   └── mnt
   ```
 
 ## SynthText (Synth800k)
@@ -295,7 +295,7 @@ should be as follows:
   │   ├── instances_train.txt
   │   ├── label.txt
   │   ├── label.lmdb
-  │   ├── synthtext
+  │   └── synthtext
   ```
 
 ## SynthAdd
@@ -326,7 +326,7 @@ should be as follows:
   ├── SynthAdd
   │   ├── label.txt
   │   ├── label.lmdb
-  │   ├── SynthText_Add
+  │   └── SynthText_Add
   ```
 
 :::{tip}
@@ -374,7 +374,7 @@ should be as follows:
   ├── TextOCR
   │   ├── image
   │   ├── train_label.txt
-  │   ├── val_label.txt
+  │   └── val_label.txt
   ```
 
 ## Totaltext
@@ -413,7 +413,7 @@ should be as follows:
   │   ├── imgs
   │   ├── annotations
   │   ├── train_label.txt
-  │   ├── test_label.txt
+  │   └── test_label.txt
   ```
 
 ## OpenVINO
@@ -464,7 +464,7 @@ should be as follows:
   │   ├── train_2_label.txt
   │   ├── train_5_label.txt
   │   ├── train_f_label.txt
-  │   ├── val_label.txt
+  │   └── val_label.txt
   ```
 
 ## DeText
@@ -503,7 +503,7 @@ should be as follows:
   │   ├── crops
   │   ├── ignores
   │   ├── train_label.jsonl
-  │   ├── test_label.jsonl
+  │   └── test_label.jsonl
   ```
 
 ## NAF
@@ -541,7 +541,7 @@ should be as follows:
   │   ├── crops
   │   ├── train_label.txt
   │   ├── val_label.txt
-  │   ├── test_label.txt
+  │   └── test_label.txt
   ```
 
 ## SROIE
@@ -580,7 +580,7 @@ should be as follows:
   ├── sroie
   │   ├── crops
   │   ├── train_label.jsonl
-  │   ├── test_label.jsonl
+  │   └── test_label.jsonl
   ```
 
 ## Lecture Video DB
@@ -620,7 +620,7 @@ should be as follows:
   ├── lv
   │   ├── Crops
   │   ├── train_label.jsonl
-  │   ├── test_label.jsonl
+  │   └── test_label.jsonl
   ```
 
 ## FUNSD
@@ -659,7 +659,7 @@ should be as follows:
   │   ├── dst_imgs
   │   ├── annotations
   │   ├── train_label.txt
-  │   ├── test_label.txt
+  │   └── test_label.txt
   ```
 
 ## IMGUR
@@ -766,7 +766,7 @@ should be as follows:
   ├── mtwi
   │   ├── crops
   │   ├── train_label.jsonl
-  │   ├── val_label.jsonl (optional)
+  │   └── val_label.jsonl (optional)
   ```
 
 ## COCO Text v2
@@ -880,7 +880,7 @@ should be as follows:
   │   ├── crops
   │   ├── ignores
   │   ├── train_label.jsonl
-  │   ├── val_label.jsonl (optional)
+  │   └── val_label.jsonl (optional)
   ```
 
 ## VinText
@@ -918,7 +918,7 @@ should be as follows:
   │   ├── ignores
   │   ├── train_label.jsonl
   │   ├── test_label.jsonl
-  │   ├── unseen_test_label.jsonl
+  │   └── unseen_test_label.jsonl
   ```
 
 ## BID
@@ -968,5 +968,5 @@ should be as follows:
   │   ├── crops
   │   ├── ignores
   │   ├── train_label.jsonl
-  │   ├── val_label.jsonl (optional)
+  │   └── val_label.jsonl (optional)
   ```
