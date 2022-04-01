@@ -62,34 +62,34 @@ Please specify an output path if you are running the codes on systems without a 
 
 - Plot loss metric.
 
-    ```shell
-    python tools/analyze_logs.py plot_curve DBNet_log.json --keys loss --legend loss
-    ```
+  ```shell
+  python tools/analyze_logs.py plot_curve DBNet_log.json --keys loss --legend loss
+  ```
 
 - Plot hmean-iou:hmean metric of text detection.
 
-    ```shell
-    python tools/analyze_logs.py plot_curve DBNet_log.json --keys hmean-iou:hmean --legend hmean-iou:hmean
-    ```
+  ```shell
+  python tools/analyze_logs.py plot_curve DBNet_log.json --keys hmean-iou:hmean --legend hmean-iou:hmean
+  ```
 
 - Plot 0_1-N.E.D metric of text recognition.
 
-    ```shell
-    python tools/analyze_logs.py plot_curve CRNN_log.json --keys 0_1-N.E.D --legend 0_1-N.E.D
-    ```
+  ```shell
+  python tools/analyze_logs.py plot_curve CRNN_log.json --keys 0_1-N.E.D --legend 0_1-N.E.D
+  ```
 
 - Compute the average training speed.
 
-    ```shell
-    python tools/analyze_logs.py cal_train_time CRNN_log.json --include-outliers
-    ```
+  ```shell
+  python tools/analyze_logs.py cal_train_time CRNN_log.json --include-outliers
+  ```
 
-    The output is expected to be like the following.
+  The output is expected to be like the following.
 
-    ```text
-    -----Analyze train time of CRNN_log.json-----
-    slowest epoch 4, average time is 0.3464
-    fastest epoch 5, average time is 0.2365
-    time std over epochs is 0.0356
-    average iter time: 0.2906 s/iter
-    ```
+  ```text
+  -----Analyze train time of CRNN_log.json-----
+  slowest epoch 4, average time is 0.3464
+  fastest epoch 5, average time is 0.2365
+  time std over epochs is 0.0356
+  average iter time: 0.2906 s/iter
+  ```
