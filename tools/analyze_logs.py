@@ -63,7 +63,6 @@ def plot_curve(log_dicts, args):
                     ys += log_dict[epoch][metric]
                     if 'val' in log_dict[epoch]['mode']:
                         xs.append(epoch)
-                ax = plt.gca()
                 plt.xlabel('epoch')
                 plt.plot(xs, ys, label=legend[i * num_metrics + j], marker='o')
             else:
