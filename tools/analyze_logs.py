@@ -51,7 +51,7 @@ def plot_curve(log_dicts, args):
     for i, log_dict in enumerate(log_dicts):
         epochs = list(log_dict.keys())
         for j, metric in enumerate(metrics):
-            print(f'plot curve of {args.json_logs[i]}, metric is {metric}')
+            print(f'Plot curve of {args.json_logs[i]}, metric is {metric}')
 
             if 'hmean' in metric or '0_' in metric:
                 # determine whether it is a epoch-plotted metric
@@ -91,52 +91,52 @@ def plot_curve(log_dicts, args):
     if args.out is None:
         plt.show()
     else:
-        print(f'save curve to: {args.out}')
+        print(f'Save curve to: {args.out}')
         plt.savefig(args.out)
         plt.cla()
 
 
 def add_plot_parser(subparsers):
     parser_plt = subparsers.add_parser(
-        'plot_curve', help='parser for plotting curves')
+        'plot_curve', help='Parser for plotting curves')
     parser_plt.add_argument(
         'json_logs',
         type=str,
         nargs='+',
-        help='path of train log in json format')
+        help='Path of train log in json format')
     parser_plt.add_argument(
         '--keys',
         type=str,
         nargs='+',
         default=['loss'],
-        help='the metric that you want to plot')
-    parser_plt.add_argument('--title', type=str, help='title of figure')
+        help='The metric that you want to plot')
+    parser_plt.add_argument('--title', type=str, help='Title of figure')
     parser_plt.add_argument(
         '--legend',
         type=str,
         nargs='+',
         default=None,
-        help='legend of each plot')
+        help='Legend of each plot')
     parser_plt.add_argument(
-        '--backend', type=str, default=None, help='backend of plt')
+        '--backend', type=str, default=None, help='Backend of plt')
     parser_plt.add_argument(
-        '--style', type=str, default='dark', help='style of plt')
+        '--style', type=str, default='dark', help='Style of plt')
     parser_plt.add_argument('--out', type=str, default=None)
 
 
 def add_time_parser(subparsers):
     parser_time = subparsers.add_parser(
         'cal_train_time',
-        help='parser for computing the average time per training iteration')
+        help='Parser for computing the average time per training iteration')
     parser_time.add_argument(
         'json_logs',
         type=str,
         nargs='+',
-        help='path of train log in json format')
+        help='Path of train log in json format')
     parser_time.add_argument(
         '--include-outliers',
         action='store_true',
-        help='include the first value of every epoch when computing '
+        help='Include the first value of every epoch when computing '
         'the average time')
 
 
