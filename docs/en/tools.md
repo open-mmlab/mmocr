@@ -40,52 +40,56 @@ You can use `tools/analyze_logs.py` to plot loss/hmean curves given a training l
 python tools/analyze_logs.py plot_curve [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
  ```
 
-| Arguments   | Type | Description                                            |
-| ----------- | ---- | ------------------------------------------------------ |
-| `--keys`    | str  | The metric that you want to plot. Defaults to `loss`.  |
-| `--title`   | str  | Title of figure.                                       |
-| `--legend`  | str  | Legend of each plot.                                   |
-| `--backend` | str  | Backend of the plot.                                   |
-| `--style`   | str  | Style of the plot. Defaults to `dark`.                 |
-| `--out`     | str  | Path of output figure.                                 |
+| Arguments   | Type | Description                                           |
+| ----------- | ---- | ----------------------------------------------------- |
+| `--keys`    | str  | The metric that you want to plot. Defaults to `loss`. |
+| `--title`   | str  | Title of figure.                                      |
+| `--legend`  | str  | Legend of each plot.                                  |
+| `--backend` | str  | Backend of the plot.                                  |
+| `--style`   | str  | Style of the plot. Defaults to `dark`.                |
+| `--out`     | str  | Path of output figure.                                |
 
 **Examples:**
 
-Download the following DBNet training log as an example to run demos.
+Download the following DBNet and CRNN training logs to run demos.
 ```shell
-wget https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.log.json -O log.json
+wget https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.log.json -O DBNet_log.json
+
+wget https://download.openmmlab.com/mmocr/textrecog/crnn/20210326_111035.log.json -O CRNN_log.json
 ```
+
+Please specify an output path if you are running the codes on systems without a GUI.
 
 - Plot loss metric.
 
     ```shell
-    python tools/analyze_logs.py plot_curve log.json --keys loss --legend loss
+    python tools/analyze_logs.py plot_curve DBNet_log.json --keys loss --legend loss
     ```
 
 - Plot hmean-iou:hmean metric of text detection.
 
     ```shell
-    python tools/analyze_logs.py plot_curve log.json --keys hmean-iou:hmean --legend hmean-iou:hmean
+    python tools/analyze_logs.py plot_curve DBNet_log.json --keys hmean-iou:hmean --legend hmean-iou:hmean
     ```
 
 - Plot 0_1-N.E.D metric of text recognition.
 
     ```shell
-    python tools/analyze_logs.py plot_curve log.json --keys 0_1-N.E.D --legend 0_1-N.E.D
+    python tools/analyze_logs.py plot_curve CRNN_log.json --keys 0_1-N.E.D --legend 0_1-N.E.D
     ```
 
 - Compute the average training speed.
 
     ```shell
-    python tools/analyze_logs.py cal_train_time log.json --include-outliers
+    python tools/analyze_logs.py cal_train_time CRNN_log.json --include-outliers
     ```
 
     The output is expected to be like the following.
 
     ```text
-    -----Analyze train time of mmocrpr/demo_dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.log.json-----
-    slowest epoch 860, average time is 1.7699
-    fastest epoch 739, average time is 1.4125
-    time std over epochs is 0.0320
-    average iter time: 1.4816 s/iter
+    -----Analyze train time of CRNN_log.json-----
+    slowest epoch 4, average time is 0.3464
+    fastest epoch 5, average time is 0.2365
+    time std over epochs is 0.0356
+    average iter time: 0.2906 s/iter
     ```
