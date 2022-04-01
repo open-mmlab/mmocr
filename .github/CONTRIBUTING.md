@@ -15,7 +15,7 @@ Contents
       - [Step 2: Develop a new feature](#step-2-develop-a-new-feature)
         - [Step 2.1: Keep your fork up to date](#step-21-keep-your-fork-up-to-date)
         - [Step 2.2: Create a feature branch](#step-22-create-a-feature-branch)
-- [index is the issue index on github above](#index-is-the-issue-index-on-github-above)
+      - [Step 3: Commit your changes](#step-3-commit-your-changes)
       - [Step 4: Prepare to Pull Request](#step-4-prepare-to-pull-request)
         - [Step 4.1: Merge official repo updates to your fork](#step-41-merge-official-repo-updates-to-your-fork)
         - [Step 4.2: Push <your_feature_branch> branch to your remote forked repo,](#step-42-push-your_feature_branch-branch-to-your-remote-forked-repo)
@@ -85,7 +85,8 @@ git push origin main
 - Create an issue on [github](https://github.com/open-mmlab/mmocr)
 
 - Create a feature branch
-- ```
+-
+  ```bash
   git checkout -b feature/iss_<index> main
   # index is the issue index on github above
   ```
