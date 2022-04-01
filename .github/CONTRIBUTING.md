@@ -1,4 +1,4 @@
-# Contributing to mmocr
+# Contributing to MMOCR
 
 All kinds of contributions are welcome, including but not limited to the following.
 
@@ -7,7 +7,7 @@ All kinds of contributions are welcome, including but not limited to the followi
 
 Contents
 
-- [Contributing to mmocr](#contributing-to-mmocr)
+- [Contributing to MMOCR](#contributing-to-mmocr)
   - [Workflow](#workflow)
     - [Main Steps](#main-steps)
     - [Detailed Steps](#detailed-steps)
