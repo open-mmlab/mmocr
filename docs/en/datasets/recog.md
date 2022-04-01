@@ -376,7 +376,7 @@ python tools/data/textdreog/lv_converter.py PATH/TO/lv
   rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
   ```
 
-- Step2: Generate `instances_training.jsonl` and `instances_val.jsonl` (optional) with the following command:
+- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
 
   ```bash
   # Annotations of LSVT test split is not publicly available, split a validation
