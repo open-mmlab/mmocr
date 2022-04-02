@@ -48,9 +48,9 @@ def parse_args():
         '--eval',
         type=str,
         nargs='+',
-        help='The evaluation metrics, which depends on the dataset, e.g.,'
-        '"bbox", "seg", "proposal" for COCO, and "mAP", "recall" for'
-        'PASCAL VOC.')
+        help='The evaluation metrics, which depends on the task. For text '
+        'detection, the metric should be either "hmean-ic13" or "hmean-iou". '
+        'For text recognition, the metric should be "acc".')
     parser.add_argument('--show', action='store_true', help='Show results.')
     parser.add_argument(
         '--show-dir', help='Directory where the output images will be saved.')
