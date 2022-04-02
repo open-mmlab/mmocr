@@ -52,10 +52,12 @@ def plot_curve(log_dicts, args):
         epochs = list(log_dict.keys())
         for j, metric in enumerate(metrics):
             print(f'Plot curve of {args.json_logs[i]}, metric is {metric}')
-	    
-            epoch_based_metrics = ['hmean', 'word_acc', 'word_acc_ignore_case', 
-				   'word_acc_ignore_case_symbol', 'char_recall', 
-				   'char_precision','1-N.E.D', 'macro_f1']
+
+            epoch_based_metrics = [
+                'hmean', 'word_acc', 'word_acc_ignore_case',
+                'word_acc_ignore_case_symbol', 'char_recall', 'char_precision',
+                '1-N.E.D', 'macro_f1'
+            ]
             if any(metric in m for m in epoch_based_metrics):
                 # determine whether it is a epoch-plotted metric
                 # e.g. hmean-iou:hmean, 0_word_acc
