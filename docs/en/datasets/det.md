@@ -271,7 +271,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   cd Groundtruth
   mv Polygon/Train ../annotations/training
   mv Polygon/Test ../annotations/test
-
   ```
 
 - Step2: Generate `instances_training.json` and `instances_test.json` with the following command:
@@ -503,7 +502,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │── lv
   │   ├── imgs
   │   ├── instances_test.json
-  │   └── instances_training.json
+  │   ├── instances_training.json
   │   └── instances_val.json
   ```
 
@@ -534,7 +533,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   # set by adding --val-ratio 0.2
   python tools/data/textdet/lsvt_converter.py PATH/TO/lsvt
   ```
-  
+
 - After running the above codes, the directory structure should be as follows:
 
   ```text
