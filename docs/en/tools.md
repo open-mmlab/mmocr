@@ -36,18 +36,20 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
 
 You can use `tools/analyze_logs.py` to plot loss/hmean curves given a training log file. Run `pip install seaborn` first to install the dependency.
 
+![](../../demo/resources/log_analysis_demo.png)
+
  ```shell
 python tools/analyze_logs.py plot_curve [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
  ```
 
-| Arguments   | Type | Description                                           |
-| ----------- | ---- | ----------------------------------------------------- |
-| `--keys`    | str  | The metric that you want to plot. Defaults to `loss`. |
-| `--title`   | str  | Title of figure.                                      |
-| `--legend`  | str  | Legend of each plot.                                  |
-| `--backend` | str  | Backend of the plot.                                  |
-| `--style`   | str  | Style of the plot. Defaults to `dark`.                |
-| `--out`     | str  | Path of output figure.                                |
+| Arguments   | Type | Description                                                                                                     |
+| ----------- | ---- | --------------------------------------------------------------------------------------------------------------- |
+| `--keys`    | str  | The metric that you want to plot. Defaults to `loss`.                                                           |
+| `--title`   | str  | Title of figure.                                                                                                |
+| `--legend`  | str  | Legend of each plot.                                                                                            |
+| `--backend` | str  | Backend of the plot. [more info](https://matplotlib.org/stable/users/explain/backends.html)                     |
+| `--style`   | str  | Style of the plot. Defaults to `dark`. [more info](https://seaborn.pydata.org/generated/seaborn.set_style.html) |
+| `--out`     | str  | Path of output figure.                                                                                          |
 
 **Examples:**
 
