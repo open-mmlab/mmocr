@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import math
 import os
 import os.path as osp
 
@@ -25,11 +24,12 @@ def collect_files(img_dir, gt_dir):
     assert gt_dir
 
     ann_list, imgs_list = [], []
-    for gt_file in os.listdir(gt_dir):
-        ann_list.append(osp.join(gt_dir, gt_file))
-        imgs_list.append(osp.join(img_dir, gt_file.replace('.json', '.png')))
+    for img_file in os.listdir(img_dir):
+        ann_file = img_file.split('_')[0] + '_gt_ocr.txt'
+        ann_list.append(osp.join(gt_dir, ann_file))
+        imgs_list.append(osp.join(img_dir, img_file))
 
-    files = list(zip(sorted(imgs_list), sorted(ann_list)))
+    files = list(zip(imgs_list, ann_list))
     assert len(files), f'No images found in {img_dir}'
     print(f'Loaded {len(files)} images from {img_dir}')
 
@@ -70,27 +70,34 @@ def load_img_info(files):
     assert isinstance(files, tuple)
 
     img_file, gt_file = files
-    assert osp.basename(gt_file).split('.')[0] == osp.basename(img_file).split(
-        '.')[0]
+    assert osp.basename(gt_file).split('_')[0] == osp.basename(gt_file).split(
+        '_')[0]
     # read imgs while ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
 
     img_info = dict(
-        file_name=osp.join(osp.basename(img_file)),
+        file_name=osp.basename(img_file),
         height=img.shape[0],
         width=img.shape[1],
-        segm_file=osp.join(osp.basename(gt_file)))
+        segm_file=osp.basename(gt_file))
 
-    if osp.splitext(gt_file)[1] == '.json':
-        img_info = load_json_info(gt_file, img_info)
+    if osp.splitext(gt_file)[1] == '.txt':
+        img_info = load_txt_info(gt_file, img_info)
     else:
         raise NotImplementedError
 
     return img_info
 
 
-def load_json_info(gt_file, img_info):
+def load_txt_info(gt_file, img_info):
     """Collect the annotation information.
+
+    The annotation format is as the following:
+    x, y, w, h, text
+    977, 152, 16, 49, NOME
+    962, 143, 12, 323, APPINHANESI BLAZEK PASSOTTO
+    906, 446, 12, 94, 206940361
+    905, 641, 12, 44, SPTC
 
     Args:
         gt_file (str): The path to ground-truth
@@ -99,23 +106,19 @@ def load_json_info(gt_file, img_info):
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
-
-    annotation = mmcv.load(gt_file)
-    anno_info = []
-    for form in annotation['form']:
-        for ann in form['words']:
-
-            iscrowd = 1 if len(ann['text']) == 0 else 0
-
-            x1, y1, x2, y2 = ann['box']
-            x = max(0, min(math.floor(x1), math.floor(x2)))
-            y = max(0, min(math.floor(y1), math.floor(y2)))
-            w, h = math.ceil(abs(x2 - x1)), math.ceil(abs(y2 - y1))
-            bbox = [x, y, w, h]
+    with open(gt_file, 'r', encoding='latin1') as f:
+        anno_info = []
+        for line in f:
+            line = line.strip('\n')
+            if line[0] == '[' or line[0] == 'x':
+                continue
+            ann = line.split(',')
+            bbox = ann[0:4]
+            bbox = [int(coord) for coord in bbox]
+            x, y, w, h = bbox
             segmentation = [x, y, x + w, y, x + w, y + h, x, y + h]
-
             anno = dict(
-                iscrowd=iscrowd,
+                iscrowd=0,
                 category_id=1,
                 bbox=bbox,
                 area=w * h,
@@ -127,12 +130,33 @@ def load_json_info(gt_file, img_info):
     return img_info
 
 
+def split_train_val_list(full_list, val_ratio):
+    """Split list by val_ratio.
+
+    Args:
+        full_list (list): list to be split
+        val_ratio (float): split ratio for val set
+
+    return:
+        list(list, list): train_list and val_list
+    """
+    n_total = len(full_list)
+    offset = int(n_total * val_ratio)
+    if n_total == 0 or offset < 1:
+        return [], full_list
+    val_list = full_list[:offset]
+    train_list = full_list[offset:]
+    return [train_list, val_list]
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of FUNSD ')
-    parser.add_argument('root_path', help='Root dir path of FUNSD')
+        description='Generate training and val set of BID ')
+    parser.add_argument('root_path', help='Root dir path of BID')
     parser.add_argument(
-        '--nproc', default=1, type=int, help='Number of process')
+        '--nproc', default=1, type=int, help='Number of processes')
+    parser.add_argument(
+        '--val-ratio', help='Split ratio for val set', default=0., type=float)
     args = parser.parse_args()
     return args
 
@@ -140,17 +164,20 @@ def parse_args():
 def main():
     args = parse_args()
     root_path = args.root_path
-
-    for split in ['training', 'test']:
-        print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert FUNSD annotation'):
-            files = collect_files(
-                osp.join(root_path, 'imgs'),
-                osp.join(root_path, 'annotations', split))
-            image_infos = collect_annotations(files, nproc=args.nproc)
+    with mmcv.Timer(print_tmpl='It takes {}s to convert BID annotation'):
+        files = collect_files(
+            osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
+        image_infos = collect_annotations(files, nproc=args.nproc)
+        if args.val_ratio:
+            image_infos = split_train_val_list(image_infos, args.val_ratio)
+            splits = ['training', 'val']
+        else:
+            image_infos = [image_infos]
+            splits = ['training']
+        for i, split in enumerate(splits):
             convert_annotations(
-                image_infos, osp.join(root_path,
-                                      'instances_' + split + '.json'))
+                image_infos[i],
+                osp.join(root_path, 'instances_' + split + '.json'))
 
 
 if __name__ == '__main__':

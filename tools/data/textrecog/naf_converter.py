@@ -1,22 +1,22 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import json
-import math
-import os
 import os.path as osp
 
 import mmcv
+import numpy as np
 
 from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.utils.fileio import list_to_file
 
 
-def collect_files(img_dir, gt_dir):
+def collect_files(img_dir, gt_dir, split_info):
     """Collect all images and their corresponding groundtruth files.
 
     Args:
         img_dir (str): The image directory
         gt_dir (str): The groundtruth directory
+        split_info (dict): The split information for train/val/test
 
     Returns:
         files (list): The list of tuples (img_file, groundtruth_file)
@@ -25,13 +25,24 @@ def collect_files(img_dir, gt_dir):
     assert img_dir
     assert isinstance(gt_dir, str)
     assert gt_dir
+    assert isinstance(split_info, dict)
+    assert split_info
 
     ann_list, imgs_list = [], []
-    for gt_file in os.listdir(gt_dir):
-        ann_list.append(osp.join(gt_dir, gt_file))
-        imgs_list.append(osp.join(img_dir, gt_file.replace('.json', '.png')))
+    for group in split_info:
+        for img in split_info[group]:
+            image_path = osp.join(img_dir, img)
+            anno_path = osp.join(gt_dir, 'groups', group,
+                                 img.replace('jpg', 'json'))
 
-    files = list(zip(sorted(imgs_list), sorted(ann_list)))
+            # Filtering out the missing images
+            if not osp.exists(image_path) or not osp.exists(anno_path):
+                continue
+
+            imgs_list.append(image_path)
+            ann_list.append(anno_path)
+
+    files = list(zip(imgs_list, ann_list))
     assert len(files), f'No images found in {img_dir}'
     print(f'Loaded {len(files)} images from {img_dir}')
 
@@ -74,7 +85,7 @@ def load_img_info(files):
     img_file, gt_file = files
     assert osp.basename(gt_file).split('.')[0] == osp.basename(img_file).split(
         '.')[0]
-    # read imgs while ignoring orientations
+    # Read imgs while ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
 
     img_info = dict(
@@ -94,6 +105,29 @@ def load_img_info(files):
 def load_json_info(gt_file, img_info):
     """Collect the annotation information.
 
+    Annotation Format
+    {
+        'filedBBs': [{
+            'poly_points': [[435,1406], [466,1406], [466,1439], [435,1439]],
+            "type": "fieldCheckBox",
+            "id": "f0",
+            "isBlank": 1, # 0:text,1:handwriting,2:print,3:blank,4:signature,
+        }], ...
+        "transcriptions":{
+            "f38": "CASE NUMBER",
+            "f29": "July 1, 1949",
+            "t20": "RANK",
+            "t19": "COMPANY",
+            ...
+        }
+    }
+
+    Some special characters are used in the transcription:
+    "«text»" indicates that "text" had a strikethrough
+    "¿" indicates the transcriber could not read a character
+    "§" indicates the whole line or word was illegible
+    "" (empty string) is if the field was blank
+
     Args:
         gt_file (str): The path to ground-truth
         img_info (dict): The dict of the img and annotation information
@@ -101,22 +135,33 @@ def load_json_info(gt_file, img_info):
     Returns:
         img_info (dict): The dict of the img and annotation information
     """
+    assert isinstance(gt_file, str)
+    assert isinstance(img_info, dict)
 
     annotation = mmcv.load(gt_file)
     anno_info = []
-    for form in annotation['form']:
-        for ann in form['words']:
 
-            # Ignore illegible samples
-            if len(ann['text']) == 0:
+    # 'textBBs' contains the printed texts of the table while 'fieldBBs'
+    #  contains the text filled by human.
+    for box_type in ['textBBs', 'fieldBBs']:
+        # NAF dataset only provides transcription GT for 'filedBBs', the
+        # 'textBBs' is only used for detection task.
+        if box_type == 'textBBs':
+            continue
+        for anno in annotation[box_type]:
+            # Skip images containing detection annotations only
+            if 'transcriptions' not in annotation.keys():
+                continue
+            # Skip boxes without recognition GT
+            if anno['id'] not in annotation['transcriptions'].keys():
                 continue
 
-            x1, y1, x2, y2 = ann['box']
-            x = max(0, min(math.floor(x1), math.floor(x2)))
-            y = max(0, min(math.floor(y1), math.floor(y2)))
-            w, h = math.ceil(abs(x2 - x1)), math.ceil(abs(y2 - y1))
-            bbox = [x, y, x + w, y, x + w, y + h, x, y + h]
-            word = ann['text']
+            word = annotation['transcriptions'][anno['id']]
+            # Skip blank boxes
+            if len(word) == 0:
+                continue
+
+            bbox = np.array(anno['poly_points']).reshape(1, 8)[0].tolist()
 
             anno = dict(bbox=bbox, word=word)
             anno_info.append(anno)
@@ -135,15 +180,21 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
-        format (str): Using jsonl(dict) or str to format annotations
+        format (str): Annotation format, should be either 'txt' or 'jsonl'
     """
 
-    dst_image_root = osp.join(root_path, 'dst_imgs', split)
+    dst_image_root = osp.join(root_path, 'crops', split)
+    ignore_image_root = osp.join(root_path, 'ignores', split)
     if split == 'training':
-        dst_label_file = osp.join(root_path, 'train_label.txt')
+        dst_label_file = osp.join(root_path, f'train_label.{format}')
+    elif split == 'val':
+        dst_label_file = osp.join(root_path, f'val_label.{format}')
     elif split == 'test':
-        dst_label_file = osp.join(root_path, 'test_label.txt')
-    os.makedirs(dst_image_root, exist_ok=True)
+        dst_label_file = osp.join(root_path, f'test_label.{format}')
+    else:
+        raise NotImplementedError
+    mmcv.mkdir_or_exist(dst_image_root)
+    mmcv.mkdir_or_exist(ignore_image_root)
 
     lines = []
     for image_info in image_infos:
@@ -154,20 +205,27 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
 
         for anno in image_info['anno_info']:
             word = anno['word']
-            dst_img = crop_img(image, anno['bbox'])
+            word = word.strip('\u202a')  # Remove unicode control character
+            word = word.replace('»',
+                                '').replace('«',
+                                            '')  # Remove strikethrough flag
+            dst_img = crop_img(image, anno['bbox'], 0, 0)
             h, w, _ = dst_img.shape
-
-            # Skip invalid annotations
-            if min(dst_img.shape) == 0:
-                continue
-            # Skip vertical texts
-            if not preserve_vertical and h / w > 2:
-                continue
 
             dst_img_name = f'{src_img_root}_{index}.png'
             index += 1
-            dst_img_path = osp.join(dst_image_root, dst_img_name)
+            # Skip invalid and illegible annotations
+            if min(dst_img.shape) == 0 or '§' in word or '¿' in word or len(
+                    word) == 0:
+                continue
+            # Skip vertical texts
+            # (Do Not Filter For Val and Test Split)
+            if (not preserve_vertical and h / w > 2) and split == 'training':
+                dst_img_path = osp.join(ignore_image_root, dst_img_name)
+            else:
+                dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
+
             if format == 'txt':
                 lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
                              f'{word}')
@@ -188,19 +246,19 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description='Generate training and test set of FUNSD ')
-    parser.add_argument('root_path', help='Root dir path of FUNSD')
+        description='Generate training, val, and test set of NAF ')
+    parser.add_argument('root_path', help='Root dir path of NAF')
     parser.add_argument(
-        '--preserve_vertical',
+        '--preserve-vertical',
         help='Preserve samples containing vertical texts',
         action='store_true')
-    parser.add_argument(
-        '--nproc', default=1, type=int, help='Number of processes')
     parser.add_argument(
         '--format',
         default='jsonl',
         help='Use jsonl or string to format annotations',
         choices=['jsonl', 'txt'])
+    parser.add_argument(
+        '--nproc', default=1, type=int, help='Number of process')
     args = parser.parse_args()
     return args
 
@@ -208,13 +266,16 @@ def parse_args():
 def main():
     args = parse_args()
     root_path = args.root_path
-
-    for split in ['training', 'test']:
+    split_info = mmcv.load(
+        osp.join(root_path, 'annotations', 'train_valid_test_split.json'))
+    split_info['training'] = split_info.pop('train')
+    split_info['val'] = split_info.pop('valid')
+    for split in ['training', 'val', 'test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert FUNSD annotation'):
+        with mmcv.Timer(print_tmpl='It takes {}s to convert NAF annotation'):
             files = collect_files(
                 osp.join(root_path, 'imgs'),
-                osp.join(root_path, 'annotations', split))
+                osp.join(root_path, 'annotations'), split_info[split])
             image_infos = collect_annotations(files, nproc=args.nproc)
             generate_ann(root_path, split, image_infos, args.preserve_vertical,
                          args.format)
