@@ -59,10 +59,10 @@ jobs:
             python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch<< parameters.torch >>/index.html
             python -m pip install mmdet
             python -m pip install -r requirements.txt
+            python -m pip install pycocotools --no-cache-dir --force-reinstall --no-deps
       - run:
           name: Build and install
           command: |
-            python -m pip install --upgrade numpy
             python -m pip install -e .
       - run:
           name: Run unittests
