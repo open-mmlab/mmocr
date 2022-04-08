@@ -29,7 +29,6 @@ jobs:
       # https://circleci.com/developer/images/image/cimg/python
       python:
         type: string
-        default: "3.7.4"
       torch:
         type: string
       torchvision:
@@ -71,9 +70,9 @@ jobs:
             python -m coverage xml
             python -m coverage report -m
 
-  build_cu101:
+  build_cu102:
     machine:
-      image: ubuntu-1604-cuda-10.1:201909-23
+      image: ubuntu-1604-cuda-10.1:201909-23 # the actual version of cuda is 10.2
     resource_class: gpu.nvidia.small
     steps:
       - checkout
@@ -85,14 +84,14 @@ jobs:
       - run:
           name: Configure Python & pip
           command: |
-            pyenv global 3.7.0
+            pyenv global 3.8.0
             python -m pip install --upgrade pip
             python -m pip install wheel
       - run:
           name: Install PyTorch
           command: |
             python -V
-            python -m pip install torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+            python -m pip install torch==1.8.1+cu102 torchvision==0.9.1+cu102 -f https://download.pytorch.org/whl/torch_stable.html
       - run:
           name: Install mmocr dependencies
           # python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch${{matrix.torch_version}}/index.html
@@ -115,42 +114,23 @@ workflows:
     jobs:
       - lint
       - build_cpu:
-          name: build_cpu_th1.6
-          torch: 1.6.0
+          name: minimum_version_cpu
+          torch: 1.5.0
           torchvision: 0.7.0
+          python: "3.6.0"
           requires:
             - lint
       - build_cpu:
-          name: build_cpu_th1.7
-          torch: 1.7.0
-          torchvision: 0.8.1
-          requires:
-            - lint
-      - build_cpu:
-          name: build_cpu_th1.8_py3.9
-          torch: 1.8.0
-          torchvision: 0.9.0
-          python: "3.9.0"
-          requires:
-            - lint
-      - build_cpu:
-          name: build_cpu_th1.9_py3.8
-          torch: 1.9.0
+          name: maximum_version_cpu
+          torch: 1.11.0
           torchvision: 0.10.0
-          python: "3.8.0"
+          python: "3.10.0"
           requires:
-            - lint
-      - build_cpu:
-          name: build_cpu_th1.9_py3.9
-          torch: 1.9.0
-          torchvision: 0.10.0
-          python: "3.9.0"
+            - minimum_version_cpu
+      - hold:
+          type: approval
           requires:
-            - lint
-      - build_cu101:
+            - maximum_version_cpu
+      - build_cu102:
           requires:
-            - build_cpu_th1.6
-            - build_cpu_th1.7
-            - build_cpu_th1.8_py3.9
-            - build_cpu_th1.9_py3.8
-            - build_cpu_th1.9_py3.9
+            - hold
