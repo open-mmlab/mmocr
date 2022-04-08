@@ -66,6 +66,7 @@ jobs:
       - run:
           name: Run unittests
           command: |
+            python -m pip list
             python -m coverage run --branch --source mmocr -m pytest tests/
             python -m coverage xml
             python -m coverage report -m
@@ -124,7 +125,7 @@ workflows:
           name: maximum_version_cpu
           torch: 1.11.0
           torchvision: 0.12.0
-          python: "3.9.0"
+          python: "3.10.0"
           requires:
             - lint # minimum_version_cpu
       - hold:
