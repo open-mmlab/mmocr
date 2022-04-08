@@ -62,6 +62,7 @@ jobs:
       - run:
           name: Build and install
           command: |
+            python -m pip install --upgrade numpy
             python -m pip install -e .
       - run:
           name: Run unittests
