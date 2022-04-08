@@ -3,6 +3,7 @@ lanms-neo==1.0.2
 lmdb
 matplotlib
 numba>=0.45.1
+numpy==1.20.3
 opencv-python-headless<=4.5.4.60
 pyclipper
 pycocotools<=2.0.2
