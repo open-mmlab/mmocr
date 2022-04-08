@@ -1,4 +1,4 @@
 # These must be installed before building mmocr
-numpy
+numpy==1.20.3
 pyclipper
 torch>=1.1
