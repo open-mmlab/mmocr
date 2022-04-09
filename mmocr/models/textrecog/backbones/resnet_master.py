@@ -239,4 +239,4 @@ class ResNetMASTER(BaseModule):
         f.append(x)
         # (6, 40)
 
-        return f
+        return x

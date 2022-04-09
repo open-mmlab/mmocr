@@ -33,8 +33,8 @@ class Maxpool2d(nn.Module):
 class GCAModule(nn.Module):
     """GCAModule in MASTER
     Args:
-        inplanes: Channels of input tensor
-        ratio: Scale ratio of inplanes
+        in_channels: Channels of input tensor
+        ratio: Scale ratio of in_channels
         headers: Nums of attention head
         pooling_type: Spatial pooling type
         is_att_scale: Scale attention map or not
@@ -42,28 +42,29 @@ class GCAModule(nn.Module):
     """
 
     def __init__(self,
-                 inplanes,
+                 in_channels,
                  ratio,
                  headers,
                  pooling_type='att',
                  is_att_scale=False,
-                 fusion_type='channel_add'):
+                 fusion_type='channel_add',
+                 **kwargs):
         super(GCAModule, self).__init__()
 
         assert pooling_type in ['avg', 'att']
         assert fusion_type in ['channel_add', 'channel_mul', 'channel_concat']
 
-        # inplanes must be divided by headers evenly
-        assert inplanes % headers == 0 and inplanes >= 8
+        # in_channels must be divided by headers evenly
+        assert in_channels % headers == 0 and in_channels >= 8
 
         self.headers = headers
-        self.inplanes = inplanes
+        self.in_channels = in_channels
         self.ratio = ratio
-        self.planes = int(inplanes * ratio)
+        self.planes = int(in_channels * ratio)
         self.pooling_type = pooling_type
         self.fusion_type = fusion_type
         self.is_att_scale = is_att_scale
-        self.single_header_inplanes = int(inplanes / headers)
+        self.single_header_inplanes = int(in_channels / headers)
 
         if pooling_type == 'att':
             self.conv_mask = nn.Conv2d(
@@ -74,22 +75,22 @@ class GCAModule(nn.Module):
 
         if fusion_type == 'channel_add':
             self.channel_add_conv = nn.Sequential(
-                nn.Conv2d(self.inplanes, self.planes, kernel_size=1),
+                nn.Conv2d(self.in_channels, self.planes, kernel_size=1),
                 nn.LayerNorm([self.planes, 1, 1]), nn.ReLU(inplace=True),
-                nn.Conv2d(self.planes, self.inplanes, kernel_size=1))
+                nn.Conv2d(self.planes, self.in_channels, kernel_size=1))
         elif fusion_type == 'channel_concat':
             self.channel_concat_conv = nn.Sequential(
-                nn.Conv2d(self.inplanes, self.planes, kernel_size=1),
+                nn.Conv2d(self.in_channels, self.planes, kernel_size=1),
                 nn.LayerNorm([self.planes, 1, 1]), nn.ReLU(inplace=True),
-                nn.Conv2d(self.planes, self.inplanes, kernel_size=1))
+                nn.Conv2d(self.planes, self.in_channels, kernel_size=1))
             # for concat
             self.cat_conv = nn.Conv2d(
-                2 * self.inplanes, self.inplanes, kernel_size=1)
+                2 * self.in_channels, self.in_channels, kernel_size=1)
         elif fusion_type == 'channel_mul':
             self.channel_mul_conv = nn.Sequential(
-                nn.Conv2d(self.inplanes, self.planes, kernel_size=1),
+                nn.Conv2d(self.in_channels, self.planes, kernel_size=1),
                 nn.LayerNorm([self.planes, 1, 1]), nn.ReLU(inplace=True),
-                nn.Conv2d(self.planes, self.inplanes, kernel_size=1))
+                nn.Conv2d(self.planes, self.in_channels, kernel_size=1))
 
     def spatial_pool(self, x):
         batch, channel, height, width = x.size()
@@ -100,7 +101,6 @@ class GCAModule(nn.Module):
             input_x = x
 
             # [N*headers, C', H * W] C = headers * C'
-            # input_x = input_x.view(batch, channel, height * width)
             input_x = input_x.view(batch * self.headers,
                                    self.single_header_inplanes, height * width)
 
@@ -164,7 +164,7 @@ class GCAModule(nn.Module):
                              channel_concat_term.expand(-1, -1, H, W)],
                             dim=1)
             out = self.cat_conv(out)
-            out = nn.functional.layer_norm(out, [self.inplanes, H, W])
+            out = nn.functional.layer_norm(out, [self.in_channels, H, W])
             out = nn.functional.relu(out)
 
         return out
