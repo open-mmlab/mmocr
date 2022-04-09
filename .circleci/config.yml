@@ -1,6 +1,14 @@
 version: 2.1
 
 jobs:
+  test:
+    - image: cimg/python:3.7.4
+  steps:
+    - checkout
+    - run:
+        name: Test Prams
+        command: |
+          echo << pipeline.git.branch >>
   lint:
     docker:
       - image: cimg/python:3.7.4
@@ -87,7 +95,7 @@ jobs:
       - run:
           name: Configure Python & pip
           command: |
-            pyenv global 3.8.0
+            pyenv global 3.7.0
             python -m pip install --upgrade pip
             python -m pip install wheel
       - run:
@@ -115,14 +123,15 @@ jobs:
 workflows:
   unit_tests:
     jobs:
-      - lint
-      - build_cpu:
-          name: minimum_version_cpu
-          torch: 1.6.0
-          torchvision: 0.7.0
-          python: "3.6.9"  # The lowest python 3.6.x version available on CircleCI images
-          requires:
-            - lint
+      - test
+      # - lint
+      # - build_cpu:
+      #     name: minimum_version_cpu
+      #     torch: 1.6.0
+      #     torchvision: 0.7.0
+      #     python: "3.6.9"  # The lowest python 3.6.x version available on CircleCI images
+      #     requires:
+      #       - lint
       # - build_cpu:
       #     name: maximum_version_cpu
       #     torch: 1.11.0
@@ -130,10 +139,10 @@ workflows:
       #     python: "3.9.0"
           # requires:
           #   - minimum_version_cpu
-      - hold:
-          type: approval
-          requires:
-            - minimum_version_cpu #maximum_version_cpu
-      - build_cu102:
-          requires:
-            - hold
+      # - hold:
+      #     type: approval
+      #     requires:
+      #       - minimum_version_cpu #maximum_version_cpu
+      # - build_cu102:
+      #     requires:
+      #       - hold
