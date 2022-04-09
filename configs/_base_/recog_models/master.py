@@ -1,8 +1,5 @@
 label_convertor = dict(
-    type='AttnConvertor',
-    dict_type='DICT90',
-    with_unknown=True
-)
+    type='AttnConvertor', dict_type='DICT90', with_unknown=True)
 
 model = dict(
     type='MASTER',
@@ -24,9 +21,13 @@ model = dict(
                 stages=(False, False, True, False),
                 position='before_stage'),
             dict(
-                cfg=dict(type='GCAModule', ratio=0.0625, headers=1,
-                         pooling_type='att', is_att_scale=False,
-                         fusion_type='channel_add'),
+                cfg=dict(
+                    type='GCAModule',
+                    ratio=0.0625,
+                    headers=1,
+                    pooling_type='att',
+                    is_att_scale=False,
+                    fusion_type='channel_add'),
                 stages=[True, True, True, True],
                 position='after_stage'),
             dict(
@@ -41,9 +42,9 @@ model = dict(
                 position='after_stage')
         ],
         init_cfg=[
-                     dict(type='Kaiming', layer='Conv2d'),
-                     dict(type='Constant', val=1, layer='BatchNorm2d'),
-                 ]),
+            dict(type='Kaiming', layer='Conv2d'),
+            dict(type='Constant', val=1, layer='BatchNorm2d'),
+        ]),
     encoder=None,
     decoder=dict(
         type='MasterDecoder',
@@ -55,7 +56,7 @@ model = dict(
         d_inner=2048,
         n_layers=3,
         feat_pe_dropout=0.2,
-        feat_size=6*40),
+        feat_size=6 * 40),
     loss=dict(type='MASTERTFLoss', reduction='mean'),
     label_convertor=label_convertor,
     max_seq_len=30)

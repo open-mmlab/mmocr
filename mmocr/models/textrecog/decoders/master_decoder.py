@@ -5,13 +5,12 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from mmcv.cnn.bricks.transformer import BaseTransformerLayer
+from mmcv.runner import ModuleList
 
 from mmocr.models.builder import DECODERS
 from mmocr.models.common.modules import PositionalEncoding
 from .base_decoder import BaseDecoder
-
-from mmcv.cnn.bricks.transformer import BaseTransformerLayer
-from mmcv.runner import ModuleList
 
 
 def clones(module, N):
@@ -61,18 +60,12 @@ class MasterDecoder(BaseDecoder):
         n_layers=3,
         max_seq_len=30,
         feat_pe_dropout=0.2,
-        feat_size=6*40,
+        feat_size=6 * 40,
     ):
         super(MasterDecoder, self).__init__()
 
-        operation_order = ('norm', 'self_attn', 'norm', 'cross_attn', 'norm', 'ffn')
-
-        """
-                    attn_masks (List[Tensor] | None): 2D Tensor used in
-                calculation of corresponding attention. The length of
-                it should equal to the number of `attention` in
-                `operation_order`. Default: None.
-        """
+        operation_order = ('norm', 'self_attn', 'norm', 'cross_attn', 'norm',
+                           'ffn')
         decoder_layer = BaseTransformerLayer(
             operation_order=operation_order,
             attn_cfgs=dict(
@@ -105,7 +98,7 @@ class MasterDecoder(BaseDecoder):
 
         self.embedding = Embeddings(d_model=d_model, vocab=num_classes)
         self.positional_encoding = PositionalEncoding(
-            d_hid=d_model, n_position=self.max_seq_len+1)
+            d_hid=d_model, n_position=self.max_seq_len + 1)
         self.feat_positional_encoding = PositionalEncoding(
             d_hid=d_model, n_position=self.feat_size, dropout=feat_pe_dropout)
         self.norm = nn.LayerNorm(d_model)
@@ -127,7 +120,7 @@ class MasterDecoder(BaseDecoder):
 
         # inverse for mmcv's BaseTransformerLayer
         tril_mask = tgt_mask.clone()
-        tgt_mask = tgt_mask.float().masked_fill_(tril_mask==0, -1e9)
+        tgt_mask = tgt_mask.float().masked_fill_(tril_mask == 0, -1e9)
         tgt_mask = tgt_mask.masked_fill_(tril_mask, 0)
         tgt_mask = tgt_mask.repeat(1, self.n_head, 1, 1)
         tgt_mask = tgt_mask.view(-1, tgt_len, tgt_len)
@@ -139,10 +132,7 @@ class MasterDecoder(BaseDecoder):
         attn_masks = [tgt_mask, src_mask]
         for i, layer in enumerate(self.decoder_layers):
             x = layer(
-                query=x,
-                key=feature,
-                value=feature,
-                attn_masks=attn_masks)
+                query=x, key=feature, value=feature, attn_masks=attn_masks)
         x = self.norm(x)
         return self.cls(x)
 

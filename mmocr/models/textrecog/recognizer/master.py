@@ -18,6 +18,15 @@ class MASTER(EncodeDecodeRecognizer):
                  max_seq_len=40,
                  pretrained=None,
                  init_cfg=None):
-        super(MASTER, self).__init__(preprocessor, backbone, encoder, decoder,
-                                     loss, label_convertor, train_cfg,
-                                     test_cfg, max_seq_len, pretrained, init_cfg=init_cfg)
+        super(MASTER, self).__init__(
+            preprocessor,
+            backbone,
+            encoder,
+            decoder,
+            loss,
+            label_convertor,
+            train_cfg,
+            test_cfg,
+            max_seq_len,
+            pretrained,
+            init_cfg=init_cfg)

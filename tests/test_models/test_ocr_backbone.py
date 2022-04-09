@@ -136,7 +136,7 @@ def test_resnet():
                 stages=(False, False, True, False),
                 position='before_stage'),
             dict(
-                cfg=dict(type='GCAModule', kernel_size=3, stride=1, padding=1),
+                cfg=dict(type='GCAModule', ratio=0.0625, headers=1),
                 stages=[True, True, True, True],
                 position='after_stage'),
             dict(

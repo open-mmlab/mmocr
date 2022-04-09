@@ -136,12 +136,9 @@ class GCAModule(nn.Module):
 
         return context
 
-
-
     def forward(self, x):
         # [N, C, 1, 1]
         context = self.spatial_pool(x)
-
         out = x
 
         if self.fusion_type == 'channel_mul':

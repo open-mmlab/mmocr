@@ -221,8 +221,8 @@ class FancyPCA:
     """Implementation of PCA based image augmentation, proposed in the paper
     ``Imagenet Classification With Deep Convolutional Neural Networks``.
 
-    It alters the intensities of RGB values along the principal
-    components of ImageNet dataset.
+    It alters the intensities of RGB values along the principal components of
+    ImageNet dataset.
     """
 
     def __init__(self, eig_vec=None, eig_val=None):

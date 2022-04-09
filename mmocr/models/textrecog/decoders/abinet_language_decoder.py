@@ -135,8 +135,8 @@ class ABILanguageDecoder(BaseDecoder):
     def _get_length(self, logit, dim=-1):
         """Greedy decoder to obtain length from logit.
 
-        Returns the first location of padding index or the length of the
-        entire tensor otherwise.
+        Returns the first location of padding index or the length of the entire
+        tensor otherwise.
         """
         # out as a boolean vector indicating the existence of end token(s)
         out = (logit.argmax(dim=-1) == self.pad_idx)
