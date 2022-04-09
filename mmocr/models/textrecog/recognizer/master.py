@@ -1,9 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import torch.nn as nn
-
 from mmocr.models.builder import DETECTORS
-from mmocr.models.common.modules import PositionalEncoding
-
 from .encode_decode_recognizer import EncodeDecodeRecognizer
 
 

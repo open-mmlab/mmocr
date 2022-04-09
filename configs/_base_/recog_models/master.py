@@ -1,6 +1,5 @@
 label_convertor = dict(
     type='AttnConvertor',
-    #type='MasterConvertor',
     dict_type='DICT90',
     with_unknown=True
 )
