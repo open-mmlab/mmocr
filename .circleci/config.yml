@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  pr:
+  check_pr:
     docker:
       - image: cimg/python:3.7.4
     steps:
@@ -10,7 +10,7 @@ jobs:
           name: PR
           command: |
             echo "this is a pr"
-  merge:
+  check_merge:
     docker:
       - image: cimg/python:3.7.4
     steps:
@@ -134,7 +134,7 @@ jobs:
 workflows:
   pr_stage_test:
     jobs:
-      - pr_test:
+      - check_pr:
           name: check_pr
           filters:
             branches:
@@ -167,7 +167,7 @@ workflows:
             - hold
   merge_stage_test:
     jobs:
-      - merge_test:
+      - check_merge:
           name: check_merge
           filters:
             branches:
