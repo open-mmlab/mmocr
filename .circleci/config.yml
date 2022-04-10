@@ -1,10 +1,5 @@
 version: 2.1
 
-parameters:
-  pull_request:
-    type: boolean
-    default: false
-
 jobs:
   pr:
     docker:
@@ -138,11 +133,19 @@ jobs:
 
 workflows:
   pr:
-    when: << pipeline.parameters.pull_request >>
+    triggers:
+      filters:
+        branches:
+          only:
+            - pull
     jobs:
       - pr
   merge:
-    unless: << pipeline.parameters.pull_request >>
+    triggers:
+      filters:
+        branches:
+          only:
+            - main
     jobs:
       - merge
   # unit_tests:
