@@ -132,22 +132,20 @@ jobs:
             python -m pytest tests/
 
 workflows:
-  pr:
-    triggers:
-      filters:
-        branches:
-          only:
-          - pull
+  pr_stage_test:
     jobs:
-      - pr
-  merge:
-    triggers:
-      filters:
-        branches:
-          only:
-          - main
+      - pr:
+        filters:
+          branches:
+            only:
+              - /pull.*/
+  merge_stage_test:
     jobs:
-      - merge
+      - merge:
+        filters:
+          branches:
+            only:
+              - main
   # unit_tests:
   #   jobs:
   #     - test
