@@ -175,5 +175,3 @@ workflows:
                 - main
       - build_cu102:
           name: minimum_version_gpu
-          requires:
-            - hold
