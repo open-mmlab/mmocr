@@ -91,6 +91,13 @@ jobs:
             python -m coverage report -m
 
   build_cu102:
+    parameters:
+      python:
+        type: string
+      torch:
+        type: string
+      torchvision:
+        type: string
     machine:
       image: ubuntu-1604-cuda-10.2:202012-01
     resource_class: gpu.nvidia.small
@@ -105,19 +112,19 @@ jobs:
       - run:
           name: Configure Python & pip
           command: |
-            pyenv global 3.8.6
+            pyenv global << parameters.python >>
             python -m pip install --upgrade pip
             python -m pip install wheel
       - run:
           name: Install PyTorch
           command: |
             python -V
-            python -m pip install torch==1.8.1+cu102 torchvision==0.9.1+cu102 -f https://download.pytorch.org/whl/torch_stable.html
+            python -m pip install torch==<< parameters.torch >>+cu102 torchvision==<< parameters.torchvision >>+cu102 -f https://download.pytorch.org/whl/torch_stable.html
       - run:
           name: Install mmocr dependencies
           # python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch${{matrix.torch_version}}/index.html
           command: |
-            python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/torch1.8.1/index.html
+            python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/torch<< parameters.torch >>/index.html
             python -m pip install mmdet
             python -m pip install -r requirements.txt
       - run:
@@ -162,6 +169,9 @@ workflows:
       #       - maximum_version_cpu
       - build_cu102:
           name: mainstream_version_gpu
+          torch: 1.8.1
+          torchvision: 0.7.0
+          python: 3.8.6
           requires:
             - check_pr #hold
   merge_stage_test:
@@ -174,5 +184,8 @@ workflows:
                 - main
       - build_cu102:
           name: minimum_version_gpu
-          requires:
-            - check_merge
+          torch: 1.6.0
+          torchvision: 0.7.0
+          python: 3.6.12
+          # requires:
+          #   - check_merge
