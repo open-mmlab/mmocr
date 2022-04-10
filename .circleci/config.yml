@@ -137,7 +137,7 @@ workflows:
       filters:
         branches:
           only:
-            - pull
+          - pull
     jobs:
       - pr
   merge:
@@ -145,7 +145,7 @@ workflows:
       filters:
         branches:
           only:
-            - main
+          - main
     jobs:
       - merge
   # unit_tests:
