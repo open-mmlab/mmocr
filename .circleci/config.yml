@@ -92,6 +92,8 @@ jobs:
 
   build_cu102:
     parameters:
+      # The python version must match available image tags in
+      # https://circleci.com/developer/images/image/cimg/python
       python:
         type: string
       torch:
@@ -170,22 +172,19 @@ workflows:
       - build_cu102:
           name: mainstream_version_gpu
           torch: 1.8.1
-          torchvision: 0.7.0
+          torchvision: 0.9.1
           python: 3.8.6
           requires:
             - check_pr #hold
-  merge_stage_test:
-    jobs:
-      - check_merge:
-          name: check_merge
-          filters:
-            branches:
-              only:
-                - main
-      - build_cu102:
-          name: minimum_version_gpu
-          torch: 1.6.0
-          torchvision: 0.7.0
-          python: 3.6.12
-          # requires:
-          #   - check_merge
+  # merge_stage_test:
+  #   jobs:
+  #     - check_merge:
+  #         name: check_merge
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
+  #     - build_cu102:
+  #         name: minimum_version_gpu
+  #         requires:
+  #           - check_merge
