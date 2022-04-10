@@ -1,22 +1,30 @@
 version: 2.1
 
+parameters:
+  pull_request:
+    type: boolean
+    default: false
+
 jobs:
-  test:
+  pr:
     docker:
       - image: cimg/python:3.7.4
     steps:
       - checkout
       - run:
-          name: Test Prams
+          name: PR
           command: |
-            echo << pipeline.git.branch >>
-            echo << pipeline.git.tag >>
-            echo << pipeline.schedule.name >>
-            echo << pipeline.schedule.id >>
-            echo << pipeline.number >>
-            if [ -z "$CIRCLE_PULL_REQUEST" ]; then
-              echo "PR"
-            fi
+            echo "this is a pr"
+  merge:
+    docker:
+      - image: cimg/python:3.7.4
+    steps:
+      - checkout
+      - run:
+          name: Merge
+          command: |
+            echo "this is a merge"
+
   lint:
     docker:
       - image: cimg/python:3.7.4
@@ -129,9 +137,17 @@ jobs:
             python -m pytest tests/
 
 workflows:
-  unit_tests:
+  pr:
+    when: << pipeline.parameters.pull_request >>
     jobs:
-      - test
+      - pr
+  merge:
+    unless: << pipeline.parameters.pull_request >>
+    jobs:
+      - merge
+  # unit_tests:
+  #   jobs:
+  #     - test
       # - lint
       # - build_cpu:
       #     name: minimum_version_cpu
