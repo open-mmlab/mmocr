@@ -9,7 +9,7 @@ jobs:
       - run:
           name: PR
           command: |
-            echo "this is a pr"
+            echo "This is a PR"
   check_merge:
     docker:
       - image: cimg/python:3.7.4
@@ -18,8 +18,7 @@ jobs:
       - run:
           name: Merge
           command: |
-            echo "this is a merge"
-
+            echo "This is a Merge"
   lint:
     docker:
       - image: cimg/python:3.7.4
@@ -175,3 +174,5 @@ workflows:
                 - main
       - build_cu102:
           name: minimum_version_gpu
+          requires:
+            - check_merge
