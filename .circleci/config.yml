@@ -135,17 +135,17 @@ workflows:
   pr_stage_test:
     jobs:
       - pr:
-        filters:
-          branches:
-            only:
-              - /pull.*/
+          filters:
+            branches:
+              only:
+                - /pull.*/
   merge_stage_test:
     jobs:
       - merge:
-        filters:
-          branches:
-            only:
-              - main
+          filters:
+            branches:
+              only:
+                - main
   # unit_tests:
   #   jobs:
   #     - test
