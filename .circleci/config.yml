@@ -101,7 +101,6 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt-get install -y git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libgl1-mesa-glx
-            nvcc -V
             pyenv versions
       - run:
           name: Configure Python & pip
@@ -114,6 +113,7 @@ jobs:
           command: |
             python -V
             python -m pip install torch==1.8.1+cu102 torchvision==0.9.1+cu102 -f https://download.pytorch.org/whl/torch_stable.html
+            nvcc -V
       - run:
           name: Install mmocr dependencies
           # python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch${{matrix.torch_version}}/index.html
