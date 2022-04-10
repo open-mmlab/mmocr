@@ -176,15 +176,18 @@ workflows:
           python: 3.8.6
           requires:
             - check_pr #hold
-  # merge_stage_test:
-  #   jobs:
-  #     - check_merge:
-  #         name: check_merge
-  #         filters:
-  #           branches:
-  #             only:
-  #               - main
-  #     - build_cu102:
-  #         name: minimum_version_gpu
-  #         requires:
-  #           - check_merge
+  merge_stage_test:
+    jobs:
+      - check_merge:
+          name: check_merge
+          filters:
+            branches:
+              only:
+                - main
+      - build_cu102:
+          name: minimum_version_gpu
+          torch: 1.6.0
+          torchvision: 0.7.0
+          python: 3.7.0
+          # requires:
+          #   - check_merge
