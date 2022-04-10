@@ -169,13 +169,13 @@ workflows:
       #     type: approval
       #     requires:
       #       - maximum_version_cpu
-      - build_cu102:
-          name: mainstream_version_gpu
-          torch: 1.8.1
-          torchvision: 0.9.1
-          python: 3.8.6
-          requires:
-            - check_pr #hold
+      # - build_cu102:
+      #     name: mainstream_version_gpu
+      #     torch: 1.8.1
+      #     torchvision: 0.9.1
+      #     python: 3.8.6
+      #     requires:
+      #       - check_pr #hold
   merge_stage_test:
     jobs:
       - check_merge:
@@ -188,6 +188,6 @@ workflows:
           name: minimum_version_gpu
           torch: 1.6.0
           torchvision: 0.7.0
-          python: 3.7.0
+          python: 3.6.12
           # requires:
           #   - check_merge
