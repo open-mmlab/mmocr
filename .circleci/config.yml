@@ -90,7 +90,7 @@ jobs:
             python -m coverage xml
             python -m coverage report -m
 
-  build_cu102:
+  build_cuda:
     parameters:
       # The python version must match available image tags in
       # https://circleci.com/developer/images/image/cimg/python
@@ -100,6 +100,9 @@ jobs:
         type: string
       torchvision:
         type: string
+      cuda:
+        type: string
+        default: cu102
     machine:
       image: ubuntu-1604-cuda-10.2:202012-01
     resource_class: gpu.nvidia.small
@@ -121,12 +124,12 @@ jobs:
           name: Install PyTorch
           command: |
             python -V
-            python -m pip install torch==<< parameters.torch >>+cu102 torchvision==<< parameters.torchvision >>+cu102 -f https://download.pytorch.org/whl/torch_stable.html
+            python -m pip install torch==<< parameters.torch >>+<< parameters.cuda >> torchvision==<< parameters.torchvision >>+<< parameters.cuda >> -f https://download.pytorch.org/whl/torch_stable.html
       - run:
           name: Install mmocr dependencies
           # python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch${{matrix.torch_version}}/index.html
           command: |
-            python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/torch<< parameters.torch >>/index.html
+            python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.cuda >>/torch<< parameters.torch >>/index.html
             python -m pip install mmdet
             python -m pip install -r requirements.txt
       - run:
@@ -169,7 +172,7 @@ workflows:
       #     type: approval
       #     requires:
       #       - maximum_version_cpu
-      # - build_cu102:
+      # - build_cuda:
       #     name: mainstream_version_gpu
       #     torch: 1.8.1
       #     torchvision: 0.9.1
@@ -184,10 +187,11 @@ workflows:
             branches:
               only:
                 - main
-      - build_cu102:
+      - build_cuda:
           name: minimum_version_gpu
           torch: 1.6.0
           torchvision: 0.7.0
           python: 3.6.12
+          cuda: cu101
           # requires:
           #   - check_merge
