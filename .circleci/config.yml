@@ -134,40 +134,46 @@ jobs:
 workflows:
   pr_stage_test:
     jobs:
-      - pr:
+      - pr_test:
+          name: check_pr
           filters:
             branches:
               only:
                 - /pull.*/
+      - lint:
+          requires:
+            - check_pr
+      - build_cpu:
+          name: minimum_version_cpu
+          torch: 1.6.0
+          torchvision: 0.7.0
+          python: "3.6.9"  # The lowest python 3.6.x version available on CircleCI images
+          requires:
+            - lint
+      - build_cpu:
+          name: maximum_version_cpu
+          torch: 1.9.0
+          torchvision: 0.10.0
+          python: "3.9.0"
+          requires:
+            - minimum_version_cpu
+      - hold:
+          type: approval
+          requires:
+            - maximum_version_cpu
+      - build_cu102:
+          name: mainstream_version_gpu
+          requires:
+            - hold
   merge_stage_test:
     jobs:
-      - merge:
+      - merge_test:
+          name: check_merge
           filters:
             branches:
               only:
                 - main
-  # unit_tests:
-  #   jobs:
-  #     - test
-      # - lint
-      # - build_cpu:
-      #     name: minimum_version_cpu
-      #     torch: 1.6.0
-      #     torchvision: 0.7.0
-      #     python: "3.6.9"  # The lowest python 3.6.x version available on CircleCI images
-      #     requires:
-      #       - lint
-      # - build_cpu:
-      #     name: maximum_version_cpu
-      #     torch: 1.11.0
-      #     torchvision: 0.12.0
-      #     python: "3.9.0"
-          # requires:
-          #   - minimum_version_cpu
-      # - hold:
-      #     type: approval
-      #     requires:
-      #       - minimum_version_cpu #maximum_version_cpu
-      # - build_cu102:
-      #     requires:
-      #       - hold
+      - build_cu102:
+          name: minimum_version_gpu
+          requires:
+            - hold
