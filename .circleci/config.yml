@@ -2,13 +2,21 @@ version: 2.1
 
 jobs:
   test:
-    - image: cimg/python:3.7.4
-  steps:
-    - checkout
-    - run:
-        name: Test Prams
-        command: |
-          echo << pipeline.git.branch >>
+    docker:
+      - image: cimg/python:3.7.4
+    steps:
+      - checkout
+      - run:
+          name: Test Prams
+          command: |
+            echo << pipeline.git.branch >>
+            echo << pipeline.git.tag >>
+            echo << pipeline.schedule.name >>
+            echo << pipeline.schedule.id >>
+            echo << pipeline.number >>
+            if [ -z "$CIRCLE_PULL_REQUEST" ]; then
+              echo "PR"
+            fi
   lint:
     docker:
       - image: cimg/python:3.7.4
