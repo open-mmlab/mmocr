@@ -106,7 +106,6 @@ jobs:
             python -m pip install torch==<< parameters.torch >>+<< parameters.cuda >> torchvision==<< parameters.torchvision >>+<< parameters.cuda >> -f https://download.pytorch.org/whl/torch_stable.html
       - run:
           name: Install mmocr dependencies
-          # python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch${{matrix.torch_version}}/index.html
           command: |
             python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.cuda >>/torch<< parameters.torch >>/index.html
             python -m pip install mmdet
