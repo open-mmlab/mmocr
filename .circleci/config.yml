@@ -1,24 +1,6 @@
 version: 2.1
 
 jobs:
-  check_pr:
-    docker:
-      - image: cimg/python:3.7.4
-    steps:
-      - checkout
-      - run:
-          name: PR
-          command: |
-            echo "This is a PR"
-  check_merge:
-    docker:
-      - image: cimg/python:3.7.4
-    steps:
-      - checkout
-      - run:
-          name: Merge
-          command: |
-            echo "This is a Merge"
   lint:
     docker:
       - image: cimg/python:3.7.4
@@ -77,8 +59,6 @@ jobs:
             python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch<< parameters.torch >>/index.html
             python -m pip install mmdet
             python -m pip install -r requirements.txt
-            python -m pip uninstall pycocotools -y
-            python -m pip install pycocotools --no-binary pycocotools
       - run:
           name: Build and install
           command: |
@@ -145,15 +125,12 @@ jobs:
 workflows:
   pr_stage_test:
     jobs:
-      - check_pr:
-          name: check_pr
-          filters:
-            branches:
-              only:
-                - /pull.*/
       - lint:
-          requires:
-            - check_pr
+        name: lint
+        filters:
+          branches:
+            only:
+              - /pull.*/
       - build_cpu:
           name: minimum_version_cpu
           torch: 1.6.0
@@ -181,17 +158,13 @@ workflows:
             - hold
   merge_stage_test:
     jobs:
-      - check_merge:
-          name: check_merge
-          filters:
-            branches:
-              only:
-                - main
       - build_cuda:
           name: minimum_version_gpu
           torch: 1.6.0
           torchvision: 0.7.0
           python: 3.6.12
           cuda: cu101
-          requires:
-            - check_merge
+          filters:
+            branches:
+              only:
+                - main
