@@ -288,8 +288,9 @@ jobs:
       - name: Install PyTorch
         run: pip install torch==${{matrix.torch}} torchvision==${{matrix.torchvision}} --no-cache-dir
       - name: Install mmocr dependencies
+      # -full -f https://download.openmmlab.com/mmcv/dist/cpu/torch1.8/index.html --only-binary mmcv-full
         run: |
-          python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch1.8/index.html --only-binary mmcv-full
+          python -m pip install mmcv
           python -m pip install mmdet
           python -m pip install -r requirements.txt
       - name: Build and install
