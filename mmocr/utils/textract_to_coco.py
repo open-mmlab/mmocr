@@ -1,8 +1,3 @@
-from email.mime import image
-from nuocr import batch_ocr
-import glob
-from tqdm import tqdm
-import imagesize
 import subprocess
 import sys
 
@@ -10,6 +5,14 @@ def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
 install('imagesize')
+install('tqdm')
+
+from email.mime import image
+from nuocr import batch_ocr
+import glob
+from tqdm import tqdm
+import imagesize
+
 DEFAULT_CATEGORY = 1
 
 
