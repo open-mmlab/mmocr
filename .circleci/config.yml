@@ -7,12 +7,12 @@ jobs:
     steps:
       - checkout
       - run:
-        command: |
-          echo << pipeline.git.branch >>
-          echo << pipeline.id >>
-          echo << pipeline.number >>
-          echo << pipeline.schedule.name >>
-          echo << pipeline.schedule.id >>
+          command: |
+            echo << pipeline.git.branch >>
+            echo << pipeline.id >>
+            echo << pipeline.number >>
+            echo << pipeline.schedule.name >>
+            echo << pipeline.schedule.id >>
   lint:
     docker:
       - image: cimg/python:3.7.4
