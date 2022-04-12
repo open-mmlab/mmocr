@@ -1,18 +1,6 @@
 version: 2.1
 
 jobs:
-  test:
-    docker:
-      - image: cimg/python:3.7.4
-    steps:
-      - checkout
-      - run:
-          command: |
-            echo << pipeline.git.branch >>
-            echo << pipeline.id >>
-            echo << pipeline.number >>
-            echo << pipeline.schedule.name >>
-            echo << pipeline.schedule.id >>
   lint:
     docker:
       - image: cimg/python:3.7.4
@@ -135,13 +123,13 @@ jobs:
 workflows:
   pr_stage_test:
     jobs:
-      - test
-  #     - lint:
-  #         name: lint
-  #         filters:
-  #           branches:
-  #             only:
-  #               - /pull.*/
+      - lint:
+          name: lint
+          filters:
+            branches:
+              only:
+                - /pull.*/
+                - << pipeline.git.branch >>
   #     - build_cpu:
   #         name: minimum_version_cpu
   #         torch: 1.6.0
