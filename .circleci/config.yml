@@ -129,7 +129,6 @@ workflows:
             branches:
               only:
                 - /pull.*/
-                - << pipeline.git.branch >>
       - build_cpu:
           name: minimum_version_cpu
           torch: 1.6.0
