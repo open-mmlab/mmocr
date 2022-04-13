@@ -1,15 +1,15 @@
-name: build
+name: build_push
 
 on:
-  push:
+  pull_request:
     paths-ignore:
       - 'README.md'
       - 'README_zh-CN.md'
       - 'docs/**'
       - 'examples/**'
       - '.dev_scripts/**'
-    branches:
-      - main
+    # branches:
+    #   - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
