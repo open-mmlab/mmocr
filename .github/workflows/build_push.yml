@@ -99,7 +99,7 @@ jobs:
           coverage run --branch --source mmocr -m pytest tests/
           coverage xml
           coverage report -m
-            # Only upload coverage report for python3.7 && pytorch1.5
+      # Only upload coverage report for python3.7 && pytorch1.5
       - name: Upload coverage to Codecov
         if: ${{matrix.torch == '1.8.1' && matrix.python-version == '3.7'}}
         uses: codecov/codecov-action@v1.0.14
