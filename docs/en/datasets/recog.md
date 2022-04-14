@@ -236,6 +236,10 @@ Please make sure you're using the right annotation to train the model by checkin
   cd /path/to/mmocr/data/mixture
 
   ln -s /path/to/Syn90k Syn90k
+
+  # Convert 'txt' format annos to 'lmdb' (optional)
+  cd /path/to/mmocr
+  python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
   ```
 
 - After running the above codes, the directory structure
@@ -245,7 +249,7 @@ should be as follows:
   ├── Syn90k
   │   ├── shuffle_labels.txt
   │   ├── label.txt
-  │   ├── label.lmdb
+  │   ├── label.lmdb (optional)
   │   └── mnt
   ```
 
@@ -277,12 +281,16 @@ Please make sure you're using the right annotation to train the model by checkin
   ln -s /path/to/SynthText SynthText
   ```
 
-- Step4:Generate cropped images and labels:
+- Step4: Generate cropped images and labels:
 
   ```bash
   cd /path/to/mmocr
 
   python tools/data/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat data/mixture/SynthText/ data/mixture/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
+
+  # Convert 'txt' format annos to 'lmdb' (optional)
+  cd /path/to/mmocr
+  python tools/data/utils/txt2lmdb.py -i data/mixture/SynthText/label.txt -o data/mixture/SynthText/label.lmdb
   ```
 
 - After running the above codes, the directory structure
@@ -294,7 +302,7 @@ should be as follows:
   │   ├── shuffle_labels.txt
   │   ├── instances_train.txt
   │   ├── label.txt
-  │   ├── label.lmdb
+  │   ├── label.lmdb (optional)
   │   └── synthtext
   ```
 
@@ -317,6 +325,10 @@ should be as follows:
   cd /path/to/mmocr/data/mixture
 
   ln -s /path/to/SynthAdd SynthAdd
+
+  # Convert 'txt' format annos to 'lmdb' (optional)
+  cd /path/to/mmocr
+  python tools/data/utils/txt2lmdb.py -i data/mixture/SynthAdd/label.txt -o data/mixture/SynthAdd/label.lmdb
   ```
 
 - After running the above codes, the directory structure
@@ -325,12 +337,12 @@ should be as follows:
   ```text
   ├── SynthAdd
   │   ├── label.txt
-  │   ├── label.lmdb
+  │   ├── label.lmdb (optional)
   │   └── SynthText_Add
   ```
 
 :::{tip}
-To convert label file with `txt` format to `lmdb` format,
+To convert label file from `txt` format to `lmdb` format,
 
 ```bash
 python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>

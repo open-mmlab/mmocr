@@ -502,7 +502,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │── lv
   │   ├── imgs
   │   ├── instances_test.json
-  │   └── instances_training.json
+  │   ├── instances_training.json
   │   └── instances_val.json
   ```
 
