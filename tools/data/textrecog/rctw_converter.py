@@ -146,7 +146,7 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
 
     Args:
         root_path (str): The root path of the dataset
-        split (str): The split of dataset. Namely: training or test
+        split (str): The split of dataset. Namely: training or val
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
