@@ -30,12 +30,18 @@ def train_detector(model,
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
     # step 1: give default values and override (if exist) from cfg.data
-    default_loader_cfg = dict(
-        num_gpus=len(cfg.gpu_ids),
-        dist=distributed,
-        seed=cfg.get('seed'),
-        drop_last=False,
-        persistent_workers=False)
+    default_loader_cfg = {
+        **dict(
+            num_gpus=len(cfg.gpu_ids),
+            dist=distributed,
+            seed=cfg.get('seed'),
+            drop_last=False,
+            persistent_workers=False),
+        **({} if torch.__version__ != 'parrots' else dict(
+               prefetch_num=2,
+               pin_memory=False,
+           )),
+    }
     # update overall dataloader(for train, val and test) setting
     default_loader_cfg.update({
         k: v
@@ -44,16 +50,9 @@ def train_detector(model,
             'test_dataloader'
         ]
     })
-    train_loader_cfg = {
-        **default_loader_cfg,
-        **({} if torch.__version__ != 'parrots' else dict(
-               prefetch_num=2,
-               pin_memory=False,
-           )),
-    }
 
     # step 2: cfg.data.train_dataloader has highest priority
-    train_loader_cfg = dict(train_loader_cfg,
+    train_loader_cfg = dict(default_loader_cfg,
                             **cfg.data.get('train_dataloader', {}))
 
     data_loaders = [build_dataloader(ds, **train_loader_cfg) for ds in dataset]
