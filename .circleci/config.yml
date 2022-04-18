@@ -127,8 +127,8 @@ workflows:
           name: lint
           filters:
             branches:
-              only:
-                - /pull.*/
+              ignore:
+                - main
       - build_cpu:
           name: minimum_version_cpu
           torch: 1.6.0
