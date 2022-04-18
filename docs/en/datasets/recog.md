@@ -30,10 +30,10 @@
 |         MTWI          |       [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us)       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |     COCO Text v2      |                            [homepage](https://bgshih.github.io/cocotext/)                             |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |         ReCTS         |                               [homepage](https://rrc.cvc.uab.es/?ch=12)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
-|       IIIT-ILST       |             [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst)              |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
-|        VinText        |                       [homepage](https://github.com/VinAIResearch/dict-guided)                        |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
-|          BID          |          [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
-
+|       IIIT-ILST       |             [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst)              |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|        VinText        |                       [homepage](https://github.com/VinAIResearch/dict-guided)                        |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|          BID          |          [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|          RCTW          |          [homepage](https://rctw.vlrlab.net/index.html)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
 
@@ -1021,4 +1021,26 @@ should be as follows:
   │   ├── ignores
   │   ├── train_label.jsonl
   │   └── val_label.jsonl (optional)
+  ```
+
+## RCTW
+
+- Step1: Download `train_images.zip.001`, `train_images.zip.002`, and `train_gts.zip` from the [homepage](https://rctw.vlrlab.net/dataset.html), extract the zips to `rctw/imgs` and `rctw/annotations`, respectively.
+
+- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+
+  ```bash
+  # Annotations of RCTW test split is not publicly available, split a validation set by adding --val-ratio 0.2
+  # Add --preserve-vertical to preserve vertical texts for training, otherwise vertical images will be filtered and stored in PATH/TO/rctw/ignores
+  python tools/data/textrecog/rctw_converter.py PATH/TO/rctw --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  │── rctw
+  │   ├── crops
+  │   ├── ignores
+  │   ├── train_label.jsonl
+  │   └── val_label.jsonl (optional)
   ```
