@@ -180,22 +180,18 @@ After you clone the repository, you will need to install initialize pre-commit h
 pip install -U pre-commit
 ```
 
+Make sure Ruby runs on your system:
+
+```shell
+sudo apt-add-repository ppa:brightbox/ruby-ng -y
+sudo apt-get update
+sudo apt-get install -y ruby2.7
+```
+
 From the repository folder
 
 ```shell
 pre-commit install
-```
-
-If you are facing issue when installing markdown lint, you may install ruby for markdown lint by following
-
-```shell
-# install rvm
-curl -L https://get.rvm.io | bash -s -- --autolibs=read-fail
-# set up environment
-# Note that you might need to edit ~/.bashrc, ~/.bash_profile.
-rvm autolibs disable
-# install ruby
-rvm install 2.7.1
 ```
 
 After this on every commit check code linters and formatter will be enforced.
