@@ -164,22 +164,22 @@ def main():
     # build the dataloader
     dataset = build_dataset(cfg.data.test, dict(test_mode=True))
     # step 1: give default values and override (if exist) from cfg.data
-    loader_cfg = {
+    default_loader_cfg = {
         **dict(seed=cfg.get('seed'), drop_last=False, dist=distributed),
         **({} if torch.__version__ != 'parrots' else dict(
                prefetch_num=2,
                pin_memory=False,
-           )),
-        **dict((k, cfg.data[k]) for k in [
-                   'workers_per_gpu',
-                   'seed',
-                   'prefetch_num',
-                   'pin_memory',
-                   'persistent_workers',
-               ] if k in cfg.data)
+           ))
     }
+    default_loader_cfg.update({
+        k: v
+        for k, v in cfg.data.items() if k not in [
+            'train', 'val', 'test', 'train_dataloader', 'val_dataloader',
+            'test_dataloader'
+        ]
+    })
     test_loader_cfg = {
-        **loader_cfg,
+        **default_loader_cfg,
         **dict(shuffle=False, drop_last=False),
         **cfg.data.get('test_dataloader', {}),
         **dict(samples_per_gpu=samples_per_gpu)
