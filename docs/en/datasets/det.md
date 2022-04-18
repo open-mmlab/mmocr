@@ -709,8 +709,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```bash
   # Annotations of ReCTS test split is not publicly available, split a validation
   # set by adding --val-ratio 0.2
-  # Add --preserve-vertical to preserve vertical texts for training, otherwise
-  # vertical images will be filtered and stored in PATH/TO/rects/ignores
   python tools/data/textdet/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
   ```
 
@@ -857,11 +855,10 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
 - Step1: Download `train_images.zip.001`, `train_images.zip.002`, and `train_gts.zip` from the [homepage](https://rctw.vlrlab.net/dataset.html), extract the zips to `rctw/imgs` and `rctw/annotations`, respectively.
 
-- Step2: Generate `instances_training.json` and `instances_val.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step2: Generate `instances_training.json` and `instances_val.json` (optional). Since the test annotations are not publicly available, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
   # Annotations of RCTW test split is not publicly available, split a validation set by adding --val-ratio 0.2
-  # Add --preserve-vertical to preserve vertical texts for training, otherwise vertical images will be filtered and stored in PATH/TO/rctw/ignores
   python tools/data/textdet/rctw_converter.py PATH/TO/rctw --nproc 4
   ```
 
