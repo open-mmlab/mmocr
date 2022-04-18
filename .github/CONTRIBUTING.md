@@ -185,7 +185,6 @@ On Windows: Install Ruby from [the official website](https://rubyinstaller.org/)
 On Debian/Ubuntu:
 
 ```shell
-# On Debian/Ubuntu:
 sudo apt-add-repository ppa:brightbox/ruby-ng -y
 sudo apt-get update
 sudo apt-get install -y ruby2.7
