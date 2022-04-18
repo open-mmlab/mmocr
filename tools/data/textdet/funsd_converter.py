@@ -132,7 +132,7 @@ def parse_args():
         description='Generate training and test set of FUNSD ')
     parser.add_argument('root_path', help='Root dir path of FUNSD')
     parser.add_argument(
-        '--nproc', default=1, type=int, help='number of process')
+        '--nproc', default=1, type=int, help='Number of process')
     args = parser.parse_args()
     return args
 

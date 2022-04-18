@@ -84,12 +84,12 @@ def test_openset_kie_dataset():
                 'filename': ann_info1['file_name'],
                 'ori_filename': ann_info1['file_name'],
                 'ori_texts': [],
-                'ori_boxes': []
+                'ori_bboxes': []
             }]
         }
         for anno in ann_info1['annotations']:
             result['img_metas'][0]['ori_texts'].append(anno['text'])
-            result['img_metas'][0]['ori_boxes'].append(anno['box'])
+            result['img_metas'][0]['ori_bboxes'].append(anno['box'])
         result['nodes'] = torch.tensor([[0.01, 0.8, 0.01, 0.18],
                                         [0.01, 0.01, 0.9, 0.08]])
         result['edges'] = torch.Tensor([[0.01, 0.99] for _ in range(4)])
