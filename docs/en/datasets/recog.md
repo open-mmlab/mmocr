@@ -24,6 +24,7 @@
 |          NAF          |                           [homepage](https://github.com/herobd/NAF_dataset)                           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |         SROIE         |                               [homepage](https://rrc.cvc.uab.es/?ch=13)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |   Lecture Video DB    |          [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|         LSVT          |                               [homepage](https://rrc.cvc.uab.es/?ch=16)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |         IMGUR         |              [homepage](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset)              |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |         KAIST         |          [homepage](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |         MTWI          |       [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us)       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
@@ -625,14 +626,53 @@ The LV dataset has already provided cropped images and the corresponding annotat
   python tools/data/textdreog/lv_converter.py PATH/TO/lv
   ```
 
-- After running the above codes, the directory structure
-should be as follows:
+- After running the above codes, the directory structure should be as follows:
 
   ```text
   ├── lv
   │   ├── Crops
   │   ├── train_label.jsonl
   │   └── test_label.jsonl
+  ```
+
+### LSVT
+
+- Step1: Download [train_full_images_0.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz), [train_full_images_1.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz), and [train_full_labels.json](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json) to `lsvt/`.
+
+  ```bash
+  mkdir lsvt && cd lsvt
+
+  # Download LSVT dataset
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json
+
+  mkdir annotations
+  tar -xf train_full_images_0.tar.gz && tar -xf train_full_images_1.tar.gz
+  mv train_full_labels.json annotations/ && mv train_full_images_1/*.jpg train_full_images_0/
+  mv train_full_images_0 imgs
+
+  rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
+  ```
+
+ - Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+
+  ```bash
+  # Annotations of LSVT test split is not publicly available, split a validation
+  # set by adding --val-ratio 0.2
+  # Add --preserve-vertical to preserve vertical texts for training, otherwise
+  # vertical images will be filtered and stored in PATH/TO/lsvt/ignores
+  python tools/data/textdrecog/lsvt_converter.py PATH/TO/lsvt --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  ├── lsvt
+  │   ├── crops
+  │   ├── ignores
+  │   ├── train_label.jsonl
+  │   ├── val_label.jsonl (optional)
   ```
 
 ## FUNSD
