@@ -26,6 +26,8 @@ Contents
   - [Code style](#code-style)
     - [Python](#python)
       - [Installing pre-commit hooks](#installing-pre-commit-hooks)
+        - [Prerequisite](#prerequisite)
+        - [Installation](#installation)
     - [C++ and CUDA](#c-and-cuda)
 
 ## Workflow
@@ -174,19 +176,40 @@ The config for a pre-commit hook is stored in [.pre-commit-config](../.pre-commi
 
 #### Installing pre-commit hooks
 
+##### Prerequisite
+
+Make sure Ruby runs on your system.
+
+On Windows: Install Ruby from [the official website](https://rubyinstaller.org/).
+
+On Debian/Ubuntu:
+
+```shell
+# On Debian/Ubuntu:
+sudo apt-add-repository ppa:brightbox/ruby-ng -y
+sudo apt-get update
+sudo apt-get install -y ruby2.7
+```
+
+On other platforms:
+
+```shell
+# install rvm
+curl -L https://get.rvm.io | bash -s -- --autolibs=read-fail
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+rvm autolibs disable
+# install ruby
+rvm install 2.7.1
+```
+
+##### Installation
+
 After you clone the repository, you will need to install initialize pre-commit hook.
 
 ```shell
 pip install -U pre-commit
 ```
 
-Make sure Ruby runs on your system:
-
-```shell
-sudo apt-add-repository ppa:brightbox/ruby-ng -y
-sudo apt-get update
-sudo apt-get install -y ruby2.7
-```
 
 From the repository folder
 
