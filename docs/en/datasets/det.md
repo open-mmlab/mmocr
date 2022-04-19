@@ -29,7 +29,8 @@
 |     IIIT-ILST     |                                                                                                  [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst)                                                                                                  |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |      VinText      |                                                                                                            [homepage](https://github.com/VinAIResearch/dict-guided)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |        BID        |                                                                                               [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
-|          RCTW          |          [homepage](https://rctw.vlrlab.net/index.html)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  - |
+|       RCTW        |                                                                                                                 [homepage](https://rctw.vlrlab.net/index.html)                                                                                                                 |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|     HierText      |                                                                                                        [homepage](https://github.com/google-research-datasets/hiertext)                                                                                                        |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 
 ## Important Note
 
@@ -869,4 +870,61 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   ├── imgs
   │   ├── instances_training.json
   │   └── instances_val.json (optional)
+  ```
+
+## HierText
+
+- Step1 (optional): Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). Here is a brief installation procedure, if you encounter problems, please check the official website.
+  ```bash
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install
+  ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
+  !aws configure
+  # this command will require you to input keys, you can skip them except
+  # for the Default region name
+  # AWS Access Key ID [None]:
+  # AWS Secret Access Key [None]:
+  # Default region name [None]: us-east-1
+  # Default output format [None]
+- Step2: Clone [HierText](https://github.com/google-research-datasets/hiertext) repo to get annotations
+  ```bash
+  mkdir HierText
+  git clone https://github.com/google-research-datasets/hiertext.git
+  ```
+- Step3: Download `train.tgz`, `validation.tgz` from aws
+  ```bash
+  aws s3 --no-sign-request cp s3://open-images-dataset/ocr/train.tgz .
+  aws s3 --no-sign-request cp s3://open-images-dataset/ocr/validation.tgz .
+  ```
+- Step4: Process raw data
+  ```bash
+  # process annotations
+  mv hiertext/gt ./
+  rm -rf hiertext
+  mv gt annotations
+  gzip -d annotations/train.jsonl.gz
+  gzip -d annotations/validation.jsonl.gz
+  # process images
+  mkdir imgs
+  mv train.tgz imgs/
+  mv validation.tgz imgs/
+  tar -xzvf imgs/train.tgz
+  tar -xzvf imgs/validation.tgz
+  ```
+- Step5: Generate `train_label.jsonl` and `val_label.jsonl`. HierText includes different levels of annotation, from paragraph, line, to word. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph level's annotation. Set `--level line` to get line level annotation. set `--level word` to get word level's annotation.
+
+  ```bash
+  # Collect word annotation from HierText  --level word
+  python tools/data/textdet/hiertext_converter.py PATH/TO/HierText --level word --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  │── HierText
+  │   ├── annotations
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json
   ```
