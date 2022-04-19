@@ -21,7 +21,6 @@ def collect_files(img_dir, gt_dir):
     Args:
         img_dir (str): The image directory
         gt_dir (str): The groundtruth directory
-        split (str): The split of dataset. Namely: training or test
 
     Returns:
         files(list): The list of tuples (img_file, groundtruth_file)
@@ -367,11 +366,11 @@ def main():
 
     set_name = {}
     for split in ['training', 'test']:
-        set_name.update({split: 'instances_' + split + '.json'})
+        set_name.update({split: split + '_label' + '.txt'})
         assert osp.exists(osp.join(img_dir, split))
 
-    for split, json_name in set_name.items():
-        print(f'Converting {split} into {json_name}')
+    for split, ann_name in set_name.items():
+        print(f'Converting {split} into {ann_name}')
         with mmcv.Timer(
                 print_tmpl='It takes {}s to convert totaltext annotation'):
             files = collect_files(
