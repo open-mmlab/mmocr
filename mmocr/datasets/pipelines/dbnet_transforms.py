@@ -93,22 +93,38 @@ class ImgAug:
 
         # augment bbox
         for key in results['bbox_fields']:
-            bboxes = self.may_augment_poly(
-                aug, shape, results[key], mask_flag=False)
+            bboxes = self.may_augment_bbox(aug, shape, results[key])
             results[key] = np.zeros(0)
             if len(bboxes) > 0:
                 results[key] = np.stack(bboxes)
 
         return results
 
-    def may_augment_poly(self, aug, img_shape, polys, mask_flag=True):
+    def may_augment_bbox(self, aug, ori_shape, bboxes):
+        imgaug_bboxes = []
+        for bbox in bboxes:
+            x1, y1, x2, y2 = bbox
+            imgaug_bboxes.append(
+                imgaug.BoundingBox(x1=x1, y1=y1, x2=x2, y2=y2))
+        imgaug_bboxes = aug.augment_bounding_boxes([
+            imgaug.BoundingBoxesOnImage(imgaug_bboxes, shape=ori_shape)
+        ])[0].clip_out_of_image()
+
+        new_bboxes = []
+        for box in imgaug_bboxes.bounding_boxes:
+            new_bboxes.append(
+                np.array([box.x1, box.y1, box.x2, box.y2], dtype=np.float32))
+
+        return new_bboxes
+
+    def may_augment_poly(self, aug, img_shape, polys):
         key_points, poly_point_nums = [], []
         for poly in polys:
-            if mask_flag:
-                poly = poly[0]
+            poly = poly[0]
             poly = poly.reshape(-1, 2)
             key_points.extend([imgaug.Keypoint(p[0], p[1]) for p in poly])
             poly_point_nums.append(poly.shape[0])
+        # Warning: we do not clip the out-of-boudnary polygons
         key_points = aug.augment_keypoints(
             [imgaug.KeypointsOnImage(keypoints=key_points,
                                      shape=img_shape)])[0].keypoints
@@ -122,7 +138,7 @@ class ImgAug:
                 new_poly.append([key_point.x, key_point.y])
             start_idx += poly_point_num
             new_poly = np.array(new_poly).flatten()
-            new_polys.append([new_poly] if mask_flag else new_poly)
+            new_polys.append([new_poly])
 
         return new_polys
 
