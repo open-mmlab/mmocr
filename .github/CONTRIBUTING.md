@@ -190,7 +190,7 @@ sudo apt-get update
 sudo apt-get install -y ruby2.7
 ```
 
-On other platforms:
+On other Linux distributions:
 
 ```shell
 # install rvm
@@ -203,7 +203,7 @@ rvm install 2.7.1
 
 ##### Installation
 
-After you clone the repository, you will need to install initialize pre-commit hook.
+After you clone the repository, you will need to install and initialize pre-commit hook.
 
 ```shell
 pip install -U pre-commit
