@@ -28,7 +28,7 @@ model = dict(
                     pooling_type='att',
                     is_att_scale=False,
                     fusion_type='channel_add'),
-                stages=[True, True, True, True],
+                stages=[False, True, True, True],
                 position='after_stage'),
             dict(
                 cfg=dict(

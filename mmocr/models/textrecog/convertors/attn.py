@@ -22,8 +22,6 @@ class AttnConvertor(BaseConvertor):
         lower (bool): If True, convert original string to lower case.
         start_end_same (bool): Whether use the same index for
             start and end token or not. Default: True.
-        start_end_same_char (bool): Whether use the same char for
-            start and end token or not. Default: True.
     """
 
     def __init__(self,
@@ -34,7 +32,6 @@ class AttnConvertor(BaseConvertor):
                  max_seq_len=40,
                  lower=False,
                  start_end_same=True,
-                 start_end_same_char=True,
                  **kwargs):
         super().__init__(dict_type, dict_file, dict_list)
         assert isinstance(with_unknown, bool)
@@ -45,37 +42,28 @@ class AttnConvertor(BaseConvertor):
         self.max_seq_len = max_seq_len
         self.lower = lower
         self.start_end_same = start_end_same
-        self.start_end_same_char = start_end_same_char
 
         self.update_dict()
 
     def update_dict(self):
-        # unknown
+        start_end_token = '<BOS/EOS>'
         unknown_token = '<UKN>'
+        padding_token = '<PAD>'
+
+        # unknown
         self.unknown_idx = None
         if self.with_unknown:
             self.idx2char.append(unknown_token)
             self.unknown_idx = len(self.idx2char) - 1
 
         # BOS/EOS
-        if self.start_end_same_char:
-            start_end_token = '<BOS/EOS>'
+        self.idx2char.append(start_end_token)
+        self.start_idx = len(self.idx2char) - 1
+        if not self.start_end_same:
             self.idx2char.append(start_end_token)
-            self.start_idx = len(self.idx2char) - 1
-            if not self.start_end_same:
-                self.idx2char.append(start_end_token)
-            self.end_idx = len(self.idx2char) - 1
-        else:
-            assert self.start_end_same is False
-            start_token = '<SOS>'
-            end_token = '<EOS>'
-            self.idx2char.append(start_token)
-            self.start_idx = len(self.idx2char) - 1
-            self.idx2char.append(end_token)
-            self.end_idx = len(self.idx2char) - 1
+        self.end_idx = len(self.idx2char) - 1
 
         # padding
-        padding_token = '<PAD>'
         self.idx2char.append(padding_token)
         self.padding_idx = len(self.idx2char) - 1
 

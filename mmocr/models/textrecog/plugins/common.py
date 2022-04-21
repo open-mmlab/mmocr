@@ -31,7 +31,8 @@ class Maxpool2d(nn.Module):
 
 @PLUGIN_LAYERS.register_module()
 class GCAModule(nn.Module):
-    """GCAModule in MASTER
+    """GCAModule in MASTER.
+
     Args:
         in_channels: Channels of input tensor
         ratio: Scale ratio of in_channels

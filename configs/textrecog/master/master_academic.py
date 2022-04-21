@@ -2,7 +2,7 @@ _base_ = [
     '../../_base_/default_runtime.py', '../../_base_/recog_models/master.py',
     '../../_base_/schedules/schedule_adam_step_6e.py',
     '../../_base_/recog_pipelines/master_pipeline.py',
-    '../../_base_/recog_datasets/HardDisk_ST_MJ_train.py',
+    '../../_base_/recog_datasets/HST_MJ_train.py',
     '../../_base_/recog_datasets/academic_test.py'
 ]
 
