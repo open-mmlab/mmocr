@@ -83,7 +83,7 @@ def load_img_info(files):
         '.')[0]
     # read imgs while ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
-    img_file = '/'.join(img_file.lstrip('data/lv/imgs/').split('/')[1:])
+    img_file = img_file.split('data/lv/')[1]
 
     img_info = dict(
         file_name=img_file,
