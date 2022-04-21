@@ -2,6 +2,7 @@
 from operator import itemgetter
 
 import mmcv
+import numpy as np
 from mmcv.utils import print_log
 
 import mmocr.utils as utils
@@ -78,11 +79,14 @@ def eval_hmean(results,
                img_infos,
                ann_infos,
                metrics={'hmean-iou'},
-               score_thr=0.3,
+               min_score_thr=0.3,
+               max_score_thr=0.9,
+               step=0.1,
                rank_list=None,
                logger=None,
                **kwargs):
-    """Evaluation in hmean metric.
+    """Evaluation in hmean metric. It conducts grid search over a range of
+    boundary score thresholds and reports the best result.
 
     Args:
         results (list[dict]): Each dict corresponds to one image,
@@ -91,7 +95,9 @@ def eval_hmean(results,
             containing the following keys: filename, height, width
         ann_infos (list[dict]): Each dict corresponds to one image,
             containing the following keys: masks, masks_ignore
-        score_thr (float): Score threshold of prediction map.
+        min_score_thr (float): Minimum score threshold of prediction map.
+        max_score_thr (float): Maximum score threshold of prediction map.
+        step (float): The spacing between score thresholds.
         metrics (set{str}): Hmean metric set, should be one or all of
             {'hmean-iou', 'hmean-ic13'}
     Returns:
@@ -100,8 +106,14 @@ def eval_hmean(results,
     assert utils.is_type_list(results, dict)
     assert utils.is_type_list(img_infos, dict)
     assert utils.is_type_list(ann_infos, dict)
+    assert 0 <= min_score_thr <= max_score_thr <= 1
+    assert 0 <= step <= 1
     assert len(results) == len(img_infos) == len(ann_infos)
     assert isinstance(metrics, set)
+
+    min_score_thr = float(min_score_thr)
+    max_score_thr = float(max_score_thr)
+    step = float(step)
 
     gts, gts_ignore = get_gt_masks(ann_infos)
 
@@ -112,21 +124,20 @@ def eval_hmean(results,
         if len(texts) > 0:
             assert utils.valid_boundary(texts[0], False)
         valid_texts, valid_text_scores = filter_2dlist_result(
-            texts, scores, score_thr)
+            texts, scores, min_score_thr)
         preds.append(valid_texts)
         pred_scores.append(valid_text_scores)
 
     eval_results = {}
+
     for metric in metrics:
         msg = f'Evaluating {metric}...'
         if logger is None:
             msg = '\n' + msg
         print_log(msg, logger=logger)
         best_result = dict(hmean=-1)
-        for iter in range(3, 10):
-            thr = iter * 0.1
-            if thr < score_thr:
-                continue
+        for thr in np.arange(min_score_thr, min(max_score_thr + step, 1.0),
+                             step):
             top_preds = select_top_boundary(preds, pred_scores, thr)
             if metric == 'hmean-iou':
                 result, img_result = hmean_iou.eval_hmean_iou(

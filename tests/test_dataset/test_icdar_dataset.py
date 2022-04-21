@@ -151,6 +151,21 @@ def test_icdar_dataset():
         'boundary_result': []
     }]
     output = dataset.evaluate(results, metrics)
-
     assert output['hmean-iou:hmean'] == 1
     assert output['hmean-ic13:hmean'] == 1
+
+    results = [{
+        'boundary_result': [[50, 60, 70, 60, 70, 80, 50, 80, 0.5],
+                            [100, 120, 130, 120, 120, 150, 100, 150, 1]]
+    }, {
+        'boundary_result': []
+    }]
+    output = dataset.evaluate(
+        results, metrics, min_score_thr=0, max_score_thr=1, step=0.5)
+    assert output['hmean-iou:hmean'] == 1
+    assert output['hmean-ic13:hmean'] == 1
+
+    output = dataset.evaluate(
+        results, metrics, min_score_thr=0.6, max_score_thr=1, step=0.5)
+    assert output['hmean-iou:hmean'] == 1 / 1.5
+    assert output['hmean-ic13:hmean'] == 1 / 1.5
