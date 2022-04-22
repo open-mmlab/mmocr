@@ -34,20 +34,23 @@ class GCAModule(nn.Module):
     """GCAModule in MASTER.
 
     Args:
-        in_channels: Channels of input tensor
-        ratio: Scale ratio of in_channels
-        headers: Nums of attention head
-        pooling_type: Spatial pooling type
-        is_att_scale: Scale attention map or not
-        fusion_type: Fusion type of input and context
+        in_channels (int): Channels of input tensor.
+        ratio (float): Scale ratio of in_channels.
+        n_head (int): Numbers of attention head.
+        pooling_type (str): Spatial pooling type. Options are [``avg``,
+            ``att``].
+        scale_attn (bool): Whether to scale the attention map. Defaults to
+            False.
+        fusion_type (str): Fusion type of input and context. Options are
+            [``channel_add``, ``channel_mul``, ``channel_concat``].
     """
 
     def __init__(self,
                  in_channels,
                  ratio,
-                 headers,
+                 n_head,
                  pooling_type='att',
-                 is_att_scale=False,
+                 scale_attn=False,
                  fusion_type='channel_add',
                  **kwargs):
         super(GCAModule, self).__init__()
@@ -56,16 +59,16 @@ class GCAModule(nn.Module):
         assert fusion_type in ['channel_add', 'channel_mul', 'channel_concat']
 
         # in_channels must be divided by headers evenly
-        assert in_channels % headers == 0 and in_channels >= 8
+        assert in_channels % n_head == 0 and in_channels >= 8
 
-        self.headers = headers
+        self.n_head = n_head
         self.in_channels = in_channels
         self.ratio = ratio
         self.planes = int(in_channels * ratio)
         self.pooling_type = pooling_type
         self.fusion_type = fusion_type
-        self.is_att_scale = is_att_scale
-        self.single_header_inplanes = int(in_channels / headers)
+        self.scale_attn = scale_attn
+        self.single_header_inplanes = int(in_channels / n_head)
 
         if pooling_type == 'att':
             self.conv_mask = nn.Conv2d(
@@ -97,12 +100,12 @@ class GCAModule(nn.Module):
         batch, channel, height, width = x.size()
         if self.pooling_type == 'att':
             # [N*headers, C', H , W] C = headers * C'
-            x = x.view(batch * self.headers, self.single_header_inplanes,
+            x = x.view(batch * self.n_head, self.single_header_inplanes,
                        height, width)
             input_x = x
 
             # [N*headers, C', H * W] C = headers * C'
-            input_x = input_x.view(batch * self.headers,
+            input_x = input_x.view(batch * self.n_head,
                                    self.single_header_inplanes, height * width)
 
             # [N*headers, 1, C', H * W]
@@ -110,11 +113,11 @@ class GCAModule(nn.Module):
             # [N*headers, 1, H, W]
             context_mask = self.conv_mask(x)
             # [N*headers, 1, H * W]
-            context_mask = context_mask.view(batch * self.headers, 1,
+            context_mask = context_mask.view(batch * self.n_head, 1,
                                              height * width)
 
             # scale variance
-            if self.is_att_scale and self.headers > 1:
+            if self.scale_attn and self.n_head > 1:
                 context_mask = context_mask / \
                                torch.sqrt(self.single_header_inplanes)
 
@@ -129,7 +132,7 @@ class GCAModule(nn.Module):
 
             # [N, headers * C', 1, 1]
             context = context.view(batch,
-                                   self.headers * self.single_header_inplanes,
+                                   self.n_head * self.single_header_inplanes,
                                    1, 1)
         else:
             # [N, C, 1, 1]
