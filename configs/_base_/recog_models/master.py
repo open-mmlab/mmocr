@@ -57,6 +57,6 @@ model = dict(
         n_layers=3,
         feat_pe_dropout=0.2,
         feat_size=6 * 40),
-    loss=dict(type='MASTERTFLoss', reduction='mean'),
+    loss=dict(type='MASTERLoss', reduction='mean'),
     label_convertor=label_convertor,
     max_seq_len=30)

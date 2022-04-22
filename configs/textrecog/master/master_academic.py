@@ -2,9 +2,12 @@ _base_ = [
     '../../_base_/default_runtime.py', '../../_base_/recog_models/master.py',
     '../../_base_/schedules/schedule_adam_step_6e.py',
     '../../_base_/recog_pipelines/master_pipeline.py',
-    '../../_base_/recog_datasets/HST_MJ_train.py',
+    '../../_base_/recog_datasets/ST_MJ_train.py',
     '../../_base_/recog_datasets/academic_test.py'
 ]
+
+optimizer = dict(lr=3e-4)
+lr_config = dict(warmup='linear', warmup_iters=100, warmup_ratio=1.0 / 3)
 
 train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}

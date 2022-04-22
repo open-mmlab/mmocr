@@ -134,8 +134,8 @@ class TFLoss(CELoss):
 
 
 @LOSSES.register_module()
-class MASTERTFLoss(CELoss):
-    """Implementation of loss module for transformer."""
+class MASTERLoss(CELoss):
+    """Implementation of loss module for MASTER."""
 
     def __init__(self,
                  ignore_index=-1,

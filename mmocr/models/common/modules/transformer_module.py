@@ -24,6 +24,7 @@ class ScaledDotProductAttention(nn.Module):
     def forward(self, q, k, v, mask=None):
 
         attn = torch.matmul(q / self.temperature, k.transpose(2, 3))
+
         if mask is not None:
             attn = attn.masked_fill(mask == 0, float('-inf'))
 
