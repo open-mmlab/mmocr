@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
 from operator import itemgetter
 
 import mmcv
@@ -79,6 +80,7 @@ def eval_hmean(results,
                img_infos,
                ann_infos,
                metrics={'hmean-iou'},
+               score_thr=None,
                min_score_thr=0.3,
                max_score_thr=0.9,
                step=0.1,
@@ -95,6 +97,7 @@ def eval_hmean(results,
             containing the following keys: filename, height, width
         ann_infos (list[dict]): Each dict corresponds to one image,
             containing the following keys: masks, masks_ignore
+        score_thr (float): Deprecated. Please use min_score_thr instead.
         min_score_thr (float): Minimum score threshold of prediction map.
         max_score_thr (float): Maximum score threshold of prediction map.
         step (float): The spacing between score thresholds.
@@ -106,6 +109,12 @@ def eval_hmean(results,
     assert utils.is_type_list(results, dict)
     assert utils.is_type_list(img_infos, dict)
     assert utils.is_type_list(ann_infos, dict)
+
+    if score_thr:
+        warnings.warn('score_thr is deprecated. Please use min_score_thr '
+                      'instead.')
+        min_score_thr = score_thr
+
     assert 0 <= min_score_thr <= max_score_thr <= 1
     assert 0 <= step <= 1
     assert len(results) == len(img_infos) == len(ann_infos)

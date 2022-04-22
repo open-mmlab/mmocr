@@ -138,6 +138,7 @@ class IcdarDataset(CocoDataset):
                  results,
                  metric='hmean-iou',
                  logger=None,
+                 score_thr=None,
                  min_score_thr=0.3,
                  max_score_thr=0.9,
                  step=0.1,
@@ -150,6 +151,10 @@ class IcdarDataset(CocoDataset):
             metric (str | list[str]): Metrics to be evaluated.
             logger (logging.Logger | str | None): Logger used for printing
                 related information during evaluation. Default: None.
+            score_thr (float): Deprecated. Please use min_score_thr instead.
+            min_score_thr (float): Minimum score threshold of prediction map.
+            max_score_thr (float): Maximum score threshold of prediction map.
+            step (float): The spacing between score thresholds.
             rank_list (str): json file used to save eval result
                 of each image after ranking.
         Returns:
@@ -173,6 +178,7 @@ class IcdarDataset(CocoDataset):
             img_infos,
             ann_infos,
             metrics=metrics,
+            score_thr=score_thr,
             min_score_thr=min_score_thr,
             max_score_thr=max_score_thr,
             step=step,

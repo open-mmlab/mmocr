@@ -80,7 +80,10 @@ class TextDetDataset(BaseDataset):
     def evaluate(self,
                  results,
                  metric='hmean-iou',
-                 score_thr=0.3,
+                 score_thr=None,
+                 min_score_thr=0.3,
+                 max_score_thr=0.9,
+                 step=0.1,
                  rank_list=None,
                  logger=None,
                  **kwargs):
@@ -89,7 +92,10 @@ class TextDetDataset(BaseDataset):
         Args:
             results (list): Testing results of the dataset.
             metric (str | list[str]): Metrics to be evaluated.
-            score_thr (float): Score threshold for prediction map.
+            score_thr (float): Deprecated. Please use min_score_thr instead.
+            min_score_thr (float): Minimum score threshold of prediction map.
+            max_score_thr (float): Maximum score threshold of prediction map.
+            step (float): The spacing between score thresholds.
             logger (logging.Logger | str | None): Logger used for printing
                 related information during evaluation. Default: None.
             rank_list (str): json file used to save eval result
@@ -116,6 +122,9 @@ class TextDetDataset(BaseDataset):
             ann_infos,
             metrics=metrics,
             score_thr=score_thr,
+            min_score_thr=min_score_thr,
+            max_score_thr=max_score_thr,
+            step=step,
             logger=logger,
             rank_list=rank_list)
 
