@@ -81,9 +81,9 @@ def get_contours_mat(gt_path):
 
     Returns:
         contours (list[lists]): A list of lists of contours
-        for the text instances
+            for the text instances
         words (list[list]): A list of lists of words (string)
-        for the text instances
+            for the text instances
     """
     assert isinstance(gt_path, str)
 
@@ -164,9 +164,9 @@ def process_line(line, contours, words):
 
     Returns:
         contours (list[lists]): A list of lists of contours
-        for the text instances
+            for the text instances
         words (list[list]): A list of lists of words (string)
-        for the text instances
+            for the text instances
     """
 
     line = '{' + line.replace('[[', '[').replace(']]', ']') + '}'
@@ -209,9 +209,9 @@ def get_contours_txt(gt_path):
 
     Returns:
         contours (list[lists]): A list of lists of contours
-        for the text instances
+            for the text instances
         words (list[list]): A list of lists of words (string)
-        for the text instances
+            for the text instances
     """
     assert isinstance(gt_path, str)
 
