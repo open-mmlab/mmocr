@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .abinet import ABINet
+from .aster_recognizer import ASTERNet
 from .base import BaseRecognizer
 from .crnn import CRNNNet
 from .encode_decode_recognizer import EncodeDecodeRecognizer
@@ -8,7 +9,6 @@ from .robust_scanner import RobustScanner
 from .sar import SARNet
 from .satrn import SATRN
 from .seg_recognizer import SegRecognizer
-from .aster_recognizer import ASTERNet
 
 __all__ = [
     'BaseRecognizer', 'EncodeDecodeRecognizer', 'CRNNNet', 'SARNet', 'NRTR',

@@ -6,7 +6,6 @@ _base_ = [
     '../../_base_/recog_models/asternet.py'
 ]
 
-
 train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}
 

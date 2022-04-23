@@ -1,12 +1,12 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class AttentionLSTM(nn.Module):
-    def __init__(self,
-                 H_Dim,
-                 S_Dim,
-                 Atten_Dim):
+
+    def __init__(self, H_Dim, S_Dim, Atten_Dim):
         super().__init__()
         """
         Args:
@@ -52,21 +52,26 @@ class AttentionLSTM(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self,
-                 h_Dim,
-                 y_Dim,
-                 s_Dim,
-                 Atten_Dim,
-                 ):
+
+    def __init__(
+        self,
+        h_Dim,
+        y_Dim,
+        s_Dim,
+        Atten_Dim,
+    ):
         self.h_Dim = h_Dim
         self.y_Dim = y_Dim
         self.s_Dim = s_Dim
         self.Atten_Dim = Atten_Dim
         self.emb_Dim = Atten_Dim
         super().__init__()
-        self.Attention = AttentionLSTM(h_Dim, s_Dim, Atten_Dim) #b*T
-        self.y_emd = nn.Embedding(y_Dim+1, self.emb_Dim)
-        self.gru = nn.GRU(input_size=h_Dim + self.emb_Dim, hidden_size=s_Dim, batch_first=True)
+        self.Attention = AttentionLSTM(h_Dim, s_Dim, Atten_Dim)  #b*T
+        self.y_emd = nn.Embedding(y_Dim + 1, self.emb_Dim)
+        self.gru = nn.GRU(
+            input_size=h_Dim + self.emb_Dim,
+            hidden_size=s_Dim,
+            batch_first=True)
         self.embeding = nn.Linear(s_Dim, y_Dim)
 
     def forward(self, h_i, s_t, y_t):

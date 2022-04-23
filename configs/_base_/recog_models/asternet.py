@@ -15,10 +15,7 @@ model = dict(
         strides=[2, 2, [2, 1], [2, 1], [2, 1]],
         init_cfg=dict(type='Xavier', layer='Conv2d')),
     encoder=dict(
-            type='ASTEREncoder',
-            in_channels=512,
-            num_classes=512,
-            with_lstm=True),
+        type='ASTEREncoder', in_channels=512, num_classes=512, with_lstm=True),
     decoder=dict(
         type='ASTERDecoder',
         in_channels=512,

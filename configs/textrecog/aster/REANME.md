@@ -32,7 +32,7 @@ A challenging aspect of scene text recognition is to handle text with distortion
 ### Results and Models
 
 
-## Citation 
+## Citation
 
 ```bibtex
 @article{bshi2018aster,
@@ -43,7 +43,7 @@ A challenging aspect of scene text recognition is to handle text with distortion
                Cong Yao and
                Xiang Bai},
   title     = {ASTER: An Attentional Scene Text Recognizer with Flexible Rectification},
-  journal   = {IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
+  journal   = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
   volume    = {41},
   number    = {9},
   pages     = {2035--2048},

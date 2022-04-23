@@ -5,13 +5,14 @@ import pytest
 import torch
 
 from mmocr.models.textrecog.decoders import (ABILanguageDecoder,
-                                             ABIVisionDecoder, BaseDecoder,
+                                             ABIVisionDecoder, ASTERDecoder,
+                                             ASTERDecoderWithBs, BaseDecoder,
                                              NRTRDecoder, ParallelSARDecoder,
                                              ParallelSARDecoderWithBS,
-                                             SequentialSARDecoder, ASTERDecoder,
-                                             ASTERDecoderWithBs)
-from mmocr.models.textrecog.decoders.sar_decoder_with_bs import DecodeNode
+                                             SequentialSARDecoder)
 from mmocr.models.textrecog.decoders.aster_decoder_with_bs import DecodeNodes
+from mmocr.models.textrecog.decoders.sar_decoder_with_bs import DecodeNode
+
 
 def _create_dummy_input():
     feat = torch.rand(1, 512, 4, 40)
@@ -29,8 +30,14 @@ def test_base_decoder():
     with pytest.raises(NotImplementedError):
         decoder.forward_test(None, None, None)
 
+
 def test_aster_decoder():
-    decoder = ASTERDecoder(in_channels=512, num_classes=512, s_Dim=512, Atten_Dim=512, max_seq_len=5)
+    decoder = ASTERDecoder(
+        in_channels=512,
+        num_classes=512,
+        s_Dim=512,
+        Atten_Dim=512,
+        max_seq_len=5)
     decoder.init_weights()
     decoder.train()
 
@@ -45,8 +52,15 @@ def test_aster_decoder():
     out_train = decoder(feat, out_enc, tgt_dict, img_metas, False)
     assert out_train.shape == torch.Size([1, 4, 512])
 
+
 def test_aster_decoder_with_beam_search():
-    decoder = ASTERDecoderWithBs(in_channels=512, num_classes=512, s_Dim=512, Atten_Dim=512, max_seq_len=5, beam_width=5)
+    decoder = ASTERDecoderWithBs(
+        in_channels=512,
+        num_classes=512,
+        s_Dim=512,
+        Atten_Dim=512,
+        max_seq_len=5,
+        beam_width=5)
     decoder.init_weights()
     decoder.train()
 
@@ -69,6 +83,7 @@ def test_aster_decoder_with_beam_search():
         DecodeNodes([1, 2], [1, 2], [0.5])
     decode_node = DecodeNodes([0, 1], [0, 1], [0.7, 0.8])
     assert math.isclose(decode_node.eval(), 1.5)
+
 
 def test_parallel_sar_decoder():
     # test parallel sar decoder

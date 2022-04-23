@@ -1,26 +1,25 @@
-import torch
-import torch.nn as nn
-
-import mmocr.utils as utils
-from mmocr.models.builder import ENCODERS
-from .base_encoder import BaseEncoder #mmocr.models.textrecog.encoders
+# Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.runner import Sequential
+from mmocr.models.builder import ENCODERS
 from mmocr.models.textrecog.layers import BidirectionalLSTM
+from .base_encoder import BaseEncoder
+
 
 @ENCODERS.register_module()
 class ASTEREncoder(BaseEncoder):
+
     def __init__(self,
                  in_channels=None,
                  num_classes=None,
                  with_lstm=True,
                  init_cfg=dict(type='Xavier', layer='Conv2d'),
-                 **kwargs
-                 ):
+                 **kwargs):
         super().__init__(init_cfg=init_cfg)
         self.in_channels = in_channels
         self.num_classes = num_classes
         self.with_lstm = with_lstm
-        self.encoder = Sequential(BidirectionalLSTM(in_channels, 256, 256),
+        self.encoder = Sequential(
+            BidirectionalLSTM(in_channels, 256, 256),
             BidirectionalLSTM(256, 256, num_classes))
 
     def forward(self, feat, img_metas=None):
@@ -44,4 +43,3 @@ class ASTEREncoder(BaseEncoder):
             n, w, c, h = x.size()
             outputs = x.view(n, w, c * h)
         return outputs
-

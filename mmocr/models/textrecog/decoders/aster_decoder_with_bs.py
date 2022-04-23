@@ -1,8 +1,7 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 from queue import PriorityQueue
-import operator
 import torch
 import torch.nn.functional as F
-
 import mmocr.utils as utils
 from mmocr.models.builder import DECODERS
 from . import ASTERDecoder
@@ -30,13 +29,15 @@ class DecodeNodes:
         accu_score = sum(self.scores)
         return accu_score
 
+
 @DECODERS.register_module()
 class ASTERDecoderWithBs(ASTERDecoder):
     """Aster Decoder module with beam-search .
 
-        Args:
-            beam_width (int): Width for beam search.
-        """
+    Args:
+        beam_width (int): Width for beam search.
+    """
+
     def __init__(self,
                  in_channels,
                  num_classes,
@@ -44,6 +45,8 @@ class ASTERDecoderWithBs(ASTERDecoder):
                  Atten_Dim,
                  max_seq_len=40,
                  beam_width=5,
+                 start_idx=0,
+                 padding_idx=92,
                  init_cfg=None,
                  **kwargs):
 
@@ -54,21 +57,24 @@ class ASTERDecoderWithBs(ASTERDecoder):
             Atten_Dim,
             max_seq_len,
             beam_width,
+            start_idx,
             init_cfg=init_cfg)
 
         assert isinstance(beam_width, int)
         assert beam_width > 0
         self.beam_width = beam_width
+        self.start_idx = start_idx
 
     def forward_test(self, feat, out_enc, img_metas):
         x = out_enc
         batch_size = x.size(0)
         assert batch_size == 1, 'batch size must bu 1 for beam search.'
         state = torch.zeros(1, batch_size, self.s_Dim).to(feat.device)
-        y_prev = torch.zeros((batch_size)).fill_(self.num_classes).to(feat.device)
+        y_prev = torch.zeros(
+            (batch_size)).fill_(self.num_classes).to(feat.device)
 
         nodes = PriorityQueue()
-        init_node = DecodeNodes(state, [0], [0.0])
+        init_node = DecodeNodes(state, [self.start_idx], [0.0])
         nodes.put((-init_node.eval(), init_node))
         for i in range(1, self.max_seq_len + 1):
             next_nodes = []
@@ -76,20 +82,23 @@ class ASTERDecoderWithBs(ASTERDecoder):
             for beam_w in range(beam_width):
                 _, node = nodes.get()
                 if i > 1:
-                    y_prev = torch.tensor(node.indexes[i-1]).view(1).to(feat.device)
+                    y_prev = torch.tensor(node.indexes[i - 1]).view(1).to(
+                        feat.device)
                     state = node.state[0][1]
                 decoder_output, temp_state = self.decoder(x, state, y_prev)
                 decoder_output = F.softmax(decoder_output, dim=1)
 
-                topk_score, topk_idx = torch.topk(decoder_output, self.beam_width)
-                topk_score, topk_idx = topk_score.squeeze(0), topk_idx.squeeze(0)
-
+                topk_score, topk_idx = torch.topk(decoder_output,
+                                                  self.beam_width)
+                topk_score, topk_idx = topk_score.squeeze(0), topk_idx.squeeze(
+                    0)
 
                 for k in range(self.beam_width):
-                    kth_score =topk_score[k].item()
+                    kth_score = topk_score[k].item()
                     kth_idx = topk_idx[k].item()
-                    next_node = DecodeNodes(node.state + [temp_state], node.indexes + [kth_idx],
-                                               node.scores + [kth_score])
+                    next_node = DecodeNodes(node.state + [temp_state],
+                                            node.indexes + [kth_idx],
+                                            node.scores + [kth_score])
                     delta = k * 1e-6
                     next_nodes.append(
                         ((-node.eval() - kth_score - delta), next_node))

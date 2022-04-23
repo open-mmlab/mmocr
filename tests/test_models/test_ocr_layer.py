@@ -4,8 +4,9 @@ import torch
 from mmocr.models.common import (PositionalEncoding, TFDecoderLayer,
                                  TFEncoderLayer)
 from mmocr.models.textrecog.layers import BasicBlock, Bottleneck
-from mmocr.models.textrecog.layers.conv_layer import conv3x3
 from mmocr.models.textrecog.layers.attention_aster_layer import AttentionLSTM
+from mmocr.models.textrecog.layers.conv_layer import conv3x3
+
 
 def test_conv_layer():
     conv3by3 = conv3x3(3, 6)

@@ -2,10 +2,10 @@
 import pytest
 import torch
 
-from mmocr.models.textrecog.encoders import (ABIVisionModel, BaseEncoder,
-                                             NRTREncoder, SAREncoder,
-                                             SatrnEncoder, TransformerEncoder,
-                                             ASTEREncoder)
+from mmocr.models.textrecog.encoders import (ABIVisionModel, ASTEREncoder,
+                                             BaseEncoder, NRTREncoder,
+                                             SAREncoder, SatrnEncoder,
+                                             TransformerEncoder)
 
 
 def test_sar_encoder():
@@ -80,6 +80,7 @@ def test_abi_vision_model():
     assert result['feature'].shape == torch.Size([1, 10, 512])
     assert result['logits'].shape == torch.Size([1, 10, 90])
     assert result['attn_scores'].shape == torch.Size([1, 10, 8, 32])
+
 
 def test_aster_encoder():
     model = ASTEREncoder(in_channels=512, num_classes=512, with_lstm=True)
