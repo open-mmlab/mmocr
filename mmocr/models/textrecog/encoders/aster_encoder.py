@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.runner import Sequential
+
 from mmocr.models.builder import ENCODERS
 from mmocr.models.textrecog.layers import BidirectionalLSTM
 from .base_encoder import BaseEncoder

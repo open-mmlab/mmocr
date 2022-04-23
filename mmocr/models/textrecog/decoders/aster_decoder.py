@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 import torch.nn.functional as F
+
 from mmocr.models.builder import DECODERS
 from mmocr.models.textrecog.layers import attention_aster_layer
 from .base_decoder import BaseDecoder

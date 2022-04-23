@@ -1,7 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from queue import PriorityQueue
+
 import torch
 import torch.nn.functional as F
+
 import mmocr.utils as utils
 from mmocr.models.builder import DECODERS
 from . import ASTERDecoder
