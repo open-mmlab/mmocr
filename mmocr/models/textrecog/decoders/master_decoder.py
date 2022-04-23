@@ -34,38 +34,43 @@ class Embeddings(nn.Module):
 class MasterDecoder(BaseDecoder):
     """Decoder module in `MASTER <https://arxiv.org/abs/1910.02562>`_.
 
+    Code is partially modified from https://github.com/wenwenyu/MASTER-pytorch.
+
     Args:
-        d_model (int): Dimension of the input from previous model.
-        num_classes (int): Output class number.
-        start_idx (int): Index of start token.
-        padding_idx (int): Index of padding token.
+        start_idx (int): The index of `<SOS>`.
+        padding_idx (int): The index of `<PAD>`.
+        num_classes (int): Number of text characters :math:`C`.
+        n_layers (int): Number of attention layers.
         n_head (int): Number of parallel attention heads.
+        d_model (int): Dimension :math:`E` of the input from previous model.
+        feat_size (int): The size of the input feature from previous model,
+            usually :math:`H * W`.
+        d_inner (int): Hidden dimension of feedforward layers.
         attn_drop (float): Dropout rate of the attention layer.
         ffn_drop (float): Dropout rate of the feedforward layer.
         feat_pe_drop (float): Dropout rate of the feature positional encoding
             layer.
-        d_inner (int): Hidden dimension of feedforward layers.
-        n_layers (int): Number of attention layers.
-        max_seq_len (int): Maximum sequence length for decoding.
-        feat_size (int): The size of the input feature.
+        max_seq_len (int): Maximum output sequence length :math:`T`.
+        init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
     def __init__(
         self,
-        d_model,
-        num_classes,
         start_idx,
         padding_idx,
+        num_classes=93,
+        n_layers=3,
         n_head=8,
+        d_model=512,
+        feat_size=6 * 40,
+        d_inner=2048,
         attn_drop=0.,
         ffn_drop=0.,
         feat_pe_drop=0.2,
-        d_inner=2048,
-        n_layers=3,
         max_seq_len=30,
-        feat_size=6 * 40,
+        init_cfg=None,
     ):
-        super(MasterDecoder, self).__init__()
+        super(MasterDecoder, self).__init__(init_cfg=init_cfg)
 
         operation_order = ('norm', 'self_attn', 'norm', 'cross_attn', 'norm',
                            'ffn')
@@ -117,10 +122,10 @@ class MasterDecoder(BaseDecoder):
             Tensor: Mask of shape [N * self.n_head, l_tgt, l_tgt]
         """
 
-        trg_pad_mask = (tgt != self.PAD).unsqueeze(1).unsqueeze(3).byte()
+        trg_pad_mask = (tgt != self.PAD).unsqueeze(1).unsqueeze(3).bool()
         tgt_len = tgt.size(1)
         trg_sub_mask = torch.tril(
-            torch.ones((tgt_len, tgt_len), dtype=torch.uint8, device=device))
+            torch.ones((tgt_len, tgt_len), dtype=torch.bool, device=device))
         tgt_mask = trg_pad_mask & trg_sub_mask
 
         # inverse for mmcv's BaseTransformerLayer
@@ -135,7 +140,7 @@ class MasterDecoder(BaseDecoder):
         x = self.embedding(input)
         x = self.positional_encoding(x)
         attn_masks = [tgt_mask, src_mask]
-        for i, layer in enumerate(self.decoder_layers):
+        for layer in self.decoder_layers:
             x = layer(
                 query=x, key=feature, value=feature, attn_masks=attn_masks)
         x = self.norm(x)
@@ -144,8 +149,8 @@ class MasterDecoder(BaseDecoder):
     def greedy_forward(self, SOS, feature):
         input = SOS
         output = None
-        for i in range(self.max_seq_len + 1):
-            _, target_mask = self.make_mask(input, device=feature.device)
+        for _ in range(self.max_seq_len):
+            target_mask = self.make_mask(input, device=feature.device)
             out = self.decode(input, feature, None, target_mask)
             output = out
             prob = F.softmax(out, dim=-1)
@@ -182,9 +187,8 @@ class MasterDecoder(BaseDecoder):
         else:
             padded_targets = targets_dict.to(device)
         src_mask = None
-        _, tgt_mask = self.make_mask(
-            padded_targets[:, :-1], device=out_enc.device)
-        return self.decode(padded_targets[:, :-1], out_enc, src_mask, tgt_mask)
+        tgt_mask = self.make_mask(padded_targets, device=out_enc.device)
+        return self.decode(padded_targets, out_enc, src_mask, tgt_mask)
 
     def forward_test(self, feat, out_enc, img_metas):
         """

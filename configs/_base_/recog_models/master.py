@@ -52,11 +52,10 @@ model = dict(
         n_head=8,
         attn_drop=0.,
         ffn_drop=0.,
-        dropout=0.,
         d_inner=2048,
         n_layers=3,
-        feat_pe_dropout=0.2,
+        feat_pe_drop=0.2,
         feat_size=6 * 40),
-    loss=dict(type='MASTERLoss', reduction='mean'),
+    loss=dict(type='TFLoss', reduction='mean'),
     label_convertor=label_convertor,
     max_seq_len=30)
