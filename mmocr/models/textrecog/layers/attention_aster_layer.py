@@ -28,7 +28,6 @@ class AttentionLSTM(nn.Module):
         Args:
             h_t(Tensor): A Tensor of shape :math:`(N, W, C)`.
             s_t1(Tensor): is the state at t-1 moment, shape:math:'(1, b, hidden_dim)
-
         Returns:
             alpha(Tensor): attentional weights at t moment
         """
@@ -66,7 +65,7 @@ class Decoder(nn.Module):
         self.Atten_Dim = Atten_Dim
         self.emb_Dim = Atten_Dim
         super().__init__()
-        self.Attention = AttentionLSTM(h_Dim, s_Dim, Atten_Dim)  #b*T
+        self.Attention = AttentionLSTM(h_Dim, s_Dim, Atten_Dim)
         self.y_emd = nn.Embedding(y_Dim + 1, self.emb_Dim)
         self.gru = nn.GRU(
             input_size=h_Dim + self.emb_Dim,

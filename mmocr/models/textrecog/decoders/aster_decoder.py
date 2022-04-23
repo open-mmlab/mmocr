@@ -70,7 +70,6 @@ class ASTERDecoder(BaseDecoder):
             else:
                 y_pre = predicted
             output, state = self.decoder(x, state, y_pre)
-            # out_put.append(output)
             outputs = F.softmax(output, dim=1)
             out_put.append(outputs)
             score, predicted = outputs.max(-1)
