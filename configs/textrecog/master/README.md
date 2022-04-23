@@ -36,14 +36,10 @@ Attention-based scene text recognizers have gained huge success, which leverages
 
 ## Results and Models
 
-|                             Methods                             |   Backbone   |        | Regular Text |       |       |       | Irregular Text |       |                                                                                                download                                                                                                |
-| :-------------------------------------------------------------: | :----------: | :----: | :----------: | :---: | :---: | :---: | :------------: | :---: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|                                                                 |              | IIIT5K |     SVT      | IC13  |       | IC15  |      SVTP      | CT80  |
-| [MASTER](/configs/textrecog/master/master_academic.py) | R31-GCAModule |    |         |   |       |  |           |   | [model]() \| [log]() |
-
-## References
-
-<a id="1">[1]</a> Ning Lu, Wenwen Yu, Xianbiao Qi, Yihao Chen, Ping Gong, and Rong Xiao. Master: Multi-aspect non-local network for scene text recognition. Pattern Recognition, 117:107980, 2021. 4.
+|                        Methods                         |   Backbone    |        | Regular Text |       |       |       | Irregular Text |       |       download       |
+| :----------------------------------------------------: | :-----------: | :----: | :----------: | :---: | :---: | :---: | :------------: | :---: | :------------------: |
+|                                                        |               | IIIT5K |     SVT      | IC13  |       | IC15  |      SVTP      | CT80  |
+| [MASTER](/configs/textrecog/master/master_academic.py) | R31-GCAModule |        |              |       |       |       |                |       | [model]() \| [log]() |
 
 ## Citation
 
