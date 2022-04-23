@@ -62,6 +62,7 @@ class ASTERDecoder(BaseDecoder):
         x = out_enc
         batch_size = x.size(0)
         state = torch.zeros(1, batch_size, self.s_Dim).to(feat.device)
+        predicted = torch.zeros((batch_size)).to(feat.device)
         out_put = []
         for i in range(self.max_seq_len):
             if i == 0:

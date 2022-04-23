@@ -5,7 +5,7 @@ Collections:
       Training Techniques:
         - SGD
       Epochs: 6
-      Batch Size:
+      Batch Size: 64
       Training Resources:
       Architecture:
         - ResNetABI
@@ -29,23 +29,23 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5k
         Metrics:
-          word_acc:
+          word_acc: 0
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc:
+          word_acc: 0
       - Task: Text Recognition
           Dataset: ICDAR2015
           Metrics:
-            word_acc:
+            word_acc: 0
             - Task: Text Recognition
               Dataset: SVTP
               Metrics:
-                word_acc:
+                word_acc: 0
             - Task: Text Recognition
               Dataset: CT80
               Metrics:
-                word_acc:
+                word_acc: 0
     Weights:
 
 

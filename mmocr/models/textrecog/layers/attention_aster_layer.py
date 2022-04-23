@@ -26,8 +26,8 @@ class AttentionLSTM(nn.Module):
         """
 
         Args:
-            h_t(Tensor): A Tensor of shape :math:`(N, W, C)`.
-            s_t1(Tensor): is the state at t-1 moment, shape:math:'(1, b, hidden_dim)
+            h_t(Tensor): A Tensor of shape(N, W, C)
+            s_t1(Tensor): is the state at t-1 moment, shape(1, b, hidden_dim)
         Returns:
             alpha(Tensor): attentional weights at t moment
         """
