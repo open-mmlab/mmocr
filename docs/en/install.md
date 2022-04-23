@@ -16,8 +16,8 @@ MMOCR has different version requirements on MMCV and MMDetection at each release
 
 | MMOCR        | MMCV                   | MMDetection               |
 | ------------ | ---------------------- | ------------------------- |
-| master       | 1.3.8 <= mmcv <= 1.6.0 | 2.14.0 <= mmdet <= 3.0.0  |
-| 0.5.0        | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 3.0.0  |
+|   main       | 1.3.8 <= mmcv <= 1.6.0 | 2.21.0 <= mmdet <= 3.0.0  |
+| 0.5.0        | 1.3.8 <= mmcv <= 1.5.0 | 2.21.0 <= mmdet <= 3.0.0  |
 | 0.4.0, 0.4.1 | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 2.20.0 |
 | 0.3.0        | 1.3.8 <= mmcv <= 1.4.0 | 2.14.0 <= mmdet <= 2.20.0 |
 | 0.2.1        | 1.3.8 <= mmcv <= 1.4.0 | 2.13.0 <= mmdet <= 2.20.0 |
