@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from . import classifiers, convertors, decoders, encoders, losses
-
 from .classifiers import *  # NOQA
 from .convertors import *  # NOQA
 from .decoders import *  # NOQA

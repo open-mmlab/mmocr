@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 
+import mmcv
 import numpy as np
 import torch
 import torch.distributed as dist
@@ -11,6 +12,7 @@ from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner,
 from mmdet.core import DistEvalHook, EvalHook
 from mmdet.datasets import build_dataloader, build_dataset
 
+from mmocr import digit_version
 from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
 from mmocr.utils import get_root_logger
@@ -28,30 +30,30 @@ def train_detector(model,
     # prepare data loaders
     dataset = dataset if isinstance(dataset, (list, tuple)) else [dataset]
     # step 1: give default values and override (if exist) from cfg.data
-    loader_cfg = {
+    default_loader_cfg = {
         **dict(
+            num_gpus=len(cfg.gpu_ids),
+            dist=distributed,
             seed=cfg.get('seed'),
             drop_last=False,
-            dist=distributed,
-            num_gpus=len(cfg.gpu_ids)),
+            persistent_workers=False),
         **({} if torch.__version__ != 'parrots' else dict(
                prefetch_num=2,
                pin_memory=False,
            )),
-        **dict((k, cfg.data[k]) for k in [
-                   'samples_per_gpu',
-                   'workers_per_gpu',
-                   'shuffle',
-                   'seed',
-                   'drop_last',
-                   'prefetch_num',
-                   'pin_memory',
-                   'persistent_workers',
-               ] if k in cfg.data)
     }
+    # update overall dataloader(for train, val and test) setting
+    default_loader_cfg.update({
+        k: v
+        for k, v in cfg.data.items() if k not in [
+            'train', 'val', 'test', 'train_dataloader', 'val_dataloader',
+            'test_dataloader'
+        ]
+    })
 
     # step 2: cfg.data.train_dataloader has highest priority
-    train_loader_cfg = dict(loader_cfg, **cfg.data.get('train_dataloader', {}))
+    train_loader_cfg = dict(default_loader_cfg,
+                            **cfg.data.get('train_dataloader', {}))
 
     data_loaders = [build_dataloader(ds, **train_loader_cfg) for ds in dataset]
 
@@ -66,8 +68,10 @@ def train_detector(model,
             broadcast_buffers=False,
             find_unused_parameters=find_unused_parameters)
     else:
-        model = MMDataParallel(
-            model.cuda(cfg.gpu_ids[0]), device_ids=cfg.gpu_ids)
+        if not torch.cuda.is_available():
+            assert digit_version(mmcv.__version__) >= digit_version('1.4.4'), \
+                'Please use MMCV >= 1.4.4 for CPU training!'
+        model = MMDataParallel(model, device_ids=cfg.gpu_ids)
 
     # build runner
     optimizer = build_optimizer(model, cfg.optimizer)
@@ -131,7 +135,7 @@ def train_detector(model,
         val_dataset = build_dataset(cfg.data.val, dict(test_mode=True))
 
         val_loader_cfg = {
-            **loader_cfg,
+            **default_loader_cfg,
             **dict(shuffle=False, drop_last=False),
             **cfg.data.get('val_dataloader', {}),
             **dict(samples_per_gpu=val_samples_per_gpu)

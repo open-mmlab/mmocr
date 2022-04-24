@@ -1,3 +1,4 @@
+# Copyright (c) OpenMMLab. All rights reserved.
 import copy
 
 import numpy as np
@@ -60,12 +61,12 @@ class OpensetKIEDataset(KIEDataset):
     def pre_pipeline(self, results):
         super().pre_pipeline(results)
         results['ori_texts'] = results['ann_info']['ori_texts']
-        results['ori_boxes'] = results['ann_info']['ori_boxes']
+        results['ori_bboxes'] = results['ann_info']['ori_bboxes']
 
     def list_to_numpy(self, ann_infos):
         results = super().list_to_numpy(ann_infos)
         results.update(dict(ori_texts=ann_infos['texts']))
-        results.update(dict(ori_boxes=ann_infos['boxes']))
+        results.update(dict(ori_bboxes=ann_infos['boxes']))
 
         return results
 

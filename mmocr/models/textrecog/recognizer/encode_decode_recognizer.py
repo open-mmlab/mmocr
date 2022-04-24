@@ -3,13 +3,13 @@ import warnings
 
 import torch
 
-from mmocr.models.builder import (DETECTORS, build_backbone, build_convertor,
+from mmocr.models.builder import (RECOGNIZERS, build_backbone, build_convertor,
                                   build_decoder, build_encoder, build_loss,
                                   build_preprocessor)
 from .base import BaseRecognizer
 
 
-@DETECTORS.register_module()
+@RECOGNIZERS.register_module()
 class EncodeDecodeRecognizer(BaseRecognizer):
     """Base class for encode-decode recognizer."""
 

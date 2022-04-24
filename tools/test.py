@@ -18,7 +18,7 @@ from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import revert_sync_batchnorm
+from mmocr.utils import revert_sync_batchnorm, setup_multi_processes
 
 
 def parse_args():
@@ -33,6 +33,12 @@ def parse_args():
         help='Whether to fuse conv and bn, this will slightly increase'
         'the inference speed.')
     parser.add_argument(
+        '--gpu-id',
+        type=int,
+        default=0,
+        help='id of gpu to use '
+        '(only applicable to non-distributed testing)')
+    parser.add_argument(
         '--format-only',
         action='store_true',
         help='Format the output results without performing evaluation. It is'
@@ -42,9 +48,9 @@ def parse_args():
         '--eval',
         type=str,
         nargs='+',
-        help='The evaluation metrics, which depends on the dataset, e.g.,'
-        '"bbox", "seg", "proposal" for COCO, and "mAP", "recall" for'
-        'PASCAL VOC.')
+        help='The evaluation metrics. Options: \'hmean-ic13\', \'hmean-iou'
+        '\' for text detection tasks, \'acc\' for text recognition tasks, and '
+        '\'macro-f1\' for key information extraction tasks.')
     parser.add_argument('--show', action='store_true', help='Show results.')
     parser.add_argument(
         '--show-dir', help='Directory where the output images will be saved.')
@@ -123,10 +129,8 @@ def main():
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
-    # import modules from string list.
-    if cfg.get('custom_imports', None):
-        from mmcv.utils import import_modules_from_strings
-        import_modules_from_strings(**cfg['custom_imports'])
+    setup_multi_processes(cfg)
+
     # set cudnn_benchmark
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
@@ -151,6 +155,7 @@ def main():
 
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
+        cfg.gpu_ids = [args.gpu_id]
         distributed = False
     else:
         distributed = True
@@ -159,22 +164,22 @@ def main():
     # build the dataloader
     dataset = build_dataset(cfg.data.test, dict(test_mode=True))
     # step 1: give default values and override (if exist) from cfg.data
-    loader_cfg = {
+    default_loader_cfg = {
         **dict(seed=cfg.get('seed'), drop_last=False, dist=distributed),
         **({} if torch.__version__ != 'parrots' else dict(
                prefetch_num=2,
                pin_memory=False,
-           )),
-        **dict((k, cfg.data[k]) for k in [
-                   'workers_per_gpu',
-                   'seed',
-                   'prefetch_num',
-                   'pin_memory',
-                   'persistent_workers',
-               ] if k in cfg.data)
+           ))
     }
+    default_loader_cfg.update({
+        k: v
+        for k, v in cfg.data.items() if k not in [
+            'train', 'val', 'test', 'train_dataloader', 'val_dataloader',
+            'test_dataloader'
+        ]
+    })
     test_loader_cfg = {
-        **loader_cfg,
+        **default_loader_cfg,
         **dict(shuffle=False, drop_last=False),
         **cfg.data.get('test_dataloader', {}),
         **dict(samples_per_gpu=samples_per_gpu)
@@ -194,7 +199,7 @@ def main():
         model = fuse_conv_bn(model)
 
     if not distributed:
-        model = MMDataParallel(model, device_ids=[0])
+        model = MMDataParallel(model, device_ids=cfg.gpu_ids)
         is_kie = cfg.model.type in ['SDMGR']
         outputs = single_gpu_test(model, data_loader, args.show, args.show_dir,
                                   is_kie, args.show_score_thr)

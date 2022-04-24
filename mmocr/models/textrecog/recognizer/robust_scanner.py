@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmocr.models.builder import DETECTORS
+from mmocr.models.builder import RECOGNIZERS
 from .encode_decode_recognizer import EncodeDecodeRecognizer
 
 
-@DETECTORS.register_module()
+@RECOGNIZERS.register_module()
 class RobustScanner(EncodeDecodeRecognizer):
     """Implementation of `RobustScanner.
 

@@ -2,6 +2,7 @@
 import io
 import json
 import os
+import platform
 import random
 import sys
 import tempfile
@@ -81,6 +82,8 @@ def test_ocr_init(mock_loading, mock_config, mock_build_detector,
 
     def loadcheckpoint_assert(*args, **kwargs):
         assert args[1] == gt_ckpt[-1]
+        assert kwargs['map_location'] == torch.device(
+            'cuda' if torch.cuda.is_available() else 'cpu')
 
     mock_loading.side_effect = loadcheckpoint_assert
     with mock.patch('mmocr.utils.ocr.revert_sync_batchnorm'):
@@ -105,8 +108,9 @@ def test_ocr_init(mock_loading, mock_config, mock_build_detector,
             mock_config.assert_called_with(gt_cfg[-1])
             mock_build_detector.assert_called_once()
             mock_loading.assert_called_once()
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         calls = [
-            mock.call(gt_cfg[i], gt_ckpt[i], device='cuda:0') for i in i_range
+            mock.call(gt_cfg[i], gt_ckpt[i], device=device) for i in i_range
         ]
         mock_init_detector.assert_has_calls(calls)
 
@@ -165,8 +169,9 @@ def test_ocr_init_customize_config(mock_loading, mock_config,
             mock_config.assert_called_with(gt_cfg[-1])
             mock_build_detector.assert_called_once()
             mock_loading.assert_called_once()
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         calls = [
-            mock.call(gt_cfg[i], gt_ckpt[i], device='cuda:0') for i in i_range
+            mock.call(gt_cfg[i], gt_ckpt[i], device=device) for i in i_range
         ]
         mock_init_detector.assert_has_calls(calls)
 
@@ -225,6 +230,9 @@ def MMOCR_testobj(mock_loading, mock_init_detector, **kwargs):
     return MMOCR(**kwargs, device=device)
 
 
+@pytest.mark.skipif(
+    platform.system() == 'Windows',
+    reason='Win container on Github Action does not have enough RAM to run')
 @mock.patch('mmocr.utils.ocr.KIEDataset')
 def test_readtext(mock_kiedataset):
     # Fixing the weights of models to prevent them from
@@ -361,3 +369,52 @@ def test_readtext(mock_kiedataset):
     with mock.patch('mmocr.utils.ocr.stitch_boxes_into_lines') as mock_merge:
         mmocr_det_recog.readtext(toy_imgs, merge=True)
         assert mock_merge.call_count == len(toy_imgs)
+
+
+@pytest.mark.parametrize('det, recog, target',
+                         [('Tesseract', None, {
+                             'boundary_result': [[0, 0, 1, 0, 1, 1, 0, 1, 1.0]]
+                         }),
+                          ('Tesseract', 'Tesseract', {
+                              'result': [{
+                                  'box': [0, 0, 1, 0, 1, 1, 0, 1],
+                                  'box_score': 1.0,
+                                  'text': 'text',
+                                  'text_score': 0.5
+                              }]
+                          }),
+                          (None, 'Tesseract', {
+                              'text': 'text',
+                              'score': 0.5
+                          })])
+@mock.patch('mmocr.utils.ocr.init_detector')
+@mock.patch('mmocr.utils.ocr.tesserocr')
+def test_tesseract_wrapper(mock_tesserocr, mock_init_detector, det, recog,
+                           target):
+
+    def init_detector_skip_ckpt(config, ckpt, device):
+        return init_detector(config, device=device)
+
+    mock_init_detector.side_effect = init_detector_skip_ckpt
+    mock_tesseract = mock.Mock()
+    mock_tesseract.GetComponentImages.return_value = [(None, {
+        'x': 0,
+        'y': 0,
+        'w': 1,
+        'h': 1
+    }, 0, None)]
+    mock_tesseract.GetUTF8Text.return_value = 'text'
+    mock_tesseract.MeanTextConf.return_value = 50
+    mock_tesserocr.PyTessBaseAPI.return_value = mock_tesseract
+
+    mmocr = MMOCR(det=det, recog=recog, device='cpu')
+
+    img_path = 'demo/demo_kie.jpeg'
+
+    # Test imshow
+    with mock.patch('mmocr.utils.ocr.mmcv.imshow') as mock_imshow:
+        result = mmocr.readtext(img_path, imshow=True, details=True)
+        for k, v in target.items():
+            assert result[0][k] == v
+        mock_imshow.assert_called_once()
+        mock_imshow.reset_mock()
