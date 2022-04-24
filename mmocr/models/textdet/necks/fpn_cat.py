@@ -27,6 +27,7 @@ class FPNC(BaseModule):
         bias_on_smooth (bool): Whether to use bias on smoothing layer.
         bn_re_on_smooth (bool): Whether to use BatchNorm and ReLU on smoothing
             layer.
+        asf_cfg (dict): Adaptive Scale Fusion module configs.
         conv_after_concat (bool): Whether to add a convolution layer after
             the concatenation of predictions.
         init_cfg (dict or list[dict], optional): Initialization configs.
@@ -179,9 +180,9 @@ class ScaleChannelSpatialAttention(BaseModule):
     This was partially adapted from https://github.com/MhLiao/DB
 
     Args:
-        in_channels (list[int]): A list of numbers of input channels.
-        lateral_channels (int): Number of channels for lateral layers.
+        in_channels (int): A numbers of input channels.
         out_channels (int): Number of output channels.
+        num_features (int): Number of feature layers.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
@@ -229,7 +230,6 @@ class ScaleChannelSpatialAttention(BaseModule):
                 norm_cfg=None,
                 act_cfg=dict(type='Sigmoid'),
                 inplace=False))
-
         # Attention Wise
         self.attention_wise = ConvModule(
             in_channels,
@@ -246,7 +246,7 @@ class ScaleChannelSpatialAttention(BaseModule):
         """
         Args:
             inputs (list[Tensor]): Each tensor has the shape of
-                :math:`(N, C_i, H_i, W_i)`. It usually expects 4 tensors
+                :math:`(N, C_i, H_i, W_i)`. It usually expects a concat tensor
                 (C2-C5 features) from ResNet.
 
         Returns:
