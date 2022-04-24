@@ -82,10 +82,6 @@ class FCOSLoss(nn.Module):
         apply_to=('cls_scores', 'bbox_preds', 'bezier_preds', 'centernesses'))
     def forward(
         self,
-        # cls_scores,
-        # bbox_preds,
-        # centernesses,
-        # bezier_preds=None,
         preds,
         img_metas,
         gt_bboxes,

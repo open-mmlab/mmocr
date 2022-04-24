@@ -188,13 +188,11 @@ def test_fcos_loss(with_bezier):
     gt_bboxes_ignore = None
     if with_bezier:
         gt_beziers = [torch.empty((0, 16))]
-        empty_gt_losses = loss(preds, gt_bboxes, gt_labels, img_metas,
+        empty_gt_losses = loss(preds, img_metas, gt_bboxes, gt_labels,
                                gt_bboxes_ignore, gt_beziers)
-        cls_scores, bbox_preds, centerness, bezier_preds = preds
     else:
-        empty_gt_losses = loss(preds, gt_bboxes, gt_labels, img_metas,
+        empty_gt_losses = loss(preds, img_metas, gt_bboxes, gt_labels,
                                gt_bboxes_ignore)
-        cls_scores, bbox_preds, centerness = preds
     # When there is no truth, the cls loss should be nonzero but there should
     # be no box loss.
     empty_cls_loss = empty_gt_losses['loss_cls']
@@ -214,12 +212,11 @@ def test_fcos_loss(with_bezier):
     gt_labels = [torch.LongTensor([2])]
     if with_bezier:
         gt_beziers = [torch.randn(1, 16)]
-        one_gt_losses = loss(cls_scores, bbox_preds, centerness, gt_bboxes,
-                             gt_labels, img_metas, gt_bboxes_ignore,
-                             bezier_preds, gt_beziers)
+        one_gt_losses = loss(preds, img_metas, gt_bboxes, gt_labels,
+                             gt_bboxes_ignore, gt_beziers)
     else:
-        one_gt_losses = loss(cls_scores, bbox_preds, centerness, gt_bboxes,
-                             gt_labels, img_metas, gt_bboxes_ignore)
+        one_gt_losses = loss(preds, img_metas, gt_bboxes, gt_labels,
+                             gt_bboxes_ignore)
     onegt_cls_loss = one_gt_losses['loss_cls']
     onegt_box_loss = one_gt_losses['loss_bbox']
     assert onegt_cls_loss.item() > 0, 'cls loss should be non-zero'

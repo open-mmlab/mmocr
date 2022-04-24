@@ -92,10 +92,12 @@ def test_fcos_head(with_bezier):
         torch.rand(1, 1, s // feat_size, s // feat_size)
         for feat_size in [4, 8, 16, 32, 64]
     ]
+    preds = head.forward(feat)
+    cls_scores = preds['cls_scores']
+    bbox_preds = preds['bbox_preds']
+    centerness = preds['centernesses']
     if with_bezier:
-        cls_scores, bbox_preds, centerness, bezier_preds = head.forward(feat)
-    else:
-        cls_scores, bbox_preds, centerness = head.forward(feat)
+        bezier_preds = preds['bezier_preds']
     for i, feat_size in enumerate([64, 32, 16, 8, 4]):
         assert cls_scores[i].shape == (1, 4, feat_size, feat_size)
         assert bbox_preds[i].shape == (1, 4, feat_size, feat_size)
