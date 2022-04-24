@@ -1,0 +1,172 @@
+# Copyright (c) OpenMMLab. All rights reserved.
+import argparse
+import glob
+import json
+import os.path as osp
+from functools import partial
+
+import mmcv
+
+from mmocr.datasets.pipelines.crop import crop_img, warp_img
+from mmocr.utils import list_to_file
+
+
+def parse_labelme_json(json_file, img_dir='./', out_dir='./', tasks=['det']):
+    invalid_res = [[], [], []]
+
+    json_obj = mmcv.load(json_file)
+
+    img_file = osp.basename(json_obj['imagePath'])
+    img_full_path = osp.join(img_dir, img_file)
+
+    img_width = json_obj['imageWidth']
+    img_height = json_obj['imageHeight']
+    if 'recog' in tasks:
+        src_img = mmcv.imread(img_full_path)
+        img_basename = osp.splitext(img_file)[0]
+        sub_dir = osp.join(out_dir, 'recog', img_basename)
+        mmcv.mkdir_or_exist(sub_dir)
+
+    det_line_json_list = []
+    recog_crop_line_str_list = []
+    recog_warp_line_str_list = []
+
+    shape_info = json_obj['shapes']
+    idx = 0
+    annos = []
+    for box_info in shape_info:
+        warp_flag = True
+        shape = box_info['shape_type']
+        if shape not in ['rectangle', 'polygon']:
+            return invalid_res
+        poly = []
+        box_points = box_info['points']
+        for point in box_points:
+            poly.extend([int(x) for x in point])
+        x_list = [x for x in poly[0::2]]
+        y_list = [y for y in poly[1::2]]
+        quad = []
+        if shape == 'rectangle':
+            warp_flag = False
+            quad = [
+                poly[0], poly[1], poly[2], poly[1], poly[2], poly[3], poly[0],
+                poly[3]
+            ]
+        else:
+            if len(poly) < 8 or len(poly) % 2 != 0:
+                return invalid_res
+            if len(poly) == 8:
+                quad = poly
+            else:
+                warp_flag = False
+                x_min, x_max, y_min, y_max = min(x_list), max(x_list), min(
+                    y_list), max(y_list)
+                quad = [x_min, y_min, x_max, y_min, x_max, y_max, x_min, y_max]
+        text_label = box_info['label']
+        # for textdet
+        anno = {}
+        anno['iscrowd'] = 0
+        anno['category_id'] = 1
+        w = max(x_list) - min(x_list)
+        h = max(y_list) - min(y_list)
+        anno['bbox'] = [min(x_list), min(y_list), w, h]
+        if shape == 'rectangle':
+            anno['segmentation'] = [quad]
+        else:
+            anno['segmentation'] = [poly]
+        anno['text'] = text_label
+        annos.append(anno)
+        # for textrecog
+        if 'recog' in tasks:
+            cropped_img = crop_img(src_img, quad)
+            img_path_cropped_img = osp.join(sub_dir, f'crop_{idx}.jpg')
+            mmcv.imwrite(cropped_img, img_path_cropped_img)
+            recog_crop_line_str_list.append(
+                f'{img_path_cropped_img} {text_label}')
+            if warp_flag:
+                warpped_img = warp_img(src_img, quad)
+                img_path_warpped_img = osp.join(sub_dir, f'warp_{idx}.jpg')
+                mmcv.imwrite(warpped_img, img_path_warpped_img)
+                recog_warp_line_str_list.append(
+                    f'{img_path_warpped_img} {text_label}')
+        idx += 1
+
+    line_json = {
+        'file_name': img_file,
+        'height': img_height,
+        'width': img_width,
+        'annotations': annos
+    }
+    det_line_json_list.append(json.dumps(line_json, ensure_ascii=False))
+
+    return [
+        det_line_json_list, recog_crop_line_str_list, recog_warp_line_str_list
+    ]
+
+
+def process(json_dir, img_dir, out_dir, tasks=['det'], n_proc=1):
+    mmcv.mkdir_or_exist(out_dir)
+
+    json_file_list = glob.glob(osp.join(json_dir, '*.json'))
+
+    parse_labelme_json_func = partial(
+        parse_labelme_json, img_dir=img_dir, out_dir=out_dir, tasks=tasks)
+
+    if n_proc <= 1:
+        total_results = mmcv.track_progress(parse_labelme_json_func,
+                                            json_file_list)
+    else:
+        total_results = mmcv.track_parallel_progress(
+            parse_labelme_json_func,
+            json_file_list,
+            keep_order=True,
+            nproc=n_proc)
+
+    total_det_line_json_list = []
+    total_recog_crop_line_str = []
+    total_recog_warp_line_str = []
+    for res in total_results:
+        total_det_line_json_list.extend(res[0])
+        if 'recog' in tasks:
+            total_recog_crop_line_str.extend(res[1])
+            total_recog_warp_line_str.extend(res[2])
+
+    det_out_dir = osp.join(out_dir, 'det')
+    mmcv.mkdir_or_exist(det_out_dir)
+    det_out_file = osp.join(det_out_dir, 'instances_train.txt')
+    list_to_file(det_out_file, total_det_line_json_list)
+
+    if 'recog' in tasks:
+        recog_out_file_crop = osp.join(out_dir, 'recog', 'crop_gt.txt')
+        recog_out_file_warp = osp.join(out_dir, 'recog', 'warp_gt.txt')
+        list_to_file(recog_out_file_crop, total_recog_crop_line_str)
+        list_to_file(recog_out_file_warp, total_recog_warp_line_str)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('json_dir', help='Root dir for labelme json file.')
+    parser.add_argument('image_dir', help='Root dir for image file.')
+    parser.add_argument(
+        'out_dir', help='Dir to save annotations in mmocr format.')
+    parser.add_argument(
+        '--tasks',
+        nargs='+',
+        help='Tasks to be processed, can be one "det" or both: "det", "recog"')
+    parser.add_argument(
+        '--n_proc', type=int, default=10, help='Number of process.')
+    args = parser.parse_args()
+    return args
+
+
+def main():
+    args = parse_args()
+
+    process(args.json_dir, args.image_dir, args.out_dir, args.tasks,
+            args.n_proc)
+
+    print('finish')
+
+
+if __name__ == '__main__':
+    main()
