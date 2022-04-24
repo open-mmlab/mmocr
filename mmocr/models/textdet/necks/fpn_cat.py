@@ -181,19 +181,23 @@ class ScaleChannelSpatialAttention(BaseModule):
 
     Args:
         in_channels (int): A numbers of input channels.
+        c_wise_channels (int): Number of channel-wise attention channels.
         out_channels (int): Number of output channels.
-        num_features (int): Number of feature layers.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
-    def __init__(self, in_channels, out_channels, num_features, init_cfg=None):
+    def __init__(self,
+                 in_channels,
+                 c_wise_channels,
+                 out_channels,
+                 init_cfg=None):
         super().__init__(init_cfg=init_cfg)
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         # Channel Wise
         self.channel_wise = Sequential(
             ConvModule(
                 in_channels,
-                out_channels,
+                c_wise_channels,
                 1,
                 bias=False,
                 conv_cfg=None,
@@ -201,7 +205,7 @@ class ScaleChannelSpatialAttention(BaseModule):
                 act_cfg=dict(type='ReLU'),
                 inplace=False),
             ConvModule(
-                out_channels,
+                c_wise_channels,
                 in_channels,
                 1,
                 bias=False,
@@ -233,7 +237,7 @@ class ScaleChannelSpatialAttention(BaseModule):
         # Attention Wise
         self.attention_wise = ConvModule(
             in_channels,
-            num_features,
+            out_channels,
             1,
             bias=False,
             conv_cfg=None,
@@ -254,11 +258,8 @@ class ScaleChannelSpatialAttention(BaseModule):
             :math:`C_{out}` is ``out_channels``.
         """
         out = self.avg_pool(inputs)
-        # N x 4 x 1 x 1
         out = self.channel_wise(out)
-        # N x C x H x W
         out = out + inputs
-        # N x 1 x H x W
         inputs = torch.mean(out, dim=1, keepdim=True)
         out = self.spatial_wise(inputs) + out
         out = self.attention_wise(out)
