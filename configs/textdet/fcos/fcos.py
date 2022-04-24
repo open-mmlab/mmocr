@@ -1,9 +1,23 @@
 _base_ = [
-    # '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/runtime_10e.py',
-    # '../../_base_/det_datasets/toy_data.py',
     '../../_base_/det_datasets/icdar2015.py',
 ]
+
+optimizer = dict(
+    type='SGD',
+    lr=0.01,
+    momentum=0.9,
+    weight_decay=0.0001,
+    paramwise_cfg=dict(bias_lr_mult=2., bias_decay_mult=0.))
+optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
+lr_config = dict(
+    policy='step',
+    warmup='linear',
+    warmup_iters=500,
+    warmup_ratio=1.0 / 3,
+    step=[8, 11])
+total_epochs = 12
+
 num_classes = 1
 strides = [8, 16, 32, 64, 128]
 bbox_coder = dict(type='DistancePointBBoxCoder')
@@ -90,6 +104,7 @@ model = dict(
         nms_pre=1000,
         nms=dict(type='nms', iou_threshold=0.5),
         score_thr=0.05))
+
 img_norm_cfg = dict(
     mean=[103.530, 116.280, 123.675], std=[1.0, 1.0, 1.0], to_rgb=False)
 train_pipeline = [
@@ -97,9 +112,9 @@ train_pipeline = [
     dict(
         type='LoadTextAnnotations',
         with_bbox=True,
-        # with_mask=True,
-        # poly2mask=True,
-        with_extra_fields=True),
+        with_mask=True,
+        poly2mask=True,
+    ),
     dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
@@ -155,20 +170,3 @@ data = dict(
         type='UniformConcatDataset',
         datasets=test_list,
         pipeline=test_pipeline))
-# optimizer
-optimizer = dict(
-    type='SGD',
-    lr=0.01,
-    momentum=0.9,
-    weight_decay=0.0001,
-    paramwise_cfg=dict(bias_lr_mult=2., bias_decay_mult=0.))
-optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
-# learning policy
-lr_config = dict(
-    policy='step',
-    warmup='linear',
-    warmup_iters=500,
-    warmup_ratio=1.0 / 3,
-    step=[8, 11])
-# runner = dict(type='EpochBasedRunner', max_epochs=12)
-total_epochs = 12

@@ -9,7 +9,7 @@ import torch.nn as nn
 
 class BasePostprocessor:
 
-    def __init__(self, text_repr_type='poly'):
+    def __init__(self, text_repr_type='poly', **kwargs):
         assert text_repr_type in ['poly', 'quad'
                                   ], f'Invalid text repr type {text_repr_type}'
 
@@ -22,14 +22,7 @@ class BasePostprocessor:
 
 
 class BaseTextDetPostProcessor(nn.Module):
-    """the results must has the same format as.
-
-    #polygon'size is batch_size * poly_num_per_img * point_num
-    [dict(
-         filename=filename,
-         polygon=list[list[list[float]]],
-         polygon_score=list[list[float]])]
-    """
+    """For FCOS head only."""
 
     def __init__(self,
                  text_repr_type='poly',
@@ -104,9 +97,10 @@ class BaseTextDetPostProcessor(nn.Module):
         raise NotImplementedError
 
     def split_results(self, pred_results, img_metas, **kwargs):
-        """convert pred_results to the follow format:
+        """Convert pred_results to the follow format:
 
-        list(dict()) the list' size is batch size dict contain single image
-        pred result
+        Args:
+            pred_results (list[dict]): The list size is batch size. The dict
+                contains the prediction result of a single image.
         """
         return pred_results

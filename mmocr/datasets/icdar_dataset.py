@@ -119,7 +119,7 @@ class IcdarDataset(CocoDataset):
                  results,
                  metric='hmean-iou',
                  logger=None,
-                 score_thr=0.05,
+                 score_thr=0.3,
                  rank_list=None,
                  **kwargs):
         """Evaluate the hmean metric.
