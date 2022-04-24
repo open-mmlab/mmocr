@@ -4,7 +4,7 @@ lmdb
 matplotlib
 numba>=0.45.1
 numpy
-opencv-python-headless<=4.5.4.60
+opencv-python
 pyclipper
 pycocotools
 rapidfuzz
