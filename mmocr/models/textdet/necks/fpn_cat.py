@@ -1,8 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
-from mmcv.runner import BaseModule, ModuleList, auto_fp16
+from mmcv.runner import BaseModule, ModuleList, Sequential, auto_fp16
 
 from mmocr.models.builder import NECKS
 
@@ -39,6 +40,7 @@ class FPNC(BaseModule):
                  bn_re_on_lateral=False,
                  bias_on_smooth=False,
                  bn_re_on_smooth=False,
+                 asf_cfg=None,
                  conv_after_concat=False,
                  init_cfg=None):
         super().__init__(init_cfg=init_cfg)
@@ -49,6 +51,7 @@ class FPNC(BaseModule):
         self.num_ins = len(in_channels)
         self.bn_re_on_lateral = bn_re_on_lateral
         self.bn_re_on_smooth = bn_re_on_smooth
+        self.asf_cfg = asf_cfg
         self.conv_after_concat = conv_after_concat
         self.lateral_convs = ModuleList()
         self.smooth_convs = ModuleList()
@@ -88,6 +91,24 @@ class FPNC(BaseModule):
 
             self.lateral_convs.append(l_conv)
             self.smooth_convs.append(smooth_conv)
+
+        if self.asf_cfg is not None:
+            self.asf_conv = ConvModule(
+                out_channels * self.num_outs,
+                out_channels * self.num_outs,
+                3,
+                padding=1,
+                conv_cfg=None,
+                norm_cfg=None,
+                act_cfg=None,
+                inplace=False)
+            if self.asf_cfg['attention_type'] == 'ScaleChannelSpatial':
+                self.asf_attn = ScaleChannelSpatialAttention(
+                    self.out_channels * self.num_outs,
+                    (self.out_channels * self.num_outs) // 4, self.num_outs)
+            else:
+                raise NotImplementedError
+
         if self.conv_after_concat:
             norm_cfg = dict(type='BN')
             act_cfg = dict(type='ReLU')
@@ -135,9 +156,111 @@ class FPNC(BaseModule):
         for i, out in enumerate(outs):
             outs[i] = F.interpolate(
                 outs[i], size=outs[0].shape[2:], mode='nearest')
+
         out = torch.cat(outs, dim=1)
+        if self.asf_cfg is not None:
+            asf_feature = self.asf_conv(out)
+            attention = self.asf_attn(asf_feature)
+            enhanced_feature = []
+            for i, out in enumerate(outs):
+                enhanced_feature.append(attention[:, i:i + 1] * outs[i])
+            out = torch.cat(enhanced_feature, dim=1)
 
         if self.conv_after_concat:
             out = self.out_conv(out)
+
+        return out
+
+
+class ScaleChannelSpatialAttention(BaseModule):
+    """Spatial Attention module in Real-Time Scene Text Detection with
+    Differentiable Binarization and Adaptive Scale Fusion.
+
+    This was partially adapted from https://github.com/MhLiao/DB
+
+    Args:
+        in_channels (list[int]): A list of numbers of input channels.
+        lateral_channels (int): Number of channels for lateral layers.
+        out_channels (int): Number of output channels.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+    """
+
+    def __init__(self, in_channels, out_channels, num_features, init_cfg=None):
+        super().__init__(init_cfg=init_cfg)
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        # Channel Wise
+        self.channel_wise = Sequential(
+            ConvModule(
+                in_channels,
+                out_channels,
+                1,
+                bias=False,
+                conv_cfg=None,
+                norm_cfg=None,
+                act_cfg=dict(type='ReLU'),
+                inplace=False),
+            ConvModule(
+                out_channels,
+                in_channels,
+                1,
+                bias=False,
+                conv_cfg=None,
+                norm_cfg=None,
+                act_cfg=dict(type='Sigmoid'),
+                inplace=False))
+        # Spatial Wise
+        self.spatial_wise = Sequential(
+            ConvModule(
+                1,
+                1,
+                3,
+                padding=1,
+                bias=False,
+                conv_cfg=None,
+                norm_cfg=None,
+                act_cfg=dict(type='ReLU'),
+                inplace=False),
+            ConvModule(
+                1,
+                1,
+                1,
+                bias=False,
+                conv_cfg=None,
+                norm_cfg=None,
+                act_cfg=dict(type='Sigmoid'),
+                inplace=False))
+
+        # Attention Wise
+        self.attention_wise = ConvModule(
+            in_channels,
+            num_features,
+            1,
+            bias=False,
+            conv_cfg=None,
+            norm_cfg=None,
+            act_cfg=dict(type='Sigmoid'),
+            inplace=False)
+
+    @auto_fp16()
+    def forward(self, inputs):
+        """
+        Args:
+            inputs (list[Tensor]): Each tensor has the shape of
+                :math:`(N, C_i, H_i, W_i)`. It usually expects 4 tensors
+                (C2-C5 features) from ResNet.
+
+        Returns:
+            Tensor: A tensor of shape :math:`(N, C_{out}, H_0, W_0)` where
+            :math:`C_{out}` is ``out_channels``.
+        """
+        out = self.avg_pool(inputs)
+        # N x 4 x 1 x 1
+        out = self.channel_wise(out)
+        # N x C x H x W
+        out = out + inputs
+        # N x 1 x H x W
+        inputs = torch.mean(out, dim=1, keepdim=True)
+        out = self.spatial_wise(inputs) + out
+        out = self.attention_wise(out)
 
         return out
