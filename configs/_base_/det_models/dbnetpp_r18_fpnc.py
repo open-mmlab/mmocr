@@ -2,19 +2,17 @@ model = dict(
     type='DBNet',
     backbone=dict(
         type='mmdet.ResNet',
-        depth=50,
+        depth=18,
         num_stages=4,
         out_indices=(0, 1, 2, 3),
         frozen_stages=-1,
         norm_cfg=dict(type='BN', requires_grad=True),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet18'),
         norm_eval=False,
-        style='pytorch',
-        dcn=dict(type='DCNv2', deform_groups=1, fallback_on_stride=False),
-        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
-        stage_with_dcn=(False, True, True, True)),
+        style='caffe'),
     neck=dict(
         type='FPNC',
-        in_channels=[256, 512, 1024, 2048],
+        in_channels=[64, 128, 256, 512],
         lateral_channels=256,
         asf_cfg=dict(attention_type='ScaleChannelSpatial')),
     bbox_head=dict(

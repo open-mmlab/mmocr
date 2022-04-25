@@ -249,13 +249,12 @@ class ScaleChannelSpatialAttention(BaseModule):
     def forward(self, inputs):
         """
         Args:
-            inputs (list[Tensor]): Each tensor has the shape of
-                :math:`(N, C_i, H_i, W_i)`. It usually expects a concat tensor
-                (C2-C5 features) from ResNet.
+            inputs (Tensor): A concat FPN feature tensor that has the shape of
+                :math:`(N, C, H, W)`.
 
         Returns:
-            Tensor: A tensor of shape :math:`(N, C_{out}, H_0, W_0)` where
-            :math:`C_{out}` is ``out_channels``.
+            Tensor: An attention map of shape :math:`(N, C_{out}, H, W)`
+            where :math:`C_{out}` is ``out_channels``.
         """
         out = self.avg_pool(inputs)
         out = self.channel_wise(out)
