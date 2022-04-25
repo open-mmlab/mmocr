@@ -27,7 +27,8 @@ class FPNC(BaseModule):
         bias_on_smooth (bool): Whether to use bias on smoothing layer.
         bn_re_on_smooth (bool): Whether to use BatchNorm and ReLU on smoothing
             layer.
-        asf_cfg (dict): Adaptive Scale Fusion module configs.
+        asf_cfg (dict): Adaptive Scale Fusion module configs. The
+            attention_type can be 'ScaleChannelSpatial'.
         conv_after_concat (bool): Whether to add a convolution layer after
             the concatenation of predictions.
         init_cfg (dict or list[dict], optional): Initialization configs.
