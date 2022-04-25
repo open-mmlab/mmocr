@@ -57,11 +57,14 @@ class ImgAug:
             followed by random rotation with angles in range [-10, 10], and
             resize with an independent scale in range [0.5, 3.0] for each
             side of images.
+        clip_invalid_polys (bool): Whether to clip invalid polygons after
+            transformation. False persists to the behavior in DBNet.
     """
 
-    def __init__(self, args=None):
+    def __init__(self, args=None, clip_invalid_ploys=True):
         self.augmenter_args = args
         self.augmenter = AugmenterBuilder().build(self.augmenter_args)
+        self.clip_invalid_polys = clip_invalid_ploys
 
     def __call__(self, results):
         # img is bgr
@@ -87,9 +90,13 @@ class ImgAug:
 
         # augment polygon mask
         for key in results['mask_fields']:
-            masks = self.may_augment_poly(aug, shape, results[key])
-            if len(masks) > 0:
+            if self.clip_invalid_polys:
+                masks = self.may_augment_poly(aug, shape, results[key])
                 results[key] = PolygonMasks(masks, *target_shape[:2])
+            else:
+                masks = self.may_augment_poly_legacy(aug, shape, results[key])
+                if len(masks) > 0:
+                    results[key] = PolygonMasks(masks, *target_shape[:2])
 
         # augment bbox
         for key in results['bbox_fields']:
@@ -118,6 +125,26 @@ class ImgAug:
         return new_bboxes
 
     def may_augment_poly(self, aug, img_shape, polys):
+        imgaug_polys = []
+        for poly in polys:
+            poly = poly[0]
+            poly = poly.reshape(-1, 2)
+            imgaug_polys.append(imgaug.Polygon(poly))
+        imgaug_polys = aug.augment_polygons(
+            [imgaug.PolygonsOnImage(imgaug_polys,
+                                    shape=img_shape)])[0].clip_out_of_image()
+
+        new_polys = []
+        for poly in imgaug_polys.polygons:
+            new_poly = []
+            for point in poly:
+                new_poly.append(np.array(point, dtype=np.float32))
+            new_poly = np.array(new_poly, dtype=np.float32).flatten()
+            new_polys.append([new_poly])
+
+        return new_polys
+
+    def may_augment_poly_legacy(self, aug, img_shape, polys):
         key_points, poly_point_nums = [], []
         for poly in polys:
             poly = poly[0]
