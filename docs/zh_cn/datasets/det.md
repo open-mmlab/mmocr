@@ -17,21 +17,21 @@
 | TextOCR | [下载地址](https://textvqa.org/textocr/dataset)  | - |                    -                    | -
 | Totaltext | [下载地址](https://github.com/cs-chan/Total-Text-Dataset)  | - |                    -                    | -
 | CurvedSynText150k | [下载地址](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) |                                                          [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json)                                                          |                                              -                                               |   -
-|FUNSD|[下载地址](https://guillaumejaume.github.io/FUNSD/)|-|-|-|  
+|FUNSD|[下载地址](https://guillaumejaume.github.io/FUNSD/)|-|-|-|
 |DeText|[下载地址](https://rrc.cvc.uab.es/?ch=9)|-|-|-|
-|NAF|[下载地址](https://github.com/herobd/NAF_dataset/releases/tag/v1.0)|-|-|-|                                                                         
-|SROIE|[下载地址](https://rrc.cvc.uab.es/?ch=13)|-|-|-|       
-|Lecture Video DB|[下载地址](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)|-|-|-|                                                                         
-|LSVT|[下载地址](https://rrc.cvc.uab.es/？ch=16)|-|-|-|                                                                         
+|NAF|[下载地址](https://github.com/herobd/NAF_dataset/releases/tag/v1.0)|-|-|-|
+|SROIE|[下载地址](https://rrc.cvc.uab.es/?ch=13)|-|-|-|
+|Lecture Video DB|[下载地址](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)|-|-|-|
+|LSVT|[下载地址](https://rrc.cvc.uab.es/？ch=16)|-|-|-|
 |IMGUR|[下载地址](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset)|-|-|-|
 |KAIST|[下载地址](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database)|-|-|-|                                |
-|MTWI|[下载地址](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us) |-|-|-|                                                            
-|COCO Text v2|[下载地址](https://bgshih.github.io/cocotext/)|-|-|-| 
+|MTWI|[下载地址](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us) |-|-|-|
+|COCO Text v2|[下载地址](https://bgshih.github.io/cocotext/)|-|-|-|
 |ReCTS|[下载地址](https://rrc.cvc.uab.es/?ch=12)|-|-|-|
-|IIIT-ILST|[下载地址](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst)|-|-|-|                                                                 
+|IIIT-ILST|[下载地址](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst)|-|-|-|
 |VinText|[下载地址](https://github.com/VinAIResearch/dict-guided)|-|-|-|
 |BID|[下载地址](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)|-|-|-|
-|RCTW|[下载地址](https://rctw.vlrlab.net/index.html)|-|-|-| 
+|RCTW|[下载地址](https://rctw.vlrlab.net/index.html)|-|-|-|
 
 ## 重要提醒
 
@@ -314,7 +314,7 @@ python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icda
 
 ## FUNSD
 
-- 第一步: 下载 [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) 到 `funsd/`中。 
+- 第一步: 下载 [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) 到 `funsd/`中。
 
   ```bash
   mkdir funsd && cd funsd
@@ -351,7 +351,7 @@ python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icda
 
 ## DeText
 
-- 第一步: 从[homepage](https://rrc.cvc.uab.es/?ch=9)**Task 3: End to End**下载 `ch9_training_images.zip`, `ch9_training_localization_transcription_gt.zip`, `ch9_validation_images.zip`, 和 `ch9_validation_localization_transcription_gt.zip`。 
+- 第一步: 从[homepage](https://rrc.cvc.uab.es/?ch=9)**Task 3: End to End**下载 `ch9_training_images.zip`, `ch9_training_localization_transcription_gt.zip`, `ch9_validation_images.zip`, 和 `ch9_validation_localization_transcription_gt.zip`。
 
   ```bash
   mkdir detext && cd detext
@@ -705,7 +705,7 @@ python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icda
 
 ## ILST
 
-- 第一步: 从 [onedrive](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)下载 `IIIT-ILST` 
+- 第一步: 从 [onedrive](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)下载 `IIIT-ILST`
 
 - 第二步: 运行以下命令
 
@@ -728,7 +728,7 @@ python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icda
   rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm -rf README.txt
   ```
 
-- 第三步: 生成 `instances_training.json` 和 `instances_val.json` (自选)。因为原本的数据集没有包含验证集， 用户可以用 `--val-ratio` 来拆分数据集。 比方说，如果设 val-ratio 为 0.2， 20% 的数据就会从原本的数据集被拆分开留作验证集。 
+- 第三步: 生成 `instances_training.json` 和 `instances_val.json` (自选)。因为原本的数据集没有包含验证集， 用户可以用 `--val-ratio` 来拆分数据集。 比方说，如果设 val-ratio 为 0.2， 20% 的数据就会从原本的数据集被拆分开留作验证集。
 
   ```bash
   python tools/data/textdet/ilst_converter.py    PATH/TO/IIIT-ILST --nproc 4
@@ -815,7 +815,7 @@ python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icda
   rm -rf desktop.ini
   ```
 
-- 第三步: 生成 `instances_training.json` 和 `instances_val.json` (自选)。 因为原本的数据集没有包含验证集， 用户可以用 `--val-ratio` 来拆分数据集。 比方说，如果设 val-ratio 为 0.2， 20% 的数据就会从原本的数据集被拆分开留作验证集。  
+- 第三步: 生成 `instances_training.json` 和 `instances_val.json` (自选)。 因为原本的数据集没有包含验证集， 用户可以用 `--val-ratio` 来拆分数据集。 比方说，如果设 val-ratio 为 0.2， 20% 的数据就会从原本的数据集被拆分开留作验证集。
 
   ```bash
   python tools/data/textdet/bid_converter.py PATH/TO/BID --nproc 4
@@ -835,7 +835,7 @@ python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icda
 
 - 第一步: 从[下载地址](https://rctw.vlrlab.net/dataset.html)下载 `train_images.zip.001`, `train_images.zip.002`, 和 `train_gts.zip`, 然后解压缩档案 `rctw/imgs` 和 `rctw/annotations`。
 
-- 第二步: 生成 `instances_training.json` 和 `instances_val.json` (自选)。 因为原本的数据集没有包含验证集， 用户可以用 `--val-ratio` 来拆分数据集。 比方说，如果设 val-ratio 为 0.2， 20% 的数据就会从原本的数据集被拆分开留作验证集。  
+- 第二步: 生成 `instances_training.json` 和 `instances_val.json` (自选)。 因为原本的数据集没有包含验证集， 用户可以用 `--val-ratio` 来拆分数据集。 比方说，如果设 val-ratio 为 0.2， 20% 的数据就会从原本的数据集被拆分开留作验证集。
 
   ```bash
   # RCTW没有公开拆分测试集的标注所以我们可以加--val-ratio 0.2来拆分验证集
