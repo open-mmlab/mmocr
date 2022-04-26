@@ -44,7 +44,11 @@ class FPNC(BaseModule):
                  bn_re_on_smooth=False,
                  asf_cfg=None,
                  conv_after_concat=False,
-                 init_cfg=None):
+                 init_cfg=[
+                     dict(type='Kaiming', layer='Conv'),
+                     dict(
+                         type='Constant', layer='BatchNorm', val=1., bias=1e-4)
+                 ]):
         super().__init__(init_cfg=init_cfg)
         assert isinstance(in_channels, list)
         self.in_channels = in_channels
@@ -191,7 +195,7 @@ class ScaleChannelSpatialAttention(BaseModule):
                  in_channels,
                  c_wise_channels,
                  out_channels,
-                 init_cfg=None):
+                 init_cfg=[dict(type='Kaiming', layer='Conv', bias=0)]):
         super().__init__(init_cfg=init_cfg)
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         # Channel Wise
