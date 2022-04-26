@@ -30,9 +30,4 @@ data = dict(
         datasets=test_list,
         pipeline=test_pipeline_1333_736))
 
-evaluation = dict(
-    interval=100,
-    metric='hmean-iou',
-    min_score_thr=0.1,
-    max_score_thr=0.5,
-    step=0.1)
+evaluation = dict(interval=100, metric='hmean-iou')
