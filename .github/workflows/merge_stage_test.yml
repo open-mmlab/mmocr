@@ -1,4 +1,4 @@
-name: build_push
+name: merge_stage_test
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - 'README.md'
       - 'README_zh-CN.md'
       - 'docs/**'
-      - 'examples/**'
+      - 'demo/**'
       - '.dev_scripts/**'
     branches:
       - main

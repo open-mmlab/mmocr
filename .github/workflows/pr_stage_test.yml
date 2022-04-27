@@ -1,4 +1,4 @@
-name: build_pr
+name: pr_stage_test
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - 'README.md'
       - 'README_zh-CN.md'
       - 'docs/**'
-      - 'examples/**'
+      - 'demo/**'
       - '.dev_scripts/**'
 
 concurrency:
