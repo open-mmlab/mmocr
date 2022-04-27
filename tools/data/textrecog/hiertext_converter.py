@@ -104,7 +104,7 @@ def process_img(args, src_image_root, dst_image_root, ignore_image_root, level,
     return labels
 
 
-def convert_cocotext(
+def convert_hiertext(
     root_path,
     split,
     level,
@@ -228,7 +228,7 @@ def main():
     args = parse_args()
     root_path = args.root_path
     print('Processing training set...')
-    convert_cocotext(
+    convert_hiertext(
         root_path=root_path,
         split='train',
         level=args.level,
@@ -236,7 +236,7 @@ def main():
         format=args.format,
         nproc=args.nproc)
     print('Processing validation set...')
-    convert_cocotext(
+    convert_hiertext(
         root_path=root_path,
         split='val',
         level=args.level,
