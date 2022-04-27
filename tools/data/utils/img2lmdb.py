@@ -45,6 +45,9 @@ def img2lmdb(imgs_path,
              lmdb_map_size,
              checkValid=True):
     """Create LMDB dataset with images and labels for text recognition.
+    This was partially adapted from
+    https://github.com/clovaai/deep-text-recognition-benchmark.
+
 
     Args:
         imgs_path (str): path to images
