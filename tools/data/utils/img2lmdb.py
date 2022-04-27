@@ -78,7 +78,7 @@ def img2lmdb(imgs_path,
     """
     # check label format
     assert osp.basename(label_path).split('.')[-1] == label_format
-    # creat lmdb env
+    # create lmdb env
     os.makedirs(output, exist_ok=True)
     env = lmdb.open(output, map_size=lmdb_map_size)
     # load label file
@@ -103,7 +103,7 @@ def img2lmdb(imgs_path,
                     print('%s is not a valid image' % img_path)
                     continue
             except Exception:
-                print('error occured at ', img_name)
+                print('error occurred at ', img_name)
 
         imageKey = 'image-%09d'.encode(coding) % cnt
         labelKey = 'label-%09d'.encode(coding) % cnt
