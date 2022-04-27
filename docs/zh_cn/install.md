@@ -16,7 +16,7 @@
 
 | MMOCR        | MMCV                   | MMDetection               |
 | ------------ | ---------------------- | ------------------------- |
-|   main       | 1.3.8 <= mmcv <= 1.6.0 | 2.21.0 <= mmdet <= 3.0.0  |
+| main         | 1.3.8 <= mmcv <= 1.6.0 | 2.21.0 <= mmdet <= 3.0.0  |
 | 0.5.0        | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 3.0.0  |
 | 0.4.0, 0.4.1 | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 2.20.0 |
 | 0.3.0        | 1.3.8 <= mmcv <= 1.4.0 | 2.14.0 <= mmdet <= 2.20.0 |
@@ -111,6 +111,20 @@ pip install -v -e . # or "python setup.py develop"
 export PYTHONPATH=$(pwd):$PYTHONPATH
 ```
 
+g. （可选）如果你需要使用与 `albumentations` 有关的变换，比如 ABINet 数据流水线中的 `Albu`，请使用以下命令安装依赖：
+
+```shell
+pip install -r requirements/albu.txt
+```
+
+:::{note}
+
+我们建议在安装 `albumentations` 之后检查当前环境，确保 `opencv-python` 和 `opencv-python-headless` 没有同时被安装，否则有可能会产生一些无法预知的错误。如果它们不巧同时存在于环境当中，请卸载 `opencv-python-headless` 以确保 MMOCR 的可视化工具可以正常运行。
+
+查看 [`albumentations` 的官方文档](https://albumentations.ai/docs/getting_started/installation/#note-on-opencv-dependencies)以获知详情。
+
+:::
+
 ## 完整安装命令
 
 以下是 conda 方式安装 mmocr 的完整安装命令。
@@ -135,6 +149,9 @@ cd mmocr
 pip install -r requirements.txt
 pip install -v -e .  # 或 "python setup.py develop"
 export PYTHONPATH=$(pwd):$PYTHONPATH
+
+# 安装 albumentations
+pip install -r requirements/albu.txt
 ```
 
 ## 可选方式: Docker镜像
