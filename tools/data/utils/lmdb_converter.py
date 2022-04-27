@@ -21,7 +21,7 @@ def main():
         '--batch_size',
         '-b',
         type=int,
-        default=10000,
+        default=1000,
         help='processing batch size, default 10000')
     parser.add_argument(
         '--encoding',
