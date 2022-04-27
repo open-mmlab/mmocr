@@ -30,6 +30,7 @@ def parseline(line, format):
     if format == 'txt':
         img_name, text = line.strip('\n').split(' ')
     else:
+        line = json.loads(line)
         img_name = line['filename']
         text = line['text']
     return img_name, text
@@ -79,11 +80,8 @@ def img2lmdb(imgs_path,
     os.makedirs(output, exist_ok=True)
     env = lmdb.open(output, map_size=lmdb_map_size)
     # load label file
-    if label_format == 'jsonl':
-        anno_list = json.load(open(label_path, 'r', encoding=coding))
-    else:
-        with open(label_path, 'r', encoding=coding) as f:
-            anno_list = f.readlines()
+    with open(label_path, 'r', encoding=coding) as f:
+        anno_list = f.readlines()
 
     cache = {}
     # index start from 1
