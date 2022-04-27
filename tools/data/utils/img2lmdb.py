@@ -116,7 +116,7 @@ def img2lmdb(imgs_path,
             print('Written %d / %d' % (cnt, nSamples))
         cnt += 1
     nSamples = cnt - 1
-    cache['num-samples'.encode(coding)] = str(nSamples).encode(coding)
+    cache['total_number'.encode(coding)] = str(nSamples).encode(coding)
     writeCache(env, cache)
     print('Created lmdb dataset with %d samples' % nSamples)
 
