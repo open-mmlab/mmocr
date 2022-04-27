@@ -32,4 +32,4 @@ data = dict(
         datasets=test_list,
         pipeline=test_pipeline_4068_1024))
 
-evaluation = dict(interval=100, metric='hmean-iou')
+evaluation = dict(interval=999999, metric='hmean-iou')  # do not evaluate
