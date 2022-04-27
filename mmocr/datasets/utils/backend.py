@@ -21,20 +21,35 @@ class LmdbAnnFileBackend:
         self.lmdb_path = lmdb_path
         self.encoding = encoding
         env = self._get_env()
-        with env.begin(write=False) as txn:
-            self.total_number = int(
-                txn.get('total_number'.encode('utf-8')).decode(self.encoding))
+        try:
+            with env.begin(write=False) as txn:
+                self.total_number = int(
+                    txn.get('total_number'.encode('utf-8')).decode(
+                        self.encoding))
+        # The existing academic lmdb dataset refers to
+        # total_number as num-samples
+        except AttributeError:
+            with env.begin(write=False) as txn:
+                self.total_number = int(
+                    txn.get('num-samples'.encode('utf-8')).decode(
+                        self.encoding))
 
     def __getitem__(self, index):
         """Retrieve one line from lmdb file by index."""
-        # only attach env to self when __getitem__ is called
-        # because env object cannot be pickle
         if not hasattr(self, 'env'):
             self.env = self._get_env()
 
         with self.env.begin(write=False) as txn:
-            line = txn.get(str(index).encode('utf-8')).decode(self.encoding)
-        return line
+            # this is for label only lmdb format
+            try:
+                line = txn.get(str(index).encode('utf-8')).decode(
+                    self.encoding)
+            # this is for image and label lmdb format
+            except Exception:
+                index = index + 1
+                label_key, filename = b'label-%09d' % index, r'%s' % index
+                line = filename + ' ' + txn.get(label_key).decode()
+            return line
 
     def __len__(self):
         return self.total_number
