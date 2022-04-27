@@ -1,8 +1,8 @@
 _base_ = [
     '../../_base_/default_runtime.py',
-    '../../_base_/schedules/schedule_sgd_1200e.py',
+    '../../_base_/schedules/schedule_sgd_100k_iters.py',
     '../../_base_/det_models/dbnet_r18_fpnc.py',
-    '../../_base_/det_datasets/icdar2015.py',
+    '../../_base_/det_datasets/synthtext.py',
     '../../_base_/det_pipelines/dbnet_pipeline.py'
 ]
 
@@ -30,4 +30,4 @@ data = dict(
         datasets=test_list,
         pipeline=test_pipeline_1333_736))
 
-evaluation = dict(interval=100, metric='hmean-iou')
+evaluation = dict(interval=999999, metric='hmean-iou') # do not evaluate

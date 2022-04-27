@@ -1,5 +1,5 @@
 _base_ = [
-    '../../_base_/runtime_10e.py',
+    '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_600e.py',
     '../../_base_/det_models/psenet_r50_fpnf.py',
     '../../_base_/det_datasets/icdar2015.py',

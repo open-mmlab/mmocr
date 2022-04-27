@@ -1,6 +1,6 @@
 _base_ = [
-    '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/default_runtime.py',
+    '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/det_models/textsnake_r50_fpn_unet.py',
     '../../_base_/det_datasets/ctw1500.py',
     '../../_base_/det_pipelines/textsnake_pipeline.py'
