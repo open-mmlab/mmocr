@@ -56,7 +56,6 @@ def label2lmdb(label_path,
         batch_size (int): Number of files written to the cache each time.
         encoding (str): label encoding method.
         lmdb_map_size (int): maximum size database may grow to.
-
     """
     # read labels
     lines = list_from_file(label_path)
