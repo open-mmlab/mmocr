@@ -20,16 +20,17 @@ class LmdbAnnFileBackend:
     def __init__(self, lmdb_path, encoding='utf8'):
         self.lmdb_path = lmdb_path
         self.encoding = encoding
+        self.label_only = False
+        self.initial_item = True
         env = self._get_env()
-        try:
-            with env.begin(write=False) as txn:
+        with env.begin(write=False) as txn:
+            try:
                 self.total_number = int(
                     txn.get('total_number'.encode('utf-8')).decode(
                         self.encoding))
-        # The existing academic lmdb dataset refers to
-        # total_number as num-samples
-        except AttributeError:
-            with env.begin(write=False) as txn:
+            # The existing academic lmdb dataset refers to
+            # total_number as num-samples
+            except AttributeError:
                 self.total_number = int(
                     txn.get('num-samples'.encode('utf-8')).decode(
                         self.encoding))
@@ -40,15 +41,33 @@ class LmdbAnnFileBackend:
             self.env = self._get_env()
 
         with self.env.begin(write=False) as txn:
-            # this is for label only lmdb format
-            try:
-                line = txn.get(str(index).encode('utf-8')).decode(
-                    self.encoding)
-            # this is for image and label lmdb format
-            except Exception:
-                index = index + 1
-                label_key, filename = b'label-%09d' % index, r'%s' % index
-                line = filename + ' ' + txn.get(label_key).decode()
+            # use initial_item to avoid error triggered frequently
+            if self.initial_item:
+                # this is for label only lmdb format
+                try:
+                    line = txn.get(str(index).encode('utf-8')).decode(
+                        self.encoding)
+                    self.label_only = True
+                # this is for image and label lmdb format
+                except AttributeError:
+                    index = index + 1
+                    label_key = f'label-{index:09d}'
+                    img_key = f'image-{index:09d}'
+                    line = img_key + ' ' + txn.get(
+                        label_key.encode('utf-8')).decode(self.encoding)
+                self.initial_item = False
+
+            else:
+                if self.label_only:
+                    line = txn.get(str(index).encode('utf-8')).decode(
+                        self.encoding)
+                else:
+                    index = index + 1
+                    label_key = f'label-{index:09d}'
+                    img_key = f'image-{index:09d}'
+                    line = img_key + ' ' + txn.get(
+                        label_key.encode('utf-8')).decode(self.encoding)
+
             return line
 
     def __len__(self):

@@ -150,14 +150,13 @@ class LoadImageFromLMDB(object):
         self.txn = None
 
     def __call__(self, results):
-        lmdb_index = results['img_info']['filename']
-        data_root = results['img_prefix']
-        img_key = 'image-%09d' % int(lmdb_index)
+        img_key = results['img_info']['filename']
+        lmdb_path = results['img_prefix']
 
         # lmdb env
         if self.env is None:
             self.env = lmdb.open(
-                data_root,
+                lmdb_path,
                 max_readers=1,
                 readonly=True,
                 lock=False,
@@ -166,15 +165,15 @@ class LoadImageFromLMDB(object):
             )
         # read image
         with self.env.begin(write=False) as txn:
-            imgbuf = txn.get(img_key.encode())
+            imgbuf = txn.get(img_key.encode('utf-8'))
             try:
                 img = mmcv.imfrombytes(imgbuf, flag=self.color_type)
             except IOError:
-                print('Corrupted image for {}'.format(lmdb_index))
+                print('Corrupted image for {}'.format(img_key))
                 return None
 
-            results['filename'] = lmdb_index
-            results['ori_filename'] = lmdb_index
+            results['filename'] = img_key
+            results['ori_filename'] = img_key
             results['img'] = img
             results['img_shape'] = img.shape
             results['ori_shape'] = img.shape
