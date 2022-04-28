@@ -19,6 +19,10 @@ class UniformConcatDataset(ConcatDataset):
         separate_eval (bool): Whether to evaluate the results
             separately if it is used as validation dataset.
             Defaults to True.
+        get_mean (bool): Whether to compute the mean evaluation results, only
+            applicable when ``separate_eval=True``. If ``True``, mean results
+            will be added to the result dictionary with keys in the form of
+            ``mean_{metric_name}``.
         pipeline (None | list[dict] | list[list[dict]]): If ``None``,
             each dataset in datasets use its own pipeline;
             If ``list[dict]``, it will be assigned to the dataset whose
