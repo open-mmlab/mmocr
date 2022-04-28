@@ -18,7 +18,7 @@ def parse_labelme_json(json_file,
                        tasks,
                        ignore_marker='###',
                        recog_format='jsonl',
-                       warp_flag=True):
+                       warp_flag=False):
     invalid_res = [[], [], []]
 
     json_obj = mmcv.load(json_file)
@@ -91,7 +91,7 @@ def parse_labelme_json(json_file,
         annos.append(anno)
         # for textrecog
         if 'recog' in tasks:
-            if text_label == ignore_marker:
+            if text_label == ignore_marker or len(text_label) == 0:
                 continue
             cropped_img = crop_img(src_img, quad)
             img_path_cropped_img = osp.join(sub_dir, f'crop_{idx}.jpg')
@@ -140,13 +140,19 @@ def process(json_dir,
             out_dir,
             tasks=['det'],
             nproc=1,
-            recog_format='jsonl'):
+            recog_format='jsonl',
+            warp=False):
     mmcv.mkdir_or_exist(out_dir)
 
     json_file_list = glob.glob(osp.join(json_dir, '*.json'))
 
     parse_labelme_json_func = partial(
-        parse_labelme_json, img_dir=img_dir, out_dir=out_dir, tasks=tasks)
+        parse_labelme_json,
+        img_dir=img_dir,
+        out_dir=out_dir,
+        tasks=tasks,
+        recog_format=recog_format,
+        warp_flag=warp)
 
     if nproc <= 1:
         total_results = mmcv.track_progress(parse_labelme_json_func,
@@ -174,9 +180,10 @@ def process(json_dir,
     if 'recog' in tasks:
         recog_out_file_crop = osp.join(out_dir, f'train_label.{recog_format}')
         list_to_file(recog_out_file_crop, total_recog_crop_line_str)
-        recog_out_file_warp = osp.join(out_dir,
-                                       f'warp_train_label.{recog_format}')
-        list_to_file(recog_out_file_warp, total_recog_warp_line_str)
+        if warp:
+            recog_out_file_warp = osp.join(out_dir,
+                                           f'warp_train_label.{recog_format}')
+            list_to_file(recog_out_file_warp, total_recog_warp_line_str)
 
 
 def parse_args():
@@ -196,6 +203,10 @@ def parse_args():
         default='jsonl',
         help='Use jsonl or string to format recognition annotations',
         choices=['jsonl', 'txt'])
+    parser.add_argument(
+        '--warp',
+        help='Store warpped img for recognition task',
+        action='store_true')
     args = parser.parse_args()
     return args
 
@@ -204,7 +215,7 @@ def main():
     args = parse_args()
 
     process(args.json_dir, args.image_dir, args.out_dir, args.tasks,
-            args.nproc, args.format)
+            args.nproc, args.format, args.warp)
 
     print('finish')
 
