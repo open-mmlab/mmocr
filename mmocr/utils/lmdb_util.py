@@ -91,12 +91,17 @@ def recog2lmdb(img_root,
     nSamples = len(anno_list)
     for anno in anno_list:
         labelKey = 'label-%09d'.encode(encoding) % cnt
+        img_name, text = parse_line(anno, label_format)
         if label_only:
             # convert only labels to lmdb
-            cache.append((labelKey, anno.encode(encoding)))
+            line = json.dumps({
+                'filename': img_name,
+                'text': text
+            },
+                              ensure_ascii=False)
+            cache.append((labelKey, line.encode(encoding)))
         else:
             # convert both images and labels to lmdb
-            img_name, text = parse_line(anno, label_format)
             img_path = osp.join(img_root, img_name)
             if not osp.exists(img_path):
                 print('%s does not exist' % img_path)
