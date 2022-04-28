@@ -74,6 +74,7 @@ def test_loader():
     _create_dummy_line_str_file(ann_file)
     lmdb_file = osp.join(tmp_dir.name, 'fake_data.lmdb')
     recog2lmdb(
+        img_root=None,
         label_path=ann_file,
         label_format='txt',
         label_only=True,
