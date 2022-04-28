@@ -40,6 +40,9 @@ class IcdarDataset(CocoDataset):
         super().__init__(ann_file, pipeline, classes, data_root, img_prefix,
                          seg_prefix, proposal_file, test_mode, filter_empty_gt)
 
+        # Set dummy flags iust to be compatible with MMDet
+        self.flag = np.zeros(len(self), dtype=np.uint8)
+
     def load_annotations(self, ann_file):
         """Load annotation from COCO style annotation file.
 

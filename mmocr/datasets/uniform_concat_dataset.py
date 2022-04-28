@@ -19,10 +19,10 @@ class UniformConcatDataset(ConcatDataset):
         separate_eval (bool): Whether to evaluate the results
             separately if it is used as validation dataset.
             Defaults to True.
-        get_mean (bool): Whether to compute the mean evaluation results, only
-            applicable when ``separate_eval=True``. If ``True``, mean results
-            will be added to the result dictionary with keys in the form of
-            ``mean_{metric_name}``.
+        show_mean_scores (bool): Whether to compute the mean evaluation
+            results, only applicable when ``separate_eval=True``. If ``True``,
+            mean results will be added to the result dictionary with keys in
+            the form of ``mean_{metric_name}``.
         pipeline (None | list[dict] | list[list[dict]]): If ``None``,
             each dataset in datasets use its own pipeline;
             If ``list[dict]``, it will be assigned to the dataset whose
@@ -37,7 +37,7 @@ class UniformConcatDataset(ConcatDataset):
     def __init__(self,
                  datasets,
                  separate_eval=True,
-                 get_mean=False,
+                 show_mean_scores=False,
                  pipeline=None,
                  force_apply=False,
                  **kwargs):
@@ -63,13 +63,19 @@ class UniformConcatDataset(ConcatDataset):
             else:
                 new_datasets = datasets
         datasets = [build_dataset(c, kwargs) for c in new_datasets]
-        super().__init__(datasets, separate_eval)
-        self.get_mean = get_mean
-        if get_mean:
+
+        if not separate_eval:
+            raise NotImplementedError(
+                'Evaluating datasets as a whole is not'
+                ' supported yet. Please use "separate_eval=True"')
+
+        self.show_mean_scores = show_mean_scores
+        if show_mean_scores:
             if len(set([type(ds) for ds in self.datasets])) != 1:
                 raise NotImplementedError(
                     'To compute mean evaluation scores, all datasets'
                     'must have the same type')
+        super().__init__(datasets, separate_eval)
 
     @staticmethod
     def _apply_pipeline(datasets, pipeline, force_apply=False):
@@ -106,7 +112,7 @@ class UniformConcatDataset(ConcatDataset):
 
             total_eval_results = dict()
 
-            if self.get_mean:
+            if self.show_mean_scores:
                 mean_eval_results = defaultdict(list)
 
             for dataset in self.datasets:
@@ -125,10 +131,10 @@ class UniformConcatDataset(ConcatDataset):
                 dataset_idx += 1
                 for k, v in eval_results_per_dataset.items():
                     total_eval_results.update({f'{dataset_idx}_{k}': v})
-                    if self.get_mean:
+                    if self.show_mean_scores:
                         mean_eval_results[k].append(v)
 
-            if self.get_mean:
+            if self.show_mean_scores:
                 for k, v in mean_eval_results.items():
                     total_eval_results[f'mean_{k}'] = np.mean(v)
 
