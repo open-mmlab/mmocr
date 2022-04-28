@@ -9,7 +9,7 @@ from mmocr.datasets.utils.backend import (HardDiskAnnFileBackend,
                                           HTTPAnnFileBackend,
                                           PetrelAnnFileBackend)
 from mmocr.datasets.utils.loader import AnnFileLoader
-from mmocr.utils import label2lmdb
+from mmocr.utils import recog2lmdb
 
 
 def _create_dummy_line_str_file(ann_file):
@@ -73,9 +73,10 @@ def test_loader():
     # test lmdb loader and line str parser
     _create_dummy_line_str_file(ann_file)
     lmdb_file = osp.join(tmp_dir.name, 'fake_data.lmdb')
-    label2lmdb(
+    recog2lmdb(
         label_path=ann_file,
         label_format='txt',
+        label_only=True,
         output=lmdb_file,
         lmdb_map_size=102400)
 
