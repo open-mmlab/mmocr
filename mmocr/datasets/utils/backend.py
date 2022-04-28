@@ -21,11 +21,24 @@ class LmdbAnnFileBackend:
     def __init__(self, lmdb_path, encoding='utf8'):
         self.lmdb_path = lmdb_path
         self.encoding = encoding
-        self.parser_type = 'LineJsonParser'
+        self.deprecated_format = False
         env = self._get_env()
         with env.begin(write=False) as txn:
-            self.total_number = int(
-                txn.get('num-samples'.encode('utf-8')).decode(self.encoding))
+            # check lmdb version
+            try:
+                self.total_number = int(
+                    txn.get('num-samples'.encode('utf-8')).decode(
+                        self.encoding))
+            except AttributeError:
+                warnings.warn(
+                    'DeprecationWarning: The lmdb dataset generated with '
+                    'txt2lmdb will be deprecate, please use the latest '
+                    'tools/data/utils/recog2lmdb to generate the lmdb dataset')
+                self.total_number = int(
+                    txn.get('total_number'.encode('utf-8')).decode(
+                        self.encoding))
+                self.deprecated_format = True
+            # check lmdb content
             try:
                 image_key = f'image-{1:09d}'
                 txn.get(image_key.encode(encoding))
@@ -39,19 +52,26 @@ class LmdbAnnFileBackend:
             self.env = self._get_env()
 
         with self.env.begin(write=False) as txn:
-            index = index + 1
-            label_key = f'label-{index:09d}'
-            if self.label_only:
-                line = txn.get(label_key.encode('utf-8')).decode(self.encoding)
-
+            if self.deprecated_format:
+                line = txn.get(str(index).encode('utf-8')).decode(
+                    self.encoding)
+                filename, text = line.split(' ')
+                line = json.dumps({
+                    'filename': filename,
+                    'text': text
+                },
+                                  ensure_ascii=False)
             else:
-                img_key = f'image-{index:09d}'
-                text = txn.get(label_key.encode('utf-8')).decode(self.encoding)
-
-                if self.parser_type == 'LineStrParser':
-                    line = img_key + ' ' + text
-
-                elif self.parser_type == 'LineJsonParser':
+                index = index + 1
+                label_key = f'label-{index:09d}'
+                if self.label_only:
+                    line = txn.get(label_key.encode('utf-8')).decode(
+                        self.encoding)
+                    line = json.dumps(line, ensure_ascii=False)
+                else:
+                    img_key = f'image-{index:09d}'
+                    text = txn.get(label_key.encode('utf-8')).decode(
+                        self.encoding)
                     line = json.dumps({
                         'filename': img_key,
                         'text': text
