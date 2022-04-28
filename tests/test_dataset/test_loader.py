@@ -95,7 +95,3 @@ def test_loader():
         HTTPAnnFileBackend(file_format='json')
 
     tmp_dir.cleanup()
-
-
-if __name__ == '__main__':
-    test_loader()
