@@ -104,7 +104,7 @@ def parse_labelme_json(json_file, img_dir='./', out_dir='./', tasks=['det']):
     ]
 
 
-def process(json_dir, img_dir, out_dir, tasks=['det'], n_proc=1):
+def process(json_dir, img_dir, out_dir, tasks=['det'], nproc=1):
     mmcv.mkdir_or_exist(out_dir)
 
     json_file_list = glob.glob(osp.join(json_dir, '*.json'))
@@ -112,7 +112,7 @@ def process(json_dir, img_dir, out_dir, tasks=['det'], n_proc=1):
     parse_labelme_json_func = partial(
         parse_labelme_json, img_dir=img_dir, out_dir=out_dir, tasks=tasks)
 
-    if n_proc <= 1:
+    if nproc <= 1:
         total_results = mmcv.track_progress(parse_labelme_json_func,
                                             json_file_list)
     else:
@@ -120,7 +120,7 @@ def process(json_dir, img_dir, out_dir, tasks=['det'], n_proc=1):
             parse_labelme_json_func,
             json_file_list,
             keep_order=True,
-            nproc=n_proc)
+            nproc=nproc)
 
     total_det_line_json_list = []
     total_recog_crop_line_str = []
@@ -154,7 +154,7 @@ def parse_args():
         nargs='+',
         help='Tasks to be processed, can be one "det" or both: "det", "recog"')
     parser.add_argument(
-        '--n_proc', type=int, default=10, help='Number of process.')
+        '--nproc', type=int, default=1, help='Number of process.')
     args = parser.parse_args()
     return args
 
@@ -163,7 +163,7 @@ def main():
     args = parse_args()
 
     process(args.json_dir, args.image_dir, args.out_dir, args.tasks,
-            args.n_proc)
+            args.nproc)
 
     print('finish')
 
