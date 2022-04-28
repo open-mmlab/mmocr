@@ -3,6 +3,7 @@ import argparse
 import glob
 import json
 import os.path as osp
+import warnings
 from functools import partial
 
 import mmcv
@@ -11,7 +12,13 @@ from mmocr.datasets.pipelines.crop import crop_img, warp_img
 from mmocr.utils import list_to_file
 
 
-def parse_labelme_json(json_file, img_dir='./', out_dir='./', tasks=['det']):
+def parse_labelme_json(json_file,
+                       img_dir,
+                       out_dir,
+                       tasks,
+                       ignore_marker='###',
+                       recog_format='jsonl',
+                       warp_flag=True):
     invalid_res = [[], [], []]
 
     json_obj = mmcv.load(json_file)
@@ -24,7 +31,7 @@ def parse_labelme_json(json_file, img_dir='./', out_dir='./', tasks=['det']):
     if 'recog' in tasks:
         src_img = mmcv.imread(img_full_path)
         img_basename = osp.splitext(img_file)[0]
-        sub_dir = osp.join(out_dir, 'recog', img_basename)
+        sub_dir = osp.join(out_dir, 'crops', img_basename)
         mmcv.mkdir_or_exist(sub_dir)
 
     det_line_json_list = []
@@ -35,16 +42,18 @@ def parse_labelme_json(json_file, img_dir='./', out_dir='./', tasks=['det']):
     idx = 0
     annos = []
     for box_info in shape_info:
-        warp_flag = True
         shape = box_info['shape_type']
         if shape not in ['rectangle', 'polygon']:
+            msg = 'Only \'rectangle\' and \'polygon\' boxes are supported. '
+            msg += f'Boxes with {shape} will be discarded.'
+            warnings.warn(msg)
             return invalid_res
         poly = []
         box_points = box_info['points']
         for point in box_points:
             poly.extend([int(x) for x in point])
-        x_list = [x for x in poly[0::2]]
-        y_list = [y for y in poly[1::2]]
+        x_list = poly[0::2]
+        y_list = poly[1::2]
         quad = []
         if shape == 'rectangle':
             warp_flag = False
@@ -54,6 +63,10 @@ def parse_labelme_json(json_file, img_dir='./', out_dir='./', tasks=['det']):
             ]
         else:
             if len(poly) < 8 or len(poly) % 2 != 0:
+                msg = f'Invalid polygon {poly}. '
+                msg += 'The polygon is expected to have 8 or more than 8 '
+                msg += 'even number of coordinates in MMOCR.'
+                warnings.warn(msg)
                 return invalid_res
             if len(poly) == 8:
                 quad = poly
@@ -65,7 +78,7 @@ def parse_labelme_json(json_file, img_dir='./', out_dir='./', tasks=['det']):
         text_label = box_info['label']
         # for textdet
         anno = {}
-        anno['iscrowd'] = 0
+        anno['iscrowd'] = 0 if text_label != ignore_marker else 1
         anno['category_id'] = 1
         w = max(x_list) - min(x_list)
         h = max(y_list) - min(y_list)
@@ -78,17 +91,35 @@ def parse_labelme_json(json_file, img_dir='./', out_dir='./', tasks=['det']):
         annos.append(anno)
         # for textrecog
         if 'recog' in tasks:
+            if text_label == ignore_marker:
+                continue
             cropped_img = crop_img(src_img, quad)
             img_path_cropped_img = osp.join(sub_dir, f'crop_{idx}.jpg')
             mmcv.imwrite(cropped_img, img_path_cropped_img)
-            recog_crop_line_str_list.append(
-                f'{img_path_cropped_img} {text_label}')
+            if recog_format == 'txt':
+                recog_crop_line_str_list.append(
+                    f'{img_path_cropped_img} {text_label}')
+            elif recog_format == 'jsonl':
+                recog_crop_line_str_list.append(
+                    json.dumps({
+                        'filename': img_path_cropped_img,
+                        'text': text_label
+                    }))
+            else:
+                raise NotImplementedError
             if warp_flag:
                 warpped_img = warp_img(src_img, quad)
                 img_path_warpped_img = osp.join(sub_dir, f'warp_{idx}.jpg')
                 mmcv.imwrite(warpped_img, img_path_warpped_img)
-                recog_warp_line_str_list.append(
-                    f'{img_path_warpped_img} {text_label}')
+                if recog_format == 'txt':
+                    recog_warp_line_str_list.append(
+                        f'{img_path_warpped_img} {text_label}')
+                elif recog_format == 'jsonl':
+                    recog_warp_line_str_list.append(
+                        json.dumps({
+                            'filename': img_path_cropped_img,
+                            'text': text_label
+                        }))
         idx += 1
 
     line_json = {
@@ -104,7 +135,12 @@ def parse_labelme_json(json_file, img_dir='./', out_dir='./', tasks=['det']):
     ]
 
 
-def process(json_dir, img_dir, out_dir, tasks=['det'], nproc=1):
+def process(json_dir,
+            img_dir,
+            out_dir,
+            tasks=['det'],
+            nproc=1,
+            recog_format='jsonl'):
     mmcv.mkdir_or_exist(out_dir)
 
     json_file_list = glob.glob(osp.join(json_dir, '*.json'))
@@ -131,15 +167,15 @@ def process(json_dir, img_dir, out_dir, tasks=['det'], nproc=1):
             total_recog_crop_line_str.extend(res[1])
             total_recog_warp_line_str.extend(res[2])
 
-    det_out_dir = osp.join(out_dir, 'det')
-    mmcv.mkdir_or_exist(det_out_dir)
-    det_out_file = osp.join(det_out_dir, 'instances_training.txt')
+    mmcv.mkdir_or_exist(out_dir)
+    det_out_file = osp.join(out_dir, 'instances_training.txt')
     list_to_file(det_out_file, total_det_line_json_list)
 
     if 'recog' in tasks:
-        recog_out_file_crop = osp.join(out_dir, 'recog', 'crop_gt.txt')
-        recog_out_file_warp = osp.join(out_dir, 'recog', 'warp_gt.txt')
+        recog_out_file_crop = osp.join(out_dir, f'train_label.{recog_format}')
         list_to_file(recog_out_file_crop, total_recog_crop_line_str)
+        recog_out_file_warp = osp.join(out_dir,
+                                       f'warp_train_label.{recog_format}')
         list_to_file(recog_out_file_warp, total_recog_warp_line_str)
 
 
@@ -152,9 +188,14 @@ def parse_args():
     parser.add_argument(
         '--tasks',
         nargs='+',
-        help='Tasks to be processed, can be one "det" or both: "det", "recog"')
+        help='Tasks to be processed, can be only "det" or both: "det recog"')
     parser.add_argument(
         '--nproc', type=int, default=1, help='Number of process.')
+    parser.add_argument(
+        '--format',
+        default='jsonl',
+        help='Use jsonl or string to format recognition annotations',
+        choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
 
@@ -163,7 +204,7 @@ def main():
     args = parse_args()
 
     process(args.json_dir, args.image_dir, args.out_dir, args.tasks,
-            args.nproc)
+            args.nproc, args.format)
 
     print('finish')
 
