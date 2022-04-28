@@ -90,7 +90,7 @@ class HardDiskAnnFileBackend:
 
     def __call__(self, ann_file):
         if self.file_format == 'lmdb':
-            return LmdbAnnFileBackend(ann_file, self.file_format)
+            return LmdbAnnFileBackend(ann_file)
 
         return list_from_file(ann_file)
 
@@ -133,7 +133,7 @@ class PetrelAnnFileBackend:
                             tmp_file_path) as local_path:
                         shutil.copy(local_path, osp.join(local_dir, each_file))
 
-            return LmdbAnnFileBackend(local_dir, self.file_format)
+            return LmdbAnnFileBackend(local_dir)
 
         lines = str(file_client.get(ann_file), encoding='utf-8').split('\n')
 
