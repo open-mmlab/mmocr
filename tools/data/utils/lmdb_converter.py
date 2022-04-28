@@ -40,6 +40,7 @@ def main():
         help='maximum size database may grow to , default 109951162776 bytes')
     opt = parser.parse_args()
 
+    assert opt.img_root or opt.label_only
     recog2lmdb(opt.img_root, opt.label_path, opt.output, opt.label_format,
                opt.label_only, opt.batch_size, opt.encoding, opt.lmdb_map_size)
 
