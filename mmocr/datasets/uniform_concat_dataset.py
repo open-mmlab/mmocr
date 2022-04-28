@@ -63,6 +63,7 @@ class UniformConcatDataset(ConcatDataset):
             else:
                 new_datasets = datasets
         datasets = [build_dataset(c, kwargs) for c in new_datasets]
+        super().__init__(datasets, separate_eval)
 
         if not separate_eval:
             raise NotImplementedError(
@@ -75,7 +76,6 @@ class UniformConcatDataset(ConcatDataset):
                 raise NotImplementedError(
                     'To compute mean evaluation scores, all datasets'
                     'must have the same type')
-        super().__init__(datasets, separate_eval)
 
     @staticmethod
     def _apply_pipeline(datasets, pipeline, force_apply=False):

@@ -86,7 +86,7 @@ def test_uniform_concat_dataset_eval():
     assert results['0_n'] == 10
     assert results['1_n'] == 20
 
-    tmp_dataset = UniformConcatDataset(datasets, get_mean=True)
+    tmp_dataset = UniformConcatDataset(datasets, show_mean_scores=True)
     results = tmp_dataset.evaluate(fake_inputs)
     assert results['0_n'] == 10
     assert results['1_n'] == 20
@@ -114,4 +114,4 @@ def test_uniform_concat_dataset_eval():
         UniformConcatDataset(
             [dict(type='DummyDataset'),
              dict(type='DummyDataset2')],
-            get_mean=True)
+            show_mean_scores=True)
