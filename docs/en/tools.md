@@ -42,10 +42,10 @@ For example,
   python tools/data/common/labelme_converter.py <json_dir> <image_dir> <out_dir> --tasks <tasks>
   ```
 
-For example, convert the labelme format annotation in `tests/data/toy_dataset/labelme.json` to MMOCR detection labels `instances_training.txt`:
+For example, converting the labelme format annotation in `tests/data/toy_dataset/labelme.json` to MMOCR detection labels `instances_training.txt` and cropping the image patches for recognition task to `tests/data/toy_dataset/crops` with the labels `train_label.jsonl`:
 
   ```bash
-  python tools/data/common/labelme_converter.py tests/data/toy_dataset/labelme tests/data/toy_dataset/imgs tests/data/toy_dataset --tasks det
+  python tools/data/common/labelme_converter.py tests/data/toy_dataset/labelme tests/data/toy_dataset/imgs tests/data/toy_dataset --tasks det recog
   ```
 
 
