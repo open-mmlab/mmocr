@@ -121,7 +121,7 @@ def recog2lmdb(img_root,
         cnt += 1
     nSamples = cnt - 1
     cache.append(
-        ('total_number'.encode(encoding), str(nSamples).encode(encoding)))
+        ('num-samples'.encode(encoding), str(nSamples).encode(encoding)))
     # cache['total_number'.encode(encoding)] = str(nSamples).encode(encoding)
     write_cache(env, cache)
     print('Created lmdb dataset with %d samples' % nSamples)
