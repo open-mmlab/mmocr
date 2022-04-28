@@ -37,7 +37,7 @@ Reading images or labels from files can be slow when data is excessive, such as 
 **Examples**
 generate image lmdb file with imgs and label.txt
 ```bash
-python tools/data/utils/lmdb_converter.py label.txt imgs.lmdb -i imgs 
+python tools/data/utils/lmdb_converter.py label.txt imgs.lmdb -i imgs
 ```
 generate image lmdb file with imgs and label.jsonl
 ```bash
