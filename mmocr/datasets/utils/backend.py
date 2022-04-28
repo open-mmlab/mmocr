@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import json
 import os
 import os.path as osp
 import shutil
@@ -17,23 +18,20 @@ class LmdbAnnFileBackend:
         lmdb_path (str): Lmdb file path.
     """
 
-    def __init__(self, lmdb_path, encoding='utf8'):
+    def __init__(self, lmdb_path, file_format, encoding='utf8'):
         self.lmdb_path = lmdb_path
         self.encoding = encoding
-        self.label_only = False
-        self.initial_item = True
+        self.file_format = file_format
         env = self._get_env()
         with env.begin(write=False) as txn:
+            self.total_number = int(
+                txn.get('num-samples'.encode('utf-8')).decode(self.encoding))
             try:
-                self.total_number = int(
-                    txn.get('total_number'.encode('utf-8')).decode(
-                        self.encoding))
-            # The existing academic lmdb dataset refers to
-            # total_number as num-samples
-            except AttributeError:
-                self.total_number = int(
-                    txn.get('num-samples'.encode('utf-8')).decode(
-                        self.encoding))
+                image_key = f'image-{1:09d}'
+                txn.get(image_key.encode(encoding))
+                self.label_only = False
+            except Exception:
+                self.label_only = True
 
     def __getitem__(self, index):
         """Retrieve one line from lmdb file by index."""
@@ -41,33 +39,18 @@ class LmdbAnnFileBackend:
             self.env = self._get_env()
 
         with self.env.begin(write=False) as txn:
-            # use initial_item to avoid error triggered frequently
-            if self.initial_item:
-                # this is for label only lmdb format
-                try:
-                    line = txn.get(str(index).encode('utf-8')).decode(
-                        self.encoding)
-                    self.label_only = True
-                # this is for image and label lmdb format
-                except AttributeError:
-                    index = index + 1
-                    label_key = f'label-{index:09d}'
-                    img_key = f'image-{index:09d}'
-                    line = img_key + ' ' + txn.get(
-                        label_key.encode('utf-8')).decode(self.encoding)
-                self.initial_item = False
+            index = index + 1
+            label_key = f'label-{index:09d}'
+            if self.label_only:
+                line = txn.get(label_key.encode('utf-8')).decode(self.encoding)
 
             else:
-                if self.label_only:
-                    line = txn.get(str(index).encode('utf-8')).decode(
-                        self.encoding)
+                img_key = f'image-{index:09d}'
+                text = txn.get(label_key.encode('utf-8')).decode(self.encoding)
+                if self.file_format == 'txt':
+                    line = img_key + ' ' + text
                 else:
-                    index = index + 1
-                    label_key = f'label-{index:09d}'
-                    img_key = f'image-{index:09d}'
-                    line = img_key + ' ' + txn.get(
-                        label_key.encode('utf-8')).decode(self.encoding)
-
+                    line = json.dumps({'filename': img_key, 'text': text})
             return line
 
     def __len__(self):
@@ -101,7 +84,7 @@ class HardDiskAnnFileBackend:
 
     def __call__(self, ann_file):
         if self.file_format == 'lmdb':
-            return LmdbAnnFileBackend(ann_file)
+            return LmdbAnnFileBackend(ann_file, self.file_format)
 
         return list_from_file(ann_file)
 
@@ -144,7 +127,7 @@ class PetrelAnnFileBackend:
                             tmp_file_path) as local_path:
                         shutil.copy(local_path, osp.join(local_dir, each_file))
 
-            return LmdbAnnFileBackend(local_dir)
+            return LmdbAnnFileBackend(local_dir, self.file_format)
 
         lines = str(file_client.get(ann_file), encoding='utf-8').split('\n')
 
