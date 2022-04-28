@@ -18,10 +18,10 @@ class LmdbAnnFileBackend:
         lmdb_path (str): Lmdb file path.
     """
 
-    def __init__(self, lmdb_path, file_format, encoding='utf8'):
+    def __init__(self, lmdb_path, encoding='utf8'):
         self.lmdb_path = lmdb_path
         self.encoding = encoding
-        self.file_format = file_format
+        self.parser_type = 'LineJsonParser'
         env = self._get_env()
         with env.begin(write=False) as txn:
             self.total_number = int(
@@ -47,10 +47,16 @@ class LmdbAnnFileBackend:
             else:
                 img_key = f'image-{index:09d}'
                 text = txn.get(label_key.encode('utf-8')).decode(self.encoding)
-                if self.file_format == 'txt':
+
+                if self.parser_type == 'LineStrParser':
                     line = img_key + ' ' + text
-                else:
-                    line = json.dumps({'filename': img_key, 'text': text})
+
+                elif self.parser_type == 'LineJsonParser':
+                    line = json.dumps({
+                        'filename': img_key,
+                        'text': text
+                    },
+                                      ensure_ascii=False)
             return line
 
     def __len__(self):
