@@ -8,8 +8,7 @@ import pytest
 from mmocr.datasets.utils.backend import (HardDiskAnnFileBackend,
                                           HTTPAnnFileBackend,
                                           PetrelAnnFileBackend)
-from mmocr.datasets.utils.loader import (AnnFileLoader, HardDiskLoader,
-                                         LmdbLoader)
+from mmocr.datasets.utils.loader import AnnFileLoader, HardDiskLoader
 from mmocr.utils import lmdb_converter
 
 
@@ -75,7 +74,8 @@ def test_loader():
     lmdb_converter(ann_file, lmdb_file, lmdb_map_size=102400)
 
     parser = dict(type='LineJsonParser', keys=['filename', 'text'])
-    lmdb_loader = LmdbLoader(lmdb_file, parser, repeat=1)
+    lmdb_loader = AnnFileLoader(
+        lmdb_file, parser, repeat=1, file_format='lmdb')
     assert lmdb_loader[0] == {'filename': 'sample1.jpg', 'text': 'hello'}
     lmdb_loader.close()
 
