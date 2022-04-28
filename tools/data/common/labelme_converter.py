@@ -133,7 +133,7 @@ def process(json_dir, img_dir, out_dir, tasks=['det'], nproc=1):
 
     det_out_dir = osp.join(out_dir, 'det')
     mmcv.mkdir_or_exist(det_out_dir)
-    det_out_file = osp.join(det_out_dir, 'instances_train.txt')
+    det_out_file = osp.join(det_out_dir, 'instances_training.txt')
     list_to_file(det_out_file, total_det_line_json_list)
 
     if 'recog' in tasks:
