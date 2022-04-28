@@ -21,16 +21,36 @@ python tools/publish_model.py work_dirs/psenet/latest.pth psenet_r50_fpnf_sbn_1x
 The final output filename will be `psenet_r50_fpnf_sbn_1x_20190801-{hash id}.pth`.
 
 
-## Convert txt annotation to lmdb format
-Sometimes, loading a large txt annotation file with multiple workers can cause OOM (out of memory) error. You can convert the file into lmdb format using `tools/data/utils/txt2lmdb.py` and use LmdbLoader in your config to avoid this issue.
-```bash
-python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
-```
-For example,
-```bash
-python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
-```
+## Convert text recognition dataset to lmdb format
+Reading images or labels from files can be slow when data is excessive, such as 10 million level. Besides, in the academic community of scene text recognition, most of the datasets are stored in lmdb format, including images and labels. So in order to be more closely integrated with academic and have a more efficient way to store files, we can use `tools/data/utils/lmdb_converter.py` to onvert the existing datasets in mmocr or custom datasets to lmdb format.
 
+| Arguments         | Type       | Description                                                    |
+| ----------------- | ---------- | -------------------------------------------------------------- |
+| `label_path`      | str        | Path to label file.                                            |
+| `output`          | str        | output lmdb path.                                              |
+| `--img-root`      | str        | input imglist path.                                            |
+| `--label-only`    | store_true | Only converter label to lmdb                                   |
+| `--label-format`  | str        | The format of the label file, either txt or jsonl.             |
+| `--batch-size`    | int        | processing batch size, default 1000                            |
+| `--encoding`      | str        | bytes coding scheme, default utf8.                             |
+| `--lmdb_map_size` | int        | maximum size database may grow to , default 109951162776 bytes |
+**Examples**
+generate image lmdb file with imgs and label.txt
+```bash
+python tools/data/utils/lmdb_converter.py label.txt imgs.lmdb -i imgs 
+```
+generate image lmdb file with imgs and label.jsonl
+```bash
+python tools/data/utils/lmdb_converter.py label.json imgs.lmdb -i imgs -f jsonl
+```
+generate label lmdb file with label.txt
+```bash
+python tools/data/utils/lmdb_converter.py label.txt label.lmdb --lable-only
+```
+generate label lmdb file with label.jsonl
+```bash
+python tools/data/utils/lmdb_converter.py label.json label.lmdb --label-only -f jsonl
+```
 
 ## Log Analysis
 

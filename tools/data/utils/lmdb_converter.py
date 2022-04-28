@@ -6,9 +6,10 @@ from mmocr.utils import recog2lmdb
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('label_path', help='Path to label file')
-    parser.add_argument('output', help='output lmdb path')
-    parser.add_argument('--img-root', '-i', help='input imglist path')
+    parser.add_argument('label_path', type=str, help='Path to label file')
+    parser.add_argument('output', type=str, help='output lmdb path')
+    parser.add_argument(
+        '--img-root', '-i', type=str, help='input imglist path')
     parser.add_argument(
         '--label-only',
         action='store_true',
@@ -20,14 +21,15 @@ def main():
         choices=['txt', 'jsonl'],
         help='The format of the label file, either txt or jsonl')
     parser.add_argument(
-        '--batch_size',
+        '--batch-size',
         '-b',
         type=int,
         default=1000,
-        help='processing batch size, default 10000')
+        help='processing batch size, default 1000')
     parser.add_argument(
         '--encoding',
-        '-c',
+        '-e',
+        type=str,
         default='utf8',
         help='bytes coding scheme, default utf8')
     parser.add_argument(
