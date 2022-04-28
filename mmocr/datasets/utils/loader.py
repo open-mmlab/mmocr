@@ -42,7 +42,7 @@ class AnnFileLoader:
         assert file_storage_backend in ['disk', 'http', 'petrel']
         assert file_format in ['txt', 'lmdb']
 
-        if file_format == 'lmdb' and parser['type'] == 'LineJsonParser':
+        if file_format == 'lmdb' and parser['type'] == 'LineStrParser':
             raise ValueError('We only support using LineJsonParser '
                              'to parse lmdb file. Please use LineJsonParser '
                              'in the dataset config')
