@@ -392,7 +392,7 @@ should be as follows:
 
 ## Totaltext
 
-- Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
+- Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` or `TT_new_train_GT.zip` (if you prefer to use the latest version of training annotations) from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
 
   ```bash
   mkdir totaltext && cd totaltext
@@ -404,27 +404,28 @@ should be as follows:
   mv Images/Train imgs/training
   mv Images/Test imgs/test
 
-  # For annotations
+  # For legacy training and test annotations
   unzip groundtruth_text.zip
-  cd Groundtruth
-  mv Polygon/Train ../annotations/training
-  mv Polygon/Test ../annotations/test
+  mv Groundtruth/Polygon/Train annotations/training
+  mv Groundtruth/Polygon/Test annotations/test
 
+  # Using the latest training annotations
+  # WARNING: Delete legacy train annotations before running the following command.
+  unzip TT_new_train_GT.zip
+  mv Train annotations/training
   ```
 
 - Step2: Generate cropped images, `train_label.txt` and `test_label.txt` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`):
 
   ```bash
-  python tools/data/textrecog/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
+  python tools/data/textrecog/totaltext_converter.py /path/to/totaltext
   ```
 
-- After running the above codes, the directory structure
-should be as follows:
+- After running the above codes, the directory structure should be as follows:
 
   ```text
-  ├── Totaltext
-  │   ├── imgs
-  │   ├── annotations
+  ├── totaltext
+  │   ├── dst_imgs
   │   ├── train_label.txt
   │   └── test_label.txt
   ```
@@ -635,7 +636,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   │   └── test_label.jsonl
   ```
 
-### LSVT
+## LSVT
 
 - Step1: Download [train_full_images_0.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz), [train_full_images_1.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz), and [train_full_labels.json](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json) to `lsvt/`.
 
@@ -655,7 +656,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
   ```
 
- - Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
 
   ```bash
   # Annotations of LSVT test split is not publicly available, split a validation
@@ -672,7 +673,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   │   ├── crops
   │   ├── ignores
   │   ├── train_label.jsonl
-  │   ├── val_label.jsonl (optional)
+  │   └── val_label.jsonl (optional)
   ```
 
 ## FUNSD

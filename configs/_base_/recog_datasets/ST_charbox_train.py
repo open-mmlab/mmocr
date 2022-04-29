@@ -12,8 +12,9 @@ train = dict(
     img_prefix=train_img_prefix,
     ann_file=train_ann_file,
     loader=dict(
-        type='HardDiskLoader',
+        type='AnnFileLoader',
         repeat=1,
+        file_format='txt',
         parser=dict(
             type='LineJsonParser', keys=['file_name', 'annotations', 'text'])),
     pipeline=None,

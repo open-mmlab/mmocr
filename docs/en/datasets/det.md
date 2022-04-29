@@ -255,7 +255,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 ## Totaltext
 
 - Step0: Read [Important Note](#important-note)
-- Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
+- Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` or `TT_new_train_GT.zip` (if you prefer to use the latest version of training annotations) from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
 
   ```bash
   mkdir totaltext && cd totaltext
@@ -267,17 +267,21 @@ inconsistency results in false examples in the training set. Therefore, users sh
   mv Images/Train imgs/training
   mv Images/Test imgs/test
 
-  # For annotations
+  # For legacy training and test annotations
   unzip groundtruth_text.zip
-  cd Groundtruth
-  mv Polygon/Train ../annotations/training
-  mv Polygon/Test ../annotations/test
+  mv Groundtruth/Polygon/Train annotations/training
+  mv Groundtruth/Polygon/Test annotations/test
+
+  # Using the latest training annotations
+  # WARNING: Delete legacy train annotations before running the following command.
+  unzip TT_new_train_GT.zip
+  mv Train annotations/training
   ```
 
 - Step2: Generate `instances_training.json` and `instances_test.json` with the following command:
 
   ```bash
-  python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
+  python tools/data/textdet/totaltext_converter.py /path/to/totaltext
   ```
 
 - The resulting directory structure looks like the following:
@@ -507,7 +511,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_val.json
   ```
 
-### LSVT
+## LSVT
 
 - Step1: Download [train_full_images_0.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz), [train_full_images_1.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz), and [train_full_labels.json](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json) to `lsvt/`.
 
@@ -705,8 +709,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```bash
   # Annotations of ReCTS test split is not publicly available, split a validation
   # set by adding --val-ratio 0.2
-  # Add --preserve-vertical to preserve vertical texts for training, otherwise
-  # vertical images will be filtered and stored in PATH/TO/rects/ignores
   python tools/data/textdet/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
   ```
 
@@ -853,11 +855,10 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
 - Step1: Download `train_images.zip.001`, `train_images.zip.002`, and `train_gts.zip` from the [homepage](https://rctw.vlrlab.net/dataset.html), extract the zips to `rctw/imgs` and `rctw/annotations`, respectively.
 
-- Step2: Generate `instances_training.json` and `instances_val.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step2: Generate `instances_training.json` and `instances_val.json` (optional). Since the test annotations are not publicly available, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
   # Annotations of RCTW test split is not publicly available, split a validation set by adding --val-ratio 0.2
-  # Add --preserve-vertical to preserve vertical texts for training, otherwise vertical images will be filtered and stored in PATH/TO/rctw/ignores
   python tools/data/textdet/rctw_converter.py PATH/TO/rctw --nproc 4
   ```
 
