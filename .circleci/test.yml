@@ -85,11 +85,11 @@ jobs:
       torch:
         type: string
       cuda:
-        # e.g. 10.2
-        type: integer
+        type: enum
+        enum: ["10.1", "10.2", "11.1"]
       mmcv_cuda:
-        # e.g. cu102
-        type: string
+        type: enum
+        enum: ["cu101", "cu102", "cu111"]
       cudnn:
         type: integer
         default: 7
