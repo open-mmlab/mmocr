@@ -83,31 +83,28 @@ def count_matches(pred_texts, gt_texts):
     return match_res
 
 
-def eval_ocr_metric(pred_texts,
-                    gt_texts,
-                    metric=[
-                        'word_acc', 'word_acc_ignore_case',
-                        'word_acc_ignore_case_symbol', 'char_recall',
-                        'char_precision', 'one_minus_ned'
-                    ]):
+def eval_ocr_metric(pred_texts, gt_texts, metric='acc'):
     """Evaluate the text recognition performance with metric: word accuracy and
     1-N.E.D. See https://rrc.cvc.uab.es/?ch=14&com=tasks for details.
 
     Args:
         pred_texts (list[str]): Text strings of prediction.
         gt_texts (list[str]): Text strings of ground truth.
-        metric (str | list[str]): Metrics to be evaluated. Options are:
+        metric (str | list[str]): Metric(s) to be evaluated. Options are:
 
-          - 'word_acc': Accuracy in word level.
-          - 'word_acc_ignore_case': Accuracy in word level, ignoring letter
-            case.
-          - 'word_acc_ignore_case_symbol': Accuracy in word level, ignoring
-            letter case and symbol. (default metric for academic evaluation)
-          - 'char_recall': Recall in character level, ignore
-            letter case and symbol.
-          - 'char_precision': Precision in character level, ignore
-            letter case and symbol.
-          - 'one_minus_ned': 1 - normalized_edit_distance.
+            - 'word_acc': Accuracy in word level.
+            - 'word_acc_ignore_case': Accuracy in word level, ignoring letter
+              case.
+            - 'word_acc_ignore_case_symbol': Accuracy in word level, ignoring
+              letter case and symbol. (default metric for academic evaluation)
+            - 'char_recall': Recall in character level, ignore
+              letter case and symbol.
+            - 'char_precision': Precision in character level, ignore
+              letter case and symbol.
+            - 'one_minus_ned': 1 - normalized_edit_distance.
+
+            In particular, if ``metric == 'acc'``, results on all metrics above
+            will be reported.
 
     Returns:
         dict{str: float}: Result dict for text recognition, keys could be some
@@ -118,7 +115,13 @@ def eval_ocr_metric(pred_texts,
     assert isinstance(pred_texts, list)
     assert isinstance(gt_texts, list)
     assert len(pred_texts) == len(gt_texts)
+
     assert isinstance(metric, str) or is_type_list(metric, str)
+    if metric == 'acc' or metric == ['acc']:
+        metric = [
+            'word_acc', 'word_acc_ignore_case', 'word_acc_ignore_case_symbol',
+            'char_recall', 'char_precision', 'one_minus_ned'
+        ]
     metric = set([metric]) if isinstance(metric, str) else set(metric)
 
     supported_metrics = set([
