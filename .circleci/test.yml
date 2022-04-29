@@ -85,7 +85,7 @@ jobs:
       torch:
         type: string
       cuda:
-        type: integer
+        type: double
         default: 10.2
       mmcv_cuda:
         type: string
