@@ -86,7 +86,7 @@ jobs:
         type: string
       cuda:
         # e.g. 10.2
-        type: string
+        type: integer
       mmcv_cuda:
         # e.g. cu102
         type: string
