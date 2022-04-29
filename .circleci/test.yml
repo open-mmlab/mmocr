@@ -99,7 +99,7 @@ jobs:
           name: Build Docker image
           command: |
             docker build .circleci/docker -t mmocr:gpu
-            docker run --gpus all -t -d -v /home/circleci/project/mmocr/:/mmocr -w /mmocr --name mmocr mmocr:gpu
+            docker run --gpus all -t -d -v /home/circleci/project:/mmocr -w /mmocr --name mmocr mmocr:gpu
             docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch1.6.0/index.html
             docker exec mmocr pip install -r requirements.txt
             docker exec mmocr python -m pytest tests/
