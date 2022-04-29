@@ -87,7 +87,7 @@ jobs:
       cuda:
         type: string
         default: 10.2
-      mmcv-cuda:
+      mmcv_cuda:
         type: string
         default: cu102
       cudnn:
@@ -107,7 +107,7 @@ jobs:
       - run:
           name: Install mmocr dependencies
           command: |
-            docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.mmcv-cuda >>/torch<< parameters.torch >>/index.html
+            docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.mmcv_cuda >>/torch<< parameters.torch >>/index.html
             docker exec mmocr pip install mmdet
             docker exec mmocr pip install -r requirements.txt
       - run:
@@ -162,7 +162,7 @@ workflows:
           name: mainstream_version_gpu
           torch: 1.8.1
           cuda: 10.2
-          mmcv-cuda: cu102
+          mmcv_cuda: cu102
           python: 3.8.6
           # requires:
           #   - hold
@@ -175,7 +175,7 @@ workflows:
           name: minimum_version_gpu
           torch: 1.6.0
           cuda: 10.1
-          mmcv-cuda: cu101
+          mmcv_cuda: cu101
           python: 3.6.12
           filters:
             branches:
