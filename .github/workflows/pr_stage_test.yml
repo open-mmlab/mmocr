@@ -8,6 +8,7 @@ on:
       - 'docs/**'
       - 'demo/**'
       - '.dev_scripts/**'
+      - '.circleci/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
