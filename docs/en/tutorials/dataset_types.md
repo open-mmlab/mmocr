@@ -2,10 +2,13 @@
 
 ## General Introduction
 
-To support the tasks of text detection, text recognition and key information extraction, we have designed some new types of dataset which consist of **loader** and **parser** to load and parse different types of annotation files.
-- **loader**: Load the annotation file. There are two types of loader, `HardDiskLoader` and `LmdbLoader`
-  - `HardDiskLoader`: Load `txt` format annotation file from hard disk to memory.
-  - `LmdbLoader`: Load `lmdb` format annotation file with lmdb backend, which is very useful for **extremely large** annotation files to avoid out-of-memory problem when ten or more GPUs are used, since each GPU will start multiple processes to load annotation file to memory.
+To support the tasks of text detection, text recognition and key information extraction, we have designed some new types of dataset which consist of **loader** , **backend**, and **parser** to load and parse different types of annotation files.
+- **loader**: Load the annotation file. We now have a unified loader, `AnnFileLoader`, which can use different `backend` to load annotation from txt. The original `HardDiskLoader` and `LmdbLoader` will be deprecated.
+- **backend**: Load annotation from different format and backend.
+  - `LmdbAnnFileBackend`: Load annotation from lmdb dataset. We have support for reading annotation files from the full lmdb dataset (with images and annotations). It is now possible to read lmdb datasets that commonly used in academia. We have also equipped it with a new dataset conversion tool, [recog2lmdb](https://github.com/open-mmlab/mmocr/blob/main/tools/data/utils/recog2lmdb.py), that converts the recognition dataset to lmdb format, see [PR982](https://github.com/open-mmlab/mmocr/pull/982) for more details.
+  - `HardDiskAnnFileBackend`: Load annotation file with raw hard disks storage backend. The annotation format can be either txt or lmdb.
+  - `PetrelAnnFileBackend`: Load annotation file with petrel storage backend. The annotation format can be either txt or lmdb.
+  - `HTTPAnnFileBackend`: Load annotation file with http storage backend. The annotation format can be either txt or lmdb.
 - **parser**: Parse the annotation file line-by-line and return with `dict` format. There are two types of parser, `LineStrParser` and `LineJsonParser`.
   - `LineStrParser`: Parse one line in ann file while treating it as a string and separating it to several parts by a `separator`. It can be used on tasks with simple annotation files such as text recognition where each line of the annotation files contains the `filename` and `label` attribute only.
   - `LineJsonParser`: Parse one line in ann file while treating it as a json-string and using `json.loads` to convert it to `dict`. It can be used on tasks with complex annotation files such as text detection where each line of the annotation files contains multiple attributes (e.g. `filename`, `height`, `width`, `box`, `segmentation`, `iscrowd`, `category_id`, etc.).

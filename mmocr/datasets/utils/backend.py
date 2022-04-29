@@ -40,7 +40,10 @@ class LmdbAnnFileBackend:
                 warnings.warn(
                     'DeprecationWarning: The lmdb dataset generated with '
                     'txt2lmdb will be deprecate, please use the latest '
-                    'tools/data/utils/recog2lmdb to generate the lmdb dataset')
+                    'tools/data/utils/recog2lmdb to generate the lmdb dataset '
+                    'see https://mmocr.readthedocs.io/en/latest/tools.html#'
+                    'convert-text-recognition-dataset-to-lmdb-format for '
+                    'details.')
                 self.total_number = int(
                     txn.get('total_number'.encode('utf-8')).decode(
                         self.encoding))
@@ -51,7 +54,7 @@ class LmdbAnnFileBackend:
                 image_key = f'image-{1:09d}'
                 txn.get(image_key.encode(encoding))
                 self.label_only = False
-            except Exception:
+            except AttributeError:
                 self.label_only = True
 
     def __getitem__(self, index):
@@ -85,11 +88,8 @@ class LmdbAnnFileBackend:
                     img_key = f'image-{index:09d}'
                     text = txn.get(label_key.encode('utf-8')).decode(
                         self.encoding)
-                    line = json.dumps({
-                        'filename': img_key,
-                        'text': text
-                    },
-                                      ensure_ascii=False)
+                    line = json.dumps(
+                        dict(filename=img_key, text=text), ensure_ascii=False)
             return line
 
     def __len__(self):
