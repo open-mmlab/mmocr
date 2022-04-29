@@ -85,11 +85,11 @@ jobs:
       torch:
         type: string
       cuda:
-        type: double
-        default: 10.2
-      mmcv_cuda:
+        # e.g. 10.2
         type: string
-        default: cu102
+      mmcv_cuda:
+        # e.g. cu102
+        type: string
       cudnn:
         type: integer
         default: 7
