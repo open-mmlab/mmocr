@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 
+import lmdb
 import mmcv
 import numpy as np
 from mmdet.core import BitmapMasks, PolygonMasks
@@ -133,3 +134,56 @@ class LoadImageFromNdarray(LoadImageFromFile):
         results['ori_shape'] = img.shape
         results['img_fields'] = ['img']
         return results
+
+
+@PIPELINES.register_module()
+class LoadImageFromLMDB(object):
+    """Load an image from lmdb file.
+
+    Similar with :obj:'LoadImageFromFile', but the image read from
+    "results['img_info']['filename']", which is a data index of lmdb file.
+    """
+
+    def __init__(self, color_type='color'):
+        self.color_type = color_type
+        self.env = None
+        self.txn = None
+
+    def __call__(self, results):
+        img_key = results['img_info']['filename']
+        lmdb_path = results['img_prefix']
+
+        # lmdb env
+        if self.env is None:
+            self.env = lmdb.open(
+                lmdb_path,
+                max_readers=1,
+                readonly=True,
+                lock=False,
+                readahead=False,
+                meminit=False,
+            )
+        # read image
+        with self.env.begin(write=False) as txn:
+            imgbuf = txn.get(img_key.encode('utf-8'))
+            try:
+                img = mmcv.imfrombytes(imgbuf, flag=self.color_type)
+            except IOError:
+                print('Corrupted image for {}'.format(img_key))
+                return None
+
+            results['filename'] = img_key
+            results['ori_filename'] = img_key
+            results['img'] = img
+            results['img_shape'] = img.shape
+            results['ori_shape'] = img.shape
+            results['img_fields'] = ['img']
+            return results
+
+    def __repr__(self):
+        return '{} (color_type={})'.format(self.__class__.__name__,
+                                           self.color_type)
+
+    def __del__(self):
+        if self.env is not None:
+            self.env.close()

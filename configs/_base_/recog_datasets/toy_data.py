@@ -31,11 +31,7 @@ train2 = dict(
         repeat=100,
         file_format='lmdb',
         file_storage_backend='disk',
-        parser=dict(
-            type='LineStrParser',
-            keys=['filename', 'text'],
-            keys_idx=[0, 1],
-            separator=' ')),
+        parser=dict(type='LineJsonParser', keys=['filename', 'text'])),
     pipeline=None,
     test_mode=False)
 
@@ -49,11 +45,7 @@ test = dict(
         repeat=1,
         file_format='lmdb',
         file_storage_backend='disk',
-        parser=dict(
-            type='LineStrParser',
-            keys=['filename', 'text'],
-            keys_idx=[0, 1],
-            separator=' ')),
+        parser=dict(type='LineJsonParser', keys=['filename', 'text'])),
     pipeline=None,
     test_mode=True)
 
