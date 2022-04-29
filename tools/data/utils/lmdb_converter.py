@@ -33,7 +33,7 @@ def main():
         default='utf8',
         help='Bytes coding scheme, defaults to utf8')
     parser.add_argument(
-        '--lmdb_map_size',
+        '--lmdb-map-size',
         '-m',
         type=int,
         default=109951162776,
