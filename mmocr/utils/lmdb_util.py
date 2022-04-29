@@ -94,7 +94,6 @@ def recog2lmdb(img_root,
         img_name, text = parse_line(anno, label_format)
         if label_only:
             # convert only labels to lmdb
-            dict(filename=img_name, text=text)
             line = json.dumps(
                 dict(filename=img_name, text=text), ensure_ascii=False)
             cache.append((label_key, line.encode(encoding)))
