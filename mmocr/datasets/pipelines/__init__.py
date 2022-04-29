@@ -9,6 +9,7 @@ from .ocr_seg_targets import OCRSegTargets
 from .ocr_transforms import (FancyPCA, NormalizeOCR, OnlineCropOCR,
                              OpencvToPil, PilToOpencv, RandomPaddingOCR,
                              RandomRotateImageBox, ResizeOCR, ToTensorOCR)
+from .spotting_transforms import GenerateBezierPoints
 from .test_time_aug import MultiRotateAugOCR
 from .textdet_targets import (DBNetTargets, FCENetTargets, PANetTargets,
                               TextSnakeTargets)
@@ -29,5 +30,5 @@ __all__ = [
     'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets',
     'RandomScaling', 'RandomCropFlip', 'NerTransform', 'ToTensorNER',
     'ResizeNoImg', 'PyramidRescale', 'OneOfWrapper', 'RandomWrapper',
-    'TorchVisionWrapper'
+    'TorchVisionWrapper', 'GenerateBezierPoints'
 ]

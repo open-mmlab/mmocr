@@ -10,6 +10,7 @@ import mmcv
 import numpy as np
 import torch
 from matplotlib import pyplot as plt
+from mmdet.core import BitmapMasks, PolygonMasks
 from PIL import Image, ImageDraw, ImageFont
 
 import mmocr.utils as utils
@@ -20,18 +21,57 @@ def overlay_mask_img(img, mask):
 
     Args:
         img (ndarray): The input image.
-        mask (ndarray): The instance mask.
+        mask (BitmapMasks or PolygonMasks or ndarray): The instance mask.
 
     Returns:
         img (ndarray): The output image with instance boundaries on it.
     """
     assert isinstance(img, np.ndarray)
-    assert isinstance(mask, np.ndarray)
 
-    contours, _ = cv2.findContours(
-        mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if isinstance(mask, BitmapMasks):
+        mask = mask.masks[0]
 
-    cv2.drawContours(img, contours, -1, (0, 255, 0), 1)
+        contours, _ = cv2.findContours(
+            mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        cv2.drawContours(img, contours, -1, (0, 255, 0), 1)
+    elif isinstance(mask, PolygonMasks):
+        mask = mask.masks
+        for m in mask:
+            cv2.polylines(
+                img, [m[0].astype(np.int32).reshape(-1, 1, 2)],
+                True,
+                color=(0, 255, 0),
+                thickness=1)
+    elif isinstance(mask, np.ndarray):
+        contours, _ = cv2.findContours(
+            mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        cv2.drawContours(img, contours, -1, (0, 255, 0), 1)
+
+    return img
+
+
+def overlay_mask_img_bezier(img, points):
+    """Draw bezier curve on image for visualization.
+
+    Args:
+        img (ndarray): The input image.
+        points (BPolygonMasks): The control points.
+
+    Returns:
+        img (ndarray): The output image with instance boundaries on it.
+    """
+    assert isinstance(img, np.ndarray)
+    assert isinstance(points, PolygonMasks)
+
+    for p in points.masks:
+        poly = utils.bezier_to_polygon(p)
+        cv2.polylines(
+            img, [np.array(poly).astype(np.int32).reshape(-1, 1, 2)],
+            True,
+            color=(0, 255, 0),
+            thickness=1)
 
     return img
 
