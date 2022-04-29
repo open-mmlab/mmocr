@@ -40,8 +40,8 @@ class LmdbAnnFileBackend:
                 warnings.warn(
                     'DeprecationWarning: The lmdb dataset generated with '
                     'txt2lmdb will be deprecate, please use the latest '
-                    'tools/data/utils/recog2lmdb to generate the lmdb dataset '
-                    'see https://mmocr.readthedocs.io/en/latest/tools.html#'
+                    'tools/data/utils/recog2lmdb to generate lmdb dataset. '
+                    'See https://mmocr.readthedocs.io/en/latest/tools.html#'
                     'convert-text-recognition-dataset-to-lmdb-format for '
                     'details.')
                 self.total_number = int(
@@ -72,11 +72,9 @@ class LmdbAnnFileBackend:
                 line = txn.get(str(index).encode('utf-8')).decode(
                     self.encoding)
                 filename, text = line.split(' ')
-                line = json.dumps({
-                    'filename': filename,
-                    'text': text
-                },
-                                  ensure_ascii=False)
+                dict(filename=filename, text=text)
+                line = json.dumps(
+                    dict(filename=filename, text=text), ensure_ascii=False)
             else:
                 index = index + 1
                 label_key = f'label-{index:09d}'
