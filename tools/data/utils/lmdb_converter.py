@@ -31,13 +31,14 @@ def main():
         '-e',
         type=str,
         default='utf8',
-        help='Bytes coding scheme, default utf8')
+        help='Bytes coding scheme, defaults to utf8')
     parser.add_argument(
         '--lmdb_map_size',
         '-m',
         type=int,
         default=109951162776,
-        help='Maximum size database may grow to , default 109951162776 bytes')
+        help='Maximum size database may grow to, '
+        'defaults to 109951162776 bytes')
     opt = parser.parse_args()
 
     assert opt.img_root or opt.label_only
