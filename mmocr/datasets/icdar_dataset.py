@@ -40,6 +40,9 @@ class IcdarDataset(CocoDataset):
         super().__init__(ann_file, pipeline, classes, data_root, img_prefix,
                          seg_prefix, proposal_file, test_mode, filter_empty_gt)
 
+        # Set dummy flags just to be compatible with MMDet
+        self.flag = np.zeros(len(self), dtype=np.uint8)
+
     def load_annotations(self, ann_file):
         """Load annotation from COCO style annotation file.
 
@@ -138,7 +141,10 @@ class IcdarDataset(CocoDataset):
                  results,
                  metric='hmean-iou',
                  logger=None,
-                 score_thr=0.3,
+                 score_thr=None,
+                 min_score_thr=0.3,
+                 max_score_thr=0.9,
+                 step=0.1,
                  rank_list=None,
                  **kwargs):
         """Evaluate the hmean metric.
@@ -148,6 +154,10 @@ class IcdarDataset(CocoDataset):
             metric (str | list[str]): Metrics to be evaluated.
             logger (logging.Logger | str | None): Logger used for printing
                 related information during evaluation. Default: None.
+            score_thr (float): Deprecated. Please use min_score_thr instead.
+            min_score_thr (float): Minimum score threshold of prediction map.
+            max_score_thr (float): Maximum score threshold of prediction map.
+            step (float): The spacing between score thresholds.
             rank_list (str): json file used to save eval result
                 of each image after ranking.
         Returns:
@@ -172,6 +182,9 @@ class IcdarDataset(CocoDataset):
             ann_infos,
             metrics=metrics,
             score_thr=score_thr,
+            min_score_thr=min_score_thr,
+            max_score_thr=max_score_thr,
+            step=step,
             logger=logger,
             rank_list=rank_list)
 

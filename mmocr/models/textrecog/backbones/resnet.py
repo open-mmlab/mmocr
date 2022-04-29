@@ -202,7 +202,7 @@ class ResNet(BaseModule):
     def forward_plugin(self, x, plugin_name):
         out = x
         for name in plugin_name:
-            out = getattr(self, name)(x)
+            out = getattr(self, name)(out)
         return out
 
     def forward(self, x):
