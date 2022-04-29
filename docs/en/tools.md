@@ -21,16 +21,45 @@ python tools/publish_model.py work_dirs/psenet/latest.pth psenet_r50_fpnf_sbn_1x
 The final output filename will be `psenet_r50_fpnf_sbn_1x_20190801-{hash id}.pth`.
 
 
-## Convert txt annotation to lmdb format
-Sometimes, loading a large txt annotation file with multiple workers can cause OOM (out of memory) error. You can convert the file into lmdb format using `tools/data/utils/txt2lmdb.py` and use LmdbLoader in your config to avoid this issue.
+## Convert text recognition dataset to lmdb format
+Reading images or labels from files can be slow when data are excessive, e.g. on a scale of millions. Besides, in academia, most of the scene text recognition datasets are stored in lmdb format, including images and labels. To get closer to the mainstream practice and enhance the data storage efficiency, MMOCR now provides `tools/data/utils/lmdb_converter.py` to convert text recognition datasets to lmdb format.
+
+| Arguments         | Type | Description                                                        |
+| ----------------- | ---- | ------------------------------------------------------------------ |
+| `label_path`      | str  | Path to label file.                                                |
+| `output`          | str  | Output lmdb path.                                                  |
+| `--img-root`      | str  | Input imglist path.                                                |
+| `--label-only`    | bool | Only converter label to lmdb                                       |
+| `--label-format`  | str  | The format of the label file, either txt or jsonl.                 |
+| `--batch-size`    | int  | Processing batch size, defaults to 1000                            |
+| `--encoding`      | str  | Bytes coding scheme, defaults to utf8.                             |
+| `--lmdb-map-size` | int  | Maximum size database may grow to , defaults to 109951162776 bytes |
+
+### Examples
+
+Generate a mixed lmdb file with label.txt and images in `imgs/`:
+
 ```bash
-python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
-```
-For example,
-```bash
-python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
+python tools/data/utils/lmdb_converter.py label.txt imgs.lmdb -i imgs
 ```
 
+Generate a mixed lmdb file with label.jsonl and images in `imgs/`:
+
+```bash
+python tools/data/utils/lmdb_converter.py label.json imgs.lmdb -i imgs -f jsonl
+```
+
+Generate a label-only lmdb file with label.txt:
+
+```bash
+python tools/data/utils/lmdb_converter.py label.txt label.lmdb --label-only
+```
+
+Generate a label-only lmdb file with label.jsonl:
+
+```bash
+python tools/data/utils/lmdb_converter.py label.json label.lmdb --label-only -f jsonl
+```
 
 ## Log Analysis
 

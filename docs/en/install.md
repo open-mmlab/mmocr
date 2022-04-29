@@ -16,7 +16,7 @@ MMOCR has different version requirements on MMCV and MMDetection at each release
 
 | MMOCR        | MMCV                   | MMDetection               |
 | ------------ | ---------------------- | ------------------------- |
-| master       | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 3.0.0  |
+| main         | 1.3.8 <= mmcv <= 1.6.0 | 2.21.0 <= mmdet <= 3.0.0  |
 | 0.5.0        | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 3.0.0  |
 | 0.4.0, 0.4.1 | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 2.20.0 |
 | 0.3.0        | 1.3.8 <= mmcv <= 1.4.0 | 2.14.0 <= mmdet <= 2.20.0 |
@@ -112,6 +112,22 @@ pip install -v -e . # or "python setup.py develop"
 export PYTHONPATH=$(pwd):$PYTHONPATH
 ```
 
+g. (optional) If you would like to use any transform involving `albumentations` (For example, `Albu` in ABINet's pipeline):
+
+```shell
+pip install -r requirements/albu.txt
+```
+
+:::{note}
+
+We recommend checking the environment after installing `albumentations` to
+ensure that `opencv-python` and `opencv-python-headless` are not installed together, otherwise it might cause unexpected issues. If that's unfortunately the case, please uninstall `opencv-python-headless` to make sure MMOCR's visualization utilities can work.
+
+Refer
+to ['albumentations`'s official documentation](https://albumentations.ai/docs/getting_started/installation/#note-on-opencv-dependencies) for more details.
+
+:::
+
 ## Full Set-up Script
 
 Here is the full script for setting up MMOCR with Conda.
@@ -136,6 +152,9 @@ cd mmocr
 pip install -r requirements.txt
 pip install -v -e .  # or "python setup.py develop"
 export PYTHONPATH=$(pwd):$PYTHONPATH
+
+# for albumentations
+pip install -r requirements/albu.txt
 ```
 
 ## Another option: Docker Image
