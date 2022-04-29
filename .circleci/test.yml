@@ -91,6 +91,7 @@ jobs:
         default: cu102
     machine:
       image: ubuntu-2004-cuda-11.4:202110-01
+      docker_layer_caching: true
     resource_class: gpu.nvidia.small
     steps:
       - checkout
