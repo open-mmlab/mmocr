@@ -50,12 +50,11 @@ class LmdbAnnFileBackend:
                 self.deprecated_format = True
             # The lmdb file may contain only the label, or it may contain both
             # the label and the image, so we use image_key here for probing.
-            try:
-                image_key = f'image-{1:09d}'
-                txn.get(image_key.encode(encoding))
-                self.label_only = False
-            except AttributeError:
+            image_key = f'image-{1:09d}'
+            if txn.get(image_key.encode(encoding)) is None:
                 self.label_only = True
+            else:
+                self.label_only = False
 
     def __getitem__(self, index):
         """Retrieve one line from lmdb file by index.
@@ -71,8 +70,7 @@ class LmdbAnnFileBackend:
             if self.deprecated_format:
                 line = txn.get(str(index).encode('utf-8')).decode(
                     self.encoding)
-                filename, text = line.split(' ')
-                dict(filename=filename, text=text)
+                filename, text = line.strip('/n').split(' ')
                 line = json.dumps(
                     dict(filename=filename, text=text), ensure_ascii=False)
             else:
@@ -81,7 +79,6 @@ class LmdbAnnFileBackend:
                 if self.label_only:
                     line = txn.get(label_key.encode('utf-8')).decode(
                         self.encoding)
-                    line = json.dumps(line, ensure_ascii=False)
                 else:
                     img_key = f'image-{index:09d}'
                     text = txn.get(label_key.encode('utf-8')).decode(
