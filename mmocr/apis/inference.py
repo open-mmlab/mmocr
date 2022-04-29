@@ -12,8 +12,8 @@ from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
 
 from mmocr.models import build_detector
-from mmocr.utils import is_2dlist
-from .utils import disable_text_recog_aug_test
+from mmocr.utils import (disable_text_recog_aug_test, is_2dlist,
+                         unify_recog_pipeline)
 
 
 def init_detector(config, checkpoint=None, device='cuda:0', cfg_options=None):
@@ -35,6 +35,7 @@ def init_detector(config, checkpoint=None, device='cuda:0', cfg_options=None):
     elif not isinstance(config, mmcv.Config):
         raise TypeError('config must be a filename or Config object, '
                         f'but got {type(config)}')
+    config = unify_recog_pipeline(config)
     if cfg_options is not None:
         config.merge_from_dict(cfg_options)
     if config.model.get('pretrained'):
@@ -140,11 +141,6 @@ def model_inference(model,
                 for key, value in data.items():
                     data[key] = value[0]
         datas.append(data)
-
-    if isinstance(datas[0]['img'], list) and len(datas) > 1:
-        raise Exception('aug test does not support '
-                        f'inference with batch size '
-                        f'{len(datas)}')
 
     data = collate(datas, samples_per_gpu=len(imgs))
 

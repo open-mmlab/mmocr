@@ -27,11 +27,11 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 80.8
+          word_acc: 80.9
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 81.3
+          word_acc: 81.1
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
@@ -43,7 +43,7 @@ Models:
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 68.1
+          word_acc: 67.9
       - Task: Text Recognition
         Dataset: CT80
         Metrics:

@@ -7,10 +7,10 @@ from mmcv.parallel import MMDataParallel
 from mmcv.runner import get_dist_info
 from mmdet.apis import single_gpu_test
 
-from mmocr.apis.inference import disable_text_recog_aug_test
 from mmocr.core.deployment import (ONNXRuntimeDetector, ONNXRuntimeRecognizer,
                                    TensorRTDetector, TensorRTRecognizer)
 from mmocr.datasets import build_dataloader, build_dataset
+from mmocr.utils import disable_text_recog_aug_test
 
 
 def parse_args():

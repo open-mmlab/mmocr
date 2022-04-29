@@ -13,9 +13,8 @@ from mmdet.core import DistEvalHook, EvalHook
 from mmdet.datasets import build_dataloader, build_dataset
 
 from mmocr import digit_version
-from mmocr.apis.utils import (disable_text_recog_aug_test,
-                              replace_image_to_tensor)
-from mmocr.utils import get_root_logger
+from mmocr.utils import (disable_text_recog_aug_test, get_root_logger,
+                         replace_image_to_tensor)
 
 
 def train_detector(model,

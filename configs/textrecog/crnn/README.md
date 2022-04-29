@@ -33,10 +33,10 @@ Image-based sequence recognition has been a long-standing research topic in comp
 
 ## Results and models
 
-|                         methods                          |        | Regular Text |       |       |       | Irregular Text |       |                                                                                    download                                                                                    |
-| :------------------------------------------------------: | :----: | :----------: | :---: | :---: | :---: | :------------: | :---: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|                         methods                          | IIIT5K |     SVT      | IC13  |       | IC15  |      SVTP      | CT80  |
-| [CRNN](/configs/textrecog/crnn/crnn_academic_dataset.py) |  80.5  |     81.5     | 86.5  |       | 54.1  |      59.1      | 55.6  | [model](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/crnn/20210326_111035.log.json) |
+|                         methods                          |        | Regular Text |      |     |      | Irregular Text |      |                                                                                    download                                                                                    |
+| :------------------------------------------------------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|                         methods                          | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |
+| [CRNN](/configs/textrecog/crnn/crnn_academic_dataset.py) |  80.7  |     81.1     | 87.0 |     |  54.6   |       59.2        |  55.6   | [model](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/crnn/20210326_111035.log.json) |
 
 ## Citation
 
