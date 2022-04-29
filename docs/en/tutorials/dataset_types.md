@@ -18,8 +18,8 @@ Here we show an example to load lmdb annotations:
 lmdb_root = 'path to lmdb folder'
 train = dict(
     type='OCRDataset',
-    img_prefix=lmdb_root ,
-    ann_file=lmdb_root ,
+    img_prefix=lmdb_root,
+    ann_file=lmdb_root,
     loader=dict(
         type='AnnFileLoader',
         repeat=1,
