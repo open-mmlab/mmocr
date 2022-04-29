@@ -95,38 +95,44 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Libraries
+          name: Build Docker image
           command: |
-            asfa
-            sudo apt-get update
-            sudo apt-get install -y git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libgl1-mesa-glx
-            pyenv versions
-      - run:
-          name: Configure Python & pip
-          command: |
-            pyenv global << parameters.python >>
-            python -m pip install --upgrade pip
-            python -m pip install wheel
-      - run:
-          name: Install PyTorch
-          command: |
-            python -V
-            python -m pip install torch==<< parameters.torch >>+<< parameters.cuda >> torchvision==<< parameters.torchvision >>+<< parameters.cuda >> -f https://download.pytorch.org/whl/torch_stable.html
-      - run:
-          name: Install mmocr dependencies
-          command: |
-            python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.cuda >>/torch<< parameters.torch >>/index.html
-            python -m pip install mmdet
-            python -m pip install -r requirements.txt
-      - run:
-          name: Build and install
-          command: |
-            python setup.py check -m -s
-            TORCH_CUDA_ARCH_LIST=7.0 python -m pip install -e .
-      - run:
-          name: Run unittests
-          command: |
-            python -m pytest tests/
+            docker build .circleci/docker -t mmocr:gpu
+            docker run --gpus all -t -d -v /home/circleci/project/mmocr/:/mmocr -w /mmocr --name mmocr mmocr:gpu
+            docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch1.6.0/index.html
+            docker exec mmocr pip install -r requirements.txt
+            docker exec mmocr python -m pytest tests/
+      #       docker exec mmocr
+      #       docker exec --work
+      #       sudo apt-get update
+      #       sudo apt-get install -y git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libgl1-mesa-glx
+      #       pyenv versions
+      # - run:
+      #     name: Configure Python & pip
+      #     command: |
+      #       pyenv global << parameters.python >>
+      #       python -m pip install --upgrade pip
+      #       python -m pip install wheel
+      # - run:
+      #     name: Install PyTorch
+      #     command: |
+      #       python -V
+      #       python -m pip install torch==<< parameters.torch >>+<< parameters.cuda >> torchvision==<< parameters.torchvision >>+<< parameters.cuda >> -f https://download.pytorch.org/whl/torch_stable.html
+      # - run:
+      #     name: Install mmocr dependencies
+      #     command: |
+      #       python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.cuda >>/torch<< parameters.torch >>/index.html
+      #       python -m pip install mmdet
+      #       python -m pip install -r requirements.txt
+      # - run:
+      #     name: Build and install
+      #     command: |
+      #       python setup.py check -m -s
+      #       TORCH_CUDA_ARCH_LIST=7.0 python -m pip install -e .
+      # - run:
+      #     name: Run unittests
+      #     command: |
+      #       python -m pytest tests/
 
 workflows:
   pr_stage_lint:
