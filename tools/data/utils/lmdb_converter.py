@@ -7,9 +7,9 @@ from mmocr.utils import recog2lmdb
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('label_path', type=str, help='Path to label file')
-    parser.add_argument('output', type=str, help='output lmdb path')
+    parser.add_argument('output', type=str, help='Output lmdb path')
     parser.add_argument(
-        '--img-root', '-i', type=str, help='input imglist path')
+        '--img-root', '-i', type=str, help='Input imglist path')
     parser.add_argument(
         '--label-only',
         action='store_true',
@@ -25,19 +25,19 @@ def main():
         '-b',
         type=int,
         default=1000,
-        help='processing batch size, default 1000')
+        help='Processing batch size, defaults to 1000')
     parser.add_argument(
         '--encoding',
         '-e',
         type=str,
         default='utf8',
-        help='bytes coding scheme, default utf8')
+        help='Bytes coding scheme, default utf8')
     parser.add_argument(
         '--lmdb_map_size',
         '-m',
         type=int,
         default=109951162776,
-        help='maximum size database may grow to , default 109951162776 bytes')
+        help='Maximum size database may grow to , default 109951162776 bytes')
     opt = parser.parse_args()
 
     assert opt.img_root or opt.label_only

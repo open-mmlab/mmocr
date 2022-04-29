@@ -49,15 +49,15 @@ def recog2lmdb(img_root,
     """Create text recognition dataset to LMDB format.
 
     Args:
-        img_root (str): path to images.
-        label_path (str): path to label file.
+        img_root (str): Path to images.
+        label_path (str): Path to label file.
         output (str): LMDB output path.
-        label_format (str): format of the label file, either txt or jsonl.
-        label_only (bool): only convert label to lmdb format.
+        label_format (str): Format of the label file, either txt or jsonl.
+        label_only (bool): Only convert label to lmdb format.
         batch_size (int): Number of files written to the cache each time.
-        encoding (str): label encoding method.
-        lmdb_map_size (int): maximum size database may grow to.
-        verify (bool): if true, check the validity of
+        encoding (str): Label encoding method.
+        lmdb_map_size (int): Maximum size database may grow to.
+        verify (bool): If true, check the validity of
             every image.Defaults to True.
 
     E.g.
@@ -88,9 +88,9 @@ def recog2lmdb(img_root,
     cache = []
     # index start from 1
     cnt = 1
-    nSamples = len(anno_list)
+    n_samples = len(anno_list)
     for anno in anno_list:
-        labelKey = 'label-%09d'.encode(encoding) % cnt
+        label_key = 'label-%09d'.encode(encoding) % cnt
         img_name, text = parse_line(anno, label_format)
         if label_only:
             # convert only labels to lmdb
@@ -99,7 +99,7 @@ def recog2lmdb(img_root,
                 'text': text
             },
                               ensure_ascii=False)
-            cache.append((labelKey, line.encode(encoding)))
+            cache.append((label_key, line.encode(encoding)))
         else:
             # convert both images and labels to lmdb
             img_path = osp.join(img_root, img_name)
@@ -107,26 +107,25 @@ def recog2lmdb(img_root,
                 print('%s does not exist' % img_path)
                 continue
             with open(img_path, 'rb') as f:
-                imageBin = f.read()
+                image_bin = f.read()
             if verify:
                 try:
-                    if not check_image_is_valid(imageBin):
+                    if not check_image_is_valid(image_bin):
                         print('%s is not a valid image' % img_path)
                         continue
                 except Exception:
                     print('error occurred at ', img_name)
-            imageKey = 'image-%09d'.encode(encoding) % cnt
-            cache.append((imageKey, imageBin))
-            cache.append((labelKey, text.encode(encoding)))
+            image_key = 'image-%09d'.encode(encoding) % cnt
+            cache.append((image_key, image_bin))
+            cache.append((label_key, text.encode(encoding)))
 
         if cnt % batch_size == 0:
             write_cache(env, cache)
             cache = []
-            print('Written %d / %d' % (cnt, nSamples))
+            print('Written %d / %d' % (cnt, n_samples))
         cnt += 1
-    nSamples = cnt - 1
+    n_samples = cnt - 1
     cache.append(
-        ('num-samples'.encode(encoding), str(nSamples).encode(encoding)))
-    # cache['total_number'.encode(encoding)] = str(nSamples).encode(encoding)
+        ('num-samples'.encode(encoding), str(n_samples).encode(encoding)))
     write_cache(env, cache)
-    print('Created lmdb dataset with %d samples' % nSamples)
+    print('Created lmdb dataset with %d samples' % n_samples)
