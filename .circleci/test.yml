@@ -84,11 +84,15 @@ jobs:
         type: string
       torch:
         type: string
-      torchvision:
-        type: string
       cuda:
         type: string
+        default: 10.2
+      mmcv-cuda:
+        type: string
         default: cu102
+      cudnn:
+        type: string
+        default: 7
     machine:
       image: ubuntu-2004-cuda-11.4:202110-01
       docker_layer_caching: true
@@ -98,43 +102,22 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker build .circleci/docker -t mmocr:gpu
+            docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=<< parameters.torch >> CUDA=<< parameters.cuda >> CUDNN=<< parameters.cudnn >>
             docker run --gpus all -t -d -v /home/circleci/project:/mmocr -w /mmocr --name mmocr mmocr:gpu
-            docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch1.6.0/index.html
+      - run:
+          name: Install mmocr dependencies
+          command: |
+            docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.mmcv-cuda >>/torch<< parameters.torch >>/index.html
             docker exec mmocr pip install mmdet
             docker exec mmocr pip install -r requirements.txt
+      - run:
+          name: Build and install
+          command: |
+            docker exec mmocr pip install -e .
+      - run:
+          name: Run unittests
+          command: |
             docker exec mmocr python -m pytest tests/
-      #       docker exec mmocr
-      #       docker exec --work
-      #       sudo apt-get update
-      #       sudo apt-get install -y git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libgl1-mesa-glx
-      #       pyenv versions
-      # - run:
-      #     name: Configure Python & pip
-      #     command: |
-      #       pyenv global << parameters.python >>
-      #       python -m pip install --upgrade pip
-      #       python -m pip install wheel
-      # - run:
-      #     name: Install PyTorch
-      #     command: |
-      #       python -V
-      #       python -m pip install torch==<< parameters.torch >>+<< parameters.cuda >> torchvision==<< parameters.torchvision >>+<< parameters.cuda >> -f https://download.pytorch.org/whl/torch_stable.html
-      # - run:
-      #     name: Install mmocr dependencies
-      #     command: |
-      #       python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.cuda >>/torch<< parameters.torch >>/index.html
-      #       python -m pip install mmdet
-      #       python -m pip install -r requirements.txt
-      # - run:
-      #     name: Build and install
-      #     command: |
-      #       python setup.py check -m -s
-      #       TORCH_CUDA_ARCH_LIST=7.0 python -m pip install -e .
-      # - run:
-      #     name: Run unittests
-      #     command: |
-      #       python -m pytest tests/
 
 workflows:
   pr_stage_lint:
@@ -178,7 +161,8 @@ workflows:
       - build_cuda:
           name: mainstream_version_gpu
           torch: 1.8.1
-          torchvision: 0.9.1
+          cuda: 10.2
+          mmcv-cuda: cu102
           python: 3.8.6
           # requires:
           #   - hold
@@ -190,9 +174,9 @@ workflows:
       - build_cuda:
           name: minimum_version_gpu
           torch: 1.6.0
-          torchvision: 0.7.0
+          cuda: 10.1
+          mmcv-cuda: cu101
           python: 3.6.12
-          cuda: cu101
           filters:
             branches:
               only:
