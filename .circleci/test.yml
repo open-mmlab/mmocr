@@ -45,6 +45,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: GET MMCV_TORCH and MMCV_CUDA
+          command: |
+            . .circleci/scripts/get_mmcv_var.sh << parameters.torch >>
+      - run:
           name: Install Libraries
           command: |
             sudo apt-get update
@@ -62,7 +66,7 @@ jobs:
       - run:
           name: Install mmocr dependencies
           command: |
-            python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch<< parameters.torch >>/index.html
+            python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
             python -m pip install mmdet
             python -m pip install -r requirements.txt
       - run:
