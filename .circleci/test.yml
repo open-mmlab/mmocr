@@ -48,6 +48,9 @@ jobs:
           name: GET MMCV_TORCH and MMCV_CUDA
           command: |
             . .circleci/scripts/get_mmcv_var.sh << parameters.torch >>
+            source $BASH_ENV
+            echo ${MMCV_TORCH}
+            dsaf
       - run:
           name: Install Libraries
           command: |

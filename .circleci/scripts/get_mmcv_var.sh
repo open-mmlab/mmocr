@@ -15,8 +15,8 @@ TORCH_VER_ARR[2]=0
 printf -v MMCV_TORCH "%s." "${TORCH_VER_ARR[@]}"
 MMCV_TORCH=${MMCV_TORCH%?}  # Remove the last dot
 
-export MMCV_CUDA=${MMCV_CUDA}
-export MMCV_TORCH=${MMCV_TORCH}
+echo "export MMCV_CUDA=${MMCV_CUDA}" >> $BASH_ENV
+echo "export MMCV_TORCH=${MMCV_TORCH}" >> $BASH_ENV
 
 # echo "Build Docker image"
 # docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=${TORCH} --build-arg CUDA=${CUDA} --build-arg CUDNN=${CUDNN}
