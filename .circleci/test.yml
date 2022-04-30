@@ -159,7 +159,6 @@ workflows:
           torch: 1.8.1
           cuda: "10.2"
           mmcv_cuda: cu102
-          python: 3.8.6
           requires:
             - hold
   merge_stage_test:
