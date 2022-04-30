@@ -103,6 +103,7 @@ jobs:
           name: Build Docker image
           command: |
             docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
+            dsafdsaf
             docker run --gpus all -t -d -v /home/circleci/project:/mmocr -w /mmocr --name mmocr mmocr:gpu
       - run:
           name: Install mmocr dependencies
@@ -159,11 +160,17 @@ workflows:
       #     requires:
       #       - maximum_version_cpu
       - build_cuda:
-          name: mainstream_version_gpu
-          torch: 1.8.1
-          cuda: "10.2"
-          mmcv_cuda: cu102
-          python: 3.8.6
+          name: minimum_version_gpu
+          torch: 1.6.0
+          cuda: "10.1"
+          mmcv_cuda: cu101
+          python: 3.6.12
+      # - build_cuda:
+      #     name: mainstream_version_gpu
+      #     torch: 1.8.1
+      #     cuda: "10.2"
+      #     mmcv_cuda: cu102
+      #     python: 3.8.6
           # requires:
           #   - hold
   merge_stage_test:
