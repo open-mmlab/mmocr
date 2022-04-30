@@ -31,7 +31,21 @@
 |        BID        |                                                                                               [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |       RCTW        |                                                                                                                 [homepage](https://rctw.vlrlab.net/index.html)                                                                                                                 |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |     HierText      |                                                                                                        [homepage](https://github.com/google-research-datasets/hiertext)                                                                                                        |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
-
+### Install AWS CLI (optional)
+- Since there are some datasets that require the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) to be installed in advance, we provide a quick installation guide here:
+  ```bash
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscliv2.zip
+    sudo ./aws/install
+    ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
+    !aws configure
+    # this command will require you to input keys, you can skip them except
+    # for the Default region name
+    # AWS Access Key ID [None]:
+    # AWS Secret Access Key [None]:
+    # Default region name [None]: us-east-1
+    # Default output format [None]
+  ```
 ## Important Note
 
 :::{note}
@@ -874,19 +888,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
 ## HierText
 
-- Step1 (optional): Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). Here is a brief installation procedure, if you encounter problems, please check the official website.
-  ```bash
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  unzip awscliv2.zip
-  sudo ./aws/install
-  ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
-  !aws configure
-  # this command will require you to input keys, you can skip them except
-  # for the Default region name
-  # AWS Access Key ID [None]:
-  # AWS Secret Access Key [None]:
-  # Default region name [None]: us-east-1
-  # Default output format [None]
+- Step1 (optional): Install [AWS CLI](#install-aws-cli-optional).
 - Step2: Clone [HierText](https://github.com/google-research-datasets/hiertext) repo to get annotations
   ```bash
   mkdir HierText
