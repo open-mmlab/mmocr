@@ -161,7 +161,7 @@ workflows:
       - build_cuda:
           name: mainstream_version_gpu
           torch: 1.8.1
-          cuda: 10.2
+          cuda: "10.2"
           mmcv_cuda: cu102
           python: 3.8.6
           # requires:
@@ -174,7 +174,7 @@ workflows:
       - build_cuda:
           name: minimum_version_gpu
           torch: 1.6.0
-          cuda: 10.1
+          cuda: "10.1"
           mmcv_cuda: cu101
           python: 3.6.12
           filters:
