@@ -86,11 +86,6 @@ jobs:
       mmcv_cuda:
         type: enum
         enum: ["cu101", "cu102", "cu111"]
-      # MMCV only provides pre-compiled packages for torch 1.x.0
-      # which works for torch 1.x.1 as well. Developers need to be
-      # cautious about the version choice here to avoid the time-consuming
-      # compilation during the environment setup. For example, if torch is
-      # 1.8.1, mmcv_torch should be 1.8.0
       mmcv_torch:
         type: string
       cudnn:
@@ -102,17 +97,21 @@ jobs:
     resource_class: gpu.nvidia.small
     steps:
       - checkout
+      # - run:
+      #     name: Build Docker image
+      #     command: |
+      #       docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
+      #       docker run --gpus all -t -d -v /home/circleci/project:/mmocr -w /mmocr --name mmocr mmocr:gpu
+      # - run:
+      #     name: Install mmocr dependencies
+      #     command: |
+      #       docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.mmcv_cuda >>/torch<< parameters.mmcv_torch >>/index.html
+      #       docker exec mmocr pip install mmdet
+      #       docker exec mmocr pip install -r requirements.txt
       - run:
-          name: Build Docker image
+          name: Setup Docker environment
           command: |
-            docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
-            docker run --gpus all -t -d -v /home/circleci/project:/mmocr -w /mmocr --name mmocr mmocr:gpu
-      - run:
-          name: Install mmocr dependencies
-          command: |
-            docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.mmcv_cuda >>/torch<< parameters.mmcv_torch >>/index.html
-            docker exec mmocr pip install mmdet
-            docker exec mmocr pip install -r requirements.txt
+            .circleci/scripts/setup_docker_env.sh << parameters.torch >> <<parameters.cuda >> <<parameters.cudnn >>
       - run:
           name: Build and install
           command: |
