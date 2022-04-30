@@ -185,14 +185,10 @@ workflows:
     jobs:
       - build_cuda:
           name: minimum_version_gpu
-          # Read the explanation in the declaration section of parameters for
-          # details
           torch: 1.6.0
-          mmcv_torch: 1.6.0
           # Use double quotation mark to explicitly specify its type
           # as string instead of number
           cuda: "10.1"
-          mmcv_cuda: cu101
           filters:
             branches:
               only:
