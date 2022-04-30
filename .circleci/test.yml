@@ -45,7 +45,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: GET MMCV_TORCH and MMCV_CUDA
+          name: Get MMCV_TORCH as environment variables
           command: |
             . .circleci/scripts/get_mmcv_var.sh << parameters.torch >>
             source $BASH_ENV
@@ -88,11 +88,6 @@ jobs:
       cuda:
         type: enum
         enum: ["10.1", "10.2", "11.1"]
-      # mmcv_cuda:
-      #   type: enum
-      #   enum: ["cu101", "cu102", "cu111"]
-      # mmcv_torch:
-      #   type: string
       cudnn:
         type: integer
         default: 7
@@ -103,9 +98,9 @@ jobs:
     steps:
       - checkout
       - run:
-          name: GET MMCV_TORCH and MMCV_CUDA
+          name: Get MMCV_TORCH and MMCV_CUDA as environment variables
           command: |
-            . .circleci/scripts/get_mmcv_var.sh << parameters.torch >>
+            . .circleci/scripts/get_mmcv_var.sh << parameters.torch >> << parameters.cuda >>
             source $BASH_ENV
       - run:
           name: Build Docker image
@@ -118,10 +113,6 @@ jobs:
             docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}/index.html
             docker exec mmocr pip install mmdet
             docker exec mmocr pip install -r requirements.txt
-      - run:
-          name: Setup Docker environment
-          command: |
-            .circleci/scripts/setup_docker_env.sh << parameters.torch >> <<parameters.cuda >> <<parameters.cudnn >>
       - run:
           name: Build and install
           command: |
@@ -146,38 +137,38 @@ workflows:
       not:
         << pipeline.parameters.lint_only >>
     jobs:
-      # - lint:
-      #     name: lint
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - main
+      - lint:
+          name: lint
+          filters:
+            branches:
+              ignore:
+                - main
       - build_cpu:
           name: minimum_version_cpu
           torch: 1.6.0
           torchvision: 0.7.0
           python: 3.6.9  # The lowest python 3.6.x version available on CircleCI images
-          # requires:
-          #   - lint
-      # - build_cpu:
-      #     name: maximum_version_cpu
-      #     torch: 1.9.0
-      #     torchvision: 0.10.0
-      #     python: 3.9.0
-      #     requires:
-      #       - minimum_version_cpu
-      # - hold:
-      #     type: approval
-      #     requires:
-      #       - maximum_version_cpu
+          requires:
+            - lint
+      - build_cpu:
+          name: maximum_version_cpu
+          torch: 1.9.0
+          torchvision: 0.10.0
+          python: 3.9.0
+          requires:
+            - minimum_version_cpu
+      - hold:
+          type: approval
+          requires:
+            - maximum_version_cpu
       - build_cuda:
           name: mainstream_version_gpu
           torch: 1.8.1
           # Use double quotation mark to explicitly specify its type
           # as string instead of number
           cuda: "10.2"
-          # requires:
-          #   - hold
+          requires:
+            - hold
   merge_stage_test:
     when:
       not:
