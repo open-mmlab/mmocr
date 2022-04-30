@@ -38,6 +38,21 @@
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
 
+### Install AWS CLI (optional)
+- Since there are some datasets that require the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) to be installed in advance, we provide a quick installation guide here:
+  ```bash
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscliv2.zip
+    sudo ./aws/install
+    ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
+    !aws configure
+    # this command will require you to input keys, you can skip them except
+    # for the Default region name
+    # AWS Access Key ID [None]:
+    # AWS Secret Access Key [None]:
+    # Default region name [None]: us-east-1
+    # Default output format [None]
+  ```
 ## ICDAR 2011 (Born-Digital Images)
 
 - Step1: Download `Challenge1_Training_Task3_Images_GT.zip`, `Challenge1_Test_Task3_Images.zip`, and `Challenge1_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.3: Word Recognition (2013 edition)`.
@@ -432,7 +447,7 @@ should be as follows:
 
 ## OpenVINO
 
-- Step1: Install [awscli](https://aws.amazon.com/cli/).
+- Step1 (optional): Install [AWS CLI](#install-aws-cli-optional).
 - Step2: Download [Open Images](https://github.com/cvdfoundation/open-images-dataset#download-images-with-bounding-boxes-annotations) subsets `train_1`, `train_2`, `train_5`, `train_f`, and `validation` to `openvino/`.
 
   ```bash
@@ -1048,19 +1063,7 @@ should be as follows:
 
 ## HierText
 
-- Step1 (optional): Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). Here is a brief installation procedure, if you encounter problems, please check the official website.
-  ```bash
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  unzip awscliv2.zip
-  sudo ./aws/install
-  ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
-  !aws configure
-  # this command will require you to input keys, you can skip them except
-  # for the Default region name
-  # AWS Access Key ID [None]:
-  # AWS Secret Access Key [None]:
-  # Default region name [None]: us-east-1
-  # Default output format [None]
+- Step1 (optional): Install [AWS CLI](#install-aws-cli-optional).
 - Step2: Clone [HierText](https://github.com/google-research-datasets/hiertext) repo to get annotations
   ```bash
   mkdir HierText
@@ -1086,7 +1089,7 @@ should be as follows:
   tar -xzvf imgs/train.tgz
   tar -xzvf imgs/validation.tgz
   ```
-- Step5: Generate `train_label.jsonl` and `val_label.jsonl`. HierText includes different levels of annotation, from paragraph, line, to word. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph level's annotation. Set `--level line` to get line level annotation. set `--level word` to get word level's annotation.
+- Step5: Generate `train_label.jsonl` and `val_label.jsonl`. HierText includes different levels of annotation, including `paragraph`, `line`, and `word`. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph-level annotation. Set `--level line` to get line-level annotation. set `--level word` to get word-level annotation.
 
   ```bash
   # Collect word annotation from HierText  --level word

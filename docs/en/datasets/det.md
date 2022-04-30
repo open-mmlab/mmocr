@@ -912,7 +912,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   tar -xzvf imgs/train.tgz
   tar -xzvf imgs/validation.tgz
   ```
-- Step5: Generate `train_label.jsonl` and `val_label.jsonl`. HierText includes different levels of annotation, from paragraph, line, to word. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph level's annotation. Set `--level line` to get line level annotation. set `--level word` to get word level's annotation.
+- Step5: Generate `instances_training.json` and `instance_val.json`. HierText includes different levels of annotation, from paragraph, line, to word. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph-level annotation. Set `--level line` to get line-level annotation. set `--level word` to get word-level annotation.
 
   ```bash
   # Collect word annotation from HierText  --level word
