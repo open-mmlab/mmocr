@@ -98,7 +98,6 @@ jobs:
         default: 7
     machine:
       image: ubuntu-2004-cuda-11.4:202110-01
-      docker_layer_caching: true
     resource_class: gpu.nvidia.small
     steps:
       - checkout
@@ -110,7 +109,7 @@ jobs:
       - run:
           name: Install mmocr dependencies
           command: |
-            docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.mmcv_cuda >>/torch<< parameters.torch >>/index.html
+            docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.mmcv_cuda >>/torch<< parameters.mmcv_torch >>/index.html
             docker exec mmocr pip install mmdet
             docker exec mmocr pip install -r requirements.txt
       - run:
@@ -167,6 +166,8 @@ workflows:
           # details
           torch: 1.8.1
           mmcv_torch: 1.8.0
+          # Use double quotation mark to explicitly specify its type
+          # as string instead of number
           cuda: "10.2"
           mmcv_cuda: cu102
           # requires:
@@ -182,6 +183,8 @@ workflows:
           # details
           torch: 1.6.0
           mmcv_torch: 1.6.0
+          # Use double quotation mark to explicitly specify its type
+          # as string instead of number
           cuda: "10.1"
           mmcv_cuda: cu101
           filters:
