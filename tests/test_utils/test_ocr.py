@@ -20,6 +20,7 @@ from mmocr.utils.ocr import MMOCR
 
 
 def test_ocr_init_errors():
+    assert False
     # Test assertions
     with pytest.raises(ValueError):
         _ = MMOCR(det='test')
