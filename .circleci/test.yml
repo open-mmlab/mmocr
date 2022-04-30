@@ -86,6 +86,13 @@ jobs:
       mmcv_cuda:
         type: enum
         enum: ["cu101", "cu102", "cu111"]
+      # MMCV only provides pre-compiled packages for torch 1.x.0
+      # which works for torch 1.x.1 as well. Developers need to be
+      # cautious about the version choice here to avoid the time-consuming
+      # compilation during the environment setup. For example, if torch is
+      # 1.8.1, mmcv_torch should be 1.8.0
+      mmcv_torch:
+        type: string
       cudnn:
         type: integer
         default: 7
@@ -156,7 +163,10 @@ workflows:
       #       - maximum_version_cpu
       - build_cuda:
           name: mainstream_version_gpu
+          # Read the explanation in the declaration section of parameters for
+          # details
           torch: 1.8.1
+          mmcv_torch: 1.8.0
           cuda: "10.2"
           mmcv_cuda: cu102
           # requires:
@@ -168,7 +178,10 @@ workflows:
     jobs:
       - build_cuda:
           name: minimum_version_gpu
+          # Read the explanation in the declaration section of parameters for
+          # details
           torch: 1.6.0
+          mmcv_torch: 1.6.0
           cuda: "10.1"
           mmcv_cuda: cu101
           filters:
