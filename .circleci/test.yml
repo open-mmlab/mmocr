@@ -78,10 +78,6 @@ jobs:
 
   build_cuda:
     parameters:
-      # The python version must match available image tags in
-      # https://circleci.com/developer/images/image/cimg/python
-      python:
-        type: string
       torch:
         type: string
       cuda:
@@ -103,7 +99,6 @@ jobs:
           name: Build Docker image
           command: |
             docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
-            dsafdsaf
             docker run --gpus all -t -d -v /home/circleci/project:/mmocr -w /mmocr --name mmocr mmocr:gpu
       - run:
           name: Install mmocr dependencies
@@ -135,44 +130,38 @@ workflows:
       not:
         << pipeline.parameters.lint_only >>
     jobs:
-      # - lint:
-      #     name: lint
-      #     filters:
-      #       branches:
-      #         ignore:
-      #           - main
-      # - build_cpu:
-      #     name: minimum_version_cpu
-      #     torch: 1.6.0
-      #     torchvision: 0.7.0
-      #     python: 3.6.9  # The lowest python 3.6.x version available on CircleCI images
-      #     requires:
-      #       - lint
-      # - build_cpu:
-      #     name: maximum_version_cpu
-      #     torch: 1.9.0
-      #     torchvision: 0.10.0
-      #     python: 3.9.0
-      #     requires:
-      #       - minimum_version_cpu
-      # - hold:
-      #     type: approval
-      #     requires:
-      #       - maximum_version_cpu
-      - build_cuda:
-          name: minimum_version_gpu
+      - lint:
+          name: lint
+          filters:
+            branches:
+              ignore:
+                - main
+      - build_cpu:
+          name: minimum_version_cpu
           torch: 1.6.0
-          cuda: "10.1"
-          mmcv_cuda: cu101
-          python: 3.6.12
-      # - build_cuda:
-      #     name: mainstream_version_gpu
-      #     torch: 1.8.1
-      #     cuda: "10.2"
-      #     mmcv_cuda: cu102
-      #     python: 3.8.6
-          # requires:
-          #   - hold
+          torchvision: 0.7.0
+          python: 3.6.9  # The lowest python 3.6.x version available on CircleCI images
+          requires:
+            - lint
+      - build_cpu:
+          name: maximum_version_cpu
+          torch: 1.9.0
+          torchvision: 0.10.0
+          python: 3.9.0
+          requires:
+            - minimum_version_cpu
+      - hold:
+          type: approval
+          requires:
+            - maximum_version_cpu
+      - build_cuda:
+          name: mainstream_version_gpu
+          torch: 1.8.1
+          cuda: "10.2"
+          mmcv_cuda: cu102
+          python: 3.8.6
+          requires:
+            - hold
   merge_stage_test:
     when:
       not:
@@ -183,7 +172,6 @@ workflows:
           torch: 1.6.0
           cuda: "10.1"
           mmcv_cuda: cu101
-          python: 3.6.12
           filters:
             branches:
               only:
