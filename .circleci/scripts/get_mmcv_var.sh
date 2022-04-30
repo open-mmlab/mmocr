@@ -17,12 +17,3 @@ MMCV_TORCH=${MMCV_TORCH%?}  # Remove the last dot
 
 echo "export MMCV_CUDA=${MMCV_CUDA}" >> $BASH_ENV
 echo "export MMCV_TORCH=${MMCV_TORCH}" >> $BASH_ENV
-
-# echo "Build Docker image"
-# docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=${TORCH} --build-arg CUDA=${CUDA} --build-arg CUDNN=${CUDNN}
-# docker run --gpus all -t -d -v /home/circleci/project:/mmocr -w /mmocr --name mmocr mmocr:gpu
-
-# echo "Install mmocr dependencies"
-# docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}/index.html
-# docker exec mmocr pip install mmdet
-# docker exec mmocr pip install -r requirements.txt

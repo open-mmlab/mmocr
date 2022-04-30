@@ -49,8 +49,6 @@ jobs:
           command: |
             . .circleci/scripts/get_mmcv_var.sh << parameters.torch >>
             source $BASH_ENV
-            echo ${MMCV_TORCH}
-            dsaf
       - run:
           name: Install Libraries
           command: |
@@ -90,11 +88,11 @@ jobs:
       cuda:
         type: enum
         enum: ["10.1", "10.2", "11.1"]
-      mmcv_cuda:
-        type: enum
-        enum: ["cu101", "cu102", "cu111"]
-      mmcv_torch:
-        type: string
+      # mmcv_cuda:
+      #   type: enum
+      #   enum: ["cu101", "cu102", "cu111"]
+      # mmcv_torch:
+      #   type: string
       cudnn:
         type: integer
         default: 7
@@ -104,17 +102,22 @@ jobs:
     resource_class: gpu.nvidia.small
     steps:
       - checkout
-      # - run:
-      #     name: Build Docker image
-      #     command: |
-      #       docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
-      #       docker run --gpus all -t -d -v /home/circleci/project:/mmocr -w /mmocr --name mmocr mmocr:gpu
-      # - run:
-      #     name: Install mmocr dependencies
-      #     command: |
-      #       docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.mmcv_cuda >>/torch<< parameters.mmcv_torch >>/index.html
-      #       docker exec mmocr pip install mmdet
-      #       docker exec mmocr pip install -r requirements.txt
+      - run:
+          name: GET MMCV_TORCH and MMCV_CUDA
+          command: |
+            . .circleci/scripts/get_mmcv_var.sh << parameters.torch >>
+            source $BASH_ENV
+      - run:
+          name: Build Docker image
+          command: |
+            docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
+            docker run --gpus all -t -d -v /home/circleci/project:/mmocr -w /mmocr --name mmocr mmocr:gpu
+      - run:
+          name: Install mmocr dependencies
+          command: |
+            docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}/index.html
+            docker exec mmocr pip install mmdet
+            docker exec mmocr pip install -r requirements.txt
       - run:
           name: Setup Docker environment
           command: |
@@ -167,18 +170,14 @@ workflows:
       #     type: approval
       #     requires:
       #       - maximum_version_cpu
-      # - build_cuda:
-      #     name: mainstream_version_gpu
-      #     # Read the explanation in the declaration section of parameters for
-      #     # details
-      #     torch: 1.8.1
-      #     mmcv_torch: 1.8.0
-      #     # Use double quotation mark to explicitly specify its type
-      #     # as string instead of number
-      #     cuda: "10.2"
-      #     mmcv_cuda: cu102
-      #     # requires:
-      #     #   - hold
+      - build_cuda:
+          name: mainstream_version_gpu
+          torch: 1.8.1
+          # Use double quotation mark to explicitly specify its type
+          # as string instead of number
+          cuda: "10.2"
+          # requires:
+          #   - hold
   merge_stage_test:
     when:
       not:
