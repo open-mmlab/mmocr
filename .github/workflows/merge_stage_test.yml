@@ -32,15 +32,14 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Get MMCV_TORCH as the environment variable
+        run: . .github/workflows/scripts/get_mmcv_var.sh ${{matrix.torch}}
       - name: Upgrade pip
         run: pip install pip --upgrade
-      - name: Install Pillow
-        run: pip install Pillow
-        if: ${{matrix.torchvision == '0.4.1'}}
       - name: Install PyTorch
         run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install MMCV
-        run: pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${{matrix.torch}}/index.html
+        run: pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
       - name: Install MMDet
         run: pip install mmdet
       - name: Install other dependencies
@@ -82,13 +81,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
         run: pip install pip --upgrade
-      - name: Install Pillow
-        run: pip install Pillow
-        if: ${{matrix.torchvision == '0.4.1'}}
+      - name: Get MMCV_TORCH as the environment variable
+        run: . .github/workflows/scripts/get_mmcv_var.sh ${{matrix.torch}}
       - name: Install PyTorch
         run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - name: Install MMCV
-        run: pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${{matrix.torch}}/index.html
+        run: pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
       - name: Install MMDet
         run: pip install mmdet
       - name: Install other dependencies
@@ -118,11 +116,9 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7]
-        torch: [1.8.1+cu102]
         include:
-          - torch: 1.8.1+cu102
-            torch_version: 1.8.1
-            torchvision: 0.9.1+cu102
+          - torch: 1.8.1
+            cuda: 10.2
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -131,36 +127,31 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade pip
         run: python -m pip install pip --upgrade
-      - name: Fetch GPG keys
-        run: |
-          apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
-          apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
+      # - name: Fetch GPG keys
+      #   run: |
+      #     apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+      #     apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
+      - name: Get MMCV_TORCH and MMCV_CUDA as environment variables
+        run: . .github/workflows/scripts/get_mmcv_var.sh ${{matrix.torch}} ${{matrix.cuda}}
       - name: Install Python-dev
         run: apt-get update && apt-get install -y python${{matrix.python-version}}-dev
         if: ${{matrix.python-version != 3.9}}
       - name: Install system dependencies
         run: |
           apt-get update && apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6
-          apt-get clean
-          rm -rf /var/lib/apt/lists/*
-          apt-get install -y ninja-build
-      - name: Install Pillow
-        run: python -m pip install Pillow==6.2.2
-        if: ${{matrix.torchvision < 0.5}}
-      - name: Install soundfile lib
-        run: apt-get install -y libsndfile1
-      - name: Install librosa and soundfile
-        run: python -m pip install librosa soundfile
-      - name: Install lmdb
-        run: python -m pip install lmdb
+      # - name: Install soundfile lib
+      #   run: apt-get install -y libsndfile1
+      # - name: Install librosa and soundfile
+      #   run: python -m pip install librosa soundfile
+      # - name: Install lmdb
+      #   run: python -m pip install lmdb
       - name: Install mmocr dependencies
         run: |
-          python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu102/torch${{matrix.torch_version}}/index.html
+          python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}}/index.html
           python -m pip install mmdet
           python -m pip install -r requirements.txt
       - name: Build and install
         run: |
-          rm -rf .eggs
           python setup.py check -m -s
           TORCH_CUDA_ARCH_LIST=7.0 python -m pip install -e .
 
