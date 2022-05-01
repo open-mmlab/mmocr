@@ -7,7 +7,17 @@ model = dict(
         type='ResNet',
         in_channels=3,
         stem_channels=[64, 128],
-        block_cfgs=dict(type='BasicBlock'),
+        block_cfgs=dict(
+            type='BasicBlock',
+            plugins=dict(
+                cfg=dict(
+                    type='GCAModule',
+                    ratio=0.0625,
+                    headers=1,
+                    pooling_type='att',
+                    is_att_scale=False,
+                    fusion_type='channel_add'),
+                position='after_conv2')),
         arch_layers=[1, 2, 5, 3],
         arch_channels=[256, 256, 512, 512],
         strides=[1, 1, 1, 1],
@@ -20,16 +30,6 @@ model = dict(
                 cfg=dict(type='Maxpool2d', kernel_size=(2, 1), stride=(2, 1)),
                 stages=(False, False, True, False),
                 position='before_stage'),
-            dict(
-                cfg=dict(
-                    type='GCAModule',
-                    ratio=0.0625,
-                    n_head=1,
-                    pooling_type='att',
-                    scale_attn=False,
-                    fusion_type='channel_add'),
-                stages=[False, True, True, True],
-                position='after_stage'),
             dict(
                 cfg=dict(
                     type='ConvModule',

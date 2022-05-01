@@ -1,6 +1,6 @@
 # MASTER
 
->[MASTER: Multi-aspect non-local network for scene text recognition](https://arxiv.org/pdf/1910.02562.pdf)
+>[MASTER: Multi-aspect non-local network for scene text recognition](https://arxiv.org/abs/1910.02562)
 
 <!-- [ALGORITHM] -->
 
@@ -21,6 +21,7 @@ Attention-based scene text recognizers have gained huge success, which leverages
 | trainset  | instance_num | repeat_num | source |
 | :-------: | :----------: | :--------: | :----: |
 | SynthText |   7266686    |     1      | synth  |
+| SynthAdd  |   1216889    |     1      | synth  |
 |  Syn90k   |   8919273    |     1      | synth  |
 
 ### Test Dataset
@@ -39,7 +40,7 @@ Attention-based scene text recognizers have gained huge success, which leverages
 |                        Methods                         |   Backbone    |        | Regular Text |       |       |       | Irregular Text |       |       download       |
 | :----------------------------------------------------: | :-----------: | :----: | :----------: | :---: | :---: | :---: | :------------: | :---: | :------------------: |
 |                                                        |               | IIIT5K |     SVT      | IC13  |       | IC15  |      SVTP      | CT80  |
-| [MASTER](/configs/textrecog/master/master_academic.py) | R31-GCAModule |        |              |       |       |       |                |       | [model]() \| [log]() |
+| [MASTER](/configs/textrecog/master/master_academic.py) | R31-GCAModule | 95.27  |     89.8     | 95.17 |       | 77.03 |     82.95      | 89.93 | [model]() \| [log]() |
 
 ## Citation
 
