@@ -24,15 +24,16 @@
 |          NAF          |                           [homepage](https://github.com/herobd/NAF_dataset)                           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |         SROIE         |                               [homepage](https://rrc.cvc.uab.es/?ch=13)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |   Lecture Video DB    |          [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|         LSVT          |                               [homepage](https://rrc.cvc.uab.es/?ch=16)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |         IMGUR         |              [homepage](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset)              |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |         KAIST         |          [homepage](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |         MTWI          |       [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us)       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |     COCO Text v2      |                            [homepage](https://bgshih.github.io/cocotext/)                             |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |         ReCTS         |                               [homepage](https://rrc.cvc.uab.es/?ch=12)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
-|       IIIT-ILST       |             [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst)              |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
-|        VinText        |                       [homepage](https://github.com/VinAIResearch/dict-guided)                        |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
-|          BID          |          [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |   |
-
+|       IIIT-ILST       |             [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst)              |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|        VinText        |                       [homepage](https://github.com/VinAIResearch/dict-guided)                        |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|          BID          |          [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|          RCTW          |          [homepage](https://rctw.vlrlab.net/index.html)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
 
@@ -236,6 +237,10 @@ Please make sure you're using the right annotation to train the model by checkin
   cd /path/to/mmocr/data/mixture
 
   ln -s /path/to/Syn90k Syn90k
+
+  # Convert 'txt' format annos to 'lmdb' (optional)
+  cd /path/to/mmocr
+  python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
   ```
 
 - After running the above codes, the directory structure
@@ -245,7 +250,7 @@ should be as follows:
   ├── Syn90k
   │   ├── shuffle_labels.txt
   │   ├── label.txt
-  │   ├── label.lmdb
+  │   ├── label.lmdb (optional)
   │   └── mnt
   ```
 
@@ -277,12 +282,16 @@ Please make sure you're using the right annotation to train the model by checkin
   ln -s /path/to/SynthText SynthText
   ```
 
-- Step4:Generate cropped images and labels:
+- Step4: Generate cropped images and labels:
 
   ```bash
   cd /path/to/mmocr
 
   python tools/data/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat data/mixture/SynthText/ data/mixture/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
+
+  # Convert 'txt' format annos to 'lmdb' (optional)
+  cd /path/to/mmocr
+  python tools/data/utils/txt2lmdb.py -i data/mixture/SynthText/label.txt -o data/mixture/SynthText/label.lmdb
   ```
 
 - After running the above codes, the directory structure
@@ -294,7 +303,7 @@ should be as follows:
   │   ├── shuffle_labels.txt
   │   ├── instances_train.txt
   │   ├── label.txt
-  │   ├── label.lmdb
+  │   ├── label.lmdb (optional)
   │   └── synthtext
   ```
 
@@ -317,6 +326,10 @@ should be as follows:
   cd /path/to/mmocr/data/mixture
 
   ln -s /path/to/SynthAdd SynthAdd
+
+  # Convert 'txt' format annos to 'lmdb' (optional)
+  cd /path/to/mmocr
+  python tools/data/utils/txt2lmdb.py -i data/mixture/SynthAdd/label.txt -o data/mixture/SynthAdd/label.lmdb
   ```
 
 - After running the above codes, the directory structure
@@ -325,12 +338,12 @@ should be as follows:
   ```text
   ├── SynthAdd
   │   ├── label.txt
-  │   ├── label.lmdb
+  │   ├── label.lmdb (optional)
   │   └── SynthText_Add
   ```
 
 :::{tip}
-To convert label file with `txt` format to `lmdb` format,
+To convert label file from `txt` format to `lmdb` format,
 
 ```bash
 python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
@@ -379,7 +392,7 @@ should be as follows:
 
 ## Totaltext
 
-- Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
+- Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` or `TT_new_train_GT.zip` (if you prefer to use the latest version of training annotations) from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
 
   ```bash
   mkdir totaltext && cd totaltext
@@ -391,27 +404,28 @@ should be as follows:
   mv Images/Train imgs/training
   mv Images/Test imgs/test
 
-  # For annotations
+  # For legacy training and test annotations
   unzip groundtruth_text.zip
-  cd Groundtruth
-  mv Polygon/Train ../annotations/training
-  mv Polygon/Test ../annotations/test
+  mv Groundtruth/Polygon/Train annotations/training
+  mv Groundtruth/Polygon/Test annotations/test
 
+  # Using the latest training annotations
+  # WARNING: Delete legacy train annotations before running the following command.
+  unzip TT_new_train_GT.zip
+  mv Train annotations/training
   ```
 
 - Step2: Generate cropped images, `train_label.txt` and `test_label.txt` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`):
 
   ```bash
-  python tools/data/textrecog/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
+  python tools/data/textrecog/totaltext_converter.py /path/to/totaltext
   ```
 
-- After running the above codes, the directory structure
-should be as follows:
+- After running the above codes, the directory structure should be as follows:
 
   ```text
-  ├── Totaltext
-  │   ├── imgs
-  │   ├── annotations
+  ├── totaltext
+  │   ├── dst_imgs
   │   ├── train_label.txt
   │   └── test_label.txt
   ```
@@ -613,14 +627,53 @@ The LV dataset has already provided cropped images and the corresponding annotat
   python tools/data/textdreog/lv_converter.py PATH/TO/lv
   ```
 
-- After running the above codes, the directory structure
-should be as follows:
+- After running the above codes, the directory structure should be as follows:
 
   ```text
   ├── lv
   │   ├── Crops
   │   ├── train_label.jsonl
   │   └── test_label.jsonl
+  ```
+
+## LSVT
+
+- Step1: Download [train_full_images_0.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz), [train_full_images_1.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz), and [train_full_labels.json](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json) to `lsvt/`.
+
+  ```bash
+  mkdir lsvt && cd lsvt
+
+  # Download LSVT dataset
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz
+  wget https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json
+
+  mkdir annotations
+  tar -xf train_full_images_0.tar.gz && tar -xf train_full_images_1.tar.gz
+  mv train_full_labels.json annotations/ && mv train_full_images_1/*.jpg train_full_images_0/
+  mv train_full_images_0 imgs
+
+  rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
+  ```
+
+- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+
+  ```bash
+  # Annotations of LSVT test split is not publicly available, split a validation
+  # set by adding --val-ratio 0.2
+  # Add --preserve-vertical to preserve vertical texts for training, otherwise
+  # vertical images will be filtered and stored in PATH/TO/lsvt/ignores
+  python tools/data/textdrecog/lsvt_converter.py PATH/TO/lsvt --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  ├── lsvt
+  │   ├── crops
+  │   ├── ignores
+  │   ├── train_label.jsonl
+  │   └── val_label.jsonl (optional)
   ```
 
 ## FUNSD
@@ -969,4 +1022,26 @@ should be as follows:
   │   ├── ignores
   │   ├── train_label.jsonl
   │   └── val_label.jsonl (optional)
+  ```
+
+## RCTW
+
+- Step1: Download `train_images.zip.001`, `train_images.zip.002`, and `train_gts.zip` from the [homepage](https://rctw.vlrlab.net/dataset.html), extract the zips to `rctw/imgs` and `rctw/annotations`, respectively.
+
+- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+
+  ```bash
+  # Annotations of RCTW test split is not publicly available, split a validation set by adding --val-ratio 0.2
+  # Add --preserve-vertical to preserve vertical texts for training, otherwise vertical images will be filtered and stored in PATH/TO/rctw/ignores
+  python tools/data/textrecog/rctw_converter.py PATH/TO/rctw --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  │── rctw
+  │   ├── crops
+  │   ├── ignores
+  │   ├── train_label.jsonl
+  │   └── val_label.jsonl (optional)
   ```
