@@ -29,7 +29,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Upgradepip
+      - name: Upgrade pip
         run: pip install pip --upgrade
       - name: Get MMCV_TORCH as the environment variable
         run: . .github/workflows/scripts/get_mmcv_var.sh ${{matrix.torch}}
