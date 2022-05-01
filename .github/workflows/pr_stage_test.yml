@@ -29,7 +29,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Upgrade pip
+      - name: Upgradepip
         run: pip install pip --upgrade
       - name: Get MMCV_TORCH as the environment variable
         run: . .github/workflows/scripts/get_mmcv_var.sh ${{matrix.torch}}
@@ -88,12 +88,6 @@ jobs:
         run: |
           apt-get update
           apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libxrender-dev
-      # - name: Install soundfile lib
-      #   run: apt-get install -y libsndfile1
-      # - name: Install librosa and soundfile
-      #   run: python -m pip install librosa soundfile
-      # - name: Install lmdb
-      #   run: python -m pip install lmdb
       - name: Install mmocr dependencies
         run: |
           python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}/index.html
