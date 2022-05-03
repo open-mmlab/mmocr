@@ -5,10 +5,12 @@ import pytest
 import torch
 
 from mmocr.models.textrecog.decoders import (ABILanguageDecoder,
-                                             ABIVisionDecoder, BaseDecoder,
+                                             ABIVisionDecoder, ASTERDecoder,
+                                             ASTERDecoderWithBs, BaseDecoder,
                                              NRTRDecoder, ParallelSARDecoder,
                                              ParallelSARDecoderWithBS,
                                              SequentialSARDecoder)
+from mmocr.models.textrecog.decoders.aster_decoder_with_bs import DecodeNodes
 from mmocr.models.textrecog.decoders.sar_decoder_with_bs import DecodeNode
 
 
@@ -27,6 +29,60 @@ def test_base_decoder():
         decoder.forward_train(None, None, None, None)
     with pytest.raises(NotImplementedError):
         decoder.forward_test(None, None, None)
+
+
+def test_aster_decoder():
+    decoder = ASTERDecoder(
+        in_channels=512,
+        num_classes=512,
+        s_Dim=512,
+        Atten_Dim=512,
+        max_seq_len=5)
+    decoder.init_weights()
+    decoder.train()
+
+    feat = torch.rand(1, 512, 1, 25)
+    out_enc = torch.rand(1, 25, 512)
+    tgt_dict = {'padded_targets': torch.LongTensor([[1, 1, 1, 1, 36]])}
+    img_metas = [{'valid_ratio': 1.0}]
+
+    out_train = decoder(feat, out_enc, tgt_dict, img_metas, True)
+    assert out_train.shape == torch.Size([1, 5, 512])
+
+    out_train = decoder(feat, out_enc, tgt_dict, img_metas, False)
+    assert out_train.shape == torch.Size([1, 4, 512])
+
+
+def test_aster_decoder_with_beam_search():
+    decoder = ASTERDecoderWithBs(
+        in_channels=512,
+        num_classes=512,
+        s_Dim=512,
+        Atten_Dim=512,
+        max_seq_len=5,
+        beam_width=5)
+    decoder.init_weights()
+    decoder.train()
+
+    feat = torch.rand(1, 512, 1, 25)
+    out_enc = torch.rand(1, 25, 512)
+    tgt_dict = {'padded_targets': torch.LongTensor([[1, 1, 1, 1, 36]])}
+    img_metas = [{'valid_ratio': 1.0}]
+
+    out_train = decoder(feat, out_enc, tgt_dict, img_metas, True)
+    assert out_train.shape == torch.Size([1, 5, 512])
+
+    out_train = decoder(feat, out_enc, tgt_dict, img_metas, False)
+    assert out_train.shape == torch.Size([1, 4, 512])
+
+    with pytest.raises(AssertionError):
+        DecodeNodes(1, 1, 1)
+    with pytest.raises(AssertionError):
+        DecodeNodes([1, 2], [1, 2], ['4', '3'])
+    with pytest.raises(AssertionError):
+        DecodeNodes([1, 2], [1, 2], [0.5])
+    decode_node = DecodeNodes([0, 1], [0, 1], [0.7, 0.8])
+    assert math.isclose(decode_node.eval(), 1.5)
 
 
 def test_parallel_sar_decoder():

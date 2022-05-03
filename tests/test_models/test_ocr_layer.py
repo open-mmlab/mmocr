@@ -4,6 +4,7 @@ import torch
 from mmocr.models.common import (PositionalEncoding, TFDecoderLayer,
                                  TFEncoderLayer)
 from mmocr.models.textrecog.layers import BasicBlock, Bottleneck
+from mmocr.models.textrecog.layers.attention_aster_layer import AttentionLSTM
 from mmocr.models.textrecog.layers.conv_layer import conv3x3
 
 
@@ -61,3 +62,13 @@ def test_transformer_layer():
         operation_order=('self_attn', 'norm', 'ffn', 'norm'))
     out_enc = encoder_layer(in_enc)
     assert out_dec.shape == torch.Size([1, 30, 512])
+
+
+def test_attentionLSTM_layer():
+    decoder_layer = AttentionLSTM(H_Dim=512, S_Dim=512, Atten_Dim=512)
+    x = torch.rand(1, 25, 512)
+    state = torch.zeros(1, 1, 512)
+
+    out_enc = decoder_layer(x, state)
+
+    assert out_enc.shape == torch.Size([1, 25])

@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .abinet_vision_model import ABIVisionModel
+from .aster_encoder import ASTEREncoder
 from .base_encoder import BaseEncoder
 from .channel_reduction_encoder import ChannelReductionEncoder
 from .nrtr_encoder import NRTREncoder
@@ -9,5 +10,5 @@ from .transformer import TransformerEncoder
 
 __all__ = [
     'SAREncoder', 'NRTREncoder', 'BaseEncoder', 'ChannelReductionEncoder',
-    'SatrnEncoder', 'TransformerEncoder', 'ABIVisionModel'
+    'SatrnEncoder', 'TransformerEncoder', 'ABIVisionModel', 'ASTEREncoder'
 ]
