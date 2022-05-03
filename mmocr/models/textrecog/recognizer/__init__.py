@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from .abcnet import ABCRecognizer
 from .abinet import ABINet
 from .base import BaseRecognizer
 from .crnn import CRNNNet
@@ -11,5 +12,5 @@ from .seg_recognizer import SegRecognizer
 
 __all__ = [
     'BaseRecognizer', 'EncodeDecodeRecognizer', 'CRNNNet', 'SARNet', 'NRTR',
-    'SegRecognizer', 'RobustScanner', 'SATRN', 'ABINet'
+    'SegRecognizer', 'RobustScanner', 'SATRN', 'ABINet', 'ABCRecognizer'
 ]

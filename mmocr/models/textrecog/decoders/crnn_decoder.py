@@ -39,7 +39,7 @@ class CRNNDecoder(BaseDecoder):
     def forward_train(self, feat, out_enc, targets_dict, img_metas):
         """
         Args:
-            feat (Tensor): A Tensor of shape :math:`(N, H, 1, W)`.
+            feat (Tensor): A Tensor of shape :math:`(N, C, 1, W)`.
 
         Returns:
             Tensor: The raw logit tensor. Shape :math:`(N, W, C)` where
@@ -61,7 +61,7 @@ class CRNNDecoder(BaseDecoder):
     def forward_test(self, feat, out_enc, img_metas):
         """
         Args:
-            feat (Tensor): A Tensor of shape :math:`(N, H, 1, W)`.
+            feat (Tensor): A Tensor of shape :math:`(N, C, 1, W)`.
 
         Returns:
             Tensor: The raw logit tensor. Shape :math:`(N, W, C)` where

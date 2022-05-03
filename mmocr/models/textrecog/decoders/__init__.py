@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from .abc_recog_decoder import ABCRecogDecoder
 from .abinet_language_decoder import ABILanguageDecoder
 from .abinet_vision_decoder import ABIVisionDecoder
 from .base_decoder import BaseDecoder
@@ -14,5 +15,6 @@ __all__ = [
     'CRNNDecoder', 'ParallelSARDecoder', 'SequentialSARDecoder',
     'ParallelSARDecoderWithBS', 'NRTRDecoder', 'BaseDecoder',
     'SequenceAttentionDecoder', 'PositionAttentionDecoder',
-    'RobustScannerDecoder', 'ABILanguageDecoder', 'ABIVisionDecoder'
+    'RobustScannerDecoder', 'ABILanguageDecoder', 'ABIVisionDecoder',
+    'ABCRecogDecoder'
 ]
