@@ -25,6 +25,7 @@ workflows:
             docs/.* lint_only true
             demo/.* lint_only true
             .dev_scripts/.* lint_only true
+            .github/workflows/.* lint_only true
           base-revision: main
           # this is the path of the configuration we should trigger once
           # path filtering and pipeline parameter value updates are
