@@ -92,16 +92,16 @@ def eval_ocr_metric(pred_texts, gt_texts, metric='acc'):
         gt_texts (list[str]): Text strings of ground truth.
         metric (str | list[str]): Metric(s) to be evaluated. Options are:
 
-            - 'word_acc': Accuracy in word level.
-            - 'word_acc_ignore_case': Accuracy in word level, ignoring letter
+            - 'word_acc': Accuracy at word level.
+            - 'word_acc_ignore_case': Accuracy at word level, ignoring letter
               case.
-            - 'word_acc_ignore_case_symbol': Accuracy in word level, ignoring
-              letter case and symbol. (default metric for academic evaluation)
-            - 'char_recall': Recall in character level, ignore
+            - 'word_acc_ignore_case_symbol': Accuracy at word level, ignoring
+              letter case and symbol. (Default metric for academic evaluation)
+            - 'char_recall': Recall at character level, ignoring
               letter case and symbol.
-            - 'char_precision': Precision in character level, ignore
+            - 'char_precision': Precision at character level, ignoring
               letter case and symbol.
-            - 'one_minus_ned': 1 - normalized_edit_distance.
+            - 'one_minus_ned': 1 - normalized_edit_distance
 
             In particular, if ``metric == 'acc'``, results on all metrics above
             will be reported.
