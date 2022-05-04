@@ -78,19 +78,32 @@ def test_uniform_concat_dataset_eval():
         def evaluate(self, res, logger, **kwargs):
             return dict(n=res[0])
 
+    # Test 'auto'
+    fake_inputs = [10]
+    datasets = [dict(type='DummyDataset')]
+    tmp_dataset = UniformConcatDataset(datasets)
+    results = tmp_dataset.evaluate(fake_inputs)
+    assert results['0_n'] == 10
+    assert 'mean_n' not in results
+
+    tmp_dataset = UniformConcatDataset(datasets, show_mean_scores=True)
+    results = tmp_dataset.evaluate(fake_inputs)
+    assert results['mean_n'] == 10
+
     fake_inputs = [10, 20]
     datasets = [dict(type='DummyDataset'), dict(type='DummyDataset')]
-
+    tmp_dataset = UniformConcatDataset(datasets)
     tmp_dataset = UniformConcatDataset(datasets)
     results = tmp_dataset.evaluate(fake_inputs)
     assert results['0_n'] == 10
     assert results['1_n'] == 20
+    assert results['mean_n'] == 15
 
-    tmp_dataset = UniformConcatDataset(datasets, show_mean_scores=True)
+    tmp_dataset = UniformConcatDataset(datasets, show_mean_scores=False)
     results = tmp_dataset.evaluate(fake_inputs)
     assert results['0_n'] == 10
     assert results['1_n'] == 20
-    assert results['mean_n'] == 15
+    assert 'mean_n' not in results
 
     with pytest.raises(NotImplementedError):
         ds = UniformConcatDataset(datasets, separate_eval=False)
