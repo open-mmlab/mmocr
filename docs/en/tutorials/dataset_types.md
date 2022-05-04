@@ -41,7 +41,7 @@ Here, `train_pipeline1` will be applied to `train1` and `train2`, and
 Evaluating the model on multiple datasets is common strategy in academia. Mean scores therefore are very critical
 indicators of the model's performance. By default, `UniformConcatDataset` reports mean scores in the form of
 `mean_{metric_name}` when more than 1 datasets are wrapped. You can customize the behavior by setting
-`show_mean_scores` in `data.val` and `data.test`. Choices are `'auto'`(default), `True` or `False`.
+`show_mean_scores` in `data.val` and `data.test`. Choices are `'auto'`(default), `True` and `False`.
 
 ```python
 data = dict(
