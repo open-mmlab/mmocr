@@ -1,5 +1,59 @@
 # Changelog
 
+## 0.6.0 (05/05/2022)
+
+### Highlights
+
+### Migration Guide - ResNet
+
+### New Features & Enhancements
+
+* Add analyze_logs in tools and its description in docs by @Y-M-Y in https://github.com/open-mmlab/mmocr/pull/899
+* Add LSVT Data Converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/896
+* Add RCTW dataset converter by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/914
+* Support computing mean scores in UniformConcatDataset by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/981
+* Support loading images and labels from lmdb file by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/982
+* Add recog2lmdb and new toy dataset files by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/979
+* Add labelme converter for textdet and textrecog by @cuhk-hbsun in https://github.com/open-mmlab/mmocr/pull/972
+* Update CircleCI configs by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/918
+* Update Git Action by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/930
+* More customizable fields in dataloaders by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/933
+* Skip CIs when docs are modified by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/941
+* Rename Github tests, fix ignored paths by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/946
+* Support latest MMCV by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/959
+* Support dynamic threshold range in eval_hmean by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/962
+* Update the version requirement of mmdet in docker by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/966
+* Replace `opencv-python-headless` with `open-python` by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/970
+* Update Dataset Configs by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/980
+
+### Bug Fixes
+
+* Fix CircleCi Main Branch Accidentally Run PR Stage Test by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/927
+* Fix a deprecate warning about mmdet.datasets.pipelines.formating by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/944
+* Fix a Bug in ResNet plugin by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/967
+* revert a wrong setting in db_r18 cfg by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/978
+* Fix TotalText Anno version issue by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/945
+* Update installation step of `albumentations` by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/984
+* Fix ImgAug transform by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/949
+* Fix GPG key error in CI and docker by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/988
+* update label.lmdb by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/991
+* correct meta key by @garvan2021 in https://github.com/open-mmlab/mmocr/pull/926
+
+### Docs
+
+* Update CONTRIBUTING.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/905
+* Fix the misleading description in test.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/908
+* Update recog.md for lmdb Generation by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/934
+* Add MMCV by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/954
+* Add wechat QR code to CN readme by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/960
+* Update CONTRIBUTING.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/947
+* Use QR codes from MMCV by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/971
+
+### New Contributors
+* @Y-M-Y made their first contribution in https://github.com/open-mmlab/mmocr/pull/899
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v0.5.0...v0.6.0
+
 ## 0.5.0 (31/03/2022)
 
 ### Highlights
