@@ -1,0 +1,28 @@
+Collections:
+- Name: DBNetpp
+  Metadata:
+    Training Data: ICDAR2015
+    Training Techniques:
+      - SGD with Momentum
+      - Weight Decay
+    Training Resources: 1x Nvidia A100
+    Architecture:
+      - ResNet
+      - FPNC
+  Paper:
+    URL: https://arxiv.org/abs/2202.10304
+    Title: 'Real-Time Scene Text Detection with Differentiable Binarization and Adaptive Scale Fusion'
+  README: configs/textdet/dbnetpp/README.md
+
+Models:
+  - Name: dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py
+    In Collection: DBNetpp
+    Config: configs/textdet/dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py
+    Metadata:
+      Training Data: ICDAR2015
+    Results:
+      - Task: Text Detection
+        Dataset: ICDAR2015
+        Metrics:
+          hmean-iou: 0.860
+    Weights: https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.pth
