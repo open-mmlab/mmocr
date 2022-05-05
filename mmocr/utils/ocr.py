@@ -327,7 +327,7 @@ class MMOCR:
             'Tesseract': {},
             'MASTER': {
                 'config': 'master/master_academic.py',
-                'ckpt': 'master/master/master_r31_12e_ST_MJ_SA-787edd36.pth'
+                'ckpt': 'master/master_r31_12e_ST_MJ_SA-787edd36.pth'
             }
         }
 
