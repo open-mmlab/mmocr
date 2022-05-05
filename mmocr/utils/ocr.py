@@ -203,7 +203,7 @@ class MMOCR:
             },
             'DBPP_r50': {
                 'config':
-                'dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py',
+                'dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py',
                 'ckpt':
                 'dbnet/'
                 'dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.pth'
