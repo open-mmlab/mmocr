@@ -66,7 +66,7 @@ Supported algorithms:
 <details open>
 <summary>Text Detection</summary>
 
-- [x] [DBNet](configs/textdet/dbnet/README.md) (AAAI'2020) / [DBNet++](configs/textdet/dbnet/README.md#dbnet-1) (TPAMI'2022)
+- [x] [DBNet](configs/textdet/dbnet/README.md) (AAAI'2020) / [DBNet++](configs/textdet/dbnetpp/README.md) (TPAMI'2022)
 - [x] [Mask R-CNN](configs/textdet/maskrcnn/README.md) (ICCV'2017)
 - [x] [PANet](configs/textdet/panet/README.md) (ICCV'2019)
 - [x] [PSENet](configs/textdet/psenet/README.md) (CVPR'2019)

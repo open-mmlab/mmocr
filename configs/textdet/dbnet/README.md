@@ -11,19 +11,6 @@ Recently, segmentation-based methods are quite popular in scene text detection, 
 <img src="https://user-images.githubusercontent.com/22607038/142791306-0da6db2a-20a6-4a68-b228-64ff275f67b3.png"/>
 </div>
 
-## DBNet++
-
-> [Real-Time Scene Text Detection with Differentiable Binarization and Adaptive Scale Fusion](https://arxiv.org/abs/2202.10304)
-<!-- [ALGORITHM] -->
-
-## Abstract
-
-Recently, segmentation-based scene text detection methods have drawn extensive attention in the scene text detection field, because of their superiority in detecting the text instances of arbitrary shapes and extreme aspect ratios, profiting from the pixel-level descriptions. However, the vast majority of the existing segmentation-based approaches are limited to their complex post-processing algorithms and the scale robustness of their segmentation models, where the post-processing algorithms are not only isolated to the model optimization but also time-consuming and the scale robustness is usually strengthened by fusing multi-scale feature maps directly. In this paper, we propose a Differentiable Binarization (DB) module that integrates the binarization process, one of the most important steps in the post-processing procedure, into a segmentation network. Optimized along with the proposed DB module, the segmentation network can produce more accurate results, which enhances the accuracy of text detection with a simple pipeline. Furthermore, an efficient Adaptive Scale Fusion (ASF) module is proposed to improve the scale robustness by fusing features of different scales adaptively. By incorporating the proposed DB and ASF with the segmentation network, our proposed scene text detector consistently achieves state-of-the-art results, in terms of both detection accuracy and speed, on five standard benchmarks.
-
-<div align=center>
-<img src="https://user-images.githubusercontent.com/45810070/166850828-f1e48c25-4a0f-429d-ae54-6997ed25c062.png"/>
-</div>
-
 ## Results and models
 
 ### ICDAR2015
@@ -32,25 +19,15 @@ Recently, segmentation-based scene text detection methods have drawn extensive a
 | :---------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------: | :-------------: | :------------: | :-----: | :-------: | :----: | :-------: | :---: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 |     [DBNet_r18](/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)     |                                                          ImageNet                                                          | ICDAR2015 Train | ICDAR2015 Test |  1200   |    736    | 0.731  |   0.871   | 0.795 |      [model](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.log.json)      |
 | [DBNet_r50dcn](/configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py) | [Synthtext](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r50dcnv2_fpnc_sbn_2e_synthtext_20210325-aa96e477.pth) | ICDAR2015 Train | ICDAR2015 Test |  1200   |   1024    | 0.814  |   0.868   | 0.840 | [model](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20211025-9fe3b590.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20211025-9fe3b590.log.json) |
-| [DBNetpp_r50dcn](/configs/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py) | [Synthtext](/configs/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_100k_iter_synthtext.py) ([model](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_100k_iter_synthtext-20220502-db297554.pth) \| [log]())| ICDAR2015 Train | ICDAR2015 Test |  1200   |   1024    | 0.822  |   0.901   | 0.860 | [model](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.log.json) |
+
 
 ## Citation
 
 ```bibtex
-# DBNet
 @article{Liao_Wan_Yao_Chen_Bai_2020,
     title={Real-Time Scene Text Detection with Differentiable Binarization},
     journal={Proceedings of the AAAI Conference on Artificial Intelligence},
     author={Liao, Minghui and Wan, Zhaoyi and Yao, Cong and Chen, Kai and Bai, Xiang},
     year={2020},
-    pages={11474-11481}
-}
-
-# DBNet++
-@article{liao2022real,
-    title={Real-Time Scene Text Detection with Differentiable Binarization and Adaptive Scale Fusion},
-    author={Liao, Minghui and Zou, Zhisheng and Wan, Zhaoyi and Yao, Cong and Bai, Xiang},
-    journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
-    year={2022},
-    publisher={IEEE}
-}
+    pages={11474-11481}}
+```
