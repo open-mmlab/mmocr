@@ -16,8 +16,6 @@ Attention-based scene text recognizers have gained huge success, which leverages
 
 ### Train Dataset
 
-### Train Dataset
-
 | trainset  | instance_num | repeat_num | source |
 | :-------: | :----------: | :--------: | :----: |
 | SynthText |   7266686    |     1      | synth  |
