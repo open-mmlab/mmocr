@@ -28,13 +28,13 @@ Recently, segmentation-based methods are quite popular in scene text detection, 
     journal={Proceedings of the AAAI Conference on Artificial Intelligence},
     author={Liao, Minghui and Wan, Zhaoyi and Yao, Cong and Chen, Kai and Bai, Xiang},
     year={2020},
-    pages={11474-11481}}
+    pages={11474-11481}
+}
 ```
 
 # DBNet++
 
 > [Real-Time Scene Text Detection with Differentiable Binarization and Adaptive Scale Fusion](https://arxiv.org/abs/2202.10304)
-
 <!-- [ALGORITHM] -->
 
 ## Abstract
@@ -51,7 +51,7 @@ Recently, segmentation-based scene text detection methods have drawn extensive a
 
 |                                    Method                                     |                                                      Pretrained Model                                                      |  Training set   |    Test set    | #epochs | Test size | Recall | Precision | Hmean |                                                                                                                         Download                                                                                                                          |
 | :---------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------: | :-------------: | :------------: | :-----: | :-------: | :----: | :-------: | :---: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| [DBNet++_r50dcn](/configs/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py) | [Synthtext]() | ICDAR2015 Train | ICDAR2015 Test |  1200   |   1024    | 0.822  |   0.901   | 0.860 | [model]() \| [log]() |
+| [DBNet++_r50dcn](/configs/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py) | [Synthtext]() | ICDAR2015 Train | ICDAR2015 Test |  1200   |   1024    | 0.822  |   0.901   | 0.860 | [model](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.log.json) |
 
 ## Citation
 
