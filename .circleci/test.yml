@@ -45,6 +45,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Get MMCV_TORCH as environment variables
+          command: |
+            . .circleci/scripts/get_mmcv_var.sh << parameters.torch >>
+            source $BASH_ENV
+      - run:
           name: Install Libraries
           command: |
             sudo apt-get update
@@ -62,7 +67,7 @@ jobs:
       - run:
           name: Install mmocr dependencies
           command: |
-            python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch<< parameters.torch >>/index.html
+            python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
             python -m pip install mmdet
             python -m pip install -r requirements.txt
       - run:
@@ -78,54 +83,44 @@ jobs:
 
   build_cuda:
     parameters:
-      # The python version must match available image tags in
-      # https://circleci.com/developer/images/image/cimg/python
-      python:
-        type: string
       torch:
         type: string
-      torchvision:
-        type: string
       cuda:
-        type: string
-        default: cu102
+        type: enum
+        enum: ["10.1", "10.2", "11.1"]
+      cudnn:
+        type: integer
+        default: 7
     machine:
-      image: ubuntu-1604-cuda-10.2:202012-01
+      image: ubuntu-2004-cuda-11.4:202110-01
+      docker_layer_caching: true
     resource_class: gpu.nvidia.small
     steps:
       - checkout
       - run:
-          name: Install Libraries
+          name: Get MMCV_TORCH and MMCV_CUDA as environment variables
           command: |
-            sudo apt-get update
-            sudo apt-get install -y git ninja-build libglib2.0-0 libsm6 libxrender-dev libxext6 libgl1-mesa-glx
-            pyenv versions
+            . .circleci/scripts/get_mmcv_var.sh << parameters.torch >> << parameters.cuda >>
+            source $BASH_ENV
       - run:
-          name: Configure Python & pip
+          name: Build Docker image
           command: |
-            pyenv global << parameters.python >>
-            python -m pip install --upgrade pip
-            python -m pip install wheel
-      - run:
-          name: Install PyTorch
-          command: |
-            python -V
-            python -m pip install torch==<< parameters.torch >>+<< parameters.cuda >> torchvision==<< parameters.torchvision >>+<< parameters.cuda >> -f https://download.pytorch.org/whl/torch_stable.html
+            docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
+            docker run --gpus all -t -d -v /home/circleci/project:/mmocr -w /mmocr --name mmocr mmocr:gpu
       - run:
           name: Install mmocr dependencies
           command: |
-            python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/<< parameters.cuda >>/torch<< parameters.torch >>/index.html
-            python -m pip install mmdet
-            python -m pip install -r requirements.txt
+            docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}/index.html
+            docker exec mmocr pip install mmdet
+            docker exec mmocr pip install -r requirements.txt
       - run:
           name: Build and install
           command: |
-            python setup.py check -m -s
-            TORCH_CUDA_ARCH_LIST=7.0 python -m pip install -e .
+            docker exec mmocr pip install -e .
       - run:
           name: Run unittests
           command: |
-            python -m pytest tests/
+            docker exec mmocr python -m pytest tests/
 
 workflows:
   pr_stage_lint:
@@ -169,8 +164,9 @@ workflows:
       - build_cuda:
           name: mainstream_version_gpu
           torch: 1.8.1
-          torchvision: 0.9.1
-          python: 3.8.6
+          # Use double quotation mark to explicitly specify its type
+          # as string instead of number
+          cuda: "10.2"
           requires:
             - hold
   merge_stage_test:
@@ -181,9 +177,9 @@ workflows:
       - build_cuda:
           name: minimum_version_gpu
           torch: 1.6.0
-          torchvision: 0.7.0
-          python: 3.6.12
-          cuda: cu101
+          # Use double quotation mark to explicitly specify its type
+          # as string instead of number
+          cuda: "10.1"
           filters:
             branches:
               only:
