@@ -892,7 +892,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
 ## HierText
 
-- Step1 (optional): Install [AWS CLI](#install-aws-cli-optional).
+- Step1 (optional): Install [AWS CLI](https://mmocr.readthedocs.io/en/latest/datasets/det.html#install-aws-cli-optional).
 - Step2: Clone [HierText](https://github.com/google-research-datasets/hiertext) repo to get annotations
 
   ```bash

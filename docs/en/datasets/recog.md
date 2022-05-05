@@ -450,7 +450,7 @@ should be as follows:
 
 ## OpenVINO
 
-- Step1 (optional): Install [AWS CLI](#install-aws-cli-optional).
+- Step1 (optional): Install [AWS CLI](https://mmocr.readthedocs.io/en/latest/datasets/recog.html#install-aws-cli-optional).
 - Step2: Download [Open Images](https://github.com/cvdfoundation/open-images-dataset#download-images-with-bounding-boxes-annotations) subsets `train_1`, `train_2`, `train_5`, `train_f`, and `validation` to `openvino/`.
 
   ```bash
@@ -1066,7 +1066,7 @@ should be as follows:
 
 ## HierText
 
-- Step1 (optional): Install [AWS CLI](#install-aws-cli-optional).
+- Step1 (optional): Install [AWS CLI](https://mmocr.readthedocs.io/en/latest/datasets/recog.html#install-aws-cli-optional).
 - Step2: Clone [HierText](https://github.com/google-research-datasets/hiertext) repo to get annotations
 
   ```bash
