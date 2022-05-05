@@ -4,7 +4,93 @@
 
 ### Highlights
 
-### Migration Guide - ResNet
+1. A new recognition algorithm [MASTER](https://arxiv.org/abs/1910.02562) has been added into MMOCR, which was the championship solution for the "ICDAR 2021 Competition on Scientific Table Image Recognition to Latex"! The model pre-trained on SynthText and MJSynth is available for testing! Credit to @JiaquanYe
+2. [DBNet++](https://arxiv.org/abs/2202.10304) has been released now! A new Adaptive Scale Fusion module has been equipped for feature enhancement. Benefiting from this, the new model achieved 2% better h-mean score than its predecessor on the ICDAR2015 dataset.
+3. Three more dataset converters are added: LSVT, RCTW and HierText. Check the dataset zoo ([Det](https://mmocr.readthedocs.io/en/latest/datasets/det.html#) & [Recog](https://mmocr.readthedocs.io/en/latest/datasets/recog.html) ) to explore further information.
+4. To enhance the data storage efficiency, MMOCR now supports loading both images and labels from .lmdb format annotations for the text recognition task. To enable such a feature, the new lmdb_converter.py is ready for use to pack your cropped images and labels into an lmdb file. For a detailed tutorial, please refer to the following sections and the [doc](https://mmocr.readthedocs.io/en/latest/tools.html#convert-text-recognition-dataset-to-lmdb-format).
+5. Testing models on multiple datasets is a widely used evaluation strategy. MMOCR now supports automatically reporting mean scores when there is more than one dataset to evaluate, which enables a more convenient comparison between checkpoints. [Doc](https://mmocr.readthedocs.io/en/latest/tutorials/dataset_types.html#getting-mean-evaluation-scores)
+6. Evaluation is more flexible and customizable now. For text detection tasks, you can set the score threshold range where the best results might come out. [doc](https://mmocr.readthedocs.io/en/latest/tutorials/dataset_types.html#evaluation) If too many results are flooding your text recognition train log, you can trim it by specifying a subset of interested metrics in evaluation config. Check out the [Evaluation](https://mmocr.readthedocs.io/en/latest/tutorials/dataset_types.html#ocrdataset) section for details.
+7. MMOCR provides a script to convert the .json labels obtained by the popular annotation toolkit **Labelme** to MMOCR supported data format. @Y-M-Y contributed a log analysis tool that helps users gain a better understanding of the entire training process. Read [tutorial docs](https://mmocr.readthedocs.io/en/latest/tools.html) to get started.
+
+### Lmdb Dataset
+
+Reading images or labels from files can be slow when data are excessive, e.g. on a scale of millions. Besides, in academia, most of the scene text recognition datasets are stored in lmdb format, including images and labels. To get closer to the mainstream practice and enhance the data storage efficiency, MMOCR now officially supports loading images and labels from lmdb datasets via a new pipeline [LoadImageFromLMDB](https://github.com/open-mmlab/mmocr/blob/878383b9de8d0e598f31fbb844ffcb0c305deb8b/mmocr/datasets/pipelines/loading.py#L140).
+This section is intended to serve as a quick walkthrough for you to master this update and apply it to facilitate your research.
+
+#### Specifications
+
+To better align with the academic community, MMOCR now requires the following specifications for lmdb datasets:
+
+  * The parameter describing the data volume of the dataset is `num-samples` instead of `total_number` (deprecated).
+  * Images and labels are stored with keys in the form of `image-000000001` and `label-00000001`, respectively.
+
+
+#### Usage
+
+1. Use existing academic lmdb datasets if they meet the specifications; or the tool provided by MMOCR to pack images & annotations into a lmdb dataset.
+
+  - Previously, MMOCR had a function `txt2lmdb` (deprecated) that only supported converting labels to lmdb format. However, it is quite different from academic lmdb datasets, which usually contain both images and labels. Now MMOCR provides a new utility [lmdb_converter](https://github.com/open-mmlab/mmocr/blob/main/tools/data/utils/lmdb_converter.py) to convert recognition datasets with both images and labels to lmdb format.
+  - Say that your recognition data in MMOCR's format are organized as follows. (See an example in [ocr_toy_dataset](https://github.com/open-mmlab/mmocr/tree/main/tests/data/ocr_toy_dataset)).
+
+    ```text
+    # Directory structure
+
+    ├──img_path
+    |      |—— img1.jpg
+    |      |—— img2.jpg
+    |      |—— ...
+    |——label.txt (or label.jsonl)
+
+    # Annotation format
+
+    label.txt:  img1.jpg HELLO
+                img2.jpg WORLD
+                ...
+
+    label.jsonl:    {'filename':'img1.jpg', 'text':'HELLO'}
+                    {'filename':'img2.jpg', 'text':'WORLD'}
+                    ...
+    ```
+
+  - Then pack these files up:
+
+    ```bash
+    python tools/data/utils/lmdb_converter.py  {PATH_TO_LABEL} {OUTPUT_PATH} --i {PATH_TO_IMAGES}
+    ```
+
+  - Check out [tools.md](https://github.com/open-mmlab/mmocr/blob/main/docs/en/tools.md) for more details.
+
+2. The second step is to modify the configuration files. For example, to train CRNN on MJ and ST datasets:
+
+  - Set parser as `LineJsonParser` and `file_format` as 'lmdb' in [dataset config](https://github.com/open-mmlab/mmocr/blob/main/configs/_base_/recog_datasets/ST_MJ_train.py#L9)
+
+      ```python
+      # configs/_base_/recog_datasets/ST_MJ_train.py
+      train1 = dict(
+          type='OCRDataset',
+          img_prefix=train_img_prefix1,
+          ann_file=train_ann_file1,
+          loader=dict(
+              type='AnnFileLoader',
+              repeat=1,
+              file_format='lmdb',
+              parser=dict(
+                  type='LineJsonParser',
+                  keys=['filename', 'text'],
+              )),
+          pipeline=None,
+          test_mode=False)
+      ```
+  - Use `LoadImageFromLMDB` in [pipeline](https://github.com/open-mmlab/mmocr/blob/main/configs/_base_/recog_pipelines/crnn_pipeline.py#L4):
+
+    ```python
+    # configs/_base_/recog_pipelines/crnn_pipeline.py
+    train_pipeline = [
+        dict(type='LoadImageFromLMDB', color_type='grayscale'),
+        ...
+    ```
+
+3. You are good to go! Start training and MMOCR will load data from your lmdb dataset.
 
 ### New Features & Enhancements
 
@@ -25,6 +111,13 @@
 * Update the version requirement of mmdet in docker by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/966
 * Replace `opencv-python-headless` with `open-python` by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/970
 * Update Dataset Configs by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/980
+* Add SynthText dataset config by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/983
+* Automatically report mean scores when applicable by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/995
+* Add DBNet++ by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/973
+* Add MASTER by @JiaquanYe in https://github.com/open-mmlab/mmocr/pull/807
+* Allow choosing metrics to report in text recognition tasks by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/989
+* Add HierText converter by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/948
+* Fix lint_only in CircleCI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/998
 
 ### Bug Fixes
 
@@ -38,6 +131,8 @@
 * Fix GPG key error in CI and docker by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/988
 * update label.lmdb by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/991
 * correct meta key by @garvan2021 in https://github.com/open-mmlab/mmocr/pull/926
+* Use new image by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/976
+* Fix Data Converter Issues by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/955
 
 ### Docs
 
@@ -48,6 +143,7 @@
 * Add wechat QR code to CN readme by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/960
 * Update CONTRIBUTING.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/947
 * Use QR codes from MMCV by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/971
+* Renew dataset_types.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/997
 
 ### New Contributors
 * @Y-M-Y made their first contribution in https://github.com/open-mmlab/mmocr/pull/899
