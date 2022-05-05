@@ -66,7 +66,7 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 <details open>
 <summary>文字检测</summary>
 
-- [x] [DBNet](configs/textdet/dbnet/README.md) (AAAI'2020) / [DBNet++](configs/textdet/dbnet/README.md#dbnet-1
+- [x] [DBNet](configs/textdet/dbnet/README.md) (AAAI'2020) / [DBNet++](configs/textdet/dbnet/README.md#dbnet-1) (TPAMI'2022)
 - [x] [Mask R-CNN](configs/textdet/maskrcnn/README.md) (ICCV'2017)
 - [x] [PANet](configs/textdet/panet/README.md) (ICCV'2019)
 - [x] [PSENet](configs/textdet/psenet/README.md) (CVPR'2019)
