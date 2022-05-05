@@ -16,7 +16,7 @@ Collections:
 
 Models:
   - Name: dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py
-    In Collection: DBNet
+    In Collection: DBNetpp
     Config: configs/textdet/dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
