@@ -1,4 +1,4 @@
-## DBNetpp
+# DBNetpp
 
 > [Real-Time Scene Text Detection with Differentiable Binarization and Adaptive Scale Fusion](https://arxiv.org/abs/2202.10304)
 <!-- [ALGORITHM] -->
