@@ -50,3 +50,26 @@ def test_detect_dataset():
     assert math.isclose(eval_res['word_acc'], 0.5, abs_tol=1e-4)
     assert math.isclose(eval_res['char_precision'], 1.0, abs_tol=1e-4)
     assert math.isclose(eval_res['char_recall'], 0.9, abs_tol=1e-4)
+
+    eval_res = dataset.evaluate(results, metric='word_acc')
+    assert math.isclose(eval_res['word_acc'], 0.5, abs_tol=1e-4)
+    assert len(eval_res) == 1
+
+    eval_res = dataset.evaluate(
+        results, metric=['char_precision', 'char_recall'])
+    assert math.isclose(eval_res['char_precision'], 1.0, abs_tol=1e-4)
+    assert math.isclose(eval_res['char_recall'], 0.9, abs_tol=1e-4)
+    assert len(eval_res) == 2
+
+    results = [{'text': 'HELLO*'}, {'text': 'worl'}]
+    eval_res = dataset.evaluate(
+        results,
+        metric=[
+            'word_acc_ignore_case_symbol', 'word_acc_ignore_case',
+            'one_minus_ned'
+        ])
+    assert math.isclose(
+        eval_res['word_acc_ignore_case_symbol'], 0.5, abs_tol=1e-4)
+    assert math.isclose(eval_res['word_acc_ignore_case'], 0, abs_tol=1e-4)
+    assert math.isclose(eval_res['1-N.E.D'], 0.9, abs_tol=1e-4)
+    assert len(eval_res) == 3
