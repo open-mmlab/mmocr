@@ -5,7 +5,7 @@ version: 2.1
 parameters:
   lint_only:
     type: boolean
-    default: false
+    default: true
 
 jobs:
   lint:
