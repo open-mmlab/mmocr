@@ -41,6 +41,7 @@
 ### Install AWS CLI (optional)
 
 - Since there are some datasets that require the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) to be installed in advance, we provide a quick installation guide here:
+
   ```bash
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
     unzip awscliv2.zip
@@ -54,6 +55,7 @@
     # Default region name [None]: us-east-1
     # Default output format [None]
   ```
+
 ## ICDAR 2011 (Born-Digital Images)
 
 - Step1: Download `Challenge1_Training_Task3_Images_GT.zip`, `Challenge1_Test_Task3_Images.zip`, and `Challenge1_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.3: Word Recognition (2013 edition)`.
@@ -672,7 +674,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
   ```
 
- - Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
 
   ```bash
   # Annotations of LSVT test split is not publicly available, split a validation
@@ -1066,16 +1068,21 @@ should be as follows:
 
 - Step1 (optional): Install [AWS CLI](#install-aws-cli-optional).
 - Step2: Clone [HierText](https://github.com/google-research-datasets/hiertext) repo to get annotations
+
   ```bash
   mkdir HierText
   git clone https://github.com/google-research-datasets/hiertext.git
   ```
+
 - Step3: Download `train.tgz`, `validation.tgz` from aws
+
   ```bash
   aws s3 --no-sign-request cp s3://open-images-dataset/ocr/train.tgz .
   aws s3 --no-sign-request cp s3://open-images-dataset/ocr/validation.tgz .
   ```
+
 - Step4: Process raw data
+
   ```bash
   # process annotations
   mv hiertext/gt ./
@@ -1090,6 +1097,7 @@ should be as follows:
   tar -xzvf imgs/train.tgz
   tar -xzvf imgs/validation.tgz
   ```
+
 - Step5: Generate `train_label.jsonl` and `val_label.jsonl`. HierText includes different levels of annotation, including `paragraph`, `line`, and `word`. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph-level annotation. Set `--level line` to get line-level annotation. set `--level word` to get word-level annotation.
 
   ```bash

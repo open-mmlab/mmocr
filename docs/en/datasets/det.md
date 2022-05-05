@@ -35,6 +35,7 @@
 ### Install AWS CLI (optional)
 
 - Since there are some datasets that require the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) to be installed in advance, we provide a quick installation guide here:
+
   ```bash
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
     unzip awscliv2.zip
@@ -48,6 +49,7 @@
     # Default region name [None]: us-east-1
     # Default output format [None]
   ```
+
 ## Important Note
 
 :::{note}
@@ -588,7 +590,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
 - After running the above codes, the directory structure should be as follows:
 
-  ```
+  ```text
   │── imgur
   │   ├── annotations
   │   ├── imgs
@@ -892,16 +894,21 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
 - Step1 (optional): Install [AWS CLI](#install-aws-cli-optional).
 - Step2: Clone [HierText](https://github.com/google-research-datasets/hiertext) repo to get annotations
+
   ```bash
   mkdir HierText
   git clone https://github.com/google-research-datasets/hiertext.git
   ```
+
 - Step3: Download `train.tgz`, `validation.tgz` from aws
+
   ```bash
   aws s3 --no-sign-request cp s3://open-images-dataset/ocr/train.tgz .
   aws s3 --no-sign-request cp s3://open-images-dataset/ocr/validation.tgz .
   ```
+
 - Step4: Process raw data
+
   ```bash
   # process annotations
   mv hiertext/gt ./
@@ -916,6 +923,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   tar -xzvf imgs/train.tgz
   tar -xzvf imgs/validation.tgz
   ```
+
 - Step5: Generate `instances_training.json` and `instance_val.json`. HierText includes different levels of annotation, from paragraph, line, to word. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph-level annotation. Set `--level line` to get line-level annotation. set `--level word` to get word-level annotation.
 
   ```bash
