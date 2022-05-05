@@ -19,7 +19,7 @@ data = dict(
         pipeline=train_pipeline))
 ```
 
-Also, it support apply different `pipeline` to different `datasets`,
+Also, it support applying different `pipeline` to different `datasets`,
 
 ```python
 train_list1 = [train1, train2]
@@ -38,8 +38,7 @@ Here, `train_pipeline1` will be applied to `train1` and `train2`, and
 
 #### Getting Mean Evaluation Scores
 
-Evaluating the model on multiple datasets is common strategy in academia. Mean scores therefore are very critical
-indicators of the model's performance. By default, `UniformConcatDataset` reports mean scores in the form of
+Evaluating the model on multiple datasets is a common strategy in academia, and the mean score is therefore a critical indicator of the model's overall performance. By default, `UniformConcatDataset` reports mean scores in the form of
 `mean_{metric_name}` when more than 1 datasets are wrapped. You can customize the behavior by setting
 `show_mean_scores` in `data.val` and `data.test`. Choices are `'auto'`(default), `True` and `False`.
 
@@ -58,8 +57,7 @@ data = dict(
         pipeline=[train_pipeline))
 ```
 
-
-## Text Detection Task
+## Text Detection
 
 ### IcdarDataset
 
@@ -87,6 +85,31 @@ It's compatible with any annotation file in COCO format defined in [MMDetection]
 Icdar 2015/2017 and ctw1500 annotations need to be converted into the COCO format following the steps in [datasets.md](datasets.md).
 :::
 
+#### Evaluation
+
+`IcdarDataset` has implemented two evaluation metrics, `hmean-iou` and `hmean-ic13`, to evaluate the performance of text detection models, where `hmean-iou` is the most widely used metric which computes precision, recall and F-score based on IoU between ground truth and prediction.
+
+In particular, filtering predictions with a reasonable score threshold greatly impacts the performance measurement. MMOCR alleviates such hyperparameter effect by sweeping through the hyperparameter space and returns the best performance every evaluation time.
+User can tune the searching scheme by passing `min_score_thr`, `max_score_thr` and `step` into the evaluation hook in the config.
+
+For example, with the following configuration, you can evaluate the model's output on a list of boundary score thresholds [0.1, 0.2, 0.3, 0.4, 0.5] and get the best score from them **during training**.
+
+```python
+evaluation = dict(
+    interval=100,
+    metric='hmean-iou',
+    min_score_thr=0.1,
+    max_score_thr=0.5,
+    step=0.1)
+```
+
+**During testing**, you can change these parameter values by appending them to `--eval-options`.
+
+```bash
+python tools/test.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py db_r18.pth --eval hmean-iou --eval-options min_score_thr=0.1 max_score_thr=0.6 step=0.1
+```
+
+Check out our [API doc](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.core.evaluation.eval_hmean) for further explanations on these parameters.
 
 ### TextDetDataset
 
@@ -132,8 +155,12 @@ The combination of `HardDiskLoader` and `LineJsonParser` will return a dict for 
 {"file_name": "test/img_10.jpg", "height": 720, "width": 1280, "annotations": [{"iscrowd": 1, "category_id": 1, "bbox": [260.0, 138.0, 24.0, 20.0], "segmentation": [[261, 138, 284, 140, 279, 158, 260, 158]]}, {"iscrowd": 0, "category_id": 1, "bbox": [288.0, 138.0, 129.0, 23.0], "segmentation": [[288, 138, 417, 140, 416, 161, 290, 157]]}, {"iscrowd": 0, "category_id": 1, "bbox": [743.0, 145.0, 37.0, 18.0], "segmentation": [[743, 145, 779, 146, 780, 163, 746, 163]]}, {"iscrowd": 0, "category_id": 1, "bbox": [783.0, 129.0, 50.0, 26.0], "segmentation": [[783, 129, 831, 132, 833, 155, 785, 153]]}, {"iscrowd": 1, "category_id": 1, "bbox": [831.0, 133.0, 43.0, 23.0], "segmentation": [[831, 133, 870, 135, 874, 156, 835, 155]]}, {"iscrowd": 1, "category_id": 1, "bbox": [159.0, 204.0, 72.0, 15.0], "segmentation": [[159, 205, 230, 204, 231, 218, 159, 219]]}, {"iscrowd": 1, "category_id": 1, "bbox": [785.0, 158.0, 75.0, 21.0], "segmentation": [[785, 158, 856, 158, 860, 178, 787, 179]]}, {"iscrowd": 1, "category_id": 1, "bbox": [1011.0, 157.0, 68.0, 16.0], "segmentation": [[1011, 157, 1079, 160, 1076, 173, 1011, 170]]}]}
 ```
 
+#### Evaluation
 
-## Text Recognition Task
+`TextDetDataset` shares a similar implementation with `IcdarDataset`. Please refer to the evaluation section of ['IcdarDataset'](#icdardataset).
+
+
+## Text Recognition
 
 ### OCRDataset
 
@@ -174,7 +201,7 @@ The combination of `HardDiskLoader` and `LineStrParser` will return a dict for e
 
 #### Loading LMDB Datasets
 
-We have support for reading annotation files from the full lmdb dataset (with images and annotations). It is now possible to read lmdb datasets commonly used in academia. We have also implemented a new dataset conversion tool, [recog2lmdb](https://github.com/open-mmlab/mmocr/blob/main/tools/data/utils/recog2lmdb.py). It converts the recognition dataset to lmdb format, See [PR982](https://github.com/open-mmlab/mmocr/pull/982) for more details.
+We have support for reading annotation files from the full lmdb dataset (with images and annotations). It is now possible to read lmdb datasets commonly used in academia. We have also implemented a new dataset conversion tool, [recog2lmdb](https://github.com/open-mmlab/mmocr/blob/main/tools/data/utils/recog2lmdb.py). It converts the recognition dataset to lmdb format. See [PR982](https://github.com/open-mmlab/mmocr/pull/982) for more details.
 
 Here is an example configuration to load lmdb annotations:
 
@@ -195,6 +222,45 @@ train = dict(
             separator=' ')),
     pipeline=None,
     test_mode=False)
+```
+
+#### Evaluation
+
+There are six evaluation metrics available for text recognition tasks: `word_acc`, `word_acc_ignore_case`, `word_acc_ignore_case_symbol`, `char_recall`, `char_precision` and `one_minus_ned`. See our [API doc](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.core.evaluation.eval_ocr_metric) for explanations on metrics.
+
+By default, `OCRDataset` generates full reports on all the metrics if its evaluation
+metric is `acc`. Here is an example case for **training**.
+
+```python
+# Configuration
+evaluation = dict(interval=1, metric='acc')
+```
+
+```bash
+# Results
+{'0_char_recall': 0.0484, '0_char_precision': 0.6, '0_word_acc': 0.0, '0_word_acc_ignore_case': 0.0, '0_word_acc_ignore_case_symbol': 0.0, '0_1-N.E.D': 0.0525}
+```
+
+:::{note}
+'0_' prefixes result from `UniformConcatDataset`. It's kept here since MMOCR always wrap `UniformConcatDataset` around any datasets.
+:::
+
+If you want to conduct the evaluation on a subset of evaluation metrics:
+
+```python
+evaluation = dict(interval=1, metric=['word_acc_ignore_case', 'one_minus_ned'])
+```
+
+The result will look like:
+
+```bash
+{'0_word_acc_ignore_case': 0.0, '0_1-N.E.D': 0.0525}
+```
+
+**During testing**, you can specify the metrics to evaluate in the command line:
+
+```bash
+python tools/test.py configs/textrecog/crnn/crnn_toy_dataset.py crnn.pth --eval word_acc_ignore_case one_minus_ned
 ```
 
 ### OCRSegDataset
