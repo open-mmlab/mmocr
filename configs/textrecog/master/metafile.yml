@@ -49,4 +49,4 @@ Models:
         Dataset: CT80
         Metrics:
           word_acc: 89.93
-    Weights:
+    Weights: https://download.openmmlab.com/mmocr/textrecog/master/master_r31_12e_ST_MJ_SA-787edd36.pth

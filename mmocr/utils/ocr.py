@@ -324,7 +324,11 @@ class MMOCR:
                 'config': 'tps/crnn_tps_academic_dataset.py',
                 'ckpt': 'tps/crnn_tps_academic_dataset_20210510-d221a905.pth'
             },
-            'Tesseract': {}
+            'Tesseract': {},
+            'MASTER': {
+                'config': 'master/master_academic.py',
+                'ckpt': 'master/master/master_r31_12e_ST_MJ_SA-787edd36.pth'
+            }
         }
 
         kie_models = {
