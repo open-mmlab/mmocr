@@ -196,7 +196,7 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 | ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------: |
 | DB_r18        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |          :x:          |
 | DB_r50        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |          :x:          |
-| DBPP_r50        |            [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization-and-adaptive-scale-fusion)            |              :x:               |
+| DBPP_r50        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization-and-adaptive-scale-fusion)            |              :x:               |
 | DRRG          |                                         [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#drrg)                                          |          :x:          |
 | FCE_IC15      |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |          :x:          |
 | FCE_CTW_DCNv2 |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |          :x:          |
