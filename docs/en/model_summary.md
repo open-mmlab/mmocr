@@ -110,6 +110,15 @@ Fuser fuses the feature output from encoder and decoder before generating the fi
 - Loss: [CTCLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.losses.CTCLoss)
 - Converter: [CTCConvertor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.convertors.CTCConvertor)
 
+### MASTER
+
+- Preprocessor: None
+- Backbone: [ResNet](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.backbones.ResNet)
+- Encoder: None
+- Decoder: [MasterDecoder](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.decoders.MasterDecoder)
+- Loss: [TFLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.losses.TFLoss)
+- Converter: [AttnConvertor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.convertors.AttnConvertor)
+
 ### NRTR
 
 - Preprocessor: None
