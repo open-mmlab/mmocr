@@ -22,7 +22,7 @@ This section is intended to serve as a quick walkthrough for you to master this 
 To better align with the academic community, MMOCR now requires the following specifications for lmdb datasets:
 
   * The parameter describing the data volume of the dataset is `num-samples` instead of `total_number` (deprecated).
-  * Images and labels are stored with keys in the form of `image-000000001` and `label-00000001`, respectively.
+  * Images and labels are stored with keys in the form of `image-000000001` and `label-000000001`, respectively.
 
 
 #### Usage
