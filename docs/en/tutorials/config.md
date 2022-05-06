@@ -66,11 +66,11 @@ _base_
 └── schedules
 ```
 
-These _primitive_ configs are categorized by their roles in a complete config. Most of model configs are making full use of _primitive_ configs by including them as parts of `_base_` section. For example, [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/5a8859fe6666c096b75fa44db4f6c53d81a2ed62/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py) takes five _primitive_ configs from `_base_`:
+These _primitive_ configs are categorized by their roles in a complete config. Most of model configs are making full use of _primitive_ configs by including them as parts of `_base_` section. For example, [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/1962c249a6196bd50dc2940e396d9f98df0fe8fe/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py) takes five _primitive_ configs from `_base_`:
 
 ```python
 _base_ = [
-    '../../_base_/runtime_10e.py',
+    '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/det_models/dbnet_r18_fpnc.py',
     '../../_base_/det_datasets/icdar2015.py',
@@ -218,7 +218,7 @@ Mainly include optimizer settings, `optimizer hook` settings, learning rate sche
 - `runner`: For `runner`, please refer to `mmcv` for [`runner`](https://mmcv.readthedocs.io/en/latest/understand_mmcv/runner.html) introduction document.
 
 ```python
-# he configuration file used to build the optimizer, support all optimizers in PyTorch.
+# The configuration file used to build the optimizer, support all optimizers in PyTorch.
 optimizer = dict(type='SGD',         # Optimizer type
                 lr=0.1,              # Learning rate of optimizers, see detail usages of the parameters in the documentation of PyTorch
                 momentum=0.9,        # Momentum
