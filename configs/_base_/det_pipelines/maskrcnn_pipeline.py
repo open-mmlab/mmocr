@@ -28,7 +28,7 @@ test_pipeline_ctw1500 = [
     dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=img_scale_ctw1500,
+        img_scale=img_scale_ctw1500,  # used by Resize
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),
@@ -45,7 +45,7 @@ test_pipeline_icdar2015 = [
     dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=img_scale_icdar2015,
+        img_scale=img_scale_icdar2015,  # used by Resize
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),
