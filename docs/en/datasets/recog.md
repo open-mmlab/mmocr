@@ -1148,7 +1148,7 @@ should be as follows:
 
 - After running the above codes, the directory structure should be as follows:
 
-  ```te
+  ```text
   │── art
   │   ├── crops
   │   ├── train_label.jsonl
