@@ -1,0 +1,178 @@
+{
+  "version": "5.0.1",
+  "flags": {},
+  "shapes": [
+    {
+      "label": "Genaxis Theatre",
+      "points": [
+        [
+          377,
+          117
+        ],
+        [
+          463,
+          117
+        ],
+        [
+          465,
+          130
+        ],
+        [
+          378,
+          130
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "[06]",
+      "points": [
+        [
+          493,
+          115
+        ],
+        [
+          519,
+          115
+        ],
+        [
+          519,
+          131
+        ],
+        [
+          493,
+          131
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          374,
+          155
+        ],
+        [
+          409,
+          155
+        ],
+        [
+          409,
+          170
+        ],
+        [
+          374,
+          170
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "62-03",
+      "points": [
+        [
+          492,
+          151
+        ],
+        [
+          551,
+          151
+        ],
+        [
+          551,
+          170
+        ],
+        [
+          492,
+          170
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "Carpark",
+      "points": [
+        [
+          376,
+          198
+        ],
+        [
+          422,
+          198
+        ],
+        [
+          422,
+          212
+        ],
+        [
+          376,
+          212
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          494,
+          190
+        ],
+        [
+          539,
+          189
+        ],
+        [
+          539,
+          205
+        ],
+        [
+          494,
+          206
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          374,
+          1
+        ],
+        [
+          494,
+          0
+        ],
+        [
+          492,
+          85
+        ],
+        [
+          372,
+          86
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    }
+  ],
+  "imagePath": "tests/data/toy_dataset/imgs/test/img_1.jpg",
+  "imageData": "",
+  "imageHeight": 720,
+  "imageWidth": 1280
+}

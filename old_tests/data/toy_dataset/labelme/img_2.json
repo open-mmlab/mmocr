@@ -1,0 +1,58 @@
+{
+  "version": "5.0.1",
+  "flags": {},
+  "shapes": [
+    {
+      "label": "EXIT",
+      "points": [
+        [
+          602,
+          173
+        ],
+        [
+          635,
+          175
+        ],
+        [
+          634,
+          197
+        ],
+        [
+          602,
+          196
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "I2R",
+      "points": [
+        [
+          734,
+          310
+        ],
+        [
+          792,
+          320
+        ],
+        [
+          792,
+          364
+        ],
+        [
+          738,
+          361
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    }
+  ],
+  "imagePath": "tests/data/toy_dataset/imgs/test/img_2.jpg",
+  "imageData": "",
+  "imageHeight": 720,
+  "imageWidth": 1280
+}

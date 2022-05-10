@@ -1,0 +1,322 @@
+{
+  "version": "5.0.1",
+  "flags": {},
+  "shapes": [
+    {
+      "label": "fusionopolis",
+      "points": [
+        [
+          58,
+          80
+        ],
+        [
+          191,
+          71
+        ],
+        [
+          194,
+          114
+        ],
+        [
+          61,
+          123
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          147,
+          21
+        ],
+        [
+          176,
+          21
+        ],
+        [
+          176,
+          36
+        ],
+        [
+          147,
+          36
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          328,
+          75
+        ],
+        [
+          391,
+          81
+        ],
+        [
+          387,
+          112
+        ],
+        [
+          326,
+          113
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          401,
+          76
+        ],
+        [
+          448,
+          84
+        ],
+        [
+          445,
+          108
+        ],
+        [
+          402,
+          111
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          780,
+          7
+        ],
+        [
+          1015,
+          6
+        ],
+        [
+          1016,
+          37
+        ],
+        [
+          788,
+          42
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "fusionopolis",
+      "points": [
+        [
+          221,
+          72
+        ],
+        [
+          311,
+          80
+        ],
+        [
+          312,
+          117
+        ],
+        [
+          222,
+          118
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          113,
+          19
+        ],
+        [
+          144,
+          19
+        ],
+        [
+          144,
+          33
+        ],
+        [
+          113,
+          33
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          257,
+          28
+        ],
+        [
+          308,
+          28
+        ],
+        [
+          308,
+          57
+        ],
+        [
+          257,
+          57
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          140,
+          120
+        ],
+        [
+          196,
+          115
+        ],
+        [
+          195,
+          129
+        ],
+        [
+          141,
+          133
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          86,
+          176
+        ],
+        [
+          110,
+          177
+        ],
+        [
+          112,
+          189
+        ],
+        [
+          89,
+          196
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          101,
+          193
+        ],
+        [
+          129,
+          185
+        ],
+        [
+          132,
+          198
+        ],
+        [
+          103,
+          204
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          223,
+          175
+        ],
+        [
+          244,
+          150
+        ],
+        [
+          294,
+          183
+        ],
+        [
+          235,
+          197
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          140,
+          239
+        ],
+        [
+          174,
+          232
+        ],
+        [
+          176,
+          247
+        ],
+        [
+          142,
+          256
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    }
+  ],
+  "imagePath": "tests/data/toy_dataset/imgs/test/img_3.jpg",
+  "imageData": "",
+  "imageHeight": 720,
+  "imageWidth": 1280
+}
