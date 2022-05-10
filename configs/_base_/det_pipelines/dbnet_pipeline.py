@@ -30,10 +30,10 @@ test_pipeline_1333_736 = [
     dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(1333, 736),
+        img_scale=(1333, 736),  # used by Resize
         flip=False,
         transforms=[
-            dict(type='Resize', img_scale=(2944, 736), keep_ratio=True),
+            dict(type='Resize', keep_ratio=True),
             dict(type='Normalize', **img_norm_cfg),
             dict(type='Pad', size_divisor=32),
             dict(type='ImageToTensor', keys=['img']),
@@ -76,10 +76,10 @@ test_pipeline_4068_1024 = [
     dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(4068, 1024),
+        img_scale=(4068, 1024),  # used by Resize
         flip=False,
         transforms=[
-            dict(type='Resize', img_scale=(2944, 736), keep_ratio=True),
+            dict(type='Resize', keep_ratio=True),
             dict(type='Normalize', **img_norm_cfg_r50dcnv2),
             dict(type='Pad', size_divisor=32),
             dict(type='ImageToTensor', keys=['img']),
