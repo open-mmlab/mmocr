@@ -1,8 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .box_utils import sort_vertex, sort_vertex8
-from .custom_format_bundle import CustomFormatBundle
 from .dbnet_transforms import EastRandomCrop, ImgAug
-from .kie_transforms import KIEFormatBundle, ResizeNoImg
+from .kie_transforms import ResizeNoImg
 from .loading import (LoadImageFromLMDB, LoadImageFromNdarray,
                       LoadTextAnnotations)
 from .ner_transforms import NerTransform, ToTensorNER
@@ -21,14 +20,14 @@ from .transforms import (ColorJitter, PyramidRescale, RandomCropFlip,
 
 __all__ = [
     'LoadTextAnnotations', 'NormalizeOCR', 'OnlineCropOCR', 'ResizeOCR',
-    'ToTensorOCR', 'CustomFormatBundle', 'DBNetTargets', 'PANetTargets',
-    'ColorJitter', 'RandomCropInstances', 'RandomRotateTextDet',
-    'ScaleAspectJitter', 'MultiRotateAugOCR', 'OCRSegTargets', 'FancyPCA',
+    'ToTensorOCR', 'DBNetTargets', 'PANetTargets', 'ColorJitter',
+    'RandomCropInstances', 'RandomRotateTextDet', 'ScaleAspectJitter',
+    'MultiRotateAugOCR', 'OCRSegTargets', 'FancyPCA',
     'RandomCropPolyInstances', 'RandomRotatePolyInstances', 'RandomPaddingOCR',
     'ImgAug', 'EastRandomCrop', 'RandomRotateImageBox', 'OpencvToPil',
-    'PilToOpencv', 'KIEFormatBundle', 'SquareResizePad', 'TextSnakeTargets',
-    'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets',
-    'RandomScaling', 'RandomCropFlip', 'NerTransform', 'ToTensorNER',
-    'ResizeNoImg', 'PyramidRescale', 'OneOfWrapper', 'RandomWrapper',
-    'TorchVisionWrapper', 'LoadImageFromLMDB'
+    'PilToOpencv', 'SquareResizePad', 'TextSnakeTargets', 'sort_vertex',
+    'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets', 'RandomScaling',
+    'RandomCropFlip', 'NerTransform', 'ToTensorNER', 'ResizeNoImg',
+    'PyramidRescale', 'OneOfWrapper', 'RandomWrapper', 'TorchVisionWrapper',
+    'LoadImageFromLMDB'
 ]
