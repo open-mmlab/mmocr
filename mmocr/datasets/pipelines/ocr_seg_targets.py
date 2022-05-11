@@ -2,13 +2,13 @@
 import cv2
 import numpy as np
 from mmdet.core import BitmapMasks
-from mmdet.datasets.builder import PIPELINES
 
 import mmocr.utils.check_argument as check_argument
 from mmocr.models.builder import build_convertor
+from mmocr.registry import TRANSFORMS
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class OCRSegTargets:
     """Generate gt shrunk kernels for segmentation based OCR framework.
 

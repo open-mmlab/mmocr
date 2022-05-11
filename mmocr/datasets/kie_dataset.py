@@ -5,11 +5,11 @@ from os import path as osp
 
 import numpy as np
 import torch
-from mmdet.datasets.builder import DATASETS
 
 from mmocr.core import compute_f1_score
 from mmocr.datasets.base_dataset import BaseDataset
 from mmocr.datasets.pipelines import sort_vertex8
+from mmocr.registry import DATASETS
 from mmocr.utils import is_type_list, list_from_file
 
 

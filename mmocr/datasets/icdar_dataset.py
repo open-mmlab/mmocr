@@ -2,12 +2,12 @@
 import mmcv
 import numpy as np
 from mmdet.datasets.api_wrappers import COCO
-from mmdet.datasets.builder import DATASETS
 from mmdet.datasets.coco import CocoDataset
 
 import mmocr.utils as utils
 from mmocr import digit_version
 from mmocr.core.evaluation.hmean import eval_hmean
+from mmocr.registry import DATASETS
 
 
 @DATASETS.register_module()

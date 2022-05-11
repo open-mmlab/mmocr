@@ -4,7 +4,8 @@ import imgaug.augmenters as iaa
 import mmcv
 import numpy as np
 from mmdet.core.mask import PolygonMasks
-from mmdet.datasets.builder import PIPELINES
+
+from mmocr.registry import TRANSFORMS
 
 
 class AugmenterBuilder:
@@ -45,7 +46,7 @@ class AugmenterBuilder:
         return obj
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class ImgAug:
     """A wrapper to use imgaug https://github.com/aleju/imgaug.
 
@@ -174,7 +175,7 @@ class ImgAug:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class EastRandomCrop:
 
     def __init__(self,

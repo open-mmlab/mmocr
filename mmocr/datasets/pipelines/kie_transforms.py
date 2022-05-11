@@ -2,11 +2,12 @@
 import numpy as np
 from mmcv import rescale_size
 from mmcv.parallel import DataContainer as DC
-from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines.formatting import DefaultFormatBundle, to_tensor
 
+from mmocr.registry import TRANSFORMS
 
-@PIPELINES.register_module()
+
+@TRANSFORMS.register_module()
 class ResizeNoImg:
     """Image resizing without img.
 
@@ -39,7 +40,7 @@ class ResizeNoImg:
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class KIEFormatBundle(DefaultFormatBundle):
     """Key information extraction formatting bundle.
 

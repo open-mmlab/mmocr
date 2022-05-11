@@ -13,8 +13,9 @@ from mmcv.image import tensor2imgs
 from mmcv.parallel import MMDataParallel
 from mmcv.runner import load_checkpoint
 
-from mmocr.datasets import build_dataloader, build_dataset
+from mmocr.datasets import build_dataloader
 from mmocr.models import build_detector
+from mmocr.registry import DATASETS
 
 
 def save_results(model, img_meta, gt_bboxes, result, out_dir):
@@ -140,7 +141,7 @@ def main():
     distributed = False
 
     # build the dataloader
-    dataset = build_dataset(cfg.data.test)
+    dataset = DATASETS.build(cfg.data.test)
     data_loader = build_dataloader(
         dataset,
         samples_per_gpu=1,

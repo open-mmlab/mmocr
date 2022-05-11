@@ -3,9 +3,9 @@ import copy
 
 import numpy as np
 import torch
-from mmdet.datasets.builder import DATASETS
 
 from mmocr.datasets import KIEDataset
+from mmocr.registry import DATASETS
 
 
 @DATASETS.register_module()

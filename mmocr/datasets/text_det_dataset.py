@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
-from mmdet.datasets.builder import DATASETS
 
 from mmocr.core.evaluation.hmean import eval_hmean
 from mmocr.datasets.base_dataset import BaseDataset
+from mmocr.registry import DATASETS
 
 
 @DATASETS.register_module()

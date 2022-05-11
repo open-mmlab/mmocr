@@ -1,8 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmdet.datasets.builder import DATASETS, build_dataloader, build_dataset
-
 from . import utils
 from .base_dataset import BaseDataset
+from .builder import DATASETS, LOADERS, PARSERS, TRANSFORMS
 from .icdar_dataset import IcdarDataset
 from .kie_dataset import KIEDataset
 from .ner_dataset import NerDataset
@@ -15,10 +14,10 @@ from .uniform_concat_dataset import UniformConcatDataset
 from .utils import *  # NOQA
 
 __all__ = [
-    'DATASETS', 'IcdarDataset', 'build_dataloader', 'build_dataset',
-    'BaseDataset', 'OCRDataset', 'TextDetDataset', 'CustomFormatBundle',
-    'DBNetTargets', 'OCRSegDataset', 'KIEDataset', 'FCENetTargets',
-    'NerDataset', 'UniformConcatDataset', 'OpensetKIEDataset'
+    'DATASETS', 'IcdarDataset', 'BaseDataset', 'OCRDataset', 'TextDetDataset',
+    'CustomFormatBundle', 'DBNetTargets', 'OCRSegDataset', 'KIEDataset',
+    'FCENetTargets', 'NerDataset', 'UniformConcatDataset', 'OpensetKIEDataset',
+    'TRANSFORMS', 'PARSERS', 'LOADERS'
 ]
 
 __all__ += utils.__all__

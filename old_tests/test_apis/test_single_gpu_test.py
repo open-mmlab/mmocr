@@ -13,8 +13,9 @@ from mmcv import Config
 from mmcv.parallel import MMDataParallel
 
 from mmocr.apis.test import single_gpu_test
-from mmocr.datasets import build_dataloader, build_dataset
+from mmocr.datasets import build_dataloader
 from mmocr.models import build_detector
+from mmocr.registry import DATASETS
 from mmocr.utils import check_argument, list_to_file, revert_sync_batchnorm
 
 
@@ -45,7 +46,7 @@ def generate_sample_dataloader(cfg, curr_dir, img_prefix='', ann_file=''):
     test.ann_file = ann_file
     cfg.data.workers_per_gpu = 0
     cfg.data.test.datasets = [test]
-    dataset = build_dataset(cfg.data.test)
+    dataset = DATASETS.build(cfg.data.test)
 
     loader_cfg = {
         **dict((k, cfg.data[k]) for k in [
@@ -140,7 +141,7 @@ def gene_sdmgr_model_dataloader(cfg, dirname, curr_dir, empty_img=False):
     cfg.model.class_list = osp.join(curr_dir,
                                     'data/kie_toy_dataset/class_list.txt')
 
-    dataset = build_dataset(cfg.data.test)
+    dataset = DATASETS.build(cfg.data.test)
 
     loader_cfg = {
         **dict((k, cfg.data[k]) for k in [

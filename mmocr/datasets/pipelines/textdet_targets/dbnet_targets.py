@@ -3,13 +3,13 @@ import cv2
 import numpy as np
 import pyclipper
 from mmdet.core import BitmapMasks
-from mmdet.datasets.builder import PIPELINES
 from shapely.geometry import Polygon
 
+from mmocr.registry import TRANSFORMS
 from . import BaseTextDetTargets
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class DBNetTargets(BaseTextDetTargets):
     """Generate gt shrunk text, gt threshold map, and their effective region
     masks to learn DBNet: Real-time Scene Text Detection with Differentiable

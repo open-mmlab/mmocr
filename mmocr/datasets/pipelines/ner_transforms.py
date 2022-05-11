@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
-from mmdet.datasets.builder import PIPELINES
 
 from mmocr.models.builder import build_convertor
+from mmocr.registry import TRANSFORMS
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class NerTransform:
     """Convert text to ID and entity in ground truth to label ID. The masks and
     tokens are generated at the same time. The four parameters will be used as
@@ -42,7 +42,7 @@ class NerTransform:
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class ToTensorNER:
     """Convert data with ``list`` type to tensor."""
 

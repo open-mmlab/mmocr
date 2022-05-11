@@ -2,14 +2,14 @@
 import cv2
 import numpy as np
 from mmdet.core import BitmapMasks
-from mmdet.datasets.builder import PIPELINES
 from numpy.linalg import norm
 
 import mmocr.utils.check_argument as check_argument
+from mmocr.registry import TRANSFORMS
 from . import BaseTextDetTargets
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class TextSnakeTargets(BaseTextDetTargets):
     """Generate the ground truth targets of TextSnake: TextSnake: A Flexible
     Representation for Detecting Text of Arbitrary Shapes.

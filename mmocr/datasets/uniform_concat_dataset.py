@@ -4,8 +4,9 @@ from collections import defaultdict
 
 import numpy as np
 from mmcv.utils import print_log
-from mmdet.datasets import DATASETS, ConcatDataset, build_dataset
+from mmdet.datasets import ConcatDataset
 
+from mmocr.registry import DATASETS
 from mmocr.utils import is_2dlist, is_type_list
 
 
@@ -64,7 +65,7 @@ class UniformConcatDataset(ConcatDataset):
                     new_datasets.extend(sub_datasets)
             else:
                 new_datasets = datasets
-        datasets = [build_dataset(c, kwargs) for c in new_datasets]
+        datasets = [DATASETS.build(c, kwargs) for c in new_datasets]
         super().__init__(datasets, separate_eval)
 
         if not separate_eval:

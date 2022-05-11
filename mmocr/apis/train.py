@@ -10,11 +10,12 @@ from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner,
                          Fp16OptimizerHook, OptimizerHook, build_optimizer,
                          build_runner, get_dist_info)
 from mmdet.core import DistEvalHook, EvalHook
-from mmdet.datasets import build_dataloader, build_dataset
+from mmdet.datasets import build_dataloader
 
 from mmocr import digit_version
 from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
+from mmocr.registry import DATASETS
 from mmocr.utils import get_root_logger
 
 
@@ -132,7 +133,7 @@ def train_detector(model,
             cfg = disable_text_recog_aug_test(cfg)
             cfg = replace_image_to_tensor(cfg)
 
-        val_dataset = build_dataset(cfg.data.val, dict(test_mode=True))
+        val_dataset = DATASETS.build(cfg.data.val, dict(test_mode=True))
 
         val_loader_cfg = {
             **default_loader_cfg,

@@ -16,8 +16,9 @@ from mmdet.apis import multi_gpu_test
 from mmocr.apis.test import single_gpu_test
 from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
-from mmocr.datasets import build_dataloader, build_dataset
+from mmocr.datasets import build_dataloader
 from mmocr.models import build_detector
+from mmocr.registry import DATASETS
 from mmocr.utils import revert_sync_batchnorm, setup_multi_processes
 
 
@@ -162,7 +163,7 @@ def main():
         init_dist(args.launcher, **cfg.dist_params)
 
     # build the dataloader
-    dataset = build_dataset(cfg.data.test, dict(test_mode=True))
+    dataset = DATASETS.build(cfg.data.test, dict(test_mode=True))
     # step 1: give default values and override (if exist) from cfg.data
     default_loader_cfg = {
         **dict(seed=cfg.get('seed'), drop_last=False, dist=distributed),

@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.core import BitmapMasks
-from mmdet.datasets.builder import PIPELINES
 
+from mmocr.registry import TRANSFORMS
 from . import BaseTextDetTargets
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class PANetTargets(BaseTextDetTargets):
     """Generate the ground truths for PANet: Efficient and Accurate Arbitrary-
     Shaped Text Detection with Pixel Aggregation Network.
