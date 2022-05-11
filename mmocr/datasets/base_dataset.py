@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 from mmcv.utils import print_log
-from mmdet.datasets.builder import DATASETS
 from mmdet.datasets.pipelines import Compose
 from torch.utils.data import Dataset
 
-from mmocr.datasets.builder import build_loader
+from mmocr.datasets.builder import LOADERS
+from mmocr.registry import DATASETS
 
 
 @DATASETS.register_module()
@@ -66,7 +66,7 @@ class BaseDataset(Dataset):
         self.ann_file = ann_file
         # load annotations
         loader.update(ann_file=ann_file)
-        self.data_infos = build_loader(loader)
+        self.data_infos = LOADERS.build(loader)
         # processing pipeline
         self.pipeline = Compose(pipeline)
         # set group flag and class, no meaning

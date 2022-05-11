@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 
-from mmocr.datasets.builder import LOADERS, build_parser
+from mmocr.datasets.builder import LOADERS, PARSERS
 from .backend import (HardDiskAnnFileBackend, HTTPAnnFileBackend,
                       PetrelAnnFileBackend)
 
@@ -46,7 +46,7 @@ class AnnFileLoader:
             raise ValueError('We only support using LineJsonParser '
                              'to parse lmdb file. Please use LineJsonParser '
                              'in the dataset config')
-        self.parser = build_parser(parser)
+        self.parser = PARSERS.build(parser)
         self.repeat = repeat
         self.ann_file_backend = self._backends[file_storage_backend](
             file_format, **kwargs)

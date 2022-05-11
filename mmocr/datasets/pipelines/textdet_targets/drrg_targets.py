@@ -3,14 +3,14 @@ import cv2
 import numpy as np
 from lanms import merge_quadrangle_n9 as la_nms
 from mmdet.core import BitmapMasks
-from mmdet.datasets.builder import PIPELINES
 from numpy.linalg import norm
 
 import mmocr.utils.check_argument as check_argument
+from mmocr.registry import TRANSFORMS
 from .textsnake_targets import TextSnakeTargets
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class DRRGTargets(TextSnakeTargets):
     """Generate the ground truth targets of DRRG: Deep Relational Reasoning
     Graph Network for Arbitrary Shape Text Detection.

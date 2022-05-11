@@ -16,8 +16,8 @@ from mmcv.utils import get_git_hash
 
 from mmocr import __version__
 from mmocr.apis import init_random_seed, train_detector
-from mmocr.datasets import build_dataset
 from mmocr.models import build_detector
+from mmocr.registry import DATASETS
 from mmocr.utils import (collect_env, get_root_logger, is_2dlist,
                          setup_multi_processes)
 
@@ -189,7 +189,7 @@ def main():
         test_cfg=cfg.get('test_cfg'))
     model.init_weights()
 
-    datasets = [build_dataset(cfg.data.train)]
+    datasets = [DATASETS.build(cfg.data.train)]
     if len(cfg.workflow) == 2:
         val_dataset = copy.deepcopy(cfg.data.val)
         if cfg.data.train.get('pipeline', None) is None:

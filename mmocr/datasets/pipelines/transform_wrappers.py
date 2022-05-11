@@ -5,13 +5,13 @@ import random
 import mmcv
 import numpy as np
 import torchvision.transforms as torchvision_transforms
-from mmcv.utils import build_from_cfg
-from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines import Compose
 from PIL import Image
 
+from mmocr.registry import TRANSFORMS
 
-@PIPELINES.register_module()
+
+@TRANSFORMS.register_module()
 class OneOfWrapper:
     """Randomly select and apply one of the transforms, each with the equal
     chance.
@@ -31,7 +31,7 @@ class OneOfWrapper:
         self.transforms = []
         for t in transforms:
             if isinstance(t, dict):
-                self.transforms.append(build_from_cfg(t, PIPELINES))
+                self.transforms.append(TRANSFORMS.build(t))
             elif callable(t):
                 self.transforms.append(t)
             else:
@@ -46,7 +46,7 @@ class OneOfWrapper:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomWrapper:
     """Run a transform or a sequence of transforms with probability p.
 
@@ -71,7 +71,7 @@ class RandomWrapper:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class TorchVisionWrapper:
     """A wrapper of torchvision trasnforms. It applies specific transform to
     ``img`` and updates ``img_shape`` accordingly.

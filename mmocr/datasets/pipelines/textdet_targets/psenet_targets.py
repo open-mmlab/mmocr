@@ -1,10 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmdet.datasets.builder import PIPELINES
-
+from mmocr.registry import TRANSFORMS
 from . import PANetTargets
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class PSENetTargets(PANetTargets):
     """Generate the ground truth targets of PSENet: Shape robust text detection
     with progressive scale expansion network.

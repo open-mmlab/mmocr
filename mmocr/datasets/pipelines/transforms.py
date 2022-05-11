@@ -6,16 +6,16 @@ import mmcv
 import numpy as np
 import torchvision.transforms as transforms
 from mmdet.core import BitmapMasks, PolygonMasks
-from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines.transforms import Resize
 from PIL import Image
 from shapely.geometry import Polygon as plg
 
 import mmocr.core.evaluation.utils as eval_utils
+from mmocr.registry import TRANSFORMS
 from mmocr.utils import check_argument
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomCropInstances:
     """Randomly crop images and make sure to contain text instances.
 
@@ -176,7 +176,7 @@ class RandomCropInstances:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomRotateTextDet:
     """Randomly rotate images."""
 
@@ -223,7 +223,7 @@ class RandomRotateTextDet:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class ColorJitter:
     """An interface for torch color jitter so that it can be invoked in
     mmdetection pipeline."""
@@ -246,7 +246,7 @@ class ColorJitter:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class ScaleAspectJitter(Resize):
     """Resize image and segmentation mask encoded by coordinates.
 
@@ -335,7 +335,7 @@ class ScaleAspectJitter(Resize):
         results['scale_idx'] = None
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class AffineJitter:
     """An interface for torchvision random affine so that it can be invoked in
     mmdet pipeline."""
@@ -370,7 +370,7 @@ class AffineJitter:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomCropPolyInstances:
     """Randomly crop images and make sure to contain at least one intact
     instance."""
@@ -513,7 +513,7 @@ class RandomCropPolyInstances:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomRotatePolyInstances:
 
     def __init__(self,
@@ -639,7 +639,7 @@ class RandomRotatePolyInstances:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class SquareResizePad:
 
     def __init__(self,
@@ -737,7 +737,7 @@ class SquareResizePad:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomScaling:
 
     def __init__(self, size=800, scale=(3. / 4, 5. / 2)):
@@ -774,7 +774,7 @@ class RandomScaling:
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomCropFlip:
 
     def __init__(self,
@@ -969,7 +969,7 @@ class RandomCropFlip:
         return h_axis, w_axis
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class PyramidRescale:
     """Resize the image to the base shape, downsample it with gaussian pyramid,
     and rescale it back to original size.

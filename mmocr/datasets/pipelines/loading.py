@@ -5,11 +5,12 @@ import lmdb
 import mmcv
 import numpy as np
 from mmdet.core import BitmapMasks, PolygonMasks
-from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines.loading import LoadAnnotations, LoadImageFromFile
 
+from mmocr.registry import TRANSFORMS
 
-@PIPELINES.register_module()
+
+@TRANSFORMS.register_module()
 class LoadTextAnnotations(LoadAnnotations):
     """Load annotations for text detection.
 
@@ -99,7 +100,7 @@ class LoadTextAnnotations(LoadAnnotations):
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class LoadImageFromNdarray(LoadImageFromFile):
     """Load an image from np.ndarray.
 
@@ -136,7 +137,7 @@ class LoadImageFromNdarray(LoadImageFromFile):
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class LoadImageFromLMDB(object):
     """Load an image from lmdb file.
 

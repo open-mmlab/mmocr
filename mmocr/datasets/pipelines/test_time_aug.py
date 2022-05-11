@@ -1,11 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import mmcv
 import numpy as np
-from mmdet.datasets.builder import PIPELINES
 from mmdet.datasets.pipelines.compose import Compose
 
+from mmocr.registry import TRANSFORMS
 
-@PIPELINES.register_module()
+
+@TRANSFORMS.register_module()
 class MultiRotateAugOCR:
     """Test-time augmentation with multiple rotations in the case that
     img_height > img_width.

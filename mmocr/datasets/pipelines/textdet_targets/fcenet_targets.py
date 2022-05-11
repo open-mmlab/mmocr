@@ -1,15 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import cv2
 import numpy as np
-from mmdet.datasets.builder import PIPELINES
 from numpy.fft import fft
 from numpy.linalg import norm
 
 import mmocr.utils.check_argument as check_argument
+from mmocr.registry import TRANSFORMS
 from .textsnake_targets import TextSnakeTargets
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class FCENetTargets(TextSnakeTargets):
     """Generate the ground truth targets of FCENet: Fourier Contour Embedding
     for Arbitrary-Shaped Text Detection.

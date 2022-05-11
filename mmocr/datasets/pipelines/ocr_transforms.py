@@ -6,16 +6,16 @@ import numpy as np
 import torch
 import torchvision.transforms.functional as TF
 from mmcv.runner.dist_utils import get_dist_info
-from mmdet.datasets.builder import PIPELINES
 from PIL import Image
 from shapely.geometry import Polygon
 from shapely.geometry import box as shapely_box
 
 import mmocr.utils as utils
 from mmocr.datasets.pipelines.crop import warp_img
+from mmocr.registry import TRANSFORMS
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class ResizeOCR:
     """Image resizing and padding for OCR.
 
@@ -129,7 +129,7 @@ class ResizeOCR:
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class ToTensorOCR:
     """Convert a ``PIL Image`` or ``numpy.ndarray`` to tensor."""
 
@@ -142,7 +142,7 @@ class ToTensorOCR:
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class NormalizeOCR:
     """Normalize a tensor image with mean and standard deviation."""
 
@@ -156,7 +156,7 @@ class NormalizeOCR:
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class OnlineCropOCR:
     """Crop text areas from whole image with bounding box jitter. If no bbox is
     given, return directly.
@@ -216,7 +216,7 @@ class OnlineCropOCR:
         return results
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class FancyPCA:
     """Implementation of PCA based image augmentation, proposed in the paper
     ``Imagenet Classification With Deep Convolutional Neural Networks``.
@@ -257,7 +257,7 @@ class FancyPCA:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomPaddingOCR:
     """Pad the given image on all sides, as well as modify the coordinates of
     character bounding box in image.
@@ -319,7 +319,7 @@ class RandomPaddingOCR:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class RandomRotateImageBox:
     """Rotate augmentation for segmentation based text recognition.
 
@@ -416,7 +416,7 @@ class RandomRotateImageBox:
         return [new_x, new_y]
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class OpencvToPil:
     """Convert ``numpy.ndarray`` (bgr) to ``PIL Image`` (rgb)."""
 
@@ -435,7 +435,7 @@ class OpencvToPil:
         return repr_str
 
 
-@PIPELINES.register_module()
+@TRANSFORMS.register_module()
 class PilToOpencv:
     """Convert ``PIL Image`` (rgb) to ``numpy.ndarray`` (bgr)."""
 
