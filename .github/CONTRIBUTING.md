@@ -26,6 +26,8 @@ Contents
   - [Code style](#code-style)
     - [Python](#python)
       - [Installing pre-commit hooks](#installing-pre-commit-hooks)
+        - [Prerequisite](#prerequisite)
+        - [Installation](#installation)
     - [C++ and CUDA](#c-and-cuda)
 
 ## Workflow
@@ -174,28 +176,44 @@ The config for a pre-commit hook is stored in [.pre-commit-config](../.pre-commi
 
 #### Installing pre-commit hooks
 
-After you clone the repository, you will need to install initialize pre-commit hook.
+##### Prerequisite
+
+Make sure Ruby runs on your system.
+
+On Windows: Install Ruby from [the official website](https://rubyinstaller.org/).
+
+On Debian/Ubuntu:
+
+```shell
+sudo apt-add-repository ppa:brightbox/ruby-ng -y
+sudo apt-get update
+sudo apt-get install -y ruby2.7
+```
+
+On other Linux distributions:
+
+```shell
+# install rvm
+curl -L https://get.rvm.io | bash -s -- --autolibs=read-fail
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+rvm autolibs disable
+# install ruby
+rvm install 2.7.1
+```
+
+##### Installation
+
+After you clone the repository, you will need to install and initialize pre-commit hook.
 
 ```shell
 pip install -U pre-commit
 ```
 
+
 From the repository folder
 
 ```shell
 pre-commit install
-```
-
-If you are facing issue when installing markdown lint, you may install ruby for markdown lint by following
-
-```shell
-# install rvm
-curl -L https://get.rvm.io | bash -s -- --autolibs=read-fail
-# set up environment
-# Note that you might need to edit ~/.bashrc, ~/.bash_profile.
-rvm autolibs disable
-# install ruby
-rvm install 2.7.1
 ```
 
 After this on every commit check code linters and formatter will be enforced.

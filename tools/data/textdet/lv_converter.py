@@ -83,9 +83,10 @@ def load_img_info(files):
         '.')[0]
     # read imgs while ignoring orientations
     img = mmcv.imread(img_file, 'unchanged')
+    img_file = img_file.split('data/lv/')[1]
 
     img_info = dict(
-        file_name=osp.join(osp.basename(img_file)),
+        file_name=img_file,
         height=img.shape[0],
         width=img.shape[1],
         segm_file=osp.join(osp.basename(gt_file)))

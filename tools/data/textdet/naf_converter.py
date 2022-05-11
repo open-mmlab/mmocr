@@ -139,14 +139,15 @@ def load_json_info(gt_file, img_info):
                 if anno['type'] == 'blank':
                     continue
 
-            xs, ys = [], []
+            xs, ys, segmentation = [], [], []
             for p in anno['poly_points']:
                 xs.append(p[0])
                 ys.append(p[1])
+                segmentation.append(p[0])
+                segmentation.append(p[1])
             x, y = max(0, min(xs)), max(0, min(ys))
             w, h = max(xs) - x, max(ys) - y
             bbox = [x, y, w, h]
-            segmentation = anno['poly_points']
 
             anno = dict(
                 iscrowd=0,

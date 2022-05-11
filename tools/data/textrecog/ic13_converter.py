@@ -39,7 +39,7 @@ def convert_annotations(root_path, split, format):
             'r',
             encoding='"utf-8-sig') as f:
         annos = f.readlines()
-    dst_image_root = osp.join(root_path, split)
+    dst_image_root = osp.join(root_path, split.lower())
     for anno in annos:
         # text may contain comma ','
         dst_img_name, word = anno.split(', "')
@@ -58,7 +58,7 @@ def convert_annotations(root_path, split, format):
         else:
             raise NotImplementedError
 
-    list_to_file(osp.join(root_path, f'{split}_label.{format}'), lines)
+    list_to_file(osp.join(root_path, f'{split.lower()}_label.{format}'), lines)
 
 
 def parse_args():

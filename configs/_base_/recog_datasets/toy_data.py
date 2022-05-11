@@ -9,8 +9,10 @@ train1 = dict(
     img_prefix=img_prefix,
     ann_file=train_anno_file1,
     loader=dict(
-        type='HardDiskLoader',
+        type='AnnFileLoader',
         repeat=100,
+        file_format='txt',
+        file_storage_backend='disk',
         parser=dict(
             type='LineStrParser',
             keys=['filename', 'text'],
@@ -25,13 +27,11 @@ train2 = dict(
     img_prefix=img_prefix,
     ann_file=train_anno_file2,
     loader=dict(
-        type='LmdbLoader',
+        type='AnnFileLoader',
         repeat=100,
-        parser=dict(
-            type='LineStrParser',
-            keys=['filename', 'text'],
-            keys_idx=[0, 1],
-            separator=' ')),
+        file_format='lmdb',
+        file_storage_backend='disk',
+        parser=dict(type='LineJsonParser', keys=['filename', 'text'])),
     pipeline=None,
     test_mode=False)
 
@@ -41,13 +41,11 @@ test = dict(
     img_prefix=img_prefix,
     ann_file=test_anno_file1,
     loader=dict(
-        type='LmdbLoader',
+        type='AnnFileLoader',
         repeat=1,
-        parser=dict(
-            type='LineStrParser',
-            keys=['filename', 'text'],
-            keys_idx=[0, 1],
-            separator=' ')),
+        file_format='lmdb',
+        file_storage_backend='disk',
+        parser=dict(type='LineJsonParser', keys=['filename', 'text'])),
     pipeline=None,
     test_mode=True)
 

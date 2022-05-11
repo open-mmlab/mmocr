@@ -21,6 +21,7 @@ class DBPostprocessor(BasePostprocessor):
         min_text_width (int): The minimum width of boundary polygon/box
             predicted.
         unclip_ratio (float): The unclip ratio for text regions dilation.
+        epsilon_ratio (float): The epsilon ratio for approximation accuracy.
         max_candidates (int): The maximum candidate number.
     """
 
@@ -30,6 +31,7 @@ class DBPostprocessor(BasePostprocessor):
                  min_text_score=0.3,
                  min_text_width=5,
                  unclip_ratio=1.5,
+                 epsilon_ratio=0.01,
                  max_candidates=3000,
                  **kwargs):
         super().__init__(text_repr_type)
@@ -37,6 +39,7 @@ class DBPostprocessor(BasePostprocessor):
         self.min_text_score = min_text_score
         self.min_text_width = min_text_width
         self.unclip_ratio = unclip_ratio
+        self.epsilon_ratio = epsilon_ratio
         self.max_candidates = max_candidates
 
     def __call__(self, preds):
@@ -62,7 +65,7 @@ class DBPostprocessor(BasePostprocessor):
         for i, poly in enumerate(contours):
             if i > self.max_candidates:
                 break
-            epsilon = 0.01 * cv2.arcLength(poly, True)
+            epsilon = self.epsilon_ratio * cv2.arcLength(poly, True)
             approx = cv2.approxPolyDP(poly, epsilon, True)
             points = approx.reshape((-1, 2))
             if points.shape[0] < 4:
