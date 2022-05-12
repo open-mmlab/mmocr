@@ -1,9 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import copy
 import unittest.mock as mock
 
 import numpy as np
-import pytest
 import torchvision.transforms as TF
 from mmdet.core import BitmapMasks, PolygonMasks
 from PIL import Image
@@ -345,29 +343,3 @@ def test_square_resize_pad(mock_sample):
     target[1::2] *= 8. / 3
     assert np.allclose(output['gt_masks'].masks[0][0], target)
     assert output['img'].shape == (40, 40, 3)
-
-
-def test_pyramid_rescale():
-    img = np.random.randint(0, 256, size=(128, 100, 3), dtype=np.uint8)
-    x = {'img': copy.deepcopy(img)}
-    f = transforms.PyramidRescale()
-    results = f(x)
-    assert results['img'].shape == (128, 100, 3)
-
-    # Test invalid inputs
-    with pytest.raises(AssertionError):
-        transforms.PyramidRescale(base_shape=(128))
-    with pytest.raises(AssertionError):
-        transforms.PyramidRescale(base_shape=128)
-    with pytest.raises(AssertionError):
-        transforms.PyramidRescale(factor=[])
-    with pytest.raises(AssertionError):
-        transforms.PyramidRescale(randomize_factor=[])
-    with pytest.raises(AssertionError):
-        f({})
-
-    # Test factor = 0
-    f_derandomized = transforms.PyramidRescale(
-        factor=0, randomize_factor=False)
-    results = f_derandomized({'img': copy.deepcopy(img)})
-    assert np.all(results['img'] == img)
