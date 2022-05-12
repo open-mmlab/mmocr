@@ -142,10 +142,9 @@ class LocalGraphs:
         assert isinstance(knn_batch, list)
         assert isinstance(sorted_dist_ind_batch, list)
 
-        num_max_nodes = max([
+        num_max_nodes = max(
             len(pivot_local_graph) for pivot_local_graphs in local_graph_batch
-            for pivot_local_graph in pivot_local_graphs
-        ])
+            for pivot_local_graph in pivot_local_graphs)
 
         local_graphs_node_feat = []
         adjacent_matrices = []

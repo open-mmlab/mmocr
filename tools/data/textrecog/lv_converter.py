@@ -36,7 +36,6 @@ def convert_annotations(root_path, split, format):
         lines = []
         with open(
                 osp.join(root_path, f'{split}_label.txt'),
-                'r',
                 encoding='"utf-8-sig') as f:
             annos = f.readlines()
         for anno in annos:

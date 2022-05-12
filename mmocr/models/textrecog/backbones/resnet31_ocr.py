@@ -140,6 +140,6 @@ class ResNet31OCR(BaseModule):
             outs.append(x)
 
         if self.out_indices is not None:
-            return tuple([outs[i] for i in self.out_indices])
+            return tuple(outs[i] for i in self.out_indices)
 
         return x

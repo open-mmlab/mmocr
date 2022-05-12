@@ -161,7 +161,7 @@ def onnx2tensorrt(onnx_file: str,
                         atol=1e-4):
                     same_diff = 'different'
                     break
-        print('The outputs are {} between TensorRT and ONNX'.format(same_diff))
+        print(f'The outputs are {same_diff} between TensorRT and ONNX')
 
         if show:
             onnx_img = onnx_model.show_result(
@@ -259,7 +259,7 @@ if __name__ == '__main__':
     assert osp.exists(args.model_config), 'Config {} not found.'.format(
         args.model_config)
     assert osp.exists(args.onnx_file), \
-        'ONNX model {} not found.'.format(args.onnx_file)
+        f'ONNX model {args.onnx_file} not found.'
     assert args.workspace_size >= 0, 'Workspace size less than 0.'
     for max_value, min_value in zip(args.max_shape, args.min_shape):
         assert max_value >= min_value, \

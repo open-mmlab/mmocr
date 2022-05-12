@@ -112,7 +112,7 @@ def load_txt_info(gt_file, img_info):
         img_info (list): The dict of the img and annotation information
     """
 
-    with open(gt_file, 'r', encoding='unicode_escape') as f:
+    with open(gt_file, encoding='unicode_escape') as f:
         anno_info = []
         for ann in f.readlines():
             # skip invalid annotation line

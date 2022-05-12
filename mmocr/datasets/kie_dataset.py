@@ -208,7 +208,7 @@ class KIEDataset(BaseDataset):
 
     def pad_text_indices(self, text_inds):
         """Pad text index to same length."""
-        max_len = max([len(text_ind) for text_ind in text_inds])
+        max_len = max(len(text_ind) for text_ind in text_inds)
         padded_text_inds = -np.ones((len(text_inds), max_len), np.int32)
         for idx, text_ind in enumerate(text_inds):
             padded_text_inds[idx, :len(text_ind)] = np.array(text_ind)

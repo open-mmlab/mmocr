@@ -63,7 +63,7 @@ def test_list_to_file():
             list_to_file(filename, lines)
             lines2 = [
                 line.rstrip('\r\n')
-                for line in open(filename, 'r', encoding='utf-8').readlines()
+                for line in open(filename, encoding='utf-8').readlines()
             ]
             lines = list(map(str, lines))
             assert len(lines) == len(lines2)
@@ -74,7 +74,7 @@ def test_list_to_file():
             list_to_file(filename, [json.dumps(line) for line in lines])
             lines2 = [
                 json.loads(line.rstrip('\r\n'))['text']
-                for line in open(filename, 'r', encoding='utf-8').readlines()
+                for line in open(filename, encoding='utf-8').readlines()
             ][0]
 
             lines = list(lines[0]['text'])

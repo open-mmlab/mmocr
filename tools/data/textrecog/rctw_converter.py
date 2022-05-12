@@ -122,7 +122,7 @@ def load_txt_info(gt_file, img_info):
     """
 
     anno_info = []
-    with open(gt_file, 'r', encoding='utf-8-sig') as f:
+    with open(gt_file, encoding='utf-8-sig') as f:
         lines = f.readlines()
     for line in lines:
         points = line.split(',')[0:8]

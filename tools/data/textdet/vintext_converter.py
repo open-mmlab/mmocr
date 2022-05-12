@@ -109,7 +109,7 @@ def load_txt_info(gt_file, img_info):
         img_info (dict): The dict of the img and annotation information
     """
 
-    with open(gt_file, 'r', encoding='utf-8') as f:
+    with open(gt_file, encoding='utf-8') as f:
         anno_info = []
         for line in f:
             line = line.strip('\n')

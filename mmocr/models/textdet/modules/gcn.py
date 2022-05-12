@@ -43,7 +43,7 @@ class GCN(nn.Module):
     """
 
     def __init__(self, feat_len):
-        super(GCN, self).__init__()
+        super().__init__()
         self.bn0 = nn.BatchNorm1d(feat_len, affine=False).float()
         self.conv1 = GraphConv(feat_len, 512)
         self.conv2 = GraphConv(512, 256)

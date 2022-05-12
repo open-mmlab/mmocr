@@ -37,28 +37,27 @@ class VeryDeepVgg(BaseModule):
         def conv_relu(i, batch_normalization=False):
             n_in = input_channels if i == 0 else nm[i - 1]
             n_out = nm[i]
-            cnn.add_module('conv{0}'.format(i),
+            cnn.add_module(f'conv{i}',
                            nn.Conv2d(n_in, n_out, ks[i], ss[i], ps[i]))
             if batch_normalization:
-                cnn.add_module('batchnorm{0}'.format(i), nn.BatchNorm2d(n_out))
+                cnn.add_module(f'batchnorm{i}', nn.BatchNorm2d(n_out))
             if leaky_relu:
-                cnn.add_module('relu{0}'.format(i),
-                               nn.LeakyReLU(0.2, inplace=True))
+                cnn.add_module(f'relu{i}', nn.LeakyReLU(0.2, inplace=True))
             else:
-                cnn.add_module('relu{0}'.format(i), nn.ReLU(True))
+                cnn.add_module(f'relu{i}', nn.ReLU(True))
 
         conv_relu(0)
-        cnn.add_module('pooling{0}'.format(0), nn.MaxPool2d(2, 2))  # 64x16x64
+        cnn.add_module(f'pooling{0}', nn.MaxPool2d(2, 2))  # 64x16x64
         conv_relu(1)
-        cnn.add_module('pooling{0}'.format(1), nn.MaxPool2d(2, 2))  # 128x8x32
+        cnn.add_module(f'pooling{1}', nn.MaxPool2d(2, 2))  # 128x8x32
         conv_relu(2, True)
         conv_relu(3)
-        cnn.add_module('pooling{0}'.format(2),
-                       nn.MaxPool2d((2, 2), (2, 1), (0, 1)))  # 256x4x16
+        cnn.add_module(f'pooling{2}', nn.MaxPool2d((2, 2), (2, 1),
+                                                   (0, 1)))  # 256x4x16
         conv_relu(4, True)
         conv_relu(5)
-        cnn.add_module('pooling{0}'.format(3),
-                       nn.MaxPool2d((2, 2), (2, 1), (0, 1)))  # 512x2x16
+        cnn.add_module(f'pooling{3}', nn.MaxPool2d((2, 2), (2, 1),
+                                                   (0, 1)))  # 512x2x16
         conv_relu(6, True)  # 512x1x16
 
         self.cnn = cnn

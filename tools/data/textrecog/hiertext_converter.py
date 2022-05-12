@@ -170,7 +170,7 @@ def convert_hiertext(
         raise Exception(
             f'{annotation_path} not exists, please check and try again.')
 
-    annotation = json.load(open(annotation_path, 'r'))['annotations']
+    annotation = json.load(open(annotation_path))['annotations']
     # outputs
     dst_label_file = osp.join(root_path, f'{split}_label.{format}')
     dst_image_root = osp.join(root_path, 'crops', split)

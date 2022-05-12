@@ -112,7 +112,7 @@ def load_txt_info(gt_file, img_info, separator):
         img_info (dict): The dict of the img and annotation information
     """
     anno_info = []
-    with open(gt_file, 'r') as f:
+    with open(gt_file) as f:
         lines = f.readlines()
         for line in lines:
             xmin, ymin, xmax, ymax = line.split(separator)[0:4]

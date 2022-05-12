@@ -138,7 +138,7 @@ class LoadImageFromNdarray(LoadImageFromFile):
 
 
 @TRANSFORMS.register_module()
-class LoadImageFromLMDB(object):
+class LoadImageFromLMDB:
     """Load an image from lmdb file.
 
     Similar with :obj:'LoadImageFromFile', but the image read from
@@ -169,8 +169,8 @@ class LoadImageFromLMDB(object):
             imgbuf = txn.get(img_key.encode('utf-8'))
             try:
                 img = mmcv.imfrombytes(imgbuf, flag=self.color_type)
-            except IOError:
-                print('Corrupted image for {}'.format(img_key))
+            except OSError:
+                print(f'Corrupted image for {img_key}')
                 return None
 
             results['filename'] = img_key

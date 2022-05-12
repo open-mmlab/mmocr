@@ -49,9 +49,10 @@ def generate_sample_dataloader(cfg, curr_dir, img_prefix='', ann_file=''):
     dataset = DATASETS.build(cfg.data.test)
 
     loader_cfg = {
-        **dict((k, cfg.data[k]) for k in [
-                   'workers_per_gpu', 'samples_per_gpu'
-               ] if k in cfg.data)
+        **{
+            k: cfg.data[k]
+            for k in ['workers_per_gpu', 'samples_per_gpu'] if k in cfg.data
+        }
     }
     test_loader_cfg = {
         **loader_cfg,
@@ -144,9 +145,10 @@ def gene_sdmgr_model_dataloader(cfg, dirname, curr_dir, empty_img=False):
     dataset = DATASETS.build(cfg.data.test)
 
     loader_cfg = {
-        **dict((k, cfg.data[k]) for k in [
-                   'workers_per_gpu', 'samples_per_gpu'
-               ] if k in cfg.data)
+        **{
+            k: cfg.data[k]
+            for k in ['workers_per_gpu', 'samples_per_gpu'] if k in cfg.data
+        }
     }
     test_loader_cfg = {
         **loader_cfg,

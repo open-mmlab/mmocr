@@ -118,12 +118,12 @@ def eval_ocr_metric(pred_texts, gt_texts, metric='acc'):
             'word_acc', 'word_acc_ignore_case', 'word_acc_ignore_case_symbol',
             'char_recall', 'char_precision', 'one_minus_ned'
         ]
-    metric = set([metric]) if isinstance(metric, str) else set(metric)
+    metric = {metric} if isinstance(metric, str) else set(metric)
 
-    supported_metrics = set([
+    supported_metrics = {
         'word_acc', 'word_acc_ignore_case', 'word_acc_ignore_case_symbol',
         'char_recall', 'char_precision', 'one_minus_ned'
-    ])
+    }
     assert metric.issubset(supported_metrics)
 
     match_res = count_matches(pred_texts, gt_texts)
@@ -160,6 +160,6 @@ def eval_ocr_metric(pred_texts, gt_texts, metric='acc'):
         eval_res['1-N.E.D'] = 1.0 - match_res['ned']
 
     for key, value in eval_res.items():
-        eval_res[key] = float('{:.4f}'.format(value))
+        eval_res[key] = float(f'{value:.4f}')
 
     return eval_res

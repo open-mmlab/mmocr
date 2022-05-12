@@ -477,7 +477,7 @@ class UNet(BaseModule):
                     act_cfg=act_cfg,
                     dcn=None,
                     plugins=None))
-            self.encoder.append((nn.Sequential(*enc_conv_block)))
+            self.encoder.append(nn.Sequential(*enc_conv_block))
             in_channels = base_channels * 2**i
 
     def forward(self, x):

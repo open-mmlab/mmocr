@@ -259,7 +259,7 @@ def pytorch2onnx(model: nn.Module,
                         atol=1e-4):
                     same_diff = 'different'
                     break
-        print('The outputs are {} between PyTorch and ONNX'.format(same_diff))
+        print(f'The outputs are {same_diff} between PyTorch and ONNX')
 
         if show:
             onnx_img = onnx_model.show_result(

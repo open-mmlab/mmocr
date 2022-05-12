@@ -53,7 +53,7 @@ class SDMGRHead(BaseModule):
             node_nums.append(text.size(0))
             char_nums.append((text > 0).sum(-1))
 
-        max_num = max([char_num.max() for char_num in char_nums])
+        max_num = max(char_num.max() for char_num in char_nums)
         all_nodes = torch.cat([
             torch.cat(
                 [text,

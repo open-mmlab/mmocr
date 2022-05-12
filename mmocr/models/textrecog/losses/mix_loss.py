@@ -40,7 +40,7 @@ class ABILoss(nn.Module):
 
     def _flatten(self, logits, target_lens):
         flatten_logits = torch.cat(
-            [s[:target_lens[i]] for i, s in enumerate((logits))])
+            [s[:target_lens[i]] for i, s in enumerate(logits)])
         return flatten_logits
 
     def _ce_loss(self, logits, targets):
