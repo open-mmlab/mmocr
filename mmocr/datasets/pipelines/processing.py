@@ -58,7 +58,12 @@ class PyramidRescale(BaseTransform):
         self.base_w, self.base_h = base_shape
 
     @cache_randomness
-    def get_random_factor(self):
+    def get_random_factor(self) -> float:
+        """Get the randomized factor.
+
+        Returns:
+            float: The randomized factor
+        """
         return np.random.randint(0, self.factor + 1)
 
     def transform(self, results: Dict) -> Dict:
