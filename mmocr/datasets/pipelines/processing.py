@@ -28,7 +28,8 @@ class PyramidRescale(BaseTransform):
     Args:
         factor (int): The decay factor from base size, or the number of
             downsampling operations from the base layer.
-        base_shape (tuple(int)): The shape of the base layer of the pyramid.
+        base_shape (tuple[int, int]): The shape (width, height) of the base
+            layer of the pyramid.
         randomize_factor (bool): If True, the final factor would be a random
             integer in [0, factor].
     """
