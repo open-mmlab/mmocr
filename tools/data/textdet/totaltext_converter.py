@@ -41,7 +41,7 @@ def collect_files(img_dir, gt_dir):
 
     imgs_list = sorted(imgs_list)
     ann_list = sorted(
-        [osp.join(gt_dir, gt_file) for gt_file in os.listdir(gt_dir)])
+        osp.join(gt_dir, gt_file) for gt_file in os.listdir(gt_dir))
 
     files = list(zip(imgs_list, ann_list))
     assert len(files), f'No images found in {img_dir}'
@@ -230,7 +230,7 @@ def get_contours_txt(gt_path):
     contours = []
     words = []
 
-    with open(gt_path, 'r') as f:
+    with open(gt_path) as f:
         tmp_line = ''
         for idx, line in enumerate(f):
             line = line.strip()

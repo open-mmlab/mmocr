@@ -92,7 +92,7 @@ def collect_hiertext_info(root_path, level, split, print_every=1000):
         raise Exception(
             f'{annotation_path} not exists, please check and try again.')
 
-    annotation = json.load(open(annotation_path, 'r'))['annotations']
+    annotation = json.load(open(annotation_path))['annotations']
     img_infos = []
     for i, img_annos in enumerate(annotation):
         if i > 0 and i % print_every == 0:

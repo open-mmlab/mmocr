@@ -47,7 +47,7 @@ def test_get_gt_mask():
 
 
 def test_eval_hmean():
-    metrics = set(['hmean-iou', 'hmean-ic13'])
+    metrics = {'hmean-iou', 'hmean-ic13'}
     results = [{
         'boundary_result': [[50, 70, 80, 70, 80, 100, 50, 100, 1],
                             [120, 140, 200, 140, 200, 200, 120, 200, 1]]

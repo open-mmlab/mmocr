@@ -15,7 +15,7 @@ class Maxpool2d(nn.Module):
     """
 
     def __init__(self, kernel_size, stride, padding=0, **kwargs):
-        super(Maxpool2d, self).__init__()
+        super().__init__()
         self.model = nn.MaxPool2d(kernel_size, stride, padding)
 
     def forward(self, x):
@@ -53,7 +53,7 @@ class GCAModule(nn.Module):
                  scale_attn=False,
                  fusion_type='channel_add',
                  **kwargs):
-        super(GCAModule, self).__init__()
+        super().__init__()
 
         assert pooling_type in ['avg', 'att']
         assert fusion_type in ['channel_add', 'channel_mul', 'channel_concat']

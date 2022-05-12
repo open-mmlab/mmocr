@@ -279,9 +279,8 @@ class ProposalLocalGraphs:
             pivot_local_graphs.append(pivot_local_graph)
             pivot_knns.append(pivot_knn)
 
-        num_max_nodes = max([
-            len(pivot_local_graph) for pivot_local_graph in pivot_local_graphs
-        ])
+        num_max_nodes = max(
+            len(pivot_local_graph) for pivot_local_graph in pivot_local_graphs)
 
         local_graphs_node_feat = []
         adjacent_matrices = []

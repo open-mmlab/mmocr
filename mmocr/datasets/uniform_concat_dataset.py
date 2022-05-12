@@ -79,7 +79,7 @@ class UniformConcatDataset(ConcatDataset):
         self.show_mean_scores = show_mean_scores
         if show_mean_scores is True or show_mean_scores == 'auto' and len(
                 self.datasets) > 1:
-            if len(set([type(ds) for ds in self.datasets])) != 1:
+            if len({type(ds) for ds in self.datasets}) != 1:
                 raise NotImplementedError(
                     'To compute mean evaluation scores, all datasets'
                     'must have the same type')

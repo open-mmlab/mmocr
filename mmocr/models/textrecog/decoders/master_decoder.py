@@ -21,7 +21,7 @@ def clones(module, N):
 class Embeddings(nn.Module):
 
     def __init__(self, d_model, vocab):
-        super(Embeddings, self).__init__()
+        super().__init__()
         self.lut = nn.Embedding(vocab, d_model)
         self.d_model = d_model
 
@@ -70,7 +70,7 @@ class MasterDecoder(BaseDecoder):
         max_seq_len=30,
         init_cfg=None,
     ):
-        super(MasterDecoder, self).__init__(init_cfg=init_cfg)
+        super().__init__(init_cfg=init_cfg)
 
         operation_order = ('norm', 'self_attn', 'norm', 'cross_attn', 'norm',
                            'ffn')

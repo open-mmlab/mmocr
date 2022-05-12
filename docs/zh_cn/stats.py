@@ -21,7 +21,7 @@ files = sorted(glob.glob('*_models.md'))
 stats = []
 
 for f in files:
-    with open(f, 'r') as content_file:
+    with open(f) as content_file:
         content = content_file.read()
 
     # Remove the blackquote notation from the paper link under the title
@@ -39,9 +39,8 @@ for f in files:
     exclude_expr = ''.join(f'(?!{s})' for s in exclude_papertype)
     expr = rf'<!-- \[{exclude_expr}([A-Z]+?)\] -->'\
         r'\s*\n.*?\btitle\s*=\s*{(.*?)}'
-    papers = set(
-        (papertype, titlecase.titlecase(paper.lower().strip()))
-        for (papertype, paper) in re.findall(expr, content, re.DOTALL))
+    papers = {(papertype, titlecase.titlecase(paper.lower().strip()))
+              for (papertype, paper) in re.findall(expr, content, re.DOTALL)}
     print(papers)
     # paper links
     revcontent = '\n'.join(list(reversed(content.splitlines())))
@@ -56,13 +55,17 @@ for f in files:
     paperlist = '\n'.join(
         sorted(f'    - [{t}] {paperlinks[x]}' for t, x in papers))
     # count configs
-    configs = set(x.lower().strip()
-                  for x in re.findall(r'https.*configs/.*\.py', content))
+    configs = {
+        x.lower().strip()
+        for x in re.findall(r'https.*configs/.*\.py', content)
+    }
 
     # count ckpts
-    ckpts = set(x.lower().strip()
-                for x in re.findall(r'https://download.*\.pth', content)
-                if 'mmocr' in x)
+    ckpts = {
+        x.lower().strip()
+        for x in re.findall(r'https://download.*\.pth', content)
+        if 'mmocr' in x
+    }
 
     statsmsg = f"""
 ## [{title}]({f})

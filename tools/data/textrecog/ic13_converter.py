@@ -36,7 +36,6 @@ def convert_annotations(root_path, split, format):
     with open(
             osp.join(root_path, 'annotations',
                      f'Challenge2_{split}_Task3_GT.txt'),
-            'r',
             encoding='"utf-8-sig') as f:
         annos = f.readlines()
     dst_image_root = osp.join(root_path, split.lower())

@@ -34,8 +34,7 @@ class LmdbAnnFileBackend:
         with env.begin(write=False) as txn:
             try:
                 self.total_number = int(
-                    txn.get('num-samples'.encode('utf-8')).decode(
-                        self.encoding))
+                    txn.get(b'num-samples').decode(self.encoding))
             except AttributeError:
                 warnings.warn(
                     'DeprecationWarning: The lmdb dataset generated with '
@@ -45,8 +44,7 @@ class LmdbAnnFileBackend:
                     'convert-text-recognition-dataset-to-lmdb-format for '
                     'details.')
                 self.total_number = int(
-                    txn.get('total_number'.encode('utf-8')).decode(
-                        self.encoding))
+                    txn.get(b'total_number').decode(self.encoding))
                 self.deprecated_format = True
             # The lmdb file may contain only the label, or it may contain both
             # the label and the image, so we use image_key here for probing.

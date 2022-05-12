@@ -160,7 +160,7 @@ def load_json_logs(json_logs):
     # value of sub dict is a list of corresponding values of all iterations
     log_dicts = [dict() for _ in json_logs]
     for json_log, log_dict in zip(json_logs, log_dicts):
-        with open(json_log, 'r') as log_file:
+        with open(json_log) as log_file:
             for line in log_file:
                 log = json.loads(line.strip())
                 # skip lines without `epoch` field

@@ -150,7 +150,7 @@ def convert_annotations(root_path, gt_name, lmdb_name):
                 img_json['annotations'].append(anno_info)
             string = json.dumps(img_json)
             txn.put(str(img_id).encode('utf8'), string.encode('utf8'))
-        key = 'total_number'.encode('utf8')
+        key = b'total_number'
         value = str(img_num).encode('utf8')
         txn.put(key, value)
 

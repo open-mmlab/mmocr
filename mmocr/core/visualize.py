@@ -406,14 +406,14 @@ def imshow_node(img,
             True,
             color=(255, 255, 0),
             thickness=1)
-        x_min = int(min([point[0] for point in new_box]))
-        y_min = int(min([point[1] for point in new_box]))
+        x_min = int(min(point[0] for point in new_box))
+        y_min = int(min(point[1] for point in new_box))
 
         # text
         pred_label = str(node_pred_label[i])
         if pred_label in idx_to_cls:
             pred_label = idx_to_cls[pred_label]
-        pred_score = '{:.2f}'.format(node_pred_score[i])
+        pred_score = f'{node_pred_score[i]:.2f}'
         text = pred_label + '(' + pred_score + ')'
         texts.append(text)
 
@@ -635,7 +635,7 @@ def is_contain_chinese(check_str):
     Return True if contains Chinese, else False.
     """
     for ch in check_str:
-        if u'\u4e00' <= ch <= u'\u9fff':
+        if '\u4e00' <= ch <= '\u9fff':
             return True
     return False
 
@@ -800,7 +800,7 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
                 (pos_current[0] + bbox_x1 + dist_key_to_value - 5) / 2.)
             score_pos_y = int((pos_current[1] + bbox_y1 + 10) / 2.)
         # draw edge score
-        cv2.putText(pred_edge_img, '{:.2f}'.format(pair_score),
+        cv2.putText(pred_edge_img, f'{pair_score:.2f}',
                     (score_pos_x, score_pos_y), cv2.FONT_HERSHEY_COMPLEX, 0.4,
                     score_color)
         # draw text for value
