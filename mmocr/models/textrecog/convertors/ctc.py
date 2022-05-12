@@ -5,11 +5,11 @@ import torch
 import torch.nn.functional as F
 
 import mmocr.utils as utils
-from mmocr.models.builder import CONVERTORS
+from mmocr.registry import MODELS
 from .base import BaseConvertor
 
 
-@CONVERTORS.register_module()
+@MODELS.register_module()
 class CTCConvertor(BaseConvertor):
     """Convert between text, index and tensor for CTC loss-based pipeline.
 

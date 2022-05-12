@@ -6,12 +6,12 @@ import torch
 import torch.nn as nn
 from mmcv.runner import BaseModule
 
-from mmocr.models.builder import HEADS
+from mmocr.registry import MODELS
 from mmocr.utils import check_argument
 from .head_mixin import HeadMixin
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class PANHead(HeadMixin, BaseModule):
     """The class for PANet head.
 

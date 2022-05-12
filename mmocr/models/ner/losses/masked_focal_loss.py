@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from torch import nn
 
-from mmocr.models.builder import LOSSES
 from mmocr.models.common.losses.focal_loss import FocalLoss
+from mmocr.registry import MODELS
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class MaskedFocalLoss(nn.Module):
     """The implementation of masked focal loss.
 

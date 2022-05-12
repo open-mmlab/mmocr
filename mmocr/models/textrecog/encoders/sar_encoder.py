@@ -6,11 +6,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 import mmocr.utils as utils
-from mmocr.models.builder import ENCODERS
+from mmocr.registry import MODELS
 from .base_encoder import BaseEncoder
 
 
-@ENCODERS.register_module()
+@MODELS.register_module()
 class SAREncoder(BaseEncoder):
     """Implementation of encoder module in `SAR.
 

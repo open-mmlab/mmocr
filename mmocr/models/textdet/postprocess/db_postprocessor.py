@@ -3,12 +3,12 @@ import cv2
 import numpy as np
 
 from mmocr.core import points2boundary
-from mmocr.models.builder import POSTPROCESSOR
+from mmocr.registry import MODELS
 from .base_postprocessor import BasePostprocessor
 from .utils import box_score_fast, unclip
 
 
-@POSTPROCESSOR.register_module()
+@MODELS.register_module()
 class DBPostprocessor(BasePostprocessor):
     """Decoding predictions of DbNet to instances. This is partially adapted
     from https://github.com/MhLiao/DB.

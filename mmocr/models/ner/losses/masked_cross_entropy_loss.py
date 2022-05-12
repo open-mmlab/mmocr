@@ -2,10 +2,10 @@
 from torch import nn
 from torch.nn import CrossEntropyLoss
 
-from mmocr.models.builder import LOSSES
+from mmocr.registry import MODELS
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class MaskedCrossEntropyLoss(nn.Module):
     """The implementation of masked cross entropy loss.
 

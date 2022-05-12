@@ -24,9 +24,9 @@ from mmocr.apis.inference import model_inference
 from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.kie_dataset import KIEDataset
 from mmocr.datasets.pipelines.crop import crop_img
-from mmocr.models import build_detector
 from mmocr.models.textdet.detectors import TextDetectorMixin
 from mmocr.models.textrecog.recognizer import BaseRecognizer
+from mmocr.registry import MODELS
 from mmocr.utils import is_type_list
 from mmocr.utils.box_util import stitch_boxes_into_lines
 from mmocr.utils.fileio import list_from_file
@@ -427,7 +427,7 @@ class MMOCR:
                     'kie/' + kie_models[self.kie]['ckpt']
 
             kie_cfg = Config.fromfile(kie_config)
-            self.kie_model = build_detector(
+            self.kie_model = MODELS.build(
                 kie_cfg.model, test_cfg=kie_cfg.get('test_cfg'))
             self.kie_model = revert_sync_batchnorm(self.kie_model)
             self.kie_model.cfg = kie_cfg

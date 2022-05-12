@@ -6,11 +6,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 import mmocr.utils as utils
-from mmocr.models.builder import DECODERS
+from mmocr.registry import MODELS
 from .base_decoder import BaseDecoder
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class ParallelSARDecoder(BaseDecoder):
     """Implementation Parallel Decoder module in `SAR.
 
@@ -255,7 +255,7 @@ class ParallelSARDecoder(BaseDecoder):
         return outputs
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class SequentialSARDecoder(BaseDecoder):
     """Implementation Sequential Decoder module in `SAR.
 

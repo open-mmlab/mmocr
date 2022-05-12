@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from mmcv.runner import BaseModule
 from torch import nn
 
-from mmocr.models.builder import NECKS
+from mmocr.registry import MODELS
 
 
 class UpBlock(BaseModule):
@@ -30,7 +30,7 @@ class UpBlock(BaseModule):
         return x
 
 
-@NECKS.register_module()
+@MODELS.register_module()
 class FPN_UNet(BaseModule):
     """The class for implementing DRRG and TextSnake U-Net-like FPN.
 

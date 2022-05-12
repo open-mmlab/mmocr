@@ -4,13 +4,13 @@ import math
 import torch
 import torch.nn as nn
 
-from mmocr.models.builder import DECODERS
 from mmocr.models.textrecog.layers import (DotProductAttentionLayer,
                                            PositionAwareLayer)
+from mmocr.registry import MODELS
 from .base_decoder import BaseDecoder
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class PositionAttentionDecoder(BaseDecoder):
     """Position attention decoder for RobustScanner.
 

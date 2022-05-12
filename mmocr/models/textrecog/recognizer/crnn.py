@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmocr.models.builder import RECOGNIZERS
+from mmocr.registry import MODELS
 from .encode_decode_recognizer import EncodeDecodeRecognizer
 
 
-@RECOGNIZERS.register_module()
+@MODELS.register_module()
 class CRNNNet(EncodeDecodeRecognizer):
     """CTC-loss based recognizer."""

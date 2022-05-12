@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmocr.models.builder import POSTPROCESSOR
+from mmocr.registry import MODELS
 from .base_postprocessor import BasePostprocessor
 from .utils import (clusters2labels, comps2boundaries, connected_components,
                     graph_propagation, remove_single)
 
 
-@POSTPROCESSOR.register_module()
+@MODELS.register_module()
 class DRRGPostprocessor(BasePostprocessor):
     """Merge text components and construct boundaries of text instances.
 

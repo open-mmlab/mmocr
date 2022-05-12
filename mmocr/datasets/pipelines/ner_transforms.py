@@ -1,8 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 
-from mmocr.models.builder import build_convertor
-from mmocr.registry import TRANSFORMS
+from mmocr.registry import MODELS, TRANSFORMS
 
 
 @TRANSFORMS.register_module()
@@ -18,7 +17,7 @@ class NerTransform:
     """
 
     def __init__(self, label_convertor, max_len):
-        self.label_convertor = build_convertor(label_convertor)
+        self.label_convertor = MODELS.build(label_convertor)
         self.max_len = max_len
 
     def __call__(self, results):

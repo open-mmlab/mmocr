@@ -4,10 +4,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.runner import BaseModule
 
-from mmocr.models.builder import DECODERS
+from mmocr.registry import MODELS
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class FCDecoder(BaseModule):
     """FC Decoder class for Ner.
 

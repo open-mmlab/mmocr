@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 
-from mmocr.models.builder import DETECTORS
 from mmocr.models.common.detectors import SingleStageDetector
+from mmocr.registry import MODELS
 
 
-@DETECTORS.register_module()
+@MODELS.register_module()
 class SingleStageTextDetector(SingleStageDetector):
     """The class for implementing single stage text detector."""
 

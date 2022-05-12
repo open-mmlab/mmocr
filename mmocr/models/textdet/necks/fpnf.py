@@ -4,10 +4,10 @@ import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule, ModuleList, auto_fp16
 
-from mmocr.models.builder import NECKS
+from mmocr.registry import MODELS
 
 
-@NECKS.register_module()
+@MODELS.register_module()
 class FPNF(BaseModule):
     """FPN-like fusion module in Shape Robust Text Detection with Progressive
     Scale Expansion Network.

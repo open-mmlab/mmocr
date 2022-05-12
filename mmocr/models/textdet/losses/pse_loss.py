@@ -1,12 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.core import BitmapMasks
 
-from mmocr.models.builder import LOSSES
+from mmocr.registry import MODELS
 from mmocr.utils import check_argument
 from . import PANLoss
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class PSELoss(PANLoss):
     r"""The class for implementing PSENet loss. This is partially adapted from
     https://github.com/whai362/PSENet.

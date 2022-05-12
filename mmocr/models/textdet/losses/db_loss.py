@@ -3,11 +3,11 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
-from mmocr.models.builder import LOSSES
 from mmocr.models.common.losses.dice_loss import DiceLoss
+from mmocr.registry import MODELS
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class DBLoss(nn.Module):
     """The class for implementing DBNet loss.
 

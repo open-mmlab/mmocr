@@ -8,11 +8,11 @@ import torch.nn.functional as F
 from mmdet.core import BitmapMasks
 from torch import nn
 
-from mmocr.models.builder import LOSSES
+from mmocr.registry import MODELS
 from mmocr.utils import check_argument
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class PANLoss(nn.Module):
     """The class for implementing PANet loss. This was partially adapted from
     https://github.com/WenmuZhou/PAN.pytorch.

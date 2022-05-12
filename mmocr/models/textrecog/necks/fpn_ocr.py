@@ -4,10 +4,10 @@ import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule, ModuleList
 
-from mmocr.models.builder import NECKS
+from mmocr.registry import MODELS
 
 
-@NECKS.register_module()
+@MODELS.register_module()
 class FPNOCR(BaseModule):
     """FPN-like Network for segmentation based text recognition.
 

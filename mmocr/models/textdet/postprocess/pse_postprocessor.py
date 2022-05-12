@@ -6,11 +6,11 @@ import torch
 from mmcv.ops import contour_expand
 
 from mmocr.core import points2boundary
-from mmocr.models.builder import POSTPROCESSOR
+from mmocr.registry import MODELS
 from .base_postprocessor import BasePostprocessor
 
 
-@POSTPROCESSOR.register_module()
+@MODELS.register_module()
 class PSEPostprocessor(BasePostprocessor):
     """Decoding predictions of PSENet to instances. This is partially adapted
     from https://github.com/whai362/PSENet.

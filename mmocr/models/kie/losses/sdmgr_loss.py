@@ -3,10 +3,10 @@ import torch
 from mmdet.models.losses import accuracy
 from torch import nn
 
-from mmocr.models.builder import LOSSES
+from mmocr.registry import MODELS
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class SDMGRLoss(nn.Module):
     """The implementation the loss of key information extraction proposed in
     the paper: Spatial Dual-Modality Graph Reasoning for Key Information

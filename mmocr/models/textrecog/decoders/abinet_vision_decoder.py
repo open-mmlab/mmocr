@@ -3,12 +3,12 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
 
-from mmocr.models.builder import DECODERS
 from mmocr.models.common.modules import PositionalEncoding
+from mmocr.registry import MODELS
 from .base_decoder import BaseDecoder
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class ABIVisionDecoder(BaseDecoder):
     """Converts visual features into text characters.
 

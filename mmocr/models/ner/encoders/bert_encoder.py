@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.runner import BaseModule
 
-from mmocr.models.builder import ENCODERS
 from mmocr.models.ner.utils.bert import BertModel
+from mmocr.registry import MODELS
 
 
-@ENCODERS.register_module()
+@MODELS.register_module()
 class BertEncoder(BaseModule):
     """Bert encoder
     Args:

@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmocr.models.builder import CONVERTORS
+from mmocr.registry import MODELS
 from mmocr.utils import list_from_file
 
 
-@CONVERTORS.register_module()
+@MODELS.register_module()
 class BaseConvertor:
     """Convert between text, index and tensor for text recognize pipeline.
 

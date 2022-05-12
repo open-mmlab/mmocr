@@ -4,10 +4,10 @@ from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule
 from torch import nn
 
-from mmocr.models.builder import HEADS
+from mmocr.registry import MODELS
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class SegHead(BaseModule):
     """Head for segmentation based text recognition.
 

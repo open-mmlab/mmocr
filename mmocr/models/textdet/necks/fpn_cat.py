@@ -5,10 +5,10 @@ import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule, ModuleList, Sequential, auto_fp16
 
-from mmocr.models.builder import NECKS
+from mmocr.registry import MODELS
 
 
-@NECKS.register_module()
+@MODELS.register_module()
 class FPNC(BaseModule):
     """FPN-like fusion module in Real-time Scene Text Detection with
     Differentiable Binarization.

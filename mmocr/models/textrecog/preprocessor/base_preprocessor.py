@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.runner import BaseModule
 
-from mmocr.models.builder import PREPROCESSOR
+from mmocr.registry import MODELS
 
 
-@PREPROCESSOR.register_module()
+@MODELS.register_module()
 class BasePreprocessor(BaseModule):
     """Base Preprocessor class for text recognition."""
 

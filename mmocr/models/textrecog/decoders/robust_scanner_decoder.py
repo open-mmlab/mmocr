@@ -3,12 +3,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from mmocr.models.builder import DECODERS, build_decoder
 from mmocr.models.textrecog.layers import RobustScannerFusionLayer
+from mmocr.registry import MODELS
 from .base_decoder import BaseDecoder
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class RobustScannerDecoder(BaseDecoder):
     """Decoder for RobustScanner.
 
@@ -72,7 +72,7 @@ class RobustScannerDecoder(BaseDecoder):
         hybrid_decoder.update(encode_value=self.encode_value)
         hybrid_decoder.update(return_feature=True)
 
-        self.hybrid_decoder = build_decoder(hybrid_decoder)
+        self.hybrid_decoder = MODELS.build(hybrid_decoder)
 
         # init position decoder
         position_decoder.update(num_classes=self.num_classes)
@@ -83,7 +83,7 @@ class RobustScannerDecoder(BaseDecoder):
         position_decoder.update(encode_value=self.encode_value)
         position_decoder.update(return_feature=True)
 
-        self.position_decoder = build_decoder(position_decoder)
+        self.position_decoder = MODELS.build(position_decoder)
 
         self.fusion_module = RobustScannerFusionLayer(
             self.dim_model if encode_value else dim_input)

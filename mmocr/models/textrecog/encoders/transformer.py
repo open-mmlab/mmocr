@@ -4,11 +4,11 @@ import copy
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmcv.runner import BaseModule, ModuleList
 
-from mmocr.models.builder import ENCODERS
 from mmocr.models.common.modules import PositionalEncoding
+from mmocr.registry import MODELS
 
 
-@ENCODERS.register_module()
+@MODELS.register_module()
 class TransformerEncoder(BaseModule):
     """Implement transformer encoder for text recognition, modified from
     `<https://github.com/FangShancheng/ABINet>`.

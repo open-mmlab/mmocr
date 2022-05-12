@@ -11,7 +11,7 @@ from mmdet.core import get_classes
 from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
 
-from mmocr.models import build_detector
+from mmocr.registry import MODELS
 from mmocr.utils import is_2dlist
 from .utils import disable_text_recog_aug_test
 
@@ -40,7 +40,7 @@ def init_detector(config, checkpoint=None, device='cuda:0', cfg_options=None):
     if config.model.get('pretrained'):
         config.model.pretrained = None
     config.model.train_cfg = None
-    model = build_detector(config.model, test_cfg=config.get('test_cfg'))
+    model = MODELS.build(config.model, test_cfg=config.get('test_cfg'))
     if checkpoint is not None:
         checkpoint = load_checkpoint(model, checkpoint, map_location='cpu')
         if 'CLASSES' in checkpoint.get('meta', {}):

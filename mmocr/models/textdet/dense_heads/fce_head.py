@@ -5,12 +5,12 @@ import torch.nn as nn
 from mmcv.runner import BaseModule
 from mmdet.core import multi_apply
 
-from mmocr.models.builder import HEADS
+from mmocr.registry import MODELS
 from ..postprocess.utils import poly_nms
 from .head_mixin import HeadMixin
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class FCEHead(HeadMixin, BaseModule):
     """The class for implementing FCENet head.
 

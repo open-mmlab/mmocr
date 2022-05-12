@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 
-from mmocr.models.builder import CONVERTORS
+from mmocr.registry import MODELS
 from mmocr.utils import list_from_file
 
 
-@CONVERTORS.register_module()
+@MODELS.register_module()
 class NerConvertor:
     """Convert between text, index and tensor for NER pipeline.
 
