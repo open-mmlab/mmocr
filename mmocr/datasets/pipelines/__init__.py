@@ -9,14 +9,15 @@ from .ocr_seg_targets import OCRSegTargets
 from .ocr_transforms import (FancyPCA, NormalizeOCR, OnlineCropOCR,
                              OpencvToPil, PilToOpencv, RandomPaddingOCR,
                              RandomRotateImageBox, ResizeOCR, ToTensorOCR)
+from .processing import PyramidRescale
 from .test_time_aug import MultiRotateAugOCR
 from .textdet_targets import (DBNetTargets, FCENetTargets, PANetTargets,
                               TextSnakeTargets)
 from .transform_wrappers import OneOfWrapper, RandomWrapper, TorchVisionWrapper
-from .transforms import (ColorJitter, PyramidRescale, RandomCropFlip,
-                         RandomCropInstances, RandomCropPolyInstances,
-                         RandomRotatePolyInstances, RandomRotateTextDet,
-                         RandomScaling, ScaleAspectJitter, SquareResizePad)
+from .transforms import (ColorJitter, RandomCropFlip, RandomCropInstances,
+                         RandomCropPolyInstances, RandomRotatePolyInstances,
+                         RandomRotateTextDet, RandomScaling, ScaleAspectJitter,
+                         SquareResizePad)
 
 __all__ = [
     'LoadTextAnnotations', 'NormalizeOCR', 'OnlineCropOCR', 'ResizeOCR',
