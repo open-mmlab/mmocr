@@ -3,10 +3,10 @@ import torch
 import torch.nn as nn
 from mmcv.runner import BaseModule
 
-from mmocr.models.builder import FUSERS
+from mmocr.registry import MODELS
 
 
-@FUSERS.register_module()
+@MODELS.register_module()
 class ABIFuser(BaseModule):
     """Mix and align visual feature and linguistic feature Implementation of
     language model of `ABINet <https://arxiv.org/abs/1910.04396>`_.

@@ -2,11 +2,11 @@
 from mmdet.models.detectors import MaskRCNN
 
 from mmocr.core import seg2boundary
-from mmocr.models.builder import DETECTORS
+from mmocr.registry import MODELS
 from .text_detector_mixin import TextDetectorMixin
 
 
-@DETECTORS.register_module()
+@MODELS.register_module()
 class OCRMaskRCNN(TextDetectorMixin, MaskRCNN):
     """Mask RCNN tailored for OCR."""
 

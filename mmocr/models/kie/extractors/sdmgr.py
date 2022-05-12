@@ -7,12 +7,12 @@ from torch import nn
 from torch.nn import functional as F
 
 from mmocr.core import imshow_edge, imshow_node
-from mmocr.models.builder import DETECTORS, build_roi_extractor
 from mmocr.models.common.detectors import SingleStageDetector
+from mmocr.registry import MODELS
 from mmocr.utils import list_from_file
 
 
-@DETECTORS.register_module()
+@MODELS.register_module()
 class SDMGR(SingleStageDetector):
     """The implementation of the paper: Spatial Dual-Modality Graph Reasoning
     for Key Information Extraction. https://arxiv.org/abs/2103.14470.
@@ -42,7 +42,7 @@ class SDMGR(SingleStageDetector):
             backbone, neck, bbox_head, train_cfg, test_cfg, init_cfg=init_cfg)
         self.visual_modality = visual_modality
         if visual_modality:
-            self.extractor = build_roi_extractor({
+            self.extractor = MODELS.build({
                 **extractor, 'out_channels':
                 self.backbone.base_channels
             })

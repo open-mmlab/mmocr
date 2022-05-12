@@ -5,12 +5,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from mmocr.models.builder import DECODERS
 from mmocr.models.textrecog.layers import DotProductAttentionLayer
+from mmocr.registry import MODELS
 from .base_decoder import BaseDecoder
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class SequenceAttentionDecoder(BaseDecoder):
     """Sequence attention decoder for RobustScanner.
 

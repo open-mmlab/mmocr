@@ -7,13 +7,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.runner import BaseModule
 
-from mmocr.models.builder import HEADS, build_loss
 from mmocr.models.textdet.modules import GCN, LocalGraphs, ProposalLocalGraphs
+from mmocr.registry import MODELS
 from mmocr.utils import check_argument
 from .head_mixin import HeadMixin
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class DRRGHead(HeadMixin, BaseModule):
     """The class for DRRG head: `Deep Relational Reasoning Graph Network for
     Arbitrary Shape Text Detection <https://arxiv.org/abs/2003.07493>`_.
@@ -118,7 +118,7 @@ class DRRGHead(HeadMixin, BaseModule):
         self.center_region_thr = center_region_thr
         self.center_region_area_thr = center_region_area_thr
         self.local_graph_thr = local_graph_thr
-        self.loss_module = build_loss(loss)
+        self.loss_module = MODELS.build(loss)
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
 

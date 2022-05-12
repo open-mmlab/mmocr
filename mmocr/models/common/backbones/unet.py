@@ -6,8 +6,9 @@ from mmcv.cnn import ConvModule, build_norm_layer
 from mmcv.runner import BaseModule
 from mmcv.utils.parrots_wrapper import _BatchNorm
 
-from mmocr.models.builder import (BACKBONES, UPSAMPLE_LAYERS,
-                                  build_activation_layer, build_upsample_layer)
+from mmocr.models.builder import (UPSAMPLE_LAYERS, build_activation_layer,
+                                  build_upsample_layer)
+from mmocr.registry import MODELS
 
 
 class UpConvBlock(nn.Module):
@@ -317,7 +318,7 @@ class InterpConv(nn.Module):
         return out
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class UNet(BaseModule):
     """UNet backbone.
     U-Net: Convolutional Networks for Biomedical Image Segmentation.

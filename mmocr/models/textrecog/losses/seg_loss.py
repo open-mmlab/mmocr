@@ -3,10 +3,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from mmocr.models.builder import LOSSES
+from mmocr.registry import MODELS
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class SegLoss(nn.Module):
     """Implementation of loss module for segmentation based text recognition
     method.

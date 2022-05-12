@@ -2,10 +2,10 @@
 import torch
 import torch.nn as nn
 
-from mmocr.models.builder import LOSSES
+from mmocr.registry import MODELS
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class DiceLoss(nn.Module):
 
     def __init__(self, eps=1e-6):

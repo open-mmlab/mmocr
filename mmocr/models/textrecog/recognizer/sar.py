@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmocr.models.builder import RECOGNIZERS
+from mmocr.registry import MODELS
 from .encode_decode_recognizer import EncodeDecodeRecognizer
 
 
-@RECOGNIZERS.register_module()
+@MODELS.register_module()
 class SARNet(EncodeDecodeRecognizer):
     """Implementation of `SAR <https://arxiv.org/abs/1811.00751>`_"""

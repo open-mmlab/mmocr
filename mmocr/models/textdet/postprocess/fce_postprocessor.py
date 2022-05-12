@@ -2,12 +2,12 @@
 import cv2
 import numpy as np
 
-from mmocr.models.builder import POSTPROCESSOR
+from mmocr.registry import MODELS
 from .base_postprocessor import BasePostprocessor
 from .utils import fill_hole, fourier2poly, poly_nms
 
 
-@POSTPROCESSOR.register_module()
+@MODELS.register_module()
 class FCEPostprocessor(BasePostprocessor):
     """Decoding predictions of FCENet to instances.
 

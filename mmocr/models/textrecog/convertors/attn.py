@@ -2,11 +2,11 @@
 import torch
 
 import mmocr.utils as utils
-from mmocr.models.builder import CONVERTORS
+from mmocr.registry import MODELS
 from .base import BaseConvertor
 
 
-@CONVERTORS.register_module()
+@MODELS.register_module()
 class AttnConvertor(BaseConvertor):
     """Convert between text, index and tensor for encoder-decoder based
     pipeline.

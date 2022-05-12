@@ -5,7 +5,6 @@ from typing import Any, Iterable
 
 import numpy as np
 import torch
-from mmdet.models.builder import DETECTORS
 
 from mmocr.models.textdet.detectors.single_stage_text_detector import \
     SingleStageTextDetector
@@ -13,6 +12,7 @@ from mmocr.models.textdet.detectors.text_detector_mixin import \
     TextDetectorMixin
 from mmocr.models.textrecog.recognizer.encode_decode_recognizer import \
     EncodeDecodeRecognizer
+from mmocr.registry import MODELS
 
 
 def inference_with_session(sess, io_binding, input_name, output_names,
@@ -34,7 +34,7 @@ def inference_with_session(sess, io_binding, input_name, output_names,
     return pred
 
 
-@DETECTORS.register_module()
+@MODELS.register_module()
 class ONNXRuntimeDetector(TextDetectorMixin, SingleStageTextDetector):
     """The class for evaluating onnx file of detection."""
 
@@ -110,7 +110,7 @@ class ONNXRuntimeDetector(TextDetectorMixin, SingleStageTextDetector):
         return boundaries
 
 
-@DETECTORS.register_module()
+@MODELS.register_module()
 class ONNXRuntimeRecognizer(EncodeDecodeRecognizer):
     """The class for evaluating onnx file of recognition."""
 
@@ -201,7 +201,7 @@ class ONNXRuntimeRecognizer(EncodeDecodeRecognizer):
         return results
 
 
-@DETECTORS.register_module()
+@MODELS.register_module()
 class TensorRTDetector(TextDetectorMixin, SingleStageTextDetector):
     """The class for evaluating TensorRT file of detection."""
 
@@ -257,7 +257,7 @@ class TensorRTDetector(TextDetectorMixin, SingleStageTextDetector):
         return boundaries
 
 
-@DETECTORS.register_module()
+@MODELS.register_module()
 class TensorRTRecognizer(EncodeDecodeRecognizer):
     """The class for evaluating TensorRT file of recognition."""
 

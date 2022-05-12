@@ -4,8 +4,7 @@ import numpy as np
 from mmdet.core import BitmapMasks
 
 import mmocr.utils.check_argument as check_argument
-from mmocr.models.builder import build_convertor
-from mmocr.registry import TRANSFORMS
+from mmocr.registry import MODELS, TRANSFORMS
 
 
 @TRANSFORMS.register_module()
@@ -41,7 +40,7 @@ class OCRSegTargets:
 
         self.attn_shrink_ratio = attn_shrink_ratio
         self.seg_shrink_ratio = seg_shrink_ratio
-        self.label_convertor = build_convertor(label_convertor)
+        self.label_convertor = MODELS.build(label_convertor)
         self.box_type = box_type
         self.pad_val = pad_val
 

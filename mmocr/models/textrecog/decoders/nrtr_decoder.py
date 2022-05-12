@@ -6,12 +6,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.runner import ModuleList
 
-from mmocr.models.builder import DECODERS
 from mmocr.models.common import PositionalEncoding, TFDecoderLayer
+from mmocr.registry import MODELS
 from .base_decoder import BaseDecoder
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class NRTRDecoder(BaseDecoder):
     """Transformer Decoder block with self attention mechanism.
 

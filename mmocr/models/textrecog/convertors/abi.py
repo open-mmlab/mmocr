@@ -2,11 +2,11 @@
 import torch
 
 import mmocr.utils as utils
-from mmocr.models.builder import CONVERTORS
+from mmocr.registry import MODELS
 from .attn import AttnConvertor
 
 
-@CONVERTORS.register_module()
+@MODELS.register_module()
 class ABIConvertor(AttnConvertor):
     """Convert between text, index and tensor for encoder-decoder based
     pipeline. Modified from AttnConvertor to get closer to ABINet's original

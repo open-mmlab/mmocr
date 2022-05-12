@@ -5,11 +5,11 @@ import torch
 import torch.nn as nn
 from mmcv.runner import BaseModule, Sequential
 
-from mmocr.models.builder import HEADS
+from mmocr.registry import MODELS
 from .head_mixin import HeadMixin
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class DBHead(HeadMixin, BaseModule):
     """The class for DBNet head.
 

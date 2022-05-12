@@ -4,11 +4,10 @@ import warnings
 from mmdet.models.detectors import \
     SingleStageDetector as MMDET_SingleStageDetector
 
-from mmocr.models.builder import (DETECTORS, build_backbone, build_head,
-                                  build_neck)
+from mmocr.registry import MODELS
 
 
-@DETECTORS.register_module()
+@MODELS.register_module()
 class SingleStageDetector(MMDET_SingleStageDetector):
     """Base class for single-stage detectors.
 
@@ -29,11 +28,11 @@ class SingleStageDetector(MMDET_SingleStageDetector):
             warnings.warn('DeprecationWarning: pretrained is deprecated, '
                           'please use "init_cfg" instead')
             backbone.pretrained = pretrained
-        self.backbone = build_backbone(backbone)
+        self.backbone = MODELS.build(backbone)
         if neck is not None:
-            self.neck = build_neck(neck)
+            self.neck = MODELS.build(neck)
         bbox_head.update(train_cfg=train_cfg)
         bbox_head.update(test_cfg=test_cfg)
-        self.bbox_head = build_head(bbox_head)
+        self.bbox_head = MODELS.build(bbox_head)
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg

@@ -4,13 +4,13 @@ import math
 import torch.nn as nn
 from mmcv.runner import ModuleList
 
-from mmocr.models.builder import ENCODERS
 from mmocr.models.textrecog.layers import (Adaptive2DPositionalEncoding,
                                            SatrnEncoderLayer)
+from mmocr.registry import MODELS
 from .base_encoder import BaseEncoder
 
 
-@ENCODERS.register_module()
+@MODELS.register_module()
 class SatrnEncoder(BaseEncoder):
     """Implement encoder for SATRN, see `SATRN.
 

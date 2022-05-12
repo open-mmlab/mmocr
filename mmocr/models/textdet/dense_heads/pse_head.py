@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmocr.models.builder import HEADS
+from mmocr.registry import MODELS
 from . import PANHead
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class PSEHead(PANHead):
     """The class for PSENet head.
 

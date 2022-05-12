@@ -1,13 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 
-from mmocr.models.builder import (RECOGNIZERS, build_backbone, build_convertor,
-                                  build_head, build_loss, build_neck,
-                                  build_preprocessor)
+from mmocr.registry import MODELS
 from .base import BaseRecognizer
 
 
-@RECOGNIZERS.register_module()
+@MODELS.register_module()
 class SegRecognizer(BaseRecognizer):
     """Base class for segmentation based recognizer."""
 
@@ -26,29 +24,29 @@ class SegRecognizer(BaseRecognizer):
 
         # Label_convertor
         assert label_convertor is not None
-        self.label_convertor = build_convertor(label_convertor)
+        self.label_convertor = MODELS.build(label_convertor)
 
         # Preprocessor module, e.g., TPS
         self.preprocessor = None
         if preprocessor is not None:
-            self.preprocessor = build_preprocessor(preprocessor)
+            self.preprocessor = MODELS.build(preprocessor)
 
         # Backbone
         assert backbone is not None
-        self.backbone = build_backbone(backbone)
+        self.backbone = MODELS.build(backbone)
 
         # Neck
         assert neck is not None
-        self.neck = build_neck(neck)
+        self.neck = MODELS.build(neck)
 
         # Head
         assert head is not None
         head.update(num_classes=self.label_convertor.num_classes())
-        self.head = build_head(head)
+        self.head = MODELS.build(head)
 
         # Loss
         assert loss is not None
-        self.loss = build_loss(loss)
+        self.loss = MODELS.build(loss)
 
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg

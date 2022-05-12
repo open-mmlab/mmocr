@@ -2,10 +2,10 @@
 import torch.nn as nn
 from mmcv.runner import BaseModule
 
-from mmocr.models.builder import BACKBONES
+from mmocr.registry import MODELS
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class NRTRModalityTransform(BaseModule):
 
     def __init__(self,

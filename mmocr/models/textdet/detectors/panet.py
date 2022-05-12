@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmocr.models.builder import DETECTORS
+from mmocr.registry import MODELS
 from .single_stage_text_detector import SingleStageTextDetector
 from .text_detector_mixin import TextDetectorMixin
 
 
-@DETECTORS.register_module()
+@MODELS.register_module()
 class PANet(TextDetectorMixin, SingleStageTextDetector):
     """The class for implementing PANet text detector:
 

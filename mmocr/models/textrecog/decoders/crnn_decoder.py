@@ -2,12 +2,12 @@
 import torch.nn as nn
 from mmcv.runner import Sequential
 
-from mmocr.models.builder import DECODERS
 from mmocr.models.textrecog.layers import BidirectionalLSTM
+from mmocr.registry import MODELS
 from .base_decoder import BaseDecoder
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class CRNNDecoder(BaseDecoder):
     """Decoder for CRNN.
 

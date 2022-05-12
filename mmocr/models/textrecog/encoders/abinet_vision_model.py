@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmocr.models.builder import ENCODERS, build_decoder, build_encoder
+from mmocr.registry import MODELS
 from .base_encoder import BaseEncoder
 
 
-@ENCODERS.register_module()
+@MODELS.register_module()
 class ABIVisionModel(BaseEncoder):
     """A wrapper of visual feature encoder and language token decoder that
     converts visual features into text tokens.
@@ -23,8 +23,8 @@ class ABIVisionModel(BaseEncoder):
                  init_cfg=dict(type='Xavier', layer='Conv2d'),
                  **kwargs):
         super().__init__(init_cfg=init_cfg)
-        self.encoder = build_encoder(encoder)
-        self.decoder = build_decoder(decoder)
+        self.encoder = MODELS.build(encoder)
+        self.decoder = MODELS.build(decoder)
 
     def forward(self, feat, img_metas=None):
         """

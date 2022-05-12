@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 
-from mmocr.models.builder import ENCODERS
+from mmocr.registry import MODELS
 from .base_encoder import BaseEncoder
 
 
-@ENCODERS.register_module()
+@MODELS.register_module()
 class ChannelReductionEncoder(BaseEncoder):
     """Change the channel number with a one by one convoluational layer.
 

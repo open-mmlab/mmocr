@@ -4,12 +4,12 @@ import math
 import torch.nn as nn
 from mmcv.runner import ModuleList
 
-from mmocr.models.builder import ENCODERS
 from mmocr.models.common import TFEncoderLayer
+from mmocr.registry import MODELS
 from .base_encoder import BaseEncoder
 
 
-@ENCODERS.register_module()
+@MODELS.register_module()
 class NRTREncoder(BaseEncoder):
     """Transformer Encoder block with self attention mechanism.
 

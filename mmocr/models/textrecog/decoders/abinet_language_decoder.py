@@ -6,12 +6,12 @@ import torch.nn as nn
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmcv.runner import ModuleList
 
-from mmocr.models.builder import DECODERS
 from mmocr.models.common.modules import PositionalEncoding
+from mmocr.registry import MODELS
 from .base_decoder import BaseDecoder
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class ABILanguageDecoder(BaseDecoder):
     r"""Transformer-based language model responsible for spell correction.
     Implementation of language model of \

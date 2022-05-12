@@ -4,10 +4,10 @@ import math
 import torch
 import torch.nn as nn
 
-from mmocr.models.builder import LOSSES
+from mmocr.registry import MODELS
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class CTCLoss(nn.Module):
     """Implementation of loss module for CTC-loss based text recognition.
 

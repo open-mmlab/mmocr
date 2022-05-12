@@ -3,13 +3,11 @@ import warnings
 
 import torch
 
-from mmocr.models.builder import (RECOGNIZERS, build_backbone, build_convertor,
-                                  build_decoder, build_encoder, build_fuser,
-                                  build_loss, build_preprocessor)
+from mmocr.registry import MODELS
 from .encode_decode_recognizer import EncodeDecodeRecognizer
 
 
-@RECOGNIZERS.register_module()
+@MODELS.register_module()
 class ABINet(EncodeDecodeRecognizer):
     """Implementation of `Read Like Humans: Autonomous, Bidirectional and
     Iterative LanguageModeling for Scene Text Recognition.
@@ -36,21 +34,21 @@ class ABINet(EncodeDecodeRecognizer):
         # Label convertor (str2tensor, tensor2str)
         assert label_convertor is not None
         label_convertor.update(max_seq_len=max_seq_len)
-        self.label_convertor = build_convertor(label_convertor)
+        self.label_convertor = MODELS.build(label_convertor)
 
         # Preprocessor module, e.g., TPS
         self.preprocessor = None
         if preprocessor is not None:
-            self.preprocessor = build_preprocessor(preprocessor)
+            self.preprocessor = MODELS.build(preprocessor)
 
         # Backbone
         assert backbone is not None
-        self.backbone = build_backbone(backbone)
+        self.backbone = MODELS.build(backbone)
 
         # Encoder module
         self.encoder = None
         if encoder is not None:
-            self.encoder = build_encoder(encoder)
+            self.encoder = MODELS.build(encoder)
 
         # Decoder module
         self.decoder = None
@@ -59,11 +57,11 @@ class ABINet(EncodeDecodeRecognizer):
             decoder.update(start_idx=self.label_convertor.start_idx)
             decoder.update(padding_idx=self.label_convertor.padding_idx)
             decoder.update(max_seq_len=max_seq_len)
-            self.decoder = build_decoder(decoder)
+            self.decoder = MODELS.build(decoder)
 
         # Loss
         assert loss is not None
-        self.loss = build_loss(loss)
+        self.loss = MODELS.build(loss)
 
         self.train_cfg = train_cfg
         self.test_cfg = test_cfg
@@ -78,7 +76,7 @@ class ABINet(EncodeDecodeRecognizer):
 
         self.fuser = None
         if fuser is not None:
-            self.fuser = build_fuser(fuser)
+            self.fuser = MODELS.build(fuser)
 
     def forward_train(self, img, img_metas):
         """

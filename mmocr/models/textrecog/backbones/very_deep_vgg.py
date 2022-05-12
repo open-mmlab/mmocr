@@ -2,10 +2,10 @@
 import torch.nn as nn
 from mmcv.runner import BaseModule, Sequential
 
-from mmocr.models.builder import BACKBONES
+from mmocr.registry import MODELS
 
 
-@BACKBONES.register_module()
+@MODELS.register_module()
 class VeryDeepVgg(BaseModule):
     """Implement VGG-VeryDeep backbone for text recognition, modified from
     `VGG-VeryDeep <https://arxiv.org/pdf/1409.1556.pdf>`_

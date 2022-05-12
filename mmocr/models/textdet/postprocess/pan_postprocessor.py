@@ -5,11 +5,11 @@ import torch
 from mmcv.ops import pixel_group
 
 from mmocr.core import points2boundary
-from mmocr.models.builder import POSTPROCESSOR
+from mmocr.registry import MODELS
 from .base_postprocessor import BasePostprocessor
 
 
-@POSTPROCESSOR.register_module()
+@MODELS.register_module()
 class PANPostprocessor(BasePostprocessor):
     """Convert scores to quadrangles via post processing in PANet. This is
     partially adapted from https://github.com/WenmuZhou/PAN.pytorch.

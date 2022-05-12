@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 
-from mmocr.models.builder import HEADS, build_loss, build_postprocessor
+from mmocr.registry import MODELS
 from mmocr.utils import check_argument
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class HeadMixin:
     """Base head class for text detection, including loss calcalation and
     postprocess.
@@ -19,8 +19,8 @@ class HeadMixin:
         assert isinstance(loss, dict)
         assert isinstance(postprocessor, dict)
 
-        self.loss_module = build_loss(loss)
-        self.postprocessor = build_postprocessor(postprocessor)
+        self.loss_module = MODELS.build(loss)
+        self.postprocessor = MODELS.build(postprocessor)
 
     def resize_boundary(self, boundaries, scale_factor):
         """Rescale boundaries via scale_factor.

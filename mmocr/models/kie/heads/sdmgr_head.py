@@ -4,10 +4,10 @@ from mmcv.runner import BaseModule
 from torch import nn
 from torch.nn import functional as F
 
-from mmocr.models.builder import HEADS, build_loss
+from mmocr.registry import MODELS
 
 
-@HEADS.register_module()
+@MODELS.register_module()
 class SDMGRHead(BaseModule):
 
     def __init__(self,
@@ -45,7 +45,7 @@ class SDMGRHead(BaseModule):
             [GNNLayer(node_embed, edge_embed) for _ in range(num_gnn)])
         self.node_cls = nn.Linear(node_embed, num_classes)
         self.edge_cls = nn.Linear(edge_embed, 2)
-        self.loss = build_loss(loss)
+        self.loss = MODELS.build(loss)
 
     def forward(self, relations, texts, x=None):
         node_nums, char_nums = [], []

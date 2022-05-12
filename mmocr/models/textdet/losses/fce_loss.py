@@ -5,10 +5,10 @@ import torch.nn.functional as F
 from mmdet.core import multi_apply
 from torch import nn
 
-from mmocr.models.builder import LOSSES
+from mmocr.registry import MODELS
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class FCELoss(nn.Module):
     """The class for implementing FCENet loss.
 

@@ -8,8 +8,8 @@ import torch.nn.functional as F
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmcv.runner import ModuleList
 
-from mmocr.models.builder import DECODERS
 from mmocr.models.common.modules import PositionalEncoding
+from mmocr.registry import MODELS
 from .base_decoder import BaseDecoder
 
 
@@ -30,7 +30,7 @@ class Embeddings(nn.Module):
         return self.lut(x) * math.sqrt(self.d_model)
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class MasterDecoder(BaseDecoder):
     """Decoder module in `MASTER <https://arxiv.org/abs/1910.02562>`_.
 

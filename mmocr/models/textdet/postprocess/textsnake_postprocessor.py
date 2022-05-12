@@ -5,12 +5,12 @@ import numpy as np
 import torch
 from skimage.morphology import skeletonize
 
-from mmocr.models.builder import POSTPROCESSOR
+from mmocr.registry import MODELS
 from .base_postprocessor import BasePostprocessor
 from .utils import centralize, fill_hole, merge_disks
 
 
-@POSTPROCESSOR.register_module()
+@MODELS.register_module()
 class TextSnakePostprocessor(BasePostprocessor):
     """Decoding predictions of TextSnake to instances. This was partially
     adapted from https://github.com/princewang1994/TextSnake.pytorch.

@@ -17,11 +17,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from mmocr.models.builder import PREPROCESSOR
+from mmocr.registry import MODELS
 from .base_preprocessor import BasePreprocessor
 
 
-@PREPROCESSOR.register_module()
+@MODELS.register_module()
 class TPSPreprocessor(BasePreprocessor):
     """Rectification Network of RARE, namely TPS based STN in
     https://arxiv.org/pdf/1603.03915.pdf.

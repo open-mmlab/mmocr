@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 
-from mmocr.models.builder import LOSSES
+from mmocr.registry import MODELS
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class CELoss(nn.Module):
     """Implementation of loss module for encoder-decoder based text recognition
     method with CrossEntropy loss.
@@ -63,7 +63,7 @@ class CELoss(nn.Module):
         return losses
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class SARLoss(CELoss):
     """Implementation of loss module in `SAR.
 
@@ -95,7 +95,7 @@ class SARLoss(CELoss):
         return outputs, targets
 
 
-@LOSSES.register_module()
+@MODELS.register_module()
 class TFLoss(CELoss):
     """Implementation of loss module for transformer.
 

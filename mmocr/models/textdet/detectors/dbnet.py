@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmocr.models.builder import DETECTORS
+from mmocr.registry import MODELS
 from .single_stage_text_detector import SingleStageTextDetector
 from .text_detector_mixin import TextDetectorMixin
 
 
-@DETECTORS.register_module()
+@MODELS.register_module()
 class DBNet(TextDetectorMixin, SingleStageTextDetector):
     """The class for implementing DBNet text detector: Real-time Scene Text
     Detection with Differentiable Binarization.
