@@ -2,6 +2,7 @@
 
 readarray -t IGNORED_FILES < $( dirname "$0" )/covignore.cfg
 
+REUSE_COVERAGE_REPORT=${REUSE_COVERAGE_REPORT:-0}
 REPO=${1:-"origin"}
 BRANCH=${2:-"refactor_dev"}
 
@@ -18,7 +19,7 @@ for FILE_NAME in $(git diff --name-only ${REPO}/${BRANCH}); do
                 continue
             fi
             if [ "${IGNORED_FILE_NAME::1}" != "#" ] && [[ "$FILE_NAME" =~ $IGNORED_FILE_NAME ]]; then
-                echo "$IGNORED_FILE_NAME"
+                echo "Ignoring $FILE_NAME"
                 IGNORED=true
                 break
             fi
@@ -32,6 +33,9 @@ done
 # Only test the coverage when PY_FILES are not empty, otherwise they will test the entire project
 if [ ! -z "${PY_FILES}" ]
 then
+    if [ "$REUSE_COVERAGE_REPORT" == "0" ]; then
+        coverage run --branch --source mmocr -m pytest tests/
+    fi
     coverage report --fail-under 80 -m $PY_FILES
     interrogate -v --ignore-init-method --ignore-module --ignore-nested-functions --ignore-magic --ignore-regex "__repr__" --fail-under 95 $PY_FILES
 fi
