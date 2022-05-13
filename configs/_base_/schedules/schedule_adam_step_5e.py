@@ -1,8 +1,11 @@
 # optimizer
 optimizer = dict(type='Adam', lr=1e-3)
-optimizer_config = dict(grad_clip=None)
+
+train_cfg = dict(by_epoch=True, max_epochs=5)
+val_cfg = dict(interval=1)
+test_cfg = dict()
+
 # learning policy
-lr_config = dict(policy='step', step=[3, 4])
-# running settings
-runner = dict(type='EpochBasedRunner', max_epochs=5)
-checkpoint_config = dict(interval=1)
+param_scheduler = [
+    dict(type='MultiStepLR', milestones=[3, 4], end=5),
+]
