@@ -5,6 +5,7 @@ from mmocr.registry import MODELS
 from mmocr.utils import check_argument
 
 
+# TODO: del this
 @MODELS.register_module()
 class HeadMixin:
     """Base head class for text detection, including loss calcalation and
