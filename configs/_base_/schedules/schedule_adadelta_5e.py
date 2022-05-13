@@ -1,8 +1,10 @@
-# optimizer
 optimizer = dict(type='Adadelta', lr=1.0)
-optimizer_config = dict(grad_clip=None)
-# learning policy
-lr_config = dict(policy='step', step=[])
-# running settings
-runner = dict(type='EpochBasedRunner', max_epochs=5)
-checkpoint_config = dict(interval=1)
+
+train_cfg = dict(by_epoch=True, max_epochs=5)
+val_cfg = dict(interval=1)
+test_cfg = dict()
+
+# learning rate
+param_scheduler = [
+    dict(type='ConstantLR'),
+]
