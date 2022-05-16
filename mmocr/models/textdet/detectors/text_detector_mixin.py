@@ -6,6 +6,7 @@ import mmcv
 from mmocr.core import imshow_pred_boundary
 
 
+# TODO: delete this
 class TextDetectorMixin:
     """Base class for text detector, only to show results.
 
