@@ -15,6 +15,7 @@ class SingleStageDetector(MMDET_SingleStageDetector):
     output features of the backbone+neck.
     """
 
+    # TODO: Remove this class as SDGMR has been refactored
     def __init__(self,
                  backbone,
                  neck=None,
