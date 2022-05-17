@@ -31,6 +31,7 @@
 |        BID        |                                                                                               [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |       RCTW        |                                                                                                                 [homepage](https://rctw.vlrlab.net/index.html)                                                                                                                 |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |     HierText      |                                                                                                        [homepage](https://github.com/google-research-datasets/hiertext)                                                                                                        |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|       ArT        |                   [homepage](https://rrc.cvc.uab.es/?ch=14)                    |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 
 ### Install AWS CLI (optional)
 
@@ -940,4 +941,42 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   ├── imgs
   │   ├── instances_training.json
   │   └── instances_val.json
+  ```
+
+## ArT
+
+- Step1: Download `train_images.tar.gz`, and `train_labels.json` from the [homepage](https://rrc.cvc.uab.es/?ch=14&com=downloads) to `art/`
+
+  ```bash
+  mkdir art && cd art
+  mkdir annotations
+
+  # Download ArT dataset
+  wget https://dataset-bj.cdn.bcebos.com/art/train_images.tar.gz --no-check-certificate
+  wget https://dataset-bj.cdn.bcebos.com/art/train_labels.json --no-check-certificate
+
+  # Extract
+  tar -xf train_images.tar.gz
+  mv train_images imgs
+  mv train_labels.json annotations/
+
+  # Remove unnecessary files
+  rm train_images.tar.gz
+  ```
+
+- Step2: Generate `instances_training.json` and `instances_val.json` (optional). Since the test annotations are not publicly available, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+
+  ```bash
+  # Annotations of ArT test split is not publicly available, split a validation set by adding --val-ratio 0.2
+  python tools/data/textdet/art_converter.py PATH/TO/art --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  │── art
+  │   ├── annotations
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json (optional)
   ```

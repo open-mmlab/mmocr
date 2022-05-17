@@ -35,6 +35,7 @@
 |          BID          |          [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |         RCTW          |                            [homepage](https://rctw.vlrlab.net/index.html)                             |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 |       HierText        |                   [homepage](https://github.com/google-research-datasets/hiertext)                    |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+|       ArT        |                   [homepage](https://rrc.cvc.uab.es/?ch=14)                    |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
 
 (*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
 
@@ -1115,4 +1116,41 @@ should be as follows:
   │   ├── ignores
   │   ├── train_label.jsonl
   │   └── val_label.jsonl
+  ```
+
+## ArT
+
+- Step1: Download `train_images.tar.gz`, and `train_labels.json` from the [homepage](https://rrc.cvc.uab.es/?ch=14&com=downloads) to `art/`
+
+  ```bash
+  mkdir art && cd art
+  mkdir annotations
+
+  # Download ArT dataset
+  wget https://dataset-bj.cdn.bcebos.com/art/train_task2_images.tar.gz
+  wget https://dataset-bj.cdn.bcebos.com/art/train_task2_labels.json
+
+  # Extract
+  tar -xf train_task2_images.tar.gz
+  mv train_task2_images crops
+  mv train_task2_labels.json annotations/
+
+  # Remove unnecessary files
+  rm train_images.tar.gz
+  ```
+
+- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional). Since the test annotations are not publicly available, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+
+  ```bash
+  # Annotations of ArT test split is not publicly available, split a validation set by adding --val-ratio 0.2
+  python tools/data/textrecog/art_converter.py PATH/TO/art
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  │── art
+  │   ├── crops
+  │   ├── train_label.jsonl
+  │   └── val_label.jsonl (optional)
   ```
