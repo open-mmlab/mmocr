@@ -1,10 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-# TODO
-from mmengine.data import BaseDataElement
-from mmengine.data import BaseDataElement as LabelData
+from mmengine.data import BaseDataElement, LabelData
 
 
-# TODO score
 class TextRecogDataSample(BaseDataElement):
     """A data structure interface of MMOCR for text recognition. They are used
     as interfaces between different components.
