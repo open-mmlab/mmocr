@@ -12,6 +12,7 @@ from .img_util import drop_orientation, is_not_png
 from .lmdb_util import recog2lmdb
 from .logger import get_root_logger
 from .model import revert_sync_batchnorm
+from .polygon_utils import rescale_polygon, rescale_polygons
 from .setup_env import setup_multi_processes
 from .string_util import StringStrip
 
@@ -22,5 +23,6 @@ __all__ = [
     'convert_annotations', 'is_not_png', 'list_to_file', 'list_from_file',
     'is_on_same_line', 'stitch_boxes_into_lines', 'StringStrip',
     'revert_sync_batchnorm', 'bezier_to_polygon', 'sort_points',
-    'setup_multi_processes', 'recog2lmdb', 'dump_ocr_data'
+    'setup_multi_processes', 'recog2lmdb', 'dump_ocr_data', 'rescale_polygons',
+    'rescale_polygon'
 ]
