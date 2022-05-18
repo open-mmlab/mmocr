@@ -4,6 +4,8 @@ from typing import Dict, Sequence
 
 import mmcv
 
+from mmocr.utils import is_type_list
+
 
 # TODO: Remove it when all converters no longer need it
 def convert_annotations(image_infos, out_json_name):
@@ -164,3 +166,65 @@ def dump_ocr_data(image_infos: Sequence[Dict], out_json_name: str,
     mmcv.dump(out_json, out_json_name)
 
     return out_json
+
+
+def recog_anno_to_imginfo(
+    file_paths: Sequence[str],
+    labels: Sequence[str],
+) -> Sequence[Dict]:
+    """Convert a list of file_paths and labels for recognition tasks into the
+    format of image_infos acceptable by :func:`dump_ocr_data()`. It's meant to
+    maintain compatibility with the legacy annotation format in MMOCR 0.x.
+
+    In MMOCR 0.x, data converters for recognition usually converts the
+    annotations into a list of file paths and a list of labels, which look
+    like the following:
+
+    .. code-block:: python
+
+        file_paths = ['1.jpg', '2.jpg', ...]
+        labels = ['aaa', 'bbb', ...]
+
+    This utility merges them into a list of dictionaries parsable by
+    :func:`dump_ocr_data()`:
+
+    .. code-block:: python
+
+        [   # A list of dicts. Each dict stands for a single image.
+            {
+                "file_name": "1.jpg",
+                "anno_info": [
+                    {
+                        "text": "aaa"
+                    }
+                ]
+            },
+            {
+                "file_name": "2.jpg",
+                "anno_info": [
+                    {
+                        "text": "bbb"
+                    }
+                ]
+            },
+            ...
+        ]
+
+    Args:
+        file_paths (list[str]): A list of file paths to images.
+        labels (list[str]): A list of text labels.
+
+    Returns:
+        list[dict]: Annotations parsable by :func:`dump_ocr_data()`.
+    """
+    assert is_type_list(file_paths, str)
+    assert is_type_list(labels, str)
+    assert len(file_paths) == len(labels)
+
+    results = []
+    for i in range(len(file_paths)):
+        result = dict(
+            file_name=file_paths[i], anno_info=[dict(text=labels[i])])
+        results.append(result)
+
+    return results
