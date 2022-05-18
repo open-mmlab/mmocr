@@ -19,8 +19,12 @@ class TestPolygonUtils(unittest.TestCase):
         polygons = [0, 0, 1, 0, 1, 1, 0, 1]
         self.assertTrue(
             np.allclose(
-                rescale_polygon(polygons, scale_factor),
+                rescale_polygon(polygons, scale_factor, mode='div'),
                 np.array([0, 0, 1 / 0.3, 0, 1 / 0.3, 1 / 0.4, 0, 1 / 0.4])))
+        self.assertTrue(
+            np.allclose(
+                rescale_polygon(polygons, scale_factor, mode='mul'),
+                np.array([0, 0, 0.3, 0, 0.3, 0.4, 0, 0.4])))
 
     def test_rescale_polygons(self):
         polygons = [
@@ -30,14 +34,24 @@ class TestPolygonUtils(unittest.TestCase):
         scale_factor = (0.5, 0.5)
         self.assertTrue(
             np.allclose(
-                rescale_polygons(polygons, scale_factor), [
+                rescale_polygons(polygons, scale_factor, mode='div'), [
                     np.array([0, 0, 2, 0, 2, 2, 0, 2]),
                     np.array([2, 2, 4, 2, 4, 4, 2, 4])
+                ]))
+        self.assertTrue(
+            np.allclose(
+                rescale_polygons(polygons, scale_factor, mode='mul'), [
+                    np.array([0, 0, 0.5, 0, 0.5, 0.5, 0, 0.5]),
+                    np.array([0.5, 0.5, 1, 0.5, 1, 1, 0.5, 1])
                 ]))
 
         polygons = [torch.Tensor([0, 0, 1, 0, 1, 1, 0, 1])]
         scale_factor = (0.3, 0.4)
         self.assertTrue(
             np.allclose(
-                rescale_polygons(polygons, scale_factor),
+                rescale_polygons(polygons, scale_factor, mode='div'),
                 [np.array([0, 0, 1 / 0.3, 0, 1 / 0.3, 1 / 0.4, 0, 1 / 0.4])]))
+        self.assertTrue(
+            np.allclose(
+                rescale_polygons(polygons, scale_factor, mode='mul'),
+                [np.array([0, 0, 0.3, 0, 0.3, 0.4, 0, 0.4])]))
