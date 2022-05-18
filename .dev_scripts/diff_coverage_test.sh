@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 readarray -t IGNORED_FILES < $( dirname "$0" )/covignore.cfg
 
 REUSE_COVERAGE_REPORT=${REUSE_COVERAGE_REPORT:-0}
