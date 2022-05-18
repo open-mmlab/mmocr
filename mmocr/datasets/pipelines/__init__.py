@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .box_utils import sort_vertex, sort_vertex8
-from .dbnet_transforms import EastRandomCrop, ImgAug
+from .dbnet_transforms import EastRandomCrop
 from .kie_transforms import ResizeNoImg
 from .loading import (LoadImageFromLMDB, LoadImageFromNdarray,
                       LoadTextAnnotations)
@@ -18,6 +18,7 @@ from .transforms import (ColorJitter, RandomCropFlip, RandomCropInstances,
                          RandomCropPolyInstances, RandomRotatePolyInstances,
                          RandomRotateTextDet, RandomScaling, ScaleAspectJitter,
                          SquareResizePad)
+from .wrappers import ImgAug
 
 __all__ = [
     'LoadTextAnnotations', 'NormalizeOCR', 'OnlineCropOCR', 'ResizeOCR',
