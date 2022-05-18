@@ -119,7 +119,7 @@ class BaseTextDetPostProcessor:
         scale_factor = np.asarray(scale_factor)
         for key in self.rescale_fields:
             results.pred_instances[key] = rescale_polygons(
-                results.pred_instances[key], scale_factor)
+                results.pred_instances[key], scale_factor, mode='div')
         return results
 
     def get_text_instances(self, pred_results: dict,
