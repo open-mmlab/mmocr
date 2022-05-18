@@ -19,17 +19,19 @@ class ImgAug(BaseTransform):
     Required Keys:
 
     - img
-    - gt_polygons
-    - gt_bboxes
-    - gt_ignores
+    - gt_polygons (optional for text recognition)
+    - gt_bboxes (optional for text recognition)
+    - gt_bboxes_labels (optional for text recognition)
+    - gt_ignores (optional for text recognition)
     - gt_texts (optional)
 
     Modified Keys:
 
     - img
-    - gt_polygons
-    - gt_bboxes
-    - gt_ignores
+    - gt_polygons (optional for text recognition)
+    - gt_bboxes (optional for text recognition)
+    - gt_bboxes_labels (optional for text recognition)
+    - gt_ignores (optional for text recognition)
     - img_shape (optional)
     - gt_texts (optional)
 
@@ -69,7 +71,8 @@ class ImgAug(BaseTransform):
         if self.augmenter:
             aug = self.augmenter.to_deterministic()
             results['img'] = aug.augment_image(image)
-            results['img_shape'] = results['img'].shape
+            results['img_shape'] = (results['img'].shape[0],
+                                    results['img'].shape[1])
 
             self._augment_annotations(aug, ori_shape, results)
 
@@ -88,30 +91,33 @@ class ImgAug(BaseTransform):
         Returns:
             dict: The transformed data.
         """
-        if aug is None:
-            return results
+        # Assume co-existence of `gt_polygons`, `gt_bboxes` and `gt_ignores`
+        # for text detection
+        if 'gt_polygons' in results:
 
-        # augment polygons
-        results['gt_polygons'], removed_poly_inds = self._augment_polygons(
-            aug, ori_shape, results['gt_polygons'])
+            # augment polygons
+            results['gt_polygons'], removed_poly_inds = self._augment_polygons(
+                aug, ori_shape, results['gt_polygons'])
 
-        # remove instances that are no longer inside the augmented image
-        results['gt_bboxes'] = np.delete(
-            results['gt_bboxes'], removed_poly_inds, axis=0)
-        results['gt_ignores'] = np.delete(
-            results['gt_ignores'], removed_poly_inds, axis=0)
-        # TODO: deal with gt_texts corresponding to clipped polygons
-        if 'gt_texts' in results:
-            results['gt_texts'] = [
-                text for i, text in enumerate(results['gt_texts'])
-                if i not in removed_poly_inds
-            ]
+            # remove instances that are no longer inside the augmented image
+            results['gt_bboxes'] = np.delete(
+                results['gt_bboxes'], removed_poly_inds, axis=0)
+            results['gt_bboxes_labels'] = np.delete(
+                results['gt_bboxes_labels'], removed_poly_inds, axis=0)
+            results['gt_ignores'] = np.delete(
+                results['gt_ignores'], removed_poly_inds, axis=0)
+            # TODO: deal with gt_texts corresponding to clipped polygons
+            if 'gt_texts' in results:
+                results['gt_texts'] = [
+                    text for i, text in enumerate(results['gt_texts'])
+                    if i not in removed_poly_inds
+                ]
 
-        # augment bboxes
-        bboxes = self._augment_bboxes(aug, ori_shape, results['gt_bboxes'])
-        results['gt_bboxes'] = np.zeros((0, 4))
-        if len(bboxes) > 0:
-            results['gt_bboxes'] = np.stack(bboxes)
+            # augment bboxes
+            bboxes = self._augment_bboxes(aug, ori_shape, results['gt_bboxes'])
+            results['gt_bboxes'] = np.zeros((0, 4))
+            if len(bboxes) > 0:
+                results['gt_bboxes'] = np.stack(bboxes)
 
         return results
 
