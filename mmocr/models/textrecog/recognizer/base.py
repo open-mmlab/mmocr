@@ -1,99 +1,153 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import warnings
+import copy
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
-import mmcv
 import torch
 import torch.distributed as dist
 from mmcv.runner import BaseModule, auto_fp16
+from mmdet.core.utils import stack_batch
 
-from mmocr.core import imshow_text_label
+from mmocr.core.data_structures import TextRecogDataSample
 
 
 class BaseRecognizer(BaseModule, metaclass=ABCMeta):
-    """Base class for text recognition."""
+    """Base class for text recognition.
 
-    def __init__(self, init_cfg=None):
+    Args:
+        preprocess_cfg (dict, optional): Model preprocessing config
+            for processing the input image data. Keys allowed are
+            ``to_rgb``(bool), ``pad_size_divisor``(int), ``pad_value``(int or
+            float), ``mean``(int or float) and ``std``(int or float).
+            Preprcessing order: 1. to rgb; 2. normalization 3. pad.
+            Defaults to None.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+    """
+
+    def __init__(self,
+                 preprocess_cfg: Optional[Dict] = None,
+                 init_cfg: Optional[Dict] = None) -> None:
         super().__init__(init_cfg=init_cfg)
         self.fp16_enabled = False
+        self.preprocess_cfg = preprocess_cfg
+
+        self.pad_size_divisor = 0
+        self.pad_value = 0
+
+        if self.preprocess_cfg is not None:
+            assert isinstance(self.preprocess_cfg, dict)
+            self.preprocess_cfg = copy.deepcopy(self.preprocess_cfg)
+
+            self.to_rgb = preprocess_cfg.get('to_rgb', False)
+            self.pad_size_divisor = preprocess_cfg.get('pad_size_divisor', 0)
+            self.pad_value = preprocess_cfg.get('pad_value', 0)
+            self.register_buffer(
+                'pixel_mean',
+                torch.tensor(preprocess_cfg['mean']).view(-1, 1, 1), False)
+            self.register_buffer(
+                'pixel_std',
+                torch.tensor(preprocess_cfg['std']).view(-1, 1, 1), False)
+        else:
+            # Only used to provide device information
+            self.register_buffer('pixel_mean', torch.tensor(1), False)
+
+    @property
+    def device(self) -> torch.device:
+        return self.pixel_mean.device
 
     @abstractmethod
-    def extract_feat(self, imgs):
+    def extract_feat(self, inputs: torch.Tensor) -> torch.Tensor:
         """Extract features from images."""
         pass
 
-    @abstractmethod
-    def forward_train(self, imgs, img_metas, **kwargs):
-        """
+    @auto_fp16(apply_to=('inputs', ))
+    def forward_train(self, inputs: torch.Tensor,
+                      data_samples: Sequence[TextRecogDataSample],
+                      **kwargs) -> Dict:
+        """Training function.
+
         Args:
-            img (tensor): tensors with shape (N, C, H, W).
-                Typically should be mean centered and std scaled.
-            img_metas (list[dict]): List of image info dict where each dict
-                has: 'img_shape', 'scale_factor', 'flip', and may also contain
-                'filename', 'ori_shape', 'pad_shape', and 'img_norm_cfg'.
-                For details of the values of these keys, see
-                :class:`mmdet.datasets.pipelines.Collect`.
-            kwargs (keyword arguments): Specific to concrete implementation.
+            inputs (Tensor):The image Tensor should have a shape NxCxHxW.
+                These should usually be mean centered and std scaled.
+            data_samples (list[:obj:`TextRecogDataSample`]):The batch
+                data samples. It usually includes ``gt_text`` information.
         """
+        # TODO: maybe remove to stack_batch
+        # NOTE the batched image size information may be useful for
+        # calculating valid ratio.
+        batch_input_shape = tuple(inputs[0].size()[-2:])
+        for data_samples in data_samples:
+            data_samples.set_metainfo({'batch_input_shape': batch_input_shape})
+
+    @abstractmethod
+    def simple_test(self, inputs: torch.Tensor,
+                    data_samples: Sequence[TextRecogDataSample],
+                    **kwargs) -> Sequence[TextRecogDataSample]:
         pass
 
     @abstractmethod
-    def simple_test(self, img, img_metas, **kwargs):
+    def aug_test(self, imgs: torch.Tensor,
+                 data_samples: Sequence[Sequence[TextRecogDataSample]],
+                 **kwargs):
+        """Test function with test time augmentation."""
         pass
-
-    @abstractmethod
-    def aug_test(self, imgs, img_metas, **kwargs):
-        """Test function with test time augmentation.
-
-        Args:
-            imgs (list[tensor]): Tensor should have shape NxCxHxW,
-                which contains all images in the batch.
-            img_metas (list[list[dict]]): The metadata of images.
-        """
-        pass
-
-    def forward_test(self, imgs, img_metas, **kwargs):
-        """
-        Args:
-            imgs (tensor | list[tensor]): Tensor should have shape NxCxHxW,
-                which contains all images in the batch.
-            img_metas (list[dict] | list[list[dict]]):
-                The outer list indicates images in a batch.
-        """
-        if isinstance(imgs, list):
-            assert len(imgs) > 0
-            assert imgs[0].size(0) == 1, ('aug test does not support '
-                                          f'inference with batch size '
-                                          f'{imgs[0].size(0)}')
-            assert len(imgs) == len(img_metas)
-            return self.aug_test(imgs, img_metas, **kwargs)
-
-        return self.simple_test(imgs, img_metas, **kwargs)
 
     @auto_fp16(apply_to=('img', ))
-    def forward(self, img, img_metas, return_loss=True, **kwargs):
-        """Calls either :func:`forward_train` or :func:`forward_test` depending
-        on whether ``return_loss`` is ``True``.
+    def forward(self,
+                data: Sequence[Dict],
+                optimizer: Optional[Union[torch.optim.Optimizer, Dict]] = None,
+                return_loss: bool = False,
+                **kwargs):
+        """The iteration step during training and testing. This method defines
+        an iteration step during training and testing, except for the back
+        propagation and optimizer updating during training, which are done in
+        an optimizer hook.
 
-        Note that img and img_meta are single-nested (i.e. tensor and
-        list[dict]).
+        Args:
+            data (list[dict]): The output of dataloader.
+            optimizer (:obj:`torch.optim.Optimizer` or dict, optional): The
+                optimizer of runner. This argument is unused and reserved.
+                Defaults to None.
+            return_loss (bool): Whether to return loss. In general,
+                it will be set to True during training and False
+                during testing. Defaults to False.
+
+        Returns:
+            During training
+                dict: It should contain at least 3 keys: ``loss``,
+                ``log_vars``, ``num_samples``.
+                    - ``loss`` is a tensor for back propagation, which can be a
+                      weighted sum of multiple losses.
+                    - ``log_vars`` contains all the variables to be sent to the
+                        logger.
+                    - ``num_samples`` indicates the batch size (when the model
+                        is DDP, it means the batch size on each GPU), which is
+                        used for averaging the logs.
+
+            During testing
+                list(obj:`TextRecogDataSample`): Recognition results of the
+                input images. Each TextRecogDataSample usually contains
+                ``pred_text``
         """
 
+        inputs, data_samples = self.preprocss_data(data)
+
         if return_loss:
-            return self.forward_train(img, img_metas, **kwargs)
+            losses = self.forward_train(inputs, data_samples, **kwargs)
+            loss, log_vars = self._parse_losses(losses)
 
-        if isinstance(img, list):
-            for idx, each_img in enumerate(img):
-                if each_img.dim() == 3:
-                    img[idx] = each_img.unsqueeze(0)
+            outputs = dict(
+                loss=loss, log_vars=log_vars, num_samples=len(data_samples))
+            return outputs
         else:
-            if len(img_metas) == 1 and isinstance(img_metas[0], list):
-                img_metas = img_metas[0]
+            # TODO: refactor and support aug test later
+            assert isinstance(data[0]['inputs'], torch.Tensor), \
+                'Only support simple test currently. Aug-test is ' \
+                'not supported yet'
+            return self.forward_simple_test(inputs, data_samples, **kwargs)
 
-        return self.forward_test(img, img_metas, **kwargs)
-
-    def _parse_losses(self, losses):
+    def _parse_losses(self, losses: Dict) -> Tuple[torch.Tensor, Dict]:
         """Parse the raw outputs (losses) of the network.
 
         Args:
@@ -128,105 +182,64 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
 
         return loss, log_vars
 
-    def train_step(self, data, optimizer):
-        """The iteration step during training.
-
-        This method defines an iteration step during training, except for the
-        back propagation and optimizer update, which are done by an optimizer
-        hook. Note that in some complicated cases or models (e.g. GAN),
-        the whole process (including the back propagation and optimizer update)
-        is also defined by this method.
-
+    def preprocss_data(self, data: List[Dict]) -> Tuple:
+        """ Process input data during training and simple testing phases.
         Args:
-            data (dict): The outputs of dataloader.
-            optimizer (:obj:`torch.optim.Optimizer` | dict): The optimizer of
-                runner is passed to ``train_step()``. This argument is unused
-                and reserved.
+            data (list[dict]): The data to be processed, which
+                comes from dataloader.
 
         Returns:
-            dict: It should contain at least 3 keys: ``loss``, ``log_vars``,
-                ``num_samples``.
+            tuple:  It should contain 2 items.
 
-                - ``loss`` is a tensor for back propagation, which is a
-                weighted sum of multiple losses.
-                - ``log_vars`` contains all the variables to be sent to the
-                logger.
-                - ``num_samples`` indicates the batch size used for
-                averaging the logs (Note: for the
-                DDP model, num_samples refers to the batch size for each GPU).
+              - inputs (Tensor): The batch input tensor.
+              - data_samples (list[:obj:`TextRecogDataSample`]): The
+                Data Samples. It usually includes `gt_text` information.
         """
-        losses = self(**data)
-        loss, log_vars = self._parse_losses(losses)
+        inputs = [data_['inputs'] for data_ in data]
+        data_samples = [data_['data_sample'] for data_ in data]
 
-        outputs = dict(
-            loss=loss, log_vars=log_vars, num_samples=len(data['img_metas']))
+        data_samples = [
+            data_sample.to(self.device) for data_sample in data_samples
+        ]
+        inputs = [_input.to(self.device) for _input in inputs]
 
-        return outputs
+        if self.preprocess_cfg is None:
+            return stack_batch(inputs).float(), data_samples
 
-    def val_step(self, data, optimizer):
-        """The iteration step during validation.
+        if self.to_rgb and inputs[0].size(0) == 3:
+            inputs = [_input[[2, 1, 0], ...] for _input in inputs]
+        inputs = [(_input - self.pixel_mean) / self.pixel_std
+                  for _input in inputs]
+        inputs = stack_batch(inputs, self.pad_size_divisor, self.pad_value)
+        return inputs, data_samples
 
-        This method shares the same signature as :func:`train_step`, but is
-        used during val epochs. Note that the evaluation after training epochs
-        is not implemented by this method, but by an evaluation hook.
+    @auto_fp16(apply_to=('inputs', ))
+    def forward_simple_test(self, inputs: torch.Tensor,
+                            data_samples: Sequence[TextRecogDataSample],
+                            **kwargs) -> Sequence[TextRecogDataSample]:
         """
-        losses = self(**data)
-        loss, log_vars = self._parse_losses(losses)
-
-        outputs = dict(
-            loss=loss, log_vars=log_vars, num_samples=len(data['img_metas']))
-
-        return outputs
-
-    @staticmethod
-    def show_result(img,
-                    result,
-                    gt_label='',
-                    win_name='',
-                    show=False,
-                    wait_time=0,
-                    out_file=None,
-                    **kwargs):
-        """Draw `result` on `img`.
-
         Args:
-            img (str or tensor): The image to be displayed.
-            result (dict): The results to draw on `img`.
-            gt_label (str): Ground truth label of img.
-            win_name (str): The window name.
-            wait_time (int): Value of waitKey param.
-                Default: 0.
-            show (bool): Whether to show the image.
-                Default: False.
-            out_file (str or None): The output filename.
-                Default: None.
+            inputs (Tensor): The input Tensor should have a
+                shape NxCxHxW.
+            data_samples (list[:obj:`TextRecogDataSample`]): The Data
+                Samples. It usually includes ``gt_text`` information.
 
         Returns:
-            img (tensor): Only if not `show` or `out_file`.
+            list[obj:`TextRecogDataSample`]: Detection results of the
+            input images. Each TextRecogDataSample usually contains
+            ``pred_text``.
         """
-        img = mmcv.imread(img)
-        img = img.copy()
-        pred_label = None
-        if 'text' in result.keys():
-            pred_label = result['text']
+        # TODO: Consider merging with forward_train logic
+        batch_size = len(data_samples)
+        batch_img_metas = []
+        for batch_index in range(batch_size):
+            metainfo = data_samples[batch_index].metainfo
 
-        # if out_file specified, do not show image in window
-        if out_file is not None:
-            show = False
-        # draw text label
-        if pred_label is not None:
-            img = imshow_text_label(
-                img,
-                pred_label,
-                gt_label,
-                show=show,
-                win_name=win_name,
-                wait_time=wait_time,
-                out_file=out_file)
+            # TODO: maybe remove to stack_batch
+            # NOTE the batched image size information may be useful for
+            # calculating valid ratio.
+            metainfo['batch_input_shape'] = \
+                tuple(inputs.size()[-2:])
+            batch_img_metas.append(metainfo)
 
-        if not (show or out_file):
-            warnings.warn('show==False and out_file is not specified, only '
-                          'result image will be returned')
-            return img
-
-        return img
+        return self.simple_test(inputs, batch_img_metas, **kwargs)
