@@ -11,40 +11,6 @@ import mmocr.core.mask as mask_utils
 import mmocr.core.visualize as visualize_utils
 
 
-def test_points2boundary():
-
-    points = np.array([[1, 2]])
-    text_repr_type = 'quad'
-    text_score = None
-
-    # test invalid arguments
-    with pytest.raises(AssertionError):
-        mask_utils.points2boundary([], text_repr_type, text_score)
-
-    with pytest.raises(AssertionError):
-        mask_utils.points2boundary(points, '', text_score)
-    with pytest.raises(AssertionError):
-        mask_utils.points2boundary(points, '', 1.1)
-
-    # test quad
-    points = np.array([[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1], [0, 2],
-                       [1, 2], [2, 2]])
-    text_repr_type = 'quad'
-    text_score = None
-
-    result = mask_utils.points2boundary(points, text_repr_type, text_score)
-    pred_poly = eval_utils.points2polygon(result)
-    target_poly = eval_utils.points2polygon([2, 2, 0, 2, 0, 0, 2, 0])
-    assert eval_utils.poly_iou(pred_poly, target_poly) == 1
-
-    # test poly
-    text_repr_type = 'poly'
-    result = mask_utils.points2boundary(points, text_repr_type, text_score)
-    pred_poly = eval_utils.points2polygon(result)
-    target_poly = eval_utils.points2polygon([0, 0, 0, 2, 2, 2, 2, 0])
-    assert eval_utils.poly_iou(pred_poly, target_poly) == 1
-
-
 def test_seg2boundary():
 
     seg = np.array([[]])
