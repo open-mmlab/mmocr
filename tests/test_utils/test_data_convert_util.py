@@ -5,7 +5,7 @@ from unittest import TestCase
 
 import mmcv
 
-from mmocr.utils.data_convert_util import dump_ocr_data
+from mmocr.utils.data_convert_util import dump_ocr_data, recog_anno_to_imginfo
 
 
 class TestDataConvertUtil(TestCase):
@@ -136,3 +136,27 @@ class TestDataConvertUtil(TestCase):
             dump_ocr_data(input_data, output_path, 'textrecog')
             result = mmcv.load(output_path)
             self.assertDictEqual(result, recog_target)
+
+    def test_recog_anno_to_imginfo(self):
+        file_paths = ['a.jpg', 'b.jpg']
+        labels = ['aaa']
+        with self.assertRaises(AssertionError):
+            recog_anno_to_imginfo(file_paths, labels)
+
+        file_paths = ['a.jpg', 'b.jpg']
+        labels = ['aaa', 'bbb']
+        target = [
+            {
+                'file_name': 'a.jpg',
+                'anno_info': [{
+                    'text': 'aaa'
+                }]
+            },
+            {
+                'file_name': 'b.jpg',
+                'anno_info': [{
+                    'text': 'bbb'
+                }]
+            },
+        ]
+        self.assertListEqual(target, recog_anno_to_imginfo(file_paths, labels))
