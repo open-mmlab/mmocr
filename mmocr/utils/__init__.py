@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.utils import Registry, build_from_cfg
 
+from .bbox_utils import bbox2poly, rescale_bboxes
 from .box_util import (bezier_to_polygon, is_on_same_line, sort_points,
                        stitch_boxes_into_lines)
 from .check_argument import (equal_len, is_2dlist, is_3dlist, is_none_or_type,
@@ -13,7 +14,7 @@ from .img_util import drop_orientation, is_not_png
 from .lmdb_util import recog2lmdb
 from .logger import get_root_logger
 from .model import revert_sync_batchnorm
-from .polygon_utils import rescale_polygon, rescale_polygons
+from .polygon_utils import crop_polygon, rescale_polygon, rescale_polygons
 from .setup_env import setup_multi_processes
 from .string_util import StringStrip
 
@@ -25,5 +26,6 @@ __all__ = [
     'is_on_same_line', 'stitch_boxes_into_lines', 'StringStrip',
     'revert_sync_batchnorm', 'bezier_to_polygon', 'sort_points',
     'setup_multi_processes', 'recog2lmdb', 'dump_ocr_data',
-    'recog_anno_to_imginfo', 'rescale_polygons', 'rescale_polygon'
+    'recog_anno_to_imginfo', 'rescale_polygons', 'rescale_polygon',
+    'rescale_bboxes', 'bbox2poly', 'crop_polygon'
 ]
