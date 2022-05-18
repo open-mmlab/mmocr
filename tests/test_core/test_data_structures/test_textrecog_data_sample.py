@@ -3,8 +3,7 @@ from unittest import TestCase
 
 import numpy as np
 import torch
-# TODO
-from mmengine.data import BaseDataElement as LabelData
+from mmengine.data import LabelData
 
 from mmocr.core import TextRecogDataSample
 
