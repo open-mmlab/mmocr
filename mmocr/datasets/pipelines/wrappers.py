@@ -22,7 +22,7 @@ class ImgAug(BaseTransform):
     - gt_polygons (optional for text recognition)
     - gt_bboxes (optional for text recognition)
     - gt_bboxes_labels (optional for text recognition)
-    - gt_ignores (optional for text recognition)
+    - gt_ignored (optional for text recognition)
     - gt_texts (optional)
 
     Modified Keys:
@@ -31,7 +31,7 @@ class ImgAug(BaseTransform):
     - gt_polygons (optional for text recognition)
     - gt_bboxes (optional for text recognition)
     - gt_bboxes_labels (optional for text recognition)
-    - gt_ignores (optional for text recognition)
+    - gt_ignored (optional for text recognition)
     - img_shape (optional)
     - gt_texts (optional)
 
@@ -91,7 +91,7 @@ class ImgAug(BaseTransform):
         Returns:
             dict: The transformed data.
         """
-        # Assume co-existence of `gt_polygons`, `gt_bboxes` and `gt_ignores`
+        # Assume co-existence of `gt_polygons`, `gt_bboxes` and `gt_ignored`
         # for text detection
         if 'gt_polygons' in results:
 
@@ -104,8 +104,8 @@ class ImgAug(BaseTransform):
                 results['gt_bboxes'], removed_poly_inds, axis=0)
             results['gt_bboxes_labels'] = np.delete(
                 results['gt_bboxes_labels'], removed_poly_inds, axis=0)
-            results['gt_ignores'] = np.delete(
-                results['gt_ignores'], removed_poly_inds, axis=0)
+            results['gt_ignored'] = np.delete(
+                results['gt_ignored'], removed_poly_inds, axis=0)
             # TODO: deal with gt_texts corresponding to clipped polygons
             if 'gt_texts' in results:
                 results['gt_texts'] = [
