@@ -1,8 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-
 import math
 import random
-from typing import Dict, List, Tuple
+from typing import Dict, List, Sequence, Tuple
 
 import cv2
 import mmcv
@@ -10,13 +9,13 @@ import numpy as np
 from mmcv.image.geometric import _scale_size
 from mmcv.transforms import Resize as MMCV_Resize
 from mmcv.transforms.base import BaseTransform
-from mmcv.transforms.utils import cache_randomness
+from mmcv.transforms.utils import avoid_cache_randomness, cache_randomness
 from shapely.geometry import Polygon as plg
 
 import mmocr.core.evaluation.utils as eval_utils
 from mmocr.registry import TRANSFORMS
-from mmocr.utils import (bbox2poly, crop_polygon, poly2bbox, rescale_bboxes,
-                         rescale_polygon)
+from mmocr.utils import (bbox2poly, crop_polygon, is_poly_outside_rect,
+                         poly2bbox, rescale_bboxes, rescale_polygon)
 from .wrappers import ImgAug
 
 
@@ -735,4 +734,435 @@ class TextDetRandomCropFlip(BaseTransform):
         repr_str += f', iter_num = {self.iter_num}'
         repr_str += f', min_area_ratio = {self.min_area_ratio}'
         repr_str += f', epsilon = {self.epsilon})'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+@avoid_cache_randomness
+class RandomCrop(BaseTransform):
+    """Randomly crop images and make sure to contain at least one intact
+    instance.
+
+    Required Keys:
+
+    - img
+    - gt_polygons
+    - gt_bboxes
+    - gt_bboxes_labels
+    - gt_ignored
+    - gt_texts (optional)
+
+    Modified Keys:
+
+    - img
+    - img_shape
+    - gt_polygons
+    - gt_bboxes
+    - gt_bboxes_labels
+    - gt_ignored
+    - gt_texts (optional)
+
+    Args:
+        min_side_ratio (float): The ratio of the shortest edge of the cropped
+            image to the original image size.
+    """
+
+    def __init__(self, min_side_ratio: float = 0.4) -> None:
+        if not 0. <= min_side_ratio <= 1.:
+            raise ValueError('`min_side_ratio` should be in range [0, 1],')
+        self.min_side_ratio = min_side_ratio
+
+    def _sample_valid_start_end(self, valid_array: np.ndarray, min_len: int,
+                                max_start: int,
+                                min_end: int) -> Tuple[int, int]:
+        """Sample a start and end point on a given axis that contains at least
+        one polygon.
+
+        Args:
+            valid_array (ndarray): Valid area, where 0 means no text area,
+                where 1 means text area.
+            min_len (int): Minimum distance between the two sampling points.
+            max_start (int): Start sampling point maximum start position.
+            min_end (int): End sampling point minimum end position.
+
+        Returns:
+            tuple(int, int): Start and end point on a given axis.
+        """
+        assert isinstance(min_len, int)
+        assert len(valid_array) > min_len
+
+        start_array = valid_array.copy()
+        max_start = min(len(start_array) - min_len, max_start)
+        start_array[max_start:] = 0
+        start_array[0] = 1
+        diff_array = np.hstack([0, start_array]) - np.hstack([start_array, 0])
+        region_starts = np.where(diff_array < 0)[0]
+        region_ends = np.where(diff_array > 0)[0]
+        region_ind = np.random.randint(0, len(region_starts))
+        start = np.random.randint(region_starts[region_ind],
+                                  region_ends[region_ind])
+
+        end_array = valid_array.copy()
+        min_end = max(start + min_len, min_end)
+        end_array[:min_end] = 0
+        end_array[-1] = 1
+        diff_array = np.hstack([0, end_array]) - np.hstack([end_array, 0])
+        region_starts = np.where(diff_array < 0)[0]
+        region_ends = np.where(diff_array > 0)[0]
+        region_ind = np.random.randint(0, len(region_starts))
+        end = np.random.randint(region_starts[region_ind],
+                                region_ends[region_ind])
+        return start, end
+
+    def _sample_crop_box(self, img_size: Tuple[int, int],
+                         results: Dict) -> np.ndarray:
+        """Generate crop box and make sure not to crop the polygon instances.
+
+        Args:
+            img_size (tuple(int)): The image size (h, w).
+            results (dict): The results dict.
+
+        Returns:
+            ndarray: Crop area in shape (4, ).
+        """
+        assert isinstance(img_size, tuple)
+        h, w = img_size[:2]
+
+        polygons = results['gt_polygons']
+        x_valid_array = np.ones(w, dtype=np.int32)
+        y_valid_array = np.ones(h, dtype=np.int32)
+        selected_poly = polygons[np.random.randint(0, len(polygons))]
+        selected_poly = selected_poly.reshape((-1, 2)).astype(np.int32)
+        max_x_start = max(np.min(selected_poly[:, 0]), 0)
+        min_x_end = min(np.max(selected_poly[:, 0]), w - 1)
+        max_y_start = max(np.min(selected_poly[:, 1]), 0)
+        min_y_end = min(np.max(selected_poly[:, 1]), h - 1)
+
+        if len(results['gt_polygons']) > 0:
+            polygons = results['gt_polygons']
+            for polygon in polygons:
+                polygon = polygon.reshape((-1, 2)).astype(np.int32)
+                clip_x = np.clip(polygon[:, 0], 0, w - 1)
+                clip_y = np.clip(polygon[:, 1], 0, h - 1)
+                min_x, max_x = np.min(clip_x), np.max(clip_x)
+                min_y, max_y = np.min(clip_y), np.max(clip_y)
+
+                x_valid_array[min_x:max_x] = 0
+                y_valid_array[min_y:max_y] = 0
+
+        min_w = int(w * self.min_side_ratio)
+        min_h = int(h * self.min_side_ratio)
+
+        x1, x2 = self._sample_valid_start_end(x_valid_array, min_w,
+                                              max_x_start, min_x_end)
+        y1, y2 = self._sample_valid_start_end(y_valid_array, min_h,
+                                              max_y_start, min_y_end)
+
+        return np.array([x1, y1, x2, y2])
+
+    def _crop_img(self, img: np.ndarray, bbox: np.ndarray) -> np.ndarray:
+        """Crop image given a bbox region.
+            Args:
+                img (ndarray): Image.
+                bbox (ndarray): Cropping region in shape (4, )
+
+            Returns:
+                ndarray: Cropped image.
+        """
+        assert img.ndim == 3
+        h, w, _ = img.shape
+        assert 0 <= bbox[1] < bbox[3] <= h
+        assert 0 <= bbox[0] < bbox[2] <= w
+        return img[bbox[1]:bbox[3], bbox[0]:bbox[2]]
+
+    def transform(self, results: Dict) -> Dict:
+        """Applying random crop on results.
+        Args:
+            results (dict): Result dict contains the data to transform.
+
+        Returns:
+            dict: The transformed data.
+        """
+        if len(results['gt_polygons']) < 1:
+            return results
+
+        crop_box = self._sample_crop_box(results['img'].shape, results)
+        img = self._crop_img(results['img'], crop_box)
+        results['img'] = img
+        results['img_shape'] = img.shape[:2]
+        crop_x = crop_box[0]
+        crop_y = crop_box[1]
+        crop_w = crop_box[2] - crop_box[0]
+        crop_h = crop_box[3] - crop_box[1]
+
+        labels = results['gt_bboxes_labels']
+        valid_labels = []
+        ignored = results['gt_ignored']
+        valid_ignored = []
+        if 'gt_texts' in results:
+            valid_texts = []
+            texts = results['gt_texts']
+
+        # for polygons
+        polys = results['gt_polygons']
+        valid_polys = []
+        for idx, poly in enumerate(polys):
+            poly = poly.reshape(-1, 2)
+            poly = poly - (crop_x, crop_y)
+            if not is_poly_outside_rect(poly, [0, 0, crop_w, crop_h]):
+                valid_polys.append(poly.flatten())
+                valid_labels.append(labels[idx])
+                valid_ignored.append(ignored[idx])
+                if 'gt_texts' in results:
+                    valid_texts.append(texts[idx])
+        results['gt_polygons'] = valid_polys
+        results['gt_bboxes_labels'] = np.array(valid_labels, dtype=np.int64)
+        results['gt_ignored'] = np.array(valid_ignored, dtype=bool)
+        if 'gt_texts' in results:
+            results['gt_texts'] = valid_texts
+        # for bboxes
+        bboxes = results['gt_bboxes']
+        valid_bboxes = []
+        for bbox in bboxes:
+            bbox = bbox.reshape(-1, 2)
+            bbox = bbox - (crop_x, crop_y)
+            if not is_poly_outside_rect(bbox, [0, 0, crop_w, crop_h]):
+                valid_bboxes.append(bbox.flatten())
+        assert (len(valid_bboxes) == len(valid_polys))
+        results['gt_bboxes'] = np.array(valid_bboxes).astype(np.float32)
+
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(min_side_ratio = {self.min_side_ratio})'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class TextDetRandomCrop(BaseTransform):
+    """Randomly select a region and crop images to a target size and make sure
+    to contain text region. This transform may break up text instances, and for
+    broken text instances, we will crop it's bbox and polygon coordinates. This
+    transform is recommend to be used in segmentation-based network.
+
+    Required Keys:
+
+    - img
+    - gt_polygons
+    - gt_bboxes
+    - gt_bboxes_labels
+    - gt_ignored
+
+    Modified Keys:
+
+    - img
+    - img_shape
+    - gt_polygons
+    - gt_bboxes
+    - gt_bboxes_labels
+    - gt_ignored
+
+    Args:
+        target_size (tuple(int, int) or int): Target size for the cropped
+            image. If it's a tuple, then target width and target height will be
+            ``target_size[0]`` and ``target_size[1]``, respectively. If it's an
+            integer, them both target width and target height will be
+            ``target_size``.
+        positive_sample_ratio (float): The probability of sampling regions
+            that go through text regions.
+    """
+
+    def __init__(self,
+                 target_size: Tuple[int, int] or int,
+                 positive_sample_ratio: float = 5.0 / 8.0) -> None:
+        self.target_size = target_size if isinstance(
+            target_size, tuple) else (target_size, target_size)
+        self.positive_sample_ratio = positive_sample_ratio
+
+    @cache_randomness
+    def _get_postive_prob(self) -> float:
+        """Get the probability to do positive sample.
+
+        Returns:
+            float: The probability to do positive sample.
+        """
+        return np.random.random_sample()
+
+    @cache_randomness
+    def _sample_num(self, start, end):
+        """Sample a number in range [start, end].
+
+        Args:
+            start (int): Starting point.
+            end (int): Ending point.
+
+        Returns:
+            (int): Sampled number.
+        """
+        return np.random.randint(start, end)
+
+    def _sample_offset(self, gt_polygons: Sequence[np.ndarray],
+                       img_size: Tuple[int, int]) -> Tuple[int, int]:
+        """Samples the top-left coordinate of a crop region, ensuring that the
+        cropped region contains at least one polygon.
+
+        Args:
+            gt_polygons (list(ndarray)) : Polygons.
+            img_size (tuple(int, int)) : Image size in the format of
+                (height, width).
+
+        Returns:
+            tuple(int, int): Top-left coordinate of the cropped region.
+        """
+        h, w = img_size
+        t_w, t_h = self.target_size
+
+        # target size is bigger than origin size
+        t_h = t_h if t_h < h else h
+        t_w = t_w if t_w < w else w
+        if (gt_polygons is not None
+                and self._get_postive_prob() < self.positive_sample_ratio
+                and np.max(gt_polygons) > 0):
+
+            # make sure to crop the positive region
+
+            # the minimum top left to crop positive region (h,w)
+            tl = np.array([h + 1, w + 1], dtype=np.float32)
+            for gt_polygon in gt_polygons:
+                temp_point = np.min(gt_polygon.reshape(2, -1), axis=1)
+                if temp_point[0] <= tl[0] and temp_point[1] <= tl[1]:
+                    tl = temp_point
+            tl = tl - (t_h, t_w)
+            tl[tl < 0] = 0
+            # the maximum bottum right to crop positive region
+            br = np.array([0, 0], dtype=np.float32)
+            for gt_polygon in gt_polygons:
+                temp_point = np.max(gt_polygon.reshape(2, -1), axis=1)
+                if temp_point[0] > br[0] and temp_point[1] > br[1]:
+                    br = temp_point
+            br = br - (t_h, t_w)
+            br[br < 0] = 0
+
+            # if br is too big so that crop the outside region of img
+            br[0] = min(br[0], h - t_h)
+            br[1] = min(br[1], w - t_w)
+            #
+            h = self._sample_num(tl[0], br[0]) if tl[0] < br[0] else 0
+            w = self._sample_num(tl[1], br[1]) if tl[1] < br[1] else 0
+        else:
+            # make sure not to crop outside of img
+
+            h = self._sample_num(0, h - t_h) if h - t_h > 0 else 0
+            w = self._sample_num(0, w - t_w) if w - t_w > 0 else 0
+
+        return (h, w)
+
+    def _crop_img(self, img: np.ndarray, offset: Tuple[int, int],
+                  target_size: Tuple[int, int]) -> np.ndarray:
+        """Crop the image given an offset and a target size.
+
+        Args:
+            img (ndarray): Image.
+            offset (Tuple[int. int]): Coordinates of the starting point.
+            target_size: Target image size.
+        """
+        h, w = img.shape[:2]
+        target_size = target_size[::-1]
+        br = np.min(
+            np.stack((np.array(offset) + np.array(target_size), np.array(
+                (h, w)))),
+            axis=0)
+        return img[offset[0]:br[0], offset[1]:br[1]], np.array(
+            [offset[1], offset[0], br[1], br[0]])
+
+    def _crop_bboxes(self, bboxes: Sequence[np.ndarray], crop_bbox: np.ndarray
+                     ) -> Tuple[np.ndarray, Sequence[int]]:
+        """Crop bounding boxes to be within a crop region.
+        Args:
+            bboxes (ArrayLike): Bounding boxes in shape (N, 4).
+            crop_bbox (ArrayLike): Cropping region in shape (4, ).
+
+        Returns:
+            tuple(ndarray, list[int]):
+            - (ndarray): The rest of the bboxes located in the crop region.
+            - (list[int]): Index list of the reserved bboxes.
+        """
+
+        bboxes_cropped = []
+        kept_idx = []
+        for idx, bbox in enumerate(bboxes):
+            bbox_cropped = crop_polygon(bbox2poly(bbox), crop_bbox)
+            if bbox_cropped is not None:
+                bbox_cropped = poly2bbox(bbox_cropped)
+                bbox_cropped = bbox_cropped.reshape(
+                    -1, 2) - (crop_bbox[0], crop_bbox[1])
+                bboxes_cropped.append(bbox_cropped.reshape(-1))
+                kept_idx.append(idx)
+        if len(bboxes_cropped) != 0:
+            return (np.array(bboxes_cropped, dtype=np.float32), kept_idx)
+        else:
+            return (np.zeros([0, 4], dtype=np.float32), kept_idx)
+
+    def _crop_polygons(self, polygons: Sequence[np.ndarray],
+                       crop_bbox: np.ndarray) -> Sequence[np.ndarray]:
+        """Crop polygons to be within a crop region. If polygon crosses the
+        crop_bbox, we will keep the part left in crop_bbox by cropping its
+        boardline.
+
+        Args:
+            polygons (list(ndarray)): List of polygons [(N1, ), (N2, ), ...].
+            crop_bbox (ndarray): Cropping region. [x1, y1, x2, y1].
+
+        Returns
+            tuple(List(ArrayLike), list[int]):
+                - (List(ArrayLike)): The rest of the polygons located in the
+                    crop region.
+                - (list[int]): Index list of the reserved polygons.
+        """
+        polygons_cropped = []
+        kept_idx = []
+        for idx, polygon in enumerate(polygons):
+            poly = crop_polygon(polygon, crop_bbox)
+            if poly is not None:
+                poly = poly.reshape(-1, 2) - (crop_bbox[0], crop_bbox[1])
+                polygons_cropped.append(poly.reshape(-1))
+                kept_idx.append(idx)
+        return (polygons_cropped, kept_idx)
+
+    def transform(self, results: Dict) -> Dict:
+        """Applying random crop on results.
+        Args:
+            results (dict): Result dict contains the data to transform.
+
+        Returns:
+            dict: The transformed data
+        """
+        gt_polygons = results['gt_polygons']
+        crop_offset = self._sample_offset(gt_polygons,
+                                          results['img'].shape[:2])
+
+        img, crop_bbox = self._crop_img(results['img'], crop_offset,
+                                        self.target_size)
+        results['img'] = img
+        results['img_shape'] = img.shape[:2]
+
+        # for bboxes and polygons
+        gt_bboxes, bboxes_kept_idx = self._crop_bboxes(results['gt_bboxes'],
+                                                       crop_bbox)
+        gt_polygons, polygon_kept_idx = self._crop_polygons(
+            gt_polygons, crop_bbox)
+        assert bboxes_kept_idx == polygon_kept_idx
+
+        results['gt_bboxes'] = gt_bboxes
+        results['gt_polygons'] = gt_polygons
+        results['gt_bboxes_labels'] = results['gt_bboxes_labels'][
+            bboxes_kept_idx]
+        results['gt_ignored'] = results['gt_ignored'][bboxes_kept_idx]
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(target_size = {self.target_size}, '
+        repr_str += f'positive_sample_ratio = {self.positive_sample_ratio})'
         return repr_str
