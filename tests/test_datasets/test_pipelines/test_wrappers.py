@@ -6,7 +6,7 @@ from typing import Dict, List, Optional
 import numpy as np
 from shapely.geometry import Polygon
 
-from mmocr.datasets.pipelines import ImgAug
+from mmocr.datasets.pipelines import ImgAug, TorchVisionWrapper
 
 
 class TestImgAug(unittest.TestCase):
@@ -140,3 +140,26 @@ class TestImgAug(unittest.TestCase):
         self.assertEqual(
             repr(transform),
             ("ImgAug(args = [['Resize', [0.5, 3.0]], ['Fliplr', 0.5]])"))
+
+
+class TestTorchVisionWrapper(unittest.TestCase):
+
+    def test_transform(self):
+        x = {'img': np.ones((128, 100, 3), dtype=np.uint8)}
+        # object not found error
+        with self.assertRaises(Exception):
+            TorchVisionWrapper(op='NonExist')
+        with self.assertRaises(TypeError):
+            TorchVisionWrapper()
+        f = TorchVisionWrapper('Grayscale')
+        with self.assertRaises(AssertionError):
+            f({})
+        results = f(x)
+        assert results['img'].shape == (128, 100)
+        assert results['img_shape'] == (128, 100)
+
+    def test_repr(self):
+        f = TorchVisionWrapper('Grayscale', num_output_channels=3)
+        self.assertEqual(
+            repr(f),
+            'TorchVisionWrapper(op = Grayscale, num_output_channels = 3)')

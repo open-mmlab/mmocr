@@ -4,7 +4,9 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import imgaug
 import imgaug.augmenters as iaa
 import numpy as np
+import torchvision.transforms as torchvision_transforms
 from mmcv.transforms.base import BaseTransform
+from PIL import Image
 
 from mmocr.registry import TRANSFORMS
 
@@ -232,4 +234,67 @@ class ImgAug(BaseTransform):
     def __repr__(self):
         repr_str = self.__class__.__name__
         repr_str += f'(args = {self.args})'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class TorchVisionWrapper(BaseTransform):
+    """A wrapper around torchvision trasnforms. It applies specific transform
+    to ``img`` and updates ``height`` and ``width`` accordingly.
+
+    Required Keys:
+
+    - img (ndarray): The input image.
+
+    Modified Keys:
+
+    - img (ndarray): The modified image.
+    - img_shape (tuple(int, int)): The shape of the image in (height, width).
+
+
+    Warning:
+        This transform only affects the image but not its associated
+        annotations, such as word bounding boxes and polygons. Therefore,
+        it may only be applicable to text recognition tasks.
+
+    Args:
+        op (str): The name of any transform class in
+            :func:`torchvision.transforms`.
+        **kwargs: Arguments that will be passed to initializer of torchvision
+            transform.
+    """
+
+    def __init__(self, op: str, **kwargs) -> None:
+        assert isinstance(op, str)
+        obj_cls = getattr(torchvision_transforms, op)
+        self.torchvision = obj_cls(**kwargs)
+        self.op = op
+        self.kwargs = kwargs
+
+    def transform(self, results):
+        """Transform the image.
+
+        Args:
+            results (dict): Result dict from the data loader.
+
+        Returns:
+            dict: Transformed results.
+        """
+        assert 'img' in results
+        # BGR -> RGB
+        img = results['img'][..., ::-1]
+        img = Image.fromarray(img)
+        img = self.torchvision(img)
+        img = np.asarray(img)
+        img = img[..., ::-1]
+        results['img'] = img
+        results['img_shape'] = img.shape[:2]
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(op = {self.op}'
+        for k, v in self.kwargs.items():
+            repr_str += f', {k} = {v}'
+        repr_str += ')'
         return repr_str

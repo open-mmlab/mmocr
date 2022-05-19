@@ -3,10 +3,8 @@ import math
 
 import mmcv
 import numpy as np
-import torchvision.transforms as transforms
 from mmdet.core import BitmapMasks, PolygonMasks
 from mmdet.datasets.pipelines.transforms import Resize
-from PIL import Image
 
 import mmocr.core.evaluation.utils as eval_utils
 from mmocr.registry import TRANSFORMS
@@ -175,29 +173,6 @@ class RandomCropInstances:
 
 
 @TRANSFORMS.register_module()
-class ColorJitter:
-    """An interface for torch color jitter so that it can be invoked in
-    mmdetection pipeline."""
-
-    def __init__(self, **kwargs):
-        self.transform = transforms.ColorJitter(**kwargs)
-
-    def __call__(self, results):
-        # img is bgr
-        img = results['img'][..., ::-1]
-        img = Image.fromarray(img)
-        img = self.transform(img)
-        img = np.asarray(img)
-        img = img[..., ::-1]
-        results['img'] = img
-        return results
-
-    def __repr__(self):
-        repr_str = self.__class__.__name__
-        return repr_str
-
-
-@TRANSFORMS.register_module()
 class ScaleAspectJitter(Resize):
     """Resize image and segmentation mask encoded by coordinates.
 
@@ -284,41 +259,6 @@ class ScaleAspectJitter(Resize):
         w_scale = scale / math.sqrt(aspect)
         results['scale'] = (int(w * w_scale), int(h * h_scale))  # (w,h)
         results['scale_idx'] = None
-
-
-@TRANSFORMS.register_module()
-class AffineJitter:
-    """An interface for torchvision random affine so that it can be invoked in
-    mmdet pipeline."""
-
-    def __init__(self,
-                 degrees=4,
-                 translate=(0.02, 0.04),
-                 scale=(0.9, 1.1),
-                 shear=None,
-                 resample=False,
-                 fillcolor=0):
-        self.transform = transforms.RandomAffine(
-            degrees=degrees,
-            translate=translate,
-            scale=scale,
-            shear=shear,
-            resample=resample,
-            fillcolor=fillcolor)
-
-    def __call__(self, results):
-        # img is bgr
-        img = results['img'][..., ::-1]
-        img = Image.fromarray(img)
-        img = self.transform(img)
-        img = np.asarray(img)
-        img = img[..., ::-1]
-        results['img'] = img
-        return results
-
-    def __repr__(self):
-        repr_str = self.__class__.__name__
-        return repr_str
 
 
 @TRANSFORMS.register_module()

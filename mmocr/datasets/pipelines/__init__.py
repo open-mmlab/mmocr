@@ -14,21 +14,18 @@ from .processing import (PyramidRescale, RandomRotate, Resize,
 from .test_time_aug import MultiRotateAugOCR
 from .textdet_targets import (DBNetTargets, FCENetTargets, PANetTargets,
                               TextSnakeTargets)
-from .transform_wrappers import OneOfWrapper, RandomWrapper, TorchVisionWrapper
-from .transforms import (ColorJitter, RandomCropInstances,
-                         RandomCropPolyInstances, RandomScaling,
-                         ScaleAspectJitter, SquareResizePad)
-from .wrappers import ImgAug
+from .transforms import (RandomCropInstances, RandomCropPolyInstances,
+                         RandomScaling, ScaleAspectJitter, SquareResizePad)
+from .wrappers import ImgAug, TorchVisionWrapper
 
 __all__ = [
     'LoadTextAnnotations', 'NormalizeOCR', 'OnlineCropOCR', 'ResizeOCR',
-    'ToTensorOCR', 'DBNetTargets', 'PANetTargets', 'ColorJitter',
-    'RandomCropInstances', 'RandomRotate', 'ScaleAspectJitter',
-    'MultiRotateAugOCR', 'OCRSegTargets', 'FancyPCA',
-    'RandomCropPolyInstances', 'RandomPaddingOCR', 'ImgAug', 'EastRandomCrop',
-    'RandomRotateImageBox', 'OpencvToPil', 'PilToOpencv', 'SquareResizePad',
-    'TextSnakeTargets', 'sort_vertex', 'LoadImageFromNdarray', 'sort_vertex8',
-    'FCENetTargets', 'RandomScaling', 'TextDetRandomCropFlip', 'NerTransform',
-    'ToTensorNER', 'ResizeNoImg', 'PyramidRescale', 'OneOfWrapper',
-    'RandomWrapper', 'TorchVisionWrapper', 'LoadImageFromLMDB', 'Resize'
+    'ToTensorOCR', 'DBNetTargets', 'PANetTargets', 'RandomCropInstances',
+    'RandomRotate', 'ScaleAspectJitter', 'MultiRotateAugOCR', 'OCRSegTargets',
+    'FancyPCA', 'RandomCropPolyInstances', 'RandomPaddingOCR', 'ImgAug',
+    'EastRandomCrop', 'RandomRotateImageBox', 'OpencvToPil', 'PilToOpencv',
+    'SquareResizePad', 'TextSnakeTargets', 'sort_vertex',
+    'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets', 'RandomScaling',
+    'TextDetRandomCropFlip', 'NerTransform', 'ToTensorNER', 'ResizeNoImg',
+    'PyramidRescale', 'TorchVisionWrapper', 'LoadImageFromLMDB', 'Resize'
 ]
