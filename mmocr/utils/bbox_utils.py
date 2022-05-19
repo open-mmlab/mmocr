@@ -2,6 +2,7 @@
 from typing import Tuple
 
 import numpy as np
+from numpy.typing import ArrayLike
 
 
 def rescale_bbox(bbox: np.ndarray,
@@ -58,11 +59,13 @@ def rescale_bboxes(bboxes: np.ndarray,
     return bboxes
 
 
-def bbox2poly(bbox: np.ndarray) -> np.ndarray:
+def bbox2poly(bbox: ArrayLike) -> np.array:
     """Converting a bounding box to a polygon.
 
     Args:
-        bbox (np.array): The bounding box with two points [x1, y1, x2, y2].
+        bbox (ArrayLike): A bbox. In any form can be accessed by 1-D indices.
+         E.g. list[float], np.ndarray, or torch.Tensor. bbox is written in
+            [x1, y1, x2, y2].
 
     Returns:
         np.array: The converted polygon [x1, y1, x2, y1, x2, y2, x1, y2].
@@ -70,5 +73,4 @@ def bbox2poly(bbox: np.ndarray) -> np.ndarray:
     assert len(bbox) == 4
     return np.array([
         bbox[0], bbox[1], bbox[2], bbox[1], bbox[2], bbox[3], bbox[0], bbox[3]
-    ],
-                    dtype=np.float32)
+    ])

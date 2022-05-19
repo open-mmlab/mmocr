@@ -24,7 +24,7 @@ train_pipeline_ctw1500 = [
     # shrink_ratio is from big to small. The 1st must be 1.0
     dict(type='PANetTargets', shrink_ratio=shrink_ratio_train_ctw1500),
     dict(type='RandomFlip', flip_ratio=0.5, direction='horizontal'),
-    dict(type='RandomRotateTextDet'),
+    dict(type='RandomRotate', rotate_ratio=1.0, max_angle=10),
     dict(
         type='RandomCropInstances',
         target_size=target_size_train_ctw1500,
@@ -75,7 +75,7 @@ train_pipeline_icdar2015 = [
         keep_ratio=False),
     dict(type='PANetTargets', shrink_ratio=shrink_ratio_train_icdar2015),
     dict(type='RandomFlip', flip_ratio=0.5, direction='horizontal'),
-    dict(type='RandomRotateTextDet'),
+    dict(type='RandomRotate', rotate_ratio=1.0, max_angle=10),
     dict(
         type='RandomCropInstances',
         target_size=target_size_train_icdar2015,
@@ -126,7 +126,7 @@ train_pipeline_icdar2017 = [
         keep_ratio=False),
     dict(type='PANetTargets', shrink_ratio=shrink_ratio_train_icdar2017),
     dict(type='RandomFlip', flip_ratio=0.5, direction='horizontal'),
-    dict(type='RandomRotateTextDet'),
+    dict(type='RandomRotate', rotate_ratio=1.0, max_angle=10),
     dict(
         type='RandomCropInstances',
         target_size=target_size_train_icdar2017,

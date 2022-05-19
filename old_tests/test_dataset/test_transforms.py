@@ -131,24 +131,6 @@ def test_scale_aspect_jitter(mock_random):
     assert results['scale'] == (650, 2600)
 
 
-@mock.patch('%s.transforms.np.random.random_sample' % __name__)
-def test_random_rotate(mock_random):
-
-    mock_random.side_effect = [0.5, 0]
-    results = {}
-    img = np.random.rand(5, 5)
-    results['img'] = img.copy()
-    results['mask_fields'] = ['masks']
-    gt_kernels = [results['img'].copy()]
-    results['masks'] = BitmapMasks(gt_kernels, 5, 5)
-
-    rotater = transforms.RandomRotateTextDet()
-
-    results = rotater(results)
-    assert np.allclose(results['img'], img)
-    assert np.allclose(results['masks'].masks, img)
-
-
 def test_color_jitter():
     img = np.ones((64, 256, 3), dtype=np.uint8)
     results = {'img': img}
@@ -293,24 +275,6 @@ def test_random_crop_poly_instances(mock_randint, mock_sample):
     assert len(output['gt_masks']) == 2
     assert np.allclose(output['gt_masks'].masks[0][0], poly_masks.masks[0][0])
     assert np.allclose(output['gt_masks'].masks[1][0], poly_masks.masks[1][0])
-    assert output['img'].shape == (30, 30, 3)
-
-
-@mock.patch('%s.transforms.np.random.random_sample' % __name__)
-def test_random_rotate_poly_instances(mock_sample):
-    results = {}
-    img = np.zeros((30, 30, 3))
-    poly_masks = PolygonMasks(
-        [[np.array([10., 10., 20., 10., 20., 20., 10., 20.])]], 30, 30)
-    results['img'] = img
-    results['gt_masks'] = poly_masks
-    results['mask_fields'] = ['gt_masks']
-    rrpi = transforms.RandomRotatePolyInstances(rotate_ratio=1.0, max_angle=90)
-
-    mock_sample.side_effect = [0., 1.]
-    output = rrpi(results)
-    assert np.allclose(output['gt_masks'].masks[0][0],
-                       np.array([10., 20., 10., 10., 20., 10., 20., 20.]))
     assert output['img'].shape == (30, 30, 3)
 
 

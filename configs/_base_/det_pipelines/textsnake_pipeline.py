@@ -16,10 +16,11 @@ train_pipeline = [
         crop_ratio=0.65,
         min_side_ratio=0.3),
     dict(
-        type='RandomRotatePolyInstances',
+        type='RandomRotate',
         rotate_ratio=0.5,
         max_angle=20,
-        pad_with_fixed_color=False),
+        pad_with_fixed_color=False,
+        use_canvas=True),
     dict(
         type='ScaleAspectJitter',
         img_scale=[(3000, 736)],  # unused

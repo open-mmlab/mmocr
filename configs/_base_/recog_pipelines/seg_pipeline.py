@@ -26,7 +26,7 @@ train_pipeline = [
         type='OCRSegTargets',
         label_convertor=gt_label_convertor,
         box_type='char_quads'),
-    dict(type='RandomRotateTextDet', rotate_ratio=0.5, max_angle=15),
+    dict(type='RandomRotate', rotate_ratio=0.5, max_angle=15),
     dict(type='ColorJitter', brightness=0.4, contrast=0.4, saturation=0.4),
     dict(type='ToTensorOCR'),
     dict(type='FancyPCA'),

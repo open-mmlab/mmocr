@@ -4,8 +4,8 @@ import unittest
 import numpy as np
 import torch
 
-from mmocr.utils import rescale_polygon, rescale_polygons
-from mmocr.utils.polygon_utils import crop_polygon
+from mmocr.utils import (crop_polygon, poly2bbox, rescale_polygon,
+                         rescale_polygons)
 
 
 class TestCropPolygon(unittest.TestCase):
@@ -82,3 +82,14 @@ class TestPolygonUtils(unittest.TestCase):
             np.allclose(
                 rescale_polygons(polygons, scale_factor, mode='mul'),
                 [np.array([0, 0, 0.3, 0, 0.3, 0.4, 0, 0.4])]))
+
+    def test_poly2bbox(self):
+        # test np.array
+        polygon = np.array([0, 0, 1, 0, 1, 1, 0, 1])
+        self.assertTrue(np.all(poly2bbox(polygon) == np.array([0, 0, 1, 1])))
+        # test list
+        polygon = [0, 0, 1, 0, 1, 1, 0, 1]
+        self.assertTrue(np.all(poly2bbox(polygon) == np.array([0, 0, 1, 1])))
+        # test tensor
+        polygon = torch.Tensor([0, 0, 1, 0, 1, 1, 0, 1])
+        self.assertTrue(np.all(poly2bbox(polygon) == np.array([0, 0, 1, 1])))

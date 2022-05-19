@@ -1,10 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import unittest
+import unittest.mock as mock
 
 import numpy as np
 
-from mmocr.datasets.pipelines import PyramidRescale, Resize
+from mmocr.datasets.pipelines import PyramidRescale, RandomRotate, Resize
 
 
 class TestPyramidRescale(unittest.TestCase):
@@ -48,11 +49,81 @@ class TestPyramidRescale(unittest.TestCase):
     def test_repr(self):
         transform = PyramidRescale(
             factor=4, base_shape=(128, 512), randomize_factor=False)
-        print(repr(transform))
         self.assertEqual(
             repr(transform),
             ('PyramidRescale(factor = 4, randomize_factor = False, '
              'base_w = 128, base_h = 512)'))
+
+
+class TestRandomRotate(unittest.TestCase):
+
+    def setUp(self):
+        img = np.random.random((5, 5))
+        self.data_info1 = dict(img=img.copy())
+        self.data_info2 = dict(
+            img=np.random.random((30, 30, 3)),
+            gt_bboxes=np.array([[10, 10, 20, 20], [5, 5, 10, 10]]))
+        self.data_info3 = dict(
+            img=np.random.random((30, 30, 3)),
+            gt_polygons=[np.array([10., 10., 20., 10., 20., 20., 10., 20.])])
+
+    def test_init(self):
+        # max angle is float
+        with self.assertRaisesRegex(TypeError,
+                                    '`max_angle` should be an integer'):
+            RandomRotate(max_angle=16.8)
+        # invalid pad value
+        with self.assertRaisesRegex(
+                ValueError, '`pad_value` should contain three integers'):
+            RandomRotate(pad_value=[16.8, 0.1])
+
+    def test_transform(self):
+        self._test_recog()
+        self._test_bboxes()
+        self._test_polygons()
+
+    def _test_recog(self):
+        # test random rotate for recognition (image only) input
+        transform = RandomRotate(max_angle=10)
+        results = transform(copy.deepcopy(self.data_info1))
+        self.assertTrue(np.allclose(results['img'], self.data_info1['img']))
+
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.random_sample')
+    def _test_bboxes(self, mock_sample):
+        # test random rotate for bboxes
+        # returns 1. for random_sample() in _sample_angle(), i.e., angle = 90
+        mock_sample.side_effect = [1.]
+        transform = RandomRotate(max_angle=90, use_canvas=True)
+        results = transform(copy.deepcopy(self.data_info2))
+        self.assertTrue(
+            np.allclose(results['gt_bboxes'][0], np.array([10, 10, 20, 20])))
+        self.assertTrue(
+            np.allclose(results['gt_bboxes'][1], np.array([5, 20, 10, 25])))
+        self.assertEqual(results['img'].shape, self.data_info2['img'].shape)
+
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.random_sample')
+    def _test_polygons(self, mock_sample):
+        # test random rotate for polygons
+        # returns 1. for random_sample() in _sample_angle(), i.e., angle = 90
+        mock_sample.side_effect = [1.]
+        transform = RandomRotate(max_angle=90, use_canvas=True)
+        results = transform(copy.deepcopy(self.data_info3))
+        self.assertTrue(
+            np.allclose(results['gt_polygons'][0],
+                        np.array([10., 20., 10., 10., 20., 10., 20., 20.])))
+        self.assertEqual(results['img'].shape, self.data_info3['img'].shape)
+
+    def test_repr(self):
+        transform = RandomRotate(
+            max_angle=10,
+            pad_with_fixed_color=False,
+            pad_value=(0, 0, 0),
+            use_canvas=False)
+        self.assertEqual(
+            repr(transform),
+            ('RandomRotate(max_angle = 10, '
+             'pad_with_fixed_color = False, pad_value = (0, 0, 0), '
+             'use_canvas = False)'))
 
 
 class TestResize(unittest.TestCase):

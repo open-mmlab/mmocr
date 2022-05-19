@@ -22,7 +22,7 @@ train_pipeline = [
         keep_ratio=False),
     dict(type='PSENetTargets'),
     dict(type='RandomFlip', flip_ratio=0.5, direction='horizontal'),
-    dict(type='RandomRotateTextDet'),
+    dict(type='RandomRotate', rotate_ratio=1.0, max_angle=10),
     dict(
         type='RandomCropInstances',
         target_size=(640, 640),

@@ -16,7 +16,8 @@ train_pipeline = [
                 type='OneOfWrapper',
                 transforms=[
                     dict(
-                        type='RandomRotateTextDet',
+                        type='RandomRotate',
+                        rotate_ratio=1.0,
                         max_angle=15,
                     ),
                     dict(
