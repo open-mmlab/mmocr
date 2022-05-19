@@ -2,9 +2,7 @@
 import unittest.mock as mock
 
 import numpy as np
-import torchvision.transforms as TF
 from mmdet.core import BitmapMasks, PolygonMasks
-from PIL import Image
 
 import mmocr.datasets.pipelines.transforms as transforms
 
@@ -129,38 +127,6 @@ def test_scale_aspect_jitter(mock_random):
     # scale1 0.5， scale2=1 scale =0.5  650/1000, w, h
     # print(results['scale'])
     assert results['scale'] == (650, 2600)
-
-
-def test_color_jitter():
-    img = np.ones((64, 256, 3), dtype=np.uint8)
-    results = {'img': img}
-
-    pt_official_color_jitter = TF.ColorJitter()
-    output1 = pt_official_color_jitter(img)
-
-    color_jitter = transforms.ColorJitter()
-    output2 = color_jitter(results)
-
-    assert np.allclose(output1, output2['img'])
-
-
-def test_affine_jitter():
-    img = np.ones((64, 256, 3), dtype=np.uint8)
-    results = {'img': img}
-
-    pt_official_affine_jitter = TF.RandomAffine(degrees=0)
-    output1 = pt_official_affine_jitter(Image.fromarray(img))
-
-    affine_jitter = transforms.AffineJitter(
-        degrees=0,
-        translate=None,
-        scale=None,
-        shear=None,
-        resample=False,
-        fillcolor=0)
-    output2 = affine_jitter(results)
-
-    assert np.allclose(np.array(output1), output2['img'])
 
 
 def test_random_scale():
