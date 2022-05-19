@@ -4,9 +4,12 @@ import unittest
 import unittest.mock as mock
 
 import numpy as np
+from mmcv.transforms import Pad
 
-from mmocr.datasets.pipelines import (PyramidRescale, RandomRotate, Resize,
+from mmocr.datasets.pipelines import (PyramidRescale, RandomCrop, RandomRotate,
+                                      Resize, TextDetRandomCrop,
                                       TextDetRandomCropFlip)
+from mmocr.utils import bbox2poly
 
 
 class TestPyramidRescale(unittest.TestCase):
@@ -280,3 +283,238 @@ class TestResize(unittest.TestCase):
                               'scale_factor=None, keep_ratio=True, '
                               'clip_object_border=True), backend=cv2), '
                               'interpolation=bilinear)'))
+
+
+class TestRandomCrop(unittest.TestCase):
+
+    def setUp(self):
+        img = np.zeros((30, 30, 3))
+        gt_polygons = [
+            np.array([5., 5., 25., 5., 25., 10., 5., 10.]),
+            np.array([5., 20., 25., 20., 25., 25., 5., 25.])
+        ]
+        gt_bboxes = np.array([[5, 5, 25, 10], [5, 20, 25, 25]])
+        labels = np.array([0, 1])
+        gt_ignored = np.array([True, False], dtype=bool)
+        texts = ['text1', 'text2']
+        self.data_info = dict(
+            img=img,
+            gt_polygons=gt_polygons,
+            gt_bboxes=gt_bboxes,
+            gt_bboxes_labels=labels,
+            gt_ignored=gt_ignored,
+            gt_texts=texts)
+
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.randint')
+    def test_sample_crop_box(self, mock_randint):
+        trans = RandomCrop(min_side_ratio=0.3)
+        mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 0, 0, 15]
+        crop_box = trans._sample_crop_box((30, 30), self.data_info.copy())
+        assert np.allclose(np.array(crop_box), np.array([0, 0, 30, 15]))
+
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.randint')
+    def test_transform(self, mock_randint):
+        mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 0, 0, 15]
+        trans = RandomCrop(min_side_ratio=0.3)
+        polygon_target = np.array([5., 5., 25., 5., 25., 10., 5., 10.])
+        bbox_target = np.array([[5., 5., 25., 10.]])
+        results = trans(self.data_info)
+
+        self.assertEqual(results['img'].shape, (15, 30, 3))
+        self.assertEqual(results['img_shape'], (15, 30))
+        self.assertEqual(results['gt_bboxes'].all(), bbox_target.all())
+        self.assertEqual(results['gt_bboxes'].shape, (1, 4))
+        self.assertTrue(len(results['gt_polygons']) == 1)
+        self.assertEqual(results['gt_polygons'][0].all(), polygon_target.all())
+        self.assertEqual(results['gt_bboxes_labels'][0], 0)
+        self.assertEqual(results['gt_ignored'][0], True)
+        self.assertEqual(results['gt_texts'][0], 'text1')
+
+    def test_repr(self):
+        transform = RandomCrop(min_side_ratio=0.4)
+        print(repr(transform))
+        self.assertEqual(repr(transform), ('RandomCrop(min_side_ratio = 0.4)'))
+
+
+class TestTextDetRandomCrop(unittest.TestCase):
+
+    def setUp(self):
+        img = np.zeros((5, 5, 3))
+        gt_polygons = [np.array([2, 2, 5, 2, 5, 5, 2, 5])]
+        gt_bboxes = np.array([[2, 2, 5, 5]])
+        gt_bboxes_labels = np.array([0])
+        gt_ignored = np.array([True], dtype=bool)
+        self.data_info = dict(
+            img=img,
+            gt_polygons=gt_polygons,
+            gt_bboxes=gt_bboxes,
+            gt_bboxes_labels=gt_bboxes_labels,
+            gt_ignored=gt_ignored)
+
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.random_sample')
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.randint')
+    def test_sample_offset(self, mock_randint, mock_sample):
+        # test target size is bigger than image size
+        mock_sample.side_effect = [1]
+        trans = TextDetRandomCrop(target_size=(6, 6))
+        offset = trans._sample_offset(self.data_info['gt_polygons'],
+                                      self.data_info['img'].shape[:2])
+        self.assertEqual(offset, (0, 0))
+
+        # test the first bracnh in sample_offset
+        mock_sample.side_effect = [0.1]
+        mock_randint.side_effect = [1, 1]
+        trans = TextDetRandomCrop(target_size=(3, 3))
+        offset = trans._sample_offset(self.data_info['gt_polygons'],
+                                      self.data_info['img'].shape[:2])
+        self.assertEqual(offset, (1, 1))
+
+        # test the second branch in sample_offset
+        mock_sample.side_effect = [1]
+        mock_randint.side_effect = [1, 2]
+        trans = TextDetRandomCrop(target_size=(3, 3))
+        offset = trans._sample_offset(self.data_info['gt_polygons'],
+                                      self.data_info['img'].shape[:2])
+        self.assertEqual(offset, (1, 2))
+
+        mock_sample.side_effect = [1]
+        mock_randint.side_effect = [1, 2]
+        trans = TextDetRandomCrop(target_size=(5, 5))
+        offset = trans._sample_offset(self.data_info['gt_polygons'],
+                                      self.data_info['img'].shape[:2])
+        self.assertEqual(offset, (0, 0))
+
+    def test_crop_image(self):
+        img = self.data_info['img']
+        offset = [0, 0]
+        target = [6, 6]
+        trans = TextDetRandomCrop(target_size=(3, 3))
+        crop = trans._crop_img(img, offset, target)
+        self.assertEqual(img.shape, crop[0].shape)
+
+        target = [3, 2]
+        crop = trans._crop_img(img, offset, target)
+        self.assertEqual(
+            np.array([[0, 0], [0, 0], [0, 0]]).all(), crop[0].all())
+        self.assertEqual(crop[1].all(), np.array([0, 0, 2, 3]).all())
+
+    def test_crop_bboxes(self):
+        trans = TextDetRandomCrop(target_size=(3, 3))
+        crop_box = np.array([2, 3, 5, 5])
+        bboxes = np.array([[2, 3, 4, 4], [0, 0, 1, 1], [1, 2, 4, 4],
+                           [0, 0, 10, 10]])
+        kept_bboxes, kept_idx = trans._crop_bboxes(bboxes, crop_box)
+        self.assertEqual(
+            kept_bboxes.all(),
+            np.array([[0, 0, 2, 1], [0, 0, 2, 1], [0, 0, 3, 2]]).all())
+        self.assertEqual(kept_idx, [0, 2, 3])
+        self.assertEqual(kept_bboxes.shape, (3, 4))
+
+        bboxes = np.array([[10, 10, 11, 11], [0, 0, 1, 1]])
+        kept_bboxes, kept_idx = trans._crop_bboxes(bboxes, crop_box)
+        self.assertEqual(kept_bboxes.size, 0)
+        self.assertEqual(kept_bboxes.shape, (0, 4))
+        self.assertEqual(len(kept_idx), 0)
+
+    def test_crop_polygons(self):
+        trans = TextDetRandomCrop(target_size=(3, 3))
+        crop_box = np.array([2, 3, 5, 5])
+        polygons = [
+            bbox2poly([2, 3, 4, 4]),
+            bbox2poly([0, 0, 1, 1]),
+            bbox2poly([1, 2, 4, 4]),
+            bbox2poly([0, 0, 10, 10])
+        ]
+        kept_polygons, kept_idx = trans._crop_polygons(polygons, crop_box)
+        target_polygons = [
+            bbox2poly([0, 0, 2, 1]),
+            bbox2poly([0, 0, 2, 1]),
+            bbox2poly([0, 0, 3, 2]),
+        ]
+        self.assertEqual(len(kept_polygons), 3)
+        self.assertEqual(kept_idx, [0, 2, 3])
+        self.assertEqual(target_polygons[0].all(), kept_polygons[0].all())
+        self.assertEqual(target_polygons[1].all(), kept_polygons[1].all())
+        self.assertEqual(target_polygons[2].all(), kept_polygons[2].all())
+
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.random_sample')
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.randint')
+    def test_transform(self, mock_randint, mock_sample):
+        mock_sample.side_effect = [0.1]
+        mock_randint.side_effect = [1, 1]
+        trans = TextDetRandomCrop(target_size=(3, 3))
+        results = trans(self.data_info)
+        box_target = np.array([1, 1, 3, 3])
+        polygon_target = np.array([1, 1, 3, 1, 3, 3, 1, 3])
+        self.assertEqual(results['img'].shape, (3, 3, 3))
+        self.assertEqual(results['img_shape'], (3, 3))
+        self.assertEqual(box_target.all(), results['gt_bboxes'].all())
+        self.assertEqual(polygon_target.all(), results['gt_polygons'][0].all())
+        self.assertEqual(results['gt_bboxes_labels'].all(),
+                         np.array([0]).all())
+        self.assertEqual(results['gt_ignored'][0], True)
+
+    def test_repr(self):
+        transform = TextDetRandomCrop(
+            target_size=(512, 512), positive_sample_ratio=0.4)
+        print(repr(transform))
+        self.assertEqual(
+            repr(transform), ('TextDetRandomCrop(target_size = (512, 512), '
+                              'positive_sample_ratio = 0.4)'))
+
+
+class TestEastRandomCrop(unittest.TestCase):
+
+    def setUp(self):
+        img = np.ones((30, 30, 3))
+        gt_polygons = [
+            np.array([5., 5., 25., 5., 25., 10., 5., 10.]),
+            np.array([5., 20., 25., 20., 25., 25., 5., 25.])
+        ]
+        gt_bboxes = np.array([[5, 5, 25, 10], [5, 20, 25, 25]])
+        labels = np.array([0, 1])
+        gt_ignored = np.array([True, False], dtype=bool)
+        texts = ['text1', 'text2']
+        self.data_info = dict(
+            img=img,
+            gt_polygons=gt_polygons,
+            gt_bboxes=gt_bboxes,
+            gt_bboxes_labels=labels,
+            gt_ignored=gt_ignored,
+            gt_texts=texts)
+
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.randint')
+    def test_east_random_crop(self, mock_randint):
+
+        # test randomcrop
+        randcrop = RandomCrop(min_side_ratio=0.5)
+        mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 0, 0, 15]
+        crop_results = randcrop(self.data_info)
+        polygon_target = np.array([5., 5., 25., 5., 25., 10., 5., 10.])
+        bbox_target = np.array([[5., 5., 25., 10.]])
+        self.assertEqual(crop_results['img'].shape, (15, 30, 3))
+        self.assertEqual(crop_results['img_shape'], (15, 30))
+        self.assertEqual(crop_results['gt_bboxes'].all(), bbox_target.all())
+        self.assertEqual(crop_results['gt_bboxes'].shape, (1, 4))
+        self.assertTrue(len(crop_results['gt_polygons']) == 1)
+        self.assertEqual(crop_results['gt_polygons'][0].all(),
+                         polygon_target.all())
+        self.assertEqual(crop_results['gt_bboxes_labels'][0], 0)
+        self.assertEqual(crop_results['gt_ignored'][0], True)
+        self.assertEqual(crop_results['gt_texts'][0], 'text1')
+
+        # test resize
+        resize = Resize(scale=(30, 30), keep_ratio=True)
+        resize_results = resize(crop_results)
+        self.assertEqual(resize_results['img'].shape, (15, 30, 3))
+        self.assertEqual(crop_results['img_shape'], (15, 30))
+        self.assertEqual(crop_results['scale'], (30, 15))
+        self.assertEqual(crop_results['scale_factor'], (1., 1.))
+        self.assertEqual(crop_results['keep_ratio'], True)
+
+        # test pad
+        pad = Pad(size=(30, 30))
+        pad_results = pad(resize_results)
+        self.assertEqual(pad_results['img'].shape, (30, 30, 3))
+        self.assertEqual(pad_results['pad_shape'], (30, 30, 3))
+        self.assertEqual(pad_results['img'].sum(), 15 * 30 * 3)
