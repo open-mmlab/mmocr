@@ -187,52 +187,6 @@ def test_random_scale():
     assert np.allclose(out_poly, gt_poly)
 
 
-@mock.patch('%s.transforms.np.random.randint' % __name__)
-def test_random_crop_flip(mock_randint):
-    img = np.ones((10, 10, 3), dtype=np.uint8)
-    img[0, 0, :] = 0
-    results = {'img': img, 'img_shape': img.shape}
-
-    polygon = np.array([0., 0., 0., 10., 10., 10., 10., 0.])
-
-    results['gt_masks'] = PolygonMasks([[polygon]], *(img.shape[:2]))
-    results['gt_masks_ignore'] = PolygonMasks([], *(img.shape[:2]))
-    results['mask_fields'] = ['gt_masks', 'gt_masks_ignore']
-
-    crop_ratio = 1.1
-    iter_num = 3
-    random_crop_fliper = transforms.RandomCropFlip(
-        crop_ratio=crop_ratio, iter_num=iter_num)
-
-    # test crop_target
-    pad_ratio = 0.1
-    h, w = img.shape[:2]
-    pad_h = int(h * pad_ratio)
-    pad_w = int(w * pad_ratio)
-    all_polys = results['gt_masks'].masks
-    h_axis, w_axis = random_crop_fliper.generate_crop_target(
-        img, all_polys, pad_h, pad_w)
-
-    assert np.allclose(h_axis, (0, 11))
-    assert np.allclose(w_axis, (0, 11))
-
-    # test __call__
-    polygon = np.array([1., 1., 1., 9., 9., 9., 9., 1.])
-    results['gt_masks'] = PolygonMasks([[polygon]], *(img.shape[:2]))
-    results['gt_masks_ignore'] = PolygonMasks([[polygon]], *(img.shape[:2]))
-
-    mock_randint.side_effect = [0, 1, 2]
-    results = random_crop_fliper(results)
-
-    out_img = results['img']
-    out_poly = results['gt_masks'].masks[0][0]
-    gt_img = img
-    gt_poly = polygon
-
-    assert np.allclose(out_img, gt_img)
-    assert np.allclose(out_poly, gt_poly)
-
-
 @mock.patch('%s.transforms.np.random.random_sample' % __name__)
 @mock.patch('%s.transforms.np.random.randint' % __name__)
 def test_random_crop_poly_instances(mock_randint, mock_sample):

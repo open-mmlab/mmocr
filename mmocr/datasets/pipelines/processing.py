@@ -1,6 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+
 import math
-from typing import Dict, Tuple
+import random
+from typing import Dict, List, Tuple
 
 import cv2
 import mmcv
@@ -9,7 +11,9 @@ from mmcv.image.geometric import _scale_size
 from mmcv.transforms import Resize as MMCV_Resize
 from mmcv.transforms.base import BaseTransform
 from mmcv.transforms.utils import cache_randomness
+from shapely.geometry import Polygon as plg
 
+import mmocr.core.evaluation.utils as eval_utils
 from mmocr.registry import TRANSFORMS
 from mmocr.utils import (bbox2poly, crop_polygon, poly2bbox, rescale_bboxes,
                          rescale_polygon)
@@ -483,4 +487,252 @@ class RandomRotate(BaseTransform):
         repr_str += f', pad_with_fixed_color = {self.pad_with_fixed_color}'
         repr_str += f', pad_value = {self.pad_value}'
         repr_str += f', use_canvas = {self.use_canvas})'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class TextDetRandomCropFlip(BaseTransform):
+    # TODO Rename this transformer; Refactor the redundant code.
+    """Random crop and flip a patch in the image. Only used in text detection
+    task.
+
+    Required Keys:
+
+    - img
+    - gt_bboxes
+    - gt_polygons
+
+    Modified Keys:
+
+    - img
+    - gt_bboxes
+    - gt_polygons
+
+    Args:
+        pad_ratio (float): The ratio of padding. Defaults to 0.1.
+        crop_ratio (float): The ratio of cropping. Defaults to 0.5.
+        iter_num (int): Number of operations. Defaults to 1.
+        min_area_ratio (float): Minimal area ratio between cropped patch
+            and original image. Defaults to 0.2.
+        epsilon (float): The threshold of polygon IoU between cropped area
+            and polygon, which is used to avoid cropping text instances.
+            Defaults to 0.01.
+    """
+
+    def __init__(self,
+                 pad_ratio: float = 0.1,
+                 crop_ratio: float = 0.5,
+                 iter_num: int = 1,
+                 min_area_ratio: float = 0.2,
+                 epsilon: float = 1e-2) -> None:
+        if not isinstance(pad_ratio, float):
+            raise TypeError('`pad_ratio` should be an float, '
+                            f'but got {type(pad_ratio)} instead')
+        if not isinstance(crop_ratio, float):
+            raise TypeError('`crop_ratio` should be a float, '
+                            f'but got {type(crop_ratio)} instead')
+        if not isinstance(iter_num, int):
+            raise TypeError('`iter_num` should be an integer, '
+                            f'but got {type(iter_num)} instead')
+        if not isinstance(min_area_ratio, float):
+            raise TypeError('`min_area_ratio` should be a float, '
+                            f'but got {type(min_area_ratio)} instead')
+        if not isinstance(epsilon, float):
+            raise TypeError('`epsilon` should be a float, '
+                            f'but got {type(epsilon)} instead')
+
+        self.pad_ratio = pad_ratio
+        self.epsilon = epsilon
+        self.crop_ratio = crop_ratio
+        self.iter_num = iter_num
+        self.min_area_ratio = min_area_ratio
+
+    @cache_randomness
+    def _random_prob(self) -> float:
+        """Get the random prob to decide whether apply the transform.
+
+        Returns:
+            float: The probability
+        """
+        return random.random()
+
+    @cache_randomness
+    def _random_flip_type(self) -> int:
+        """Get the random flip type.
+
+        Returns:
+            int: The flip type index. (0: horizontal; 1: vertical; 2: both)
+        """
+        return np.random.randint(3)
+
+    @cache_randomness
+    def _random_choice(self, axis: np.ndarray) -> np.ndarray:
+        """Randomly select two coordinates from the axis.
+
+        Args:
+            axis (np.ndarray): Result dict containing the data to transform
+
+        Returns:
+            np.ndarray: The selected coordinates
+        """
+        return np.random.choice(axis, size=2)
+
+    def transform(self, results: Dict) -> Dict:
+        """Applying random crop flip on results.
+
+        Args:
+            results (dict): Result dict containing the data to transform
+
+        Returns:
+            dict: The transformed data
+        """
+        assert 'img' in results, '`img` is not found in results'
+        for _ in range(self.iter_num):
+            results = self._random_crop_flip_polygons(results)
+        # TODO Add random_crop_flip_bboxes (will be added after the poly2box
+        # and box2poly have been merged)
+        return results
+
+    def _random_crop_flip_polygons(self, results: Dict) -> Dict:
+        """Applying random crop flip on polygons.
+
+        Args:
+            results (dict): Result dict containing the data to transform
+
+        Returns:
+            dict: The transformed data
+        """
+        if results.get('gt_polygons', None) is None:
+            return results
+
+        image = results['img']
+        polygons = results['gt_polygons']
+        if len(polygons) == 0 or self._random_prob() > self.crop_ratio:
+            return results
+
+        h, w = results['img_shape']
+        area = h * w
+        pad_h = int(h * self.pad_ratio)
+        pad_w = int(w * self.pad_ratio)
+        h_axis, w_axis = self._generate_crop_target(image, polygons, pad_h,
+                                                    pad_w)
+        if len(h_axis) == 0 or len(w_axis) == 0:
+            return results
+
+        # At most 10 attempts
+        for _ in range(10):
+            polys_keep = []
+            polys_new = []
+            xx = self._random_choice(w_axis)
+            yy = self._random_choice(h_axis)
+            xmin = np.clip(np.min(xx) - pad_w, 0, w - 1)
+            xmax = np.clip(np.max(xx) - pad_w, 0, w - 1)
+            ymin = np.clip(np.min(yy) - pad_h, 0, h - 1)
+            ymax = np.clip(np.max(yy) - pad_h, 0, h - 1)
+            if (xmax - xmin) * (ymax - ymin) < area * self.min_area_ratio:
+                # Skip when cropped area is too small
+                continue
+
+            pts = np.stack([[xmin, xmax, xmax, xmin],
+                            [ymin, ymin, ymax, ymax]]).T.astype(np.int32)
+            pp = plg(pts)
+            success_flag = True
+            for polygon in polygons:
+                ppi = plg(polygon.reshape(-1, 2))
+                # TODO Move this eval_utils to point_utils?
+                ppiou = eval_utils.poly_intersection(ppi, pp)
+                if np.abs(ppiou - float(ppi.area)) > self.epsilon and \
+                        np.abs(ppiou) > self.epsilon:
+                    success_flag = False
+                    break
+                if np.abs(ppiou - float(ppi.area)) < self.epsilon:
+                    polys_new.append(polygon)
+                else:
+                    polys_keep.append(polygon)
+
+            if success_flag:
+                break
+
+        cropped = image[ymin:ymax, xmin:xmax, :]
+        select_type = self._random_flip_type()
+        print(select_type)
+        if select_type == 0:
+            img = np.ascontiguousarray(cropped[:, ::-1])
+        elif select_type == 1:
+            img = np.ascontiguousarray(cropped[::-1, :])
+        else:
+            img = np.ascontiguousarray(cropped[::-1, ::-1])
+        image[ymin:ymax, xmin:xmax, :] = img
+        results['img'] = image
+
+        if len(polys_new) != 0:
+            height, width, _ = cropped.shape
+            if select_type == 0:
+                for idx, polygon in enumerate(polys_new):
+                    poly = polygon.reshape(-1, 2)
+                    poly[:, 0] = width - poly[:, 0] + 2 * xmin
+                    polys_new[idx] = poly.reshape(-1, )
+            elif select_type == 1:
+                for idx, polygon in enumerate(polys_new):
+                    poly = polygon.reshape(-1, 2)
+                    poly[:, 1] = height - poly[:, 1] + 2 * ymin
+                    polys_new[idx] = poly.reshape(-1, )
+            else:
+                for idx, polygon in enumerate(polys_new):
+                    poly = polygon.reshape(-1, 2)
+                    poly[:, 0] = width - poly[:, 0] + 2 * xmin
+                    poly[:, 1] = height - poly[:, 1] + 2 * ymin
+                    polys_new[idx] = poly.reshape(-1, )
+            polygons = polys_keep + polys_new
+            results['gt_polygons'] = polygons
+
+        return results
+
+    def _generate_crop_target(self, image: np.ndarray,
+                              all_polys: List[np.ndarray], pad_h: int,
+                              pad_w: int) -> Tuple[np.ndarray, np.ndarray]:
+        """Generate cropping target and make sure not to crop the polygon
+        instances.
+
+        Args:
+            image (np.ndarray): The image waited to be crop.
+            all_polys (list[np.ndarray]): Ground-truth polygons.
+            pad_h (int): Padding length of height.
+            pad_w (int): Padding length of width.
+
+        Returns:
+            (np.ndarray, np.ndarray): Returns a tuple ``(h_axis, w_axis)``,
+            where ``h_axis`` is the vertical cropping range and ``w_axis``
+            is the horizontal cropping range.
+        """
+        h, w, _ = image.shape
+        h_array = np.zeros((h + pad_h * 2), dtype=np.int32)
+        w_array = np.zeros((w + pad_w * 2), dtype=np.int32)
+
+        text_polys = []
+        for polygon in all_polys:
+            rect = cv2.minAreaRect(polygon.astype(np.int32).reshape(-1, 2))
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
+            text_polys.append([box[0], box[1], box[2], box[3]])
+
+        polys = np.array(text_polys, dtype=np.int32)
+        for poly in polys:
+            poly = np.round(poly, decimals=0).astype(np.int32)
+            minx, maxx = np.min(poly[:, 0]), np.max(poly[:, 0])
+            miny, maxy = np.min(poly[:, 1]), np.max(poly[:, 1])
+            w_array[minx + pad_w:maxx + pad_w] = 1
+            h_array[miny + pad_h:maxy + pad_h] = 1
+
+        h_axis = np.where(h_array == 0)[0]
+        w_axis = np.where(w_array == 0)[0]
+        return h_axis, w_axis
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(pad_ratio = {self.pad_ratio}'
+        repr_str += f', crop_ratio = {self.crop_ratio}'
+        repr_str += f', iter_num = {self.iter_num}'
+        repr_str += f', min_area_ratio = {self.min_area_ratio}'
+        repr_str += f', epsilon = {self.epsilon})'
         return repr_str

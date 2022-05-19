@@ -5,7 +5,8 @@ import unittest.mock as mock
 
 import numpy as np
 
-from mmocr.datasets.pipelines import PyramidRescale, RandomRotate, Resize
+from mmocr.datasets.pipelines import (PyramidRescale, RandomRotate, Resize,
+                                      TextDetRandomCropFlip)
 
 
 class TestPyramidRescale(unittest.TestCase):
@@ -53,6 +54,64 @@ class TestPyramidRescale(unittest.TestCase):
             repr(transform),
             ('PyramidRescale(factor = 4, randomize_factor = False, '
              'base_w = 128, base_h = 512)'))
+
+
+class TestTextDetRandomCropFlip(unittest.TestCase):
+
+    def setUp(self):
+        img = np.ones((10, 10, 3))
+        img[0, 0, :] = 0
+        self.data_info1 = dict(
+            img=copy.deepcopy(img),
+            gt_polygons=[np.array([0., 0., 0., 10., 10., 10., 10., 0.])],
+            img_shape=[10, 10])
+        self.data_info2 = dict(
+            img=copy.deepcopy(img),
+            gt_polygons=[np.array([1., 1., 1., 9., 9., 9., 9., 1.])],
+            img_shape=[10, 10])
+
+    def test_init(self):
+        # iter_num is int
+        transform = TextDetRandomCropFlip(iter_num=1)
+        self.assertEqual(transform.iter_num, 1)
+        # iter_num is float
+        with self.assertRaisesRegex(TypeError,
+                                    '`iter_num` should be an integer'):
+            transform = TextDetRandomCropFlip(iter_num=1.5)
+
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.randint')
+    def test_transforms(self, mock_sample):
+        mock_sample.side_effect = [0, 1, 2]
+        transform = TextDetRandomCropFlip(crop_ratio=1.0, iter_num=3)
+        results = transform(self.data_info2)
+        self.assertTrue(np.allclose(results['img'], self.data_info2['img']))
+        self.assertTrue(
+            np.allclose(results['gt_polygons'],
+                        self.data_info2['gt_polygons']))
+
+    def test_generate_crop_target(self):
+        transform = TextDetRandomCropFlip(
+            crop_ratio=1.0, iter_num=3, pad_ratio=0.1)
+        h, w = self.data_info1['img_shape']
+        pad_h = int(h * transform.pad_ratio)
+        pad_w = int(w * transform.pad_ratio)
+        h_axis, w_axis = transform._generate_crop_target(
+            self.data_info1['img'], self.data_info1['gt_polygons'], pad_h,
+            pad_w)
+        self.assertTrue(np.allclose(h_axis, (0, 11)))
+        self.assertTrue(np.allclose(w_axis, (0, 11)))
+
+    def test_repr(self):
+        transform = TextDetRandomCropFlip(
+            pad_ratio=0.1,
+            crop_ratio=0.5,
+            iter_num=1,
+            min_area_ratio=0.2,
+            epsilon=1e-2)
+        self.assertEqual(
+            repr(transform),
+            ('TextDetRandomCropFlip(pad_ratio = 0.1, crop_ratio = 0.5, '
+             'iter_num = 1, min_area_ratio = 0.2, epsilon = 0.01)'))
 
 
 class TestRandomRotate(unittest.TestCase):
