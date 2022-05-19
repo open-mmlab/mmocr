@@ -25,7 +25,7 @@ class TestImgAug(unittest.TestCase):
         # It shall always be 0 in MMOCR, but we assign different labels to
         # dummy instances for testing
         labels = np.array([0, 1], dtype=np.int64)
-        ignores = np.array([False, True], dtype=bool)
+        ignored = np.array([False, True], dtype=bool)
         texts = ['text1', 'text2']
         return dict(
             img=img,
@@ -33,7 +33,7 @@ class TestImgAug(unittest.TestCase):
             gt_polygons=poly,
             gt_bboxes=box,
             gt_bboxes_labels=labels,
-            gt_ignores=ignores,
+            gt_ignored=ignored,
             gt_texts=texts)
 
     def assertPolyEqual(self, poly1: List[np.ndarray],
@@ -53,7 +53,7 @@ class TestImgAug(unittest.TestCase):
         self.assertTrue(np.array_equal(bbox_targets, results['gt_bboxes']))
         self.assertTrue(
             np.array_equal(bbox_label_targets, results['gt_bboxes_labels']))
-        self.assertTrue(np.array_equal(ignore_targets, results['gt_ignores']))
+        self.assertTrue(np.array_equal(ignore_targets, results['gt_ignored']))
         self.assertEqual(text_targets, results['gt_texts'])
         self.assertEqual(results['img_shape'],
                          (results['img'].shape[0], results['img'].shape[1]))
@@ -68,7 +68,7 @@ class TestImgAug(unittest.TestCase):
         self.assert_result_equal(results, origin_results['gt_polygons'],
                                  origin_results['gt_bboxes'],
                                  origin_results['gt_bboxes_labels'],
-                                 origin_results['gt_ignores'],
+                                 origin_results['gt_ignored'],
                                  origin_results['gt_texts'])
 
         args = [dict(cls='Affine', translate_px=dict(x=-10, y=-10))]
@@ -84,10 +84,10 @@ class TestImgAug(unittest.TestCase):
         ]
         box_target = np.array([[0, 0, 40, 40], [10, 10, 40, 40]])
         label_target = np.array([0, 1], dtype=np.int64)
-        ignores = np.array([False, True], dtype=bool)
+        ignored = np.array([False, True], dtype=bool)
         texts = ['text1', 'text2']
         self.assert_result_equal(results, poly_target, box_target,
-                                 label_target, ignores, texts)
+                                 label_target, ignored, texts)
 
         # Some polygons and bboxes are no longer inside the image after
         # transformation
@@ -97,13 +97,13 @@ class TestImgAug(unittest.TestCase):
         poly_target = [np.array([0, 30, 20, 30, 20, 50, 0, 50])]
         box_target = np.array([[0, 30, 20, 50]])
         label_target = np.array([0], dtype=np.int64)
-        ignores = np.array([False], dtype=bool)
+        ignored = np.array([False], dtype=bool)
         texts = ['text1']
         imgaug_transform = ImgAug(args)
         results = self._create_dummy_data()
         results = imgaug_transform(results)
         self.assert_result_equal(results, poly_target, box_target,
-                                 label_target, ignores, texts)
+                                 label_target, ignored, texts)
 
         # All polygons and bboxes are no longer inside the image after
         # transformation
@@ -111,13 +111,13 @@ class TestImgAug(unittest.TestCase):
         poly_target = []
         box_target = np.zeros((0, 4))
         label_target = np.array([], dtype=np.int64)
-        ignores = np.array([], dtype=bool)
+        ignored = np.array([], dtype=bool)
         texts = []
         imgaug_transform = ImgAug(args)
         results = self._create_dummy_data()
         results = imgaug_transform(results)
         self.assert_result_equal(results, poly_target, box_target,
-                                 label_target, ignores, texts)
+                                 label_target, ignored, texts)
 
         # Everything should work well without gt_texts
         results = self._create_dummy_data()
