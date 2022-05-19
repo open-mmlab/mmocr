@@ -56,7 +56,7 @@ def rescale_polygons(polygons: Sequence[ArrayLike],
     image size.
 
     Args:
-        polygon (list[ArrayLike]): A list of polygons, each written in
+        polygons (list[ArrayLike]): A list of polygons, each written in
             [x1, y1, x2, y2, ...] and in any form can be converted
             to an 1-D numpy array. E.g. list[list[float]],
             list[np.ndarray], or list[torch.Tensor].
@@ -70,6 +70,25 @@ def rescale_polygons(polygons: Sequence[ArrayLike],
     for polygon in polygons:
         results.append(rescale_polygon(polygon, scale_factor, mode))
     return results
+
+
+def poly2bbox(polygon: ArrayLike) -> np.array:
+    """Converting a polygon to a bounding box.
+
+    Args:
+         polygon (ArrayLike): A polygon. In any form can be converted
+             to an 1-D numpy array. E.g. list[float], np.ndarray,
+             or torch.Tensor. Polygon is written in
+             [x1, y1, x2, y2, ...].
+
+     Returns:
+         np.array: The converted bounding box [x1, y1, x2, y2]
+    """
+    assert len(polygon) % 2 == 0
+    polygon = np.array(polygon, dtype=np.float32)
+    x = polygon[::2]
+    y = polygon[1::2]
+    return np.array([min(x), min(y), max(x), max(y)])
 
 
 def crop_polygon(polygon: ArrayLike, crop_box: np.ndarray) -> np.ndarray:

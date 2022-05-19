@@ -19,10 +19,11 @@ train_pipeline = [
         crop_ratio=0.8,
         min_side_ratio=0.3),
     dict(
-        type='RandomRotatePolyInstances',
+        type='RandomRotate',
         rotate_ratio=0.5,
         max_angle=60,
-        pad_with_fixed_color=False),
+        pad_with_fixed_color=False,
+        use_canvas=True),
     dict(type='SquareResizePad', target_size=800, pad_ratio=0.6),
     dict(type='RandomFlip', flip_ratio=0.5, direction='horizontal'),
     dict(type='DRRGTargets'),
