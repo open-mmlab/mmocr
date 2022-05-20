@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .box_utils import sort_vertex, sort_vertex8
+from .formatting import PackTextDetInputs, PackTextRecogInputs
 from .kie_transforms import ResizeNoImg
 from .loading import (LoadImageFromLMDB, LoadImageFromNdarray,
                       LoadTextAnnotations)
@@ -25,5 +26,6 @@ __all__ = [
     'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets',
     'TextDetRandomCropFlip', 'NerTransform', 'ToTensorNER', 'ResizeNoImg',
     'PyramidRescale', 'TorchVisionWrapper', 'LoadImageFromLMDB', 'Resize',
-    'RandomCrop', 'TextDetRandomCrop', 'RandomCrop'
+    'RandomCrop', 'TextDetRandomCrop', 'RandomCrop', 'PackTextDetInputs',
+    'PackTextRecogInputs'
 ]
