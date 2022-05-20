@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-import mmocr.models.textdet.dense_heads.pan_head as pan_head
+import mmocr.models.textdet.heads.pan_head as pan_head
 
 
 def test_panhead():

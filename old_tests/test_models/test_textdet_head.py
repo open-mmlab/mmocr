@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 
-from mmocr.models.textdet.dense_heads import DRRGHead
+from mmocr.models.textdet.heads import DRRGHead
 
 
 def test_drrg_head():
