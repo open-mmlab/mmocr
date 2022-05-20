@@ -6,7 +6,6 @@ from typing import Dict, List, Optional, Sequence, Tuple
 import cv2
 import mmcv
 import numpy as np
-from mmcv.image.geometric import _scale_size
 from mmcv.transforms import Resize as MMCV_Resize
 from mmcv.transforms.base import BaseTransform
 from mmcv.transforms.utils import avoid_cache_randomness, cache_randomness
@@ -15,7 +14,7 @@ from shapely.geometry import Polygon as plg
 import mmocr.core.evaluation.utils as eval_utils
 from mmocr.registry import TRANSFORMS
 from mmocr.utils import (bbox2poly, crop_polygon, is_poly_outside_rect,
-                         poly2bbox, rescale_bboxes, rescale_polygon)
+                         poly2bbox, rescale_polygon)
 from .wrappers import ImgAug
 
 
@@ -113,10 +112,9 @@ class Resize(MMCV_Resize):
     """Resize image & bboxes & polygons.
 
     This transform resizes the input image according to ``scale`` or
-    ``scale_factor``. Bboxes and polygons are then resized
-    with the same scale factor.
-    if ``scale`` and ``scale_factor`` are both set, it will use ``scale`` to
-    resize.
+    ``scale_factor``. Bboxes and polygons are then resized with the same
+    scale factor. if ``scale`` and ``scale_factor`` are both set, it will use
+    ``scale`` to resize.
 
     Required Keys:
 
@@ -140,14 +138,14 @@ class Resize(MMCV_Resize):
     - keep_ratio
 
     Args:
-        scale (int or tuple): Image scales for resizing. Defaults to None
-        scale_factor (float or tuple[float]): Scale factors for resizing. It's
-        either a factor applicable to both dimensions or in the form of
-        (scale_w, scale_h). Defaults to None.
+        scale (int or tuple): Image scales for resizing. Defaults to None.
+        scale_factor (float or tuple[float, float]): Scale factors for
+            resizing. It's either a factor applicable to both dimensions or
+            in the form of (scale_w, scale_h). Defaults to None.
         keep_ratio (bool): Whether to keep the aspect ratio when resizing the
             image. Defaults to False.
-        clip_object_border (bool): Whether to clip the objects
-            outside the border of the image. Defaults to True.
+        clip_object_border (bool): Whether to clip the objects outside the
+            border of the image. Defaults to True.
         backend (str): Image resize backend, choices are 'cv2' and 'pillow'.
             These two backends generates slightly different results. Defaults
             to 'cv2'.
@@ -156,18 +154,6 @@ class Resize(MMCV_Resize):
             backend, "nearest", "bilinear" for 'pillow' backend. Defaults
             to 'bilinear'.
     """
-
-    def _resize_bboxes(self, results: dict) -> None:
-        """Resize bounding boxes with ``results['scale_factor']``."""
-        if results.get('gt_bboxes', None) is not None:
-            bboxes = rescale_bboxes(results['gt_bboxes'],
-                                    results['scale_factor'])
-            if self.clip_object_border:
-                bboxes[:, 0::2] = np.clip(bboxes[:, 0::2], 0,
-                                          results['img_shape'][1])
-                bboxes[:, 1::2] = np.clip(bboxes[:, 1::2], 0,
-                                          results['img_shape'][0])
-            results['gt_bboxes'] = bboxes.astype(np.float32)
 
     def _resize_polygons(self, results: dict) -> None:
         """Resize polygons with ``results['scale_factor']``."""
@@ -197,14 +183,7 @@ class Resize(MMCV_Resize):
             'scale', 'scale_factor', 'height', 'width', and 'keep_ratio' keys
             are updated in result dict.
         """
-
-        if self.scale:
-            results['scale'] = self.scale
-        else:
-            img_shape = results['img'].shape[:2]
-            results['scale'] = _scale_size(img_shape[::-1], self.scale_factor)
-        self._resize_img(results)
-        self._resize_bboxes(results)
+        results = super().transform(results)
         self._resize_polygons(results)
         return results
 
