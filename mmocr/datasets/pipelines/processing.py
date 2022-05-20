@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import math
 import random
-from typing import Dict, List, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple
 
 import cv2
 import mmcv
@@ -1165,4 +1165,153 @@ class TextDetRandomCrop(BaseTransform):
         repr_str = self.__class__.__name__
         repr_str += f'(target_size = {self.target_size}, '
         repr_str += f'positive_sample_ratio = {self.positive_sample_ratio})'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class RescaleToHeight(BaseTransform):
+    """Rescale the image to the height according to setting and keep the aspect
+    ratio unchanged if possible. However, if any of ``min_width``,
+    ``max_width`` or ``width_divisor`` are specified, aspect ratio may still be
+    changed to ensure the width meets these constraints.
+
+    Required Keys:
+
+    - img
+
+    Modified Keys:
+
+    - img
+    - img_shape
+
+    Added Keys:
+
+    - scale
+    - scale_factor
+    - keep_ratio
+
+    Args:
+        height (int): Height of rescaled image.
+        min_width (int, optional): Minimum width of rescaled image. Defaults
+            to None.
+        max_width (int, optional): Maximum width of rescaled image. Defaults
+            to None.
+        width_divisor (int): The divisor of width size. Defaults to 1.
+        resize_cfg (dict):  (dict): Config to construct the Resize transform.
+            Refer to ``Resize`` for detail. Defaults to
+            ``dict(type='Resize')``.
+    """
+
+    def __init__(self,
+                 height: int,
+                 min_width: Optional[int] = None,
+                 max_width: Optional[int] = None,
+                 width_divisor: int = 1,
+                 resize_cfg: dict = dict(type='Resize')) -> None:
+        super().__init__()
+        assert isinstance(height, int)
+        assert isinstance(width_divisor, int)
+        if min_width is not None:
+            assert isinstance(min_width, int)
+        if max_width is not None:
+            assert isinstance(max_width, int)
+        self.width_divisor = width_divisor
+        self.height = height
+        self.min_width = min_width
+        self.max_width = max_width
+        self.resize_cfg = resize_cfg
+
+    def transform(self, results: Dict) -> Dict:
+        """Transform function to resize images, bounding boxes and polygons.
+
+        Args:
+            results (dict): Result dict from loading pipeline.
+
+        Returns:
+            dict: Resized results.
+        """
+        ori_height, ori_width = results['img'].shape[:2]
+        new_width = math.ceil(float(self.height) / ori_height * ori_width)
+        if self.min_width is not None:
+            new_width = max(self.min_width, new_width)
+        if self.max_width is not None:
+            new_width = min(self.max_width, new_width)
+
+        if new_width % self.width_divisor != 0:
+            new_width = round(
+                new_width / self.width_divisor) * self.width_divisor
+        # TODO replace up code after testing precision.
+        # new_width = math.ceil(
+        #     new_width / self.width_divisor) * self.width_divisor
+        scale = (new_width, self.height)
+        _resize_cfg = self.resize_cfg.copy()
+        _resize_cfg.update(dict(scale=scale))
+        resize_transform = TRANSFORMS.build(_resize_cfg)
+        results = resize_transform(results)
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(height={self.height}, '
+        repr_str += f'min_width={self.min_width}, '
+        repr_str += f'max_width={self.max_width}, '
+        repr_str += f'width_divisor={self.width_divisor}, '
+        repr_str += f'resize_cfg={self.resize_cfg})'
+        return repr_str
+
+
+class PadToWidth(BaseTransform):
+    """Only pad the image's width.
+
+    Required Keys:
+
+    - img
+
+    Modified Keys:
+
+    - img
+    - img_shape
+
+    Added Keys:
+
+    - pad_shape
+    - pad_fixed_size
+    - pad_size_divisor
+    - valid_ratio
+
+    Args:
+        width (int): Target width of padded image. Defaults to None.
+        pad_cfg (dict): Config to construct the Resize transform. Refer to
+            ``Pad`` for detail. Defaults to ``dict(type='Pad')``.
+    """
+
+    def __init__(self, width: int, pad_cfg: dict = dict(type='Pad')) -> None:
+        super().__init__()
+        assert isinstance(width, int)
+        self.width = width
+        self.pad_cfg = pad_cfg
+
+    def transform(self, results: Dict) -> Dict:
+        """Call function to pad images.
+
+        Args:
+            results (dict): Result dict from loading pipeline.
+
+        Returns:
+            dict: Updated result dict.
+        """
+        ori_height, ori_width = results['img'].shape[:2]
+        valid_ratio = min(1.0, 1.0 * ori_width / self.width)
+        size = (self.width, ori_height)
+        _pad_cfg = self.pad_cfg.copy()
+        _pad_cfg.update(dict(size=size))
+        pad_transform = TRANSFORMS.build(_pad_cfg)
+        results = pad_transform(results)
+        results['valid_ratio'] = valid_ratio
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(width={self.width}, '
+        repr_str += f'pad_cfg={self.pad_cfg})'
         return repr_str

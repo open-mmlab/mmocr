@@ -9,8 +9,9 @@ from .ocr_seg_targets import OCRSegTargets
 from .ocr_transforms import (FancyPCA, NormalizeOCR, OnlineCropOCR,
                              OpencvToPil, PilToOpencv, RandomPaddingOCR,
                              RandomRotateImageBox, ResizeOCR, ToTensorOCR)
-from .processing import (PyramidRescale, RandomCrop, RandomRotate, Resize,
-                         TextDetRandomCrop, TextDetRandomCropFlip)
+from .processing import (PadToWidth, PyramidRescale, RandomCrop, RandomRotate,
+                         RescaleToHeight, Resize, TextDetRandomCrop,
+                         TextDetRandomCropFlip)
 from .test_time_aug import MultiRotateAugOCR
 from .textdet_targets import (DBNetTargets, FCENetTargets, PANetTargets,
                               TextSnakeTargets)
@@ -27,5 +28,5 @@ __all__ = [
     'TextDetRandomCropFlip', 'NerTransform', 'ToTensorNER', 'ResizeNoImg',
     'PyramidRescale', 'TorchVisionWrapper', 'LoadImageFromLMDB', 'Resize',
     'RandomCrop', 'TextDetRandomCrop', 'RandomCrop', 'PackTextDetInputs',
-    'PackTextRecogInputs'
+    'PackTextRecogInputs', 'RescaleToHeight', 'PadToWidth'
 ]

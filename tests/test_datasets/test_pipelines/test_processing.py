@@ -6,9 +6,9 @@ import unittest.mock as mock
 import numpy as np
 from mmcv.transforms import Pad, RandomResize
 
-from mmocr.datasets.pipelines import (PyramidRescale, RandomCrop, RandomRotate,
-                                      Resize, TextDetRandomCrop,
-                                      TextDetRandomCropFlip)
+from mmocr.datasets.pipelines import (PadToWidth, PyramidRescale, RandomCrop,
+                                      RandomRotate, RescaleToHeight, Resize,
+                                      TextDetRandomCrop, TextDetRandomCropFlip)
 from mmocr.utils import bbox2poly
 
 
@@ -545,3 +545,75 @@ class TestRandomResize(unittest.TestCase):
         self.assertEqual(results['gt_bboxes'].all(), target_bboxes.all())
         self.assertEqual(results['gt_polygons'][0].all(),
                          target_polygons[0].all())
+
+
+class TestRescaleToHeight(unittest.TestCase):
+
+    def test_rescale_height(self):
+        data_info = dict(
+            img=np.random.random((16, 25, 3)),
+            gt_seg_map=np.random.random((16, 25, 3)),
+            gt_bboxes=np.array([[0, 0, 10, 10]]),
+            gt_keypoints=np.array([[[10, 10, 1]]]))
+        with self.assertRaises(AssertionError):
+            RescaleToHeight(height=20.9)
+        with self.assertRaises(AssertionError):
+            RescaleToHeight(height=20, min_width=20.9)
+        with self.assertRaises(AssertionError):
+            RescaleToHeight(height=20, max_width=20.9)
+        with self.assertRaises(AssertionError):
+            RescaleToHeight(height=20, width_divisor=0.5)
+        transform = RescaleToHeight(height=32)
+        results = transform(copy.deepcopy(data_info))
+        self.assertTupleEqual(results['img'].shape[:2], (32, 50))
+        self.assertTupleEqual(results['scale'], (50, 32))
+        self.assertTupleEqual(results['scale_factor'], (50 / 25, 32 / 16))
+
+        # test min_width
+        transform = RescaleToHeight(height=32, min_width=60)
+        results = transform(copy.deepcopy(data_info))
+        self.assertTupleEqual(results['img'].shape[:2], (32, 60))
+        self.assertTupleEqual(results['scale'], (60, 32))
+        self.assertTupleEqual(results['scale_factor'], (60 / 25, 32 / 16))
+
+        # test max_width
+        transform = RescaleToHeight(height=32, max_width=45)
+        results = transform(copy.deepcopy(data_info))
+        self.assertTupleEqual(results['img'].shape[:2], (32, 45))
+        self.assertTupleEqual(results['scale'], (45, 32))
+        self.assertTupleEqual(results['scale_factor'], (45 / 25, 32 / 16))
+
+        # test width_divisor
+        transform = RescaleToHeight(height=32, width_divisor=4)
+        results = transform(copy.deepcopy(data_info))
+        self.assertTupleEqual(results['img'].shape[:2], (32, 48))
+        self.assertTupleEqual(results['scale'], (48, 32))
+        self.assertTupleEqual(results['scale_factor'], (48 / 25, 32 / 16))
+
+    def test_repr(self):
+        transform = RescaleToHeight(height=32)
+        self.assertEqual(
+            repr(transform), ('RescaleToHeight(height=32, '
+                              'min_width=None, max_width=None, '
+                              'width_divisor=1, '
+                              "resize_cfg={'type': 'Resize'})"))
+
+
+class TestPadToWidth(unittest.TestCase):
+
+    def test_pad_to_width(self):
+        data_info = dict(img=np.random.random((16, 25, 3)))
+        # test size and size_divisor are both set
+        with self.assertRaises(AssertionError):
+            PadToWidth(width=10.5)
+
+        transform = PadToWidth(width=100)
+        results = transform(copy.deepcopy(data_info))
+        self.assertTupleEqual(results['img'].shape[:2], (16, 100))
+        self.assertEqual(results['valid_ratio'], 25 / 100)
+
+    def test_repr(self):
+        transform = PadToWidth(width=100)
+        self.assertEqual(
+            repr(transform),
+            ("PadToWidth(width=100, pad_cfg={'type': 'Pad'})"))
