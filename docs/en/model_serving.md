@@ -19,9 +19,9 @@ python tools/deployment/mmocr2torchserve.py ${CONFIG_FILE} ${CHECKPOINT_FILE} \
 --model-name ${MODEL_NAME}
 ```
 
-:::{note}
+```{note}
 ${MODEL_STORE} needs to be an absolute path to a folder.
-:::
+```
 
 For example:
 
@@ -50,13 +50,13 @@ Then you can access inference, management and metrics services
 through TorchServe's REST API.
 You can find their usages in [TorchServe REST API](https://github.com/pytorch/serve/blob/master/docs/rest_api.md).
 
-| Service           |  Address                                                            |
-| ------------------- | ----------------------- |
-| Inference | `http://127.0.0.1:8080` |
+| Service    | Address                 |
+| ---------- | ----------------------- |
+| Inference  | `http://127.0.0.1:8080` |
 | Management | `http://127.0.0.1:8081` |
-| Metrics | `http://127.0.0.1:8082` |
+| Metrics    | `http://127.0.0.1:8082` |
 
-:::{note}
+````{note}
 By default, TorchServe binds port number `8080`, `8081` and `8082` to its services.
 You can change such behavior by modifying and saving the contents below to `config.properties`, and running TorchServe with option `--ts-config config.preperties`.
 
@@ -69,8 +69,7 @@ job_queue_size=1000
 model_store=/home/model-server/model-store
 ```
 
-:::
-
+````
 
 ### From Docker
 
@@ -101,21 +100,19 @@ docker run --rm \
 mmocr-serve:latest
 ```
 
-:::{note}
+```{note}
 `realpath ./checkpoints` points to the absolute path of "./checkpoints", and you can replace it with the absolute path where you store torchserve models.
-:::
+```
 
 Upon running the docker, you can access inference, management and metrics services
 through TorchServe's REST API.
 You can find their usages in [TorchServe REST API](https://github.com/pytorch/serve/blob/master/docs/rest_api.md).
 
-| Service           |  Address                                                            |
-| ------------------- | ----------------------- |
-| Inference | `http://127.0.0.1:8080` |
+| Service    | Address                 |
+| ---------- | ----------------------- |
+| Inference  | `http://127.0.0.1:8080` |
 | Management | `http://127.0.0.1:8081` |
-| Metrics | `http://127.0.0.1:8082` |
-
-
+| Metrics    | `http://127.0.0.1:8082` |
 
 ## 4. Test deployment
 
