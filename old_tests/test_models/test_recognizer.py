@@ -8,8 +8,8 @@ import pytest
 import torch
 from mmdet.core import BitmapMasks
 
-from mmocr.models.textrecog.recognizer import (EncodeDecodeRecognizer,
-                                               SegRecognizer)
+from mmocr.models.textrecog.recognizers import (EncodeDecodeRecognizer,
+                                                SegRecognizer)
 
 
 def _create_dummy_dict_file(dict_file):

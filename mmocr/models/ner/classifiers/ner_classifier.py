@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmocr.models.textrecog.recognizer.base import BaseRecognizer
+from mmocr.models.textrecog.recognizers.base import BaseRecognizer
 from mmocr.registry import MODELS
 
 

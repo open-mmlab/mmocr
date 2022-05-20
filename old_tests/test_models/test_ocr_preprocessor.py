@@ -2,8 +2,8 @@
 import pytest
 import torch
 
-from mmocr.models.textrecog.preprocessor import (BasePreprocessor,
-                                                 TPSPreprocessor)
+from mmocr.models.textrecog.preprocessors import (BasePreprocessor,
+                                                  TPSPreprocessor)
 
 
 def test_tps_preprocessor():

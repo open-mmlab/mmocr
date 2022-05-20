@@ -9,7 +9,7 @@ from mmengine.data import LabelData
 
 from mmocr.core.data_structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
-from mmocr.models.textrecog.postprocessor.attn_postprocessor import \
+from mmocr.models.textrecog.postprocessors.attn_postprocessor import \
     AttentionPostprocessor
 
 
