@@ -10,7 +10,7 @@ from mmocr.models.textdet.detectors.single_stage_text_detector import \
     SingleStageTextDetector
 from mmocr.models.textdet.detectors.text_detector_mixin import \
     TextDetectorMixin
-from mmocr.models.textrecog.recognizer.encode_decode_recognizer import \
+from mmocr.models.textrecog.recognizers.encode_decode_recognizer import \
     EncodeDecodeRecognizer
 from mmocr.registry import MODELS
 

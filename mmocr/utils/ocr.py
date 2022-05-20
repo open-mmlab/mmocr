@@ -25,7 +25,7 @@ from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets.kie_dataset import KIEDataset
 from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.models.textdet.detectors import TextDetectorMixin
-from mmocr.models.textrecog.recognizer import BaseRecognizer
+from mmocr.models.textrecog.recognizers import BaseRecognizer
 from mmocr.registry import MODELS
 from mmocr.utils import is_type_list
 from mmocr.utils.box_util import stitch_boxes_into_lines
