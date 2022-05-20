@@ -71,7 +71,7 @@ class PyramidRescale(BaseTransform):
         """Get the randomized factor.
 
         Returns:
-            float: The randomized factor
+            float: The randomized factor.
         """
         return np.random.randint(0, self.factor + 1)
 
@@ -82,7 +82,7 @@ class PyramidRescale(BaseTransform):
             results (dict): Result dict containing the data to transform.
 
         Returns:
-            Dict: The transformed data
+            Dict: The transformed data.
         """
 
         assert 'img' in results, '`img` is not found in results'

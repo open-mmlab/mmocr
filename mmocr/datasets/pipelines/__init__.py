@@ -13,7 +13,7 @@ from .processing import (PyramidRescale, RandomCrop, RandomRotate, Resize,
 from .test_time_aug import MultiRotateAugOCR
 from .textdet_targets import (DBNetTargets, FCENetTargets, PANetTargets,
                               TextSnakeTargets)
-from .transforms import RandomScaling, ScaleAspectJitter, SquareResizePad
+from .transforms import ScaleAspectJitter, SquareResizePad
 from .wrappers import ImgAug, TorchVisionWrapper
 
 __all__ = [
@@ -22,7 +22,7 @@ __all__ = [
     'ScaleAspectJitter', 'MultiRotateAugOCR', 'OCRSegTargets', 'FancyPCA',
     'RandomPaddingOCR', 'ImgAug', 'RandomRotateImageBox', 'OpencvToPil',
     'PilToOpencv', 'SquareResizePad', 'TextSnakeTargets', 'sort_vertex',
-    'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets', 'RandomScaling',
+    'LoadImageFromNdarray', 'sort_vertex8', 'FCENetTargets',
     'TextDetRandomCropFlip', 'NerTransform', 'ToTensorNER', 'ResizeNoImg',
     'PyramidRescale', 'TorchVisionWrapper', 'LoadImageFromLMDB', 'Resize',
     'RandomCrop', 'TextDetRandomCrop', 'RandomCrop'
