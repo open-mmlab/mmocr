@@ -45,7 +45,7 @@ Documentation: https://mmocr.readthedocs.io/en/latest/.
 
 - **Comprehensive Pipeline**
 
-   The toolbox supports not only text detection and text recognition, but also their downstream tasks such as key information extraction.
+  The toolbox supports not only text detection and text recognition, but also their downstream tasks such as key information extraction.
 
 - **Multiple Models**
 
