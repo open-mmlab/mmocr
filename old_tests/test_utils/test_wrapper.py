@@ -3,10 +3,11 @@ import numpy as np
 import pytest
 import torch
 
-from mmocr.models.textdet.postprocess import (DBPostprocessor,
-                                              FCEPostprocessor,
-                                              TextSnakePostprocessor)
-from mmocr.models.textdet.postprocess.utils import comps2boundaries, poly_nms
+from mmocr.models.textdet.postprocessors import (DBPostprocessor,
+                                                 FCEPostprocessor,
+                                                 TextSnakePostprocessor)
+from mmocr.models.textdet.postprocessors.utils import (comps2boundaries,
+                                                       poly_nms)
 
 
 def test_db_boxes_from_bitmaps():

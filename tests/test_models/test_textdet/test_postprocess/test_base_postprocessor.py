@@ -7,7 +7,7 @@ from mmengine import InstanceData
 
 from mmocr.core import TextDetDataSample
 from mmocr.core.evaluation.utils import points2polygon, poly_iou
-from mmocr.models.textdet.postprocess import BaseTextDetPostProcessor
+from mmocr.models.textdet.postprocessors import BaseTextDetPostProcessor
 
 
 class TestBaseTextDetPostProcessor(unittest.TestCase):
