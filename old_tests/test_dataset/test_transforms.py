@@ -43,30 +43,6 @@ def test_scale_aspect_jitter(mock_random):
     assert results['scale'] == (650, 2600)
 
 
-def test_random_scale():
-    h, w, c = 100, 100, 3
-    img = np.ones((h, w, c), dtype=np.uint8)
-    results = {'img': img, 'img_shape': (h, w, c)}
-
-    polygon = np.array([0., 0., 0., 10., 10., 10., 10., 0.])
-
-    results['gt_masks'] = PolygonMasks([[polygon]], *(img.shape[:2]))
-    results['mask_fields'] = ['gt_masks']
-
-    size = 100
-    scale = (2., 2.)
-    random_scaler = transforms.RandomScaling(size=size, scale=scale)
-
-    results = random_scaler(results)
-
-    out_img = results['img']
-    out_poly = results['gt_masks'].masks[0][0]
-    gt_poly = polygon * 2
-
-    assert np.allclose(out_img.shape, (2 * h, 2 * w, c))
-    assert np.allclose(out_poly, gt_poly)
-
-
 @mock.patch('%s.transforms.np.random.random_sample' % __name__)
 def test_square_resize_pad(mock_sample):
     results = {}

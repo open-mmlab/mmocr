@@ -4,7 +4,7 @@ import unittest
 import unittest.mock as mock
 
 import numpy as np
-from mmcv.transforms import Pad
+from mmcv.transforms import Pad, RandomResize
 
 from mmocr.datasets.pipelines import (PyramidRescale, RandomCrop, RandomRotate,
                                       Resize, TextDetRandomCrop,
@@ -518,3 +518,30 @@ class TestEastRandomCrop(unittest.TestCase):
         self.assertEqual(pad_results['img'].shape, (30, 30, 3))
         self.assertEqual(pad_results['pad_shape'], (30, 30, 3))
         self.assertEqual(pad_results['img'].sum(), 15 * 30 * 3)
+
+
+class TestRandomResize(unittest.TestCase):
+
+    def setUp(self):
+        self.data_info1 = dict(
+            img=np.random.random((300, 400, 3)),
+            gt_bboxes=np.array([[0, 0, 60, 100]]),
+            gt_polygons=[np.array([0, 0, 200, 0, 200, 100, 0, 100])])
+
+    @mock.patch('mmcv.transforms.processing.np.random.random_sample')
+    def test_random_resize(self, mock_sample):
+        randresize = RandomResize(scale=(500, 500), ratio_range=(0.8, 1.2))
+        target_bboxes = np.array([0, 0, 90, 120])
+        target_polygons = [np.array([0, 0, 300, 0, 300, 150, 0, 150])]
+
+        mock_sample.side_effect = [1.0]
+        results = randresize(self.data_info1)
+
+        self.assertEqual(results['img'].shape, (450, 600, 3))
+        self.assertEqual(results['img_shape'], (450, 600))
+        self.assertEqual(results['keep_ratio'], True)
+        self.assertEqual(results['scale'], (600, 450))
+        self.assertEqual(results['scale_factor'], (600. / 400., 450. / 300.))
+        self.assertEqual(results['gt_bboxes'].all(), target_bboxes.all())
+        self.assertEqual(results['gt_polygons'][0].all(),
+                         target_polygons[0].all())
