@@ -1,25 +1,47 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import imgaug
 import numpy as np
+from shapely.geometry import Polygon
 
 import mmocr.datasets.pipelines.dbnet_transforms as transforms
 
 
 def test_imgaug():
-    args = [['Fliplr', 0.5],
-            dict(cls='Affine', rotate=[-10, 10]), ['Resize', [0.5, 3.0]]]
-    imgaug = transforms.ImgAug(args)
-    img = np.random.rand(3, 100, 200)
+    args = [dict(cls='Affine', translate_px=dict(x=-10, y=-10))]
+    imgaug_transform = transforms.ImgAug(args, clip_invalid_ploys=False)
+    img = np.random.rand(100, 200, 3)
     poly = np.array([[[0, 0, 50, 0, 50, 50, 0, 50]],
                      [[20, 20, 50, 20, 50, 50, 20, 50]]])
     box = np.array([[0, 0, 50, 50], [20, 20, 50, 50]])
     results = dict(img=img, masks=poly, bboxes=box)
     results['mask_fields'] = ['masks']
     results['bbox_fields'] = ['bboxes']
-    results = imgaug(results)
-    assert np.allclose(results['bboxes'][0],
-                       results['masks'].masks[0][0][[0, 1, 4, 5]])
-    assert np.allclose(results['bboxes'][1],
-                       results['masks'].masks[1][0][[0, 1, 4, 5]])
+    results = imgaug_transform(results)
+    for i in range(2):
+        mask = results['masks'].masks[i][0]
+        poly = imgaug.augmentables.polys.Polygon(mask.reshape(-1, 2))
+        box = poly.to_bounding_box().clip_out_of_image(results['img_shape'])
+        assert box.coords_almost_equals(results['bboxes'][i].reshape(-1, 2))
+
+    args = [dict(cls='Affine', translate_px=dict(x=-10, y=-10))]
+    imgaug_transform = transforms.ImgAug(args, clip_invalid_ploys=True)
+    img = np.random.rand(100, 200, 3)
+    poly = np.array([[[0, 0, 50, 0, 50, 50, 0, 50]],
+                     [[20, 20, 50, 20, 50, 50, 20, 50]]])
+    box = np.array([[0, 0, 50, 50], [20, 20, 50, 50]])
+    poly_target = np.array([[[0, 0, 40, 0, 40, 40, 0, 40]],
+                            [[10, 10, 40, 10, 40, 40, 10, 40]]])
+    box_target = np.array([[0, 0, 40, 40], [10, 10, 40, 40]])
+    results = dict(img=img, masks=poly, bboxes=box)
+    results['mask_fields'] = ['masks']
+    results['bbox_fields'] = ['bboxes']
+    results = imgaug_transform(results)
+    assert np.allclose(results['bboxes'], box_target)
+    for i in range(2):
+        poly1 = Polygon(results['masks'].masks[i][0].reshape(-1, 2))
+        poly2 = Polygon(poly_target[i].reshape(-1, 2))
+        assert poly1.equals(poly2)
+        assert np.allclose(results['bboxes'][i], box_target[i])
 
 
 def test_eastrandomcrop():

@@ -29,7 +29,27 @@
 |     IIIT-ILST     |                                                                                                  [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst)                                                                                                  |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |      VinText      |                                                                                                            [homepage](https://github.com/VinAIResearch/dict-guided)                                                                                                            |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
 |        BID        |                                                                                               [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)                                                                                               |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
-|          RCTW          |          [homepage](https://rctw.vlrlab.net/index.html)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |  - |
+|       RCTW        |                                                                                                                 [homepage](https://rctw.vlrlab.net/index.html)                                                                                                                 |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|     HierText      |                                                                                                        [homepage](https://github.com/google-research-datasets/hiertext)                                                                                                        |                                                                                                              -                                                                                                               |                                              -                                               |                                               -                                                |
+|       ArT        |                   [homepage](https://rrc.cvc.uab.es/?ch=14)                    |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             | - |
+
+### Install AWS CLI (optional)
+
+- Since there are some datasets that require the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) to be installed in advance, we provide a quick installation guide here:
+
+  ```bash
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    unzip awscliv2.zip
+    sudo ./aws/install
+    ./aws/install -i /usr/local/aws-cli -b /usr/local/bin
+    !aws configure
+    # this command will require you to input keys, you can skip them except
+    # for the Default region name
+    # AWS Access Key ID [None]:
+    # AWS Secret Access Key [None]:
+    # Default region name [None]: us-east-1
+    # Default output format [None]
+  ```
 
 ## Important Note
 
@@ -255,7 +275,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 ## Totaltext
 
 - Step0: Read [Important Note](#important-note)
-- Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
+- Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` or `TT_new_train_GT.zip` (if you prefer to use the latest version of training annotations) from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
 
   ```bash
   mkdir totaltext && cd totaltext
@@ -267,17 +287,21 @@ inconsistency results in false examples in the training set. Therefore, users sh
   mv Images/Train imgs/training
   mv Images/Test imgs/test
 
-  # For annotations
+  # For legacy training and test annotations
   unzip groundtruth_text.zip
-  cd Groundtruth
-  mv Polygon/Train ../annotations/training
-  mv Polygon/Test ../annotations/test
+  mv Groundtruth/Polygon/Train annotations/training
+  mv Groundtruth/Polygon/Test annotations/test
+
+  # Using the latest training annotations
+  # WARNING: Delete legacy train annotations before running the following command.
+  unzip TT_new_train_GT.zip
+  mv Train annotations/training
   ```
 
 - Step2: Generate `instances_training.json` and `instances_test.json` with the following command:
 
   ```bash
-  python tools/data/textdet/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
+  python tools/data/textdet/totaltext_converter.py /path/to/totaltext
   ```
 
 - The resulting directory structure looks like the following:
@@ -507,7 +531,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_val.json
   ```
 
-### LSVT
+## LSVT
 
 - Step1: Download [train_full_images_0.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz), [train_full_images_1.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz), and [train_full_labels.json](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json) to `lsvt/`.
 
@@ -571,7 +595,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
 - After running the above codes, the directory structure should be as follows:
 
-  ```
+  ```text
   │── imgur
   │   ├── annotations
   │   ├── imgs
@@ -705,8 +729,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```bash
   # Annotations of ReCTS test split is not publicly available, split a validation
   # set by adding --val-ratio 0.2
-  # Add --preserve-vertical to preserve vertical texts for training, otherwise
-  # vertical images will be filtered and stored in PATH/TO/rects/ignores
   python tools/data/textdet/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
   ```
 
@@ -853,11 +875,10 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
 - Step1: Download `train_images.zip.001`, `train_images.zip.002`, and `train_gts.zip` from the [homepage](https://rctw.vlrlab.net/dataset.html), extract the zips to `rctw/imgs` and `rctw/annotations`, respectively.
 
-- Step2: Generate `instances_training.json` and `instances_val.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step2: Generate `instances_training.json` and `instances_val.json` (optional). Since the test annotations are not publicly available, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
   # Annotations of RCTW test split is not publicly available, split a validation set by adding --val-ratio 0.2
-  # Add --preserve-vertical to preserve vertical texts for training, otherwise vertical images will be filtered and stored in PATH/TO/rctw/ignores
   python tools/data/textdet/rctw_converter.py PATH/TO/rctw --nproc 4
   ```
 
@@ -865,6 +886,95 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
   ```text
   │── rctw
+  │   ├── annotations
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json (optional)
+  ```
+
+## HierText
+
+- Step1 (optional): Install [AWS CLI](https://mmocr.readthedocs.io/en/latest/datasets/det.html#install-aws-cli-optional).
+- Step2: Clone [HierText](https://github.com/google-research-datasets/hiertext) repo to get annotations
+
+  ```bash
+  mkdir HierText
+  git clone https://github.com/google-research-datasets/hiertext.git
+  ```
+
+- Step3: Download `train.tgz`, `validation.tgz` from aws
+
+  ```bash
+  aws s3 --no-sign-request cp s3://open-images-dataset/ocr/train.tgz .
+  aws s3 --no-sign-request cp s3://open-images-dataset/ocr/validation.tgz .
+  ```
+
+- Step4: Process raw data
+
+  ```bash
+  # process annotations
+  mv hiertext/gt ./
+  rm -rf hiertext
+  mv gt annotations
+  gzip -d annotations/train.jsonl.gz
+  gzip -d annotations/validation.jsonl.gz
+  # process images
+  mkdir imgs
+  mv train.tgz imgs/
+  mv validation.tgz imgs/
+  tar -xzvf imgs/train.tgz
+  tar -xzvf imgs/validation.tgz
+  ```
+
+- Step5: Generate `instances_training.json` and `instance_val.json`. HierText includes different levels of annotation, from paragraph, line, to word. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph-level annotation. Set `--level line` to get line-level annotation. set `--level word` to get word-level annotation.
+
+  ```bash
+  # Collect word annotation from HierText  --level word
+  python tools/data/textdet/hiertext_converter.py PATH/TO/HierText --level word --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  │── HierText
+  │   ├── annotations
+  │   ├── imgs
+  │   ├── instances_training.json
+  │   └── instances_val.json
+  ```
+
+## ArT
+
+- Step1: Download `train_images.tar.gz`, and `train_labels.json` from the [homepage](https://rrc.cvc.uab.es/?ch=14&com=downloads) to `art/`
+
+  ```bash
+  mkdir art && cd art
+  mkdir annotations
+
+  # Download ArT dataset
+  wget https://dataset-bj.cdn.bcebos.com/art/train_images.tar.gz --no-check-certificate
+  wget https://dataset-bj.cdn.bcebos.com/art/train_labels.json --no-check-certificate
+
+  # Extract
+  tar -xf train_images.tar.gz
+  mv train_images imgs
+  mv train_labels.json annotations/
+
+  # Remove unnecessary files
+  rm train_images.tar.gz
+  ```
+
+- Step2: Generate `instances_training.json` and `instances_val.json` (optional). Since the test annotations are not publicly available, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+
+  ```bash
+  # Annotations of ArT test split is not publicly available, split a validation set by adding --val-ratio 0.2
+  python tools/data/textdet/art_converter.py PATH/TO/art --nproc 4
+  ```
+
+- After running the above codes, the directory structure should be as follows:
+
+  ```text
+  │── art
   │   ├── annotations
   │   ├── imgs
   │   ├── instances_training.json

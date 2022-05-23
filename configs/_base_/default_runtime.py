@@ -1,10 +1,8 @@
-checkpoint_config = dict(interval=1)
 # yapf:disable
 log_config = dict(
     interval=5,
     hooks=[
         dict(type='TextLoggerHook')
-
     ])
 # yapf:enable
 dist_params = dict(backend='nccl')

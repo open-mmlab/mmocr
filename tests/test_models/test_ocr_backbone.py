@@ -118,8 +118,41 @@ def test_resnet():
                 stages=(True, True, True, True),
                 position='after_stage')
         ])
+
+    resnet31_master = ResNet(
+        in_channels=3,
+        stem_channels=[64, 128],
+        block_cfgs=dict(type='BasicBlock'),
+        arch_layers=[1, 2, 5, 3],
+        arch_channels=[256, 256, 512, 512],
+        strides=[1, 1, 1, 1],
+        plugins=[
+            dict(
+                cfg=dict(type='Maxpool2d', kernel_size=2, stride=(2, 2)),
+                stages=(True, True, False, False),
+                position='before_stage'),
+            dict(
+                cfg=dict(type='Maxpool2d', kernel_size=(2, 1), stride=(2, 1)),
+                stages=(False, False, True, False),
+                position='before_stage'),
+            dict(
+                cfg=dict(type='GCAModule', ratio=0.0625, n_head=1),
+                stages=[True, True, True, True],
+                position='after_stage'),
+            dict(
+                cfg=dict(
+                    type='ConvModule',
+                    kernel_size=3,
+                    stride=1,
+                    padding=1,
+                    norm_cfg=dict(type='BN'),
+                    act_cfg=dict(type='ReLU')),
+                stages=(True, True, True, True),
+                position='after_stage')
+        ])
     img = torch.rand(1, 3, 32, 100)
 
     assert resnet45_aster(img).shape == torch.Size([1, 512, 1, 25])
     assert resnet45_abi(img).shape == torch.Size([1, 512, 8, 25])
     assert resnet_31(img).shape == torch.Size([1, 512, 4, 25])
+    assert resnet31_master(img).shape == torch.Size([1, 512, 4, 25])

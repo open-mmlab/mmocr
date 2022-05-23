@@ -201,6 +201,13 @@ class MMOCR:
                 'dbnet/'
                 'dbnet_r50dcnv2_fpnc_sbn_1200e_icdar2015_20211025-9fe3b590.pth'
             },
+            'DBPP_r50': {
+                'config':
+                'dbnetpp/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py',
+                'ckpt':
+                'dbnet/'
+                'dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.pth'
+            },
             'DRRG': {
                 'config':
                 'drrg/drrg_r50_fpn_unet_1200e_ctw1500.py',
@@ -324,7 +331,11 @@ class MMOCR:
                 'config': 'tps/crnn_tps_academic_dataset.py',
                 'ckpt': 'tps/crnn_tps_academic_dataset_20210510-d221a905.pth'
             },
-            'Tesseract': {}
+            'Tesseract': {},
+            'MASTER': {
+                'config': 'master/master_academic.py',
+                'ckpt': 'master/master_r31_12e_ST_MJ_SA-787edd36.pth'
+            }
         }
 
         kie_models = {

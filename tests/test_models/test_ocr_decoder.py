@@ -6,7 +6,8 @@ import torch
 
 from mmocr.models.textrecog.decoders import (ABILanguageDecoder,
                                              ABIVisionDecoder, BaseDecoder,
-                                             NRTRDecoder, ParallelSARDecoder,
+                                             MasterDecoder, NRTRDecoder,
+                                             ParallelSARDecoder,
                                              ParallelSARDecoderWithBS,
                                              SequentialSARDecoder)
 from mmocr.models.textrecog.decoders.sar_decoder_with_bs import DecodeNode
@@ -132,3 +133,19 @@ def test_abi_vision_decoder():
     assert result['feature'].shape == torch.Size([2, 10, 128])
     assert result['logits'].shape == torch.Size([2, 10, 90])
     assert result['attn_scores'].shape == torch.Size([2, 10, 8, 32])
+
+
+def test_master_decoder():
+    model = MasterDecoder(
+        start_idx=0,
+        padding_idx=36,
+        num_classes=37,
+        d_model=64,
+        n_head=2,
+        max_seq_len=5)
+    feat = torch.randn(1, 64, 6, 40)
+    tgt_dict = {'padded_targets': torch.LongTensor([[0, 1, 1, 1, 36]])}
+    result = model(feat, None, tgt_dict)
+    assert result.shape == torch.Size([1, 5, 37])
+    result = model.forward_test(feat, None, None)
+    assert result.shape == torch.Size([1, 5, 37])

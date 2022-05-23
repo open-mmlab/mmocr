@@ -1,0 +1,202 @@
+{
+  "version": "5.0.1",
+  "flags": {},
+  "shapes": [
+    {
+      "label": "###",
+      "points": [
+        [
+          261,
+          138
+        ],
+        [
+          284,
+          140
+        ],
+        [
+          279,
+          158
+        ],
+        [
+          260,
+          158
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "HarbourFront",
+      "points": [
+        [
+          288,
+          138
+        ],
+        [
+          417,
+          140
+        ],
+        [
+          416,
+          161
+        ],
+        [
+          290,
+          157
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "CC22",
+      "points": [
+        [
+          743,
+          145
+        ],
+        [
+          779,
+          146
+        ],
+        [
+          780,
+          163
+        ],
+        [
+          746,
+          163
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "bua",
+      "points": [
+        [
+          783,
+          129
+        ],
+        [
+          831,
+          132
+        ],
+        [
+          833,
+          155
+        ],
+        [
+          785,
+          153
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          831,
+          133
+        ],
+        [
+          870,
+          135
+        ],
+        [
+          874,
+          156
+        ],
+        [
+          835,
+          155
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          159,
+          205
+        ],
+        [
+          230,
+          204
+        ],
+        [
+          231,
+          218
+        ],
+        [
+          159,
+          219
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          785,
+          158
+        ],
+        [
+          856,
+          158
+        ],
+        [
+          860,
+          178
+        ],
+        [
+          787,
+          179
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    },
+    {
+      "label": "###",
+      "points": [
+        [
+          1011,
+          157
+        ],
+        [
+          1079,
+          160
+        ],
+        [
+          1076,
+          173
+        ],
+        [
+          1011,
+          170
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    }
+  ],
+  "imagePath": "tests/data/toy_dataset/imgs/test/img_10.jpg",
+  "imageData": "",
+  "imageHeight": 720,
+  "imageWidth": 1280
+}
