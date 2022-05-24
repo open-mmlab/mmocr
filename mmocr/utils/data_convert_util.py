@@ -154,7 +154,7 @@ def dump_ocr_data(image_infos: Sequence[Dict], out_json_name: str,
                         'Detected nested segmentation for a single'
                         'text instance, which should be a 1-d array now.'
                         'Please fix input accordingly.')
-                instance['mask'] = mask
+                instance['polygon'] = mask
                 x, y, w, h = anno_info['bbox']
                 instance['bbox'] = [x, y, x + w, y + h]
                 instance['bbox_label'] = anno_info['category_id']

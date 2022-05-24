@@ -52,13 +52,13 @@ class TestDataConvertUtil(TestCase):
                     {
                         'bbox': [0, 0, 10, 20],
                         'bbox_label': 0,
-                        'mask': [0, 0, 0, 10, 10, 20, 20, 0],
+                        'polygon': [0, 0, 0, 10, 10, 20, 20, 0],
                         'ignore': False
                     },
                     {
                         'bbox': [10, 10, 30, 30],  # x1, y1, x2, y2
                         'bbox_label': 0,
-                        'mask': [10, 10, 10, 30, 30, 30, 30, 10],
+                        'polygon': [10, 10, 10, 30, 30, 30, 30, 10],
                         'ignore': True
                     }
                 ]
@@ -87,14 +87,14 @@ class TestDataConvertUtil(TestCase):
                     {
                         'bbox': [0, 0, 10, 20],
                         'bbox_label': 0,
-                        'mask': [0, 0, 0, 10, 10, 20, 20, 0],
+                        'polygon': [0, 0, 0, 10, 10, 20, 20, 0],
                         'text': 't1',
                         'ignore': False
                     },
                     {
                         'bbox': [10, 10, 30, 30],  # x1, y1, x2, y2
                         'bbox_label': 0,
-                        'mask': [10, 10, 10, 30, 30, 30, 30, 10],
+                        'polygon': [10, 10, 10, 30, 30, 30, 30, 10],
                         'text': 't2',
                         'ignore': True
                     }

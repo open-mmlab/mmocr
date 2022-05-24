@@ -1,190 +1,175 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import warnings
 
-import lmdb
-import mmcv
 import numpy as np
-from mmdet.core import BitmapMasks, PolygonMasks
-from mmdet.datasets.pipelines.loading import LoadAnnotations, LoadImageFromFile
+from mmcv.transforms import LoadAnnotations as MMCV_LoadAnnotations
 
 from mmocr.registry import TRANSFORMS
 
 
 @TRANSFORMS.register_module()
-class LoadTextAnnotations(LoadAnnotations):
-    """Load annotations for text detection.
+class LoadOCRAnnotations(MMCV_LoadAnnotations):
+    """Load and process the ``instances`` annotation provided by dataset.
+
+    The annotation format is as the following:
+
+    .. code-block:: python
+
+        {
+            'instances':
+            [
+                {
+                # List of 4 numbers representing the bounding box of the
+                # instance, in (x1, y1, x2, y2) order.
+                # used in text detection or text spotting tasks.
+                'bbox': [x1, y1, x2, y2],
+
+                # Label of instance, usually it's 0.
+                # used in text detection or text spotting tasks.
+                'bbox_label': 0,
+
+                # List of n numbers representing the polygon of the
+                # instance, in (xn, yn) order.
+                # used in text detection/ textspotter.
+                "polygon": [x1, y1, x2, y2, ... xn, yn],
+
+                # The flag indicating whether the instance should be ignored.
+                # used in text detection or text spotting tasks.
+                "ignore": False,
+
+                # The groundtruth of text.
+                # used in text recognition or text spotting tasks.
+                "text": 'tmp',
+                }
+            ]
+        }
+
+    After this module, the annotation has been changed to the format below:
+
+    .. code-block:: python
+
+        {
+            # In (x1, y1, x2, y2) order, float type. N is the number of bboxes
+            # in np.float32
+            'gt_bboxes': np.ndarray(N, 4)
+             # In np.int64 type.
+            'gt_bboxes_labels': np.ndarray(N, )
+            # In (x1, y1,..., xk, yk) order, float type.
+            # in list[np.float32]
+            'gt_polygons': list[np.ndarray(2k, )]
+             # In np.bool_ type.
+            'gt_ignored': np.ndarray(N, )
+             # In list[str]
+            'gt_texts': list[str]
+        }
+
+    Required Keys:
+
+    - instances
+
+      - bbox (optional)
+      - bbox_label (optional)
+      - polygon (optional)
+      - ignore (optional)
+      - text (optional)
+
+    Added Keys:
+
+    - gt_bboxes (np.float32)
+    - gt_bboxes_labels (np.int64)
+    - gt_polygons (list[np.float32])
+    - gt_ignored (np.bool_)
+    - gt_text (list[str])
 
     Args:
         with_bbox (bool): Whether to parse and load the bbox annotation.
-             Default: True.
+            Defaults to False.
         with_label (bool): Whether to parse and load the label annotation.
-            Default: True.
-        with_mask (bool): Whether to parse and load the mask annotation.
-             Default: False.
-        with_seg (bool): Whether to parse and load the semantic segmentation
-            annotation. Default: False.
-        poly2mask (bool): Whether to convert the instance masks from polygons
-            to bitmaps. Default: True.
-        use_img_shape (bool): Use the shape of loaded image from
-            previous pipeline ``LoadImageFromFile`` to generate mask.
+            Defaults to False.
+        with_polygon (bool): Whether to parse and load the polygon annotation.
+            Defaults to False.
+        with_text (bool): Whether to parse and load the text annotation.
+            Defaults to False.
     """
 
     def __init__(self,
-                 with_bbox=True,
-                 with_label=True,
-                 with_mask=False,
-                 with_seg=False,
-                 poly2mask=True,
-                 use_img_shape=False):
-        super().__init__(
-            with_bbox=with_bbox,
-            with_label=with_label,
-            with_mask=with_mask,
-            with_seg=with_seg,
-            poly2mask=poly2mask)
+                 with_bbox: bool = False,
+                 with_label: bool = False,
+                 with_polygon: bool = False,
+                 with_text: bool = False,
+                 **kwargs) -> None:
+        super().__init__(with_bbox=with_bbox, with_label=with_label, **kwargs)
+        self.with_polygon = with_polygon
+        self.with_text = with_text
+        self.with_ignore = with_bbox or with_polygon
 
-        self.use_img_shape = use_img_shape
-
-    def process_polygons(self, polygons):
-        """Convert polygons to list of ndarray and filter invalid polygons.
+    def _load_ignore_flags(self, results: dict) -> None:
+        """Private function to load ignore annotations.
 
         Args:
-            polygons (list[list]): Polygons of one instance.
+            results (dict): Result dict from :obj:``OCRDataset``.
 
         Returns:
-            list[numpy.ndarray]: Processed polygons.
+            dict: The dict contains loaded ignore annotations.
         """
+        gt_ignored = []
+        for instance in results['instances']:
+            gt_ignored.append(instance['ignore'])
+        results['gt_ignored'] = np.array(gt_ignored, dtype=np.bool_)
 
-        polygons = [np.array(p).astype(np.float32) for p in polygons]
-        valid_polygons = []
-        for polygon in polygons:
-            if len(polygon) % 2 == 0 and len(polygon) >= 6:
-                valid_polygons.append(polygon)
-        return valid_polygons
-
-    def _load_masks(self, results):
-        ann_info = results['ann_info']
-        h, w = results['img_info']['height'], results['img_info']['width']
-        if self.use_img_shape:
-            if results.get('ori_shape', None):
-                h, w = results['ori_shape'][:2]
-                results['img_info']['height'] = h
-                results['img_info']['width'] = w
-            else:
-                warnings.warn('"ori_shape" not in results, use the shape '
-                              'in "img_info" instead.')
-        gt_masks = ann_info['masks']
-        if self.poly2mask:
-            gt_masks = BitmapMasks(
-                [self._poly2mask(mask, h, w) for mask in gt_masks], h, w)
-        else:
-            gt_masks = PolygonMasks(
-                [self.process_polygons(polygons) for polygons in gt_masks], h,
-                w)
-        gt_masks_ignore = ann_info.get('masks_ignore', None)
-        if gt_masks_ignore is not None:
-            if self.poly2mask:
-                gt_masks_ignore = BitmapMasks(
-                    [self._poly2mask(mask, h, w) for mask in gt_masks_ignore],
-                    h, w)
-            else:
-                gt_masks_ignore = PolygonMasks([
-                    self.process_polygons(polygons)
-                    for polygons in gt_masks_ignore
-                ], h, w)
-            results['gt_masks_ignore'] = gt_masks_ignore
-            results['mask_fields'].append('gt_masks_ignore')
-
-        results['gt_masks'] = gt_masks
-        results['mask_fields'].append('gt_masks')
-        return results
-
-
-@TRANSFORMS.register_module()
-class LoadImageFromNdarray(LoadImageFromFile):
-    """Load an image from np.ndarray.
-
-    Similar with :obj:`LoadImageFromFile`, but the image read from
-    ``results['img']``, which is np.ndarray.
-    """
-
-    def __call__(self, results):
-        """Call functions to add image meta information.
+    def _load_polygons(self, results: dict) -> None:
+        """Private function to load polygon annotations.
 
         Args:
-            results (dict): Result dict with Webcam read image in
-                ``results['img']``.
+            results (dict): Result dict from :obj:``OCRDataset``.
 
         Returns:
-            dict: The dict contains loaded image and meta information.
+            dict: The dict contains loaded polygon annotations.
         """
-        assert results['img'].dtype == 'uint8'
 
-        img = results['img']
-        if self.color_type == 'grayscale' and img.shape[2] == 3:
-            img = mmcv.bgr2gray(img, keepdim=True)
-        if self.color_type == 'color' and img.shape[2] == 1:
-            img = mmcv.gray2bgr(img)
-        if self.to_float32:
-            img = img.astype(np.float32)
+        gt_polygons = []
+        for instance in results['instances']:
+            gt_polygons.append(np.array(instance['polygon'], dtype=np.float32))
+        results['gt_polygons'] = gt_polygons
 
-        results['filename'] = None
-        results['ori_filename'] = None
-        results['img'] = img
-        results['img_shape'] = img.shape
-        results['ori_shape'] = img.shape
-        results['img_fields'] = ['img']
+    def _load_texts(self, results: dict) -> None:
+        """Private function to load text annotations.
+
+        Args:
+            results (dict): Result dict from :obj:``OCRDataset``.
+
+        Returns:
+            dict: The dict contains loaded text annotations.
+        """
+        gt_texts = []
+        for instance in results['instances']:
+            gt_texts.append(instance['text'])
+        results['gt_texts'] = gt_texts
+
+    def transform(self, results: dict) -> dict:
+        """Function to load multiple types annotations.
+
+        Args:
+            results (dict): Result dict from :obj:``OCRDataset``.
+
+        Returns:
+            dict: The dict contains loaded bounding box, label polygon and
+            text annotations.
+        """
+        results = super().transform(results)
+        if self.with_polygon:
+            self._load_polygons(results)
+        if self.with_text:
+            self._load_texts(results)
+        if self.with_ignore:
+            self._load_ignore_flags(results)
         return results
 
-
-@TRANSFORMS.register_module()
-class LoadImageFromLMDB:
-    """Load an image from lmdb file.
-
-    Similar with :obj:'LoadImageFromFile', but the image read from
-    "results['img_info']['filename']", which is a data index of lmdb file.
-    """
-
-    def __init__(self, color_type='color'):
-        self.color_type = color_type
-        self.env = None
-        self.txn = None
-
-    def __call__(self, results):
-        img_key = results['img_info']['filename']
-        lmdb_path = results['img_prefix']
-
-        # lmdb env
-        if self.env is None:
-            self.env = lmdb.open(
-                lmdb_path,
-                max_readers=1,
-                readonly=True,
-                lock=False,
-                readahead=False,
-                meminit=False,
-            )
-        # read image
-        with self.env.begin(write=False) as txn:
-            imgbuf = txn.get(img_key.encode('utf-8'))
-            try:
-                img = mmcv.imfrombytes(imgbuf, flag=self.color_type)
-            except OSError:
-                print(f'Corrupted image for {img_key}')
-                return None
-
-            results['filename'] = img_key
-            results['ori_filename'] = img_key
-            results['img'] = img
-            results['img_shape'] = img.shape
-            results['ori_shape'] = img.shape
-            results['img_fields'] = ['img']
-            return results
-
-    def __repr__(self):
-        return '{} (color_type={})'.format(self.__class__.__name__,
-                                           self.color_type)
-
-    def __del__(self):
-        if self.env is not None:
-            self.env.close()
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(with_bbox={self.with_bbox}, '
+        repr_str += f'with_label={self.with_label}, '
+        repr_str += f'with_polygon={self.with_polygon}, '
+        repr_str += f'with_text={self.with_text}, '
+        repr_str += f"imdecode_backend='{self.imdecode_backend}', "
+        repr_str += f'file_client_args={self.file_client_args})'
+        return repr_str
