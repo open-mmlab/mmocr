@@ -25,10 +25,11 @@ class PackTextDetInputs(BaseTransform):
           'gt_bboxes'.
         - labels (torch.LongTensor(N)): The labels of instances.
           Renamed from 'gt_bboxes_labels'.
-        - polygons(list[torch.tensor((2k,), dtype=torch.float32)]): The
+        - polygons(list[np.array((2k,), dtype=np.float32)]): The
           groundtruth of polygons in the form of [x1, y1,..., xk, yk]. Each
           element in polygons may have different number of points. Renamed from
-          'gt_polygons'.
+          'gt_polygons'. Using numpy instead of tensor is that polygon usually
+          is not the output of model and operated on cpu.
         - ignored (torch.BoolTensor((N,))): The flag indicating whether the
           corresponding instance should be ignored. Renamed from
           'gt_ignored'.
@@ -98,10 +99,6 @@ class PackTextDetInputs(BaseTransform):
             if key in ['gt_bboxes', 'gt_bboxes_labels', 'gt_ignored']:
                 instance_data[self.mapping_table[key]] = to_tensor(
                     results[key])
-            elif key == 'gt_polygons':
-                instance_data[self.mapping_table[key]] = [
-                    to_tensor(polygon) for polygon in results[key]
-                ]
             else:
                 instance_data[self.mapping_table[key]] = results[key]
         data_sample.gt_instances = instance_data

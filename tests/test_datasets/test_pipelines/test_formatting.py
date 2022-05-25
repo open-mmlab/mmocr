@@ -42,10 +42,9 @@ class TestPackTextDetInputs(TestCase):
         self.assertIn('bboxes', data_sample.gt_instances)
         self.assertIsInstance(data_sample.gt_instances.bboxes, torch.Tensor)
         self.assertEqual(data_sample.gt_instances.bboxes.dtype, torch.float32)
-        self.assertIsInstance(data_sample.gt_instances.polygons[0],
-                              torch.Tensor)
+        self.assertIsInstance(data_sample.gt_instances.polygons[0], np.ndarray)
         self.assertEqual(data_sample.gt_instances.polygons[0].dtype,
-                         torch.float32)
+                         np.float32)
         self.assertEqual(data_sample.gt_instances.ignored.dtype, torch.bool)
         self.assertEqual(data_sample.gt_instances.labels.dtype, torch.int64)
         self.assertIsInstance(data_sample.gt_instances.texts, list)
