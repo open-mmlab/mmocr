@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import math
 import random
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import cv2
 import mmcv
@@ -1293,4 +1293,85 @@ class PadToWidth(BaseTransform):
         repr_str = self.__class__.__name__
         repr_str += f'(width={self.width}, '
         repr_str += f'pad_cfg={self.pad_cfg})'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class SourceImagePad(BaseTransform):
+    """Pad Image to target size. It will randomly crop an area from the
+    original image and resize it to the target size, then paste the original
+    image to its top left corner.
+
+    Required Keys:
+
+    - img
+
+    Modified Keys:
+
+    - img
+    - img_shape
+
+    Added Keys:
+    - pad_shape
+    - pad_fixed_size
+
+    Args:
+        target_scale (int or tuple[int, int]]): The target size of padded
+            image. If it's an integer, then the padding size would be
+            (target_size, target_size). If it's tuple, then ``target_scale[0]``
+            should be the width and ``target_scale[1]`` should be the height.
+            The size of the padded image will be (target_scale[1],
+            target_scale[0])
+        crop_ratio (float or Tuple[float, float]): Relative size for the
+            crop region. If ``crop_ratio`` is a float, then the initial crop
+            size would be
+            ``(crop_ratio * img.shape[0], crop_ratio * img.shape[1])`` . If
+            ``crop_ratio`` is a tuple, then ``crop_ratio[0]`` is for the width
+            and ``crop_ratio[1]`` is for the height. The initial crop size
+            would be
+            ``(crop_ratio[1] * img.shape[0], crop_ratio[0] * img.shape[1])``.
+            Defaults to 1./9.
+    """
+
+    def __init__(self,
+                 target_scale: Union[int, Tuple[int, int]],
+                 crop_ratio: Union[float, Tuple[float,
+                                                float]] = 1. / 9) -> None:
+        self.target_scale = target_scale if isinstance(
+            target_scale, tuple) else (target_scale, target_scale)
+        self.crop_ratio = crop_ratio if isinstance(
+            crop_ratio, tuple) else (crop_ratio, crop_ratio)
+
+    def transform(self, results: Dict) -> Dict:
+        """Pad Image to target size. It will randomly select a small area from
+        the  original image and resize it to the target size, then paste the
+        original image to its top left corner.
+
+        Args:
+            results (Dict): Result dict containing the data to transform.
+
+        Returns:
+            (Dict): The transformed data.
+        """
+        img = results['img']
+        h, w = img.shape[:2]
+        assert h <= self.target_scale[1] and w <= self.target_scale[
+            0], 'image size should be smaller that the target size'
+        h_ind = np.random.randint(0, int(h - h * self.crop_ratio[1]) + 1)
+        w_ind = np.random.randint(0, int(w - w * self.crop_ratio[0]) + 1)
+        img_cut = img[h_ind:int(h_ind + h * self.crop_ratio[1]),
+                      w_ind:int(w_ind + w * self.crop_ratio[1])]
+        expand_img = mmcv.imresize(img_cut, self.target_scale)
+        # paste img to the top left corner of the padding region
+        expand_img[0:h, 0:w] = img
+        results['img'] = expand_img
+        results['img_shape'] = expand_img.shape[:2]
+        results['pad_shape'] = expand_img.shape
+        results['pad_fixed_size'] = self.target_scale
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(target_scale = {self.target_scale}, '
+        repr_str += f'crop_ratio = {self.crop_ratio})'
         return repr_str
