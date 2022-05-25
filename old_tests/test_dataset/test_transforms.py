@@ -2,7 +2,6 @@
 import unittest.mock as mock
 
 import numpy as np
-from mmdet.core import PolygonMasks
 
 import mmocr.datasets.pipelines.transforms as transforms
 
@@ -41,34 +40,3 @@ def test_scale_aspect_jitter(mock_random):
     # scale1 0.5， scale2=1 scale =0.5  650/1000, w, h
     # print(results['scale'])
     assert results['scale'] == (650, 2600)
-
-
-@mock.patch('%s.transforms.np.random.random_sample' % __name__)
-def test_square_resize_pad(mock_sample):
-    results = {}
-    img = np.zeros((15, 30, 3))
-    polygon = np.array([10., 5., 20., 5., 20., 10., 10., 10.])
-    poly_masks = PolygonMasks([[polygon]], 15, 30)
-    results['img'] = img
-    results['gt_masks'] = poly_masks
-    results['mask_fields'] = ['gt_masks']
-    srp = transforms.SquareResizePad(target_size=40, pad_ratio=0.5)
-
-    # test resize with padding
-    mock_sample.side_effect = [0.]
-    output = srp(results)
-    target = 4. / 3 * polygon
-    target[1::2] += 10.
-    assert np.allclose(output['gt_masks'].masks[0][0], target)
-    assert output['img'].shape == (40, 40, 3)
-
-    # test resize to square without padding
-    results['img'] = img
-    results['gt_masks'] = poly_masks
-    mock_sample.side_effect = [1.]
-    output = srp(results)
-    target = polygon.copy()
-    target[::2] *= 4. / 3
-    target[1::2] *= 8. / 3
-    assert np.allclose(output['gt_masks'].masks[0][0], target)
-    assert output['img'].shape == (40, 40, 3)

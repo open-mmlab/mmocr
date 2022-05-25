@@ -9,12 +9,12 @@ from .ocr_transforms import (FancyPCA, NormalizeOCR, OnlineCropOCR,
                              OpencvToPil, PilToOpencv, RandomPaddingOCR,
                              RandomRotateImageBox, ResizeOCR, ToTensorOCR)
 from .processing import (PadToWidth, PyramidRescale, RandomCrop, RandomRotate,
-                         RescaleToHeight, Resize, TextDetRandomCrop,
-                         TextDetRandomCropFlip)
+                         RescaleToHeight, Resize, SourceImagePad,
+                         TextDetRandomCrop, TextDetRandomCropFlip)
 from .test_time_aug import MultiRotateAugOCR
 from .textdet_targets import (DBNetTargets, FCENetTargets, PANetTargets,
                               TextSnakeTargets)
-from .transforms import ScaleAspectJitter, SquareResizePad
+from .transforms import ScaleAspectJitter
 from .wrappers import ImgAug, TorchVisionWrapper
 
 __all__ = [
@@ -22,7 +22,7 @@ __all__ = [
     'ToTensorOCR', 'DBNetTargets', 'PANetTargets', 'RandomRotate',
     'ScaleAspectJitter', 'MultiRotateAugOCR', 'OCRSegTargets', 'FancyPCA',
     'RandomPaddingOCR', 'ImgAug', 'RandomRotateImageBox', 'OpencvToPil',
-    'PilToOpencv', 'SquareResizePad', 'TextSnakeTargets', 'sort_vertex',
+    'PilToOpencv', 'SourceImagePad', 'TextSnakeTargets', 'sort_vertex',
     'sort_vertex8', 'FCENetTargets', 'TextDetRandomCropFlip', 'NerTransform',
     'ToTensorNER', 'ResizeNoImg', 'PyramidRescale', 'TorchVisionWrapper',
     'Resize', 'RandomCrop', 'TextDetRandomCrop', 'RandomCrop',
