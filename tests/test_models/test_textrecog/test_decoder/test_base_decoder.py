@@ -1,40 +1,92 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import os.path as osp
+import tempfile
 from unittest import TestCase, mock
 
 from mmocr.models.textrecog.decoders import BaseDecoder
+from mmocr.models.textrecog.dictionary.dictionary import Dictionary
 from mmocr.registry import MODELS
 
 
 @MODELS.register_module()
 class Tmp:
-    pass
+
+    def __init__(self, max_seq_len, dictionary) -> None:
+        pass
 
 
 class TestBaseDecoder(TestCase):
 
+    def _create_dummy_dict_file(
+        self, dict_file,
+        chars=list('0123456789abcdefghijklmnopqrstuvwxyz')):  # NOQA
+        with open(dict_file, 'w') as f:
+            for char in chars:
+                f.write(char + '\n')
+
     def test_init(self):
         cfg = dict(type='Tmp')
+        tmp_dir = tempfile.TemporaryDirectory()
+        dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
+        self._create_dummy_dict_file(dict_file)
+        # test diction cfg
+        dict_cfg = dict(
+            type='Dictionary',
+            dict_file=dict_file,
+            with_start=True,
+            with_end=True,
+            same_start_end=False,
+            with_padding=True,
+            with_unknown=True)
         with self.assertRaises(AssertionError):
-            BaseDecoder([], cfg)
+            BaseDecoder(dict_cfg, [], cfg)
         with self.assertRaises(AssertionError):
-            BaseDecoder(cfg, [])
-        decoder = BaseDecoder()
+            BaseDecoder(dict_cfg, cfg, [])
+        with self.assertRaises(TypeError):
+            BaseDecoder([], cfg, cfg)
+        decoder = BaseDecoder(dictionary=dict_cfg)
         self.assertIsNone(decoder.loss)
         self.assertIsNone(decoder.postprocessor)
-
-        decoder = BaseDecoder(cfg, cfg)
+        self.assertIsInstance(decoder.dictionary, Dictionary)
+        decoder = BaseDecoder(dict_cfg, cfg, cfg)
         self.assertIsInstance(decoder.loss, Tmp)
         self.assertIsInstance(decoder.postprocessor, Tmp)
+        tmp_dir.cleanup()
 
     def test_forward_train(self):
-        decoder = BaseDecoder()
+        tmp_dir = tempfile.TemporaryDirectory()
+        dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
+        self._create_dummy_dict_file(dict_file)
+        # test diction cfg
+        dict_cfg = dict(
+            type='Dictionary',
+            dict_file=dict_file,
+            with_start=True,
+            with_end=True,
+            same_start_end=False,
+            with_padding=True,
+            with_unknown=True)
+        decoder = BaseDecoder(dictionary=dict_cfg)
         with self.assertRaises(NotImplementedError):
             decoder.forward_train(None, None, None)
+        tmp_dir.cleanup()
 
     def test_forward_test(self):
-        decoder = BaseDecoder()
+        tmp_dir = tempfile.TemporaryDirectory()
+        dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
+        self._create_dummy_dict_file(dict_file)
+        dict_cfg = dict(
+            type='Dictionary',
+            dict_file=dict_file,
+            with_start=True,
+            with_end=True,
+            same_start_end=False,
+            with_padding=True,
+            with_unknown=True)
+        decoder = BaseDecoder(dictionary=dict_cfg)
         with self.assertRaises(NotImplementedError):
             decoder.forward_test(None, None, None)
+        tmp_dir.cleanup()
 
     @mock.patch(f'{__name__}.BaseDecoder.forward_test')
     @mock.patch(f'{__name__}.BaseDecoder.forward_train')
@@ -46,10 +98,22 @@ class TestBaseDecoder(TestCase):
         def mock_func_test(feat, out_enc, datasamples):
             return False
 
+        tmp_dir = tempfile.TemporaryDirectory()
+        dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
+        self._create_dummy_dict_file(dict_file)
+        dict_cfg = dict(
+            type='Dictionary',
+            dict_file=dict_file,
+            with_start=True,
+            with_end=True,
+            same_start_end=False,
+            with_padding=True,
+            with_unknown=True)
         mock_forward_train.side_effect = mock_func_train
         mock_forward_test.side_effect = mock_func_test
         cfg = dict(type='Tmp')
-        decoder = BaseDecoder(cfg, cfg)
+        decoder = BaseDecoder(dict_cfg, cfg, cfg)
 
         self.assertTrue(decoder(None, None, None, True))
         self.assertFalse(decoder(None, None, None, False))
+        tmp_dir.cleanup()
