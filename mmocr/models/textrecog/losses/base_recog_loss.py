@@ -31,7 +31,7 @@ class BaseRecogLoss(nn.Module):
     def __init__(self,
                  dictionary: Union[Dict, Dictionary],
                  max_seq_len: int = 40,
-                 letter_case: str = 'no_change',
+                 letter_case: str = 'unchanged',
                  **kwargs) -> None:
         super().__init__()
         if isinstance(dictionary, dict):
@@ -43,7 +43,7 @@ class BaseRecogLoss(nn.Module):
                 'The type of dictionary should be `Dictionary` or dict, '
                 f'but got {type(dictionary)}')
         self.max_seq_len = max_seq_len
-        assert letter_case in ['no_change', 'upper', 'lower']
+        assert letter_case in ['unchanged', 'upper', 'lower']
         self.letter_case = letter_case
 
     def get_targets(
