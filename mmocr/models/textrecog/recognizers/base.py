@@ -56,6 +56,31 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
     def device(self) -> torch.device:
         return self.pixel_mean.device
 
+    @property
+    def with_backbone(self):
+        """bool: whether the recognizer has a backbone"""
+        return getattr(self, 'backbone', None) is not None
+
+    @property
+    def with_encoder(self):
+        """bool: whether the recognizer has an encoder"""
+        return getattr(self, 'encoder', None) is not None
+
+    @property
+    def with_preprocessor(self):
+        """bool: whether the recognizer has a preprocessor"""
+        return getattr(self, 'preprocessor', None) is not None
+
+    @property
+    def with_dictionary(self):
+        """bool: whether the recognizer has a dictionary"""
+        return getattr(self, 'dictionary', None) is not None
+
+    @property
+    def with_decoder(self):
+        """bool: whether the recognizer has a decoder"""
+        return getattr(self, 'decoder', None) is not None
+
     @abstractmethod
     def extract_feat(self, inputs: torch.Tensor) -> torch.Tensor:
         """Extract features from images."""
@@ -77,8 +102,8 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
         # NOTE the batched image size information may be useful for
         # calculating valid ratio.
         batch_input_shape = tuple(inputs[0].size()[-2:])
-        for data_samples in data_samples:
-            data_samples.set_metainfo({'batch_input_shape': batch_input_shape})
+        for data_sample in data_samples:
+            data_sample.set_metainfo({'batch_input_shape': batch_input_shape})
 
     @abstractmethod
     def simple_test(self, inputs: torch.Tensor,
@@ -86,7 +111,6 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
                     **kwargs) -> Sequence[TextRecogDataSample]:
         pass
 
-    @abstractmethod
     def aug_test(self, imgs: torch.Tensor,
                  data_samples: Sequence[Sequence[TextRecogDataSample]],
                  **kwargs):
@@ -230,16 +254,8 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
             ``pred_text``.
         """
         # TODO: Consider merging with forward_train logic
-        batch_size = len(data_samples)
-        batch_img_metas = []
-        for batch_index in range(batch_size):
-            metainfo = data_samples[batch_index].metainfo
+        batch_input_shape = tuple(inputs[0].size()[-2:])
+        for data_sample in data_samples:
+            data_sample.set_metainfo({'batch_input_shape': batch_input_shape})
 
-            # TODO: maybe remove to stack_batch
-            # NOTE the batched image size information may be useful for
-            # calculating valid ratio.
-            metainfo['batch_input_shape'] = \
-                tuple(inputs.size()[-2:])
-            batch_img_metas.append(metainfo)
-
-        return self.simple_test(inputs, batch_img_metas, **kwargs)
+        return self.simple_test(inputs, data_samples, **kwargs)
