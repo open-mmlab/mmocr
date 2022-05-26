@@ -16,7 +16,7 @@ class MaskedDiceLoss(nn.Module):
             1e-6.
     """
 
-    def __init__(self, eps=1e-6):
+    def __init__(self, eps: float = 1e-6) -> None:
         super().__init__()
         assert isinstance(eps, float)
         self.eps = eps

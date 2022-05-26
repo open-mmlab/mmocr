@@ -50,3 +50,8 @@ class TestMaskedBalancedBCELoss(TestCase):
             self.bce_loss(self.pred, self.gt, self.mask).item(),
             1.4067,
             delta=0.1)
+
+        # Test zero mask
+        zero_mask = torch.FloatTensor([0, 0, 0, 0])
+        self.assertAlmostEqual(
+            self.bce_loss(self.pred, self.gt, zero_mask).item(), 0)
