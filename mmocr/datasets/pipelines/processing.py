@@ -13,7 +13,7 @@ from shapely.geometry import Polygon as plg
 
 import mmocr.core.evaluation.utils as eval_utils
 from mmocr.registry import TRANSFORMS
-from mmocr.utils import (bbox2poly, crop_polygon, is_poly_outside_rect,
+from mmocr.utils import (bbox2poly, crop_polygon, is_poly_inside_rect,
                          poly2bbox, rescale_polygon)
 from .wrappers import ImgAug
 
@@ -888,7 +888,7 @@ class RandomCrop(BaseTransform):
         for idx, poly in enumerate(polys):
             poly = poly.reshape(-1, 2)
             poly = poly - (crop_x, crop_y)
-            if not is_poly_outside_rect(poly, [0, 0, crop_w, crop_h]):
+            if is_poly_inside_rect(poly.flatten(), [0, 0, crop_w, crop_h]):
                 valid_polys.append(poly.flatten())
                 valid_labels.append(labels[idx])
                 valid_ignored.append(ignored[idx])
@@ -905,7 +905,8 @@ class RandomCrop(BaseTransform):
         for bbox in bboxes:
             bbox = bbox.reshape(-1, 2)
             bbox = bbox - (crop_x, crop_y)
-            if not is_poly_outside_rect(bbox, [0, 0, crop_w, crop_h]):
+            if is_poly_inside_rect(
+                    bbox2poly(bbox.flatten()), [0, 0, crop_w, crop_h]):
                 valid_bboxes.append(bbox.flatten())
         assert (len(valid_bboxes) == len(valid_polys))
         results['gt_bboxes'] = np.array(valid_bboxes).astype(np.float32)

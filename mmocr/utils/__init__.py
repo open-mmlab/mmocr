@@ -14,7 +14,7 @@ from .img_util import drop_orientation, is_not_png
 from .lmdb_util import recog2lmdb
 from .logger import get_root_logger
 from .model import revert_sync_batchnorm
-from .polygon_utils import (crop_polygon, is_poly_outside_rect, poly2bbox,
+from .polygon_utils import (crop_polygon, is_poly_inside_rect, poly2bbox,
                             poly2shapely, poly_intersection, poly_iou,
                             poly_make_valid, poly_union, polys2shapely,
                             rescale_polygon, rescale_polygons)
@@ -29,7 +29,7 @@ __all__ = [
     'stitch_boxes_into_lines', 'StringStrip', 'revert_sync_batchnorm',
     'bezier_to_polygon', 'sort_points', 'recog2lmdb', 'dump_ocr_data',
     'recog_anno_to_imginfo', 'rescale_polygons', 'rescale_polygon',
-    'rescale_bboxes', 'bbox2poly', 'crop_polygon', 'is_poly_outside_rect',
+    'rescale_bboxes', 'bbox2poly', 'crop_polygon', 'is_poly_inside_rect',
     'poly2bbox', 'poly_intersection', 'poly_iou', 'poly_make_valid',
     'poly_union', 'poly2shapely', 'polys2shapely', 'register_all_modules'
 ]

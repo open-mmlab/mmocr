@@ -260,19 +260,17 @@ def poly_iou(poly_a: Polygon,
     return area_inters / area_union if area_union != 0 else zero_division
 
 
-def is_poly_outside_rect(poly: ArrayLike, rect: np.ndarray) -> bool:
-    """Check if the polygon is outside the target region.
+def is_poly_inside_rect(poly: ArrayLike, rect: np.ndarray) -> bool:
+    """Check if the polygon is inside the target region.
         Args:
             poly (ArrayLike): Polygon in shape (N, ).
             rect (ndarray): Target region [x1, y1, x2, y2].
 
         Returns:
-            bool: Whether the polygon is outside the cropping region.
+            bool: Whether the polygon is inside the cropping region.
         """
 
-    poly = np.array(poly).reshape(-1, 2)
-    if poly[:, 0].max() < rect[0] or poly[:, 0].min() > rect[2]:
-        return True
-    if poly[:, 1].max() < rect[1] or poly[:, 1].min() > rect[3]:
-        return True
-    return False
+    poly = poly2shapely(poly)
+    rect = poly2shapely(bbox2poly(rect))
+    inter = poly.intersection(rect)
+    return inter.area == poly.area
