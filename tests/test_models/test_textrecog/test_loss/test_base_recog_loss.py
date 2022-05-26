@@ -42,7 +42,9 @@ class TestBaseRecogLoss(TestCase):
             with_unknown=True)
         base_recog_loss = BaseRecogLoss(dict_cfg)
         self.assertIsInstance(base_recog_loss.dictionary, Dictionary)
-
+        # test case mode
+        with self.assertRaises(AssertionError):
+            base_recog_loss = BaseRecogLoss(dict_cfg, letter_case='no')
         # test dictionary is invalid type
         dict_cfg = ['tmp']
         with self.assertRaisesRegex(
@@ -70,11 +72,11 @@ class TestBaseRecogLoss(TestCase):
             with_unknown=True)
         base_recog_loss = BaseRecogLoss(dictionary, max_seq_len=10)
         target_data_samples = base_recog_loss.get_targets([data_sample])
-        assert self._equal(target_data_samples[0].gt_text.item,
+        assert self._equal(target_data_samples[0].gt_text.indexes,
                            torch.LongTensor([0, 1, 2, 3]))
         padding_idx = dictionary.padding_idx
         assert self._equal(
-            target_data_samples[0].gt_text.item_padded,
+            target_data_samples[0].gt_text.padding_indexes,
             torch.LongTensor([
                 dictionary.start_idx, 0, 1, 2, 3, dictionary.end_idx,
                 padding_idx, padding_idx, padding_idx, padding_idx
@@ -90,10 +92,10 @@ class TestBaseRecogLoss(TestCase):
         base_recog_loss = BaseRecogLoss(dictionary, max_seq_len=3)
         data_sample.gt_text.item = '0123'
         target_data_samples = base_recog_loss.get_targets([data_sample])
-        assert self._equal(target_data_samples[0].gt_text.item,
+        assert self._equal(target_data_samples[0].gt_text.indexes,
                            torch.LongTensor([0, 1, 2, 3]))
         padding_idx = dictionary.padding_idx
-        assert self._equal(target_data_samples[0].gt_text.item_padded,
+        assert self._equal(target_data_samples[0].gt_text.padding_indexes,
                            torch.LongTensor([0, 1, 2]))
 
         dict_cfg = dict(
@@ -104,12 +106,13 @@ class TestBaseRecogLoss(TestCase):
             same_start_end=False,
             with_padding=False,
             with_unknown=True)
-        base_recog_loss = BaseRecogLoss(dict_cfg, max_seq_len=10)
+        base_recog_loss = BaseRecogLoss(
+            dict_cfg, max_seq_len=10, letter_case='lower')
         data_sample.gt_text.item = '0123'
         target_data_samples = base_recog_loss.get_targets([data_sample])
-        assert self._equal(target_data_samples[0].gt_text.item,
+        assert self._equal(target_data_samples[0].gt_text.indexes,
                            torch.LongTensor([0, 1, 2, 3]))
-        assert self._equal(target_data_samples[0].gt_text.item_padded,
+        assert self._equal(target_data_samples[0].gt_text.padding_indexes,
                            torch.LongTensor([0, 1, 2, 3]))
 
         target_data_samples = base_recog_loss.get_targets([])
