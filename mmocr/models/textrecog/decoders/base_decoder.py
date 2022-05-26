@@ -59,7 +59,7 @@ class BaseDecoder(BaseModule):
         self,
         feat: Optional[torch.Tensor] = None,
         out_enc: Optional[torch.Tensor] = None,
-        datasamples: Optional[Sequence[TextRecogDataSample]] = None
+        data_samples: Optional[Sequence[TextRecogDataSample]] = None
     ) -> torch.Tensor:
         """Forward for training.
 
@@ -67,7 +67,7 @@ class BaseDecoder(BaseModule):
             feat (torch.Tensor, optional): The feature map from backbone of
                 shape :math:`(N, E, H, W)`. Defaults to None.
             out_enc (torch.Tensor, optional): Encoder output. Defaults to None.
-            datasamples (Sequence[TextRecogDataSample]): Batch of
+            data_samples (Sequence[TextRecogDataSample]): Batch of
                 TextRecogDataSample, containing gt_text information. Defaults
                 to None.
         """
@@ -77,7 +77,7 @@ class BaseDecoder(BaseModule):
         self,
         feat: Optional[torch.Tensor] = None,
         out_enc: Optional[torch.Tensor] = None,
-        datasamples: Optional[Sequence[TextRecogDataSample]] = None
+        data_samples: Optional[Sequence[TextRecogDataSample]] = None
     ) -> torch.Tensor:
         """Forward for testing.
 
@@ -85,7 +85,7 @@ class BaseDecoder(BaseModule):
             feat (torch.Tensor, optional): The feature map from backbone of
                 shape :math:`(N, E, H, W)`. Defaults to None.
             out_enc (torch.Tensor, optional): Encoder output. Defaults to None.
-            datasamples (Sequence[TextRecogDataSample]): Batch of
+            data_samples (Sequence[TextRecogDataSample]): Batch of
                 TextRecogDataSample, containing gt_text information. Defaults
                 to None.
         """
@@ -94,7 +94,7 @@ class BaseDecoder(BaseModule):
     def forward(self,
                 feat: Optional[torch.Tensor] = None,
                 out_enc: Optional[torch.Tensor] = None,
-                datasamples: Optional[Sequence[TextRecogDataSample]] = None,
+                data_samples: Optional[Sequence[TextRecogDataSample]] = None,
                 train_mode: bool = True) -> torch.Tensor:
         """
 
@@ -102,7 +102,7 @@ class BaseDecoder(BaseModule):
             feat (torch.Tensor, optional): The feature map from backbone of
                 shape :math:`(N, E, H, W)`. Defaults to None.
             out_enc (torch.Tensor, optional): Encoder output. Defaults to None.
-            datasamples (Sequence[TextRecogDataSample]): Batch of
+            data_samples (Sequence[TextRecogDataSample]): Batch of
                 TextRecogDataSample, containing gt_text information. Defaults
                 to None.
             train_mode (bool): Train or test. Defaults to True.
@@ -112,6 +112,6 @@ class BaseDecoder(BaseModule):
         """
         self.train_mode = train_mode
         if train_mode:
-            return self.forward_train(feat, out_enc, datasamples)
+            return self.forward_train(feat, out_enc, data_samples)
 
-        return self.forward_test(feat, out_enc, datasamples)
+        return self.forward_test(feat, out_enc, data_samples)
