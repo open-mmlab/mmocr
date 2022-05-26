@@ -5,55 +5,6 @@ from shapely.geometry import Polygon as plg
 import mmocr.utils as utils
 
 
-def ignore_pred(pred_boxes, gt_ignored_index, gt_polys, precision_thr):
-    """Ignore the predicted box if it hits any ignored ground truth.
-
-    Args:
-        pred_boxes (list[ndarray or list]): The predicted boxes of one image.
-        gt_ignored_index (list[int]): The ignored ground truth index list.
-        gt_polys (list[Polygon]): The polygon list of one image.
-        precision_thr (float): The precision threshold.
-
-    Returns:
-        pred_polys (list[Polygon]): The predicted polygon list.
-        pred_points (list[list]): The predicted box list represented
-            by point sequences.
-        pred_ignored_index (list[int]): The ignored text index list.
-    """
-
-    assert isinstance(pred_boxes, list)
-    assert isinstance(gt_ignored_index, list)
-    assert isinstance(gt_polys, list)
-    assert 0 <= precision_thr <= 1
-
-    pred_polys = []
-    pred_points = []
-    pred_ignored_index = []
-
-    gt_ignored_num = len(gt_ignored_index)
-    # get detection polygons
-    for box_id, box in enumerate(pred_boxes):
-        poly = points2polygon(box)
-        pred_polys.append(poly)
-        pred_points.append(box)
-
-        if gt_ignored_num < 1:
-            continue
-
-        # ignore the current detection box
-        # if its overlap with any ignored gt > precision_thr
-        for ignored_box_id in gt_ignored_index:
-            ignored_box = gt_polys[ignored_box_id]
-            inter_area = poly_intersection(poly, ignored_box)
-            area = poly.area
-            precision = 0 if area == 0 else inter_area / area
-            if precision > precision_thr:
-                pred_ignored_index.append(box_id)
-                break
-
-    return pred_polys, pred_points, pred_ignored_index
-
-
 def compute_hmean(accum_hit_recall, accum_hit_prec, gt_num, pred_num):
     """Compute hmean given hit number, ground truth number and prediction
     number.
@@ -95,6 +46,7 @@ def compute_hmean(accum_hit_recall, accum_hit_prec, gt_num, pred_num):
 
 
 def box2polygon(box):
+    # TODO This has been moved to mmocr.utils. Delete this later
     """Convert box to polygon.
 
     Args:
@@ -117,6 +69,7 @@ def box2polygon(box):
 
 
 def points2polygon(points):
+    # TODO This has been moved to mmocr.utils. Delete this later
     """Convert k points to 1 polygon.
 
     Args:
@@ -137,6 +90,7 @@ def points2polygon(points):
 
 
 def poly_make_valid(poly):
+    # TODO This has been moved to mmocr.utils. Delete this later
     """Convert a potentially invalid polygon to a valid one by eliminating
     self-crossing or self-touching parts.
 
@@ -150,6 +104,7 @@ def poly_make_valid(poly):
 
 
 def poly_intersection(poly_det, poly_gt, invalid_ret=None, return_poly=False):
+    # TODO This has been moved to mmocr.utils. Delete this later
     """Calculate the intersection area between two polygon.
 
     Args:
@@ -185,6 +140,7 @@ def poly_intersection(poly_det, poly_gt, invalid_ret=None, return_poly=False):
 
 
 def poly_union(poly_det, poly_gt, invalid_ret=None, return_poly=False):
+    # TODO This has been moved to mmocr.utils. Delete this later
     """Calculate the union area between two polygon.
     Args:
         poly_det (Polygon): A polygon predicted by detector.
@@ -241,6 +197,7 @@ def boundary_iou(src, target, zero_division=0):
 
 
 def poly_iou(poly_det, poly_gt, zero_division=0):
+    # TODO This has been moved to mmocr.utils. Delete this later
     """Calculate the IOU between two polygons.
 
     Args:
