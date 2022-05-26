@@ -18,7 +18,7 @@ from .polygon_utils import (crop_polygon, is_poly_outside_rect, poly2bbox,
                             poly2shapely, poly_intersection, poly_iou,
                             poly_make_valid, poly_union, polys2shapely,
                             rescale_polygon, rescale_polygons)
-from .setup_env import setup_multi_processes
+from .setup_env import register_all_modules
 from .string_util import StringStrip
 
 __all__ = [
@@ -27,9 +27,9 @@ __all__ = [
     'valid_boundary', 'drop_orientation', 'convert_annotations', 'is_not_png',
     'list_to_file', 'list_from_file', 'is_on_same_line',
     'stitch_boxes_into_lines', 'StringStrip', 'revert_sync_batchnorm',
-    'bezier_to_polygon', 'sort_points', 'setup_multi_processes', 'recog2lmdb',
-    'dump_ocr_data', 'recog_anno_to_imginfo', 'rescale_polygons',
-    'rescale_polygon', 'rescale_bboxes', 'bbox2poly', 'crop_polygon',
-    'is_poly_outside_rect', 'poly2bbox', 'poly_intersection', 'poly_iou',
-    'poly_make_valid', 'poly_union', 'poly2shapely', 'polys2shapely'
+    'bezier_to_polygon', 'sort_points', 'recog2lmdb', 'dump_ocr_data',
+    'recog_anno_to_imginfo', 'rescale_polygons', 'rescale_polygon',
+    'rescale_bboxes', 'bbox2poly', 'crop_polygon', 'is_poly_outside_rect',
+    'poly2bbox', 'poly_intersection', 'poly_iou', 'poly_make_valid',
+    'poly_union', 'poly2shapely', 'polys2shapely', 'register_all_modules'
 ]
