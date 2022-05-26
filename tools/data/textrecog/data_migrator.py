@@ -39,7 +39,7 @@ def parse_legacy_data(in_path: str,
             if format == 'txt':
                 for line in f:
                     line = strip_cls(line)
-                    file_path, label = line.split()  # Assume no extra spaces
+                    file_path, label = line.split()[:2]
                     file_paths.append(file_path)
                     labels.append(label)
             elif format == 'jsonl':
