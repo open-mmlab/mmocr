@@ -14,16 +14,19 @@ class MaskedSmoothL1Loss(nn.Module):
     Args:
         beta (float, optional): The threshold in the piecewise function.
             Defaults to 1.
+        eps (float, optional): Eps to avoid zero-division error.  Defaults to
+            1e-6.
     """
 
-    def __init__(self, beta: Union[float, int] = 1) -> None:
+    def __init__(self, beta: Union[float, int] = 1, eps: float = 1e-6) -> None:
         super().__init__()
-        self.smooth_l1_loss = nn.SmoothL1Loss(beta=beta)
+        self.smooth_l1_loss = nn.SmoothL1Loss(beta=beta, reduction='none')
+        self.eps = eps
 
     def forward(self,
                 pred: torch.Tensor,
                 gt: torch.Tensor,
-                mask: Optional[torch.BoolTensor] = None) -> torch.Tensor:
+                mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         """Forward function.
 
         Args:
@@ -43,7 +46,5 @@ class MaskedSmoothL1Loss(nn.Module):
         if mask is None:
             mask = torch.ones_like(gt).bool()
         assert mask.size() == gt.size()
-        if not isinstance(mask, torch.BoolTensor):
-            assert torch.all(torch.logical_or(mask == 0, mask == 1))
-            mask = mask.bool()
-        return self.smooth_l1_loss(pred[mask], gt[mask])
+        loss = self.smooth_l1_loss(pred * mask, gt * mask)
+        return loss.sum() / (mask.sum() + self.eps)

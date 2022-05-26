@@ -36,3 +36,8 @@ class TestMaskedDiceLoss(TestCase):
             self.loss(self.pred, self.gt, self.mask).item(),
             1 / 5,
             delta=0.001)
+
+        # Test zero mask
+        zero_mask = torch.FloatTensor([0, 0, 0, 0])
+        self.assertAlmostEqual(
+            self.loss(self.pred, self.gt, zero_mask).item(), 1)

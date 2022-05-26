@@ -27,9 +27,21 @@ class TestMaskedSmoothL1Loss(TestCase):
             invalid_mask = torch.BoolTensor([True, False, False])
             self.l1_loss(self.pred, self.gt, invalid_mask)
 
-        self.assertAlmostEqual(self.l1_loss(self.pred, self.gt).item(), 0.5)
+        # Test L1 loss results
         self.assertAlmostEqual(
-            self.l1_loss(self.pred, self.gt, self.mask).item(), 0.75)
+            self.l1_loss(self.pred, self.gt).item(), 0.5, delta=0.01)
+        self.assertAlmostEqual(
+            self.l1_loss(self.pred, self.gt, self.mask).item(),
+            0.75,
+            delta=0.01)
 
+        # Test Smooth L1 loss results
         self.assertAlmostEqual(
-            self.smooth_l1_loss(self.pred, self.gt, self.mask).item(), 0.3125)
+            self.smooth_l1_loss(self.pred, self.gt, self.mask).item(),
+            0.3125,
+            delta=0.01)
+
+        # Test zero mask
+        zero_mask = torch.FloatTensor([0, 0, 0, 0])
+        self.assertAlmostEqual(
+            self.smooth_l1_loss(self.pred, self.gt, zero_mask).item(), 0)

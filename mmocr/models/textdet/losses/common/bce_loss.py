@@ -23,7 +23,7 @@ class MaskedBalancedBCELoss(nn.Module):
     def __init__(self,
                  reduction: str = 'none',
                  negative_ratio: Union[float, int] = 3,
-                 eps: float = 1e-6):
+                 eps: float = 1e-6) -> None:
         super().__init__()
         assert reduction in ['none', 'mean', 'sum']
         assert isinstance(negative_ratio, (float, int))
