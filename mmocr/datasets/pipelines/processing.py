@@ -170,7 +170,8 @@ class Resize(MMCV_Resize):
                 if polygon is not None:
                     polygons_resize.append(polygon.astype(np.float32))
                 else:
-                    polygons_resize.append(np.zeros_like(polygons[idx]))
+                    polygons_resize.append(
+                        np.zeros_like(polygons[idx], dtype=np.float32))
             results['gt_polygons'] = polygons_resize
 
     def transform(self, results: dict) -> dict:

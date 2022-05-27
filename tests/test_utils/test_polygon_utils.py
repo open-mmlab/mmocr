@@ -17,22 +17,25 @@ class TestCropPolygon(unittest.TestCase):
         # polygon cross box
         polygon = np.array([20., -10., 40., 10., 10., 40., -10., 20.])
         crop_box = np.array([0., 0., 60., 60.])
-        target_poly_cropped = np.array([[10., 40., 30., 10., 0., 0., 10.],
-                                        [40., 10., 0., 0., 10., 30., 40.]])
+        target_poly_cropped = np.array(
+            [10, 40, 0, 30, 0, 10, 10, 0, 30, 0, 40, 10])
         poly_cropped = crop_polygon(polygon, crop_box)
-        self.assertTrue(target_poly_cropped.all() == poly_cropped.all())
+        self.assertTrue(
+            poly2shapely(poly_cropped).equals(
+                poly2shapely(target_poly_cropped)))
 
         # polygon inside box
         polygon = np.array([0., 0., 30., 0., 30., 30., 0., 30.]).reshape(-1, 2)
         crop_box = np.array([0., 0., 60., 60.])
         target_poly_cropped = polygon
         poly_cropped = crop_polygon(polygon, crop_box)
-        self.assertTrue(target_poly_cropped.all() == poly_cropped.all())
+        self.assertTrue(
+            poly2shapely(poly_cropped).equals(
+                poly2shapely(target_poly_cropped)))
 
         # polygon outside box
         polygon = np.array([0., 0., 30., 0., 30., 30., 0., 30.]).reshape(-1, 2)
         crop_box = np.array([80., 80., 90., 90.])
-        target_poly_cropped = polygon
         poly_cropped = crop_polygon(polygon, crop_box)
         self.assertEqual(poly_cropped, None)
 
@@ -133,10 +136,10 @@ class TestPolygonUtils(unittest.TestCase):
         self.assertEqual(polys2shapely(polys), polygons)
         # test invalid
         polys = [0, 0, 1]
-        with self.assertRaises(TypeError):
+        with self.assertRaises(AssertionError):
             polys2shapely(polys)
         polys = [0, 0, 1, 0, 1, 1, 0, 1, 1]
-        with self.assertRaises(TypeError):
+        with self.assertRaises(AssertionError):
             polys2shapely(polys)
 
     def test_poly_make_valid(self):
