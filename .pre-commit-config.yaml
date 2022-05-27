@@ -20,8 +20,10 @@ repos:
     rev: v3.1.0
     hooks:
       - id: trailing-whitespace
+        exclude: ^dicts/
       - id: check-yaml
       - id: end-of-file-fixer
+        exclude: ^dicts/
       - id: requirements-txt-fixer
       - id: double-quote-string-fixer
       - id: check-merge-conflict
