@@ -100,8 +100,8 @@ def poly2shapely(polygon: ArrayLike) -> Polygon:
     Returns:
         polygon (Polygon): A polygon object.
     """
-    assert len(polygon) % 2 == 0 and len(polygon) >= 8
     polygon = np.array(polygon, dtype=np.float32)
+    assert polygon.size % 2 == 0 and polygon.size >= 6
 
     polygon = polygon.reshape([-1, 2])
     return Polygon(polygon)
@@ -119,7 +119,8 @@ def polys2shapely(polygons: Sequence[ArrayLike]) -> Sequence[Polygon]:
     return [poly2shapely(polygon) for polygon in polygons]
 
 
-def crop_polygon(polygon: ArrayLike, crop_box: np.ndarray) -> np.ndarray:
+def crop_polygon(polygon: ArrayLike,
+                 crop_box: np.ndarray) -> Union[np.ndarray, None]:
     """Crop polygon to be within a box region.
 
     Args:
@@ -127,19 +128,18 @@ def crop_polygon(polygon: ArrayLike, crop_box: np.ndarray) -> np.ndarray:
         crop_box (ndarray): target box region in shape (4, ).
 
     Returns:
-        np.array or None: Cropped polygon.
+        np.array or None: Cropped polygon. If the polygon is not within the
+            crop box, return None.
     """
-    polygon = np.asarray(polygon, dtype=np.float32)
-    crop_box = np.asarray(crop_box, dtype=np.float32)
-    poly = Polygon(polygon.reshape(-1, 2))
-    crop_poly = Polygon(bbox2poly(crop_box).reshape(-1, 2))
+    poly = poly2shapely(polygon)
+    crop_poly = poly2shapely(bbox2poly(crop_box))
     poly_cropped = poly.intersection(crop_poly)
     if poly_cropped.area == 0.:
         # If polygon is outside crop_box region, return None.
         return None
     else:
-        poly_cropped = np.array(poly_cropped.boundary.xy)[:, :-1]
-        return poly_cropped.reshape(-1)
+        poly_cropped = np.array(poly_cropped.boundary.xy, dtype=np.float32)
+        return poly_cropped[:, :-1].T.reshape(-1)
 
 
 def poly_make_valid(poly: Polygon) -> Polygon:
