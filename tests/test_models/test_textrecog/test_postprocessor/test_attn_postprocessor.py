@@ -5,7 +5,6 @@ import tempfile
 from unittest import TestCase
 
 import torch
-from mmengine.data import LabelData
 
 from mmocr.core.data_structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
@@ -33,8 +32,7 @@ class TestAttentionPostprocessor(TestCase):
             same_start_end=True,
             with_padding=True,
             with_unknown=False)
-        pred_text = LabelData(valid_ratio=1.0)
-        data_samples = [TextRecogDataSample(pred_text=pred_text)]
+        data_samples = [TextRecogDataSample()]
         postprocessor = AttentionPostprocessor(
             max_seq_len=None, dictionary=dict_gen, ignore_chars=['0'])
         dict_gen.end_idx = 3
