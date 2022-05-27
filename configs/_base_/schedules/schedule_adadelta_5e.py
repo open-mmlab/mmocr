@@ -6,5 +6,5 @@ test_cfg = dict()
 
 # learning rate
 param_scheduler = [
-    dict(type='ConstantLR'),
+    dict(type='ConstantLR', factor=1.0),
 ]

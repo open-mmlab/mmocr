@@ -107,7 +107,7 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         out_enc = None
         if self.with_encoder:
             out_enc = self.encoder(feat, data_samples)
-        data_samples = self.decoder.loss.get_target(data_samples)
+        data_samples = self.decoder.loss.get_targets(data_samples)
         out_dec = self.decoder(feat, out_enc, data_samples, train_mode=True)
 
         losses = self.decoder.loss(out_dec, data_samples)
