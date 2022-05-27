@@ -20,7 +20,6 @@ class BaseRecogLoss(nn.Module):
             generated from decoder. Defaults to 40.
         letter_case (str): There are three options to alter the letter cases
             of gt texts:
-
             - unchanged: Do not change gt texts.
             - upper: Convert gt texts into uppercase characters.
             - lower: Convert gt texts into lowercase characters.
@@ -61,7 +60,7 @@ class BaseRecogLoss(nn.Module):
 
             - indexes (torch.LongTensor): Character indexes representing gt
               texts.
-            - padding_indexes (torch.LongTensor) Character indexes
+            - padded_indexes (torch.LongTensor) Character indexes
               representing gt texts, following several padding_idxs until
               reaching the length of ``max_seq_len``.
         """
@@ -88,14 +87,14 @@ class BaseRecogLoss(nn.Module):
                 slice_end = src_target.size(0) - 1
             src_target = src_target[slice_start:slice_end]
             if self.dictionary.padding_idx is not None:
-                padding_indexes = (torch.ones(self.max_seq_len) *
-                                   self.dictionary.padding_idx).long()
+                padded_indexes = (torch.ones(self.max_seq_len) *
+                                  self.dictionary.padding_idx).long()
                 char_num = min(src_target.size(0), self.max_seq_len)
-                padding_indexes[:char_num] = src_target[:char_num]
+                padded_indexes[:char_num] = src_target[:char_num]
             else:
-                padding_indexes = src_target
+                padded_indexes = src_target
 
             # put in DataSample
             data_sample.gt_text.indexes = indexes
-            data_sample.gt_text.padding_indexes = padding_indexes
+            data_sample.gt_text.padded_indexes = padded_indexes
         return data_samples

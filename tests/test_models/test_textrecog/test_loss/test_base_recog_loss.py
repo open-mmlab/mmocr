@@ -76,7 +76,7 @@ class TestBaseRecogLoss(TestCase):
                            torch.LongTensor([0, 1, 2, 3]))
         padding_idx = dictionary.padding_idx
         assert self._equal(
-            target_data_samples[0].gt_text.padding_indexes,
+            target_data_samples[0].gt_text.padded_indexes,
             torch.LongTensor([
                 dictionary.start_idx, 0, 1, 2, 3, dictionary.end_idx,
                 padding_idx, padding_idx, padding_idx, padding_idx
@@ -95,7 +95,7 @@ class TestBaseRecogLoss(TestCase):
         assert self._equal(target_data_samples[0].gt_text.indexes,
                            torch.LongTensor([0, 1, 2, 3]))
         padding_idx = dictionary.padding_idx
-        assert self._equal(target_data_samples[0].gt_text.padding_indexes,
+        assert self._equal(target_data_samples[0].gt_text.padded_indexes,
                            torch.LongTensor([0, 1, 2]))
 
         dict_cfg = dict(
@@ -112,7 +112,7 @@ class TestBaseRecogLoss(TestCase):
         target_data_samples = base_recog_loss.get_targets([data_sample])
         assert self._equal(target_data_samples[0].gt_text.indexes,
                            torch.LongTensor([0, 1, 2, 3]))
-        assert self._equal(target_data_samples[0].gt_text.padding_indexes,
+        assert self._equal(target_data_samples[0].gt_text.padded_indexes,
                            torch.LongTensor([0, 1, 2, 3]))
 
         target_data_samples = base_recog_loss.get_targets([])
