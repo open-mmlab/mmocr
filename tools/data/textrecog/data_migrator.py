@@ -31,6 +31,8 @@ def parse_legacy_data(in_path: str,
         for i in range(num):
             line_json = loader[i]
             file_path, label = line_json['filename'], line_json['text']
+            file_path = strip_cls(file_path)
+            label = strip_cls(label)
             file_paths.append(file_path)
             labels.append(label)
         return file_paths, labels
