@@ -4,7 +4,6 @@ import tempfile
 from unittest import TestCase, mock
 
 import torch
-from mmengine.data import LabelData
 
 from mmocr.core.data_structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
@@ -83,8 +82,7 @@ class TestBaseTextRecogPostprocessor(TestCase):
             with_padding=True,
             with_unknown=True)
         mock_get_single_prediction.side_effect = mock_func
-        pred_text = LabelData(valid_ratio=1.0)
-        data_samples = [TextRecogDataSample(pred_text=pred_text)]
+        data_samples = [TextRecogDataSample()]
         postprocessor = BaseTextRecogPostprocessor(
             max_seq_len=None, dictionary=dict_cfg)
 

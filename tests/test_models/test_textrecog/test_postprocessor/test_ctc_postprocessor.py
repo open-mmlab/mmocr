@@ -5,7 +5,6 @@ import tempfile
 from unittest import TestCase
 
 import torch
-from mmengine.data import LabelData
 
 from mmocr.core.data_structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
@@ -33,8 +32,7 @@ class TestCTCPostProcessor(TestCase):
             with_end=False,
             with_padding=True,
             with_unknown=False)
-        pred_text = LabelData(valid_ratio=1.0)
-        data_samples = [TextRecogDataSample(pred_text=pred_text)]
+        data_samples = [TextRecogDataSample()]
         postprocessor = CTCPostProcessor(max_seq_len=None, dictionary=dict_gen)
 
         # test decode output to index
@@ -69,8 +67,7 @@ class TestCTCPostProcessor(TestCase):
             with_end=False,
             with_padding=True,
             with_unknown=False)
-        pred_text = LabelData(valid_ratio=1.0)
-        data_samples = [TextRecogDataSample(pred_text=pred_text)]
+        data_samples = [TextRecogDataSample()]
         postprocessor = CTCPostProcessor(max_seq_len=None, dictionary=dict_gen)
 
         # test decode output to index

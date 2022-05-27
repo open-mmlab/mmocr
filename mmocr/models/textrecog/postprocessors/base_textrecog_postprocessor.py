@@ -3,6 +3,7 @@ from typing import Dict, Optional, Sequence, Tuple, Union
 
 import mmcv
 import torch
+from mmengine.data import LabelData
 
 from mmocr.core.data_structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
@@ -95,6 +96,8 @@ class BaseTextRecogPostprocessor:
             index, score = self.get_single_prediction(outputs[idx, :, :],
                                                       data_samples[idx])
             text = self.dictionary.idx2str(index)
-            data_samples[idx].pred_text.score = score
-            data_samples[idx].pred_text.item = text
+            pred_text = LabelData()
+            pred_text.score = score
+            pred_text.item = text
+            data_samples[idx].pred_text = pred_text
         return data_samples
