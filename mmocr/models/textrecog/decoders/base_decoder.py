@@ -42,6 +42,7 @@ class BaseDecoder(BaseModule):
                 f'but got {type(dictionary)}')
         self.loss = None
         self.postprocessor = None
+        self.max_seq_len = max_seq_len
 
         if loss is not None:
             assert isinstance(loss, dict)
