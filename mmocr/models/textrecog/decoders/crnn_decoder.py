@@ -34,7 +34,8 @@ class CRNNDecoder(BaseDecoder):
                  rnn_flag: bool = False,
                  loss: Dict = None,
                  postprocessor: Dict = None,
-                 init_cfg=dict(type='Xavier', layer='Conv2d')):
+                 init_cfg=dict(type='Xavier', layer='Conv2d'),
+                 **kwargs):
         super().__init__(
             init_cfg=init_cfg,
             dictionary=dictionary,

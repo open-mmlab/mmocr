@@ -113,9 +113,9 @@ class Dictionary:
             char_idx = self._char2idx.get(s, self.unknown_idx)
             if char_idx is None:
                 raise Exception(f'Chararcter: {s} not in dict,'
-                                f' please check gt_label and use'
-                                f' custom dict file,'
-                                f' or set "with_unknown=True"')
+                                ' please check gt_label and use'
+                                ' custom dict file,'
+                                ' or set "with_unknown=True"')
             idx.append(char_idx)
         return idx
 
