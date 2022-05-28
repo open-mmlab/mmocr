@@ -18,7 +18,7 @@ Collections:
 Models:
   - Name: master_academic
     In Collection: MASTER
-    Config: configs/textrecog/master/master_academic.py
+    Config: configs/textrecog/master/master_r31_12e_ST_MJ_SA.py
     Metadata:
       Training Data:
         - SynthText
