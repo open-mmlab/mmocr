@@ -37,6 +37,8 @@ The main branch works with **PyTorch 1.6+**.
 
 Documentation: https://mmocr.readthedocs.io/en/latest/.
 
+Video tutorials: https://www.bilibili.com/video/BV1Ua411x7dB
+
 <div align="left">
   <img src="resources/illustration.jpg"/>
 </div>
