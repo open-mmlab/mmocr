@@ -33,6 +33,10 @@ def parse_legacy_data(in_path: str,
             file_path, label = line_json['filename'], line_json['text']
             file_path = strip_cls(file_path)
             label = strip_cls(label)
+            # MJ's file_path starts with './'
+            if file_path.startswith('./'):
+                file_path = file_path[2:]
+
             file_paths.append(file_path)
             labels.append(label)
         return file_paths, labels
@@ -42,12 +46,21 @@ def parse_legacy_data(in_path: str,
                 for line in f:
                     line = strip_cls(line)
                     file_path, label = line.split()[:2]
+                    # MJ's file_path starts with './'
+                    if file_path.startswith('./'):
+                        file_path = file_path[2:]
+
                     file_paths.append(file_path)
                     labels.append(label)
             elif format == 'jsonl':
                 for line in f:
                     datum = json.loads(line)
-                    file_paths.append(datum['filename'])
+                    file_path = datum['filename']
+                    # MJ's file_path starts with './'
+                    if file_path.startswith('./'):
+                        file_path = file_path[2:]
+
+                    file_paths.append(file_path)
                     labels.append(datum['text'])
 
     return file_paths, labels
