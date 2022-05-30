@@ -1,4 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Dict, List, Optional, Tuple, Union
+
+import torch
 from mmcv.cnn import ConvModule, build_plugin_layer
 from mmcv.runner import BaseModule, Sequential
 
@@ -18,24 +21,24 @@ class ResNet(BaseModule):
         block_cfgs (dict): Configs of block
         arch_layers (list[int]): List of Block number for each stage.
         arch_channels (list[int]): List of channels for each stage.
-        strides (Sequence[int] | Sequence[tuple]): Strides of the first block
+        strides (Sequence[int] or Sequence[tuple]): Strides of the first block
             of each stage.
-        out_indices (None | Sequence[int]): Indices of output stages. If not
+        out_indices (Sequence[int], optional): Indices of output stages. If not
             specified, only the last stage will be returned.
-        stage_plugins (dict): Configs of stage plugins
+        plugins (dict, optional): Configs of stage plugins
         init_cfg (dict or list[dict], optional): Initialization config dict.
     """
 
     def __init__(self,
-                 in_channels,
-                 stem_channels,
-                 block_cfgs,
-                 arch_layers,
-                 arch_channels,
-                 strides,
-                 out_indices=None,
-                 plugins=None,
-                 init_cfg=[
+                 in_channels: int,
+                 stem_channels: List[int],
+                 block_cfgs: dict,
+                 arch_layers: List[int],
+                 arch_channels: List[int],
+                 strides: Union[List[int], List[Tuple]],
+                 out_indices: Optional[List[int]] = None,
+                 plugins: Optional[Dict] = None,
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = [
                      dict(type='Xavier', layer='Conv2d'),
                      dict(type='Constant', val=1, layer='BatchNorm2d'),
                  ]):
@@ -79,7 +82,20 @@ class ResNet(BaseModule):
             self.add_module(layer_name, res_layer)
             self.res_layers.append(layer_name)
 
-    def _make_layer(self, block_cfgs, inplanes, planes, blocks, stride):
+    def _make_layer(self, block_cfgs: Dict, inplanes: int, planes: int,
+                    blocks: int, stride: int) -> Sequential:
+        """Build resnet layer.
+
+        Args:
+            block_cfgs (dict): Configs of blocks.
+            inplanes (int): Number of input channels.
+            planes (int): Number of output channels.
+            blocks (int): Number of blocks.
+            stride (int): Stride of the first block.
+
+        Returns:
+            Sequential: A sequence of blocks.
+        """
         layers = []
         downsample = None
         block_cfgs_ = block_cfgs.copy()
@@ -114,7 +130,15 @@ class ResNet(BaseModule):
 
         return Sequential(*layers)
 
-    def _make_stem_layer(self, in_channels, stem_channels):
+    def _make_stem_layer(self, in_channels: int,
+                         stem_channels: Union[int, List[int]]) -> None:
+        """Make stem layers.
+
+        Args:
+            in_channels (int): Number of input channels.
+            stem_channels (list[int] or int): List of channels in each stem
+                layer. If int, only one stem layer will be created.
+        """
         if isinstance(stem_channels, int):
             stem_channels = [stem_channels]
         stem_layers = []
@@ -133,8 +157,8 @@ class ResNet(BaseModule):
         self.stem_layers = Sequential(*stem_layers)
         self.inplanes = stem_channels[-1]
 
-    def _make_stage_plugins(self, plugins, stage_idx):
-        """Make plugins for ResNet ``stage_idx`` th stage.
+    def _make_stage_plugins(self, plugins: List[Dict], stage_idx: int) -> None:
+        """Make plugins for ResNet ``stage_idx``th stage.
 
         Currently we support inserting ``nn.Maxpooling``,
         ``mmcv.cnn.Convmodule``into the backbone. Originally designed
@@ -165,11 +189,8 @@ class ResNet(BaseModule):
             Maxpooling -> A set of Basicblocks -> ConvModule
 
         Args:
-            plugins (list[dict]): List of plugins cfg to build.
+            plugins (list[dict]): List of plugin configs to build.
             stage_idx (int): Index of stage to build
-
-        Returns:
-            list[dict]: Plugins for current stage
         """
         in_channels = self.arch_channels[stage_idx]
         self.plugin_ahead_names.append([])
@@ -199,13 +220,24 @@ class ResNet(BaseModule):
                 else:
                     raise ValueError('uncorrect plugin position')
 
-    def forward_plugin(self, x, plugin_name):
+    def forward_plugin(self, x: torch.Tensor,
+                       plugin_name: List[str]) -> torch.Tensor:
+        """Forward tensor through plugin.
+
+        Args:
+            x (torch.Tensor): Input tensor.
+            plugin_name (list[str]): Name of plugins.
+
+        Returns:
+            torch.Tensor: Output tensor.
+        """
         out = x
         for name in plugin_name:
             out = getattr(self, name)(out)
         return out
 
-    def forward(self, x):
+    def forward(self,
+                x: torch.Tensor) -> Union[torch.Tensor, List[torch.Tensor]]:
         """
         Args: x (Tensor): Image tensor of shape :math:`(N, 3, H, W)`.
 
