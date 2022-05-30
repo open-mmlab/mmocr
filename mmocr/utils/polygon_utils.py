@@ -295,14 +295,19 @@ def offset_polygon(poly: ArrayLike, distance: float) -> ArrayLike:
 
     Returns:
         np.array: 1-D Offsetted polygon ndarray in float32 type. If the
-        result polygon is invalid, return an empty array.
+        result polygon is invalid or has been split into several parts,
+        return an empty array.
     """
     poly = np.array(poly).reshape(-1, 2)
     pco = pyclipper.PyclipperOffset()
     pco.AddPath(poly, pyclipper.JT_ROUND, pyclipper.ET_CLOSEDPOLYGON)
     # Returned result will be in type of int32, convert it back to float32
     # following MMOCR's convention
-    result = np.array(pco.Execute(distance)).astype(np.float32)
+    result = np.array(pco.Execute(distance))
+    if len(result) > 0 and isinstance(result[0], list):
+        # The processed polygon has been split into several parts
+        result = np.array([])
+    result = result.astype(np.float32)
     # Always use the first polygon since only one polygon is expected
     # But when the resulting polygon is invalid, return the empty array
     # as it is
