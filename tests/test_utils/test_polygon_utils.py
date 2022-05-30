@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from shapely.geometry import MultiPolygon, Polygon
 
-from mmocr.utils import (crop_polygon, poly2bbox, poly2shapely,
+from mmocr.utils import (crop_polygon, offset_polygon, poly2bbox, poly2shapely,
                          poly_intersection, poly_iou, poly_make_valid,
                          poly_union, polys2shapely, rescale_polygon,
                          rescale_polygons)
@@ -259,3 +259,15 @@ class TestPolygonUtils(unittest.TestCase):
         self.assertEqual(poly_iou(poly2, poly2), 0)
         self.assertEqual(poly_iou(poly3, poly3, zero_division=1), 1)
         self.assertEqual(poly_iou(poly2, poly3), 0)
+
+    def test_offset_polygon(self):
+        polygons = np.array([0, 0, 0, 1, 1, 1, 1, 0], dtype=np.float32)
+        expanded_polygon = offset_polygon(polygons, 1)
+        self.assertTrue(
+            poly2shapely(expanded_polygon).equals(
+                poly2shapely(
+                    np.array(
+                        [2, 0, 2, 1, 1, 2, 0, 2, -1, 1, -1, 0, 0, -1, 1,
+                         -1]))))
+        shrunk_polygon = offset_polygon(polygons, -10)
+        self.assertEqual(len(shrunk_polygon), 0)

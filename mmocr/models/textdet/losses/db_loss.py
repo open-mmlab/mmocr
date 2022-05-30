@@ -1,165 +1,259 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Dict, List, Sequence, Tuple, Union
+
+import cv2
+import numpy as np
 import torch
-import torch.nn.functional as F
+from mmdet.core import multi_apply
+from numpy.typing import ArrayLike
+from shapely.geometry import Polygon
 from torch import nn
 
-from mmocr.models.common.losses.dice_loss import DiceLoss
+from mmocr.core import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.utils import dist_points2line, offset_polygon
+from .text_kernel_mixin import TextKernelMixin
 
 
 @MODELS.register_module()
-class DBLoss(nn.Module):
-    """The class for implementing DBNet loss.
+class DBLoss(nn.Module, TextKernelMixin):
+    r"""The class for implementing DBNet loss.
 
     This is partially adapted from https://github.com/MhLiao/DB.
 
     Args:
-        alpha (float): The binary loss coef.
-        beta (float): The threshold loss coef.
-        reduction (str): The way to reduce the loss.
-        negative_ratio (float): The ratio of positives to negatives.
-        eps (float): Epsilon in the threshold loss function.
-        bbce_loss (bool): Whether to use balanced bce for probability loss.
-            If False, dice loss will be used instead.
+        loss_prob (dict): The loss config for probability map.
+        loss_thr (dict): The loss config for threshold map.
+        loss_db (dict): The loss config for binary map.
+        weight_prob (float): The weight of probability map loss.
+            Denoted as :math:`\alpha` in paper.
+        weight_thr (float): The weight of threshold map loss.
+            Denoted as :math:`\beta` in paper.
+        shrink_ratio (float): The ratio of shrunk text region.
+        thr_min (float): The minimum threshold map value.
+        thr_max (float): The maximum threshold map value.
+        min_sidelength (int or float): The minimum sidelength of the
+            minimum rotated rectangle around any text region.
     """
 
     def __init__(self,
-                 alpha=1,
-                 beta=1,
-                 reduction='mean',
-                 negative_ratio=3.0,
-                 eps=1e-6,
-                 bbce_loss=False):
+                 loss_prob: Dict = dict(type='MaskedBalancedBCELoss'),
+                 loss_thr: Dict = dict(type='MaskedSmoothL1Loss', beta=0),
+                 loss_db: Dict = dict(type='MaskedDiceLoss'),
+                 weight_prob: float = 5.,
+                 weight_thr: float = 10.,
+                 shrink_ratio: float = 0.4,
+                 thr_min: float = 0.3,
+                 thr_max: float = 0.7,
+                 min_sidelength: Union[int, float] = 8) -> None:
         super().__init__()
-        assert reduction in ['mean',
-                             'sum'], " reduction must in ['mean','sum']"
-        self.alpha = alpha
-        self.beta = beta
-        self.reduction = reduction
-        self.negative_ratio = negative_ratio
-        self.eps = eps
-        self.bbce_loss = bbce_loss
-        self.dice_loss = DiceLoss(eps=eps)
+        self.loss_prob = MODELS.build(loss_prob)
+        self.loss_thr = MODELS.build(loss_thr)
+        self.loss_db = MODELS.build(loss_db)
+        self.weight_prob = weight_prob
+        self.weight_thr = weight_thr
+        self.shrink_ratio = shrink_ratio
+        self.thr_min = thr_min
+        self.thr_max = thr_max
+        self.min_sidelength = min_sidelength
 
-    def bitmasks2tensor(self, bitmasks, target_sz):
-        """Convert Bitmasks to tensor.
-
-        Args:
-            bitmasks (list[BitmapMasks]): The BitmapMasks list. Each item is
-                for one img.
-            target_sz (tuple(int, int)): The target tensor of size
-                :math:`(H, W)`.
-
-        Returns:
-            list[Tensor]: The list of kernel tensors. Each element stands for
-            one kernel level.
-        """
-        assert isinstance(bitmasks, list)
-        assert isinstance(target_sz, tuple)
-
-        batch_size = len(bitmasks)
-        num_levels = len(bitmasks[0])
-
-        result_tensors = []
-
-        for level_inx in range(num_levels):
-            kernel = []
-            for batch_inx in range(batch_size):
-                mask = torch.from_numpy(bitmasks[batch_inx].masks[level_inx])
-                mask_sz = mask.shape
-                pad = [
-                    0, target_sz[1] - mask_sz[1], 0, target_sz[0] - mask_sz[0]
-                ]
-                mask = F.pad(mask, pad, mode='constant', value=0)
-                kernel.append(mask)
-            kernel = torch.stack(kernel)
-            result_tensors.append(kernel)
-
-        return result_tensors
-
-    def balance_bce_loss(self, pred, gt, mask):
-
-        positive = (gt * mask)
-        negative = ((1 - gt) * mask)
-        positive_count = int(positive.float().sum())
-        negative_count = min(
-            int(negative.float().sum()),
-            int(positive_count * self.negative_ratio))
-
-        assert gt.max() <= 1 and gt.min() >= 0
-        assert pred.max() <= 1 and pred.min() >= 0
-        loss = F.binary_cross_entropy(pred, gt, reduction='none')
-        positive_loss = loss * positive.float()
-        negative_loss = loss * negative.float()
-
-        negative_loss, _ = torch.topk(negative_loss.view(-1), negative_count)
-
-        balance_loss = (positive_loss.sum() + negative_loss.sum()) / (
-            positive_count + negative_count + self.eps)
-
-        return balance_loss
-
-    def l1_thr_loss(self, pred, gt, mask):
-        thr_loss = torch.abs((pred - gt) * mask).sum() / (
-            mask.sum() + self.eps)
-        return thr_loss
-
-    def forward(self, preds, downsample_ratio, gt_shrink, gt_shrink_mask,
-                gt_thr, gt_thr_mask):
+    def forward(self, preds: Dict,
+                data_samples: Sequence[TextDetDataSample]) -> Dict:
         """Compute DBNet loss.
 
         Args:
-            preds (Tensor): The output tensor with size :math:`(N, 3, H, W)`.
-            downsample_ratio (float): The downsample ratio for the
-                ground truths.
-            gt_shrink (list[BitmapMasks]): The mask list with each element
-                being the shrunk text mask for one img.
-            gt_shrink_mask (list[BitmapMasks]): The effective mask list with
-                each element being the shrunk effective mask for one img.
-            gt_thr (list[BitmapMasks]): The mask list with each element
-                being the threshold text mask for one img.
-            gt_thr_mask (list[BitmapMasks]): The effective mask list with
-                each element being the threshold effective mask for one img.
+            preds (dict): Raw predictions from model, containing ``prob_map``,
+                ``thr_map`` and ``binary_map``. Each is a tensor of shape
+                :math:`(N, H, W)`.
+            data_samples (list[TextDetDataSample]): The data samples.
 
         Returns:
-            dict: The dict for dbnet losses with "loss_prob", "loss_db" and
-            "loss_thresh".
+            results(dict): The dict for dbnet losses with loss_prob, \
+                loss_db and loss_thr.
         """
-        assert isinstance(downsample_ratio, float)
+        prob_map = preds['prob_map']
+        thr_map = preds['thr_map']
+        binary_map = preds['binary_map']
+        gt_shrinks, gt_shrink_masks, gt_thrs, gt_thr_masks = self.get_targets(
+            data_samples)
+        gt_shrinks = gt_shrinks.to(prob_map.device)
+        gt_shrink_masks = gt_shrink_masks.to(prob_map.device)
+        gt_thrs = gt_thrs.to(thr_map.device)
+        gt_thr_masks = gt_thr_masks.to(thr_map.device)
+        loss_prob = self.loss_prob(prob_map, gt_shrinks, gt_shrink_masks)
 
-        assert isinstance(gt_shrink, list)
-        assert isinstance(gt_shrink_mask, list)
-        assert isinstance(gt_thr, list)
-        assert isinstance(gt_thr_mask, list)
-
-        pred_prob = preds[:, 0, :, :]
-        pred_thr = preds[:, 1, :, :]
-        pred_db = preds[:, 2, :, :]
-        feature_sz = preds.size()
-
-        keys = ['gt_shrink', 'gt_shrink_mask', 'gt_thr', 'gt_thr_mask']
-        gt = {}
-        for k in keys:
-            gt[k] = eval(k)
-            gt[k] = [item.rescale(downsample_ratio) for item in gt[k]]
-            gt[k] = self.bitmasks2tensor(gt[k], feature_sz[2:])
-            gt[k] = [item.to(preds.device) for item in gt[k]]
-        gt['gt_shrink'][0] = (gt['gt_shrink'][0] > 0).float()
-        if self.bbce_loss:
-            loss_prob = self.balance_bce_loss(pred_prob, gt['gt_shrink'][0],
-                                              gt['gt_shrink_mask'][0])
-        else:
-            loss_prob = self.dice_loss(pred_prob, gt['gt_shrink'][0],
-                                       gt['gt_shrink_mask'][0])
-
-        loss_db = self.dice_loss(pred_db, gt['gt_shrink'][0],
-                                 gt['gt_shrink_mask'][0])
-        loss_thr = self.l1_thr_loss(pred_thr, gt['gt_thr'][0],
-                                    gt['gt_thr_mask'][0])
+        loss_thr = self.loss_thr(thr_map, gt_thrs, gt_thr_masks)
+        loss_db = self.loss_db(binary_map, gt_shrinks, gt_shrink_masks)
 
         results = dict(
-            loss_prob=self.alpha * loss_prob,
-            loss_db=loss_db,
-            loss_thr=self.beta * loss_thr)
+            loss_prob=self.weight_prob * loss_prob,
+            loss_thr=self.weight_thr * loss_thr,
+            loss_db=loss_db)
 
         return results
+
+    def _is_poly_invalid(self, poly: np.ndarray) -> bool:
+        """Check if the input polygon is invalid or not. It is invalid if its
+        area is smaller than 1 or the shorter side of its minimum bounding box
+        is smaller than min_sidelength.
+
+        Args:
+            poly (ndarray): The polygon.
+
+        Returns:
+            bool: Whether the polygon is invalid.
+        """
+        poly = poly.reshape(-1, 2)
+        area = Polygon(poly).area
+        if abs(area) < 1:
+            return True
+        rect_size = cv2.minAreaRect(poly)[1]
+        len_shortest_side = min(rect_size)
+        if len_shortest_side < self.min_sidelength:
+            return True
+
+        return False
+
+    def _generate_thr_map(self, img_size: Tuple[int, int],
+                          polygons: ArrayLike) -> np.ndarray:
+        """Generate threshold map.
+
+        Args:
+            img_size (tuple(int)): The image size (h, w)
+            polygons (Sequence[ndarray]): 2-d array, representing all the
+                polygons of the text region.
+
+        Returns:
+            tuple:
+
+            - thr_map (ndarray): The generated threshold map.
+            - thr_mask (ndarray): The effective mask of threshold map.
+        """
+        thr_map = np.zeros(img_size, dtype=np.float32)
+        thr_mask = np.zeros(img_size, dtype=np.uint8)
+
+        for polygon in polygons:
+            self._draw_border_map(polygon, thr_map, mask=thr_mask)
+        thr_map = thr_map * (self.thr_max - self.thr_min) + self.thr_min
+
+        return thr_map, thr_mask
+
+    def _draw_border_map(self, polygon: np.ndarray, canvas: np.ndarray,
+                         mask: np.ndarray) -> None:
+        """Generate threshold map for one polygon.
+
+        Args:
+            polygon (np.ndarray): The polygon.
+            canvas (np.ndarray): The generated threshold map.
+            mask (np.ndarray): The generated threshold mask.
+        """
+
+        polygon = polygon.reshape(-1, 2)
+        polygon_obj = Polygon(polygon)
+        distance = (
+            polygon_obj.area * (1 - np.power(self.shrink_ratio, 2)) /
+            polygon_obj.length)
+        expanded_polygon = offset_polygon(polygon, distance)
+        if len(expanded_polygon) == 0:
+            print(f'Padding {polygon} with {distance} gets {expanded_polygon}')
+            expanded_polygon = polygon.copy().astype(np.int32)
+        else:
+            expanded_polygon = expanded_polygon.reshape(-1, 2).astype(np.int32)
+
+        x_min = expanded_polygon[:, 0].min()
+        x_max = expanded_polygon[:, 0].max()
+        y_min = expanded_polygon[:, 1].min()
+        y_max = expanded_polygon[:, 1].max()
+
+        width = x_max - x_min + 1
+        height = y_max - y_min + 1
+
+        polygon[:, 0] = polygon[:, 0] - x_min
+        polygon[:, 1] = polygon[:, 1] - y_min
+
+        xs = np.broadcast_to(
+            np.linspace(0, width - 1, num=width).reshape(1, width),
+            (height, width))
+        ys = np.broadcast_to(
+            np.linspace(0, height - 1, num=height).reshape(height, 1),
+            (height, width))
+
+        distance_map = np.zeros((polygon.shape[0], height, width),
+                                dtype=np.float32)
+        for i in range(polygon.shape[0]):
+            j = (i + 1) % polygon.shape[0]
+            absolute_distance = dist_points2line(xs, ys, polygon[i],
+                                                 polygon[j])
+            distance_map[i] = np.clip(absolute_distance / distance, 0, 1)
+        distance_map = distance_map.min(axis=0)
+
+        x_min_valid = min(max(0, x_min), canvas.shape[1] - 1)
+        x_max_valid = min(max(0, x_max), canvas.shape[1] - 1)
+        y_min_valid = min(max(0, y_min), canvas.shape[0] - 1)
+        y_max_valid = min(max(0, y_max), canvas.shape[0] - 1)
+
+        if x_min_valid - x_min >= width or y_min_valid - y_min >= height:
+            return
+
+        cv2.fillPoly(mask, [expanded_polygon.astype(np.int32)], 1.0)
+        canvas[y_min_valid:y_max_valid + 1,
+               x_min_valid:x_max_valid + 1] = np.fmax(
+                   1 - distance_map[y_min_valid - y_min:y_max_valid - y_max +
+                                    height, x_min_valid - x_min:x_max_valid -
+                                    x_max + width],
+                   canvas[y_min_valid:y_max_valid + 1,
+                          x_min_valid:x_max_valid + 1])
+
+    def get_targets(self, data_samples: List[TextDetDataSample]) -> Tuple:
+        """Generate loss targets from data samples.
+
+        Args:
+            data_samples (list(TextDetDataSample)): Ground truth data samples.
+
+        Returns:
+            tuple: A tuple of four tensors as DBNet targets.
+        """
+
+        gt_shrinks, gt_shrink_masks, gt_thrs, gt_thr_masks = multi_apply(
+            self._get_target_single, data_samples)
+        gt_shrinks = torch.cat(gt_shrinks)
+        gt_shrink_masks = torch.cat(gt_shrink_masks)
+        gt_thrs = torch.cat(gt_thrs)
+        gt_thr_masks = torch.cat(gt_thr_masks)
+        return gt_shrinks, gt_shrink_masks, gt_thrs, gt_thr_masks
+
+    def _get_target_single(self, data_sample: TextDetDataSample) -> Tuple:
+        """Generate loss target from a data sample.
+
+        Args:
+            data_sample (TextDetDataSample): The data sample.
+
+        Returns:
+            tuple: A tuple of four tensors as the targets of one prediction.
+        """
+
+        gt_instances = data_sample.gt_instances
+        ignore_flags = gt_instances.ignored
+        for idx, polygon in enumerate(gt_instances.polygons):
+            if self._is_poly_invalid(polygon):
+                ignore_flags[idx] = True
+        gt_shrink, ignore_flags = self._generate_kernels(
+            data_sample.img_shape,
+            gt_instances.polygons,
+            self.shrink_ratio,
+            ignore_flags=ignore_flags)
+
+        # Get boolean mask where Trues indicate text instance pixels
+        gt_shrink = gt_shrink > 0
+
+        gt_shrink_mask = self._generate_effective_mask(
+            data_sample.img_shape, gt_instances[ignore_flags].polygons)
+        gt_thr, gt_thr_mask = self._generate_thr_map(
+            data_sample.img_shape, gt_instances[~ignore_flags].polygons)
+
+        # to_tensor
+        gt_shrink = torch.from_numpy(gt_shrink).unsqueeze(0).float()
+        gt_shrink_mask = torch.from_numpy(gt_shrink_mask).unsqueeze(0).float()
+        gt_thr = torch.from_numpy(gt_thr).unsqueeze(0).float()
+        gt_thr_mask = torch.from_numpy(gt_thr_mask).unsqueeze(0).float()
+        return gt_shrink, gt_shrink_mask, gt_thr, gt_thr_mask
