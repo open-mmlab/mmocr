@@ -261,6 +261,7 @@ class TestPolygonUtils(unittest.TestCase):
         self.assertEqual(poly_iou(poly2, poly3), 0)
 
     def test_offset_polygon(self):
+        # usual case
         polygons = np.array([0, 0, 0, 1, 1, 1, 1, 0], dtype=np.float32)
         expanded_polygon = offset_polygon(polygons, 1)
         self.assertTrue(
@@ -269,5 +270,14 @@ class TestPolygonUtils(unittest.TestCase):
                     np.array(
                         [2, 0, 2, 1, 1, 2, 0, 2, -1, 1, -1, 0, 0, -1, 1,
                          -1]))))
+
+        # Overshrunk polygon doesn't exist
         shrunk_polygon = offset_polygon(polygons, -10)
         self.assertEqual(len(shrunk_polygon), 0)
+
+        # When polygon is shrunk into two polygons, it is regarded as invalid
+        # and an empty array is returned.
+        polygons = np.array([0, 0, 0, 3, 1, 2, 2, 3, 2, 0, 1, 1],
+                            dtype=np.float32)
+        shrunk = offset_polygon(polygons, -1)
+        self.assertEqual(len(shrunk), 0)

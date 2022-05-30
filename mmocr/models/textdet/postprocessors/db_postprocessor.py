@@ -98,7 +98,7 @@ class DBPostprocessor(BaseTextDetPostProcessor):
             poly = self._unclip(poly_pts)
             # If the result polygon does not exist, or it is split into
             # multiple polygons, skip it.
-            if len(poly) == 0 or isinstance(poly, list):
+            if len(poly) == 0:
                 continue
             poly = poly.reshape(-1, 2)
 
