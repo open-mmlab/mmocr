@@ -23,7 +23,8 @@ class WordMetric(BaseMetric):
               letter case and symbol. (Default metric for academic evaluation)
             If mode is a list, then metrics in mode will be calculated
             separately. Defaults to 'ignore_case_symbol'
-        valid_symbol (str): Valid characters.
+        valid_symbol (str): Valid characters. Defaults to
+            '[^A-Z^a-z^0-9^\u4e00-\u9fa5]'
         collect_device (str): Device name used for collecting results from
             different ranks during distributed training. Must be 'cpu' or
             'gpu'. Defaults to 'cpu'.
@@ -59,10 +60,10 @@ class WordMetric(BaseMetric):
             data_batch (Sequence[Dict]): A batch of gts.
             predictions (Sequence[Dict]): A batch of outputs from the model.
         """
-        match_num = 0
-        match_ignore_case_num = 0
-        match_ignore_case_symbol_num = 0
         for gt, pred in zip(data_batch, predictions):
+            match_num = 0
+            match_ignore_case_num = 0
+            match_ignore_case_symbol_num = 0
             pred_text = pred.get('pred_text').get('item')
             gt_text = gt.get('data_sample').get('instances')[0].get('text')
             if 'ignore_case' in self.mode or 'ignore_case_symbol' in self.mode:
@@ -72,17 +73,17 @@ class WordMetric(BaseMetric):
                 gt_text_lower_ignore = self.valid_symbol.sub('', gt_text_lower)
                 pred_text_lower_ignore = self.valid_symbol.sub(
                     '', pred_text_lower)
-                match_ignore_case_symbol_num +=\
+                match_ignore_case_symbol_num =\
                     gt_text_lower_ignore == pred_text_lower_ignore
             if 'ignore_case' in self.mode:
-                match_ignore_case_num += pred_text_lower == gt_text_lower
+                match_ignore_case_num = pred_text_lower == gt_text_lower
             if 'exact' in self.mode:
-                match_num += pred_text == gt_text
-            results = dict(
+                match_num = pred_text == gt_text
+            result = dict(
                 match_num=match_num,
                 match_ignore_case_num=match_ignore_case_num,
                 match_ignore_case_symbol_num=match_ignore_case_symbol_num)
-            self.results.append(results)
+            self.results.append(result)
 
     def compute_metrics(self, results: Sequence[Dict]) -> Dict:
         """Compute the metrics from processed results.
@@ -228,7 +229,8 @@ class OneMinusNEDMetric(BaseMetric):
     """One minus NED metric for text recognition task.
 
     Args:
-        valid_symbol (str): Valid characters
+        valid_symbol (str): Valid characters. Defaults to
+            '[^A-Z^a-z^0-9^\u4e00-\u9fa5]'
         collect_device (str): Device name used for collecting results from
             different ranks during distributed training. Must be 'cpu' or
             'gpu'. Defaults to 'cpu'.
