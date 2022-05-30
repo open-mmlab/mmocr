@@ -56,28 +56,30 @@ class TestWordMetric(unittest.TestCase):
         metric = WordMetric(mode='exact')
         metric.process(self.gt, self.pred)
         eval_res = metric.evaluate(size=3)
-        self.assertTrue(eval_res['recog/word_acc'], 1. / 3)
+        self.assertAlmostEqual(eval_res['recog/word_acc'], 1. / 3, 4)
 
     def test_word_acc_ignore_case_metric(self):
         metric = WordMetric(mode='ignore_case')
         metric.process(self.gt, self.pred)
         eval_res = metric.evaluate(size=3)
-        self.assertTrue(eval_res['recog/word_acc_ignore_case'], 2. / 3)
+        self.assertAlmostEqual(eval_res['recog/word_acc_ignore_case'], 2. / 3,
+                               4)
 
     def test_word_acc_ignore_case_symbol_metric(self):
         metric = WordMetric(mode='ignore_case_symbol')
         metric.process(self.gt, self.pred)
         eval_res = metric.evaluate(size=3)
-        self.assertTrue(eval_res['recog/word_acc_ignore_case_symbol'], 1.0)
+        self.assertEqual(eval_res['recog/word_acc_ignore_case_symbol'], 1.0)
 
     def test_all_metric(self):
         metric = WordMetric(
             mode=['exact', 'ignore_case', 'ignore_case_symbol'])
         metric.process(self.gt, self.pred)
         eval_res = metric.evaluate(size=3)
-        self.assertTrue(eval_res['recog/word_acc'], 1. / 3)
-        self.assertTrue(eval_res['recog/word_acc_ignore_case'], 2. / 3)
-        self.assertTrue(eval_res['recog/word_acc_ignore_case_symbol'], 1.0)
+        self.assertAlmostEqual(eval_res['recog/word_acc'], 1. / 3, 4)
+        self.assertAlmostEqual(eval_res['recog/word_acc_ignore_case'], 2. / 3,
+                               4)
+        self.assertEqual(eval_res['recog/word_acc_ignore_case_symbol'], 1.0)
 
 
 class TestCharMetric(unittest.TestCase):
@@ -120,8 +122,8 @@ class TestCharMetric(unittest.TestCase):
         metric = CharMetric()
         metric.process(self.gt, self.pred)
         eval_res = metric.evaluate(size=2)
-        self.assertTrue(eval_res['recog/char_recall'], 0.8)
-        self.assertTrue(eval_res['recog/char_precision'], 0.7)
+        self.assertEqual(eval_res['recog/char_recall'], 0.7)
+        self.assertEqual(eval_res['recog/char_precision'], 1)
 
 
 class TestOneMinusNED(unittest.TestCase):
@@ -164,4 +166,4 @@ class TestOneMinusNED(unittest.TestCase):
         metric = OneMinusNEDMetric()
         metric.process(self.gt, self.pred)
         eval_res = metric.evaluate(size=2)
-        self.assertTrue(eval_res['recog/1-N.E.D'], 0.7)
+        self.assertEqual(eval_res['recog/1-N.E.D'], 0.4875)
