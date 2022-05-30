@@ -2,33 +2,7 @@
 import pytest
 import torch
 
-from mmocr.models.textdet.necks import FPNC, FPN_UNet
-
-
-def test_fpnc():
-
-    in_channels = [64, 128, 256, 512]
-    size = [112, 56, 28, 14]
-    asf_cfgs = [
-        None,
-        dict(attention_type='ScaleChannelSpatial'),
-    ]
-    for flag in [False, True]:
-        for asf_cfg in asf_cfgs:
-            fpnc = FPNC(
-                in_channels=in_channels,
-                bias_on_lateral=flag,
-                bn_re_on_lateral=flag,
-                bias_on_smooth=flag,
-                bn_re_on_smooth=flag,
-                asf_cfg=asf_cfg,
-                conv_after_concat=flag)
-        fpnc.init_weights()
-        inputs = []
-        for i in range(4):
-            inputs.append(torch.rand(1, in_channels[i], size[i], size[i]))
-        outputs = fpnc.forward(inputs)
-        assert list(outputs.size()) == [1, 256, 112, 112]
+from mmocr.models.textdet.necks import FPN_UNet
 
 
 def test_fpn_unet_neck():
