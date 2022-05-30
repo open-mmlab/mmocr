@@ -1,133 +1,93 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Dict, Sequence, Union
+
+import torch
 import torch.nn as nn
 
+from mmocr.core import TextRecogDataSample
+from mmocr.models.textrecog.dictionary.dictionary import Dictionary
 from mmocr.registry import MODELS
+from .base_recog_loss import BaseRecogLoss
 
 
 @MODELS.register_module()
-class CELoss(nn.Module):
+class CELoss(BaseRecogLoss):
     """Implementation of loss module for encoder-decoder based text recognition
     method with CrossEntropy loss.
 
     Args:
+        dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
+            the instance of `Dictionary`.
+        max_seq_len (int): Maximum sequence length. The sequence is usually
+            generated from decoder. Defaults to 40.
+        letter_case (str): There are three options to alter the letter cases
+            of gt texts:
+            - unchanged: Do not change gt texts.
+            - upper: Convert gt texts into uppercase characters.
+            - lower: Convert gt texts into lowercase characters.
+            Usually, it only works for English characters. Defaults to
+            'unchanged'.
         ignore_index (int): Specifies a target value that is
-            ignored and does not contribute to the input gradient.
+            ignored and does not contribute to the input gradient. Defaults to
+            -1.
         reduction (str): Specifies the reduction to apply to the output,
-            should be one of the following: ('none', 'mean', 'sum').
+            should be one of the following: ('none', 'mean', 'sum'). Defaults
+            to 'none'.
         ignore_first_char (bool): Whether to ignore the first token in target (
             usually the start token). If ``True``, the last token of the output
             sequence will also be removed to be aligned with the target length.
+            Defaults to ``False``.
+        flatten (bool): Whether to flatten the vectors for loss computation.
+            Defaults to False.
     """
 
     def __init__(self,
-                 ignore_index=-1,
-                 reduction='none',
-                 ignore_first_char=False):
-        super().__init__()
+                 dictionary: Union[Dict, Dictionary],
+                 max_seq_len: int = 40,
+                 letter_case: str = 'unchanged',
+                 ignore_index: int = -1,
+                 flatten: bool = False,
+                 reduction: str = 'none',
+                 ignore_first_char: bool = False):
+        super().__init__(
+            dictionary=dictionary,
+            max_seq_len=max_seq_len,
+            letter_case=letter_case)
         assert isinstance(ignore_index, int)
         assert isinstance(reduction, str)
         assert reduction in ['none', 'mean', 'sum']
         assert isinstance(ignore_first_char, bool)
-
+        assert isinstance(flatten, bool)
+        self.flatten = flatten
         self.loss_ce = nn.CrossEntropyLoss(
             ignore_index=ignore_index, reduction=reduction)
         self.ignore_first_char = ignore_first_char
 
-    def format(self, outputs, targets_dict):
-        targets = targets_dict['padded_targets']
-        if self.ignore_first_char:
-            targets = targets[:, 1:].contiguous()
-            outputs = outputs[:, :-1, :]
-
-        outputs = outputs.permute(0, 2, 1).contiguous()
-
-        return outputs, targets
-
-    def forward(self, outputs, targets_dict, img_metas=None):
+    def forward(self, outputs: torch.Tensor,
+                data_samples: Sequence[TextRecogDataSample]) -> Dict:
         """
         Args:
             outputs (Tensor): A raw logit tensor of shape :math:`(N, T, C)`.
-            targets_dict (dict): A dict with a key ``padded_targets``, which is
-                a tensor of shape :math:`(N, T)`. Each element is the index of
-                a character.
-            img_metas (None): Unused.
+            data_samples (list[TextRecogDataSample]): List of
+                ``TextRecogDataSample`` which are processed by ``get_target``.
 
         Returns:
             dict: A loss dict with the key ``loss_ce``.
         """
-        outputs, targets = self.format(outputs, targets_dict)
-
-        loss_ce = self.loss_ce(outputs, targets.to(outputs.device))
-        losses = dict(loss_ce=loss_ce)
-
-        return losses
-
-
-@MODELS.register_module()
-class SARLoss(CELoss):
-    """Implementation of loss module in `SAR.
-
-    <https://arxiv.org/abs/1811.00751>`_.
-
-    Args:
-        ignore_index (int): Specifies a target value that is
-            ignored and does not contribute to the input gradient.
-        reduction (str): Specifies the reduction to apply to the output,
-            should be one of the following: ("none", "mean", "sum").
-
-    Warning:
-        SARLoss assumes that the first input token is always `<SOS>`.
-    """
-
-    def __init__(self, ignore_index=-1, reduction='mean', **kwargs):
-        super().__init__(ignore_index, reduction)
-
-    def format(self, outputs, targets_dict):
-        targets = targets_dict['padded_targets']
-        # targets[0, :], [start_idx, idx1, idx2, ..., end_idx, pad_idx...]
-        # outputs[0, :, 0], [idx1, idx2, ..., end_idx, ...]
-
-        # ignore first index of target in loss calculation
-        targets = targets[:, 1:].contiguous()
-        # ignore last index of outputs to be in same seq_len with targets
-        outputs = outputs[:, :-1, :].permute(0, 2, 1).contiguous()
-
-        return outputs, targets
-
-
-@MODELS.register_module()
-class TFLoss(CELoss):
-    """Implementation of loss module for transformer.
-
-    Args:
-        ignore_index (int, optional): The character index to be ignored in
-            loss computation.
-        reduction (str): Type of reduction to apply to the output,
-            should be one of the following: ("none", "mean", "sum").
-        flatten (bool): Whether to flatten the vectors for loss computation.
-
-    Warning:
-        TFLoss assumes that the first input token is always `<SOS>`.
-    """
-
-    def __init__(self,
-                 ignore_index=-1,
-                 reduction='none',
-                 flatten=True,
-                 **kwargs):
-        super().__init__(ignore_index, reduction)
-        assert isinstance(flatten, bool)
-
-        self.flatten = flatten
-
-    def format(self, outputs, targets_dict):
-        outputs = outputs[:, :-1, :].contiguous()
-        targets = targets_dict['padded_targets']
-        targets = targets[:, 1:].contiguous()
+        targets = list()
+        for data_sample in data_samples:
+            targets.append(data_sample.gt_text.padded_indexes)
+        targets = torch.stack(targets, dim=0).long()
+        if self.ignore_first_char:
+            targets = targets[:, 1:].contiguous()
+            outputs = outputs[:, :-1, :].contiguous()
         if self.flatten:
             outputs = outputs.view(-1, outputs.size(-1))
             targets = targets.view(-1)
         else:
             outputs = outputs.permute(0, 2, 1).contiguous()
 
-        return outputs, targets
+        loss_ce = self.loss_ce(outputs, targets.to(outputs.device))
+        losses = dict(loss_ce=loss_ce)
+
+        return losses
