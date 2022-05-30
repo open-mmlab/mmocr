@@ -14,10 +14,11 @@ from .img_util import drop_orientation, is_not_png
 from .lmdb_util import recog2lmdb
 from .logger import get_root_logger
 from .model import revert_sync_batchnorm
-from .polygon_utils import (crop_polygon, is_poly_inside_rect, poly2bbox,
-                            poly2shapely, poly_intersection, poly_iou,
-                            poly_make_valid, poly_union, polys2shapely,
-                            rescale_polygon, rescale_polygons)
+from .point_utils import dist_points2line
+from .polygon_utils import (crop_polygon, is_poly_inside_rect, offset_polygon,
+                            poly2bbox, poly2shapely, poly_intersection,
+                            poly_iou, poly_make_valid, poly_union,
+                            polys2shapely, rescale_polygon, rescale_polygons)
 from .setup_env import register_all_modules
 from .string_util import StringStrip
 
@@ -31,5 +32,6 @@ __all__ = [
     'recog_anno_to_imginfo', 'rescale_polygons', 'rescale_polygon',
     'rescale_bboxes', 'bbox2poly', 'crop_polygon', 'is_poly_inside_rect',
     'poly2bbox', 'poly_intersection', 'poly_iou', 'poly_make_valid',
-    'poly_union', 'poly2shapely', 'polys2shapely', 'register_all_modules'
+    'poly_union', 'poly2shapely', 'polys2shapely', 'register_all_modules',
+    'dist_points2line', 'offset_polygon'
 ]

@@ -2,6 +2,7 @@
 from typing import Optional, Sequence, Tuple, Union
 
 import numpy as np
+import pyclipper
 from numpy.typing import ArrayLike
 from shapely.geometry import MultiPolygon, Polygon
 
@@ -274,3 +275,35 @@ def is_poly_inside_rect(poly: ArrayLike, rect: np.ndarray) -> bool:
     rect = poly2shapely(bbox2poly(rect))
     inter = poly.intersection(rect)
     return inter.area == poly.area
+
+
+def offset_polygon(poly: ArrayLike, distance: float) -> ArrayLike:
+    """Offset (expand/shrink) the polygon by the target distance. It's a
+    wrapper around pyclipper based on Vatti clipping algorithm.
+
+    Warning:
+        Polygon coordinates will be casted to int type in PyClipper. Mind the
+        potential precision loss caused by the casting.
+
+    Args:
+        poly (ArrayLike): A polygon. In any form can be converted
+            to an 1-D numpy array. E.g. list[float], np.ndarray,
+            or torch.Tensor. Polygon is written in
+            [x1, y1, x2, y2, ...].
+        distance (float): The offset distance. Positive value means expanding,
+            negative value means shrinking.
+
+    Returns:
+        np.array: 1-D Offsetted polygon ndarray in float32 type. If the
+        result polygon is invalid, return an empty array.
+    """
+    poly = np.array(poly).reshape(-1, 2)
+    pco = pyclipper.PyclipperOffset()
+    pco.AddPath(poly, pyclipper.JT_ROUND, pyclipper.ET_CLOSEDPOLYGON)
+    # Returned result will be in type of int32, convert it back to float32
+    # following MMOCR's convention
+    result = np.array(pco.Execute(distance)).astype(np.float32)
+    # Always use the first polygon since only one polygon is expected
+    # But when the resulting polygon is invalid, return the empty array
+    # as it is
+    return result if len(result) == 0 else result[0].flatten()
