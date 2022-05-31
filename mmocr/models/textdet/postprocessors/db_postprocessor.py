@@ -115,8 +115,10 @@ class DBPostprocessor(BaseTextDetPostProcessor):
 
             if len(poly) > 0:
                 data_sample.pred_instances.polygons.append(poly)
-                data_sample.pred_instances.scores.append(
-                    torch.FloatTensor([score]))
+                data_sample.pred_instances.scores.append(score)
+
+        data_sample.pred_instances.scores = torch.FloatTensor(
+            data_sample.pred_instances.scores)
 
         return data_sample
 
