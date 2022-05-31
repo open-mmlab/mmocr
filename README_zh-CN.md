@@ -17,7 +17,6 @@
     </sup>
   </div>
   <div>&nbsp;</div>
-</div>
 
 [![build](https://github.com/open-mmlab/mmocr/workflows/build/badge.svg)](https://github.com/open-mmlab/mmocr/actions)
 [![docs](https://readthedocs.org/projects/mmocr/badge/?version=latest)](https://mmocr.readthedocs.io/en/latest/?badge=latest)
@@ -27,11 +26,13 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 
-    [📘文档](https://mmocr.readthedocs.io/) |
-    [🛠️安装](https://mmocr.readthedocs.io/en/latest/install.html) |
-    [👀模型库](https://mmocr.readthedocs.io/en/latest/modelzoo.html) |
-    [🆕更新日志](https://mmocr.readthedocs.io/en/latest/changelog.html) |
-    [🤔报告问题](https://github.com/open-mmlab/mmocr/issues/new/choose)
+  [📘文档](https://mmocr.readthedocs.io/) |
+  [🛠️安装](https://mmocr.readthedocs.io/en/latest/install.html) |
+  [👀模型库](https://mmocr.readthedocs.io/en/latest/modelzoo.html) |
+  [🆕更新日志](https://mmocr.readthedocs.io/en/latest/changelog.html) |
+  [🤔报告问题](https://github.com/open-mmlab/mmocr/issues/new/choose)
+
+</div>
 
 <div align="center">
 

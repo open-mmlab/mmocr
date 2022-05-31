@@ -17,7 +17,6 @@
     </sup>
   </div>
   <div>&nbsp;</div>
-</div>
 
 [![build](https://github.com/open-mmlab/mmocr/workflows/build/badge.svg)](https://github.com/open-mmlab/mmocr/actions)
 [![docs](https://readthedocs.org/projects/mmocr/badge/?version=latest)](https://mmocr.readthedocs.io/en/latest/?badge=latest)
@@ -27,11 +26,13 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 
-    [📘Documentation](https://mmocr.readthedocs.io/) |
-    [🛠️Installation](https://mmocr.readthedocs.io/en/latest/install.html) |
-    [👀Model Zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html) |
-    [🆕Update News](https://mmocr.readthedocs.io/en/latest/changelog.html) |
-    [🤔Reporting Issues](https://github.com/open-mmlab/mmocr/issues/new/choose)
+  [📘Documentation](https://mmocr.readthedocs.io/) |
+  [🛠️Installation](https://mmocr.readthedocs.io/en/latest/install.html) |
+  [👀Model Zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html) |
+  [🆕Update News](https://mmocr.readthedocs.io/en/latest/changelog.html) |
+  [🤔Reporting Issues](https://github.com/open-mmlab/mmocr/issues/new/choose)
+
+</div>
 
 <div align="center">
 
