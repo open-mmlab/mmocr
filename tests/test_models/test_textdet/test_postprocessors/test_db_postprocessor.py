@@ -33,10 +33,14 @@ class TestDBPostProcessor(unittest.TestCase):
         results = postprocessor.get_text_instances(pred_result, data_sample)
         self.assertIn('polygons', results.pred_instances)
         self.assertIn('scores', results.pred_instances)
+        self.assertTrue(
+            isinstance(results.pred_instances['scores'], torch.FloatTensor))
 
         postprocessor = DBPostprocessor(
             min_text_score=1, text_repr_type=text_repr_type)
         pred_result = dict(prob_map=torch.rand(4, 5) * 0.8)
         results = postprocessor.get_text_instances(pred_result, data_sample)
         self.assertEqual(results.pred_instances.polygons, [])
-        self.assertEqual(results.pred_instances.scores, [])
+        self.assertTrue(
+            isinstance(results.pred_instances['scores'], torch.FloatTensor))
+        self.assertEqual(len(results.pred_instances.scores), 0)
