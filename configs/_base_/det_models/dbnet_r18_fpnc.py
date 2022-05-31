@@ -1,3 +1,9 @@
+preprocess_cfg = dict(
+    mean=[123.675, 116.28, 103.53],
+    std=[58.395, 57.12, 57.375],
+    to_rgb=True,
+    pad_size_divisor=32)
+
 model = dict(
     type='DBNet',
     backbone=dict(
@@ -12,10 +18,9 @@ model = dict(
         style='caffe'),
     neck=dict(
         type='FPNC', in_channels=[64, 128, 256, 512], lateral_channels=256),
-    bbox_head=dict(
+    det_head=dict(
         type='DBHead',
         in_channels=256,
-        loss=dict(type='DBLoss', alpha=5.0, beta=10.0, bbce_loss=True),
+        loss=dict(type='DBLoss'),
         postprocessor=dict(type='DBPostprocessor', text_repr_type='quad')),
-    train_cfg=None,
-    test_cfg=None)
+    preprocess_cfg=preprocess_cfg)
