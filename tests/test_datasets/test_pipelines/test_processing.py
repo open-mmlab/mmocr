@@ -211,25 +211,60 @@ class TestRandomCrop(unittest.TestCase):
 
     @mock.patch('mmocr.datasets.pipelines.processing.np.random.randint')
     def test_sample_crop_box(self, mock_randint):
+
+        def rand_min(low, high):
+            return low
+
         trans = RandomCrop(min_side_ratio=0.3)
-        mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 0, 0, 15]
+        mock_randint.side_effect = rand_min
         crop_box = trans._sample_crop_box((30, 30), self.data_info.copy())
-        assert np.allclose(np.array(crop_box), np.array([0, 0, 30, 15]))
+        assert np.allclose(np.array(crop_box), np.array([0, 0, 25, 10]))
+
+        def rand_max(low, high):
+            return high - 1
+
+        mock_randint.side_effect = rand_max
+        crop_box = trans._sample_crop_box((30, 30), self.data_info.copy())
+        assert np.allclose(np.array(crop_box), np.array([4, 19, 30, 30]))
 
     @mock.patch('mmocr.datasets.pipelines.processing.np.random.randint')
     def test_transform(self, mock_randint):
-        mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 0, 0, 15]
+
+        def rand_min(low, high):
+            return low
+
+        # mock_randint.side_effect = [0, 0, 0, 0, 30, 0, 0, 0, 15]
+        mock_randint.side_effect = rand_min
         trans = RandomCrop(min_side_ratio=0.3)
         polygon_target = np.array([5., 5., 25., 5., 25., 10., 5., 10.])
         bbox_target = np.array([[5., 5., 25., 10.]])
         results = trans(self.data_info)
 
-        self.assertEqual(results['img'].shape, (15, 30, 3))
-        self.assertEqual(results['img_shape'], (15, 30))
-        self.assertEqual(results['gt_bboxes'].all(), bbox_target.all())
+        self.assertEqual(results['img'].shape, (10, 25, 3))
+        self.assertEqual(results['img_shape'], (10, 25))
+        self.assertTrue(np.allclose(results['gt_bboxes'], bbox_target))
         self.assertEqual(results['gt_bboxes'].shape, (1, 4))
-        self.assertTrue(len(results['gt_polygons']) == 1)
-        self.assertEqual(results['gt_polygons'][0].all(), polygon_target.all())
+        self.assertEqual(len(results['gt_polygons']), 1)
+        self.assertTrue(np.allclose(results['gt_polygons'][0], polygon_target))
+        self.assertEqual(results['gt_bboxes_labels'][0], 0)
+        self.assertEqual(results['gt_ignored'][0], True)
+        self.assertEqual(results['gt_texts'][0], 'text1')
+
+        def rand_max(low, high):
+            return high - 1
+
+        mock_randint.side_effect = rand_max
+        trans = RandomCrop(min_side_ratio=0.3)
+        polygon_target = np.array([1, 1, 21, 1, 21, 6, 1, 6])
+        bbox_target = np.array([[1, 1, 21, 6]])
+        results = trans(self.data_info)
+
+        self.assertEqual(results['img'].shape, (6, 21, 3))
+        self.assertEqual(results['img_shape'], (6, 21))
+        self.assertTrue(np.allclose(results['gt_bboxes'], bbox_target))
+        self.assertEqual(results['gt_bboxes'].shape, (1, 4))
+        self.assertEqual(len(results['gt_polygons']), 1)
+        self.assertTrue(np.allclose(results['gt_polygons'][0], polygon_target))
         self.assertEqual(results['gt_bboxes_labels'][0], 0)
         self.assertEqual(results['gt_ignored'][0], True)
         self.assertEqual(results['gt_texts'][0], 'text1')

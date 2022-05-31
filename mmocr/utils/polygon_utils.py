@@ -273,8 +273,7 @@ def is_poly_inside_rect(poly: ArrayLike, rect: np.ndarray) -> bool:
 
     poly = poly2shapely(poly)
     rect = poly2shapely(bbox2poly(rect))
-    inter = poly.intersection(rect)
-    return inter.area == poly.area
+    return rect.contains(poly)
 
 
 def offset_polygon(poly: ArrayLike, distance: float) -> ArrayLike:
