@@ -2,34 +2,80 @@ _base_ = [
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/det_models/dbnet_r50dcnv2_fpnc.py',
-    '../../_base_/det_datasets/icdar2015.py',
-    '../../_base_/det_pipelines/dbnet_pipeline.py'
 ]
 
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
-
-train_pipeline_r50dcnv2 = {{_base_.train_pipeline_r50dcnv2}}
-test_pipeline_4068_1024 = {{_base_.test_pipeline_4068_1024}}
+default_hooks = dict(checkpoint=dict(type='CheckpointHook', interval=20), )
 
 load_from = 'checkpoints/textdet/dbnet/res50dcnv2_synthtext.pth'
 
-data = dict(
-    samples_per_gpu=8,
-    workers_per_gpu=4,
-    val_dataloader=dict(samples_per_gpu=1),
-    test_dataloader=dict(samples_per_gpu=1),
-    train=dict(
-        type='UniformConcatDataset',
-        datasets=train_list,
-        pipeline=train_pipeline_r50dcnv2),
-    val=dict(
-        type='UniformConcatDataset',
-        datasets=test_list,
-        pipeline=test_pipeline_4068_1024),
-    test=dict(
-        type='UniformConcatDataset',
-        datasets=test_list,
-        pipeline=test_pipeline_4068_1024))
+train_pipeline_r50dcnv2 = [
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(
+        type='LoadOCRAnnotations',
+        with_bbox=True,
+        with_polygon=True,
+        with_label=True,
+    ),
+    dict(
+        type='TorchVisionWrapper',
+        op='ColorJitter',
+        brightness=32.0 / 255,
+        saturation=0.5),
+    dict(
+        type='ImgAug',
+        args=[['Fliplr', 0.5],
+              dict(cls='Affine', rotate=[-10, 10]), ['Resize', [0.5, 3.0]]]),
+    dict(type='RandomCrop', min_side_ratio=0.1),
+    dict(type='Resize', scale=(640, 640), keep_ratio=True),
+    dict(type='Pad', size=(640, 640)),
+    dict(
+        type='PackTextDetInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape'))
+]
 
-evaluation = dict(interval=100, metric='hmean-iou')
+test_pipeline_4068_1024 = [
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(type='Resize', scale=(4068, 1024), keep_ratio=True),
+    dict(
+        type='PackTextDetInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor',
+                   'instances'))
+]
+
+dataset_type = 'OCRDataset'
+data_root = 'data/icdar2015'
+
+train_dataset = dict(
+    type=dataset_type,
+    data_root=data_root,
+    ann_file='instances_training.json',
+    data_prefix=dict(img_path='imgs/'),
+    filter_cfg=dict(filter_empty_gt=True, min_size=32),
+    pipeline=train_pipeline_r50dcnv2)
+
+test_dataset = dict(
+    type=dataset_type,
+    data_root=data_root,
+    ann_file='instances_test.json',
+    data_prefix=dict(img_path='imgs/'),
+    test_mode=True,
+    pipeline=test_pipeline_4068_1024)
+
+train_dataloader = dict(
+    batch_size=16,
+    num_workers=8,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=train_dataset)
+val_dataloader = dict(
+    batch_size=16,
+    num_workers=8,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=test_dataset)
+test_dataloader = val_dataloader
+
+val_evaluator = dict(type='HmeanIOUMetric')
+test_evaluator = val_evaluator
+
+visualizer = dict(type='TextDetLocalVisualizer', name='visualizer')
