@@ -26,10 +26,10 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 
-  [📘文档](https://mmocr.readthedocs.io/) |
-  [🛠️安装](https://mmocr.readthedocs.io/en/latest/install.html) |
-  [👀模型库](https://mmocr.readthedocs.io/en/latest/modelzoo.html) |
-  [🆕更新日志](https://mmocr.readthedocs.io/en/latest/changelog.html) |
+  [📘文档](https://mmocr.readthedocs.io/zh_CN/latest/) |
+  [🛠️安装](https://mmocr.readthedocs.io/zh_CN/latest/install.html) |
+  [👀模型库](https://mmocr.readthedocs.io/zh_CN/latest/modelzoo.html) |
+  [🆕更新日志](https://mmocr.readthedocs.io/zh_CN/latest/changelog.html) |
   [🤔报告问题](https://github.com/open-mmlab/mmocr/issues/new/choose)
 
 </div>
