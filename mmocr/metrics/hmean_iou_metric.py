@@ -171,15 +171,15 @@ class HmeanIOUMetric(BaseMetric):
                 dataset_pred_num[i] += np.sum(~pred_ignore_flags)
 
         for i, pred_score_thr in enumerate(self.pred_score_thrs):
-            precision, recall, hmean = compute_hmean(
+            recall, precision, hmean = compute_hmean(
                 int(dataset_hit_num[i]), int(dataset_hit_num[i]),
                 int(dataset_gt_num), int(dataset_pred_num[i]))
             eval_results = dict(
                 precision=precision, recall=recall, hmean=hmean)
-            logger.info(f'prediction score threshold: {pred_score_thr}, '
-                        f'recall: {eval_results["recall"]:.3f}, '
-                        f'precision: {eval_results["precision"]:.3f}, '
-                        f'hmean: {eval_results["hmean"]:.3f}\n')
+            logger.info(f'prediction score threshold: {pred_score_thr:.2f}, '
+                        f'recall: {eval_results["recall"]:.4f}, '
+                        f'precision: {eval_results["precision"]:.4f}, '
+                        f'hmean: {eval_results["hmean"]:.4f}\n')
             if eval_results['hmean'] > best_eval_results['hmean']:
                 best_eval_results = eval_results
         return best_eval_results

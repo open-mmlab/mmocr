@@ -68,9 +68,10 @@ class TestHmeanIOU(unittest.TestCase):
         pred_data_sample = TextDetDataSample()
         pred_data_sample.pred_instances = InstanceData()
         pred_data_sample.pred_instances.polygons = [
+            torch.FloatTensor([0, 0, 1, 0, 1, 1, 0, 1]),
             torch.FloatTensor([0, 0, 1, 0, 1, 1, 0, 1])
         ]
-        pred_data_sample.pred_instances.scores = torch.FloatTensor([0.8])
+        pred_data_sample.pred_instances.scores = torch.FloatTensor([1, 0.95])
         predictions.append(pred_data_sample.to_dict())
 
         self.predictions = predictions
@@ -81,7 +82,7 @@ class TestHmeanIOU(unittest.TestCase):
         metric.process(self.gt, self.predictions)
         eval_results = metric.evaluate(size=2)
 
-        precision = 3 / 4
+        precision = 3 / 5
         recall = 3 / 4
         hmean = 2 * precision * recall / (precision + recall)
         target_result = {
