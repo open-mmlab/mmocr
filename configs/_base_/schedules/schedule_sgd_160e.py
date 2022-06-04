@@ -1,6 +1,7 @@
 # optimizer
-optimizer = dict(type='SGD', lr=0.08, momentum=0.9, weight_decay=0.0001)
-
+optim_wrapper = dict(
+    type='OptimWrapper',
+    optimizer=dict(type='SGD', lr=0.08, momentum=0.9, weight_decay=0.0001))
 train_cfg = dict(by_epoch=True, max_epochs=160)
 val_cfg = dict(interval=20)
 test_cfg = dict()
