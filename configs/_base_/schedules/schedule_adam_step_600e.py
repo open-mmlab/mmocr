@@ -1,6 +1,5 @@
 # optimizer
-optimizer = dict(type='Adam', lr=1e-4)
-
+optim_wrapper = dict(type='OptimWrapper', optimizer=dict(type='Adam', lr=1e-4))
 train_cfg = dict(by_epoch=True, max_epochs=600)
 val_cfg = dict(interval=40)
 test_cfg = dict()
