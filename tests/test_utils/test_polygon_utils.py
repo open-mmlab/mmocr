@@ -25,7 +25,7 @@ class TestCropPolygon(unittest.TestCase):
                 poly2shapely(target_poly_cropped)))
 
         # polygon inside box
-        polygon = np.array([0., 0., 30., 0., 30., 30., 0., 30.]).reshape(-1, 2)
+        polygon = np.array([0., 0., 30., 0., 30., 30., 0., 30.])
         crop_box = np.array([0., 0., 60., 60.])
         target_poly_cropped = polygon
         poly_cropped = crop_polygon(polygon, crop_box)
@@ -34,7 +34,7 @@ class TestCropPolygon(unittest.TestCase):
                 poly2shapely(target_poly_cropped)))
 
         # polygon outside box
-        polygon = np.array([0., 0., 30., 0., 30., 30., 0., 30.]).reshape(-1, 2)
+        polygon = np.array([0., 0., 30., 0., 30., 30., 0., 30.])
         crop_box = np.array([80., 80., 90., 90.])
         poly_cropped = crop_polygon(polygon, crop_box)
         self.assertEqual(poly_cropped, None)
