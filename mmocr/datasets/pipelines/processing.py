@@ -1245,6 +1245,7 @@ class RescaleToHeight(BaseTransform):
         return repr_str
 
 
+@TRANSFORMS.register_module()
 class PadToWidth(BaseTransform):
     """Only pad the image's width.
 
