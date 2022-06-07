@@ -292,7 +292,7 @@ class TestTextDetRandomCrop(unittest.TestCase):
             gt_ignored=gt_ignored)
 
     @mock.patch('mmocr.datasets.pipelines.processing.np.random.random_sample')
-    @mock.patch('mmocr.datasets.pipelines.processing.np.random.randint')
+    @mock.patch('mmocr.datasets.pipelines.processing.random.randint')
     def test_sample_offset(self, mock_randint, mock_sample):
         # test target size is bigger than image size
         mock_sample.side_effect = [1]
@@ -303,11 +303,11 @@ class TestTextDetRandomCrop(unittest.TestCase):
 
         # test the first bracnh in sample_offset
         mock_sample.side_effect = [0.1]
-        mock_randint.side_effect = [1, 1]
+        mock_randint.side_effect = [0, 2]
         trans = TextDetRandomCrop(target_size=(3, 3))
         offset = trans._sample_offset(self.data_info['gt_polygons'],
                                       self.data_info['img'].shape[:2])
-        self.assertEqual(offset, (1, 1))
+        self.assertEqual(offset, (0, 2))
 
         # test the second branch in sample_offset
         mock_sample.side_effect = [1]
@@ -340,24 +340,6 @@ class TestTextDetRandomCrop(unittest.TestCase):
                 crop[0]))
         self.assertTrue(np.allclose(crop[1], np.array([0, 0, 3, 2])))
 
-    def test_crop_bboxes(self):
-        trans = TextDetRandomCrop(target_size=(3, 3))
-        crop_box = np.array([2, 3, 5, 5])
-        bboxes = np.array([[2, 3, 4, 4], [0, 0, 1, 1], [1, 2, 4, 4],
-                           [0, 0, 10, 10]])
-        kept_bboxes, kept_idx = trans._crop_bboxes(bboxes, crop_box)
-        self.assertTrue(
-            np.allclose(kept_bboxes,
-                        np.array([[0, 0, 2, 1], [0, 0, 2, 1], [0, 0, 3, 2]])))
-        self.assertEqual(kept_idx, [0, 2, 3])
-        self.assertEqual(kept_bboxes.shape, (3, 4))
-
-        bboxes = np.array([[10, 10, 11, 11], [0, 0, 1, 1]])
-        kept_bboxes, kept_idx = trans._crop_bboxes(bboxes, crop_box)
-        self.assertEqual(kept_bboxes.size, 0)
-        self.assertEqual(kept_bboxes.shape, (0, 4))
-        self.assertEqual(len(kept_idx), 0)
-
     def test_crop_polygons(self):
         trans = TextDetRandomCrop(target_size=(3, 3))
         crop_box = np.array([2, 3, 5, 5])
@@ -386,12 +368,19 @@ class TestTextDetRandomCrop(unittest.TestCase):
                 poly2shapely(kept_polygons[2])))
 
     @mock.patch('mmocr.datasets.pipelines.processing.np.random.random_sample')
-    @mock.patch('mmocr.datasets.pipelines.processing.np.random.randint')
+    @mock.patch('mmocr.datasets.pipelines.processing.random.randint')
     def test_transform(self, mock_randint, mock_sample):
+        # test target size is equal to image size
+        trans = TextDetRandomCrop(target_size=(5, 5))
+        data_info = self.data_info.copy()
+        results = trans(data_info)
+        self.assertDictEqual(results, data_info)
+
         mock_sample.side_effect = [0.1]
         mock_randint.side_effect = [1, 1]
         trans = TextDetRandomCrop(target_size=(3, 3))
-        results = trans(self.data_info)
+        data_info = self.data_info.copy()
+        results = trans(data_info)
         box_target = np.array([1, 1, 3, 3])
         polygon_target = np.array([1, 1, 3, 1, 3, 3, 1, 3])
         self.assertEqual(results['img'].shape, (3, 3, 1))
