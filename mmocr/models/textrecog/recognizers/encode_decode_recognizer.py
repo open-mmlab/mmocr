@@ -15,6 +15,8 @@ class EncodeDecodeRecognizer(BaseRecognizer):
     """Base class for encode-decode recognizer.
 
     Args:
+        preprocessor (dict, optional): Config dict for preprocessor. Defaults
+            to None.
         backbone (dict, optional): Backbone config. Defaults to None.
         encoder (dict, optional): Encoder config. If None, the output from
             backbone will be directly fed into ``decoder``. Defaults to None.

@@ -59,27 +59,27 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
     @property
     def with_backbone(self):
         """bool: whether the recognizer has a backbone"""
-        return getattr(self, 'backbone', None) is not None
+        return hasattr(self, 'backbone')
 
     @property
     def with_encoder(self):
         """bool: whether the recognizer has an encoder"""
-        return getattr(self, 'encoder', None) is not None
+        return hasattr(self, 'encoder')
 
     @property
     def with_preprocessor(self):
         """bool: whether the recognizer has a preprocessor"""
-        return getattr(self, 'preprocessor', None) is not None
+        return hasattr(self, 'preprocessor')
 
     @property
     def with_dictionary(self):
         """bool: whether the recognizer has a dictionary"""
-        return getattr(self, 'dictionary', None) is not None
+        return hasattr(self, 'dictionary')
 
     @property
     def with_decoder(self):
         """bool: whether the recognizer has a decoder"""
-        return getattr(self, 'decoder', None) is not None
+        return hasattr(self, 'decoder')
 
     @abstractmethod
     def extract_feat(self, inputs: torch.Tensor) -> torch.Tensor:
