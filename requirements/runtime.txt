@@ -3,7 +3,7 @@ lanms-neo==1.0.2
 lmdb
 matplotlib
 numpy
-opencv-python != 4.5.5.*
+opencv-python >=4.2.0.32, != 4.5.5.*  # avoid Github security alert
 pyclipper
 pycocotools
 rapidfuzz
