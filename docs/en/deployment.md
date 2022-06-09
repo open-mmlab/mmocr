@@ -37,33 +37,32 @@ Description of arguments:
 | `--show`           | bool           | Determines whether to visualize outputs of ONNXRuntime and PyTorch. Defaults to `False`.           |
 | `--dynamic-export` | bool           | Determines whether to export ONNX model with dynamic input and output shapes. Defaults to `False`. |
 
-:::{note}
+```{note}
 This tool is still experimental. For now, some customized operators are not supported, and we only support a subset of detection and recognition algorithms.
-:::
+```
 
 ### List of supported models exportable to ONNX
 
 The table below lists the models that are guaranteed to be exportable to ONNX and runnable in ONNX Runtime.
 
-| Model  |                                                                      Config                                                                      | Dynamic Shape | Batch Inference |                  Note                  |
-| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :-----------: | :-------------: | :------------------------------------: |
-| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |       Y       |        N        |                                        |
-| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |       Y       |        Y        |                                        |
-| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |       Y       |        Y        |                                        |
-| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |       Y       |        Y        |                                        |
+| Model  |                                                              Config                                                              | Dynamic Shape | Batch Inference |                  Note                  |
+| :----: | :------------------------------------------------------------------------------------------------------------------------------: | :-----------: | :-------------: | :------------------------------------: |
+| DBNet  | [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py) |       Y       |        N        |                                        |
+| PSENet | [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py) |       Y       |        Y        |                                        |
+| PSENet | [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py) |       Y       |        Y        |                                        |
+| PANet  | [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py) |       Y       |        Y        |                                        |
 | PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |                                        |
-|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |       Y       |        Y        | CRNN only accepts input with height 32 |
+|  CRNN  |    [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)     |       Y       |        Y        | CRNN only accepts input with height 32 |
 
-:::{note}
+```{note}
 - *All models above are tested with PyTorch==1.8.1 and onnxruntime-gpu == 1.8.1*
 - If you meet any problem with the listed models above, please create an issue and it would be taken care of soon.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
-:::
+```
 
 ## Convert ONNX to TensorRT (experimental)
 
 We also provide a script to convert [ONNX](https://github.com/onnx/onnx) model to [TensorRT](https://github.com/NVIDIA/TensorRT) format. Besides, we support comparing the output results between ONNX and TensorRT model.
-
 
 ```bash
 python tools/deployment/onnx2tensorrt.py
@@ -98,35 +97,35 @@ Description of arguments:
 | `--show`           | bool           | Determines whether to show the output of ONNX and TensorRT. Defaults to `False`.                    |
 | `--verbose`        | bool           | Determines whether to verbose logging messages while creating TensorRT engine. Defaults to `False`. |
 
-:::{note}
+```{note}
 This tool is still experimental. For now, some customized operators are not supported, and we only support a subset of detection and recognition algorithms.
-:::
+```
 
 ### List of supported models exportable to TensorRT
 
 The table below lists the models that are guaranteed to be exportable to TensorRT engine and runnable in TensorRT.
 
-| Model  |                                                                      Config                                                                      | Dynamic Shape | Batch Inference |                  Note                  |
-| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :-----------: | :-------------: | :------------------------------------: |
-| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |       Y       |        N        |                                        |
-| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |       Y       |        Y        |                                        |
-| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |       Y       |        Y        |                                        |
-| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |       Y       |        Y        |                                        |
+| Model  |                                                              Config                                                              | Dynamic Shape | Batch Inference |                  Note                  |
+| :----: | :------------------------------------------------------------------------------------------------------------------------------: | :-----------: | :-------------: | :------------------------------------: |
+| DBNet  | [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py) |       Y       |        N        |                                        |
+| PSENet | [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py) |       Y       |        Y        |                                        |
+| PSENet | [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py) |       Y       |        Y        |                                        |
+| PANet  | [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py) |       Y       |        Y        |                                        |
 | PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |                                        |
-|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |       Y       |        Y        | CRNN only accepts input with height 32 |
+|  CRNN  |    [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)     |       Y       |        Y        | CRNN only accepts input with height 32 |
 
-:::{note}
+```{note}
 - *All models above are tested with PyTorch==1.8.1,  onnxruntime-gpu==1.8.1 and tensorrt==7.2.1.6*
 - If you meet any problem with the listed models above, please create an issue and it would be taken care of soon.
 - Because this feature is experimental and may change fast, please always try with the latest `mmcv` and `mmocr`.
-:::
-
+```
 
 ## Evaluate ONNX and TensorRT Models (experimental)
 
 We provide methods to evaluate TensorRT and ONNX models in `tools/deployment/deploy_test.py`.
 
 ### Prerequisite
+
 To evaluate ONNX and TensorRT models, ONNX, ONNXRuntime and TensorRT should be installed first. Install `mmcv-full` with ONNXRuntime custom ops and TensorRT plugins follow [ONNXRuntime in mmcv](https://mmcv.readthedocs.io/en/latest/onnxruntime_op.html) and [TensorRT plugin in mmcv](https://github.com/open-mmlab/mmcv/blob/master/docs/tensorrt_plugin.md).
 
 ### Usage
@@ -153,7 +152,6 @@ python tools/deploy_test.py \
 | `--device`     | str                       | Device for evaluation. Defaults to `cuda:0`.                                            |
 
 ## Results and Models
-
 
 <table class="tg">
 <thead>
@@ -302,15 +300,15 @@ python tools/deploy_test.py \
 </tbody>
 </table>
 
-:::{note}
+```{note}
 - TensorRT upsampling operation is a little different from PyTorch. For DBNet and PANet, we suggest replacing upsampling operations with the nearest mode to operations with bilinear mode. [Here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpem_ffm.py#L33) for PANet, [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L111) and [here](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L121) for DBNet. As is shown in the above table, networks with tag * mean the upsampling mode is changed.
 - Note that changing upsampling mode reduces less performance compared with using the nearest mode. However, the weights of networks are trained through the nearest mode. To pursue the best performance, using bilinear mode for both training and TensorRT deployment is recommended.
 - All ONNX and TensorRT models are evaluated with dynamic shapes on the datasets, and images are preprocessed according to the original config file.
 - This tool is still experimental, and we only support a subset of detection and recognition algorithms for now.
-:::
-
+```
 
 ## C++ Inference example with OpenCV
+
 The example below is tested with Visual Studio 2019 as console application, CPU inference only.
 
 ### Prerequisites
@@ -324,16 +322,17 @@ python3.9 ../mmocr/tools/deployment/pytorch2onnx.py --verify --output-file detec
 python3.9 ../mmocr/tools/deployment/pytorch2onnx.py --opset 14 --verify --output-file recognizer.onnx ../mmocr/configs/textrecog/satrn/satrn_small.py ./satrn_small_20211009-2cf13355.pth recog ./sample_small_image_eg_200x50.png
 ```
 
-:::{note}
+```{note}
 - Be aware, while exported `detector.onnx` file is relatively small (about 50 Mb), `recognizer.onnx` is pretty big (more than 600 Mb).
 - *DBNet_r18* can use ONNX opset 11, *SATRN_small* can be exported with opset 14.
-:::
+```
 
-:::{warning}
+```{warning}
 Be sure, that verifications of both models are successful - look through the export messages.
-:::
+```
 
 ### Example
+
 Example usage of exported models with C++ is in the code below (don't forget to change paths to \*.onnx files). It's applicable to these two models only, other models have another preprocessing and postprocessing logics.
 
 ```C++
@@ -548,6 +547,7 @@ int main(int argc, const char* argv[]) {
 ```
 
 The output should look something like this.
+
 ```
 Loading models...
 Loading models done in 5715 ms

@@ -26,11 +26,11 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 
-  [📘文档](https://mmocr.readthedocs.io/zh_CN/latest/) |
-  [🛠️安装](https://mmocr.readthedocs.io/zh_CN/latest/install.html) |
-  [👀模型库](https://mmocr.readthedocs.io/zh_CN/latest/modelzoo.html) |
-  [🆕更新日志](https://mmocr.readthedocs.io/zh_CN/latest/changelog.html) |
-  [🤔报告问题](https://github.com/open-mmlab/mmocr/issues/new/choose)
+[📘文档](https://mmocr.readthedocs.io/zh_CN/latest/) |
+[🛠️安装](https://mmocr.readthedocs.io/zh_CN/latest/install.html) |
+[👀模型库](https://mmocr.readthedocs.io/zh_CN/latest/modelzoo.html) |
+[🆕更新日志](https://mmocr.readthedocs.io/zh_CN/latest/changelog.html) |
+[🤔报告问题](https://github.com/open-mmlab/mmocr/issues/new/choose)
 
 </div>
 
@@ -54,20 +54,20 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 
 -**全流程**
 
-   该工具箱不仅支持文本检测和文本识别，还支持其下游任务，例如关键信息提取。
+该工具箱不仅支持文本检测和文本识别，还支持其下游任务，例如关键信息提取。
 
 -**多种模型**
 
-  该工具箱支持用于文本检测，文本识别和关键信息提取的各种最新模型。
+该工具箱支持用于文本检测，文本识别和关键信息提取的各种最新模型。
 
 -**模块化设计**
 
-  MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处理器，模型组件如主干模块，颈部模块和头部模块，以及损失函数。有关如何构建自定义模型的信
+MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处理器，模型组件如主干模块，颈部模块和头部模块，以及损失函数。有关如何构建自定义模型的信
 息，请参考[快速入门](https://mmocr.readthedocs.io/zh_CN/latest/getting_started.html)。
 
 -**众多实用工具**
 
-  该工具箱提供了一套全面的实用程序，可以帮助用户评估模型的性能。它包括可对图像，标注的真值以及预测结果进行可视化的可视化工具，以及用于在训练过程中评估模型的验证工具。它还包括数据转换器，演示了如何将用户自建的标注数据转换为 MMOCR 支持的标注文件。
+该工具箱提供了一套全面的实用程序，可以帮助用户评估模型的性能。它包括可对图像，标注的真值以及预测结果进行可视化的可视化工具，以及用于在训练过程中评估模型的验证工具。它还包括数据转换器，演示了如何将用户自建的标注数据转换为 MMOCR 支持的标注文件。
 
 ## 最新进展
 
@@ -152,6 +152,7 @@ pip3 install -e .
 我们感谢所有的贡献者为改进和提升 MMOCR 所作出的努力。请参考[贡献指南](.github/CONTRIBUTING.md)来了解参与项目贡献的相关指引。
 
 ## 致谢
+
 MMOCR 是一款由来自不同高校和企业的研发人员共同参与贡献的开源项目。我们感谢所有为项目提供算法复现和新功能支持的贡献者，以及提供宝贵反馈的用户。 我们希望此工具箱可以帮助大家来复现已有的方法和开发新的方法，从而为研究社区贡献力量。
 
 ## 引用
@@ -170,7 +171,6 @@ MMOCR 是一款由来自不同高校和企业的研发人员共同参与贡献�
 ## 开源许可证
 
 该项目采用 [Apache 2.0 license](LICENSE) 开源许可证。
-
 
 ## OpenMMLab 的其他项目
 

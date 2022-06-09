@@ -26,11 +26,11 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 
-  [📘Documentation](https://mmocr.readthedocs.io/) |
-  [🛠️Installation](https://mmocr.readthedocs.io/en/latest/install.html) |
-  [👀Model Zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html) |
-  [🆕Update News](https://mmocr.readthedocs.io/en/latest/changelog.html) |
-  [🤔Reporting Issues](https://github.com/open-mmlab/mmocr/issues/new/choose)
+[📘Documentation](https://mmocr.readthedocs.io/) |
+[🛠️Installation](https://mmocr.readthedocs.io/en/latest/install.html) |
+[👀Model Zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html) |
+[🆕Update News](https://mmocr.readthedocs.io/en/latest/changelog.html) |
+[🤔Reporting Issues](https://github.com/open-mmlab/mmocr/issues/new/choose)
 
 </div>
 
@@ -54,7 +54,7 @@ The main branch works with **PyTorch 1.6+**.
 
 - **Comprehensive Pipeline**
 
-   The toolbox supports not only text detection and text recognition, but also their downstream tasks such as key information extraction.
+  The toolbox supports not only text detection and text recognition, but also their downstream tasks such as key information extraction.
 
 - **Multiple Models**
 
@@ -67,7 +67,6 @@ The main branch works with **PyTorch 1.6+**.
 - **Numerous Utilities**
 
   The toolbox provides a comprehensive set of utilities which can help users assess the performance of models. It includes visualizers which allow visualization of images, ground truths as well as predicted bounding boxes, and a validation tool for evaluating checkpoints during training.  It also includes data converters to demonstrate how to convert your own data to the annotation files which the toolbox supports.
-
 
 ## What's New
 
@@ -100,7 +99,6 @@ pip3 install -e .
 ## Get Started
 
 Please see [Getting Started](https://mmocr.readthedocs.io/en/latest/getting_started.html) for the basic usage of MMOCR.
-
 
 ## [Model Zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html)
 
@@ -170,7 +168,6 @@ If you find this project useful in your research, please consider cite:
     year={2021}
 }
 ```
-
 
 ## License
 

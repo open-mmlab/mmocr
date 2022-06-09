@@ -10,9 +10,9 @@ Image-based sequence recognition has been a long-standing research topic in comp
 <img src="https://user-images.githubusercontent.com/22607038/142797788-6b1cd78d-1dd6-4e02-be32-3dbd257c4992.png"/>
 </div>
 
-:::{note}
+```{note}
 We use STN from this paper as the preprocessor and CRNN as the recognition network.
-:::
+```
 
 ## Dataset
 
@@ -35,10 +35,10 @@ We use STN from this paper as the preprocessor and CRNN as the recognition netwo
 
 ## Results and models
 
-|                             methods                             |        | Regular Text |       |       |       | Irregular Text |       |                                                                                             download                                                                                              |
-| :-------------------------------------------------------------: | :----: | :----------: | :---: | :---: | :---: | :------------: | :---: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|                                                                 | IIIT5K |     SVT      | IC13  |       | IC15  |      SVTP      | CT80  |
-| [CRNN-STN](/configs/textrecog/tps/crnn_tps_academic_dataset.py) |  80.8  |     81.3     | 85.0  |       | 59.6  |      68.1      | 53.8  | [model](https://download.openmmlab.com/mmocr/textrecog/tps/crnn_tps_academic_dataset_20210510-d221a905.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/tps/20210510_204353.log.json) |
+|                             methods                             |        | Regular Text |      |     |      | Irregular Text |      |                                          download                                          |
+| :-------------------------------------------------------------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :----------------------------------------------------------------------------------------: |
+|                                                                 | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |                                                                                            |
+| [CRNN-STN](/configs/textrecog/tps/crnn_tps_academic_dataset.py) |  80.8  |     81.3     | 85.0 |     | 59.6 |      68.1      | 53.8 | [model](https://download.openmmlab.com/mmocr/textrecog/tps/crnn_tps_academic_dataset_20210510-d221a905.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/tps/20210510_204353.log.json) |
 
 ## Citation
 

@@ -23,47 +23,46 @@ python tools/deployment/pytorch2onnx.py
 
 参数说明：
 
-| 参数               | 类型           | 描述                                                         |
-| ------------------ | -------------- | ------------------------------------------------------------ |
-| `model_config`     | str            | 模型配置文件的路径。                                         |
-| `model_ckpt`       | str            | 模型权重文件的路径。                                         |
-| `model_type`       | 'recog', 'det' | 配置文件对应的模型类型。                                     |
-| `image_path`       | str            | 输入图片的路径。                                             |
-| `--output-file`    | str            | 输出的 ONNX 模型路径。 默认为 `tmp.onnx`。                   |
-| `--device-id`      | int            | 使用哪块 GPU。默认为0。                                      |
-| `--opset-version`  | int            | ONNX 操作集版本。默认为11。                                  |
-| `--verify`         | bool           | 决定是否验证输出模型的正确性。默认为 `False`。               |
-| `--verbose`        | bool           | 决定是否打印导出模型的结构，默认为 `False`。                 |
+| 参数               | 类型           | 描述                                                           |
+| ------------------ | -------------- | -------------------------------------------------------------- |
+| `model_config`     | str            | 模型配置文件的路径。                                           |
+| `model_ckpt`       | str            | 模型权重文件的路径。                                           |
+| `model_type`       | 'recog', 'det' | 配置文件对应的模型类型。                                       |
+| `image_path`       | str            | 输入图片的路径。                                               |
+| `--output-file`    | str            | 输出的 ONNX 模型路径。 默认为 `tmp.onnx`。                     |
+| `--device-id`      | int            | 使用哪块 GPU。默认为0。                                        |
+| `--opset-version`  | int            | ONNX 操作集版本。默认为11。                                    |
+| `--verify`         | bool           | 决定是否验证输出模型的正确性。默认为 `False`。                 |
+| `--verbose`        | bool           | 决定是否打印导出模型的结构，默认为 `False`。                   |
 | `--show`           | bool           | 决定是否可视化 ONNXRuntime 和 PyTorch 的输出。默认为 `False`。 |
 | `--dynamic-export` | bool           | 决定是否导出有动态输入和输出尺寸的 ONNX 模型。默认为 `False`。 |
 
-:::{note}
+```{note}
  这个工具仍然是试验性的。一些定制的操作没有被支持，并且我们目前仅支持一部分的文本检测和文本识别算法。
-:::
+```
 
 ### 支持导出到 ONNX 的模型列表
 
 下表列出的模型可以保证导出到 ONNX 并且可以在 ONNX Runtime 下运行。
 
-|  模型 |                                                                      配置                                                                      | 动态尺寸 | 批推理 | 注 |
-|:------:|:------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|:---------------:|:----:|
-|  DBNet |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |       Y       |        N        |      |
-| PSENet |      [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)     |       Y       |        Y        |      |
-| PSENet |    [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)   |       Y       |        Y        |      |
-|  PANet |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |       Y       |        Y        |      |
-|  PANet | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |      |
-|  CRNN  |             [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)            |       Y       |        Y        | CRNN 仅接受高度为32的输入 |
+|  模型  |                                                                       配置                                                                       | 动态尺寸 | 批推理 |            注             |
+| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :------: | :----: | :-----------------------: |
+| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |    Y     |   N    |                           |
+| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |    Y     |   Y    |                           |
+| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |    Y     |   Y    |                           |
+| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |    Y     |   Y    |                           |
+| PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |    Y     |   Y    |                           |
+|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |    Y     |   Y    | CRNN 仅接受高度为32的输入 |
 
-:::{note}
+```{note}
 - *以上所有模型测试基于 PyTorch==1.8.1，onnxruntime==1.7.0 进行*
 - 如果你在上述模型中遇到问题，请创建一个issue，我们会尽快处理。
 - 因为这个特性是试验性的，可能变动很快，请尽量使用最新版的 `mmcv` 和 `mmocr` 尝试。
-:::
+```
 
-##  ONNX 转 TensorRT （试验性的）
+## ONNX 转 TensorRT （试验性的）
 
 我们也提供了从 [ONNX](https://github.com/onnx/onnx) 模型转换至 [TensorRT](https://github.com/NVIDIA/TensorRT) 格式的脚本。另外，我们支持比较 ONNX 和 TensorRT 模型的输出结果。
-
 
 ```bash
 python tools/deployment/onnx2tensorrt.py
@@ -98,35 +97,35 @@ python tools/deployment/onnx2tensorrt.py
 | `--show`           | bool           | 决定是否可视化 ONNX 和 TensorRT 的输出。默认为 `False`。     |
 | `--verbose`        | bool           | 决定是否在创建 TensorRT 引擎时打印日志信息。默认为 `False`。 |
 
-:::{note}
+```{note}
  这个工具仍然是试验性的。一些定制的操作模型没有被支持。我们目前仅支持一部的文本检测和文本识别算法。
-:::
+```
 
 ### 支持导出到 TensorRT 的模型列表
 
 下表列出的模型可以保证导出到 TensorRT 引擎并且可以在 TensorRT 下运行。
 
-|  模型 |                                                                      配置                                                                      | 动态尺寸 | 批推理 | 注 |
-|:------:|:------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------:|:---------------:|:----:|
-|  DBNet |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |       Y       |        N        |      |
-| PSENet |      [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)     |       Y       |        Y        |      |
-| PSENet |    [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)   |       Y       |        Y        |      |
-|  PANet |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |       Y       |        Y        |      |
-|  PANet | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |      |
-|  CRNN  |             [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)            |       Y       |        Y        | CRNN 仅接受高度为32的输入 |
+|  模型  |                                                                       配置                                                                       | 动态尺寸 | 批推理 |            注             |
+| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :------: | :----: | :-----------------------: |
+| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |    Y     |   N    |                           |
+| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |    Y     |   Y    |                           |
+| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |    Y     |   Y    |                           |
+| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |    Y     |   Y    |                           |
+| PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |    Y     |   Y    |                           |
+|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |    Y     |   Y    | CRNN 仅接受高度为32的输入 |
 
-:::{note}
+```{note}
 - *以上所有模型测试基于 PyTorch==1.8.1，onnxruntime==1.7.0，tensorrt==7.2.1.6 进行*
 - 如果你在上述模型中遇到问题，请创建一个 issue，我们会尽快处理。
 - 因为这个特性是试验性的，可能变动很快，请尽量使用最新版的 `mmcv` 和 `mmocr` 尝试。
-:::
-
+```
 
 ## 评估 ONNX 和 TensorRT 模型（试验性的）
 
 我们在 `tools/deployment/deploy_test.py ` 中提供了评估 TensorRT 和 ONNX 模型的方法。
 
 ### 前提条件
+
 在评估 ONNX 和 TensorRT 模型之前，首先需要安装 ONNX，ONNXRuntime 和 TensorRT。根据 [ONNXRuntime in mmcv](https://mmcv.readthedocs.io/en/latest/onnxruntime_op.html) 和 [TensorRT plugin in mmcv](https://github.com/open-mmlab/mmcv/blob/master/docs/tensorrt_plugin.md) 安装 ONNXRuntime 定制操作和 TensorRT 插件。
 
 ### 使用
@@ -301,9 +300,9 @@ python tools/deploy_test.py \
 </tbody>
 </table>
 
-:::{note}
+```{note}
 - TensorRT 上采样（upsample）操作和 PyTorch 有一点不同。对于 DBNet 和 PANet，我们建议把上采样的最近邻 (nearest) 模式代替成双线性 (bilinear) 模式。 PANet 的替换处在[这里](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpem_ffm.py#L33) ，DBNet 的替换处在[这里](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L111)和[这里](https://github.com/open-mmlab/mmocr/blob/50a25e718a028c8b9d96f497e241767dbe9617d1/mmocr/models/textdet/necks/fpn_cat.py#L121)。如在上表中显示的，带有标记*的网络的上采样模式均被改变了。
 - 注意到，相比最近邻模式，使用更改后的上采样模式会降低性能。然而，默认网络的权重是通过最近邻模式训练的。为了保持在部署中的最佳性能，建议在训练和 TensorRT 部署中使用双线性模式。
 - 所有 ONNX 和 TensorRT 模型都使用数据集上的动态尺寸进行评估，图像根据原始配置文件进行预处理。
 - 这个工具仍然是试验性的。一些定制的操作模型没有被支持。并且我们目前仅支持一部分的文本检测和文本识别算法。
-:::
+```
