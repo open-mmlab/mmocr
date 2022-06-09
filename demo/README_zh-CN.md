@@ -136,19 +136,19 @@ ______________________________________________________________________
 
 **MMOCR():**
 
-| 参数             | 类型           | 默认值        | 描述                                                              |
-| -------------- | ------------ | ---------- | --------------------------------------------------------------- |
-| `det`          | 参考 **模型** 章节 | PANet_IC15 | 文本检测算法                                                          |
-| `recog`        | 参考 **模型** 章节 | SAR        | 文本识别算法                                                          |
-| `kie` \[1\]    | 参考 **模型** 章节 | None       | 关键信息提取算法                                                        |
-| `config_dir`   | str          | configs/   | 用于存放所有配置文件的文件夹路径                                                |
-| `det_config`   | str          | None       | 指定检测模型的自定义配置文件路径                                                |
-| `det_ckpt`     | str          | None       | 指定检测模型的自定义参数文件路径                                                |
-| `recog_config` | str          | None       | 指定识别模型的自定义配置文件路径                                                |
-| `recog_ckpt`   | str          | None       | 指定识别模型的自定义参数文件路径                                                |
-| `kie_config`   | str          | None       | 指定关键信息提取模型的自定义配置路径                                              |
-| `kie_ckpt`     | str          | None       | 指定关键信息提取的自定义参数文件路径                                              |
-| `device`       | str          | None       | 推理时使用的设备标识, 支持 `torch.device` 所包含的所有设备字符. 例如, 'cuda:0' 或 'cpu'. |
+| 参数           | 类型               | 默认值     | 描述                                                                                     |
+| -------------- | ------------------ | ---------- | ---------------------------------------------------------------------------------------- |
+| `det`          | 参考 **模型** 章节 | PANet_IC15 | 文本检测算法                                                                             |
+| `recog`        | 参考 **模型** 章节 | SAR        | 文本识别算法                                                                             |
+| `kie` \[1\]    | 参考 **模型** 章节 | None       | 关键信息提取算法                                                                         |
+| `config_dir`   | str                | configs/   | 用于存放所有配置文件的文件夹路径                                                         |
+| `det_config`   | str                | None       | 指定检测模型的自定义配置文件路径                                                         |
+| `det_ckpt`     | str                | None       | 指定检测模型的自定义参数文件路径                                                         |
+| `recog_config` | str                | None       | 指定识别模型的自定义配置文件路径                                                         |
+| `recog_ckpt`   | str                | None       | 指定识别模型的自定义参数文件路径                                                         |
+| `kie_config`   | str                | None       | 指定关键信息提取模型的自定义配置路径                                                     |
+| `kie_ckpt`     | str                | None       | 指定关键信息提取的自定义参数文件路径                                                     |
+| `device`       | str                | None       | 推理时使用的设备标识, 支持 `torch.device` 所包含的所有设备字符. 例如, 'cuda:0' 或 'cpu'. |
 
 \[1\]: `kie` 当且仅当同时指定了文本检测和识别模型时才有效。
 
@@ -160,21 +160,21 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 
 ### readtext()
 
-| 参数                  | 类型                      | 默认值    | 描述                                                 |
-| ------------------- | ----------------------- | ------ | -------------------------------------------------- |
+| 参数                | 类型                    | 默认值   | 描述                                                                  |
+| ------------------- | ----------------------- | -------- | --------------------------------------------------------------------- |
 | `img`               | str/list/tuple/np.array | **必填** | 图像，文件夹路径，np array 或 list/tuple （包含图片路径或 np arrays） |
-| `output`            | str                     | None   | 可视化输出结果 - 图片路径或文件夹路径                               |
-| `batch_mode`        | bool                    | False  | 是否使用批处理模式推理 \[1\]                                  |
-| `det_batch_size`    | int                     | 0      | 文本检测的批处理大小（设置为 0 则与待推理图片个数相同）                      |
-| `recog_batch_size`  | int                     | 0      | 文本识别的批处理大小（设置为 0 则与待推理图片个数相同）                      |
-| `single_batch_size` | int                     | 0      | 仅用于检测或识别使用的批处理大小                                   |
-| `export`            | str                     | None   | 存放导出图片结果的文件夹                                       |
-| `export_format`     | str                     | json   | 导出的结果文件格式                                          |
-| `details`           | bool                    | False  | 是否包含文本框的坐标和置信度的值                                   |
-| `imshow`            | bool                    | False  | 是否在屏幕展示可视化结果                                       |
-| `print_result`      | bool                    | False  | 是否展示每个图片的结果                                        |
-| `merge`             | bool                    | False  | 是否对相邻框进行合并 \[2\]                                   |
-| `merge_xdist`       | float                   | 20     | 合并相邻框的最大x-轴距离                                      |
+| `output`            | str                     | None     | 可视化输出结果 - 图片路径或文件夹路径                                 |
+| `batch_mode`        | bool                    | False    | 是否使用批处理模式推理 \[1\]                                          |
+| `det_batch_size`    | int                     | 0        | 文本检测的批处理大小（设置为 0 则与待推理图片个数相同）               |
+| `recog_batch_size`  | int                     | 0        | 文本识别的批处理大小（设置为 0 则与待推理图片个数相同）               |
+| `single_batch_size` | int                     | 0        | 仅用于检测或识别使用的批处理大小                                      |
+| `export`            | str                     | None     | 存放导出图片结果的文件夹                                              |
+| `export_format`     | str                     | json     | 导出的结果文件格式                                                    |
+| `details`           | bool                    | False    | 是否包含文本框的坐标和置信度的值                                      |
+| `imshow`            | bool                    | False    | 是否在屏幕展示可视化结果                                              |
+| `print_result`      | bool                    | False    | 是否展示每个图片的结果                                                |
+| `merge`             | bool                    | False    | 是否对相邻框进行合并 \[2\]                                            |
+| `merge_xdist`       | float                   | 20       | 合并相邻框的最大x-轴距离                                              |
 
 \[1\]: `batch_mode` 需确保模型兼容批处理模式（见下表模型是否支持批处理）。
 
@@ -192,41 +192,41 @@ ______________________________________________________________________
 
 **文本检测：**
 
-| 名称            |                                                                           引用                                                                           | `batch_mode` 推理支持  |
-| ------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------: |
-| DB_r18        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |        :x:         |
-| DB_r50        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |        :x:         |
-| DBPP_r50      |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#dbnetpp)                                        |        :x:         |
-| DRRG          |                                         [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#drrg)                                          |        :x:         |
-| FCE_IC15      |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |        :x:         |
-| FCE_CTW_DCNv2 |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |        :x:         |
-| MaskRCNN_CTW  |                                      [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |        :x:         |
-| MaskRCNN_IC15 |                                      [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |        :x:         |
-| MaskRCNN_IC17 |                                      [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |        :x:         |
-| PANet_CTW     | [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) | :heavy_check_mark: |
-| PANet_IC15    | [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) | :heavy_check_mark: |
-| PS_CTW        |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |        :x:         |
-| PS_IC15       |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |        :x:         |
-| Tesseract     |                                                         [链接](https://tesseract-ocr.github.io/)                                                         | :heavy_check_mark: |
-| TextSnake     |                                       [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#textsnake)                                       | :heavy_check_mark: |
+| 名称          |                                                                           引用                                                                           | `batch_mode` 推理支持 |
+| ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------: |
+| DB_r18        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |          :x:          |
+| DB_r50        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |          :x:          |
+| DBPP_r50      |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#dbnetpp)                                        |          :x:          |
+| DRRG          |                                         [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#drrg)                                          |          :x:          |
+| FCE_IC15      |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |          :x:          |
+| FCE_CTW_DCNv2 |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |          :x:          |
+| MaskRCNN_CTW  |                                      [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |          :x:          |
+| MaskRCNN_IC15 |                                      [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |          :x:          |
+| MaskRCNN_IC17 |                                      [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |          :x:          |
+| PANet_CTW     | [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |  :heavy_check_mark:   |
+| PANet_IC15    | [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |  :heavy_check_mark:   |
+| PS_CTW        |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |          :x:          |
+| PS_IC15       |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |          :x:          |
+| Tesseract     |                                                         [链接](https://tesseract-ocr.github.io/)                                                         |  :heavy_check_mark:   |
+| TextSnake     |                                       [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#textsnake)                                       |  :heavy_check_mark:   |
 
 **文本识别：**
 
-| 名称            |                                                                                    引用                                                                                     | `batch_mode` 推理支持  |
-| ------------- | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------: |
-| ABINet        |  [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#read-like-humans-autonomous-bidirectional-and-iterative-language-modeling-for-scene-text-recognition)  | :heavy_check_mark: |
-| CRNN          | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |        :x:         |
-| CRNN_TPS      |                                        [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#crnn-with-tps-based-stn)                                         | :heavy_check_mark: |
-| MASTER        |                                                 [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#master)                                                 | :heavy_check_mark: |
-| NRTR_1/16-1/8 |                                                  [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr)                                                  | :heavy_check_mark: |
-| NRTR_1/8-1/4  |                                                  [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr)                                                  | :heavy_check_mark: |
-| RobustScanner |            [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#robustscanner-dynamically-enhancing-positional-clues-for-robust-text-recognition)            | :heavy_check_mark: |
-| SAR           |            [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition)            | :heavy_check_mark: |
-| SAR_CN \*     |            [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition)            | :heavy_check_mark: |
-| SATRN         |                                                 [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                                  | :heavy_check_mark: |
-| SATRN_sm      |                                                 [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                                  | :heavy_check_mark: |
-| SEG           |                                         [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline)                                         |        :x:         |
-| Tesseract     |                                                                  [链接](https://tesseract-ocr.github.io/)                                                                   | :heavy_check_mark: |
+| 名称          |                                                                                  引用                                                                                  | `batch_mode` 推理支持 |
+| ------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------: |
+| ABINet        | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#read-like-humans-autonomous-bidirectional-and-iterative-language-modeling-for-scene-text-recognition) |  :heavy_check_mark:   |
+| CRNN          | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |          :x:          |
+| CRNN_TPS      |                                      [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#crnn-with-tps-based-stn)                                      |  :heavy_check_mark:   |
+| MASTER        |                                              [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#master)                                               |  :heavy_check_mark:   |
+| NRTR_1/16-1/8 |                                               [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr)                                                |  :heavy_check_mark:   |
+| NRTR_1/8-1/4  |                                               [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#nrtr)                                                |  :heavy_check_mark:   |
+| RobustScanner |         [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#robustscanner-dynamically-enhancing-positional-clues-for-robust-text-recognition)          |  :heavy_check_mark:   |
+| SAR           |         [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition)          |  :heavy_check_mark:   |
+| SAR_CN \*     |         [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition)          |  :heavy_check_mark:   |
+| SATRN         |                                               [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                               |  :heavy_check_mark:   |
+| SATRN_sm      |                                               [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                               |  :heavy_check_mark:   |
+| SEG           |                                      [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline)                                       |          :x:          |
+| Tesseract     |                                                                [链接](https://tesseract-ocr.github.io/)                                                                |  :heavy_check_mark:   |
 
 ```{note}
 
@@ -236,7 +236,7 @@ SAR_CN 是唯一支持中文字符识别的模型，并且它需要一个中文�
 
 **关键信息提取：**
 
-| 名称                                                                                                                                   |  `batch_mode` 支持   |
+| 名称                                                                                                                                 | `batch_mode` 支持  |
 | ------------------------------------------------------------------------------------------------------------------------------------ | :----------------: |
 | [SDMGR](https://mmocr.readthedocs.io/en/latest/kie_models.html#spatial-dual-modality-graph-reasoning-for-key-information-extraction) | :heavy_check_mark: |
 

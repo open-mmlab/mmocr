@@ -33,13 +33,11 @@ repos:
     rev: 0.7.9
     hooks:
       - id: mdformat
-        args: ["--number"]
+        args: ["--number", "--table-width", "200"]
         additional_dependencies:
-          - git+https://github.com/mzr1996/mdformat-tables.git#egg=mdformat-tables
           - mdformat-openmmlab
           - mdformat_frontmatter
           - linkify-it-py
-          - mdformat-myst
   - repo: https://github.com/myint/docformatter
     rev: v1.3.1
     hooks:

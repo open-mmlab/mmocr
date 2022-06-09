@@ -23,19 +23,19 @@ python tools/deployment/pytorch2onnx.py
 
 参数说明：
 
-| 参数                 | 类型             | 描述                                             |
-| ------------------ | -------------- | ---------------------------------------------- |
-| `model_config`     | str            | 模型配置文件的路径。                                     |
-| `model_ckpt`       | str            | 模型权重文件的路径。                                     |
-| `model_type`       | 'recog', 'det' | 配置文件对应的模型类型。                                   |
-| `image_path`       | str            | 输入图片的路径。                                       |
-| `--output-file`    | str            | 输出的 ONNX 模型路径。 默认为 `tmp.onnx`。                 |
-| `--device-id`      | int            | 使用哪块 GPU。默认为0。                                 |
-| `--opset-version`  | int            | ONNX 操作集版本。默认为11。                              |
-| `--verify`         | bool           | 决定是否验证输出模型的正确性。默认为 `False`。                    |
-| `--verbose`        | bool           | 决定是否打印导出模型的结构，默认为 `False`。                     |
+| 参数               | 类型           | 描述                                                           |
+| ------------------ | -------------- | -------------------------------------------------------------- |
+| `model_config`     | str            | 模型配置文件的路径。                                           |
+| `model_ckpt`       | str            | 模型权重文件的路径。                                           |
+| `model_type`       | 'recog', 'det' | 配置文件对应的模型类型。                                       |
+| `image_path`       | str            | 输入图片的路径。                                               |
+| `--output-file`    | str            | 输出的 ONNX 模型路径。 默认为 `tmp.onnx`。                     |
+| `--device-id`      | int            | 使用哪块 GPU。默认为0。                                        |
+| `--opset-version`  | int            | ONNX 操作集版本。默认为11。                                    |
+| `--verify`         | bool           | 决定是否验证输出模型的正确性。默认为 `False`。                 |
+| `--verbose`        | bool           | 决定是否打印导出模型的结构，默认为 `False`。                   |
 | `--show`           | bool           | 决定是否可视化 ONNXRuntime 和 PyTorch 的输出。默认为 `False`。 |
-| `--dynamic-export` | bool           | 决定是否导出有动态输入和输出尺寸的 ONNX 模型。默认为 `False`。         |
+| `--dynamic-export` | bool           | 决定是否导出有动态输入和输出尺寸的 ONNX 模型。默认为 `False`。 |
 
 ```{note}
  这个工具仍然是试验性的。一些定制的操作没有被支持，并且我们目前仅支持一部分的文本检测和文本识别算法。
@@ -45,14 +45,14 @@ python tools/deployment/pytorch2onnx.py
 
 下表列出的模型可以保证导出到 ONNX 并且可以在 ONNX Runtime 下运行。
 
-|   模型   |                                                                        配置                                                                        | 动态尺寸 | 批推理 |        注         |
-| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :--: | :-: | :--------------: |
-| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |  Y   |  N  |                  |
-| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |  Y   |  Y  |                  |
-| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |  Y   |  Y  |                  |
-| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |  Y   |  Y  |                  |
-| PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |  Y   |  Y  |                  |
-|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |  Y   |  Y  | CRNN 仅接受高度为32的输入 |
+|  模型  |                                                                       配置                                                                       | 动态尺寸 | 批推理 |            注             |
+| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :------: | :----: | :-----------------------: |
+| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |    Y     |   N    |                           |
+| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |    Y     |   Y    |                           |
+| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |    Y     |   Y    |                           |
+| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |    Y     |   Y    |                           |
+| PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |    Y     |   Y    |                           |
+|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |    Y     |   Y    | CRNN 仅接受高度为32的输入 |
 
 ```{note}
 - *以上所有模型测试基于 PyTorch==1.8.1，onnxruntime==1.7.0 进行*
@@ -82,20 +82,20 @@ python tools/deployment/onnx2tensorrt.py
 
 参数说明：
 
-| 参数                 | 类型             | 描述                                       |
-| ------------------ | -------------- | ---------------------------------------- |
-| `model_config`     | str            | 模型配置文件的路径。                               |
-| `model_type`       | 'recog', 'det' | 配置文件对应的模型类型。                             |
-| `image_path`       | str            | 输入图片的路径。                                 |
-| `onnx_file`        | str            | 输入的 ONNX 文件路径。                           |
-| `--trt-file`       | str            | 输出的 TensorRT 模型路径。默认为 `tmp.trt`。         |
-| `--max-shape`      | int * 4        | 模型输入的最大尺寸。                               |
-| `--min-shape`      | int * 4        | 模型输入的最小尺寸。                               |
-| `--workspace-size` | int            | 最大工作空间大小，单位为 GiB。默认为1。                   |
-| `--fp16`           | bool           | 决定是否输出 fp16 模式的 TensorRT 模型。默认为 `False`。 |
-| `--verify`         | bool           | 决定是否验证输出模型的正确性。默认为 `False`。              |
-| `--show`           | bool           | 决定是否可视化 ONNX 和 TensorRT 的输出。默认为 `False`。 |
-| `--verbose`        | bool           | 决定是否在创建 TensorRT 引擎时打印日志信息。默认为 `False`。  |
+| 参数               | 类型           | 描述                                                         |
+| ------------------ | -------------- | ------------------------------------------------------------ |
+| `model_config`     | str            | 模型配置文件的路径。                                         |
+| `model_type`       | 'recog', 'det' | 配置文件对应的模型类型。                                     |
+| `image_path`       | str            | 输入图片的路径。                                             |
+| `onnx_file`        | str            | 输入的 ONNX 文件路径。                                       |
+| `--trt-file`       | str            | 输出的 TensorRT 模型路径。默认为 `tmp.trt`。                 |
+| `--max-shape`      | int * 4        | 模型输入的最大尺寸。                                         |
+| `--min-shape`      | int * 4        | 模型输入的最小尺寸。                                         |
+| `--workspace-size` | int            | 最大工作空间大小，单位为 GiB。默认为1。                      |
+| `--fp16`           | bool           | 决定是否输出 fp16 模式的 TensorRT 模型。默认为 `False`。     |
+| `--verify`         | bool           | 决定是否验证输出模型的正确性。默认为 `False`。               |
+| `--show`           | bool           | 决定是否可视化 ONNX 和 TensorRT 的输出。默认为 `False`。     |
+| `--verbose`        | bool           | 决定是否在创建 TensorRT 引擎时打印日志信息。默认为 `False`。 |
 
 ```{note}
  这个工具仍然是试验性的。一些定制的操作模型没有被支持。我们目前仅支持一部的文本检测和文本识别算法。
@@ -105,14 +105,14 @@ python tools/deployment/onnx2tensorrt.py
 
 下表列出的模型可以保证导出到 TensorRT 引擎并且可以在 TensorRT 下运行。
 
-|   模型   |                                                                        配置                                                                        | 动态尺寸 | 批推理 |        注         |
-| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :--: | :-: | :--------------: |
-| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |  Y   |  N  |                  |
-| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |  Y   |  Y  |                  |
-| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |  Y   |  Y  |                  |
-| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |  Y   |  Y  |                  |
-| PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |  Y   |  Y  |                  |
-|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |  Y   |  Y  | CRNN 仅接受高度为32的输入 |
+|  模型  |                                                                       配置                                                                       | 动态尺寸 | 批推理 |            注             |
+| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :------: | :----: | :-----------------------: |
+| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |    Y     |   N    |                           |
+| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |    Y     |   Y    |                           |
+| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |    Y     |   Y    |                           |
+| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |    Y     |   Y    |                           |
+| PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |    Y     |   Y    |                           |
+|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |    Y     |   Y    | CRNN 仅接受高度为32的输入 |
 
 ```{note}
 - *以上所有模型测试基于 PyTorch==1.8.1，onnxruntime==1.7.0，tensorrt==7.2.1.6 进行*
@@ -142,14 +142,14 @@ python tools/deploy_test.py \
 
 ### 参数说明
 
-| 参数             | 类型                        | 描述                                  |
-| -------------- | ------------------------- | ----------------------------------- |
-| `model_config` | str                       | 模型配置文件的路径。                          |
-| `model_file`   | str                       | TensorRT 或 ONNX 模型路径。               |
-| `model_type`   | 'recog', 'det'            | 部署检测还是识别模型。                         |
-| `backend`      | 'TensorRT', 'ONNXRuntime' | 测试后端。                               |
+| 参数           | 类型                      | 描述                                                   |
+| -------------- | ------------------------- | ------------------------------------------------------ |
+| `model_config` | str                       | 模型配置文件的路径。                                   |
+| `model_file`   | str                       | TensorRT 或 ONNX 模型路径。                            |
+| `model_type`   | 'recog', 'det'            | 部署检测还是识别模型。                                 |
+| `backend`      | 'TensorRT', 'ONNXRuntime' | 测试后端。                                             |
 | `--eval`       | 'acc', 'hmean-iou'        | 评估指标。“acc”用于识别模型，“hmean-iou”用于检测模型。 |
-| `--device`     | str                       | 评估使用的设备。默认为 `cuda:0`。               |
+| `--device`     | str                       | 评估使用的设备。默认为 `cuda:0`。                      |
 
 ## 结果和模型
 

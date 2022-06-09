@@ -46,7 +46,7 @@ torchserve --start --model-store ./checkpoints --models dbnet=dbnet.mar
 
 然后，你可以通过 TorchServe 的 REST API 访问 Inference、 Management、 Metrics 等服务。你可以在[TorchServe REST API](https://github.com/pytorch/serve/blob/master/docs/rest_api.md) 中找到它们的用法。
 
-| 服务         | 地址                      |
+| 服务       | 地址                    |
 | ---------- | ----------------------- |
 | Inference  | `http://127.0.0.1:8080` |
 | Management | `http://127.0.0.1:8081` |
@@ -97,7 +97,7 @@ mmocr-serve:latest
 
 运行docker后，你可以通过 TorchServe 的 REST API 访问 Inference、 Management、 Metrics 等服务。具体你可以在[TorchServe REST API](https://github.com/pytorch/serve/blob/master/docs/rest_api.md) 中找到它们的用法。
 
-| 服务         | 地址                    |
+| 服务       | 地址                  |
 | ---------- | --------------------- |
 | Inference  | http://127.0.0.1:8080 |
 | Management | http://127.0.0.1:8081 |
