@@ -3,7 +3,7 @@ lanms-neo==1.0.2
 lmdb
 matplotlib
 numpy
-opencv-python<=4.5.4.60
+opencv-python
 pyclipper
 pycocotools
 rapidfuzz
