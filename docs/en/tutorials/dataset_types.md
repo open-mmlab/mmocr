@@ -217,9 +217,7 @@ train = dict(
         file_format='lmdb',
         parser=dict(
             type='LineJsonParser',
-            keys=['filename', 'text'],
-            keys_idx=[0, 1],
-            separator=' ')),
+            keys=['filename', 'text']),
     pipeline=None,
     test_mode=False)
 ```
