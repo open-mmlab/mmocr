@@ -323,6 +323,10 @@ class MMOCR:
                 'config': 'abinet/abinet_academic.py',
                 'ckpt': 'abinet/abinet_academic-f718abf6.pth'
             },
+            'ABINet_Vision': {
+                'config': 'abinet/abinet_vision_only_academic.py',
+                'ckpt': 'abinet/abinet_vision_only_academic-e6b9ea89.pth'
+            },
             'SEG': {
                 'config': 'seg/seg_r31_1by16_fpnocr_academic.py',
                 'ckpt': 'seg/seg_r31_1by16_fpnocr_academic-72235b11.pth'
