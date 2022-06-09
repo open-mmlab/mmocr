@@ -6,5 +6,5 @@ numpy
 opencv-python<=4.5.4.60
 pyclipper
 pycocotools
-rapidfuzz
+rapidfuzz>=2.0.0
 scikit-image
