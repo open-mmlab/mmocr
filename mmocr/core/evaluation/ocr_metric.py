@@ -2,7 +2,7 @@
 import re
 from difflib import SequenceMatcher
 
-from rapidfuzz import string_metric
+from rapidfuzz.distance import Levenshtein
 
 from mmocr.utils import is_type_list
 
@@ -63,12 +63,8 @@ def count_matches(pred_texts, gt_texts):
             match_res['match_word_ignore_case_symbol'] += 1
         match_res['gt_word_num'] += 1
 
-        # normalized edit distance
-        edit_dist = string_metric.levenshtein(pred_text_lower_ignore,
-                                              gt_text_lower_ignore)
-        norm_ed = float(edit_dist) / max(1, len(gt_text_lower_ignore),
-                                         len(pred_text_lower_ignore))
-        norm_ed_sum += norm_ed
+        norm_ed_sum += Levenshtein.normalized_distance(pred_text_lower_ignore,
+                                                       gt_text_lower_ignore)
 
         # number to calculate char level recall & precision
         match_res['gt_char_num'] += len(gt_text_lower_ignore)
