@@ -1,19 +1,19 @@
 _base_ = [
     '../../_base_/default_runtime.py',
-    '../../_base_/schedules/schedule_adam_step_6e.py',
-    '../../_base_/recog_pipelines/nrtr_pipeline.py',
-    '../../_base_/recog_datasets/ST_MJ_train.py',
-    '../../_base_/recog_datasets/academic_test.py'
+    '../../_base_/schedules/schedule_adam_step_6e.py'
 ]
 
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
+optimizer = dict(type='Adam', lr=3e-4)
+default_hooks = dict(logger=dict(type='LoggerHook', interval=50))
 
-train_pipeline = {{_base_.train_pipeline}}
-test_pipeline = {{_base_.test_pipeline}}
-
-label_convertor = dict(
-    type='AttnConvertor', dict_type='DICT90', with_unknown=True)
+dictionary = dict(
+    type='Dictionary',
+    dict_file='dicts/english_digits_symbols.txt',
+    with_padding=True,
+    with_unknown=True,
+    same_start_end=True,
+    with_start=True,
+    with_end=True)
 
 model = dict(
     type='NRTR',
@@ -24,25 +24,83 @@ model = dict(
         stage4_pool_cfg=dict(kernel_size=(2, 1), stride=(2, 1)),
         last_stage_pool=False),
     encoder=dict(type='NRTREncoder'),
-    decoder=dict(type='NRTRDecoder'),
-    loss=dict(type='TFLoss'),
-    label_convertor=label_convertor,
-    max_seq_len=40)
+    decoder=dict(
+        type='NRTRDecoder',
+        loss=dict(type='CELoss', ignore_first_char=True, flatten=True),
+        postprocessor=dict(type='AttentionPostprocessor')),
+    dictionary=dictionary,
+    max_seq_len=30,
+    preprocess_cfg=dict(
+        mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375]))
 
-data = dict(
-    samples_per_gpu=64,
-    workers_per_gpu=4,
-    train=dict(
-        type='UniformConcatDataset',
-        datasets=train_list,
-        pipeline=train_pipeline),
-    val=dict(
-        type='UniformConcatDataset',
-        datasets=test_list,
-        pipeline=test_pipeline),
-    test=dict(
-        type='UniformConcatDataset',
-        datasets=test_list,
+# dataset settings
+dataset_type = 'OCRDataset'
+data_root = 'data/recog/'
+file_client_args = dict(backend='disk')
+
+train_pipeline = [
+    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='LoadOCRAnnotations', with_text=True),
+    dict(
+        type='RescaleToHeight',
+        height=32,
+        min_width=32,
+        max_width=160,
+        width_divisor=4),
+    dict(type='PadToWidth', width=160),
+    dict(
+        type='PackTextRecogInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
+]
+
+test_pipeline = [
+    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(
+        type='RescaleToHeight',
+        height=32,
+        min_width=32,
+        max_width=160,
+        width_divisor=16),
+    dict(type='PadToWidth', width=160),
+    dict(
+        type='PackTextRecogInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio',
+                   'instances'))
+]
+
+train_dataloader = dict(
+    batch_size=256,
+    num_workers=2,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
+        type=dataset_type,
+        data_root=data_root,
+        data_prefix=dict(img_path=None),
+        ann_file='train_label.json',
+        pipeline=train_pipeline))
+
+val_dataloader = dict(
+    batch_size=128,
+    num_workers=2,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type=dataset_type,
+        data_root=data_root,
+        data_prefix=dict(img_path=None),
+        ann_file='test_label.json',
+        test_mode=True,
         pipeline=test_pipeline))
+test_dataloader = val_dataloader
 
-evaluation = dict(interval=1, metric='acc')
+val_evaluator = [
+    dict(
+        type='WordMetric', mode=['exact', 'ignore_case',
+                                 'ignore_case_symbol']),
+    dict(type='CharMetric')
+]
+
+test_evaluator = val_evaluator
+visualizer = dict(type='TextRecogLocalVisualizer', name='visualizer')
