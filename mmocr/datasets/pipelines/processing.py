@@ -1181,6 +1181,9 @@ class RescaleToHeight(BaseTransform):
         self.min_width = min_width
         self.max_width = max_width
         self.resize_cfg = resize_cfg
+        _resize_cfg = self.resize_cfg.copy()
+        _resize_cfg.update(dict(scale=0))
+        self.resize = TRANSFORMS.build(_resize_cfg)
 
     def transform(self, results: Dict) -> Dict:
         """Transform function to resize images, bounding boxes and polygons.
@@ -1205,10 +1208,8 @@ class RescaleToHeight(BaseTransform):
         # new_width = math.ceil(
         #     new_width / self.width_divisor) * self.width_divisor
         scale = (new_width, self.height)
-        _resize_cfg = self.resize_cfg.copy()
-        _resize_cfg.update(dict(scale=scale))
-        resize_transform = TRANSFORMS.build(_resize_cfg)
-        results = resize_transform(results)
+        self.resize.scale = scale
+        results = self.resize(results)
         return results
 
     def __repr__(self) -> str:
@@ -1252,6 +1253,9 @@ class PadToWidth(BaseTransform):
         assert isinstance(width, int)
         self.width = width
         self.pad_cfg = pad_cfg
+        _pad_cfg = self.pad_cfg.copy()
+        _pad_cfg.update(dict(size=0))
+        self.pad = TRANSFORMS.build(_pad_cfg)
 
     def transform(self, results: Dict) -> Dict:
         """Call function to pad images.
@@ -1265,10 +1269,8 @@ class PadToWidth(BaseTransform):
         ori_height, ori_width = results['img'].shape[:2]
         valid_ratio = min(1.0, 1.0 * ori_width / self.width)
         size = (self.width, ori_height)
-        _pad_cfg = self.pad_cfg.copy()
-        _pad_cfg.update(dict(size=size))
-        pad_transform = TRANSFORMS.build(_pad_cfg)
-        results = pad_transform(results)
+        self.pad.size = size
+        results = self.pad(results)
         results['valid_ratio'] = valid_ratio
         return results
 
