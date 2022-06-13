@@ -20,6 +20,35 @@ class TestCELoss(TestCase):
         data_sample3.gt_text = LabelData(item='123456789')
         self.gt = [data_sample1, data_sample2, data_sample3]
 
+    def test_init(self):
+        dict_cfg = dict(
+            type='Dictionary',
+            dict_file='dicts/lower_english_digits.txt',
+            with_start=True,
+            with_end=True,
+            same_start_end=True,
+            with_padding=True,
+            with_unknown=False)
+
+        with self.assertRaises(AssertionError):
+            CELoss(dict_cfg, reduction=1)
+        with self.assertRaises(AssertionError):
+            CELoss(dict_cfg, reduction='avg')
+        with self.assertRaises(AssertionError):
+            CELoss(dict_cfg, flatten=1)
+        with self.assertRaises(AssertionError):
+            CELoss(dict_cfg, ignore_first_char=1)
+        with self.assertRaises(AssertionError):
+            CELoss(dict_cfg, ignore_char=['ignore'])
+        ce_loss = CELoss(dict_cfg)
+        self.assertEqual(ce_loss.ignore_index, 37)
+        ce_loss = CELoss(dict_cfg, ignore_char=-1)
+        self.assertEqual(ce_loss.ignore_index, -1)
+        with self.assertRaises(ValueError):
+            ce_loss = CELoss(dict_cfg, ignore_char='ignore')
+        ce_loss = CELoss(dict_cfg, ignore_char='1')
+        self.assertEqual(ce_loss.ignore_index, 1)
+
     def test_ce_loss(self):
         dict_cfg = dict(
             type='Dictionary',
@@ -29,16 +58,6 @@ class TestCELoss(TestCase):
             same_start_end=True,
             with_padding=True,
             with_unknown=False)
-        with self.assertRaises(AssertionError):
-            CELoss(dict_cfg, ignore_index='ignore')
-        with self.assertRaises(AssertionError):
-            CELoss(dict_cfg, reduction=1)
-        with self.assertRaises(AssertionError):
-            CELoss(dict_cfg, reduction='avg')
-        with self.assertRaises(AssertionError):
-            CELoss(dict_cfg, flatten=1)
-        with self.assertRaises(AssertionError):
-            CELoss(dict_cfg, ignore_first_char=1)
         max_seq_len = 40
         ce_loss = CELoss(dict_cfg)
         ce_loss.get_targets(self.gt)

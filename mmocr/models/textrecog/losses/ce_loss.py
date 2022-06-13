@@ -27,9 +27,15 @@ class CELoss(BaseRecogLoss):
             - lower: Convert gt texts into lowercase characters.
             Usually, it only works for English characters. Defaults to
             'unchanged'.
-        ignore_index (int): Specifies a target value that is
-            ignored and does not contribute to the input gradient. Defaults to
-            -1.
+        ignore_char (int or str): Specifies a target value that is
+            ignored and does not contribute to the input gradient.
+            ignore_char can be int or str. If int, it is the index of
+            the ignored char. If str, it is the character to ignore.
+            Apart from single characters, each item can be one of the
+            following reversed keywords: 'padding', 'start', 'end',
+            and 'unknown', which refer to their corresponding special
+            tokens in the dictionary. It will not ignore any special
+            tokens when ignore_char == -1 or 'none'. Defaults to 'padding'.
         reduction (str): Specifies the reduction to apply to the output,
             should be one of the following: ('none', 'mean', 'sum'). Defaults
             to 'none'.
@@ -45,7 +51,7 @@ class CELoss(BaseRecogLoss):
                  dictionary: Union[Dict, Dictionary],
                  max_seq_len: int = 40,
                  letter_case: str = 'unchanged',
-                 ignore_index: int = -1,
+                 ignore_char: Union[int, str] = 'padding',
                  flatten: bool = False,
                  reduction: str = 'none',
                  ignore_first_char: bool = False):
@@ -53,15 +59,35 @@ class CELoss(BaseRecogLoss):
             dictionary=dictionary,
             max_seq_len=max_seq_len,
             letter_case=letter_case)
-        assert isinstance(ignore_index, int)
+        assert isinstance(ignore_char, (int, str))
         assert isinstance(reduction, str)
         assert reduction in ['none', 'mean', 'sum']
         assert isinstance(ignore_first_char, bool)
         assert isinstance(flatten, bool)
         self.flatten = flatten
+
+        self.ignore_first_char = ignore_first_char
+
+        if isinstance(ignore_char, int):
+            ignore_index = ignore_char
+        else:
+            mapping_table = {
+                'none': -1,
+                'start': self.dictionary.start_idx,
+                'padding': self.dictionary.padding_idx,
+                'end': self.dictionary.end_idx,
+                'unknown': self.dictionary.unknown_idx,
+            }
+            # TODO add char2id in Dictionary
+            ignore_index = mapping_table.get(
+                ignore_char, self.dictionary._char2idx.get(ignore_char, None))
+            if ignore_index is None:
+                raise ValueError(
+                    f'{ignore_char} does not exist in the dictionary')
+        self.ignore_char = ignore_char
+        self.ignore_index = ignore_index
         self.loss_ce = nn.CrossEntropyLoss(
             ignore_index=ignore_index, reduction=reduction)
-        self.ignore_first_char = ignore_first_char
 
     def forward(self, outputs: torch.Tensor,
                 data_samples: Sequence[TextRecogDataSample]) -> Dict:
