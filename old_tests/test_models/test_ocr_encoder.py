@@ -4,7 +4,7 @@ import torch
 
 from mmocr.models.textrecog.encoders import (ABIVisionModel, BaseEncoder,
                                              NRTREncoder, SAREncoder,
-                                             SatrnEncoder, TransformerEncoder)
+                                             TransformerEncoder)
 
 
 def test_sar_encoder():
@@ -43,16 +43,6 @@ def test_nrtr_encoder():
     out_enc = tf_encoder(feat)
     print('hello', out_enc.size())
     assert out_enc.shape == torch.Size([1, 25, 512])
-
-
-def test_satrn_encoder():
-    satrn_encoder = SatrnEncoder()
-    satrn_encoder.init_weights()
-    satrn_encoder.train()
-
-    feat = torch.randn(1, 512, 8, 25)
-    out_enc = satrn_encoder(feat)
-    assert out_enc.shape == torch.Size([1, 200, 512])
 
 
 def test_base_encoder():
