@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 
 import mmcv
 
-from mmocr.utils import convert_annotations
+from mmocr.utils import dump_ocr_data
 
 
 def collect_files(img_dir, gt_dir):
@@ -196,9 +196,9 @@ def main():
             image_infos = [image_infos]
             splits = ['training']
         for i, split in enumerate(splits):
-            convert_annotations(
+            dump_ocr_data(
                 list(filter(None, image_infos[i])),
-                osp.join(root_path, 'instances_' + split + '.json'))
+                osp.join(root_path, 'instances_' + split + '.json'), 'textdet')
 
 
 if __name__ == '__main__':

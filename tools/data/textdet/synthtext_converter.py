@@ -164,6 +164,7 @@ def parse_args():
     return args
 
 
+# TODO: Refactor synthtext
 def main():
     args = parse_args()
     synthtext_path = args.synthtext_path

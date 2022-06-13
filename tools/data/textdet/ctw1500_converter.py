@@ -9,7 +9,7 @@ import mmcv
 import numpy as np
 from shapely.geometry import Polygon
 
-from mmocr.utils import convert_annotations, list_from_file
+from mmocr.utils import dump_ocr_data, list_from_file
 
 
 def collect_files(img_dir, gt_dir, split):
@@ -224,7 +224,7 @@ def main():
             files = collect_files(
                 osp.join(img_dir, split), osp.join(gt_dir, split), split)
             image_infos = collect_annotations(files, split, nproc=args.nproc)
-            convert_annotations(image_infos, osp.join(out_dir, json_name))
+            dump_ocr_data(image_infos, osp.join(out_dir, json_name), 'textdet')
 
 
 if __name__ == '__main__':

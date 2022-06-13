@@ -5,7 +5,7 @@ import os.path as osp
 
 import mmcv
 
-from mmocr.utils import convert_annotations
+from mmocr.utils import dump_ocr_data
 
 
 def parse_args():
@@ -63,11 +63,12 @@ def main():
     root_path = args.root_path
     print('Processing training set...')
     training_infos = collect_textocr_info(root_path, 'TextOCR_0.1_train.json')
-    convert_annotations(training_infos,
-                        osp.join(root_path, 'instances_training.json'))
+    dump_ocr_data(training_infos,
+                  osp.join(root_path, 'instances_training.json'), 'textdet')
     print('Processing validation set...')
     val_infos = collect_textocr_info(root_path, 'TextOCR_0.1_val.json')
-    convert_annotations(val_infos, osp.join(root_path, 'instances_val.json'))
+    dump_ocr_data(val_infos, osp.join(root_path, 'instances_val.json'),
+                  'textdet')
     print('Finish')
 
 
