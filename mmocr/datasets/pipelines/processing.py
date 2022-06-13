@@ -6,6 +6,7 @@ from typing import Dict, List, Optional, Sequence, Tuple, Union
 import cv2
 import mmcv
 import numpy as np
+from mmcv.transforms import RandomFlip as MMCV_RandomFlip
 from mmcv.transforms import Resize as MMCV_Resize
 from mmcv.transforms.base import BaseTransform
 from mmcv.transforms.utils import avoid_cache_randomness, cache_randomness
@@ -1357,6 +1358,99 @@ class SourceImagePad(BaseTransform):
         repr_str += f'(target_scale = {self.target_scale}, '
         repr_str += f'crop_ratio = {self.crop_ratio})'
         return repr_str
+
+
+@TRANSFORMS.register_module()
+class RandomFlip(MMCV_RandomFlip):
+    """Flip the image & bbox polygon.
+
+    There are 3 flip modes:
+
+     - ``prob`` is float, ``direction`` is string: the image will be
+         ``direction``ly flipped with probability of ``prob`` .
+         E.g., ``prob=0.5``, ``direction='horizontal'``,
+         then image will be horizontally flipped with probability of 0.5.
+     - ``prob`` is float, ``direction`` is list of string: the image will
+         be ``direction[i]``ly flipped with probability of
+         ``prob/len(direction)``.
+         E.g., ``prob=0.5``, ``direction=['horizontal', 'vertical']``,
+         then image will be horizontally flipped with probability of 0.25,
+         vertically with probability of 0.25.
+     - ``prob`` is list of float, ``direction`` is list of string:
+         given ``len(prob) == len(direction)``, the image will
+         be ``direction[i]``ly flipped with probability of ``prob[i]``.
+         E.g., ``prob=[0.3, 0.5]``, ``direction=['horizontal',
+         'vertical']``, then image will be horizontally flipped with
+         probability of 0.3, vertically with probability of 0.5.
+
+    Required Keys:
+        - img
+        - gt_bboxes (optional)
+        - gt_polygons (optional)
+
+    Modified Keys:
+        - img
+        - gt_bboxes (optional)
+        - gt_polygons (optional)
+
+    Added Keys:
+        - flip
+        - flip_direction
+    Args:
+         prob (float | list[float], optional): The flipping probability.
+             Defaults to None.
+         direction(str | list[str]): The flipping direction. Options
+             If input is a list, the length must equal ``prob``. Each
+             element in ``prob`` indicates the flip probability of
+             corresponding direction. Defaults to 'horizontal'.
+    """
+
+    def flip_polygons(self, polygons: Sequence[np.ndarray],
+                      img_shape: Tuple[int, int],
+                      direction: str) -> Sequence[np.ndarray]:
+        """Flip polygons horizontally, vertically or diagonally.
+
+        Args:
+            polygons (list[numpy.ndarray): polygons.
+            img_shape (tuple[int]): Image shape (height, width)
+            direction (str): Flip direction. Options are 'horizontal',
+                'vertical' and 'diagonal'.
+        Returns:
+            list[numpy.ndarray]: Flipped polygons.
+        """
+
+        h, w = img_shape
+        flipped_polygons = []
+        if direction == 'horizontal':
+            for polygon in polygons:
+                flipped_polygon = polygon.copy()
+                flipped_polygon[0::2] = w - polygon[0::2]
+                flipped_polygons.append(flipped_polygon)
+        elif direction == 'vertical':
+            for polygon in polygons:
+                flipped_polygon = polygon.copy()
+                flipped_polygon[1::2] = h - polygon[1::2]
+                flipped_polygons.append(flipped_polygon)
+        elif direction == 'diagonal':
+            for polygon in polygons:
+                flipped_polygon = polygon.copy()
+                flipped_polygon[0::2] = w - polygon[0::2]
+                flipped_polygon[1::2] = h - polygon[1::2]
+                flipped_polygons.append(flipped_polygon)
+        else:
+            raise ValueError(
+                f"Flipping direction must be 'horizontal', 'vertical', \
+                  or 'diagnal', but got '{direction}'")
+        return flipped_polygons
+
+    def _flip(self, results: dict) -> None:
+        """Flip images, bounding boxes and polygons."""
+        super()._flip(results)
+        # flip polygons
+        if results.get('gt_polygons', None) is not None:
+            results['gt_polygons'] = self.flip_polygons(
+                results['gt_polygons'], results['img'].shape[:2],
+                results['flip_direction'])
 
 
 @TRANSFORMS.register_module()
