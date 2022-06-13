@@ -380,8 +380,6 @@ class RandomRotate(BaseTransform):
                 rotated_img = rotated_img + img_cut * mask
 
             results['img'] = rotated_img
-            results['img_shape'] = (results['img'].shape[0],
-                                    results['img'].shape[1])
         else:
             raise ValueError('`img` is not found in results')
 
@@ -448,6 +446,9 @@ class RandomRotate(BaseTransform):
             self._rotate_bboxes(results, center_shift)
             # rotate gt_polygons
             self._rotate_polygons(results, center_shift)
+
+            results['img_shape'] = (results['img'].shape[0],
+                                    results['img'].shape[1])
         else:
             args = [
                 dict(

@@ -122,13 +122,15 @@ class TestRandomRotate(unittest.TestCase):
 
     def setUp(self):
         img = np.random.random((5, 5))
-        self.data_info1 = dict(img=img.copy())
+        self.data_info1 = dict(img=img.copy(), img_shape=img.shape[:2])
         self.data_info2 = dict(
             img=np.random.random((30, 30, 3)),
-            gt_bboxes=np.array([[10, 10, 20, 20], [5, 5, 10, 10]]))
+            gt_bboxes=np.array([[10, 10, 20, 20], [5, 5, 10, 10]]),
+            img_shape=(30, 30))
         self.data_info3 = dict(
             img=np.random.random((30, 30, 3)),
-            gt_polygons=[np.array([10., 10., 20., 10., 20., 20., 10., 20.])])
+            gt_polygons=[np.array([10., 10., 20., 10., 20., 20., 10., 20.])],
+            img_shape=(30, 30))
 
     def test_init(self):
         # max angle is float
