@@ -8,8 +8,8 @@ from mmcv.transforms import Pad, RandomResize
 
 from mmocr.datasets.pipelines import (PadToWidth, PyramidRescale, RandomCrop,
                                       RandomRotate, RescaleToHeight, Resize,
-                                      SourceImagePad, TextDetRandomCrop,
-                                      TextDetRandomCropFlip)
+                                      ShortScaleAspectJitter, SourceImagePad,
+                                      TextDetRandomCrop, TextDetRandomCropFlip)
 from mmocr.utils import bbox2poly, poly2shapely
 
 
@@ -631,3 +631,39 @@ class TestSourceImagePad(unittest.TestCase):
             repr(transform),
             ('SourceImagePad(target_scale = (30, 30), crop_ratio = (0.1, 0.1))'
              ))
+
+
+class TestShortScaleAspectJitter(unittest.TestCase):
+
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.random_sample')
+    def test_transform(self, mock_random):
+        ratio_range = (0.5, 1.5)
+        aspect_ratio_range = (0.9, 1.1)
+        mock_random.side_effect = [0.5, 0.5]
+        img = np.zeros((15, 20, 3))
+        polygon = [np.array([10., 5., 20., 5., 20., 10., 10., 10.])]
+        bbox = np.array([[10., 5., 20., 10.]])
+        data_info = dict(img=img, gt_polygons=polygon, gt_bboxes=bbox)
+        t = ShortScaleAspectJitter(
+            short_size=40,
+            ratio_range=ratio_range,
+            aspect_ratio_range=aspect_ratio_range,
+            scale_divisor=4)
+        results = t(data_info)
+        self.assertEqual(results['img'].shape, (40, 56, 3))
+        self.assertEqual(results['img_shape'], (40, 56))
+
+    def test_repr(self):
+        transform = ShortScaleAspectJitter(
+            short_size=40,
+            ratio_range=(0.5, 1.5),
+            aspect_ratio_range=(0.9, 1.1),
+            scale_divisor=4,
+            resize_cfg=dict(type='Resize'))
+        self.assertEqual(
+            repr(transform), ('ShortScaleAspectJitter('
+                              'short_size = 40, '
+                              'ratio_range = (0.5, 1.5), '
+                              'aspect_ratio_range = (0.9, 1.1), '
+                              'scale_divisor = 4, '
+                              "resize_cfg = {'type': 'Resize', 'scale': 0})"))
