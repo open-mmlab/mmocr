@@ -7,7 +7,8 @@ import numpy as np
 from mmcv.transforms import Pad, RandomResize
 
 from mmocr.datasets.pipelines import (PadToWidth, PyramidRescale, RandomCrop,
-                                      RandomRotate, RescaleToHeight, Resize,
+                                      RandomFlip, RandomRotate,
+                                      RescaleToHeight, Resize,
                                       ShortScaleAspectJitter, SourceImagePad,
                                       TextDetRandomCrop, TextDetRandomCropFlip)
 from mmocr.utils import bbox2poly, poly2shapely
@@ -631,6 +632,50 @@ class TestSourceImagePad(unittest.TestCase):
             repr(transform),
             ('SourceImagePad(target_scale = (30, 30), crop_ratio = (0.1, 0.1))'
              ))
+
+
+class TestRandomFlip(unittest.TestCase):
+
+    def setUp(self):
+        img = np.random.random((30, 40, 3))
+        gt_polygons = [np.array([10., 5., 20., 5., 20., 10., 10., 10.])]
+        self.data_info = dict(
+            img_shape=(30, 40), img=img, gt_polygons=gt_polygons)
+
+    def test_flip_polygons(self):
+        t = RandomFlip(prob=1.0, direction='horizontal')
+        results = t.flip_polygons(self.data_info['gt_polygons'], (30, 40),
+                                  'horizontal')
+        self.assertIsInstance(results, list)
+        self.assertIsInstance(results[0], np.ndarray)
+        self.assertTrue(
+            (results[0] == np.array([30., 5., 20., 5., 20., 10., 30.,
+                                     10.])).all())
+
+        results = t.flip_polygons(self.data_info['gt_polygons'], (30, 40),
+                                  'vertical')
+        self.assertIsInstance(results, list)
+        self.assertIsInstance(results[0], np.ndarray)
+        self.assertTrue(
+            (results[0] == np.array([10., 25., 20., 25., 20., 20., 10.,
+                                     20.])).all())
+        results = t.flip_polygons(self.data_info['gt_polygons'], (30, 40),
+                                  'diagonal')
+        self.assertIsInstance(results, list)
+        self.assertIsInstance(results[0], np.ndarray)
+        self.assertTrue(
+            (results[0] == np.array([30., 25., 20., 25., 20., 20., 30.,
+                                     20.])).all())
+        with self.assertRaises(ValueError):
+            t.flip_polygons(self.data_info['gt_polygons'], (30, 40), 'mmocr')
+
+    def test_flip(self):
+        t = RandomFlip(prob=1.0, direction='horizontal')
+        results = t(self.data_info.copy())
+        self.assertEqual(results['img'].shape, (30, 40, 3))
+        self.assertEqual(results['img_shape'], (30, 40))
+        self.assertTrue((results['gt_polygons'][0] == np.array(
+            [30., 5., 20., 5., 20., 10., 30., 10.])).all())
 
 
 class TestShortScaleAspectJitter(unittest.TestCase):
