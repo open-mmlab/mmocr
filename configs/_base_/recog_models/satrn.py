@@ -1,11 +1,17 @@
-label_convertor = dict(
-    type='AttnConvertor', dict_type='DICT36', with_unknown=True, lower=True)
+dictionary = dict(
+    type='Dictionary',
+    dict_file='dicts/english_digits_symbols.txt',
+    with_padding=True,
+    with_unknown=True,
+    same_start_end=True,
+    with_start=True,
+    with_end=True)
 
 model = dict(
     type='SATRN',
     backbone=dict(type='ShallowCNN'),
-    encoder=dict(type='SatrnEncoder'),
-    decoder=dict(type='TFDecoder'),
-    loss=dict(type='TFLoss'),
-    label_convertor=label_convertor,
-    max_seq_len=40)
+    encoder=dict(type='SATRNEncoder'),
+    decoder=dict(type='NRTRDecoder', loss=dict(type='CELoss')),
+    dictionary=dictionary,
+    preprocess_cfg=dict(
+        mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375]))
