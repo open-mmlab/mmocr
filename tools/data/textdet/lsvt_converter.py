@@ -5,7 +5,7 @@ import os.path as osp
 
 import mmcv
 
-from mmocr.utils import convert_annotations
+from mmocr.utils import dump_ocr_data
 
 
 def parse_args():
@@ -115,13 +115,13 @@ def main():
     root_path = args.root_path
     print('Processing training set...')
     training_infos = collect_lsvt_info(root_path, 'train', args.val_ratio)
-    convert_annotations(training_infos,
-                        osp.join(root_path, 'instances_training.json'))
+    dump_ocr_data(training_infos,
+                  osp.join(root_path, 'instances_training.json'), 'textdet')
     if args.val_ratio > 0:
         print('Processing validation set...')
         val_infos = collect_lsvt_info(root_path, 'val', args.val_ratio)
-        convert_annotations(val_infos, osp.join(root_path,
-                                                'instances_val.json'))
+        dump_ocr_data(val_infos, osp.join(root_path, 'instances_val.json'),
+                      'textdet')
     print('Finish')
 
 

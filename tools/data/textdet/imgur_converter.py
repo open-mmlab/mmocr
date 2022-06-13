@@ -6,7 +6,7 @@ import os.path as osp
 import mmcv
 import numpy as np
 
-from mmocr.utils import convert_annotations
+from mmocr.utils import dump_ocr_data
 
 
 def parse_args():
@@ -141,8 +141,9 @@ def main():
         with mmcv.Timer(print_tmpl='It takes {}s to convert IMGUR annotation'):
             anno_infos = collect_imgur_info(
                 root_path, f'imgur5k_annotations_{split}.json')
-            convert_annotations(anno_infos,
-                                osp.join(root_path, f'instances_{split}.json'))
+            dump_ocr_data(anno_infos,
+                          osp.join(root_path, f'instances_{split}.json'),
+                          'textdet')
 
 
 if __name__ == '__main__':

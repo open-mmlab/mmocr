@@ -6,7 +6,7 @@ import os.path as osp
 
 import mmcv
 
-from mmocr.utils import convert_annotations
+from mmocr.utils import dump_ocr_data
 
 
 def collect_files(img_dir, gt_dir, ratio):
@@ -189,16 +189,17 @@ def main():
     trn_infos = collect_annotations(trn_files, nproc=args.nproc)
     with mmcv.Timer(
             print_tmpl='It takes {}s to convert ReCTS Training annotation'):
-        convert_annotations(trn_infos,
-                            osp.join(root_path, 'instances_training.json'))
+        dump_ocr_data(trn_infos, osp.join(root_path,
+                                          'instances_training.json'),
+                      'textdet')
 
     # Val set
     if len(val_files) > 0:
         val_infos = collect_annotations(val_files, nproc=args.nproc)
         with mmcv.Timer(
                 print_tmpl='It takes {}s to convert ReCTS Val annotation'):
-            convert_annotations(val_infos,
-                                osp.join(root_path, 'instances_val.json'))
+            dump_ocr_data(val_infos, osp.join(root_path, 'instances_val.json'),
+                          'textdet')
 
 
 if __name__ == '__main__':

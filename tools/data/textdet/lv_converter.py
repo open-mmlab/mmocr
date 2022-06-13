@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 
 import mmcv
 
-from mmocr.utils import convert_annotations
+from mmocr.utils import dump_ocr_data
 
 
 def collect_files(data_dir):
@@ -171,9 +171,9 @@ def main():
         with mmcv.Timer(print_tmpl='It takes {}s to convert LV annotation'):
             files = collect_files(osp.join(root_path, 'imgs', split))
             image_infos = collect_annotations(files, nproc=args.nproc)
-            convert_annotations(
-                image_infos, osp.join(root_path,
-                                      'instances_' + split + '.json'))
+            dump_ocr_data(image_infos,
+                          osp.join(root_path, 'instances_' + split + '.json'),
+                          'textdet')
 
 
 if __name__ == '__main__':

@@ -5,7 +5,7 @@ import os.path as osp
 
 import mmcv
 
-from mmocr.utils import convert_annotations
+from mmocr.utils import dump_ocr_data
 
 
 def collect_files(img_dir, gt_dir):
@@ -175,9 +175,9 @@ def main():
             image_infos = [image_infos]
             splits = ['training']
         for i, split in enumerate(splits):
-            convert_annotations(
-                image_infos[i],
-                osp.join(root_path, 'instances_' + split + '.json'))
+            dump_ocr_data(image_infos[i],
+                          osp.join(root_path, 'instances_' + split + '.json'),
+                          'textdet')
 
 
 if __name__ == '__main__':

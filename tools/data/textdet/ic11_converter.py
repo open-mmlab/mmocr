@@ -6,7 +6,7 @@ import os.path as osp
 import mmcv
 from PIL import Image
 
-from mmocr.utils import convert_annotations
+from mmocr.utils import dump_ocr_data
 
 
 def convert_gif(img_path):
@@ -163,9 +163,9 @@ def main():
                 osp.join(root_path, 'imgs', split),
                 osp.join(root_path, 'annotations', split))
             image_infos = collect_annotations(files, nproc=args.nproc)
-            convert_annotations(
-                image_infos, osp.join(root_path,
-                                      'instances_' + split + '.json'))
+            dump_ocr_data(image_infos,
+                          osp.join(root_path, 'instances_' + split + '.json'),
+                          'textdet')
 
 
 if __name__ == '__main__':
