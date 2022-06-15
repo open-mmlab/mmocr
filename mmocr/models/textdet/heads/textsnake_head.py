@@ -1,15 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import warnings
+from typing import Dict, List, Optional, Union
 
+import torch
 import torch.nn as nn
-from mmcv.runner import BaseModule
 
+from mmocr.core import TextDetDataSample
+from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
-from .head_mixin import HeadMixin
 
 
 @MODELS.register_module()
-class TextSnakeHead(HeadMixin, BaseModule):
+class TextSnakeHead(BaseTextDetHead):
     """The class for TextSnake head: TextSnake: A Flexible Representation for
     Detecting Text of Arbitrary Shapes.
 
@@ -22,43 +23,27 @@ class TextSnakeHead(HeadMixin, BaseModule):
         downsample_ratio (float): Downsample ratio.
         loss (dict): Configuration dictionary for loss type.
         postprocessor (dict): Config of postprocessor for TextSnake.
-        train_cfg, test_cfg: Depreciated.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
-    def __init__(self,
-                 in_channels,
-                 out_channels=5,
-                 downsample_ratio=1.0,
-                 loss=dict(type='TextSnakeLoss'),
-                 postprocessor=dict(
-                     type='TextSnakePostprocessor', text_repr_type='poly'),
-                 train_cfg=None,
-                 test_cfg=None,
-                 init_cfg=dict(
-                     type='Normal',
-                     override=dict(name='out_conv'),
-                     mean=0,
-                     std=0.01),
-                 **kwargs):
-        old_keys = ['text_repr_type', 'decoding_type']
-        for key in old_keys:
-            if kwargs.get(key, None):
-                postprocessor[key] = kwargs.get(key)
-                warnings.warn(
-                    f'{key} is deprecated, please specify '
-                    'it in postprocessor config dict. See '
-                    'https://github.com/open-mmlab/mmocr/pull/640 '
-                    'for details.', UserWarning)
-        BaseModule.__init__(self, init_cfg=init_cfg)
-        HeadMixin.__init__(self, loss, postprocessor)
-
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int = 5,
+        downsample_ratio: float = 1.0,
+        loss: Dict = dict(type='TextSnakeLoss'),
+        postprocessor: Dict = dict(
+            type='TextSnakePostprocessor', text_repr_type='poly'),
+        init_cfg: Optional[Union[Dict, List[Dict]]] = dict(
+            type='Normal', override=dict(name='out_conv'), mean=0, std=0.01)
+    ) -> None:
+        super().__init__(
+            loss=loss, postprocessor=postprocessor, init_cfg=init_cfg)
         assert isinstance(in_channels, int)
+        assert isinstance(out_channels, int)
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.downsample_ratio = downsample_ratio
-        self.train_cfg = train_cfg
-        self.test_cfg = test_cfg
 
         self.out_conv = nn.Conv2d(
             in_channels=self.in_channels,
@@ -67,15 +52,19 @@ class TextSnakeHead(HeadMixin, BaseModule):
             stride=1,
             padding=0)
 
-    def forward(self, inputs):
+    def forward(self, inputs: torch.Tensor,
+                data_samples: List[TextDetDataSample]) -> Dict:
         """
         Args:
-            inputs (Tensor): Shape :math:`(N, C_{in}, H, W)`, where
+            inputs (torch.Tensor): Shape :math:`(N, C_{in}, H, W)`, where
                 :math:`C_{in}` is ``in_channels``. :math:`H` and :math:`W`
                 should be the same as the input of backbone.
+            data_samples (List[TextDetDataSample]): List of data samples.
 
         Returns:
-            Tensor: A tensor of shape :math:`(N, 5, H, W)`.
+            Tensor: A tensor of shape :math:`(N, 5, H, W)`, where the five
+            channels represent [0]: text score, [1]: center score,
+            [2]: sin, [3] cos, [4] radius, respectively.
         """
         outputs = self.out_conv(inputs)
         return outputs
