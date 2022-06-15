@@ -53,67 +53,6 @@ def fill_hole(input_mask):
     return ~canvas | input_mask
 
 
-def centralize(points_yx,
-               normal_sin,
-               normal_cos,
-               radius,
-               contour_mask,
-               step_ratio=0.03):
-
-    h, w = contour_mask.shape
-    top_yx = bot_yx = points_yx
-    step_flags = np.ones((len(points_yx), 1), dtype=np.bool)
-    step = step_ratio * radius * np.hstack([normal_sin, normal_cos])
-    while np.any(step_flags):
-        next_yx = np.array(top_yx + step, dtype=np.int32)
-        next_y, next_x = next_yx[:, 0], next_yx[:, 1]
-        step_flags = (next_y >= 0) & (next_y < h) & (next_x > 0) & (
-            next_x < w) & contour_mask[np.clip(next_y, 0, h - 1),
-                                       np.clip(next_x, 0, w - 1)]
-        top_yx = top_yx + step_flags.reshape((-1, 1)) * step
-    step_flags = np.ones((len(points_yx), 1), dtype=np.bool)
-    while np.any(step_flags):
-        next_yx = np.array(bot_yx - step, dtype=np.int32)
-        next_y, next_x = next_yx[:, 0], next_yx[:, 1]
-        step_flags = (next_y >= 0) & (next_y < h) & (next_x > 0) & (
-            next_x < w) & contour_mask[np.clip(next_y, 0, h - 1),
-                                       np.clip(next_x, 0, w - 1)]
-        bot_yx = bot_yx - step_flags.reshape((-1, 1)) * step
-    centers = np.array((top_yx + bot_yx) * 0.5, dtype=np.int32)
-    return centers
-
-
-def merge_disks(disks, disk_overlap_thr):
-    xy = disks[:, 0:2]
-    radius = disks[:, 2]
-    scores = disks[:, 3]
-    order = scores.argsort()[::-1]
-
-    merged_disks = []
-    while order.size > 0:
-        if order.size == 1:
-            merged_disks.append(disks[order])
-            break
-        i = order[0]
-        d = norm(xy[i] - xy[order[1:]], axis=1)
-        ri = radius[i]
-        r = radius[order[1:]]
-        d_thr = (ri + r) * disk_overlap_thr
-
-        merge_inds = np.where(d <= d_thr)[0] + 1
-        if merge_inds.size > 0:
-            merge_order = np.hstack([i, order[merge_inds]])
-            merged_disks.append(np.mean(disks[merge_order], axis=0))
-        else:
-            merged_disks.append(disks[i])
-
-        inds = np.where(d > d_thr)[0] + 1
-        order = order[inds]
-    merged_disks = np.vstack(merged_disks)
-
-    return merged_disks
-
-
 def poly_nms(polygons, threshold):
     assert isinstance(polygons, list)
 
