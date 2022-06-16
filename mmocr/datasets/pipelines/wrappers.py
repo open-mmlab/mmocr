@@ -9,6 +9,7 @@ from mmcv.transforms.base import BaseTransform
 from PIL import Image
 
 from mmocr.registry import TRANSFORMS
+from mmocr.utils import poly2bbox
 
 
 @TRANSFORMS.register_module()
@@ -72,12 +73,11 @@ class ImgAug(BaseTransform):
 
         if self.augmenter:
             aug = self.augmenter.to_deterministic()
+            if not self._augment_annotations(aug, ori_shape, results):
+                return None
             results['img'] = aug.augment_image(image)
             results['img_shape'] = (results['img'].shape[0],
                                     results['img'].shape[1])
-
-            self._augment_annotations(aug, ori_shape, results)
-
         return results
 
     def _augment_annotations(self, aug: imgaug.augmenters.meta.Augmenter,
@@ -91,19 +91,22 @@ class ImgAug(BaseTransform):
             results (dict): Result dict containing annotations to transform.
 
         Returns:
-            dict: The transformed data.
+            bool: Whether the transformation has been successfully applied. If
+            the transform results in empty polygon/bbox annotations, return
+            False.
         """
         # Assume co-existence of `gt_polygons`, `gt_bboxes` and `gt_ignored`
         # for text detection
         if 'gt_polygons' in results:
 
             # augment polygons
-            results['gt_polygons'], removed_poly_inds = self._augment_polygons(
+            transformed_polygons, removed_poly_inds = self._augment_polygons(
                 aug, ori_shape, results['gt_polygons'])
+            if len(transformed_polygons) == 0:
+                return False
+            results['gt_polygons'] = transformed_polygons
 
             # remove instances that are no longer inside the augmented image
-            results['gt_bboxes'] = np.delete(
-                results['gt_bboxes'], removed_poly_inds, axis=0)
             results['gt_bboxes_labels'] = np.delete(
                 results['gt_bboxes_labels'], removed_poly_inds, axis=0)
             results['gt_ignored'] = np.delete(
@@ -115,13 +118,13 @@ class ImgAug(BaseTransform):
                     if i not in removed_poly_inds
                 ]
 
-            # augment bboxes
-            bboxes = self._augment_bboxes(aug, ori_shape, results['gt_bboxes'])
-            results['gt_bboxes'] = np.zeros((0, 4))
+            # Generate new bboxes
+            bboxes = [poly2bbox(poly) for poly in transformed_polygons]
+            results['gt_bboxes'] = np.zeros((0, 4), dtype=np.float32)
             if len(bboxes) > 0:
                 results['gt_bboxes'] = np.stack(bboxes)
 
-        return results
+        return True
 
     def _augment_polygons(self, aug: imgaug.augmenters.meta.Augmenter,
                           ori_shape: Tuple[int, int], polys: List[np.ndarray]
@@ -154,38 +157,14 @@ class ImgAug(BaseTransform):
             for point in poly.clip_out_of_image(imgaug_polys.shape)[0]:
                 new_poly.append(np.array(point, dtype=np.float32))
             new_poly = np.array(new_poly, dtype=np.float32).flatten()
+            # Under some conditions, imgaug can generate "polygon" with only
+            # two points, which is not a valid polygon.
+            if len(new_poly) <= 4:
+                removed_poly_inds.append(i)
+                continue
             new_polys.append(new_poly)
 
         return new_polys, removed_poly_inds
-
-    def _augment_bboxes(self, aug: imgaug.augmenters.meta.Augmenter,
-                        ori_shape: Tuple[int, int],
-                        bboxes: np.ndarray) -> np.ndarray:
-        """Augment bboxes.
-
-        Args:
-            aug (imgaug.augmenters.meta.Augmenter): The imgaug augmenter.
-            ori_shape (tuple[int, int]): The shape of the original image.
-            bboxes (np.ndarray): The bboxes to be augmented.
-
-        Returns:
-            np.ndarray: The augmented bboxes.
-        """
-        imgaug_bboxes = []
-        for bbox in bboxes:
-            x1, y1, x2, y2 = bbox
-            imgaug_bboxes.append(
-                imgaug.BoundingBox(x1=x1, y1=y1, x2=x2, y2=y2))
-        new_imgaug_bboxes = aug.augment_bounding_boxes([
-            imgaug.BoundingBoxesOnImage(imgaug_bboxes, shape=ori_shape)
-        ])[0].clip_out_of_image()
-
-        new_bboxes = []
-        for box in new_imgaug_bboxes.bounding_boxes:
-            new_bboxes.append(
-                np.array([box.x1, box.y1, box.x2, box.y2], dtype=np.float32))
-
-        return new_bboxes
 
     def _build_augmentation(self, args, root=True):
         """Build ImgAug augmentations.

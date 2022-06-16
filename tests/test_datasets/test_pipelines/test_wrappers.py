@@ -107,17 +107,13 @@ class TestImgAug(unittest.TestCase):
 
         # All polygons and bboxes are no longer inside the image after
         # transformation
+
+        # When some transforms result in empty polygons
         args = [dict(cls='Affine', translate_px=dict(x=100, y=100))]
-        poly_target = []
-        box_target = np.zeros((0, 4))
-        label_target = np.array([], dtype=np.int64)
-        ignored = np.array([], dtype=bool)
-        texts = []
-        imgaug_transform = ImgAug(args)
         results = self._create_dummy_data()
-        results = imgaug_transform(results)
-        self.assert_result_equal(results, poly_target, box_target,
-                                 label_target, ignored, texts)
+        invalid_transform = ImgAug(args)
+        results = invalid_transform(results)
+        self.assertIsNone(results)
 
         # Everything should work well without gt_texts
         results = self._create_dummy_data()
