@@ -1,81 +1,71 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import warnings
+from typing import List, Optional
 
-import numpy as np
 import torch
 import torch.nn as nn
-from mmcv.runner import BaseModule
 
+from mmocr.core import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import check_argument
-from .head_mixin import HeadMixin
+from .base_textdet_head import BaseTextDetHead
 
 
 @MODELS.register_module()
-class PANHead(HeadMixin, BaseModule):
+class PANHead(BaseTextDetHead):
     """The class for PANet head.
 
     Args:
         in_channels (list[int]): A list of 4 numbers of input channels.
-        out_channels (int): Number of output channels.
-        downsample_ratio (float): Downsample ratio.
-        loss (dict): Configuration dictionary for loss type. Supported loss
-            types are "PANLoss" and "PSELoss".
-        postprocessor (dict): Config of postprocessor for PANet.
-        train_cfg, test_cfg (dict): Depreciated.
-        init_cfg (dict or list[dict], optional): Initialization configs.
+        hidden_dim (int): The hidden dimension of the first convolutional
+            layer.
+        out_channel (int): Number of output channels.
+        loss (dict): Configuration dictionary for loss type. Defaults
+            to dict(type='PANLoss')
+        postprocessor (dict): Config of postprocessor for PANet. Defaults to
+            dict(type='PANPostprocessor', text_repr_type='poly').
+        init_cfg (list[dict]): Initialization configs. Defaults to
+            [dict(type='Normal', mean=0, std=0.01, layer='Conv2d'),
+             dict(type='Constant', val=1, bias=0, layer='BN')]
     """
 
-    def __init__(self,
-                 in_channels,
-                 out_channels,
-                 downsample_ratio=0.25,
-                 loss=dict(type='PANLoss'),
-                 postprocessor=dict(
-                     type='PANPostprocessor', text_repr_type='poly'),
-                 train_cfg=None,
-                 test_cfg=None,
-                 init_cfg=dict(
-                     type='Normal',
-                     mean=0,
-                     std=0.01,
-                     override=dict(name='out_conv')),
-                 **kwargs):
-        old_keys = ['text_repr_type', 'decoding_type']
-        for key in old_keys:
-            if kwargs.get(key, None):
-                postprocessor[key] = kwargs.get(key)
-                warnings.warn(
-                    f'{key} is deprecated, please specify '
-                    'it in postprocessor config dict. See '
-                    'https://github.com/open-mmlab/mmocr/pull/640'
-                    ' for details.', UserWarning)
-
-        BaseModule.__init__(self, init_cfg=init_cfg)
-        HeadMixin.__init__(self, loss, postprocessor)
+    def __init__(
+        self,
+        in_channels: List[int],
+        hidden_dim: int,
+        out_channel: int,
+        loss=dict(type='PANLoss'),
+        postprocessor=dict(type='PANPostprocessor', text_repr_type='poly'),
+        init_cfg=[
+            dict(type='Normal', mean=0, std=0.01, layer='Conv2d'),
+            dict(type='Constant', val=1, bias=0, layer='BN')
+        ]
+    ) -> None:
+        super().__init__(
+            loss=loss, postprocessor=postprocessor, init_cfg=init_cfg)
 
         assert check_argument.is_type_list(in_channels, int)
-        assert isinstance(out_channels, int)
+        assert isinstance(out_channel, int)
+        assert isinstance(hidden_dim, int)
 
-        assert 0 <= downsample_ratio <= 1
+        in_channels = sum(in_channels)
+        self.conv1 = nn.Conv2d(
+            in_channels, hidden_dim, kernel_size=3, stride=1, padding=1)
+        self.bn1 = nn.BatchNorm2d(hidden_dim)
+        self.relu1 = nn.ReLU(inplace=True)
+        self.conv2 = nn.Conv2d(
+            hidden_dim, out_channel, kernel_size=1, stride=1, padding=0)
 
-        self.in_channels = in_channels
-        self.out_channels = out_channels
-        self.downsample_ratio = downsample_ratio
-        self.train_cfg = train_cfg
-        self.test_cfg = test_cfg
-
-        self.out_conv = nn.Conv2d(
-            in_channels=np.sum(np.array(in_channels)),
-            out_channels=out_channels,
-            kernel_size=1)
-
-    def forward(self, inputs):
-        r"""
+    def forward(self,
+                inputs: torch.Tensor,
+                data_samples: Optional[List[TextDetDataSample]] = None
+                ) -> torch.Tensor:
+        r"""PAN head forward.
         Args:
             inputs (list[Tensor] | Tensor): Each tensor has the shape of
                 :math:`(N, C_i, W, H)`, where :math:`\sum_iC_i=C_{in}` and
                 :math:`C_{in}` is ``input_channels``.
+            data_samples (list[TextDetDataSample], optional): A list of data
+                samples. Defaults to None.
 
         Returns:
             Tensor: A tensor of shape :math:`(N, C_{out}, W, H)` where
@@ -85,6 +75,7 @@ class PANHead(HeadMixin, BaseModule):
             outputs = torch.cat(inputs, dim=1)
         else:
             outputs = inputs
-        outputs = self.out_conv(outputs)
-
+        outputs = self.conv1(outputs)
+        outputs = self.relu1(self.bn1(outputs))
+        outputs = self.conv2(outputs)
         return outputs
