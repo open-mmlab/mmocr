@@ -73,6 +73,17 @@ class TestTextDetRandomCropFlip(unittest.TestCase):
         self.data_info2 = dict(
             img=copy.deepcopy(img),
             gt_polygons=[np.array([1., 1., 1., 9., 9., 9., 9., 1.])],
+            gt_bboxes_labels=np.array([0], dtype=np.int64),
+            gt_ignored=np.array([True], dtype=np.bool_),
+            img_shape=[10, 10])
+        self.data_info3 = dict(
+            img=copy.deepcopy(img),
+            gt_polygons=[
+                np.array([0., 0., 4., 0., 4., 4., 0., 4.]),
+                np.array([4., 0., 8., 0., 8., 4., 4., 4.])
+            ],
+            gt_bboxes_labels=np.array([0, 0], dtype=np.int64),
+            gt_ignored=np.array([True, True], dtype=np.bool_),
             img_shape=[10, 10])
 
     def test_init(self):
@@ -93,6 +104,21 @@ class TestTextDetRandomCropFlip(unittest.TestCase):
         self.assertTrue(
             np.allclose(results['gt_polygons'],
                         self.data_info2['gt_polygons']))
+        self.assertEqual(
+            len(results['gt_bboxes']), len(results['gt_polygons']))
+        self.assertTrue(
+            poly2shapely(results['gt_polygons'][0]).equals(
+                poly2shapely(bbox2poly(results['gt_bboxes'][0]))))
+
+    def test_size(self):
+        transform = TextDetRandomCropFlip(crop_ratio=1.0, iter_num=3)
+        results = transform(self.data_info3)
+        self.assertEqual(
+            len(results['gt_bboxes']), len(results['gt_polygons']))
+        self.assertEqual(
+            len(results['gt_polygons']), len(results['gt_ignored']))
+        self.assertEqual(
+            len(results['gt_ignored']), len(results['gt_bboxes_labels']))
 
     def test_generate_crop_target(self):
         transform = TextDetRandomCropFlip(

@@ -570,8 +570,9 @@ class TextDetRandomCropFlip(BaseTransform):
         assert 'img' in results, '`img` is not found in results'
         for _ in range(self.iter_num):
             results = self._random_crop_flip_polygons(results)
-        # TODO Add random_crop_flip_bboxes (will be added after the poly2box
-        # and box2poly have been merged)
+        bboxes = [poly2bbox(poly) for poly in results['gt_polygons']]
+        results['gt_bboxes'] = np.array(
+            bboxes, dtype=np.float32).reshape(-1, 4)
         return results
 
     def _random_crop_flip_polygons(self, results: Dict) -> Dict:
@@ -604,6 +605,7 @@ class TextDetRandomCropFlip(BaseTransform):
         for _ in range(10):
             polys_keep = []
             polys_new = []
+            kept_idxs = []
             xx = self._random_choice(w_axis)
             yy = self._random_choice(h_axis)
             xmin = np.clip(np.min(xx) - pad_w, 0, w - 1)
@@ -618,7 +620,7 @@ class TextDetRandomCropFlip(BaseTransform):
                             [ymin, ymin, ymax, ymax]]).T.astype(np.int32)
             pp = plg(pts)
             success_flag = True
-            for polygon in polygons:
+            for poly_idx, polygon in enumerate(polygons):
                 ppi = plg(polygon.reshape(-1, 2))
                 # TODO Move this eval_utils to point_utils?
                 ppiou = eval_utils.poly_intersection(ppi, pp)
@@ -626,6 +628,7 @@ class TextDetRandomCropFlip(BaseTransform):
                         np.abs(ppiou) > self.epsilon:
                     success_flag = False
                     break
+                kept_idxs.append(poly_idx)
                 if np.abs(ppiou - float(ppi.area)) < self.epsilon:
                     polys_new.append(polygon)
                 else:
@@ -636,7 +639,6 @@ class TextDetRandomCropFlip(BaseTransform):
 
         cropped = image[ymin:ymax, xmin:xmax, :]
         select_type = self._random_flip_type()
-        print(select_type)
         if select_type == 0:
             img = np.ascontiguousarray(cropped[:, ::-1])
         elif select_type == 1:
@@ -665,8 +667,11 @@ class TextDetRandomCropFlip(BaseTransform):
                     poly[:, 1] = height - poly[:, 1] + 2 * ymin
                     polys_new[idx] = poly.reshape(-1, )
             polygons = polys_keep + polys_new
+            # ignored = polys_keep_ignore_idx + polys_new_ignore_idx
             results['gt_polygons'] = polygons
-
+            results['gt_ignored'] = results['gt_ignored'][kept_idxs]
+            results['gt_bboxes_labels'] = results['gt_bboxes_labels'][
+                kept_idxs]
         return results
 
     def _generate_crop_target(self, image: np.ndarray,
