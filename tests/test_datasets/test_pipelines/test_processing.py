@@ -476,7 +476,8 @@ class TestRandomResize(unittest.TestCase):
         randresize = RandomResize(
             scale=(500, 500),
             ratio_range=(0.8, 1.2),
-            resize_cfg=dict(type='mmocr.Resize', keep_ratio=True))
+            resize_type='mmocr.Resize',
+            keep_ratio=True)
         target_bboxes = np.array([0, 0, 90, 150])
         target_polygons = [np.array([0, 0, 300, 0, 300, 150, 0, 150])]
 
