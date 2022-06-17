@@ -1,20 +1,22 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import itertools
 import warnings
+from typing import Dict, Sequence, Tuple, Union
 
 import numpy as np
 import torch
 import torch.nn.functional as F
-from mmdet.core import BitmapMasks
+from mmdet.core import multi_apply
 from torch import nn
 
+from mmocr.core import TextDetDataSample
 from mmocr.registry import MODELS
-from mmocr.utils import check_argument
+from .text_kernel_mixin import TextKernelMixin
 
 
 @MODELS.register_module()
-class PANLoss(nn.Module):
+class PANLoss(nn.Module, TextKernelMixin):
     """The class for implementing PANet loss. This was partially adapted from
+    https://github.com/whai362/pan_pp.pytorch and
     https://github.com/WenmuZhou/PAN.pytorch.
 
     PANet: `Efficient and Accurate Arbitrary-
@@ -22,255 +24,184 @@ class PANLoss(nn.Module):
     <https://arxiv.org/abs/1908.05900>`_.
 
     Args:
-        alpha (float): The kernel loss coef.
-        beta (float): The aggregation and discriminative loss coef.
-        delta_aggregation (float): The constant for aggregation loss.
-        delta_discrimination (float): The constant for discriminative loss.
-        ohem_ratio (float): The negative/positive ratio in ohem.
-        reduction (str): The way to reduce the loss.
-        speedup_bbox_thr (int):  Speed up if speedup_bbox_thr > 0
-            and < bbox num.
+        loss_text (dict) The loss config for text map. Defaults to
+            dict(type='MaskedSquareDiceLoss').
+        loss_kernel (dict) The loss config for kernel map. Defaults to
+            dict(type='MaskedSquareDiceLoss').
+        loss_embedding (dict) The loss config for embedding map. Defaults to
+            dict(type='PANEmbLossV1').
+        weight_text (float): The weight of text loss. Defaults to 1.
+        weight_kernel (float): The weight of kernel loss. Defaults to 0.5.
+        weight_embedding (float): The weight of embedding loss.
+            Defaults to 0.25.
+        ohem_ratio (float): The negative/positive ratio in ohem. Defaults to 3.
+        shrink_ratio (tuple[float]) : The ratio of shrinking kernel. Defaults
+            to (1.0, 0.5).
+        max_shrink_dist (int or float): The maximum shrinking distance.
+            Defaults to 20.
+        reduction (str): The way to reduce the loss. Available options are
+            "mean" and "sum". Defaults to 'mean'.
     """
 
-    def __init__(self,
-                 alpha=0.5,
-                 beta=0.25,
-                 delta_aggregation=0.5,
-                 delta_discrimination=3,
-                 ohem_ratio=3,
-                 reduction='mean',
-                 speedup_bbox_thr=-1):
+    def __init__(
+            self,
+            loss_text: Dict = dict(type='MaskedSquareDiceLoss'),
+            loss_kernel: Dict = dict(type='MaskedSquareDiceLoss'),
+            loss_embedding: Dict = dict(type='PANEmbLossV1'),
+            weight_text: float = 1.0,
+            weight_kernel: float = 0.5,
+            weight_embedding: float = 0.25,
+            ohem_ratio: Union[int, float] = 3,  # TODO Find a better name
+            shrink_ratio: Sequence[Union[int, float]] = (1.0, 0.5),
+            max_shrink_dist: Union[int, float] = 20,
+            reduction: str = 'mean') -> None:
         super().__init__()
         assert reduction in ['mean', 'sum'], "reduction must in ['mean','sum']"
-        self.alpha = alpha
-        self.beta = beta
-        self.delta_aggregation = delta_aggregation
-        self.delta_discrimination = delta_discrimination
+        self.weight_text = weight_text
+        self.weight_kernel = weight_kernel
+        self.weight_embedding = weight_embedding
+        self.shrink_ratio = shrink_ratio
         self.ohem_ratio = ohem_ratio
         self.reduction = reduction
-        self.speedup_bbox_thr = speedup_bbox_thr
+        self.max_shrink_dist = max_shrink_dist
+        self.loss_text = MODELS.build(loss_text)
+        self.loss_kernel = MODELS.build(loss_kernel)
+        self.loss_embedding = MODELS.build(loss_embedding)
 
-    def bitmasks2tensor(self, bitmasks, target_sz):
-        """Convert Bitmasks to tensor.
-
-        Args:
-            bitmasks (list[BitmapMasks]): The BitmapMasks list. Each item is
-                for one img.
-            target_sz (tuple(int, int)): The target tensor of size
-                :math:`(H, W)`.
-
-        Returns:
-            list[Tensor]: The list of kernel tensors. Each element stands for
-            one kernel level.
-        """
-        assert check_argument.is_type_list(bitmasks, BitmapMasks)
-        assert isinstance(target_sz, tuple)
-
-        batch_size = len(bitmasks)
-        num_masks = len(bitmasks[0])
-
-        results = []
-
-        for level_inx in range(num_masks):
-            kernel = []
-            for batch_inx in range(batch_size):
-                mask = torch.from_numpy(bitmasks[batch_inx].masks[level_inx])
-                # hxw
-                mask_sz = mask.shape
-                # left, right, top, bottom
-                pad = [
-                    0, target_sz[1] - mask_sz[1], 0, target_sz[0] - mask_sz[0]
-                ]
-                mask = F.pad(mask, pad, mode='constant', value=0)
-                kernel.append(mask)
-            kernel = torch.stack(kernel)
-            results.append(kernel)
-
-        return results
-
-    def forward(self, preds, downsample_ratio, gt_kernels, gt_mask):
-        """Compute PANet loss.
+    def forward(self, preds: torch.Tensor,
+                data_samples: Sequence[TextDetDataSample]) -> Dict:
+        """Compute PAN loss.
 
         Args:
-            preds (Tensor): The output tensor of size :math:`(N, 6, H, W)`.
-            downsample_ratio (float): The downsample ratio between preds
-                and the input img.
-            gt_kernels (list[BitmapMasks]): The kernel list with each element
-                being the text kernel mask for one img.
-            gt_mask (list[BitmapMasks]): The effective mask list
-                with each element being the effective mask for one img.
+            preds (dict): Raw predictions from model with
+                shape :math:`(N, C, H, W)`.
+            data_samples (list[TextDetDataSample]): The data samples.
 
         Returns:
-            dict:  A loss dict with ``loss_text``, ``loss_kernel``,
-            ``loss_aggregation`` and ``loss_discrimination``.
+            dict: The dict for pan losses with loss_text, loss_kernel,
+            loss_aggregation and loss_discrimination.
         """
 
-        assert check_argument.is_type_list(gt_kernels, BitmapMasks)
-        assert check_argument.is_type_list(gt_mask, BitmapMasks)
-        assert isinstance(downsample_ratio, float)
-
+        gt_kernels, gt_masks = self.get_targets(data_samples)
+        target_size = gt_kernels.size()[2:]
+        preds = F.interpolate(preds, size=target_size, mode='bilinear')
         pred_texts = preds[:, 0, :, :]
         pred_kernels = preds[:, 1, :, :]
         inst_embed = preds[:, 2:, :, :]
-        feature_sz = preds.size()
+        gt_kernels = gt_kernels.to(preds.device)
+        gt_masks = gt_masks.to(preds.device)
 
-        mapping = {'gt_kernels': gt_kernels, 'gt_mask': gt_mask}
-        gt = {}
-        for key, value in mapping.items():
-            gt[key] = value
-            gt[key] = [item.rescale(downsample_ratio) for item in gt[key]]
-            gt[key] = self.bitmasks2tensor(gt[key], feature_sz[2:])
-            gt[key] = [item.to(preds.device) for item in gt[key]]
-        loss_aggrs, loss_discrs = self.aggregation_discrimination_loss(
-            gt['gt_kernels'][0], gt['gt_kernels'][1], inst_embed)
+        # compute embedding loss
+        loss_emb = self.loss_embedding(inst_embed, gt_kernels[0],
+                                       gt_kernels[1], gt_masks)
+        gt_kernels[gt_kernels <= 0.5] = 0
+        gt_kernels[gt_kernels > 0.5] = 1
         # compute text loss
-        sampled_mask = self.ohem_batch(pred_texts.detach(),
-                                       gt['gt_kernels'][0], gt['gt_mask'][0])
-        loss_texts = self.dice_loss_with_logits(pred_texts,
-                                                gt['gt_kernels'][0],
-                                                sampled_mask)
+        sampled_mask = self._ohem_batch(pred_texts.detach(), gt_kernels[0],
+                                        gt_masks)
+        pred_texts = torch.sigmoid(pred_texts)
+        loss_texts = self.loss_text(pred_texts, gt_kernels[0], sampled_mask)
 
         # compute kernel loss
+        pred_kernels = torch.sigmoid(pred_kernels)
+        sampled_masks_kernel = (gt_kernels[0] > 0.5).float() * gt_masks
+        loss_kernels = self.loss_kernel(pred_kernels, gt_kernels[1],
+                                        sampled_masks_kernel)
 
-        sampled_masks_kernel = (gt['gt_kernels'][0] > 0.5).float() * (
-            gt['gt_mask'][0].float())
-        loss_kernels = self.dice_loss_with_logits(pred_kernels,
-                                                  gt['gt_kernels'][1],
-                                                  sampled_masks_kernel)
-        losses = [loss_texts, loss_kernels, loss_aggrs, loss_discrs]
+        losses = [loss_texts, loss_kernels, loss_emb]
         if self.reduction == 'mean':
             losses = [item.mean() for item in losses]
-        elif self.reduction == 'sum':
-            losses = [item.sum() for item in losses]
         else:
-            raise NotImplementedError
-
-        coefs = [1, self.alpha, self.beta, self.beta]
-        losses = [item * scale for item, scale in zip(losses, coefs)]
+            losses = [item.sum() for item in losses]
 
         results = dict()
         results.update(
-            loss_text=losses[0],
-            loss_kernel=losses[1],
-            loss_aggregation=losses[2],
-            loss_discrimination=losses[3])
+            loss_text=self.weight_text * losses[0],
+            loss_kernel=self.weight_kernel * losses[1],
+            loss_embedding=self.weight_embedding * losses[2])
         return results
 
-    def aggregation_discrimination_loss(self, gt_texts, gt_kernels,
-                                        inst_embeds):
-        """Compute the aggregation and discrimnative losses.
+    def get_targets(
+        self,
+        data_samples: Sequence[TextDetDataSample],
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Generate the gt targets for PANet.
 
         Args:
-            gt_texts (Tensor): The ground truth text mask of size
-                :math:`(N, 1, H, W)`.
-            gt_kernels (Tensor): The ground truth text kernel mask of
-                size :math:`(N, 1, H, W)`.
-            inst_embeds(Tensor): The text instance embedding tensor
-                of size :math:`(N, 1, H, W)`.
+            results (dict): The input result dictionary.
 
         Returns:
-            (Tensor, Tensor): A tuple of aggregation loss and discriminative
-            loss before reduction.
+            results (dict): The output result dictionary.
         """
+        gt_kernels, gt_masks = multi_apply(self._get_target_single,
+                                           data_samples)
+        # gt_kernels: (N, kernel_number, H, W)->(kernel_number, N, H, W)
+        gt_kernels = torch.stack(gt_kernels, dim=0).permute(1, 0, 2, 3)
+        gt_masks = torch.stack(gt_masks, dim=0)
+        return gt_kernels, gt_masks
 
-        batch_size = gt_texts.size()[0]
-        gt_texts = gt_texts.contiguous().reshape(batch_size, -1)
-        gt_kernels = gt_kernels.contiguous().reshape(batch_size, -1)
+    def _get_target_single(self, data_sample: TextDetDataSample
+                           ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Generate loss target from a data sample.
 
-        assert inst_embeds.shape[1] == 4
-        inst_embeds = inst_embeds.contiguous().reshape(batch_size, 4, -1)
+        Args:
+            data_sample (TextDetDataSample): The data sample.
 
-        loss_aggrs = []
-        loss_discrs = []
+        Returns:
+            tuple: A tuple of four tensors as the targets of one prediction.
+        """
+        gt_polygons = data_sample.gt_instances.polygons
+        gt_ignored = data_sample.gt_instances.ignored
 
-        for text, kernel, embed in zip(gt_texts, gt_kernels, inst_embeds):
+        gt_kernels = []
+        for ratio in self.shrink_ratio:
+            # TODO pass `gt_ignored` to `_generate_kernels`
+            gt_kernel, _ = self._generate_kernels(
+                data_sample.img_shape,
+                gt_polygons,
+                ratio,
+                ignore_flags=None,
+                max_shrink_dist=self.max_shrink_dist)
+            gt_kernels.append(gt_kernel)
+        gt_polygons_ignored = data_sample.gt_instances[gt_ignored].polygons
+        gt_mask = self._generate_effective_mask(data_sample.img_shape,
+                                                gt_polygons_ignored)
 
-            # for each image
-            text_num = int(text.max().item())
-            loss_aggr_img = []
-            kernel_avgs = []
-            select_num = self.speedup_bbox_thr
-            if 0 < select_num < text_num:
-                inds = np.random.choice(
-                    text_num, select_num, replace=False) + 1
-            else:
-                inds = range(1, text_num + 1)
+        gt_kernels = np.stack(gt_kernels, axis=0)
+        gt_kernels = torch.from_numpy(gt_kernels).float()
+        gt_mask = torch.from_numpy(gt_mask).float()
+        return gt_kernels, gt_mask
 
-            for i in inds:
-                # for each text instance
-                kernel_i = (kernel == i)  # 0.2ms
-                if kernel_i.sum() == 0 or (text == i).sum() == 0:  # 0.2ms
-                    continue
+    def _ohem_batch(self, text_scores: torch.Tensor, gt_texts: torch.Tensor,
+                    gt_mask: torch.Tensor) -> torch.Tensor:
+        """OHEM sampling for a batch of imgs.
 
-                # compute G_Ki in Eq (2)
-                avg = embed[:, kernel_i].mean(1)  # 0.5ms
-                kernel_avgs.append(avg)
+        Args:
+            text_scores (Tensor): The text scores of size :math:`(H, W)`.
+            gt_texts (Tensor): The gt text masks of size :math:`(H, W)`.
+            gt_mask (Tensor): The gt effective mask of size :math:`(H, W)`.
 
-                embed_i = embed[:, text == i]  # 0.6ms
-                # ||F(p) - G(K_i)|| - delta_aggregation, shape: nums
-                distance = (embed_i - avg.reshape(4, 1)).norm(  # 0.5ms
-                    2, dim=0) - self.delta_aggregation
-                # compute D(p,K_i) in Eq (2)
-                hinge = torch.max(
-                    distance,
-                    torch.tensor(0, device=distance.device,
-                                 dtype=torch.float)).pow(2)
+        Returns:
+            Tensor: The sampled mask of size :math:`(H, W)`.
+        """
+        assert isinstance(text_scores, torch.Tensor)
+        assert isinstance(gt_texts, torch.Tensor)
+        assert isinstance(gt_mask, torch.Tensor)
+        assert len(text_scores.shape) == 3
+        assert text_scores.shape == gt_texts.shape
+        assert gt_texts.shape == gt_mask.shape
 
-                aggr = torch.log(hinge + 1).mean()
-                loss_aggr_img.append(aggr)
+        sampled_masks = []
+        for i in range(text_scores.shape[0]):
+            sampled_masks.append(
+                self._ohem_single(text_scores[i], gt_texts[i], gt_mask[i]))
 
-            num_inst = len(loss_aggr_img)
-            if num_inst > 0:
-                loss_aggr_img = torch.stack(loss_aggr_img).mean()
-            else:
-                loss_aggr_img = torch.tensor(
-                    0, device=gt_texts.device, dtype=torch.float)
-            loss_aggrs.append(loss_aggr_img)
+        sampled_masks = torch.stack(sampled_masks)
 
-            loss_discr_img = 0
-            for avg_i, avg_j in itertools.combinations(kernel_avgs, 2):
-                # delta_discrimination - ||G(K_i) - G(K_j)||
-                distance_ij = self.delta_discrimination - (avg_i -
-                                                           avg_j).norm(2)
-                # D(K_i,K_j)
-                D_ij = torch.max(
-                    distance_ij,
-                    torch.tensor(
-                        0, device=distance_ij.device,
-                        dtype=torch.float)).pow(2)
-                loss_discr_img += torch.log(D_ij + 1)
+        return sampled_masks
 
-            if num_inst > 1:
-                loss_discr_img /= (num_inst * (num_inst - 1))
-            else:
-                loss_discr_img = torch.tensor(
-                    0, device=gt_texts.device, dtype=torch.float)
-            if num_inst == 0:
-                warnings.warn('num of instance is 0')
-            loss_discrs.append(loss_discr_img)
-        return torch.stack(loss_aggrs), torch.stack(loss_discrs)
-
-    def dice_loss_with_logits(self, pred, target, mask):
-
-        smooth = 0.001
-
-        pred = torch.sigmoid(pred)
-        target[target <= 0.5] = 0
-        target[target > 0.5] = 1
-        pred = pred.contiguous().view(pred.size()[0], -1)
-        target = target.contiguous().view(target.size()[0], -1)
-        mask = mask.contiguous().view(mask.size()[0], -1)
-
-        pred = pred * mask
-        target = target * mask
-
-        a = torch.sum(pred * target, 1) + smooth
-        b = torch.sum(pred * pred, 1) + smooth
-        c = torch.sum(target * target, 1) + smooth
-        d = (2 * a) / (b + c)
-        return 1 - d
-
-    def ohem_img(self, text_score, gt_text, gt_mask):
+    def _ohem_single(self, text_score: torch.Tensor, gt_text: torch.Tensor,
+                     gt_mask: torch.Tensor) -> torch.Tensor:
         """Sample the top-k maximal negative samples and all positive samples.
 
         Args:
@@ -305,29 +236,112 @@ class PANLoss(nn.Module):
             gt_mask > 0.5)
         return sampled_mask
 
-    def ohem_batch(self, text_scores, gt_texts, gt_mask):
-        """OHEM sampling for a batch of imgs.
+
+@MODELS.register_module()
+class PANEmbLossV1(nn.Module):
+    """The class for implementing EmbLossV1. This was partially adapted from
+    https://github.com/whai362/pan_pp.pytorch.
+
+    Args:
+        feature_dim (int): The dimension of the feature. Defaults to 4.
+        delta_aggregation (float): The delta for aggregation. Defaults to 0.5.
+        delta_discrimination (float): The delta for discrimination.
+            Defaults to 1.5.
+    """
+
+    def __init__(self,
+                 feature_dim: int = 4,
+                 delta_aggregation: float = 0.5,
+                 delta_discrimination: float = 1.5) -> None:
+        super().__init__()
+        self.feature_dim = feature_dim
+        self.delta_aggregation = delta_aggregation
+        self.delta_discrimination = delta_discrimination
+        self.weights = (1.0, 1.0)
+
+    def _forward_single(self, emb: torch.Tensor, instance: torch.Tensor,
+                        kernel: torch.Tensor,
+                        training_mask: torch.Tensor) -> torch.Tensor:
+        """Compute the loss for a single image.
 
         Args:
-            text_scores (Tensor): The text scores of size :math:`(H, W)`.
-            gt_texts (Tensor): The gt text masks of size :math:`(H, W)`.
-            gt_mask (Tensor): The gt effective mask of size :math:`(H, W)`.
-
-        Returns:
-            Tensor: The sampled mask of size :math:`(H, W)`.
+            emb (torch.Tensor): The embedding feature.
+            instance (torch.Tensor): The instance feature.
+            kernel (torch.Tensor): The kernel feature.
+            training_mask (torch.Tensor): The effective mask.
         """
-        assert isinstance(text_scores, torch.Tensor)
-        assert isinstance(gt_texts, torch.Tensor)
-        assert isinstance(gt_mask, torch.Tensor)
-        assert len(text_scores.shape) == 3
-        assert text_scores.shape == gt_texts.shape
-        assert gt_texts.shape == gt_mask.shape
+        training_mask = (training_mask > 0.5).float()
+        kernel = (kernel > 0.5).float()
+        instance = instance * training_mask
+        instance_kernel = (instance * kernel).view(-1)
+        instance = instance.view(-1)
+        emb = emb.view(self.feature_dim, -1)
 
-        sampled_masks = []
-        for i in range(text_scores.shape[0]):
-            sampled_masks.append(
-                self.ohem_img(text_scores[i], gt_texts[i], gt_mask[i]))
+        unique_labels, unique_ids = torch.unique(
+            instance_kernel, sorted=True, return_inverse=True)
+        num_instance = unique_labels.size(0)
+        if num_instance <= 1:
+            return 0
 
-        sampled_masks = torch.stack(sampled_masks)
+        emb_mean = emb.new_zeros((self.feature_dim, num_instance),
+                                 dtype=torch.float32)
+        for i, lb in enumerate(unique_labels):
+            if lb == 0:
+                continue
+            ind_k = instance_kernel == lb
+            emb_mean[:, i] = torch.mean(emb[:, ind_k], dim=1)
 
-        return sampled_masks
+        l_agg = emb.new_zeros(num_instance, dtype=torch.float32)
+        for i, lb in enumerate(unique_labels):
+            if lb == 0:
+                continue
+            ind = instance == lb
+            emb_ = emb[:, ind]
+            dist = (emb_ - emb_mean[:, i:i + 1]).norm(p=2, dim=0)
+            dist = F.relu(dist - self.delta_aggregation)**2
+            l_agg[i] = torch.mean(torch.log(dist + 1.0))
+        l_agg = torch.mean(l_agg[1:])
+
+        if num_instance > 2:
+            emb_interleave = emb_mean.permute(1, 0).repeat(num_instance, 1)
+            emb_band = emb_mean.permute(1, 0).repeat(1, num_instance).view(
+                -1, self.feature_dim)
+
+            mask = (1 - torch.eye(num_instance, dtype=torch.int8)).view(
+                -1, 1).repeat(1, self.feature_dim)
+            mask = mask.view(num_instance, num_instance, -1)
+            mask[0, :, :] = 0
+            mask[:, 0, :] = 0
+            mask = mask.view(num_instance * num_instance, -1)
+
+            dist = emb_interleave - emb_band
+            dist = dist[mask > 0].view(-1, self.feature_dim).norm(p=2, dim=1)
+            dist = F.relu(2 * self.delta_discrimination - dist)**2
+            l_dis = torch.mean(torch.log(dist + 1.0))
+        else:
+            l_dis = 0
+
+        l_agg = self.weights[0] * l_agg
+        l_dis = self.weights[1] * l_dis
+        l_reg = torch.mean(torch.log(torch.norm(emb_mean, 2, 0) + 1.0)) * 0.001
+        loss = l_agg + l_dis + l_reg
+        return loss
+
+    def forward(self, emb: torch.Tensor, instance: torch.Tensor,
+                kernel: torch.Tensor,
+                training_mask: torch.Tensor) -> torch.Tensor:
+        """Compute the loss for a batch image.
+
+        Args:
+            emb (torch.Tensor): The embedding feature.
+            instance (torch.Tensor): The instance feature.
+            kernel (torch.Tensor): The kernel feature.
+            training_mask (torch.Tensor): The effective mask.
+        """
+        loss_batch = emb.new_zeros((emb.size(0)), dtype=torch.float32)
+
+        for i in range(loss_batch.size(0)):
+            loss_batch[i] = self._forward_single(emb[i], instance[i],
+                                                 kernel[i], training_mask[i])
+
+        return loss_batch
