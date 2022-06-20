@@ -1,5 +1,11 @@
-label_convertor = dict(
-    type='AttnConvertor', dict_type='DICT90', with_unknown=True)
+dictionary = dict(
+    type='Dictionary',
+    dict_file='dicts/english_digits_symbols.txt',
+    with_padding=True,
+    with_unknown=True,
+    same_start_end=True,
+    with_start=True,
+    with_end=True)
 
 model = dict(
     type='MASTER',
@@ -55,7 +61,9 @@ model = dict(
         d_inner=2048,
         n_layers=3,
         feat_pe_drop=0.2,
-        feat_size=6 * 40),
-    loss=dict(type='TFLoss', reduction='mean'),
-    label_convertor=label_convertor,
-    max_seq_len=30)
+        feat_size=6 * 40,
+        postprocessor=dict(type='AttentionPostprocessor'),
+        loss=dict(type='CELoss', reduction='mean', ignore_first_char=True)),
+    max_seq_len=30,
+    dictionary=dictionary,
+    preprocess_cfg=dict(mean=[127.5, 127.5, 127.5], std=[127.5, 127.5, 127.5]))

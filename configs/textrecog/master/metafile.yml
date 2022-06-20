@@ -16,7 +16,7 @@ Collections:
     README: configs/textrecog/master/README.md
 
 Models:
-  - Name: master_academic
+  - Name: master_r31_12e_ST_MJ_SA
     In Collection: MASTER
     Config: configs/textrecog/master/master_r31_12e_ST_MJ_SA.py
     Metadata:
