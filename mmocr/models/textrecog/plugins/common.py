@@ -1,9 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Tuple, Union
+
 import torch
 import torch.nn as nn
 from mmcv.cnn import PLUGIN_LAYERS
 
 
+# TODO: Replace PLUGIN_LAYERS with MODELS
 @PLUGIN_LAYERS.register_module()
 class Maxpool2d(nn.Module):
     """A wrapper around nn.Maxpool2d().
@@ -14,17 +17,21 @@ class Maxpool2d(nn.Module):
         padding (int or tuple(int)): Padding for pooling layer
     """
 
-    def __init__(self, kernel_size, stride, padding=0, **kwargs):
+    def __init__(self,
+                 kernel_size: Union[int, Tuple[int]],
+                 stride: Union[int, Tuple[int]],
+                 padding: Union[int, Tuple[int]] = 0,
+                 **kwargs) -> None:
         super().__init__()
         self.model = nn.MaxPool2d(kernel_size, stride, padding)
 
-    def forward(self, x):
-        """
+    def forward(self, x) -> torch.Tensor:
+        """Forward function.
         Args:
-            x (Tensor): Input feature map
+            x (Tensor): Input feature map.
 
         Returns:
-            Tensor: The tensor after Maxpooling layer.
+            Tensor: Output tensor after Maxpooling layer.
         """
         return self.model(x)
 
@@ -46,13 +53,13 @@ class GCAModule(nn.Module):
     """
 
     def __init__(self,
-                 in_channels,
-                 ratio,
-                 n_head,
-                 pooling_type='att',
-                 scale_attn=False,
-                 fusion_type='channel_add',
-                 **kwargs):
+                 in_channels: int,
+                 ratio: float,
+                 n_head: int,
+                 pooling_type: str = 'att',
+                 scale_attn: bool = False,
+                 fusion_type: str = 'channel_add',
+                 **kwargs) -> None:
         super().__init__()
 
         assert pooling_type in ['avg', 'att']
@@ -96,7 +103,15 @@ class GCAModule(nn.Module):
                 nn.LayerNorm([self.planes, 1, 1]), nn.ReLU(inplace=True),
                 nn.Conv2d(self.planes, self.in_channels, kernel_size=1))
 
-    def spatial_pool(self, x):
+    def spatial_pool(self, x: torch.Tensor) -> torch.Tensor:
+        """Spatial pooling function.
+
+        Args:
+            x (Tensor): Input feature map.
+
+        Returns:
+            Tensor: Output tensor after spatial pooling.
+        """
         batch, channel, height, width = x.size()
         if self.pooling_type == 'att':
             # [N*headers, C', H , W] C = headers * C'
@@ -140,7 +155,15 @@ class GCAModule(nn.Module):
 
         return context
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward function.
+
+        Args:
+            x (Tensor): Input feature map.
+
+        Returns:
+            Tensor: Output tensor after GCAModule.
+        """
         # [N, C, 1, 1]
         context = self.spatial_pool(x)
         out = x
