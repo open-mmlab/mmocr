@@ -406,7 +406,8 @@ class RandomRotate(BaseTransform):
                 rotated_box = poly2bbox(rotated_box)
                 box_list.append(rotated_box)
 
-            results['gt_bboxes'] = np.array(box_list)
+            results['gt_bboxes'] = np.array(
+                box_list, dtype=np.float32).reshape(-1, 4)
 
     def _rotate_polygons(self, results: Dict,
                          center_shift: Tuple[int, int]) -> None:
