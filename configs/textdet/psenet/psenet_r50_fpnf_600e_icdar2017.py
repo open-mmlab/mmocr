@@ -1,3 +1,4 @@
+# TODO Train on ICDAR 2017
 _base_ = [
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_600e.py',
