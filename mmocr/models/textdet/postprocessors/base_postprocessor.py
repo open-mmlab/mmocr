@@ -2,7 +2,6 @@
 from functools import partial
 from typing import Dict, List, Optional, Sequence
 
-import cv2
 import numpy as np
 
 from mmocr.core import TextDetDataSample
@@ -65,9 +64,9 @@ class BaseTextDetPostProcessor:
 
         Args:
             pred_results (dict): The prediction results stored in a dictionary.
-                Usually each item to be postprocessed is expected to be a
+                Usually each item to be post-processed is expected to be a
                 batched tensor.
-            data_samples (list[TextDetDataSample]): Batch of datasamples,
+            data_samples (list[TextDetDataSample]): Batch of data_samples,
                 each corresponding to a prediction result.
             training (bool): Whether the model is in training mode. Defaults to
                 False.
@@ -141,49 +140,6 @@ class BaseTextDetPostProcessor:
             are saved in ``TextDetDataSample.pred_instances.scores``.
         """
         raise NotImplementedError
-
-    def points2boundary(self,
-                        points: np.ndarray,
-                        min_width: int = 0) -> List[float]:
-        """Convert a text mask represented by point coordinates sequence into a
-        text boundary.
-        TODO: move to psenet and panet's postprocessors
-
-        Args:
-            points (ndarray): Mask index of size (n, 2).
-            min_width (int): Minimum bounding box width to be converted. Only
-                applicable to 'quad' type. Defaults to 0.
-
-        Returns:
-            list[float]: The text boundary point coordinates (x, y) list.
-            Return [] if no text boundary found.
-        """
-        assert isinstance(points, np.ndarray)
-        assert points.shape[1] == 2
-        assert self.text_repr_type in ['quad', 'poly']
-
-        if self.text_repr_type == 'quad':
-            rect = cv2.minAreaRect(points)
-            vertices = cv2.boxPoints(rect)
-            boundary = []
-            if min(rect[1]) >= min_width:
-                boundary = [p for p in vertices.flatten().tolist()]
-        elif self.text_repr_type == 'poly':
-
-            height = np.max(points[:, 1]) + 10
-            width = np.max(points[:, 0]) + 10
-
-            mask = np.zeros((height, width), np.uint8)
-            mask[points[:, 1], points[:, 0]] = 255
-
-            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL,
-                                           cv2.CHAIN_APPROX_SIMPLE)
-            boundary = list(contours[0].flatten().tolist())
-
-        if len(boundary) < 8:
-            return []
-
-        return boundary
 
     def split_results(self,
                       pred_results: Dict,

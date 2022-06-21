@@ -6,7 +6,6 @@ import numpy as np
 from mmengine import InstanceData
 
 from mmocr.core import TextDetDataSample
-from mmocr.core.evaluation.utils import points2polygon, poly_iou
 from mmocr.models.textdet.postprocessors import BaseTextDetPostProcessor
 
 
@@ -77,35 +76,6 @@ class TestBaseTextDetPostProcessor(unittest.TestCase):
     def test_get_text_instances(self):
         with self.assertRaises(NotImplementedError):
             BaseTextDetPostProcessor().get_text_instances(None, None)
-
-    def test_points2boundary(self):
-
-        base_postprocessor = BaseTextDetPostProcessor(text_repr_type='quad')
-
-        # test invalid arguments
-        with self.assertRaises(AssertionError):
-            base_postprocessor.points2boundary([])
-
-        points = np.array([[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1],
-                           [0, 2], [1, 2], [2, 2]])
-
-        # test quad
-        base_postprocessor = BaseTextDetPostProcessor(text_repr_type='quad')
-
-        result = base_postprocessor.points2boundary(points)
-        pred_poly = points2polygon(result)
-        target_poly = points2polygon([2, 2, 0, 2, 0, 0, 2, 0])
-        self.assertEqual(poly_iou(pred_poly, target_poly), 1)
-
-        result = base_postprocessor.points2boundary(points, min_width=3)
-        self.assertEqual(len(result), 0)
-
-        # test poly
-        base_postprocessor = BaseTextDetPostProcessor(text_repr_type='poly')
-        result = base_postprocessor.points2boundary(points)
-        pred_poly = points2polygon(result)
-        target_poly = points2polygon([0, 0, 0, 2, 2, 2, 2, 0])
-        assert poly_iou(pred_poly, target_poly) == 1
 
     def test_split_results(self):
 
