@@ -1,3 +1,4 @@
+# TODO Train on ctw1500
 _base_ = [
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_600e.py',
