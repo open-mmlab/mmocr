@@ -3,7 +3,8 @@ from unittest import TestCase
 
 import torch
 
-from mmocr.models.textdet.losses.common import MaskedBalancedBCELoss
+from mmocr.models.textdet.losses.common import (MaskedBalancedBCELoss,
+                                                MaskedBCELoss)
 
 
 class TestMaskedBalancedBCELoss(TestCase):
@@ -77,14 +78,14 @@ class TestMaskedBalancedBCELoss(TestCase):
 class TestMaskedBCELoss(TestCase):
 
     def setUp(self) -> None:
-        self.bce_loss = MaskedBalancedBCELoss()
+        self.bce_loss = MaskedBCELoss()
         self.pred = torch.FloatTensor([0.1, 0.2, 0.3, 0.4])
         self.gt = torch.FloatTensor([1, 0, 0, 0])
         self.mask = torch.BoolTensor([True, False, False, True])
 
     def test_init(self):
         with self.assertRaises(AssertionError):
-            MaskedBalancedBCELoss(eps='a')
+            MaskedBCELoss(eps='a')
 
     def test_forward(self):
 
