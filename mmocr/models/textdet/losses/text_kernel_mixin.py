@@ -29,8 +29,8 @@ class TextKernelMixin:
             text_polys (Sequence[np.ndarray]): 2D array of text polygons.
             shrink_ratio (float or int): The shrink ratio of kernel.
             max_shrink_dist (float or int): The maximum shrinking distance.
-            ignore_flags (torch.BoolTensor, options): Indicate whether the
-                corresponding text polygon is ignored.
+            ignore_flags (torch.BoolTensor, optional): Indicate whether the
+                corresponding text polygon is ignored. Defaults to None.
 
         Returns:
             tuple(ndarray, ndarray): The text instance kernels of shape

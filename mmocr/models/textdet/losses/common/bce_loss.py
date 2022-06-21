@@ -130,4 +130,4 @@ class MaskedBCELoss(nn.Module):
         assert pred.max() <= 1 and pred.min() >= 0
         loss = self.binary_cross_entropy(pred, gt)
 
-        return (loss * mask) / (mask.sum() + self.eps)
+        return (loss * mask).sum() / (mask.sum() + self.eps)

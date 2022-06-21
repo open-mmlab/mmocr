@@ -8,6 +8,11 @@ from mmocr.registry import MODELS
 
 
 @MODELS.register_module()
+class SmoothL1Loss(nn.SmoothL1Loss):
+    """Smooth L1 loss."""
+
+
+@MODELS.register_module()
 class MaskedSmoothL1Loss(nn.Module):
     """Masked Smooth L1 loss.
 
