@@ -1556,3 +1556,102 @@ class ShortScaleAspectJitter(BaseTransform):
         repr_str += f'scale_divisor = {self.scale_divisor}, '
         repr_str += f'resize_cfg = {self.resize_cfg})'
         return repr_str
+
+
+@TRANSFORMS.register_module()
+@avoid_cache_randomness
+class BoundedScaleAspectJitter(BaseTransform):
+    """First randomly rescale the image so that the longside and shortside of
+    the image are around the bound; then jitter its aspect ratio.
+
+    Required Keys:
+
+    - img
+    - img_shape
+    - gt_bboxes (optional)
+    - gt_polygons (optional)
+
+    Modified Keys:
+
+    - img
+    - img_shape
+    - gt_bboxes (optional)
+    - gt_polygons (optional)
+
+    Added Keys:
+
+    - scale
+    - scale_factor
+    - keep_ratio
+
+    Args:
+        long_size_bound (int): The approximate bound for long size.
+        short_size_bound (int): The approximate bound for short size.
+        size_jitter_range (tuple(float, float)): Range of the ratio used
+            to jitter the size. Defaults to (0.7, 1.3).
+        aspect_ratio_jitter_range (tuple(float, float)): Range of the ratio
+            used to jitter its aspect ratio. Defaults to (0.9, 1.1).
+        resize_type (str): The type of resize class to use. Defaults to
+            "Resize".
+        **resize_kwargs: Other keyword arguments for the ``resize_type``.
+    """
+
+    def __init__(
+        self,
+        long_size_bound: int,
+        short_size_bound: int,
+        ratio_range: Tuple[float, float] = (0.7, 1.3),
+        aspect_ratio_range: Tuple[float, float] = (0.9, 1.1),
+        resize_type: str = 'Resize',
+        **resize_kwargs,
+    ) -> None:
+        super().__init__()
+        self.ratio_range = ratio_range
+        self.aspect_ratio_range = aspect_ratio_range
+        self.long_size_bound = long_size_bound
+        self.short_size_bound = short_size_bound
+        self.resize_cfg = dict(type=resize_type, **resize_kwargs)
+        # create an empty Reisize object
+        self.resize_cfg.update(dict(scale=0))
+        self.resize = TRANSFORMS.build(self.resize_cfg)
+
+    def _sample_from_range(self, range: Tuple[float, float]) -> float:
+        """A ratio will be randomly sampled from the range specified by
+        ``range``.
+
+        Args:
+            ratio_range (tuple[float]): The minimum and maximum ratio.
+
+        Returns:
+            float: A ratio randomly sampled from the range.
+        """
+        min_value, max_value = min(range), max(range)
+        value = np.random.random_sample() * (max_value - min_value) + min_value
+        return value
+
+    def transform(self, results: Dict) -> Dict:
+        h, w = results['img'].shape[:2]
+        new_scale = 1
+        if max(h, w) > self.long_size_bound:
+            new_scale = self.long_size_bound / max(h, w)
+        jitter_ratio = self._sample_from_range(self.ratio_range)
+        jitter_ratio = new_scale * jitter_ratio
+        if min(h, w) * jitter_ratio <= self.short_size_bound:
+            jitter_ratio = (self.short_size_bound + 10) * 1.0 / min(h, w)
+        aspect = self._sample_from_range(self.aspect_ratio_range)
+        h_scale = jitter_ratio * math.sqrt(aspect)
+        w_scale = jitter_ratio / math.sqrt(aspect)
+        new_h = int(h * h_scale)
+        new_w = int(w * w_scale)
+
+        self.resize.scale = (new_w, new_h)
+        return self.resize(results)
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(long_size_bound = {self.long_size_bound}, '
+        repr_str += f'short_size_bound = {self.short_size_bound}, '
+        repr_str += f'ratio_range = {self.ratio_range}, '
+        repr_str += f'aspect_ratio_range = {self.aspect_ratio_range}, '
+        repr_str += f'resize_cfg = {self.resize_cfg})'
+        return repr_str

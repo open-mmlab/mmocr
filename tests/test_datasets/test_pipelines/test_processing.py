@@ -6,9 +6,9 @@ import unittest.mock as mock
 import numpy as np
 from mmcv.transforms import Pad, RandomResize
 
-from mmocr.datasets.pipelines import (PadToWidth, PyramidRescale, RandomCrop,
-                                      RandomFlip, RandomRotate,
-                                      RescaleToHeight, Resize,
+from mmocr.datasets.pipelines import (BoundedScaleAspectJitter, PadToWidth,
+                                      PyramidRescale, RandomCrop, RandomFlip,
+                                      RandomRotate, RescaleToHeight, Resize,
                                       ShortScaleAspectJitter, SourceImagePad,
                                       TextDetRandomCrop, TextDetRandomCropFlip)
 from mmocr.utils import bbox2poly, poly2shapely
@@ -739,3 +739,27 @@ class TestShortScaleAspectJitter(unittest.TestCase):
                               'aspect_ratio_range = (0.9, 1.1), '
                               'scale_divisor = 4, '
                               "resize_cfg = {'type': 'Resize', 'scale': 0})"))
+
+
+class TestBoundedScaleAspectJitter(unittest.TestCase):
+
+    @mock.patch('mmocr.datasets.pipelines.processing.np.random.random_sample')
+    def test_transform(self, mock_random):
+        mock_random.side_effect = [1.0, 1.0]
+        data_info = dict(img=np.random.random((16, 25, 3)), img_shape=(16, 25))
+        # test size and size_divisor are both set
+        transform = BoundedScaleAspectJitter(10, 5)
+        result = transform(data_info)
+        print(result['img'].shape)
+        self.assertEqual(result['img'].shape, (8, 12, 3))
+        self.assertEqual(result['img_shape'], (8, 12))
+
+    def test_repr(self):
+        transform = BoundedScaleAspectJitter(10, 5)
+        print(repr(transform))
+        self.assertEqual(
+            repr(transform),
+            ('BoundedScaleAspectJitter(long_size_bound = 10, '
+             'short_size_bound = 5, ratio_range = (0.7, 1.3), '
+             'aspect_ratio_range = (0.9, 1.1), '
+             "resize_cfg = {'type': 'Resize', 'scale': 0})"))
