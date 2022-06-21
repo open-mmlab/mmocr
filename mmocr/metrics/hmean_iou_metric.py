@@ -49,8 +49,7 @@ class HmeanIOUMetric(BaseMetric):
             and 'vanilla'. 'max_matching' refers to the optimum strategy that
             maximizes the number of matches. Vanilla strategy matches gt and
             pred polygons if both of them are never matched before. It was used
-            in MMOCR 0.x and is not recommended to use now. Defaults to
-            'max_matching'.
+            in MMOCR 0.x and and academia. Defaults to 'vanilla'.
         collect_device (str): Device name used for collecting results from
             different ranks during distributed training. Must be 'cpu' or
             'gpu'. Defaults to 'cpu'.
@@ -65,7 +64,7 @@ class HmeanIOUMetric(BaseMetric):
                  match_iou_thr: float = 0.5,
                  ignore_precision_thr: float = 0.5,
                  pred_score_thrs: Dict = dict(start=0.3, stop=0.9, step=0.1),
-                 strategy: str = 'max_matching',
+                 strategy: str = 'vanilla',
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None) -> None:
         super().__init__(collect_device=collect_device, prefix=prefix)
