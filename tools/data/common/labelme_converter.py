@@ -117,7 +117,7 @@ def parse_labelme_json(json_file,
                 elif recog_format == 'jsonl':
                     recog_warp_line_str_list.append(
                         json.dumps({
-                            'filename': img_path_cropped_img,
+                            'filename': img_path_warpped_img,
                             'text': text_label
                         }))
         idx += 1
