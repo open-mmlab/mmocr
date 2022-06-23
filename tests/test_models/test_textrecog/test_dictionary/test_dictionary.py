@@ -120,6 +120,10 @@ class TestDictionary(TestCase):
             dict_gen = Dictionary(dict_file=dict_file, with_unknown=True)
             self.assertListEqual(dict_gen.str2idx('H'), [dict_gen.unknown_idx])
 
+            dict_gen = Dictionary(
+                dict_file=dict_file, with_unknown=True, unknown_token=None)
+            self.assertListEqual(dict_gen.str2idx('H'), [])
+
     def test_idx2str(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
 

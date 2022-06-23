@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import re
-from typing import List, Sequence
+from typing import List, Optional, Sequence
 
 from mmocr.registry import TASK_UTILS
 from mmocr.utils import list_from_file
@@ -34,8 +34,9 @@ class Dictionary:
             end is the same. Defaults to '<BOS/EOS>'.
         padding_token (str): The padding token as a string.
             Defaults to '<PAD>'.
-        unknown_token (str): The unknown token as a string.
-            Defaults to '<UKN>'.
+        unknown_token (str, optional): The unknown token as a string. If it's
+            set to None and ``with_unknown`` is True, the unknown token will be
+            skipped when converting string to index. Defaults to '<UKN>'.
     """
 
     def __init__(self,
@@ -49,7 +50,7 @@ class Dictionary:
                  end_token: str = '<EOS>',
                  start_end_token: str = '<BOS/EOS>',
                  padding_token: str = '<PAD>',
-                 unknown_token: str = '<UKN>',
+                 unknown_token: Optional[str] = '<UKN>',
                  **kwargs) -> None:
         self.with_start = with_start
         self.with_end = with_end
@@ -100,7 +101,7 @@ class Dictionary:
         return self._contain_uppercase
 
     def str2idx(self, string: str) -> List:
-        """Convert a string to a list of indexes via ``Dictionary.dict``
+        """Convert a string to a list of indexes via ``Dictionary.dict``.
 
         Args:
             string (str): The string to convert to indexes.
@@ -112,6 +113,8 @@ class Dictionary:
         for s in string:
             char_idx = self._char2idx.get(s, self.unknown_idx)
             if char_idx is None:
+                if self.with_unknown:
+                    continue
                 raise Exception(f'Chararcter: {s} not in dict,'
                                 ' please check gt_label and use'
                                 ' custom dict file,'
@@ -159,7 +162,7 @@ class Dictionary:
 
         # unknown
         self.unknown_idx = None
-        if self.with_unknown:
+        if self.with_unknown and self.unknown_token is not None:
             self._dict.append(self.unknown_token)
             self.unknown_idx = len(self._dict) - 1
 
