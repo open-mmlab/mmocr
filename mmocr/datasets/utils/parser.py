@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
 import warnings
+from typing import Dict, Tuple
 
 from mmocr.datasets.builder import PARSERS
 from mmocr.utils import StringStrip
@@ -11,16 +12,18 @@ class LineStrParser:
     """Parse string of one line in annotation file to dict format.
 
     Args:
-        keys (list[str]): Keys in result dict.
-        keys_idx (list[int]): Value index in sub-string list
-            for each key above.
+        keys (list[str]): Keys in result dict. Defaults to
+            ['filename', 'text'].
+        keys_idx (list[int]): Value index in sub-string list for each key
+            above. Defaults to [0, 1].
         separator (str): Separator to separate string to list of sub-string.
+            Defaults to ' '.
     """
 
     def __init__(self,
-                 keys=['filename', 'text'],
-                 keys_idx=[0, 1],
-                 separator=' ',
+                 keys: Tuple[str, str] = ['filename', 'text'],
+                 keys_idx: Tuple[int, int] = [0, 1],
+                 separator: str = ' ',
                  **kwargs):
         assert isinstance(keys, list)
         assert isinstance(keys_idx, list)
@@ -32,10 +35,8 @@ class LineStrParser:
         self.separator = separator
         self.strip_cls = StringStrip(**kwargs)
 
-    def get_item(self, data_ret, index):
-        map_index = index % len(data_ret)
-        line_str = data_ret[map_index]
-        line_str = self.strip_cls(line_str)
+    def __call__(self, in_str: str) -> Dict:
+        line_str = self.strip_cls(in_str)
         if len(line_str.split(' ')) > 2:
             msg = 'More than two blank spaces were detected. '
             msg += 'Please use LineJsonParser to handle '
@@ -44,10 +45,10 @@ class LineStrParser:
             msg += 'https://mmocr.readthedocs.io/en/latest/'
             msg += 'tutorials/blank_recog.html '
             msg += 'for details.'
-            warnings.warn(msg)
+            warnings.warn(msg, UserWarning)
         line_str = line_str.split(self.separator)
         if len(line_str) <= max(self.keys_idx):
-            raise Exception(
+            raise ValueError(
                 f'key index: {max(self.keys_idx)} out of range: {line_str}')
 
         line_info = {}
@@ -61,18 +62,17 @@ class LineJsonParser:
     """Parse json-string of one line in annotation file to dict format.
 
     Args:
-        keys (list[str]): Keys in both json-string and result dict.
+        keys (list[str]): Keys in both json-string and result dict. Defaults
+            to ['filename', 'text'].
     """
 
-    def __init__(self, keys=[]):
+    def __init__(self, keys: Tuple[str, str] = ['filename', 'text']) -> None:
         assert isinstance(keys, list)
         assert len(keys) > 0
         self.keys = keys
 
-    def get_item(self, data_ret, index):
-        map_index = index % len(data_ret)
-        json_str = data_ret[map_index]
-        line_json_obj = json.loads(json_str)
+    def __call__(self, in_str: str) -> Dict:
+        line_json_obj = json.loads(in_str)
         line_info = {}
         for key in self.keys:
             if key not in line_json_obj:
