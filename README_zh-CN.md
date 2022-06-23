@@ -17,11 +17,6 @@
     </sup>
   </div>
   <div>&nbsp;</div>
-</div>
-
-## 简介
-
-[English](/README.md) | 简体中文
 
 [![build](https://github.com/open-mmlab/mmocr/workflows/build/badge.svg)](https://github.com/open-mmlab/mmocr/actions)
 [![docs](https://readthedocs.org/projects/mmocr/badge/?version=latest)](https://mmocr.readthedocs.io/en/latest/?badge=latest)
@@ -31,13 +26,27 @@
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 
+[📘文档](https://mmocr.readthedocs.io/zh_CN/latest/) |
+[🛠️安装](https://mmocr.readthedocs.io/zh_CN/latest/install.html) |
+[👀模型库](https://mmocr.readthedocs.io/zh_CN/latest/modelzoo.html) |
+[🆕更新日志](https://mmocr.readthedocs.io/zh_CN/latest/changelog.html) |
+[🤔报告问题](https://github.com/open-mmlab/mmocr/issues/new/choose)
+
+</div>
+
+<div align="center">
+
+[English](/README.md) | 简体中文
+
+</div>
+
+## 简介
+
 MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检测，文本识别以及相应的下游任务，如关键信息提取。 它是 OpenMMLab 项目的一部分。
 
 主分支目前支持 **PyTorch 1.6 以上**的版本。
 
-文档：https://mmocr.readthedocs.io/zh_CN/latest/
-
-<div align="left">
+<div align="center">
   <img src="resources/illustration.jpg"/>
 </div>
 
@@ -45,20 +54,52 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 
 -**全流程**
 
-   该工具箱不仅支持文本检测和文本识别，还支持其下游任务，例如关键信息提取。
+该工具箱不仅支持文本检测和文本识别，还支持其下游任务，例如关键信息提取。
 
 -**多种模型**
 
-  该工具箱支持用于文本检测，文本识别和关键信息提取的各种最新模型。
+该工具箱支持用于文本检测，文本识别和关键信息提取的各种最新模型。
 
 -**模块化设计**
 
-  MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处理器，模型组件如主干模块，颈部模块和头部模块，以及损失函数。有关如何构建自定义模型的信
+MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处理器，模型组件如主干模块，颈部模块和头部模块，以及损失函数。有关如何构建自定义模型的信
 息，请参考[快速入门](https://mmocr.readthedocs.io/zh_CN/latest/getting_started.html)。
 
 -**众多实用工具**
 
-  该工具箱提供了一套全面的实用程序，可以帮助用户评估模型的性能。它包括可对图像，标注的真值以及预测结果进行可视化的可视化工具，以及用于在训练过程中评估模型的验证工具。它还包括数据转换器，演示了如何将用户自建的标注数据转换为 MMOCR 支持的标注文件。
+该工具箱提供了一套全面的实用程序，可以帮助用户评估模型的性能。它包括可对图像，标注的真值以及预测结果进行可视化的可视化工具，以及用于在训练过程中评估模型的验证工具。它还包括数据转换器，演示了如何将用户自建的标注数据转换为 MMOCR 支持的标注文件。
+
+## 最新进展
+
+最新的月度版本 v0.6.0 在 2022.05.05 发布。
+
+1. 支持了两个新模型：[MASTER](https://arxiv.org/abs/1910.02562) 和 [DBNet++](https://arxiv.org/abs/2202.10304)
+2. 新支持了三个数据集：LSVT, RCTW 和 HierText
+3. 支持从 LMDB 数据集读取数据 [查看文档](https://mmocr.readthedocs.io/en/latest/tools.html#convert-text-recognition-dataset-to-lmdb-format)
+4. 提供了 Labelme 数据格式转换脚本，可使 MMOCR 支持由 Labelme 标注的数据
+
+阅读[更新日志](https://mmocr.readthedocs.io/en/latest/changelog.html)以获取更多信息。
+
+## 安装
+
+MMOCR 依赖 [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv) 和 [MMDetection](https://github.com/open-mmlab/mmdetection)，以下是安装的简要步骤。
+更详细的安装指南请参考 [安装文档](https://mmocr.readthedocs.io/zh_CN/latest/install.html)。
+
+```shell
+conda create -n open-mmlab python=3.8 pytorch=1.10 cudatoolkit=11.3 torchvision -c pytorch -y
+conda activate open-mmlab
+pip3 install openmim
+mim install mmcv-full
+mim install mmdet
+git clone https://github.com/open-mmlab/mmocr.git
+cd mmocr
+pip3 install -e .
+```
+
+## 快速入门
+
+请参考[快速入门](https://mmocr.readthedocs.io/zh_CN/latest/getting_started.html)文档学习 MMOCR 的基本使用。
+
 ## [模型库](https://mmocr.readthedocs.io/en/latest/modelzoo.html)
 
 支持的算法：
@@ -106,9 +147,13 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 
 请点击[模型库](https://mmocr.readthedocs.io/en/latest/modelzoo.html)查看更多关于上述算法的详细信息。
 
-## 开源许可证
+## 贡献指南
 
-该项目采用 [Apache 2.0 license](LICENSE) 开源许可证。
+我们感谢所有的贡献者为改进和提升 MMOCR 所作出的努力。请参考[贡献指南](.github/CONTRIBUTING.md)来了解参与项目贡献的相关指引。
+
+## 致谢
+
+MMOCR 是一款由来自不同高校和企业的研发人员共同参与贡献的开源项目。我们感谢所有为项目提供算法复现和新功能支持的贡献者，以及提供宝贵反馈的用户。 我们希望此工具箱可以帮助大家来复现已有的方法和开发新的方法，从而为研究社区贡献力量。
 
 ## 引用
 
@@ -123,39 +168,11 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 }
 ```
 
-## 更新日志
+## 开源许可证
 
-最新的月度版本 v0.6.0 在 2022.05.05 发布。
-
-## 安装
-
-MMOCR 依赖 [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv) 和 [MMDetection](https://github.com/open-mmlab/mmdetection)，以下是安装的简要步骤。
-更详细的安装指南请参考 [安装文档](https://mmocr.readthedocs.io/zh_CN/latest/install.html)。
-
-```shell
-conda create -n open-mmlab python=3.8 pytorch=1.10 cudatoolkit=11.3 torchvision -c pytorch -y
-conda activate open-mmlab
-pip3 install openmim
-mim install mmcv-full
-mim install mmdet
-git clone https://github.com/open-mmlab/mmocr.git
-cd mmocr
-pip3 install -e .
-```
-
-## 快速入门
-
-请参考[快速入门](https://mmocr.readthedocs.io/zh_CN/latest/getting_started.html)文档学习 MMOCR 的基本使用。
-
-## 贡献指南
-
-我们感谢所有的贡献者为改进和提升 MMOCR 所作出的努力。请参考[贡献指南](.github/CONTRIBUTING.md)来了解参与项目贡献的相关指引。
-
-## 致谢
-MMOCR 是一款由来自不同高校和企业的研发人员共同参与贡献的开源项目。我们感谢所有为项目提供算法复现和新功能支持的贡献者，以及提供宝贵反馈的用户。 我们希望此工具箱可以帮助大家来复现已有的方法和开发新的方法，从而为研究社区贡献力量。
+该项目采用 [Apache 2.0 license](LICENSE) 开源许可证。
 
 ## OpenMMLab 的其他项目
-
 
 - [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab 计算机视觉基础库
 - [MIM](https://github.com/open-mmlab/mim): MIM 是 OpenMMlab 项目、算法、模型的统一入口

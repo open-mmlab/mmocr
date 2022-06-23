@@ -122,8 +122,6 @@ master_doc = 'index'
 html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
 
-# Enable ::: for my_st
-myst_enable_extensions = ['colon_fence']
 myst_heading_anchors = 3
 
 

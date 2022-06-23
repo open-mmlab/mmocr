@@ -15,11 +15,11 @@ The objective of CloseSet SDMGR is to predict which category fits the text box b
 </div>
 <br>
 
-:::{warning}
+```{warning}
 
 A `*_key` and `*_value` pair do not necessarily have to both appear on the receipt. For example, we usually won't see `Prod_item_key` appearing on the receipt, while there can be multiple boxes annotated as `Pred_item_value`. In contrast, `Tax_key` and `Tax_value` are likely to appear together since they're usually structured as `Tax`: `11.02` on the receipt.
 
-:::
+```
 
 ## OpenSet
 
@@ -29,28 +29,28 @@ Multiple nodes can have the same edge label. However, only key and value nodes w
 
 When making OpenSet annotations, each node must have an edge label. It should be an unique one if it falls into non-`key` non-`value` categories.
 
-:::{note}
+```{note}
 You can merge `background` to `others` if telling background apart is not important, and we provide this choice in the conversion script for WildReceipt .
-:::
+```
 
 ### Converting WildReceipt from CloseSet to OpenSet
 
 We provide a [conversion script](../datasets/kie.md) that converts WildRecipt-like dataset to OpenSet format. This script links every `key`-`value` pairs following the rules above. Here's an example illustration: (For better understanding, all the node labels are presented as texts)
 
-|box_content | closeset_node_label| closeset_edge_label | openset_node_label | openset_edge_label |
-| :----: | :---: | :----: | :---: | :---: |
-| hello | Ignore | - | Others | 0 |
-| world | Ignore | - | Others | 1 |
-| Actor | Actor_key | - | Key | 2 |
-| Tom | Actor_value | - | Value | 2 |
-| Tony | Actor_value | - | Value | 2 |
-| Tim | Actor_value | - | Value | 2 |
-| something | Ignore | - | Others | 3 |
-| Actress | Actress_key | - | Key | 4 |
-| Lucy | Actress_value | - | Value | 4 |
-| Zora | Actress_value  | - | Value | 4 |
+| box_content | closeset_node_label | closeset_edge_label | openset_node_label | openset_edge_label |
+| :---------: | :-----------------: | :-----------------: | :----------------: | :----------------: |
+|    hello    |       Ignore        |          -          |       Others       |         0          |
+|    world    |       Ignore        |          -          |       Others       |         1          |
+|    Actor    |      Actor_key      |          -          |        Key         |         2          |
+|     Tom     |     Actor_value     |          -          |       Value        |         2          |
+|    Tony     |     Actor_value     |          -          |       Value        |         2          |
+|     Tim     |     Actor_value     |          -          |       Value        |         2          |
+|  something  |       Ignore        |          -          |       Others       |         3          |
+|   Actress   |     Actress_key     |          -          |        Key         |         4          |
+|    Lucy     |    Actress_value    |          -          |       Value        |         4          |
+|    Zora     |    Actress_value    |          -          |       Value        |         4          |
 
-:::{warning}
+```{warning}
 
 A common request from our community is to extract the relations between food items and food prices. In this case, this conversion script ***is not you need***.
 Wildrecipt doesn't provide necessary information to recover this relation. For instance, there are four text boxes "Hamburger", "Hotdog", "$1" and "$2" on the receipt, and here's how they actually look like before and after the conversion:
@@ -71,4 +71,4 @@ So there won't be any valid edges connecting them. Nevertheless, OpenSet format 
 | $1 | Value | 0 |
 | $2 | Value | 1 |
 
-:::
+```
