@@ -1,10 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from functools import partial
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
 from mmocr.core import TextDetDataSample
+from mmocr.core.evaluation.utils import boundary_iou
 from mmocr.utils import is_type_list, rescale_polygons
 
 
@@ -179,3 +180,47 @@ class BaseTextDetPostProcessor:
                 for i in range(batch_num):
                     results[i][k] = v
         return results
+
+    def poly_nms(self, polygons: List[np.ndarray], scores: List[float],
+                 threshold: float) -> Tuple[List[np.ndarray], List[float]]:
+        """Non-maximum suppression for text detection.
+
+        Args:
+            polygons (list[ndarray]): List of polygons.
+            scores (list[float]): List of scores.
+            threshold (float): Threshold for NMS.
+
+        Returns:
+            tuple(keep_polys, keep_scores):
+
+            - keep_polys (list[ndarray]): List of preserved polygons after NMS.
+            - keep_scores (list[float]): List of preserved scores after NMS.
+        """
+        assert isinstance(polygons, list)
+        assert isinstance(scores, list)
+        assert len(polygons) == len(scores)
+
+        polygons = [
+            np.hstack((polygon, score))
+            for polygon, score in zip(polygons, scores)
+        ]
+        polygons = np.array(sorted(polygons, key=lambda x: x[-1]))
+        keep_polys = []
+        keep_scores = []
+        index = [i for i in range(len(polygons))]
+
+        while len(index) > 0:
+            keep_polys.append(polygons[index[-1]][:-1].tolist())
+            keep_scores.append(polygons[index[-1]][-1])
+            A = polygons[index[-1]][:-1]
+            index = np.delete(index, -1)
+
+            iou_list = np.zeros((len(index), ))
+            for i in range(len(index)):
+                B = polygons[index[i]][:-1]
+
+                iou_list[i] = boundary_iou(A, B, 1)
+            remove_index = np.where(iou_list > threshold)
+            index = np.delete(index, remove_index)
+
+        return keep_polys, keep_scores

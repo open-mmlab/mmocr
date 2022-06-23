@@ -122,3 +122,20 @@ class TestBaseTextDetPostProcessor(unittest.TestCase):
             'test2': 3,
             'meta': 'str'
         }])
+
+    def test_poly_nms(self):
+        base_postprocessor = BaseTextDetPostProcessor(text_repr_type='poly')
+        polygons = [
+            np.array([0., 0., 10., 0., 10., 10., 0., 10.]),
+            np.array([5., 0., 15., 0., 15., 10., 5., 10.])
+        ]
+        scores = [0.9, 0.8]
+        keep = base_postprocessor.poly_nms(polygons, scores, 0.6)
+
+        self.assertEqual(len(keep[0]), 2)
+        self.assertTrue(np.allclose(keep[0][0], polygons[0]))
+        self.assertTrue(np.allclose(keep[0][1], polygons[1]))
+
+        keep = base_postprocessor.poly_nms(polygons, scores, 0.2)
+        self.assertEqual(len(keep[0]), 1)
+        self.assertTrue(np.allclose(keep[0][0], polygons[0]))
