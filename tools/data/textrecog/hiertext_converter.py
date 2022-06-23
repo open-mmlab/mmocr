@@ -57,8 +57,10 @@ def process_level(
         dst_img_name = f'img_{img_idx}_{para_idx}_{line_idx}.jpg'
     if not preserve_vertical and h / w > 2 and split == 'train':
         dst_img_path = osp.join(ignore_image_root, dst_img_name)
-    else:
-        dst_img_path = osp.join(dst_image_root, dst_img_name)
+        mmcv.imwrite(dst_img, dst_img_path)
+        return None
+
+    dst_img_path = osp.join(dst_image_root, dst_img_name)
     mmcv.imwrite(dst_img, dst_img_path)
 
     if format == 'txt':
@@ -91,7 +93,8 @@ def process_img(args, src_image_root, dst_image_root, ignore_image_root, level,
                                           ignore_image_root, preserve_vertical,
                                           split, format, para_idx, img_idx,
                                           line_idx)
-                    labels.append(label)
+                    if label is not None:
+                        labels.append(label)
             elif level == 'word':
                 for word_idx, word in enumerate(line['words']):
                     if not word['legible']:
@@ -100,7 +103,8 @@ def process_img(args, src_image_root, dst_image_root, ignore_image_root, level,
                                           ignore_image_root, preserve_vertical,
                                           split, format, para_idx, img_idx,
                                           line_idx, word_idx)
-                    labels.append(label)
+                    if label is not None:
+                        labels.append(label)
     return labels
 
 

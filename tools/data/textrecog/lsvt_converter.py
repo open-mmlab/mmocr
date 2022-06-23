@@ -52,10 +52,11 @@ def process_img(args, dst_image_root, ignore_image_root, preserve_vertical,
 
         if not preserve_vertical and h / w > 2 and split == 'train':
             dst_img_path = osp.join(ignore_image_root, dst_img_name)
-        else:
-            dst_img_path = osp.join(dst_image_root, dst_img_name)
-        mmcv.imwrite(dst_img, dst_img_path)
+            mmcv.imwrite(dst_img, dst_img_path)
+            continue
 
+        dst_img_path = osp.join(dst_image_root, dst_img_name)
+        mmcv.imwrite(dst_img, dst_img_path)
         if format == 'txt':
             labels.append(f'{osp.basename(dst_image_root)}/{dst_img_name}'
                           f' {text_label}')

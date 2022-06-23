@@ -200,8 +200,10 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio, format):
                 # Skip vertical texts
                 if not preserve_vertical and h / w > 2 and split == 'training':
                     dst_img_path = osp.join(ignore_image_root, dst_img_name)
-                else:
-                    dst_img_path = osp.join(dst_image_root, dst_img_name)
+                    mmcv.imwrite(dst_img, dst_img_path)
+                    continue
+
+                dst_img_path = osp.join(dst_image_root, dst_img_name)
                 mmcv.imwrite(dst_img, dst_img_path)
                 filename = f'{osp.basename(dst_image_root)}/{dst_img_name}'
                 if format == 'txt':

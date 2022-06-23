@@ -222,10 +222,11 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
             # (Do Not Filter For Val and Test Split)
             if (not preserve_vertical and h / w > 2) and split == 'training':
                 dst_img_path = osp.join(ignore_image_root, dst_img_name)
-            else:
-                dst_img_path = osp.join(dst_image_root, dst_img_name)
-            mmcv.imwrite(dst_img, dst_img_path)
+                mmcv.imwrite(dst_img, dst_img_path)
+                continue
 
+            dst_img_path = osp.join(dst_image_root, dst_img_name)
+            mmcv.imwrite(dst_img, dst_img_path)
             if format == 'txt':
                 lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
                              f'{word}')
