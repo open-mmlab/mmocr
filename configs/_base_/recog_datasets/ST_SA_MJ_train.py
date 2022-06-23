@@ -14,11 +14,7 @@ train1 = dict(
         type='AnnFileLoader',
         repeat=1,
         file_format='lmdb',
-        parser=dict(
-            type='LineStrParser',
-            keys=['filename', 'text'],
-            keys_idx=[0, 1],
-            separator=' ')),
+        parser=dict(type='LineJsonParser', keys=['filename', 'text'])),
     pipeline=None,
     test_mode=False)
 
@@ -37,5 +33,10 @@ train3 = {key: value for key, value in train1.items()}
 train3['img_prefix'] = train_img_prefix3
 train3['ann_file'] = train_ann_file3
 train3['loader']['file_format'] = 'txt'
+train3['loader']['parser'] = dict(
+    type='LineStrParser',
+    keys=['filename', 'text'],
+    keys_idx=[0, 1],
+    separator=' ')
 
 train_list = [train1, train2, train3]
