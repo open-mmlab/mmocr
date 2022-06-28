@@ -477,7 +477,7 @@ class TestEastRandomCrop(unittest.TestCase):
         resize_results = resize(crop_results)
         self.assertEqual(resize_results['img'].shape, (15, 30, 3))
         self.assertEqual(crop_results['img_shape'], (15, 30))
-        self.assertEqual(crop_results['scale'], (30, 15))
+        self.assertEqual(crop_results['scale'], (30, 30))
         self.assertEqual(crop_results['scale_factor'], (1., 1.))
         self.assertTrue(crop_results['keep_ratio'])
 
@@ -513,7 +513,7 @@ class TestRandomResize(unittest.TestCase):
         self.assertEqual(results['img'].shape, (450, 600, 3))
         self.assertEqual(results['img_shape'], (450, 600))
         self.assertEqual(results['keep_ratio'], True)
-        self.assertEqual(results['scale'], (600, 450))
+        self.assertEqual(results['scale'], (600, 600))
         self.assertEqual(results['scale_factor'], (600. / 400., 450. / 300.))
 
         self.assertTrue(
