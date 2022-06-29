@@ -54,12 +54,10 @@ class KIEDataSample(BaseDataElement):
          >>> data_sample = KIEDataSample()
          >>> gt_instances_data = dict(
          ...                        bboxes=torch.rand(2, 4),
-         ...                        labels=torch.rand(2),
-         ...                        relations=torch.rand(2, 2))
+         ...                        labels=torch.rand(2))
          >>> gt_instances = InstanceData(**gt_instances_data)
          >>> data_sample.gt_instances = gt_instances
          >>> assert 'gt_instances' in data_sample
-         >>> assert 'relations' in data_sample.gt_instances
     """
 
     @property
