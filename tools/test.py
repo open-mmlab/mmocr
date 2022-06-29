@@ -18,6 +18,10 @@ def parse_args():
         '--work-dir',
         help='The directory to save the file containing evaluation metrics')
     parser.add_argument(
+        '--save-preds',
+        action='store_true',
+        help='Dump predictions to a pickle file for offline evaluation')
+    parser.add_argument(
         '--cfg-options',
         nargs='+',
         action=DictAction,
@@ -62,6 +66,18 @@ def main():
                                 osp.splitext(osp.basename(args.config))[0])
 
     cfg.load_from = args.checkpoint
+
+    # save predictions
+    if args.save_preds:
+        dump_metric = dict(
+            type='DumpResults',
+            out_file_path=osp.join(
+                cfg.work_dir,
+                f'{osp.basename(args.checkpoint)}_predictions.pkl'))
+        if isinstance(cfg.test_evaluator, (list, tuple)):
+            cfg.test_evaluator = list(cfg.test_evaluator).append(dump_metric)
+        else:
+            cfg.test_evaluator = [cfg.test_evaluator, dump_metric]
 
     # build the runner from config
     runner = Runner.from_cfg(cfg)
