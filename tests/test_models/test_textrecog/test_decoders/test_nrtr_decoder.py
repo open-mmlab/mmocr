@@ -48,7 +48,7 @@ class TestNRTRDecoder(TestCase):
             with_padding=True,
             with_unknown=True)
         loss_cfg = dict(type='CELoss')
-        NRTRDecoder(dictionary=dict_cfg, loss=loss_cfg)
+        NRTRDecoder(dictionary=dict_cfg, loss_module=loss_cfg)
         tmp_dir.cleanup()
 
     def test_forward_train(self):
@@ -66,10 +66,10 @@ class TestNRTRDecoder(TestCase):
             with_padding=True,
             with_unknown=True)
         loss_cfg = dict(type='CELoss')
-        decoder = NRTRDecoder(dictionary=dict_cfg, loss=loss_cfg)
-        data_samples = decoder.loss.get_targets(self.data_info)
-        output = decoder(
-            out_enc=encoder_out, data_samples=data_samples, train_mode=True)
+        decoder = NRTRDecoder(dictionary=dict_cfg, loss_module=loss_cfg)
+        data_samples = decoder.loss_module.get_targets(self.data_info)
+        output = decoder.forward_train(
+            out_enc=encoder_out, data_samples=data_samples)
         self.assertTupleEqual(tuple(output.shape), (2, 40, 39))
 
     def test_forward_test(self):
@@ -88,13 +88,7 @@ class TestNRTRDecoder(TestCase):
             with_unknown=True)
         loss_cfg = dict(type='CELoss')
         decoder = NRTRDecoder(
-            dictionary=dict_cfg, loss=loss_cfg, max_seq_len=40)
-        output = decoder(
-            out_enc=encoder_out, data_samples=self.data_info, train_mode=False)
+            dictionary=dict_cfg, loss_module=loss_cfg, max_seq_len=40)
+        output = decoder.forward_test(
+            out_enc=encoder_out, data_samples=self.data_info)
         self.assertTupleEqual(tuple(output.shape), (2, 40, 39))
-
-
-if __name__ == '__main__':
-    t = TestNRTRDecoder()
-    t.setUp()
-    t.test_forward_test()

@@ -15,4 +15,5 @@ model = dict(
         loss=dict(type='CTCLoss', letter_case='lower'),
         postprocessor=dict(type='CTCPostProcessor')),
     dictionary=dictionary,
-    preprocess_cfg=dict(mean=[127], std=[127]))
+    data_preprocessor=dict(
+        type='TextRecogDataPreprocessor', mean=[127], std=[127]))

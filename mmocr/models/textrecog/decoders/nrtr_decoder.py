@@ -31,7 +31,8 @@ class NRTRDecoder(BaseDecoder):
             greater than ``max_seq_len``. Defaults to 200.
         dropout (float): Dropout rate for text embedding, MHSA, FFN. Defaults
             to 0.1.
-        loss (dict, optional): Config to build loss. Defaults to None.
+        loss_module (dict, optional): Config to build loss_module. Defaults
+            to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
@@ -39,12 +40,6 @@ class NRTRDecoder(BaseDecoder):
         max_seq_len (int): Maximum output sequence length :math:`T`. Defaults
             to 40.
         init_cfg (dict or list[dict], optional): Initialization configs.
-
-    Warning:
-        This decoder will not predict the final class which is assumed to be
-        `<PAD>`. Therefore, its output size is always :math:`C - 1`. `<PAD>`
-        is also ignored by loss as specified in
-        :obj:`mmocr.models.textrecog.recognizer.EncodeDecodeRecognizer`.
     """
 
     def __init__(self,
@@ -57,13 +52,13 @@ class NRTRDecoder(BaseDecoder):
                  d_inner: int = 256,
                  n_position: int = 200,
                  dropout: float = 0.1,
-                 loss: Optional[Dict] = None,
+                 loss_module: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  dictionary: Optional[Union[Dict, Dictionary]] = None,
                  max_seq_len: int = 40,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
         super().__init__(
-            loss=loss,
+            loss_module=loss_module,
             postprocessor=postprocessor,
             dictionary=dictionary,
             init_cfg=init_cfg)

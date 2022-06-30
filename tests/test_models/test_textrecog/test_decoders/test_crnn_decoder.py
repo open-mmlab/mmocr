@@ -54,9 +54,9 @@ class TestCRNNDecoder(TestCase):
                 with_padding=True,
                 with_unknown=False)
             decoder = CRNNDecoder(in_channels=10, dictionary=dict_cfg)
-            output = decoder(inputs, train_mode=True)
+            output = decoder.forward_train(inputs)
             self.assertTupleEqual(tuple(output.shape), (3, 100, 37))
             decoder = CRNNDecoder(
                 in_channels=10, dictionary=dict_cfg, rnn_flag=True)
-            output = decoder(inputs, train_mode=False)
+            output = decoder.forward_test(inputs)
             self.assertTupleEqual(tuple(output.shape), (3, 100, 37))

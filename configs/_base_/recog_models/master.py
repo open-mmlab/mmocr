@@ -63,7 +63,11 @@ model = dict(
         feat_pe_drop=0.2,
         feat_size=6 * 40,
         postprocessor=dict(type='AttentionPostprocessor'),
-        loss=dict(type='CELoss', reduction='mean', ignore_first_char=True)),
+        loss_module=dict(
+            type='CELoss', reduction='mean', ignore_first_char=True)),
     max_seq_len=30,
     dictionary=dictionary,
-    preprocess_cfg=dict(mean=[127.5, 127.5, 127.5], std=[127.5, 127.5, 127.5]))
+    data_preprocessor=dict(
+        type='TextRecogDataPreprocessor',
+        mean=[127.5, 127.5, 127.5],
+        std=[127.5, 127.5, 127.5]))

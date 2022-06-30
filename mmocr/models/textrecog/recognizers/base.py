@@ -1,60 +1,42 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import copy
 from abc import ABCMeta, abstractmethod
-from collections import OrderedDict
-from typing import Dict, List, Optional, Sequence, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import torch
-import torch.distributed as dist
-from mmcv.runner import BaseModule, auto_fp16
-from mmdet.core.utils import stack_batch
+from mmengine.config import ConfigDict
+from mmengine.model.base_model import BaseModel
 
 from mmocr.core.data_structures import TextRecogDataSample
 
+# Type hint of config data
+ConfigType = Union[ConfigDict, dict]
+OptConfigType = Optional[ConfigType]
+# Type hint of one or more config data
+MultiConfig = Union[ConfigType, List[ConfigType]]
+OptMultiConfig = Optional[MultiConfig]
 
-class BaseRecognizer(BaseModule, metaclass=ABCMeta):
-    """Base class for text recognition.
+ForwardResults = Union[Dict[str, torch.Tensor], List[TextRecogDataSample],
+                       Tuple[torch.Tensor], torch.Tensor]
+SampleList = List[TextRecogDataSample]
+OptSampleList = Optional[SampleList]
+
+
+class BaseRecognizer(BaseModel, metaclass=ABCMeta):
+    """Base class for recognizer.
 
     Args:
-        preprocess_cfg (dict, optional): Model preprocessing config
-            for processing the input image data. Keys allowed are
-            ``to_rgb``(bool), ``pad_size_divisor``(int), ``pad_value``(int or
-            float), ``mean``(int or float) and ``std``(int or float).
-            Preprcessing order: 1. to rgb; 2. normalization 3. pad.
-            Defaults to None.
-        init_cfg (dict or list[dict], optional): Initialization configs.
+        data_preprocessor (dict or ConfigDict, optional): The pre-process
+            config of :class:`BaseDataPreprocessor`.  it usually includes,
+            ``pad_size_divisor``, ``pad_value``, ``mean`` and ``std``.
+        init_cfg (dict or ConfigDict or List[dict], optional): the config
+            to control the initialization. Defaults to None.
     """
 
     def __init__(self,
-                 preprocess_cfg: Optional[Dict] = None,
-                 init_cfg: Optional[Dict] = None) -> None:
-        super().__init__(init_cfg=init_cfg)
-        self.fp16_enabled = False
-        self.preprocess_cfg = preprocess_cfg
-
-        self.pad_size_divisor = 0
-        self.pad_value = 0
-
-        if self.preprocess_cfg is not None:
-            assert isinstance(self.preprocess_cfg, dict)
-            self.preprocess_cfg = copy.deepcopy(self.preprocess_cfg)
-
-            self.to_rgb = preprocess_cfg.get('to_rgb', False)
-            self.pad_size_divisor = preprocess_cfg.get('pad_size_divisor', 0)
-            self.pad_value = preprocess_cfg.get('pad_value', 0)
-            self.register_buffer(
-                'pixel_mean',
-                torch.tensor(preprocess_cfg['mean']).view(-1, 1, 1), False)
-            self.register_buffer(
-                'pixel_std',
-                torch.tensor(preprocess_cfg['std']).view(-1, 1, 1), False)
-        else:
-            # Only used to provide device information
-            self.register_buffer('pixel_mean', torch.tensor(1), False)
-
-    @property
-    def device(self) -> torch.device:
-        return self.pixel_mean.device
+                 data_preprocessor: Optional[Union[ConfigDict, dict]] = None,
+                 init_cfg: OptMultiConfig = None):
+        super().__init__(
+            data_preprocessor=data_preprocessor, init_cfg=init_cfg)
 
     @property
     def with_backbone(self):
@@ -86,176 +68,70 @@ class BaseRecognizer(BaseModule, metaclass=ABCMeta):
         """Extract features from images."""
         pass
 
-    @auto_fp16(apply_to=('inputs', ))
-    def forward_train(self, inputs: torch.Tensor,
-                      data_samples: Sequence[TextRecogDataSample],
-                      **kwargs) -> Dict:
-        """Training function.
+    def forward(self,
+                batch_inputs: torch.Tensor,
+                batch_data_samples: OptSampleList = None,
+                mode: str = 'tensor',
+                **kwargs) -> ForwardResults:
+        """The unified entry for a forward process in both training and test.
+
+        The method should accept three modes: "tensor", "predict" and "loss":
+
+        - "tensor": Forward the whole network and return tensor or tuple of
+        tensor without any post-processing, same as a common nn.Module.
+        - "predict": Forward and return the predictions, which are fully
+        processed to a list of :obj:`DetDataSample`.
+        - "loss": Forward and return a dict of losses according to the given
+        inputs and data samples.
+
+        Note that this method doesn't handle neither back propagation nor
+        optimizer updating, which are done in the :meth:`train_step`.
 
         Args:
-            inputs (Tensor):The image Tensor should have a shape NxCxHxW.
-                These should usually be mean centered and std scaled.
-            data_samples (list[:obj:`TextRecogDataSample`]):The batch
-                data samples. It usually includes ``gt_text`` information.
+            batch_inputs (torch.Tensor): The input tensor with shape
+                (N, C, ...) in general.
+            batch_data_samples (list[:obj:`DetDataSample`], optional): The
+                annotation data of every samples. Defaults to None.
+            mode (str): Return what kind of value. Defaults to 'tensor'.
+
+        Returns:
+            The return type depends on ``mode``.
+
+            - If ``mode="tensor"``, return a tensor or a tuple of tensor.
+            - If ``mode="predict"``, return a list of :obj:`DetDataSample`.
+            - If ``mode="loss"``, return a dict of tensor.
         """
-        # TODO: maybe remove to stack_batch
-        # NOTE the batched image size information may be useful for
-        # calculating valid ratio.
-        batch_input_shape = tuple(inputs[0].size()[-2:])
-        for data_sample in data_samples:
-            data_sample.set_metainfo({'batch_input_shape': batch_input_shape})
+        if mode == 'loss':
+            return self.loss(batch_inputs, batch_data_samples, **kwargs)
+        elif mode == 'predict':
+            return self.predict(batch_inputs, batch_data_samples, **kwargs)
+        elif mode == 'tensor':
+            return self._forward(batch_inputs, batch_data_samples, **kwargs)
+        else:
+            raise RuntimeError(f'Invalid mode "{mode}". '
+                               'Only supports loss, predict and tensor mode')
 
     @abstractmethod
-    def simple_test(self, inputs: torch.Tensor,
-                    data_samples: Sequence[TextRecogDataSample],
-                    **kwargs) -> Sequence[TextRecogDataSample]:
+    def loss(self, batch_inputs: torch.Tensor, batch_data_samples: SampleList,
+             **kwargs) -> Union[dict, tuple]:
+        """Calculate losses from a batch of inputs and data samples."""
         pass
 
-    def aug_test(self, imgs: torch.Tensor,
-                 data_samples: Sequence[Sequence[TextRecogDataSample]],
+    @abstractmethod
+    def predict(self, batch_inputs: torch.Tensor,
+                batch_data_samples: SampleList, **kwargs) -> SampleList:
+        """Predict results from a batch of inputs and data samples with post-
+        processing."""
+        pass
+
+    @abstractmethod
+    def _forward(self,
+                 batch_inputs: torch.Tensor,
+                 batch_data_samples: OptSampleList = None,
                  **kwargs):
-        """Test function with test time augmentation."""
+        """Network forward process.
+
+        Usually includes backbone, neck and head forward without any post-
+        processing.
+        """
         pass
-
-    @auto_fp16(apply_to=('img', ))
-    def forward(self,
-                data: Sequence[Dict],
-                optimizer: Optional[Union[torch.optim.Optimizer, Dict]] = None,
-                return_loss: bool = False,
-                **kwargs):
-        """The iteration step during training and testing. This method defines
-        an iteration step during training and testing, except for the back
-        propagation and optimizer updating during training, which are done in
-        an optimizer hook.
-
-        Args:
-            data (list[dict]): The output of dataloader.
-            optimizer (:obj:`torch.optim.Optimizer` or dict, optional): The
-                optimizer of runner. This argument is unused and reserved.
-                Defaults to None.
-            return_loss (bool): Whether to return loss. In general,
-                it will be set to True during training and False
-                during testing. Defaults to False.
-
-        Returns:
-            During training
-                dict: It should contain at least 3 keys: ``loss``,
-                ``log_vars``, ``num_samples``.
-                    - ``loss`` is a tensor for back propagation, which can be a
-                      weighted sum of multiple losses.
-                    - ``log_vars`` contains all the variables to be sent to the
-                        logger.
-                    - ``num_samples`` indicates the batch size (when the model
-                        is DDP, it means the batch size on each GPU), which is
-                        used for averaging the logs.
-
-            During testing
-                list(obj:`TextRecogDataSample`): Recognition results of the
-                input images. Each TextRecogDataSample usually contains
-                ``pred_text``
-        """
-
-        inputs, data_samples = self.preprocss_data(data)
-
-        if return_loss:
-            losses = self.forward_train(inputs, data_samples, **kwargs)
-            loss, log_vars = self._parse_losses(losses)
-
-            outputs = dict(
-                loss=loss, log_vars=log_vars, num_samples=len(data_samples))
-            return outputs
-        else:
-            # TODO: refactor and support aug test later
-            assert isinstance(data[0]['inputs'], torch.Tensor), \
-                'Only support simple test currently. Aug-test is ' \
-                'not supported yet'
-            return self.forward_simple_test(inputs, data_samples, **kwargs)
-
-    def _parse_losses(self, losses: Dict) -> Tuple[torch.Tensor, Dict]:
-        """Parse the raw outputs (losses) of the network.
-
-        Args:
-            losses (dict): Raw outputs of the network, which usually contain
-                losses and other necessary information.
-
-        Returns:
-            tuple[tensor, dict]: (loss, log_vars), loss is the loss tensor
-                which may be a weighted sum of all losses, log_vars contains
-                all the variables to be sent to the logger.
-        """
-        log_vars = OrderedDict()
-        for loss_name, loss_value in losses.items():
-            if isinstance(loss_value, torch.Tensor):
-                log_vars[loss_name] = loss_value.mean()
-            elif isinstance(loss_value, list):
-                log_vars[loss_name] = sum(_loss.mean() for _loss in loss_value)
-            else:
-                raise TypeError(
-                    f'{loss_name} is not a tensor or list of tensors')
-
-        loss = sum(_value for _key, _value in log_vars.items()
-                   if 'loss' in _key)
-
-        log_vars['loss'] = loss
-        for loss_name, loss_value in log_vars.items():
-            # reduce loss when distributed training
-            if dist.is_available() and dist.is_initialized():
-                loss_value = loss_value.data.clone()
-                dist.all_reduce(loss_value.div_(dist.get_world_size()))
-            log_vars[loss_name] = loss_value.item()
-
-        return loss, log_vars
-
-    def preprocss_data(self, data: List[Dict]) -> Tuple:
-        """ Process input data during training and simple testing phases.
-        Args:
-            data (list[dict]): The data to be processed, which
-                comes from dataloader.
-
-        Returns:
-            tuple:  It should contain 2 items.
-
-              - inputs (Tensor): The batch input tensor.
-              - data_samples (list[:obj:`TextRecogDataSample`]): The
-                Data Samples. It usually includes `gt_text` information.
-        """
-        inputs = [data_['inputs'] for data_ in data]
-        data_samples = [data_['data_sample'] for data_ in data]
-
-        data_samples = [
-            data_sample.to(self.device) for data_sample in data_samples
-        ]
-        inputs = [_input.to(self.device) for _input in inputs]
-
-        if self.preprocess_cfg is None:
-            return stack_batch(inputs).float(), data_samples
-
-        if self.to_rgb and inputs[0].size(0) == 3:
-            inputs = [_input[[2, 1, 0], ...] for _input in inputs]
-        inputs = [(_input - self.pixel_mean) / self.pixel_std
-                  for _input in inputs]
-        inputs = stack_batch(inputs, self.pad_size_divisor, self.pad_value)
-        return inputs, data_samples
-
-    @auto_fp16(apply_to=('inputs', ))
-    def forward_simple_test(self, inputs: torch.Tensor,
-                            data_samples: Sequence[TextRecogDataSample],
-                            **kwargs) -> Sequence[TextRecogDataSample]:
-        """
-        Args:
-            inputs (Tensor): The input Tensor should have a
-                shape NxCxHxW.
-            data_samples (list[:obj:`TextRecogDataSample`]): The Data
-                Samples. It usually includes ``gt_text`` information.
-
-        Returns:
-            list[obj:`TextRecogDataSample`]: Detection results of the
-            input images. Each TextRecogDataSample usually contains
-            ``pred_text``.
-        """
-        # TODO: Consider merging with forward_train logic
-        batch_input_shape = tuple(inputs[0].size()[-2:])
-        for data_sample in data_samples:
-            data_sample.set_metainfo({'batch_input_shape': batch_input_shape})
-
-        return self.simple_test(inputs, data_samples, **kwargs)

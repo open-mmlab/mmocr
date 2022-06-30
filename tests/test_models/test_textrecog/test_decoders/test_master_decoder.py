@@ -46,7 +46,7 @@ class TestMasterDecoder(TestCase):
             with_padding=True,
             with_unknown=True)
         loss_cfg = dict(type='CELoss')
-        MasterDecoder(dictionary=dict_cfg, loss=loss_cfg)
+        MasterDecoder(dictionary=dict_cfg, loss_module=loss_cfg)
         tmp_dir.cleanup()
 
     def test_forward_train(self):
@@ -65,9 +65,10 @@ class TestMasterDecoder(TestCase):
             with_unknown=True)
         loss_cfg = dict(type='CELoss')
         decoder = MasterDecoder(
-            dictionary=dict_cfg, loss=loss_cfg, max_seq_len=30)
-        output = decoder(
-            feat=encoder_out, data_samples=self.data_info, train_mode=True)
+            dictionary=dict_cfg, loss_module=loss_cfg, max_seq_len=30)
+        data_samples = decoder.loss_module.get_targets(self.data_info)
+        output = decoder.forward_train(
+            feat=encoder_out, data_samples=data_samples)
         self.assertTupleEqual(tuple(output.shape), (2, 30, 39))
 
     def test_forward_test(self):
@@ -86,7 +87,7 @@ class TestMasterDecoder(TestCase):
             with_unknown=True)
         loss_cfg = dict(type='CELoss')
         decoder = MasterDecoder(
-            dictionary=dict_cfg, loss=loss_cfg, max_seq_len=30)
-        output = decoder(
-            feat=encoder_out, data_samples=self.data_info, train_mode=False)
+            dictionary=dict_cfg, loss_module=loss_cfg, max_seq_len=30)
+        output = decoder.forward_test(
+            feat=encoder_out, data_samples=self.data_info)
         self.assertTupleEqual(tuple(output.shape), (2, 30, 39))

@@ -66,6 +66,8 @@ class BaseRecogLoss(nn.Module):
         """
 
         for data_sample in data_samples:
+            if data_sample.get('have_target', False):
+                continue
             text = data_sample.gt_text.item
             if self.letter_case in ['upper', 'lower']:
                 text = getattr(text, self.letter_case)()
@@ -97,4 +99,5 @@ class BaseRecogLoss(nn.Module):
             # put in DataSample
             data_sample.gt_text.indexes = indexes
             data_sample.gt_text.padded_indexes = padded_indexes
+            data_sample.set_metainfo(dict(have_target=True))
         return data_samples
