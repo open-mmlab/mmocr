@@ -140,7 +140,10 @@ def crop_polygon(polygon: ArrayLike,
         return None
     else:
         poly_cropped = np.array(poly_cropped.boundary.xy, dtype=np.float32)
-        return poly_cropped[:, :-1].T.reshape(-1)
+        poly_cropped = poly_cropped[:, :-1].T
+        # reverse poly_cropped to have clockwise order
+        poly_cropped = poly_cropped[::-1, :].reshape(-1)
+        return poly_cropped
 
 
 def poly_make_valid(poly: Polygon) -> Polygon:
