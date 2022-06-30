@@ -3,7 +3,6 @@ from .box_utils import sort_vertex, sort_vertex8
 from .formatting import PackTextDetInputs, PackTextRecogInputs
 from .kie_transforms import ResizeNoImg
 from .loading import LoadOCRAnnotations
-from .ner_transforms import NerTransform, ToTensorNER
 from .ocr_seg_targets import OCRSegTargets
 from .ocr_transforms import (FancyPCA, NormalizeOCR, OnlineCropOCR,
                              OpencvToPil, PilToOpencv, RandomPaddingOCR,
@@ -24,10 +23,9 @@ __all__ = [
     'ScaleAspectJitter', 'MultiRotateAugOCR', 'OCRSegTargets', 'FancyPCA',
     'RandomPaddingOCR', 'ImgAug', 'RandomRotateImageBox', 'OpencvToPil',
     'PilToOpencv', 'SourceImagePad', 'TextSnakeTargets', 'sort_vertex',
-    'sort_vertex8', 'FCENetTargets', 'TextDetRandomCropFlip', 'NerTransform',
-    'ToTensorNER', 'ResizeNoImg', 'PyramidRescale', 'TorchVisionWrapper',
-    'Resize', 'RandomCrop', 'TextDetRandomCrop', 'RandomCrop',
-    'PackTextDetInputs', 'PackTextRecogInputs', 'RescaleToHeight',
-    'PadToWidth', 'ShortScaleAspectJitter', 'RandomFlip',
-    'BoundedScaleAspectJitter'
+    'sort_vertex8', 'FCENetTargets', 'TextDetRandomCropFlip', 'ResizeNoImg',
+    'PyramidRescale', 'TorchVisionWrapper', 'Resize', 'RandomCrop',
+    'TextDetRandomCrop', 'RandomCrop', 'PackTextDetInputs',
+    'PackTextRecogInputs', 'RescaleToHeight', 'PadToWidth',
+    'ShortScaleAspectJitter', 'RandomFlip', 'BoundedScaleAspectJitter'
 ]

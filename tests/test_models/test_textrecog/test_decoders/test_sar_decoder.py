@@ -45,12 +45,12 @@ class TestParallelSARDecoder(TestCase):
     def test_forward_train(self):
         # test parallel sar decoder
         loss_cfg = dict(type='CELoss')
-        decoder = ParallelSARDecoder(self.dict_cfg, loss=loss_cfg)
+        decoder = ParallelSARDecoder(self.dict_cfg, loss_module=loss_cfg)
         decoder.init_weights()
         decoder.train()
         feat = torch.rand(2, 512, 4, 40)
         out_enc = torch.rand(2, 512)
-        data_samples = decoder.loss.get_targets(self.data_info)
+        data_samples = decoder.loss_module.get_targets(self.data_info)
         decoder.train_mode = True
         out_train = decoder.forward_train(
             feat, out_enc, data_samples=data_samples)
@@ -100,19 +100,27 @@ class TestSequentialSARDecoder(TestCase):
             self.dict_cfg, dec_gru=True, pred_concat=True)
         self.assertIsInstance(decoder.rnn_decoder_layer1, torch.nn.GRUCell)
 
-    def test_sequential_sar_decoder(self):
+    def test_forward_train(self):
         # test parallel sar decoder
         loss_cfg = dict(type='CELoss')
-        decoder = SequentialSARDecoder(self.dict_cfg, loss=loss_cfg)
+        decoder = SequentialSARDecoder(self.dict_cfg, loss_module=loss_cfg)
         decoder.init_weights()
         decoder.train()
         feat = torch.rand(2, 512, 4, 40)
         out_enc = torch.rand(2, 512)
-        data_samples = decoder.loss.get_targets(self.data_info)
-        out_train = decoder(feat, out_enc, data_samples)
+        data_samples = decoder.loss_module.get_targets(self.data_info)
+        out_train = decoder.forward_train(feat, out_enc, data_samples)
         self.assertEqual(out_train.shape, torch.Size([2, 40, 39]))
 
-        out_test = decoder(feat, out_enc, data_samples, False)
+    def test_forward_test(self):
+        # test parallel sar decoder
+        loss_cfg = dict(type='CELoss')
+        decoder = SequentialSARDecoder(self.dict_cfg, loss_module=loss_cfg)
+        decoder.init_weights()
+        decoder.train()
+        feat = torch.rand(2, 512, 4, 40)
+        out_enc = torch.rand(2, 512)
+        out_test = decoder.forward_test(feat, out_enc, self.data_info)
         self.assertEqual(out_test.shape, torch.Size([2, 40, 39]))
-        out_test = decoder(feat, out_enc, None, False)
+        out_test = decoder.forward_test(feat, out_enc, None)
         self.assertEqual(out_test.shape, torch.Size([2, 40, 39]))

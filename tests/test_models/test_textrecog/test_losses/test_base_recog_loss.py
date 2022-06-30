@@ -55,7 +55,7 @@ class TestBaseRecogLoss(TestCase):
 
         tmp_dir.cleanup()
 
-    def test_get_target(self):
+    def test_get_targets(self):
         label_data = LabelData(item='0123')
         data_sample = TextRecogDataSample()
         data_sample.gt_text = label_data
@@ -81,7 +81,9 @@ class TestBaseRecogLoss(TestCase):
                 dictionary.start_idx, 0, 1, 2, 3, dictionary.end_idx,
                 padding_idx, padding_idx, padding_idx, padding_idx
             ]))
-
+        self.assertTrue(target_data_samples[0].have_target)
+        target_data_samples = base_recog_loss.get_targets(target_data_samples)
+        data_sample.set_metainfo(dict(have_target=False))
         dictionary = Dictionary(
             dict_file=dict_file,
             with_start=False,
@@ -97,7 +99,7 @@ class TestBaseRecogLoss(TestCase):
         padding_idx = dictionary.padding_idx
         assert self._equal(target_data_samples[0].gt_text.padded_indexes,
                            torch.LongTensor([0, 1, 2]))
-
+        data_sample.set_metainfo(dict(have_target=False))
         dict_cfg = dict(
             type='Dictionary',
             dict_file=dict_file,

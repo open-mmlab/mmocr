@@ -5,7 +5,7 @@ from unittest import TestCase, mock
 
 from mmocr.models.textrecog.decoders import BaseDecoder
 from mmocr.models.textrecog.dictionary.dictionary import Dictionary
-from mmocr.registry import MODELS
+from mmocr.registry import MODELS, TASK_UTILS
 
 
 @MODELS.register_module()
@@ -13,6 +13,12 @@ class Tmp:
 
     def __init__(self, max_seq_len, dictionary) -> None:
         pass
+
+    def get_targets(self, datasamples):
+        return None
+
+    def __call__(self, *args):
+        return None
 
 
 class TestBaseDecoder(TestCase):
@@ -45,12 +51,15 @@ class TestBaseDecoder(TestCase):
         with self.assertRaises(TypeError):
             BaseDecoder([], cfg, cfg)
         decoder = BaseDecoder(dictionary=dict_cfg)
-        self.assertIsNone(decoder.loss)
+        self.assertIsNone(decoder.loss_module)
         self.assertIsNone(decoder.postprocessor)
         self.assertIsInstance(decoder.dictionary, Dictionary)
         decoder = BaseDecoder(dict_cfg, cfg, cfg)
-        self.assertIsInstance(decoder.loss, Tmp)
+        self.assertIsInstance(decoder.loss_module, Tmp)
         self.assertIsInstance(decoder.postprocessor, Tmp)
+        dictionary = TASK_UTILS.build(dict_cfg)
+        decoder = BaseDecoder(dictionary, cfg, cfg)
+        self.assertIsInstance(decoder.dictionary, Dictionary)
         tmp_dir.cleanup()
 
     def test_forward_train(self):
@@ -93,9 +102,11 @@ class TestBaseDecoder(TestCase):
     def test_forward(self, mock_forward_train, mock_forward_test):
 
         def mock_func_train(feat, out_enc, datasamples):
+
             return True
 
         def mock_func_test(feat, out_enc, datasamples):
+
             return False
 
         tmp_dir = tempfile.TemporaryDirectory()
@@ -113,7 +124,18 @@ class TestBaseDecoder(TestCase):
         mock_forward_test.side_effect = mock_func_test
         cfg = dict(type='Tmp')
         decoder = BaseDecoder(dict_cfg, cfg, cfg)
+        # test loss
+        loss = decoder.loss(None, None, None)
+        self.assertIsNone(loss)
 
-        self.assertTrue(decoder(None, None, None, True))
-        self.assertFalse(decoder(None, None, None, False))
+        # test predict
+        predict = decoder.predict(None, None, None)
+        self.assertIsNone(predict)
+
+        # test forward
+        tensor = decoder(None, None, None)
+        self.assertTrue(tensor)
+        decoder.eval()
+        tensor = decoder(None, None, None)
+        self.assertFalse(tensor)
         tmp_dir.cleanup()

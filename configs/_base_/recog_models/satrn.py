@@ -11,7 +11,9 @@ model = dict(
     type='SATRN',
     backbone=dict(type='ShallowCNN'),
     encoder=dict(type='SATRNEncoder'),
-    decoder=dict(type='NRTRDecoder', loss=dict(type='CELoss')),
+    decoder=dict(type='NRTRDecoder', loss_module=dict(type='CELoss')),
     dictionary=dictionary,
-    preprocess_cfg=dict(
-        mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375]))
+    data_preprocessor=dict(
+        type='TextRecogDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375]))

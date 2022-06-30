@@ -13,9 +13,11 @@ model = dict(
     encoder=dict(type='NRTREncoder', n_layers=12),
     decoder=dict(
         type='NRTRDecoder',
-        loss=dict(type='CELoss', ignore_first_char=True, flatten=True),
+        loss_module=dict(type='CELoss', ignore_first_char=True, flatten=True),
         postprocessor=dict(type='AttentionPostprocessor')),
     dictionary=dictionary,
     max_seq_len=30,
-    preprocess_cfg=dict(
-        mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375]))
+    data_preprocessor=dict(
+        type='TextRecogDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375]))

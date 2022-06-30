@@ -74,7 +74,8 @@ class MasterDecoder(BaseDecoder):
             layer.
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
             the instance of `Dictionary`.
-        loss (dict, optional): Config to build loss. Defaults to None.
+        loss_module (dict, optional): Config to build loss_module. Defaults
+            to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
         max_seq_len (int): Maximum output sequence length :math:`T`.
@@ -91,14 +92,14 @@ class MasterDecoder(BaseDecoder):
         attn_drop: float = 0.,
         ffn_drop: float = 0.,
         feat_pe_drop: float = 0.2,
-        loss: Optional[Dict] = None,
+        loss_module: Optional[Dict] = None,
         postprocessor: Optional[Dict] = None,
         dictionary: Optional[Union[Dict, Dictionary]] = None,
         max_seq_len: int = 30,
         init_cfg: Optional[Union[Dict, Sequence[Dict]]] = None,
     ):
         super().__init__(
-            loss=loss,
+            loss_module=loss_module,
             postprocessor=postprocessor,
             dictionary=dictionary,
             init_cfg=init_cfg,
@@ -221,9 +222,8 @@ class MasterDecoder(BaseDecoder):
             feat = feat.permute((0, 2, 1))
         feat = self.feat_positional_encoding(feat)
 
-        targets = self.loss.get_targets(data_samples)
         trg_seq = []
-        for target in targets:
+        for target in data_samples:
             trg_seq.append(target.gt_text.padded_indexes.to(feat.device))
 
         trg_seq = torch.stack(trg_seq, dim=0)

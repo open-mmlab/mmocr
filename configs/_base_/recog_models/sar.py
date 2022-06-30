@@ -9,7 +9,10 @@ dictionary = dict(
 
 model = dict(
     type='SARNet',
-    preprocess_cfg=dict(mean=[127, 127, 127], std=[127, 127, 127]),
+    data_preprocessor=dict(
+        type='TextRecogDataPreprocessor',
+        mean=[127, 127, 127],
+        std=[127, 127, 127]),
     backbone=dict(type='ResNet31OCR'),
     encoder=dict(
         type='SAREncoder',
@@ -27,6 +30,7 @@ model = dict(
         d_k=512,
         pred_concat=True,
         postprocessor=dict(type='AttentionPostprocessor'),
-        loss=dict(type='CELoss', ignore_first_char=True, reduction='mean')),
+        loss_module=dict(
+            type='CELoss', ignore_first_char=True, reduction='mean')),
     dictionary=dictionary,
     max_seq_len=30)

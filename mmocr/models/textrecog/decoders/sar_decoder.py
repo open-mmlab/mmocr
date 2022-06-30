@@ -21,7 +21,8 @@ class ParallelSARDecoder(BaseDecoder):
     Args:
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
             the instance of `Dictionary`.
-        loss (dict, optional): Config to build loss. Defaults to None.
+        loss_module (dict, optional): Config to build loss_module. Defaults
+            to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
         enc_bi_rnn (bool): If True, use bidirectional RNN in encoder.
@@ -50,7 +51,7 @@ class ParallelSARDecoder(BaseDecoder):
 
     def __init__(self,
                  dictionary: Union[Dict, Dictionary],
-                 loss: Optional[Dict] = None,
+                 loss_module: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  enc_bi_rnn: bool = False,
                  dec_bi_rnn: bool = False,
@@ -67,7 +68,7 @@ class ParallelSARDecoder(BaseDecoder):
                  **kwargs) -> None:
         super().__init__(
             dictionary=dictionary,
-            loss=loss,
+            loss_module=loss_module,
             max_seq_len=max_seq_len,
             postprocessor=postprocessor,
             init_cfg=init_cfg)
@@ -293,7 +294,8 @@ class SequentialSARDecoder(BaseDecoder):
     Args:
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
             the instance of `Dictionary`.
-        loss (dict, optional): Config to build loss. Defaults to None.
+        loss_module (dict, optional): Config to build loss_module. Defaults
+            to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
         enc_bi_rnn (bool): If True, use bidirectional RNN in encoder. Defaults
@@ -321,7 +323,7 @@ class SequentialSARDecoder(BaseDecoder):
 
     def __init__(self,
                  dictionary: Optional[Union[Dict, Dictionary]] = None,
-                 loss: Optional[Dict] = None,
+                 loss_module: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  enc_bi_rnn: bool = False,
                  dec_bi_rnn: bool = False,
@@ -337,7 +339,7 @@ class SequentialSARDecoder(BaseDecoder):
                  **kwargs):
         super().__init__(
             dictionary=dictionary,
-            loss=loss,
+            loss_module=loss_module,
             postprocessor=postprocessor,
             max_seq_len=max_seq_len,
             init_cfg=init_cfg)
@@ -473,20 +475,13 @@ class SequentialSARDecoder(BaseDecoder):
                 for data_sample in data_samples
             ] if self.mask else None
 
-        if self.train_mode:
-            padded_targets = [
-                data_sample.gt_text.padded_indexes
-                for data_sample in data_samples
-            ]
-            padded_targets = torch.stack(padded_targets, dim=0).to(feat.device)
-            tgt_embedding = self.embedding(padded_targets)
+        padded_targets = [
+            data_sample.gt_text.padded_indexes for data_sample in data_samples
+        ]
+        padded_targets = torch.stack(padded_targets, dim=0).to(feat.device)
+        tgt_embedding = self.embedding(padded_targets)
 
         outputs = []
-        start_token = torch.full((feat.size(0), ),
-                                 self.start_idx,
-                                 device=feat.device,
-                                 dtype=torch.long)
-        start_token = self.embedding(start_token)
         for i in range(-1, self.max_seq_len):
             if i == -1:
                 if self.dec_gru:
@@ -495,11 +490,8 @@ class SequentialSARDecoder(BaseDecoder):
                 else:
                     hx1, cx1 = self.rnn_decoder_layer1(out_enc)
                     hx2, cx2 = self.rnn_decoder_layer2(hx1)
-                if not self.train_mode:
-                    y_prev = start_token
             else:
-                if self.train_mode:
-                    y_prev = tgt_embedding[:, i, :]
+                y_prev = tgt_embedding[:, i, :]
                 y, hx1, cx1, hx2, cx2 = self._2d_attention(
                     y_prev,
                     feat,
@@ -509,13 +501,8 @@ class SequentialSARDecoder(BaseDecoder):
                     hx2,
                     cx2,
                     valid_ratios=valid_ratios)
-                if self.train_mode:
-                    y = self.pred_dropout(y)
-                else:
-                    y = F.softmax(y, -1)
-                    _, max_idx = torch.max(y, dim=1, keepdim=False)
-                    char_embedding = self.embedding(max_idx)
-                    y_prev = char_embedding
+                y = self.pred_dropout(y)
+
                 outputs.append(y)
 
         outputs = torch.stack(outputs, 1)
@@ -540,4 +527,45 @@ class SequentialSARDecoder(BaseDecoder):
         Returns:
             Tensor: A raw logit tensor of shape :math:`(N, T, C)`.
         """
-        return self.forward_train(feat, out_enc, data_samples)
+        valid_ratios = None
+        if data_samples is not None:
+            valid_ratios = [
+                data_sample.get('valid_ratio', 1.0)
+                for data_sample in data_samples
+            ] if self.mask else None
+
+        outputs = []
+        start_token = torch.full((feat.size(0), ),
+                                 self.start_idx,
+                                 device=feat.device,
+                                 dtype=torch.long)
+        start_token = self.embedding(start_token)
+        for i in range(-1, self.max_seq_len):
+            if i == -1:
+                if self.dec_gru:
+                    hx1 = cx1 = self.rnn_decoder_layer1(out_enc)
+                    hx2 = cx2 = self.rnn_decoder_layer2(hx1)
+                else:
+                    hx1, cx1 = self.rnn_decoder_layer1(out_enc)
+                    hx2, cx2 = self.rnn_decoder_layer2(hx1)
+                    y_prev = start_token
+            else:
+                y, hx1, cx1, hx2, cx2 = self._2d_attention(
+                    y_prev,
+                    feat,
+                    out_enc,
+                    hx1,
+                    cx1,
+                    hx2,
+                    cx2,
+                    valid_ratios=valid_ratios)
+
+                y = F.softmax(y, -1)
+                _, max_idx = torch.max(y, dim=1, keepdim=False)
+                char_embedding = self.embedding(max_idx)
+                y_prev = char_embedding
+                outputs.append(y)
+
+        outputs = torch.stack(outputs, 1)
+
+        return outputs
