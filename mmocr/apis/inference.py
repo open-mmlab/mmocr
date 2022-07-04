@@ -12,8 +12,7 @@ from mmdet.datasets import replace_ImageToTensor
 from mmdet.datasets.pipelines import Compose
 
 from mmocr.registry import MODELS
-from mmocr.utils import is_2dlist
-from .utils import disable_text_recog_aug_test
+from mmocr.utils import disable_text_recog_aug_test, is_2dlist
 
 
 def init_detector(config, checkpoint=None, device='cuda:0', cfg_options=None):

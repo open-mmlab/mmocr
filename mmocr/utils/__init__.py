@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.utils import Registry, build_from_cfg
 
+from .api_utils import disable_text_recog_aug_test
 from .bbox_utils import bbox2poly, rescale_bboxes
 from .box_util import (bezier_to_polygon, is_on_same_line, sort_points,
                        stitch_boxes_into_lines)
@@ -30,5 +31,5 @@ __all__ = [
     'rescale_bboxes', 'bbox2poly', 'crop_polygon', 'is_poly_inside_rect',
     'poly2bbox', 'poly_intersection', 'poly_iou', 'poly_make_valid',
     'poly_union', 'poly2shapely', 'polys2shapely', 'register_all_modules',
-    'dist_points2line', 'offset_polygon'
+    'dist_points2line', 'offset_polygon', 'disable_text_recog_aug_test'
 ]
