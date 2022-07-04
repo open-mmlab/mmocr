@@ -4,50 +4,7 @@ import operator
 
 import cv2
 import numpy as np
-import pyclipper
 from numpy.linalg import norm
-from shapely.geometry import Polygon
-
-
-def filter_instance(area, confidence, min_area, min_confidence):
-    return bool(area < min_area or confidence < min_confidence)
-
-
-def box_score_fast(bitmap, _box):
-    h, w = bitmap.shape[:2]
-    box = _box.copy()
-    xmin = np.clip(np.floor(box[:, 0].min()).astype(np.int32), 0, w - 1)
-    xmax = np.clip(np.ceil(box[:, 0].max()).astype(np.int32), 0, w - 1)
-    ymin = np.clip(np.floor(box[:, 1].min()).astype(np.int32), 0, h - 1)
-    ymax = np.clip(np.ceil(box[:, 1].max()).astype(np.int32), 0, h - 1)
-
-    mask = np.zeros((ymax - ymin + 1, xmax - xmin + 1), dtype=np.uint8)
-    box[:, 0] = box[:, 0] - xmin
-    box[:, 1] = box[:, 1] - ymin
-    cv2.fillPoly(mask, box.reshape(1, -1, 2).astype(np.int32), 1)
-    return cv2.mean(bitmap[ymin:ymax + 1, xmin:xmax + 1], mask)[0]
-
-
-def unclip(box, unclip_ratio=1.5):
-    poly = Polygon(box)
-    distance = poly.area * unclip_ratio / poly.length
-    offset = pyclipper.PyclipperOffset()
-    offset.AddPath(box, pyclipper.JT_ROUND, pyclipper.ET_CLOSEDPOLYGON)
-    expanded = np.array(offset.Execute(distance))
-    return expanded
-
-
-def fill_hole(input_mask):
-    h, w = input_mask.shape
-    canvas = np.zeros((h + 2, w + 2), np.uint8)
-    canvas[1:h + 1, 1:w + 1] = input_mask.copy()
-
-    mask = np.zeros((h + 4, w + 4), np.uint8)
-
-    cv2.floodFill(canvas, mask, (0, 0), 1)
-    canvas = canvas[1:h + 1, 1:w + 1].astype(np.bool)
-
-    return ~canvas | input_mask
 
 
 class Node:

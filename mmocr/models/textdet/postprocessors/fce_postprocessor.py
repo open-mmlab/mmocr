@@ -9,8 +9,8 @@ from numpy.fft import ifft
 
 from mmocr.core import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.utils import fill_hole
 from .base_postprocessor import BaseTextDetPostProcessor
-from .utils import fill_hole
 
 
 @MODELS.register_module()
