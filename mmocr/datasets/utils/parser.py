@@ -3,11 +3,11 @@ import json
 import warnings
 from typing import Dict, Tuple
 
-from mmocr.datasets.builder import PARSERS
+from mmocr.registry import TASK_UTILS
 from mmocr.utils import StringStrip
 
 
-@PARSERS.register_module()
+@TASK_UTILS.register_module()
 class LineStrParser:
     """Parse string of one line in annotation file to dict format.
 
@@ -57,7 +57,7 @@ class LineStrParser:
         return line_info
 
 
-@PARSERS.register_module()
+@TASK_UTILS.register_module()
 class LineJsonParser:
     """Parse json-string of one line in annotation file to dict format.
 
