@@ -28,7 +28,7 @@ class DBHead(BaseTextDetHead):
         self,
         in_channels: int,
         with_bias: bool = False,
-        loss: Dict = dict(type='DBLoss'),
+        loss_module: Dict = dict(type='DBLoss'),
         postprocessor: Dict = dict(
             type='DBPostprocessor', text_repr_type='quad'),
         init_cfg: Optional[Union[Dict, List[Dict]]] = [
@@ -37,7 +37,9 @@ class DBHead(BaseTextDetHead):
         ]
     ) -> None:
         super().__init__(
-            loss=loss, postprocessor=postprocessor, init_cfg=init_cfg)
+            loss_module=loss_module,
+            postprocessor=postprocessor,
+            init_cfg=init_cfg)
 
         assert isinstance(in_channels, int)
         assert isinstance(with_bias, bool)

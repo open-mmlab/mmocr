@@ -31,14 +31,16 @@ class TextSnakeHead(BaseTextDetHead):
         in_channels: int,
         out_channels: int = 5,
         downsample_ratio: float = 1.0,
-        loss: Dict = dict(type='TextSnakeLoss'),
+        loss_module: Dict = dict(type='TextSnakeLoss'),
         postprocessor: Dict = dict(
             type='TextSnakePostprocessor', text_repr_type='poly'),
         init_cfg: Optional[Union[Dict, List[Dict]]] = dict(
             type='Normal', override=dict(name='out_conv'), mean=0, std=0.01)
     ) -> None:
         super().__init__(
-            loss=loss, postprocessor=postprocessor, init_cfg=init_cfg)
+            loss_module=loss_module,
+            postprocessor=postprocessor,
+            init_cfg=init_cfg)
         assert isinstance(in_channels, int)
         assert isinstance(out_channels, int)
         self.in_channels = in_channels

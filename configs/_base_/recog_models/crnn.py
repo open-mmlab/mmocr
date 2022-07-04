@@ -12,7 +12,7 @@ model = dict(
         type='CRNNDecoder',
         in_channels=512,
         rnn_flag=True,
-        loss=dict(type='CTCLoss', letter_case='lower'),
+        loss_module=dict(type='CTCLoss', letter_case='lower'),
         postprocessor=dict(type='CTCPostProcessor')),
     dictionary=dictionary,
     data_preprocessor=dict(

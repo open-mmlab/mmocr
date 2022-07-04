@@ -23,7 +23,7 @@ model = dict(
         in_channels=256,
         scales=(8, 16, 32),
         fourier_degree=5,
-        loss=dict(type='FCELoss', num_sample=50),
+        loss_module=dict(type='FCELoss', num_sample=50),
         postprocessor=dict(
             type='FCEPostprocessor',
             text_repr_type='quad',

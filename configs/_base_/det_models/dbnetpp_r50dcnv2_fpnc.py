@@ -20,7 +20,7 @@ model = dict(
     bbox_head=dict(
         type='DBHead',
         in_channels=256,
-        loss=dict(type='DBLoss', alpha=5.0, beta=10.0, bbce_loss=True),
+        loss_module=dict(type='DBLoss', alpha=5.0, beta=10.0, bbce_loss=True),
         postprocessor=dict(
             type='DBPostprocessor', text_repr_type='quad',
             epsilon_ratio=0.002)),

@@ -17,5 +17,5 @@ model = dict(
         in_channels=32,
         text_region_thr=0.3,
         center_region_thr=0.4,
-        loss=dict(type='DRRGLoss'),
+        loss_module=dict(type='DRRGLoss'),
         postprocessor=dict(type='DRRGPostprocessor', link_thr=0.80)))
