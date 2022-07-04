@@ -23,6 +23,7 @@ from .polygon_utils import (boundary_iou, crop_polygon, is_poly_inside_rect,
                             poly_intersection, poly_iou, poly_make_valid,
                             poly_union, polys2shapely, rescale_polygon,
                             rescale_polygons)
+from .postprocessor_utils import fill_hole
 from .setup_env import register_all_modules
 from .string_util import StringStrip
 
@@ -40,5 +41,5 @@ __all__ = [
     'disable_text_recog_aug_test', 'box_center_distance', 'box_diag',
     'compute_hmean', 'filter_2dlist_result', 'many2one_match_ic13',
     'one2one_match_ic13', 'select_top_boundary', 'boundary_iou',
-    'point_distance', 'points_center'
+    'point_distance', 'points_center', 'fill_hole'
 ]
