@@ -24,7 +24,7 @@ class PSEHead(PANHead):
                  in_channels: List[int],
                  hidden_dim: int,
                  out_channel: int,
-                 loss: Dict = dict(type='PSELoss'),
+                 loss_module: Dict = dict(type='PSELoss'),
                  postprocessor: Dict = dict(
                      type='PSEPostprocessor', text_repr_type='poly'),
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
@@ -33,6 +33,6 @@ class PSEHead(PANHead):
             in_channels=in_channels,
             hidden_dim=hidden_dim,
             out_channel=out_channel,
-            loss=loss,
+            loss_module=loss_module,
             postprocessor=postprocessor,
             init_cfg=init_cfg)

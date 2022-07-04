@@ -21,7 +21,7 @@ model = dict(
     det_head=dict(
         type='TextSnakeHead',
         in_channels=32,
-        loss=dict(type='TextSnakeLoss'),
+        loss_module=dict(type='TextSnakeLoss'),
         postprocessor=dict(
             type='TextSnakePostprocessor', text_repr_type='poly')),
     preprocess_cfg=preprocess_cfg)

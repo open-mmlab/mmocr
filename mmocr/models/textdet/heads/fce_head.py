@@ -30,7 +30,7 @@ class FCEHead(BaseTextDetHead):
         self,
         in_channels: int,
         fourier_degree: int = 5,
-        loss: Dict = dict(type='FCELoss', num_sample=50),
+        loss_module: Dict = dict(type='FCELoss', num_sample=50),
         postprocessor: Dict = dict(
             type='FCEPostprocessor',
             text_repr_type='poly',
@@ -45,10 +45,12 @@ class FCEHead(BaseTextDetHead):
             override=[dict(name='out_conv_cls'),
                       dict(name='out_conv_reg')])
     ) -> None:
-        loss['fourier_degree'] = fourier_degree
+        loss_module['fourier_degree'] = fourier_degree
         postprocessor['fourier_degree'] = fourier_degree
         super().__init__(
-            loss=loss, postprocessor=postprocessor, init_cfg=init_cfg)
+            loss_module=loss_module,
+            postprocessor=postprocessor,
+            init_cfg=init_cfg)
 
         assert isinstance(in_channels, int)
         assert isinstance(fourier_degree, int)

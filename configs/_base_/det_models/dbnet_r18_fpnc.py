@@ -21,6 +21,6 @@ model = dict(
     det_head=dict(
         type='DBHead',
         in_channels=256,
-        loss=dict(type='DBLoss'),
+        loss_module=dict(type='DBLoss'),
         postprocessor=dict(type='DBPostprocessor', text_repr_type='quad')),
     preprocess_cfg=preprocess_cfg)

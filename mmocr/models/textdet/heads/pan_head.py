@@ -33,7 +33,7 @@ class PANHead(BaseTextDetHead):
         in_channels: List[int],
         hidden_dim: int,
         out_channel: int,
-        loss=dict(type='PANLoss'),
+        loss_module=dict(type='PANLoss'),
         postprocessor=dict(type='PANPostprocessor', text_repr_type='poly'),
         init_cfg=[
             dict(type='Normal', mean=0, std=0.01, layer='Conv2d'),
@@ -41,7 +41,9 @@ class PANHead(BaseTextDetHead):
         ]
     ) -> None:
         super().__init__(
-            loss=loss, postprocessor=postprocessor, init_cfg=init_cfg)
+            loss_module=loss_module,
+            postprocessor=postprocessor,
+            init_cfg=init_cfg)
 
         assert check_argument.is_type_list(in_channels, int)
         assert isinstance(out_channel, int)

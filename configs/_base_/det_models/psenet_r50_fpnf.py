@@ -26,7 +26,7 @@ model_poly = dict(
         in_channels=[256],
         hidden_dim=256,
         out_channel=7,
-        loss=dict(type='PSELoss'),
+        loss_module=dict(type='PSELoss'),
         postprocessor=dict(type='PSEPostprocessor', text_repr_type='poly')),
     preprocess_cfg=preprocess_cfg)
 
