@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .box_utils import sort_vertex, sort_vertex8
 from .formatting import PackTextDetInputs, PackTextRecogInputs
 from .kie_transforms import ResizeNoImg
 from .loading import LoadOCRAnnotations
@@ -22,10 +21,10 @@ __all__ = [
     'ToTensorOCR', 'DBNetTargets', 'PANetTargets', 'RandomRotate',
     'ScaleAspectJitter', 'MultiRotateAugOCR', 'OCRSegTargets', 'FancyPCA',
     'RandomPaddingOCR', 'ImgAug', 'RandomRotateImageBox', 'OpencvToPil',
-    'PilToOpencv', 'SourceImagePad', 'TextSnakeTargets', 'sort_vertex',
-    'sort_vertex8', 'FCENetTargets', 'TextDetRandomCropFlip', 'ResizeNoImg',
-    'PyramidRescale', 'TorchVisionWrapper', 'Resize', 'RandomCrop',
-    'TextDetRandomCrop', 'RandomCrop', 'PackTextDetInputs',
-    'PackTextRecogInputs', 'RescaleToHeight', 'PadToWidth',
-    'ShortScaleAspectJitter', 'RandomFlip', 'BoundedScaleAspectJitter'
+    'PilToOpencv', 'SourceImagePad', 'TextSnakeTargets', 'FCENetTargets',
+    'TextDetRandomCropFlip', 'ResizeNoImg', 'PyramidRescale',
+    'TorchVisionWrapper', 'Resize', 'RandomCrop', 'TextDetRandomCrop',
+    'RandomCrop', 'PackTextDetInputs', 'PackTextRecogInputs',
+    'RescaleToHeight', 'PadToWidth', 'ShortScaleAspectJitter', 'RandomFlip',
+    'BoundedScaleAspectJitter'
 ]

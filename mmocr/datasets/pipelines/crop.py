@@ -4,7 +4,6 @@ import numpy as np
 from shapely.geometry import LineString, Point
 
 import mmocr.utils as utils
-from .box_utils import sort_vertex
 
 
 def box_jitter(points_x, points_y, jitter_ratio_x=0.5, jitter_ratio_y=0.1):
@@ -56,7 +55,7 @@ def warp_img(src_img,
     points_x = [min(max(x, 0), w) for x in box[0:8:2]]
     points_y = [min(max(y, 0), h) for y in box[1:9:2]]
 
-    points_x, points_y = sort_vertex(points_x, points_y)
+    points_x, points_y = utils.sort_vertex(points_x, points_y)
 
     if jitter_flag:
         box_jitter(
