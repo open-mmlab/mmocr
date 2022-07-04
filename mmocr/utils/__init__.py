@@ -2,10 +2,10 @@
 from mmcv.utils import Registry, build_from_cfg
 
 from .api_utils import disable_text_recog_aug_test
-from .bbox_utils import (bbox2poly, box_center_distance, box_diag,
-                         rescale_bboxes, sort_vertex, sort_vertex8)
-from .box_util import (bezier_to_polygon, is_on_same_line, sort_points,
-                       stitch_boxes_into_lines)
+from .bbox_utils import (bbox2poly, bezier_to_polygon, box_center_distance,
+                         box_diag, is_on_same_line, rescale_bboxes,
+                         sort_points, sort_vertex, sort_vertex8,
+                         stitch_boxes_into_lines)
 from .check_argument import (equal_len, is_2dlist, is_3dlist, is_none_or_type,
                              is_type_list, valid_boundary)
 from .collect_env import collect_env
