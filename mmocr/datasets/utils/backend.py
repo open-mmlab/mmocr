@@ -11,6 +11,7 @@ from mmocr import digit_version
 from mmocr.utils import list_from_file
 
 
+# TODO: remove
 class LmdbAnnFileBackend:
     """Lmdb storage backend for annotation file.
 

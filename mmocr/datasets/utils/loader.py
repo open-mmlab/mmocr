@@ -6,6 +6,7 @@ from .backend import (HardDiskAnnFileBackend, HTTPAnnFileBackend,
                       PetrelAnnFileBackend)
 
 
+# TODO: remove
 @LOADERS.register_module()
 class AnnFileLoader:
     """Annotation file loader to load annotations from ann_file, and parse raw
