@@ -5,10 +5,10 @@ import numpy as np
 import torch
 from shapely.geometry import MultiPolygon, Polygon
 
-from mmocr.utils import (crop_polygon, offset_polygon, poly2bbox, poly2shapely,
-                         poly_intersection, poly_iou, poly_make_valid,
-                         poly_union, polys2shapely, rescale_polygon,
-                         rescale_polygons)
+from mmocr.utils import (boundary_iou, crop_polygon, offset_polygon, poly2bbox,
+                         poly2shapely, poly_intersection, poly_iou,
+                         poly_make_valid, poly_union, polys2shapely,
+                         rescale_polygon, rescale_polygons)
 
 
 class TestCropPolygon(unittest.TestCase):
@@ -281,3 +281,19 @@ class TestPolygonUtils(unittest.TestCase):
                             dtype=np.float32)
         shrunk = offset_polygon(polygons, -1)
         self.assertEqual(len(shrunk), 0)
+
+    def test_boundary_iou(self):
+        points = [0, 0, 0, 1, 1, 1, 1, 0]
+        points1 = [10, 20, 30, 40, 50, 60, 70, 80]
+        points2 = [0, 0, 0, 0, 0, 0, 0, 0]  # Invalid polygon
+        points3 = [0, 0, 0, 1, 1, 0, 1, 1]  # Self-intersected polygon
+
+        self.assertEqual(boundary_iou(points, points1), 0)
+
+        # test overlapping boundaries
+        self.assertEqual(boundary_iou(points, points), 1)
+
+        # test invalid boundaries
+        self.assertEqual(boundary_iou(points2, points2), 0)
+        self.assertEqual(boundary_iou(points3, points3, zero_division=1), 1)
+        self.assertEqual(boundary_iou(points2, points3), 0)

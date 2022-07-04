@@ -6,8 +6,8 @@ import torch
 from nose_parameterized import parameterized
 
 from mmocr.core import TextDetDataSample
-from mmocr.core.evaluation.utils import points2polygon, poly_iou
 from mmocr.models.textdet.postprocessors import PANPostprocessor
+from mmocr.utils import poly2shapely, poly_iou
 
 
 class TestPANPostprocessor(unittest.TestCase):
@@ -44,8 +44,8 @@ class TestPANPostprocessor(unittest.TestCase):
         postprocessor = PANPostprocessor(text_repr_type='quad')
 
         result = postprocessor._points2boundary(points)
-        pred_poly = points2polygon(result)
-        target_poly = points2polygon([2, 2, 0, 2, 0, 0, 2, 0])
+        pred_poly = poly2shapely(result)
+        target_poly = poly2shapely([2, 2, 0, 2, 0, 0, 2, 0])
         self.assertEqual(poly_iou(pred_poly, target_poly), 1)
 
         result = postprocessor._points2boundary(points, min_width=3)
@@ -54,6 +54,6 @@ class TestPANPostprocessor(unittest.TestCase):
         # test poly
         postprocessor = PANPostprocessor(text_repr_type='poly')
         result = postprocessor._points2boundary(points)
-        pred_poly = points2polygon(result)
-        target_poly = points2polygon([0, 0, 0, 2, 2, 2, 2, 0])
+        pred_poly = poly2shapely(result)
+        target_poly = poly2shapely([0, 0, 0, 2, 2, 2, 2, 0])
         assert poly_iou(pred_poly, target_poly) == 1

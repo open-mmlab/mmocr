@@ -34,3 +34,26 @@ def dist_points2line(xs, ys, pt1, pt2):
     # set result to minimum edge if C<pi/2
     result[neg_cos_c < 0] = np.sqrt(np.fmin(a_square, b_square))[neg_cos_c < 0]
     return result
+
+
+def points_center(points):
+    # TODO typehints & docstring
+    assert isinstance(points, np.ndarray)
+    assert points.size % 2 == 0
+
+    points = points.reshape([-1, 2])
+    return np.mean(points, axis=0)
+
+
+def point_distance(p1, p2):
+    # TODO typehints & docstring
+    assert isinstance(p1, np.ndarray)
+    assert isinstance(p2, np.ndarray)
+
+    assert p1.size == 2
+    assert p2.size == 2
+
+    dist = np.square(p2 - p1)
+    dist = np.sum(dist)
+    dist = np.sqrt(dist)
+    return dist

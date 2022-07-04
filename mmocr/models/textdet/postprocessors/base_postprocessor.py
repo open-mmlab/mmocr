@@ -5,8 +5,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 import numpy as np
 
 from mmocr.core import TextDetDataSample
-from mmocr.core.evaluation.utils import boundary_iou
-from mmocr.utils import is_type_list, rescale_polygons
+from mmocr.utils import boundary_iou, is_type_list, rescale_polygons
 
 
 class BasePostprocessor:

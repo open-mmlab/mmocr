@@ -25,23 +25,6 @@ def test_compute_hmean():
     assert hmean == 0
 
 
-def test_boundary_iou():
-    points = [0, 0, 0, 1, 1, 1, 1, 0]
-    points1 = [10, 20, 30, 40, 50, 60, 70, 80]
-    points2 = [0, 0, 0, 0, 0, 0, 0, 0]  # Invalid polygon
-    points3 = [0, 0, 0, 1, 1, 0, 1, 1]  # Self-intersected polygon
-
-    assert utils.boundary_iou(points, points1) == 0
-
-    # test overlapping boundaries
-    assert utils.boundary_iou(points, points) == 1
-
-    # test invalid boundaries
-    assert utils.boundary_iou(points2, points2) == 0
-    assert utils.boundary_iou(points3, points3, zero_division=1) == 1
-    assert utils.boundary_iou(points2, points3) == 0
-
-
 def test_points_center():
 
     # test unsupported type

@@ -4,6 +4,8 @@ from typing import Tuple
 import numpy as np
 from numpy.typing import ArrayLike
 
+from mmocr.utils.point_utils import point_distance, points_center
+
 
 def rescale_bbox(bbox: np.ndarray,
                  scale_factor: Tuple[int, int],
@@ -74,3 +76,18 @@ def bbox2poly(bbox: ArrayLike) -> np.array:
     return np.array([
         bbox[0], bbox[1], bbox[2], bbox[1], bbox[2], bbox[3], bbox[0], bbox[3]
     ])
+
+
+def box_center_distance(b1, b2):
+    # TODO typehints & docstring & test
+    assert isinstance(b1, np.ndarray)
+    assert isinstance(b2, np.ndarray)
+    return point_distance(points_center(b1), points_center(b2))
+
+
+def box_diag(box):
+    # TODO typehints & docstring & test
+    assert isinstance(box, np.ndarray)
+    assert box.size == 8
+
+    return point_distance(box[0:2], box[4:6])

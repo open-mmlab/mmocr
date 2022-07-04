@@ -2,7 +2,6 @@
 import numpy as np
 
 import mmocr.utils as utils
-from . import utils as eval_utils
 
 
 def eval_hmean_iou(pred_boxes,
@@ -57,10 +56,10 @@ def eval_hmean_iou(pred_boxes,
 
         # get gt polygons.
         gt_all = gt + gt_ignored
-        gt_polys = [eval_utils.points2polygon(p) for p in gt_all]
+        gt_polys = [utils.poly2shapely(p) for p in gt_all]
         gt_ignored_index = [gt_num + i for i in range(len(gt_ignored))]
         gt_num = len(gt_polys)
-        pred_polys, _, pred_ignored_index = eval_utils.ignore_pred(
+        pred_polys, _, pred_ignored_index = utils.ignore_pred(
             pred, gt_ignored_index, gt_polys, precision_thr)
 
         # match.
@@ -76,8 +75,7 @@ def eval_hmean_iou(pred_boxes,
                     gt_pol = gt_polys[gt_id]
                     det_pol = pred_polys[pred_id]
 
-                    iou_mat[gt_id,
-                            pred_id] = eval_utils.poly_iou(det_pol, gt_pol)
+                    iou_mat[gt_id, pred_id] = utils.poly_iou(det_pol, gt_pol)
 
             for gt_id in range(gt_num):
                 for pred_id in range(pred_num):
@@ -93,8 +91,8 @@ def eval_hmean_iou(pred_boxes,
         gt_care_number = gt_num - gt_ignored_num
         pred_care_number = pred_num - len(pred_ignored_index)
 
-        r, p, h = eval_utils.compute_hmean(hit_num, hit_num, gt_care_number,
-                                           pred_care_number)
+        r, p, h = utils.compute_hmean(hit_num, hit_num, gt_care_number,
+                                      pred_care_number)
 
         img_results.append({'recall': r, 'precision': p, 'hmean': h})
 
@@ -102,7 +100,7 @@ def eval_hmean_iou(pred_boxes,
         dataset_gt_num += gt_care_number
         dataset_pred_num += pred_care_number
 
-    dataset_r, dataset_p, dataset_h = eval_utils.compute_hmean(
+    dataset_r, dataset_p, dataset_h = utils.compute_hmean(
         dataset_hit_num, dataset_hit_num, dataset_gt_num, dataset_pred_num)
 
     dataset_results = {
