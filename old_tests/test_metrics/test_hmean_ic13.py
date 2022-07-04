@@ -5,7 +5,7 @@ import math
 import pytest
 
 import mmocr.core.evaluation.hmean_ic13 as hmean_ic13
-import mmocr.core.evaluation.utils as utils
+import mmocr.utils as utils
 
 
 def test_compute_recall_precision():
@@ -21,8 +21,8 @@ def test_compute_recall_precision():
 
     box2 = [0, 0, 10, 0, 10, 1, 0, 1]
 
-    gt_polys = [utils.points2polygon(box1)]
-    det_polys = [utils.points2polygon(box2)]
+    gt_polys = [utils.poly2shapely(box1)]
+    det_polys = [utils.poly2shapely(box2)]
     recall, precision = hmean_ic13.compute_recall_precision(
         gt_polys, det_polys)
     assert recall == 1

@@ -1,12 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Optional, Sequence, Tuple, Union
+from typing import List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pyclipper
 from numpy.typing import ArrayLike
 from shapely.geometry import MultiPolygon, Polygon
 
-from mmocr.utils import bbox2poly
+from mmocr.utils import bbox2poly, valid_boundary
 
 
 def rescale_polygon(polygon: ArrayLike,
@@ -314,3 +314,25 @@ def offset_polygon(poly: ArrayLike, distance: float) -> ArrayLike:
     # But when the resulting polygon is invalid, return the empty array
     # as it is
     return result if len(result) == 0 else result[0].flatten()
+
+
+def boundary_iou(src: List,
+                 target: List,
+                 zero_division: Union[int, float] = 0) -> float:
+    """Calculate the IOU between two boundaries.
+
+    Args:
+       src (list): Source boundary.
+       target (list): Target boundary.
+       zero_division (int or float): The return value when invalid
+                                    boundary exists.
+
+    Returns:
+       float: The iou between two boundaries.
+    """
+    assert valid_boundary(src, False)
+    assert valid_boundary(target, False)
+    src_poly = poly2shapely(src)
+    target_poly = poly2shapely(target)
+
+    return poly_iou(src_poly, target_poly, zero_division=zero_division)

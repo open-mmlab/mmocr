@@ -8,9 +8,8 @@ from mmcv.utils import print_log
 
 import mmocr.utils as utils
 from mmocr.core.evaluation import hmean_ic13, hmean_iou
-from mmocr.core.evaluation.utils import (filter_2dlist_result,
-                                         select_top_boundary)
 from mmocr.core.mask import extract_boundary
+from mmocr.utils import filter_2dlist_result, select_top_boundary
 
 
 def output_ranklist(img_results, img_infos, out_file):

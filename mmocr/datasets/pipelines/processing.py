@@ -12,10 +12,9 @@ from mmcv.transforms.base import BaseTransform
 from mmcv.transforms.utils import avoid_cache_randomness, cache_randomness
 from shapely.geometry import Polygon as plg
 
-import mmocr.core.evaluation.utils as eval_utils
 from mmocr.registry import TRANSFORMS
 from mmocr.utils import (bbox2poly, crop_polygon, is_poly_inside_rect,
-                         poly2bbox, rescale_polygon)
+                         poly2bbox, poly_intersection, rescale_polygon)
 from .wrappers import ImgAug
 
 
@@ -623,8 +622,7 @@ class TextDetRandomCropFlip(BaseTransform):
             success_flag = True
             for poly_idx, polygon in enumerate(polygons):
                 ppi = plg(polygon.reshape(-1, 2))
-                # TODO Move this eval_utils to point_utils?
-                ppiou = eval_utils.poly_intersection(ppi, pp)
+                ppiou = poly_intersection(ppi, pp)
                 if np.abs(ppiou - float(ppi.area)) > self.epsilon and \
                         np.abs(ppiou) > self.epsilon:
                     success_flag = False
