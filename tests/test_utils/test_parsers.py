@@ -2,7 +2,7 @@
 import json
 from unittest import TestCase
 
-from mmocr.datasets import LineJsonParser, LineStrParser
+from mmocr.utils import LineJsonParser, LineStrParser
 
 
 class TestParser(TestCase):
@@ -20,3 +20,15 @@ class TestParser(TestCase):
         data = parser(line)
         self.assertEqual(data['filename'], 'test.jpg')
         self.assertEqual(data['text'], 'mmocr')
+
+        # warnings
+        line = 'test test test'
+        msg = 'More than two blank spaces were detected. '
+        msg += 'Please use LineJsonParser to handle '
+        msg += 'annotations with blanks. '
+        msg += 'Check Doc '
+        msg += 'https://mmocr.readthedocs.io/en/latest/'
+        msg += 'tutorials/blank_recog.html '
+        msg += 'for details.'
+        data = parser(line)
+        self.assertWarnsRegex(UserWarning, msg)

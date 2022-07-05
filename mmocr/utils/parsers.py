@@ -4,7 +4,7 @@ import warnings
 from typing import Dict, Tuple
 
 from mmocr.registry import TASK_UTILS
-from mmocr.utils import StringStrip
+from mmocr.utils.string_util import StringStrip
 
 
 @TASK_UTILS.register_module()

@@ -17,6 +17,7 @@ from .fileio import list_from_file, list_to_file
 from .lmdb_util import recog2lmdb
 from .logger import get_root_logger
 from .model import revert_sync_batchnorm
+from .parsers import LineJsonParser, LineStrParser
 from .point_utils import dist_points2line, point_distance, points_center
 from .polygon_utils import (boundary_iou, crop_polygon, is_poly_inside_rect,
                             offset_polygon, poly2bbox, poly2shapely,
@@ -41,5 +42,6 @@ __all__ = [
     'disable_text_recog_aug_test', 'box_center_distance', 'box_diag',
     'compute_hmean', 'filter_2dlist_result', 'many2one_match_ic13',
     'one2one_match_ic13', 'select_top_boundary', 'boundary_iou',
-    'point_distance', 'points_center', 'fill_hole'
+    'point_distance', 'points_center', 'fill_hole', 'LineJsonParser',
+    'LineStrParser'
 ]
