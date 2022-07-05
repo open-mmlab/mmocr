@@ -20,8 +20,19 @@ from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
 from mmocr.utils import revert_sync_batchnorm, setup_multi_processes
 
+class TestArg:
+    def __init__(self, config=None, checkpoint=None):
+        self.arg_list = None
+        if config is not None and checkpoint is not None:
+            self.arg_list = [config, checkpoint]
 
-def parse_args():
+    def add_arg(self, key, value=None):
+        self.arg_list.append(key)
+        if value is not None:
+            self.arg_list.append(value)
+
+
+def parse_args(arg_list=None):
     parser = argparse.ArgumentParser(
         description='MMOCR test (and eval) a model.')
     parser.add_argument('config', help='Test config file path.')
@@ -96,7 +107,7 @@ def parse_args():
         default='none',
         help='Options for job launcher.')
     parser.add_argument('--local_rank', type=int, default=0)
-    args = parser.parse_args()
+    args = parser.parse_args(arg_list)
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
 
@@ -110,8 +121,7 @@ def parse_args():
     return args
 
 
-def main():
-    args = parse_args()
+def run_test_cmd(args):
 
     assert (
         args.out or args.eval or args.format_only or args.show
@@ -232,4 +242,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    args = parse_args(TestArg().arg_list)
+    run_test_cmd(args)
