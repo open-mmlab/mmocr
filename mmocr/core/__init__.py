@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .data_structures import *  # NOQA
 from .evaluation import *  # NOQA
+from .loops import *  # NOQA
 from .mask import extract_boundary, points2boundary, seg2boundary
 from .visualization import TextDetLocalVisualizer, TextRecogLocalVisualizer
 from .visualize import (det_recog_show_result, imshow_edge, imshow_node,
