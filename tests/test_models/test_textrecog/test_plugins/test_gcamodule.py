@@ -2,7 +2,7 @@
 from unittest import TestCase
 
 import torch
-from nose_parameterized import parameterized
+from parameterized import parameterized
 
 from mmocr.models.textrecog.plugins import GCAModule
 

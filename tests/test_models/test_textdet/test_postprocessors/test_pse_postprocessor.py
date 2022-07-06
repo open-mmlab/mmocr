@@ -2,7 +2,7 @@
 import unittest
 
 import torch
-from nose_parameterized import parameterized
+from parameterized import parameterized
 
 from mmocr.core import TextDetDataSample
 from mmocr.models.textdet.postprocessors import PSEPostprocessor

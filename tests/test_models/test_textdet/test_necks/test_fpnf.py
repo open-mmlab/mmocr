@@ -2,7 +2,7 @@
 import unittest
 
 import torch
-from nose_parameterized import parameterized
+from parameterized import parameterized
 
 from mmocr.models.textdet.necks import FPNF
 
