@@ -172,7 +172,7 @@ class TextSnakePostprocessor(BaseTextDetPostProcessor):
 
         h, w = contour_mask.shape
         top_yx = bot_yx = points_yx
-        step_flags = np.ones((len(points_yx), 1), dtype=np.bool)
+        step_flags = np.ones((len(points_yx), 1), dtype=np.bool_)
         step = step_ratio * radius * np.hstack([normal_cos, normal_sin])
         while np.any(step_flags):
             next_yx = np.array(top_yx + step, dtype=np.int32)
@@ -181,7 +181,7 @@ class TextSnakePostprocessor(BaseTextDetPostProcessor):
                 next_x < w) & contour_mask[np.clip(next_y, 0, h - 1),
                                            np.clip(next_x, 0, w - 1)]
             top_yx = top_yx + step_flags.reshape((-1, 1)) * step
-        step_flags = np.ones((len(points_yx), 1), dtype=np.bool)
+        step_flags = np.ones((len(points_yx), 1), dtype=np.bool_)
         while np.any(step_flags):
             next_yx = np.array(bot_yx - step, dtype=np.int32)
             next_y, next_x = next_yx[:, 0], next_yx[:, 1]

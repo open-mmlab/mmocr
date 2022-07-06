@@ -316,7 +316,7 @@ def _sort_vertex(vertices):
     left_top = np.min(vertices, axis=0)
     dists = np.linalg.norm(left_top - vertices, axis=-1, ord=2)
     lefttop_idx = np.argmin(dists)
-    indexes = (np.arange(N, dtype=np.int) + lefttop_idx) % N
+    indexes = (np.arange(N, dtype=np.int_) + lefttop_idx) % N
     return vertices[indexes]
 
 

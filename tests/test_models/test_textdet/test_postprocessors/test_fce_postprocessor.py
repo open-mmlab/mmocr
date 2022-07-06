@@ -4,7 +4,7 @@ import unittest
 import numpy as np
 import torch
 from mmengine import InstanceData
-from nose_parameterized import parameterized
+from parameterized import parameterized
 
 from mmocr.core import TextDetDataSample
 from mmocr.models.textdet.postprocessors import FCEPostprocessor

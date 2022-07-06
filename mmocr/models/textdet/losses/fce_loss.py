@@ -251,7 +251,7 @@ class FCELoss(TextSnakeLoss):
         level_maps = []
 
         for poly_ind, poly in enumerate(text_polys):
-            poly = np.array(poly, dtype=np.int).reshape((1, -1, 2))
+            poly = np.array(poly, dtype=np.int_).reshape((1, -1, 2))
             _, _, box_w, box_h = cv2.boundingRect(poly)
             proportion = max(box_h, box_w) / (h + 1e-8)
 
