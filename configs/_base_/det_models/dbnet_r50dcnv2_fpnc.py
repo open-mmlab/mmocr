@@ -1,9 +1,3 @@
-preprocess_cfg = dict(
-    mean=[122.67891434, 116.66876762, 104.00698793],
-    std=[58.395, 57.12, 57.375],
-    to_rgb=True,
-    pad_size_divisor=32)
-
 model = dict(
     type='DBNet',
     backbone=dict(
@@ -25,4 +19,9 @@ model = dict(
         in_channels=256,
         loss_module=dict(type='DBLoss'),
         postprocessor=dict(type='DBPostprocessor', text_repr_type='quad')),
-    preprocess_cfg=preprocess_cfg)
+    data_preprocessor=dict(
+        type='TextDetDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        bgr_to_rgb=True,
+        pad_size_divisor=32))

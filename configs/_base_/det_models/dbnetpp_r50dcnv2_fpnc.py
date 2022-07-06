@@ -17,12 +17,16 @@ model = dict(
         in_channels=[256, 512, 1024, 2048],
         lateral_channels=256,
         asf_cfg=dict(attention_type='ScaleChannelSpatial')),
-    bbox_head=dict(
+    det_head=dict(
         type='DBHead',
         in_channels=256,
         loss_module=dict(type='DBLoss', alpha=5.0, beta=10.0, bbce_loss=True),
         postprocessor=dict(
             type='DBPostprocessor', text_repr_type='quad',
             epsilon_ratio=0.002)),
-    train_cfg=None,
-    test_cfg=None)
+    data_preprocessor=dict(
+        type='TextDetDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        bgr_to_rgb=True,
+        pad_size_divisor=32))
