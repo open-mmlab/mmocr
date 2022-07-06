@@ -17,5 +17,9 @@ model = dict(
         out_channels=6,
         loss_module=dict(type='PANLoss', speedup_bbox_thr=32),
         postprocessor=dict(type='PANPostprocessor', text_repr_type='poly')),
-    train_cfg=None,
-    test_cfg=None)
+    data_preprocessor=dict(
+        type='TextDetDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        bgr_to_rgb=True,
+        pad_size_divisor=32))

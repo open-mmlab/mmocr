@@ -1,9 +1,3 @@
-preprocess_cfg = dict(
-    mean=[123.675, 116.28, 103.53],
-    std=[58.395, 57.12, 57.375],
-    to_rgb=True,
-    pad_size_divisor=32)
-
 model = dict(
     type='TextSnake',
     backbone=dict(
@@ -24,4 +18,9 @@ model = dict(
         loss_module=dict(type='TextSnakeLoss'),
         postprocessor=dict(
             type='TextSnakePostprocessor', text_repr_type='poly')),
-    preprocess_cfg=preprocess_cfg)
+    data_preprocessor=dict(
+        type='TextDetDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        bgr_to_rgb=True,
+        pad_size_divisor=32))

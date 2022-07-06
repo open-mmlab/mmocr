@@ -1,9 +1,3 @@
-preprocess_cfg = dict(
-    mean=[123.675, 116.28, 103.53],
-    std=[58.395, 57.12, 57.375],
-    to_rgb=True,
-    pad_size_divisor=32)
-
 model_poly = dict(
     type='PSENet',
     backbone=dict(
@@ -28,7 +22,12 @@ model_poly = dict(
         out_channel=7,
         loss_module=dict(type='PSELoss'),
         postprocessor=dict(type='PSEPostprocessor', text_repr_type='poly')),
-    preprocess_cfg=preprocess_cfg)
+    data_preprocessor=dict(
+        type='TextDetDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        bgr_to_rgb=True,
+        pad_size_divisor=32))
 
 model_quad = dict(
     type='PSENet',
@@ -54,4 +53,9 @@ model_quad = dict(
         out_channel=7,
         loss=dict(type='PSELoss'),
         postprocessor=dict(type='PSEPostprocessor', text_repr_type='quad')),
-    preprocess_cfg=preprocess_cfg)
+    data_preprocessor=dict(
+        type='TextDetDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        bgr_to_rgb=True,
+        pad_size_divisor=32))
