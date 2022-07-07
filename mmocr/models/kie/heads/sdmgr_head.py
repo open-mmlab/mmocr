@@ -79,9 +79,9 @@ class SDMGRHead(BaseModule):
         embed_edges = F.normalize(embed_edges)
 
         for gnn_layer in self.gnn_layers:
-            nodes, cat_nodes = gnn_layer(nodes, embed_edges, node_nums)
+            nodes, embed_edges = gnn_layer(nodes, embed_edges, node_nums)
 
-        node_cls, edge_cls = self.node_cls(nodes), self.edge_cls(cat_nodes)
+        node_cls, edge_cls = self.node_cls(nodes), self.edge_cls(embed_edges)
         return node_cls, edge_cls
 
 
