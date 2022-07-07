@@ -11,7 +11,7 @@ from torch import nn
 
 from mmocr.core import TextDetDataSample
 from mmocr.registry import MODELS
-from mmocr.utils import dist_points2line, offset_polygon
+from mmocr.utils import offset_polygon
 from .text_kernel_mixin import TextKernelMixin
 
 
@@ -182,8 +182,8 @@ class DBLoss(nn.Module, TextKernelMixin):
                                 dtype=np.float32)
         for i in range(polygon.shape[0]):
             j = (i + 1) % polygon.shape[0]
-            absolute_distance = dist_points2line(xs, ys, polygon[i],
-                                                 polygon[j])
+            absolute_distance = self._dist_points2line(xs, ys, polygon[i],
+                                                       polygon[j])
             distance_map[i] = np.clip(absolute_distance / distance, 0, 1)
         distance_map = distance_map.min(axis=0)
 
@@ -257,3 +257,40 @@ class DBLoss(nn.Module, TextKernelMixin):
         gt_thr = torch.from_numpy(gt_thr).unsqueeze(0).float()
         gt_thr_mask = torch.from_numpy(gt_thr_mask).unsqueeze(0).float()
         return gt_shrink, gt_shrink_mask, gt_thr, gt_thr_mask
+
+    @staticmethod
+    def _dist_points2line(xs: np.ndarray, ys: np.ndarray, pt1: np.ndarray,
+                          pt2: np.ndarray) -> np.ndarray:
+        """Compute distances from points to a line. This is adapted from
+        https://github.com/MhLiao/DB.
+
+        Args:
+            xs (ndarray): The x coordinates of points of size :math:`(N, )`.
+            ys (ndarray): The y coordinates of size :math:`(N, )`.
+            pt1 (ndarray): The first point on the line of size :math:`(2, )`.
+            pt2 (ndarray): The second point on the line of size :math:`(2, )`.
+
+        Returns:
+            ndarray: The distance matrix of size :math:`(N, )`.
+        """
+        # suppose a triangle with three edge abc with c=point_1 point_2
+        # a^2
+        a_square = np.square(xs - pt1[0]) + np.square(ys - pt1[1])
+        # b^2
+        b_square = np.square(xs - pt2[0]) + np.square(ys - pt2[1])
+        # c^2
+        c_square = np.square(pt1[0] - pt2[0]) + np.square(pt1[1] - pt2[1])
+        # -cosC=(c^2-a^2-b^2)/2(ab)
+        neg_cos_c = (
+            (c_square - a_square - b_square) /
+            (np.finfo(np.float32).eps + 2 * np.sqrt(a_square * b_square)))
+        # sinC^2=1-cosC^2
+        square_sin = 1 - np.square(neg_cos_c)
+        square_sin = np.nan_to_num(square_sin)
+        # distance=a*b*sinC/c=a*h/c=2*area/c
+        result = np.sqrt(a_square * b_square * square_sin /
+                         (np.finfo(np.float32).eps + c_square))
+        # set result to minimum edge if C<pi/2
+        result[neg_cos_c < 0] = np.sqrt(np.fmin(a_square,
+                                                b_square))[neg_cos_c < 0]
+        return result

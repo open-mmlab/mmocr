@@ -25,35 +25,6 @@ def test_compute_hmean():
     assert hmean == 0
 
 
-def test_points_center():
-
-    # test unsupported type
-    with pytest.raises(AssertionError):
-        utils.points_center([1])
-    with pytest.raises(AssertionError):
-        points = np.array([1, 2, 3])
-        utils.points_center(points)
-
-    points = np.array([1, 2, 3, 4])
-    assert np.array_equal(utils.points_center(points), np.array([2, 3]))
-
-
-def test_point_distance():
-    # test unsupported type
-    with pytest.raises(AssertionError):
-        utils.point_distance([1, 2], [1, 2])
-
-    with pytest.raises(AssertionError):
-        p = np.array([1, 2, 3])
-        utils.point_distance(p, p)
-
-    p = np.array([1, 2])
-    assert utils.point_distance(p, p) == 0
-
-    p1 = np.array([2, 2])
-    assert utils.point_distance(p, p1) == 1
-
-
 def test_box_center_distance():
     p1 = np.array([1, 1, 3, 3])
     p2 = np.array([2, 2, 4, 2])
