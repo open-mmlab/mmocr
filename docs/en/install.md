@@ -97,7 +97,7 @@ See [here](https://pypi.org/project/mmdet/) for different versions of `mmdet`.
 pip install mmdet
 ```
 
-Optionally you can choose to install `mmdet` following the official [installation guide](https://github.com/open-mmlab/mmdetection/blob/master/docs/get_started.md).
+Optionally you can choose to install `mmdet` following the official installation guide [[en](https://github.com/open-mmlab/mmdetection/blob/master/docs/en/get_started.md)/[zh_cn](https://github.com/open-mmlab/mmdetection/blob/master/docs/zh_cn/get_started.md)].
 
 e. Clone the MMOCR repository.
 
