@@ -18,7 +18,7 @@ from .lmdb_util import recog2lmdb
 from .logger import get_root_logger
 from .model import revert_sync_batchnorm
 from .parsers import LineJsonParser, LineStrParser
-from .point_utils import dist_points2line, point_distance, points_center
+from .point_utils import point_distance, points_center
 from .polygon_utils import (boundary_iou, crop_polygon, is_poly_inside_rect,
                             offset_polygon, poly2bbox, poly2shapely,
                             poly_intersection, poly_iou, poly_make_valid,
@@ -38,7 +38,7 @@ __all__ = [
     'rescale_bboxes', 'bbox2poly', 'crop_polygon', 'is_poly_inside_rect',
     'poly2bbox', 'poly_intersection', 'poly_iou', 'poly_make_valid',
     'poly_union', 'poly2shapely', 'polys2shapely', 'register_all_modules',
-    'dist_points2line', 'offset_polygon', 'sort_vertex8', 'sort_vertex',
+    'offset_polygon', 'sort_vertex8', 'sort_vertex',
     'disable_text_recog_aug_test', 'box_center_distance', 'box_diag',
     'compute_hmean', 'filter_2dlist_result', 'many2one_match_ic13',
     'one2one_match_ic13', 'select_top_boundary', 'boundary_iou',
