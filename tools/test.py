@@ -20,7 +20,9 @@ from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
 from mmocr.utils import revert_sync_batchnorm, setup_multi_processes
 
+
 class TestArg:
+
     def __init__(self, config=None, checkpoint=None):
         self.arg_list = None
         if config is not None and checkpoint is not None:

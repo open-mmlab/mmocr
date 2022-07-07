@@ -23,6 +23,7 @@ from mmocr.utils import (collect_env, get_root_logger, is_2dlist,
 
 
 class TrainArg:
+
     def __init__(self, config=None):
         self.arg_list = None
         if config is not None:
@@ -113,7 +114,7 @@ def parse_args(arg_list=None):
 
 
 def run_train_cmd(args):
-    
+
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
