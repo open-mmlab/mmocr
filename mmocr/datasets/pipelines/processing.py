@@ -920,7 +920,8 @@ class RandomCrop(BaseTransform):
         if 'gt_texts' in results:
             results['gt_texts'] = valid_texts
         valid_bboxes = [poly2bbox(poly) for poly in results['gt_polygons']]
-        results['gt_bboxes'] = np.array(valid_bboxes).astype(np.float32)
+        results['gt_bboxes'] = np.array(valid_bboxes).astype(
+            np.float32).reshape(-1, 4)
 
         return results
 
