@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .formatting import PackTextDetInputs, PackTextRecogInputs
-from .kie_transforms import ResizeNoImg
-from .loading import LoadOCRAnnotations
+from .formatting import PackKIEInputs, PackTextDetInputs, PackTextRecogInputs
+from .loading import LoadKIEAnnotations, LoadOCRAnnotations
 from .ocr_seg_targets import OCRSegTargets
 from .ocr_transforms import (FancyPCA, NormalizeOCR, OnlineCropOCR,
                              OpencvToPil, PilToOpencv, RandomPaddingOCR,
@@ -23,9 +22,9 @@ __all__ = [
     'ScaleAspectJitter', 'MultiRotateAugOCR', 'OCRSegTargets', 'FancyPCA',
     'RandomPaddingOCR', 'ImgAug', 'RandomRotateImageBox', 'OpencvToPil',
     'PilToOpencv', 'SourceImagePad', 'TextSnakeTargets', 'FCENetTargets',
-    'TextDetRandomCropFlip', 'ResizeNoImg', 'PyramidRescale',
-    'TorchVisionWrapper', 'Resize', 'RandomCrop', 'TextDetRandomCrop',
-    'RandomCrop', 'PackTextDetInputs', 'PackTextRecogInputs',
-    'RescaleToHeight', 'PadToWidth', 'ShortScaleAspectJitter', 'RandomFlip',
-    'BoundedScaleAspectJitter', 'FixInvalidPolygon'
+    'TextDetRandomCropFlip', 'PyramidRescale', 'TorchVisionWrapper', 'Resize',
+    'RandomCrop', 'TextDetRandomCrop', 'RandomCrop', 'PackTextDetInputs',
+    'PackTextRecogInputs', 'RescaleToHeight', 'PadToWidth',
+    'ShortScaleAspectJitter', 'RandomFlip', 'BoundedScaleAspectJitter',
+    'PackKIEInputs', 'LoadKIEAnnotations', 'FixInvalidPolygon'
 ]

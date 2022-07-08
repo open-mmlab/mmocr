@@ -805,3 +805,37 @@ class TestFixInvalidPolygon(unittest.TestCase):
         transform = FixInvalidPolygon()
         print(repr(transform))
         self.assertEqual(repr(transform), 'FixInvalidPolygon(mode = "fix")')
+
+
+class TestResize(unittest.TestCase):
+
+    def test_resize_wo_img(self):
+        # keep_ratio = True
+        dummy_result = dict(img_shape=(10, 20))
+        resize = Resize(scale=(40, 30), keep_ratio=True)
+        result = resize(dummy_result)
+        self.assertEqual(result['img_shape'], (20, 40))
+        self.assertEqual(result['scale'], (40, 20))
+        self.assertEqual(result['scale_factor'], (2., 2.))
+        self.assertEqual(result['keep_ratio'], True)
+
+        # keep_ratio = False
+        dummy_result = dict(img_shape=(10, 20))
+        resize = Resize(scale=(40, 30), keep_ratio=False)
+        result = resize(dummy_result)
+        self.assertEqual(result['img_shape'], (30, 40))
+        self.assertEqual(result['scale'], (40, 30))
+        self.assertEqual(result['scale_factor'], (
+            2.,
+            3.,
+        ))
+        self.assertEqual(result['keep_ratio'], False)
+
+    def test_resize_bbox(self):
+        # keep_ratio = True
+        dummy_result = dict(
+            img_shape=(10, 20),
+            gt_bboxes=np.array([[0, 0, 1, 1]], dtype=np.float32))
+        resize = Resize(scale=(40, 30))
+        result = resize(dummy_result)
+        self.assertEqual(result['gt_bboxes'].dtype, np.float32)

@@ -5,7 +5,8 @@ from unittest import TestCase
 import numpy as np
 import torch
 
-from mmocr.datasets.pipelines import PackTextDetInputs, PackTextRecogInputs
+from mmocr.datasets.pipelines import (PackKIEInputs, PackTextDetInputs,
+                                      PackTextRecogInputs)
 
 
 class TestPackTextDetInputs(TestCase):
@@ -137,3 +138,60 @@ class TestPackTextRecogInputs(TestCase):
             repr(transform),
             ("PackTextRecogInputs(meta_keys=('img_path', 'ori_shape', "
              "'img_shape', 'pad_shape', 'valid_ratio'))"))
+
+
+class TestPackKIEInputs(TestCase):
+
+    def setUp(self) -> None:
+        self.transform = PackKIEInputs()
+
+    def test_transform(self):
+        datainfo = dict(
+            img=np.random.random((10, 10)),
+            img_shape=(10, 10),
+            ori_shape=(10, 10),
+            scale_factor=(1, 1),
+            img_path='tmp/tmp.jpg',
+            gt_bboxes=np.array([[0, 0, 10, 10], [5, 5, 15, 15]],
+                               dtype=np.float32),
+            gt_bboxes_labels=np.array([0, 0], np.int64),
+            gt_edges_labels=np.array([[0, 0], [0, 0]], np.int64),
+            gt_texts=['text1', 'text2'])
+
+        with self.assertRaises(KeyError):
+            transform = PackKIEInputs(meta_keys=('tmp', ))
+            transform(copy.deepcopy(datainfo))
+
+        results = self.transform(copy.deepcopy(datainfo))
+        self.assertIn('inputs', results)
+        self.assertTupleEqual(tuple(results['inputs'].shape), (1, 10, 10))
+        self.assertIn('data_sample', results)
+        data_sample = results['data_sample']
+        self.assertIsInstance(data_sample.gt_instances.bboxes, torch.Tensor)
+        self.assertEqual(data_sample.gt_instances.bboxes.dtype, torch.float32)
+        self.assertEqual(data_sample.gt_instances.labels.dtype, torch.int64)
+        self.assertEqual(data_sample.gt_instances.edge_labels.dtype,
+                         torch.int64)
+        self.assertIsInstance(data_sample.gt_instances.texts, list)
+
+        self.assertIn('img_path', data_sample)
+
+        transform = PackKIEInputs(meta_keys=('img_path', ))
+        results = transform(copy.deepcopy(datainfo))
+        self.assertIn('inputs', results)
+        self.assertIn('data_sample', results)
+
+        data_sample = results['data_sample']
+        self.assertIn('bboxes', data_sample.gt_instances)
+        self.assertIn('img_path', data_sample)
+
+        datainfo.pop('img')
+        results = self.transform(copy.deepcopy(datainfo))
+        self.assertIn('inputs', results)
+        self.assertEqual(results['inputs'].shape, torch.Size((0, 0, 0)))
+
+    def test_repr(self):
+        self.assertEqual(
+            repr(self.transform),
+            ("PackKIEInputs(meta_keys=('img_path', 'ori_shape', "
+             "'img_shape', 'scale_factor'))"))
