@@ -1,3 +1,9 @@
+preprocess_cfg = dict(
+    mean=[123.675, 116.28, 103.53],
+    std=[58.395, 57.12, 57.375],
+    to_rgb=True,
+    pad_size_divisor=32)
+
 model = dict(
     type='DRRG',
     backbone=dict(
@@ -12,7 +18,7 @@ model = dict(
         style='caffe'),
     neck=dict(
         type='FPN_UNet', in_channels=[256, 512, 1024, 2048], out_channels=32),
-    bbox_head=dict(
+    det_head=dict(
         type='DRRGHead',
         in_channels=32,
         text_region_thr=0.3,
