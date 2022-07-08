@@ -23,7 +23,7 @@ from .polygon_utils import (boundary_iou, crop_polygon, is_poly_inside_rect,
                             offset_polygon, poly2bbox, poly2shapely,
                             poly_intersection, poly_iou, poly_make_valid,
                             poly_union, polys2shapely, rescale_polygon,
-                            rescale_polygons)
+                            rescale_polygons, shapely2poly)
 from .postprocessor_utils import fill_hole
 from .setup_env import register_all_modules
 from .string_util import StringStrip
@@ -43,5 +43,5 @@ __all__ = [
     'compute_hmean', 'filter_2dlist_result', 'many2one_match_ic13',
     'one2one_match_ic13', 'select_top_boundary', 'boundary_iou',
     'point_distance', 'points_center', 'fill_hole', 'LineJsonParser',
-    'LineStrParser'
+    'LineStrParser', 'shapely2poly'
 ]

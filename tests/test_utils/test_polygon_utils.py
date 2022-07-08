@@ -8,7 +8,7 @@ from shapely.geometry import MultiPolygon, Polygon
 from mmocr.utils import (boundary_iou, crop_polygon, offset_polygon, poly2bbox,
                          poly2shapely, poly_intersection, poly_iou,
                          poly_make_valid, poly_union, polys2shapely,
-                         rescale_polygon, rescale_polygons)
+                         rescale_polygon, rescale_polygons, shapely2poly)
 
 
 class TestCropPolygon(unittest.TestCase):
@@ -141,6 +141,12 @@ class TestPolygonUtils(unittest.TestCase):
         polys = [0, 0, 1, 0, 1, 1, 0, 1, 1]
         with self.assertRaises(AssertionError):
             polys2shapely(polys)
+
+    def test_shapely2poly(self):
+        polygon = Polygon([[0., 0.], [1., 0.], [1., 1.], [0., 1.]])
+        poly = np.array([0., 0., 1., 0., 1., 1., 0., 1., 0., 0.])
+        self.assertTrue(poly2shapely(poly).equals(polygon))
+        self.assertTrue(isinstance(shapely2poly(polygon), np.ndarray))
 
     def test_poly_make_valid(self):
         poly = Polygon([[0, 0], [1, 1], [1, 0], [0, 1]])

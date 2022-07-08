@@ -14,7 +14,8 @@ from shapely.geometry import Polygon as plg
 
 from mmocr.registry import TRANSFORMS
 from mmocr.utils import (bbox2poly, crop_polygon, is_poly_inside_rect,
-                         poly2bbox, poly_intersection, rescale_polygon)
+                         poly2bbox, poly2shapely, poly_intersection,
+                         poly_make_valid, rescale_polygon, shapely2poly)
 from .wrappers import ImgAug
 
 
@@ -1653,4 +1654,68 @@ class BoundedScaleAspectJitter(BaseTransform):
         repr_str += f'ratio_range = {self.ratio_range}, '
         repr_str += f'aspect_ratio_range = {self.aspect_ratio_range}, '
         repr_str += f'resize_cfg = {self.resize_cfg})'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class FixInvalidPolygon(BaseTransform):
+    """Fix invalid polygons in the dataset.
+
+    Required Keys:
+
+    - gt_polygons
+    - gt_ignored
+
+    Modified Keys:
+
+    - gt_polygons
+    - gt_ignored
+
+    Args:
+        mode (str): The mode of fixing invalid polygons. Options are 'fix' and
+            'ignore'. For the 'fix' mode, the transform will try to fix
+            the invalid polygons to a valid one by eliminating the
+            self-intersection. For the 'ignore' mode, the invalid polygons
+            will be ignored during training. Defaults to 'fix'.
+        min_poly_points (int): Minimum number of the coordinate points in a
+            polygon. Defaults to 3.
+    """
+
+    def __init__(self, mode: str = 'fix', min_poly_points: int = 3) -> None:
+        super().__init__()
+        self.mode = mode
+        self.min_poly_points = min_poly_points
+        assert self.mode in [
+            'fix', 'ignore'
+        ], f"Supported modes are 'fix' and 'ignore', but got {self.mode}"
+
+    def transform(self, results: Dict) -> Dict:
+        """Fix invalid polygons.
+
+        Args:
+            results (dict): Result dict containing the data to transform.
+
+        Returns:
+            dict: The transformed data.
+        """
+        if results.get('gt_polygons', None) is not None:
+            for idx, polygon in enumerate(results['gt_polygons']):
+                if not (len(polygon) >= self.min_poly_points * 2
+                        and len(polygon) % 2 == 0):
+                    results['gt_polygons'][idx] = bbox2poly(
+                        results['gt_bboxes'][idx])
+                    continue
+                polygon = poly2shapely(polygon)
+                if not polygon.is_valid:
+                    if self.mode == 'fix':
+                        polygon = poly_make_valid(polygon)
+                        polygon = shapely2poly(polygon)
+                        results['gt_polygons'][idx] = polygon
+                    elif self.mode == 'ignore':
+                        results['gt_ignored'][idx] = True
+        return results
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(mode = "{self.mode}")'
         return repr_str

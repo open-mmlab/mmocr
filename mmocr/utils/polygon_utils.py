@@ -120,6 +120,18 @@ def polys2shapely(polygons: Sequence[ArrayLike]) -> Sequence[Polygon]:
     return [poly2shapely(polygon) for polygon in polygons]
 
 
+def shapely2poly(polygon: Polygon) -> np.array:
+    """Convert a nested list of boundaries to a list of Polygons.
+
+    Args:
+        polygon (Polygon): A polygon represented by shapely.Polygon.
+
+    Returns:
+        np.array: Converted numpy array
+    """
+    return np.array(polygon.exterior.coords).reshape(-1, )
+
+
 def crop_polygon(polygon: ArrayLike,
                  crop_box: np.ndarray) -> Union[np.ndarray, None]:
     """Crop polygon to be within a box region.
