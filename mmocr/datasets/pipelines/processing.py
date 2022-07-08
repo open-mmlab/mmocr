@@ -156,6 +156,33 @@ class Resize(MMCV_Resize):
             to 'bilinear'.
     """
 
+    def _resize_img(self, results: dict) -> None:
+        """Resize images with ``results['scale']``.
+
+        If no image is provided, only resize ``results['img_shape']``.
+        """
+        if results.get('img', None) is not None:
+            return super()._resize_img(results)
+        h, w = results['img_shape']
+        if self.keep_ratio:
+            new_w, new_h = mmcv.rescale_size((w, h),
+                                             results['scale'],
+                                             return_scale=False)
+        else:
+            new_w, new_h = results['scale']
+        w_scale = new_w / w
+        h_scale = new_h / h
+        results['img_shape'] = (new_h, new_w)
+        results['scale'] = (new_w, new_h)
+        results['scale_factor'] = (w_scale, h_scale)
+        results['keep_ratio'] = self.keep_ratio
+
+    def _resize_bboxes(self, results: dict) -> None:
+        """Resize bounding boxes."""
+        super()._resize_bboxes(results)
+        if results.get('gt_bboxes', None) is not None:
+            results['gt_bboxes'] = results['gt_bboxes'].astype(np.float32)
+
     def _resize_polygons(self, results: dict) -> None:
         """Resize polygons with ``results['scale_factor']``."""
         if results.get('gt_polygons', None) is not None:
@@ -180,6 +207,7 @@ class Resize(MMCV_Resize):
 
         Args:
             results (dict): Result dict from loading pipeline.
+
         Returns:
             dict: Resized results, 'img', 'gt_bboxes', 'gt_polygons',
             'scale', 'scale_factor', 'height', 'width', and 'keep_ratio' keys
