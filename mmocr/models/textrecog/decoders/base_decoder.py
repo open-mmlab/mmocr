@@ -159,7 +159,8 @@ class BaseDecoder(BaseModule):
             Tensor: Features from ``decoder`` forward.
         """
         if self.training:
-            data_samples = self.loss_module.get_targets(data_samples)
+            if getattr(self, 'loss_module') is not None:
+                data_samples = self.loss_module.get_targets(data_samples)
             return self.forward_train(feat, out_enc, data_samples)
         else:
             return self.forward_test(feat, out_enc, data_samples)
