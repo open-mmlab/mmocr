@@ -91,11 +91,11 @@ class TextSnakeLoss(nn.Module, TextKernelMixin):
             batch.append(np.expand_dims(padded_mask, axis=0))
         return np.concatenate(batch)
 
-    def forward(self, pred_maps: Tensor,
+    def forward(self, preds: Tensor,
                 data_samples: Sequence[TextDetDataSample]) -> Dict:
         """
         Args:
-            pred_maps (Tensor): The prediction map of shape
+            preds (Tensor): The prediction map of shape
                 :math:`(N, 5, H, W)`, where each dimension is the map of
                 "text_region", "center_region", "sin_map", "cos_map", and
                 "radius_map" respectively.
@@ -109,13 +109,13 @@ class TextSnakeLoss(nn.Module, TextKernelMixin):
         (gt_text_masks, gt_masks, gt_center_region_masks, gt_radius_maps,
          gt_sin_maps, gt_cos_maps) = self.get_targets(data_samples)
 
-        pred_text_region = pred_maps[:, 0, :, :]
-        pred_center_region = pred_maps[:, 1, :, :]
-        pred_sin_map = pred_maps[:, 2, :, :]
-        pred_cos_map = pred_maps[:, 3, :, :]
-        pred_radius_map = pred_maps[:, 4, :, :]
-        feature_sz = pred_maps.size()
-        device = pred_maps.device
+        pred_text_region = preds[:, 0, :, :]
+        pred_center_region = preds[:, 1, :, :]
+        pred_sin_map = preds[:, 2, :, :]
+        pred_cos_map = preds[:, 3, :, :]
+        pred_radius_map = preds[:, 4, :, :]
+        feature_sz = preds.size()
+        device = preds.device
 
         mapping = {
             'gt_text_masks': gt_text_masks,

@@ -92,7 +92,7 @@ class TextKernelMixin:
         mask = np.ones(mask_size, dtype=np.uint8)
 
         for poly in ignored_polygons:
-            instance = poly.reshape(-1, 2).astype(np.int32).reshape(1, -1, 2)
+            instance = poly.astype(np.int32).reshape(1, -1, 2)
             cv2.fillPoly(mask, instance, 0)
 
         return mask
