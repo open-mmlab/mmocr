@@ -123,7 +123,7 @@ class BaseTextDetHead(BaseModule):
             SampleList: Detection results of each image
             after the post process.
         """
-        outs = self(x)
+        outs = self(x, batch_data_samples)
 
         predictions = self.postprocessor(outs, batch_data_samples)
         return predictions
