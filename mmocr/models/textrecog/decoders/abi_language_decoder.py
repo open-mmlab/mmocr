@@ -1,12 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
+from typing import Dict, List, Optional, Sequence, Union
 
 import torch
 import torch.nn as nn
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmcv.runner import ModuleList
 
+from mmocr.core import TextRecogDataSample
 from mmocr.models.common.modules import PositionalEncoding
+from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS
 from .base_decoder import BaseDecoder
 
@@ -18,48 +21,59 @@ class ABILanguageDecoder(BaseDecoder):
         `ABINet <https://arxiv.org/abs/1910.04396>`_.
 
     Args:
-        d_model (int): Hidden size of input.
+        dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
+            the instance of `Dictionary`. The dictionary must have an end
+            token.
+        d_model (int): Hidden size :math:`E` of model. Defaults to 512.
         n_head (int): Number of multi-attention heads.
         d_inner (int): Hidden size of feedforward network model.
         n_layers (int): The number of similar decoding layers.
-        max_seq_len (int): Maximum text sequence length :math:`T`.
         dropout (float): Dropout rate.
         detach_tokens (bool): Whether to block the gradient flow at input
          tokens.
-        num_chars (int): Number of text characters :math:`C`.
         use_self_attn (bool): If True, use self attention in decoder layers,
             otherwise cross attention will be used.
-        pad_idx (bool): The index of the token indicating the end of output,
-            which is used to compute the length of output. It is usually the
-            index of `<EOS>` or `<PAD>` token.
-        init_cfg (dict): Specifies the initialization method for model layers.
+        max_seq_len (int): Maximum sequence length :math:`T`. The
+            sequence is usually generated from decoder. Defaults to 40.
+        loss_module (dict, optional): Config to build loss. Defaults to None.
+        postprocessor (dict, optional): Config to build postprocessor.
+            Defaults to None.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+            Defaults to None.
     """
 
     def __init__(self,
-                 d_model=512,
-                 n_head=8,
-                 d_inner=2048,
-                 n_layers=4,
-                 max_seq_len=40,
-                 dropout=0.1,
-                 detach_tokens=True,
-                 num_chars=90,
-                 use_self_attn=False,
-                 pad_idx=0,
-                 init_cfg=None,
-                 **kwargs):
-        super().__init__(init_cfg=init_cfg)
+                 dictionary: Union[Dict, Dictionary],
+                 d_model: int = 512,
+                 n_head: int = 8,
+                 d_inner: int = 2048,
+                 n_layers: int = 4,
+                 dropout: float = 0.1,
+                 detach_tokens: bool = True,
+                 use_self_attn: bool = False,
+                 max_seq_len: int = 40,
+                 loss_module: Optional[Dict] = None,
+                 postprocessor: Optional[Dict] = None,
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None,
+                 **kwargs) -> None:
+        super().__init__(
+            dictionary=dictionary,
+            loss_module=loss_module,
+            postprocessor=postprocessor,
+            max_seq_len=max_seq_len,
+            init_cfg=init_cfg)
+
+        assert self.dictionary.end_idx is not None,\
+            'Dictionary must contain an end token! (with_end=True)'
+
         self.detach_tokens = detach_tokens
-
         self.d_model = d_model
-        self.max_seq_len = max_seq_len
 
-        self.proj = nn.Linear(num_chars, d_model, False)
+        self.proj = nn.Linear(self.dictionary.num_classes, d_model, False)
         self.token_encoder = PositionalEncoding(
             d_model, n_position=self.max_seq_len, dropout=0.1)
         self.pos_encoder = PositionalEncoding(
             d_model, n_position=self.max_seq_len)
-        self.pad_idx = pad_idx
 
         if use_self_attn:
             operation_order = ('self_attn', 'norm', 'cross_attn', 'norm',
@@ -87,23 +101,34 @@ class ABILanguageDecoder(BaseDecoder):
         self.decoder_layers = ModuleList(
             [copy.deepcopy(decoder_layer) for _ in range(n_layers)])
 
-        self.cls = nn.Linear(d_model, num_chars)
+        self.cls = nn.Linear(d_model, self.dictionary.num_classes)
 
-    def forward_train(self, feat, logits, targets_dict, img_metas):
+    def forward_train(
+            self,
+            feat: Optional[torch.Tensor] = None,
+            out_enc: torch.Tensor = None,
+            data_samples: Optional[Sequence[TextRecogDataSample]] = None
+    ) -> Dict:
         """
         Args:
-            logits (Tensor): Raw language logitis. Shape (N, T, C).
+            feat (torch.Tensor, optional): Not required. Feature map
+                placeholder. Defaults to None.
+            logits (torch.Tensor): Tensor with shape :math:`(N, T, C)`.
+                Defaults to None.
+            data_samples (list[TextRecogDataSample], optional): Not required.
+                DataSample placeholder. Defaults to None.
 
         Returns:
             A dict with keys ``feature`` and ``logits``.
-            feature (Tensor): Shape (N, T, E). Raw textual features for vision
-                language aligner.
-            logits (Tensor): Shape (N, T, C). The raw logits for characters
-                after spell correction.
+
+            - feature (Tensor): Shape :math:`(N, T, E)`. Raw textual features
+              for vision language aligner.
+            - logits (Tensor): Shape :math:`(N, T, C)`. The raw logits for
+              characters after spell correction.
         """
-        lengths = self._get_length(logits)
+        lengths = self._get_length(out_enc)
         lengths.clamp_(2, self.max_seq_len)
-        tokens = torch.softmax(logits, dim=-1)
+        tokens = torch.softmax(out_enc, dim=-1)
         if self.detach_tokens:
             tokens = tokens.detach()
         embed = self.proj(tokens)  # (N, T, E)
@@ -126,20 +151,42 @@ class ABILanguageDecoder(BaseDecoder):
                 key_padding_mask=padding_mask)
         output = output.permute(1, 0, 2)  # (N, T, E)
 
-        logits = self.cls(output)  # (N, T, C)
-        return {'feature': output, 'logits': logits}
+        out_enc = self.cls(output)  # (N, T, C)
+        return {'feature': output, 'logits': out_enc}
 
-    def forward_test(self, feat, out_enc, img_metas):
-        return self.forward_train(feat, out_enc, None, img_metas)
+    def forward_test(
+            self,
+            feat: Optional[torch.Tensor] = None,
+            logits: torch.Tensor = None,
+            data_samples: Optional[Sequence[TextRecogDataSample]] = None
+    ) -> Dict:
+        """
+        Args:
+            feat (torch.Tensor, optional): Not required. Feature map
+                placeholder. Defaults to None.
+            logits (Tensor): Raw language logitis. Shape :math:`(N, T, C)`.
+                Defaults to None.
+            data_samples (list[TextRecogDataSample], optional): Not required.
+                DataSample placeholder. Defaults to None.
 
-    def _get_length(self, logit, dim=-1):
+        Returns:
+            A dict with keys ``feature`` and ``logits``.
+
+            - feature (Tensor): Shape :math:`(N, T, E)`. Raw textual features
+              for vision language aligner.
+            - logits (Tensor): Shape :math:`(N, T, C)`. The raw logits for
+              characters after spell correction.
+        """
+        return self.forward_train(feat, logits, data_samples)
+
+    def _get_length(self, logit: torch.Tensor, dim: int = -1) -> torch.Tensor:
         """Greedy decoder to obtain length from logit.
 
         Returns the first location of padding index or the length of the entire
         tensor otherwise.
         """
         # out as a boolean vector indicating the existence of end token(s)
-        out = (logit.argmax(dim=-1) == self.pad_idx)
+        out = (logit.argmax(dim=-1) == self.dictionary.end_idx)
         abn = out.any(dim)
         # Get the first index of end token
         out = ((out.cumsum(dim) == 1) & out).max(dim)[1]
@@ -148,7 +195,9 @@ class ABILanguageDecoder(BaseDecoder):
         return out
 
     @staticmethod
-    def _get_location_mask(seq_len, device=None):
+    def _get_location_mask(seq_len: int,
+                           device: Union[Optional[torch.device],
+                                         str] = None) -> torch.Tensor:
         """Generate location masks given input sequence length.
 
         Args:
@@ -165,7 +214,7 @@ class ABILanguageDecoder(BaseDecoder):
         return mask
 
     @staticmethod
-    def _get_padding_mask(length, max_length):
+    def _get_padding_mask(length: int, max_length: int) -> torch.Tensor:
         """Generate padding masks.
 
         Args:

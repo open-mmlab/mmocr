@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .abinet_language_decoder import ABILanguageDecoder
-from .abinet_vision_decoder import ABIVisionDecoder
+from .abi_fuser import ABIFuser
+from .abi_language_decoder import ABILanguageDecoder
+from .abi_vision_decoder import ABIVisionDecoder
 from .base_decoder import BaseDecoder
 from .crnn_decoder import CRNNDecoder
 from .master_decoder import MasterDecoder
@@ -16,5 +17,5 @@ __all__ = [
     'ParallelSARDecoderWithBS', 'NRTRDecoder', 'BaseDecoder',
     'SequenceAttentionDecoder', 'PositionAttentionDecoder',
     'ABILanguageDecoder', 'ABIVisionDecoder', 'MasterDecoder',
-    'RobustScannerFuser'
+    'RobustScannerFuser', 'ABIFuser'
 ]
