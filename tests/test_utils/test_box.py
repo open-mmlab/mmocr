@@ -118,7 +118,7 @@ def test_sort_points():
     assert np.allclose(target, sort_points(points))
 
     points = np.array([[1, 1], [1, -1], [-1, 1], [-1, -1]])
-    target = np.array([[-1, -1], [-1, 1], [1, 1], [1, -1]])
+    target = np.array([[-1, -1], [1, -1], [1, 1], [-1, 1]])
     assert np.allclose(target, sort_points(points))
 
     points = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
