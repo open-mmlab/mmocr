@@ -5,7 +5,6 @@ from .data_preprocessors import *  # NOQA
 from .decoders import *  # NOQA
 from .dictionary import *  # NOQA
 from .encoders import *  # NOQA
-from .fusers import *  # NOQA
 from .heads import *  # NOQA
 from .losses import *  # NOQA
 from .necks import *  # NOQA
