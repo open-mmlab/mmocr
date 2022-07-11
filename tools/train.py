@@ -22,20 +22,7 @@ from mmocr.utils import (collect_env, get_root_logger, is_2dlist,
                          setup_multi_processes)
 
 
-class TrainArg:
-
-    def __init__(self, config=None):
-        self.arg_list = None
-        if config is not None:
-            self.arg_list = [config]
-
-    def add_arg(self, key, value=None):
-        self.arg_list.append(key)
-        if value is not None:
-            self.arg_list.append(value)
-
-
-def parse_args(arg_list=None):
+def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector.')
     parser.add_argument('config', help='Train config file path.')
     parser.add_argument('--work-dir', help='The dir to save logs and models.')
@@ -98,7 +85,7 @@ def parse_args(arg_list=None):
         help='Options for job launcher.')
     parser.add_argument('--local_rank', type=int, default=0)
 
-    args = parser.parse_args(arg_list)
+    args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
 
@@ -113,7 +100,8 @@ def parse_args(arg_list=None):
     return args
 
 
-def run_train_cmd(args):
+def main():
+    args = parse_args()
 
     cfg = Config.fromfile(args.config)
     if args.cfg_options is not None:
@@ -239,5 +227,4 @@ def run_train_cmd(args):
 
 
 if __name__ == '__main__':
-    args = parse_args(TrainArg().arg_list)
-    run_train_cmd(args)
+    main()
