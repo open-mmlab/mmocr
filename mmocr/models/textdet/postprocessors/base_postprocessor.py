@@ -8,26 +8,6 @@ from mmocr.core import TextDetDataSample
 from mmocr.utils import boundary_iou, is_type_list, rescale_polygons
 
 
-class BasePostprocessor:
-    """Deprecated.
-
-    TODO: remove this class when all det postprocessors are
-    refactored
-    """
-
-    def __init__(self, text_repr_type='poly'):
-        assert text_repr_type in ['poly', 'quad'
-                                  ], f'Invalid text repr type {text_repr_type}'
-
-        self.text_repr_type = text_repr_type
-
-    def is_valid_instance(self, area, confidence, area_thresh,
-                          confidence_thresh):
-        """If the area is a valid instance."""
-
-        return bool(area >= area_thresh and confidence > confidence_thresh)
-
-
 class BaseTextDetPostProcessor:
     """Base postprocessor for text detection models.
 
