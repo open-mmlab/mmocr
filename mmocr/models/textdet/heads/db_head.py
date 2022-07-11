@@ -68,12 +68,15 @@ class DBHead(BaseTextDetHead):
         """
         return torch.reciprocal(1.0 + torch.exp(-k * (prob_map - thr_map)))
 
-    def forward(self, img: torch.Tensor,
-                data_samples: List[TextDetDataSample]) -> Dict:
+    def forward(self,
+                img: torch.Tensor,
+                data_samples: Optional[List[TextDetDataSample]] = None
+                ) -> Dict:
         """
         Args:
             img (torch.Tensor): Shape :math:`(N, C, H, W)`.
-            data_samples (List[TextDetDataSample]): List of data samples.
+            data_samples (list[TextDetDataSample], optional): A list of data
+                samples. Defaults to None.
 
         Returns:
             dict: A dict with keys of ``prob_map``,  ``thr_map`` and

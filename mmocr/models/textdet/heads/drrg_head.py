@@ -294,10 +294,16 @@ class DRRGHead(BaseTextDetHead):
         return self.loss_module((pred_maps, gcn_pred, gt_labels),
                                 batch_data_samples)
 
-    def forward(self, batch_inputs: Tensor) -> Tuple[Tensor, Tensor, Tensor]:
+    def forward(
+        self,
+        batch_inputs: Tensor,
+        data_samples: Optional[List[TextDetDataSample]] = None
+    ) -> Tuple[Tensor, Tensor, Tensor]:
         r"""Run DRRG head in prediction mode, and return the raw tensors only.
         Args:
             batch_inputs (Tensor): Shape of :math:`(1, C, H, W)`.
+            data_samples (list[TextDetDataSample], optional): A list of data
+                samples. Defaults to None.
 
         Returns:
             tuple: Returns (edge, score, text_comps).

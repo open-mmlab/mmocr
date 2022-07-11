@@ -75,13 +75,14 @@ class FCEHead(BaseTextDetHead):
 
     def forward(self,
                 inputs: List[torch.Tensor],
-                data_samples: List[TextDetDataSample] = None) -> Dict:
+                data_samples: Optional[List[TextDetDataSample]] = None
+                ) -> Dict:
         """
         Args:
             inputs (List[Tensor]): Each tensor has the shape of :math:`(N, C_i,
                 H_i, W_i)`.
-            data_samples (List[TextDetDataSample]): List of data samples.
-                Default to None.
+            data_samples (list[TextDetDataSample], optional): A list of data
+                samples. Defaults to None.
 
         Returns:
             list[dict]: A list of dict with keys of ``cls_res``, ``reg_res``

@@ -54,14 +54,17 @@ class TextSnakeHead(BaseTextDetHead):
             stride=1,
             padding=0)
 
-    def forward(self, inputs: torch.Tensor,
-                data_samples: List[TextDetDataSample]) -> Dict:
+    def forward(self,
+                inputs: torch.Tensor,
+                data_samples: Optional[List[TextDetDataSample]] = None
+                ) -> Dict:
         """
         Args:
             inputs (torch.Tensor): Shape :math:`(N, C_{in}, H, W)`, where
                 :math:`C_{in}` is ``in_channels``. :math:`H` and :math:`W`
                 should be the same as the input of backbone.
-            data_samples (List[TextDetDataSample]): List of data samples.
+            data_samples (list[TextDetDataSample], optional): A list of data
+                samples. Defaults to None.
 
         Returns:
             Tensor: A tensor of shape :math:`(N, 5, H, W)`, where the five
