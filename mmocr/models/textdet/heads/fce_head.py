@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from mmdet.core import multi_apply
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
 

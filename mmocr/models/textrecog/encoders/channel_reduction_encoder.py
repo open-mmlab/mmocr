@@ -4,7 +4,7 @@ from typing import Dict, Optional, Sequence
 import torch
 import torch.nn as nn
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.registry import MODELS
 from .base_encoder import BaseEncoder
 

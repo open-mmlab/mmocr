@@ -9,7 +9,7 @@ import torch.nn.functional as F
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmcv.runner import ModuleList
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.models.common.modules import PositionalEncoding
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS

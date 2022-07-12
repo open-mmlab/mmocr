@@ -6,7 +6,7 @@ import torch
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmcv.runner import BaseModule, ModuleList
 
-from mmocr.core import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.models.common.modules import PositionalEncoding
 from mmocr.registry import MODELS
 

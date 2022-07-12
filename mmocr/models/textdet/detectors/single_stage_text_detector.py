@@ -4,7 +4,7 @@ from typing import Dict, Optional, Sequence
 import torch
 from mmdet.models.detectors.base import BaseDetector as MMDET_BaseDetector
 
-from mmocr.core.data_structures import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 
 

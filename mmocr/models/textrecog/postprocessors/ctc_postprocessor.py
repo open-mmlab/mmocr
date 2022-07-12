@@ -5,7 +5,7 @@ from typing import Sequence, Tuple
 import torch
 import torch.nn.functional as F
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.registry import MODELS
 from .base_textrecog_postprocessor import BaseTextRecogPostprocessor
 

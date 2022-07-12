@@ -5,7 +5,7 @@ from unittest import mock
 import numpy as np
 from mmengine import InstanceData
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.postprocessors import BaseTextDetPostProcessor
 
 

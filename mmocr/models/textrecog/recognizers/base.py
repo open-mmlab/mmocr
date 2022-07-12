@@ -6,7 +6,7 @@ import torch
 from mmengine.config import ConfigDict
 from mmengine.model.base_model import BaseModel
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 
 # Type hint of config data
 ConfigType = Union[ConfigDict, dict]

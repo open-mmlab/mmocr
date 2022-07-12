@@ -13,7 +13,7 @@ from numpy import ndarray
 from torch import Tensor
 from torch.nn import init
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
 from mmocr.utils.postprocessor_utils import fill_hole

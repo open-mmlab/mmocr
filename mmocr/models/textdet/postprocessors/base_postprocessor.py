@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.utils import boundary_iou, is_type_list, rescale_polygons
 
 

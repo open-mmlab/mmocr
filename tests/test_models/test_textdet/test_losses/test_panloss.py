@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from mmengine import InstanceData
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.losses import PANLoss
 from mmocr.models.textdet.losses.pan_loss import PANEmbLossV1
 

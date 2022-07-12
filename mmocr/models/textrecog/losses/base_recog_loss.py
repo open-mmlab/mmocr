@@ -5,7 +5,7 @@ from typing import Dict, Sequence, Union
 import torch
 import torch.nn as nn
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import TASK_UTILS
 

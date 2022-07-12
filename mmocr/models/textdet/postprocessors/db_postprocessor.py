@@ -7,7 +7,7 @@ import torch
 from mmengine import InstanceData
 from shapely.geometry import Polygon
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import offset_polygon
 from .base_postprocessor import BaseTextDetPostProcessor

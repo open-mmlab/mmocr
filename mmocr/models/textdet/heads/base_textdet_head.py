@@ -5,7 +5,7 @@ import torch
 from mmcv.runner import BaseModule
 from torch import Tensor
 
-from mmocr.core.data_structures import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 
 SampleList = List[TextDetDataSample]

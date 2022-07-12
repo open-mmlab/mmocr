@@ -5,7 +5,7 @@ from typing import Dict, Optional, Sequence, Union
 import torch
 import torch.nn as nn
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.models.textrecog.layers import (DotProductAttentionLayer,
                                            PositionAwareLayer)

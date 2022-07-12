@@ -6,7 +6,7 @@ from mmcv.runner import BaseModule
 from torch import Tensor, nn
 from torch.nn import functional as F
 
-from mmocr.core.data_structures.kie_data_sample import KIEDataSample
+from mmocr.data import KIEDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS, TASK_UTILS
 

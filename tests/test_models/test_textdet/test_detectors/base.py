@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from mmengine import Config, ConfigDict, InstanceData
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 
 
 class BaseTestUtils:

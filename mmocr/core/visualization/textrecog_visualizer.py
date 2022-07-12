@@ -6,7 +6,7 @@ import mmcv
 import numpy as np
 from mmengine import Visualizer
 
-from mmocr.core import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.registry import VISUALIZERS
 
 

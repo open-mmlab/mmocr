@@ -6,7 +6,7 @@ import torch.nn as nn
 from mmcv.runner import ModuleList
 from torch import Tensor
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.layers import (Adaptive2DPositionalEncoding,
                                            SATRNEncoderLayer)
 from mmocr.registry import MODELS

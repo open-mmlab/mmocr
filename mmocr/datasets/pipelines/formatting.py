@@ -5,7 +5,7 @@ from mmcv.transforms import to_tensor
 from mmcv.transforms.base import BaseTransform
 from mmengine.data import InstanceData, LabelData
 
-from mmocr.core import KIEDataSample, TextDetDataSample, TextRecogDataSample
+from mmocr.data import KIEDataSample, TextDetDataSample, TextRecogDataSample
 from mmocr.registry import TRANSFORMS
 
 

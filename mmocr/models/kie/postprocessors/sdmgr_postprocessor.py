@@ -6,7 +6,7 @@ import torch
 from mmengine import InstanceData
 from torch import Tensor, nn
 
-from mmocr.core import KIEDataSample
+from mmocr.data import KIEDataSample
 from mmocr.registry import MODELS
 
 

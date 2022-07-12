@@ -4,7 +4,7 @@ import unittest
 import torch
 from parameterized import parameterized
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.postprocessors import PSEPostprocessor
 
 

@@ -7,7 +7,7 @@ from mmdet.core import bbox2roi
 from mmengine.model import BaseModel
 from torch import nn
 
-from mmocr.core import KIEDataSample
+from mmocr.data import KIEDataSample
 from mmocr.registry import MODELS, TASK_UTILS
 
 
