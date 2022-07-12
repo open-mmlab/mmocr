@@ -47,8 +47,8 @@ class TestBaseTextRecogPostprocessor(TestCase):
                                     'ignore_chars must be list of str'):
             base_postprocessor = BaseTextRecogPostprocessor(
                 dict_cfg, ignore_chars=[1, 2, 3])
-        with self.assertRaisesRegex(ValueError,
-                                    'M is not exist in dictionary'):
+        with self.assertWarnsRegex(Warning,
+                                   'M does not exist in the dictionary'):
             base_postprocessor = BaseTextRecogPostprocessor(
                 dict_cfg, ignore_chars=['M'])
 
