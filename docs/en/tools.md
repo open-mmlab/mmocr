@@ -33,7 +33,7 @@ Reading images or labels from files can be slow when data are excessive, e.g. on
 | `--label-format`  | str  | The format of the label file, either txt or jsonl.                 |
 | `--batch-size`    | int  | Processing batch size, defaults to 1000                            |
 | `--encoding`      | str  | Bytes coding scheme, defaults to utf8.                             |
-| `--lmdb-map-size` | int  | Maximum size database may grow to , defaults to 109951162776 bytes |
+| `--lmdb-map-size` | int  | Maximum size database may grow to , defaults to 1099511627776 bytes (1TB) |
 
 ### Examples
 
