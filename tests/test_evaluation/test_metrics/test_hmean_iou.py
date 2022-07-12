@@ -6,7 +6,7 @@ import torch
 from mmengine import InstanceData
 
 from mmocr.core import TextDetDataSample
-from mmocr.metrics import HmeanIOUMetric
+from mmocr.evaluation import HmeanIOUMetric
 
 
 class TestHmeanIOU(unittest.TestCase):
