@@ -16,7 +16,7 @@ from torch.nn import init
 from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
-from mmocr.utils.postprocessor_utils import fill_hole
+from mmocr.utils import fill_hole
 
 
 def normalize_adjacent_matrix(mat: ndarray) -> ndarray:
