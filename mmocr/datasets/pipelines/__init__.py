@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .formatting import PackKIEInputs, PackTextDetInputs, PackTextRecogInputs
 from .loading import LoadKIEAnnotations, LoadOCRAnnotations
-from .ocr_seg_targets import OCRSegTargets
 from .ocr_transforms import (FancyPCA, NormalizeOCR, OnlineCropOCR,
                              OpencvToPil, PilToOpencv, RandomPaddingOCR,
                              RandomRotateImageBox, ResizeOCR, ToTensorOCR)
@@ -11,20 +10,16 @@ from .processing import (BoundedScaleAspectJitter, FixInvalidPolygon,
                          ShortScaleAspectJitter, SourceImagePad,
                          TextDetRandomCrop, TextDetRandomCropFlip)
 from .test_time_aug import MultiRotateAugOCR
-from .textdet_targets import (DBNetTargets, FCENetTargets, PANetTargets,
-                              TextSnakeTargets)
-from .transforms import ScaleAspectJitter
 from .wrappers import ImgAug, TorchVisionWrapper
 
 __all__ = [
     'LoadOCRAnnotations', 'NormalizeOCR', 'OnlineCropOCR', 'ResizeOCR',
-    'ToTensorOCR', 'DBNetTargets', 'PANetTargets', 'RandomRotate',
-    'ScaleAspectJitter', 'MultiRotateAugOCR', 'OCRSegTargets', 'FancyPCA',
+    'ToTensorOCR', 'RandomRotate', 'MultiRotateAugOCR', 'FancyPCA',
     'RandomPaddingOCR', 'ImgAug', 'RandomRotateImageBox', 'OpencvToPil',
-    'PilToOpencv', 'SourceImagePad', 'TextSnakeTargets', 'FCENetTargets',
-    'TextDetRandomCropFlip', 'PyramidRescale', 'TorchVisionWrapper', 'Resize',
-    'RandomCrop', 'TextDetRandomCrop', 'RandomCrop', 'PackTextDetInputs',
-    'PackTextRecogInputs', 'RescaleToHeight', 'PadToWidth',
-    'ShortScaleAspectJitter', 'RandomFlip', 'BoundedScaleAspectJitter',
-    'PackKIEInputs', 'LoadKIEAnnotations', 'FixInvalidPolygon'
+    'PilToOpencv', 'SourceImagePad', 'TextDetRandomCropFlip', 'PyramidRescale',
+    'TorchVisionWrapper', 'Resize', 'RandomCrop', 'TextDetRandomCrop',
+    'RandomCrop', 'PackTextDetInputs', 'PackTextRecogInputs',
+    'RescaleToHeight', 'PadToWidth', 'ShortScaleAspectJitter', 'RandomFlip',
+    'BoundedScaleAspectJitter', 'PackKIEInputs', 'LoadKIEAnnotations',
+    'FixInvalidPolygon'
 ]
