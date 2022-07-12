@@ -14,7 +14,7 @@ from mmengine.registry import DATASETS, HOOKS, METRICS, MODELS
 from mmengine.runner import Runner
 from torch.utils.data import Dataset
 
-from mmocr.core.loops import MultiTestLoop, MultiValLoop
+from mmocr.engine.runner import MultiTestLoop, MultiValLoop
 
 
 @MODELS.register_module()
