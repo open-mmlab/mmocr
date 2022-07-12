@@ -5,10 +5,11 @@ from unittest import TestCase
 
 import mmcv
 
-from mmocr.utils.data_convert_util import dump_ocr_data, recog_anno_to_imginfo
+from mmocr.utils.data_converter_utils import (dump_ocr_data,
+                                              recog_anno_to_imginfo)
 
 
-class TestDataConvertUtil(TestCase):
+class TestDataConverterUtils(TestCase):
 
     def _create_dummy_data(self):
         img_info = dict(
