@@ -9,7 +9,7 @@ from numpy.typing import ArrayLike
 from shapely.geometry import Polygon
 from torch import nn
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import offset_polygon
 from .text_kernel_mixin import TextKernelMixin

@@ -10,7 +10,7 @@ from numpy import ndarray
 from numpy.linalg import norm
 from torch import Tensor, nn
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 from .text_kernel_mixin import TextKernelMixin
 

@@ -17,6 +17,7 @@ def register_all_modules(init_default_scope: bool = True) -> None:
             Defaults to True.
     """  # noqa
     import mmocr.core  # noqa: F401,F403
+    import mmocr.data  # noqa: F401,F403
     import mmocr.datasets  # noqa: F401,F403
     import mmocr.engine  # noqa: F401,F403
     import mmocr.evaluation  # noqa: F401,F403

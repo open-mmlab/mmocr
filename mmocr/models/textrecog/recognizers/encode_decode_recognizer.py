@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import torch
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.registry import MODELS, TASK_UTILS
 from .base import BaseRecognizer
 

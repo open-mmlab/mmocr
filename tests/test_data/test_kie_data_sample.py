@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from mmengine.data import InstanceData
 
-from mmocr.core import KIEDataSample
+from mmocr.data import KIEDataSample
 
 
 class TestTextDetDataSample(TestCase):

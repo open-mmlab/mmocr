@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from mmengine import InstanceData
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.losses import DRRGLoss
 
 

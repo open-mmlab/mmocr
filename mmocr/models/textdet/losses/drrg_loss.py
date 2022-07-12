@@ -11,7 +11,7 @@ from numpy import ndarray
 from numpy.linalg import norm
 from torch import Tensor
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import check_argument
 from .textsnake_loss import TextSnakeLoss

@@ -4,7 +4,7 @@ import unittest
 
 from mmengine.data import LabelData
 
-from mmocr.core import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.evaluation import CharMetric, OneMinusNEDMetric, WordMetric
 
 

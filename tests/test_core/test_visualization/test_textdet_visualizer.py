@@ -8,8 +8,8 @@ import numpy as np
 import torch
 from mmengine.data import InstanceData
 
-from mmocr.core import TextDetDataSample
 from mmocr.core.visualization import TextDetLocalVisualizer
+from mmocr.data import TextDetDataSample
 from mmocr.utils import bbox2poly
 
 

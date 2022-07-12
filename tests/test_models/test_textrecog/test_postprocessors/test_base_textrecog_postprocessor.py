@@ -5,7 +5,7 @@ from unittest import TestCase, mock
 
 import torch
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.models.textrecog.postprocessors import BaseTextRecogPostprocessor
 

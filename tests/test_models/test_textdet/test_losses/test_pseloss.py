@@ -7,7 +7,7 @@ import torch.nn as nn
 from mmengine import InstanceData
 from parameterized import parameterized
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.losses import PSELoss
 
 

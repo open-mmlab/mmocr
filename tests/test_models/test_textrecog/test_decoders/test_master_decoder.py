@@ -6,7 +6,7 @@ from unittest import TestCase
 import torch
 from mmengine.data import LabelData
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.decoders import MasterDecoder
 
 

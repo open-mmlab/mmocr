@@ -7,7 +7,7 @@ import torch
 from mmcv.ops import pixel_group
 from mmengine.data import InstanceData
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 from .base_postprocessor import BaseTextDetPostProcessor
 

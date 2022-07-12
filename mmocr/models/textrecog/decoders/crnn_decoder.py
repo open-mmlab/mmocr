@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from mmcv.runner import Sequential
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.models.textrecog.layers import BidirectionalLSTM
 from mmocr.registry import MODELS

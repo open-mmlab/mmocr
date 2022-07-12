@@ -4,7 +4,7 @@ from unittest import TestCase
 import torch
 from mmengine.data import LabelData
 
-from mmocr.core import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.losses import CELoss
 
 

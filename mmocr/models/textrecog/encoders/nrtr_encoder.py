@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from mmcv.runner import ModuleList
 
-from mmocr.core.data_structures import TextRecogDataSample
+from mmocr.data import TextRecogDataSample
 from mmocr.models.common import TFEncoderLayer
 from mmocr.registry import MODELS
 from .base_encoder import BaseEncoder

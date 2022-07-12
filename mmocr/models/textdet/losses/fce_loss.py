@@ -9,7 +9,7 @@ from numpy.fft import fft
 from numpy.linalg import norm
 from numpy.typing import ArrayLike
 
-from mmocr.core import TextDetDataSample
+from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 from .textsnake_loss import TextSnakeLoss
 
