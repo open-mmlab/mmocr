@@ -3,7 +3,7 @@ import argparse
 import json
 from typing import List, Tuple
 
-from mmocr.datasets.utils.loader import AnnFileLoader
+from mmocr.datasets import RecogLMDBDataset
 from mmocr.utils import StringStrip, dump_ocr_data, recog_anno_to_imginfo
 
 
@@ -14,7 +14,8 @@ def parse_legacy_data(in_path: str,
     Args:
         in_path (str): Path to annotation file.
         format (str): Annotation format. Choices are 'txt', 'json' and 'lmdb'.
-
+            For 'lmdb' format, the lmdb file should only contains labels. For
+            lmdb file with labels and images, the conversion is unnecessary.
     Returns:
         tuple(list[str], list[str]): File paths and labels.
     """
@@ -22,15 +23,12 @@ def parse_legacy_data(in_path: str,
     labels = []
     strip_cls = StringStrip()
     if format == 'lmdb':
-        # TODO: Backend might be deprecated
-        loader = AnnFileLoader(
+        dataset = RecogLMDBDataset(
             in_path,
-            parser=dict(type='LineJsonParser', keys=['filename', 'text']),
-            file_format='lmdb')
-        num = len(loader)
-        for i in range(num):
-            line_json = loader[i]
-            file_path, label = line_json['filename'], line_json['text']
+            parser_cfg=dict(type='LineJsonParser', keys=['filename', 'text']))
+        for data_info in dataset:
+            file_path = data_info['img_path']
+            label = data_info['instances'][0]['text']
             file_path = strip_cls(file_path)
             label = strip_cls(label)
             # MJ's file_path starts with './'
@@ -83,6 +81,8 @@ def parse_args():
         default='txt',
         help='Legacy data format')
     args = parser.parse_args()
+    if args.out_path.split('.')[-1] != 'json':
+        raise ValueError('The output path must be a json file.')
     return args
 
 
