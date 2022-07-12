@@ -5,6 +5,8 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 # learning policy
 param_scheduler = [
-    dict(type='LinearLR', end=1, start_factor=0.001),
+    dict(
+        type='LinearLR', end=2, start_factor=0.001,
+        convert_to_iter_based=True),
     dict(type='MultiStepLR', milestones=[16, 18], end=20),
 ]
