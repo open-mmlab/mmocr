@@ -4,6 +4,7 @@ import numpy as np
 import mmocr.utils as utils
 
 
+# TODO replace with HmeanIc13Metric
 def compute_recall_precision(gt_polys, pred_polys):
     """Compute the recall and the precision matrices between gt and predicted
     polygons.
