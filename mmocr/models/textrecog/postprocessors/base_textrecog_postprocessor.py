@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
 from typing import Dict, Optional, Sequence, Tuple, Union
 
 import mmcv
@@ -55,7 +56,10 @@ class BaseTextRecogPostprocessor:
             index = mapping_table.get(
                 ignore_char, self.dictionary._char2idx.get(ignore_char, None))
             if index is None:
-                raise ValueError(f'{ignore_char} is not exist in dictionary')
+                warnings.warn(
+                    f'{ignore_char} does not exist in the dictionary',
+                    UserWarning)
+                continue
             ignore_indexes.append(index)
         self.ignore_indexes = ignore_indexes
 
