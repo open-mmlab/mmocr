@@ -9,6 +9,7 @@ from mmengine.data import LabelData
 from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.models.textrecog.losses import CTCLoss
+from mmocr.testing import create_dummy_dict_file
 
 
 class TestCTCLoss(TestCase):
@@ -17,7 +18,7 @@ class TestCTCLoss(TestCase):
         tmp_dir = tempfile.TemporaryDirectory()
         # create dummy data
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file)
 
         dictionary = Dictionary(dict_file=dict_file, with_padding=True)
         with self.assertRaises(AssertionError):
@@ -51,17 +52,11 @@ class TestCTCLoss(TestCase):
                               torch.tensor(losses['loss_ctc'].item()).float())
         tmp_dir.cleanup()
 
-    def _create_dummy_dict_file(self, dict_file):
-        chars = list('helowrd')
-        with open(dict_file, 'w') as fw:
-            for char in chars:
-                fw.write(char + '\n')
-
     def test_get_targets(self):
         tmp_dir = tempfile.TemporaryDirectory()
         # create dummy data
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file, list('helowrd'))
 
         dictionary = Dictionary(dict_file=dict_file, with_padding=True)
         loss = CTCLoss(dictionary=dictionary, letter_case='lower')

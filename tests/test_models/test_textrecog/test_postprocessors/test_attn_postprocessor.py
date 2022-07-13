@@ -10,21 +10,15 @@ from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.models.textrecog.postprocessors.attn_postprocessor import \
     AttentionPostprocessor
+from mmocr.testing import create_dummy_dict_file
 
 
 class TestAttentionPostprocessor(TestCase):
 
-    def _create_dummy_dict_file(
-        self, dict_file,
-        chars=list('0123456789abcdefghijklmnopqrstuvwxyz')):  # NOQA
-        with open(dict_file, 'w') as f:
-            for char in chars:
-                f.write(char + '\n')
-
     def test_call(self):
         tmp_dir = tempfile.TemporaryDirectory()
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file)
         dict_gen = Dictionary(
             dict_file=dict_file,
             with_start=True,

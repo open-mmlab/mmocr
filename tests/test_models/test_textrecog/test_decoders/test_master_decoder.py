@@ -8,6 +8,7 @@ from mmengine.data import LabelData
 
 from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.decoders import MasterDecoder
+from mmocr.testing import create_dummy_dict_file
 
 
 class TestMasterDecoder(TestCase):
@@ -26,17 +27,10 @@ class TestMasterDecoder(TestCase):
 
         self.data_info = [gt_text_sample1, gt_text_sample2]
 
-    def _create_dummy_dict_file(
-        self, dict_file,
-        chars=list('0123456789abcdefghijklmnopqrstuvwxyz')):  # NOQA
-        with open(dict_file, 'w') as f:
-            for char in chars:
-                f.write(char + '\n')
-
     def test_init(self):
         tmp_dir = tempfile.TemporaryDirectory()
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file)
         dict_cfg = dict(
             type='Dictionary',
             dict_file=dict_file,
@@ -53,7 +47,7 @@ class TestMasterDecoder(TestCase):
         encoder_out = torch.randn(2, 512, 6, 40)
         tmp_dir = tempfile.TemporaryDirectory()
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file)
         # test diction cfg
         dict_cfg = dict(
             type='Dictionary',
@@ -75,7 +69,7 @@ class TestMasterDecoder(TestCase):
         encoder_out = torch.randn(2, 512, 6, 40)
         tmp_dir = tempfile.TemporaryDirectory()
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file)
         # test diction cfg
         dict_cfg = dict(
             type='Dictionary',

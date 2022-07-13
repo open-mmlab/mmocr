@@ -7,21 +7,15 @@ import torch
 import torch.nn as nn
 
 from mmocr.models.textrecog.decoders import CRNNDecoder
+from mmocr.testing import create_dummy_dict_file
 
 
 class TestCRNNDecoder(TestCase):
 
-    def _create_dummy_dict_file(
-        self, dict_file,
-        chars=list('0123456789abcdefghijklmnopqrstuvwxyz')):  # NOQA
-        with open(dict_file, 'w') as f:
-            for char in chars:
-                f.write(char + '\n')
-
     def test_init(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             dict_file = osp.join(tmp_dir, 'fake_chars.txt')
-            self._create_dummy_dict_file(dict_file)
+            create_dummy_dict_file(dict_file)
             # test diction cfg
             dict_cfg = dict(
                 type='Dictionary',
@@ -43,7 +37,7 @@ class TestCRNNDecoder(TestCase):
         inputs = torch.randn(3, 10, 1, 100)
         with tempfile.TemporaryDirectory() as tmp_dir:
             dict_file = osp.join(tmp_dir, 'fake_chars.txt')
-            self._create_dummy_dict_file(dict_file)
+            create_dummy_dict_file(dict_file)
             # test diction cfg
             dict_cfg = dict(
                 type='Dictionary',

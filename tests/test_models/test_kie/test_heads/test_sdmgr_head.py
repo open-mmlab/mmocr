@@ -9,16 +9,10 @@ from mmengine import InstanceData
 from mmocr.data import KIEDataSample
 from mmocr.models.kie.heads import SDMGRHead
 from mmocr.models.textrecog.dictionary import Dictionary
+from mmocr.testing import create_dummy_dict_file
 
 
 class TestSDMGRHead(TestCase):
-
-    def _create_dummy_dict_file(
-        self, dict_file,
-        chars=list('0123456789abcdefghijklmnopqrstuvwxyz')):  # NOQA
-        with open(dict_file, 'w') as f:
-            for char in chars:
-                f.write(char + '\n')
 
     def test_init(self):
         with self.assertRaises(AssertionError):
@@ -31,7 +25,7 @@ class TestSDMGRHead(TestCase):
             bboxes=torch.rand((2, 4)), texts=['t1', 't2'])
         with tempfile.TemporaryDirectory() as tmp_dir:
             dict_file = osp.join(tmp_dir, 'fake_chars.txt')
-            self._create_dummy_dict_file(dict_file)
+            create_dummy_dict_file(dict_file)
             dict_cfg = dict(
                 type='Dictionary',
                 dict_file=dict_file,
