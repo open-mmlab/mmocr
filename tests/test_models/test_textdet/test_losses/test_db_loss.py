@@ -26,10 +26,8 @@ class TestDBLoss(TestCase):
                     ignored=torch.BoolTensor([False, False, True])))
         ]
         pred_size = (1, 40, 40)
-        self.preds = dict(
-            prob_map=torch.rand(pred_size),
-            thr_map=torch.rand(pred_size),
-            binary_map=torch.rand(pred_size))
+        self.preds = (torch.rand(pred_size), torch.rand(pred_size),
+                      torch.rand(pred_size))
 
     def test_is_poly_invalid(self):
         # area < 1

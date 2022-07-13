@@ -1,11 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from functools import partial
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
+import mmcv
 import numpy as np
+from torch import Tensor
 
 from mmocr.data import TextDetDataSample
-from mmocr.utils import boundary_iou, is_type_list, rescale_polygons
+from mmocr.utils import boundary_iou, rescale_polygons
 
 
 class BaseTextDetPostProcessor:
@@ -121,43 +123,39 @@ class BaseTextDetPostProcessor:
         """
         raise NotImplementedError
 
-    def split_results(self,
-                      pred_results: Dict,
-                      fields: Optional[Sequence[str]] = None,
-                      keep_unsplit_fields: bool = False) -> List[Dict]:
-        """Split batched elements in pred_results along the first dimension
-        into ``batch_num`` sub-elements and regather them into a list of dicts.
+    def split_results(
+        self, pred_results: Union[Tensor, List[Tensor]]
+    ) -> Union[List[Tensor], List[List[Tensor]]]:
+        """Split batched tensor(s) along the first dimension pack split tensors
+        into a list.
 
         Args:
-            pred_results (dict): Raw result dictionary from detection head.
-                Each item usually has the shape of (N, ...)
-            fields (list[str], optional): Fields to split. If not specified,
-                all fields in ``pred_results`` will be split.
-            keep_unsplit_fields (bool): Whether to keep unsplit fields in
-                result dicts. If True, the fields not specified in ``fields``
-                will be copied to each result dict. Defaults to False.
+            pred_results (tensor or list[tensor]): Raw result tensor(s) from
+                detection head. Each tensor usually has the shape of (N, ...)
 
         Returns:
-            list[dict]: N dicts whose keys remains the same as that of
-            pred_results.
+            list[tensor] or list[list[tensor]]: N tensors if ``pred_results``
+                is a tensor, or a list of N lists of tensors if
+                ``pred_results`` is a list of tensors.
         """
-        assert isinstance(pred_results, dict) and len(pred_results) > 0
-        assert fields is None or is_type_list(fields, str)
-        assert isinstance(keep_unsplit_fields, bool)
+        assert isinstance(pred_results, Tensor) or mmcv.is_seq_of(
+            pred_results, Tensor)
 
-        if fields is None:
-            fields = list(pred_results.keys())
-        batch_num = len(pred_results[fields[0]])
-        results = [{} for _ in range(batch_num)]
-        for field in fields:
-            for i in range(batch_num):
-                results[i][field] = pred_results[field][i]
-        if keep_unsplit_fields:
-            for k, v in pred_results.items():
-                if k in fields:
-                    continue
-                for i in range(batch_num):
-                    results[i][k] = v
+        if mmcv.is_seq_of(pred_results, Tensor):
+            for i in range(1, len(pred_results)):
+                assert pred_results[0].shape[0] == pred_results[i].shape[0], \
+                    'The first dimension of all tensors should be the same'
+
+        batch_num = len(pred_results) if isinstance(pred_results, Tensor) else\
+            len(pred_results[0])
+        results = []
+        for i in range(batch_num):
+            if isinstance(pred_results, Tensor):
+                results.append(pred_results[i])
+            else:
+                results.append([])
+                for tensor in pred_results:
+                    results[i].append(tensor[i])
         return results
 
     def poly_nms(self, polygons: List[np.ndarray], scores: List[float],

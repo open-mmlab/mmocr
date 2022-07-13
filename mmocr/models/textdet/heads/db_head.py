@@ -1,9 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 import torch.nn as nn
 from mmcv.runner import Sequential
+from torch import Tensor
 
 from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.heads import BaseTextDetHead
@@ -54,8 +55,8 @@ class DBHead(BaseTextDetHead):
             nn.ConvTranspose2d(in_channels // 4, 1, 2, 2), nn.Sigmoid())
         self.threshold = self._init_thr(in_channels)
 
-    def _diff_binarize(self, prob_map: torch.Tensor, thr_map: torch.Tensor,
-                       k: int) -> torch.Tensor:
+    def _diff_binarize(self, prob_map: Tensor, thr_map: Tensor,
+                       k: int) -> Tensor:
         """Differential binarization.
 
         Args:
@@ -64,30 +65,29 @@ class DBHead(BaseTextDetHead):
             k (int): Amplification factor.
 
         Returns:
-            torch.Tensor: Binary map.
+            Tensor: Binary map.
         """
         return torch.reciprocal(1.0 + torch.exp(-k * (prob_map - thr_map)))
 
-    def forward(self,
-                img: torch.Tensor,
-                data_samples: Optional[List[TextDetDataSample]] = None
-                ) -> Dict:
+    def forward(
+        self,
+        img: Tensor,
+        data_samples: Optional[List[TextDetDataSample]] = None
+    ) -> Tuple[Tensor, Tensor, Tensor]:
         """
         Args:
-            img (torch.Tensor): Shape :math:`(N, C, H, W)`.
+            img (Tensor): Shape :math:`(N, C, H, W)`.
             data_samples (list[TextDetDataSample], optional): A list of data
                 samples. Defaults to None.
 
         Returns:
-            dict: A dict with keys of ``prob_map``,  ``thr_map`` and
-            ``binary_map``, each of shape :math:`(N, 4H, 4W)`.
+            tuple(Tensor, Tensor, Tensor): A tuple of ``prob_map``, ``thr_map``
+            and ``binary_map``, each of shape :math:`(N, 4H, 4W)`.
         """
         prob_map = self.binarize(img).squeeze(1)
         thr_map = self.threshold(img).squeeze(1)
         binary_map = self._diff_binarize(prob_map, thr_map, k=50).squeeze(1)
-        outputs = dict(
-            prob_map=prob_map, thr_map=thr_map, binary_map=binary_map)
-        return outputs
+        return (prob_map, thr_map, binary_map)
 
     def _init_thr(self,
                   inner_channels: int,

@@ -1,11 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Sequence
+from typing import Sequence, Tuple
 
 import cv2
 import numpy as np
 import torch
 from mmengine import InstanceData
 from shapely.geometry import Polygon
+from torch import Tensor
 
 from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
@@ -54,14 +55,14 @@ class DBPostprocessor(BaseTextDetPostProcessor):
         self.unclip_ratio = unclip_ratio
         self.max_candidates = max_candidates
 
-    def get_text_instances(self, pred_results: dict,
+    def get_text_instances(self, pred_results: Tuple[Tensor, Tensor, Tensor],
                            data_sample: TextDetDataSample
                            ) -> TextDetDataSample:
         """Get text instance predictions of one image.
 
         Args:
-            pred_result (dict): Prediction results of an image containing the
-                ``prob_map``, which is a tensor of shape :math:`(N, H, W)`.
+            pred_result (tuple(Tensor)): A tuple of 3 tensors where the first
+                tensor is ``prob_map`` of shape :math:`(N, H, W)`.
             data_sample (TextDetDataSample): Datasample of an image.
 
         Returns:
@@ -75,7 +76,7 @@ class DBPostprocessor(BaseTextDetPostProcessor):
         data_sample.pred_instances.polygons = []
         data_sample.pred_instances.scores = []
 
-        prob_map = pred_results['prob_map']
+        prob_map = pred_results[0]
         text_mask = prob_map > self.mask_thr
 
         score_map = prob_map.data.cpu().numpy().astype(np.float32)
