@@ -143,10 +143,10 @@ def eval_hmean_ic13(det_boxes,
                         gt_point = np.array(gt_points[gt_id])
                         det_point = np.array(pred_points[pred_id])
 
-                        norm_dist = utils.box_center_distance(
+                        norm_dist = utils.bbox_center_distance(
                             det_point, gt_point)
-                        norm_dist /= utils.box_diag(
-                            det_point) + utils.box_diag(gt_point)
+                        norm_dist /= utils.bbox_diag(
+                            det_point) + utils.bbox_diag(gt_point)
                         norm_dist *= 2.0
 
                         if norm_dist < center_dist_thr:

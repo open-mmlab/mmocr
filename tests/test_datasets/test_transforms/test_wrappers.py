@@ -6,16 +6,16 @@ from typing import Dict, List, Optional
 import numpy as np
 from shapely.geometry import Polygon
 
-from mmocr.datasets.pipelines import ImgAug, TorchVisionWrapper
+from mmocr.datasets.transforms import ImgAugWrapper, TorchVisionWrapper
 
 
 class TestImgAug(unittest.TestCase):
 
     def test_init(self):
         with self.assertRaises(AssertionError):
-            ImgAug(args=[])
+            ImgAugWrapper(args=[])
         with self.assertRaises(AssertionError):
-            ImgAug(args=['test'])
+            ImgAugWrapper(args=['test'])
 
     def _create_dummy_data(self):
         img = np.random.rand(50, 50, 3)
@@ -61,7 +61,7 @@ class TestImgAug(unittest.TestCase):
     def test_transform(self):
 
         # Test empty transform
-        imgaug_transform = ImgAug()
+        imgaug_transform = ImgAugWrapper()
         results = self._create_dummy_data()
         origin_results = copy.deepcopy(results)
         results = imgaug_transform(results)
@@ -72,7 +72,7 @@ class TestImgAug(unittest.TestCase):
                                  origin_results['gt_texts'])
 
         args = [dict(cls='Affine', translate_px=dict(x=-10, y=-10))]
-        imgaug_transform = ImgAug(args)
+        imgaug_transform = ImgAugWrapper(args)
         results = self._create_dummy_data()
         results = imgaug_transform(results)
 
@@ -99,7 +99,7 @@ class TestImgAug(unittest.TestCase):
         label_target = np.array([0], dtype=np.int64)
         ignored = np.array([False], dtype=bool)
         texts = ['text1']
-        imgaug_transform = ImgAug(args)
+        imgaug_transform = ImgAugWrapper(args)
         results = self._create_dummy_data()
         results = imgaug_transform(results)
         self.assert_result_equal(results, poly_target, box_target,
@@ -111,7 +111,7 @@ class TestImgAug(unittest.TestCase):
         # When some transforms result in empty polygons
         args = [dict(cls='Affine', translate_px=dict(x=100, y=100))]
         results = self._create_dummy_data()
-        invalid_transform = ImgAug(args)
+        invalid_transform = ImgAugWrapper(args)
         results = invalid_transform(results)
         self.assertIsNone(results)
 
@@ -131,11 +131,12 @@ class TestImgAug(unittest.TestCase):
 
     def test_repr(self):
         args = [['Resize', [0.5, 3.0]], ['Fliplr', 0.5]]
-        transform = ImgAug(args)
+        transform = ImgAugWrapper(args)
         print(repr(transform))
         self.assertEqual(
             repr(transform),
-            ("ImgAug(args = [['Resize', [0.5, 3.0]], ['Fliplr', 0.5]])"))
+            ("ImgAugWrapper(args = [['Resize', [0.5, 3.0]], ['Fliplr', 0.5]])"
+             ))
 
 
 class TestTorchVisionWrapper(unittest.TestCase):

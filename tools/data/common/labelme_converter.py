@@ -8,8 +8,8 @@ from functools import partial
 
 import mmcv
 
-from mmocr.datasets.pipelines.crop import crop_img, warp_img
 from mmocr.utils import list_to_file
+from mmocr.utils.img_utils import crop_img, warp_img
 
 
 def parse_labelme_json(json_file,

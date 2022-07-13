@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmcv.utils import Registry, build_from_cfg
 
-from .bbox_utils import (bbox2poly, bezier_to_polygon, box_center_distance,
-                         box_diag, is_on_same_line, rescale_bboxes,
+from .bbox_utils import (bbox2poly, bbox_center_distance, bbox_diag,
+                         bezier_to_polygon, is_on_same_line, rescale_bboxes,
                          sort_points, sort_vertex, sort_vertex8,
                          stitch_boxes_into_lines)
 from .check_argument import (equal_len, is_2dlist, is_3dlist, is_none_or_type,
@@ -13,6 +13,7 @@ from .evaluation_utils import (compute_hmean, filter_2dlist_result,
                                many2one_match_ic13, one2one_match_ic13,
                                select_top_boundary)
 from .fileio import list_from_file, list_to_file
+from .img_utils import crop_img, warp_img
 from .logger import get_root_logger
 from .mask_utils import fill_hole
 from .model import revert_sync_batchnorm
@@ -36,9 +37,9 @@ __all__ = [
     'rescale_bboxes', 'bbox2poly', 'crop_polygon', 'is_poly_inside_rect',
     'poly2bbox', 'poly_intersection', 'poly_iou', 'poly_make_valid',
     'poly_union', 'poly2shapely', 'polys2shapely', 'register_all_modules',
-    'offset_polygon', 'sort_vertex8', 'sort_vertex', 'box_center_distance',
-    'box_diag', 'compute_hmean', 'filter_2dlist_result', 'many2one_match_ic13',
-    'one2one_match_ic13', 'select_top_boundary', 'boundary_iou',
-    'point_distance', 'points_center', 'fill_hole', 'LineJsonParser',
-    'LineStrParser', 'shapely2poly'
+    'offset_polygon', 'sort_vertex8', 'sort_vertex', 'bbox_center_distance',
+    'bbox_diag', 'compute_hmean', 'filter_2dlist_result',
+    'many2one_match_ic13', 'one2one_match_ic13', 'select_top_boundary',
+    'boundary_iou', 'point_distance', 'points_center', 'fill_hole',
+    'LineJsonParser', 'LineStrParser', 'shapely2poly', 'crop_img', 'warp_img'
 ]

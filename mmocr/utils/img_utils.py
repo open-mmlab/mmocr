@@ -1,64 +1,40 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import cv2
 import numpy as np
+from mmcv.utils import is_seq_of
 from shapely.geometry import LineString, Point
 
-import mmocr.utils as utils
-
-
-def box_jitter(points_x, points_y, jitter_ratio_x=0.5, jitter_ratio_y=0.1):
-    """Jitter on the coordinates of bounding box.
-
-    Args:
-        points_x (list[float | int]): List of y for four vertices.
-        points_y (list[float | int]): List of x for four vertices.
-        jitter_ratio_x (float): Horizontal jitter ratio relative to the height.
-        jitter_ratio_y (float): Vertical jitter ratio relative to the height.
-    """
-    assert len(points_x) == 4
-    assert len(points_y) == 4
-    assert isinstance(jitter_ratio_x, float)
-    assert isinstance(jitter_ratio_y, float)
-    assert 0 <= jitter_ratio_x < 1
-    assert 0 <= jitter_ratio_y < 1
-
-    points = [Point(points_x[i], points_y[i]) for i in range(4)]
-    line_list = [
-        LineString([points[i], points[i + 1 if i < 3 else 0]])
-        for i in range(4)
-    ]
-
-    tmp_h = max(line_list[1].length, line_list[3].length)
-
-    for i in range(4):
-        jitter_pixel_x = (np.random.rand() - 0.5) * 2 * jitter_ratio_x * tmp_h
-        jitter_pixel_y = (np.random.rand() - 0.5) * 2 * jitter_ratio_y * tmp_h
-        points_x[i] += jitter_pixel_x
-        points_y[i] += jitter_pixel_y
+from .bbox_utils import bbox_jitter, sort_vertex
 
 
 def warp_img(src_img,
              box,
-             jitter_flag=False,
+             jitter=False,
              jitter_ratio_x=0.5,
              jitter_ratio_y=0.1):
-    """Crop box area from image using opencv warpPerspective w/o box jitter.
+    """Crop box area from image using opencv warpPerspective.
 
     Args:
         src_img (np.array): Image before cropping.
         box (list[float | int]): Coordinates of quadrangle.
+        jitter (bool): Whether to jitter the box.
+        jitter_ratio_x (float): Horizontal jitter ratio relative to the height.
+        jitter_ratio_y (float): Vertical jitter ratio relative to the height.
+
+    Returns:
+        np.array: The warped image.
     """
-    assert utils.is_type_list(box, (float, int))
+    assert is_seq_of(box, (float, int))
     assert len(box) == 8
 
     h, w = src_img.shape[:2]
     points_x = [min(max(x, 0), w) for x in box[0:8:2]]
     points_y = [min(max(y, 0), h) for y in box[1:9:2]]
 
-    points_x, points_y = utils.sort_vertex(points_x, points_y)
+    points_x, points_y = sort_vertex(points_x, points_y)
 
-    if jitter_flag:
-        box_jitter(
+    if jitter:
+        bbox_jitter(
             points_x,
             points_y,
             jitter_ratio_x=jitter_ratio_x,
@@ -84,17 +60,24 @@ def warp_img(src_img,
 
 
 def crop_img(src_img, box, long_edge_pad_ratio=0.4, short_edge_pad_ratio=0.2):
-    """Crop text region with their bounding box.
+    """Crop text region given the bounding box which might be slightly padded.
+    The bounding box is assumed to be a quadrangle and tightly bound the text
+    region.
 
     Args:
         src_img (np.array): The original image.
         box (list[float | int]): Points of quadrangle.
-        long_edge_pad_ratio (float): Box pad ratio for long edge
-            corresponding to font size.
-        short_edge_pad_ratio (float): Box pad ratio for short edge
-            corresponding to font size.
+        long_edge_pad_ratio (float): The ratio of padding to the long edge. The
+            padding will be the length of the short edge * long_edge_pad_ratio.
+            Defaults to 0.4.
+        short_edge_pad_ratio (float): The ratio of padding to the short edge.
+            The padding will be the length of the long edge *
+            short_edge_pad_ratio. Defaults to 0.2.
+
+    Returns:
+        np.array: The cropped image.
     """
-    assert utils.is_type_list(box, (float, int))
+    assert is_seq_of(box, (float, int))
     assert len(box) == 8
     assert 0. <= long_edge_pad_ratio < 1.0
     assert 0. <= short_edge_pad_ratio < 1.0
@@ -105,14 +88,14 @@ def crop_img(src_img, box, long_edge_pad_ratio=0.4, short_edge_pad_ratio=0.2):
 
     box_width = np.max(points_x) - np.min(points_x)
     box_height = np.max(points_y) - np.min(points_y)
-    font_size = min(box_height, box_width)
+    shorter_size = min(box_height, box_width)
 
     if box_height < box_width:
-        horizontal_pad = long_edge_pad_ratio * font_size
-        vertical_pad = short_edge_pad_ratio * font_size
+        horizontal_pad = long_edge_pad_ratio * shorter_size
+        vertical_pad = short_edge_pad_ratio * shorter_size
     else:
-        horizontal_pad = short_edge_pad_ratio * font_size
-        vertical_pad = long_edge_pad_ratio * font_size
+        horizontal_pad = short_edge_pad_ratio * shorter_size
+        vertical_pad = long_edge_pad_ratio * shorter_size
 
     left = np.clip(int(np.min(points_x) - horizontal_pad), 0, w)
     top = np.clip(int(np.min(points_y) - vertical_pad), 0, h)

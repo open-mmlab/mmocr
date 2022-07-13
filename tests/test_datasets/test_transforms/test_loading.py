@@ -4,7 +4,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from mmocr.datasets.pipelines import LoadKIEAnnotations, LoadOCRAnnotations
+from mmocr.datasets.transforms import LoadKIEAnnotations, LoadOCRAnnotations
 
 
 class TestLoadOCRAnnotations(TestCase):
