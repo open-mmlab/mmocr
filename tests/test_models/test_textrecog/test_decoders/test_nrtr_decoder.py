@@ -54,6 +54,7 @@ class TestNRTRDecoder(TestCase):
     def test_forward_train(self):
         encoder_out = torch.randn(2, 25, 512)
         tmp_dir = tempfile.TemporaryDirectory()
+        max_seq_len = 40
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
         self._create_dummy_dict_file(dict_file)
         # test diction cfg
@@ -66,11 +67,12 @@ class TestNRTRDecoder(TestCase):
             with_padding=True,
             with_unknown=True)
         loss_cfg = dict(type='CELoss')
-        decoder = NRTRDecoder(dictionary=dict_cfg, loss_module=loss_cfg)
+        decoder = NRTRDecoder(
+            dictionary=dict_cfg, loss_module=loss_cfg, max_seq_len=max_seq_len)
         data_samples = decoder.loss_module.get_targets(self.data_info)
         output = decoder.forward_train(
             out_enc=encoder_out, data_samples=data_samples)
-        self.assertTupleEqual(tuple(output.shape), (2, 40, 39))
+        self.assertTupleEqual(tuple(output.shape), (2, max_seq_len, 39))
 
     def test_forward_test(self):
         encoder_out = torch.randn(2, 25, 512)

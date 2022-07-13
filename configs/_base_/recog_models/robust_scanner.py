@@ -25,6 +25,6 @@ model = dict(
         in_channels=[512, 512],
         postprocessor=dict(type='AttentionPostprocessor'),
         loss_module=dict(
-            type='CELoss', ignore_first_char=True, reduction='mean')),
-    dictionary=dictionary,
-    max_seq_len=30)
+            type='CELoss', ignore_first_char=True, reduction='mean'),
+        dictionary=dictionary,
+        max_seq_len=30))

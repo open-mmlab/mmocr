@@ -64,9 +64,9 @@ model = dict(
         feat_size=6 * 40,
         postprocessor=dict(type='AttentionPostprocessor'),
         loss_module=dict(
-            type='CELoss', reduction='mean', ignore_first_char=True)),
-    max_seq_len=30,
-    dictionary=dictionary,
+            type='CELoss', reduction='mean', ignore_first_char=True),
+        max_seq_len=30,
+        dictionary=dictionary),
     data_preprocessor=dict(
         type='TextRecogDataPreprocessor',
         mean=[127.5, 127.5, 127.5],

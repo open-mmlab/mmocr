@@ -40,7 +40,7 @@ class ParallelSARDecoder(BaseDecoder):
         pred_dropout (float): Dropout probability of prediction layer. Defaults
             to 0.0.
         max_seq_len (int): Maximum sequence length for decoding. Defaults to
-            40.
+            30.
         mask (bool): If True, mask padding in feature map. Defaults to True.
         pred_concat (bool): If True, concat glimpse feature from
             attention with holistic feature and hidden state. Defaults to
@@ -61,7 +61,7 @@ class ParallelSARDecoder(BaseDecoder):
                  d_enc: int = 512,
                  d_k: int = 64,
                  pred_dropout: float = 0.0,
-                 max_seq_len: int = 40,
+                 max_seq_len: int = 30,
                  mask: bool = True,
                  pred_concat: bool = False,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None,

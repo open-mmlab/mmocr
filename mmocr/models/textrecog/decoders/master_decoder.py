@@ -62,23 +62,26 @@ class MasterDecoder(BaseDecoder):
     Code is partially modified from https://github.com/wenwenyu/MASTER-pytorch.
 
     Args:
-        n_layers (int): Number of attention layers.
-        n_head (int): Number of parallel attention heads.
+        n_layers (int): Number of attention layers. Defaults to 3.
+        n_head (int): Number of parallel attention heads. Defaults to 8.
         d_model (int): Dimension :math:`E` of the input from previous model.
+            Defaults to 512.
         feat_size (int): The size of the input feature from previous model,
-            usually :math:`H * W`.
+            usually :math:`H * W`. Defaults to 6 * 40.
         d_inner (int): Hidden dimension of feedforward layers.
-        attn_drop (float): Dropout rate of the attention layer.
-        ffn_drop (float): Dropout rate of the feedforward layer.
+            Defaults to 2048.
+        attn_drop (float): Dropout rate of the attention layer. Defaults to 0.
+        ffn_drop (float): Dropout rate of the feedforward layer. Defaults to 0.
         feat_pe_drop (float): Dropout rate of the feature positional encoding
-            layer.
+            layer. Defaults to 0.2.
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
-            the instance of `Dictionary`.
+            the instance of `Dictionary`. Defaults to None.
         loss_module (dict, optional): Config to build loss_module. Defaults
             to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
-        max_seq_len (int): Maximum output sequence length :math:`T`.
+        max_seq_len (int): Maximum output sequence length :math:`T`. Defaults
+            to 30.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 

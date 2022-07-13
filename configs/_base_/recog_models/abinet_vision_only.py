@@ -31,9 +31,9 @@ model = dict(
             init_cfg=dict(type='Xavier', layer='Conv2d')),
         loss_module=dict(type='ABILoss', letter_case='lower'),
         postprocessor=dict(type='AttentionPostprocessor'),
+        dictionary=dictionary,
+        max_seq_len=26,
     ),
-    dictionary=dictionary,
-    max_seq_len=26,
     data_preprocessor=dict(
         type='TextRecogDataPreprocessor',
         mean=[123.675, 116.28, 103.53],

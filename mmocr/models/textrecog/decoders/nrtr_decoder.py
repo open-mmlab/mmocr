@@ -38,7 +38,7 @@ class NRTRDecoder(BaseDecoder):
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
             the instance of `Dictionary`.
         max_seq_len (int): Maximum output sequence length :math:`T`. Defaults
-            to 40.
+            to 30.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
@@ -55,13 +55,14 @@ class NRTRDecoder(BaseDecoder):
                  loss_module: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  dictionary: Optional[Union[Dict, Dictionary]] = None,
-                 max_seq_len: int = 40,
+                 max_seq_len: int = 30,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
         super().__init__(
             loss_module=loss_module,
             postprocessor=postprocessor,
             dictionary=dictionary,
-            init_cfg=init_cfg)
+            init_cfg=init_cfg,
+            max_seq_len=max_seq_len)
 
         self.padding_idx = self.dictionary.padding_idx
         self.start_idx = self.dictionary.start_idx
