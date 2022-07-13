@@ -6,22 +6,16 @@ from unittest import TestCase
 import torch
 
 from mmocr.models.textrecog.decoders import ABIFuser
+from mmocr.testing import create_dummy_dict_file
 
 
 class TestABINetFuser(TestCase):
-
-    def _create_dummy_dict_file(
-        self, dict_file,
-        chars=list('0123456789abcdefghijklmnopqrstuvwxyz')):  # NOQA
-        with open(dict_file, 'w') as f:
-            for char in chars:
-                f.write(char + '\n')
 
     def setUp(self):
 
         self.tmp_dir = tempfile.TemporaryDirectory()
         self.dict_file = osp.join(self.tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(self.dict_file)
+        create_dummy_dict_file(self.dict_file)
         self.dict_cfg = dict(
             type='Dictionary',
             dict_file=self.dict_file,

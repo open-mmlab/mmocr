@@ -6,6 +6,7 @@ from unittest import TestCase, mock
 from mmocr.models.textrecog.decoders import BaseDecoder
 from mmocr.models.textrecog.dictionary.dictionary import Dictionary
 from mmocr.registry import MODELS, TASK_UTILS
+from mmocr.testing import create_dummy_dict_file
 
 
 @MODELS.register_module()
@@ -23,18 +24,11 @@ class Tmp:
 
 class TestBaseDecoder(TestCase):
 
-    def _create_dummy_dict_file(
-        self, dict_file,
-        chars=list('0123456789abcdefghijklmnopqrstuvwxyz')):  # NOQA
-        with open(dict_file, 'w') as f:
-            for char in chars:
-                f.write(char + '\n')
-
     def test_init(self):
         cfg = dict(type='Tmp')
         tmp_dir = tempfile.TemporaryDirectory()
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file)
         # test diction cfg
         dict_cfg = dict(
             type='Dictionary',
@@ -65,7 +59,7 @@ class TestBaseDecoder(TestCase):
     def test_forward_train(self):
         tmp_dir = tempfile.TemporaryDirectory()
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file)
         # test diction cfg
         dict_cfg = dict(
             type='Dictionary',
@@ -83,7 +77,7 @@ class TestBaseDecoder(TestCase):
     def test_forward_test(self):
         tmp_dir = tempfile.TemporaryDirectory()
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file)
         dict_cfg = dict(
             type='Dictionary',
             dict_file=dict_file,
@@ -111,7 +105,7 @@ class TestBaseDecoder(TestCase):
 
         tmp_dir = tempfile.TemporaryDirectory()
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file)
         dict_cfg = dict(
             type='Dictionary',
             dict_file=dict_file,

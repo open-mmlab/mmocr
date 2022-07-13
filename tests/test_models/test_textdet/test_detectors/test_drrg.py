@@ -1,23 +1,26 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
 import unittest
+from os.path import dirname, exists, join
 from unittest import mock
 
 import numpy as np
 import torch
-from base import BaseTestUtils
+from mmengine import Config, ConfigDict
 
 from mmocr.registry import MODELS
+from mmocr.testing.data import create_dummy_textdet_inputs
 from mmocr.utils import register_all_modules
 
 
-class TestDRRG(BaseTestUtils, unittest.TestCase):
+class TestDRRG(unittest.TestCase):
 
     def setUp(self):
         cfg_path = 'textdet/drrg/drrg_r50_fpn_unet_1200e_ctw1500.py'
         self.model_cfg = self._get_detector_cfg(cfg_path)
         register_all_modules()
         self.model = MODELS.build(self.model_cfg)
-        self.inputs = self._create_dummy_inputs(input_shape=(1, 3, 224, 224))
+        self.inputs = create_dummy_textdet_inputs(input_shape=(1, 3, 224, 224))
 
     def _get_comp_attribs(self):
         num_rois = 32
@@ -86,3 +89,35 @@ class TestDRRG(BaseTestUtils, unittest.TestCase):
         self.assertIn('scores', results[0].pred_instances)
         self.assertTrue(
             isinstance(results[0].pred_instances['scores'], torch.FloatTensor))
+
+    def _get_config_directory(self):
+        """Find the predefined detector config directory."""
+        try:
+            # Assume we are running in the source mmocr repo
+            repo_dpath = dirname(dirname(dirname(dirname(dirname(__file__)))))
+        except NameError:
+            # For IPython development when this __file__ is not defined
+            import mmocr
+            repo_dpath = dirname(
+                dirname(dirname(dirname(dirname(mmocr.__file__)))))
+        config_dpath = join(repo_dpath, 'configs')
+        if not exists(config_dpath):
+            raise Exception('Cannot find config path')
+        return config_dpath
+
+    def _get_config_module(self, fname: str) -> 'ConfigDict':
+        """Load a configuration as a python module."""
+        config_dpath = self._get_config_directory()
+        config_fpath = join(config_dpath, fname)
+        config_mod = Config.fromfile(config_fpath)
+        return config_mod
+
+    def _get_detector_cfg(self, fname: str) -> 'ConfigDict':
+        """Grab necessary configs necessary to create a detector.
+
+        These are deep copied to allow for safe modification of parameters
+        without influencing other tests.
+        """
+        config = self._get_config_module(fname)
+        model = copy.deepcopy(config.model)
+        return model

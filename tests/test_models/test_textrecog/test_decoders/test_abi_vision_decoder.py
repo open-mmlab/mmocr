@@ -6,21 +6,15 @@ from unittest import TestCase
 import torch
 
 from mmocr.models.textrecog.decoders import ABIVisionDecoder
+from mmocr.testing import create_dummy_dict_file
 
 
 class TestABIVisionDecoder(TestCase):
 
-    def _create_dummy_dict_file(
-        self, dict_file,
-        chars=list('0123456789abcdefghijklmnopqrstuvwxyz')):  # NOQA
-        with open(dict_file, 'w') as f:
-            for char in chars:
-                f.write(char + '\n')
-
     def test_forward(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             dict_file = osp.join(tmp_dir, 'fake_chars.txt')
-            self._create_dummy_dict_file(dict_file)
+            create_dummy_dict_file(dict_file)
             # test diction cfg
             dict_cfg = dict(
                 type='Dictionary',

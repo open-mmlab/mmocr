@@ -10,16 +10,10 @@ from mmengine.data import LabelData
 from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.models.textrecog.losses import BaseRecogLoss
+from mmocr.testing import create_dummy_dict_file
 
 
 class TestBaseRecogLoss(TestCase):
-
-    def _create_dummy_dict_file(
-        self, dict_file,
-        chars=list('0123456789abcdefghijklmnopqrstuvwxyz')):  # NOQA
-        with open(dict_file, 'w') as f:
-            for char in chars:
-                f.write(char + '\n')
 
     def _equal(self, a, b):
         if isinstance(a, (torch.Tensor, np.ndarray)):
@@ -30,7 +24,7 @@ class TestBaseRecogLoss(TestCase):
     def test_init(self):
         tmp_dir = tempfile.TemporaryDirectory()
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file)
         # test diction cfg
         dict_cfg = dict(
             type='Dictionary',
@@ -77,7 +71,7 @@ class TestBaseRecogLoss(TestCase):
         data_sample.gt_text = label_data
         tmp_dir = tempfile.TemporaryDirectory()
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
-        self._create_dummy_dict_file(dict_file)
+        create_dummy_dict_file(dict_file)
         # test diction cfg
         dictionary = Dictionary(
             dict_file=dict_file,
