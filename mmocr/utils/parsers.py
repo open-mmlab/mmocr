@@ -4,7 +4,7 @@ import warnings
 from typing import Dict, Tuple
 
 from mmocr.registry import TASK_UTILS
-from mmocr.utils.string_util import StringStrip
+from mmocr.utils.string_utils import StringStripper
 
 
 @TASK_UTILS.register_module()
@@ -33,7 +33,7 @@ class LineStrParser:
         self.keys = keys
         self.keys_idx = keys_idx
         self.separator = separator
-        self.strip_cls = StringStrip(**kwargs)
+        self.strip_cls = StringStripper(**kwargs)
 
     def __call__(self, in_str: str) -> Dict:
         line_str = self.strip_cls(in_str)

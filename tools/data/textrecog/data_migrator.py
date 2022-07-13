@@ -4,7 +4,7 @@ import json
 from typing import List, Tuple
 
 from mmocr.datasets import RecogLMDBDataset
-from mmocr.utils import StringStrip, dump_ocr_data, recog_anno_to_imginfo
+from mmocr.utils import StringStripper, dump_ocr_data, recog_anno_to_imginfo
 
 
 def parse_legacy_data(in_path: str,
@@ -21,7 +21,7 @@ def parse_legacy_data(in_path: str,
     """
     file_paths = []
     labels = []
-    strip_cls = StringStrip()
+    strip_cls = StringStripper()
     if format == 'lmdb':
         dataset = RecogLMDBDataset(
             in_path,

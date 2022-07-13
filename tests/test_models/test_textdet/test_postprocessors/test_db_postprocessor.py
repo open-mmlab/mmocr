@@ -36,6 +36,17 @@ class TestDBPostProcessor(unittest.TestCase):
         self.assertTrue(
             isinstance(results.pred_instances['scores'], torch.FloatTensor))
 
+        preds = (torch.FloatTensor([[0.8, 0.8, 0.8, 0.8, 0],
+                                    [0.8, 0.8, 0.8, 0.8, 0],
+                                    [0.8, 0.8, 0.8, 0.8, 0],
+                                    [0.8, 0.8, 0.8, 0.8, 0],
+                                    [0.8, 0.8, 0.8, 0.8, 0]]),
+                 torch.rand([1, 10]), torch.rand([1, 10]))
+        postprocessor = DBPostprocessor(
+            text_repr_type=text_repr_type, min_text_width=0)
+        results = postprocessor.get_text_instances(preds, data_sample)
+        self.assertEqual(len(results.pred_instances['polygons']), 1)
+
         postprocessor = DBPostprocessor(
             min_text_score=1, text_repr_type=text_repr_type)
         pred_result = (torch.rand(4, 5) * 0.8, torch.rand(4, 5) * 0.8,

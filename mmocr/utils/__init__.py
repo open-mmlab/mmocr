@@ -23,7 +23,7 @@ from .polygon_utils import (boundary_iou, crop_polygon, is_poly_inside_rect,
                             poly_union, polys2shapely, rescale_polygon,
                             rescale_polygons, shapely2poly)
 from .setup_env import register_all_modules
-from .string_util import StringStrip
+from .string_utils import StringStripper
 from .typing import (ColorType, ConfigType, DetSampleList, InitConfigType,
                      KIESampleList, MultiConfig, OptConfigType,
                      OptDetSampleList, OptInitConfigType, OptKIESampleList,
@@ -34,7 +34,7 @@ __all__ = [
     'Registry', 'build_from_cfg', 'get_root_logger', 'collect_env',
     'is_3dlist', 'is_type_list', 'is_none_or_type', 'equal_len', 'is_2dlist',
     'valid_boundary', 'list_to_file', 'list_from_file', 'is_on_same_line',
-    'stitch_boxes_into_lines', 'StringStrip', 'revert_sync_batchnorm',
+    'stitch_boxes_into_lines', 'StringStripper', 'revert_sync_batchnorm',
     'bezier_to_polygon', 'sort_points', 'dump_ocr_data',
     'recog_anno_to_imginfo', 'rescale_polygons', 'rescale_polygon',
     'rescale_bboxes', 'bbox2poly', 'crop_polygon', 'is_poly_inside_rect',
