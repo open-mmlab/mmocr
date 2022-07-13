@@ -16,9 +16,9 @@ Key information extraction from document images is of paramount importance in of
 
 ### WildReceipt
 
-|                                 Method                                 |     Modality     | Macro F1-Score |                                               Download                                               |
-| :--------------------------------------------------------------------: | :--------------: | :------------: | :--------------------------------------------------------------------------------------------------: |
-|   [sdmgr_unet16](/configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py)   | Visual + Textual |     0.888      | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt_20210520-7489e6de.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/20210520_132236.log.json) |
+|                                 Method                                 |     Modality     | Macro F1-Score |                                                                                            Download                                                                                            |
+| :--------------------------------------------------------------------: | :--------------: | :------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|   [sdmgr_unet16](/configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py)   | Visual + Textual |     0.888      |  [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt_20210520-7489e6de.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/20210520_132236.log.json)  |
 | [sdmgr_novisual](/configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt.py) |     Textual      |     0.870      | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_20210517-a44850da.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/20210517_205829.log.json) |
 
 ```{note}
@@ -27,8 +27,8 @@ Key information extraction from document images is of paramount importance in of
 
 ### WildReceiptOpenset
 
-|                                Method                                 | Modality | Edge F1-Score | Node Macro F1-Score | Node Micro F1-Score |                                 Download                                 |
-| :-------------------------------------------------------------------: | :------: | :-----------: | :-----------------: | :-----------------: | :----------------------------------------------------------------------: |
+|                                     Method                                     | Modality | Edge F1-Score | Node Macro F1-Score | Node Micro F1-Score |                                                                                                Download                                                                                                |
+| :----------------------------------------------------------------------------: | :------: | :-----------: | :-----------------: | :-----------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | [sdmgr_novisual](/configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_openset.py) | Textual  |     0.786     |        0.926        |        0.935        | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_openset_20210917-d236b3ea.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/20210917_050824.log.json) |
 
 ```{note}
