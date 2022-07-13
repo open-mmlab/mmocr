@@ -14,20 +14,22 @@ class AttentionPostprocessor(BaseTextRecogPostprocessor):
 
     def get_single_prediction(
         self,
-        output: torch.Tensor,
+        probs: torch.Tensor,
         data_sample: Optional[TextRecogDataSample] = None,
     ) -> Tuple[Sequence[int], Sequence[float]]:
-        """Convert the output of a single image to index and score.
+        """Convert the output probabilities of a single image to index and
+        score.
 
         Args:
-            output (torch.Tensor): Single image output.
+            probs (torch.Tensor): Character probabilities with shape
+                :math:`(T, C)`.
             data_sample (TextRecogDataSample, optional): Datasample of an
                 image. Defaults to None.
 
         Returns:
             tuple(list[int], list[float]): index and score.
         """
-        max_value, max_idx = torch.max(output, -1)
+        max_value, max_idx = torch.max(probs, -1)
         index, score = [], []
         output_index = max_idx.cpu().detach().numpy().tolist()
         output_score = max_value.cpu().detach().numpy().tolist()

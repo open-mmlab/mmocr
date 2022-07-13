@@ -54,6 +54,7 @@ class CRNNDecoder(BaseDecoder):
                 self.dictionary.num_classes,
                 kernel_size=1,
                 stride=1)
+        self.softmax = nn.Softmax(dim=-1)
 
     def forward_train(
         self,
@@ -101,7 +102,8 @@ class CRNNDecoder(BaseDecoder):
                 Defaults to None.
 
         Returns:
-            Tensor: The raw logit tensor. Shape :math:`(N, W, C)` where
-            :math:`C` is ``num_classes``.
+            Tensor: Character probabilities. of shape
+            :math:`(N, self.max_seq_len, C)` where :math:`C` is
+            ``num_classes``.
         """
-        return self.forward_train(feat, out_enc, data_samples)
+        return self.softmax(self.forward_train(feat, out_enc, data_samples))

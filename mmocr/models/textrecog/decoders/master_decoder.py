@@ -5,7 +5,6 @@ from typing import Dict, Optional, Sequence, Union
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmcv.runner import ModuleList
 
@@ -148,6 +147,7 @@ class MasterDecoder(BaseDecoder):
         self.feat_positional_encoding = PositionalEncoding(
             d_hid=d_model, n_position=self.feat_size, dropout=feat_pe_drop)
         self.norm = nn.LayerNorm(d_model)
+        self.softmax = nn.Softmax(dim=-1)
 
     def make_target_mask(self, tgt: torch.Tensor,
                          device: torch.device) -> torch.Tensor:
@@ -248,8 +248,8 @@ class MasterDecoder(BaseDecoder):
             data_samples (list[TextRecogDataSample]): Unused.
 
         Returns:
-            Tensor: The raw logit tensor.
-            Shape :math:`(N, self.max_seq_len, C)` where :math:`C` is
+            Tensor: Character probabilities. of shape
+            :math:`(N, self.max_seq_len, C)` where :math:`C` is
             ``num_classes``.
         """
 
@@ -270,7 +270,6 @@ class MasterDecoder(BaseDecoder):
             target_mask = self.make_target_mask(input, device=feat.device)
             out = self.decode(input, feat, None, target_mask)
             output = out
-            prob = F.softmax(out, dim=-1)
-            _, next_word = torch.max(prob, dim=-1)
+            _, next_word = torch.max(out, dim=-1)
             input = torch.cat([input, next_word[:, -1].unsqueeze(-1)], dim=1)
-        return output
+        return self.softmax(output)

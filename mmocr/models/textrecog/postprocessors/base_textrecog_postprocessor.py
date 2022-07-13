@@ -65,13 +65,15 @@ class BaseTextRecogPostprocessor:
 
     def get_single_prediction(
         self,
-        output: torch.Tensor,
+        probs: torch.Tensor,
         data_sample: Optional[TextRecogDataSample] = None,
     ) -> Tuple[Sequence[int], Sequence[float]]:
-        """Convert the output of a single image to index and score.
+        """Convert the output probabilities of a single image to index and
+        score.
 
         Args:
-           output (torch.Tensor): Single image output.
+           probs (torch.Tensor): Character probabilities with shape
+                :math:`(T, C)`.
            data_sample (TextRecogDataSample): Datasample of an image.
 
         Returns:
@@ -80,13 +82,13 @@ class BaseTextRecogPostprocessor:
         raise NotImplementedError
 
     def __call__(
-        self, outputs: torch.Tensor,
-        data_samples: Sequence[TextRecogDataSample]
+        self, probs: torch.Tensor, data_samples: Sequence[TextRecogDataSample]
     ) -> Sequence[TextRecogDataSample]:
         """Convert outputs to strings and scores.
 
         Args:
-            outputs (torch.Tensor): The model outputs in size: N * T * C
+            probs (torch.Tensor): Batched character probabilities, the model's
+                softmaxed output in size: :math:`(N, T, C)`.
             data_samples (list[TextRecogDataSample]): The list of
                 TextRecogDataSample.
 
@@ -94,10 +96,10 @@ class BaseTextRecogPostprocessor:
             list(TextRecogDataSample): The list of TextRecogDataSample. It
             usually contain ``pred_text`` information.
         """
-        batch_size = outputs.size(0)
+        batch_size = probs.size(0)
 
         for idx in range(batch_size):
-            index, score = self.get_single_prediction(outputs[idx, :, :],
+            index, score = self.get_single_prediction(probs[idx, :, :],
                                                       data_samples[idx])
             text = self.dictionary.idx2str(index)
             pred_text = LabelData()

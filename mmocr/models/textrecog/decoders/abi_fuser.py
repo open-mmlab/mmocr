@@ -77,6 +77,7 @@ class ABIFuser(BaseDecoder):
                     warnings.warn(f"Using max_seq_len {cfg['max_seq_len']} "
                                   "in decoder's config.")
                 setattr(self, cfg_name, MODELS.build(cfg))
+        self.softmax = nn.Softmax(dim=-1)
 
     def forward_train(
             self,
@@ -138,7 +139,9 @@ class ABIFuser(BaseDecoder):
                 DataSample placeholder. Defaults to None.
 
         Returns:
-            torch.Tensor: Raw logits.
+            Tensor: Character probabilities. of shape
+            :math:`(N, self.max_seq_len, C)` where :math:`C` is
+            ``num_classes``.
         """
         raw_result = self.forward_train(feat, logits, data_samples)
 
@@ -149,7 +152,7 @@ class ABIFuser(BaseDecoder):
         else:
             ret = raw_result['out_vis']['logits']
 
-        return ret
+        return self.softmax(ret)
 
     def fuse(self, l_feature: torch.Tensor, v_feature: torch.Tensor) -> Dict:
         """Mix and align visual feature and linguistic feature.

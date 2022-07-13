@@ -83,6 +83,7 @@ class PositionAttentionDecoder(BaseDecoder):
             self.prediction = nn.Linear(
                 dim_model if encode_value else dim_input,
                 self.dictionary.num_classes)
+        self.softmax = nn.Softmax(dim=-1)
 
     def _get_position_index(self,
                             length: int,
@@ -174,7 +175,7 @@ class PositionAttentionDecoder(BaseDecoder):
                 to None.
 
         Returns:
-            Tensor: A raw logit tensor of shape :math:`(N, T, C)` if
+            Tensor: Character probabilities of shape :math:`(N, T, C)` if
             ``return_feature=False``. Otherwise it would be the hidden feature
             before the prediction projection layer, whose shape is
             :math:`(N, T, D_m)`.
@@ -216,4 +217,4 @@ class PositionAttentionDecoder(BaseDecoder):
         if self.return_feature:
             return attn_out
 
-        return self.prediction(attn_out)
+        return self.softmax(self.prediction(attn_out))

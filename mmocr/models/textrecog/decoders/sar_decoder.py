@@ -115,6 +115,7 @@ class ParallelSARDecoder(BaseDecoder):
         else:
             fc_in_channel = d_model
         self.prediction = nn.Linear(fc_in_channel, self.num_classes)
+        self.softmax = nn.Softmax(dim=-1)
 
     def _2d_attention(self,
                       decoder_input: torch.Tensor,
@@ -239,7 +240,9 @@ class ParallelSARDecoder(BaseDecoder):
                 information. Defaults to None.
 
         Returns:
-            Tensor: A raw logit tensor of shape :math:`(N, T, C)`.
+            Tensor: Character probabilities. of shape
+            :math:`(N, self.max_seq_len, C)` where :math:`C` is
+            ``num_classes``.
         """
         if data_samples is not None:
             assert len(data_samples) == feat.size(0)
@@ -273,7 +276,6 @@ class ParallelSARDecoder(BaseDecoder):
             decoder_output = self._2d_attention(
                 decoder_input, feat, out_enc, valid_ratios=valid_ratios)
             char_output = decoder_output[:, i, :]  # bsz * num_classes
-            char_output = F.softmax(char_output, -1)
             outputs.append(char_output)
             _, max_idx = torch.max(char_output, dim=1, keepdim=False)
             char_embedding = self.embedding(max_idx)  # bsz * emb_dim
@@ -282,7 +284,7 @@ class ParallelSARDecoder(BaseDecoder):
 
         outputs = torch.stack(outputs, 1)  # bsz * seq_len * num_classes
 
-        return outputs
+        return self.softmax(outputs)
 
 
 @MODELS.register_module()
@@ -386,6 +388,7 @@ class SequentialSARDecoder(BaseDecoder):
         else:
             fc_in_channel = d_model
         self.prediction = nn.Linear(fc_in_channel, self.num_classes)
+        self.softmax = nn.Softmax(dim=-1)
 
     def _2d_attention(self,
                       y_prev: torch.Tensor,
@@ -525,7 +528,9 @@ class SequentialSARDecoder(BaseDecoder):
                 information.
 
         Returns:
-            Tensor: A raw logit tensor of shape :math:`(N, T, C)`.
+            Tensor: Character probabilities. of shape
+            :math:`(N, self.max_seq_len, C)` where :math:`C` is
+            ``num_classes``.
         """
         valid_ratios = None
         if data_samples is not None:
@@ -559,8 +564,6 @@ class SequentialSARDecoder(BaseDecoder):
                     hx2,
                     cx2,
                     valid_ratios=valid_ratios)
-
-                y = F.softmax(y, -1)
                 _, max_idx = torch.max(y, dim=1, keepdim=False)
                 char_embedding = self.embedding(max_idx)
                 y_prev = char_embedding
@@ -568,4 +571,4 @@ class SequentialSARDecoder(BaseDecoder):
 
         outputs = torch.stack(outputs, 1)
 
-        return outputs
+        return self.softmax(outputs)
