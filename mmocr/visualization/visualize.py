@@ -15,6 +15,7 @@ from PIL import Image, ImageDraw, ImageFont
 import mmocr.utils as utils
 
 
+# TODO remove after KieVisualizer and TextSpotterVisualizer
 def overlay_mask_img(img, mask):
     """Draw mask boundaries on image for visualization.
 
