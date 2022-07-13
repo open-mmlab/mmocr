@@ -11,7 +11,7 @@ train_pipeline_r18 = [
     dict(type='ColorJitter', brightness=32.0 / 255, saturation=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(
-        type='ImgAug',
+        type='ImgAugWrapper',
         args=[['Fliplr', 0.5],
               dict(cls='Affine', rotate=[-10, 10]), ['Resize', [0.5, 3.0]]]),
     dict(type='EastRandomCrop', target_size=(640, 640)),
@@ -57,7 +57,7 @@ train_pipeline_r50dcnv2 = [
     dict(type='ColorJitter', brightness=32.0 / 255, saturation=0.5),
     dict(type='Normalize', **img_norm_cfg_r50dcnv2),
     dict(
-        type='ImgAug',
+        type='ImgAugWrapper',
         args=[['Fliplr', 0.5],
               dict(cls='Affine', rotate=[-10, 10]), ['Resize', [0.5, 3.0]]]),
     dict(type='EastRandomCrop', target_size=(640, 640)),

@@ -22,7 +22,7 @@ train_pipeline_r50dcnv2 = [
         brightness=32.0 / 255,
         saturation=0.5),
     dict(
-        type='ImgAug',
+        type='ImgAugWrapper',
         args=[['Fliplr', 0.5],
               dict(cls='Affine', rotate=[-10, 10]), ['Resize', [0.5, 3.0]]]),
     dict(type='RandomCrop', min_side_ratio=0.1),

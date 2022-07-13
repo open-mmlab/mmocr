@@ -4,6 +4,7 @@ from typing import Tuple
 
 import numpy as np
 from numpy.typing import ArrayLike
+from shapely.geometry import LineString, Point
 
 from mmocr.utils.check_argument import is_2dlist, is_type_list
 from mmocr.utils.point_utils import point_distance, points_center
@@ -329,16 +330,47 @@ def sort_vertex8(points):
     return sorted_box
 
 
-def box_center_distance(b1, b2):
+def bbox_center_distance(b1, b2):
     # TODO typehints & docstring & test
     assert isinstance(b1, np.ndarray)
     assert isinstance(b2, np.ndarray)
     return point_distance(points_center(b1), points_center(b2))
 
 
-def box_diag(box):
+def bbox_diag(box):
     # TODO typehints & docstring & test
     assert isinstance(box, np.ndarray)
     assert box.size == 8
 
     return point_distance(box[0:2], box[4:6])
+
+
+def bbox_jitter(points_x, points_y, jitter_ratio_x=0.5, jitter_ratio_y=0.1):
+    """Jitter on the coordinates of bounding box.
+
+    Args:
+        points_x (list[float | int]): List of y for four vertices.
+        points_y (list[float | int]): List of x for four vertices.
+        jitter_ratio_x (float): Horizontal jitter ratio relative to the height.
+        jitter_ratio_y (float): Vertical jitter ratio relative to the height.
+    """
+    assert len(points_x) == 4
+    assert len(points_y) == 4
+    assert isinstance(jitter_ratio_x, float)
+    assert isinstance(jitter_ratio_y, float)
+    assert 0 <= jitter_ratio_x < 1
+    assert 0 <= jitter_ratio_y < 1
+
+    points = [Point(points_x[i], points_y[i]) for i in range(4)]
+    line_list = [
+        LineString([points[i], points[i + 1 if i < 3 else 0]])
+        for i in range(4)
+    ]
+
+    tmp_h = max(line_list[1].length, line_list[3].length)
+
+    for i in range(4):
+        jitter_pixel_x = (np.random.rand() - 0.5) * 2 * jitter_ratio_x * tmp_h
+        jitter_pixel_y = (np.random.rand() - 0.5) * 2 * jitter_ratio_y * tmp_h
+        points_x[i] += jitter_pixel_x
+        points_y[i] += jitter_pixel_y

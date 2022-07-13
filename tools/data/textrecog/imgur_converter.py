@@ -8,8 +8,8 @@ import os.path as osp
 import mmcv
 import numpy as np
 
-from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.utils.fileio import list_to_file
+from mmocr.utils.img_utils import crop_img
 
 
 def parse_args():

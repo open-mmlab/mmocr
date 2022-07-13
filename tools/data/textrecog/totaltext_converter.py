@@ -11,8 +11,8 @@ import scipy.io as scio
 import yaml
 from shapely.geometry import Polygon
 
-from mmocr.datasets.pipelines.crop import crop_img
 from mmocr.utils.fileio import list_to_file
+from mmocr.utils.img_utils import crop_img
 
 
 def collect_files(img_dir, gt_dir):

@@ -13,7 +13,7 @@ from mmocr.utils import poly2bbox
 
 
 @TRANSFORMS.register_module()
-class ImgAug(BaseTransform):
+class ImgAugWrapper(BaseTransform):
     """A wrapper around imgaug https://github.com/aleju/imgaug.
 
     Find available augmenters at
@@ -167,7 +167,7 @@ class ImgAug(BaseTransform):
         return new_polys, removed_poly_inds
 
     def _build_augmentation(self, args, root=True):
-        """Build ImgAug augmentations.
+        """Build ImgAugWrapper augmentations.
 
         Args:
             args (dict): Arguments to be passed to imgaug.
