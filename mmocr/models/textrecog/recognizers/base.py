@@ -1,25 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Union
 
 import torch
-from mmengine.config import ConfigDict
 from mmengine.model.base_model import BaseModel
 
-from mmocr.data import TextRecogDataSample
-
-# TODO Move to type hint file
-# Type hint of config data
-ConfigType = Union[ConfigDict, dict]
-OptConfigType = Optional[ConfigType]
-# Type hint of one or more config data
-MultiConfig = Union[ConfigType, List[ConfigType]]
-OptMultiConfig = Optional[MultiConfig]
-
-ForwardResults = Union[Dict[str, torch.Tensor], List[TextRecogDataSample],
-                       Tuple[torch.Tensor], torch.Tensor]
-SampleList = List[TextRecogDataSample]
-OptSampleList = Optional[SampleList]
+from mmocr.utils import (OptConfigType, OptMultiConfig, OptRecSampleList,
+                         RecForwardResults, RecSampleList)
 
 
 class BaseRecognizer(BaseModel, metaclass=ABCMeta):
@@ -34,7 +21,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
     """
 
     def __init__(self,
-                 data_preprocessor: Optional[Union[ConfigDict, dict]] = None,
+                 data_preprocessor: OptConfigType = None,
                  init_cfg: OptMultiConfig = None):
         super().__init__(
             data_preprocessor=data_preprocessor, init_cfg=init_cfg)
@@ -66,9 +53,9 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
 
     def forward(self,
                 batch_inputs: torch.Tensor,
-                batch_data_samples: OptSampleList = None,
+                batch_data_samples: OptRecSampleList = None,
                 mode: str = 'tensor',
-                **kwargs) -> ForwardResults:
+                **kwargs) -> RecForwardResults:
         """The unified entry for a forward process in both training and test.
 
         The method should accept three modes: "tensor", "predict" and "loss":
@@ -108,14 +95,15 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
                                'Only supports loss, predict and tensor mode')
 
     @abstractmethod
-    def loss(self, batch_inputs: torch.Tensor, batch_data_samples: SampleList,
+    def loss(self, batch_inputs: torch.Tensor,
+             batch_data_samples: RecSampleList,
              **kwargs) -> Union[dict, tuple]:
         """Calculate losses from a batch of inputs and data samples."""
         pass
 
     @abstractmethod
     def predict(self, batch_inputs: torch.Tensor,
-                batch_data_samples: SampleList, **kwargs) -> SampleList:
+                batch_data_samples: RecSampleList, **kwargs) -> RecSampleList:
         """Predict results from a batch of inputs and data samples with post-
         processing."""
         pass
@@ -123,7 +111,7 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
     @abstractmethod
     def _forward(self,
                  batch_inputs: torch.Tensor,
-                 batch_data_samples: OptSampleList = None,
+                 batch_data_samples: OptRecSampleList = None,
                  **kwargs):
         """Network forward process.
 
