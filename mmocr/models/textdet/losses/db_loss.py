@@ -7,7 +7,7 @@ import torch
 from mmdet.core import multi_apply
 from numpy.typing import ArrayLike
 from shapely.geometry import Polygon
-from torch import nn
+from torch import Tensor, nn
 
 from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
@@ -57,23 +57,21 @@ class DBLoss(nn.Module, TextKernelMixin):
         self.thr_max = thr_max
         self.min_sidelength = min_sidelength
 
-    def forward(self, preds: Dict,
+    def forward(self, preds: Tuple[Tensor, Tensor, Tensor],
                 data_samples: Sequence[TextDetDataSample]) -> Dict:
         """Compute DBNet loss.
 
         Args:
-            preds (dict): Raw predictions from model, containing ``prob_map``,
-                ``thr_map`` and ``binary_map``. Each is a tensor of shape
-                :math:`(N, H, W)`.
+            preds (tuple(tensor)): Raw predictions from model, containing
+                ``prob_map``, ``thr_map`` and ``binary_map``. Each is a tensor
+                of shape :math:`(N, H, W)`.
             data_samples (list[TextDetDataSample]): The data samples.
 
         Returns:
             results(dict): The dict for dbnet losses with loss_prob, \
                 loss_db and loss_thr.
         """
-        prob_map = preds['prob_map']
-        thr_map = preds['thr_map']
-        binary_map = preds['binary_map']
+        prob_map, thr_map, binary_map = preds
         gt_shrinks, gt_shrink_masks, gt_thrs, gt_thr_masks = self.get_targets(
             data_samples)
         gt_shrinks = gt_shrinks.to(prob_map.device)

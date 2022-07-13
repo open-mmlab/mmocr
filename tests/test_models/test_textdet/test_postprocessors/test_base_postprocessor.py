@@ -3,6 +3,7 @@ import unittest
 from unittest import mock
 
 import numpy as np
+import torch
 from mmengine import InstanceData
 
 from mmocr.data import TextDetDataSample
@@ -29,9 +30,7 @@ class TestBaseTextDetPostProcessor(unittest.TestCase):
 
         mock_get_text_instances.side_effect = mock_func
 
-        pred_results = {
-            'prob_map': np.array([[0.1, 0.2], [0.3, 0.4]]),
-        }
+        pred_results = torch.Tensor([[0.1, 0.2], [0.3, 0.4]])
         data_samples = [
             TextDetDataSample(
                 metainfo=dict(scale_factor=(0.5, 1)),
@@ -79,49 +78,30 @@ class TestBaseTextDetPostProcessor(unittest.TestCase):
 
     def test_split_results(self):
 
+        # some shorthands
+        lt = torch.LongTensor
+        ft = torch.FloatTensor
+
         base_postprocessor = BaseTextDetPostProcessor()
 
         # test invalid arguments
         with self.assertRaises(AssertionError):
             base_postprocessor.split_results(None)
 
+        results = [lt([0, 1, 5]), ft([0.2, 0.3])]
         with self.assertRaises(AssertionError):
-            base_postprocessor.split_results({'test': [0, 1]}, 'fields')
-
-        with self.assertRaises(AssertionError):
-            base_postprocessor.split_results({'test': [0, 1]},
-                                             keep_unsplit_fields='true')
+            base_postprocessor.split_results(results)
 
         # test split_results
-        results = {
-            'test': [0, 1],
-            'test2': np.array([2, 3], dtype=int),
-            'meta': 'str'
-        }
-        split_results = base_postprocessor.split_results(results, ['test'])
-        self.assertEqual(split_results, [{'test': 0}, {'test': 1}])
+        results = [lt([0, 1, 5]), ft([0.2, 0.3, 0.6])]
+        split_results = base_postprocessor.split_results(results)
+        self.assertEqual(split_results,
+                         [[lt([0]), ft([0.2])], [lt([1]), ft([0.3])],
+                          [lt([5]), ft([0.6])]])
 
-        split_results = base_postprocessor.split_results(
-            results, ['test', 'test2'])
-        self.assertEqual(split_results, [{
-            'test': 0,
-            'test2': 2
-        }, {
-            'test': 1,
-            'test2': 3
-        }])
-
-        split_results = base_postprocessor.split_results(
-            results, ['test', 'test2'], keep_unsplit_fields=True)
-        self.assertEqual(split_results, [{
-            'test': 0,
-            'test2': 2,
-            'meta': 'str'
-        }, {
-            'test': 1,
-            'test2': 3,
-            'meta': 'str'
-        }])
+        results = lt([0, 1, 5])
+        split_results = base_postprocessor.split_results(results)
+        self.assertEqual(split_results, [lt([0]), lt([1]), lt([5])])
 
     def test_poly_nms(self):
         base_postprocessor = BaseTextDetPostProcessor(text_repr_type='poly')

@@ -23,7 +23,7 @@ class TestDBPostProcessor(unittest.TestCase):
     def test_get_text_instances(self, text_repr_type):
 
         postprocessor = DBPostprocessor(text_repr_type=text_repr_type)
-        pred_result = dict(prob_map=torch.rand(4, 5))
+        pred_result = (torch.rand(4, 5), torch.rand(4, 5), torch.rand(4, 5))
         data_sample = TextDetDataSample(
             metainfo=dict(scale_factor=(0.5, 1)),
             gt_instances=InstanceData(polygons=[
@@ -38,7 +38,8 @@ class TestDBPostProcessor(unittest.TestCase):
 
         postprocessor = DBPostprocessor(
             min_text_score=1, text_repr_type=text_repr_type)
-        pred_result = dict(prob_map=torch.rand(4, 5) * 0.8)
+        pred_result = (torch.rand(4, 5) * 0.8, torch.rand(4, 5) * 0.8,
+                       torch.rand(4, 5) * 0.8)
         results = postprocessor.get_text_instances(pred_result, data_sample)
         self.assertEqual(results.pred_instances.polygons, [])
         self.assertTrue(
