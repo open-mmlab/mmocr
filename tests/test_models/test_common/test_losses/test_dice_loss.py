@@ -3,8 +3,7 @@ from unittest import TestCase
 
 import torch
 
-from mmocr.models.textdet.losses.common import (MaskedDiceLoss,
-                                                MaskedSquareDiceLoss)
+from mmocr.models.common.losses import MaskedDiceLoss, MaskedSquareDiceLoss
 
 
 class TestMaskedDiceLoss(TestCase):

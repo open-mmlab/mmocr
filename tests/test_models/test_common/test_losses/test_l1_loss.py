@@ -3,7 +3,7 @@ from unittest import TestCase
 
 import torch
 
-from mmocr.models.textdet.losses.common import MaskedSmoothL1Loss
+from mmocr.models.common.losses import MaskedSmoothL1Loss
 
 
 class TestMaskedSmoothL1Loss(TestCase):

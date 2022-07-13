@@ -3,8 +3,7 @@ from unittest import TestCase
 
 import torch
 
-from mmocr.models.textdet.losses.common import (MaskedBalancedBCELoss,
-                                                MaskedBCELoss)
+from mmocr.models.common.losses import MaskedBalancedBCELoss, MaskedBCELoss
 
 
 class TestMaskedBalancedBCELoss(TestCase):
