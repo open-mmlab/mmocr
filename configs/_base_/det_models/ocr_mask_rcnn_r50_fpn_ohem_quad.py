@@ -1,7 +1,7 @@
 # model settings
 model = dict(
     type='MMDetWrapper',
-    text_repr_type='poly',
+    text_repr_type='quad',
     cfg=dict(
         type='MaskRCNN',
         data_preprocessor=dict(
