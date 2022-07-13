@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from .adapters import MMDet2MMOCR, MMOCR2MMDet
 from .formatting import PackKIEInputs, PackTextDetInputs, PackTextRecogInputs
 from .loading import LoadKIEAnnotations, LoadOCRAnnotations
 from .ocr_transforms import RandomCrop, RandomRotate, Resize
@@ -15,5 +16,6 @@ __all__ = [
     'RandomCrop', 'TextDetRandomCrop', 'RandomCrop', 'PackTextDetInputs',
     'PackTextRecogInputs', 'RescaleToHeight', 'PadToWidth',
     'ShortScaleAspectJitter', 'RandomFlip', 'BoundedScaleAspectJitter',
-    'PackKIEInputs', 'LoadKIEAnnotations', 'FixInvalidPolygon'
+    'PackKIEInputs', 'LoadKIEAnnotations', 'FixInvalidPolygon', 'MMDet2MMOCR',
+    'MMOCR2MMDet'
 ]
