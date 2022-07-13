@@ -3,7 +3,6 @@ import math
 from typing import Sequence, Tuple
 
 import torch
-import torch.nn.functional as F
 
 from mmocr.data import TextRecogDataSample
 from mmocr.registry import MODELS
@@ -15,20 +14,22 @@ from .base_textrecog_postprocessor import BaseTextRecogPostprocessor
 class CTCPostProcessor(BaseTextRecogPostprocessor):
     """PostProcessor for CTC."""
 
-    def get_single_prediction(self, output: torch.Tensor,
+    def get_single_prediction(self, probs: torch.Tensor,
                               data_sample: TextRecogDataSample
                               ) -> Tuple[Sequence[int], Sequence[float]]:
-        """Convert the output of a single image to index and score.
+        """Convert the output probabilities of a single image to index and
+        score.
 
         Args:
-            output (torch.Tensor): Single image output.
+            probs (torch.Tensor): Character probabilities with shape
+                :math:`(T, C)`.
             data_sample (TextRecogDataSample): Datasample of an image.
 
         Returns:
             tuple(list[int], list[float]): index and score.
         """
-        feat_len = output.size(0)
-        max_value, max_idx = torch.max(output, -1)
+        feat_len = probs.size(0)
+        max_value, max_idx = torch.max(probs, -1)
         valid_ratio = data_sample.get('valid_ratio', 1)
         decode_len = min(feat_len, math.ceil(feat_len * valid_ratio))
         index = []
@@ -47,7 +48,5 @@ class CTCPostProcessor(BaseTextRecogPostprocessor):
         self, outputs: torch.Tensor,
         data_samples: Sequence[TextRecogDataSample]
     ) -> Sequence[TextRecogDataSample]:
-        # TODO move to decoder
-        outputs = F.softmax(outputs, dim=2)
         outputs = outputs.cpu().detach()
         return super().__call__(outputs, data_samples)

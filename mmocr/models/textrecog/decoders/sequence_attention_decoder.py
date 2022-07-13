@@ -4,7 +4,6 @@ from typing import Dict, Optional, Sequence, Union
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
@@ -92,6 +91,7 @@ class SequenceAttentionDecoder(BaseDecoder):
             self.prediction = nn.Linear(
                 dim_model if encode_value else dim_input,
                 self.dictionary.num_classes)
+        self.softmax = nn.Softmax(dim=-1)
 
     def forward_train(
         self,
@@ -176,8 +176,9 @@ class SequenceAttentionDecoder(BaseDecoder):
                 to None.
 
         Returns:
-            Tensor: The output logit sequence tensor of shape
-            :math:`(N, T, C)`.
+            Tensor: Character probabilities. of shape
+            :math:`(N, self.max_seq_len, C)` where :math:`C` is
+            ``num_classes``.
         """
         seq_len = self.max_seq_len
         batch_size = feat.size(0)
@@ -196,7 +197,7 @@ class SequenceAttentionDecoder(BaseDecoder):
 
         outputs = torch.stack(outputs, 1)
 
-        return outputs
+        return self.softmax(outputs)
 
     def forward_test_step(self, feat: torch.Tensor, out_enc: torch.Tensor,
                           decode_sequence: torch.Tensor, current_step: int,
@@ -255,6 +256,5 @@ class SequenceAttentionDecoder(BaseDecoder):
 
         if not self.return_feature:
             out = self.prediction(out)
-            out = F.softmax(out, dim=-1)
 
         return out

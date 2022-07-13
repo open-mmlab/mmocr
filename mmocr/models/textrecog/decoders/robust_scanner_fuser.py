@@ -4,7 +4,6 @@ from typing import Dict, List, Optional, Sequence, Union
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
@@ -78,6 +77,7 @@ class RobustScannerFuser(BaseDecoder):
         self.glu_layer = nn.GLU(dim=dim)
         self.prediction = nn.Linear(
             int(in_channels / 2), self.dictionary.num_classes)
+        self.softmax = nn.Softmax(dim=-1)
 
     def forward_train(
         self,
@@ -117,6 +117,11 @@ class RobustScannerFuser(BaseDecoder):
             data_samples (Sequence[TextRecogDataSample]): Batch of
                 TextRecogDataSample, containing vaild_ratio information.
                 Defaults to None.
+
+        Returns:
+            Tensor: Character probabilities. of shape
+            :math:`(N, self.max_seq_len, C)` where :math:`C` is
+            ``num_classes``.
         """
         position_glimpse = self.position_decoder(feat, out_enc, data_samples)
 
@@ -133,10 +138,9 @@ class RobustScannerFuser(BaseDecoder):
             output = self.linear_layer(fusion_input)
             output = self.glu_layer(output)
             output = self.prediction(output)
-            output = F.softmax(output, -1)
             _, max_idx = torch.max(output, dim=1, keepdim=False)
             if step < self.max_seq_len - 1:
                 decode_sequence[:, step + 1] = max_idx
             outputs.append(output)
         outputs = torch.stack(outputs, 1)
-        return outputs
+        return self.softmax(outputs)

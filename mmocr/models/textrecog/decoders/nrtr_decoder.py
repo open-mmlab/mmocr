@@ -4,7 +4,6 @@ from typing import Dict, List, Optional, Sequence, Union
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from mmcv.runner import ModuleList
 
 from mmocr.data import TextRecogDataSample
@@ -86,6 +85,7 @@ class NRTRDecoder(BaseDecoder):
 
         pred_num_class = self.dictionary.num_classes
         self.classifier = nn.Linear(d_model, pred_num_class)
+        self.softmax = nn.Softmax(dim=-1)
 
     def _get_target_mask(self, trg_seq: torch.Tensor) -> torch.Tensor:
         """Generate mask for target sequence.
@@ -225,8 +225,8 @@ class NRTRDecoder(BaseDecoder):
                 information. Defaults to None.
 
         Returns:
-            Tensor: The raw logit tensor.
-            Shape :math:`(N, self.max_seq_len, C)` where :math:`C` is
+            Tensor: Character probabilities. of shape
+            :math:`(N, self.max_seq_len, C)` where :math:`C` is
             ``num_classes``.
         """
         valid_ratios = []
@@ -246,8 +246,7 @@ class NRTRDecoder(BaseDecoder):
             decoder_output = self._attention(
                 init_target_seq, out_enc, src_mask=src_mask)
             # bsz * seq_len * C
-            step_result = F.softmax(
-                self.classifier(decoder_output[:, step, :]), dim=-1)
+            step_result = self.classifier(decoder_output[:, step, :])
             # bsz * num_classes
             outputs.append(step_result)
             _, step_max_index = torch.max(step_result, dim=-1)
@@ -255,4 +254,4 @@ class NRTRDecoder(BaseDecoder):
 
         outputs = torch.stack(outputs, dim=1)
 
-        return outputs
+        return self.softmax(outputs)
