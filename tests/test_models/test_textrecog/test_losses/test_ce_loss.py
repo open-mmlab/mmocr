@@ -44,12 +44,13 @@ class TestCELoss(TestCase):
         self.assertEqual(ce_loss.ignore_index, 37)
         ce_loss = CELoss(dict_cfg, ignore_char=-1)
         self.assertEqual(ce_loss.ignore_index, -1)
-        with self.assertRaises(ValueError):
+        # with self.assertRaises(ValueError):
+        with self.assertWarns(UserWarning):
             ce_loss = CELoss(dict_cfg, ignore_char='ignore')
         ce_loss = CELoss(dict_cfg, ignore_char='1')
         self.assertEqual(ce_loss.ignore_index, 1)
 
-    def test_ce_loss(self):
+    def test_forward(self):
         dict_cfg = dict(
             type='Dictionary',
             dict_file='dicts/lower_english_digits.txt',

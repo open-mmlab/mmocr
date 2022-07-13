@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
 from typing import Dict, Sequence, Union
 
 import torch
@@ -36,6 +37,8 @@ class CELoss(BaseRecogLoss):
             and 'unknown', which refer to their corresponding special
             tokens in the dictionary. It will not ignore any special
             tokens when ignore_char == -1 or 'none'. Defaults to 'padding'.
+        flatten (bool): Whether to flatten the output and target before
+            computing CE loss. Defaults to False.
         reduction (str): Specifies the reduction to apply to the output,
             should be one of the following: ('none', 'mean', 'sum'). Defaults
             to 'none'.
@@ -82,8 +85,11 @@ class CELoss(BaseRecogLoss):
             ignore_index = mapping_table.get(
                 ignore_char, self.dictionary._char2idx.get(ignore_char, None))
             if ignore_index is None:
-                raise ValueError(
-                    f'{ignore_char} does not exist in the dictionary')
+                warnings.warn(
+                    f'{ignore_char} does not exist in the dictionary',
+                    UserWarning)
+                ignore_index = -1
+
         self.ignore_char = ignore_char
         self.ignore_index = ignore_index
         self.loss_ce = nn.CrossEntropyLoss(
