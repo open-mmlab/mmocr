@@ -39,6 +39,12 @@ class TestCropPolygon(unittest.TestCase):
         poly_cropped = crop_polygon(polygon, crop_box)
         self.assertEqual(poly_cropped, None)
 
+        # polygon and box are overlapped at a point
+        polygon = np.array([0., 0., 10., 0., 10., 10., 0., 10.])
+        crop_box = np.array([10., 10., 20., 20.])
+        poly_cropped = crop_polygon(polygon, crop_box)
+        self.assertEqual(poly_cropped, None)
+
 
 class TestPolygonUtils(unittest.TestCase):
 

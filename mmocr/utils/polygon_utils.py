@@ -3,6 +3,7 @@ from typing import List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pyclipper
+import shapely
 from numpy.typing import ArrayLike
 from shapely.geometry import MultiPolygon, Polygon
 
@@ -147,8 +148,10 @@ def crop_polygon(polygon: ArrayLike,
     poly = poly2shapely(polygon)
     crop_poly = poly2shapely(bbox2poly(crop_box))
     poly_cropped = poly.intersection(crop_poly)
-    if poly_cropped.area == 0.:
-        # If polygon is outside crop_box region, return None.
+    if poly_cropped.area == 0. or not isinstance(
+            poly_cropped, shapely.geometry.polygon.Polygon):
+        # If polygon is outside crop_box region or the intersection is not a
+        # polygon, return None.
         return None
     else:
         poly_cropped = np.array(poly_cropped.boundary.xy, dtype=np.float32)
