@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-class StringStrip:
+class StringStripper:
     """Removing the leading and/or the trailing characters based on the string
     argument passed.
 

@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import pytest
 
-from mmocr.utils import StringStrip
+from mmocr.utils import StringStripper
 
 
 def test_string_strip():
@@ -23,13 +23,13 @@ def test_string_strip():
             for idx3, strip_str in enumerate(strip_str_list):
                 tmp_args = dict(
                     strip=strip, strip_pos=strip_pos, strip_str=strip_str)
-                strip_class = StringStrip(**tmp_args)
+                strip_class = StringStripper(**tmp_args)
                 i = idx1 * len(strip_pos_list) * len(
                     strip_str_list) + idx2 * len(strip_str_list) + idx3
 
                 assert strip_class(in_str_list[i]) == out_str_list[i]
 
     with pytest.raises(AssertionError):
-        StringStrip(strip='strip')
-        StringStrip(strip_pos='head')
-        StringStrip(strip_str=['\n', '\t'])
+        StringStripper(strip='strip')
+        StringStripper(strip_pos='head')
+        StringStripper(strip_str=['\n', '\t'])
