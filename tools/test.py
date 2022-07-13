@@ -75,7 +75,8 @@ def main():
                 cfg.work_dir,
                 f'{osp.basename(args.checkpoint)}_predictions.pkl'))
         if isinstance(cfg.test_evaluator, (list, tuple)):
-            cfg.test_evaluator = list(cfg.test_evaluator).append(dump_metric)
+            cfg.test_evaluator = list(cfg.test_evaluator)
+            cfg.test_evaluator.append(dump_metric)
         else:
             cfg.test_evaluator = [cfg.test_evaluator, dump_metric]
 
