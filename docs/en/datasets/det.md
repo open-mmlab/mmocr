@@ -1,3 +1,4 @@
+
 # Text Detection
 
 ## Overview
@@ -61,7 +62,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
 ## CTW1500
 
 - Step0: Read [Important Note](#important-note)
-
 - Step1: Download `train_images.zip`, `test_images.zip`, `train_labels.zip`, `test_labels.zip` from [github](https://github.com/Yuliang-Liu/Curve-Text-Detector)
 
   ```bash
@@ -180,9 +180,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 ## ICDAR 2015
 
 - Step0: Read [Important Note](#important-note)
-
 - Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
-
 - Step2:
 
   ```bash
@@ -197,7 +195,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 - Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) and move them to `icdar2015`
-
 - Or, generate `instances_training.json` and `instances_test.json` with the following command:
 
   ```bash
@@ -217,7 +214,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
 ## ICDAR 2017
 
 - Follow similar steps as [ICDAR 2015](#icdar-2015).
-
 - The resulting directory structure looks like the following:
 
   ```text
@@ -230,7 +226,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
 ## SynthText
 
-- Step1: Download SynthText.zip from \[homepage\](<https://www.robots.ox.ac.uk/~vgg/data/scenetext/> and extract its content to `synthtext/img`.
+- Step1: Download SynthText.zip from [homepage](<https://www.robots.ox.ac.uk/~vgg/data/scenetext/> and extract its content to `synthtext/img`.
 
 - Step2: Download [data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb) and [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb) to `synthtext/instances_training.lmdb/`.
 
@@ -279,7 +275,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
 ## Totaltext
 
 - Step0: Read [Important Note](#important-note)
-
 - Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` or `TT_new_train_GT.zip` (if you prefer to use the latest version of training annotations) from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
 
   ```bash
@@ -322,7 +317,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
 ## CurvedSynText150k
 
 - Step1: Download [syntext1.zip](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) and [syntext2.zip](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) to `CurvedSynText150k/`.
-
 - Step2:
 
   ```bash
@@ -338,7 +332,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```
 
 - Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json) to `CurvedSynText150k/`
-
 - Or, generate `instances_training.json` with following command:
 
   ```bash
@@ -902,7 +895,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
 ## HierText
 
 - Step1 (optional): Install [AWS CLI](https://mmocr.readthedocs.io/en/latest/datasets/det.html#install-aws-cli-optional).
-
 - Step2: Clone [HierText](https://github.com/google-research-datasets/hiertext) repo to get annotations
 
   ```bash

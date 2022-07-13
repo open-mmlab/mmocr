@@ -1,6 +1,5 @@
 # SDMGR
-
-> [Spatial Dual-Modality Graph Reasoning for Key Information Extraction](https://arxiv.org/abs/2103.14470)
+>[Spatial Dual-Modality Graph Reasoning for Key Information Extraction](https://arxiv.org/abs/2103.14470)
 
 <!-- [ALGORITHM] -->
 

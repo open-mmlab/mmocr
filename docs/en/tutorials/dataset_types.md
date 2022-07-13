@@ -65,6 +65,7 @@ data = dict(
 
 #### Example Configuration
 
+
 ```python
 dataset_type = 'IcdarDataset'
 prefix = 'tests/data/toy_dataset/'
@@ -91,7 +92,7 @@ Icdar 2015/2017 and ctw1500 annotations need to be converted into the COCO forma
 In particular, filtering predictions with a reasonable score threshold greatly impacts the performance measurement. MMOCR alleviates such hyperparameter effect by sweeping through the hyperparameter space and returns the best performance every evaluation time.
 User can tune the searching scheme by passing `min_score_thr`, `max_score_thr` and `step` into the evaluation hook in the config.
 
-For example, with the following configuration, you can evaluate the model's output on a list of boundary score thresholds \[0.1, 0.2, 0.3, 0.4, 0.5\] and get the best score from them **during training**.
+For example, with the following configuration, you can evaluate the model's output on a list of boundary score thresholds [0.1, 0.2, 0.3, 0.4, 0.5] and get the best score from them **during training**.
 
 ```python
 evaluation = dict(
@@ -115,7 +116,6 @@ Check out our [API doc](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.co
 *Dataset with annotation file in line-json txt format*
 
 We have designed new types of dataset consisting of **loader** , **backend**, and **parser** to load and parse different types of annotation files.
-
 - **loader**: Load the annotation file. We now have a unified loader, `AnnFileLoader`, which can use different `backend` to load annotation from txt. The original `HardDiskLoader` and `LmdbLoader` will be deprecated.
 - **backend**: Load annotation from different format and backend.
   - `LmdbAnnFileBackend`: Load annotation from lmdb dataset.
@@ -151,7 +151,6 @@ test = dict(
 The results are generated in the same way as the segmentation-based text recognition task above.
 You can check the content of the annotation file in `tests/data/toy_dataset/instances_test.txt`.
 The combination of `HardDiskLoader` and `LineJsonParser` will return a dict for each file by calling `__getitem__`:
-
 ```python
 {"file_name": "test/img_10.jpg", "height": 720, "width": 1280, "annotations": [{"iscrowd": 1, "category_id": 1, "bbox": [260.0, 138.0, 24.0, 20.0], "segmentation": [[261, 138, 284, 140, 279, 158, 260, 158]]}, {"iscrowd": 0, "category_id": 1, "bbox": [288.0, 138.0, 129.0, 23.0], "segmentation": [[288, 138, 417, 140, 416, 161, 290, 157]]}, {"iscrowd": 0, "category_id": 1, "bbox": [743.0, 145.0, 37.0, 18.0], "segmentation": [[743, 145, 779, 146, 780, 163, 746, 163]]}, {"iscrowd": 0, "category_id": 1, "bbox": [783.0, 129.0, 50.0, 26.0], "segmentation": [[783, 129, 831, 132, 833, 155, 785, 153]]}, {"iscrowd": 1, "category_id": 1, "bbox": [831.0, 133.0, 43.0, 23.0], "segmentation": [[831, 133, 870, 135, 874, 156, 835, 155]]}, {"iscrowd": 1, "category_id": 1, "bbox": [159.0, 204.0, 72.0, 15.0], "segmentation": [[159, 205, 230, 204, 231, 218, 159, 219]]}, {"iscrowd": 1, "category_id": 1, "bbox": [785.0, 158.0, 75.0, 21.0], "segmentation": [[785, 158, 856, 158, 860, 178, 787, 179]]}, {"iscrowd": 1, "category_id": 1, "bbox": [1011.0, 157.0, 68.0, 16.0], "segmentation": [[1011, 157, 1079, 160, 1076, 173, 1011, 170]]}]}
 ```
@@ -159,6 +158,7 @@ The combination of `HardDiskLoader` and `LineJsonParser` will return a dict for 
 #### Evaluation
 
 `TextDetDataset` shares a similar implementation with `IcdarDataset`. Please refer to the evaluation section of ['IcdarDataset'](#icdardataset).
+
 
 ## Text Recognition
 
@@ -266,6 +266,7 @@ python tools/test.py configs/textrecog/crnn/crnn_toy_dataset.py crnn.pth --eval 
 *Dataset for segmentation-based recognizer*
 
 It shares a similar architecture with `TextDetDataset`. Check out the [introduction](#textdetdataset) for details.
+
 
 #### Example Configuration
 

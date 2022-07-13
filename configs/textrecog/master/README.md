@@ -1,6 +1,6 @@
 # MASTER
 
-> [MASTER: Multi-aspect non-local network for scene text recognition](https://arxiv.org/abs/1910.02562)
+>[MASTER: Multi-aspect non-local network for scene text recognition](https://arxiv.org/abs/1910.02562)
 
 <!-- [ALGORITHM] -->
 

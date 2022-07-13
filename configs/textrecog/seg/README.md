@@ -1,10 +1,10 @@
 # SegOCR
 
 <!-- [ALGORITHM] -->
-
 ## Abstract
 
 Just a simple Seg-based baseline for text recognition tasks.
+
 
 ## Dataset
 

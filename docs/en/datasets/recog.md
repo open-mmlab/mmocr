@@ -37,7 +37,7 @@
 |       HierText        |                   [homepage](https://github.com/google-research-datasets/hiertext)                    |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
 |          ArT          |                               [homepage](https://rrc.cvc.uab.es/?ch=14)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
 
-(\*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
+(*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
 
 ### Install AWS CLI (optional)
 
@@ -132,14 +132,12 @@
   │   └── test_label.jsonl
   ```
 
-## ICDAR 2013 \[Deprecated\]
+## ICDAR 2013 [Deprecated]
 
 - Step1: Download `Challenge2_Test_Task3_Images.zip` and `Challenge2_Training_Task3_Images_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads)
-
 - Step2: Download [test_label_1015.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt) and [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/train_label.txt)
-
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── icdar_2013
@@ -153,11 +151,9 @@
 ## ICDAR 2015
 
 - Step1: Download `ch4_training_word_images_gt.zip` and `ch4_test_word_images_gt.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
-
 - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt)
-
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── icdar_2015
@@ -170,11 +166,9 @@
 ## IIIT5K
 
 - Step1: Download `IIIT5K-Word_V3.0.tar.gz` from [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html)
-
 - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt)
-
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── III5K
@@ -187,9 +181,7 @@
 ## svt
 
 - Step1: Download `svt.zip` form [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset)
-
 - Step2: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)
-
 - Step3:
 
   ```bash
@@ -197,7 +189,7 @@
   ```
 
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── svt
@@ -208,9 +200,8 @@
 ## ct80
 
 - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)
-
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── ct80
@@ -221,9 +212,8 @@
 ## svtp
 
 - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)
-
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── svtp
@@ -234,11 +224,9 @@
 ## coco_text
 
 - Step1: Download from [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads)
-
 - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt)
-
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── coco_text
@@ -249,7 +237,6 @@
 ## MJSynth (Syn90k)
 
 - Step1: Download `mjsynth.tar.gz` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)
-
 - Step2: Download [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt) (8,919,273 annotations) and [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) (2,400,000 randomly sampled annotations).
 
 ```{note}
@@ -279,7 +266,7 @@ Please make sure you're using the right annotation to train the model by checkin
   ```
 
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── Syn90k
@@ -330,7 +317,7 @@ Please make sure you're using the right annotation to train the model by checkin
   ```
 
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── SynthText
@@ -345,9 +332,7 @@ Please make sure you're using the right annotation to train the model by checkin
 ## SynthAdd
 
 - Step1: Download `SynthText_Add.zip` from [SynthAdd](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg) (code:627x))
-
 - Step2: Download [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)
-
 - Step3:
 
   ```bash
@@ -370,7 +355,7 @@ Please make sure you're using the right annotation to train the model by checkin
   ```
 
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── SynthAdd
@@ -418,7 +403,7 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   ```
 
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── TextOCR
@@ -470,7 +455,6 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
 ## OpenVINO
 
 - Step1 (optional): Install [AWS CLI](https://mmocr.readthedocs.io/en/latest/datasets/recog.html#install-aws-cli-optional).
-
 - Step2: Download [Open Images](https://github.com/cvdfoundation/open-images-dataset#download-images-with-bounding-boxes-annotations) subsets `train_1`, `train_2`, `train_5`, `train_f`, and `validation` to `openvino/`.
 
   ```bash
@@ -503,7 +487,7 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   ```
 
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── OpenVINO
@@ -585,8 +569,6 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
   # vertical images will be filtered and stored in PATH/TO/naf/ignores
   python tools/data/textrecog/naf_converter.py PATH/TO/naf --nproc 4
-
-  ```
 
 - After running the above codes, the directory structure should be as follows:
 
@@ -744,7 +726,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```
 
 - After running the above codes, the directory structure
-  should be as follows:
+should be as follows:
 
   ```text
   ├── funsd
@@ -1089,7 +1071,6 @@ The LV dataset has already provided cropped images and the corresponding annotat
 ## HierText
 
 - Step1 (optional): Install [AWS CLI](https://mmocr.readthedocs.io/en/latest/datasets/recog.html#install-aws-cli-optional).
-
 - Step2: Clone [HierText](https://github.com/google-research-datasets/hiertext) repo to get annotations
 
   ```bash

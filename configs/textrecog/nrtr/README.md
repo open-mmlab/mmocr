@@ -1,6 +1,6 @@
 # NRTR
 
-> [NRTR: A No-Recurrence Sequence-to-Sequence Model For Scene Text Recognition](https://arxiv.org/abs/1806.00926)
+>[NRTR: A No-Recurrence Sequence-to-Sequence Model For Scene Text Recognition](https://arxiv.org/abs/1806.00926)
 
 <!-- [ALGORITHM] -->
 

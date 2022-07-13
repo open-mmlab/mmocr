@@ -64,6 +64,7 @@ The table below lists the models that are guaranteed to be exportable to ONNX an
 
 We also provide a script to convert [ONNX](https://github.com/onnx/onnx) model to [TensorRT](https://github.com/NVIDIA/TensorRT) format. Besides, we support comparing the output results between ONNX and TensorRT model.
 
+
 ```bash
 python tools/deployment/onnx2tensorrt.py
     ${MODEL_CONFIG_PATH} \
@@ -125,7 +126,6 @@ The table below lists the models that are guaranteed to be exportable to TensorR
 We provide methods to evaluate TensorRT and ONNX models in `tools/deployment/deploy_test.py`.
 
 ### Prerequisite
-
 To evaluate ONNX and TensorRT models, ONNX, ONNXRuntime and TensorRT should be installed first. Install `mmcv-full` with ONNXRuntime custom ops and TensorRT plugins follow [ONNXRuntime in mmcv](https://mmcv.readthedocs.io/en/latest/onnxruntime_op.html) and [TensorRT plugin in mmcv](https://github.com/open-mmlab/mmcv/blob/master/docs/tensorrt_plugin.md).
 
 ### Usage
@@ -152,6 +152,7 @@ python tools/deploy_test.py \
 | `--device`     | str                       | Device for evaluation. Defaults to `cuda:0`.                                            |
 
 ## Results and Models
+
 
 <table class="tg">
 <thead>
@@ -308,7 +309,6 @@ python tools/deploy_test.py \
 ```
 
 ## C++ Inference example with OpenCV
-
 The example below is tested with Visual Studio 2019 as console application, CPU inference only.
 
 ### Prerequisites
@@ -332,7 +332,6 @@ Be sure, that verifications of both models are successful - look through the exp
 ```
 
 ### Example
-
 Example usage of exported models with C++ is in the code below (don't forget to change paths to \*.onnx files). It's applicable to these two models only, other models have another preprocessing and postprocessing logics.
 
 ```C++
@@ -547,7 +546,6 @@ int main(int argc, const char* argv[]) {
 ```
 
 The output should look something like this.
-
 ```
 Loading models...
 Loading models done in 5715 ms

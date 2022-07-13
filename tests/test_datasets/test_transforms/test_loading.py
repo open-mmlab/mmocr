@@ -4,8 +4,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from mmocr.datasets.transforms import (LoadImageFromLMDB, LoadKIEAnnotations,
-                                       LoadOCRAnnotations)
+from mmocr.datasets.transforms import LoadKIEAnnotations, LoadOCRAnnotations
 
 
 class TestLoadOCRAnnotations(TestCase):
@@ -135,53 +134,3 @@ class TestLoadKIEAnnotations(TestCase):
             repr(self.load),
             'LoadKIEAnnotations(with_bbox=True, with_label=True, '
             'with_text=True)')
-
-
-class TestLoadImageFromLMDB(TestCase):
-
-    def setUp(self):
-        img_key = 'image-%09d' % 1
-        self.results1 = {
-            'img_path': f'tests/data/recog_toy_dataset/imgs.lmdb/{img_key}'
-        }
-
-        img_key = 'image-%09d' % 100
-        self.results2 = {
-            'img_path': f'tests/data/recog_toy_dataset/imgs.lmdb/{img_key}'
-        }
-
-    def test_transform(self):
-        transform = LoadImageFromLMDB()
-        results = transform(copy.deepcopy(self.results1))
-        self.assertIn('img', results)
-        self.assertIsInstance(results['img'], np.ndarray)
-        self.assertEqual(results['img'].shape[:2], results['img_shape'])
-        self.assertEqual(results['ori_shape'], results['img_shape'])
-
-    def test_invalid_key(self):
-        transform = LoadImageFromLMDB()
-        results = transform(copy.deepcopy(self.results2))
-        self.assertEqual(results, None)
-
-    def test_to_float32(self):
-        transform = LoadImageFromLMDB(to_float32=True)
-        results = transform(copy.deepcopy(self.results1))
-        self.assertIn('img', results)
-        self.assertIsInstance(results['img'], np.ndarray)
-        self.assertTrue(results['img'].dtype, np.float32)
-        self.assertEqual(results['img'].shape[:2], results['img_shape'])
-        self.assertEqual(results['ori_shape'], results['img_shape'])
-
-    def test_repr(self):
-        transform = LoadImageFromLMDB()
-        assert repr(transform) == (
-            'LoadImageFromLMDB(ignore_empty=False, '
-            "to_float32=False, color_type='color', "
-            "imdecode_backend='cv2', "
-            "file_client_args={'backend': 'lmdb', 'db_path': ''})")
-
-
-if __name__ == '__main__':
-    test = TestLoadImageFromLMDB()
-    test.setUp()
-    test.test_transform()
