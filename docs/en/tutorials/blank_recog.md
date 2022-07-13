@@ -9,7 +9,7 @@ test/img 2.jpg Hello Open MMLab!
 test/img 3.jpg Hello MMOCR!
 ```
 
-The `LineStrParser` will split the above annotation line to pieces (e.g. \['test/img', '1.jpg', 'Hello', 'World!'\]) that cannot be matched to the `keys` (e.g. \['filename', 'text'\]). Therefore, we need to convert it to a json line format by `json.dumps` (check [here](https://github.com/open-mmlab/mmocr/blob/main/tools/data/textrecog/funsd_converter.py#L175-L180) to see how to dump `jsonl`), and then the annotation file will look like as follows:
+The `LineStrParser` will split the above annotation line to pieces (e.g. ['test/img', '1.jpg', 'Hello', 'World!']) that cannot be matched to the `keys` (e.g. ['filename', 'text']). Therefore, we need to convert it to a json line format by `json.dumps` (check [here](https://github.com/open-mmlab/mmocr/blob/main/tools/data/textrecog/funsd_converter.py#L175-L180) to see how to dump `jsonl`), and then the annotation file will look like as follows:
 
 ```txt
 % A json line annotation file that contains blank spaces

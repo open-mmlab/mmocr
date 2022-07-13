@@ -14,16 +14,16 @@
 
 为了确保代码实现的正确性，MMOCR 每个版本都有可能改变对 MMCV 和 MMDetection 版本的依赖。请根据以下表格确保版本之间的相互匹配。
 
-| MMOCR        | MMCV                     | MMDetection                 |
-| ------------ | ------------------------ | --------------------------- |
-| main         | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.6.0        | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.5.0        | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 3.0.0  |
-| 0.4.0, 0.4.1 | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.3.0        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.2.1        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.13.0 \<= mmdet \<= 2.20.0 |
-| 0.2.0        | 1.3.4 \<= mmcv \<= 1.4.0 | 2.11.0 \<= mmdet \<= 2.13.0 |
-| 0.1.0        | 1.2.6 \<= mmcv \<= 1.3.4 | 2.9.0 \<= mmdet \<= 2.11.0  |
+| MMOCR        | MMCV                   | MMDetection               |
+| ------------ | ---------------------- | ------------------------- |
+| main         | 1.3.8 <= mmcv <= 1.6.0 | 2.21.0 <= mmdet <= 3.0.0  |
+| 0.6.0        | 1.3.8 <= mmcv <= 1.6.0 | 2.21.0 <= mmdet <= 3.0.0  |
+| 0.5.0        | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 3.0.0  |
+| 0.4.0, 0.4.1 | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 2.20.0 |
+| 0.3.0        | 1.3.8 <= mmcv <= 1.4.0 | 2.14.0 <= mmdet <= 2.20.0 |
+| 0.2.1        | 1.3.8 <= mmcv <= 1.4.0 | 2.13.0 <= mmdet <= 2.20.0 |
+| 0.2.0        | 1.3.4 <= mmcv <= 1.4.0 | 2.11.0 <= mmdet <= 2.13.0 |
+| 0.1.0        | 1.2.6 <= mmcv <= 1.3.4 | 2.9.0 <= mmdet <= 2.11.0  |
 
 我们已经测试了以下操作系统和软件版本:
 
@@ -62,7 +62,7 @@ c. 安装 [mmcv](https://github.com/open-mmlab/mmcv)，推荐以下方式进行�
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
 ```
 
-请将上述 url 中 `{cu_version}` 和 `{torch_version}`替换成你环境中对应的 CUDA 版本和 PyTorch 版本。例如，如果想要安装最新版基于 CUDA 11 和 PyTorch 1.7.0 的最新版 `mmcv-full`，请输入以下命令:
+请将上述 url 中 ``{cu_version}`` 和 ``{torch_version}``替换成你环境中对应的 CUDA 版本和 PyTorch 版本。例如，如果想要安装最新版基于 CUDA 11 和 PyTorch 1.7.0 的最新版 `mmcv-full`，请输入以下命令:
 
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
@@ -175,7 +175,7 @@ docker run --gpus all --shm-size=8g -it -v {实际数据目录}:/mmocr/data mmoc
 我们推荐建立一个 symlink 路径映射，连接数据集路径到 `mmocr/data`。 详细数据集准备方法请阅读**数据集**章节。
 如果你需要的文件夹路径不同，你可能需要在 configs 文件中修改对应的文件路径信息。
 
-`mmocr` 文件夹路径结构如下：
+ `mmocr` 文件夹路径结构如下：
 
 ```
 ├── configs/

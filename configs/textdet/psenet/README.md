@@ -1,6 +1,6 @@
 # PSENet
 
-> [Shape robust text detection with progressive scale expansion network](https://arxiv.org/abs/1903.12473)
+>[Shape robust text detection with progressive scale expansion network](https://arxiv.org/abs/1903.12473)
 
 <!-- [ALGORITHM] -->
 
@@ -11,6 +11,7 @@ Scene text detection has witnessed rapid progress especially with the recent dev
 <div align=center>
 <img src="https://user-images.githubusercontent.com/22607038/142795864-9b455b10-8a19-45bb-aeaf-4b733f341afc.png"/>
 </div>
+
 
 ## Results and models
 
@@ -30,6 +31,7 @@ Scene text detection has witnessed rapid progress especially with the recent dev
 ```{note}
 We've upgraded our IoU backend from `Polygon3` to `shapely`. There are some performance differences for some models due to the backends' different logics to handle invalid polygons (more info [here](https://github.com/open-mmlab/mmocr/issues/465)). **New evaluation result is presented in brackets** and new logs will be uploaded soon.
 ```
+
 
 ## Citation
 

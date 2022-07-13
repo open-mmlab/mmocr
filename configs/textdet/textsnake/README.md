@@ -1,6 +1,6 @@
 # Textsnake
 
-> [TextSnake: A Flexible Representation for Detecting Text of Arbitrary Shapes](https://arxiv.org/abs/1807.01544)
+>[TextSnake: A Flexible Representation for Detecting Text of Arbitrary Shapes](https://arxiv.org/abs/1807.01544)
 
 <!-- [ALGORITHM] -->
 
@@ -16,9 +16,9 @@ Driven by deep neural networks and large scale datasets, scene text detection me
 
 ### CTW1500
 
-|                            Method                            | Pretrained Model | Training set  |   Test set   | #epochs | Test size | Recall | Precision | Hmean |                            Download                             |
-| :----------------------------------------------------------: | :--------------: | :-----------: | :----------: | :-----: | :-------: | :----: | :-------: | :---: | :-------------------------------------------------------------: |
-| [TextSnake](/configs/textdet/textsnake/textsnake_r50_fpn_unet_600e_ctw1500.py) |     ImageNet     | CTW1500 Train | CTW1500 Test |  1200   |    736    | 0.795  |   0.840   | 0.817 | [model](https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_r50_fpn_unet_1200e_ctw1500-27f65b64.pth) \| [log](<>) |
+|                                     Method                                     | Pretrained Model | Training set  |   Test set   | #epochs | Test size | Recall | Precision | Hmean |                                                           Download                                                           |
+| :----------------------------------------------------------------------------: | :--------------: | :-----------: | :----------: | :-----: | :-------: | :----: | :-------: | :---: | :--------------------------------------------------------------------------------------------------------------------------: |
+| [TextSnake](/configs/textdet/textsnake/textsnake_r50_fpn_unet_600e_ctw1500.py) |     ImageNet     | CTW1500 Train | CTW1500 Test |  1200   |    736    | 0.795  |   0.840   | 0.817 | [model](https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_r50_fpn_unet_1200e_ctw1500-27f65b64.pth) \| [log]() |
 
 ## Citation
 

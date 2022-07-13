@@ -54,7 +54,7 @@ The main branch works with **PyTorch 1.6+**.
 
 - **Comprehensive Pipeline**
 
-  The toolbox supports not only text detection and text recognition, but also their downstream tasks such as key information extraction.
+   The toolbox supports not only text detection and text recognition, but also their downstream tasks such as key information extraction.
 
 - **Multiple Models**
 
