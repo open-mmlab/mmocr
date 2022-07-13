@@ -244,7 +244,7 @@ class TestShortScaleAspectJitter(unittest.TestCase):
             ratio_range=(0.5, 1.5),
             aspect_ratio_range=(0.9, 1.1),
             scale_divisor=4,
-            resize_cfg=dict(type='Resize'))
+            resize_type='Resize')
         self.assertEqual(
             repr(transform), ('ShortScaleAspectJitter('
                               'short_size = 40, '
