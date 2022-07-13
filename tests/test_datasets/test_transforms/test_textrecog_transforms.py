@@ -124,4 +124,4 @@ class TestRescaleToHeight(unittest.TestCase):
             repr(transform), ('RescaleToHeight(height=32, '
                               'min_width=None, max_width=None, '
                               'width_divisor=1, '
-                              "resize_cfg={'type': 'Resize'})"))
+                              "resize_cfg={'type': 'Resize', 'scale': 0})"))

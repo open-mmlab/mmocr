@@ -129,9 +129,9 @@ class RescaleToHeight(BaseTransform):
         max_width (int, optional): Maximum width of rescaled image. Defaults
             to None.
         width_divisor (int): The divisor of width size. Defaults to 1.
-        resize_cfg (dict):  (dict): Config to construct the Resize transform.
-            Refer to ``Resize`` for detail. Defaults to
-            ``dict(type='Resize')``.
+        resize_type (str): The type of resize class to use. Defaults to
+            "Resize".
+        **resize_kwargs: Other keyword arguments for the ``resize_type``.
     """
 
     def __init__(self,
@@ -139,7 +139,9 @@ class RescaleToHeight(BaseTransform):
                  min_width: Optional[int] = None,
                  max_width: Optional[int] = None,
                  width_divisor: int = 1,
-                 resize_cfg: dict = dict(type='Resize')) -> None:
+                 resize_type: str = 'Resize',
+                 **resize_kwargs) -> None:
+
         super().__init__()
         assert isinstance(height, int)
         assert isinstance(width_divisor, int)
@@ -151,10 +153,9 @@ class RescaleToHeight(BaseTransform):
         self.height = height
         self.min_width = min_width
         self.max_width = max_width
-        self.resize_cfg = resize_cfg
-        _resize_cfg = self.resize_cfg.copy()
-        _resize_cfg.update(dict(scale=0))
-        self.resize = TRANSFORMS.build(_resize_cfg)
+        self.resize_cfg = dict(type=resize_type, **resize_kwargs)
+        self.resize_cfg.update(dict(scale=0))
+        self.resize = TRANSFORMS.build(self.resize_cfg)
 
     def transform(self, results: Dict) -> Dict:
         """Transform function to resize images, bounding boxes and polygons.

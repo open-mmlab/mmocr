@@ -263,7 +263,11 @@ class RandomFlip(MMCV_RandomFlip):
         return flipped_polygons
 
     def _flip(self, results: dict) -> None:
-        """Flip images, bounding boxes and polygons."""
+        """Flip images, bounding boxes and polygons.
+
+        Args:
+            results (dict): Result dict containing the data to transform.
+        """
         super()._flip(results)
         # flip polygons
         if results.get('gt_polygons', None) is not None:
@@ -389,9 +393,9 @@ class ShortScaleAspectJitter(BaseTransform):
         aspect_ratio_jitter_range (tuple(float, float)): Range of the ratio
             used to jitter its aspect ratio. Defaults to (0.9, 1.1).
         scale_divisor (int): The scale divisor. Defaults to 1.
-        resize_cfg (dict):  (dict): Config to construct the Resize transform.
-            Refer to ``Resize`` for detail. Defaults to
-            ``dict(type='Resize')``.
+        resize_type (str): The type of resize class to use. Defaults to
+            "Resize".
+        **resize_kwargs: Other keyword arguments for the ``resize_type``.
     """
 
     def __init__(self,
@@ -399,15 +403,18 @@ class ShortScaleAspectJitter(BaseTransform):
                  ratio_range: Tuple[float, float] = (0.7, 1.3),
                  aspect_ratio_range: Tuple[float, float] = (0.9, 1.1),
                  scale_divisor: int = 1,
-                 resize_cfg: Dict = dict(type='Resize')) -> None:
+                 resize_type: str = 'Resize',
+                 **resize_kwargs) -> None:
+
         super().__init__()
         self.short_size = short_size
         self.ratio_range = ratio_range
         self.aspect_ratio_range = aspect_ratio_range
-        self.resize_cfg = resize_cfg
+        self.resize_cfg = dict(type=resize_type, **resize_kwargs)
+
         # create a empty Reisize object
-        resize_cfg.update(dict(scale=0))
-        self.resize = TRANSFORMS.build(resize_cfg)
+        self.resize_cfg.update(dict(scale=0))
+        self.resize = TRANSFORMS.build(self.resize_cfg)
         self.scale_divisor = scale_divisor
 
     def _sample_from_range(self, range: Tuple[float, float]) -> float:
@@ -425,6 +432,13 @@ class ShortScaleAspectJitter(BaseTransform):
         return value
 
     def transform(self, results: Dict) -> Dict:
+        """Short Scale Aspect Jitter.
+        Args:
+            results (dict): Result dict containing the data to transform.
+
+        Returns:
+            dict: The transformed data.
+        """
         h, w = results['img'].shape[:2]
         ratio = self._sample_from_range(self.ratio_range)
         scale = (ratio * self.short_size) / min(h, w)
