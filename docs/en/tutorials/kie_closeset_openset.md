@@ -55,20 +55,20 @@ We provide a [conversion script](../datasets/kie.md) that converts WildRecipt-li
 A common request from our community is to extract the relations between food items and food prices. In this case, this conversion script ***is not you need***.
 Wildrecipt doesn't provide necessary information to recover this relation. For instance, there are four text boxes "Hamburger", "Hotdog", "$1" and "$2" on the receipt, and here's how they actually look like before and after the conversion:
 
-|box_content | closeset_node_label| closeset_edge_label | openset_node_label | openset_edge_label |
-| :----: | :---: | :----: | :---: | :---: |
-| Hamburger | Prod_item_value | - | Value | 0 |
-| Hotdog | Prod_item_value | - | Value | 0 |
-| $1 | Prod_price_value | - | Value | 1 |
-| $2 | Prod_price_value  | - | Value | 1 |
+| box_content | closeset_node_label | closeset_edge_label | openset_node_label | openset_edge_label |
+| :---------: | :-----------------: | :-----------------: | :----------------: | :----------------: |
+|  Hamburger  |   Prod_item_value   |          -          |       Value        |         0          |
+|   Hotdog    |   Prod_item_value   |          -          |       Value        |         0          |
+|     $1      |  Prod_price_value   |          -          |       Value        |         1          |
+|     $2      |  Prod_price_value   |          -          |       Value        |         1          |
 
 So there won't be any valid edges connecting them. Nevertheless, OpenSet format is far more general than CloseSet, so this task can be achieved by annotating the data from scratch.
 
-|box_content | openset_node_label | openset_edge_label |
-| :----: | :---: | :---: |
-| Hamburger | Value | 0 |
-| Hotdog | Value | 1 |
-| $1 | Value | 0 |
-| $2 | Value | 1 |
+| box_content | openset_node_label | openset_edge_label |
+| :---------: | :----------------: | :----------------: |
+|  Hamburger  |       Value        |         0          |
+|   Hotdog    |       Value        |         1          |
+|     $1      |       Value        |         0          |
+|     $2      |       Value        |         1          |
 
 ```
