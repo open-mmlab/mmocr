@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import functools
-from typing import Tuple
+from typing import List, Tuple
 
 import numpy as np
 from numpy.typing import ArrayLike
@@ -82,7 +82,7 @@ def bbox2poly(bbox: ArrayLike) -> np.array:
 
 
 def is_on_same_line(box_a, box_b, min_y_overlap_ratio=0.8):
-    # TODO Add typehints & test & docstring
+    # TODO Check if it should be deleted after ocr.py refactored
     """Check if two boxes are on the same line by their y-axis coordinates.
 
     Two boxes are on the same line if they overlap vertically, and the length
@@ -121,7 +121,7 @@ def is_on_same_line(box_a, box_b, min_y_overlap_ratio=0.8):
 
 
 def stitch_boxes_into_lines(boxes, max_x_dist=10, min_y_overlap_ratio=0.8):
-    # TODO Add typehints & test & docstring
+    # TODO Check if it should be deleted after ocr.py refactored
     """Stitch fragmented boxes of words into lines.
 
     Note: part of its logic is inspired by @Johndirr
@@ -199,8 +199,9 @@ def stitch_boxes_into_lines(boxes, max_x_dist=10, min_y_overlap_ratio=0.8):
     return merged_boxes
 
 
-def bezier_to_polygon(bezier_points, num_sample=20):
-    # TODO Add typehints & test & docstring
+def bezier2polygon(bezier_points: np.ndarray,
+                   num_sample: int = 20) -> List[np.ndarray]:
+    # TODO check test later
     """Sample points from the boundary of a polygon enclosed by two Bezier
     curves, which are controlled by ``bezier_points``.
 
@@ -209,6 +210,7 @@ def bezier_to_polygon(bezier_points, num_sample=20):
             or its equalivance. The first 4 points control the curve at one
             side and the last four control the other side.
         num_sample (int): The number of sample points at each Bezeir curve.
+            Defaults to 20.
 
     Returns:
         list[ndarray]: A list of 2*num_sample points representing the polygon
@@ -218,7 +220,7 @@ def bezier_to_polygon(bezier_points, num_sample=20):
         The points are not guaranteed to be ordered. Please use
         :func:`mmocr.utils.sort_points` to sort points if necessary.
     """
-    assert num_sample > 0
+    assert num_sample > 0, 'The sampling number should greater than 0'
 
     bezier_points = np.asarray(bezier_points)
     assert np.prod(
@@ -330,19 +332,41 @@ def sort_vertex8(points):
     return sorted_box
 
 
-def bbox_center_distance(b1, b2):
-    # TODO typehints & docstring & test
-    assert isinstance(b1, np.ndarray)
-    assert isinstance(b2, np.ndarray)
-    return point_distance(points_center(b1), points_center(b2))
+def bbox_center_distance(box1: ArrayLike, box2: ArrayLike) -> float:
+    """Calculate the distance between the center points of two bounding boxes.
+
+    Args:
+        box1 (ArrayLike): The first bounding box
+            represented in [x1, y1, x2, y2].
+        box2 (ArrayLike): The second bounding box
+            represented in [x1, y1, x2, y2].
+
+    Returns:
+        float: The distance between the center points of two bounding boxes.
+    """
+    return point_distance(points_center(box1), points_center(box2))
 
 
-def bbox_diag(box):
-    # TODO typehints & docstring & test
-    assert isinstance(box, np.ndarray)
-    assert box.size == 8
+def bbox_diag_distance(box: ArrayLike) -> float:
+    """Calculate the diagonal length of a bounding box (distance between the
+    top-left and bottom-right).
 
-    return point_distance(box[0:2], box[4:6])
+    Args:
+        box (ArrayLike): The bounding box represented in
+        [x1, y1, x2, y2, x3, y3, x4, y4] or [x1, y1, x2, y2].
+
+    Returns:
+        float: The diagonal length of the bounding box.
+    """
+    box = np.array(box, dtype=np.float32)
+    assert (box.size == 8 or box.size == 4)
+
+    if box.size == 8:
+        diag = point_distance(box[0:2], box[4:6])
+    elif box.size == 4:
+        diag = point_distance(box[0:2], box[2:4])
+
+    return diag
 
 
 def bbox_jitter(points_x, points_y, jitter_ratio_x=0.5, jitter_ratio_y=0.1):
