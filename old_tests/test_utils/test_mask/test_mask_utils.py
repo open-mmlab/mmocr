@@ -8,7 +8,7 @@ import pytest
 
 import mmocr.core.evaluation.utils as eval_utils
 import mmocr.core.mask as mask_utils
-import mmocr.core.visualize as visualize_utils
+import mmocr.visualization.visualize as visualize_utils
 
 
 def test_seg2boundary():

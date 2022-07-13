@@ -7,8 +7,8 @@ import cv2
 import numpy as np
 from mmengine.data import LabelData
 
-from mmocr.core.visualization import TextRecogLocalVisualizer
 from mmocr.data import TextRecogDataSample
+from mmocr.visualization import TextRecogLocalVisualizer
 
 
 class TestTextDetLocalVisualizer(unittest.TestCase):

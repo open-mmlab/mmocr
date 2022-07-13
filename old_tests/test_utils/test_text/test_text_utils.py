@@ -8,7 +8,7 @@ from unittest import mock
 import numpy as np
 import pytest
 
-import mmocr.core.visualize as visualize_utils
+import mmocr.visualization.visualize as visualize_utils
 
 
 def test_tile_image():

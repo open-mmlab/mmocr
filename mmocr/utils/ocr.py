@@ -21,7 +21,6 @@ except ImportError:
 
 from mmocr.apis import init_detector
 from mmocr.apis.inference import model_inference
-from mmocr.core.visualize import det_recog_show_result
 from mmocr.datasets import WildReceiptDataset
 from mmocr.models.textdet.detectors import TextDetectorMixin
 from mmocr.models.textrecog.recognizers import BaseRecognizer
@@ -30,6 +29,7 @@ from mmocr.utils import is_type_list, stitch_boxes_into_lines
 from mmocr.utils.fileio import list_from_file
 from mmocr.utils.img_utils import crop_img
 from mmocr.utils.model import revert_sync_batchnorm
+from mmocr.visualization.visualize import det_recog_show_result
 
 
 # Parse CLI arguments
