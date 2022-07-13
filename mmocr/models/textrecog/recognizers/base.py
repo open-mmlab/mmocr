@@ -8,6 +8,7 @@ from mmengine.model.base_model import BaseModel
 
 from mmocr.data import TextRecogDataSample
 
+# TODO Move to type hint file
 # Type hint of config data
 ConfigType = Union[ConfigDict, dict]
 OptConfigType = Optional[ConfigType]
@@ -52,11 +53,6 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
     def with_preprocessor(self):
         """bool: whether the recognizer has a preprocessor"""
         return hasattr(self, 'preprocessor')
-
-    @property
-    def with_dictionary(self):
-        """bool: whether the recognizer has a dictionary"""
-        return hasattr(self, 'dictionary')
 
     @property
     def with_decoder(self):

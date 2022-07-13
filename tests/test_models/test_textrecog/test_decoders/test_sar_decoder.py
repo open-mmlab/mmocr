@@ -34,6 +34,7 @@ class TestParallelSARDecoder(TestCase):
             same_start_end=True,
             with_padding=True,
             with_unknown=True)
+        self.max_seq_len = 40
 
     def test_init(self):
         decoder = ParallelSARDecoder(self.dict_cfg)
@@ -45,26 +46,29 @@ class TestParallelSARDecoder(TestCase):
     def test_forward_train(self):
         # test parallel sar decoder
         loss_cfg = dict(type='CELoss')
-        decoder = ParallelSARDecoder(self.dict_cfg, loss_module=loss_cfg)
+        decoder = ParallelSARDecoder(
+            self.dict_cfg, loss_module=loss_cfg, max_seq_len=self.max_seq_len)
         decoder.init_weights()
         decoder.train()
-        feat = torch.rand(2, 512, 4, 40)
+        feat = torch.rand(2, 512, 4, self.max_seq_len)
         out_enc = torch.rand(2, 512)
         data_samples = decoder.loss_module.get_targets(self.data_info)
         decoder.train_mode = True
         out_train = decoder.forward_train(
             feat, out_enc, data_samples=data_samples)
-        self.assertEqual(out_train.shape, torch.Size([2, 40, 39]))
+        self.assertEqual(out_train.shape, torch.Size([2, self.max_seq_len,
+                                                      39]))
 
     def test_forward_test(self):
-        decoder = ParallelSARDecoder(self.dict_cfg)
-        feat = torch.rand(2, 512, 4, 40)
+        decoder = ParallelSARDecoder(
+            self.dict_cfg, max_seq_len=self.max_seq_len)
+        feat = torch.rand(2, 512, 4, self.max_seq_len)
         out_enc = torch.rand(2, 512)
         decoder.train_mode = False
         out_test = decoder.forward_test(feat, out_enc, self.data_info)
-        assert out_test.shape == torch.Size([2, 40, 39])
+        assert out_test.shape == torch.Size([2, self.max_seq_len, 39])
         out_test = decoder.forward_test(feat, out_enc, None)
-        assert out_test.shape == torch.Size([2, 40, 39])
+        assert out_test.shape == torch.Size([2, self.max_seq_len, 39])
 
 
 class TestSequentialSARDecoder(TestCase):

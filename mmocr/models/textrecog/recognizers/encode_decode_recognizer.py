@@ -1,12 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 
-import warnings
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import torch
 
 from mmocr.data import TextRecogDataSample
-from mmocr.registry import MODELS, TASK_UTILS
+from mmocr.registry import MODELS
 from .base import BaseRecognizer
 
 ForwardResults = Union[Dict[str, torch.Tensor], List[TextRecogDataSample],
@@ -26,8 +25,6 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         encoder (dict, optional): Encoder config. If None, the output from
             backbone will be directly fed into ``decoder``. Defaults to None.
         decoder (dict, optional): Decoder config. Defaults to None.
-        dictionary (dict, optional): Dictionary config. Defaults to None.
-        max_seq_len (int): Maximum sequence length. Defaults to 40.
         data_preprocessor (dict, optional): Model preprocessing config
             for processing the input image data. Keys allowed are
             ``to_rgb``(bool), ``pad_size_divisor``(int), ``pad_value``(int or
@@ -43,8 +40,6 @@ class EncodeDecodeRecognizer(BaseRecognizer):
                  backbone: Optional[Dict] = None,
                  encoder: Optional[Dict] = None,
                  decoder: Optional[Dict] = None,
-                 dictionary: Optional[Dict] = None,
-                 max_seq_len: int = 40,
                  data_preprocessor: Dict = None,
                  init_cfg: Optional[Dict] = None) -> None:
 
@@ -63,23 +58,8 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         if encoder is not None:
             self.encoder = MODELS.build(encoder)
 
-        # Dictionary
-        if dictionary is not None:
-            self.dictionary = TASK_UTILS.build(dictionary)
         # Decoder module
         assert decoder is not None
-
-        if self.with_dictionary:
-            if decoder.get('dictionary', None) is None:
-                decoder.update(dictionary=self.dictionary)
-            else:
-                warnings.warn(f"Using dictionary {decoder['dictionary']} "
-                              "in decoder's config.")
-        if decoder.get('max_seq_len', None) is None:
-            decoder.update(max_seq_len=max_seq_len)
-        else:
-            warnings.warn(f"Using max_seq_len {decoder['max_seq_len']} "
-                          "in decoder's config.")
         self.decoder = MODELS.build(decoder)
 
     def extract_feat(self, batch_inputs: torch.Tensor) -> torch.Tensor:

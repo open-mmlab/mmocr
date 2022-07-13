@@ -13,7 +13,7 @@ model = dict(
         in_channels=512,
         rnn_flag=True,
         loss_module=dict(type='CTCLoss', letter_case='lower'),
-        postprocessor=dict(type='CTCPostProcessor')),
-    dictionary=dictionary,
+        postprocessor=dict(type='CTCPostProcessor'),
+        dictionary=dictionary),
     data_preprocessor=dict(
         type='TextRecogDataPreprocessor', mean=[127], std=[127]))

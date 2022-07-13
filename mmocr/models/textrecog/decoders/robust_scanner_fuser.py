@@ -30,7 +30,7 @@ class RobustScannerFuser(BaseDecoder):
         fuser (dict): Config to build fuser. Defaults to
             dict(type='RobustScannerFuser').
         max_seq_len (int): Maximum sequence length. The
-            sequence is usually generated from decoder. Defaults to 40.
+            sequence is usually generated from decoder. Defaults to 30.
         in_channels (list[int]): List of input channels.
             Defaults to [512, 512].
         dim (int): The dimension on which to split the input. Defaults to -1.
@@ -45,13 +45,16 @@ class RobustScannerFuser(BaseDecoder):
                  hybrid_decoder: Dict = dict(type='SequenceAttentionDecoder'),
                  position_decoder: Dict = dict(
                      type='PositionAttentionDecoder'),
-                 max_seq_len: int = 40,
+                 max_seq_len: int = 30,
                  in_channels: List[int] = [512, 512],
                  dim: int = -1,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
-
-        super().__init__(dictionary, loss_module, postprocessor, max_seq_len,
-                         init_cfg)
+        super().__init__(
+            dictionary=dictionary,
+            loss_module=loss_module,
+            postprocessor=postprocessor,
+            max_seq_len=max_seq_len,
+            init_cfg=init_cfg)
 
         for cfg_name in ['hybrid_decoder', 'position_decoder']:
             cfg = eval(cfg_name)

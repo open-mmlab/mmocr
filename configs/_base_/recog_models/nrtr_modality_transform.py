@@ -14,9 +14,9 @@ model = dict(
     decoder=dict(
         type='NRTRDecoder',
         loss_module=dict(type='CELoss', ignore_first_char=True, flatten=True),
-        postprocessor=dict(type='AttentionPostprocessor')),
-    dictionary=dictionary,
-    max_seq_len=30,
+        postprocessor=dict(type='AttentionPostprocessor'),
+        dictionary=dictionary,
+        max_seq_len=30),
     data_preprocessor=dict(
         type='TextRecogDataPreprocessor',
         mean=[123.675, 116.28, 103.53],
