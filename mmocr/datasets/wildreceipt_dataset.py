@@ -7,8 +7,8 @@ from mmengine.dataset import BaseDataset
 from mmengine.fileio import list_from_file
 
 from mmocr.registry import DATASETS
-from mmocr.utils.bbox_utils import sort_vertex8
 from mmocr.utils.parsers import LineJsonParser
+from mmocr.utils.polygon_utils import sort_vertex8
 
 
 @DATASETS.register_module()

@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import unittest
+from itertools import chain, permutations
 
 import numpy as np
 import torch
@@ -8,10 +9,11 @@ from shapely.geometry import MultiPolygon, Polygon
 from mmocr.utils import (boundary_iou, crop_polygon, offset_polygon, poly2bbox,
                          poly2shapely, poly_intersection, poly_iou,
                          poly_make_valid, poly_union, polys2shapely,
-                         rescale_polygon, rescale_polygons, shapely2poly)
+                         rescale_polygon, rescale_polygons, shapely2poly,
+                         sort_points, sort_vertex, sort_vertex8)
 
 
-class TestCropPolygon(unittest.TestCase):
+class TestPolygonUtils(unittest.TestCase):
 
     def test_crop_polygon(self):
         # polygon cross box
@@ -44,9 +46,6 @@ class TestCropPolygon(unittest.TestCase):
         crop_box = np.array([10., 10., 20., 20.])
         poly_cropped = crop_polygon(polygon, crop_box)
         self.assertEqual(poly_cropped, None)
-
-
-class TestPolygonUtils(unittest.TestCase):
 
     def test_rescale_polygon(self):
         scale_factor = (0.3, 0.4)
@@ -309,3 +308,55 @@ class TestPolygonUtils(unittest.TestCase):
         self.assertEqual(boundary_iou(points2, points2), 0)
         self.assertEqual(boundary_iou(points3, points3, zero_division=1), 1)
         self.assertEqual(boundary_iou(points2, points3), 0)
+
+    def test_sort_points(self):
+        points = np.array([[1, 1], [0, 0], [1, -1], [2, -2], [0, 2], [1, 1],
+                           [0, 1], [-1, 1], [-1, -1]])
+        target = np.array([[-1, -1], [0, 0], [-1, 1], [0, 1], [0, 2], [1, 1],
+                           [1, 1], [2, -2], [1, -1]])
+        self.assertTrue(np.allclose(target, sort_points(points)))
+
+        points = np.array([[1, 1], [1, -1], [-1, 1], [-1, -1]])
+        target = np.array([[-1, -1], [-1, 1], [1, 1], [1, -1]])
+        self.assertTrue(np.allclose(target, sort_points(points)))
+
+        points = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
+        self.assertTrue(np.allclose(target, sort_points(points)))
+
+        with self.assertRaises(AssertionError):
+            sort_points([1, 2])
+
+    def test_sort_vertex(self):
+        dummy_points_x = [20, 20, 120, 120]
+        dummy_points_y = [20, 40, 40, 20]
+
+        expect_points_x = [20, 120, 120, 20]
+        expect_points_y = [20, 20, 40, 40]
+
+        with self.assertRaises(AssertionError):
+            sort_vertex([], dummy_points_y)
+        with self.assertRaises(AssertionError):
+            sort_vertex(dummy_points_x, [])
+
+        for perm in set(permutations([0, 1, 2, 3])):
+            points_x = [dummy_points_x[i] for i in perm]
+            points_y = [dummy_points_y[i] for i in perm]
+            ordered_points_x, ordered_points_y = sort_vertex(
+                points_x, points_y)
+
+            self.assertTrue(np.allclose(ordered_points_x, expect_points_x))
+            self.assertTrue(np.allclose(ordered_points_y, expect_points_y))
+
+    def test_sort_vertex8(self):
+        dummy_points_x = [21, 21, 122, 122]
+        dummy_points_y = [21, 39, 39, 21]
+
+        expect_points = [21, 21, 122, 21, 122, 39, 21, 39]
+
+        for perm in set(permutations([0, 1, 2, 3])):
+            points_x = [dummy_points_x[i] for i in perm]
+            points_y = [dummy_points_y[i] for i in perm]
+            points = list(chain.from_iterable(zip(points_x, points_y)))
+            ordered_points = sort_vertex8(points)
+
+            self.assertTrue(np.allclose(ordered_points, expect_points))
