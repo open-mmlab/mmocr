@@ -4,7 +4,7 @@ dictionary = dict(
     with_padding=True)
 
 model = dict(
-    type='CRNNNet',
+    type='CRNN',
     preprocessor=None,
     backbone=dict(type='VeryDeepVgg', leaky_relu=False, input_channels=1),
     encoder=None,

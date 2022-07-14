@@ -6,5 +6,4 @@ from .dictionary import *  # NOQA
 from .encoders import *  # NOQA
 from .plugins import *  # NOQA
 from .postprocessors import *  # NOQA
-from .preprocessors import *  # NOQA
 from .recognizers import *  # NOQA

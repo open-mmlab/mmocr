@@ -9,9 +9,9 @@ from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import maximum_bipartite_matching
 from shapely.geometry import Polygon
 
+from mmocr.evaluation.functional import compute_hmean
 from mmocr.registry import METRICS
-from mmocr.utils import (compute_hmean, poly_intersection, poly_iou,
-                         polys2shapely)
+from mmocr.utils import poly_intersection, poly_iou, polys2shapely
 
 
 @METRICS.register_module()

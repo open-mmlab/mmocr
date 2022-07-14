@@ -9,7 +9,7 @@ label_convertor = dict(
     type='CTCConvertor', dict_type='DICT36', with_unknown=True, lower=True)
 
 model = dict(
-    type='CRNNNet',
+    type='CRNN',
     preprocessor=None,
     backbone=dict(type='VeryDeepVgg', leaky_relu=False, input_channels=1),
     encoder=None,
