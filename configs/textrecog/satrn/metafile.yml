@@ -4,13 +4,13 @@ Collections:
     Training Data: OCRDataset
     Training Techniques:
       - Adam
-    Training Resources: 8x Tesla V100
+    Training Resources: 4x Tesla A100
     Epochs: 6
     Batch Size: 512
     Architecture:
       - ShallowCNN
       - SatrnEncoder
-      - TFDecoder
+      - NRTRDecoder
   Paper:
     URL: https://arxiv.org/pdf/1910.04396.pdf
     Title: 'On Recognizing Texts of Arbitrary Shapes with 2D Self-Attention'
@@ -28,27 +28,27 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 96.1
+          word_acc: 95.1
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 93.5
+          word_acc: 92.0
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 95.7
+          word_acc: 95.8
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 84.1
+          word_acc: 81.4
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 88.5
+          word_acc: 87.6
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 90.3
+          word_acc: 90.6
     Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_academic_20211009-cb8b1580.pth
 
   - Name: satrn_small
