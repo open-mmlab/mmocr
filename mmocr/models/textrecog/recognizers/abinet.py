@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmocr.registry import MODELS
-from .encode_decode_recognizer import EncodeDecodeRecognizer
+from .encoder_decoder_recognizer import EncoderDecoderRecognizer
 
 
 @MODELS.register_module()
-class ABINet(EncodeDecodeRecognizer):
+class ABINet(EncoderDecoderRecognizer):
     """Implementation of `Read Like Humans: Autonomous, Bidirectional and
     Iterative LanguageModeling for Scene Text Recognition.
 

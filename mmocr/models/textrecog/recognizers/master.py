@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmocr.registry import MODELS
-from .encode_decode_recognizer import EncodeDecodeRecognizer
+from .encoder_decoder_recognizer import EncoderDecoderRecognizer
 
 
 @MODELS.register_module()
-class MASTER(EncodeDecodeRecognizer):
+class MASTER(EncoderDecoderRecognizer):
     """Implementation of `MASTER <https://arxiv.org/abs/1910.02562>`_"""
