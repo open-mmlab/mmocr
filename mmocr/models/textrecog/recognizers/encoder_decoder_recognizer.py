@@ -1,21 +1,18 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 
-from typing import Dict, List, Optional, Sequence, Tuple, Union
+from typing import Dict
 
 import torch
 
-from mmocr.data import TextRecogDataSample
 from mmocr.registry import MODELS
+from mmocr.utils.typing import (ConfigType, InitConfigType, OptConfigType,
+                                OptRecSampleList, RecForwardResults,
+                                RecSampleList)
 from .base import BaseRecognizer
-
-ForwardResults = Union[Dict[str, torch.Tensor], List[TextRecogDataSample],
-                       Tuple[torch.Tensor], torch.Tensor]
-SampleList = List[TextRecogDataSample]
-OptSampleList = Optional[SampleList]
 
 
 @MODELS.register_module()
-class EncodeDecodeRecognizer(BaseRecognizer):
+class EncoderDecoderRecognizer(BaseRecognizer):
     """Base class for encode-decode recognizer.
 
     Args:
@@ -36,12 +33,12 @@ class EncodeDecodeRecognizer(BaseRecognizer):
     """
 
     def __init__(self,
-                 preprocessor: Optional[Dict] = None,
-                 backbone: Optional[Dict] = None,
-                 encoder: Optional[Dict] = None,
-                 decoder: Optional[Dict] = None,
-                 data_preprocessor: Dict = None,
-                 init_cfg: Optional[Dict] = None) -> None:
+                 preprocessor: OptConfigType = None,
+                 backbone: OptConfigType = None,
+                 encoder: OptConfigType = None,
+                 decoder: OptConfigType = None,
+                 data_preprocessor: ConfigType = None,
+                 init_cfg: InitConfigType = None) -> None:
 
         super().__init__(
             init_cfg=init_cfg, data_preprocessor=data_preprocessor)
@@ -71,8 +68,7 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         return batch_inputs
 
     def loss(self, batch_inputs: torch.Tensor,
-             batch_data_samples: Sequence[TextRecogDataSample],
-             **kwargs) -> Dict:
+             batch_data_samples: RecSampleList, **kwargs) -> Dict:
         """Calculate losses from a batch of inputs and data samples.
         Args:
             inputs (tensor): Input images of shape (N, C, H, W).
@@ -91,7 +87,7 @@ class EncodeDecodeRecognizer(BaseRecognizer):
         return self.decoder.loss(feat, out_enc, batch_data_samples)
 
     def predict(self, batch_inputs: torch.Tensor,
-                batch_data_samples: SampleList, **kwargs) -> SampleList:
+                batch_data_samples: RecSampleList, **kwargs) -> RecSampleList:
         """Predict results from a batch of inputs and data samples with post-
         processing.
 
@@ -113,8 +109,8 @@ class EncodeDecodeRecognizer(BaseRecognizer):
 
     def _forward(self,
                  batch_inputs: torch.Tensor,
-                 batch_data_samples: OptSampleList = None,
-                 **kwargs):
+                 batch_data_samples: OptRecSampleList = None,
+                 **kwargs) -> RecForwardResults:
         """Network forward process. Usually includes backbone, encoder and
         decoder forward without any post-processing.
 

@@ -2,7 +2,7 @@
 from .abinet import ABINet
 from .base import BaseRecognizer
 from .crnn import CRNNNet
-from .encode_decode_recognizer import EncodeDecodeRecognizer
+from .encoder_decoder_recognizer import EncoderDecoderRecognizer
 from .master import MASTER
 from .nrtr import NRTR
 from .robust_scanner import RobustScanner
@@ -10,6 +10,6 @@ from .sar import SARNet
 from .satrn import SATRN
 
 __all__ = [
-    'BaseRecognizer', 'EncodeDecodeRecognizer', 'CRNNNet', 'SARNet', 'NRTR',
+    'BaseRecognizer', 'EncoderDecoderRecognizer', 'CRNNNet', 'SARNet', 'NRTR',
     'RobustScanner', 'SATRN', 'ABINet', 'MASTER'
 ]
