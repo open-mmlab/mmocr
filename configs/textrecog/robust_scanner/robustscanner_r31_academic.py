@@ -1,6 +1,5 @@
 _base_ = [
-    '../../_base_/default_runtime.py',
-    '../../_base_/recog_models/robust_scanner.py',
+    'robust_scanner.py', '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_5e.py'
 ]
 

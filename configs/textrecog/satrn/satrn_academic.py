@@ -1,7 +1,7 @@
 _base_ = [
+    'satrn.py'
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_5e.py',
-    '../../_base_/recog_models/satrn.py'
 ]
 
 default_hooks = dict(logger=dict(type='LoggerHook', interval=50))

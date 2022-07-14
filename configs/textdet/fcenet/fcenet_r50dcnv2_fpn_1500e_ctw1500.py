@@ -1,7 +1,7 @@
 _base_ = [
+    'fcenet_r50_fpn.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1500e.py',
-    '../../_base_/det_models/fcenet_r50dcnv2_fpn.py',
 ]
 
 default_hooks = dict(

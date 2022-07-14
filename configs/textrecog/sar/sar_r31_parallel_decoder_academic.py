@@ -1,6 +1,6 @@
 _base_ = [
+    'sar.py',
     '../../_base_/default_runtime.py',
-    '../../_base_/recog_models/sar.py',
     '../../_base_/schedules/schedule_adam_step_5e.py',
 ]
 

@@ -1,7 +1,7 @@
 _base_ = [
+    'drrg_r50_fpn_unet.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1200e.py',
-    '../../_base_/det_models/drrg_r50_fpn_unet.py',
 ]
 
 train_pipeline = [
