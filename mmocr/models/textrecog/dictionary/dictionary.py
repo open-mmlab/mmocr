@@ -100,6 +100,30 @@ class Dictionary:
         """
         return self._contain_uppercase
 
+    def char2idx(self, char: str, strict: bool = True) -> int:
+        """Convert a character to an index via ``Dictionary.dict``.
+
+        Args:
+            char (str): The character to convert to index.
+            strict (bool): The flag to control whether to raise an exception
+                when the character is not in the dictionary. Defaults to True.
+
+        Return:
+            int: The index of the character.
+        """
+        char_idx = self._char2idx.get(char, None)
+        if char_idx is None:
+            if self.with_unknown:
+                return self.unknown_idx
+            elif not strict:
+                return None
+            else:
+                raise Exception(f'Chararcter: {char} not in dict,'
+                                ' please check gt_label and use'
+                                ' custom dict file,'
+                                ' or set "with_unknown=True"')
+        return char_idx
+
     def str2idx(self, string: str) -> List:
         """Convert a string to a list of indexes via ``Dictionary.dict``.
 
@@ -111,7 +135,7 @@ class Dictionary:
         """
         idx = list()
         for s in string:
-            char_idx = self._char2idx.get(s, self.unknown_idx)
+            char_idx = self.char2idx(s)
             if char_idx is None:
                 if self.with_unknown:
                     continue

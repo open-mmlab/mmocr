@@ -55,6 +55,65 @@ class TestBaseTextRecogPostprocessor(TestCase):
                             ' or dict, '
                             f'but got {type(dict_cfg)}')):
             base_postprocessor = BaseTextRecogPostprocessor(dict_cfg)
+        # test diction cfg with with_unknown=False
+        dict_cfg = dict(
+            type='Dictionary',
+            dict_file=dict_file,
+            with_start=True,
+            with_end=True,
+            same_start_end=False,
+            with_padding=True,
+            with_unknown=False)
+        base_postprocessor = BaseTextRecogPostprocessor(
+            dict_cfg, ignore_chars=['1', '2', '3'])
+
+        self.assertListEqual(base_postprocessor.ignore_indexes, [1, 2, 3])
+
+        # test ignore_chars
+        with self.assertRaisesRegex(TypeError,
+                                    'ignore_chars must be list of str'):
+            base_postprocessor = BaseTextRecogPostprocessor(
+                dict_cfg, ignore_chars=[1, 2, 3])
+
+        with self.assertWarnsRegex(Warning,
+                                   'M does not exist in the dictionary'):
+            base_postprocessor = BaseTextRecogPostprocessor(
+                dict_cfg, ignore_chars=['M'])
+
+        with self.assertWarnsRegex(Warning,
+                                   'M does not exist in the dictionary'):
+            base_postprocessor = BaseTextRecogPostprocessor(
+                dict(
+                    type='Dictionary',
+                    dict_file=dict_file,
+                    with_unknown=True,
+                    unkown_token=None),
+                ignore_chars=['M'])
+
+        with self.assertWarnsRegex(Warning,
+                                   'M does not exist in the dictionary'):
+            base_postprocessor = BaseTextRecogPostprocessor(
+                dict(
+                    type='Dictionary', dict_file=dict_file, with_unknown=True),
+                ignore_chars=['M'])
+
+        with self.assertWarnsRegex(Warning,
+                                   'unknown does not exist in the dictionary'):
+            base_postprocessor = BaseTextRecogPostprocessor(
+                dict(
+                    type='Dictionary', dict_file=dict_file,
+                    with_unknown=False),
+                ignore_chars=['unknown'])
+
+        base_postprocessor = BaseTextRecogPostprocessor(
+            dict_cfg, ignore_chars=['1', '2', '3'])
+        # test dictionary is invalid type
+        dict_cfg = ['tmp']
+        with self.assertRaisesRegex(
+                TypeError, ('The type of dictionary should be `Dictionary`'
+                            ' or dict, '
+                            f'but got {type(dict_cfg)}')):
+            base_postprocessor = BaseTextRecogPostprocessor(dict_cfg)
 
         tmp_dir.cleanup()
 
