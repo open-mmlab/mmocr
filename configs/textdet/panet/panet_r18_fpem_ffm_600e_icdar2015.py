@@ -1,7 +1,7 @@
 _base_ = [
+    'panet_r18_fpem_ffm.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_600e.py',
-    '../../_base_/det_models/panet_r18_fpem_ffm.py',
 ]
 
 train_pipeline = [

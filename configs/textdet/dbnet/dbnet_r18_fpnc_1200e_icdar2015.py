@@ -1,7 +1,7 @@
 _base_ = [
+    'dbnet_r18_fpnc.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1200e.py',
-    '../../_base_/det_models/dbnet_r18_fpnc.py',
 ]
 
 default_hooks = dict(checkpoint=dict(type='CheckpointHook', interval=20), )

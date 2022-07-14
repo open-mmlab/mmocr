@@ -1,8 +1,7 @@
 # TODO Train on ICDAR 2017
 _base_ = [
-    '../../_base_/default_runtime.py',
+    'psenet_r50_fpnf.py', '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_600e.py',
-    '../../_base_/det_models/psenet_r50_fpnf.py',
     '../../_base_/det_datasets/icdar2017.py',
     '../../_base_/det_pipelines/psenet_pipeline.py'
 ]

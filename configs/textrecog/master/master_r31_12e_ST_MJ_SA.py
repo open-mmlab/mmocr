@@ -1,6 +1,6 @@
 _base_ = [
+    'master.py',
     '../../_base_/default_runtime.py',
-    '../../_base_/recog_models/master.py',
     '../../_base_/schedules/schedule_adam_step_12e.py',
 ]
 

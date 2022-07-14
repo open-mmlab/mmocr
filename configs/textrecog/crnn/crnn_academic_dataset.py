@@ -1,8 +1,8 @@
 # training schedule for 1x
 _base_ = [
+    'crnn.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adadelta_5e.py',
-    '../../_base_/recog_models/crnn.py',
 ]
 
 default_hooks = dict(logger=dict(type='LoggerHook', interval=50), )

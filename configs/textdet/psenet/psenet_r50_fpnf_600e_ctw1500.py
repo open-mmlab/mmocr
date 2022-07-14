@@ -1,8 +1,7 @@
 # TODO Train on ctw1500
 _base_ = [
-    '../../_base_/default_runtime.py',
+    'psenet_r50_fpnf.py', '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_600e.py',
-    '../../_base_/det_models/psenet_r50_fpnf.py',
     '../../_base_/det_datasets/ctw1500.py',
     '../../_base_/det_pipelines/psenet_pipeline.py'
 ]

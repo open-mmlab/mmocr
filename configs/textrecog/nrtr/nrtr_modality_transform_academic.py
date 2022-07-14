@@ -1,6 +1,5 @@
 _base_ = [
-    '../../_base_/default_runtime.py',
-    '../../_base_/recog_models/nrtr_modality_transform.py',
+    'nrtr_modality_transform.py', '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_6e.py'
 ]
 

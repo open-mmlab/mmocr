@@ -1,5 +1,5 @@
 _base_ = [
-    '../../_base_/default_runtime.py', '../../_base_/recog_models/sar.py',
+    'sar.py', '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_5e.py',
     '../../_base_/recog_pipelines/sar_pipeline.py',
     '../../_base_/recog_datasets/toy_data.py'
