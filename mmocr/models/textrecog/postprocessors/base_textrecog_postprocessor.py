@@ -52,10 +52,11 @@ class BaseTextRecogPostprocessor:
             raise TypeError('ignore_chars must be list of str')
         ignore_indexes = list()
         for ignore_char in ignore_chars:
-            # TODO add char2id in Dictionary
             index = mapping_table.get(
-                ignore_char, self.dictionary._char2idx.get(ignore_char, None))
-            if index is None:
+                ignore_char,
+                self.dictionary.char2idx(ignore_char, strict=False))
+            if index is None or (index == self.dictionary.unknown_idx
+                                 and ignore_char != 'unknown'):
                 warnings.warn(
                     f'{ignore_char} does not exist in the dictionary',
                     UserWarning)

@@ -28,6 +28,14 @@ class CEModuleLoss(BaseRecogModuleLoss):
             - lower: Convert gt texts into lowercase characters.
             Usually, it only works for English characters. Defaults to
             'unchanged'.
+        pad_with (str): The padding strategy for ``gt_text.padded_indexes``.
+            Defaults to 'auto'. Options are:
+            - 'auto': Use dictionary.padding_idx to pad gt texts, or
+              dictionary.end_idx if dictionary.padding_idx
+              is None.
+            - 'padding': Always use dictionary.padding_idx to pad gt texts.
+            - 'end': Always use dictionary.end_idx to pad gt texts.
+            - 'none': Do not pad gt texts.
         ignore_char (int or str): Specifies a target value that is
             ignored and does not contribute to the input gradient.
             ignore_char can be int or str. If int, it is the index of
@@ -54,6 +62,7 @@ class CEModuleLoss(BaseRecogModuleLoss):
                  dictionary: Union[Dict, Dictionary],
                  max_seq_len: int = 40,
                  letter_case: str = 'unchanged',
+                 pad_with: str = 'auto',
                  ignore_char: Union[int, str] = 'padding',
                  flatten: bool = False,
                  reduction: str = 'none',
@@ -61,7 +70,8 @@ class CEModuleLoss(BaseRecogModuleLoss):
         super().__init__(
             dictionary=dictionary,
             max_seq_len=max_seq_len,
-            letter_case=letter_case)
+            letter_case=letter_case,
+            pad_with=pad_with)
         assert isinstance(ignore_char, (int, str))
         assert isinstance(reduction, str)
         assert reduction in ['none', 'mean', 'sum']
@@ -81,10 +91,13 @@ class CEModuleLoss(BaseRecogModuleLoss):
                 'end': self.dictionary.end_idx,
                 'unknown': self.dictionary.unknown_idx,
             }
-            # TODO add char2id in Dictionary
+
             ignore_index = mapping_table.get(
-                ignore_char, self.dictionary._char2idx.get(ignore_char, None))
-            if ignore_index is None:
+                ignore_char,
+                self.dictionary.char2idx(ignore_char, strict=False))
+            if ignore_index is None or (ignore_index
+                                        == self.dictionary.unknown_idx
+                                        and ignore_char != 'unknown'):
                 warnings.warn(
                     f'{ignore_char} does not exist in the dictionary',
                     UserWarning)

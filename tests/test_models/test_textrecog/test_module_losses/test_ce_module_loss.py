@@ -21,9 +21,10 @@ class TestCEModuleLoss(TestCase):
         self.gt = [data_sample1, data_sample2, data_sample3]
 
     def test_init(self):
+        dict_file = 'dicts/lower_english_digits.txt'
         dict_cfg = dict(
             type='Dictionary',
-            dict_file='dicts/lower_english_digits.txt',
+            dict_file=dict_file,
             with_start=True,
             with_end=True,
             same_start_end=True,
@@ -47,6 +48,26 @@ class TestCEModuleLoss(TestCase):
         # with self.assertRaises(ValueError):
         with self.assertWarns(UserWarning):
             ce_loss = CEModuleLoss(dict_cfg, ignore_char='ignore')
+        with self.assertWarns(UserWarning):
+            ce_loss = CEModuleLoss(
+                dict(
+                    type='Dictionary', dict_file=dict_file, with_unknown=True),
+                ignore_char='M',
+                pad_with='none')
+        with self.assertWarns(UserWarning):
+            ce_loss = CEModuleLoss(
+                dict(
+                    type='Dictionary', dict_file=dict_file,
+                    with_unknown=False),
+                ignore_char='M',
+                pad_with='none')
+        with self.assertWarns(UserWarning):
+            ce_loss = CEModuleLoss(
+                dict(
+                    type='Dictionary', dict_file=dict_file,
+                    with_unknown=False),
+                ignore_char='unknown',
+                pad_with='none')
         ce_loss = CEModuleLoss(dict_cfg, ignore_char='1')
         self.assertEqual(ce_loss.ignore_index, 1)
 
