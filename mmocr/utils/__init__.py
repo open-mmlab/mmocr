@@ -8,7 +8,6 @@ from .check_argument import (equal_len, is_2dlist, is_3dlist, is_none_or_type,
                              is_type_list, valid_boundary)
 from .collect_env import collect_env
 from .data_converter_utils import dump_ocr_data, recog_anno_to_imginfo
-from .evaluation_utils import compute_hmean
 from .fileio import list_from_file, list_to_file
 from .img_utils import crop_img, warp_img
 from .mask_utils import fill_hole
@@ -39,10 +38,10 @@ __all__ = [
     'poly_iou', 'poly_make_valid', 'poly_union', 'poly2shapely',
     'polys2shapely', 'register_all_modules', 'offset_polygon', 'sort_vertex8',
     'sort_vertex', 'bbox_center_distance', 'bbox_diag_distance',
-    'compute_hmean', 'boundary_iou', 'point_distance', 'points_center',
-    'fill_hole', 'LineJsonParser', 'LineStrParser', 'shapely2poly', 'crop_img',
-    'warp_img', 'ConfigType', 'DetSampleList', 'RecForwardResults',
-    'InitConfigType', 'OptConfigType', 'OptDetSampleList', 'OptInitConfigType',
-    'OptMultiConfig', 'OptRecSampleList', 'RecSampleList', 'MultiConfig',
-    'OptTensor', 'ColorType', 'OptKIESampleList', 'KIESampleList'
+    'boundary_iou', 'point_distance', 'points_center', 'fill_hole',
+    'LineJsonParser', 'LineStrParser', 'shapely2poly', 'crop_img', 'warp_img',
+    'ConfigType', 'DetSampleList', 'RecForwardResults', 'InitConfigType',
+    'OptConfigType', 'OptDetSampleList', 'OptInitConfigType', 'OptMultiConfig',
+    'OptRecSampleList', 'RecSampleList', 'MultiConfig', 'OptTensor',
+    'ColorType', 'OptKIESampleList', 'KIESampleList'
 ]

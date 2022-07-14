@@ -1,9 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-# TODO check whether to keep these utils after refactoring ic13 metrics
 
 
 def compute_hmean(accum_hit_recall, accum_hit_prec, gt_num, pred_num):
-    # TODO Add typehints & Test
+    # TODO Add typehints
     """Compute hmean given hit number, ground truth number and prediction
     number.
 

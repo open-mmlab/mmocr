@@ -3,7 +3,7 @@ label_convertor = dict(
     type='CTCConvertor', dict_type='DICT36', with_unknown=False, lower=True)
 
 model = dict(
-    type='CRNNNet',
+    type='CRNN',
     preprocessor=dict(
         type='TPSPreprocessor',
         num_fiducial=20,
