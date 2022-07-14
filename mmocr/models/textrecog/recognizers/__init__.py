@@ -8,9 +8,8 @@ from .nrtr import NRTR
 from .robust_scanner import RobustScanner
 from .sar import SARNet
 from .satrn import SATRN
-from .seg_recognizer import SegRecognizer
 
 __all__ = [
     'BaseRecognizer', 'EncodeDecodeRecognizer', 'CRNNNet', 'SARNet', 'NRTR',
-    'SegRecognizer', 'RobustScanner', 'SATRN', 'ABINet', 'MASTER'
+    'RobustScanner', 'SATRN', 'ABINet', 'MASTER'
 ]
