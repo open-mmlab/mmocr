@@ -86,7 +86,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
 
   ```bash
-  python tools/data/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
+  python tools/dataset_converters/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
   ```
 
 - The resulting directory structure looks like the following:
@@ -126,7 +126,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step 2: Generate `instances_training.json` and `instances_test.json` with the following command:
 
   ```bash
-  python tools/data/textdet/ic11_converter.py PATH/TO/icdar2011 --nproc 4
+  python tools/dataset_converters/textdet/ic11_converter.py PATH/TO/icdar2011 --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -165,7 +165,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step 2: Generate `instances_training.json` and `instances_test.json` with the following command:
 
   ```bash
-  python tools/data/textdet/ic13_converter.py PATH/TO/icdar2013 --nproc 4
+  python tools/dataset_converters/textdet/ic13_converter.py PATH/TO/icdar2013 --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -198,7 +198,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Or, generate `instances_training.json` and `instances_test.json` with the following command:
 
   ```bash
-  python tools/data/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
+  python tools/dataset_converters/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
   ```
 
 - The resulting directory structure looks like the following:
@@ -260,7 +260,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
 
   ```bash
-  python tools/data/textdet/textocr_converter.py /path/to/textocr
+  python tools/dataset_converters/textdet/textocr_converter.py /path/to/textocr
   ```
 
 - The resulting directory structure looks like the following:
@@ -301,7 +301,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step2: Generate `instances_training.json` and `instances_test.json` with the following command:
 
   ```bash
-  python tools/data/textdet/totaltext_converter.py /path/to/totaltext
+  python tools/dataset_converters/textdet/totaltext_converter.py /path/to/totaltext
   ```
 
 - The resulting directory structure looks like the following:
@@ -335,7 +335,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Or, generate `instances_training.json` with following command:
 
   ```bash
-  python tools/data/common/curvedsyntext_converter.py PATH/TO/CurvedSynText150k --nproc 4
+  python tools/dataset_converters/common/curvedsyntext_converter.py PATH/TO/CurvedSynText150k --nproc 4
   ```
 
 - The resulting directory structure looks like the following:
@@ -371,7 +371,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step2: Generate `instances_training.json` and `instances_test.json` with following command:
 
   ```bash
-  python tools/data/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
+  python tools/dataset_converters/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
   ```
 
 - The resulting directory structure looks like the following:
@@ -408,7 +408,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step2: Generate `instances_training.json` and `instances_val.json` with following command:
 
   ```bash
-  python tools/data/textdet/detext_converter.py PATH/TO/detext --nproc 4
+  python tools/dataset_converters/textdet/detext_converter.py PATH/TO/detext --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -445,7 +445,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step2: Generate `instances_training.json`, `instances_val.json`, and `instances_test.json` with following command:
 
   ```bash
-  python tools/data/textdet/naf_converter.py PATH/TO/naf --nproc 4
+  python tools/dataset_converters/textdet/naf_converter.py PATH/TO/naf --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -486,7 +486,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step3: Generate `instances_training.json` and `instances_test.json` with the following command:
 
   ```bash
-  python tools/data/textdet/sroie_converter.py PATH/TO/sroie --nproc 4
+  python tools/dataset_converters/textdet/sroie_converter.py PATH/TO/sroie --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -518,7 +518,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step2: Generate `instances_training.json`, `instances_val.json`, and `instances_test.json` with following command:
 
   ```bash
-  python tools/data/textdet/lv_converter.py PATH/TO/lv --nproc 4
+  python tools/dataset_converters/textdet/lv_converter.py PATH/TO/lv --nproc 4
   ```
 
 - The resulting directory structure looks like the following:
@@ -556,7 +556,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```bash
   # Annotations of LSVT test split is not publicly available, split a validation
   # set by adding --val-ratio 0.2
-  python tools/data/textdet/lsvt_converter.py PATH/TO/lsvt
+  python tools/dataset_converters/textdet/lsvt_converter.py PATH/TO/lsvt
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -590,7 +590,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step2: Generate `instances_train.json`, `instance_val.json` and `instances_test.json` with the following command:
 
   ```bash
-  python tools/data/textdet/imgur_converter.py PATH/TO/imgur
+  python tools/dataset_converters/textdet/imgur_converter.py PATH/TO/imgur
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -622,14 +622,14 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step2: Extract zips:
 
   ```bash
-  python tools/data/common/extract_kaist.py PATH/TO/kaist
+  python tools/dataset_converters/common/extract_kaist.py PATH/TO/kaist
   ```
 
 - Step3: Generate `instances_training.json` and `instances_val.json` (optional) with following command:
 
   ```bash
   # Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
-  python tools/data/textdet/kaist_converter.py PATH/TO/kaist --nproc 4
+  python tools/dataset_converters/textdet/kaist_converter.py PATH/TO/kaist --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -660,7 +660,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```bash
   # Annotations of MTWI test split is not publicly available, split a validation
   # set by adding --val-ratio 0.2
-  python tools/data/textdet/mtwi_converter.py PATH/TO/mtwi --nproc 4
+  python tools/dataset_converters/textdet/mtwi_converter.py PATH/TO/mtwi --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -694,7 +694,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
 
   ```bash
-  python tools/data/textdet/cocotext_converter.py PATH/TO/coco_textv2
+  python tools/dataset_converters/textdet/cocotext_converter.py PATH/TO/coco_textv2
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -729,7 +729,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
   ```bash
   # Annotations of ReCTS test split is not publicly available, split a validation
   # set by adding --val-ratio 0.2
-  python tools/data/textdet/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
+  python tools/dataset_converters/textdet/rects_converter.py PATH/TO/rects --nproc 4 --val-ratio 0.2
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -770,7 +770,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step3: Generate `instances_training.json` and `instances_val.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
-  python tools/data/textdet/ilst_converter.py    PATH/TO/IIIT-ILST --nproc 4
+  python tools/dataset_converters/textdet/ilst_converter.py    PATH/TO/IIIT-ILST --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -807,7 +807,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step2: Generate `instances_training.json`, `instances_test.json` and `instances_unseen_test.json`
 
   ```bash
-  python tools/data/textdet/vintext_converter.py PATH/TO/vintext --nproc 4
+  python tools/dataset_converters/textdet/vintext_converter.py PATH/TO/vintext --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -858,7 +858,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 - Step3: - Step3: Generate `instances_training.json` and `instances_val.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
-  python tools/data/textdet/bid_converter.py PATH/TO/BID --nproc 4
+  python tools/dataset_converters/textdet/bid_converter.py PATH/TO/BID --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -879,7 +879,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
   ```bash
   # Annotations of RCTW test split is not publicly available, split a validation set by adding --val-ratio 0.2
-  python tools/data/textdet/rctw_converter.py PATH/TO/rctw --nproc 4
+  python tools/dataset_converters/textdet/rctw_converter.py PATH/TO/rctw --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -930,7 +930,7 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
   ```bash
   # Collect word annotation from HierText  --level word
-  python tools/data/textdet/hiertext_converter.py PATH/TO/HierText --level word --nproc 4
+  python tools/dataset_converters/textdet/hiertext_converter.py PATH/TO/HierText --level word --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
