@@ -8,11 +8,11 @@ from mmengine.data import LabelData
 
 from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
-from mmocr.models.textrecog.losses import CTCLoss
+from mmocr.models.textrecog.module_losses import CTCModuleLoss
 from mmocr.testing import create_dummy_dict_file
 
 
-class TestCTCLoss(TestCase):
+class TestCTCModuleLoss(TestCase):
 
     def test_ctc_loss(self):
         tmp_dir = tempfile.TemporaryDirectory()
@@ -22,11 +22,11 @@ class TestCTCLoss(TestCase):
 
         dictionary = Dictionary(dict_file=dict_file, with_padding=True)
         with self.assertRaises(AssertionError):
-            CTCLoss(dictionary=dictionary, flatten='flatten')
+            CTCModuleLoss(dictionary=dictionary, flatten='flatten')
         with self.assertRaises(AssertionError):
-            CTCLoss(dictionary=dictionary, reduction=1)
+            CTCModuleLoss(dictionary=dictionary, reduction=1)
         with self.assertRaises(AssertionError):
-            CTCLoss(dictionary=dictionary, zero_infinity='zero')
+            CTCModuleLoss(dictionary=dictionary, zero_infinity='zero')
 
         outputs = torch.zeros(2, 40, 37)
         datasample1 = TextRecogDataSample()
@@ -36,7 +36,7 @@ class TestCTCLoss(TestCase):
         gt_text2 = LabelData(item='owrd')
         datasample2.gt_text = gt_text2
         data_samples = [datasample1, datasample2]
-        ctc_loss = CTCLoss(dictionary=dictionary)
+        ctc_loss = CTCModuleLoss(dictionary=dictionary)
         data_samples = ctc_loss.get_targets(data_samples)
         losses = ctc_loss(outputs, data_samples)
         assert isinstance(losses, dict)
@@ -44,7 +44,7 @@ class TestCTCLoss(TestCase):
         assert torch.allclose(losses['loss_ctc'],
                               torch.tensor(losses['loss_ctc'].item()).float())
         # test flatten = False
-        ctc_loss = CTCLoss(dictionary=dictionary, flatten=False)
+        ctc_loss = CTCModuleLoss(dictionary=dictionary, flatten=False)
         losses = ctc_loss(outputs, data_samples)
         assert isinstance(losses, dict)
         assert 'loss_ctc' in losses
@@ -59,7 +59,7 @@ class TestCTCLoss(TestCase):
         create_dummy_dict_file(dict_file, list('helowrd'))
 
         dictionary = Dictionary(dict_file=dict_file, with_padding=True)
-        loss = CTCLoss(dictionary=dictionary, letter_case='lower')
+        loss = CTCModuleLoss(dictionary=dictionary, letter_case='lower')
         # test encode str to tensor
         datasample1 = TextRecogDataSample()
         gt_text1 = LabelData(item='hell')

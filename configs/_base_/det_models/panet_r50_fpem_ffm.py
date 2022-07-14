@@ -15,7 +15,7 @@ model = dict(
         type='PANHead',
         in_channels=[128, 128, 128, 128],
         out_channels=6,
-        loss_module=dict(type='PANLoss', speedup_bbox_thr=32),
+        module_loss=dict(type='PANModuleLoss', speedup_bbox_thr=32),
         postprocessor=dict(type='PANPostprocessor', text_repr_type='poly')),
     data_preprocessor=dict(
         type='TextDetDataPreprocessor',

@@ -21,7 +21,8 @@ class FCEHead(BaseTextDetHead):
         in_channels (int): The number of input channels.
         fourier_degree (int) : The maximum Fourier transform degree k. Defaults
             to 5.
-        loss (dict): Config of loss for FCENet.
+        module_loss (dict): Config of loss for FCENet. Defaults to
+            ``dict(type='FCEModuleLoss', num_sample=50)``.
         postprocessor (dict): Config of postprocessor for FCENet.
         init_cfg (dict, optional): Initialization configs.
     """
@@ -30,7 +31,7 @@ class FCEHead(BaseTextDetHead):
         self,
         in_channels: int,
         fourier_degree: int = 5,
-        loss_module: Dict = dict(type='FCELoss', num_sample=50),
+        module_loss: Dict = dict(type='FCEModuleLoss', num_sample=50),
         postprocessor: Dict = dict(
             type='FCEPostprocessor',
             text_repr_type='poly',
@@ -45,10 +46,10 @@ class FCEHead(BaseTextDetHead):
             override=[dict(name='out_conv_cls'),
                       dict(name='out_conv_reg')])
     ) -> None:
-        loss_module['fourier_degree'] = fourier_degree
+        module_loss['fourier_degree'] = fourier_degree
         postprocessor['fourier_degree'] = fourier_degree
         super().__init__(
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor,
             init_cfg=init_cfg)
 

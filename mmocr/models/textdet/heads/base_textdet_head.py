@@ -21,12 +21,12 @@ class BaseTextDetHead(BaseModule):
 
     2. The ``loss`` method is used to calculate the loss of head,
     which includes two steps: (1) the head model performs forward
-    propagation to obtain the feature maps (2) The ``loss_module`` method
+    propagation to obtain the feature maps (2) The ``module_loss`` method
     is called based on the feature maps to calculate the loss.
 
     .. code:: text
 
-        loss(): forward() -> loss_module()
+        loss(): forward() -> module_loss()
 
     3. The ``predict`` method is used to predict detection results,
     which includes two steps: (1) the head model performs forward
@@ -40,11 +40,11 @@ class BaseTextDetHead(BaseModule):
 
     4. The ``loss_and_predict`` method is used to return loss and detection
     results at the same time. It will call head's ``forward``,
-    ``loss_module`` and ``postprocessor`` methods in order.
+    ``module_loss`` and ``postprocessor`` methods in order.
 
     .. code:: text
 
-        loss_and_predict(): forward() -> loss_module() -> postprocessor()
+        loss_and_predict(): forward() -> module_loss() -> postprocessor()
 
 
     Args:
@@ -55,14 +55,14 @@ class BaseTextDetHead(BaseModule):
     """
 
     def __init__(self,
-                 loss_module: Dict,
+                 module_loss: Dict,
                  postprocessor: Dict,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
         super().__init__(init_cfg=init_cfg)
-        assert isinstance(loss_module, dict)
+        assert isinstance(module_loss, dict)
         assert isinstance(postprocessor, dict)
 
-        self.loss_module = MODELS.build(loss_module)
+        self.module_loss = MODELS.build(module_loss)
         self.postprocessor = MODELS.build(postprocessor)
 
     def loss(self, x: Tuple[Tensor], batch_data_samples: SampleList) -> dict:
@@ -80,7 +80,7 @@ class BaseTextDetHead(BaseModule):
             dict: A dictionary of loss components.
         """
         outs = self(x)
-        losses = self.loss_module(outs, batch_data_samples)
+        losses = self.module_loss(outs, batch_data_samples)
         return losses
 
     def loss_and_predict(self, x: Tuple[Tensor], batch_data_samples: SampleList
@@ -102,7 +102,7 @@ class BaseTextDetHead(BaseModule):
                   results of each image after the post process.
         """
         outs = self(x)
-        losses = self.loss_module(outs, batch_data_samples)
+        losses = self.module_loss(outs, batch_data_samples)
 
         predictions = self.postprocessor(outs, batch_data_samples)
         return losses, predictions

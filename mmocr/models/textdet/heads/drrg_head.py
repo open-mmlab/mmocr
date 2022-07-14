@@ -162,8 +162,8 @@ class DRRGHead(BaseTextDetHead):
             text center region. Defaults to 50.
         local_graph_thr (float): The threshold to filter identical local
             graphs. Defaults to 0.7.
-        loss (dict): The config of loss that DRRGHead uses. Defaults to
-            ``dict(type='DRRGLoss')``.
+        module_loss (dict): The config of loss that DRRGHead uses. Defaults to
+            ``dict(type='DRRGModuleLoss')``.
         postprocessor (dict): Config of postprocessor for Drrg. Defaults to
             ``dict(type='DrrgPostProcessor', link_thr=0.85)``.
         init_cfg (dict or list[dict], optional): Initialization configs.
@@ -189,13 +189,13 @@ class DRRGHead(BaseTextDetHead):
         center_region_thr: float = 0.2,
         center_region_area_thr: int = 50,
         local_graph_thr: float = 0.7,
-        loss_module: Dict = dict(type='DRRGLoss'),
+        module_loss: Dict = dict(type='DRRGModuleLoss'),
         postprocessor: Dict = dict(type='DRRGPostprocessor', link_thr=0.85),
         init_cfg: Optional[Union[Dict, List[Dict]]] = dict(
             type='Normal', override=dict(name='out_conv'), mean=0, std=0.01)
     ) -> None:
         super().__init__(
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor,
             init_cfg=init_cfg)
 
@@ -281,7 +281,7 @@ class DRRGHead(BaseTextDetHead):
             - gt_labels (Tensor): Ground-truth label of shape
                 :math:`(m, n)` where :math:`m * n = N`.
         """
-        targets = self.loss_module.get_targets(batch_data_samples)
+        targets = self.module_loss.get_targets(batch_data_samples)
         gt_comp_attribs = targets[-1]
 
         pred_maps = self.out_conv(batch_inputs)
@@ -291,7 +291,7 @@ class DRRGHead(BaseTextDetHead):
 
         gcn_pred = self.gcn(node_feats, adjacent_matrices, knn_inds)
 
-        return self.loss_module((pred_maps, gcn_pred, gt_labels),
+        return self.module_loss((pred_maps, gcn_pred, gt_labels),
                                 batch_data_samples)
 
     def forward(

@@ -11,11 +11,11 @@ from numpy.typing import ArrayLike
 
 from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
-from .textsnake_loss import TextSnakeLoss
+from .textsnake_module_loss import TextSnakeModuleLoss
 
 
 @MODELS.register_module()
-class FCELoss(TextSnakeLoss):
+class FCEModuleLoss(TextSnakeModuleLoss):
     """The class for implementing FCENet loss.
 
     FCENet(CVPR2021): `Fourier Contour Embedding for Arbitrary-shaped Text

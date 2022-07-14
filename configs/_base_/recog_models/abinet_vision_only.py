@@ -29,7 +29,7 @@ model = dict(
             attn_width=32,
             attn_mode='nearest',
             init_cfg=dict(type='Xavier', layer='Conv2d')),
-        loss_module=dict(type='ABILoss', letter_case='lower'),
+        module_loss=dict(type='ABIModuleLoss', letter_case='lower'),
         postprocessor=dict(type='AttentionPostprocessor'),
         dictionary=dictionary,
         max_seq_len=26,

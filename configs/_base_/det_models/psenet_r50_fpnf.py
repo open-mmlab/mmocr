@@ -20,7 +20,7 @@ model_poly = dict(
         in_channels=[256],
         hidden_dim=256,
         out_channel=7,
-        loss_module=dict(type='PSELoss'),
+        module_loss=dict(type='PSEModuleLoss'),
         postprocessor=dict(type='PSEPostprocessor', text_repr_type='poly')),
     data_preprocessor=dict(
         type='TextDetDataPreprocessor',
@@ -51,7 +51,7 @@ model_quad = dict(
         in_channels=[256],
         hidden_dim=256,
         out_channel=7,
-        loss=dict(type='PSELoss'),
+        module_loss=dict(type='PSEModuleLoss'),
         postprocessor=dict(type='PSEPostprocessor', text_repr_type='quad')),
     data_preprocessor=dict(
         type='TextDetDataPreprocessor',

@@ -63,8 +63,8 @@ model = dict(
         feat_pe_drop=0.2,
         feat_size=6 * 40,
         postprocessor=dict(type='AttentionPostprocessor'),
-        loss_module=dict(
-            type='CELoss', reduction='mean', ignore_first_char=True),
+        module_loss=dict(
+            type='CEModuleLoss', reduction='mean', ignore_first_char=True),
         max_seq_len=30,
         dictionary=dictionary),
     data_preprocessor=dict(

@@ -196,7 +196,7 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 | ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------: |
 | DB_r18        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |          :x:          |
 | DB_r50        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |          :x:          |
-| DBPP_r50        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#dbnetpp)            |              :x:               |
+| DBPP_r50      |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#dbnetpp)                                        |          :x:          |
 | DRRG          |                                         [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#drrg)                                          |          :x:          |
 | FCE_IC15      |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |          :x:          |
 | FCE_CTW_DCNv2 |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |          :x:          |
@@ -225,7 +225,6 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 | SAR_CN *      |                     [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition)                      |  :heavy_check_mark:   |
 | SATRN         |                                                           [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                                           |  :heavy_check_mark:   |
 | SATRN_sm      |                                                           [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                                           |  :heavy_check_mark:   |
-| SEG           |                                                  [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline)                                                   |          :x:          |
 | Tesseract     |                                                                            [链接](https://tesseract-ocr.github.io/)                                                                            |  :heavy_check_mark:   |
 
 ```{note}

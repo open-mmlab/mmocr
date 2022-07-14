@@ -16,7 +16,7 @@ from .text_kernel_mixin import TextKernelMixin
 
 
 @MODELS.register_module()
-class TextSnakeLoss(nn.Module, TextKernelMixin):
+class TextSnakeModuleLoss(nn.Module, TextKernelMixin):
     """The class for implementing TextSnake loss. This is partially adapted
     from https://github.com/princewang1994/TextSnake.pytorch.
 

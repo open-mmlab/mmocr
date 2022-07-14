@@ -21,7 +21,8 @@ class TextSnakeHead(BaseTextDetHead):
         in_channels (int): Number of input channels.
         out_channels (int): Number of output channels.
         downsample_ratio (float): Downsample ratio.
-        loss (dict): Configuration dictionary for loss type.
+        module_loss (dict): Configuration dictionary for loss type.
+            Defaults to ``dict(type='TextSnakeModuleLoss')``.
         postprocessor (dict): Config of postprocessor for TextSnake.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
@@ -31,14 +32,14 @@ class TextSnakeHead(BaseTextDetHead):
         in_channels: int,
         out_channels: int = 5,
         downsample_ratio: float = 1.0,
-        loss_module: Dict = dict(type='TextSnakeLoss'),
+        module_loss: Dict = dict(type='TextSnakeModuleLoss'),
         postprocessor: Dict = dict(
             type='TextSnakePostprocessor', text_repr_type='poly'),
         init_cfg: Optional[Union[Dict, List[Dict]]] = dict(
             type='Normal', override=dict(name='out_conv'), mean=0, std=0.01)
     ) -> None:
         super().__init__(
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor,
             init_cfg=init_cfg)
         assert isinstance(in_channels, int)

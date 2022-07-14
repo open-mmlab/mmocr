@@ -35,7 +35,7 @@ class ABILanguageDecoder(BaseDecoder):
             otherwise cross attention will be used.
         max_seq_len (int): Maximum sequence length :math:`T`. The
             sequence is usually generated from decoder. Defaults to 40.
-        loss_module (dict, optional): Config to build loss. Defaults to None.
+        module_loss (dict, optional): Config to build loss. Defaults to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
         init_cfg (dict or list[dict], optional): Initialization configs.
@@ -52,13 +52,13 @@ class ABILanguageDecoder(BaseDecoder):
                  detach_tokens: bool = True,
                  use_self_attn: bool = False,
                  max_seq_len: int = 40,
-                 loss_module: Optional[Dict] = None,
+                 module_loss: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None,
                  **kwargs) -> None:
         super().__init__(
             dictionary=dictionary,
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor,
             max_seq_len=max_seq_len,
             init_cfg=init_cfg)

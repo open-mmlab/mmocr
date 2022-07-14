@@ -6,11 +6,11 @@ import torch.nn.functional as F
 
 from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
-from . import PANLoss
+from . import PANModuleLoss
 
 
 @MODELS.register_module()
-class PSELoss(PANLoss):
+class PSEModuleLoss(PANModuleLoss):
     """The class for implementing PSENet loss. This is partially adapted from
     https://github.com/whai362/PSENet.
 

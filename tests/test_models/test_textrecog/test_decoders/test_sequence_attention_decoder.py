@@ -36,28 +36,28 @@ class TestSequenceAttentionDecoder(TestCase):
 
     def test_init(self):
 
-        loss_module_cfg = dict(type='CELoss')
+        module_loss_cfg = dict(type='CEModuleLoss')
         decoder = SequenceAttentionDecoder(
             dictionary=self.dict_cfg,
-            loss_module=loss_module_cfg,
+            module_loss=module_loss_cfg,
             return_feature=False)
         self.assertIsInstance(decoder.prediction, torch.nn.Linear)
 
     def test_forward_train(self):
         feat = torch.randn(2, 512, 8, 8)
         encoder_out = torch.randn(2, 128, 8, 8)
-        loss_module_cfg = dict(type='CELoss')
+        module_loss_cfg = dict(type='CEModuleLoss')
         decoder = SequenceAttentionDecoder(
             dictionary=self.dict_cfg,
-            loss_module=loss_module_cfg,
+            module_loss=module_loss_cfg,
             return_feature=False)
-        data_samples = decoder.loss_module.get_targets(self.data_info)
+        data_samples = decoder.module_loss.get_targets(self.data_info)
         output = decoder.forward_train(
             feat=feat, out_enc=encoder_out, data_samples=data_samples)
         self.assertTupleEqual(tuple(output.shape), (2, 40, 39))
 
         decoder = SequenceAttentionDecoder(
-            dictionary=self.dict_cfg, loss_module=loss_module_cfg)
+            dictionary=self.dict_cfg, module_loss=module_loss_cfg)
         output = decoder.forward_train(
             feat=feat, out_enc=encoder_out, data_samples=data_samples)
         self.assertTupleEqual(tuple(output.shape), (2, 40, 512))
@@ -72,10 +72,10 @@ class TestSequenceAttentionDecoder(TestCase):
     def test_forward_test(self):
         feat = torch.randn(2, 512, 8, 8)
         encoder_out = torch.randn(2, 128, 8, 8)
-        loss_module_cfg = dict(type='CELoss')
+        module_loss_cfg = dict(type='CEModuleLoss')
         decoder = SequenceAttentionDecoder(
             dictionary=self.dict_cfg,
-            loss_module=loss_module_cfg,
+            module_loss=module_loss_cfg,
             return_feature=False)
         output = decoder.forward_test(feat, encoder_out, self.data_info)
         self.assertTupleEqual(tuple(output.shape), (2, 40, 39))

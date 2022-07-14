@@ -6,13 +6,13 @@ import torch
 from mmengine import InstanceData
 
 from mmocr.data import TextDetDataSample
-from mmocr.models.textdet.losses import FCELoss
+from mmocr.models.textdet.module_losses import FCEModuleLoss
 
 
-class TestFCELoss(TestCase):
+class TestFCEModuleLoss(TestCase):
 
     def setUp(self) -> None:
-        self.fce_loss = FCELoss(fourier_degree=5, num_sample=400)
+        self.fce_loss = FCEModuleLoss(fourier_degree=5, num_sample=400)
         self.data_samples = [
             TextDetDataSample(
                 metainfo=dict(img_shape=(320, 320)),

@@ -199,7 +199,7 @@ means that `batch_mode` and `print_result` are set to `True`)
 | ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------: |
 | DB_r18        |            [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |              :x:               |
 | DB_r50        |            [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |              :x:               |
-| DBPP_r50        |            [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#dbnetpp)            |              :x:               |
+| DBPP_r50      |                                        [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#dbnetpp)                                        |              :x:               |
 | DRRG          |                                         [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#drrg)                                          |              :x:               |
 | FCE_IC15      |             [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |              :x:               |
 | FCE_CTW_DCNv2 |             [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |              :x:               |
@@ -228,7 +228,6 @@ means that `batch_mode` and `print_result` are set to `True`)
 | SAR_CN *      |                     [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition)                      |       :heavy_check_mark:       |
 | SATRN         |                                                           [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                                           |       :heavy_check_mark:       |
 | SATRN_sm      |                                                           [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                                           |       :heavy_check_mark:       |
-| SEG           |                                                  [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline)                                                   |              :x:               |
 | Tesseract     |                                                                            [link](https://tesseract-ocr.github.io/)                                                                            |              :x:               |
 
 ```{warning}

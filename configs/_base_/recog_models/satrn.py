@@ -13,7 +13,7 @@ model = dict(
     encoder=dict(type='SATRNEncoder'),
     decoder=dict(
         type='NRTRDecoder',
-        loss_module=dict(type='CELoss'),
+        module_loss=dict(type='CEModuleLoss'),
         dictionary=dictionary,
         max_seq_len=40),
     data_preprocessor=dict(

@@ -14,11 +14,11 @@ from torch import Tensor
 from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import check_argument
-from .textsnake_loss import TextSnakeLoss
+from .textsnake_module_loss import TextSnakeModuleLoss
 
 
 @MODELS.register_module()
-class DRRGLoss(TextSnakeLoss):
+class DRRGModuleLoss(TextSnakeModuleLoss):
     """The class for implementing DRRG loss. This is partially adapted from
     https://github.com/GXYM/DRRG licensed under the MIT license.
 

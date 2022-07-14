@@ -6,7 +6,7 @@ from .decoders import *  # NOQA
 from .dictionary import *  # NOQA
 from .encoders import *  # NOQA
 from .heads import *  # NOQA
-from .losses import *  # NOQA
+from .module_losses import *  # NOQA
 from .plugins import *  # NOQA
 from .postprocessors import *  # NOQA
 from .preprocessors import *  # NOQA

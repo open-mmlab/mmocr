@@ -6,10 +6,10 @@ import torch
 from mmengine import InstanceData
 
 from mmocr.data import TextDetDataSample
-from mmocr.models.textdet.losses import DRRGLoss
+from mmocr.models.textdet.module_losses import DRRGModuleLoss
 
 
-class TestDRRGLoss(TestCase):
+class TestDRRGModuleLoss(TestCase):
 
     def setUp(self) -> None:
         preds_maps = torch.rand(1, 6, 64, 64)
@@ -30,7 +30,7 @@ class TestDRRGLoss(TestCase):
         ]
 
     def test_forward(self):
-        loss = DRRGLoss()
+        loss = DRRGModuleLoss()
         loss_output = loss(self.preds, self.data_samples)
         self.assertIsInstance(loss_output, dict)
         self.assertIn('loss_text', loss_output)
@@ -42,7 +42,7 @@ class TestDRRGLoss(TestCase):
 
     def test_get_targets(self):
         # test get_targets
-        loss = DRRGLoss(
+        loss = DRRGModuleLoss(
             min_width=2.,
             max_width=4.,
             min_rand_half_height=3.,
@@ -64,7 +64,7 @@ class TestDRRGLoss(TestCase):
 
         # test get_targets with the number of proposed text components exceeds
         # num_max_comps
-        loss = DRRGLoss(
+        loss = DRRGModuleLoss(
             min_width=2.,
             max_width=4.,
             min_rand_half_height=3.,
@@ -82,7 +82,7 @@ class TestDRRGLoss(TestCase):
                     polygons=[np.array([13, 6, 17, 6, 17, 14, 13, 14])],
                     ignored=torch.BoolTensor([False])))
         ]
-        loss = DRRGLoss(
+        loss = DRRGModuleLoss(
             min_width=4.,
             max_width=8.,
             min_rand_half_height=3.,
@@ -92,7 +92,7 @@ class TestDRRGLoss(TestCase):
 
         # test generate_targets with shrunk margin in
         # generate_rand_comp_attribs
-        loss = DRRGLoss(
+        loss = DRRGModuleLoss(
             min_width=2.,
             max_width=30.,
             min_rand_half_height=3.,

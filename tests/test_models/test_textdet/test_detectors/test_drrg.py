@@ -53,7 +53,9 @@ class TestDRRG(unittest.TestCase):
                                     gt_bot_height_map, gt_sin_map, gt_cos_map,
                                     gt_comp_attribs)
 
-    @mock.patch('mmocr.models.textdet.losses.drrg_loss.DRRGLoss.get_targets')
+    @mock.patch(
+        'mmocr.models.textdet.module_losses.drrg_module_loss.DRRGModuleLoss.'
+        'get_targets')
     def test_loss(self, mock_get_targets):
         imgs, data_samples, targets = self._get_drrg_inputs()
         mock_get_targets.return_value = targets

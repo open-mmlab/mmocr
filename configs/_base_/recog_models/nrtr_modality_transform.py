@@ -13,7 +13,8 @@ model = dict(
     encoder=dict(type='NRTREncoder', n_layers=12),
     decoder=dict(
         type='NRTRDecoder',
-        loss_module=dict(type='CELoss', ignore_first_char=True, flatten=True),
+        module_loss=dict(
+            type='CEModuleLoss', ignore_first_char=True, flatten=True),
         postprocessor=dict(type='AttentionPostprocessor'),
         dictionary=dictionary,
         max_seq_len=30),

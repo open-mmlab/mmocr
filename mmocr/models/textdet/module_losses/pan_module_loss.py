@@ -14,7 +14,7 @@ from .text_kernel_mixin import TextKernelMixin
 
 
 @MODELS.register_module()
-class PANLoss(nn.Module, TextKernelMixin):
+class PANModuleLoss(nn.Module, TextKernelMixin):
     """The class for implementing PANet loss. This was partially adapted from
     https://github.com/whai362/pan_pp.pytorch and
     https://github.com/WenmuZhou/PAN.pytorch.

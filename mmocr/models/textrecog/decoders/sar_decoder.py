@@ -21,7 +21,7 @@ class ParallelSARDecoder(BaseDecoder):
     Args:
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
             the instance of `Dictionary`.
-        loss_module (dict, optional): Config to build loss_module. Defaults
+        module_loss (dict, optional): Config to build module_loss. Defaults
             to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
@@ -51,7 +51,7 @@ class ParallelSARDecoder(BaseDecoder):
 
     def __init__(self,
                  dictionary: Union[Dict, Dictionary],
-                 loss_module: Optional[Dict] = None,
+                 module_loss: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  enc_bi_rnn: bool = False,
                  dec_bi_rnn: bool = False,
@@ -68,7 +68,7 @@ class ParallelSARDecoder(BaseDecoder):
                  **kwargs) -> None:
         super().__init__(
             dictionary=dictionary,
-            loss_module=loss_module,
+            module_loss=module_loss,
             max_seq_len=max_seq_len,
             postprocessor=postprocessor,
             init_cfg=init_cfg)
@@ -296,7 +296,7 @@ class SequentialSARDecoder(BaseDecoder):
     Args:
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
             the instance of `Dictionary`.
-        loss_module (dict, optional): Config to build loss_module. Defaults
+        module_loss (dict, optional): Config to build module_loss. Defaults
             to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
@@ -325,7 +325,7 @@ class SequentialSARDecoder(BaseDecoder):
 
     def __init__(self,
                  dictionary: Optional[Union[Dict, Dictionary]] = None,
-                 loss_module: Optional[Dict] = None,
+                 module_loss: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  enc_bi_rnn: bool = False,
                  dec_bi_rnn: bool = False,
@@ -341,7 +341,7 @@ class SequentialSARDecoder(BaseDecoder):
                  **kwargs):
         super().__init__(
             dictionary=dictionary,
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor,
             max_seq_len=max_seq_len,
             init_cfg=init_cfg)

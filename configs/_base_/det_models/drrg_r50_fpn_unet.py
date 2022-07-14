@@ -23,5 +23,5 @@ model = dict(
         in_channels=32,
         text_region_thr=0.3,
         center_region_thr=0.4,
-        loss_module=dict(type='DRRGLoss'),
+        module_loss=dict(type='DRRGModuleLoss'),
         postprocessor=dict(type='DRRGPostprocessor', link_thr=0.80)))
