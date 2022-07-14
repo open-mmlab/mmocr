@@ -3,7 +3,6 @@ from mmcv.utils import Registry, build_from_cfg
 
 from .bbox_utils import (bbox2poly, bbox_center_distance, bbox_diag_distance,
                          bezier2polygon, is_on_same_line, rescale_bboxes,
-                         sort_points, sort_vertex, sort_vertex8,
                          stitch_boxes_into_lines)
 from .check_argument import (equal_len, is_2dlist, is_3dlist, is_none_or_type,
                              is_type_list, valid_boundary)
@@ -19,7 +18,8 @@ from .polygon_utils import (boundary_iou, crop_polygon, is_poly_inside_rect,
                             offset_polygon, poly2bbox, poly2shapely,
                             poly_intersection, poly_iou, poly_make_valid,
                             poly_union, polys2shapely, rescale_polygon,
-                            rescale_polygons, shapely2poly)
+                            rescale_polygons, shapely2poly, sort_points,
+                            sort_vertex, sort_vertex8)
 from .setup_env import register_all_modules
 from .string_utils import StringStripper
 from .typing import (ColorType, ConfigType, DetSampleList, InitConfigType,

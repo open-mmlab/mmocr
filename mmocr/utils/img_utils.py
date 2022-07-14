@@ -4,7 +4,8 @@ import numpy as np
 from mmcv.utils import is_seq_of
 from shapely.geometry import LineString, Point
 
-from .bbox_utils import bbox_jitter, sort_vertex
+from .bbox_utils import bbox_jitter
+from .polygon_utils import sort_vertex
 
 
 def warp_img(src_img,

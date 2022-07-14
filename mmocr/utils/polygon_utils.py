@@ -1,13 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import functools
 from typing import List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pyclipper
 import shapely
+from mmcv import is_list_of
 from numpy.typing import ArrayLike
 from shapely.geometry import MultiPolygon, Polygon
 
 from mmocr.utils import bbox2poly, valid_boundary
+from mmocr.utils.check_argument import is_2dlist
 
 
 def rescale_polygon(polygon: ArrayLike,
@@ -351,3 +354,99 @@ def boundary_iou(src: List,
     target_poly = poly2shapely(target)
 
     return poly_iou(src_poly, target_poly, zero_division=zero_division)
+
+
+def sort_points(points):
+    # TODO Add typehints & test & docstring
+    """Sort arbitory points in clockwise order. Reference:
+    https://stackoverflow.com/a/6989383.
+
+    Args:
+        points (list[ndarray] or ndarray or list[list]): A list of unsorted
+            boundary points.
+
+    Returns:
+        list[ndarray]: A list of points sorted in clockwise order.
+    """
+
+    assert is_list_of(points, np.ndarray) or isinstance(points, np.ndarray) \
+        or is_2dlist(points)
+
+    points = np.array(points)
+    center = np.mean(points, axis=0)
+
+    def cmp(a, b):
+        oa = a - center
+        ob = b - center
+
+        # Some corner cases
+        if oa[0] >= 0 and ob[0] < 0:
+            return 1
+        if oa[0] < 0 and ob[0] >= 0:
+            return -1
+
+        prod = np.cross(oa, ob)
+        if prod > 0:
+            return 1
+        if prod < 0:
+            return -1
+
+        # a, b are on the same line from the center
+        return 1 if (oa**2).sum() < (ob**2).sum() else -1
+
+    return sorted(points, key=functools.cmp_to_key(cmp))
+
+
+def sort_vertex(points_x, points_y):
+    # TODO Add typehints & test
+    """Sort box vertices in clockwise order from left-top first.
+
+    Args:
+        points_x (list[float]): x of four vertices.
+        points_y (list[float]): y of four vertices.
+
+    Returns:
+        tuple[list[float], list[float]]: Sorted x and y of four vertices.
+
+        - sorted_points_x (list[float]): x of sorted four vertices.
+        - sorted_points_y (list[float]): y of sorted four vertices.
+    """
+    assert is_list_of(points_x, (float, int))
+    assert is_list_of(points_y, (float, int))
+    assert len(points_x) == 4
+    assert len(points_y) == 4
+    vertices = np.stack((points_x, points_y), axis=-1).astype(np.float32)
+    vertices = _sort_vertex(vertices)
+    sorted_points_x = list(vertices[:, 0])
+    sorted_points_y = list(vertices[:, 1])
+    return sorted_points_x, sorted_points_y
+
+
+def _sort_vertex(vertices):
+    # TODO Add typehints & docstring & test
+    assert vertices.ndim == 2
+    assert vertices.shape[-1] == 2
+    N = vertices.shape[0]
+    if N == 0:
+        return vertices
+
+    center = np.mean(vertices, axis=0)
+    directions = vertices - center
+    angles = np.arctan2(directions[:, 1], directions[:, 0])
+    sort_idx = np.argsort(angles)
+    vertices = vertices[sort_idx]
+
+    left_top = np.min(vertices, axis=0)
+    dists = np.linalg.norm(left_top - vertices, axis=-1, ord=2)
+    lefttop_idx = np.argmin(dists)
+    indexes = (np.arange(N, dtype=np.int_) + lefttop_idx) % N
+    return vertices[indexes]
+
+
+def sort_vertex8(points):
+    # TODO Add typehints & docstring & test
+    """Sort vertex with 8 points [x1 y1 x2 y2 x3 y3 x4 y4]"""
+    assert len(points) == 8
+    vertices = _sort_vertex(np.array(points, dtype=np.float32).reshape(-1, 2))
+    sorted_box = list(vertices.flatten())
+    return sorted_box

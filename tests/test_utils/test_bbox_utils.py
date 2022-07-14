@@ -5,7 +5,9 @@ import numpy as np
 import torch
 
 from mmocr.utils import (bbox2poly, bbox_center_distance, bbox_diag_distance,
-                         bezier2polygon)
+                         bezier2polygon, is_on_same_line,
+                         stitch_boxes_into_lines)
+from mmocr.utils.bbox_utils import bbox_jitter
 
 
 class TestBbox2poly(unittest.TestCase):
@@ -135,3 +137,80 @@ class TestBezier2Polygon(unittest.TestCase):
             bezier2polygon(self.bezier_points2, num_sample=-1)
         with self.assertRaises(AssertionError):
             bezier2polygon(self.invalid_input, num_sample=-1)
+
+
+class TestBboxJitter(unittest.TestCase):
+
+    def test_bbox_jitter(self):
+        dummy_points_x = [20, 120, 120, 20]
+        dummy_points_y = [20, 20, 40, 40]
+
+        kwargs = dict(jitter_ratio_x=0.0, jitter_ratio_y=0.0)
+
+        with self.assertRaises(AssertionError):
+            bbox_jitter([], dummy_points_y)
+        with self.assertRaises(AssertionError):
+            bbox_jitter(dummy_points_x, [])
+        with self.assertRaises(AssertionError):
+            bbox_jitter(dummy_points_x, dummy_points_y, jitter_ratio_x=1.)
+        with self.assertRaises(AssertionError):
+            bbox_jitter(dummy_points_x, dummy_points_y, jitter_ratio_y=1.)
+
+        bbox_jitter(dummy_points_x, dummy_points_y, **kwargs)
+
+        assert np.allclose(dummy_points_x, [20, 120, 120, 20])
+        assert np.allclose(dummy_points_y, [20, 20, 40, 40])
+
+
+class TestIsOnSameLine(unittest.TestCase):
+
+    def test_box_on_line(self):
+        # regular boxes
+        box1 = [0, 0, 1, 0, 1, 1, 0, 1]
+        box2 = [2, 0.5, 3, 0.5, 3, 1.5, 2, 1.5]
+        box3 = [4, 0.8, 5, 0.8, 5, 1.8, 4, 1.8]
+        self.assertTrue(is_on_same_line(box1, box2, 0.5))
+        self.assertFalse(is_on_same_line(box1, box3, 0.5))
+
+        # irregular box4
+        box4 = [0, 0, 1, 1, 1, 2, 0, 1]
+        box5 = [2, 1.5, 3, 1.5, 3, 2.5, 2, 2.5]
+        box6 = [2, 1.6, 3, 1.6, 3, 2.6, 2, 2.6]
+        self.assertTrue(is_on_same_line(box4, box5, 0.5))
+        self.assertFalse(is_on_same_line(box4, box6, 0.5))
+
+
+class TestStitchBoxesIntoLines(unittest.TestCase):
+
+    def test_stitch_boxes_into_lines(self):
+        boxes = [  # regular boxes
+            [0, 0, 1, 0, 1, 1, 0, 1],
+            [2, 0.5, 3, 0.5, 3, 1.5, 2, 1.5],
+            [3, 1.2, 4, 1.2, 4, 2.2, 3, 2.2],
+            [5, 0.5, 6, 0.5, 6, 1.5, 5, 1.5],
+            # irregular box
+            [6, 1.5, 7, 1.25, 7, 1.75, 6, 1.75]
+        ]
+        raw_input = [{
+            'box': boxes[i],
+            'text': str(i)
+        } for i in range(len(boxes))]
+        result = stitch_boxes_into_lines(raw_input, 1, 0.5)
+        # Final lines: [0, 1], [2], [3, 4]
+        # box 0, 1, 3, 4 are on the same line but box 3 is 2 pixels away from
+        # box 1
+        # box 3 and 4 are on the same line since the length of overlapping part
+        # >= 0.5 * the y-axis length of box 5
+        expected_result = [{
+            'box': [0, 0, 3, 0, 3, 1.5, 0, 1.5],
+            'text': '0 1'
+        }, {
+            'box': [3, 1.2, 4, 1.2, 4, 2.2, 3, 2.2],
+            'text': '2'
+        }, {
+            'box': [5, 0.5, 7, 0.5, 7, 1.75, 5, 1.75],
+            'text': '3 4'
+        }]
+        result.sort(key=lambda x: x['box'][0])
+        expected_result.sort(key=lambda x: x['box'][0])
+        self.assertEqual(result, expected_result)
