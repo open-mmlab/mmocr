@@ -33,7 +33,8 @@ model = dict(
         d_inner=512 * 4,
         d_k=512 // 8,
         d_v=512 // 8,
-        loss=dict(type='CELoss', flatten=True, ignore_first_char=True),
+        module_loss=dict(
+            type='CEModuleLoss', flatten=True, ignore_first_char=True),
         max_seq_len=25,
         postprocessor=dict(type='AttentionPostprocessor')))
 

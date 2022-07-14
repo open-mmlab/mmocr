@@ -21,7 +21,7 @@ class CRNNDecoder(BaseDecoder):
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
             the instance of `Dictionary`.
         rnn_flag (bool): Use RNN or CNN as the decoder. Defaults to False.
-        loss_module (dict, optional): Config to build loss_module. Defaults
+        module_loss (dict, optional): Config to build module_loss. Defaults
             to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
@@ -33,14 +33,14 @@ class CRNNDecoder(BaseDecoder):
                  in_channels: int,
                  dictionary: Union[Dictionary, Dict],
                  rnn_flag: bool = False,
-                 loss_module: Dict = None,
+                 module_loss: Dict = None,
                  postprocessor: Dict = None,
                  init_cfg=dict(type='Xavier', layer='Conv2d'),
                  **kwargs):
         super().__init__(
             init_cfg=init_cfg,
             dictionary=dictionary,
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor)
         self.rnn_flag = rnn_flag
 

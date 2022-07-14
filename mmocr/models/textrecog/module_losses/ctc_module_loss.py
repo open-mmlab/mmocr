@@ -8,11 +8,11 @@ import torch.nn as nn
 from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary.dictionary import Dictionary
 from mmocr.registry import MODELS
-from .base_recog_loss import BaseRecogLoss
+from .base_recog_module_loss import BaseRecogModuleLoss
 
 
 @MODELS.register_module()
-class CTCLoss(BaseRecogLoss):
+class CTCModuleLoss(BaseRecogModuleLoss):
     """Implementation of loss module for CTC-loss based text recognition.
 
     Args:

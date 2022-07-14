@@ -6,12 +6,12 @@ import torch
 from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary.dictionary import Dictionary
 from mmocr.registry import MODELS
-from .base_recog_loss import BaseRecogLoss
-from .ce_loss import CELoss
+from .base_recog_module_loss import BaseRecogModuleLoss
+from .ce_module_loss import CEModuleLoss
 
 
 @MODELS.register_module()
-class ABILoss(BaseRecogLoss):
+class ABIModuleLoss(BaseRecogModuleLoss):
     """Implementation of ABINet multiloss that allows mixing different types of
     losses with weights.
 
@@ -53,7 +53,7 @@ class ABILoss(BaseRecogLoss):
         self.weight_vis = weight_vis
         self.weight_lang = weight_lang
         self.weight_fusion = weight_fusion
-        self._ce_loss = CELoss(
+        self._ce_loss = CEModuleLoss(
             self.dictionary,
             max_seq_len,
             letter_case,

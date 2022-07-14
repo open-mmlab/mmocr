@@ -15,7 +15,7 @@ model = dict(
     det_head=dict(
         type='DBHead',
         in_channels=256,
-        loss_module=dict(type='DBLoss'),
+        module_loss=dict(type='DBModuleLoss'),
         postprocessor=dict(type='DBPostprocessor', text_repr_type='quad')),
     data_preprocessor=dict(
         type='TextDetDataPreprocessor',

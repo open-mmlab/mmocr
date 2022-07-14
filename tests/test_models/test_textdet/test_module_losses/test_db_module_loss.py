@@ -6,13 +6,13 @@ import torch
 from mmengine import InstanceData
 
 from mmocr.data import TextDetDataSample
-from mmocr.models.textdet.losses import DBLoss
+from mmocr.models.textdet.module_losses import DBModuleLoss
 
 
-class TestDBLoss(TestCase):
+class TestDBModuleLoss(TestCase):
 
     def setUp(self) -> None:
-        self.db_loss = DBLoss(thr_min=0.3, thr_max=0.7)
+        self.db_loss = DBModuleLoss(thr_min=0.3, thr_max=0.7)
         self.data_samples = [
             TextDetDataSample(
                 metainfo=dict(img_shape=(40, 40)),

@@ -16,7 +16,7 @@ from .text_kernel_mixin import TextKernelMixin
 
 
 @MODELS.register_module()
-class DBLoss(nn.Module, TextKernelMixin):
+class DBModuleLoss(nn.Module, TextKernelMixin):
     r"""The class for implementing DBNet loss.
 
     This is partially adapted from https://github.com/MhLiao/DB.

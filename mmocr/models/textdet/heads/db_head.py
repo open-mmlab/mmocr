@@ -20,7 +20,8 @@ class DBHead(BaseTextDetHead):
     Args:
         in_channels (int): The number of input channels.
         with_bias (bool): Whether add bias in Conv2d layer. Defaults to False.
-        loss (dict): Config of loss for dbnet.
+        module_loss (dict): Config of loss for dbnet. Defaults to
+            ``dict(type='DBModuleLoss')``
         postprocessor (dict): Config of postprocessor for dbnet.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
@@ -29,7 +30,7 @@ class DBHead(BaseTextDetHead):
         self,
         in_channels: int,
         with_bias: bool = False,
-        loss_module: Dict = dict(type='DBLoss'),
+        module_loss: Dict = dict(type='DBModuleLoss'),
         postprocessor: Dict = dict(
             type='DBPostprocessor', text_repr_type='quad'),
         init_cfg: Optional[Union[Dict, List[Dict]]] = [
@@ -38,7 +39,7 @@ class DBHead(BaseTextDetHead):
         ]
     ) -> None:
         super().__init__(
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor,
             init_cfg=init_cfg)
 

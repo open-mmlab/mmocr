@@ -15,8 +15,12 @@ class TestDRRGHead(TestCase):
     def setUp(self) -> None:
         self.drrg_head = DRRGHead(in_channels=10)
 
-    @mock.patch('mmocr.models.textdet.losses.drrg_loss.DRRGLoss.get_targets')
-    @mock.patch('mmocr.models.textdet.losses.drrg_loss.DRRGLoss.forward')
+    @mock.patch(
+        'mmocr.models.textdet.module_losses.drrg_module_loss.DRRGModuleLoss.'
+        'get_targets')
+    @mock.patch(
+        'mmocr.models.textdet.module_losses.drrg_module_loss.DRRGModuleLoss.'
+        'forward')
     def test_loss(self, mock_forward, mock_get_targets):
         num_rois = 16
         feature_maps = torch.randn((2, 10, 128, 128), dtype=torch.float)

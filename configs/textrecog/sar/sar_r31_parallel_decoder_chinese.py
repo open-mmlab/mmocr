@@ -25,7 +25,7 @@ model = dict(
         pred_dropout=0.1,
         d_k=512,
         pred_concat=True),
-    loss=dict(type='SARLoss'),
+    module_loss=dict(type='SARModuleLoss'),
     label_convertor=label_convertor,
     max_seq_len=30)
 

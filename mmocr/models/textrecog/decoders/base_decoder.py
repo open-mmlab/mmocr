@@ -27,7 +27,7 @@ class BaseDecoder(BaseModule):
 
     def __init__(self,
                  dictionary: Union[Dict, Dictionary],
-                 loss_module: Optional[Dict] = None,
+                 module_loss: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  max_seq_len: int = 40,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
@@ -40,15 +40,15 @@ class BaseDecoder(BaseModule):
             raise TypeError(
                 'The type of dictionary should be `Dictionary` or dict, '
                 f'but got {type(dictionary)}')
-        self.loss_module = None
+        self.module_loss = None
         self.postprocessor = None
         self.max_seq_len = max_seq_len
 
-        if loss_module is not None:
-            assert isinstance(loss_module, dict)
-            loss_module.update(dictionary=dictionary)
-            loss_module.update(max_seq_len=max_seq_len)
-            self.loss_module = MODELS.build(loss_module)
+        if module_loss is not None:
+            assert isinstance(module_loss, dict)
+            module_loss.update(dictionary=dictionary)
+            module_loss.update(max_seq_len=max_seq_len)
+            self.module_loss = MODELS.build(module_loss)
 
         if postprocessor is not None:
             assert isinstance(postprocessor, dict)
@@ -112,7 +112,7 @@ class BaseDecoder(BaseModule):
             dict[str, tensor]: A dictionary of loss components.
         """
         out_dec = self(feat, out_enc, data_samples)
-        return self.loss_module(out_dec, data_samples)
+        return self.module_loss(out_dec, data_samples)
 
     def predict(
         self,
@@ -159,8 +159,8 @@ class BaseDecoder(BaseModule):
             Tensor: Features from ``decoder`` forward.
         """
         if self.training:
-            if getattr(self, 'loss_module') is not None:
-                data_samples = self.loss_module.get_targets(data_samples)
+            if getattr(self, 'module_loss') is not None:
+                data_samples = self.module_loss.get_targets(data_samples)
             return self.forward_train(feat, out_enc, data_samples)
         else:
             return self.forward_test(feat, out_enc, data_samples)

@@ -29,7 +29,7 @@ class TestBaseTextDetHead(TestCase):
             BaseTextDetHead(cfg, [])
 
         decoder = BaseTextDetHead(cfg, cfg)
-        self.assertIsInstance(decoder.loss_module, FakeModule)
+        self.assertIsInstance(decoder.module_loss, FakeModule)
         self.assertIsInstance(decoder.postprocessor, FakeModule)
 
     @mock.patch(f'{__name__}.BaseTextDetHead.forward')

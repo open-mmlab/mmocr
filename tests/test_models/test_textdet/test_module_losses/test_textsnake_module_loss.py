@@ -6,13 +6,13 @@ import torch
 from mmengine import InstanceData
 
 from mmocr.data import TextDetDataSample
-from mmocr.models.textdet.losses import TextSnakeLoss
+from mmocr.models.textdet.module_losses import TextSnakeModuleLoss
 
 
-class TestTextSnakeLoss(TestCase):
+class TestTextSnakeModuleLoss(TestCase):
 
     def setUp(self) -> None:
-        self.loss = TextSnakeLoss()
+        self.loss = TextSnakeModuleLoss()
 
         self.data_samples = [
             TextDetDataSample(

@@ -32,7 +32,7 @@ class ABIVisionDecoder(BaseDecoder):
             32.
         attn_mode (str): Upsampling mode for :obj:`torch.nn.Upsample` in mini
             U-Net. Defaults to 'nearest'.
-        loss_module (dict, optional): Config to build loss. Defaults to None.
+        module_loss (dict, optional): Config to build loss. Defaults to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
         max_seq_len (int): Maximum sequence length. The
@@ -48,7 +48,7 @@ class ABIVisionDecoder(BaseDecoder):
                  attn_height: int = 8,
                  attn_width: int = 32,
                  attn_mode: str = 'nearest',
-                 loss_module: Optional[Dict] = None,
+                 module_loss: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  max_seq_len: int = 40,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = dict(
@@ -57,7 +57,7 @@ class ABIVisionDecoder(BaseDecoder):
 
         super().__init__(
             dictionary=dictionary,
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor,
             max_seq_len=max_seq_len,
             init_cfg=init_cfg)

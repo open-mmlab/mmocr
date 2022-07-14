@@ -19,8 +19,8 @@ class PANHead(BaseTextDetHead):
         hidden_dim (int): The hidden dimension of the first convolutional
             layer.
         out_channel (int): Number of output channels.
-        loss (dict): Configuration dictionary for loss type. Defaults
-            to dict(type='PANLoss')
+        module_loss (dict): Configuration dictionary for loss type. Defaults
+            to dict(type='PANModuleLoss')
         postprocessor (dict): Config of postprocessor for PANet. Defaults to
             dict(type='PANPostprocessor', text_repr_type='poly').
         init_cfg (list[dict]): Initialization configs. Defaults to
@@ -33,7 +33,7 @@ class PANHead(BaseTextDetHead):
         in_channels: List[int],
         hidden_dim: int,
         out_channel: int,
-        loss_module=dict(type='PANLoss'),
+        module_loss=dict(type='PANModuleLoss'),
         postprocessor=dict(type='PANPostprocessor', text_repr_type='poly'),
         init_cfg=[
             dict(type='Normal', mean=0, std=0.01, layer='Conv2d'),
@@ -41,7 +41,7 @@ class PANHead(BaseTextDetHead):
         ]
     ) -> None:
         super().__init__(
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor,
             init_cfg=init_cfg)
 

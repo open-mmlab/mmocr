@@ -6,10 +6,10 @@ import torch
 from mmengine.data import LabelData
 
 from mmocr.data import TextRecogDataSample
-from mmocr.models.textrecog.losses import ABILoss
+from mmocr.models.textrecog.module_losses import ABIModuleLoss
 
 
-class TestABILoss(TestCase):
+class TestABIModuleLoss(TestCase):
 
     def setUp(self) -> None:
 
@@ -34,7 +34,7 @@ class TestABILoss(TestCase):
             same_start_end=True,
             with_padding=True,
             with_unknown=False)
-        abi_loss = ABILoss(dict_cfg, max_seq_len=10)
+        abi_loss = ABIModuleLoss(dict_cfg, max_seq_len=10)
         abi_loss.get_targets(self.gt)
         outputs = dict(
             out_vis=dict(logits=torch.randn(2, 10, 38)),

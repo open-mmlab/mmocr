@@ -8,10 +8,10 @@ from mmengine import InstanceData
 from parameterized import parameterized
 
 from mmocr.data import TextDetDataSample
-from mmocr.models.textdet.losses import PSELoss
+from mmocr.models.textdet.module_losses import PSEModuleLoss
 
 
-class TestPSELoss(TestCase):
+class TestPSEModuleLoss(TestCase):
 
     def setUp(self) -> None:
         self.data_samples = [
@@ -31,14 +31,14 @@ class TestPSELoss(TestCase):
 
     def test_init(self):
         with self.assertRaises(AssertionError):
-            PSELoss(reduction=1)
-        pse_loss = PSELoss(reduction='sum')
+            PSEModuleLoss(reduction=1)
+        pse_loss = PSEModuleLoss(reduction='sum')
         self.assertIsInstance(pse_loss.loss_text, nn.Module)
         self.assertIsInstance(pse_loss.loss_kernel, nn.Module)
 
     @parameterized.expand([('mean', 'hard'), ('sum', 'adaptive')])
     def test_forward(self, reduction, kernel_sample_type):
-        pse_loss = PSELoss(
+        pse_loss = PSEModuleLoss(
             reduction=reduction, kernel_sample_type=kernel_sample_type)
         loss = pse_loss(self.preds, self.data_samples)
         self.assertIn('loss_text', loss)

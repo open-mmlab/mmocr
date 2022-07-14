@@ -45,11 +45,11 @@ class TestBaseDecoder(TestCase):
         with self.assertRaises(TypeError):
             BaseDecoder([], cfg, cfg)
         decoder = BaseDecoder(dictionary=dict_cfg)
-        self.assertIsNone(decoder.loss_module)
+        self.assertIsNone(decoder.module_loss)
         self.assertIsNone(decoder.postprocessor)
         self.assertIsInstance(decoder.dictionary, Dictionary)
         decoder = BaseDecoder(dict_cfg, cfg, cfg)
-        self.assertIsInstance(decoder.loss_module, Tmp)
+        self.assertIsInstance(decoder.module_loss, Tmp)
         self.assertIsInstance(decoder.postprocessor, Tmp)
         dictionary = TASK_UTILS.build(dict_cfg)
         decoder = BaseDecoder(dictionary, cfg, cfg)

@@ -8,11 +8,11 @@ import torch.nn as nn
 from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary.dictionary import Dictionary
 from mmocr.registry import MODELS
-from .base_recog_loss import BaseRecogLoss
+from .base_recog_module_loss import BaseRecogModuleLoss
 
 
 @MODELS.register_module()
-class CELoss(BaseRecogLoss):
+class CEModuleLoss(BaseRecogModuleLoss):
     """Implementation of loss module for encoder-decoder based text recognition
     method with CrossEntropy loss.
 

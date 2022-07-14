@@ -36,12 +36,12 @@ class TestRobustScannerFuser(TestCase):
             with_padding=True,
             with_unknown=True)
 
-        self.loss_cfg = dict(type='CELoss')
+        self.loss_cfg = dict(type='CEModuleLoss')
         hybrid_decoder = dict(type='SequenceAttentionDecoder')
         position_decoder = dict(type='PositionAttentionDecoder')
         self.decoder = RobustScannerFuser(
             dictionary=self.dict_cfg,
-            loss_module=self.loss_cfg,
+            module_loss=self.loss_cfg,
             hybrid_decoder=hybrid_decoder,
             position_decoder=position_decoder,
             max_seq_len=40)
@@ -57,7 +57,7 @@ class TestRobustScannerFuser(TestCase):
         with self.assertWarns(Warning):
             RobustScannerFuser(
                 dictionary=self.dict_cfg,
-                loss_module=self.loss_cfg,
+                module_loss=self.loss_cfg,
                 hybrid_decoder=hybrid_decoder,
                 position_decoder=position_decoder,
                 max_seq_len=40)
@@ -66,7 +66,7 @@ class TestRobustScannerFuser(TestCase):
         with self.assertWarns(Warning):
             RobustScannerFuser(
                 dictionary=self.dict_cfg,
-                loss_module=self.loss_cfg,
+                module_loss=self.loss_cfg,
                 hybrid_decoder=hybrid_decoder,
                 position_decoder=position_decoder,
                 max_seq_len=40)

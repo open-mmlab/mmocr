@@ -3,11 +3,11 @@ import numpy as np
 import torch
 from mmdet.core import BitmapMasks
 
-import mmocr.models.textdet.losses as losses
+import mmocr.models.textdet.module_losses as module_losses
 
 
 def test_panloss():
-    panloss = losses.PANLoss()
+    panloss = module_losses.PANModuleLoss()
 
     # test bitmasks2tensor
     mask = [[1, 0, 1], [1, 1, 1], [0, 0, 1]]
@@ -24,7 +24,7 @@ def test_panloss():
 
 def test_fcenetloss():
     k = 5
-    fcenetloss = losses.FCELoss(fourier_degree=k, num_sample=10)
+    fcenetloss = module_losses.FCEModuleLoss(fourier_degree=k, num_sample=10)
 
     input_shape = (1, 3, 64, 64)
     (n, c, h, w) = input_shape
@@ -62,7 +62,7 @@ def test_fcenetloss():
 
 
 def test_drrgloss():
-    drrgloss = losses.DRRGLoss()
+    drrgloss = module_losses.DRRGModuleLoss()
     assert np.allclose(drrgloss.ohem_ratio, 3.0)
 
     # test balance_bce_loss
@@ -140,7 +140,7 @@ def test_dice_loss():
     target = torch.Tensor([[[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
     mask = torch.Tensor([[[1, 1, 1], [1, 1, 1], [1, 1, 1]]])
 
-    pan_loss = losses.PANLoss()
+    pan_loss = module_losses.PANModuleLoss()
 
     dice_loss = pan_loss.dice_loss_with_logits(pred, target, mask)
 

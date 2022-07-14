@@ -5,10 +5,10 @@ import torch
 from mmengine.data import LabelData
 
 from mmocr.data import TextRecogDataSample
-from mmocr.models.textrecog.losses import CELoss
+from mmocr.models.textrecog.module_losses import CEModuleLoss
 
 
-class TestCELoss(TestCase):
+class TestCEModuleLoss(TestCase):
 
     def setUp(self) -> None:
 
@@ -31,23 +31,23 @@ class TestCELoss(TestCase):
             with_unknown=False)
 
         with self.assertRaises(AssertionError):
-            CELoss(dict_cfg, reduction=1)
+            CEModuleLoss(dict_cfg, reduction=1)
         with self.assertRaises(AssertionError):
-            CELoss(dict_cfg, reduction='avg')
+            CEModuleLoss(dict_cfg, reduction='avg')
         with self.assertRaises(AssertionError):
-            CELoss(dict_cfg, flatten=1)
+            CEModuleLoss(dict_cfg, flatten=1)
         with self.assertRaises(AssertionError):
-            CELoss(dict_cfg, ignore_first_char=1)
+            CEModuleLoss(dict_cfg, ignore_first_char=1)
         with self.assertRaises(AssertionError):
-            CELoss(dict_cfg, ignore_char=['ignore'])
-        ce_loss = CELoss(dict_cfg)
+            CEModuleLoss(dict_cfg, ignore_char=['ignore'])
+        ce_loss = CEModuleLoss(dict_cfg)
         self.assertEqual(ce_loss.ignore_index, 37)
-        ce_loss = CELoss(dict_cfg, ignore_char=-1)
+        ce_loss = CEModuleLoss(dict_cfg, ignore_char=-1)
         self.assertEqual(ce_loss.ignore_index, -1)
         # with self.assertRaises(ValueError):
         with self.assertWarns(UserWarning):
-            ce_loss = CELoss(dict_cfg, ignore_char='ignore')
-        ce_loss = CELoss(dict_cfg, ignore_char='1')
+            ce_loss = CEModuleLoss(dict_cfg, ignore_char='ignore')
+        ce_loss = CEModuleLoss(dict_cfg, ignore_char='1')
         self.assertEqual(ce_loss.ignore_index, 1)
 
     def test_forward(self):
@@ -60,7 +60,7 @@ class TestCELoss(TestCase):
             with_padding=True,
             with_unknown=False)
         max_seq_len = 40
-        ce_loss = CELoss(dict_cfg)
+        ce_loss = CEModuleLoss(dict_cfg)
         ce_loss.get_targets(self.gt)
         outputs = torch.rand(3, max_seq_len, ce_loss.dictionary.num_classes)
         losses = ce_loss(outputs, self.gt)
@@ -69,13 +69,13 @@ class TestCELoss(TestCase):
         self.assertEqual(losses['loss_ce'].size(1), max_seq_len)
 
         # test ignore_first_char
-        ce_loss = CELoss(dict_cfg, ignore_first_char=True)
+        ce_loss = CEModuleLoss(dict_cfg, ignore_first_char=True)
         ignore_first_char_losses = ce_loss(outputs, self.gt)
         self.assertEqual(ignore_first_char_losses['loss_ce'].shape,
                          torch.Size([3, max_seq_len - 1]))
 
         # test flatten
-        ce_loss = CELoss(dict_cfg, flatten=True)
+        ce_loss = CEModuleLoss(dict_cfg, flatten=True)
         flatten_losses = ce_loss(outputs, self.gt)
         self.assertEqual(flatten_losses['loss_ce'].shape,
                          torch.Size([3 * max_seq_len]))

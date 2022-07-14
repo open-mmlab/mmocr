@@ -94,6 +94,7 @@ model = dict(
         d_k=512,
         pred_concat=True,
         postprocessor=dict(type='AttentionPostprocessor'),
-        loss=dict(type='CELoss', ignore_first_char=True, reduction='mean')),
+        module_loss=dict(
+            type='CEModuleLoss', ignore_first_char=True, reduction='mean')),
     dictionary=dictionary,
     max_seq_len=30)

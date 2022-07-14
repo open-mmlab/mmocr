@@ -14,8 +14,9 @@ class PSEHead(PANHead):
         hidden_dim (int): The hidden dimension of the first convolutional
             layer.
         out_channel (int): Number of output channels.
-        loss (dict): Configuration dictionary for loss type. Supported loss
-            types are "PANLoss" and "PSELoss". Defaults to PSELoss.
+        module_loss (dict): Configuration dictionary for loss type. Supported
+            loss types are "PANModuleLoss" and "PSEModuleLoss". Defaults to
+            PSEModuleLoss.
         postprocessor (dict): Config of postprocessor for PSENet.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
@@ -24,7 +25,7 @@ class PSEHead(PANHead):
                  in_channels: List[int],
                  hidden_dim: int,
                  out_channel: int,
-                 loss_module: Dict = dict(type='PSELoss'),
+                 module_loss: Dict = dict(type='PSEModuleLoss'),
                  postprocessor: Dict = dict(
                      type='PSEPostprocessor', text_repr_type='poly'),
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
@@ -33,6 +34,6 @@ class PSEHead(PANHead):
             in_channels=in_channels,
             hidden_dim=hidden_dim,
             out_channel=out_channel,
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor,
             init_cfg=init_cfg)

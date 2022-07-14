@@ -18,7 +18,7 @@ class RobustScannerFuser(BaseDecoder):
     Args:
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
             the instance of `Dictionary`.
-        loss_module (dict, optional): Config to build loss_module. Defaults
+        module_loss (dict, optional): Config to build module_loss. Defaults
             to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
@@ -39,7 +39,7 @@ class RobustScannerFuser(BaseDecoder):
 
     def __init__(self,
                  dictionary: Union[Dict, Dictionary],
-                 loss_module: Optional[Dict] = None,
+                 module_loss: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  hybrid_decoder: Dict = dict(type='SequenceAttentionDecoder'),
                  position_decoder: Dict = dict(
@@ -50,7 +50,7 @@ class RobustScannerFuser(BaseDecoder):
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
         super().__init__(
             dictionary=dictionary,
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor,
             max_seq_len=max_seq_len,
             init_cfg=init_cfg)

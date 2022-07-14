@@ -7,11 +7,11 @@ import torch.nn as nn
 from mmengine import InstanceData
 
 from mmocr.data import TextDetDataSample
-from mmocr.models.textdet.losses import PANLoss
-from mmocr.models.textdet.losses.pan_loss import PANEmbLossV1
+from mmocr.models.textdet.module_losses import PANModuleLoss
+from mmocr.models.textdet.module_losses.pan_module_loss import PANEmbLossV1
 
 
-class TestPANLoss(TestCase):
+class TestPANModuleLoss(TestCase):
 
     def setUp(self) -> None:
 
@@ -32,20 +32,20 @@ class TestPANLoss(TestCase):
 
     def test_init(self):
         with self.assertRaises(AssertionError):
-            PANLoss(reduction=1)
-        pan_loss = PANLoss()
+            PANModuleLoss(reduction=1)
+        pan_loss = PANModuleLoss()
         self.assertIsInstance(pan_loss.loss_text, nn.Module)
         self.assertIsInstance(pan_loss.loss_kernel, nn.Module)
         self.assertIsInstance(pan_loss.loss_embedding, nn.Module)
 
     def test_get_target(self):
-        pan_loss = PANLoss()
+        pan_loss = PANModuleLoss()
         gt_kernels, gt_masks = pan_loss.get_targets(self.data_samples)
         self.assertEqual(gt_kernels.shape, (2, 1, 40, 40))
         self.assertEqual(gt_masks.shape, (1, 40, 40))
 
     def test_pan_loss(self):
-        pan_loss = PANLoss()
+        pan_loss = PANModuleLoss()
         loss = pan_loss(self.preds, self.data_samples)
         self.assertIn('loss_text', loss)
         self.assertIn('loss_kernel', loss)

@@ -30,7 +30,7 @@ class NRTRDecoder(BaseDecoder):
             greater than ``max_seq_len``. Defaults to 200.
         dropout (float): Dropout rate for text embedding, MHSA, FFN. Defaults
             to 0.1.
-        loss_module (dict, optional): Config to build loss_module. Defaults
+        module_loss (dict, optional): Config to build module_loss. Defaults
             to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
@@ -51,13 +51,13 @@ class NRTRDecoder(BaseDecoder):
                  d_inner: int = 256,
                  n_position: int = 200,
                  dropout: float = 0.1,
-                 loss_module: Optional[Dict] = None,
+                 module_loss: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  dictionary: Optional[Union[Dict, Dictionary]] = None,
                  max_seq_len: int = 30,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
         super().__init__(
-            loss_module=loss_module,
+            module_loss=module_loss,
             postprocessor=postprocessor,
             dictionary=dictionary,
             init_cfg=init_cfg,

@@ -10,7 +10,7 @@ from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import TASK_UTILS
 
 
-class BaseRecogLoss(nn.Module):
+class BaseRecogModuleLoss(nn.Module):
     """Base recognition loss.
 
     Args:

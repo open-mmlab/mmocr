@@ -25,8 +25,8 @@ model = dict(
         in_channels=[128, 128, 128, 128],
         hidden_dim=128,
         out_channel=6,
-        loss_module=dict(
-            type='PANLoss',
+        module_loss=dict(
+            type='PANModuleLoss',
             loss_text=dict(type='MaskedSquareDiceLoss'),
             loss_kernel=dict(type='MaskedSquareDiceLoss'),
         ),
