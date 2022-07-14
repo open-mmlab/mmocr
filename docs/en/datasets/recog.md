@@ -82,7 +82,7 @@
 - Step2: Convert original annotations to `Train_label.jsonl` and `Test_label.jsonl` with the following command:
 
   ```bash
-  python tools/data/textrecog/ic11_converter.py PATH/TO/icdar2011
+  python tools/dataset_converters/textrecog/ic11_converter.py PATH/TO/icdar2011
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -120,7 +120,7 @@
 - Step 2: Generate `Train_label.jsonl` and `Test_label.jsonl` with the following command:
 
   ```bash
-  python tools/data/textrecog/ic13_converter.py PATH/TO/icdar2013
+  python tools/dataset_converters/textrecog/ic13_converter.py PATH/TO/icdar2013
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -185,7 +185,7 @@ should be as follows:
 - Step3:
 
   ```bash
-  python tools/data/textrecog/svt_converter.py <download_svt_dir_path>
+  python tools/dataset_converters/textrecog/svt_converter.py <download_svt_dir_path>
   ```
 
 - After running the above codes, the directory structure
@@ -262,7 +262,7 @@ Please make sure you're using the right annotation to train the model by checkin
 
   # Convert 'txt' format annos to 'lmdb' (optional)
   cd /path/to/mmocr
-  python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
+  python tools/dataset_converters/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
   ```
 
 - After running the above codes, the directory structure
@@ -309,11 +309,11 @@ Please make sure you're using the right annotation to train the model by checkin
   ```bash
   cd /path/to/mmocr
 
-  python tools/data/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat data/mixture/SynthText/ data/mixture/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
+  python tools/dataset_converters/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat data/mixture/SynthText/ data/mixture/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
 
   # Convert 'txt' format annos to 'lmdb' (optional)
   cd /path/to/mmocr
-  python tools/data/utils/txt2lmdb.py -i data/mixture/SynthText/label.txt -o data/mixture/SynthText/label.lmdb
+  python tools/dataset_converters/utils/txt2lmdb.py -i data/mixture/SynthText/label.txt -o data/mixture/SynthText/label.lmdb
   ```
 
 - After running the above codes, the directory structure
@@ -351,7 +351,7 @@ should be as follows:
 
   # Convert 'txt' format annos to 'lmdb' (optional)
   cd /path/to/mmocr
-  python tools/data/utils/txt2lmdb.py -i data/mixture/SynthAdd/label.txt -o data/mixture/SynthAdd/label.lmdb
+  python tools/dataset_converters/utils/txt2lmdb.py -i data/mixture/SynthAdd/label.txt -o data/mixture/SynthAdd/label.lmdb
   ```
 
 - After running the above codes, the directory structure
@@ -368,13 +368,13 @@ should be as follows:
 To convert label file from `txt` format to `lmdb` format,
 
 ```bash
-python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
+python tools/dataset_converters/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
 ```
 
 For example,
 
 ```bash
-python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
+python tools/dataset_converters/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
 ```
 
 ````
@@ -399,7 +399,7 @@ python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mix
 - Step2: Generate `train_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
 
   ```bash
-  python tools/data/textrecog/textocr_converter.py /path/to/textocr 4
+  python tools/dataset_converters/textrecog/textocr_converter.py /path/to/textocr 4
   ```
 
 - After running the above codes, the directory structure
@@ -440,7 +440,7 @@ should be as follows:
 - Step2: Generate cropped images, `train_label.txt` and `test_label.txt` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`):
 
   ```bash
-  python tools/data/textrecog/totaltext_converter.py /path/to/totaltext
+  python tools/dataset_converters/textrecog/totaltext_converter.py /path/to/totaltext
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -483,7 +483,7 @@ should be as follows:
 - Step3: Generate `train_{1,2,5,f}_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
 
   ```bash
-  python tools/data/textrecog/openvino_converter.py /path/to/openvino 4
+  python tools/dataset_converters/textrecog/openvino_converter.py /path/to/openvino 4
   ```
 
 - After running the above codes, the directory structure
@@ -529,7 +529,7 @@ should be as follows:
   ```bash
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
   # vertical images will be filtered and stored in PATH/TO/detext/ignores
-  python tools/data/textrecog/detext_converter.py PATH/TO/detext --nproc 4
+  python tools/dataset_converters/textrecog/detext_converter.py PATH/TO/detext --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -568,7 +568,7 @@ should be as follows:
   ```bash
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
   # vertical images will be filtered and stored in PATH/TO/naf/ignores
-  python tools/data/textrecog/naf_converter.py PATH/TO/naf --nproc 4
+  python tools/dataset_converters/textrecog/naf_converter.py PATH/TO/naf --nproc 4
 
 - After running the above codes, the directory structure should be as follows:
 
@@ -607,7 +607,7 @@ should be as follows:
 - Step3: Generate `train_label.jsonl` and `test_label.jsonl` and crop images using 4 processes with the following command:
 
   ```bash
-  python tools/data/textrecog/sroie_converter.py PATH/TO/sroie --nproc 4
+  python tools/dataset_converters/textrecog/sroie_converter.py PATH/TO/sroie --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -646,7 +646,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
 - Step2: Generate `train_label.jsonl`, `val.jsonl`, and `test.jsonl` with following command:
 
   ```bash
-  python tools/data/textdreog/lv_converter.py PATH/TO/lv
+  python tools/dataset_converters/textdreog/lv_converter.py PATH/TO/lv
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -685,7 +685,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   # set by adding --val-ratio 0.2
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
   # vertical images will be filtered and stored in PATH/TO/lsvt/ignores
-  python tools/data/textdrecog/lsvt_converter.py PATH/TO/lsvt --nproc 4
+  python tools/dataset_converters/textdrecog/lsvt_converter.py PATH/TO/lsvt --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -722,7 +722,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
 - Step2: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
 
   ```bash
-  python tools/data/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
+  python tools/dataset_converters/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
   ```
 
 - After running the above codes, the directory structure
@@ -759,7 +759,7 @@ should be as follows:
 - Step2: Generate `train_label.txt`, `val_label.txt` and `test_label.txt` and crop images with the following command:
 
   ```bash
-  python tools/data/textrecog/imgur_converter.py PATH/TO/imgur
+  python tools/dataset_converters/textrecog/imgur_converter.py PATH/TO/imgur
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -790,7 +790,7 @@ should be as follows:
 - Step2: Extract zips:
 
   ```bash
-  python tools/data/common/extract_kaist.py PATH/TO/kaist
+  python tools/dataset_converters/common/extract_kaist.py PATH/TO/kaist
   ```
 
 - Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with following command:
@@ -799,7 +799,7 @@ should be as follows:
   # Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
   # vertical images will be filtered and stored in PATH/TO/kaist/ignores
-  python tools/data/textrecog/kaist_converter.py PATH/TO/kaist --nproc 4
+  python tools/dataset_converters/textrecog/kaist_converter.py PATH/TO/kaist --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -832,7 +832,7 @@ should be as follows:
   # set by adding --val-ratio 0.2
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
   # vertical images will be filtered and stored in PATH/TO/mtwi/ignores
-  python tools/data/textrecog/mtwi_converter.py PATH/TO/mtwi --nproc 4
+  python tools/dataset_converters/textrecog/mtwi_converter.py PATH/TO/mtwi --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -867,7 +867,7 @@ should be as follows:
   ```bash
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
   # vertical images will be filtered and stored in PATH/TO/mtwi/ignores
-  python tools/data/textrecog/cocotext_converter.py PATH/TO/coco_textv2 --nproc 4
+  python tools/dataset_converters/textrecog/cocotext_converter.py PATH/TO/coco_textv2 --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -904,7 +904,7 @@ should be as follows:
   # set by adding --val-ratio 0.2
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
   # vertical images will be filtered and stored in PATH/TO/rects/ignores
-  python tools/data/textrecog/rects_converter.py PATH/TO/rects --nproc 4
+  python tools/dataset_converters/textrecog/rects_converter.py PATH/TO/rects --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -945,7 +945,7 @@ should be as follows:
 - Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
-  python tools/data/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4
+  python tools/dataset_converters/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -982,7 +982,7 @@ should be as follows:
 - Step2: Generate `train_label.jsonl`, `test_label.jsonl`, `unseen_test_label.jsonl`,  and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts).
 
   ```bash
-  python tools/data/textrecog/vintext_converter.py PATH/TO/vietnamese --nproc 4
+  python tools/dataset_converters/textrecog/vintext_converter.py PATH/TO/vietnamese --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -1033,7 +1033,7 @@ should be as follows:
 - Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
-  python tools/data/textrecog/bid_converter.py dPATH/TO/BID --nproc 4
+  python tools/dataset_converters/textrecog/bid_converter.py dPATH/TO/BID --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -1055,7 +1055,7 @@ should be as follows:
   ```bash
   # Annotations of RCTW test split is not publicly available, split a validation set by adding --val-ratio 0.2
   # Add --preserve-vertical to preserve vertical texts for training, otherwise vertical images will be filtered and stored in PATH/TO/rctw/ignores
-  python tools/data/textrecog/rctw_converter.py PATH/TO/rctw --nproc 4
+  python tools/dataset_converters/textrecog/rctw_converter.py PATH/TO/rctw --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -1107,7 +1107,7 @@ should be as follows:
   ```bash
   # Collect word annotation from HierText  --level word
   # Add --preserve-vertical to preserve vertical texts for training, otherwise vertical images will be filtered and stored in PATH/TO/HierText/ignores
-  python tools/data/textrecog/hiertext_converter.py PATH/TO/HierText --level word --nproc 4
+  python tools/dataset_converters/textrecog/hiertext_converter.py PATH/TO/HierText --level word --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
