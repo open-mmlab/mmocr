@@ -1,11 +1,21 @@
 _base_ = [
     'panet_r18_fpem_ffm.py',
     '../../_base_/default_runtime.py',
+    '../../_base_/det_datasets/icdar2015.py',
     '../../_base_/schedules/schedule_adam_600e.py',
 ]
 
+# dataset settings
+train_list = {{_base_.train_list}}
+test_list = {{_base_.test_list}}
+file_client_args = dict(backend='disk')
+default_hooks = dict(checkpoint=dict(type='CheckpointHook', interval=20), )
+
 train_pipeline = [
-    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        color_type='color_ignore_orientation'),
     dict(
         type='LoadOCRAnnotations',
         with_polygon=True,
@@ -28,7 +38,10 @@ train_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        color_type='color_ignore_orientation'),
     # TODO Replace with mmcv.RescaleToShort when it's ready
     dict(
         type='RescaleToShortAspectJitter',
@@ -42,37 +55,20 @@ test_pipeline = [
                    'instances'))
 ]
 
-dataset_type = 'OCRDataset'
-data_root = 'data/det/icdar2015'
-
-train_dataset = dict(
-    type=dataset_type,
-    data_root=data_root,
-    ann_file='instance_training.json',
-    data_prefix=dict(img_path='imgs/'),
-    filter_cfg=dict(filter_empty_gt=True),
-    pipeline=train_pipeline)
-
-test_dataset = dict(
-    type=dataset_type,
-    data_root=data_root,
-    ann_file='instance_test.json',
-    data_prefix=dict(img_path='imgs/'),
-    test_mode=True,
-    pipeline=test_pipeline)
-
 train_dataloader = dict(
     batch_size=8,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=train_dataset)
+    dataset=dict(
+        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=test_dataset)
+    dataset=dict(
+        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
 test_dataloader = val_dataloader
 
 val_evaluator = dict(
