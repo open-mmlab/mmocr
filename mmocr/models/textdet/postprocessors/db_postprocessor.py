@@ -65,7 +65,7 @@ class DBPostprocessor(BaseTextDetPostProcessor):
         """Get text instance predictions of one image.
 
         Args:
-            pred_result (tuple(Tensor)): A tuple of 3 tensors where the first
+            pred_result (tuple(Tensor)): A tuple of 4 tensors where the first
                 tensor is ``prob_map`` of shape :math:`(N, H, W)`.
             data_sample (TextDetDataSample): Datasample of an image.
 

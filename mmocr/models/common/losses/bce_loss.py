@@ -8,8 +8,9 @@ from mmocr.registry import MODELS
 
 
 @MODELS.register_module()
-class MaskedBalancedBCELoss(nn.Module):
-    """Masked Balanced BCE loss.
+class MaskedBalancedBCEWithLogitsLoss(nn.Module):
+    """This loss combines a Sigmoid layers and a masked balanced BCE loss in
+    one single class. It's AMP-eligible.
 
     Args:
         reduction (str, optional): The method to reduce the loss.
@@ -37,7 +38,7 @@ class MaskedBalancedBCELoss(nn.Module):
         self.negative_ratio = negative_ratio
         self.reduction = reduction
         self.fallback_negative_num = fallback_negative_num
-        self.binary_cross_entropy = nn.BCELoss(reduction=reduction)
+        self.loss = nn.BCEWithLogitsLoss(reduction=reduction)
 
     def forward(self,
                 pred: torch.Tensor,
@@ -74,8 +75,7 @@ class MaskedBalancedBCELoss(nn.Module):
                 int(negative.sum()), int(positive_count * self.negative_ratio))
 
         assert gt.max() <= 1 and gt.min() >= 0
-        assert pred.max() <= 1 and pred.min() >= 0
-        loss = self.binary_cross_entropy(pred, gt)
+        loss = self.loss(pred, gt)
         positive_loss = loss * positive
         negative_loss = loss * negative
 
@@ -88,8 +88,64 @@ class MaskedBalancedBCELoss(nn.Module):
 
 
 @MODELS.register_module()
-class MaskedBCELoss(nn.Module):
-    """Masked BCE loss.
+class MaskedBalancedBCELoss(MaskedBalancedBCEWithLogitsLoss):
+    """Masked Balanced BCE loss.
+
+    Args:
+        reduction (str, optional): The method to reduce the loss.
+            Options are 'none', 'mean' and 'sum'. Defaults to 'none'.
+        negative_ratio (float or int, optional): Maximum ratio of negative
+            samples to positive ones. Defaults to 3.
+        fallback_negative_num (int, optional): When the mask contains no
+            positive samples, the number of negative samples to be sampled.
+            Defaults to 0.
+        eps (float, optional): Eps to avoid zero-division error.  Defaults to
+            1e-6.
+    """
+
+    def __init__(self,
+                 reduction: str = 'none',
+                 negative_ratio: Union[float, int] = 3,
+                 fallback_negative_num: int = 0,
+                 eps: float = 1e-6) -> None:
+        super().__init__()
+        assert reduction in ['none', 'mean', 'sum']
+        assert isinstance(negative_ratio, (float, int))
+        assert isinstance(fallback_negative_num, int)
+        assert isinstance(eps, float)
+        self.eps = eps
+        self.negative_ratio = negative_ratio
+        self.reduction = reduction
+        self.fallback_negative_num = fallback_negative_num
+        self.loss = nn.BCELoss(reduction=reduction)
+
+    def forward(self,
+                pred: torch.Tensor,
+                gt: torch.Tensor,
+                mask: Optional[torch.Tensor] = None) -> torch.Tensor:
+        """Forward function.
+
+        Args:
+            pred (torch.Tensor): The prediction in any shape.
+            gt (torch.Tensor): The learning target of the prediction in the
+                same shape as pred.
+            mask (torch.Tensor, optional): Binary mask in the same shape of
+                pred, indicating positive regions to calculate the loss. Whole
+                region will be taken into account if not provided. Defaults to
+                None.
+
+        Returns:
+            torch.Tensor: The loss value.
+        """
+
+        assert pred.max() <= 1 and pred.min() >= 0
+        return super().forward(pred, gt, mask)
+
+
+@MODELS.register_module()
+class MaskedBCEWithLogitsLoss(nn.Module):
+    """This loss combines a Sigmoid layers and a masked BCE loss in one single
+    class. It's AMP-eligible.
 
     Args:
         eps (float, optional): Eps to avoid zero-division error.  Defaults to
@@ -100,7 +156,7 @@ class MaskedBCELoss(nn.Module):
         super().__init__()
         assert isinstance(eps, float)
         self.eps = eps
-        self.binary_cross_entropy = nn.BCELoss(reduction='none')
+        self.loss = nn.BCEWithLogitsLoss(reduction='none')
 
     def forward(self,
                 pred: torch.Tensor,
@@ -127,7 +183,45 @@ class MaskedBCELoss(nn.Module):
         assert mask.size() == gt.size()
 
         assert gt.max() <= 1 and gt.min() >= 0
-        assert pred.max() <= 1 and pred.min() >= 0
-        loss = self.binary_cross_entropy(pred, gt)
+        loss = self.loss(pred, gt)
 
         return (loss * mask).sum() / (mask.sum() + self.eps)
+
+
+@MODELS.register_module()
+class MaskedBCELoss(MaskedBCEWithLogitsLoss):
+    """Masked BCE loss.
+
+    Args:
+        eps (float, optional): Eps to avoid zero-division error.  Defaults to
+            1e-6.
+    """
+
+    def __init__(self, eps: float = 1e-6) -> None:
+        super().__init__()
+        assert isinstance(eps, float)
+        self.eps = eps
+        self.loss = nn.BCELoss(reduction='none')
+
+    def forward(self,
+                pred: torch.Tensor,
+                gt: torch.Tensor,
+                mask: Optional[torch.Tensor] = None) -> torch.Tensor:
+        """Forward function.
+
+        Args:
+            pred (torch.Tensor): The prediction in any shape.
+            gt (torch.Tensor): The learning target of the prediction in the
+                same shape as pred.
+            mask (torch.Tensor, optional): Binary mask in the same shape of
+                pred, indicating positive regions to calculate the loss. Whole
+                region will be taken into account if not provided. Defaults to
+                None.
+
+        Returns:
+            torch.Tensor: The loss value.
+        """
+
+        assert pred.max() <= 1 and pred.min() >= 0
+
+        return super().forward(pred, gt, mask)

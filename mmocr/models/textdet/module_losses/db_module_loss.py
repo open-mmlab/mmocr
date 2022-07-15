@@ -22,22 +22,26 @@ class DBModuleLoss(nn.Module, TextKernelMixin):
     This is partially adapted from https://github.com/MhLiao/DB.
 
     Args:
-        loss_prob (dict): The loss config for probability map.
-        loss_thr (dict): The loss config for threshold map.
-        loss_db (dict): The loss config for binary map.
+        loss_prob (dict): The loss config for probability map. Defaults to
+            dict(type='MaskedBalancedBCEWithLogitsLoss').
+        loss_thr (dict): The loss config for threshold map. Defaults to
+            dict(type='MaskedSmoothL1Loss', beta=0).
+        loss_db (dict): The loss config for binary map. Defaults to
+            dict(type='MaskedDiceLoss').
         weight_prob (float): The weight of probability map loss.
-            Denoted as :math:`\alpha` in paper.
+            Denoted as :math:`\alpha` in paper. Defaults to 5.
         weight_thr (float): The weight of threshold map loss.
-            Denoted as :math:`\beta` in paper.
-        shrink_ratio (float): The ratio of shrunk text region.
-        thr_min (float): The minimum threshold map value.
-        thr_max (float): The maximum threshold map value.
+            Denoted as :math:`\beta` in paper. Defaults to 10.
+        shrink_ratio (float): The ratio of shrunk text region. Defaults to 0.4.
+        thr_min (float): The minimum threshold map value. Defaults to 0.3.
+        thr_max (float): The maximum threshold map value. Defaults to 0.7.
         min_sidelength (int or float): The minimum sidelength of the
-            minimum rotated rectangle around any text region.
+            minimum rotated rectangle around any text region. Defaults to 8.
     """
 
     def __init__(self,
-                 loss_prob: Dict = dict(type='MaskedBalancedBCELoss'),
+                 loss_prob: Dict = dict(
+                     type='MaskedBalancedBCEWithLogitsLoss'),
                  loss_thr: Dict = dict(type='MaskedSmoothL1Loss', beta=0),
                  loss_db: Dict = dict(type='MaskedDiceLoss'),
                  weight_prob: float = 5.,
@@ -63,22 +67,22 @@ class DBModuleLoss(nn.Module, TextKernelMixin):
 
         Args:
             preds (tuple(tensor)): Raw predictions from model, containing
-                ``prob_map``, ``thr_map`` and ``binary_map``. Each is a tensor
-                of shape :math:`(N, H, W)`.
+                ``prob_map``, ``thr_map``, ``binary_map`` and ``prob_logits``.
+                Each is a tensor of shape :math:`(N, H, W)`.
             data_samples (list[TextDetDataSample]): The data samples.
 
         Returns:
             results(dict): The dict for dbnet losses with loss_prob, \
                 loss_db and loss_thr.
         """
-        prob_map, thr_map, binary_map = preds
+        _, thr_map, binary_map, prob_logits = preds
         gt_shrinks, gt_shrink_masks, gt_thrs, gt_thr_masks = self.get_targets(
             data_samples)
-        gt_shrinks = gt_shrinks.to(prob_map.device)
-        gt_shrink_masks = gt_shrink_masks.to(prob_map.device)
+        gt_shrinks = gt_shrinks.to(prob_logits.device)
+        gt_shrink_masks = gt_shrink_masks.to(prob_logits.device)
         gt_thrs = gt_thrs.to(thr_map.device)
         gt_thr_masks = gt_thr_masks.to(thr_map.device)
-        loss_prob = self.loss_prob(prob_map, gt_shrinks, gt_shrink_masks)
+        loss_prob = self.loss_prob(prob_logits, gt_shrinks, gt_shrink_masks)
 
         loss_thr = self.loss_thr(thr_map, gt_thrs, gt_thr_masks)
         loss_db = self.loss_db(binary_map, gt_shrinks, gt_shrink_masks)

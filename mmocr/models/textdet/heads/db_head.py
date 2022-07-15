@@ -53,7 +53,7 @@ class DBHead(BaseTextDetHead):
             nn.BatchNorm2d(in_channels // 4), nn.ReLU(inplace=True),
             nn.ConvTranspose2d(in_channels // 4, in_channels // 4, 2, 2),
             nn.BatchNorm2d(in_channels // 4), nn.ReLU(inplace=True),
-            nn.ConvTranspose2d(in_channels // 4, 1, 2, 2), nn.Sigmoid())
+            nn.ConvTranspose2d(in_channels // 4, 1, 2, 2))
         self.threshold = self._init_thr(in_channels)
 
     def _diff_binarize(self, prob_map: Tensor, thr_map: Tensor,
@@ -83,12 +83,14 @@ class DBHead(BaseTextDetHead):
 
         Returns:
             tuple(Tensor, Tensor, Tensor): A tuple of ``prob_map``, ``thr_map``
-            and ``binary_map``, each of shape :math:`(N, 4H, 4W)`.
+            , ``binary_map`` and ``prob_logits``, each of shape
+            :math:`(N, 4H, 4W)`. ``prob_map`` is sigmoided ``prob_logits``.
         """
-        prob_map = self.binarize(img).squeeze(1)
+        prob_logits = self.binarize(img).squeeze(1)
+        prob_map = prob_logits.sigmoid()
         thr_map = self.threshold(img).squeeze(1)
         binary_map = self._diff_binarize(prob_map, thr_map, k=50).squeeze(1)
-        return (prob_map, thr_map, binary_map)
+        return (prob_map, thr_map, binary_map, prob_logits)
 
     def _init_thr(self,
                   inner_channels: int,

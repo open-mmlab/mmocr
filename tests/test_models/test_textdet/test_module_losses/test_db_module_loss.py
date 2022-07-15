@@ -27,7 +27,7 @@ class TestDBModuleLoss(TestCase):
         ]
         pred_size = (1, 40, 40)
         self.preds = (torch.rand(pred_size), torch.rand(pred_size),
-                      torch.rand(pred_size))
+                      torch.rand(pred_size), torch.rand(pred_size))
 
     def test_is_poly_invalid(self):
         # area < 1
