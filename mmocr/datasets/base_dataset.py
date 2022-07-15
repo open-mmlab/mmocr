@@ -19,7 +19,7 @@ class BaseDataset(Dataset):
        converted to dict for visualizing only).
 
         .. code-block:: json
-            
+
             {
                 "file_name": "sample.jpg",
                 "height": 1080,
@@ -30,7 +30,7 @@ class BaseDataset(Dataset):
                             "iscrowd": 0,
                             "category_id": 1,
                             "bbox": [357.0, 667.0, 804.0, 100.0],
-                            "segmentation": [[361, 667, 710, 670, 
+                            "segmentation": [[361, 667, 710, 670,
                                               72, 767, 357, 763]]
                         }
                     ]
