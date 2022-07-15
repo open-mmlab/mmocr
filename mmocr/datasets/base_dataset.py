@@ -16,23 +16,25 @@ class BaseDataset(Dataset):
     1. The text detection annotation format is as follows:
        The `annotations` field is optional for testing
        (this is one line of anno_file, with line-json-str
-        converted to dict for visualizing only).
+       converted to dict for visualizing only).
 
-        {
-            "file_name": "sample.jpg",
-            "height": 1080,
-            "width": 960,
-            "annotations":
-                [
-                    {
-                        "iscrowd": 0,
-                        "category_id": 1,
-                        "bbox": [357.0, 667.0, 804.0, 100.0],
-                        "segmentation": [[361, 667, 710, 670,
-                                          72, 767, 357, 763]]
-                    }
-                ]
-        }
+        .. code-block:: json
+            
+            {
+                "file_name": "sample.jpg",
+                "height": 1080,
+                "width": 960,
+                "annotations":
+                    [
+                        {
+                            "iscrowd": 0,
+                            "category_id": 1,
+                            "bbox": [357.0, 667.0, 804.0, 100.0],
+                            "segmentation": [[361, 667, 710, 670, 
+                                              72, 767, 357, 763]]
+                        }
+                    ]
+            }
 
     2. The two text recognition annotation formats are as follows:
        The `x1,y1,x2,y2,x3,y3,x4,y4` field is used for online crop
