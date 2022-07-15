@@ -94,12 +94,12 @@ class MaskedBalancedBCELoss(MaskedBalancedBCEWithLogitsLoss):
     Args:
         reduction (str, optional): The method to reduce the loss.
             Options are 'none', 'mean' and 'sum'. Defaults to 'none'.
-        negative_ratio (float or int, optional): Maximum ratio of negative
+        negative_ratio (float or int): Maximum ratio of negative
             samples to positive ones. Defaults to 3.
-        fallback_negative_num (int, optional): When the mask contains no
+        fallback_negative_num (int): When the mask contains no
             positive samples, the number of negative samples to be sampled.
             Defaults to 0.
-        eps (float, optional): Eps to avoid zero-division error.  Defaults to
+        eps (float): Eps to avoid zero-division error.  Defaults to
             1e-6.
     """
 
@@ -148,7 +148,7 @@ class MaskedBCEWithLogitsLoss(nn.Module):
     class. It's AMP-eligible.
 
     Args:
-        eps (float, optional): Eps to avoid zero-division error.  Defaults to
+        eps (float): Eps to avoid zero-division error.  Defaults to
             1e-6.
     """
 
@@ -193,7 +193,7 @@ class MaskedBCELoss(MaskedBCEWithLogitsLoss):
     """Masked BCE loss.
 
     Args:
-        eps (float, optional): Eps to avoid zero-division error.  Defaults to
+        eps (float): Eps to avoid zero-division error.  Defaults to
             1e-6.
     """
 

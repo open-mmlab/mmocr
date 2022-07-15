@@ -74,7 +74,7 @@ class DBHead(BaseTextDetHead):
         self,
         img: Tensor,
         data_samples: Optional[List[TextDetDataSample]] = None
-    ) -> Tuple[Tensor, Tensor, Tensor]:
+    ) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
         """
         Args:
             img (Tensor): Shape :math:`(N, C, H, W)`.
@@ -82,8 +82,8 @@ class DBHead(BaseTextDetHead):
                 samples. Defaults to None.
 
         Returns:
-            tuple(Tensor, Tensor, Tensor): A tuple of ``prob_map``, ``thr_map``
-            , ``binary_map`` and ``prob_logits``, each of shape
+            tuple(Tensor, Tensor, Tensor, Tensor): A tuple of ``prob_map``,
+            ``thr_map``, ``binary_map`` and ``prob_logits``, each of shape
             :math:`(N, 4H, 4W)`. ``prob_map`` is sigmoided ``prob_logits``.
         """
         prob_logits = self.binarize(img).squeeze(1)
