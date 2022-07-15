@@ -61,7 +61,7 @@ class ImgAug:
             transformation. False persists to the behavior in DBNet.
     """
 
-    def __init__(self, args=None, clip_invalid_ploys=False):
+    def __init__(self, args=None, clip_invalid_ploys=True):
         self.augmenter_args = args
         self.augmenter = AugmenterBuilder().build(self.augmenter_args)
         self.clip_invalid_polys = clip_invalid_ploys
