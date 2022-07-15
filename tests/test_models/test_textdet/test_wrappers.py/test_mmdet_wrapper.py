@@ -2,7 +2,7 @@
 import unittest
 
 import torch
-from mmdet.core import DetDataSample
+from mmdet.data_elements import DetDataSample
 from mmdet.testing import demo_mm_inputs
 from mmengine.config import Config
 from mmengine.data import InstanceData

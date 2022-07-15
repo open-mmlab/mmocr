@@ -1,17 +1,19 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List
+from typing import Dict, List, Tuple, Union
 
 import cv2
 import torch
-from mmdet.core import DetDataSample
-from mmdet.core.mask.structures import bitmap_to_polygon
-from mmdet.core.utils import ForwardResults, OptSampleList
+from mmdet.data_elements import DetDataSample, OptSampleList
+from mmdet.data_elements.mask import bitmap_to_polygon
 from mmengine import InstanceData
 from mmengine.model import BaseModel
 
 from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils.bbox_utils import bbox2poly
+
+ForwardResults = Union[Dict[str, torch.Tensor], List[DetDataSample],
+                       Tuple[torch.Tensor], torch.Tensor]
 
 
 @MODELS.register_module()

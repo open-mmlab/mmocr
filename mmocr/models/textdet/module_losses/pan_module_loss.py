@@ -5,7 +5,7 @@ from typing import Dict, Sequence, Tuple, Union
 import numpy as np
 import torch
 import torch.nn.functional as F
-from mmdet.core import multi_apply
+from mmdet.models.utils import multi_apply
 from torch import nn
 
 from mmocr.data import TextDetDataSample

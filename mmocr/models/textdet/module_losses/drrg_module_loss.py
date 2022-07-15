@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from lanms import merge_quadrangle_n9 as la_nms
 from mmcv.image import imrescale
-from mmdet.core import multi_apply
+from mmdet.models.utils import multi_apply
 from numpy import ndarray
 from numpy.linalg import norm
 from torch import Tensor

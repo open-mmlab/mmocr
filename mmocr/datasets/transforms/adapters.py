@@ -2,8 +2,7 @@
 from typing import Dict
 
 from mmcv.transforms.base import BaseTransform
-from mmdet.core import PolygonMasks
-from mmdet.core.mask.structures import bitmap_to_polygon
+from mmdet.data_elements.mask import PolygonMasks, bitmap_to_polygon
 
 from mmocr.registry import TRANSFORMS
 

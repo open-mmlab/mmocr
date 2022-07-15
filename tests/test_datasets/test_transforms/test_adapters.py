@@ -2,8 +2,7 @@
 import unittest
 
 import numpy as np
-from mmdet.core import PolygonMasks
-from mmdet.core.mask.structures import bitmap_to_polygon
+from mmdet.data_elements.mask import PolygonMasks, bitmap_to_polygon
 
 from mmocr.datasets import MMDet2MMOCR, MMOCR2MMDet, Resize
 from mmocr.utils import poly2shapely
@@ -112,7 +111,7 @@ class TestMMDet2MMOCR(unittest.TestCase):
                         self.data_info_ocr['gt_ignored']))
 
     def test_ocr2det2ocr(self):
-        from mmdet.datasets.pipelines import Resize as MMDet_Resize
+        from mmdet.datasets.transforms import Resize as MMDet_Resize
         t1 = MMOCR2MMDet()
         t2 = MMDet_Resize(scale=(60, 60))
         t3 = MMDet2MMOCR()
