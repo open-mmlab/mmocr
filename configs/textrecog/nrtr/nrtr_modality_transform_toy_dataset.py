@@ -3,12 +3,11 @@ _base_ = [
     '../../_base_/schedules/schedule_adam_step_6e.py'
 ]
 
-default_hooks = dict(logger=dict(type='LoggerHook', interval=50))
-
 # dataset settings
-dataset_type = 'OCRDataset'
-data_root = 'test/data/recog_toy_dataset'
+train_list = {{_base_.train_list}}
+test_list = {{_base_.test_list}}
 file_client_args = dict(backend='disk')
+default_hooks = dict(logger=dict(type='LoggerHook', interval=100))
 
 train_pipeline = [
     dict(type='LoadImageFromFile', file_client_args=file_client_args),
@@ -46,11 +45,7 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
-        type=dataset_type,
-        data_root=data_root,
-        data_prefix=dict(img_path=None),
-        ann_file='label.json',
-        pipeline=train_pipeline))
+        type='ConcatDataset', datasets=train_list, pipeline=test_pipeline))
 
 val_dataloader = dict(
     batch_size=128,
@@ -59,12 +54,8 @@ val_dataloader = dict(
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type=dataset_type,
-        data_root=data_root,
-        data_prefix=dict(img_path=None),
-        ann_file='label.json',
-        test_mode=True,
-        pipeline=test_pipeline))
+        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
+
 test_dataloader = val_dataloader
 
 val_evaluator = [
