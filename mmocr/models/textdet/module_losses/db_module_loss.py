@@ -4,7 +4,7 @@ from typing import Dict, List, Sequence, Tuple, Union
 import cv2
 import numpy as np
 import torch
-from mmdet.core import multi_apply
+from mmdet.models.utils import multi_apply
 from numpy.typing import ArrayLike
 from shapely.geometry import Polygon
 from torch import Tensor, nn

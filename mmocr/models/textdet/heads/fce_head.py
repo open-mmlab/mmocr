@@ -3,7 +3,7 @@ from typing import Dict, List, Optional
 
 import torch
 import torch.nn as nn
-from mmdet.core import multi_apply
+from mmdet.models.utils import multi_apply
 
 from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.heads import BaseTextDetHead

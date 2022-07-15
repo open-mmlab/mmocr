@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import torch
 from mmcv.image import impad, imrescale
-from mmdet.core import multi_apply
+from mmdet.models.utils import multi_apply
 from numpy import ndarray
 from numpy.linalg import norm
 from torch import Tensor, nn

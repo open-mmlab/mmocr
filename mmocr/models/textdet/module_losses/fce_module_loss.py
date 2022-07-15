@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Sequence, Tuple, Union
 import cv2
 import numpy as np
 import torch
-from mmdet.core import multi_apply
+from mmdet.models.utils import multi_apply
 from numpy.fft import fft
 from numpy.linalg import norm
 from numpy.typing import ArrayLike
