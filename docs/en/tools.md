@@ -24,15 +24,15 @@ The final output filename will be `psenet_r50_fpnf_sbn_1x_20190801-{hash id}.pth
 
 Reading images or labels from files can be slow when data are excessive, e.g. on a scale of millions. Besides, in academia, most of the scene text recognition datasets are stored in lmdb format, including images and labels. To get closer to the mainstream practice and enhance the data storage efficiency, MMOCR now provides `tools/data/utils/lmdb_converter.py` to convert text recognition datasets to lmdb format.
 
-| Arguments         | Type | Description                                                        |
-| ----------------- | ---- | ------------------------------------------------------------------ |
-| `label_path`      | str  | Path to label file.                                                |
-| `output`          | str  | Output lmdb path.                                                  |
-| `--img-root`      | str  | Input imglist path.                                                |
-| `--label-only`    | bool | Only converter label to lmdb                                       |
-| `--label-format`  | str  | The format of the label file, either txt or jsonl.                 |
-| `--batch-size`    | int  | Processing batch size, defaults to 1000                            |
-| `--encoding`      | str  | Bytes coding scheme, defaults to utf8.                             |
+| Arguments         | Type | Description                                                               |
+| ----------------- | ---- | ------------------------------------------------------------------------- |
+| `label_path`      | str  | Path to label file.                                                       |
+| `output`          | str  | Output lmdb path.                                                         |
+| `--img-root`      | str  | Input imglist path.                                                       |
+| `--label-only`    | bool | Only converter label to lmdb                                              |
+| `--label-format`  | str  | The format of the label file, either txt or jsonl.                        |
+| `--batch-size`    | int  | Processing batch size, defaults to 1000                                   |
+| `--encoding`      | str  | Bytes coding scheme, defaults to utf8.                                    |
 | `--lmdb-map-size` | int  | Maximum size database may grow to , defaults to 1099511627776 bytes (1TB) |
 
 ### Examples
