@@ -44,7 +44,7 @@ def recog2lmdb(img_root,
                label_only=False,
                batch_size=1000,
                encoding='utf-8',
-               lmdb_map_size=109951162776,
+               lmdb_map_size=1099511627776,
                verify=True):
     """Create text recognition dataset to LMDB format.
 
