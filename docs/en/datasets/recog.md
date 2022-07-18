@@ -209,13 +209,27 @@
 
 - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)
 
+- Step2: Download [timage.tar.gz](https://github.com/open-mmlab/mmocr/files/7408429/timage.tar.gz)
+
+- Step3:
+
+  ```bash
+  mkdir ct80 && cd ct80
+  mv /path/to/test_label.txt .
+  mv /path/to/timage.tar.gz .
+  tar -xvf timage.tar.gz
+  # create soft link
+  cd /path/to/mmocr/data/mixture
+  ln -s /path/to/ct80 ct80
+  ```
+
 - After running the above codes, the directory structure
   should be as follows:
 
   ```text
   ├── ct80
   │   ├── test_label.txt
-  │   └── image
+  │   └── timage
   ```
 
 ## svtp
