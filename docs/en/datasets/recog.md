@@ -209,7 +209,7 @@
 
 - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)
 
-- Step2: Download [timage.tar.gz](https://github.com/open-mmlab/mmocr/files/7408429/timage.tar.gz)
+- Step2: Download [timage.tar.gz](https://download.openmmlab.com/mmocr/data/mixture/ct80/timage.tar.gz)
 
 - Step3:
 
