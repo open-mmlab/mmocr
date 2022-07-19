@@ -44,7 +44,7 @@ test_pipeline = [
         color_type='color_ignore_orientation'),
     # TODO Replace with mmcv.RescaleToShort when it's ready
     dict(
-        type='RescaleToShortAspectJitter',
+        type='ShortScaleAspectJitter',
         short_size=736,
         scale_divisor=1,
         ratio_range=(1.0, 1.0),
