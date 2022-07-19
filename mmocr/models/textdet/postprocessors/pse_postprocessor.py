@@ -105,5 +105,9 @@ class PSEPostprocessor(PANPostprocessor):
         pred_instances.polygons = polygons
         pred_instances.scores = torch.FloatTensor(scores)
         data_sample.pred_instances = pred_instances
+        scale_factor = data_sample.scale_factor
+        scale_factor = tuple(factor * self.downsample_ratio
+                             for factor in scale_factor)
+        data_sample.set_metainfo(dict(scale_factor=scale_factor))
 
         return data_sample
