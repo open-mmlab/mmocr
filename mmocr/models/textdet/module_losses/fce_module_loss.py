@@ -7,10 +7,10 @@ import torch
 from mmdet.models.utils import multi_apply
 from numpy.fft import fft
 from numpy.linalg import norm
-from numpy.typing import ArrayLike
 
 from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.utils.typing import ArrayLike
 from .textsnake_module_loss import TextSnakeModuleLoss
 
 

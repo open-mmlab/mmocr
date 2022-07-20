@@ -6,11 +6,11 @@ import numpy as np
 import pyclipper
 import shapely
 from mmcv import is_list_of
-from numpy.typing import ArrayLike
 from shapely.geometry import MultiPolygon, Polygon
 
 from mmocr.utils import bbox2poly, valid_boundary
 from mmocr.utils.check_argument import is_2dlist
+from mmocr.utils.typing import ArrayLike
 
 
 def rescale_polygon(polygon: ArrayLike,

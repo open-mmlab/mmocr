@@ -3,11 +3,11 @@ import functools
 from typing import List, Tuple
 
 import numpy as np
-from numpy.typing import ArrayLike
 from shapely.geometry import LineString, Point
 
 from mmocr.utils.check_argument import is_2dlist, is_type_list
 from mmocr.utils.point_utils import point_distance, points_center
+from mmocr.utils.typing import ArrayLike
 
 
 def rescale_bbox(bbox: np.ndarray,
