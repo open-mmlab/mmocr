@@ -1,5 +1,5 @@
 _base_ = [
-    'fcenet_r50_fpn.py',
+    'fcenet_r50dcnv2_fpn.py',
     '../../_base_/det_datasets/ctw1500.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1500e.py',

@@ -1,5 +1,5 @@
 _base_ = [
-    '../../_base_/recog_datasets/ST_MJ_train.py',
+    'nrtr_r31.py', '../../_base_/recog_datasets/ST_MJ_train.py',
     '../../_base_/recog_datasets/academic_test.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_6e.py'
@@ -14,33 +14,7 @@ test_list = {{_base_.test_list}}
 file_client_args = dict(backend='disk')
 default_hooks = dict(logger=dict(type='LoggerHook', interval=100))
 
-dictionary = dict(
-    type='Dictionary',
-    dict_file='dicts/english_digits_symbols.txt',
-    with_padding=True,
-    with_unknown=True,
-    same_start_end=True,
-    with_start=True,
-    with_end=True)
-
-model = dict(
-    type='NRTR',
-    backbone=dict(
-        type='ResNet31OCR',
-        layers=[1, 2, 5, 3],
-        channels=[32, 64, 128, 256, 512, 512],
-        stage4_pool_cfg=dict(kernel_size=(2, 1), stride=(2, 1)),
-        last_stage_pool=False),
-    encoder=dict(type='NRTREncoder'),
-    decoder=dict(
-        type='NRTRDecoder',
-        module_loss=dict(
-            type='CEModuleLoss', ignore_first_char=True, flatten=True),
-        postprocessor=dict(type='AttentionPostprocessor')),
-    dictionary=dictionary,
-    max_seq_len=30,
-    preprocess_cfg=dict(
-        mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375]))
+model = dict(backbone=dict(last_stage_pool=False))
 
 train_pipeline = [
     dict(type='LoadImageFromFile', file_client_args=file_client_args),
@@ -73,8 +47,8 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=256,
-    num_workers=2,
+    batch_size=384,
+    num_workers=32,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -82,7 +56,7 @@ train_dataloader = dict(
 
 val_dataloader = dict(
     batch_size=128,
-    num_workers=2,
+    num_workers=4,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
