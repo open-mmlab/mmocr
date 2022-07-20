@@ -23,6 +23,7 @@
 
 - 准备好 [WildReceipt](#WildReceipt)。
 - 转换 WildReceipt 成 OpenSet 格式:
+
 ```bash
 # 你可以运行以下命令以获取更多可用参数：
 # python tools/data/kie/closeset_to_openset.py -h

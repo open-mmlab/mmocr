@@ -4,6 +4,7 @@ from typing import Optional, Union
 import torch
 import torch.nn as nn
 
+from mmocr import digit_version
 from mmocr.registry import MODELS
 
 
@@ -25,8 +26,10 @@ class MaskedSmoothL1Loss(nn.Module):
 
     def __init__(self, beta: Union[float, int] = 1, eps: float = 1e-6) -> None:
         super().__init__()
-        self.smooth_l1_loss = nn.SmoothL1Loss(beta=beta, reduction='none')
+        if digit_version(torch.__version__) > digit_version('1.6.0'):
+            self.smooth_l1_loss = nn.SmoothL1Loss(beta=beta, reduction='none')
         self.eps = eps
+        self.beta = beta
 
     def forward(self,
                 pred: torch.Tensor,
@@ -51,5 +54,14 @@ class MaskedSmoothL1Loss(nn.Module):
         if mask is None:
             mask = torch.ones_like(gt).bool()
         assert mask.size() == gt.size()
-        loss = self.smooth_l1_loss(pred * mask, gt * mask)
+        x = pred * mask
+        y = gt * mask
+        if digit_version(torch.__version__) > digit_version('1.6.0'):
+            loss = self.smooth_l1_loss(x, y)
+        else:
+            loss = torch.zeros_like(gt)
+            diff = torch.abs(x - y)
+            mask_beta = diff < self.beta
+            loss[mask_beta] = 0.5 * torch.square(diff)[mask_beta] / self.beta
+            loss[~mask_beta] = diff[~mask_beta] - 0.5 * self.beta
         return loss.sum() / (mask.sum() + self.eps)

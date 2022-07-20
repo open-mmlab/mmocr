@@ -37,18 +37,18 @@ You can merge `background` to `others` if telling background apart is not import
 
 We provide a [conversion script](../datasets/kie.md) that converts WildRecipt-like dataset to OpenSet format. This script links every `key`-`value` pairs following the rules above. Here's an example illustration: (For better understanding, all the node labels are presented as texts)
 
-|box_content | closeset_node_label| closeset_edge_label | openset_node_label | openset_edge_label |
-| :----: | :---: | :----: | :---: | :---: |
-| hello | Ignore | - | Others | 0 |
-| world | Ignore | - | Others | 1 |
-| Actor | Actor_key | - | Key | 2 |
-| Tom | Actor_value | - | Value | 2 |
-| Tony | Actor_value | - | Value | 2 |
-| Tim | Actor_value | - | Value | 2 |
-| something | Ignore | - | Others | 3 |
-| Actress | Actress_key | - | Key | 4 |
-| Lucy | Actress_value | - | Value | 4 |
-| Zora | Actress_value  | - | Value | 4 |
+| box_content | closeset_node_label | closeset_edge_label | openset_node_label | openset_edge_label |
+| :---------: | :-----------------: | :-----------------: | :----------------: | :----------------: |
+|    hello    |       Ignore        |          -          |       Others       |         0          |
+|    world    |       Ignore        |          -          |       Others       |         1          |
+|    Actor    |      Actor_key      |          -          |        Key         |         2          |
+|     Tom     |     Actor_value     |          -          |       Value        |         2          |
+|    Tony     |     Actor_value     |          -          |       Value        |         2          |
+|     Tim     |     Actor_value     |          -          |       Value        |         2          |
+|  something  |       Ignore        |          -          |       Others       |         3          |
+|   Actress   |     Actress_key     |          -          |        Key         |         4          |
+|    Lucy     |    Actress_value    |          -          |       Value        |         4          |
+|    Zora     |    Actress_value    |          -          |       Value        |         4          |
 
 ```{warning}
 

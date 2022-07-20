@@ -45,14 +45,14 @@ This tool is still experimental. For now, some customized operators are not supp
 
 The table below lists the models that are guaranteed to be exportable to ONNX and runnable in ONNX Runtime.
 
-| Model  |                                                                      Config                                                                      | Dynamic Shape | Batch Inference |                  Note                  |
-| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :-----------: | :-------------: | :------------------------------------: |
-| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |       Y       |        N        |                                        |
-| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |       Y       |        Y        |                                        |
-| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |       Y       |        Y        |                                        |
-| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |       Y       |        Y        |                                        |
+| Model  |                                                              Config                                                              | Dynamic Shape | Batch Inference |                  Note                  |
+| :----: | :------------------------------------------------------------------------------------------------------------------------------: | :-----------: | :-------------: | :------------------------------------: |
+| DBNet  | [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py) |       Y       |        N        |                                        |
+| PSENet | [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py) |       Y       |        Y        |                                        |
+| PSENet | [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py) |       Y       |        Y        |                                        |
+| PANet  | [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py) |       Y       |        Y        |                                        |
 | PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |                                        |
-|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |       Y       |        Y        | CRNN only accepts input with height 32 |
+|  CRNN  |    [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)     |       Y       |        Y        | CRNN only accepts input with height 32 |
 
 ```{note}
 - *All models above are tested with PyTorch==1.8.1 and onnxruntime-gpu == 1.8.1*
@@ -63,7 +63,6 @@ The table below lists the models that are guaranteed to be exportable to ONNX an
 ## Convert ONNX to TensorRT (experimental)
 
 We also provide a script to convert [ONNX](https://github.com/onnx/onnx) model to [TensorRT](https://github.com/NVIDIA/TensorRT) format. Besides, we support comparing the output results between ONNX and TensorRT model.
-
 
 ```bash
 python tools/deployment/onnx2tensorrt.py
@@ -106,14 +105,14 @@ This tool is still experimental. For now, some customized operators are not supp
 
 The table below lists the models that are guaranteed to be exportable to TensorRT engine and runnable in TensorRT.
 
-| Model  |                                                                      Config                                                                      | Dynamic Shape | Batch Inference |                  Note                  |
-| :----: | :----------------------------------------------------------------------------------------------------------------------------------------------: | :-----------: | :-------------: | :------------------------------------: |
-| DBNet  |    [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py)    |       Y       |        N        |                                        |
-| PSENet |     [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py)      |       Y       |        Y        |                                        |
-| PSENet |   [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py)    |       Y       |        Y        |                                        |
-| PANet  |   [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py)   |       Y       |        Y        |                                        |
+| Model  |                                                              Config                                                              | Dynamic Shape | Batch Inference |                  Note                  |
+| :----: | :------------------------------------------------------------------------------------------------------------------------------: | :-----------: | :-------------: | :------------------------------------: |
+| DBNet  | [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py) |       Y       |        N        |                                        |
+| PSENet | [psenet_r50_fpnf_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py) |       Y       |        Y        |                                        |
+| PSENet | [psenet_r50_fpnf_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py) |       Y       |        Y        |                                        |
+| PANet  | [panet_r18_fpem_ffm_600e_ctw1500.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py) |       Y       |        Y        |                                        |
 | PANet  | [panet_r18_fpem_ffm_600e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py) |       Y       |        Y        |                                        |
-|  CRNN  |            [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)             |       Y       |        Y        | CRNN only accepts input with height 32 |
+|  CRNN  |    [crnn_academic_dataset.py](https://github.com/open-mmlab/mmocr/blob/main/configs/textrecog/crnn/crnn_academic_dataset.py)     |       Y       |        Y        | CRNN only accepts input with height 32 |
 
 ```{note}
 - *All models above are tested with PyTorch==1.8.1,  onnxruntime-gpu==1.8.1 and tensorrt==7.2.1.6*
@@ -126,6 +125,7 @@ The table below lists the models that are guaranteed to be exportable to TensorR
 We provide methods to evaluate TensorRT and ONNX models in `tools/deployment/deploy_test.py`.
 
 ### Prerequisite
+
 To evaluate ONNX and TensorRT models, ONNX, ONNXRuntime and TensorRT should be installed first. Install `mmcv-full` with ONNXRuntime custom ops and TensorRT plugins follow [ONNXRuntime in mmcv](https://mmcv.readthedocs.io/en/latest/onnxruntime_op.html) and [TensorRT plugin in mmcv](https://github.com/open-mmlab/mmcv/blob/master/docs/tensorrt_plugin.md).
 
 ### Usage
@@ -152,7 +152,6 @@ python tools/deploy_test.py \
 | `--device`     | str                       | Device for evaluation. Defaults to `cuda:0`.                                            |
 
 ## Results and Models
-
 
 <table class="tg">
 <thead>
@@ -309,6 +308,7 @@ python tools/deploy_test.py \
 ```
 
 ## C++ Inference example with OpenCV
+
 The example below is tested with Visual Studio 2019 as console application, CPU inference only.
 
 ### Prerequisites
@@ -332,6 +332,7 @@ Be sure, that verifications of both models are successful - look through the exp
 ```
 
 ### Example
+
 Example usage of exported models with C++ is in the code below (don't forget to change paths to \*.onnx files). It's applicable to these two models only, other models have another preprocessing and postprocessing logics.
 
 ```C++
@@ -546,6 +547,7 @@ int main(int argc, const char* argv[]) {
 ```
 
 The output should look something like this.
+
 ```
 Loading models...
 Loading models done in 5715 ms

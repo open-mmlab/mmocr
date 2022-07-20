@@ -25,6 +25,7 @@ The structure of the key information extraction dataset directory is organized a
 
 - Step0: have [WildReceipt](#WildReceipt) prepared.
 - Step1: Convert annotation files to OpenSet format:
+
 ```bash
 # You may find more available arguments by running
 # python tools/data/kie/closeset_to_openset.py -h
