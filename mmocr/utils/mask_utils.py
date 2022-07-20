@@ -1,7 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import cv2
 import numpy as np
-from numpy.typing import ArrayLike
+
+from mmocr.utils.typing import ArrayLike
 
 
 def fill_hole(input_mask: ArrayLike) -> np.array:

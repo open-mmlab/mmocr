@@ -3,9 +3,11 @@
 
 from typing import Dict, List, Optional, Tuple, Union
 
+import numpy as np
 import torch
 from mmengine.config import ConfigDict
 
+from mmocr import digit_version
 from mmocr.data import KIEDataSample, TextDetDataSample, TextRecogDataSample
 
 # Config
@@ -31,3 +33,6 @@ RecForwardResults = Union[Dict[str, torch.Tensor], List[TextRecogDataSample],
 
 # Visualization
 ColorType = Union[str, Tuple, List[str], List[Tuple]]
+
+ArrayLike = 'ArrayLike' if digit_version(
+    np.__version__) < digit_version('1.20.0') else np.typing.ArrayLike
