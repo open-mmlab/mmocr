@@ -3,8 +3,8 @@ from typing import Dict, List, Tuple, Union
 
 import cv2
 import torch
-from mmdet.data_elements import DetDataSample, OptSampleList
-from mmdet.data_elements.mask import bitmap_to_polygon
+from mmdet.structures import DetDataSample, OptSampleList
+from mmdet.structures.mask import bitmap_to_polygon
 from mmengine import InstanceData
 from mmengine.model import BaseModel
 
