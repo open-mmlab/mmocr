@@ -7,7 +7,7 @@
 你可以根据[官网](https://github.com/pytorch/serve#install-torchserve-and-torch-model-archiver)步骤来安装 `TorchServe` 和
 `torch-model-archiver` 两个模块。
 
-##  将 MMOCR 模型转换为 TorchServe 模型格式
+## 将 MMOCR 模型转换为 TorchServe 模型格式
 
 我们提供了一个便捷的工具可以将任何以 `.pth` 为后缀的模型转换为以 `.mar` 结尾的模型来满足 TorchServe 使用要求。
 
@@ -46,12 +46,11 @@ torchserve --start --model-store ./checkpoints --models dbnet=dbnet.mar
 
 然后，你可以通过 TorchServe 的 REST API 访问 Inference、 Management、 Metrics 等服务。你可以在[TorchServe REST API](https://github.com/pytorch/serve/blob/master/docs/rest_api.md) 中找到它们的用法。
 
-
-| 服务           |  地址                                                            |
-| ------------------- | ----------------------- |
-|  Inference | `http://127.0.0.1:8080` |
-|  Management | `http://127.0.0.1:8081` |
-| Metrics | `http://127.0.0.1:8082` |
+| 服务       | 地址                    |
+| ---------- | ----------------------- |
+| Inference  | `http://127.0.0.1:8080` |
+| Management | `http://127.0.0.1:8081` |
+| Metrics    | `http://127.0.0.1:8082` |
 
 ````{note}
 TorchServe 默认会将服务绑定到端口 `8080`、 `8081` 、 `8082` 上。你可以通过修改 `config.properties` 来更改端口及存储位置等内容，并通过可选项 `--ts-config config.preperties` 来运行 TorchServe 服务。
@@ -66,7 +65,6 @@ model_store=/home/model-server/model-store
 ```
 
 ````
-
 
 ### 通过 Docker 启动
 
@@ -99,13 +97,11 @@ mmocr-serve:latest
 
 运行docker后，你可以通过 TorchServe 的 REST API 访问 Inference、 Management、 Metrics 等服务。具体你可以在[TorchServe REST API](https://github.com/pytorch/serve/blob/master/docs/rest_api.md) 中找到它们的用法。
 
-| 服务           |  地址                                                            |
-| ------------------- | ----------------------- |
-| Inference | http://127.0.0.1:8080 |
+| 服务       | 地址                  |
+| ---------- | --------------------- |
+| Inference  | http://127.0.0.1:8080 |
 | Management | http://127.0.0.1:8081 |
-| Metrics | http://127.0.0.1:8082 |
-
-
+| Metrics    | http://127.0.0.1:8082 |
 
 ## 4. 测试单张图片推理
 
@@ -122,6 +118,7 @@ curl http://127.0.0.1:8080/predictions/dbnet -T demo/demo_text_det.jpg
 ```
 
 对于检测模型，你会获取到名为 boundary_result 的 json 对象。内部的每个数组包含以浮点数格式的，按顺时针排序的 x， y 边界顶点坐标。数组的最后一位为置信度分数。
+
 ```json
 {
   "boundary_result": [

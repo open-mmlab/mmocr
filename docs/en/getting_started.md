@@ -27,11 +27,13 @@ Its detection result will be printed out and a new window will pop up with resul
 We provide a toy dataset under `tests/data` on which you can get a sense of training before the academic dataset is prepared.
 
 For example, to train a text recognition task with `seg` method and toy dataset,
+
 ```shell
 python tools/train.py configs/textrecog/seg/seg_r31_1by16_fpnocr_toy_dataset.py --work-dir seg
 ```
 
 To train a text recognition task with `sar` method and toy dataset,
+
 ```shell
 python tools/train.py configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py --work-dir sar
 ```
@@ -39,6 +41,7 @@ python tools/train.py configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset
 ### Training with Academic Dataset
 
 Once you have prepared required academic dataset following our instruction, the only last thing to check is if the model's config points MMOCR to the correct dataset path. Suppose we want to train DBNet on ICDAR 2015, and part of `configs/_base_/det_datasets/icdar2015.py` looks like the following:
+
 ```python
 dataset_type = 'IcdarDataset'
 data_root = 'data/icdar2015'
@@ -55,7 +58,9 @@ test = dict(
 train_list = [train]
 test_list = [test]
 ```
+
 You would need to check if `data/icdar2015` is right. Then you can start training with the command:
+
 ```shell
 python tools/train.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py --work-dir dbnet
 ```
@@ -65,11 +70,13 @@ You can find full training instructions, explanations and useful training config
 ## Testing
 
 Suppose now you have finished the training of DBNet and the latest model has been saved in `dbnet/latest.pth`. You can evaluate its performance on the test set using the `hmean-iou` metric with the following command:
+
 ```shell
 python tools/test.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py dbnet/latest.pth --eval hmean-iou
 ```
 
 Evaluating any pretrained model accessible online is also allowed:
+
 ```shell
 python tools/test.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth --eval hmean-iou
 ```

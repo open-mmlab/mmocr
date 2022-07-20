@@ -50,11 +50,11 @@ Then you can access inference, management and metrics services
 through TorchServe's REST API.
 You can find their usages in [TorchServe REST API](https://github.com/pytorch/serve/blob/master/docs/rest_api.md).
 
-| Service           |  Address                                                            |
-| ------------------- | ----------------------- |
-| Inference | `http://127.0.0.1:8080` |
+| Service    | Address                 |
+| ---------- | ----------------------- |
+| Inference  | `http://127.0.0.1:8080` |
 | Management | `http://127.0.0.1:8081` |
-| Metrics | `http://127.0.0.1:8082` |
+| Metrics    | `http://127.0.0.1:8082` |
 
 ````{note}
 By default, TorchServe binds port number `8080`, `8081` and `8082` to its services.
@@ -70,7 +70,6 @@ model_store=/home/model-server/model-store
 ```
 
 ````
-
 
 ### From Docker
 
@@ -109,13 +108,11 @@ Upon running the docker, you can access inference, management and metrics servic
 through TorchServe's REST API.
 You can find their usages in [TorchServe REST API](https://github.com/pytorch/serve/blob/master/docs/rest_api.md).
 
-| Service           |  Address                                                            |
-| ------------------- | ----------------------- |
-| Inference | `http://127.0.0.1:8080` |
+| Service    | Address                 |
+| ---------- | ----------------------- |
+| Inference  | `http://127.0.0.1:8080` |
 | Management | `http://127.0.0.1:8081` |
-| Metrics | `http://127.0.0.1:8082` |
-
-
+| Metrics    | `http://127.0.0.1:8082` |
 
 ## 4. Test deployment
 
