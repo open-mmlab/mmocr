@@ -10,7 +10,7 @@ class TestRecogTextDataset(TestCase):
 
         # test initialization
         dataset = RecogTextDataset(
-            ann_file='tests/data/recog_toy_dataset/old_label.txt',
+            ann_file='tests/data/rec_toy_dataset/old_label.txt',
             data_prefix=dict(img_path='imgs'),
             parser_cfg=dict(
                 type='LineStrParser',
@@ -30,7 +30,7 @@ class TestRecogTextDataset(TestCase):
 
     def test_jsonl_dataset(self):
         dataset = RecogTextDataset(
-            ann_file='tests/data/recog_toy_dataset/old_label.jsonl',
+            ann_file='tests/data/rec_toy_dataset/old_label.jsonl',
             data_prefix=dict(img_path='imgs'),
             parser_cfg=dict(type='LineJsonParser', keys=['filename', 'text']),
             pipeline=[])

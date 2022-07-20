@@ -1,4 +1,4 @@
-data_root = 'tests/data/recog_toy_dataset'
+data_root = 'tests/data/rec_toy_dataset'
 train_img_prefix = 'imgs/'
 train_anno_file = 'label.json'
 

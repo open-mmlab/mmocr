@@ -1,17 +1,10 @@
 # Text Recognition Training set, including:
 # Synthetic Datasets: SynthText, Syn90k
-data_root = 'data/recog'
+data_root = 'data/rec'
+train_img_prefix1 = 'Syn90k/mnt/ramdisk/max/90kDICT32px'
+train_ann_file1 = 'Syn90k/label.json'
 
-train_img_prefix1 = 'SynthText_Add'
-train_img_prefix2 = 'SynthText/synthtext/' + \
-    'SynthText_patch_horizontal'
-train_img_prefix3 = 'Syn90k/mnt/ramdisk/max/90kDICT32px'
-
-train_ann_file1 = 'SynthText_Add/label.json',
-train_ann_file2 = 'SynthText/label.json',
-train_ann_file3 = 'Syn90k/label.json'
-
-train1 = dict(
+MJ = dict(
     type='OCRDataset',
     data_root=data_root,
     data_prefix=dict(img_path=train_img_prefix1),
@@ -19,12 +12,27 @@ train1 = dict(
     test_mode=False,
     pipeline=None)
 
-train2 = {key: value for key, value in train1.items()}
-train2['data_prefix'] = dict(img_path=train_img_prefix2)
-train2['ann_file'] = train_ann_file2
+train_img_prefix2 = 'SynthText/synthtext/' + \
+    'SynthText_patch_horizontal'
+train_ann_file2 = 'SynthText/label.json',
 
-train3 = {key: value for key, value in train1.items()}
-train3['img_prefix'] = dict(img_path=train_img_prefix3)
-train3['ann_file'] = train_ann_file3
+ST = dict(
+    type='OCRDataset',
+    data_root=data_root,
+    data_prefix=dict(img_path=train_img_prefix2),
+    ann_file=train_ann_file2,
+    test_mode=False,
+    pipeline=None)
 
-train_list = [train1, train2, train3]
+train_img_prefix3 = 'SynthText_Add'
+train_ann_file3 = 'SynthText_Add/label.json'
+
+STADD = dict(
+    type='OCRDataset',
+    data_root=data_root,
+    data_prefix=dict(img_path=train_img_prefix3),
+    ann_file=train_ann_file3,
+    test_mode=False,
+    pipeline=None)
+
+train_list = [MJ, ST, STADD]

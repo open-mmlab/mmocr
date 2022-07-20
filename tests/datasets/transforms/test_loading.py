@@ -142,12 +142,12 @@ class TestLoadImageFromLMDB(TestCase):
     def setUp(self):
         img_key = 'image-%09d' % 1
         self.results1 = {
-            'img_path': f'tests/data/recog_toy_dataset/imgs.lmdb/{img_key}'
+            'img_path': f'tests/data/rec_toy_dataset/imgs.lmdb/{img_key}'
         }
 
         img_key = 'image-%09d' % 100
         self.results2 = {
-            'img_path': f'tests/data/recog_toy_dataset/imgs.lmdb/{img_key}'
+            'img_path': f'tests/data/rec_toy_dataset/imgs.lmdb/{img_key}'
         }
 
     def test_transform(self):

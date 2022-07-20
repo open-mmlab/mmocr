@@ -28,7 +28,7 @@ class TestRecogLMDBDataset(TestCase):
 
         # test initialization
         dataset = RecogLMDBDataset(
-            ann_file='tests/data/recog_toy_dataset/label.lmdb',
+            ann_file='tests/data/rec_toy_dataset/label.lmdb',
             data_prefix=dict(img_path='imgs'),
             pipeline=[])
         dataset.full_init()
@@ -44,7 +44,7 @@ class TestRecogLMDBDataset(TestCase):
 
         # test initialization
         dataset = RecogLMDBDataset(
-            ann_file='tests/data/recog_toy_dataset/imgs.lmdb',
+            ann_file='tests/data/rec_toy_dataset/imgs.lmdb',
             data_prefix=dict(img_path='imgs'),
             pipeline=[])
         dataset.full_init()
