@@ -97,13 +97,13 @@ jobs:
           # CLoning repos in VM since Docker doesn't have access to the private key
           name: Clone Repos
           command: |
-            git clone -b main --depth 1 ssh://git@github.com/open-mmlab/mmengine.git /mmengine
-            git clone -b dev-3.x --depth 1 ssh://git@github.com/open-mmlab/mmdetection.git /mmdetection
+            git clone -b main --depth 1 ssh://git@github.com/open-mmlab/mmengine.git /home/circleci/mmengine
+            git clone -b dev-3.x --depth 1 ssh://git@github.com/open-mmlab/mmdetection.git /home/circleci/mmdetection
       - run:
           name: Build Docker image
           command: |
             docker build .circleci/docker -t mmocr:gpu --build-arg PYTORCH=<< parameters.torch >> --build-arg CUDA=<< parameters.cuda >> --build-arg CUDNN=<< parameters.cudnn >>
-            docker run --gpus all -t -d -v /home/circleci/project:/mmocr -v /mmengine:/mmengine -v /mmdetection:/mmdetection -w /mmocr --name mmocr mmocr:gpu
+            docker run --gpus all -t -d -v /home/circleci/project:/mmocr -v /home/circleci/mmengine:/mmengine -v /home/circleci/mmdetection:/mmdetection -w /mmocr --name mmocr mmocr:gpu
       - run:
           name: Install mmocr dependencies
           command: |
@@ -134,32 +134,32 @@ workflows:
       not:
         << pipeline.parameters.lint_only >>
     jobs:
-      - lint:
-          name: lint
-          filters:
-            branches:
-              ignore:
-                - main
-      - build_cpu:
-          name: minimum_version_cpu
-          torch: 1.6.0
-          torchvision: 0.7.0
-          python: 3.6.9  # The lowest python 3.6.x version available on CircleCI images
-          mmcv: https://download.openmmlab.com/mmcv/dev-2.x/cpu/torch1.6.0/mmcv_full-2.0.0rc0-cp36-cp36m-manylinux1_x86_64.whl
-          # requires:
-          #   - lint
-      - build_cpu:
-          name: maximum_version_cpu
-          torch: 1.9.0
-          torchvision: 0.10.0
-          python: 3.9.0
-          mmcv: https://download.openmmlab.com/mmcv/dev-2.x/cpu/torch1.9.0/mmcv_full-2.0.0rc0-cp39-cp39-manylinux1_x86_64.whl
-          requires:
-            - minimum_version_cpu
-      - hold:
-          type: approval
-          requires:
-            - maximum_version_cpu
+      # - lint:
+      #     name: lint
+      #     filters:
+      #       branches:
+      #         ignore:
+      #           - main
+      # - build_cpu:
+      #     name: minimum_version_cpu
+      #     torch: 1.6.0
+      #     torchvision: 0.7.0
+      #     python: 3.6.9  # The lowest python 3.6.x version available on CircleCI images
+      #     mmcv: https://download.openmmlab.com/mmcv/dev-2.x/cpu/torch1.6.0/mmcv_full-2.0.0rc0-cp36-cp36m-manylinux1_x86_64.whl
+      #     # requires:
+      #     #   - lint
+      # - build_cpu:
+      #     name: maximum_version_cpu
+      #     torch: 1.9.0
+      #     torchvision: 0.10.0
+      #     python: 3.9.0
+      #     mmcv: https://download.openmmlab.com/mmcv/dev-2.x/cpu/torch1.9.0/mmcv_full-2.0.0rc0-cp39-cp39-manylinux1_x86_64.whl
+      #     requires:
+      #       - minimum_version_cpu
+      # - hold:
+      #     type: approval
+      #     requires:
+      #       - maximum_version_cpu
       - build_cuda:
           name: mainstream_version_gpu
           torch: 1.8.1
