@@ -20,10 +20,8 @@ repos:
     rev: v3.1.0
     hooks:
       - id: trailing-whitespace
-        exclude: ^dicts/
       - id: check-yaml
       - id: end-of-file-fixer
-        exclude: ^dicts/
       - id: requirements-txt-fixer
       - id: double-quote-string-fixer
       - id: check-merge-conflict
@@ -31,22 +29,20 @@ repos:
         args: ["--remove"]
       - id: mixed-line-ending
         args: ["--fix=lf"]
-  - repo: https://github.com/markdownlint/markdownlint
-    rev: v0.11.0
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.9
     hooks:
-      - id: markdownlint
-        args: ["-r", "~MD002,~MD013,~MD029,~MD033,~MD034",
-              "-t", "allow_different_nesting"]
+      - id: mdformat
+        args: ["--number", "--table-width", "200"]
+        additional_dependencies:
+          - mdformat-openmmlab
+          - mdformat_frontmatter
+          - linkify-it-py
   - repo: https://github.com/myint/docformatter
     rev: v1.3.1
     hooks:
       - id: docformatter
         args: ["--in-place", "--wrap-descriptions", "79"]
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v2.32.1
-    hooks:
-      - id: pyupgrade
-        args: ["--py36-plus"]
   - repo: https://github.com/open-mmlab/pre-commit-hooks
     rev: v0.2.0  # Use the ref you want to point at
     hooks:
