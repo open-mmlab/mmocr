@@ -44,11 +44,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Get MMCV_TORCH as environment variables
-          command: |
-            . .circleci/scripts/get_mmcv_var.sh << parameters.torch >>
-            source $BASH_ENV
-      - run:
           name: Install Libraries
           command: |
             sudo apt-get update
@@ -98,11 +93,6 @@ jobs:
     resource_class: gpu.nvidia.small
     steps:
       - checkout
-      - run:
-          name: Get MMCV_TORCH and MMCV_CUDA as environment variables
-          command: |
-            . .circleci/scripts/get_mmcv_var.sh << parameters.torch >> << parameters.cuda >>
-            source $BASH_ENV
       - run:
           name: Build Docker image
           command: |
