@@ -16,6 +16,8 @@ jobs:
       - run:
           name: Install pre-commit hook
           command: |
+            echo $ENGINE_TOKEN
+            pip install git+https://"$ENGINE_TOKEN"@github.com/open-mmlab/mmengine.git@main
             pip install pre-commit
             pre-commit install
       - run:
@@ -25,7 +27,7 @@ jobs:
           name: Check docstring coverage
           command: |
             pip install interrogate
-            interrogate -v --ignore-init-method --ignore-module --ignore-nested-functions --ignore-regex "__repr__" --fail-under 50 mmocr
+            interrogate -v --ignore-init-method --ignore-module --ignore-nested-functions --ignore-magic --ignore-regex "__repr__" --fail-under 90 mmocr
   build_cpu:
     parameters:
       # The python version must match available image tags in
@@ -44,6 +46,7 @@ jobs:
       - run:
           name: Get MMCV_TORCH as environment variables
           command: |
+            asdfsdf
             . .circleci/scripts/get_mmcv_var.sh << parameters.torch >>
             source $BASH_ENV
       - run:
@@ -64,7 +67,9 @@ jobs:
       - run:
           name: Install mmocr dependencies
           command: |
+            pip install git+ssh://git@github.com/open-mmlab/mmengine.git
             python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
+            pip install git+ssh://git@github.com/open-mmlab/mmdetection.git@dev-2.x
             python -m pip install mmdet
             python -m pip install -r requirements.txt
       - run:
@@ -135,6 +140,7 @@ workflows:
         << pipeline.parameters.lint_only >>
     jobs:
       - lint:
+          context: mmengine
           name: lint
           filters:
             branches:
@@ -181,3 +187,4 @@ workflows:
             branches:
               only:
                 - main
+ 
