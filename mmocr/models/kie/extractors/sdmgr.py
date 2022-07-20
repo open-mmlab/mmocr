@@ -3,7 +3,7 @@ import warnings
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import torch
-from mmdet.data_elements.bbox import bbox2roi
+from mmdet.structures.bbox import bbox2roi
 from mmengine.model import BaseModel
 from torch import nn
 

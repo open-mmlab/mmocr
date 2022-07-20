@@ -2,7 +2,7 @@
 import unittest
 
 import numpy as np
-from mmdet.data_elements.mask import PolygonMasks, bitmap_to_polygon
+from mmdet.structures.mask import PolygonMasks, bitmap_to_polygon
 
 from mmocr.datasets import MMDet2MMOCR, MMOCR2MMDet, Resize
 from mmocr.utils import poly2shapely
