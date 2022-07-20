@@ -34,5 +34,7 @@ RecForwardResults = Union[Dict[str, torch.Tensor], List[TextRecogDataSample],
 # Visualization
 ColorType = Union[str, Tuple, List[str], List[Tuple]]
 
-ArrayLike = 'ArrayLike' if digit_version(
-    np.__version__) < digit_version('1.20.0') else np.typing.ArrayLike
+ArrayLike = 'ArrayLike'
+if digit_version(np.__version__) >= digit_version('1.20.0'):
+    from numpy.typing import ArrayLike as NP_ARRAY_LIKE
+    ArrayLike = NP_ARRAY_LIKE
