@@ -94,7 +94,7 @@ jobs:
     steps:
       - checkout
       - run:
-          # CLoning repos in VM since Docker doesn't have access to the private key
+          # Cloning repos in VM since Docker doesn't have access to the private key
           name: Clone Repos
           command: |
             git clone -b main --depth 1 ssh://git@github.com/open-mmlab/mmengine.git /home/circleci/mmengine
