@@ -5,13 +5,13 @@ import cv2
 import numpy as np
 import torch
 from mmdet.models.utils import multi_apply
-from numpy.typing import ArrayLike
 from shapely.geometry import Polygon
 from torch import Tensor, nn
 
 from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import offset_polygon
+from mmocr.utils.typing import ArrayLike
 from .text_kernel_mixin import TextKernelMixin
 
 

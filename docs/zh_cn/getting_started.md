@@ -27,11 +27,13 @@ python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
 在`tests/data`目录下提供了一个用于训练演示的小数据集，在准备学术数据集之前，它可以演示一个初步的训练。
 
 例如：用 `seg` 方法和小数据集来训练文本识别任务，
+
 ```shell
 python tools/train.py configs/textrecog/seg/seg_r31_1by16_fpnocr_toy_dataset.py --work-dir seg
 ```
 
 用 `sar` 方法和小数据集训练文本识别,
+
 ```shell
 python tools/train.py configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py --work-dir sar
 ```
@@ -39,6 +41,7 @@ python tools/train.py configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset
 ### 使用学术数据集进行训练
 
 按照说明准备好所需的学术数据集后，最后要检查模型的配置是否将 MMOCR 指向正确的数据集路径。假设在 ICDAR2015 数据集上训练 DBNet,部分配置如 `configs/_base_/det_datasets/icdar2015.py` 所示:
+
 ```python
 dataset_type = 'IcdarDataset'
 data_root = 'data/icdar2015'
@@ -55,7 +58,9 @@ test = dict(
 train_list = [train]
 test_list = [test]
 ```
+
 这里需要检查数据集路径 `data/icdar2015` 是否正确. 然后可以启动训练命令：
+
 ```shell
 python tools/train.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py --work-dir dbnet
 ```
@@ -65,11 +70,13 @@ python tools/train.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py --
 ## 测试
 
 假设我们完成了 DBNet 模型训练，并将最新的模型保存在 `dbnet/latest.pth`。则可以使用以下命令，及`hmean-iou`指标来评估其在测试集上的性能：
+
 ```shell
 python tools/test.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py dbnet/latest.pth --eval hmean-iou
 ```
 
 还可以在线评估预训练模型，命令如下：
+
 ```shell
 python tools/test.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth --eval hmean-iou
 ```

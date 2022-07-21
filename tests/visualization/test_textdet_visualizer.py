@@ -50,12 +50,12 @@ class TestTextDetLocalVisualizer(unittest.TestCase):
     def _rand_bboxes(num_boxes, h, w):
         cx, cy, bw, bh = torch.rand(num_boxes, 4).T
 
-        tl_x = ((cx * w) - (w * bw / 2)).clip(0, w)
-        tl_y = ((cy * h) - (h * bh / 2)).clip(0, h)
-        br_x = ((cx * w) + (w * bw / 2)).clip(0, w)
-        br_y = ((cy * h) + (h * bh / 2)).clip(0, h)
+        tl_x = ((cx * w) - (w * bw / 2)).clamp(0, w).unsqueeze(0)
+        tl_y = ((cy * h) - (h * bh / 2)).clamp(0, h).unsqueeze(0)
+        br_x = ((cx * w) + (w * bw / 2)).clamp(0, w).unsqueeze(0)
+        br_y = ((cy * h) + (h * bh / 2)).clamp(0, h).unsqueeze(0)
 
-        bboxes = torch.vstack([tl_x, tl_y, br_x, br_y]).T
+        bboxes = torch.cat([tl_x, tl_y, br_x, br_y], dim=0).T
 
         return bboxes
 

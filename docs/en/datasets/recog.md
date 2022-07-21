@@ -2,42 +2,42 @@
 
 ## Overview
 
-|        Dataset        |                                                images                                                 |                                                                                                                                                                                                    annotation file                                                                                                                                                                                                    |                                                      annotation file                                                      |
-| :-------------------: | :---------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------: |
-|                       |                                                                                                       |                                                                                                                                                                                                       training                                                                                                                                                                                                        |                                                           test                                                            |
-|       coco_text       |                        [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads)                         |                                                                                                                                                            [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt)                                                                                                                                                             |                                                             -                                                             |
-|       ICDAR2011       |                               [homepage](https://rrc.cvc.uab.es/?ch=1)                                |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|       ICDAR2013       |                               [homepage](https://rrc.cvc.uab.es/?ch=2)                                |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|      icdar_2015       |                        [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)                         |                                                                                                                                                            [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt)                                                                                                                                                            |               [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt)               |
-|        IIIT5K         |            [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html)             |                                                                                                                                                              [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt)                                                                                                                                                              |                 [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt)                 |
-|         ct80          |                     [homepage](http://cs-chan.com/downloads_CUTE80_dataset.html)                      |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                  [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)                  |
-|          svt          |         [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset)         |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                  [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)                   |
-|         svtp          | [unofficial homepage\[1\]](https://github.com/Jyouhou/Case-Sensitive-Scene-Text-Recognition-Datasets) |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                  [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)                  |
-|   MJSynth (Syn90k)    |                        [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)                        |                                                                                                                 [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt)                                                                                                                  |                                                             -                                                             |
-| SynthText (Synth800k) |                     [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)                      | [alphanumeric_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/alphanumeric_labels.txt) \|[shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) |                                                             -                                                             |
-|       SynthAdd        |           [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x)           |                                                                                                                                                                   [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)                                                                                                                                                                   |                                                             -                                                             |
-|        TextOCR        |                            [homepage](https://textvqa.org/textocr/dataset)                            |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|       Totaltext       |                       [homepage](https://github.com/cs-chan/Total-Text-Dataset)                       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|       OpenVINO        |                  [Open Images](https://github.com/cvdfoundation/open-images-dataset)                  |                                                                                                                                               [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text)                                                                                                                                               | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |
-|         FUNSD         |                          [homepage](https://guillaumejaume.github.io/FUNSD/)                          |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|        DeText         |                               [homepage](https://rrc.cvc.uab.es/?ch=9)                                |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|          NAF          |                           [homepage](https://github.com/herobd/NAF_dataset)                           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|         SROIE         |                               [homepage](https://rrc.cvc.uab.es/?ch=13)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|   Lecture Video DB    |          [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|         LSVT          |                               [homepage](https://rrc.cvc.uab.es/?ch=16)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|         IMGUR         |              [homepage](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset)              |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|         KAIST         |          [homepage](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|         MTWI          |       [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us)       |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|     COCO Text v2      |                            [homepage](https://bgshih.github.io/cocotext/)                             |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|         ReCTS         |                               [homepage](https://rrc.cvc.uab.es/?ch=12)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|       IIIT-ILST       |             [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst)              |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|        VinText        |                       [homepage](https://github.com/VinAIResearch/dict-guided)                        |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|          BID          |          [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset)           |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|         RCTW          |                            [homepage](https://rctw.vlrlab.net/index.html)                             |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|       HierText        |                   [homepage](https://github.com/google-research-datasets/hiertext)                    |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
-|          ArT          |                               [homepage](https://rrc.cvc.uab.es/?ch=14)                               |                                                                                                                                                                                                           -                                                                                                                                                                                                           |                                                             -                                                             |
+|        Dataset        |                        images                         |                         annotation file                         |                         annotation file                         |
+| :-------------------: | :---------------------------------------------------: | :-------------------------------------------------------------: | :-------------------------------------------------------------: |
+|                       |                                                       |                            training                             |                              test                               |
+|       coco_text       | [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads) | [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt) |                                -                                |
+|       ICDAR2011       |       [homepage](https://rrc.cvc.uab.es/?ch=1)        |                                -                                |                                -                                |
+|       ICDAR2013       |       [homepage](https://rrc.cvc.uab.es/?ch=2)        |                                -                                |                                -                                |
+|      icdar_2015       | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads) | [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt) | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt) |
+|        IIIT5K         | [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html) | [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt) | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt) |
+|         ct80          | [homepage](http://cs-chan.com/downloads_CUTE80_dataset.html) |                                -                                | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt) |
+|          svt          | [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset) |                                -                                | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt) |
+|         svtp          | [unofficial homepage\[1\]](https://github.com/Jyouhou/Case-Sensitive-Scene-Text-Recognition-Datasets) |                                -                                | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt) |
+|   MJSynth (Syn90k)    | [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/) | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt) |                                -                                |
+| SynthText (Synth800k) | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/) | [alphanumeric_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/alphanumeric_labels.txt) \|[shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) |                                -                                |
+|       SynthAdd        | [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x) | [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt) |                                -                                |
+|        TextOCR        |    [homepage](https://textvqa.org/textocr/dataset)    |                                -                                |                                -                                |
+|       Totaltext       | [homepage](https://github.com/cs-chan/Total-Text-Dataset) |                                -                                |                                -                                |
+|       OpenVINO        | [Open Images](https://github.com/cvdfoundation/open-images-dataset) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |
+|         FUNSD         |  [homepage](https://guillaumejaume.github.io/FUNSD/)  |                                -                                |                                -                                |
+|        DeText         |       [homepage](https://rrc.cvc.uab.es/?ch=9)        |                                -                                |                                -                                |
+|          NAF          |   [homepage](https://github.com/herobd/NAF_dataset)   |                                -                                |                                -                                |
+|         SROIE         |       [homepage](https://rrc.cvc.uab.es/?ch=13)       |                                -                                |                                -                                |
+|   Lecture Video DB    | [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb) |                                -                                |                                -                                |
+|         LSVT          |       [homepage](https://rrc.cvc.uab.es/?ch=16)       |                                -                                |                                -                                |
+|         IMGUR         | [homepage](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset) |                                -                                |                                -                                |
+|         KAIST         | [homepage](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) |                                -                                |                                -                                |
+|         MTWI          | [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us) |                                -                                |                                -                                |
+|     COCO Text v2      |    [homepage](https://bgshih.github.io/cocotext/)     |                                -                                |                                -                                |
+|         ReCTS         |       [homepage](https://rrc.cvc.uab.es/?ch=12)       |                                -                                |                                -                                |
+|       IIIT-ILST       | [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst) |                                -                                |                                -                                |
+|        VinText        | [homepage](https://github.com/VinAIResearch/dict-guided) |                                -                                |                                -                                |
+|          BID          | [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset) |                                -                                |                                -                                |
+|         RCTW          |    [homepage](https://rctw.vlrlab.net/index.html)     |                                -                                |                                -                                |
+|       HierText        | [homepage](https://github.com/google-research-datasets/hiertext) |                                -                                |                                -                                |
+|          ArT          |       [homepage](https://rrc.cvc.uab.es/?ch=14)       |                                -                                |                                -                                |
 
-(*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
+(\*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
 
 ### Install AWS CLI (optional)
 
@@ -132,12 +132,14 @@
   │   └── test_label.jsonl
   ```
 
-## ICDAR 2013 [Deprecated]
+## ICDAR 2013 \[Deprecated\]
 
 - Step1: Download `Challenge2_Test_Task3_Images.zip` and `Challenge2_Training_Task3_Images_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads)
+
 - Step2: Download [test_label_1015.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt) and [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/train_label.txt)
+
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── icdar_2013
@@ -151,9 +153,11 @@ should be as follows:
 ## ICDAR 2015
 
 - Step1: Download `ch4_training_word_images_gt.zip` and `ch4_test_word_images_gt.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
+
 - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt)
+
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── icdar_2015
@@ -166,9 +170,11 @@ should be as follows:
 ## IIIT5K
 
 - Step1: Download `IIIT5K-Word_V3.0.tar.gz` from [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html)
+
 - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt)
+
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── III5K
@@ -181,7 +187,9 @@ should be as follows:
 ## svt
 
 - Step1: Download `svt.zip` form [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset)
+
 - Step2: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)
+
 - Step3:
 
   ```bash
@@ -189,7 +197,7 @@ should be as follows:
   ```
 
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── svt
@@ -216,7 +224,7 @@ should be as follows:
   ```
 
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── ct80
@@ -227,8 +235,9 @@ should be as follows:
 ## svtp
 
 - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)
+
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── svtp
@@ -239,9 +248,11 @@ should be as follows:
 ## coco_text
 
 - Step1: Download from [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads)
+
 - Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt)
+
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── coco_text
@@ -277,11 +288,11 @@ Please make sure you're using the right annotation to train the model by checkin
 
   # Convert 'txt' format annos to 'lmdb' (optional)
   cd /path/to/mmocr
-  python tools/dataset_converters/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
+  python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt data/mixture/Syn90k/label.lmdb --label-only
   ```
 
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── Syn90k
@@ -328,11 +339,11 @@ Please make sure you're using the right annotation to train the model by checkin
 
   # Convert 'txt' format annos to 'lmdb' (optional)
   cd /path/to/mmocr
-  python tools/dataset_converters/utils/txt2lmdb.py -i data/mixture/SynthText/label.txt -o data/mixture/SynthText/label.lmdb
+  python tools/dataset_converters/lmdb_converter.py data/mixture/SynthText/label.txt data/mixture/SynthText/label.lmdb --label-only
   ```
 
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── SynthText
@@ -347,7 +358,9 @@ should be as follows:
 ## SynthAdd
 
 - Step1: Download `SynthText_Add.zip` from [SynthAdd](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg) (code:627x))
+
 - Step2: Download [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)
+
 - Step3:
 
   ```bash
@@ -366,11 +379,11 @@ should be as follows:
 
   # Convert 'txt' format annos to 'lmdb' (optional)
   cd /path/to/mmocr
-  python tools/dataset_converters/utils/txt2lmdb.py -i data/mixture/SynthAdd/label.txt -o data/mixture/SynthAdd/label.lmdb
+  python tools/dataset_converters/lmdb_converter.py data/mixture/SynthAdd/label.txt data/mixture/SynthAdd/label.lmdb --label-only
   ```
 
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── SynthAdd
@@ -383,13 +396,13 @@ should be as follows:
 To convert label file from `txt` format to `lmdb` format,
 
 ```bash
-python tools/dataset_converters/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
+python tools/dataset_converters/lmdb_converter.py <txt_label_path> <lmdb_label_path> --label-only
 ```
 
 For example,
 
 ```bash
-python tools/dataset_converters/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
+python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt data/mixture/Syn90k/label.lmdb --label-only
 ```
 
 ````
@@ -418,7 +431,7 @@ python tools/dataset_converters/utils/txt2lmdb.py -i data/mixture/Syn90k/label.t
   ```
 
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── TextOCR
@@ -470,6 +483,7 @@ should be as follows:
 ## OpenVINO
 
 - Step1 (optional): Install [AWS CLI](https://mmocr.readthedocs.io/en/latest/datasets/recog.html#install-aws-cli-optional).
+
 - Step2: Download [Open Images](https://github.com/cvdfoundation/open-images-dataset#download-images-with-bounding-boxes-annotations) subsets `train_1`, `train_2`, `train_5`, `train_f`, and `validation` to `openvino/`.
 
   ```bash
@@ -502,7 +516,7 @@ should be as follows:
   ```
 
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── OpenVINO
@@ -584,6 +598,8 @@ should be as follows:
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
   # vertical images will be filtered and stored in PATH/TO/naf/ignores
   python tools/dataset_converters/textrecog/naf_converter.py PATH/TO/naf --nproc 4
+
+  ```
 
 - After running the above codes, the directory structure should be as follows:
 
@@ -741,7 +757,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```
 
 - After running the above codes, the directory structure
-should be as follows:
+  should be as follows:
 
   ```text
   ├── funsd
@@ -1086,6 +1102,7 @@ should be as follows:
 ## HierText
 
 - Step1 (optional): Install [AWS CLI](https://mmocr.readthedocs.io/en/latest/datasets/recog.html#install-aws-cli-optional).
+
 - Step2: Clone [HierText](https://github.com/google-research-datasets/hiertext) repo to get annotations
 
   ```bash

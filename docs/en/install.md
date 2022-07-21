@@ -14,16 +14,16 @@
 
 MMOCR has different version requirements on MMCV and MMDetection at each release to guarantee the implementation correctness. Please refer to the table below and ensure the package versions fit the requirement.
 
-| MMOCR        | MMCV                   | MMDetection               |
-| ------------ | ---------------------- | ------------------------- |
-| main         | 1.3.8 <= mmcv <= 1.6.0 | 2.21.0 <= mmdet <= 3.0.0  |
-| 0.6.0        | 1.3.8 <= mmcv <= 1.6.0 | 2.21.0 <= mmdet <= 3.0.0  |
-| 0.5.0        | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 3.0.0  |
-| 0.4.0, 0.4.1 | 1.3.8 <= mmcv <= 1.5.0 | 2.14.0 <= mmdet <= 2.20.0 |
-| 0.3.0        | 1.3.8 <= mmcv <= 1.4.0 | 2.14.0 <= mmdet <= 2.20.0 |
-| 0.2.1        | 1.3.8 <= mmcv <= 1.4.0 | 2.13.0 <= mmdet <= 2.20.0 |
-| 0.2.0        | 1.3.4 <= mmcv <= 1.4.0 | 2.11.0 <= mmdet <= 2.13.0 |
-| 0.1.0        | 1.2.6 <= mmcv <= 1.3.4 | 2.9.0 <= mmdet <= 2.11.0  |
+| MMOCR        | MMCV                     | MMDetection                 |
+| ------------ | ------------------------ | --------------------------- |
+| main         | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
+| 0.6.0        | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
+| 0.5.0        | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 3.0.0  |
+| 0.4.0, 0.4.1 | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
+| 0.3.0        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
+| 0.2.1        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.13.0 \<= mmdet \<= 2.20.0 |
+| 0.2.0        | 1.3.4 \<= mmcv \<= 1.4.0 | 2.11.0 \<= mmdet \<= 2.13.0 |
+| 0.1.0        | 1.2.6 \<= mmcv \<= 1.3.4 | 2.9.0 \<= mmdet \<= 2.11.0  |
 
 We have tested the following versions of OS and software:
 
@@ -63,7 +63,7 @@ c. Install [mmcv](https://github.com/open-mmlab/mmcv), we recommend you to insta
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
 ```
 
-Please replace ``{cu_version}`` and ``{torch_version}`` in the url with your desired one. For example, to install the latest ``mmcv-full`` with CUDA 11 and PyTorch 1.7.0, use the following command:
+Please replace `{cu_version}` and `{torch_version}` in the url with your desired one. For example, to install the latest `mmcv-full` with CUDA 11 and PyTorch 1.7.0, use the following command:
 
 ```shell
 pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html

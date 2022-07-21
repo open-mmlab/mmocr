@@ -54,15 +54,15 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 
 -**全流程**
 
-   该工具箱不仅支持文本检测和文本识别，还支持其下游任务，例如关键信息提取。
+该工具箱不仅支持文本检测和文本识别，还支持其下游任务，例如关键信息提取。
 
 -**多种模型**
 
-  该工具箱支持用于文本检测，文本识别和关键信息提取的各种最新模型。
+该工具箱支持用于文本检测，文本识别和关键信息提取的各种最新模型。
 
 -**模块化设计**
 
-  MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处理器，模型组件如主干模块，颈部模块和头部模块，以及损失函数。有关如何构建自定义模型的信
+MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处理器，模型组件如主干模块，颈部模块和头部模块，以及损失函数。有关如何构建自定义模型的信
 息，请参考[快速入门](https://mmocr.readthedocs.io/zh_CN/latest/getting_started.html)。
 
 -**众多实用工具**
@@ -128,7 +128,6 @@ pip3 install -e .
 - [x] [SAR](configs/textrecog/sar/README.md) (AAAI'2019)
 - [x] [SATRN](configs/textrecog/satrn/README.md) (CVPR'2020 Workshop on Text and Documents in the Deep Learning Era)
 
-
 </details>
 
 <details open>
@@ -173,7 +172,6 @@ MMOCR 是一款由来自不同高校和企业的研发人员共同参与贡献�
 该项目采用 [Apache 2.0 license](LICENSE) 开源许可证。
 
 ## OpenMMLab 的其他项目
-
 
 - [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab 计算机视觉基础库
 - [MIM](https://github.com/open-mmlab/mim): MIM 是 OpenMMlab 项目、算法、模型的统一入口
