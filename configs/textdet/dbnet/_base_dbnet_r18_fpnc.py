@@ -26,7 +26,7 @@ model = dict(
         bgr_to_rgb=True,
         pad_size_divisor=32))
 
-train_pipeline_r18 = [
+train_pipeline = [
     dict(
         type='LoadImageFromFile',
         file_client_args=file_client_args,
@@ -54,7 +54,7 @@ train_pipeline_r18 = [
         meta_keys=('img_path', 'ori_shape', 'img_shape'))
 ]
 
-test_pipeline_1333_736 = [
+test_pipeline = [
     dict(
         type='LoadImageFromFile',
         file_client_args=file_client_args,

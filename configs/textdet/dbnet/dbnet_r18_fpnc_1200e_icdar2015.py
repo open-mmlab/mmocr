@@ -17,7 +17,7 @@ train_dataloader = dict(
     dataset=dict(
         type='ConcatDataset',
         datasets=train_list,
-        pipeline=_base_.train_pipeline_r18))
+        pipeline=_base_.train_pipeline))
 
 val_dataloader = dict(
     batch_size=16,
@@ -27,6 +27,6 @@ val_dataloader = dict(
     dataset=dict(
         type='ConcatDataset',
         datasets=test_list,
-        pipeline=_base_.test_pipeline_1333_736))
+        pipeline=_base_.test_pipeline))
 
 test_dataloader = val_dataloader

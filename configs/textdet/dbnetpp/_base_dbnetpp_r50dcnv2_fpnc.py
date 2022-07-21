@@ -31,7 +31,7 @@ model = dict(
         bgr_to_rgb=True,
         pad_size_divisor=32))
 
-train_pipeline_r50dcnv2 = [
+train_pipeline = [
     dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadOCRAnnotations',
@@ -56,7 +56,7 @@ train_pipeline_r50dcnv2 = [
         meta_keys=('img_path', 'ori_shape', 'img_shape'))
 ]
 
-test_pipeline_4068_1024 = [
+test_pipeline = [
     dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(type='Resize', scale=(4068, 1024), keep_ratio=True),
     dict(
