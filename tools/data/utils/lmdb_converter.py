@@ -36,9 +36,9 @@ def main():
         '--lmdb-map-size',
         '-m',
         type=int,
-        default=109951162776,
+        default=1099511627776,
         help='Maximum size database may grow to, '
-        'defaults to 109951162776 bytes')
+        'defaults to 1099511627776 bytes (1TB)')
     opt = parser.parse_args()
 
     assert opt.img_root or opt.label_only
