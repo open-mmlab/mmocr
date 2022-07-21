@@ -6,8 +6,8 @@ _base_ = [
 ]
 
 # dataset settings
-train_list = _base_.train_list
-test_list = _base_.test_list
+train_list = [_base_.ctw_det_train]
+test_list = [_base_.ctw_det_test]
 file_client_args = dict(backend='disk')
 
 train_pipeline = [
