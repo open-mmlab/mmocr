@@ -6,8 +6,8 @@ _base_ = [
 ]
 
 # dataset settings
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
+train_list = [_base_.ic15_det_train]
+test_list = [_base_.ic15_det_test]
 
 train_dataloader = dict(
     batch_size=16,

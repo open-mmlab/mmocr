@@ -6,8 +6,8 @@ _base_ = [
 ]
 
 # dataset settings
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
+train_list = [_base_.ic15_det_train]
+test_list = [_base_.ic15_det_test]
 
 load_from = 'https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r50dcnv2_fpnc_sbn_2e_synthtext_20210325-aa96e477.pth'  # noqa
 
