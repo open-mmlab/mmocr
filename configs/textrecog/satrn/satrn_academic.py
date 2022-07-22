@@ -70,7 +70,7 @@ train_dataloader = dict(
         type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
 
 val_dataloader = dict(
-    batch_size=64,
+    batch_size=1,
     num_workers=4,
     persistent_workers=True,
     drop_last=False,
