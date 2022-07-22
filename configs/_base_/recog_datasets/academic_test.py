@@ -18,7 +18,7 @@ test_ann_file4 = 'icdar_2015/test_label.json'
 test_ann_file5 = 'svtp/test_label.json'
 test_ann_file6 = 'ct80/test_label.json'
 
-IIIT5K = dict(
+iiit5k_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix1),
@@ -26,7 +26,7 @@ IIIT5K = dict(
     test_mode=True,
     pipeline=None)
 
-SVT = dict(
+svt_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix2),
@@ -34,7 +34,7 @@ SVT = dict(
     test_mode=True,
     pipeline=None)
 
-IC13 = dict(
+ic13_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix3),
@@ -42,7 +42,7 @@ IC13 = dict(
     test_mode=True,
     pipeline=None)
 
-IC15 = dict(
+ic15_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix4),
@@ -50,7 +50,7 @@ IC15 = dict(
     test_mode=True,
     pipeline=None)
 
-SVTP = dict(
+svtp_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix5),
@@ -58,7 +58,7 @@ SVTP = dict(
     test_mode=True,
     pipeline=None)
 
-CUTE80 = dict(
+cute80_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix6),
@@ -66,59 +66,57 @@ CUTE80 = dict(
     test_mode=True,
     pipeline=None)
 
-test_list = [IIIT5K, SVT, IC13, IC15, SVTP, CUTE80]
-
-IIIT5K_val_dataloader = dict(
+iiit5k_val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=IIIT5K)
+    dataset=iiit5k_rec_test)
 
-SVT_val_dataloader = dict(
+svt_val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=SVT)
+    dataset=svt_rec_test)
 
-IC13_val_dataloader = dict(
+ic13_val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=IC13)
+    dataset=ic13_rec_test)
 
-IC15_val_dataloader = dict(
+ic15_val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=IC15)
+    dataset=ic15_rec_test)
 
-SVTP_val_dataloader = dict(
+svtp_val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=SVTP)
+    dataset=svtp_rec_test)
 
-CUTE80_val_dataloader = dict(
+cute80_val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=CUTE80)
+    dataset=cute80_rec_test)
 
 val_dataloader = [
-    IIIT5K_val_dataloader, SVT_val_dataloader, IC13_val_dataloader,
-    IC15_val_dataloader, SVTP_val_dataloader, CUTE80_val_dataloader
+    iiit5k_val_dataloader, svt_val_dataloader, ic13_val_dataloader,
+    ic15_val_dataloader, svtp_val_dataloader, cute80_val_dataloader
 ]
 
 test_dataloader = val_dataloader
@@ -166,3 +164,7 @@ val_evaluator = [[
                      dict(type='CharMetric', prefix='ct80')
                  ]]
 test_evaluator = val_evaluator
+test_list = [
+    iiit5k_rec_test, svt_rec_test, ic13_rec_test, ic15_rec_test, svtp_rec_test,
+    cute80_rec_test
+]
