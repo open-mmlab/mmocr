@@ -1,24 +1,25 @@
 _base_ = [
-    '../../_base_/default_runtime.py',
-    '../../_base_/recog_pipelines/satrn_pipeline.py',
+    'satrn.py',
     '../../_base_/recog_datasets/ST_MJ_train.py',
-    '../../_base_/recog_datasets/academic_test.py'
+    '../../_base_/recog_datasets/academic_test.py',
+    '../../_base_/default_runtime.py',
+    '../../_base_/schedules/schedule_adam_step_5e.py',
 ]
 
+# dataset settings
 train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}
+file_client_args = dict(backend='disk')
+default_hooks = dict(logger=dict(type='LoggerHook', interval=50))
 
-train_pipeline = {{_base_.train_pipeline}}
-test_pipeline = {{_base_.test_pipeline}}
-
-label_convertor = dict(
-    type='AttnConvertor', dict_type='DICT90', with_unknown=True)
+# optimizer
+optim_wrapper = dict(type='OptimWrapper', optimizer=dict(type='Adam', lr=3e-4))
 
 model = dict(
     type='SATRN',
     backbone=dict(type='ShallowCNN', input_channels=3, hidden_dim=512),
     encoder=dict(
-        type='SatrnEncoder',
+        type='SATRNEncoder',
         n_layers=12,
         n_head=8,
         d_k=512 // 8,
@@ -35,34 +36,54 @@ model = dict(
         d_model=512,
         d_inner=512 * 4,
         d_k=512 // 8,
-        d_v=512 // 8),
-    loss=dict(type='TFLoss'),
-    label_convertor=label_convertor,
-    max_seq_len=25)
+        d_v=512 // 8,
+        module_loss=dict(
+            type='CEModuleLoss', flatten=True, ignore_first_char=True),
+        max_seq_len=25,
+        postprocessor=dict(type='AttentionPostprocessor')))
 
-# optimizer
-optimizer = dict(type='Adam', lr=3e-4)
-optimizer_config = dict(grad_clip=None)
-# learning policy
-lr_config = dict(policy='step', step=[3, 4])
-total_epochs = 6
+train_pipeline = [
+    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='LoadOCRAnnotations', with_text=True),
+    dict(type='Resize', scale=(100, 32), keep_ratio=False),
+    dict(
+        type='PackTextRecogInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
+]
 
-data = dict(
-    samples_per_gpu=64,
-    workers_per_gpu=4,
-    val_dataloader=dict(samples_per_gpu=1),
-    test_dataloader=dict(samples_per_gpu=1),
-    train=dict(
-        type='UniformConcatDataset',
-        datasets=train_list,
-        pipeline=train_pipeline),
-    val=dict(
-        type='UniformConcatDataset',
-        datasets=test_list,
-        pipeline=test_pipeline),
-    test=dict(
-        type='UniformConcatDataset',
-        datasets=test_list,
-        pipeline=test_pipeline))
+# TODO Add Test Time Augmentation `MultiRotateAugOCR`
+test_pipeline = [
+    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='Resize', scale=(100, 32), keep_ratio=False),
+    dict(
+        type='PackTextRecogInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio',
+                   'instances'))
+]
 
-evaluation = dict(interval=1, metric='acc')
+train_dataloader = dict(
+    batch_size=64,
+    num_workers=8,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
+        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
+
+val_dataloader = dict(
+    batch_size=64,
+    num_workers=4,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
+test_dataloader = val_dataloader
+
+val_evaluator = [
+    dict(
+        type='WordMetric', mode=['exact', 'ignore_case',
+                                 'ignore_case_symbol']),
+    dict(type='CharMetric')
+]
+test_evaluator = val_evaluator
+visualizer = dict(type='TextRecogLocalVisualizer', name='visualizer')

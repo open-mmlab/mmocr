@@ -1,7 +1,6 @@
 _base_ = [
-    '../../_base_/default_runtime.py',
+    'dbnet_r50dcnv2_fpnc.py', '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_100k_iters.py',
-    '../../_base_/det_models/dbnet_r50dcnv2_fpnc.py',
     '../../_base_/det_datasets/synthtext.py',
     '../../_base_/det_pipelines/dbnet_pipeline.py'
 ]

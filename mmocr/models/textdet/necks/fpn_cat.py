@@ -1,14 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Dict, List, Optional, Union
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.runner import BaseModule, ModuleList, Sequential, auto_fp16
 
-from mmocr.models.builder import NECKS
+from mmocr.registry import MODELS
 
 
-@NECKS.register_module()
+@MODELS.register_module()
 class FPNC(BaseModule):
     """FPN-like fusion module in Real-time Scene Text Detection with
     Differentiable Binarization.
@@ -27,28 +29,29 @@ class FPNC(BaseModule):
         bias_on_smooth (bool): Whether to use bias on smoothing layer.
         bn_re_on_smooth (bool): Whether to use BatchNorm and ReLU on smoothing
             layer.
-        asf_cfg (dict): Adaptive Scale Fusion module configs. The
+        asf_cfg (dict, optional): Adaptive Scale Fusion module configs. The
             attention_type can be 'ScaleChannelSpatial'.
         conv_after_concat (bool): Whether to add a convolution layer after
             the concatenation of predictions.
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
-    def __init__(self,
-                 in_channels,
-                 lateral_channels=256,
-                 out_channels=64,
-                 bias_on_lateral=False,
-                 bn_re_on_lateral=False,
-                 bias_on_smooth=False,
-                 bn_re_on_smooth=False,
-                 asf_cfg=None,
-                 conv_after_concat=False,
-                 init_cfg=[
-                     dict(type='Kaiming', layer='Conv'),
-                     dict(
-                         type='Constant', layer='BatchNorm', val=1., bias=1e-4)
-                 ]):
+    def __init__(
+        self,
+        in_channels: List[int],
+        lateral_channels: int = 256,
+        out_channels: int = 64,
+        bias_on_lateral: bool = False,
+        bn_re_on_lateral: bool = False,
+        bias_on_smooth: bool = False,
+        bn_re_on_smooth: bool = False,
+        asf_cfg: Optional[Dict] = None,
+        conv_after_concat: bool = False,
+        init_cfg: Optional[Union[Dict, List[Dict]]] = [
+            dict(type='Kaiming', layer='Conv'),
+            dict(type='Constant', layer='BatchNorm', val=1., bias=1e-4)
+        ]
+    ) -> None:
         super().__init__(init_cfg=init_cfg)
         assert isinstance(in_channels, list)
         self.in_channels = in_channels
@@ -129,7 +132,7 @@ class FPNC(BaseModule):
                 inplace=False)
 
     @auto_fp16()
-    def forward(self, inputs):
+    def forward(self, inputs: List[torch.Tensor]) -> torch.Tensor:
         """
         Args:
             inputs (list[Tensor]): Each tensor has the shape of
@@ -191,11 +194,15 @@ class ScaleChannelSpatialAttention(BaseModule):
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
-    def __init__(self,
-                 in_channels,
-                 c_wise_channels,
-                 out_channels,
-                 init_cfg=[dict(type='Kaiming', layer='Conv', bias=0)]):
+    def __init__(
+        self,
+        in_channels: int,
+        c_wise_channels: int,
+        out_channels: int,
+        init_cfg: Optional[Union[Dict, List[Dict]]] = [
+            dict(type='Kaiming', layer='Conv', bias=0)
+        ]
+    ) -> None:
         super().__init__(init_cfg=init_cfg)
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         # Channel Wise
@@ -251,7 +258,7 @@ class ScaleChannelSpatialAttention(BaseModule):
             inplace=False)
 
     @auto_fp16()
-    def forward(self, inputs):
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
         """
         Args:
             inputs (Tensor): A concat FPN feature tensor that has the shape of

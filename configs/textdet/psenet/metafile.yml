@@ -4,10 +4,11 @@ Collections:
     Training Data: ICDAR SCUT-CTW1500
     Training Techniques:
       - Adam
-    Training Resources: 8x GeForce GTX 1080 Ti
+    Training Resources: 1x Tesla A100
     Architecture:
       - ResNet
       - FPNF
+      - PSEHead
   Paper:
     URL: https://arxiv.org/abs/1806.02559.pdf
     Title: 'Shape Robust Text Detection with Progressive Scale Expansion Network'
@@ -35,7 +36,7 @@ Models:
       - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
-          hmean-iou: 0.807
+          hmean-iou: 0.806
     Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015-c6131f0d.pth
 
   - Name: psenet_r50_fpnf_600e_icdar2015

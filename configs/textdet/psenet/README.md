@@ -22,14 +22,10 @@ Scene text detection has witnessed rapid progress especially with the recent dev
 
 ### ICDAR2015
 
-|                Method                | Backbone |                Extra Data                 | Training set | Test set  | #epochs | Test size |    Recall     |   Precision   |     Hmean     |                Download                 |
-| :----------------------------------: | :------: | :---------------------------------------: | :----------: | :-------: | :-----: | :-------: | :-----------: | :-----------: | :-----------: | :-------------------------------------: |
-| [PSENet-4s](configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py) | ResNet50 |                     -                     |  IC15 Train  | IC15 Test |   600   |   2240    | 0.784 (0.753) | 0.831 (0.867) | 0.807 (0.806) | [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015-c6131f0d.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/psenet/20210331_214145.log.json) |
-| [PSENet-4s](configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py) | ResNet50 | pretrain on IC17 MLT [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2017_as_pretrain-3bd6056c.pth) |  IC15 Train  | IC15 Test |   600   |   2240    |     0.834     |     0.861     |     0.847     | [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015_pretrain-eefd8fe6.pth) \| [log](<>) |
-
-```{note}
-We've upgraded our IoU backend from `Polygon3` to `shapely`. There are some performance differences for some models due to the backends' different logics to handle invalid polygons (more info [here](https://github.com/open-mmlab/mmocr/issues/465)). **New evaluation result is presented in brackets** and new logs will be uploaded soon.
-```
+|                   Method                    | Backbone |                   Extra Data                    | Training set | Test set  | #epochs | Test size | Recall | Precision | Hmean |                   Download                    |
+| :-----------------------------------------: | :------: | :---------------------------------------------: | :----------: | :-------: | :-----: | :-------: | :----: | :-------: | :---: | :-------------------------------------------: |
+| [PSENet-4s](configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py) | ResNet50 |                        -                        |  IC15 Train  | IC15 Test |   600   |   2240    | 0.766  |   0.840   | 0.806 | [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015-c6131f0d.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/psenet/20210331_214145.log.json) |
+| [PSENet-4s](configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py) | ResNet50 | pretrain on IC17 MLT [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2017_as_pretrain-3bd6056c.pth) |  IC15 Train  | IC15 Test |   600   |   2240    | 0.834  |   0.861   | 0.847 | [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015_pretrain-eefd8fe6.pth) \| [log](<>) |
 
 ## Citation
 

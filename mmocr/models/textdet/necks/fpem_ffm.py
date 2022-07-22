@@ -3,7 +3,7 @@ import torch.nn.functional as F
 from mmcv.runner import BaseModule, ModuleList
 from torch import nn
 
-from mmocr.models.builder import NECKS
+from mmocr.registry import MODELS
 
 
 class FPEM(BaseModule):
@@ -72,7 +72,7 @@ class SeparableConv2d(BaseModule):
         return x
 
 
-@NECKS.register_module()
+@MODELS.register_module()
 class FPEM_FFM(BaseModule):
     """This code is from https://github.com/WenmuZhou/PAN.pytorch.
 

@@ -5,7 +5,7 @@ Collections:
     Training Techniques:
       - SGD with Momentum
       - Weight Decay
-    Training Resources: 8x GeForce GTX 1080 Ti
+    Training Resources: 1x Tesla A100
     Architecture:
       - ResNet
       - FPN
@@ -25,7 +25,7 @@ Models:
       - Task: Text Detection
         Dataset: CTW1500
         Metrics:
-          hmean: 0.732
+          hmean: 0.7486
     Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_ctw1500_20210219-96497a76.pth
 
   - Name: mask_rcnn_r50_fpn_160e_icdar2015
@@ -37,7 +37,7 @@ Models:
       - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
-          hmean: 0.825
+          hmean: 0.8280
     Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015_20210219-8eb340a3.pth
 
   - Name: mask_rcnn_r50_fpn_160e_icdar2017
