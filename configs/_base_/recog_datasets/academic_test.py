@@ -11,12 +11,12 @@ test_img_prefix4 = 'icdar_2015/ch4_test_word_images_gt'
 test_img_prefix5 = 'svtp/'
 test_img_prefix6 = 'ct80/'
 
-test_ann_file1 = 'IIIT5K/test_label.json'
-test_ann_file2 = 'svt/test_label.json'
-test_ann_file3 = 'icdar_2013/test_label.json'
-test_ann_file4 = 'icdar_2015/test_label.json'
-test_ann_file5 = 'svtp/test_label.json'
-test_ann_file6 = 'ct80/test_label.json'
+test_ann_file1 = 'IIIT5K/test_labels.json'
+test_ann_file2 = 'svt/test_labels.json'
+test_ann_file3 = 'icdar_2013/test_labels.json'
+test_ann_file4 = 'icdar_2015/test_labels.json'
+test_ann_file5 = 'svtp/test_labels.json'
+test_ann_file6 = 'ct80/test_labels.json'
 
 iiit5k_rec_test = dict(
     type='OCRDataset',

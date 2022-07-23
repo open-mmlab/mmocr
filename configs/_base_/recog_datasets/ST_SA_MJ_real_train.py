@@ -8,18 +8,18 @@ train_img_prefix2 = 'icdar_2013'
 train_img_prefix3 = 'icdar_2015'
 train_img_prefix4 = 'coco_text'
 train_img_prefix5 = 'IIIT5K'
-train_img_prefix6 = 'SynthText_Add'
+train_img_prefix6 = 'synthtext_add'
 train_img_prefix7 = 'SynthText/synthtext/SynthText_patch_horizontal'
 train_img_prefix8 = 'Syn90k/mnt/ramdisk/max/90kDICT32px'
 
-train_ann_file1 = 'icdar_2011/train_label.json',
-train_ann_file2 = 'icdar_2013/train_label.json',
-train_ann_file3 = 'icdar_2015/train_label.json',
-train_ann_file4 = 'coco_text/train_label.json',
-train_ann_file5 = 'IIIT5K/train_label.json',
-train_ann_file6 = 'SynthText_Add/train_label.json',
-train_ann_file7 = 'SynthText/shuffle_label.json',
-train_ann_file8 = 'Syn90k/mnt/ramdisk/max/90kDICT32px/shuffle_label.json'
+train_ann_file1 = 'icdar_2011/train_labels.json',
+train_ann_file2 = 'icdar_2013/train_labels.json',
+train_ann_file3 = 'icdar_2015/train_labels.json',
+train_ann_file4 = 'coco_text_v1/train_labels.json',
+train_ann_file5 = 'IIIT5K/train_labels.json',
+train_ann_file6 = 'synthtext_add/train_labels.json',
+train_ann_file7 = 'SynthText/shuffle_train_labels.json',
+train_ann_file8 = 'Syn90k/shuffle_train_labels.json'
 
 ic11_rec_train = dict(
     type='OCRDataset',
