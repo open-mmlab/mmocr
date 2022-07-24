@@ -2,7 +2,7 @@
 from typing import Dict, List, Optional, Sequence, Union
 
 import torch
-from mmcv.runner import BaseModule
+from mmengine.model import BaseModule
 
 from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
