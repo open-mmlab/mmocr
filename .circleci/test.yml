@@ -164,6 +164,10 @@ workflows:
           mmcv: https://download.openmmlab.com/mmcv/dev-2.x/cpu/torch1.6.0/mmcv_full-2.0.0rc0-cp36-cp36m-manylinux1_x86_64.whl
           # requires:
           #   - lint
+          filters:
+            branches:
+              only:
+                - dev-1.x
       - build_cpu:
           name: maximum_version_cpu
           torch: 1.9.0
