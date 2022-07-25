@@ -7,8 +7,81 @@ import mmcv
 import numpy as np
 from mmcv.transforms import BaseTransform
 from mmcv.transforms import LoadAnnotations as MMCV_LoadAnnotations
+from mmcv.transforms import LoadImageFromFile as MMCV_LoadImageFromFile
 
 from mmocr.registry import TRANSFORMS
+
+
+@TRANSFORMS.register_module()
+class LoadImageFromFile(MMCV_LoadImageFromFile):
+    """Load an image from file.
+
+    Required Keys:
+
+    - img_path
+
+    Modified Keys:
+
+    - img
+    - img_shape
+    - ori_shape
+
+    Args:
+        to_float32 (bool): Whether to convert the loaded image to a float32
+            numpy array. If set to False, the loaded image is an uint8 array.
+            Defaults to False.
+        color_type (str): The flag argument for :func:``mmcv.imfrombytes``.
+            Defaults to 'color'.
+        imdecode_backend (str): The image decoding backend type. The backend
+            argument for :func:``mmcv.imfrombytes``.
+            See :func:``mmcv.imfrombytes`` for details.
+            Defaults to 'cv2'.
+        file_client_args (dict): Arguments to instantiate a FileClient.
+            See :class:`mmcv.fileio.FileClient` for details.
+            Defaults to ``dict(backend='disk')``.
+        ignore_empty (bool): Whether to allow loading empty image or file path
+            not existent. Defaults to False.
+        min_size (int): The minimum size of the image to be loaded. If the
+            image is smaller than the minimum size, it will be ignored.
+            Defaults to 0.
+    """
+
+    def __init__(self,
+                 to_float32: bool = False,
+                 color_type: str = 'color',
+                 imdecode_backend: str = 'cv2',
+                 file_client_args: dict = dict(backend='disk'),
+                 min_size: int = 0,
+                 ignore_empty: bool = False) -> None:
+        self.ignore_empty = ignore_empty
+        self.to_float32 = to_float32
+        self.color_type = color_type
+        self.imdecode_backend = imdecode_backend
+        self.file_client_args = file_client_args.copy()
+        self.file_client = mmcv.FileClient(**self.file_client_args)
+        self.min_size = min_size
+
+    def transform(self, results: dict) -> Optional[dict]:
+        """Functions to load image.
+
+        Args:
+            results (dict): Result dict from :obj:``mmcv.BaseDataset``.
+        """
+        results = super().transform(results)
+        if min(results['ori_shape']) < self.min_size:
+            return None
+        else:
+            return results
+
+    def __repr__(self):
+        repr_str = (f'{self.__class__.__name__}('
+                    f'ignore_empty={self.ignore_empty}, '
+                    f'min_size={self.min_size}, '
+                    f'to_float32={self.to_float32}, '
+                    f"color_type='{self.color_type}', "
+                    f"imdecode_backend='{self.imdecode_backend}', "
+                    f'file_client_args={self.file_client_args})')
+        return repr_str
 
 
 @TRANSFORMS.register_module()

@@ -11,7 +11,11 @@ file_client_args = dict(backend='disk')
 default_hooks = dict(logger=dict(type='LoggerHook', interval=100))
 
 train_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        ignore_empty=True,
+        min_size=5),
     dict(type='LoadOCRAnnotations', with_text=True),
     dict(type='Resize', scale=(128, 32)),
     dict(
