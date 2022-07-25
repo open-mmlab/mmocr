@@ -1,5 +1,5 @@
 _base_ = [
-    '../../_base_/recog_datasets/ST_MJ_train.py',
+    '../../_base_/recog_datasets/ST_MJ_alphanumeric_train.py',
     '../../_base_/recog_datasets/academic_test.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_20e.py',

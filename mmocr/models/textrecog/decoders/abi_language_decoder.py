@@ -113,7 +113,7 @@ class ABILanguageDecoder(BaseDecoder):
         Args:
             feat (torch.Tensor, optional): Not required. Feature map
                 placeholder. Defaults to None.
-            logits (torch.Tensor): Tensor with shape :math:`(N, T, C)`.
+            out_enc (torch.Tensor): Logits with shape :math:`(N, T, C)`.
                 Defaults to None.
             data_samples (list[TextRecogDataSample], optional): Not required.
                 DataSample placeholder. Defaults to None.
