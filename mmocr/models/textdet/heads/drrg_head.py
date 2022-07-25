@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from lanms import merge_quadrangle_n9 as la_nms
 from mmcv.ops import RoIAlignRotated
-from mmcv.runner import BaseModule
+from mmengine.model import BaseModule
 from numpy import ndarray
 from torch import Tensor
 from torch.nn import init
