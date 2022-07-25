@@ -1,18 +1,23 @@
-dataset_type = 'TextDetDataset'
-data_root = 'data/synthtext'
+data_root = 'data/det/synthtext'
 
-train = dict(
-    type=dataset_type,
-    ann_file=f'{data_root}/instances_training.lmdb',
-    loader=dict(
-        type='AnnFileLoader',
-        repeat=1,
-        file_format='lmdb',
-        parser=dict(
-            type='LineJsonParser',
-            keys=['file_name', 'height', 'width', 'annotations'])),
-    img_prefix=f'{data_root}/imgs',
+train_anno_path = 'instances_training.json'
+test_anno_path = 'instances_test.json'
+
+train_dataset = dict(
+    type='OCRDataset',
+    data_root=data_root,
+    ann_file=train_anno_path,
+    data_prefix=dict(img_path='imgs/'),
+    filter_cfg=dict(filter_empty_gt=True, min_size=32),
     pipeline=None)
 
-train_list = [train]
-test_list = [train]
+test_dataset = dict(
+    type='OCRDataset',
+    data_root=data_root,
+    ann_file=test_anno_path,
+    data_prefix=dict(img_path='imgs/'),
+    test_mode=True,
+    pipeline=None)
+
+train_list = [train_dataset]
+test_list = [test_dataset]

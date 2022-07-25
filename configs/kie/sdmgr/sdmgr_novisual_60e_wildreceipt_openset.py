@@ -1,84 +1,101 @@
 _base_ = ['../../_base_/default_runtime.py']
 
+optim_wrapper = dict(
+    type='OptimWrapper', optimizer=dict(type='Adam', weight_decay=0.0001))
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=60, val_interval=1)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
+# learning rate
+param_scheduler = [
+    dict(type='MultiStepLR', milestones=[40, 50], end=60),
+]
+
+default_hooks = dict(logger=dict(type='LoggerHook', interval=100), )
+
+num_classes = 4
+key_node_idx = 1
+value_node_idx = 2
+
 model = dict(
     type='SDMGR',
-    backbone=dict(type='UNet', base_channels=16),
-    bbox_head=dict(
-        type='SDMGRHead', visual_dim=16, num_chars=92, num_classes=4),
-    visual_modality=False,
-    train_cfg=None,
-    test_cfg=None,
-    class_list=None,
-    openset=True)
-
-optimizer = dict(type='Adam', weight_decay=0.0001)
-optimizer_config = dict(grad_clip=None)
-lr_config = dict(
-    policy='step',
-    warmup='linear',
-    warmup_iters=1,
-    warmup_ratio=1,
-    step=[40, 50])
-total_epochs = 60
+    kie_head=dict(
+        type='SDMGRHead',
+        visual_dim=16,
+        num_classes=num_classes,
+        module_loss=dict(type='SDMGRModuleLoss'),
+        postprocessor=dict(
+            type='SDMGRPostProcessor',
+            link_type='one-to-many',
+            key_node_idx=key_node_idx,
+            value_node_idx=value_node_idx)),
+    dictionary=dict(
+        type='Dictionary',
+        dict_file='data/wildreceipt/dict.txt',
+        with_padding=True,
+        with_unknown=True,
+        unknown_token=None),
+)
 
 train_pipeline = [
-    dict(type='LoadAnnotations'),
-    dict(type='ResizeNoImg', img_scale=(1024, 512), keep_ratio=True),
-    dict(type='KIEFormatBundle'),
-    dict(
-        type='Collect',
-        keys=['img', 'relations', 'texts', 'gt_bboxes', 'gt_labels'],
-        meta_keys=('filename', 'ori_filename', 'ori_texts'))
+    dict(type='LoadKIEAnnotations'),
+    dict(type='Resize', scale=(1024, 512), keep_ratio=True),
+    dict(type='PackKIEInputs')
 ]
 test_pipeline = [
-    dict(type='LoadAnnotations'),
-    dict(type='ResizeNoImg', img_scale=(1024, 512), keep_ratio=True),
-    dict(type='KIEFormatBundle'),
     dict(
-        type='Collect',
-        keys=['img', 'relations', 'texts', 'gt_bboxes'],
-        meta_keys=('filename', 'ori_filename', 'ori_texts', 'ori_bboxes',
-                   'img_norm_cfg', 'ori_filename', 'img_shape'))
+        type='LoadKIEAnnotations',
+        key_node_idx=key_node_idx,
+        value_node_idx=value_node_idx),  # Keep key->value edges for evaluation
+    dict(type='Resize', scale=(1024, 512), keep_ratio=True),
+    dict(type='PackKIEInputs'),
 ]
 
-dataset_type = 'OpensetKIEDataset'
-data_root = 'data/wildreceipt'
+dataset_type = 'WildReceiptDataset'
+data_root = 'data/wildreceipt/'
 
-loader = dict(
-    type='HardDiskLoader',
-    repeat=1,
-    parser=dict(
-        type='LineJsonParser',
-        keys=['file_name', 'height', 'width', 'annotations']))
-
-train = dict(
+train_dataset = dict(
     type=dataset_type,
-    ann_file=f'{data_root}/openset_train.txt',
-    pipeline=train_pipeline,
-    img_prefix=data_root,
-    link_type='one-to-many',
-    loader=loader,
-    dict_file=f'{data_root}/dict.txt',
-    test_mode=False)
-test = dict(
+    data_root=data_root,
+    metainfo=data_root + 'class_list.txt',
+    ann_file='openset_train.txt',
+    pipeline=train_pipeline)
+
+test_dataset = dict(
     type=dataset_type,
-    ann_file=f'{data_root}/openset_test.txt',
-    pipeline=test_pipeline,
-    img_prefix=data_root,
-    link_type='one-to-many',
-    loader=loader,
-    dict_file=f'{data_root}/dict.txt',
-    test_mode=True)
+    data_root=data_root,
+    metainfo=data_root + 'class_list.txt',
+    ann_file='openset_test.txt',
+    test_mode=True,
+    pipeline=test_pipeline)
 
-data = dict(
-    samples_per_gpu=4,
-    workers_per_gpu=1,
-    val_dataloader=dict(samples_per_gpu=1),
-    test_dataloader=dict(samples_per_gpu=1),
-    train=train,
-    val=test,
-    test=test)
+train_dataloader = dict(
+    batch_size=4,
+    num_workers=1,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=train_dataset)
+val_dataloader = dict(
+    batch_size=1,
+    num_workers=1,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=test_dataset)
+test_dataloader = val_dataloader
 
-evaluation = dict(interval=1, metric='openset_f1', metric_options=None)
-
-find_unused_parameters = True
+val_evaluator = [
+    dict(
+        type='F1Metric',
+        prefix='node',
+        key='labels',
+        mode=['micro', 'macro'],
+        num_classes=num_classes,
+        cared_classes=[key_node_idx, value_node_idx]),
+    dict(
+        type='F1Metric',
+        prefix='edge',
+        mode='micro',
+        key='edge_labels',
+        cared_classes=[1],  # binary f1 score
+        num_classes=2)
+]
+test_evaluator = val_evaluator

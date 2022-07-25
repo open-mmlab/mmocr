@@ -600,7 +600,7 @@ Take a snippet of PANet's config as an example. Before the change, its config fo
         text_repr_type='poly',
         in_channels=[128, 128, 128, 128],
         out_channels=6,
-        loss=dict(type='PANLoss')),
+        module_loss=dict(type='PANModuleLoss')),
 ```
 
 Afterwards:
@@ -610,7 +610,7 @@ Afterwards:
     type='PANHead',
     in_channels=[128, 128, 128, 128],
     out_channels=6,
-    loss=dict(type='PANLoss'),
+    module_loss=dict(type='PANModuleLoss'),
     postprocessor=dict(type='PANPostprocessor', text_repr_type='poly')),
 ```
 

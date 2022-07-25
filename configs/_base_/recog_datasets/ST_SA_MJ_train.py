@@ -1,48 +1,30 @@
 # Text Recognition Training set, including:
 # Synthetic Datasets: SynthText, Syn90k
+data_root = 'data/rec'
 
-train_root = 'data/mixture'
-
-train_img_prefix1 = f'{train_root}/Syn90k/mnt/ramdisk/max/90kDICT32px'
-train_ann_file1 = f'{train_root}/Syn90k/label.lmdb'
-
-train1 = dict(
+mj_rec_train = dict(
     type='OCRDataset',
-    img_prefix=train_img_prefix1,
-    ann_file=train_ann_file1,
-    loader=dict(
-        type='AnnFileLoader',
-        repeat=1,
-        file_format='lmdb',
-        parser=dict(type='LineJsonParser', keys=['filename', 'text'])),
-    pipeline=None,
-    test_mode=False)
+    data_root=data_root,
+    data_prefix=dict(img_path='Syn90k/mnt/ramdisk/max/90kDICT32px'),
+    ann_file='Syn90k/train_labels.json',
+    test_mode=False,
+    pipeline=None)
 
-train_img_prefix2 = f'{train_root}/SynthText/' + \
-    'synthtext/SynthText_patch_horizontal'
-train_ann_file2 = f'{train_root}/SynthText/label.lmdb'
-
-train_img_prefix3 = f'{train_root}/SynthText_Add'
-train_ann_file3 = f'{train_root}/SynthText_Add/label.txt'
-
-train2 = {key: value for key, value in train1.items()}
-train2['img_prefix'] = train_img_prefix2
-train2['ann_file'] = train_ann_file2
-
-train3 = dict(
+st_rec_train = dict(
     type='OCRDataset',
-    img_prefix=train_img_prefix3,
-    ann_file=train_ann_file3,
-    loader=dict(
-        type='AnnFileLoader',
-        repeat=1,
-        file_format='txt',
-        parser=dict(
-            type='LineStrParser',
-            keys=['filename', 'text'],
-            keys_idx=[0, 1],
-            separator=' ')),
-    pipeline=None,
-    test_mode=False)
+    data_root=data_root,
+    data_prefix=dict(
+        img_path='SynthText/synthtext/SynthText_patch_horizontal'),
+    ann_file='SynthText/train_labels.json',
+    test_mode=False,
+    pipeline=None)
 
-train_list = [train1, train2, train3]
+st_add_rec_train = dict(
+    type='OCRDataset',
+    data_root=data_root,
+    data_prefix=dict(img_path='synthtext_add'),
+    ann_file='synthtext_add/train_labels.json',
+    test_mode=False,
+    pipeline=None)
+
+train_list = [mj_rec_train, st_rec_train, st_add_rec_train]

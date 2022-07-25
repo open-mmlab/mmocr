@@ -21,16 +21,15 @@ except ImportError:
 
 from mmocr.apis import init_detector
 from mmocr.apis.inference import model_inference
-from mmocr.core.visualize import det_recog_show_result
-from mmocr.datasets.kie_dataset import KIEDataset
-from mmocr.datasets.pipelines.crop import crop_img
-from mmocr.models import build_detector
+from mmocr.datasets import WildReceiptDataset
 from mmocr.models.textdet.detectors import TextDetectorMixin
-from mmocr.models.textrecog.recognizer import BaseRecognizer
-from mmocr.utils import is_type_list
-from mmocr.utils.box_util import stitch_boxes_into_lines
+from mmocr.models.textrecog.recognizers import BaseRecognizer
+from mmocr.registry import MODELS
+from mmocr.utils import is_type_list, stitch_boxes_into_lines
 from mmocr.utils.fileio import list_from_file
+from mmocr.utils.img_utils import crop_img
 from mmocr.utils.model import revert_sync_batchnorm
+from mmocr.visualization.visualize import det_recog_show_result
 
 
 # Parse CLI arguments
@@ -427,7 +426,7 @@ class MMOCR:
                     'kie/' + kie_models[self.kie]['ckpt']
 
             kie_cfg = Config.fromfile(kie_config)
-            self.kie_model = build_detector(
+            self.kie_model = MODELS.build(
                 kie_cfg.model, test_cfg=kie_cfg.get('test_cfg'))
             self.kie_model = revert_sync_batchnorm(self.kie_model)
             self.kie_model.cfg = kie_cfg
@@ -682,7 +681,7 @@ class MMOCR:
         bboxes_list = [res['boundary_result'] for res in det_result]
 
         if kie_model:
-            kie_dataset = KIEDataset(
+            kie_dataset = WildReceiptDataset(
                 dict_file=kie_model.cfg.data.test.dict_file)
 
         # For each bounding box, the image is cropped and

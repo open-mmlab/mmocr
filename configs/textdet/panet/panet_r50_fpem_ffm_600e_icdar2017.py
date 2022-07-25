@@ -1,7 +1,6 @@
 _base_ = [
-    '../../_base_/default_runtime.py',
+    'panet_r50_fpem_ffm.py', '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_600e.py',
-    '../../_base_/det_models/panet_r50_fpem_ffm.py',
     '../../_base_/det_datasets/icdar2017.py',
     '../../_base_/det_pipelines/panet_pipeline.py'
 ]

@@ -1,8 +1,10 @@
-# optimizer
-optimizer = dict(type='SGD', lr=1e-3, momentum=0.90, weight_decay=5e-4)
-optimizer_config = dict(grad_clip=None)
+optim_wrapper = dict(
+    type='OptimWrapper',
+    optimizer=dict(type='SGD', lr=1e-3, momentum=0.9, weight_decay=5e-4))
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=1500, val_interval=20)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
 # learning policy
-lr_config = dict(policy='poly', power=0.9, min_lr=1e-7, by_epoch=True)
-# running settings
-runner = dict(type='EpochBasedRunner', max_epochs=1500)
-checkpoint_config = dict(interval=100)
+param_scheduler = [
+    dict(type='PolyLR', power=0.9, eta_min=1e-7, end=1500),
+]

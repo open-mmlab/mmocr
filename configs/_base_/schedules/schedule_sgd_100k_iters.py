@@ -1,8 +1,12 @@
 # optimizer
-optimizer = dict(type='SGD', lr=0.007, momentum=0.9, weight_decay=0.0001)
-optimizer_config = dict(grad_clip=None)
+optim_wrapper = dict(
+    type='OptimWrapper',
+    optimizer=dict(type='SGD', lr=0.007, momentum=0.9, weight_decay=0.0001))
+
+train_cfg = dict(type='IterBasedTrainLoop', max_iters=100000)
+test_cfg = dict(type='TestLoop')
+val_cfg = None
 # learning policy
-lr_config = dict(policy='poly', power=0.9, min_lr=1e-7, by_epoch=False)
-# running settings
-runner = dict(type='IterBasedRunner', max_iters=100000)
-checkpoint_config = dict(interval=10000)
+param_scheduler = [
+    dict(type='PolyLR', power=0.9, eta_min=1e-7, by_epoch=False, end=100000),
+]

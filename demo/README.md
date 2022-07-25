@@ -228,7 +228,6 @@ ______________________________________________________________________
 | SAR_CN \*     |     [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition)     |       :heavy_check_mark:       |
 | SATRN         |                                          [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                           |       :heavy_check_mark:       |
 | SATRN_sm      |                                          [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                           |       :heavy_check_mark:       |
-| SEG           |                                  [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline)                                  |              :x:               |
 | Tesseract     |                                                           [link](https://tesseract-ocr.github.io/)                                                            |              :x:               |
 
 ```{warning}
