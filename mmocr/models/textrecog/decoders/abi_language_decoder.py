@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Sequence, Union
 import torch
 import torch.nn as nn
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
-from mmcv.runner import ModuleList
+from mmengine.model import ModuleList
 
 from mmocr.data import TextRecogDataSample
 from mmocr.models.common.modules import PositionalEncoding
@@ -113,7 +113,7 @@ class ABILanguageDecoder(BaseDecoder):
         Args:
             feat (torch.Tensor, optional): Not required. Feature map
                 placeholder. Defaults to None.
-            logits (torch.Tensor): Tensor with shape :math:`(N, T, C)`.
+            out_enc (torch.Tensor): Logits with shape :math:`(N, T, C)`.
                 Defaults to None.
             data_samples (list[TextRecogDataSample], optional): Not required.
                 DataSample placeholder. Defaults to None.

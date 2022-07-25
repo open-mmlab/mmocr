@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Union
 
 import torch
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
-from mmcv.runner import BaseModule, ModuleList
+from mmengine.model import BaseModule, ModuleList
 
 from mmocr.data import TextRecogDataSample
 from mmocr.models.common.modules import PositionalEncoding
