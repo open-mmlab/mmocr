@@ -5,6 +5,7 @@ In this guide, we will show you some useful commands and familiarize you with MM
 ## Installation
 
 Requirements:
+
 - MMEngine
 - MMCV
 - MMDetection
@@ -54,7 +55,7 @@ python tools/train.py configs/textrecog/crnn/crnn_toy_dataset.py --work-dir crnn
 
 ### Training with Academic Dataset
 
-Once you have prepared the required academic dataset following [our instructions](https://mmocr.readthedocs.io/en/latest/datasets/det.html), the only last thing to check is if the model’s config points MMOCR to the correct dataset path. Suppose we want to train DBNet on ICDAR 2015; you will need to check the root path in the dataset config (`configs/_base_/det_datasets/icdar2015.py`) correctly points to your local dir. If you are unfamiliar with the config structure in MMOCR, don't worry; please refer to our [config tutorial]().
+Once you have prepared the required academic dataset following [our instructions](https://mmocr.readthedocs.io/en/latest/datasets/det.html), the only last thing to check is if the model’s config points MMOCR to the correct dataset path. Suppose we want to train DBNet on ICDAR 2015; you will need to check the root path in the dataset config (`configs/_base_/det_datasets/icdar2015.py`) correctly points to your local dir. If you are unfamiliar with the config structure in MMOCR, don't worry; please refer to our [config tutorial](<>).
 
 ```python
 data_root = 'data/det/icdar2015' # check if your dataset is linked to this path
@@ -90,7 +91,7 @@ python tools/train.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py --
 
 ## Testing
 
-Suppose now you have finished the training of DBNet and the latest model has been saved in `dbnet/latest.pth`. You can evaluate its performance with the following command: 
+Suppose now you have finished the training of DBNet and the latest model has been saved in `dbnet/latest.pth`. You can evaluate its performance with the following command:
 
 ```shell
 python tools/test.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py dbnet/latest.pth
@@ -98,11 +99,11 @@ python tools/test.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py dbn
 
 To dump the prediction results, you can add `--save-preds`, which will automatically save the predicted bounding boxes/recognition results in `.pkl` format.
 
-## Usefull Tools
+## Useful Tools
 
 MMOCR provides useful tools to help users visualize, analyze or evaluate while developing new OCR models.
 
-### Browsing your Datsets
+### Browsing your Datasets
 
 You can use the `tools/analysis_tools/browse_dataset.py` visualization script to browse your customized datasets and training pipelines. For example, using the following command to view the data transformed by a training pipeline used for training DBNet.
 
@@ -110,7 +111,7 @@ You can use the `tools/analysis_tools/browse_dataset.py` visualization script to
 python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py --output-dir ./vis_dbnet_ic15
 ```
 
-### Offline Evalutaion
+### Offline Evaluation
 
 Suppose that you have dumped the prediction results of the DBNet, then you can use the offline evaluation tools to get the performance any time later without re-running the testing script.
 
