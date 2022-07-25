@@ -33,6 +33,8 @@ class DBPostprocessor(BaseTextDetPostProcessor):
             predicted. Defaults to 5.
         unclip_ratio (float): The unclip ratio for text regions dilation.
             Defaults to 1.5.
+        epsilon_ratio (float): The epsilon ratio for approximation accuracy.
+            Defaults to 0.01.
         max_candidates (int): The maximum candidate number. Defaults to 3000.
     """
 
@@ -43,6 +45,7 @@ class DBPostprocessor(BaseTextDetPostProcessor):
                  min_text_score: float = 0.3,
                  min_text_width: int = 5,
                  unclip_ratio: float = 1.5,
+                 epsilon_ratio: float = 0.01,
                  max_candidates: int = 3000,
                  **kwargs) -> None:
         super().__init__(
@@ -53,6 +56,7 @@ class DBPostprocessor(BaseTextDetPostProcessor):
         self.min_text_score = min_text_score
         self.min_text_width = min_text_width
         self.unclip_ratio = unclip_ratio
+        self.epsilon_ratio = epsilon_ratio
         self.max_candidates = max_candidates
 
     def get_text_instances(self, pred_results: Tuple[Tensor, Tensor, Tensor],
@@ -88,7 +92,7 @@ class DBPostprocessor(BaseTextDetPostProcessor):
         for i, poly in enumerate(contours):
             if i > self.max_candidates:
                 break
-            epsilon = 0.01 * cv2.arcLength(poly, True)
+            epsilon = self.epsilon_ratio * cv2.arcLength(poly, True)
             approx = cv2.approxPolyDP(poly, epsilon, True)
             poly_pts = approx.reshape((-1, 2))
             if poly_pts.shape[0] < 4:
