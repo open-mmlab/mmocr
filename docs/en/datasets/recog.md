@@ -209,13 +209,27 @@
 
 - Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)
 
+- Step2: Download [timage.tar.gz](https://download.openmmlab.com/mmocr/data/mixture/ct80/timage.tar.gz)
+
+- Step3:
+
+  ```bash
+  mkdir ct80 && cd ct80
+  mv /path/to/test_label.txt .
+  mv /path/to/timage.tar.gz .
+  tar -xvf timage.tar.gz
+  # create soft link
+  cd /path/to/mmocr/data/mixture
+  ln -s /path/to/ct80 ct80
+  ```
+
 - After running the above codes, the directory structure
   should be as follows:
 
   ```text
   ├── ct80
   │   ├── test_label.txt
-  │   └── image
+  │   └── timage
   ```
 
 ## svtp
@@ -274,7 +288,7 @@ Please make sure you're using the right annotation to train the model by checkin
 
   # Convert 'txt' format annos to 'lmdb' (optional)
   cd /path/to/mmocr
-  python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
+  python tools/data/utils/lmdb_converter.py data/mixture/Syn90k/label.txt data/mixture/Syn90k/label.lmdb --label-only
   ```
 
 - After running the above codes, the directory structure
@@ -325,7 +339,7 @@ Please make sure you're using the right annotation to train the model by checkin
 
   # Convert 'txt' format annos to 'lmdb' (optional)
   cd /path/to/mmocr
-  python tools/data/utils/txt2lmdb.py -i data/mixture/SynthText/label.txt -o data/mixture/SynthText/label.lmdb
+  python tools/data/utils/lmdb_converter.py data/mixture/SynthText/label.txt data/mixture/SynthText/label.lmdb --label-only
   ```
 
 - After running the above codes, the directory structure
@@ -365,7 +379,7 @@ Please make sure you're using the right annotation to train the model by checkin
 
   # Convert 'txt' format annos to 'lmdb' (optional)
   cd /path/to/mmocr
-  python tools/data/utils/txt2lmdb.py -i data/mixture/SynthAdd/label.txt -o data/mixture/SynthAdd/label.lmdb
+  python tools/data/utils/lmdb_converter.py data/mixture/SynthAdd/label.txt data/mixture/SynthAdd/label.lmdb --label-only
   ```
 
 - After running the above codes, the directory structure
@@ -382,13 +396,13 @@ Please make sure you're using the right annotation to train the model by checkin
 To convert label file from `txt` format to `lmdb` format,
 
 ```bash
-python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
+python tools/data/utils/lmdb_converter.py <txt_label_path> <lmdb_label_path> --label-only
 ```
 
 For example,
 
 ```bash
-python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
+python tools/data/utils/lmdb_converter.py data/mixture/Syn90k/label.txt data/mixture/Syn90k/label.lmdb --label-only
 ```
 
 ````
