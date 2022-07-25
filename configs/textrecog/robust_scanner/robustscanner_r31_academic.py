@@ -5,8 +5,6 @@ _base_ = [
     '../../_base_/schedules/schedule_adam_step_5e.py'
 ]
 
-# dataset settings
-train_list = {{_base_.train_list}}
 file_client_args = dict(backend='disk')
 default_hooks = dict(logger=dict(type='LoggerHook', interval=100))
 
@@ -34,13 +32,41 @@ test_pipeline = [
                    'instances'))
 ]
 
+# dataset settings
+ic11_rec_train = _base_.ic11_rec_train
+ic13_rec_train = _base_.ic13_rec_train
+ic15_rec_train = _base_.ic15_rec_train
+cocov1_rec_train = _base_.cocov1_rec_train
+iiit5k_rec_train = _base_.iiit5k_rec_train
+st_add_rec_train = _base_.st_add_rec_train
+st_rec_train = _base_.st_rec_train
+mj_rec_trian = _base_.mj_rec_trian
+
+ic11_rec_train.pipeline = test_pipeline
+ic13_rec_train.pipeline = test_pipeline
+ic15_rec_train.pipeline = test_pipeline
+cocov1_rec_train.pipeline = test_pipeline
+iiit5k_rec_train.pipeline = test_pipeline
+st_add_rec_train.pipeline = test_pipeline
+st_rec_train.pipeline = test_pipeline
+mj_rec_trian.pipeline = test_pipeline
+repeat_ic11 = dict(type='RepeatDataset', dataset=ic11_rec_train, times=20)
+repeat_ic13 = dict(type='RepeatDataset', dataset=ic13_rec_train, times=20)
+repeat_ic15 = dict(type='RepeatDataset', dataset=ic15_rec_train, times=20)
+repeat_cocov1 = dict(type='RepeatDataset', dataset=cocov1_rec_train, times=20)
+repeat_iiit5k = dict(type='RepeatDataset', dataset=iiit5k_rec_train, times=20)
+
 train_dataloader = dict(
     batch_size=64,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
-        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
+        type='ConcatDataset',
+        datasets=[
+            repeat_ic11, repeat_ic13, repeat_ic15, repeat_cocov1,
+            repeat_iiit5k, st_add_rec_train, st_rec_train, mj_rec_trian
+        ]))
 
 test_cfg = dict(type='MultiTestLoop')
 val_cfg = dict(type='MultiValLoop')
