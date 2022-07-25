@@ -42,7 +42,11 @@ model = dict(
         postprocessor=dict(type='AttentionPostprocessor')))
 
 train_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        ignore_empty=True,
+        min_size=5),
     dict(type='LoadOCRAnnotations', with_text=True),
     dict(type='Resize', scale=(100, 32), keep_ratio=False),
     dict(
