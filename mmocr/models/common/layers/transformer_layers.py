@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
-from mmcv.runner import BaseModule
+from mmengine.model import BaseModule
 
 from mmocr.models.common.modules import (MultiHeadAttention,
                                          PositionwiseFeedForward)

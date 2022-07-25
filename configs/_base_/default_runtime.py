@@ -7,7 +7,7 @@ default_hooks = dict(
     param_scheduler=dict(type='ParamSchedulerHook'),
     checkpoint=dict(type='CheckpointHook', interval=1),
     sampler_seed=dict(type='DistSamplerSeedHook'),
-)
+    sync_buffer=dict(type='SyncBuffersHook'))
 
 env_cfg = dict(
     cudnn_benchmark=True,

@@ -147,7 +147,7 @@ class ABIFuser(BaseDecoder):
 
         if 'out_fusers' in raw_result and len(raw_result['out_fusers']) > 0:
             ret = raw_result['out_fusers'][-1]['logits']
-        if 'out_langs' in raw_result and len(raw_result['out_langs']) > 0:
+        elif 'out_langs' in raw_result and len(raw_result['out_langs']) > 0:
             ret = raw_result['out_langs'][-1]['logits']
         else:
             ret = raw_result['out_vis']['logits']
