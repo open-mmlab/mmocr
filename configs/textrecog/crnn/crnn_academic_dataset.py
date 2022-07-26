@@ -9,7 +9,7 @@ _base_ = [
 
 # dataset settings
 train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
+
 file_client_args = dict(backend='disk')
 default_hooks = dict(logger=dict(type='LoggerHook', interval=50), )
 
@@ -17,7 +17,9 @@ train_pipeline = [
     dict(
         type='LoadImageFromFile',
         color_type='grayscale',
-        file_client_args=file_client_args),
+        file_client_args=file_client_args,
+        ignore_empty=True,
+        min_size=5),
     dict(type='LoadOCRAnnotations', with_text=True),
     dict(type='Resize', scale=(100, 32), keep_ratio=False),
     dict(
@@ -50,21 +52,13 @@ train_dataloader = dict(
     dataset=dict(
         type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
 
-val_dataloader = dict(
-    batch_size=1,
-    num_workers=4,
-    persistent_workers=True,
-    drop_last=False,
-    sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dict(
-        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
-test_dataloader = val_dataloader
+test_cfg = dict(type='MultiTestLoop')
+val_cfg = dict(type='MultiValLoop')
+val_dataloader = _base_.val_dataloader
+test_dataloader = _base_.test_dataloader
+for dataloader in test_dataloader:
+    dataloader['dataset']['pipeline'] = test_pipeline
+for dataloader in val_dataloader:
+    dataloader['dataset']['pipeline'] = test_pipeline
 
-val_evaluator = [
-    dict(
-        type='WordMetric', mode=['exact', 'ignore_case',
-                                 'ignore_case_symbol']),
-    dict(type='CharMetric')
-]
-test_evaluator = val_evaluator
 visualizer = dict(type='TextRecogLocalVisualizer', name='visualizer')

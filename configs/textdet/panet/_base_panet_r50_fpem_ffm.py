@@ -1,6 +1,5 @@
 model = dict(
     type='PANet',
-    pretrained='torchvision://resnet50',
     backbone=dict(
         type='mmdet.ResNet',
         depth=50,
@@ -9,13 +8,20 @@ model = dict(
         frozen_stages=1,
         norm_cfg=dict(type='BN', requires_grad=True),
         norm_eval=True,
-        style='caffe'),
+        style='caffe',
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
+    ),
     neck=dict(type='FPEM_FFM', in_channels=[256, 512, 1024, 2048]),
-    bbox_head=dict(
+    det_head=dict(
         type='PANHead',
         in_channels=[128, 128, 128, 128],
-        out_channels=6,
-        module_loss=dict(type='PANModuleLoss', speedup_bbox_thr=32),
+        hidden_dim=128,
+        out_channel=6,
+        module_loss=dict(
+            type='PANModuleLoss',
+            loss_text=dict(type='MaskedSquareDiceLoss'),
+            loss_kernel=dict(type='MaskedSquareDiceLoss'),
+        ),
         postprocessor=dict(type='PANPostprocessor', text_repr_type='poly')),
     data_preprocessor=dict(
         type='TextDetDataPreprocessor',

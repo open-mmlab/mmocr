@@ -3,7 +3,7 @@ from typing import Dict, Optional, Sequence, Union
 
 import torch
 import torch.nn as nn
-from mmcv.runner import Sequential
+from mmengine.model import Sequential
 
 from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
