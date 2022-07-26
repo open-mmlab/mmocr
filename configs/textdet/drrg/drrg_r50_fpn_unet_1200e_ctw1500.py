@@ -1,15 +1,14 @@
 _base_ = [
     'drrg_r50_fpn_unet.py',
-    '../../_base_/det_datasets/icdar2015.py',
-    '../../_base_/default_runtime.py',
+    '../../_base_/det_datasets/ctw1500.py',
+    '../../_base_/textdet_default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
 # dataset settings
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
+train_list = _base_.train_list
+test_list = _base_.test_list
 file_client_args = dict(backend='disk')
-default_hooks = dict(checkpoint=dict(type='CheckpointHook', interval=20), )
 
 train_pipeline = [
     dict(
@@ -30,7 +29,7 @@ train_pipeline = [
         type='RandomResize',
         scale=(800, 800),
         ratio_range=(0.75, 2.5),
-        resize_cfg=dict(type='Resize', keep_ratio=True)),
+        keep_ratio=True),
     dict(
         type='TextDetRandomCropFlip',
         crop_ratio=0.5,
@@ -90,9 +89,5 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
+
 test_dataloader = val_dataloader
-
-val_evaluator = dict(type='HmeanIOUMetric')
-test_evaluator = val_evaluator
-
-visualizer = dict(type='TextDetLocalVisualizer', name='visualizer')

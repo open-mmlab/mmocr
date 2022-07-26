@@ -1,9 +1,3 @@
-preprocess_cfg = dict(
-    mean=[123.675, 116.28, 103.53],
-    std=[58.395, 57.12, 57.375],
-    to_rgb=True,
-    pad_size_divisor=32)
-
 model = dict(
     type='DRRG',
     backbone=dict(
@@ -24,4 +18,10 @@ model = dict(
         text_region_thr=0.3,
         center_region_thr=0.4,
         module_loss=dict(type='DRRGModuleLoss'),
-        postprocessor=dict(type='DRRGPostprocessor', link_thr=0.80)))
+        postprocessor=dict(type='DRRGPostprocessor', link_thr=0.80)),
+    data_preprocessor=dict(
+        type='TextDetDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        bgr_to_rgb=True,
+        pad_size_divisor=32))
