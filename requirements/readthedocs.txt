@@ -6,7 +6,7 @@ matplotlib
 mmcv
 mmdet
 pyclipper
-rapidfuzz
+rapidfuzz>=2.0.0
 regex
 scikit-image
 scipy

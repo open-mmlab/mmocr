@@ -3,6 +3,7 @@ from .abinet_language_decoder import ABILanguageDecoder
 from .abinet_vision_decoder import ABIVisionDecoder
 from .base_decoder import BaseDecoder
 from .crnn_decoder import CRNNDecoder
+from .master_decoder import MasterDecoder
 from .nrtr_decoder import NRTRDecoder
 from .position_attention_decoder import PositionAttentionDecoder
 from .robust_scanner_decoder import RobustScannerDecoder
@@ -14,5 +15,6 @@ __all__ = [
     'CRNNDecoder', 'ParallelSARDecoder', 'SequentialSARDecoder',
     'ParallelSARDecoderWithBS', 'NRTRDecoder', 'BaseDecoder',
     'SequenceAttentionDecoder', 'PositionAttentionDecoder',
-    'RobustScannerDecoder', 'ABILanguageDecoder', 'ABIVisionDecoder'
+    'RobustScannerDecoder', 'ABILanguageDecoder', 'ABIVisionDecoder',
+    'MasterDecoder'
 ]

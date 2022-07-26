@@ -104,7 +104,7 @@ class FPNF(BaseModule):
         for i in range(used_backbone_levels - 1, 0, -1):
             # step 1: upsample to level i-1 size and add level i-1
             prev_shape = laterals[i - 1].shape[2:]
-            laterals[i - 1] += F.interpolate(
+            laterals[i - 1] = laterals[i - 1] + F.interpolate(
                 laterals[i], size=prev_shape, mode='nearest')
             # step 2: smooth level i-1
             laterals[i - 1] = self.fpn_convs[i - 1](laterals[i - 1])

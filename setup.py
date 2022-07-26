@@ -16,7 +16,7 @@ version_file = 'mmocr/version.py'
 is_windows = sys.platform == 'win32'
 
 
-def add_mim_extention():
+def add_mim_extension():
     """Add extra files that are required to support MIM into the package.
 
     These files will be added by creating a symlink to the originals if the
@@ -163,7 +163,7 @@ def parse_requirements(fname='requirements.txt', with_version=True):
 
 
 if __name__ == '__main__':
-    add_mim_extention()
+    add_mim_extension()
     library_dirs = [
         lp for lp in os.environ.get('LD_LIBRARY_PATH', '').split(':')
         if len(lp) > 1
@@ -197,5 +197,6 @@ if __name__ == '__main__':
             'tests': parse_requirements('requirements/tests.txt'),
             'build': parse_requirements('requirements/build.txt'),
             'optional': parse_requirements('requirements/optional.txt'),
+            'mim': parse_requirements('requirements/mminstall.txt'),
         },
         zip_safe=False)

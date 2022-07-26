@@ -42,6 +42,10 @@ class AnnFileLoader:
         assert file_storage_backend in ['disk', 'http', 'petrel']
         assert file_format in ['txt', 'lmdb']
 
+        if file_format == 'lmdb' and parser['type'] == 'LineStrParser':
+            raise ValueError('We only support using LineJsonParser '
+                             'to parse lmdb file. Please use LineJsonParser '
+                             'in the dataset config')
         self.parser = build_parser(parser)
         self.repeat = repeat
         self.ann_file_backend = self._backends[file_storage_backend](

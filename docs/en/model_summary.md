@@ -88,9 +88,9 @@ The architecture diverges at training and test phases. The loss module returns a
 - Loss: [ABILoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.losses.ABILoss)
 - Converter: [ABIConvertor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.convertors.ABIConvertor)
 
-:::{note}
+```{note}
 Fuser fuses the feature output from encoder and decoder before generating the final text outputs and computing the loss in full ABINet.
-:::
+```
 
 ### CRNN
 
@@ -109,6 +109,15 @@ Fuser fuses the feature output from encoder and decoder before generating the fi
 - Decoder: [CRNNDecoder](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.decoders.CRNNDecoder)
 - Loss: [CTCLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.losses.CTCLoss)
 - Converter: [CTCConvertor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.convertors.CTCConvertor)
+
+### MASTER
+
+- Preprocessor: None
+- Backbone: [ResNet](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.backbones.ResNet)
+- Encoder: None
+- Decoder: [MasterDecoder](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.decoders.MasterDecoder)
+- Loss: [TFLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.losses.TFLoss)
+- Converter: [AttnConvertor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.convertors.AttnConvertor)
 
 ### NRTR
 
@@ -154,9 +163,9 @@ Fuser fuses the feature output from encoder and decoder before generating the fi
 - Loss: [SegLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.losses.SegLoss)
 - Converter: [SegConvertor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textrecog.convertors.SegConvertor)
 
-:::{note}
+```{note}
 SegOCR's architecture is an exception - it is closer to text detection models.
-:::
+```
 
 ## Key Information Extraction Models
 

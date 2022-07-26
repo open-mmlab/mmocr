@@ -1,5 +1,5 @@
 _base_ = [
-    '../../_base_/runtime_10e.py',
+    '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/det_models/dbnet_r18_fpnc.py',
     '../../_base_/det_datasets/icdar2015.py',
@@ -30,9 +30,4 @@ data = dict(
         datasets=test_list,
         pipeline=test_pipeline_1333_736))
 
-evaluation = dict(
-    interval=100,
-    metric='hmean-iou',
-    min_score_thr=0.1,
-    max_score_thr=0.5,
-    step=0.1)
+evaluation = dict(interval=100, metric='hmean-iou')

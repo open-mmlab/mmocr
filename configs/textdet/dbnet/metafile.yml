@@ -5,7 +5,7 @@ Collections:
     Training Techniques:
       - SGD with Momentum
       - Weight Decay
-    Training Resources: 8x GeForce GTX 1080 Ti
+    Training Resources: 1x GeForce GTX 1080 Ti
     Architecture:
       - ResNet
       - FPNC
