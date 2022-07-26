@@ -1,8 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import functools
+import math
 import operator
 from functools import reduce
-import math
 
 import numpy as np
 
@@ -176,7 +175,10 @@ def sort_points(points):
     assert is_type_list(points, np.ndarray) or isinstance(points, np.ndarray) \
         or is_2dlist(points)
     center_point = tuple(
-        map(operator.truediv, reduce(lambda x, y: map(operator.add, x, y), points),
+        map(operator.truediv,
+            reduce(lambda x, y: map(operator.add, x, y), points),
             [len(points)] * 2))
-    return sorted(points, key=lambda coord: (180 + math.degrees(
-        math.atan2(*tuple(map(operator.sub, coord, center_point))))) % 360)
+    return sorted(
+        points,
+        key=lambda coord: (180 + math.degrees(
+            math.atan2(*tuple(map(operator.sub, coord, center_point))))) % 360)
