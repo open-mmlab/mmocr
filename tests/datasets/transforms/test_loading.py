@@ -34,6 +34,11 @@ class TestLoadImageFromFile(TestCase):
         results = transform(copy.deepcopy(results))
         self.assertIsNone(results)
 
+        results = dict(img_path='fake.jpg')
+        transform = LoadImageFromFile(min_size=26, ignore_empty=True)
+        results = transform(copy.deepcopy(results))
+        self.assertIsNone(results)
+
 
 class TestLoadOCRAnnotations(TestCase):
 

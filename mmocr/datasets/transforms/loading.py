@@ -68,7 +68,7 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
             results (dict): Result dict from :obj:``mmcv.BaseDataset``.
         """
         results = super().transform(results)
-        if min(results['ori_shape']) < self.min_size:
+        if results and min(results['ori_shape']) < self.min_size:
             return None
         else:
             return results
