@@ -10,7 +10,7 @@ train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}
 file_client_args = dict(backend='disk')
 default_hooks = dict(
-    checkpoint=dict(type='CheckpointHook', interval=20),
+    checkpoint=dict(type='CheckpointHook', interval=100),
     logger=dict(type='LoggerHook', interval=20))
 
 model = {{_base_.model_quad}}

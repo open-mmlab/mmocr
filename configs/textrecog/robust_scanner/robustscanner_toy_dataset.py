@@ -1,40 +1,33 @@
-# training schedule for 1x
 _base_ = [
-    'crnn.py',
+    'robust_scanner.py', '../../_base_/recog_datasets/toy_data.py',
     '../../_base_/default_runtime.py',
-    '../../_base_/recog_datasets/toy_data.py',
-    '../../_base_/schedules/schedule_adadelta_5e.py',
+    '../../_base_/schedules/schedule_adam_step_5e.py'
 ]
 
 # dataset settings
 train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}
 file_client_args = dict(backend='disk')
-default_hooks = dict(logger=dict(type='LoggerHook', interval=50), )
+default_hooks = dict(logger=dict(type='LoggerHook', interval=100))
 
 train_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        color_type='grayscale',
-        file_client_args=file_client_args),
+    dict(type='LoadImageFromFile', file_client_args=file_client_args),
     dict(type='LoadOCRAnnotations', with_text=True),
-    dict(type='Resize', scale=(100, 32), keep_ratio=False),
+    dict(type='Resize', scale=(160, 48), keep_ratio=False),
     dict(
         type='PackTextRecogInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
 ]
 
 test_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        color_type='grayscale',
-        file_client_args=file_client_args),
+    dict(type='LoadImageFromFile', file_client_args=file_client_args),
     dict(
         type='RescaleToHeight',
-        height=32,
-        min_width=32,
-        max_width=None,
-        width_divisor=16),
+        height=48,
+        min_width=48,
+        max_width=160,
+        width_divisor=4),
+    dict(type='PadToWidth', width=160),
     dict(
         type='PackTextRecogInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio',
@@ -48,6 +41,7 @@ train_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
+
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
@@ -66,5 +60,3 @@ val_evaluator = [
 ]
 test_evaluator = val_evaluator
 visualizer = dict(type='TextRecogLocalVisualizer', name='visualizer')
-
-model = dict(decoder=dict(dictionary=dict(with_unknown=True)))

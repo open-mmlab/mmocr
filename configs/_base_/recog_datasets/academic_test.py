@@ -11,14 +11,14 @@ test_img_prefix4 = 'icdar_2015/ch4_test_word_images_gt'
 test_img_prefix5 = 'svtp/'
 test_img_prefix6 = 'ct80/'
 
-test_ann_file1 = 'IIIT5K/test_label.json'
-test_ann_file2 = 'svt/test_label.json'
-test_ann_file3 = 'icdar_2013/test_label.json'
-test_ann_file4 = 'icdar_2015/test_label.json'
-test_ann_file5 = 'svtp/test_label.json'
-test_ann_file6 = 'ct80/test_label.json'
+test_ann_file1 = 'IIIT5K/test_labels.json'
+test_ann_file2 = 'svt/test_labels.json'
+test_ann_file3 = 'icdar_2013/test_labels.json'
+test_ann_file4 = 'icdar_2015/test_labels.json'
+test_ann_file5 = 'svtp/test_labels.json'
+test_ann_file6 = 'ct80/test_labels.json'
 
-IIIT5K = dict(
+iiit5k_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix1),
@@ -26,7 +26,7 @@ IIIT5K = dict(
     test_mode=True,
     pipeline=None)
 
-SVT = dict(
+svt_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix2),
@@ -34,7 +34,7 @@ SVT = dict(
     test_mode=True,
     pipeline=None)
 
-IC13 = dict(
+ic13_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix3),
@@ -42,7 +42,7 @@ IC13 = dict(
     test_mode=True,
     pipeline=None)
 
-IC15 = dict(
+ic15_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix4),
@@ -50,7 +50,7 @@ IC15 = dict(
     test_mode=True,
     pipeline=None)
 
-SVTP = dict(
+svtp_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix5),
@@ -58,7 +58,7 @@ SVTP = dict(
     test_mode=True,
     pipeline=None)
 
-CUTE80 = dict(
+cute80_rec_test = dict(
     type='OCRDataset',
     data_root=test_root,
     data_prefix=dict(img_path=test_img_prefix6),
@@ -66,4 +66,105 @@ CUTE80 = dict(
     test_mode=True,
     pipeline=None)
 
-test_list = [IIIT5K, SVT, IC13, IC15, SVTP, CUTE80]
+iiit5k_val_dataloader = dict(
+    batch_size=1,
+    num_workers=4,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=iiit5k_rec_test)
+
+svt_val_dataloader = dict(
+    batch_size=1,
+    num_workers=4,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=svt_rec_test)
+
+ic13_val_dataloader = dict(
+    batch_size=1,
+    num_workers=4,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=ic13_rec_test)
+
+ic15_val_dataloader = dict(
+    batch_size=1,
+    num_workers=4,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=ic15_rec_test)
+
+svtp_val_dataloader = dict(
+    batch_size=1,
+    num_workers=4,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=svtp_rec_test)
+
+cute80_val_dataloader = dict(
+    batch_size=1,
+    num_workers=4,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=cute80_rec_test)
+
+val_dataloader = [
+    iiit5k_val_dataloader, svt_val_dataloader, ic13_val_dataloader,
+    ic15_val_dataloader, svtp_val_dataloader, cute80_val_dataloader
+]
+
+test_dataloader = val_dataloader
+
+val_evaluator = [[
+    dict(
+        type='WordMetric',
+        mode=['exact', 'ignore_case', 'ignore_case_symbol'],
+        prefix='IIIT5K'),
+    dict(type='CharMetric', prefix='IIIT5K')
+],
+                 [
+                     dict(
+                         type='WordMetric',
+                         mode=['exact', 'ignore_case', 'ignore_case_symbol'],
+                         prefix='svt'),
+                     dict(type='CharMetric', prefix='svt')
+                 ],
+                 [
+                     dict(
+                         type='WordMetric',
+                         mode=['exact', 'ignore_case', 'ignore_case_symbol'],
+                         prefix='icdar_2013'),
+                     dict(type='CharMetric', prefix='icdar_2013')
+                 ],
+                 [
+                     dict(
+                         type='WordMetric',
+                         mode=['exact', 'ignore_case', 'ignore_case_symbol'],
+                         prefix='icdar_2015'),
+                     dict(type='CharMetric', prefix='icdar_2015')
+                 ],
+                 [
+                     dict(
+                         type='WordMetric',
+                         mode=['exact', 'ignore_case', 'ignore_case_symbol'],
+                         prefix='svtp'),
+                     dict(type='CharMetric', prefix='svtp')
+                 ],
+                 [
+                     dict(
+                         type='WordMetric',
+                         mode=['exact', 'ignore_case', 'ignore_case_symbol'],
+                         prefix='ct80'),
+                     dict(type='CharMetric', prefix='ct80')
+                 ]]
+test_evaluator = val_evaluator
+test_list = [
+    iiit5k_rec_test, svt_rec_test, ic13_rec_test, ic15_rec_test, svtp_rec_test,
+    cute80_rec_test
+]

@@ -2,7 +2,7 @@
 from typing import Dict, List, Optional, Tuple, Union
 
 import torch
-from mmcv.runner import BaseModule
+from mmengine.model import BaseModule
 from torch import Tensor
 
 from mmocr.data import TextDetDataSample

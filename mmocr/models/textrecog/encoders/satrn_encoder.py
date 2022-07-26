@@ -3,7 +3,8 @@ import math
 from typing import Dict, List, Optional, Union
 
 import torch.nn as nn
-from mmcv.runner import ModuleList
+# from mmengine.model import ModuleList
+from mmengine.model import ModuleList
 from torch import Tensor
 
 from mmocr.data import TextRecogDataSample
