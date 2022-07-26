@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os
+import warnings
 from typing import Optional
 
 import mmcv
@@ -67,11 +68,42 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
         Args:
             results (dict): Result dict from :obj:``mmcv.BaseDataset``.
         """
-        results = super().transform(results)
-        if results and min(results['ori_shape']) < self.min_size:
+        """Functions to load image.
+
+        Args:
+            results (dict): Result dict from :obj:``mmcv.BaseDataset``.
+
+        Returns:
+            dict: The dict contains loaded image and meta information.
+        """
+
+        filename = results['img_path']
+        try:
+            img_bytes = self.file_client.get(filename)
+            img = mmcv.imfrombytes(
+                img_bytes, flag=self.color_type, backend=self.imdecode_backend)
+        except Exception as e:
+            if self.ignore_empty:
+                warnings.warn(f'Failed to load {filename} due to {e}')
+                return None
+            else:
+                raise e
+        if self.ignore_empty and img is None:
+            warnings.warn(f'Ignore broken image: {filename}')
             return None
-        else:
-            return results
+        elif img is None:
+            raise IOError(f'{filename} is broken')
+
+        if self.to_float32:
+            img = img.astype(np.float32)
+
+        if min(img.shape[:2]) < self.min_size:
+            return None
+
+        results['img'] = img
+        results['img_shape'] = img.shape[:2]
+        results['ori_shape'] = img.shape[:2]
+        return results
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
