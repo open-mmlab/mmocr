@@ -288,9 +288,10 @@ class MMOCR:
             [packed_results])
         return det_model.predict(batch_inputs, batch_data_samples)
 
-    def recog_inference(self, recog_model: nn.ModuleList,
-                        packed_results: Union[List[dict], dict]
-                        ) -> List[TextRecogDataSample]:
+    def recog_inference(
+            self, recog_model: nn.ModuleList,
+            packed_results: Union[List[dict],
+                                  dict]) -> List[TextRecogDataSample]:
         """Batch inference for recognition models.
 
         Args:
@@ -648,7 +649,7 @@ class MMOCR:
                 'config': 'master/master_r31_12e_ST_MJ_SA.py',
                 'ckpt': 'textrecog/master/master_r31_12e_ST_MJ_SA-787edd36.pth'
             },
-            # KIE model
+            # KIE models
             'SDMGR': {
                 'config':
                 'sdmgr/sdmgr_unet16_60e_wildreceipt.py',
