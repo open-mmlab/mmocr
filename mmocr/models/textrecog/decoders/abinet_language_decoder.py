@@ -15,7 +15,7 @@ from .base_decoder import BaseDecoder
 class ABILanguageDecoder(BaseDecoder):
     r"""Transformer-based language model responsible for spell correction.
     Implementation of language model of \
-        `ABINet <https://arxiv.org/abs/1910.04396>`_.
+        `ABINet <https://arxiv.org/pdf/2103.06495>`_.
 
     Args:
         d_model (int): Hidden size of input.
