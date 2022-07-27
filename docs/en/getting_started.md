@@ -1,84 +1,120 @@
 # Getting Started
 
-In this guide we will show you some useful commands and familiarize you with MMOCR. We also provide [a notebook](https://github.com/open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb) that can help you get the most out of MMOCR.
+In this guide, we will show you some useful commands and familiarize you with MMOCR.
 
 ## Installation
 
-Check out our [installation guide](install.md) for full steps.
+Requirements:
+
+- MMEngine
+- MMCV
+- MMDetection
+
+```bash
+# Create conda environment
+conda create -n mmocr python=3.8 -y
+conda activate mmocr
+pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
+
+# Install requirements
+# TODO: Update after release
+# Engine
+git clone https://github.com/open-mmlab/mmengine.git
+cd mmengine && pip install -e . && cd ../
+# MMCV
+git clone https://github.com/open-mmlab/mmcv.git
+cd mmcv && git checkout dev-2.x
+# Compiling on cluster
+MMCV_WITH_OPS=1 srun -p $PARTITION -n1 --gres=gpu:1 pip install -e .
+# Compiling on local machine
+MMCV_WITH_OPS=1 pip install -e .
+# MMDet
+git clone https://github.com/open-mmlab/mmdetection.git
+cd mmdetection && git checkout dev-3.x
+pip install -e .
+
+# Install MMOCR
+git clone https://github.com/open-mmlab/mmocr.git
+cd mmocr && git checkout dev-1.x
+pip install -e .
+```
 
 ## Dataset Preparation
 
-MMOCR supports numerous datasets which are classified by the type of their corresponding tasks. You may find their preparation steps in these sections: [Detection Datasets](datasets/det.md), [Recognition Datasets](datasets/recog.md), [KIE Datasets](datasets/kie.md) and [NER Datasets](datasets/ner.md).
-
-## Inference with Pretrained Models
-
-You can perform end-to-end OCR on our demo image with one simple line of command:
-
-```shell
-python mmocr/utils/ocr.py demo/demo_text_ocr.jpg --print-result --imshow
-```
-
-Its detection result will be printed out and a new window will pop up with result visualization. More demo and full instructions can be found in [Demo](demo.md).
+MMOCR supports numerous datasets which are classified by the type of their corresponding tasks. You may find their preparation steps in these sections: [Detection Datasets](https://mmocr.readthedocs.io/en/latest/datasets/det.html), [Recognition Datasets](https://mmocr.readthedocs.io/en/latest/datasets/recog.html), and [KIE Datasets](https://mmocr.readthedocs.io/en/latest/datasets/kie.html). For a quick start, we also prepared a toy dataset and its corresponding configs, which can be found under `tests/data`.
 
 ## Training
 
 ### Training with Toy Dataset
 
-We provide a toy dataset under `tests/data` on which you can get a sense of training before the academic dataset is prepared.
+Training a text recognizer CRNN on toy dataset.
 
-For example, to train a text recognition task with `seg` method and toy dataset,
-
-```shell
-python tools/train.py configs/textrecog/seg/seg_r31_1by16_fpnocr_toy_dataset.py --work-dir seg
-```
-
-To train a text recognition task with `sar` method and toy dataset,
-
-```shell
-python tools/train.py configs/textrecog/sar/sar_r31_parallel_decoder_toy_dataset.py --work-dir sar
+```bash
+python tools/train.py configs/textrecog/crnn/crnn_toy_dataset.py --work-dir crnn
 ```
 
 ### Training with Academic Dataset
 
-Once you have prepared required academic dataset following our instruction, the only last thing to check is if the model's config points MMOCR to the correct dataset path. Suppose we want to train DBNet on ICDAR 2015, and part of `configs/_base_/det_datasets/icdar2015.py` looks like the following:
+Once you have prepared the required academic dataset following [our instructions](https://mmocr.readthedocs.io/en/latest/datasets/det.html), the only last thing to check is if the model’s config points MMOCR to the correct dataset path. Suppose we want to train DBNet on ICDAR 2015; you will need to check the root path in the dataset config (`configs/_base_/det_datasets/icdar2015.py`) correctly points to your local dir. If you are unfamiliar with the config structure in MMOCR, don't worry; please refer to our [config tutorial](<>).
 
 ```python
-dataset_type = 'IcdarDataset'
-data_root = 'data/icdar2015'
-train = dict(
-    type=dataset_type,
-    ann_file=f'{data_root}/instances_training.json',
-    img_prefix=f'{data_root}/imgs',
+data_root = 'data/det/icdar2015' # check if your dataset is linked to this path
+
+train_anno_path = 'instances_training.json'
+test_anno_path = 'instances_test.json'
+
+train_dataset = dict(
+    type='OCRDataset',
+    data_root=data_root,
+    ann_file=train_anno_path,
+    data_prefix=dict(img_path='imgs/'),
+    filter_cfg=dict(filter_empty_gt=True, min_size=32),
     pipeline=None)
-test = dict(
-    type=dataset_type,
-    ann_file=f'{data_root}/instances_test.json',
-    img_prefix=f'{data_root}/imgs',
+
+test_dataset = dict(
+    type='OCRDataset',
+    data_root=data_root,
+    ann_file=test_anno_path,
+    data_prefix=dict(img_path='imgs/'),
+    test_mode=True,
     pipeline=None)
-train_list = [train]
-test_list = [test]
+
+train_list = [train_dataset]
+test_list = [test_dataset]
 ```
 
-You would need to check if `data/icdar2015` is right. Then you can start training with the command:
+Then you can start training with the command:
 
-```shell
+```bash
 python tools/train.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py --work-dir dbnet
 ```
 
-You can find full training instructions, explanations and useful training configs in [Training](training.md).
-
 ## Testing
 
-Suppose now you have finished the training of DBNet and the latest model has been saved in `dbnet/latest.pth`. You can evaluate its performance on the test set using the `hmean-iou` metric with the following command:
+Suppose now you have finished the training of DBNet and the latest model has been saved in `dbnet/latest.pth`. You can evaluate its performance with the following command:
 
 ```shell
-python tools/test.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py dbnet/latest.pth --eval hmean-iou
+python tools/test.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py dbnet/latest.pth
 ```
 
-Evaluating any pretrained model accessible online is also allowed:
+To dump the prediction results, you can add `--save-preds`, which will automatically save the predicted bounding boxes/recognition results in `.pkl` format.
 
-```shell
-python tools/test.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth --eval hmean-iou
+## Useful Tools
+
+MMOCR provides useful tools to help users visualize, analyze or evaluate while developing new OCR models.
+
+### Browsing your Datasets
+
+You can use the `tools/analysis_tools/browse_dataset.py` visualization script to browse your customized datasets and training pipelines. For example, using the following command to view the data transformed by a training pipeline used for training DBNet.
+
+```bash
+python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py --output-dir ./vis_dbnet_ic15
 ```
 
-More instructions on testing are available in [Testing](testing.md).
+### Offline Evaluation
+
+Suppose that you have dumped the prediction results of the DBNet, then you can use the offline evaluation tools to get the performance any time later without re-running the testing script.
+
+```bash
+python tools/analysis_tools/offline_eval.py configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py path/to/results/dbnet_predictions.pkl
+```
