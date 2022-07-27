@@ -5,8 +5,8 @@ import torch
 from mmengine.model import BaseModule
 from torch import Tensor
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 
 SampleList = List[TextDetDataSample]
 

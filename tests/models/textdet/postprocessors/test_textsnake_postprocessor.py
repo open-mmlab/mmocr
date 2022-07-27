@@ -7,8 +7,8 @@ import torch
 from mmengine import InstanceData
 from parameterized import parameterized
 
-from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.postprocessors import TextSnakePostprocessor
+from mmocr.structures import TextDetDataSample
 
 
 class TestTextSnakePostProcessor(unittest.TestCase):

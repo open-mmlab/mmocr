@@ -6,8 +6,8 @@ import numpy as np
 import torch
 from mmengine import InstanceData
 
-from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.postprocessors import BaseTextDetPostProcessor
+from mmocr.structures import TextDetDataSample
 
 
 class TestBaseTextDetPostProcessor(unittest.TestCase):

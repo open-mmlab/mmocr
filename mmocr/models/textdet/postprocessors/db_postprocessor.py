@@ -8,8 +8,8 @@ from mmengine import InstanceData
 from shapely.geometry import Polygon
 from torch import Tensor
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 from mmocr.utils import offset_polygon
 from .base_postprocessor import BaseTextDetPostProcessor
 

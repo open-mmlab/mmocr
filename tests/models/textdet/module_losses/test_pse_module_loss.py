@@ -7,8 +7,8 @@ import torch.nn as nn
 from mmengine import InstanceData
 from parameterized import parameterized
 
-from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.module_losses import PSEModuleLoss
+from mmocr.structures import TextDetDataSample
 
 
 class TestPSEModuleLoss(TestCase):

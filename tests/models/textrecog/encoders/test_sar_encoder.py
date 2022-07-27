@@ -3,8 +3,8 @@ from unittest import TestCase
 
 import torch
 
-from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.encoders import SAREncoder
+from mmocr.structures import TextRecogDataSample
 
 
 class TestSAREncoder(TestCase):

@@ -6,9 +6,9 @@ from mmengine.model import BaseModule
 from torch import Tensor, nn
 from torch.nn import functional as F
 
-from mmocr.data import KIEDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS, TASK_UTILS
+from mmocr.structures import KIEDataSample
 
 
 @MODELS.register_module()

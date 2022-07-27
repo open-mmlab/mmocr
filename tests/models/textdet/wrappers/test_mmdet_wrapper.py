@@ -7,8 +7,8 @@ from mmdet.testing import demo_mm_inputs
 from mmengine.config import Config
 from mmengine.data import InstanceData
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 
 
 class TestMMDetWrapper(unittest.TestCase):

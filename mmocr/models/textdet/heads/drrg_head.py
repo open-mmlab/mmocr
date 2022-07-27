@@ -13,9 +13,9 @@ from numpy import ndarray
 from torch import Tensor
 from torch.nn import init
 
-from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 from mmocr.utils import fill_hole
 
 

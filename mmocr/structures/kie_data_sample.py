@@ -15,7 +15,7 @@ class KIEDataSample(BaseDataElement):
          >>> import torch
          >>> import numpy as np
          >>> from mmengine.data import InstanceData
-         >>> from mmocr.data import KIEDataSample
+         >>> from mmocr.structures import KIEDataSample
          >>> # gt_instances
          >>> data_sample = KIEDataSample()
          >>> img_meta = dict(img_shape=(800, 1196, 3),

@@ -5,10 +5,10 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
 
-from mmocr.data import TextRecogDataSample
 from mmocr.models.common.modules import PositionalEncoding
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 from .base_decoder import BaseDecoder
 
 
