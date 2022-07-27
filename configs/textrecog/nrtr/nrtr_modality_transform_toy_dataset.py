@@ -7,7 +7,7 @@ _base_ = [
 train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}
 file_client_args = dict(backend='disk')
-default_hooks = dict(logger=dict(type='LoggerHook', interval=100))
+default_hooks = dict(logger=dict(type='LoggerHook', interval=50))
 
 train_pipeline = [
     dict(type='LoadImageFromFile', file_client_args=file_client_args),

@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
-from mmcv.runner import BaseModule, ModuleList, Sequential, auto_fp16
+from mmengine.model import BaseModule, ModuleList, Sequential
 
 from mmocr.registry import MODELS
 
@@ -131,7 +131,6 @@ class FPNC(BaseModule):
                 act_cfg=act_cfg,
                 inplace=False)
 
-    @auto_fp16()
     def forward(self, inputs: List[torch.Tensor]) -> torch.Tensor:
         """
         Args:
@@ -257,7 +256,6 @@ class ScaleChannelSpatialAttention(BaseModule):
             act_cfg=dict(type='Sigmoid'),
             inplace=False)
 
-    @auto_fp16()
     def forward(self, inputs: torch.Tensor) -> torch.Tensor:
         """
         Args:

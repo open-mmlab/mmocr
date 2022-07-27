@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn.functional as F
-from mmcv.runner import BaseModule, ModuleList
+from mmengine.model import BaseModule, ModuleList
 from torch import nn
 
 from mmocr.registry import MODELS

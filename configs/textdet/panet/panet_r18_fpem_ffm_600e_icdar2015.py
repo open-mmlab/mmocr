@@ -1,5 +1,5 @@
 _base_ = [
-    'panet_r18_fpem_ffm.py',
+    '_base_panet_r18_fpem_ffm.py',
     '../../_base_/default_runtime.py',
     '../../_base_/det_datasets/icdar2015.py',
     '../../_base_/schedules/schedule_adam_600e.py',
@@ -56,8 +56,8 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=8,
-    num_workers=4,
+    batch_size=64,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
