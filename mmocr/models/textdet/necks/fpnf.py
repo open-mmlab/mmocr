@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Union
 import torch
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
-from mmcv.runner import BaseModule, ModuleList, auto_fp16
+from mmengine.model import BaseModule, ModuleList
 from torch import Tensor
 
 from mmocr.registry import MODELS
@@ -88,7 +88,6 @@ class FPNF(BaseModule):
             act_cfg=act_cfg,
             inplace=False)
 
-    @auto_fp16()
     def forward(self, inputs: List[Tensor]) -> Tensor:
         """
         Args:

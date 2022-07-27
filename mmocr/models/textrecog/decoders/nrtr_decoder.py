@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Sequence, Union
 
 import torch
 import torch.nn as nn
-from mmcv.runner import ModuleList
+from mmengine.model import ModuleList
 
 from mmocr.data import TextRecogDataSample
 from mmocr.models.common import PositionalEncoding, TFDecoderLayer
