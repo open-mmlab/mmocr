@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from mmengine.data import LabelData
 
-from mmocr.data import TextRecogDataSample
+from mmocr.structures import TextRecogDataSample
 
 
 class TestTextRecogDataSample(TestCase):

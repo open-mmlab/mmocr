@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from parameterized import parameterized
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.models.textdet.postprocessors import PANPostprocessor
 from mmocr.utils import poly2shapely, poly_iou
 
