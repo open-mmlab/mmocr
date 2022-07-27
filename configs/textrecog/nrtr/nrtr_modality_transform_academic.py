@@ -50,7 +50,7 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
-        type='ConcatDataset', datasets=train_list, pipeline=test_pipeline))
+        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
 
 test_cfg = dict(type='MultiTestLoop')
 val_cfg = dict(type='MultiValLoop')
