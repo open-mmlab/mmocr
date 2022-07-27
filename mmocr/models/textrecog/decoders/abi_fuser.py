@@ -13,9 +13,8 @@ from .base_decoder import BaseDecoder
 
 @MODELS.register_module()
 class ABIFuser(BaseDecoder):
-    r"""Transformer-based language model responsible for spell correction.
-    Implementation of language model of \
-        `ABINet <https://arxiv.org/abs/1910.04396>`_.
+    r"""A special decoder responsible for mixing and aligning visual feature
+    and linguistic feature. `ABINet <https://arxiv.org/abs/2103.06495>`_
 
     Args:
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
