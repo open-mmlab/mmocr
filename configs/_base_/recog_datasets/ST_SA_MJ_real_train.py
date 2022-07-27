@@ -6,22 +6,22 @@ data_root = 'data/rec'
 train_img_prefix1 = 'icdar_2011'
 train_img_prefix2 = 'icdar_2013'
 train_img_prefix3 = 'icdar_2015'
-train_img_prefix4 = 'coco_text'
+train_img_prefix4 = 'coco_text_v1'
 train_img_prefix5 = 'IIIT5K'
-train_img_prefix6 = 'SynthText_Add'
+train_img_prefix6 = 'synthtext_add'
 train_img_prefix7 = 'SynthText/synthtext/SynthText_patch_horizontal'
 train_img_prefix8 = 'Syn90k/mnt/ramdisk/max/90kDICT32px'
 
-train_ann_file1 = 'icdar_2011/train_label.json',
-train_ann_file2 = 'icdar_2013/train_label.json',
-train_ann_file3 = 'icdar_2015/train_label.json',
-train_ann_file4 = 'coco_text/train_label.json',
-train_ann_file5 = 'IIIT5K/train_label.json',
-train_ann_file6 = 'SynthText_Add/train_label.json',
-train_ann_file7 = 'SynthText/shuffle_label.json',
-train_ann_file8 = 'Syn90k/mnt/ramdisk/max/90kDICT32px/shuffle_label.json'
+train_ann_file1 = 'icdar_2011/train_labels.json'
+train_ann_file2 = 'icdar_2013/train_labels.json'
+train_ann_file3 = 'icdar_2015/train_labels.json'
+train_ann_file4 = 'coco_text_v1/train_labels.json'
+train_ann_file5 = 'IIIT5K/train_labels.json'
+train_ann_file6 = 'synthtext_add/train_labels.json'
+train_ann_file7 = 'SynthText/shuffle_train_labels.json'
+train_ann_file8 = 'Syn90k/shuffle_train_labels.json'
 
-IC11 = dict(
+ic11_rec_train = dict(
     type='OCRDataset',
     data_root=data_root,
     data_prefix=dict(img_path=train_img_prefix1),
@@ -29,7 +29,7 @@ IC11 = dict(
     test_mode=False,
     pipeline=None)
 
-IC13 = dict(
+ic13_rec_train = dict(
     type='OCRDataset',
     data_root=data_root,
     data_prefix=dict(img_path=train_img_prefix2),
@@ -37,7 +37,7 @@ IC13 = dict(
     test_mode=False,
     pipeline=None)
 
-IC15 = dict(
+ic15_rec_train = dict(
     type='OCRDataset',
     data_root=data_root,
     data_prefix=dict(img_path=train_img_prefix3),
@@ -45,7 +45,7 @@ IC15 = dict(
     test_mode=False,
     pipeline=None)
 
-COCO = dict(
+cocov1_rec_train = dict(
     type='OCRDataset',
     data_root=data_root,
     data_prefix=dict(img_path=train_img_prefix4),
@@ -53,7 +53,7 @@ COCO = dict(
     test_mode=False,
     pipeline=None)
 
-IIIT5K = dict(
+iiit5k_rec_train = dict(
     type='OCRDataset',
     data_root=data_root,
     data_prefix=dict(img_path=train_img_prefix5),
@@ -61,7 +61,7 @@ IIIT5K = dict(
     test_mode=False,
     pipeline=None)
 
-STADD = dict(
+st_add_rec_train = dict(
     type='OCRDataset',
     data_root=data_root,
     data_prefix=dict(img_path=train_img_prefix6),
@@ -69,7 +69,7 @@ STADD = dict(
     test_mode=False,
     pipeline=None)
 
-ST = dict(
+st_rec_train = dict(
     type='OCRDataset',
     data_root=data_root,
     data_prefix=dict(img_path=train_img_prefix7),
@@ -77,7 +77,7 @@ ST = dict(
     test_mode=False,
     pipeline=None)
 
-MJ = dict(
+mj_rec_trian = dict(
     type='OCRDataset',
     data_root=data_root,
     data_prefix=dict(img_path=train_img_prefix8),
@@ -85,4 +85,7 @@ MJ = dict(
     test_mode=False,
     pipeline=None)
 
-train_list = [IC13, IC11, IC15, COCO, IIIT5K, STADD, ST, MJ]
+train_list = [
+    ic13_rec_train, ic11_rec_train, ic15_rec_train, cocov1_rec_train,
+    iiit5k_rec_train, st_add_rec_train, st_rec_train, mj_rec_trian
+]

@@ -1,4 +1,3 @@
-# custom_imports = dict(imports=['mmcv.transforms'], allow_failed_imports=False) # noqa
 default_scope = 'mmocr'
 
 default_hooks = dict(
@@ -7,7 +6,7 @@ default_hooks = dict(
     param_scheduler=dict(type='ParamSchedulerHook'),
     checkpoint=dict(type='CheckpointHook', interval=1),
     sampler_seed=dict(type='DistSamplerSeedHook'),
-)
+    sync_buffer=dict(type='SyncBuffersHook'))
 
 env_cfg = dict(
     cudnn_benchmark=True,

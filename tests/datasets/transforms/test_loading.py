@@ -1,11 +1,64 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
+import os.path as osp
 from unittest import TestCase
 
 import numpy as np
 
-from mmocr.datasets.transforms import (LoadImageFromLMDB, LoadKIEAnnotations,
-                                       LoadOCRAnnotations)
+from mmocr.datasets.transforms import (LoadImageFromFile, LoadImageFromLMDB,
+                                       LoadKIEAnnotations, LoadOCRAnnotations)
+
+
+class TestLoadImageFromFile(TestCase):
+
+    def test_load_img(self):
+        data_prefix = osp.join(
+            osp.dirname(__file__), '../../data/rec_toy_dataset/imgs/')
+
+        results = dict(img_path=osp.join(data_prefix, '1036169.jpg'))
+        transform = LoadImageFromFile(min_size=0)
+        results = transform(copy.deepcopy(results))
+        self.assertEquals(results['img_path'],
+                          osp.join(data_prefix, '1036169.jpg'))
+        self.assertEquals(results['img'].shape, (25, 119, 3))
+        self.assertEquals(results['img'].dtype, np.uint8)
+        self.assertEquals(results['img_shape'], (25, 119))
+        self.assertEquals(results['ori_shape'], (25, 119))
+        self.assertEquals(
+            repr(transform),
+            ('LoadImageFromFile(ignore_empty=False, min_size=0, '
+             "to_float32=False, color_type='color', imdecode_backend='cv2', "
+             "file_client_args={'backend': 'disk'})"))
+
+        # to_float32
+        transform = LoadImageFromFile(to_float32=True)
+        results = transform(copy.deepcopy(results))
+        self.assertEquals(results['img'].dtype, np.float32)
+
+        # min_size
+        transform = LoadImageFromFile(min_size=26)
+        results = transform(copy.deepcopy(results))
+        self.assertIsNone(results)
+
+        # test load empty
+        fake_img_path = osp.join(data_prefix, 'fake.jpg')
+        results = dict(img_path=fake_img_path)
+        transform = LoadImageFromFile(ignore_empty=False)
+        with self.assertRaises(FileNotFoundError):
+            transform(copy.deepcopy(results))
+        transform = LoadImageFromFile(ignore_empty=True)
+        results = transform(copy.deepcopy(results))
+        self.assertIsNone(results)
+
+        data_prefix = osp.join(osp.dirname(__file__), '../../data')
+        broken_img_path = osp.join(data_prefix, 'broken.jpg')
+        results = dict(img_path=broken_img_path)
+        transform = LoadImageFromFile(ignore_empty=False)
+        with self.assertRaises(IOError):
+            transform(copy.deepcopy(results))
+        transform = LoadImageFromFile(ignore_empty=True)
+        results = transform(copy.deepcopy(results))
+        self.assertIsNone(results)
 
 
 class TestLoadOCRAnnotations(TestCase):
@@ -179,9 +232,3 @@ class TestLoadImageFromLMDB(TestCase):
             "to_float32=False, color_type='color', "
             "imdecode_backend='cv2', "
             "file_client_args={'backend': 'lmdb', 'db_path': ''})")
-
-
-if __name__ == '__main__':
-    test = TestLoadImageFromLMDB()
-    test.setUp()
-    test.test_transform()

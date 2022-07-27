@@ -1,5 +1,6 @@
 _base_ = [
     'nrtr_modality_transform.py', '../../_base_/default_runtime.py',
+    '../../_base_/recog_datasets/toy_data.py',
     '../../_base_/schedules/schedule_adam_step_6e.py'
 ]
 
@@ -7,7 +8,7 @@ _base_ = [
 train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}
 file_client_args = dict(backend='disk')
-default_hooks = dict(logger=dict(type='LoggerHook', interval=100))
+default_hooks = dict(logger=dict(type='LoggerHook', interval=50))
 
 train_pipeline = [
     dict(type='LoadImageFromFile', file_client_args=file_client_args),
@@ -45,7 +46,7 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
-        type='ConcatDataset', datasets=train_list, pipeline=test_pipeline))
+        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
 
 val_dataloader = dict(
     batch_size=1,

@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Union
 
 import torch.nn as nn
 from mmcv.cnn import ConvModule
-from mmcv.runner import BaseModule
+from mmengine.model import BaseModule
 from torch import Tensor
 
 from mmocr.registry import MODELS
