@@ -2,7 +2,9 @@
 import re
 from difflib import SequenceMatcher
 
-from rapidfuzz import string_metric
+from rapidfuzz.distance import Levenshtein
+
+from mmocr.utils import is_type_list
 
 
 def cal_true_positive_char(pred, gt):
@@ -61,12 +63,8 @@ def count_matches(pred_texts, gt_texts):
             match_res['match_word_ignore_case_symbol'] += 1
         match_res['gt_word_num'] += 1
 
-        # normalized edit distance
-        edit_dist = string_metric.levenshtein(pred_text_lower_ignore,
-                                              gt_text_lower_ignore)
-        norm_ed = float(edit_dist) / max(1, len(gt_text_lower_ignore),
-                                         len(pred_text_lower_ignore))
-        norm_ed_sum += norm_ed
+        norm_ed_sum += Levenshtein.normalized_distance(pred_text_lower_ignore,
+                                                       gt_text_lower_ignore)
 
         # number to calculate char level recall & precision
         match_res['gt_char_num'] += len(gt_text_lower_ignore)
@@ -81,52 +79,85 @@ def count_matches(pred_texts, gt_texts):
     return match_res
 
 
-def eval_ocr_metric(pred_texts, gt_texts):
+def eval_ocr_metric(pred_texts, gt_texts, metric='acc'):
     """Evaluate the text recognition performance with metric: word accuracy and
     1-N.E.D. See https://rrc.cvc.uab.es/?ch=14&com=tasks for details.
 
     Args:
         pred_texts (list[str]): Text strings of prediction.
         gt_texts (list[str]): Text strings of ground truth.
+        metric (str | list[str]): Metric(s) to be evaluated. Options are:
+
+            - 'word_acc': Accuracy at word level.
+            - 'word_acc_ignore_case': Accuracy at word level, ignoring letter
+              case.
+            - 'word_acc_ignore_case_symbol': Accuracy at word level, ignoring
+              letter case and symbol. (Default metric for academic evaluation)
+            - 'char_recall': Recall at character level, ignoring
+              letter case and symbol.
+            - 'char_precision': Precision at character level, ignoring
+              letter case and symbol.
+            - 'one_minus_ned': 1 - normalized_edit_distance
+
+            In particular, if ``metric == 'acc'``, results on all metrics above
+            will be reported.
 
     Returns:
-        eval_res (dict[str: float]): Metric dict for text recognition, include:
-            - word_acc: Accuracy in word level.
-            - word_acc_ignore_case: Accuracy in word level, ignore letter case.
-            - word_acc_ignore_case_symbol: Accuracy in word level, ignore
-                letter case and symbol. (default metric for
-                academic evaluation)
-            - char_recall: Recall in character level, ignore
-                letter case and symbol.
-            - char_precision: Precision in character level, ignore
-                letter case and symbol.
-            - 1-N.E.D: 1 - normalized_edit_distance.
+        dict{str: float}: Result dict for text recognition, keys could be some
+        of the following: ['word_acc', 'word_acc_ignore_case',
+        'word_acc_ignore_case_symbol', 'char_recall', 'char_precision',
+        '1-N.E.D'].
     """
     assert isinstance(pred_texts, list)
     assert isinstance(gt_texts, list)
     assert len(pred_texts) == len(gt_texts)
 
+    assert isinstance(metric, str) or is_type_list(metric, str)
+    if metric == 'acc' or metric == ['acc']:
+        metric = [
+            'word_acc', 'word_acc_ignore_case', 'word_acc_ignore_case_symbol',
+            'char_recall', 'char_precision', 'one_minus_ned'
+        ]
+    metric = set([metric]) if isinstance(metric, str) else set(metric)
+
+    supported_metrics = set([
+        'word_acc', 'word_acc_ignore_case', 'word_acc_ignore_case_symbol',
+        'char_recall', 'char_precision', 'one_minus_ned'
+    ])
+    assert metric.issubset(supported_metrics)
+
     match_res = count_matches(pred_texts, gt_texts)
     eps = 1e-8
-    char_recall = 1.0 * match_res['true_positive_char_num'] / (
-        eps + match_res['gt_char_num'])
-    char_precision = 1.0 * match_res['true_positive_char_num'] / (
-        eps + match_res['pred_char_num'])
-    word_acc = 1.0 * match_res['match_word_num'] / (
-        eps + match_res['gt_word_num'])
-    word_acc_ignore_case = 1.0 * match_res['match_word_ignore_case'] / (
-        eps + match_res['gt_word_num'])
-    word_acc_ignore_case_symbol = 1.0 * match_res[
-        'match_word_ignore_case_symbol'] / (
-            eps + match_res['gt_word_num'])
-
     eval_res = {}
-    eval_res['word_acc'] = word_acc
-    eval_res['word_acc_ignore_case'] = word_acc_ignore_case
-    eval_res['word_acc_ignore_case_symbol'] = word_acc_ignore_case_symbol
-    eval_res['char_recall'] = char_recall
-    eval_res['char_precision'] = char_precision
-    eval_res['1-N.E.D'] = 1.0 - match_res['ned']
+
+    if 'char_recall' in metric:
+        char_recall = 1.0 * match_res['true_positive_char_num'] / (
+            eps + match_res['gt_char_num'])
+        eval_res['char_recall'] = char_recall
+
+    if 'char_precision' in metric:
+        char_precision = 1.0 * match_res['true_positive_char_num'] / (
+            eps + match_res['pred_char_num'])
+        eval_res['char_precision'] = char_precision
+
+    if 'word_acc' in metric:
+        word_acc = 1.0 * match_res['match_word_num'] / (
+            eps + match_res['gt_word_num'])
+        eval_res['word_acc'] = word_acc
+
+    if 'word_acc_ignore_case' in metric:
+        word_acc_ignore_case = 1.0 * match_res['match_word_ignore_case'] / (
+            eps + match_res['gt_word_num'])
+        eval_res['word_acc_ignore_case'] = word_acc_ignore_case
+
+    if 'word_acc_ignore_case_symbol' in metric:
+        word_acc_ignore_case_symbol = 1.0 * match_res[
+            'match_word_ignore_case_symbol'] / (
+                eps + match_res['gt_word_num'])
+        eval_res['word_acc_ignore_case_symbol'] = word_acc_ignore_case_symbol
+
+    if 'one_minus_ned' in metric:
+        eval_res['1-N.E.D'] = 1.0 - match_res['ned']
 
     for key, value in eval_res.items():
         eval_res[key] = float('{:.4f}'.format(value))

@@ -38,7 +38,7 @@ Models:
           hmean-iou: 0.807
     Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015-c6131f0d.pth
 
-  - Name: psenet_r50_fpnf_600e_icdar2015_with_pretrain
+  - Name: psenet_r50_fpnf_600e_icdar2015
     In Collection: PSENet
     Config: configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py
     Metadata:

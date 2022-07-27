@@ -42,10 +42,10 @@ test_pipeline_ctw1500 = [
     dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=img_scale_test_ctw1500,
+        img_scale=img_scale_test_ctw1500,  # used by Resize
         flip=False,
         transforms=[
-            dict(type='Resize', img_scale=(3000, 640), keep_ratio=True),
+            dict(type='Resize', keep_ratio=True),
             dict(type='Normalize', **img_norm_cfg),
             dict(type='Pad', size_divisor=32),
             dict(type='ImageToTensor', keys=['img']),
@@ -93,10 +93,10 @@ test_pipeline_icdar2015 = [
     dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=img_scale_test_icdar2015,
+        img_scale=img_scale_test_icdar2015,  # used by Resize
         flip=False,
         transforms=[
-            dict(type='Resize', img_scale=(3000, 640), keep_ratio=True),
+            dict(type='Resize', keep_ratio=True),
             dict(type='Normalize', **img_norm_cfg),
             dict(type='Pad', size_divisor=32),
             dict(type='ImageToTensor', keys=['img']),
@@ -144,10 +144,10 @@ test_pipeline_icdar2017 = [
     dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=img_scale_test_icdar2017,
+        img_scale=img_scale_test_icdar2017,  # used by Resize
         flip=False,
         transforms=[
-            dict(type='Resize', img_scale=(3000, 640), keep_ratio=True),
+            dict(type='Resize', keep_ratio=True),
             dict(type='Normalize', **img_norm_cfg),
             dict(type='Pad', size_divisor=32),
             dict(type='ImageToTensor', keys=['img']),

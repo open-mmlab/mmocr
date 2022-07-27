@@ -13,13 +13,10 @@ train1 = dict(
     img_prefix=train_img_prefix1,
     ann_file=train_ann_file1,
     loader=dict(
-        type='LmdbLoader',
+        type='AnnFileLoader',
         repeat=1,
-        parser=dict(
-            type='LineStrParser',
-            keys=['filename', 'text'],
-            keys_idx=[0, 1],
-            separator=' ')),
+        file_format='lmdb',
+        parser=dict(type='LineJsonParser', keys=['filename', 'text'])),
     pipeline=None,
     test_mode=False)
 

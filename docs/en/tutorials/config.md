@@ -21,7 +21,7 @@ When submitting jobs using "tools/train.py" or "tools/test.py", you may specify 
 - Update values of list/tuples.
 
   If the value to be updated is a list or a tuple. For example, the config file normally sets `workflow=[('train', 1)]`. If you want to
-  change this key, you may specify `--cfg-options workflow="[(train,1),(val,1)]"`. Note that the quotation mark \" is necessary to
+  change this key, you may specify `--cfg-options workflow="[(train,1),(val,1)]"`. Note that the quotation mark " is necessary to
   support list/tuple data types, and that **NO** white space is allowed inside the quotation marks in the specified value.
 
 ## Config Name Style
@@ -38,17 +38,20 @@ We follow the below style to name full config files (`configs/TASK/*.py`). Contr
 - `[ARCHITECTURE]`: expands some invoked modules following the order of data flow, and the content depends on the model framework. The following examples show how it is generally expanded.
   - For text detection tasks, key information tasks, and SegOCR in text recognition task: `{model}_[backbone]_[neck]_[schedule]_{dataset}.py`
   - For other text recognition tasks, `{model}_[backbone]_[encoder]_[decoder]_[schedule]_{dataset}.py`
-  Note that `backbone`, `neck`, `encoder`, `decoder` are the names of modules, e.g. `r50`, `fpnocr`, etc.
+    Note that `backbone`, `neck`, `encoder`, `decoder` are the names of modules, e.g. `r50`, `fpnocr`, etc.
 - `{schedule}`: training schedule. For instance, `1200e` denotes 1200 epochs.
 - `{dataset}`: dataset. It can either be the name of a dataset (`icdar2015`), or a collection of datasets for brevity (e.g. `academic` usually refers to a common practice in academia, which uses MJSynth + SynthText as training set, and IIIT5K, SVT, IC13, IC15, SVTP and CT80 as test set).
 
 Most configs are composed of basic _primitive_ configs in `configs/_base_`, where each _primitive_ config in different subdirectory has a slightly different name style. We present them as follows.
 
-- det_datasets, recog_datasets: `{dataset_name(s)}_[train|test].py`. If [train|test] is not specified, the config should contain both training and test set.
+- det_datasets, recog_datasets: `{dataset_name(s)}_[train|test].py`. If \[train|test\] is not specified, the config should contain both training and test set.
 
   There are two exceptions: toy_data.py and seg_toy_data.py. In recog_datasets, the first one works for most while the second one contains character level annotations and works for seg baseline only as of Dec 2021.
+
 - det_models, recog_models: `{model}_[ARCHITECTURE].py`.
+
 - det_pipelines, recog_pipelines: `{model}_pipeline.py`.
+
 - schedules: `schedule_{optimizer}_{num_epochs}e.py`.
 
 ## Config Structure
@@ -66,11 +69,11 @@ _base_
 └── schedules
 ```
 
-These _primitive_ configs are categorized by their roles in a complete config. Most of model configs are making full use of _primitive_ configs by including them as parts of `_base_` section. For example, [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/5a8859fe6666c096b75fa44db4f6c53d81a2ed62/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py) takes five _primitive_ configs from `_base_`:
+These _primitive_ configs are categorized by their roles in a complete config. Most of model configs are making full use of _primitive_ configs by including them as parts of `_base_` section. For example, [dbnet_r18_fpnc_1200e_icdar2015.py](https://github.com/open-mmlab/mmocr/blob/1962c249a6196bd50dc2940e396d9f98df0fe8fe/configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py) takes five _primitive_ configs from `_base_`:
 
 ```python
 _base_ = [
-    '../../_base_/runtime_10e.py',
+    '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1200e.py',
     '../../_base_/det_models/dbnet_r18_fpnc.py',
     '../../_base_/det_datasets/icdar2015.py',
@@ -218,7 +221,7 @@ Mainly include optimizer settings, `optimizer hook` settings, learning rate sche
 - `runner`: For `runner`, please refer to `mmcv` for [`runner`](https://mmcv.readthedocs.io/en/latest/understand_mmcv/runner.html) introduction document.
 
 ```python
-# he configuration file used to build the optimizer, support all optimizers in PyTorch.
+# The configuration file used to build the optimizer, support all optimizers in PyTorch.
 optimizer = dict(type='SGD',         # Optimizer type
                 lr=0.1,              # Learning rate of optimizers, see detail usages of the parameters in the documentation of PyTorch
                 momentum=0.9,        # Momentum

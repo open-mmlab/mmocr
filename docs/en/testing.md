@@ -16,30 +16,30 @@ And here is the full usage of the script:
 python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 ```
 
-:::{note}
+````{note}
 By default, MMOCR prefers GPU(s) to CPU. If you want to test a model on CPU, please empty `CUDA_VISIBLE_DEVICES` or set it to -1 to make GPU(s) invisible to the program. Note that running CPU tests requires **MMCV >= 1.4.4**.
 
 ```bash
 CUDA_VISIBLE_DEVICES= python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} [ARGS]
 ```
 
-:::
+````
 
-| ARGS               | Type                                         | Description                                                                                                                                                                                                                                                                                                                                                                            |
-| ------------------ | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--out`            | str                                          | Output result file in pickle format.                                                                                                                                                                                                                                                                                                                                                   |
-| `--fuse-conv-bn`   | bool                                         | Path to the custom config of the selected det model.                                                                                                                                                                                                                                                                                                                                   |
-| `--format-only`    | bool                                         | Format the output results without performing evaluation. It is useful when you want to format the results to a specific format and submit them to the test server.                                                                                                                                                                                                                     |
-| `--gpu-id`         | int                                          | GPU id to use. Only applicable to non-distributed training.                                                                                                                                                                                                                                                                                                                            |
-| `--eval`           | 'hmean-ic13', 'hmean-iou', 'acc', 'macro-f1' | The evaluation metrics. Options: 'hmean-ic13', 'hmean-iou' for text detection tasks, 'acc' for text recognition tasks, and 'macro-f1' for key information extraction tasks.                                                                                                                                                                                                            |
-| `--show`           | bool                                         | Whether to show results.                                                                                                                                                                                                                                                                                                                                                               |
-| `--show-dir`       | str                                          | Directory where the output images will be saved.                                                                                                                                                                                                                                                                                                                                       |
-| `--show-score-thr` | float                                        | Score threshold (default: 0.3).                                                                                                                                                                                                                                                                                                                                                        |
-| `--gpu-collect`    | bool                                         | Whether to use gpu to collect results.                                                                                                                                                                                                                                                                                                                                                 |
-| `--tmpdir`         | str                                          | The tmp directory used for collecting results from multiple workers, available when gpu-collect is not specified.                                                                                                                                                                                                                                                                      |
-| `--cfg-options`    | str                                          | Override some settings in the used config, the key-value pair in xxx=yyy format will be merged into the config file. If the value to be overwritten is a list, it should be of the form of either key="[a,b]" or key=a,b. The argument also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]". Note that the quotation marks are necessary and that no white space is allowed. |
-| `--eval-options`   | str                                          | Custom options for evaluation, the key-value pair in xxx=yyy format will be kwargs for dataset.evaluate() function.                                                                                                                                                                                                                                                                    |
-| `--launcher`       | 'none', 'pytorch', 'slurm', 'mpi'            | Options for job launcher.                                                                                                                                                                                                                                                                                                                                                              |
+| ARGS               | Type                                         | Description                                                                                                                                |
+| ------------------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--out`            | str                                          | Output result file in pickle format.                                                                                                       |
+| `--fuse-conv-bn`   | bool                                         | Path to the custom config of the selected det model.                                                                                       |
+| `--format-only`    | bool                                         | Format the output results without performing evaluation. It is useful when you want to format the results to a specific format and submit them to the test server. |
+| `--gpu-id`         | int                                          | GPU id to use. Only applicable to non-distributed training.                                                                                |
+| `--eval`           | 'hmean-ic13', 'hmean-iou', 'acc', 'macro-f1' | The evaluation metrics. Options: 'hmean-ic13', 'hmean-iou' for text detection tasks, 'acc' for text recognition tasks, and 'macro-f1' for key information extraction tasks. |
+| `--show`           | bool                                         | Whether to show results.                                                                                                                   |
+| `--show-dir`       | str                                          | Directory where the output images will be saved.                                                                                           |
+| `--show-score-thr` | float                                        | Score threshold (default: 0.3).                                                                                                            |
+| `--gpu-collect`    | bool                                         | Whether to use gpu to collect results.                                                                                                     |
+| `--tmpdir`         | str                                          | The tmp directory used for collecting results from multiple workers, available when gpu-collect is not specified.                          |
+| `--cfg-options`    | str                                          | Override some settings in the used config, the key-value pair in xxx=yyy format will be merged into the config file. If the value to be overwritten is a list, it should be of the form of either key="\[a,b\]" or key=a,b. The argument also allows nested list/tuple values, e.g. key="\[(a,b),(c,d)\]". Note that the quotation marks are necessary and that no white space is allowed. |
+| `--eval-options`   | str                                          | Custom options for evaluation, the key-value pair in xxx=yyy format will be kwargs for dataset.evaluate() function.                        |
+| `--launcher`       | 'none', 'pytorch', 'slurm', 'mpi'            | Options for job launcher.                                                                                                                  |
 
 ## Testing on Multiple GPUs
 
@@ -84,9 +84,9 @@ NNODES=${NNODES} NODE_RANK=${NODE_RANK} PORT=${MASTER_PORT} MASTER_ADDR=${MASTER
 | `GPU_NUM`         | int  | The number of GPUs to be used per node. Defaults to 8.               |
 | `PY_ARGS`         | str  | Arguments to be parsed by `tools/test.py`.                           |
 
-:::{note}
+```{note}
 MMOCR relies on torch.distributed package for distributed testing. Find more information at PyTorch’s [launch utility](https://pytorch.org/docs/stable/distributed.html#launch-utility).
-:::
+```
 
 Say that you want to launch a job on two machines. On the first machine:
 
@@ -100,9 +100,9 @@ On the second machine:
 NNODES=2 NODE_RANK=1 PORT=${MASTER_PORT} MASTER_ADDR=${MASTER_ADDR} ./tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM} [PY_ARGS]
 ```
 
-:::{note}
+```{note}
 The speed of the network could be the bottleneck of testing.
-:::
+```
 
 ## Testing with Slurm
 
@@ -140,6 +140,6 @@ data = dict(
 
 will test the model with 16 images in a batch.
 
-:::{warning}
+```{warning}
 Batch testing may incur performance decrease of the model due to the different behavior of the data preprocessing pipeline.
-:::
+```
