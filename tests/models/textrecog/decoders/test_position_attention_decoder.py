@@ -4,8 +4,8 @@ from unittest import TestCase
 import torch
 from mmengine.data import LabelData
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.decoders import PositionAttentionDecoder
+from mmocr.structures import TextRecogDataSample
 
 
 class TestPositionAttentionDecoder(TestCase):

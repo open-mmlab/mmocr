@@ -5,8 +5,8 @@ import numpy as np
 import torch
 from mmengine import InstanceData
 
-from mmocr.structures import TextDetDataSample
 from mmocr.models.textdet.module_losses import DBModuleLoss
+from mmocr.structures import TextDetDataSample
 
 
 class TestDBModuleLoss(TestCase):

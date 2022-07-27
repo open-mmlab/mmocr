@@ -6,8 +6,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 from .base_encoder import BaseEncoder
 
 

@@ -3,9 +3,9 @@ from unittest import TestCase
 
 import torch
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.data_preprocessors import TextRecogDataPreprocessor
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 
 
 @MODELS.register_module()

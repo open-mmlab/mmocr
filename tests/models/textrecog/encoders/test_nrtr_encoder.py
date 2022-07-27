@@ -3,8 +3,8 @@ import unittest
 
 import torch
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.encoders import NRTREncoder
+from mmocr.structures import TextRecogDataSample
 
 
 class TestNRTREncoder(unittest.TestCase):

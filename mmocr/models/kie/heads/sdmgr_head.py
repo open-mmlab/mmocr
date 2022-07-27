@@ -6,9 +6,9 @@ from mmengine.model import BaseModule
 from torch import Tensor, nn
 from torch.nn import functional as F
 
-from mmocr.structures import KIEDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS, TASK_UTILS
+from mmocr.structures import KIEDataSample
 
 
 @MODELS.register_module()
@@ -96,9 +96,9 @@ class SDMGRHead(BaseModule):
         preds = self.forward(batch_inputs, batch_data_samples)
         return self.module_loss(preds, batch_data_samples)
 
-    def predict(
-            self, batch_inputs: Tensor,
-            batch_data_samples: List[KIEDataSample]) -> List[KIEDataSample]:
+    def predict(self, batch_inputs: Tensor,
+                batch_data_samples: List[KIEDataSample]
+                ) -> List[KIEDataSample]:
         """Predict results from a batch of inputs and data samples with post-
         processing.
 
@@ -124,9 +124,9 @@ class SDMGRHead(BaseModule):
         preds = self.forward(batch_inputs, batch_data_samples)
         return self.postprocessor(preds, batch_data_samples)
 
-    def forward(
-            self, batch_inputs: Tensor,
-            batch_data_samples: List[KIEDataSample]) -> Tuple[Tensor, Tensor]:
+    def forward(self, batch_inputs: Tensor,
+                batch_data_samples: List[KIEDataSample]
+                ) -> Tuple[Tensor, Tensor]:
         """
         Args:
             batch_inputs (torch.Tensor): Shape :math:`(N, E)`.

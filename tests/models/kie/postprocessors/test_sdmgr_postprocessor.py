@@ -5,8 +5,8 @@ from unittest import TestCase
 import torch
 from mmengine import InstanceData
 
-from mmocr.structures import KIEDataSample
 from mmocr.models.kie.postprocessors import SDMGRPostProcessor
+from mmocr.structures import KIEDataSample
 
 
 class TestSDMGRPostProcessor(TestCase):

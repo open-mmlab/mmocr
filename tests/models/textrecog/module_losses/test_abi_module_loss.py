@@ -5,8 +5,8 @@ import numpy as np
 import torch
 from mmengine.data import LabelData
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.module_losses import ABIModuleLoss
+from mmocr.structures import TextRecogDataSample
 
 
 class TestABIModuleLoss(TestCase):

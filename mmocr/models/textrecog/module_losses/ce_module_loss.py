@@ -5,9 +5,9 @@ from typing import Dict, Sequence, Union
 import torch
 import torch.nn as nn
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary.dictionary import Dictionary
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 from .base_recog_module_loss import BaseRecogModuleLoss
 
 

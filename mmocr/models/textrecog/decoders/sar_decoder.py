@@ -6,9 +6,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 from .base_decoder import BaseDecoder
 
 
@@ -117,12 +117,12 @@ class ParallelSARDecoder(BaseDecoder):
         self.prediction = nn.Linear(fc_in_channel, self.num_classes)
         self.softmax = nn.Softmax(dim=-1)
 
-    def _2d_attention(
-            self,
-            decoder_input: torch.Tensor,
-            feat: torch.Tensor,
-            holistic_feat: torch.Tensor,
-            valid_ratios: Optional[Sequence[float]] = None) -> torch.Tensor:
+    def _2d_attention(self,
+                      decoder_input: torch.Tensor,
+                      feat: torch.Tensor,
+                      holistic_feat: torch.Tensor,
+                      valid_ratios: Optional[Sequence[float]] = None
+                      ) -> torch.Tensor:
         """2D attention layer.
 
         Args:
@@ -186,9 +186,9 @@ class ParallelSARDecoder(BaseDecoder):
 
         return y
 
-    def forward_train(
-            self, feat: torch.Tensor, out_enc: torch.Tensor,
-            data_samples: Sequence[TextRecogDataSample]) -> torch.Tensor:
+    def forward_train(self, feat: torch.Tensor, out_enc: torch.Tensor,
+                      data_samples: Sequence[TextRecogDataSample]
+                      ) -> torch.Tensor:
         """
         Args:
             feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.
@@ -390,16 +390,16 @@ class SequentialSARDecoder(BaseDecoder):
         self.prediction = nn.Linear(fc_in_channel, self.num_classes)
         self.softmax = nn.Softmax(dim=-1)
 
-    def _2d_attention(
-            self,
-            y_prev: torch.Tensor,
-            feat: torch.Tensor,
-            holistic_feat: torch.Tensor,
-            hx1: torch.Tensor,
-            cx1: torch.Tensor,
-            hx2: torch.Tensor,
-            cx2: torch.Tensor,
-            valid_ratios: Optional[Sequence[float]] = None) -> torch.Tensor:
+    def _2d_attention(self,
+                      y_prev: torch.Tensor,
+                      feat: torch.Tensor,
+                      holistic_feat: torch.Tensor,
+                      hx1: torch.Tensor,
+                      cx1: torch.Tensor,
+                      hx2: torch.Tensor,
+                      cx2: torch.Tensor,
+                      valid_ratios: Optional[Sequence[float]] = None
+                      ) -> torch.Tensor:
         """2D attention layer.
 
         Args:

@@ -6,9 +6,9 @@ import torch
 import torch.nn as nn
 from mmengine.model import ModuleList
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.common import TFEncoderLayer
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 from .base_encoder import BaseEncoder
 
 
@@ -31,16 +31,16 @@ class NRTREncoder(BaseEncoder):
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
-    def __init__(
-            self,
-            n_layers: int = 6,
-            n_head: int = 8,
-            d_k: int = 64,
-            d_v: int = 64,
-            d_model: int = 512,
-            d_inner: int = 256,
-            dropout: float = 0.1,
-            init_cfg: Optional[Union[Dict, Sequence[Dict]]] = None) -> None:
+    def __init__(self,
+                 n_layers: int = 6,
+                 n_head: int = 8,
+                 d_k: int = 64,
+                 d_v: int = 64,
+                 d_model: int = 512,
+                 d_inner: int = 256,
+                 dropout: float = 0.1,
+                 init_cfg: Optional[Union[Dict,
+                                          Sequence[Dict]]] = None) -> None:
         super().__init__(init_cfg=init_cfg)
         self.d_model = d_model
         self.layer_stack = ModuleList([
@@ -76,11 +76,10 @@ class NRTREncoder(BaseEncoder):
 
         return mask
 
-    def forward(
-            self,
-            feat: torch.Tensor,
-            data_samples: Sequence[TextRecogDataSample] = None
-    ) -> torch.Tensor:
+    def forward(self,
+                feat: torch.Tensor,
+                data_samples: Sequence[TextRecogDataSample] = None
+                ) -> torch.Tensor:
         """
         Args:
             feat (Tensor): Backbone output of shape :math:`(N, C, H, W)`.

@@ -7,8 +7,8 @@ from mmdet.structures.bbox import bbox2roi
 from mmengine.model import BaseModel
 from torch import nn
 
-from mmocr.structures import KIEDataSample
 from mmocr.registry import MODELS, TASK_UTILS
+from mmocr.structures import KIEDataSample
 
 
 @MODELS.register_module()

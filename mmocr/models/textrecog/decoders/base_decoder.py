@@ -4,9 +4,9 @@ from typing import Dict, List, Optional, Sequence, Union
 import torch
 from mmengine.model import BaseModule
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS, TASK_UTILS
+from mmocr.structures import TextRecogDataSample
 
 
 @MODELS.register_module()
@@ -92,12 +92,11 @@ class BaseDecoder(BaseModule):
         """
         raise NotImplementedError
 
-    def loss(
-            self,
-            feat: Optional[torch.Tensor] = None,
-            out_enc: Optional[torch.Tensor] = None,
-            data_samples: Optional[Sequence[TextRecogDataSample]] = None
-    ) -> Dict:
+    def loss(self,
+             feat: Optional[torch.Tensor] = None,
+             out_enc: Optional[torch.Tensor] = None,
+             data_samples: Optional[Sequence[TextRecogDataSample]] = None
+             ) -> Dict:
         """Calculate losses from a batch of inputs and data samples.
 
         Args:
