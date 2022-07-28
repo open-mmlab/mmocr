@@ -118,11 +118,14 @@ def test_sort_points():
     assert np.allclose(target, sort_points(points))
 
     points = np.array([[1, 1], [1, -1], [-1, 1], [-1, -1]])
-    target = np.array([[-1, -1], [-1, 1], [1, 1], [1, -1]])
+    target = np.array([[-1, -1], [1, -1], [1, 1], [-1, 1]])
     assert np.allclose(target, sort_points(points))
 
     points = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
     assert np.allclose(target, sort_points(points))
+
+    target = [[1668, 1748], [1704, 1749], [1742, 1898], [1705, 1898]]
+    assert np.allclose(target, sort_points(target))
 
     with pytest.raises(AssertionError):
         sort_points([1, 2])
