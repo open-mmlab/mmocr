@@ -195,9 +195,9 @@ class ABILanguageDecoder(BaseDecoder):
         return out
 
     @staticmethod
-    def _get_location_mask(
-            seq_len: int,
-            device: Union[Optional[torch.device], str] = None) -> torch.Tensor:
+    def _get_location_mask(seq_len: int,
+                           device: Union[Optional[torch.device],
+                                         str] = None) -> torch.Tensor:
         """Generate location masks given input sequence length.
 
         Args:
