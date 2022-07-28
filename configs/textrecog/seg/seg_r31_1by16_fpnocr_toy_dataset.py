@@ -3,6 +3,7 @@ _base_ = [
     '../../_base_/recog_datasets/seg_toy_data.py',
     '../../_base_/recog_models/seg.py',
     '../../_base_/recog_pipelines/seg_pipeline.py',
+    '../../_base_/recog_datasets/academic_test.py'
 ]
 
 train_list = {{_base_.train_list}}
