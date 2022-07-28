@@ -373,7 +373,30 @@ class AffineJitter:
 @PIPELINES.register_module()
 class RandomCropPolyInstances:
     """Randomly crop images and make sure to contain at least one intact
-    instance."""
+    instance.
+
+    Args:
+        instance_key (str): The key of ``results`` to instance masks.
+        crop_ratio (float): The probability of each image getting cropped.
+        min_side_ratio (float): Minimum cropping height and width ratio
+            relative to the original image.
+
+    :Required Keys:
+        - | "instance_key": The key specified in the init argument,
+            pointing to instance masks.
+        - | ``img`` (ndarray): The input image.
+        - | ``mask_fields`` (list[str], optional): A list of keys in
+            ``results`` to fields containing masks.
+        - | ``gt_labels`` (list[int]): A list of gold labels.
+
+    :Affected Keys:
+        :Modified:
+            - | ``img`` (ndarray): The cropped image.
+            - | ``gt_labels`` (ndarray): Out-of-boundary instances are removed.
+        :Added:
+            - | ``img_shape`` (tuple(int)): Size of the cropped image.
+            - | ``crop_region`` (ndarray): Crop region in [x1, y1, x2, y2].
+    """
 
     def __init__(self,
                  instance_key='gt_masks',
@@ -384,7 +407,8 @@ class RandomCropPolyInstances:
         self.crop_ratio = crop_ratio
         self.min_side_ratio = min_side_ratio
 
-    def sample_valid_start_end(self, valid_array, min_len, max_start, min_end):
+    def _sample_valid_start_end(self, valid_array, min_len, max_start,
+                                min_end):
 
         assert isinstance(min_len, int)
         assert len(valid_array) > min_len
@@ -412,12 +436,15 @@ class RandomCropPolyInstances:
                                 region_ends[region_ind])
         return start, end
 
-    def sample_crop_box(self, img_size, results):
+    def _sample_crop_box(self, img_size, results):
         """Generate crop box and make sure not to crop the polygon instances.
 
         Args:
             img_size (tuple(int)): The image size (h, w).
-            results (dict): The results dict.
+            results (dict): The results dict with ``mask_field``.
+
+        Returns:
+            ndarray: The crop box coordinates [x1, y1, x2, y2].
         """
 
         assert isinstance(img_size, tuple)
@@ -452,14 +479,14 @@ class RandomCropPolyInstances:
         min_w = int(w * self.min_side_ratio)
         min_h = int(h * self.min_side_ratio)
 
-        x1, x2 = self.sample_valid_start_end(x_valid_array, min_w, max_x_start,
-                                             min_x_end)
-        y1, y2 = self.sample_valid_start_end(y_valid_array, min_h, max_y_start,
-                                             min_y_end)
+        x1, x2 = self._sample_valid_start_end(x_valid_array, min_w,
+                                              max_x_start, min_x_end)
+        y1, y2 = self._sample_valid_start_end(y_valid_array, min_h,
+                                              max_y_start, min_y_end)
 
         return np.array([x1, y1, x2, y2])
 
-    def crop_img(self, img, bbox):
+    def _crop_img(self, img, bbox):
         assert img.ndim == 3
         h, w, _ = img.shape
         assert 0 <= bbox[1] < bbox[3] <= h
@@ -470,9 +497,9 @@ class RandomCropPolyInstances:
         if len(results[self.instance_key].masks) < 1:
             return results
         if np.random.random_sample() < self.crop_ratio:
-            crop_box = self.sample_crop_box(results['img'].shape, results)
+            crop_box = self._sample_crop_box(results['img'].shape, results)
             results['crop_region'] = crop_box
-            img = self.crop_img(results['img'], crop_box)
+            img = self._crop_img(results['img'], crop_box)
             results['img'] = img
             results['img_shape'] = img.shape
 
