@@ -1,21 +1,12 @@
 # Text Recognition Training set, including:
 # Synthetic Datasets: Syn90k
 
-train_root = 'data/mixture/Syn90k'
-
-train_img_prefix = f'{train_root}/mnt/ramdisk/max/90kDICT32px'
-train_ann_file = f'{train_root}/label.lmdb'
-
-train = dict(
+mj_rec_train = dict(
     type='OCRDataset',
-    img_prefix=train_img_prefix,
-    ann_file=train_ann_file,
-    loader=dict(
-        type='AnnFileLoader',
-        repeat=1,
-        file_format='lmdb',
-        parser=dict(type='LineJsonParser', keys=['filename', 'text'])),
-    pipeline=None,
-    test_mode=False)
+    data_root='data/rec',
+    data_prefix=dict(img_path='Syn90k/mnt/ramdisk/max/90kDICT32px'),
+    ann_file='Syn90k/train_labels.json',
+    test_mode=False,
+    pipeline=None)
 
-train_list = [train]
+train_list = [mj_rec_train]

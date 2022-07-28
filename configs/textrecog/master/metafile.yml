@@ -16,7 +16,7 @@ Collections:
     README: configs/textrecog/master/README.md
 
 Models:
-  - Name: master_academic
+  - Name: master_r31_12e_ST_MJ_SA
     In Collection: MASTER
     Config: configs/textrecog/master/master_r31_12e_ST_MJ_SA.py
     Metadata:
@@ -28,25 +28,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 95.27
+          word_acc: 94.63
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 89.8
+          word_acc: 90.42
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 95.17
+          word_acc: 94.98
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 77.03
+          word_acc: 75.54
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 82.95
+          word_acc: 82.79
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 89.93
+          word_acc: 88.54
     Weights: https://download.openmmlab.com/mmocr/textrecog/master/master_r31_12e_ST_MJ_SA-787edd36.pth

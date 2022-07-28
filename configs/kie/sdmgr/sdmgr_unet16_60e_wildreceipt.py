@@ -1,105 +1,94 @@
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-max_scale, min_scale = 1024, 512
+_base_ = ['../../_base_/default_runtime.py']
 
-train_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations'),
-    dict(type='Resize', img_scale=(max_scale, min_scale), keep_ratio=True),
-    dict(type='RandomFlip', flip_ratio=0.),
-    dict(type='Normalize', **img_norm_cfg),
-    dict(type='Pad', size_divisor=32),
-    dict(type='KIEFormatBundle'),
-    dict(
-        type='Collect',
-        keys=['img', 'relations', 'texts', 'gt_bboxes', 'gt_labels'])
-]
-test_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations'),
-    dict(type='Resize', img_scale=(max_scale, min_scale), keep_ratio=True),
-    dict(type='RandomFlip', flip_ratio=0.),
-    dict(type='Normalize', **img_norm_cfg),
-    dict(type='Pad', size_divisor=32),
-    dict(type='KIEFormatBundle'),
-    dict(
-        type='Collect',
-        keys=['img', 'relations', 'texts', 'gt_bboxes'],
-        meta_keys=[
-            'img_norm_cfg', 'img_shape', 'ori_filename', 'filename',
-            'ori_texts'
-        ])
+optim_wrapper = dict(
+    type='OptimWrapper', optimizer=dict(type='Adam', weight_decay=0.0001))
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=60, val_interval=1)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
+# learning rate
+param_scheduler = [
+    dict(type='MultiStepLR', milestones=[40, 50], end=60),
 ]
 
-dataset_type = 'KIEDataset'
-data_root = 'data/wildreceipt'
+default_hooks = dict(logger=dict(type='LoggerHook', interval=100), )
 
-loader = dict(
-    type='HardDiskLoader',
-    repeat=1,
-    parser=dict(
-        type='LineJsonParser',
-        keys=['file_name', 'height', 'width', 'annotations']))
-
-train = dict(
-    type=dataset_type,
-    ann_file=f'{data_root}/train.txt',
-    pipeline=train_pipeline,
-    img_prefix=data_root,
-    loader=loader,
-    dict_file=f'{data_root}/dict.txt',
-    test_mode=False)
-test = dict(
-    type=dataset_type,
-    ann_file=f'{data_root}/test.txt',
-    pipeline=test_pipeline,
-    img_prefix=data_root,
-    loader=loader,
-    dict_file=f'{data_root}/dict.txt',
-    test_mode=True)
-
-data = dict(
-    samples_per_gpu=4,
-    workers_per_gpu=4,
-    val_dataloader=dict(samples_per_gpu=1),
-    test_dataloader=dict(samples_per_gpu=1),
-    train=train,
-    val=test,
-    test=test)
-
-evaluation = dict(
-    interval=1,
-    metric='macro_f1',
-    metric_options=dict(
-        macro_f1=dict(
-            ignores=[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 25])))
+num_classes = 26
 
 model = dict(
     type='SDMGR',
     backbone=dict(type='UNet', base_channels=16),
-    bbox_head=dict(
-        type='SDMGRHead', visual_dim=16, num_chars=92, num_classes=26),
-    visual_modality=True,
-    train_cfg=None,
-    test_cfg=None,
-    class_list=f'{data_root}/class_list.txt')
+    roi_extractor=dict(
+        type='mmdet.SingleRoIExtractor',
+        roi_layer=dict(type='RoIAlign', output_size=7),
+        featmap_strides=[1]),
+    kie_head=dict(
+        type='SDMGRHead',
+        visual_dim=16,
+        num_classes=num_classes,
+        module_loss=dict(type='SDMGRModuleLoss'),
+        postprocessor=dict(type='SDMGRPostProcessor')),
+    dictionary=dict(
+        type='Dictionary',
+        dict_file='data/wildreceipt/dict.txt',
+        with_padding=True,
+        with_unknown=True,
+        unknown_token=None),
+    data_preprocessor=dict(
+        type='ImgDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        bgr_to_rgb=True,
+        pad_size_divisor=32),
+)
 
-optimizer = dict(type='Adam', weight_decay=0.0001)
-optimizer_config = dict(grad_clip=None)
-lr_config = dict(
-    policy='step',
-    warmup='linear',
-    warmup_iters=1,
-    warmup_ratio=1,
-    step=[40, 50])
-total_epochs = 60
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadKIEAnnotations'),
+    dict(type='Resize', scale=(1024, 512), keep_ratio=True),
+    dict(type='PackKIEInputs')
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadKIEAnnotations'),
+    dict(type='Resize', scale=(1024, 512), keep_ratio=True),
+    dict(type='PackKIEInputs'),
+]
 
-checkpoint_config = dict(interval=1)
-log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
-dist_params = dict(backend='nccl')
-log_level = 'INFO'
-load_from = None
-resume_from = None
-workflow = [('train', 1)]
+dataset_type = 'WildReceiptDataset'
+data_root = 'data/wildreceipt/'
 
-find_unused_parameters = True
+train_dataset = dict(
+    type=dataset_type,
+    data_root=data_root,
+    metainfo=data_root + 'class_list.txt',
+    ann_file='train.txt',
+    pipeline=train_pipeline)
+
+test_dataset = dict(
+    type=dataset_type,
+    data_root=data_root,
+    metainfo=data_root + 'class_list.txt',
+    ann_file='test.txt',
+    test_mode=True,
+    pipeline=test_pipeline)
+
+train_dataloader = dict(
+    batch_size=4,
+    num_workers=4,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=train_dataset)
+val_dataloader = dict(
+    batch_size=1,
+    num_workers=1,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=test_dataset)
+test_dataloader = val_dataloader
+
+val_evaluator = dict(
+    type='F1Metric',
+    mode='macro',
+    num_classes=num_classes,
+    ignored_classes=[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 25])
+test_evaluator = val_evaluator

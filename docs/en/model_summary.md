@@ -18,7 +18,7 @@ When training, the output of `bbox_head` is directly fed into the `loss` module,
 - Backbone: [mmdet.ResNet](https://mmdetection.readthedocs.io/en/latest/api.html#mmdet.models.backbones.ResNet)
 - Neck: [FPNC](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.necks.FPNC)
 - Bbox_head: [DBHead](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.dense_heads.DBHead)
-- Loss: [DBLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.losses.DBLoss)
+- Loss: [DBModuleLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.module_losses.DBModuleLoss)
 - Postprocessor: [DBPostprocessor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.postprocess.DBPostprocessor)
 
 ### DRRG
@@ -26,7 +26,7 @@ When training, the output of `bbox_head` is directly fed into the `loss` module,
 - Backbone: [mmdet.ResNet](https://mmdetection.readthedocs.io/en/latest/api.html#mmdet.models.backbones.ResNet)
 - Neck: [FPN_UNet](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.necks.FPN_UNet)
 - Bbox_head: [DRRGHead](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.dense_heads.DRRGHead)
-- Loss: [DRRGLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.losses.DRRGLoss)
+- Loss: [DRRGModuleLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.module_losses.DRRGModuleLoss)
 - Postprocessor: [DRRGPostprocessor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.postprocess.DRRGPostprocessor)
 
 ### FCENet
@@ -34,7 +34,7 @@ When training, the output of `bbox_head` is directly fed into the `loss` module,
 - Backbone: [mmdet.ResNet](https://mmdetection.readthedocs.io/en/latest/api.html#mmdet.models.backbones.ResNet)
 - Neck: [mmdet.FPN](https://mmdetection.readthedocs.io/en/latest/api.html#mmdet.models.necks.FPN)
 - Bbox_head: [FCEHead](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.dense_heads.FCEHead)
-- Loss: [FCELoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.losses.FCELoss)
+- Loss: [FCEModuleLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.module_losses.FCEModuleLoss)
 - Postprocessor: [FCEPostprocessor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.postprocess.FCEPostprocessor)
 
 ### Mask R-CNN
@@ -46,7 +46,7 @@ We use the same architecture as in MMDetection. See MMDetection's [config docume
 - Backbone: [mmdet.ResNet](https://mmdetection.readthedocs.io/en/latest/api.html#mmdet.models.backbones.ResNet)
 - Neck: [FPEM_FFM](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.necks.FPEM_FFM)
 - Bbox_head: [PANHead](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.dense_heads.PANHead)
-- Loss: [PANLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.losses.PANLoss)
+- Loss: [PANModuleLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.module_losses.PANModuleLoss)
 - Postprocessor: [PANPostprocessor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.postprocess.PANPostprocessor)
 
 ### PSENet
@@ -54,7 +54,7 @@ We use the same architecture as in MMDetection. See MMDetection's [config docume
 - Backbone: [mmdet.ResNet](https://mmdetection.readthedocs.io/en/latest/api.html#mmdet.models.backbones.ResNet)
 - Neck: [FPNF](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.necks.FPNF)
 - Bbox_head: [PSEHead](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.dense_heads.PSEHead)
-- Loss: [PSELoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.losses.PSELoss)
+- Loss: [PSEModuleLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.module_losses.PSEModuleLoss)
 - Postprocessor: [PSEPostprocessor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.postprocess.PSEPostprocessor)
 
 ### Textsnake
@@ -62,7 +62,7 @@ We use the same architecture as in MMDetection. See MMDetection's [config docume
 - Backbone: [mmdet.ResNet](https://mmdetection.readthedocs.io/en/latest/api.html#mmdet.models.backbones.ResNet)
 - Neck: [FPN_UNet](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.necks.FPN_UNet)
 - Bbox_head: [TextSnakeHead](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.dense_heads.TextSnakeHead)
-- Loss: [TextSnakeLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.losses.TextSnakeLoss)
+- Loss: [TextSnakeModuleLoss](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.module_losses.TextSnakeModuleLoss)
 - Postprocessor: [TextSnakePostprocessor](https://mmocr.readthedocs.io/en/latest/api.html#mmocr.models.textdet.postprocess.TextSnakePostprocessor)
 
 ## Text Recognition Models

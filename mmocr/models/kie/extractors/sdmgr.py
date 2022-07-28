@@ -1,166 +1,194 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
+from typing import Dict, List, Optional, Sequence, Tuple
 
-import mmcv
-from mmdet.core import bbox2roi
+import torch
+from mmdet.structures.bbox import bbox2roi
+from mmengine.model import BaseModel
 from torch import nn
-from torch.nn import functional as F
 
-from mmocr.core import imshow_edge, imshow_node
-from mmocr.models.builder import DETECTORS, build_roi_extractor
-from mmocr.models.common.detectors import SingleStageDetector
-from mmocr.utils import list_from_file
+from mmocr.data import KIEDataSample
+from mmocr.registry import MODELS, TASK_UTILS
 
 
-@DETECTORS.register_module()
-class SDMGR(SingleStageDetector):
+@MODELS.register_module()
+class SDMGR(BaseModel):
     """The implementation of the paper: Spatial Dual-Modality Graph Reasoning
     for Key Information Extraction. https://arxiv.org/abs/2103.14470.
 
     Args:
-        visual_modality (bool): Whether use the visual modality.
-        class_list (None | str): Mapping file of class index to
-            class name. If None, class index will be shown in
-            `show_results`, else class name.
+        backbone (dict, optional): Config of backbone. If None, None will be
+            passed to kie_head during training and testing. Defaults to None.
+        roi_extractor (dict, optional): Config of roi extractor. Only
+            applicable when backbone is not None. Defaults to None.
+        neck (dict, optional): Config of neck. Defaults to None.
+        kie_head (dict): Config of KIE head. Defaults to None.
+        dictionary (dict, optional): Config of dictionary. Defaults to None.
+        data_preprocessor (dict or ConfigDict, optional): The pre-process
+            config of :class:`BaseDataPreprocessor`.  it usually includes,
+            ``pad_size_divisor``, ``pad_value``, ``mean`` and ``std``. It has
+            to be None when working in non-visual mode. Defaults to None.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+            Defaults to None.
     """
 
     def __init__(self,
-                 backbone,
-                 neck=None,
-                 bbox_head=None,
-                 extractor=dict(
-                     type='mmdet.SingleRoIExtractor',
-                     roi_layer=dict(type='RoIAlign', output_size=7),
-                     featmap_strides=[1]),
-                 visual_modality=False,
-                 train_cfg=None,
-                 test_cfg=None,
-                 class_list=None,
-                 init_cfg=None,
-                 openset=False):
+                 backbone: Optional[Dict] = None,
+                 roi_extractor: Optional[Dict] = None,
+                 neck: Optional[Dict] = None,
+                 kie_head: Dict = None,
+                 dictionary: Optional[Dict] = None,
+                 data_preprocessor: Optional[Dict] = None,
+                 init_cfg: Optional[Dict] = None) -> None:
         super().__init__(
-            backbone, neck, bbox_head, train_cfg, test_cfg, init_cfg=init_cfg)
-        self.visual_modality = visual_modality
-        if visual_modality:
-            self.extractor = build_roi_extractor({
-                **extractor, 'out_channels':
+            data_preprocessor=data_preprocessor, init_cfg=init_cfg)
+        if dictionary is not None:
+            self.dictionary = TASK_UTILS.build(dictionary)
+            if kie_head.get('dictionary', None) is None:
+                kie_head.update(dictionary=self.dictionary)
+            else:
+                warnings.warn(f"Using dictionary {kie_head['dictionary']} "
+                              "in kie_head's config.")
+        if backbone is not None:
+            self.backbone = MODELS.build(backbone)
+            self.extractor = MODELS.build({
+                **roi_extractor, 'out_channels':
                 self.backbone.base_channels
             })
-            self.maxpool = nn.MaxPool2d(extractor['roi_layer']['output_size'])
-        else:
-            self.extractor = None
-        self.class_list = class_list
-        self.openset = openset
+            self.maxpool = nn.MaxPool2d(
+                roi_extractor['roi_layer']['output_size'])
+        if neck is not None:
+            self.neck = MODELS.build(neck)
+        self.kie_head = MODELS.build(kie_head)
 
-    def forward_train(self, img, img_metas, relations, texts, gt_bboxes,
-                      gt_labels):
-        """
+    def extract_feat(self, img: torch.Tensor,
+                     gt_bboxes: List[torch.Tensor]) -> torch.Tensor:
+        """Extract features from images if self.backbone is not None. It
+        returns None otherwise.
+
         Args:
-            img (tensor): Input images of shape (N, C, H, W).
+            img (torch.Tensor): The input image with shape (N, C, H, W).
+            gt_bboxes (list[torch.Tensor)): A list of ground truth bounding
+                boxes, each of shape :math:`(N_i, 4)`.
+
+        Returns:
+            torch.Tensor: The extracted features with shape (N, E).
+        """
+        if not hasattr(self, 'backbone'):
+            return None
+        x = self.backbone(img)
+        if hasattr(self, 'neck'):
+            x = self.neck(x)
+        x = x[-1]
+        feats = self.maxpool(self.extractor([x], bbox2roi(gt_bboxes)))
+        return feats.view(feats.size(0), -1)
+
+    def forward(self,
+                batch_inputs: torch.Tensor,
+                batch_data_samples: Sequence[KIEDataSample] = None,
+                mode: str = 'tensor',
+                **kwargs) -> torch.Tensor:
+        """The unified entry for a forward process in both training and test.
+
+        The method should accept three modes: "tensor", "predict" and "loss":
+
+        - "tensor": Forward the whole network and return tensor or tuple of
+        tensor without any post-processing, same as a common nn.Module.
+        - "predict": Forward and return the predictions, which are fully
+        processed to a list of :obj:`DetDataSample`.
+        - "loss": Forward and return a dict of losses according to the given
+        inputs and data samples.
+
+        Note that this method doesn't handle neither back propagation nor
+        optimizer updating, which are done in the :meth:`train_step`.
+
+        Args:
+            batch_inputs (torch.Tensor): The input tensor with shape
+                (N, C, ...) in general.
+            batch_data_samples (list[:obj:`DetDataSample`], optional): The
+                annotation data of every samples. Defaults to None.
+            mode (str): Return what kind of value. Defaults to 'tensor'.
+
+        Returns:
+            The return type depends on ``mode``.
+
+            - If ``mode="tensor"``, return a tensor or a tuple of tensor.
+            - If ``mode="predict"``, return a list of :obj:`DetDataSample`.
+            - If ``mode="loss"``, return a dict of tensor.
+        """
+        if mode == 'loss':
+            return self.loss(batch_inputs, batch_data_samples, **kwargs)
+        elif mode == 'predict':
+            return self.predict(batch_inputs, batch_data_samples, **kwargs)
+        elif mode == 'tensor':
+            return self._forward(batch_inputs, batch_data_samples, **kwargs)
+        else:
+            raise RuntimeError(f'Invalid mode "{mode}". '
+                               'Only supports loss, predict and tensor mode')
+
+    def loss(self, batch_inputs: torch.Tensor,
+             batch_data_samples: Sequence[KIEDataSample], **kwargs) -> dict:
+        """Calculate losses from a batch of inputs and data samples.
+
+        Args:
+            batch_inputs (torch.Tensor): Input images of shape (N, C, H, W).
                 Typically these should be mean centered and std scaled.
-            img_metas (list[dict]): A list of image info dict where each dict
-                contains: 'img_shape', 'scale_factor', 'flip', and may also
-                contain 'filename', 'ori_shape', 'pad_shape', and
-                'img_norm_cfg'. For details of the values of these keys,
-                please see :class:`mmdet.datasets.pipelines.Collect`.
-            relations (list[tensor]): Relations between bboxes.
-            texts (list[tensor]): Texts in bboxes.
-            gt_bboxes (list[tensor]): Each item is the truth boxes for each
-                image in [tl_x, tl_y, br_x, br_y] format.
-            gt_labels (list[tensor]): Class indices corresponding to each box.
+            batch_data_samples (list[KIEDataSample]): A list of N datasamples,
+                containing meta information and gold annotations for each of
+                the images.
+        Returns:
+            dict[str, Tensor]: A dictionary of loss components.
+        """
+        x = self.extract_feat(batch_inputs, [
+            data_sample.gt_instances.bboxes
+            for data_sample in batch_data_samples
+        ])
+        return self.kie_head.loss(x, batch_data_samples)
+
+    def predict(self, batch_inputs: torch.Tensor,
+                batch_data_samples: Sequence[KIEDataSample],
+                **kwargs) -> List[KIEDataSample]:
+        """Predict results from a batch of inputs and data samples with post-
+        processing.
+        Args:
+            batch_inputs (torch.Tensor): Input images of shape (N, C, H, W).
+                Typically these should be mean centered and std scaled.
+            batch_data_samples (list[KIEDataSample]): A list of N datasamples,
+                containing meta information and gold annotations for each of
+                the images.
 
         Returns:
-            dict[str, tensor]: A dictionary of loss components.
+            List[KIEDataSample]: A list of datasamples of prediction results.
+            Results are stored in ``pred_instances.labels`` and
+            ``pred_instances.edge_labels``.
         """
-        x = self.extract_feat(img, gt_bboxes)
-        node_preds, edge_preds = self.bbox_head.forward(relations, texts, x)
-        return self.bbox_head.loss(node_preds, edge_preds, gt_labels)
+        x = self.extract_feat(batch_inputs, [
+            data_sample.gt_instances.bboxes
+            for data_sample in batch_data_samples
+        ])
+        return self.kie_head.predict(x, batch_data_samples)
 
-    def forward_test(self,
-                     img,
-                     img_metas,
-                     relations,
-                     texts,
-                     gt_bboxes,
-                     rescale=False):
-        x = self.extract_feat(img, gt_bboxes)
-        node_preds, edge_preds = self.bbox_head.forward(relations, texts, x)
-        return [
-            dict(
-                img_metas=img_metas,
-                nodes=F.softmax(node_preds, -1),
-                edges=F.softmax(edge_preds, -1))
-        ]
-
-    def extract_feat(self, img, gt_bboxes):
-        if self.visual_modality:
-            x = super().extract_feat(img)[-1]
-            feats = self.maxpool(self.extractor([x], bbox2roi(gt_bboxes)))
-            return feats.view(feats.size(0), -1)
-        return None
-
-    def show_result(self,
-                    img,
-                    result,
-                    boxes,
-                    win_name='',
-                    show=False,
-                    wait_time=0,
-                    out_file=None,
-                    **kwargs):
-        """Draw `result` on `img`.
+    def _forward(self, batch_inputs: torch.Tensor,
+                 batch_data_samples: Sequence[KIEDataSample],
+                 **kwargs) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Get the raw tensor outputs from backbone and head without any post-
+        processing.
 
         Args:
-            img (str or tensor): The image to be displayed.
-            result (dict): The results to draw on `img`.
-            boxes (list): Bbox of img.
-            win_name (str): The window name.
-            wait_time (int): Value of waitKey param.
-                Default: 0.
-            show (bool): Whether to show the image.
-                Default: False.
-            out_file (str or None): The output filename.
-                Default: None.
+            batch_inputs (torch.Tensor): Input images of shape (N, C, H, W).
+                Typically these should be mean centered and std scaled.
+            batch_data_samples (list[KIEDataSample]): A list of N datasamples,
+                containing meta information and gold annotations for each of
+                the images.
 
         Returns:
-            img (tensor): Only if not `show` or `out_file`.
+            tuple(torch.Tensor, torch.Tensor): Tensor output from head.
+
+            - node_cls (torch.Tensor): Node classification output.
+            - edge_cls (torch.Tensor): Edge classification output.
         """
-        img = mmcv.imread(img)
-        img = img.copy()
-
-        idx_to_cls = {}
-        if self.class_list is not None:
-            for line in list_from_file(self.class_list):
-                class_idx, class_label = line.strip().split()
-                idx_to_cls[class_idx] = class_label
-
-        # if out_file specified, do not show image in window
-        if out_file is not None:
-            show = False
-
-        if self.openset:
-            img = imshow_edge(
-                img,
-                result,
-                boxes,
-                show=show,
-                win_name=win_name,
-                wait_time=wait_time,
-                out_file=out_file)
-        else:
-            img = imshow_node(
-                img,
-                result,
-                boxes,
-                idx_to_cls=idx_to_cls,
-                show=show,
-                win_name=win_name,
-                wait_time=wait_time,
-                out_file=out_file)
-
-        if not (show or out_file):
-            warnings.warn('show==False and out_file is not specified, only '
-                          'result image will be returned')
-            return img
-
-        return img
+        x = self.extract_feat(batch_inputs, [
+            data_sample.gt_instances.bboxes
+            for data_sample in batch_data_samples
+        ])
+        return self.kie_head(x, batch_data_samples)

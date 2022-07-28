@@ -20,13 +20,17 @@ repos:
     rev: v3.1.0
     hooks:
       - id: trailing-whitespace
+        exclude: ^dicts/
       - id: check-yaml
       - id: end-of-file-fixer
+        exclude: ^dicts/
       - id: requirements-txt-fixer
       - id: double-quote-string-fixer
       - id: check-merge-conflict
       - id: fix-encoding-pragma
         args: ["--remove"]
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
       - id: mixed-line-ending
         args: ["--fix=lf"]
   - repo: https://github.com/executablebooks/mdformat

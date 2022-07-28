@@ -27,7 +27,7 @@ author = 'OpenMMLab'
 
 # The full version, including alpha/beta/rc tags
 version_file = '../../mmocr/version.py'
-with open(version_file, 'r') as f:
+with open(version_file) as f:
     exec(compile(f.read(), version_file, 'exec'))
 __version__ = locals()['__version__']
 release = __version__

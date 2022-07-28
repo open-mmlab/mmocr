@@ -1,12 +1,11 @@
 # optimizer
-optimizer = dict(type='Adam', lr=4e-4)
-optimizer_config = dict(grad_clip=None)
+
+optim_wrapper = dict(type='OptimWrapper', optimizer=dict(type='Adam', lr=4e-4))
+train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=12, val_interval=1)
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
 # learning policy
-lr_config = dict(
-    policy='step',
-    warmup='linear',
-    warmup_iters=100,
-    warmup_ratio=1.0 / 3,
-    step=[11])
-runner = dict(type='EpochBasedRunner', max_epochs=12)
-checkpoint_config = dict(interval=1)
+param_scheduler = [
+    dict(type='LinearLR', end=100, by_epoch=False),
+    dict(type='MultiStepLR', milestones=[11], end=12),
+]
