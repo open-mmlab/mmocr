@@ -2,7 +2,7 @@
 import pytest
 import torch
 
-from mmocr.models.textdet.necks import FPNC, FPN_UNet
+from mmocr.models.textdet.necks import FPNC, FPN_UNet, HyperNet
 
 
 def test_fpnc():
@@ -55,3 +55,17 @@ def test_fpn_unet_neck():
 
     out_neck = fpn_unet_neck(feats)
     assert out_neck.shape == torch.Size([1, out_channels, s * 4, s * 4])
+
+
+def test_HyperNet():
+    in_channels = [256, 512, 1024, 2048]
+    size = [112, 56, 28, 14]
+    stage_out_channels = [128, 64, 32]
+    hypernet = HyperNet(
+        in_channels=in_channels, stage_out_channels=stage_out_channels)
+    hypernet.init_weights()
+    inputs = []
+    for i in range(4):
+        inputs.append(torch.rand(1, in_channels[i], size[i], size[i]))
+    outputs = hypernet.forward(inputs)
+    assert list(outputs.size()) == [1, 32, 112, 112]
