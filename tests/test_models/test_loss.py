@@ -1,9 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
+import pytest
 import torch
 from mmdet.core import BitmapMasks
 
 import mmocr.models.textdet.losses as losses
+from mmocr.models.textdet.dense_heads import FCOSHead
 
 
 def test_panloss():
@@ -157,3 +159,73 @@ def test_dice_loss():
     dice_loss = pan_loss.dice_loss_with_logits(pred, target, mask)
 
     assert np.allclose(dice_loss.item(), 0)
+
+
+@pytest.mark.parametrize('with_bezier', [True, False])
+def test_fcos_loss(with_bezier):
+    """Tests fcos head loss when truth is empty and non-empty."""
+    s = 256
+    img_metas = [{
+        'img_shape': (s, s, 3),
+        'scale_factor': 1,
+        'pad_shape': (s, s, 3)
+    }]
+    head = FCOSHead(num_classes=4, in_channels=1, with_bezier=with_bezier)
+    # Focal Loss is not supported on CPU
+    loss = losses.FCOSLoss(
+        num_classes=4,
+        loss_cls=dict(
+            type='mmdet.CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0),
+        with_bezier=with_bezier)
+    feat = [
+        torch.rand(1, 1, s // feat_size, s // feat_size)
+        for feat_size in [4, 8, 16, 32, 64]
+    ]
+    if with_bezier:
+        cls_scores, bbox_preds, centerness, bezier_preds = head.forward(feat)
+    else:
+        cls_scores, bbox_preds, centerness = head.forward(feat)
+    # Test that empty ground truth encourages the network to predict background
+    gt_bboxes = [torch.empty((0, 4))]
+    gt_labels = [torch.LongTensor([])]
+    gt_bboxes_ignore = None
+    if with_bezier:
+        gt_beziers = [torch.empty((0, 16))]
+        empty_gt_losses = loss(cls_scores, bbox_preds, centerness, gt_bboxes,
+                               gt_labels, img_metas, gt_bboxes_ignore,
+                               bezier_preds, gt_beziers)
+    else:
+        empty_gt_losses = loss(cls_scores, bbox_preds, centerness, gt_bboxes,
+                               gt_labels, img_metas, gt_bboxes_ignore)
+    # When there is no truth, the cls loss should be nonzero but there should
+    # be no box loss.
+    empty_cls_loss = empty_gt_losses['loss_cls']
+    empty_box_loss = empty_gt_losses['loss_bbox']
+    assert empty_cls_loss.item() > 0, 'cls loss should be non-zero'
+    assert empty_box_loss.item() == 0, (
+        'there should be no box loss when there are no true boxes')
+    if with_bezier:
+        empty_bezier_loss = empty_gt_losses['loss_bezier']
+        assert empty_bezier_loss.item() == 0, 'bezier loss should be zero'
+
+    # When truth is non-empty then both cls and box loss should be nonzero for
+    # random inputs
+    gt_bboxes = [
+        torch.Tensor([[23.6667, 23.8757, 238.6326, 151.8874]]),
+    ]
+    gt_labels = [torch.LongTensor([2])]
+    if with_bezier:
+        gt_beziers = [torch.randn(1, 16)]
+        one_gt_losses = loss(cls_scores, bbox_preds, centerness, gt_bboxes,
+                             gt_labels, img_metas, gt_bboxes_ignore,
+                             bezier_preds, gt_beziers)
+    else:
+        one_gt_losses = loss(cls_scores, bbox_preds, centerness, gt_bboxes,
+                             gt_labels, img_metas, gt_bboxes_ignore)
+    onegt_cls_loss = one_gt_losses['loss_cls']
+    onegt_box_loss = one_gt_losses['loss_bbox']
+    assert onegt_cls_loss.item() > 0, 'cls loss should be non-zero'
+    assert onegt_box_loss.item() > 0, 'box loss should be non-zero'
+    if with_bezier:
+        one_bezier_loss = one_gt_losses['loss_bezier']
+        assert one_bezier_loss.item() > 0, 'bezier loss should be non-zero'
