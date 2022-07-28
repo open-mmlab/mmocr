@@ -18,7 +18,7 @@ from .base_decoder import BaseDecoder
 class ABILanguageDecoder(BaseDecoder):
     r"""Transformer-based language model responsible for spell correction.
     Implementation of language model of \
-        `ABINet <https://arxiv.org/pdf/2103.06495>`_.
+        `ABINet <https://arxiv.org/abs/1910.04396>`_.
 
     Args:
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
