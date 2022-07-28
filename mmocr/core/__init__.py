@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from . import evaluation
-from .evaluation import *  # NOQA
+from .bbox import *  # noqa: F401, F403
+from .evaluation import *  # noqa: F401, F403
 from .mask import extract_boundary, points2boundary, seg2boundary
 from .visualize import (det_recog_show_result, imshow_edge, imshow_node,
                         imshow_pred_boundary, imshow_text_char_boundary,
@@ -13,4 +13,3 @@ __all__ = [
     'imshow_pred_boundary', 'imshow_text_char_boundary', 'imshow_text_label',
     'imshow_node', 'det_recog_show_result', 'imshow_edge'
 ]
-__all__ += evaluation.__all__
