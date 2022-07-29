@@ -7,10 +7,10 @@ import torch.nn as nn
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmengine.model import ModuleList
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.common.modules import PositionalEncoding
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 from .base_decoder import BaseDecoder
 
 
@@ -195,9 +195,9 @@ class ABILanguageDecoder(BaseDecoder):
         return out
 
     @staticmethod
-    def _get_location_mask(
-            seq_len: int,
-            device: Union[Optional[torch.device], str] = None) -> torch.Tensor:
+    def _get_location_mask(seq_len: int,
+                           device: Union[Optional[torch.device],
+                                         str] = None) -> torch.Tensor:
         """Generate location masks given input sequence length.
 
         Args:

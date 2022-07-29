@@ -3,8 +3,8 @@ from typing import Optional, Sequence, Tuple
 
 import torch
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 from .base_textrecog_postprocessor import BaseTextRecogPostprocessor
 
 

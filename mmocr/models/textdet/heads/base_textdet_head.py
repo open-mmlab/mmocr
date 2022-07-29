@@ -5,8 +5,8 @@ import torch
 from mmengine.model import BaseModule
 from torch import Tensor
 
-from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 
 SampleList = List[TextDetDataSample]
 
@@ -83,9 +83,8 @@ class BaseTextDetHead(BaseModule):
         losses = self.module_loss(outs, batch_data_samples)
         return losses
 
-    def loss_and_predict(
-            self, x: Tuple[Tensor],
-            batch_data_samples: SampleList) -> Tuple[dict, SampleList]:
+    def loss_and_predict(self, x: Tuple[Tensor], batch_data_samples: SampleList
+                         ) -> Tuple[dict, SampleList]:
         """Perform forward propagation of the head, then calculate loss and
         predictions from the features and data samples.
 

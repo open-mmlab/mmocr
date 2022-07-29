@@ -6,9 +6,9 @@ import torch
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmengine.model import BaseModule, ModuleList
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.common.modules import PositionalEncoding
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 
 
 @MODELS.register_module()

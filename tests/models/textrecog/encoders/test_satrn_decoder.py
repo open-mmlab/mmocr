@@ -3,8 +3,8 @@ import unittest
 
 import torch
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.encoders import SATRNEncoder
+from mmocr.structures import TextRecogDataSample
 
 
 class TestSATRNEncoder(unittest.TestCase):

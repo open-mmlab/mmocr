@@ -8,7 +8,8 @@ import torch
 from mmengine.config import ConfigDict
 
 from mmocr import digit_version
-from mmocr.structures import KIEDataSample, TextDetDataSample, TextRecogDataSample
+from mmocr.structures import (KIEDataSample, TextDetDataSample,
+                              TextRecogDataSample)
 
 # Config
 ConfigType = Union[ConfigDict, Dict]
