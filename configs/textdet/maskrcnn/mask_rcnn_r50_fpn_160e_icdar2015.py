@@ -1,6 +1,6 @@
 _base_ = [
     'ocr_mask_rcnn_r50_fpn_ohem_poly.py',
-    '../../_base_/det_datasets/icdar2015.py',
+    '../../_base_/det_datasets/toy_data.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_160e.py',
 ]
@@ -49,7 +49,7 @@ test_pipeline = [
         type='LoadImageFromFile',
         file_client_args=file_client_args,
         color_type='color_ignore_orientation'),
-    dict(type='mmdet.Resize', scale=(1920, 1920), keep_ratio=True),
+    dict(type='Resize', scale=(1920, 1920), keep_ratio=True),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor',

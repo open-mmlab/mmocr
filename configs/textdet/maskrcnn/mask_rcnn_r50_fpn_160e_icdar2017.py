@@ -48,7 +48,7 @@ test_pipeline = [
         type='LoadImageFromFile',
         file_client_args=file_client_args,
         color_type='color_ignore_orientation'),
-    dict(type='mmdet.Resize', scale=(1920, 1920), keep_ratio=True),
+    dict(type='Resize', scale=(1920, 1920), keep_ratio=True),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor',
