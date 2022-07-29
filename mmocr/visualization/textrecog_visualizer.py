@@ -49,12 +49,12 @@ class TextRecogLocalVisualizer(Visualizer):
     def add_datasample(self,
                        name: str,
                        image: np.ndarray,
-                       gt_sample: Optional['TextRecogDataSample'] = None,
-                       pred_sample: Optional['TextRecogDataSample'] = None,
+                       data_sample: Optional['TextRecogDataSample'] = None,
                        draw_gt: bool = True,
                        draw_pred: bool = True,
                        show: bool = False,
                        wait_time: int = 0,
+                       pred_score_thr=None,
                        out_file: Optional[str] = None,
                        step=0) -> None:
         """Visualize datasample and save to all backends.
@@ -71,9 +71,9 @@ class TextRecogLocalVisualizer(Visualizer):
         Args:
             name (str): The image title. Defaults to 'image'.
             image (np.ndarray): The image to draw.
-            gt_sample (:obj:`TextRecogDataSample`, optional): GT
+            data_sample (:obj:`TextRecogDataSample`, optional): GT
                 TextRecogDataSample. Defaults to None.
-            pred_sample (:obj:`TextRecogDataSample`, optional): Predicted
+            data_sample (:obj:`TextRecogDataSample`, optional): Predicted
                 TextRecogDataSample. Defaults to None.
             draw_gt (bool): Whether to draw GT TextRecogDataSample.
                 Defaults to True.
@@ -93,8 +93,8 @@ class TextRecogLocalVisualizer(Visualizer):
         if image.ndim == 2:
             image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
-        if draw_gt and gt_sample is not None and 'gt_text' in gt_sample:
-            gt_text = gt_sample.gt_text.item
+        if draw_gt and data_sample is not None and 'gt_text' in data_sample:
+            gt_text = data_sample.gt_text.item
             empty_img = np.full_like(image, 255)
             self.set_image(empty_img)
             font_size = 0.5 * resize_width / len(gt_text)
@@ -108,9 +108,9 @@ class TextRecogLocalVisualizer(Visualizer):
             gt_text_image = self.get_image()
             gt_img_data = np.concatenate((image, gt_text_image), axis=0)
 
-        if (draw_pred and pred_sample is not None
-                and 'pred_text' in pred_sample):
-            pred_text = pred_sample.pred_text.item
+        if (draw_pred and data_sample is not None
+                and 'pred_text' in data_sample):
+            pred_text = data_sample.pred_text.item
             empty_img = np.full_like(image, 255)
             self.set_image(empty_img)
             font_size = 0.5 * resize_width / len(pred_text)

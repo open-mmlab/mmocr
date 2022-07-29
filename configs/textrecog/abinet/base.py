@@ -76,12 +76,13 @@ train_pipeline = [
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile', file_client_args=file_client_args),
-    dict(type='LoadOCRAnnotations', with_text=True),
     dict(type='Resize', scale=(128, 32)),
+    # add loading annotation after ``Resize`` because ground truth
+    # does not need to do resize data transform
+    dict(type='LoadOCRAnnotations', with_text=True),
     dict(
         type='PackTextRecogInputs',
-        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio',
-                   'instances'))
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
 ]
 
 train_dataloader = dict(
