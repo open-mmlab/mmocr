@@ -1,6 +1,6 @@
 _base_ = [
     'ocr_mask_rcnn_r50_fpn_ohem_poly.py',
-    '../../_base_/det_datasets/toy_data.py',
+    '../../_base_/det_datasets/icdar2015.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_sgd_160e.py',
 ]
