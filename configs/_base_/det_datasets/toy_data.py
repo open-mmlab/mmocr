@@ -1,41 +1,23 @@
-root = 'tests/data/toy_dataset'
+data_root = 'tests/data/det_toy_dataset'
 
-# dataset with type='TextDetDataset'
-train1 = dict(
-    type='TextDetDataset',
-    img_prefix=f'{root}/imgs',
-    ann_file=f'{root}/instances_test.txt',
-    loader=dict(
-        type='AnnFileLoader',
-        repeat=4,
-        file_format='txt',
-        parser=dict(
-            type='LineJsonParser',
-            keys=['file_name', 'height', 'width', 'annotations'])),
-    pipeline=None,
-    test_mode=False)
+train_anno_path = 'instances_test.json'
+test_anno_path = 'instances_test.json'
 
-# dataset with type='IcdarDataset'
-train2 = dict(
-    type='IcdarDataset',
-    ann_file=f'{root}/instances_test.json',
-    img_prefix=f'{root}/imgs',
+train_dataset = dict(
+    type='OCRDataset',
+    data_root=data_root,
+    ann_file=train_anno_path,
+    data_prefix=dict(img_path='imgs/'),
+    filter_cfg=dict(filter_empty_gt=True, min_size=32),
     pipeline=None)
 
-test = dict(
-    type='TextDetDataset',
-    img_prefix=f'{root}/imgs',
-    ann_file=f'{root}/instances_test.txt',
-    loader=dict(
-        type='AnnFileLoader',
-        repeat=1,
-        file_format='txt',
-        parser=dict(
-            type='LineJsonParser',
-            keys=['file_name', 'height', 'width', 'annotations'])),
-    pipeline=None,
-    test_mode=True)
+test_dataset = dict(
+    type='OCRDataset',
+    data_root=data_root,
+    ann_file=test_anno_path,
+    data_prefix=dict(img_path='imgs/'),
+    test_mode=True,
+    pipeline=None)
 
-train_list = [train1, train2]
-
-test_list = [test]
+train_list = [train_dataset]
+test_list = [test_dataset]

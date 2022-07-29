@@ -5,8 +5,7 @@ import cv2
 import torch
 
 from mmocr.apis import init_detector, model_inference
-from mmocr.datasets import build_dataset  # noqa: F401
-from mmocr.models import build_detector  # noqa: F401
+from mmocr.registry import DATASETS  # noqa: F401
 
 
 def parse_args():

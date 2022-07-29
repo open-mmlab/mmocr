@@ -1,33 +1,93 @@
 _base_ = [
-    '../../_base_/default_runtime.py',
-    '../../_base_/schedules/schedule_sgd_1200e.py',
-    '../../_base_/det_models/drrg_r50_fpn_unet.py',
+    'drrg_r50_fpn_unet.py',
     '../../_base_/det_datasets/ctw1500.py',
-    '../../_base_/det_pipelines/drrg_pipeline.py'
+    '../../_base_/textdet_default_runtime.py',
+    '../../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
+# dataset settings
+train_list = _base_.train_list
+test_list = _base_.test_list
+file_client_args = dict(backend='disk')
 
-train_pipeline = {{_base_.train_pipeline}}
-test_pipeline = {{_base_.test_pipeline}}
+train_pipeline = [
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        color_type='color_ignore_orientation'),
+    dict(
+        type='LoadOCRAnnotations',
+        with_bbox=True,
+        with_polygon=True,
+        with_label=True),
+    dict(
+        type='TorchVisionWrapper',
+        op='ColorJitter',
+        brightness=32.0 / 255,
+        saturation=0.5),
+    dict(
+        type='RandomResize',
+        scale=(800, 800),
+        ratio_range=(0.75, 2.5),
+        keep_ratio=True),
+    dict(
+        type='TextDetRandomCropFlip',
+        crop_ratio=0.5,
+        iter_num=1,
+        min_area_ratio=0.2),
+    dict(
+        type='RandomApply',
+        transforms=[dict(type='RandomCrop', min_side_ratio=0.3)],
+        prob=0.8),
+    dict(
+        type='RandomApply',
+        transforms=[
+            dict(
+                type='RandomRotate',
+                max_angle=60,
+                use_canvas=True,
+                pad_with_fixed_color=False)
+        ],
+        prob=0.5),
+    dict(
+        type='RandomChoice',
+        transforms=[[
+            dict(type='Resize', scale=800, keep_ratio=True),
+            dict(type='SourceImagePad', target_scale=800)
+        ],
+                    dict(type='Resize', scale=800, keep_ratio=False)],
+        prob=[0.4, 0.6]),
+    dict(type='RandomFlip', prob=0.5, direction='horizontal'),
+    dict(
+        type='PackTextDetInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape'))
+]
 
-data = dict(
-    samples_per_gpu=4,
-    workers_per_gpu=4,
-    val_dataloader=dict(samples_per_gpu=1),
-    test_dataloader=dict(samples_per_gpu=1),
-    train=dict(
-        type='UniformConcatDataset',
-        datasets=train_list,
-        pipeline=train_pipeline),
-    val=dict(
-        type='UniformConcatDataset',
-        datasets=test_list,
-        pipeline=test_pipeline),
-    test=dict(
-        type='UniformConcatDataset',
-        datasets=test_list,
-        pipeline=test_pipeline))
+test_pipeline = [
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        color_type='color_ignore_orientation'),
+    dict(type='Resize', scale=(1024, 640), keep_ratio=True),
+    dict(
+        type='PackTextDetInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor',
+                   'instances'))
+]
 
-evaluation = dict(interval=20, metric='hmean-iou')
+train_dataloader = dict(
+    batch_size=4,
+    num_workers=4,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(
+        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
+val_dataloader = dict(
+    batch_size=1,
+    num_workers=1,
+    persistent_workers=True,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
+
+test_dataloader = val_dataloader

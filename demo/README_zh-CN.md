@@ -225,7 +225,6 @@ ______________________________________________________________________
 | SAR_CN \*     |         [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#show-attend-and-read-a-simple-and-strong-baseline-for-irregular-text-recognition)          |  :heavy_check_mark:   |
 | SATRN         |                                               [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                               |  :heavy_check_mark:   |
 | SATRN_sm      |                                               [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#satrn)                                               |  :heavy_check_mark:   |
-| SEG           |                                      [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#segocr-simple-baseline)                                       |          :x:          |
 | Tesseract     |                                                                [链接](https://tesseract-ocr.github.io/)                                                                |  :heavy_check_mark:   |
 
 ```{note}

@@ -1,10 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmcv.runner import BaseModule
+from mmengine.model import BaseModule
 
-from mmocr.models.builder import ENCODERS
+from mmocr.registry import MODELS
 
 
-@ENCODERS.register_module()
+@MODELS.register_module()
 class BaseEncoder(BaseModule):
     """Base Encoder class for text recognition."""
 

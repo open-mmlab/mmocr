@@ -31,7 +31,7 @@ class BasicBlock(nn.Module):
                  downsample=None,
                  use_conv1x1=False,
                  plugins=None):
-        super(BasicBlock, self).__init__()
+        super().__init__()
 
         if use_conv1x1:
             self.conv1 = conv1x1(inplanes, planes)
