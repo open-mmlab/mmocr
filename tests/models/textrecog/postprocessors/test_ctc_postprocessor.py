@@ -6,10 +6,10 @@ from unittest import TestCase
 
 import torch
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.models.textrecog.postprocessors.ctc_postprocessor import \
     CTCPostProcessor
+from mmocr.structures import TextRecogDataSample
 from mmocr.testing import create_dummy_dict_file
 
 

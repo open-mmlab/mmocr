@@ -6,10 +6,10 @@ import torch
 import torch.nn as nn
 from mmengine.model import ModuleList
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.models.common import PositionalEncoding, TFDecoderLayer
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 from .base_decoder import BaseDecoder
 
 
@@ -175,12 +175,11 @@ class NRTRDecoder(BaseDecoder):
 
         return output
 
-    def forward_train(
-            self,
-            feat: Optional[torch.Tensor] = None,
-            out_enc: torch.Tensor = None,
-            data_samples: Sequence[TextRecogDataSample] = None
-    ) -> torch.Tensor:
+    def forward_train(self,
+                      feat: Optional[torch.Tensor] = None,
+                      out_enc: torch.Tensor = None,
+                      data_samples: Sequence[TextRecogDataSample] = None
+                      ) -> torch.Tensor:
         """Forward for training. Source mask will be used here.
 
         Args:
@@ -209,12 +208,11 @@ class NRTRDecoder(BaseDecoder):
 
         return outputs
 
-    def forward_test(
-            self,
-            feat: Optional[torch.Tensor] = None,
-            out_enc: torch.Tensor = None,
-            data_samples: Sequence[TextRecogDataSample] = None
-    ) -> torch.Tensor:
+    def forward_test(self,
+                     feat: Optional[torch.Tensor] = None,
+                     out_enc: torch.Tensor = None,
+                     data_samples: Sequence[TextRecogDataSample] = None
+                     ) -> torch.Tensor:
         """Forward for testing.
 
         Args:

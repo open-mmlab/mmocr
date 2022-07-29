@@ -8,8 +8,8 @@ from mmdet.models.utils import multi_apply
 from numpy.fft import fft
 from numpy.linalg import norm
 
-from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 from mmocr.utils.typing import ArrayLike
 from .textsnake_module_loss import TextSnakeModuleLoss
 
@@ -223,12 +223,11 @@ class FCEModuleLoss(TextSnakeModuleLoss):
         p5_map = torch.from_numpy(p5_map).unsqueeze(0).float()
         return p3_map, p4_map, p5_map
 
-    def _generate_level_targets(
-        self,
-        img_size: Tuple[int, int],
-        text_polys: List[ArrayLike],
-        ignore_flags: Optional[torch.BoolTensor] = None
-    ) -> Tuple[torch.Tensor]:
+    def _generate_level_targets(self,
+                                img_size: Tuple[int, int],
+                                text_polys: List[ArrayLike],
+                                ignore_flags: Optional[torch.BoolTensor] = None
+                                ) -> Tuple[torch.Tensor]:
         """Generate targets for one feature level.
 
         Args:
@@ -348,9 +347,9 @@ class FCEModuleLoss(TextSnakeModuleLoss):
         cv2.fillPoly(center_region_mask, center_region_boxes, 1)
         return center_region_mask
 
-    def _generate_fourier_maps(
-            self, img_size: Tuple[int, int],
-            text_polys: ArrayLike) -> Tuple[np.ndarray, np.ndarray]:
+    def _generate_fourier_maps(self, img_size: Tuple[int, int],
+                               text_polys: ArrayLike
+                               ) -> Tuple[np.ndarray, np.ndarray]:
         """Generate Fourier coefficient maps.
 
         Args:

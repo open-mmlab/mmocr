@@ -6,8 +6,8 @@ import mmcv
 import numpy as np
 from mmengine import Visualizer
 
-from mmocr.structures import TextRecogDataSample
 from mmocr.registry import VISUALIZERS
+from mmocr.structures import TextRecogDataSample
 
 
 @VISUALIZERS.register_module()
@@ -30,15 +30,14 @@ class TextRecogLocalVisualizer(Visualizer):
             of color, such as `'r'` for `'red'`. Defaults to 'r'.
     """
 
-    def __init__(
-            self,
-            name: str = 'visualizer',
-            image: Optional[np.ndarray] = None,
-            vis_backends: Optional[Dict] = None,
-            save_dir: Optional[str] = None,
-            gt_color: Optional[Union[str, Tuple[int, int, int]]] = 'g',
-            pred_color: Optional[Union[str, Tuple[int, int,
-                                                  int]]] = 'r') -> None:
+    def __init__(self,
+                 name: str = 'visualizer',
+                 image: Optional[np.ndarray] = None,
+                 vis_backends: Optional[Dict] = None,
+                 save_dir: Optional[str] = None,
+                 gt_color: Optional[Union[str, Tuple[int, int, int]]] = 'g',
+                 pred_color: Optional[Union[str, Tuple[int, int,
+                                                       int]]] = 'r') -> None:
         super().__init__(
             name=name,
             image=image,

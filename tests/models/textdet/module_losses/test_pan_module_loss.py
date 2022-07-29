@@ -6,9 +6,9 @@ import torch
 import torch.nn as nn
 from mmengine import InstanceData
 
-from mmocr.structures import TextDetDataSample
 from mmocr.models.textdet.module_losses import PANModuleLoss
 from mmocr.models.textdet.module_losses.pan_module_loss import PANEmbLossV1
+from mmocr.structures import TextDetDataSample
 
 
 class TestPANModuleLoss(TestCase):

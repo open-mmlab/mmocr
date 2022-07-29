@@ -10,8 +10,8 @@ from numpy import ndarray
 from numpy.linalg import norm
 from torch import Tensor, nn
 
-from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 from .text_kernel_mixin import TextKernelMixin
 
 
@@ -314,9 +314,8 @@ class TextSnakeModuleLoss(nn.Module, TextKernelMixin):
 
         return center_region_mask, radius_map, sin_map, cos_map
 
-    def _reorder_poly_edge(
-            self,
-            points: ndarray) -> Tuple[ndarray, ndarray, ndarray, ndarray]:
+    def _reorder_poly_edge(self, points: ndarray
+                           ) -> Tuple[ndarray, ndarray, ndarray, ndarray]:
         """Get the respective points composing head edge, tail edge, top
         sideline and bottom sideline.
 
