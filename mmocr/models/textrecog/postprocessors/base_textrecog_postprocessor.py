@@ -6,7 +6,7 @@ import mmcv
 import torch
 from mmengine.data import LabelData
 
-from mmocr.data import TextRecogDataSample
+from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import TASK_UTILS
 

@@ -2,11 +2,11 @@
 from mmengine.data import BaseDataElement, InstanceData
 
 
-class KIEDataSample(BaseDataElement):
+class TextDetDataSample(BaseDataElement):
     """A data structure interface of MMOCR. They are used as interfaces between
     different components.
 
-    The attributes in ``KIEDataSample`` are divided into two parts:
+    The attributes in ``TextDetDataSample`` are divided into two parts:
 
         - ``gt_instances``(InstanceData): Ground truth of instance annotations.
         - ``pred_instances``(InstanceData): Instances of model predictions.
@@ -15,9 +15,9 @@ class KIEDataSample(BaseDataElement):
          >>> import torch
          >>> import numpy as np
          >>> from mmengine.data import InstanceData
-         >>> from mmocr.structures import KIEDataSample
+         >>> from from mmocr.structures import TextDetDataSample
          >>> # gt_instances
-         >>> data_sample = KIEDataSample()
+         >>> data_sample = TextDetDataSample()
          >>> img_meta = dict(img_shape=(800, 1196, 3),
          ...                 pad_shape=(800, 1216, 3))
          >>> gt_instances = InstanceData(metainfo=img_meta)
@@ -28,7 +28,7 @@ class KIEDataSample(BaseDataElement):
          >>> len(data_sample.gt_instances)
          5
          >>> print(data_sample)
-        <KIEDataSample(
+        <TextDetDataSample(
             META INFORMATION
             DATA FIELDS
             gt_instances: <InstanceData(
@@ -49,15 +49,17 @@ class KIEDataSample(BaseDataElement):
          >>> pred_instances = InstanceData(metainfo=img_meta)
          >>> pred_instances.bboxes = torch.rand((5, 4))
          >>> pred_instances.scores = torch.rand((5,))
-         >>> data_sample = KIEDataSample(pred_instances=pred_instances)
+         >>> data_sample = TextDetDataSample(pred_instances=pred_instances)
          >>> assert 'pred_instances' in data_sample
-         >>> data_sample = KIEDataSample()
+         >>> data_sample = TextDetDataSample()
          >>> gt_instances_data = dict(
          ...                        bboxes=torch.rand(2, 4),
-         ...                        labels=torch.rand(2))
+         ...                        labels=torch.rand(2),
+         ...                        masks=np.random.rand(2, 2, 2))
          >>> gt_instances = InstanceData(**gt_instances_data)
          >>> data_sample.gt_instances = gt_instances
          >>> assert 'gt_instances' in data_sample
+         >>> assert 'masks' in data_sample.gt_instances
     """
 
     @property

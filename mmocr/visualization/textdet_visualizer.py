@@ -5,7 +5,7 @@ import mmcv
 import numpy as np
 from mmengine import Visualizer
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import VISUALIZERS
 
 

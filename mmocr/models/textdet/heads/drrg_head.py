@@ -13,7 +13,7 @@ from numpy import ndarray
 from torch import Tensor
 from torch.nn import init
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
 from mmocr.utils import fill_hole
@@ -242,12 +242,9 @@ class DRRGHead(BaseTextDetHead):
             stride=1,
             padding=0)
 
-        self.graph_train = LocalGraphs(self.k_at_hops,
-                                       self.num_adjacent_linkages,
-                                       self.node_geo_feat_len,
-                                       self.pooling_scale,
-                                       self.pooling_output_size,
-                                       self.local_graph_thr)
+        self.graph_train = LocalGraphs(
+            self.k_at_hops, self.num_adjacent_linkages, self.node_geo_feat_len,
+            self.pooling_scale, self.pooling_output_size, self.local_graph_thr)
 
         self.graph_test = ProposalLocalGraphs(
             self.k_at_hops, self.num_adjacent_linkages, self.node_geo_feat_len,
@@ -390,9 +387,9 @@ class LocalGraphs:
         self.pooling = RoIAlignRotated(pooling_output_size, pooling_scale)
         self.local_graph_thr = local_graph_thr
 
-    def generate_local_graphs(self, sorted_dist_inds: ndarray,
-                              gt_comp_labels: ndarray
-                              ) -> Tuple[List[List[int]], List[List[int]]]:
+    def generate_local_graphs(
+            self, sorted_dist_inds: ndarray, gt_comp_labels: ndarray
+    ) -> Tuple[List[List[int]], List[List[int]]]:
         """Generate local graphs for GCN to predict which instance a text
         component belongs to.
 
@@ -575,8 +572,9 @@ class LocalGraphs:
         return (local_graphs_node_feat, adjacent_matrices, pivots_knn_inds,
                 pivots_gt_linkage)
 
-    def __call__(self, feat_maps: Tensor, comp_attribs: ndarray
-                 ) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
+    def __call__(
+            self, feat_maps: Tensor,
+            comp_attribs: ndarray) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
         """Generate local graphs as GCN input.
 
         Args:
@@ -894,9 +892,9 @@ class ProposalLocalGraphs:
 
         return comp_attribs, text_comps
 
-    def generate_local_graphs(self, sorted_dist_inds: ndarray,
-                              node_feats: Tensor
-                              ) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
+    def generate_local_graphs(
+            self, sorted_dist_inds: ndarray,
+            node_feats: Tensor) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
         """Generate local graphs and graph convolution network input data.
 
         Args:
@@ -1009,8 +1007,9 @@ class ProposalLocalGraphs:
         return (local_graphs_node_feat, adjacent_matrices, pivots_knn_inds,
                 pivots_local_graphs)
 
-    def __call__(self, preds: Tensor, feat_maps: Tensor
-                 ) -> Tuple[bool, Tensor, Tensor, Tensor, Tensor, ndarray]:
+    def __call__(
+        self, preds: Tensor, feat_maps: Tensor
+    ) -> Tuple[bool, Tensor, Tensor, Tensor, Tensor, ndarray]:
         """Generate local graphs and graph convolutional network input data.
 
         Args:

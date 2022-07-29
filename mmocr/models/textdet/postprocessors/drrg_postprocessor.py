@@ -9,7 +9,7 @@ import torch
 from mmengine import InstanceData
 from numpy import ndarray
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
 from .base_postprocessor import BaseTextDetPostProcessor
 
@@ -68,10 +68,9 @@ class DRRGPostprocessor(BaseTextDetPostProcessor):
         self.link_thr = link_thr
         self.edge_len_thr = edge_len_thr
 
-    def get_text_instances(self, pred_results: Tuple[ndarray, ndarray,
-                                                     ndarray],
-                           data_sample: TextDetDataSample
-                           ) -> TextDetDataSample:
+    def get_text_instances(
+            self, pred_results: Tuple[ndarray, ndarray, ndarray],
+            data_sample: TextDetDataSample) -> TextDetDataSample:
         """Get text instance predictions of one image.
 
         Args:
@@ -112,8 +111,9 @@ class DRRGPostprocessor(BaseTextDetPostProcessor):
 
         return data_sample
 
-    def split_results(self, pred_results: Tuple[ndarray, ndarray,
-                                                ndarray]) -> List[Tuple]:
+    def split_results(
+            self, pred_results: Tuple[ndarray, ndarray,
+                                      ndarray]) -> List[Tuple]:
         """Split batched elements in pred_results along the first dimension
         into ``batch_num`` sub-elements and regather them into a list of dicts.
 
@@ -270,8 +270,9 @@ class DRRGPostprocessor(BaseTextDetPostProcessor):
 
         return filtered_text_comps, filtered_labels
 
-    def _comps2polys(self, text_comps: ndarray, comp_pred_labels: ndarray
-                     ) -> Tuple[List[ndarray], List[float]]:
+    def _comps2polys(
+            self, text_comps: ndarray,
+            comp_pred_labels: ndarray) -> Tuple[List[ndarray], List[float]]:
         """Construct text instance boundaries from clustered text components.
         This code was partially adapted from https://github.com/GXYM/DRRG
         licensed under the MIT license.
@@ -398,9 +399,10 @@ class DRRGPostprocessor(BaseTextDetPostProcessor):
         x, y = point
         return cv2.pointPolygonTest(contour, (int(x), int(y)), False) > 0.5
 
-    def _fix_corner(self, top_line: List[List[int]], btm_line: List[List[int]],
-                    start_box: ndarray, end_box: ndarray
-                    ) -> Tuple[List[List[int]], List[List[int]]]:
+    def _fix_corner(
+            self, top_line: List[List[int]], btm_line: List[List[int]],
+            start_box: ndarray,
+            end_box: ndarray) -> Tuple[List[List[int]], List[List[int]]]:
         """Add corner points to predicted side lines. This code was partially
         adapted from https://github.com/GXYM/DRRG licensed under the MIT
         license.

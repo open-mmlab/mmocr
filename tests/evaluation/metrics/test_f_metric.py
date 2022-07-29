@@ -4,7 +4,7 @@ import unittest
 import torch
 from mmengine import InstanceData
 
-from mmocr.data import KIEDataSample
+from mmocr.structures import KIEDataSample
 from mmocr.evaluation import F1Metric
 
 
@@ -46,19 +46,20 @@ class TestF1Metric(unittest.TestCase):
                             labels=torch.LongTensor([4]))))
             ],
         ]
-        preds_cases = [[
-            KIEDataSample(
-                pred_instances=InstanceData(
-                    labels=torch.LongTensor([0, 1, 2])))
-        ],
-                       [
-                           KIEDataSample(
-                               pred_instances=InstanceData(
-                                   labels=torch.LongTensor([0, 1]))),
-                           KIEDataSample(
-                               pred_instances=InstanceData(
-                                   labels=torch.LongTensor([2])))
-                       ]]
+        preds_cases = [
+            [
+                KIEDataSample(
+                    pred_instances=InstanceData(
+                        labels=torch.LongTensor([0, 1, 2])))
+            ],
+            [
+                KIEDataSample(
+                    pred_instances=InstanceData(
+                        labels=torch.LongTensor([0, 1]))),
+                KIEDataSample(
+                    pred_instances=InstanceData(labels=torch.LongTensor([2])))
+            ]
+        ]
 
         # num_classes < the maximum label index
         metric = F1Metric(num_classes=3, ignored_classes=[1])

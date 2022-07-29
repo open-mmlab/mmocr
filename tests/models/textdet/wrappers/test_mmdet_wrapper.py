@@ -7,7 +7,7 @@ from mmdet.testing import demo_mm_inputs
 from mmengine.config import Config
 from mmengine.data import InstanceData
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
 
 

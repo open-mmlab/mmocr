@@ -6,7 +6,7 @@ import torch
 from mmengine import InstanceData
 from torch import Tensor, nn
 
-from mmocr.data import KIEDataSample
+from mmocr.structures import KIEDataSample
 from mmocr.registry import MODELS
 
 
@@ -51,9 +51,9 @@ class SDMGRPostProcessor:
         self.value_node_idx = value_node_idx
         self.softmax = nn.Softmax(dim=-1)
 
-    def __call__(self, preds: Tuple[Tensor, Tensor],
-                 batch_data_samples: List[KIEDataSample]
-                 ) -> List[KIEDataSample]:
+    def __call__(
+            self, preds: Tuple[Tensor, Tensor],
+            batch_data_samples: List[KIEDataSample]) -> List[KIEDataSample]:
         """Postprocess raw outputs from SDMGR heads and pack the results into a
         list of KIEDataSample.
 

@@ -6,7 +6,7 @@ import torch.nn as nn
 from mmengine.model import Sequential
 from torch import Tensor
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
 

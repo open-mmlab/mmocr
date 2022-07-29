@@ -15,7 +15,7 @@ class TextRecogDataSample(BaseDataElement):
          >>> import torch
          >>> import numpy as np
          >>> from mmengine.data import LabelData
-         >>> from mmocr.structures import TextRecogDataSample
+         >>> from from mmocr.structures import TextRecogDataSample
          >>> # gt_text
          >>> data_sample = TextRecogDataSample()
          >>> img_meta = dict(img_shape=(800, 1196, 3),

@@ -8,7 +8,7 @@ import torch.nn as nn
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmengine.model import ModuleList
 
-from mmocr.data import TextRecogDataSample
+from mmocr.structures import TextRecogDataSample
 from mmocr.models.common.modules import PositionalEncoding
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS
@@ -199,11 +199,12 @@ class MasterDecoder(BaseDecoder):
         x = self.norm(x)
         return self.cls(x)
 
-    def forward_train(self,
-                      feat: Optional[torch.Tensor] = None,
-                      out_enc: torch.Tensor = None,
-                      data_samples: Sequence[TextRecogDataSample] = None
-                      ) -> torch.Tensor:
+    def forward_train(
+            self,
+            feat: Optional[torch.Tensor] = None,
+            out_enc: torch.Tensor = None,
+            data_samples: Sequence[TextRecogDataSample] = None
+    ) -> torch.Tensor:
         """Forward for training. Source mask will not be used here.
 
         Args:
@@ -235,11 +236,12 @@ class MasterDecoder(BaseDecoder):
         tgt_mask = self.make_target_mask(trg_seq, device=feat.device)
         return self.decode(trg_seq, feat, src_mask, tgt_mask)
 
-    def forward_test(self,
-                     feat: Optional[torch.Tensor] = None,
-                     out_enc: torch.Tensor = None,
-                     data_samples: Sequence[TextRecogDataSample] = None
-                     ) -> torch.Tensor:
+    def forward_test(
+            self,
+            feat: Optional[torch.Tensor] = None,
+            out_enc: torch.Tensor = None,
+            data_samples: Sequence[TextRecogDataSample] = None
+    ) -> torch.Tensor:
         """Forward for testing.
 
         Args:
