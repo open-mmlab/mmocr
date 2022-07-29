@@ -91,7 +91,7 @@ git push origin main
 
 - Create a feature branch
 
-- ```bash
+  ```bash
   git checkout -b feature/iss_<index> main
   # index is the issue index on github above
   ```

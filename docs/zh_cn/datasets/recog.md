@@ -195,7 +195,7 @@ python tools/data/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat
 - 第二步：下载 [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)
 - 第三步：
 
-```bash
+`````bash
 mkdir SynthAdd && cd SynthAdd
 
 mv /path/to/SynthText_Add.zip .
@@ -207,100 +207,90 @@ mv /path/to/label.txt .
 # 创建软链接
 cd /path/to/mmocr/data/mixture
 
-ln -s /path/to/SynthAdd SynthAdd
-```
-
 ````{tip}
 运行以下命令，可以把 `.txt` 格式的标注文件转换成 `.lmdb` 格式：
 ```bash
 python tools/data/utils/txt2lmdb.py -i <txt_label_path> -o <lmdb_label_path>
-```
+`````
+
 例如：
+
 ```bash
 python tools/data/utils/txt2lmdb.py -i data/mixture/Syn90k/label.txt -o data/mixture/Syn90k/label.lmdb
 ```
+
 ````
 
 ### TextOCR
+  - 第一步：下载 [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip)，[TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) 和 [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) 到 `textocr/` 目录.
+  ```bash
+  mkdir textocr && cd textocr
 
-- 第一步：下载 [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip)，[TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) 和 [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) 到 `textocr/` 目录.
+  # 下载 TextOCR 数据集
+  wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
+  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json
+  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
 
-```bash
-mkdir textocr && cd textocr
+  # 对于数据图像
+  unzip -q train_val_images.zip
+  mv train_images train
+  ```
+  - 第二步：用四个并行进程剪裁图像然后生成  `train_label.txt`，`val_label.txt` ，可以使用以下命令：
+  ```bash
+  python tools/data/textrecog/textocr_converter.py /path/to/textocr 4
+  ```
 
-# 下载 TextOCR 数据集
-wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
-wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json
-wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
-
-# 对于数据图像
-unzip -q train_val_images.zip
-mv train_images train
-```
-
-- 第二步：用四个并行进程剪裁图像然后生成  `train_label.txt`，`val_label.txt` ，可以使用以下命令：
-
-```bash
-python tools/data/textrecog/textocr_converter.py /path/to/textocr 4
-```
 
 ### Totaltext
+  - 第一步：从 [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) 下载 `totaltext.zip`，然后从 [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) 下载 `groundtruth_text.zip` （我们建议下载 `.mat` 格式的标注文件，因为我们提供的 `totaltext_converter.py` 标注格式转换工具只支持 `.mat` 文件）
+  ```bash
+  mkdir totaltext && cd totaltext
+  mkdir imgs && mkdir annotations
 
-- 第一步：从 [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) 下载 `totaltext.zip`，然后从 [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) 下载 `groundtruth_text.zip` （我们建议下载 `.mat` 格式的标注文件，因为我们提供的 `totaltext_converter.py` 标注格式转换工具只支持 `.mat` 文件）
+  # 对于图像数据
+  # 在 ./totaltext 目录下运行
+  unzip totaltext.zip
+  mv Images/Train imgs/training
+  mv Images/Test imgs/test
 
-```bash
-mkdir totaltext && cd totaltext
-mkdir imgs && mkdir annotations
-
-# 对于图像数据
-# 在 ./totaltext 目录下运行
-unzip totaltext.zip
-mv Images/Train imgs/training
-mv Images/Test imgs/test
-
-# 对于标注文件
-unzip groundtruth_text.zip
-cd Groundtruth
-mv Polygon/Train ../annotations/training
-mv Polygon/Test ../annotations/test
-```
-
-- 第二步：用以下命令生成经剪裁后的标注文件 `train_label.txt` 和 `test_label.txt` （剪裁后的图像会被保存在目录 `data/totaltext/dst_imgs/`）：
-
-```bash
-python tools/data/textrecog/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
-```
+  # 对于标注文件
+  unzip groundtruth_text.zip
+  cd Groundtruth
+  mv Polygon/Train ../annotations/training
+  mv Polygon/Test ../annotations/test
+  ```
+  - 第二步：用以下命令生成经剪裁后的标注文件 `train_label.txt` 和 `test_label.txt` （剪裁后的图像会被保存在目录 `data/totaltext/dst_imgs/`）：
+  ```bash
+  python tools/data/textrecog/totaltext_converter.py /path/to/totaltext -o /path/to/totaltext --split-list training test
+  ```
 
 ### OpenVINO
+  - 第零步：安装 [awscli](https://aws.amazon.com/cli/)。
+  - 第一步：下载 [Open Images](https://github.com/cvdfoundation/open-images-dataset#download-images-with-bounding-boxes-annotations) 的子数据集 `train_1`、 `train_2`、 `train_5`、 `train_f` 及 `validation` 至 `openvino/`。
+  ```bash
+  mkdir openvino && cd openvino
 
-- 第零步：安装 [awscli](https://aws.amazon.com/cli/)。
-- 第一步：下载 [Open Images](https://github.com/cvdfoundation/open-images-dataset#download-images-with-bounding-boxes-annotations) 的子数据集 `train_1`、 `train_2`、 `train_5`、 `train_f` 及 `validation` 至 `openvino/`。
+  # 下载 Open Images 的子数据集
+  for s in 1 2 5 f; do
+    aws s3 --no-sign-request cp s3://open-images-dataset/tar/train_${s}.tar.gz .
+  done
+  aws s3 --no-sign-request cp s3://open-images-dataset/tar/validation.tar.gz .
 
-```bash
-mkdir openvino && cd openvino
+  # 下载标注文件
+  for s in 1 2 5 f; do
+    wget https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text/text_spotting_openimages_v5_train_${s}.json
+  done
+  wget https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text/text_spotting_openimages_v5_validation.json
 
-# 下载 Open Images 的子数据集
-for s in 1 2 5 f; do
-  aws s3 --no-sign-request cp s3://open-images-dataset/tar/train_${s}.tar.gz .
-done
-aws s3 --no-sign-request cp s3://open-images-dataset/tar/validation.tar.gz .
-
-# 下载标注文件
-for s in 1 2 5 f; do
-  wget https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text/text_spotting_openimages_v5_train_${s}.json
-done
-wget https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text/text_spotting_openimages_v5_validation.json
-
-# 解压数据集
-mkdir -p openimages_v5/val
-for s in 1 2 5 f; do
-  tar zxf train_${s}.tar.gz -C openimages_v5
-done
-tar zxf validation.tar.gz -C openimages_v5/val
-```
-
-- 第二步： 运行以下的命令，以用4个进程生成标注 `train_{1,2,5,f}_label.txt` 和 `val_label.txt` 并裁剪原图：
-
-```bash
-python tools/data/textrecog/openvino_converter.py /path/to/openvino 4
-```
+  # 解压数据集
+  mkdir -p openimages_v5/val
+  for s in 1 2 5 f; do
+    tar zxf train_${s}.tar.gz -C openimages_v5
+  done
+  tar zxf validation.tar.gz -C openimages_v5/val
+  ```
+  - 第二步： 运行以下的命令，以用4个进程生成标注 `train_{1,2,5,f}_label.txt` 和 `val_label.txt` 并裁剪原图：
+  ```bash
+  python tools/data/textrecog/openvino_converter.py /path/to/openvino 4
+  ```
+````

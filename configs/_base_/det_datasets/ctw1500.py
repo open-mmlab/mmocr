@@ -1,18 +1,23 @@
-dataset_type = 'IcdarDataset'
-data_root = 'data/ctw1500'
+data_root = 'data/det/ctw1500'
 
-train = dict(
-    type=dataset_type,
-    ann_file=f'{data_root}/instances_training.json',
-    img_prefix=f'{data_root}/imgs',
+train_anno_path = 'instances_training.json'
+test_anno_path = 'instances_test.json'
+
+train_dataset = dict(
+    type='OCRDataset',
+    data_root=data_root,
+    ann_file=train_anno_path,
+    data_prefix=dict(img_path='imgs/'),
+    filter_cfg=dict(filter_empty_gt=True, min_size=32),
     pipeline=None)
 
-test = dict(
-    type=dataset_type,
-    ann_file=f'{data_root}/instances_test.json',
-    img_prefix=f'{data_root}/imgs',
+test_dataset = dict(
+    type='OCRDataset',
+    data_root=data_root,
+    ann_file=test_anno_path,
+    data_prefix=dict(img_path='imgs/'),
+    test_mode=True,
     pipeline=None)
 
-train_list = [train]
-
-test_list = [test]
+train_list = [train_dataset]
+test_list = [test_dataset]

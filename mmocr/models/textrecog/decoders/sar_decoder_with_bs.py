@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 
 import mmocr.utils as utils
-from mmocr.models.builder import DECODERS
+from mmocr.registry import MODELS
 from . import ParallelSARDecoder
 
 
@@ -31,7 +31,7 @@ class DecodeNode:
         return accu_score
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class ParallelSARDecoderWithBS(ParallelSARDecoder):
     """Parallel Decoder module with beam-search in SAR.
 

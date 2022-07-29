@@ -1,16 +1,18 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import math
+from typing import Dict, Optional, Sequence, Union
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
-from mmocr.models.builder import DECODERS
+from mmocr.data import TextRecogDataSample
+from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.models.textrecog.layers import DotProductAttentionLayer
+from mmocr.registry import MODELS
 from .base_decoder import BaseDecoder
 
 
-@DECODERS.register_module()
+@MODELS.register_module()
 class SequenceAttentionDecoder(BaseDecoder):
     """Sequence attention decoder for RobustScanner.
 
@@ -18,56 +20,62 @@ class SequenceAttentionDecoder(BaseDecoder):
     Robust Text Recognition <https://arxiv.org/abs/2007.07542>`_
 
     Args:
-        num_classes (int): Number of output classes :math:`C`.
-        rnn_layers (int): Number of RNN layers.
+        dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
+            the instance of `Dictionary`.
+        module_loss (dict, optional): Config to build module_loss. Defaults
+            to None.
+        postprocessor (dict, optional): Config to build postprocessor.
+            Defaults to None.
+        rnn_layers (int): Number of RNN layers. Defaults to 2.
         dim_input (int): Dimension :math:`D_i` of input vector ``feat``.
+            Defaults to 512.
         dim_model (int): Dimension :math:`D_m` of the model. Should also be the
-            same as encoder output vector ``out_enc``.
+            same as encoder output vector ``out_enc``. Defaults to 128.
         max_seq_len (int): Maximum output sequence length :math:`T`.
-        start_idx (int): The index of `<SOS>`.
+            Defaults to 40.
         mask (bool): Whether to mask input features according to
-            ``img_meta['valid_ratio']``.
-        padding_idx (int): The index of `<PAD>`.
-        dropout (float): Dropout rate.
-        return_feature (bool): Return feature or logits as the result.
+            ``data_sample.valid_ratio``. Defaults to True.
+        dropout (float): Dropout rate for LSTM layer. Defaults to 0.
+        return_feature (bool): Return feature or logic as the result.
+            Defaults to True.
         encode_value (bool): Whether to use the output of encoder ``out_enc``
             as `value` of attention layer. If False, the original feature
-            ``feat`` will be used.
+            ``feat`` will be used. Defaults to False.
         init_cfg (dict or list[dict], optional): Initialization configs.
-
-    Warning:
-        This decoder will not predict the final class which is assumed to be
-        `<PAD>`. Therefore, its output size is always :math:`C - 1`. `<PAD>`
-        is also ignored by loss as specified in
-        :obj:`mmocr.models.textrecog.recognizer.EncodeDecodeRecognizer`.
+            Defaults to None.
     """
 
     def __init__(self,
-                 num_classes=None,
-                 rnn_layers=2,
-                 dim_input=512,
-                 dim_model=128,
-                 max_seq_len=40,
-                 start_idx=0,
-                 mask=True,
-                 padding_idx=None,
-                 dropout=0,
-                 return_feature=False,
-                 encode_value=False,
-                 init_cfg=None):
-        super().__init__(init_cfg=init_cfg)
+                 dictionary: Union[Dictionary, Dict],
+                 module_loss: Optional[Dict] = None,
+                 postprocessor: Optional[Dict] = None,
+                 rnn_layers: int = 2,
+                 dim_input: int = 512,
+                 dim_model: int = 128,
+                 max_seq_len: int = 40,
+                 mask: bool = True,
+                 dropout: int = 0,
+                 return_feature: bool = True,
+                 encode_value: bool = False,
+                 init_cfg: Optional[Union[Dict,
+                                          Sequence[Dict]]] = None) -> None:
+        super().__init__(
+            dictionary=dictionary,
+            module_loss=module_loss,
+            postprocessor=postprocessor,
+            max_seq_len=max_seq_len,
+            init_cfg=init_cfg)
 
-        self.num_classes = num_classes
         self.dim_input = dim_input
         self.dim_model = dim_model
         self.return_feature = return_feature
         self.encode_value = encode_value
-        self.max_seq_len = max_seq_len
-        self.start_idx = start_idx
         self.mask = mask
 
         self.embedding = nn.Embedding(
-            self.num_classes, self.dim_model, padding_idx=padding_idx)
+            self.dictionary.num_classes,
+            self.dim_model,
+            padding_idx=self.dictionary.padding_idx)
 
         self.sequence_layer = nn.LSTM(
             input_size=dim_model,
@@ -80,11 +88,17 @@ class SequenceAttentionDecoder(BaseDecoder):
 
         self.prediction = None
         if not self.return_feature:
-            pred_num_classes = num_classes - 1
             self.prediction = nn.Linear(
-                dim_model if encode_value else dim_input, pred_num_classes)
+                dim_model if encode_value else dim_input,
+                self.dictionary.num_classes)
+        self.softmax = nn.Softmax(dim=-1)
 
-    def forward_train(self, feat, out_enc, targets_dict, img_metas):
+    def forward_train(
+        self,
+        feat: torch.Tensor,
+        out_enc: torch.Tensor,
+        data_samples: Optional[Sequence[TextRecogDataSample]] = None
+    ) -> torch.Tensor:
         """
         Args:
             feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.
@@ -93,21 +107,26 @@ class SequenceAttentionDecoder(BaseDecoder):
             targets_dict (dict): A dict with the key ``padded_targets``, a
                 tensor of shape :math:`(N, T)`. Each element is the index of a
                 character.
-            img_metas (dict): A dict that contains meta information of input
-                images. Preferably with the key ``valid_ratio``.
+            data_samples (list[TextRecogDataSample], optional): Batch of
+                TextRecogDataSample, containing gt_text information. Defaults
+                to None.
 
         Returns:
-            Tensor: A raw logit tensor of shape :math:`(N, T, C-1)` if
+            Tensor: A raw logit tensor of shape :math:`(N, T, C)` if
             ``return_feature=False``. Otherwise it would be the hidden feature
             before the prediction projection layer, whose shape is
             :math:`(N, T, D_m)`.
         """
+
         valid_ratios = [
-            img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+            data_sample.get('valid_ratio', 1.0) for data_sample in data_samples
         ] if self.mask else None
 
-        targets = targets_dict['padded_targets'].to(feat.device)
-        tgt_embedding = self.embedding(targets)
+        padded_targets = [
+            data_sample.gt_text.padded_indexes for data_sample in data_samples
+        ]
+        padded_targets = torch.stack(padded_targets, dim=0).to(feat.device)
+        tgt_embedding = self.embedding(padded_targets)
 
         n, c_enc, h, w = out_enc.size()
         assert c_enc == self.dim_model
@@ -144,29 +163,33 @@ class SequenceAttentionDecoder(BaseDecoder):
 
         return out
 
-    def forward_test(self, feat, out_enc, img_metas):
+    def forward_test(self, feat: torch.Tensor, out_enc: torch.Tensor,
+                     data_samples: Optional[Sequence[TextRecogDataSample]]
+                     ) -> torch.Tensor:
         """
         Args:
             feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.
             out_enc (Tensor): Encoder output of shape
                 :math:`(N, D_m, H, W)`.
-            img_metas (dict): A dict that contains meta information of input
-                images. Preferably with the key ``valid_ratio``.
+            data_samples (list[TextRecogDataSample], optional): Batch of
+                TextRecogDataSample, containing gt_text information. Defaults
+                to None.
 
         Returns:
-            Tensor: The output logit sequence tensor of shape
-            :math:`(N, T, C-1)`.
+            Tensor: Character probabilities. of shape
+            :math:`(N, self.max_seq_len, C)` where :math:`C` is
+            ``num_classes``.
         """
         seq_len = self.max_seq_len
         batch_size = feat.size(0)
 
         decode_sequence = (feat.new_ones(
-            (batch_size, seq_len)) * self.start_idx).long()
-
+            (batch_size, seq_len)) * self.dictionary.start_idx).long()
+        assert not self.return_feature
         outputs = []
         for i in range(seq_len):
             step_out = self.forward_test_step(feat, out_enc, decode_sequence,
-                                              i, img_metas)
+                                              i, data_samples)
             outputs.append(step_out)
             _, max_idx = torch.max(step_out, dim=1, keepdim=False)
             if i < seq_len - 1:
@@ -174,10 +197,12 @@ class SequenceAttentionDecoder(BaseDecoder):
 
         outputs = torch.stack(outputs, 1)
 
-        return outputs
+        return self.softmax(outputs)
 
-    def forward_test_step(self, feat, out_enc, decode_sequence, current_step,
-                          img_metas):
+    def forward_test_step(self, feat: torch.Tensor, out_enc: torch.Tensor,
+                          decode_sequence: torch.Tensor, current_step: int,
+                          data_samples: Sequence[TextRecogDataSample]
+                          ) -> torch.Tensor:
         """
         Args:
             feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.
@@ -186,15 +211,16 @@ class SequenceAttentionDecoder(BaseDecoder):
             decode_sequence (Tensor): Shape :math:`(N, T)`. The tensor that
                 stores history decoding result.
             current_step (int): Current decoding step.
-            img_metas (dict): A dict that contains meta information of input
-                images. Preferably with the key ``valid_ratio``.
+            data_samples (list[TextRecogDataSample], optional): Batch of
+                TextRecogDataSample, containing gt_text information. Defaults
+                to None.
 
         Returns:
-            Tensor: Shape :math:`(N, C-1)`. The logit tensor of predicted
+            Tensor: Shape :math:`(N, C)`. The logit tensor of predicted
             tokens at current time step.
         """
         valid_ratios = [
-            img_meta.get('valid_ratio', 1.0) for img_meta in img_metas
+            img_meta.get('valid_ratio', 1.0) for img_meta in data_samples
         ] if self.mask else None
 
         embed = self.embedding(decode_sequence)
@@ -228,10 +254,7 @@ class SequenceAttentionDecoder(BaseDecoder):
 
         out = attn_out[:, :, current_step]
 
-        if self.return_feature:
-            return out
-
-        out = self.prediction(out)
-        out = F.softmax(out, dim=-1)
+        if not self.return_feature:
+            out = self.prediction(out)
 
         return out
