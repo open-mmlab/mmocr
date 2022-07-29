@@ -17,7 +17,7 @@ class ABIVisionDecoder(BaseDecoder):
     """Converts visual features into text characters.
 
     Implementation of VisionEncoder in
-        `ABINet <https://arxiv.org/abs/1910.04396>`_.
+        `ABINet <https://arxiv.org/pdf/2103.06495`_.
 
     Args:
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
