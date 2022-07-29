@@ -9,7 +9,7 @@ from mmengine.data import InstanceData
 from numpy.linalg import norm
 from skimage.morphology import skeletonize
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import fill_hole
 from .base_postprocessor import BaseTextDetPostProcessor
@@ -54,9 +54,9 @@ class TextSnakePostprocessor(BaseTextDetPostProcessor):
         self.disk_overlap_thr = disk_overlap_thr
         self.radius_shrink_ratio = radius_shrink_ratio
 
-    def get_text_instances(self, pred_results: torch.Tensor,
-                           data_sample: TextDetDataSample
-                           ) -> TextDetDataSample:
+    def get_text_instances(
+            self, pred_results: torch.Tensor,
+            data_sample: TextDetDataSample) -> TextDetDataSample:
         """
         Args:
             pred_results (torch.Tensor): Prediction map with

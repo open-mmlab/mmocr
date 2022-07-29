@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Union
 import torch
 import torch.nn as nn
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
 
@@ -55,10 +55,10 @@ class TextSnakeHead(BaseTextDetHead):
             stride=1,
             padding=0)
 
-    def forward(self,
-                inputs: torch.Tensor,
-                data_samples: Optional[List[TextDetDataSample]] = None
-                ) -> Dict:
+    def forward(
+            self,
+            inputs: torch.Tensor,
+            data_samples: Optional[List[TextDetDataSample]] = None) -> Dict:
         """
         Args:
             inputs (torch.Tensor): Shape :math:`(N, C_{in}, H, W)`, where

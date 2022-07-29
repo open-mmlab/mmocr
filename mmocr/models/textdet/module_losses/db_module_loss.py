@@ -8,7 +8,7 @@ from mmdet.models.utils import multi_apply
 from shapely.geometry import Polygon
 from torch import Tensor, nn
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import offset_polygon
 from mmocr.utils.typing import ArrayLike

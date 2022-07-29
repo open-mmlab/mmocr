@@ -7,7 +7,7 @@ import torch
 from mmengine import InstanceData
 from numpy.fft import ifft
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import fill_hole
 from .base_postprocessor import BaseTextDetPostProcessor
@@ -92,9 +92,9 @@ class FCEPostprocessor(BaseTextDetPostProcessor):
             results.append(batch_list)
         return results
 
-    def get_text_instances(self, pred_results: Sequence[Dict],
-                           data_sample: TextDetDataSample
-                           ) -> TextDetDataSample:
+    def get_text_instances(
+            self, pred_results: Sequence[Dict],
+            data_sample: TextDetDataSample) -> TextDetDataSample:
         """Get text instance predictions of one image.
 
         Args:

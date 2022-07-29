@@ -5,7 +5,7 @@ from typing import Dict, Optional, Sequence, Union
 import torch
 import torch.nn as nn
 
-from mmocr.data import TextRecogDataSample
+from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.models.textrecog.layers import (DotProductAttentionLayer,
                                            PositionAwareLayer)
@@ -45,19 +45,19 @@ class PositionAttentionDecoder(BaseDecoder):
             Defaults to None.
     """
 
-    def __init__(self,
-                 dictionary: Union[Dictionary, Dict],
-                 module_loss: Optional[Dict] = None,
-                 postprocessor: Optional[Dict] = None,
-                 rnn_layers: int = 2,
-                 dim_input: int = 512,
-                 dim_model: int = 128,
-                 max_seq_len: int = 40,
-                 mask: bool = True,
-                 return_feature: bool = True,
-                 encode_value: bool = False,
-                 init_cfg: Optional[Union[Dict,
-                                          Sequence[Dict]]] = None) -> None:
+    def __init__(
+            self,
+            dictionary: Union[Dictionary, Dict],
+            module_loss: Optional[Dict] = None,
+            postprocessor: Optional[Dict] = None,
+            rnn_layers: int = 2,
+            dim_input: int = 512,
+            dim_model: int = 128,
+            max_seq_len: int = 40,
+            mask: bool = True,
+            return_feature: bool = True,
+            encode_value: bool = False,
+            init_cfg: Optional[Union[Dict, Sequence[Dict]]] = None) -> None:
         super().__init__(
             dictionary=dictionary,
             module_loss=module_loss,
@@ -85,11 +85,11 @@ class PositionAttentionDecoder(BaseDecoder):
                 self.dictionary.num_classes)
         self.softmax = nn.Softmax(dim=-1)
 
-    def _get_position_index(self,
-                            length: int,
-                            batch_size: int,
-                            device: Optional[torch.device] = None
-                            ) -> torch.Tensor:
+    def _get_position_index(
+            self,
+            length: int,
+            batch_size: int,
+            device: Optional[torch.device] = None) -> torch.Tensor:
         """Get position index for position attention.
 
         Args:
@@ -105,9 +105,9 @@ class PositionAttentionDecoder(BaseDecoder):
         position_index = position_index.long()
         return position_index
 
-    def forward_train(self, feat: torch.Tensor, out_enc: torch.Tensor,
-                      data_samples: Sequence[TextRecogDataSample]
-                      ) -> torch.Tensor:
+    def forward_train(
+            self, feat: torch.Tensor, out_enc: torch.Tensor,
+            data_samples: Sequence[TextRecogDataSample]) -> torch.Tensor:
         """
         Args:
             feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.

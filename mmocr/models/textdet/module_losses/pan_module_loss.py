@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from mmdet.models.utils import multi_apply
 from torch import nn
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
 from .text_kernel_mixin import TextKernelMixin
 
@@ -140,8 +140,9 @@ class PANModuleLoss(nn.Module, TextKernelMixin):
         gt_masks = torch.stack(gt_masks, dim=0)
         return gt_kernels, gt_masks
 
-    def _get_target_single(self, data_sample: TextDetDataSample
-                           ) -> Tuple[torch.Tensor, torch.Tensor]:
+    def _get_target_single(
+            self, data_sample: TextDetDataSample
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Generate loss target from a data sample.
 
         Args:

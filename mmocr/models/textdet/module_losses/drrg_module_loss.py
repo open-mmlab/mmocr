@@ -11,7 +11,7 @@ from numpy import ndarray
 from numpy.linalg import norm
 from torch import Tensor
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import check_argument
 from .textsnake_module_loss import TextSnakeModuleLoss
@@ -288,12 +288,9 @@ class DRRGModuleLoss(TextSnakeModuleLoss):
          gt_bot_height_map, gt_sin_map,
          gt_cos_map) = self._generate_center_mask_attrib_maps((h, w), polygons)
 
-        gt_comp_attribs = self._generate_comp_attribs(center_lines,
-                                                      gt_text_mask,
-                                                      gt_center_region_mask,
-                                                      gt_top_height_map,
-                                                      gt_bot_height_map,
-                                                      gt_sin_map, gt_cos_map)
+        gt_comp_attribs = self._generate_comp_attribs(
+            center_lines, gt_text_mask, gt_center_region_mask,
+            gt_top_height_map, gt_bot_height_map, gt_sin_map, gt_cos_map)
 
         return (gt_text_mask, gt_center_region_mask, gt_mask,
                 gt_top_height_map, gt_bot_height_map, gt_sin_map, gt_cos_map,

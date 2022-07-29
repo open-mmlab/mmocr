@@ -4,7 +4,7 @@ from typing import List, Optional
 import torch
 import torch.nn as nn
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import check_argument
 from .base_textdet_head import BaseTextDetHead
@@ -57,10 +57,11 @@ class PANHead(BaseTextDetHead):
         self.conv2 = nn.Conv2d(
             hidden_dim, out_channel, kernel_size=1, stride=1, padding=0)
 
-    def forward(self,
-                inputs: torch.Tensor,
-                data_samples: Optional[List[TextDetDataSample]] = None
-                ) -> torch.Tensor:
+    def forward(
+        self,
+        inputs: torch.Tensor,
+        data_samples: Optional[List[TextDetDataSample]] = None
+    ) -> torch.Tensor:
         r"""PAN head forward.
         Args:
             inputs (list[Tensor] | Tensor): Each tensor has the shape of

@@ -8,7 +8,7 @@ from mmengine import InstanceData
 from shapely.geometry import Polygon
 from torch import Tensor
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils import offset_polygon
 from .base_postprocessor import BaseTextDetPostProcessor
@@ -59,9 +59,9 @@ class DBPostprocessor(BaseTextDetPostProcessor):
         self.epsilon_ratio = epsilon_ratio
         self.max_candidates = max_candidates
 
-    def get_text_instances(self, pred_results: Tuple[Tensor, Tensor, Tensor],
-                           data_sample: TextDetDataSample
-                           ) -> TextDetDataSample:
+    def get_text_instances(
+            self, pred_results: Tuple[Tensor, Tensor, Tensor],
+            data_sample: TextDetDataSample) -> TextDetDataSample:
         """Get text instance predictions of one image.
 
         Args:

@@ -4,7 +4,7 @@ from typing import Sequence, Tuple
 
 import torch
 
-from mmocr.data import TextRecogDataSample
+from mmocr.structures import TextRecogDataSample
 from mmocr.registry import MODELS
 from .base_textrecog_postprocessor import BaseTextRecogPostprocessor
 
@@ -14,9 +14,9 @@ from .base_textrecog_postprocessor import BaseTextRecogPostprocessor
 class CTCPostProcessor(BaseTextRecogPostprocessor):
     """PostProcessor for CTC."""
 
-    def get_single_prediction(self, probs: torch.Tensor,
-                              data_sample: TextRecogDataSample
-                              ) -> Tuple[Sequence[int], Sequence[float]]:
+    def get_single_prediction(
+        self, probs: torch.Tensor, data_sample: TextRecogDataSample
+    ) -> Tuple[Sequence[int], Sequence[float]]:
         """Convert the output probabilities of a single image to index and
         score.
 

@@ -4,7 +4,7 @@ from typing import Dict, Sequence, Tuple, Union
 import torch
 import torch.nn.functional as F
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
 from . import PANModuleLoss
 

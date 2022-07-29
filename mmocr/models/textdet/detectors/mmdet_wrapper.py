@@ -8,7 +8,7 @@ from mmdet.structures.mask import bitmap_to_polygon
 from mmengine import InstanceData
 from mmengine.model import BaseModel
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils.bbox_utils import bbox2poly
 
@@ -74,8 +74,8 @@ class MMDetWrapper(BaseModel):
 
         return results
 
-    def adapt_predictions(self, data: List[DetDataSample]
-                          ) -> List[TextDetDataSample]:
+    def adapt_predictions(
+            self, data: List[DetDataSample]) -> List[TextDetDataSample]:
         """Convert Instance datas from MMDet into MMOCR's format.
 
         Args:

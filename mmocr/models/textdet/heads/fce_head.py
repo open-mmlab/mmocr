@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 from mmdet.models.utils import multi_apply
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
 
@@ -74,10 +74,10 @@ class FCEHead(BaseTextDetHead):
             stride=1,
             padding=1)
 
-    def forward(self,
-                inputs: List[torch.Tensor],
-                data_samples: Optional[List[TextDetDataSample]] = None
-                ) -> Dict:
+    def forward(
+            self,
+            inputs: List[torch.Tensor],
+            data_samples: Optional[List[TextDetDataSample]] = None) -> Dict:
         """
         Args:
             inputs (List[Tensor]): Each tensor has the shape of :math:`(N, C_i,

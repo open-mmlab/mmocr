@@ -5,7 +5,7 @@ from typing import Dict, Optional, Sequence, Union
 import torch
 import torch.nn as nn
 
-from mmocr.data import TextRecogDataSample
+from mmocr.structures import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.models.textrecog.layers import DotProductAttentionLayer
 from mmocr.registry import MODELS
@@ -45,20 +45,20 @@ class SequenceAttentionDecoder(BaseDecoder):
             Defaults to None.
     """
 
-    def __init__(self,
-                 dictionary: Union[Dictionary, Dict],
-                 module_loss: Optional[Dict] = None,
-                 postprocessor: Optional[Dict] = None,
-                 rnn_layers: int = 2,
-                 dim_input: int = 512,
-                 dim_model: int = 128,
-                 max_seq_len: int = 40,
-                 mask: bool = True,
-                 dropout: int = 0,
-                 return_feature: bool = True,
-                 encode_value: bool = False,
-                 init_cfg: Optional[Union[Dict,
-                                          Sequence[Dict]]] = None) -> None:
+    def __init__(
+            self,
+            dictionary: Union[Dictionary, Dict],
+            module_loss: Optional[Dict] = None,
+            postprocessor: Optional[Dict] = None,
+            rnn_layers: int = 2,
+            dim_input: int = 512,
+            dim_model: int = 128,
+            max_seq_len: int = 40,
+            mask: bool = True,
+            dropout: int = 0,
+            return_feature: bool = True,
+            encode_value: bool = False,
+            init_cfg: Optional[Union[Dict, Sequence[Dict]]] = None) -> None:
         super().__init__(
             dictionary=dictionary,
             module_loss=module_loss,
@@ -163,9 +163,10 @@ class SequenceAttentionDecoder(BaseDecoder):
 
         return out
 
-    def forward_test(self, feat: torch.Tensor, out_enc: torch.Tensor,
-                     data_samples: Optional[Sequence[TextRecogDataSample]]
-                     ) -> torch.Tensor:
+    def forward_test(
+            self, feat: torch.Tensor, out_enc: torch.Tensor,
+            data_samples: Optional[Sequence[TextRecogDataSample]]
+    ) -> torch.Tensor:
         """
         Args:
             feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.
@@ -199,10 +200,10 @@ class SequenceAttentionDecoder(BaseDecoder):
 
         return self.softmax(outputs)
 
-    def forward_test_step(self, feat: torch.Tensor, out_enc: torch.Tensor,
-                          decode_sequence: torch.Tensor, current_step: int,
-                          data_samples: Sequence[TextRecogDataSample]
-                          ) -> torch.Tensor:
+    def forward_test_step(
+            self, feat: torch.Tensor, out_enc: torch.Tensor,
+            decode_sequence: torch.Tensor, current_step: int,
+            data_samples: Sequence[TextRecogDataSample]) -> torch.Tensor:
         """
         Args:
             feat (Tensor): Tensor of shape :math:`(N, D_i, H, W)`.
