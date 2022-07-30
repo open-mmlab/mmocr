@@ -4,6 +4,7 @@ import os
 import shutil
 import urllib
 import warnings
+from typing import List
 
 import cv2
 import mmcv
@@ -13,6 +14,8 @@ from matplotlib import pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 
 import mmocr.utils as utils
+from mmocr.data.textdet_data_sample import TextDetDataSample
+from mmocr.data.textrecog_data_sample import TextRecogDataSample
 
 
 # TODO remove after KieVisualizer and TextSpotterVisualizer
@@ -22,7 +25,6 @@ def overlay_mask_img(img, mask):
     Args:
         img (ndarray): The input image.
         mask (ndarray): The instance mask.
-
     Returns:
         img (ndarray): The output image with instance boundaries on it.
     """
@@ -565,7 +567,6 @@ def draw_texts_by_pil(img,
         fill_color (tuple(int), optional): Fill color for text.
         draw_pos (list[tuple(int)], optional): Start point to draw each text.
         return_text_size (bool): If True, return the list of text size.
-
     Returns:
         (np.ndarray, list[tuple]) or np.ndarray: Return a tuple
         ``(out_img, text_sizes)``, where ``out_img`` is the output image
@@ -632,7 +633,6 @@ def is_contain_chinese(check_str):
 
     Args:
         check_str (str): String to be checked.
-
     Return True if contains Chinese, else False.
     """
     for ch in check_str:
@@ -641,27 +641,30 @@ def is_contain_chinese(check_str):
     return False
 
 
-def det_recog_show_result(img, end2end_res, out_file=None):
+def det_recog_show_result(img: np.ndarray,
+                          det_results: TextDetDataSample,
+                          recog_results: List[TextRecogDataSample],
+                          out_file=None):
     """Draw `result`(boxes and texts) on `img`.
 
     Args:
-        img (str or np.ndarray): The image to be displayed.
-        end2end_res (dict): Text detect and recognize results.
+        img (np.ndarray): The image to be displayed.
+        det_results (TextDetDataSample): The detection results.
+        recog_results (List[TextRecogDataSample]): The recognition results.
         out_file (str): Image path where the visualized image should be saved.
     Return:
         out_img (np.ndarray): Visualized image.
     """
-    img = mmcv.imread(img)
-    boxes, texts = [], []
-    for res in end2end_res['result']:
-        boxes.append(res['box'])
-        texts.append(res['text'])
-    box_vis_img = draw_polygons(img, boxes)
+    polygons = det_results[0].pred_instances.polygons
+    texts = []
+    for i, polygon in enumerate(polygons):
+        texts.append(recog_results[i].pred_text.item)
+    box_vis_img = draw_polygons(img, polygons)
 
     if is_contain_chinese(''.join(texts)):
-        text_vis_img = draw_texts_by_pil(img, texts, boxes)
+        text_vis_img = draw_texts_by_pil(img, texts, polygons)
     else:
-        text_vis_img = draw_texts(img, texts, boxes)
+        text_vis_img = draw_texts(img, texts, polygons)
 
     h, w = img.shape[:2]
     out_img = np.ones((h, w * 2, 3), dtype=np.uint8)
@@ -676,7 +679,6 @@ def det_recog_show_result(img, end2end_res, out_file=None):
 
 def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
     """Draw text and their relationship on empty images.
-
     Args:
         img (np.ndarray): The original image.
         result (dict): The result of model forward_test, including:
@@ -687,7 +689,6 @@ def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):
         edge_thresh (float): Score threshold for edge classification.
         keynode_thresh (float): Score threshold for node
             (``key``) classification.
-
     Returns:
         np.ndarray: The image with key, value and relation drawn on it.
     """
@@ -828,7 +829,6 @@ def imshow_edge(img,
                 wait_time=-1,
                 out_file=None):
     """Display the prediction results of the nodes and edges of the KIE model.
-
     Args:
         img (np.ndarray): The original image.
         result (dict): The result of model forward_test, including:
@@ -842,7 +842,6 @@ def imshow_edge(img,
         wait_time (float): Value of waitKey param. Default: 0.
         out_file (str or None): The filename to write the image.
             Default: None.
-
     Returns:
         np.ndarray: The image with key, value and relation drawn on it.
     """
