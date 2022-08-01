@@ -6,7 +6,7 @@ _base_ = [
 ]
 
 # optimizer settings
-optimizer = dict(type='Adam', lr=3e-4)
+optim_wrapper = dict(type='OptimWrapper', optimizer=dict(type='Adam', lr=3e-4))
 
 # dataset settings
 train_list = {{_base_.train_list}}
@@ -15,7 +15,11 @@ file_client_args = dict(backend='disk')
 default_hooks = dict(logger=dict(type='LoggerHook', interval=50), )
 
 train_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        ignore_empty=True,
+        min_size=5),
     dict(type='LoadOCRAnnotations', with_text=True),
     dict(
         type='RescaleToHeight',
