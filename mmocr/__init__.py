@@ -47,7 +47,7 @@ def digit_version(version_str: str, length: int = 4):
 
 
 mmcv_minimum_version = '2.0.0rc0'
-mmcv_maximum_version = '2.0.0'
+mmcv_maximum_version = '2.1.0'
 mmcv_version = digit_version(mmcv.__version__)
 
 assert (mmcv_version >= digit_version(mmcv_minimum_version)
@@ -56,8 +56,8 @@ assert (mmcv_version >= digit_version(mmcv_minimum_version)
     f'Please use MMCV >= {mmcv_minimum_version}, ' \
     f'<= {mmcv_maximum_version} instead.'
 
-mmdet_minimum_version = '2.21.0'
-mmdet_maximum_version = '3.0.0'
+mmdet_minimum_version = '3.0.0rc0'
+mmdet_maximum_version = '3.1.0'
 mmdet_version = digit_version(mmdet.__version__)
 
 assert (mmdet_version >= digit_version(mmdet_minimum_version)
