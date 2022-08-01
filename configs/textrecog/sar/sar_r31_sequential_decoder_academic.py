@@ -17,7 +17,13 @@ train_pipeline = [
         ignore_empty=True,
         min_size=5),
     dict(type='LoadOCRAnnotations', with_text=True),
-    dict(type='Resize', scale=(160, 48), keep_ratio=False),
+    dict(
+        type='RescaleToHeight',
+        height=48,
+        min_width=48,
+        max_width=160,
+        width_divisor=4),
+    dict(type='PadToWidth', width=160),
     dict(
         type='PackTextRecogInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
