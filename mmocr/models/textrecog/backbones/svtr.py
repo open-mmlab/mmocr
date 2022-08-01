@@ -2,6 +2,7 @@
 # Modified from <https://arxiv.org/abs/2205.00159>
 # Adapted from <https://github.com/PaddlePaddle/PaddleOCR>
 
+import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
 from mmengine.model import BaseModule
@@ -12,9 +13,9 @@ class OverlapPatchEmbed(BaseModule):
 
     Args:
         input_size (int | tuple): The size of input, which will be used to
-            calculate the out size.
-        in_channels (int): Number of input channels.
-        embed_dims (int): The dimensions of embedding.
+            calculate the out size. Defaults to [32, 100].
+        in_channels (int): Number of input channels. Defaults to 3.
+        embed_dims (int): The dimensions of embedding. Defaults to 768.
         num_layers (int, optional): Number of Conv_BN_Layer. Defaults to 2.
     """
 
@@ -85,14 +86,14 @@ class OverlapPatchEmbed(BaseModule):
                     norm_cfg=dict(type='BN'),
                     act_cfg=dict(type='GELU')))
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward function.
 
         Args:
             x (Tensor): A Tensor of shape :math:`(N, C, H, W)`.
 
         Returns:
-            The feature Tensor of shape :math:`(N, HW, C)`.
+            Tensor: A tensor of shape math:`(N, HW_m, C)`.
         """
         B, C, H, W = x.shape
         assert H == self.img_size[0] and W == self.img_size[1], \
