@@ -6,8 +6,8 @@ import torch
 from mmengine import InstanceData
 from parameterized import parameterized
 
-from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.postprocessors import FCEPostprocessor
+from mmocr.structures import TextDetDataSample
 
 
 class TestFCEPostProcessor(unittest.TestCase):

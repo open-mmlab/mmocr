@@ -4,8 +4,8 @@ import unittest
 import torch
 from mmengine import InstanceData
 
-from mmocr.data import KIEDataSample
 from mmocr.evaluation import F1Metric
+from mmocr.structures import KIEDataSample
 
 
 class TestF1Metric(unittest.TestCase):

@@ -6,9 +6,9 @@ from unittest import TestCase
 import torch
 from mmengine import InstanceData
 
-from mmocr.data import KIEDataSample
 from mmocr.models.kie.heads import SDMGRHead
 from mmocr.models.textrecog.dictionary import Dictionary
+from mmocr.structures import KIEDataSample
 from mmocr.testing import create_dummy_dict_file
 
 

@@ -4,9 +4,9 @@ from typing import Dict, List, Optional, Sequence, Union
 import torch
 from mmengine.model import BaseModule
 
-from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS, TASK_UTILS
+from mmocr.structures import TextRecogDataSample
 
 
 @MODELS.register_module()

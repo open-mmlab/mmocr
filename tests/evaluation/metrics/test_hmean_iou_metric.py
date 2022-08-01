@@ -5,8 +5,8 @@ import numpy as np
 import torch
 from mmengine import InstanceData
 
-from mmocr.data import TextDetDataSample
 from mmocr.evaluation import HmeanIOUMetric
+from mmocr.structures import TextDetDataSample
 
 
 class TestHmeanIOU(unittest.TestCase):

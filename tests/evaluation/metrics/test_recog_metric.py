@@ -4,8 +4,8 @@ import unittest
 
 from mmengine.data import LabelData
 
-from mmocr.data import TextRecogDataSample
 from mmocr.evaluation import CharMetric, OneMinusNEDMetric, WordMetric
+from mmocr.structures import TextRecogDataSample
 
 
 class TestWordMetric(unittest.TestCase):

@@ -6,8 +6,8 @@ from os.path import dirname, exists, join
 import torch
 from mmengine import Config, ConfigDict, InstanceData
 
-from mmocr.data import KIEDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import KIEDataSample
 
 
 class TestSDMGR(unittest.TestCase):

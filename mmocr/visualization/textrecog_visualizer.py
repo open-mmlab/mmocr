@@ -6,8 +6,8 @@ import mmcv
 import numpy as np
 from mmengine import Visualizer
 
-from mmocr.data import TextRecogDataSample
 from mmocr.registry import VISUALIZERS
+from mmocr.structures import TextRecogDataSample
 
 
 @VISUALIZERS.register_module()
