@@ -8,8 +8,8 @@ from unittest.mock import Mock
 import torch
 from mmengine.data import InstanceData
 
-from mmocr.data import TextDetDataSample
 from mmocr.engine.hooks import VisualizationHook
+from mmocr.structures import TextDetDataSample
 from mmocr.visualization import TextDetLocalVisualizer
 
 
@@ -28,7 +28,6 @@ def _rand_bboxes(num_boxes, h, w):
 class TestVisualizationHook(TestCase):
 
     def setUp(self) -> None:
-        TextDetLocalVisualizer.get_instance('visualizer')
 
         data_sample = TextDetDataSample()
         data_sample.set_metainfo({
@@ -48,27 +47,33 @@ class TestVisualizationHook(TestCase):
         self.data_batch = None
 
     def test_after_val_iter(self):
+        timestamp = time.strftime('%Y%m%d_%H%M%S', time.localtime())
+        TextDetLocalVisualizer.get_instance(
+            'visualizer_val',
+            vis_backends=[dict(type='LocalVisBackend', img_save_dir='')],
+            save_dir=timestamp)
         runner = Mock()
         runner.iter = 1
-        hook = VisualizationHook(draw=True, interval=1)
+        hook = VisualizationHook(enable=True, interval=1)
+        self.assertFalse(osp.exists(timestamp))
         hook.after_val_iter(runner, 1, self.data_batch, self.outputs)
+        self.assertTrue(osp.exists(timestamp))
+        shutil.rmtree(timestamp)
 
     def test_after_test_iter(self):
+        timestamp = time.strftime('%Y%m%d_%H%M%S', time.localtime())
+        TextDetLocalVisualizer.get_instance(
+            'visualizer_test',
+            vis_backends=[dict(type='LocalVisBackend', img_save_dir='')],
+            save_dir=timestamp)
         runner = Mock()
         runner.iter = 1
-        hook = VisualizationHook(draw=True)
-        hook.after_test_iter(runner, 1, self.data_batch, self.outputs)
 
-        # test
-        timestamp = time.strftime('%Y%m%d_%H%M%S', time.localtime())
-        test_out_dir = timestamp + '1'
-        runner.work_dir = timestamp
-        runner.timestamp = '1'
-        hook = VisualizationHook(draw=False, test_out_dir=test_out_dir)
+        hook = VisualizationHook(enable=False)
         hook.after_test_iter(runner, 1, self.data_batch, self.outputs)
-        self.assertTrue(not osp.exists(f'{timestamp}/1/{test_out_dir}'))
+        self.assertFalse(osp.exists(timestamp))
 
-        hook = VisualizationHook(draw=True, test_out_dir=test_out_dir)
+        hook = VisualizationHook(enable=True)
         hook.after_test_iter(runner, 1, self.data_batch, self.outputs)
-        self.assertTrue(osp.exists(f'{timestamp}/1/{test_out_dir}'))
-        shutil.rmtree(f'{timestamp}')
+        self.assertTrue(osp.exists(timestamp))
+        shutil.rmtree(timestamp)

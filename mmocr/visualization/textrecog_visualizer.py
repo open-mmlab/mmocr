@@ -54,7 +54,7 @@ class TextRecogLocalVisualizer(Visualizer):
                        draw_pred: bool = True,
                        show: bool = False,
                        wait_time: int = 0,
-                       pred_score_thr=None,
+                       pred_score_thr: float = None,
                        out_file: Optional[str] = None,
                        step=0) -> None:
         """Visualize datasample and save to all backends.
@@ -71,10 +71,9 @@ class TextRecogLocalVisualizer(Visualizer):
         Args:
             name (str): The image title. Defaults to 'image'.
             image (np.ndarray): The image to draw.
-            data_sample (:obj:`TextRecogDataSample`, optional): GT
-                TextRecogDataSample. Defaults to None.
-            data_sample (:obj:`TextRecogDataSample`, optional): Predicted
-                TextRecogDataSample. Defaults to None.
+            data_sample (:obj:`TextRecogDataSample`, optional):
+                TextRecogDataSample which contains gt and prediction.
+                Defaults to None.
             draw_gt (bool): Whether to draw GT TextRecogDataSample.
                 Defaults to True.
             draw_pred (bool): Whether to draw Predicted TextRecogDataSample.
@@ -83,6 +82,8 @@ class TextRecogLocalVisualizer(Visualizer):
             wait_time (float): The interval of show (s). Defaults to 0.
             out_file (str): Path to output file. Defaults to None.
             step (int): Global step value to record. Defaults to 0.
+            pred_score_thr (float): Threshold of prediction score. It's not
+                used in this function. Defaults to None.
         """
         gt_img_data = None
         pred_img_data = None
@@ -97,7 +98,7 @@ class TextRecogLocalVisualizer(Visualizer):
             gt_text = data_sample.gt_text.item
             empty_img = np.full_like(image, 255)
             self.set_image(empty_img)
-            font_size = 0.5 * resize_width / len(gt_text)
+            font_size = 0.5 * resize_width / (len(gt_text) + 1)
             self.draw_texts(
                 gt_text,
                 np.array([resize_width / 2, resize_height / 2]),
@@ -113,7 +114,7 @@ class TextRecogLocalVisualizer(Visualizer):
             pred_text = data_sample.pred_text.item
             empty_img = np.full_like(image, 255)
             self.set_image(empty_img)
-            font_size = 0.5 * resize_width / len(pred_text)
+            font_size = 0.5 * resize_width / (len(pred_text) + 1)
             self.draw_texts(
                 pred_text,
                 np.array([resize_width / 2, resize_height / 2]),
@@ -128,8 +129,10 @@ class TextRecogLocalVisualizer(Visualizer):
             drawn_img = np.concatenate((gt_img_data, pred_text_image), axis=0)
         elif gt_img_data is not None:
             drawn_img = gt_img_data
-        else:
+        elif pred_img_data is not None:
             drawn_img = pred_img_data
+        else:
+            drawn_img = image
 
         if show:
             self.show(drawn_img, win_name=name, wait_time=wait_time)

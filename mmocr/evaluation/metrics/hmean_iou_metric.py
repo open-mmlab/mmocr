@@ -97,7 +97,7 @@ class HmeanIOUMetric(BaseMetric):
             gt_instances = data_sample.get('gt_instances')
             gt_polys = gt_instances.get('polygons')
             gt_ignore_flags = gt_instances.get('ignored')
-            if isinstance(pred_scores, torch.Tensor):
+            if isinstance(gt_ignore_flags, torch.Tensor):
                 gt_ignore_flags = gt_ignore_flags.cpu().numpy()
             gt_polys = polys2shapely(gt_polys)
             pred_polys = polys2shapely(pred_polygons)
