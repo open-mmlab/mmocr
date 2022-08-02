@@ -18,21 +18,19 @@ class TestTextDetLocalVisualizer(unittest.TestCase):
         image = np.random.randint(0, 256, size=(h, w, 3)).astype('uint8')
 
         # test gt_text
-        gt_recog_data_sample = TextRecogDataSample()
+        data_sample = TextRecogDataSample()
         img_meta = dict(img_shape=(12, 10, 3))
         gt_text = LabelData(metainfo=img_meta)
         gt_text.item = 'mmocr'
-        gt_recog_data_sample.gt_text = gt_text
+        data_sample.gt_text = gt_text
 
         recog_local_visualizer = TextRecogLocalVisualizer()
-        recog_local_visualizer.add_datasample('image', image,
-                                              gt_recog_data_sample)
+        recog_local_visualizer.add_datasample('image', image, data_sample)
 
         # test gt_text and pred_text
-        pred_recog_data_sample = TextRecogDataSample()
         pred_text = LabelData(metainfo=img_meta)
         pred_text.item = 'MMOCR'
-        pred_recog_data_sample.pred_text = pred_text
+        data_sample.pred_text = pred_text
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             # test out
@@ -40,26 +38,27 @@ class TestTextDetLocalVisualizer(unittest.TestCase):
 
             # draw_gt = True + gt_sample
             recog_local_visualizer.add_datasample(
-                'image', image, gt_recog_data_sample, out_file=out_file)
+                'image',
+                image,
+                data_sample,
+                out_file=out_file,
+                draw_gt=True,
+                draw_pred=False)
             self._assert_image_and_shape(out_file, (h * 2, w, 3))
 
             # draw_gt = True + gt_sample + pred_sample
             recog_local_visualizer.add_datasample(
                 'image',
                 image,
-                gt_recog_data_sample,
-                pred_recog_data_sample,
-                out_file=out_file)
+                data_sample,
+                out_file=out_file,
+                draw_gt=True,
+                draw_pred=True)
             self._assert_image_and_shape(out_file, (h * 3, w, 3))
 
             # draw_gt = False + gt_sample + pred_sample
             recog_local_visualizer.add_datasample(
-                'image',
-                image,
-                gt_recog_data_sample,
-                pred_recog_data_sample,
-                draw_gt=False,
-                out_file=out_file)
+                'image', image, data_sample, draw_gt=False, out_file=out_file)
             self._assert_image_and_shape(out_file, (h * 2, w, 3))
 
     def _assert_image_and_shape(self, out_file, out_shape):

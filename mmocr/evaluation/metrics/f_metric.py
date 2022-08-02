@@ -96,9 +96,11 @@ class F1Metric(BaseMetric):
             data_batch (Sequence[Dict]): A batch of gts.
             predictions (Sequence[Dict]): A batch of outputs from the model.
         """
-        for gt, pred in zip(data_batch, predictions):
-            pred_labels = pred.get('pred_instances').get(self.key).cpu()
-            gt_labels = gt.get('data_sample').get('gt_instances').get(self.key)
+        for data_samples in predictions:
+            pred_labels = data_samples.get('pred_instances').get(
+                self.key).cpu()
+            gt_labels = data_samples.get('gt_instances').get(self.key).cpu()
+
             result = dict(
                 pred_labels=pred_labels.flatten(),
                 gt_labels=gt_labels.flatten())

@@ -69,10 +69,16 @@ test_pipeline = [
         file_client_args=file_client_args,
         color_type='color_ignore_orientation'),
     dict(type='Resize', scale=(1024, 640), keep_ratio=True),
+    # add loading annotation after ``Resize`` because ground truth
+    # does not need to do resize data transform
+    dict(
+        type='LoadOCRAnnotations',
+        with_polygon=True,
+        with_bbox=True,
+        with_label=True),
     dict(
         type='PackTextDetInputs',
-        meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor',
-                   'instances'))
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
 
 train_dataloader = dict(

@@ -26,60 +26,47 @@ class TestHmeanIOU(unittest.TestCase):
         pred_d is ignored in the recall computation since it overlaps
         gt_d_ignored and the precision > ignore_precision_thr.
         """
-        # prepare gt
-        self.gt = [{
-            'data_sample': {
-                'instances': [{
-                    'polygon': [0, 0, 1, 0, 1, 1, 0, 1],
-                    'ignore': False
-                }, {
-                    'polygon': [2, 0, 3, 0, 3, 1, 2, 1],
-                    'ignore': False
-                }, {
-                    'polygon': [10, 0, 11, 0, 11, 1, 10, 1],
-                    'ignore': False
-                }, {
-                    'polygon': [1, 0, 2, 0, 2, 1, 1, 1],
-                    'ignore': True
-                }]
-            }
-        }, {
-            'data_sample': {
-                'instances': [{
-                    'polygon': [0, 0, 1, 0, 1, 1, 0, 1],
-                    'ignore': False
-                }],
-            }
-        }]
-
-        # prepare pred
-        pred_data_sample = TextDetDataSample()
-        pred_data_sample.pred_instances = InstanceData()
-        pred_data_sample.pred_instances.polygons = [
+        data_sample = TextDetDataSample()
+        gt_instances = InstanceData()
+        gt_instances.polygons = [
+            torch.FloatTensor([0, 0, 1, 0, 1, 1, 0, 1]),
+            torch.FloatTensor([2, 0, 3, 0, 3, 1, 2, 1]),
+            torch.FloatTensor([10, 0, 11, 0, 11, 1, 10, 1]),
+            torch.FloatTensor([1, 0, 2, 0, 2, 1, 1, 1]),
+        ]
+        gt_instances.ignored = np.bool_([False, False, False, True])
+        pred_instances = InstanceData()
+        pred_instances.polygons = [
             torch.FloatTensor([0, 0, 1, 0, 1, 1, 0, 1]),
             torch.FloatTensor([2, 0.1, 3, 0.1, 3, 1.1, 2, 1.1]),
             torch.FloatTensor([1, 1, 2, 1, 2, 2, 1, 2]),
             torch.FloatTensor([1, -0.5, 2, -0.5, 2, 0.5, 1, 0.5]),
         ]
-        pred_data_sample.pred_instances.scores = torch.FloatTensor(
-            [1, 1, 1, 0.001])
-        predictions = [pred_data_sample.to_dict()]
+        pred_instances.scores = torch.FloatTensor([1, 1, 1, 0.001])
+        data_sample.gt_instances = gt_instances
+        data_sample.pred_instances = pred_instances
+        predictions = [data_sample.to_dict()]
 
-        pred_data_sample = TextDetDataSample()
-        pred_data_sample.pred_instances = InstanceData()
-        pred_data_sample.pred_instances.polygons = [
+        data_sample = TextDetDataSample()
+        gt_instances = InstanceData()
+        gt_instances.polygons = [torch.FloatTensor([0, 0, 1, 0, 1, 1, 0, 1])]
+        gt_instances.ignored = np.bool_([False])
+        pred_instances = InstanceData()
+        pred_instances.polygons = [
             torch.FloatTensor([0, 0, 1, 0, 1, 1, 0, 1]),
             torch.FloatTensor([0, 0, 1, 0, 1, 1, 0, 1])
         ]
-        pred_data_sample.pred_instances.scores = torch.FloatTensor([1, 0.95])
-        predictions.append(pred_data_sample.to_dict())
+        pred_instances.scores = torch.FloatTensor([1, 0.95])
+        data_sample.gt_instances = gt_instances
+        data_sample.pred_instances = pred_instances
+        predictions.append(data_sample.to_dict())
 
         self.predictions = predictions
 
     def test_hmean_iou(self):
 
         metric = HmeanIOUMetric(prefix='mmocr')
-        metric.process(self.gt, self.predictions)
+        metric.process(None, self.predictions)
         eval_results = metric.evaluate(size=2)
 
         precision = 3 / 5

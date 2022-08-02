@@ -49,10 +49,16 @@ test_pipeline = [
         scale_divisor=1,
         ratio_range=(1.0, 1.0),
         aspect_ratio_range=(1.0, 1.0)),
+    # add loading annotation after ``Resize`` because ground truth
+    # does not need to do resize data transform
+    dict(
+        type='LoadOCRAnnotations',
+        with_polygon=True,
+        with_bbox=True,
+        with_label=True),
     dict(
         type='PackTextDetInputs',
-        meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor',
-                   'instances'))
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
 
 train_dataloader = dict(
