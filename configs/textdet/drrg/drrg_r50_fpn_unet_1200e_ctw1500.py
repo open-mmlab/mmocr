@@ -2,7 +2,7 @@ _base_ = [
     'drrg_r50_fpn_unet.py',
     '../../_base_/det_datasets/ctw1500.py',
     '../../_base_/textdet_default_runtime.py',
-    '../../_base_/schedules/schedule_sgd_1200e.py',
+    '../../_base_/schedules/schedule_adam_step_600e.py',
 ]
 
 # dataset settings
@@ -76,8 +76,8 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=4,
-    num_workers=4,
+    batch_size=12,
+    num_workers=12,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
