@@ -71,12 +71,7 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 
 ## 最新进展
 
-最新的月度版本 v0.6.0 在 2022.05.05 发布。
-
-1. 支持了两个新模型：[MASTER](https://arxiv.org/abs/1910.02562) 和 [DBNet++](https://arxiv.org/abs/2202.10304)
-2. 新支持了三个数据集：LSVT, RCTW 和 HierText
-3. 支持从 LMDB 数据集读取数据 [查看文档](https://mmocr.readthedocs.io/en/latest/tools.html#convert-text-recognition-dataset-to-lmdb-format)
-4. 提供了 Labelme 数据格式转换脚本，可使 MMOCR 支持由 Labelme 标注的数据
+最新的月度版本 v0.6.1 在 2022.08.03 发布。该版本支持了 ArT 数据集。
 
 阅读[更新日志](https://mmocr.readthedocs.io/en/latest/changelog.html)以获取更多信息。
 
