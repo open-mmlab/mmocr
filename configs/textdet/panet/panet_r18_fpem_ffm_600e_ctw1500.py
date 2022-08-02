@@ -56,8 +56,8 @@ test_pipeline = [
 ]
 model = dict(det_head=dict(module_loss=dict(shrink_ratio=(1, 0.7))))
 train_dataloader = dict(
-    batch_size=64,
-    num_workers=8,
+    batch_size=16,
+    num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
