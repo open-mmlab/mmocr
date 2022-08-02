@@ -174,26 +174,44 @@ def sort_points(points):
     assert is_type_list(points, np.ndarray) or isinstance(points, np.ndarray) \
         or is_2dlist(points)
 
-    points = np.array(points)
-    center = np.mean(points, axis=0)
+    if len(points) == 4:
+        return sort_bbox_points(points)
+    else:
+        points = np.array(points)
+        center = np.mean(points, axis=0)
 
-    def cmp(a, b):
-        oa = a - center
-        ob = b - center
+        def cmp(a, b):
+            oa = a - center
+            ob = b - center
 
-        # Some corner cases
-        if oa[0] >= 0 and ob[0] < 0:
-            return 1
-        if oa[0] < 0 and ob[0] >= 0:
-            return -1
+            # Some corner cases
+            if oa[0] >= 0 and ob[0] < 0:
+                return 1
+            if oa[0] < 0 and ob[0] >= 0:
+                return -1
 
-        prod = np.cross(oa, ob)
-        if prod > 0:
-            return 1
-        if prod < 0:
-            return -1
+            prod = np.cross(oa, ob)
+            if prod > 0:
+                return 1
+            if prod < 0:
+                return -1
 
-        # a, b are on the same line from the center
-        return 1 if (oa**2).sum() < (ob**2).sum() else -1
+            # a, b are on the same line from the center
+            return 1 if (oa**2).sum() < (ob**2).sum() else -1
 
-    return sorted(points, key=functools.cmp_to_key(cmp))
+        return sorted(points, key=functools.cmp_to_key(cmp))
+
+
+def sort_bbox_points(a_poly_4pts):
+    """Sort a polygon defined by 4 corner points in clockwise order."""
+    assert is_type_list(a_poly_4pts, np.ndarray) \
+        or isinstance(a_poly_4pts, np.ndarray) \
+        or is_2dlist(a_poly_4pts)
+
+    s = np.sum(a_poly_4pts, axis=1)
+    p_tl = a_poly_4pts[np.argmin(s)]
+    p_br = a_poly_4pts[np.argmax(s)]
+    diff = np.diff(a_poly_4pts, axis=1)
+    p_tr = a_poly_4pts[np.argmin(diff)]
+    p_bl = a_poly_4pts[np.argmax(diff)]
+    return np.array([p_tl, p_tr, p_br, p_bl], dtype='float32')
