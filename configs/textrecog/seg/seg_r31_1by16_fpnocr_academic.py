@@ -3,7 +3,8 @@ _base_ = [
     '../../_base_/recog_pipelines/seg_pipeline.py',
     '../../_base_/recog_models/seg.py',
     '../../_base_/recog_datasets/ST_charbox_train.py',
-    '../../_base_/recog_datasets/academic_test.py'
+    '../../_base_/recog_datasets/academic_test.py',
+    '../../_base_/schedules/schedule_adam_step_5e.py'
 ]
 
 train_list = {{_base_.train_list}}

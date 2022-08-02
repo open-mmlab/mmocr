@@ -15,7 +15,9 @@ train1 = dict(
     pipeline=None,
     test_mode=False)
 
-# dataset with type='IcdarDataset'
+# dataset with type='IcdarDataset'.
+# Cannot be concatenated by 'UniformConcatDataset' and therefore not appended
+# to train_list, but left for demonstration.
 train2 = dict(
     type='IcdarDataset',
     ann_file=f'{root}/instances_test.json',
@@ -36,6 +38,6 @@ test = dict(
     pipeline=None,
     test_mode=True)
 
-train_list = [train1, train2]
+train_list = [train1]
 
 test_list = [test]
