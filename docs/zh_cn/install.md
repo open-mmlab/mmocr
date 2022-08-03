@@ -9,33 +9,6 @@
 - CUDA 10.1
 - NCCL 2
 - GCC 5.4.0 或更高版本
-- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation)
-- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation)
-
-为了确保代码实现的正确性，MMOCR 每个版本都有可能改变对 MMCV 和 MMDetection 版本的依赖。请根据以下表格确保版本之间的相互匹配。
-
-| MMOCR        | MMCV                     | MMDetection                 |
-| ------------ | ------------------------ | --------------------------- |
-| main         | 1.3.8 \<= mmcv \<= 1.7.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.6.0        | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.5.0        | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 3.0.0  |
-| 0.4.0, 0.4.1 | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.3.0        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.2.1        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.13.0 \<= mmdet \<= 2.20.0 |
-| 0.2.0        | 1.3.4 \<= mmcv \<= 1.4.0 | 2.11.0 \<= mmdet \<= 2.13.0 |
-| 0.1.0        | 1.2.6 \<= mmcv \<= 1.3.4 | 2.9.0 \<= mmdet \<= 2.11.0  |
-
-我们已经测试了以下操作系统和软件版本:
-
-- OS: Ubuntu 16.04
-- CUDA: 10.1
-- GCC(G++): 5.4.0
-- MMCV 1.3.8
-- MMDetection 2.14.0
-- PyTorch 1.6.0
-- torchvision 0.7.0
-
-MMOCR 基于 PyTorch 和 MMDetection 项目实现。
 
 ## 准备环境
 
@@ -236,3 +209,18 @@ docker build -t mmocr docker/
 ```shell
 docker run --gpus all --shm-size=8g -it -v {实际数据目录}:/mmocr/data mmocr
 ```
+
+## 对 MMCV 和 MMDetection 的版本依赖
+
+为了确保代码实现的正确性，MMOCR 每个版本都有可能改变对 MMCV 和 MMDetection 版本的依赖。请根据以下表格确保版本之间的相互匹配。
+
+| MMOCR        | MMCV                     | MMDetection                 |
+| ------------ | ------------------------ | --------------------------- |
+| main         | 1.3.8 \<= mmcv \<= 1.7.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
+| 0.6.0        | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
+| 0.5.0        | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 3.0.0  |
+| 0.4.0, 0.4.1 | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
+| 0.3.0        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
+| 0.2.1        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.13.0 \<= mmdet \<= 2.20.0 |
+| 0.2.0        | 1.3.4 \<= mmcv \<= 1.4.0 | 2.11.0 \<= mmdet \<= 2.13.0 |
+| 0.1.0        | 1.2.6 \<= mmcv \<= 1.3.4 | 2.9.0 \<= mmdet \<= 2.11.0  |

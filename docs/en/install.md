@@ -9,33 +9,6 @@
 - CUDA 10.1
 - NCCL 2
 - GCC 5.4.0 or higher
-- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation)
-- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation)
-
-MMOCR has different version requirements on MMCV and MMDetection at each release to guarantee the implementation correctness. Please refer to the table below and ensure the package versions fit the requirement.
-
-| MMOCR        | MMCV                     | MMDetection                 |
-| ------------ | ------------------------ | --------------------------- |
-| main         | 1.3.8 \<= mmcv \<= 1.7.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.6.0        | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.5.0        | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 3.0.0  |
-| 0.4.0, 0.4.1 | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.3.0        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.2.1        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.13.0 \<= mmdet \<= 2.20.0 |
-| 0.2.0        | 1.3.4 \<= mmcv \<= 1.4.0 | 2.11.0 \<= mmdet \<= 2.13.0 |
-| 0.1.0        | 1.2.6 \<= mmcv \<= 1.3.4 | 2.9.0 \<= mmdet \<= 2.11.0  |
-
-We have tested the following versions of OS and software:
-
-- OS: Ubuntu 16.04
-- CUDA: 10.1
-- GCC(G++): 5.4.0
-- MMCV 1.3.8
-- MMDetection 2.14.0
-- PyTorch 1.6.0
-- torchvision 0.7.0
-
-MMOCR depends on PyTorch and MMDetection.
 
 ## Environment Setup
 
@@ -203,9 +176,9 @@ pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.1
 
 ### Install on CPU-only platforms
 
-MMOCR can be built for CPU only environment. In CPU mode you can train (requires MMCV version >= 1.4.4), test or inference a model.
+MMOCR can be built for CPU-only environment. In CPU mode you can train (requires MMCV version >= 1.4.4), test or inference a model.
 
-However some functionalities are gone in this mode:
+However, some functionalities are gone in this mode:
 
 - Deformable Convolution
 - Modulated Deformable Convolution
@@ -234,3 +207,18 @@ Run it with
 ```shell
 docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmocr/data mmocr
 ```
+
+## Dependency on MMCV & MMDetection
+
+MMOCR has different version requirements on MMCV and MMDetection at each release to guarantee the implementation correctness. Please refer to the table below and ensure the package versions fit the requirement.
+
+| MMOCR        | MMCV                     | MMDetection                 |
+| ------------ | ------------------------ | --------------------------- |
+| main         | 1.3.8 \<= mmcv \<= 1.7.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
+| 0.6.0        | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
+| 0.5.0        | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 3.0.0  |
+| 0.4.0, 0.4.1 | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
+| 0.3.0        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
+| 0.2.1        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.13.0 \<= mmdet \<= 2.20.0 |
+| 0.2.0        | 1.3.4 \<= mmcv \<= 1.4.0 | 2.11.0 \<= mmdet \<= 2.13.0 |
+| 0.1.0        | 1.2.6 \<= mmcv \<= 1.3.4 | 2.9.0 \<= mmdet \<= 2.11.0  |
