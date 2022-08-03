@@ -57,7 +57,7 @@ cfg_default_prefix = os.path.join(str(Path.cwd()), 'configs/')
          'https://download.openmmlab.com/mmocr/textrecog/'
          'crnn/crnn_academic-a723a1c5.pth',
          'https://download.openmmlab.com/mmocr/kie/'
-         'sdmgr/sdmgr_unet16_60e_wildreceipt_20210520-7489e6de.pth'
+         'sdmgr/sdmgr_unet16_60e_wildreceipt_20220706-57c220a6.pth'
      ]),
      ('DB_r18', 'CRNN', 'SDMGR', 'test/', [
          'test/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py',
@@ -69,7 +69,7 @@ cfg_default_prefix = os.path.join(str(Path.cwd()), 'configs/')
          'https://download.openmmlab.com/mmocr/textrecog/'
          'crnn/crnn_academic-a723a1c5.pth',
          'https://download.openmmlab.com/mmocr/kie/'
-         'sdmgr/sdmgr_unet16_60e_wildreceipt_20210520-7489e6de.pth'
+         'sdmgr/sdmgr_unet16_60e_wildreceipt_20220706-57c220a6.pth'
      ])],
 )
 @mock.patch('mmocr.utils.ocr.init_detector')
@@ -125,7 +125,7 @@ def test_ocr_init(mock_loading, mock_config, mock_build_detector,
           'https://download.openmmlab.com/mmocr/textrecog/'
           'crnn/crnn_academic-a723a1c5.pth',
           'https://download.openmmlab.com/mmocr/kie/'
-          'sdmgr/sdmgr_unet16_60e_wildreceipt_20210520-7489e6de.pth'
+          'sdmgr/sdmgr_unet16_60e_wildreceipt_20220706-57c220a6.pth'
       ]),
      ('DB_r18', '', 'test.ckpt', 'CRNN', '', 'test.ckpt', 'SDMGR', '',
       'test.ckpt', '', [
