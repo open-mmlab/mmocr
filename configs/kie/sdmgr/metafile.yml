@@ -23,8 +23,8 @@ Models:
       - Task: Key Information Extraction
         Dataset: wildreceipt
         Metrics:
-          macro_f1: 0.876
-    Weights: https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt_20210405-16a47642.pth
+          macro_f1: 0.888
+    Weights: https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt_20220706-57c220a6.pth
 
   - Name: sdmgr_novisual_60e_wildreceipt
     In Collection: SDMGR
@@ -35,5 +35,5 @@ Models:
       - Task: Key Information Extraction
         Dataset: wildreceipt
         Metrics:
-          macro_f1: 0.864
-    Weights: https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_20210405-07bc26ad.pth
+          macro_f1: 0.871
+    Weights: https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_20220803-d06d4a1a.pth
