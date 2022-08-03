@@ -346,7 +346,7 @@ class MMOCR:
             'SDMGR': {
                 'config': 'sdmgr/sdmgr_unet16_60e_wildreceipt.py',
                 'ckpt':
-                'sdmgr/sdmgr_unet16_60e_wildreceipt_20210520-7489e6de.pth'
+                'sdmgr/sdmgr_unet16_60e_wildreceipt_20220706-57c220a6.pth'
             }
         }
 

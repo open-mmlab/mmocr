@@ -18,8 +18,8 @@ Key information extraction from document images is of paramount importance in of
 
 |                                 Method                                 |     Modality     | Macro F1-Score |                                               Download                                               |
 | :--------------------------------------------------------------------: | :--------------: | :------------: | :--------------------------------------------------------------------------------------------------: |
-|   [sdmgr_unet16](/configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py)   | Visual + Textual |     0.888      | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt_20210520-7489e6de.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/20210520_132236.log.json) |
-| [sdmgr_novisual](/configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt.py) |     Textual      |     0.870      | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_20210517-a44850da.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/20210517_205829.log.json) |
+|   [sdmgr_unet16](/configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py)   | Visual + Textual |     0.888      | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt_20220706-57c220a6.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/20220706_220455.log.json) |
+| [sdmgr_novisual](/configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt.py) |     Textual      |     0.871      | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_20220803-d06d4a1a.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/20220803_010223.log.json) |
 
 ```{note}
 1. For `sdmgr_novisual`, images are not needed for training and testing. So fake `img_prefix` can be used in configs. As well, fake `file_name` can be used in annotation files.
@@ -29,7 +29,7 @@ Key information extraction from document images is of paramount importance in of
 
 |                                Method                                 | Modality | Edge F1-Score | Node Macro F1-Score | Node Micro F1-Score |                                 Download                                 |
 | :-------------------------------------------------------------------: | :------: | :-----------: | :-----------------: | :-----------------: | :----------------------------------------------------------------------: |
-| [sdmgr_novisual](/configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_openset.py) | Textual  |     0.786     |        0.926        |        0.935        | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_openset_20210917-d236b3ea.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/20210917_050824.log.json) |
+| [sdmgr_novisual](/configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_openset.py) | Textual  |     0.796     |        0.930        |        0.938        | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt_openset_20220803-427ec7a8.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/20220803_010235.log.json) |
 
 ```{note}
 1. In the case of openset, the number of node categories is unknown or unfixed, and more node category can be added.
