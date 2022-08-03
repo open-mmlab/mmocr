@@ -94,9 +94,8 @@ pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 
 ```
 
-### 检验安装
+### 检验
 
-We provide two options to verify the installation via inference demo, depending on your installation method. You should be able to see a pop-up image and the inference result upon successful verification.
 根据安装方式的不同，我们提供了两个可以验证安装正确性的方法。若 MMOCR 的安装无误，你在这一节完成后应当能看到以图片和文字形式表示的识别结果，示意如下：
 
 <div align="center">
