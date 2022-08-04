@@ -70,7 +70,11 @@ The main branch works with **PyTorch 1.6+**.
 
 ## What's New
 
-v0.6.1 was released in 2022-08-03. ArT dataset is supported.
+v0.6.1 was released in 2022-08-03.
+
+1. ArT dataset is available for text detection and recognition!
+2. Fixed several bugs that affects the correctness of the models.
+3. Thanks to [MIM](https://github.com/open-mmlab/mim), our installation is much simpler now! The [docs](https://mmocr.readthedocs.io/en/latest/install.html) has been renewed as well.
 
 Read [Changelog](https://mmocr.readthedocs.io/en/latest/changelog.html) for more details!
 

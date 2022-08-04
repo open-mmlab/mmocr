@@ -2,6 +2,12 @@
 
 ## 0.6.1 (03/08/2022)
 
+### Highlights
+
+1. ArT dataset is available for text detection and recognition!
+2. Fixed several bugs that affects the correctness of the models.
+3. Thanks to [MIM](https://github.com/open-mmlab/mim), our installation is much simpler now! The [docs](https://mmocr.readthedocs.io/en/latest/install.html) has been renewed as well.
+
 ### New Features & Enhancements
 
 - Add ArT by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1006
@@ -11,6 +17,8 @@
 - Simplify normalized edit distance calculation by @maxbachmann in https://github.com/open-mmlab/mmocr/pull/1060
 - Test mim in CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1090
 - Remove redundant steps by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1091
+
+* Update links to SDMGR links by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1252
 
 ### Bug Fixes
 
@@ -51,6 +59,9 @@
 - Update readme according to the guideline by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1047
 - Limit markdown version by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1172
 - Limit extension versions by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1210
+
+* Update installation guide by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1254
+* Update image link @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1255
 
 ### New Contributors
 
