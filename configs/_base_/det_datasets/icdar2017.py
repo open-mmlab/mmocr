@@ -1,7 +1,7 @@
 data_root = 'data/det/icdar2017'
 
 train_anno_path = 'instances_training.json'
-test_anno_path = 'instances_test.json'
+test_anno_path = 'instances_val.json'
 
 train_dataset = dict(
     type='OCRDataset',
