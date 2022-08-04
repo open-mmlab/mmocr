@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-"""MMOCR provides 17 registry nodes to support using modules across projects.
-Each node is a child of the root registry in MMEngine.
+"""MMDetection provides 17 registry nodes to support using modules across
+projects. Each node is a child of the root registry in MMEngine.
 
 More details can be found at
 https://mmengine.readthedocs.io/en/latest/tutorials/registry.html.
@@ -8,13 +8,16 @@ https://mmengine.readthedocs.io/en/latest/tutorials/registry.html.
 
 from mmengine.registry import DATA_SAMPLERS as MMENGINE_DATA_SAMPLERS
 from mmengine.registry import DATASETS as MMENGINE_DATASETS
+from mmengine.registry import EVALUATOR as MMENGINE_EVALUATOR
 from mmengine.registry import HOOKS as MMENGINE_HOOKS
+from mmengine.registry import LOG_PROCESSORS as MMENGINE_LOG_PROCESSORS
 from mmengine.registry import LOOPS as MMENGINE_LOOPS
 from mmengine.registry import METRICS as MMENGINE_METRICS
 from mmengine.registry import MODEL_WRAPPERS as MMENGINE_MODEL_WRAPPERS
 from mmengine.registry import MODELS as MMENGINE_MODELS
 from mmengine.registry import \
     OPTIM_WRAPPER_CONSTRUCTORS as MMENGINE_OPTIM_WRAPPER_CONSTRUCTORS
+from mmengine.registry import OPTIM_WRAPPERS as MMENGINE_OPTIM_WRAPPERS
 from mmengine.registry import OPTIMIZERS as MMENGINE_OPTIMIZERS
 from mmengine.registry import PARAM_SCHEDULERS as MMENGINE_PARAM_SCHEDULERS
 from mmengine.registry import \
@@ -43,24 +46,29 @@ DATASETS = Registry('dataset', parent=MMENGINE_DATASETS)
 DATA_SAMPLERS = Registry('data sampler', parent=MMENGINE_DATA_SAMPLERS)
 TRANSFORMS = Registry('transform', parent=MMENGINE_TRANSFORMS)
 
-# mangage all kinds of modules inheriting `nn.Module`
+# manage all kinds of modules inheriting `nn.Module`
 MODELS = Registry('model', parent=MMENGINE_MODELS)
-# mangage all kinds of model wrappers like 'MMDistributedDataParallel'
+# manage all kinds of model wrappers like 'MMDistributedDataParallel'
 MODEL_WRAPPERS = Registry('model_wrapper', parent=MMENGINE_MODEL_WRAPPERS)
-# mangage all kinds of weight initialization modules like `Uniform`
+# manage all kinds of weight initialization modules like `Uniform`
 WEIGHT_INITIALIZERS = Registry(
     'weight initializer', parent=MMENGINE_WEIGHT_INITIALIZERS)
 
-# mangage all kinds of optimizers like `SGD` and `Adam`
+# manage all kinds of optimizers like `SGD` and `Adam`
 OPTIMIZERS = Registry('optimizer', parent=MMENGINE_OPTIMIZERS)
+# manage optimizer wrapper
+OPTIM_WRAPPERS = Registry('optim wrapper', parent=MMENGINE_OPTIM_WRAPPERS)
 # manage constructors that customize the optimization hyperparameters.
 OPTIM_WRAPPER_CONSTRUCTORS = Registry(
     'optimizer constructor', parent=MMENGINE_OPTIM_WRAPPER_CONSTRUCTORS)
-# mangage all kinds of parameter schedulers like `MultiStepLR`
+# manage all kinds of parameter schedulers like `MultiStepLR`
 PARAM_SCHEDULERS = Registry(
     'parameter scheduler', parent=MMENGINE_PARAM_SCHEDULERS)
+
 # manage all kinds of metrics
 METRICS = Registry('metric', parent=MMENGINE_METRICS)
+# manage evaluator
+EVALUATOR = Registry('evaluator', parent=MMENGINE_EVALUATOR)
 
 # manage task-specific modules like anchor generators and box coders
 TASK_UTILS = Registry('task util', parent=MMENGINE_TASK_UTILS)
@@ -69,3 +77,6 @@ TASK_UTILS = Registry('task util', parent=MMENGINE_TASK_UTILS)
 VISUALIZERS = Registry('visualizer', parent=MMENGINE_VISUALIZERS)
 # manage visualizer backend
 VISBACKENDS = Registry('vis_backend', parent=MMENGINE_VISBACKENDS)
+
+# manage logprocessor
+LOG_PROCESSORS = Registry('log_processor', parent=MMENGINE_LOG_PROCESSORS)
