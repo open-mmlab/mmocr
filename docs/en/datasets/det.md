@@ -216,14 +216,40 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
 ## ICDAR 2017
 
-- Follow similar steps as [ICDAR 2015](#icdar-2015).
+- Step0: Read [Important Note](#important-note)
+
+- Step1: Download and extract all the training and validation images of Task 1 (`ch8_training_images_*.zip` (1-8) and `ch8_validation_images.zip`) from [official website](https://rrc.cvc.uab.es/?ch=8&com=downloads).
+
+  ```bash
+  mkdir icdar2017 && cd icdar2017
+  mkdir training && mkdir validation
+  cd training
+  for i in {1..8};
+  do
+      wget https://datasets.cvc.uab.es/rrc/ch8_training_images_${i}.zip --no-check-certificate
+      unzip -q ch8_training_images_${i}.zip
+      rm ch8_training_images_${i}.zip
+  done
+  cd ../validation
+  wget https://rrc.cvc.uab.es/downloads/ch8_validation_images.zip --no-check-certificate
+  unzip -q ch8_validation_images.zip
+  rm ch8_validation_images.zip
+  cd ..
+  ```
+
+- Step2: Download processed [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) and [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json).
+
+  ```bash
+  wget https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json
+  wget https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json
+  ```
 
 - The resulting directory structure looks like the following:
 
   ```text
   ├── icdar2017
-  │   ├── imgs
-  │   ├── annotations
+  │   ├── training
+  │   ├── validation
   │   ├── instances_training.json
   │   └── instances_val.json
   ```
