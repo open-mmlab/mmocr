@@ -1,5 +1,83 @@
 # Changelog
 
+## 0.6.1 (04/08/2022)
+
+### Highlights
+
+1. ArT dataset is available for text detection and recognition!
+2. Fix several bugs that affects the correctness of the models.
+3. Thanks to [MIM](https://github.com/open-mmlab/mim), our installation is much simpler now! The [docs](https://mmocr.readthedocs.io/en/latest/install.html) has been renewed as well.
+
+### New Features & Enhancements
+
+- Add ArT by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1006
+- add ABINet_Vision api by @Abdelrahman350 in https://github.com/open-mmlab/mmocr/pull/1041
+- add codespell ignore and use mdformat by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1022
+- Add mim to extras_requrie to setup.py, update mminstall… by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1062
+- Simplify normalized edit distance calculation by @maxbachmann in https://github.com/open-mmlab/mmocr/pull/1060
+- Test mim in CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1090
+- Remove redundant steps by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1091
+
+* Update links to SDMGR links by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1252
+
+### Bug Fixes
+
+- Remove unnecessary requirements by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1000
+- Remove confusing img_scales in pipelines by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1007
+- inplace operator "+=" will cause RuntimeError when model backward by @garvan2021 in https://github.com/open-mmlab/mmocr/pull/1018
+- Fix a typo problem in MASTER by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1031
+- Fix config name of MASTER in ocr.py by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1044
+- Relax OpenCV requirement by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1061
+- Restrict the minimum version of OpenCV to avoid potential vulnerability by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1065
+- typo by @tpoisonooo in https://github.com/open-mmlab/mmocr/pull/1024
+- Fix a typo in setup.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1095
+- fix #1067: add torchserve DockerFile and fix bugs by @Hegelim in https://github.com/open-mmlab/mmocr/pull/1073
+- Incorrect filename in labelme_converter.py by @xiefeifeihu in https://github.com/open-mmlab/mmocr/pull/1103
+- Fix dataset configs by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1106
+- Fix #1098: normalize text recognition scores by @Hegelim in https://github.com/open-mmlab/mmocr/pull/1119
+- Update ST_SA_MJ_train.py by @MingyuLau in https://github.com/open-mmlab/mmocr/pull/1117
+- PSENet metafile by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1121
+- Flexible ways of getting file name by @balandongiv in https://github.com/open-mmlab/mmocr/pull/1107
+- Updating edge-embeddings after each GNN layer by @amitbcp in https://github.com/open-mmlab/mmocr/pull/1134
+- links update by @TekayaNidham in https://github.com/open-mmlab/mmocr/pull/1141
+- bug fix: access params by cfg.get by @doem97 in https://github.com/open-mmlab/mmocr/pull/1145
+- Fix a bug in LmdbAnnFileBackend that cause breaking in Synthtext detection training by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1159
+- Fix typo of --lmdb-map-size default value by @easilylazy in https://github.com/open-mmlab/mmocr/pull/1147
+- Fixed docstring syntax error of line 19 & 21 by @APX103 in https://github.com/open-mmlab/mmocr/pull/1157
+- Update lmdb_converter and ct80 cropped image source in document by @doem97 in https://github.com/open-mmlab/mmocr/pull/1164
+- MMCV compatibility due to outdated MMDet by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1192
+- Update maximum version of mmcv by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1219
+- Update ABINet links for main by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1221
+- Update owners by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1248
+- Add back some missing fields in configs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1171
+
+### Docs
+
+- Fix typos by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1001
+- Configure Myst-parser to parse anchor tag by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1012
+- Fix a error in docs/en/tutorials/dataset_types.md by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1034
+- Update readme according to the guideline by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1047
+- Limit markdown version by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1172
+- Limit extension versions by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1210
+
+* Update installation guide by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1254
+* Update image link @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1255
+
+### New Contributors
+
+- @tpoisonooo made their first contribution in https://github.com/open-mmlab/mmocr/pull/1024
+- @Abdelrahman350 made their first contribution in https://github.com/open-mmlab/mmocr/pull/1041
+- @Hegelim made their first contribution in https://github.com/open-mmlab/mmocr/pull/1073
+- @xiefeifeihu made their first contribution in https://github.com/open-mmlab/mmocr/pull/1103
+- @MingyuLau made their first contribution in https://github.com/open-mmlab/mmocr/pull/1117
+- @balandongiv made their first contribution in https://github.com/open-mmlab/mmocr/pull/1107
+- @amitbcp made their first contribution in https://github.com/open-mmlab/mmocr/pull/1134
+- @TekayaNidham made their first contribution in https://github.com/open-mmlab/mmocr/pull/1141
+- @easilylazy made their first contribution in https://github.com/open-mmlab/mmocr/pull/1147
+- @APX103 made their first contribution in https://github.com/open-mmlab/mmocr/pull/1157
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v0.6.0...v0.6.1
+
 ## 0.6.0 (05/05/2022)
 
 ### Highlights

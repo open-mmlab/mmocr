@@ -70,12 +70,11 @@ The main branch works with **PyTorch 1.6+**.
 
 ## What's New
 
-v0.6.0 was released in 2022-05-05.
+v0.6.1 was released in 2022-08-04.
 
-1. We support [MASTER](https://arxiv.org/abs/1910.02562) and [DBNet++](https://arxiv.org/abs/2202.10304) now!
-2. Three dataset converters are added: LSVT, RCTW, and HierText.
-3. MMOCR now can load data from LMDB dataset. [Doc](https://mmocr.readthedocs.io/en/latest/tools.html#convert-text-recognition-dataset-to-lmdb-format)
-4. We provide a script to convert .json labels obtained by **Labelme** into MMOCR-supported data format.
+1. ArT dataset is available for text detection and recognition!
+2. Fix several bugs that affects the correctness of the models.
+3. Thanks to [MIM](https://github.com/open-mmlab/mim), our installation is much simpler now! The [docs](https://mmocr.readthedocs.io/en/latest/install.html) has been renewed as well.
 
 Read [Changelog](https://mmocr.readthedocs.io/en/latest/changelog.html) for more details!
 
