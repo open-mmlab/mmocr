@@ -70,7 +70,7 @@ The main branch works with **PyTorch 1.6+**.
 
 ## What's New
 
-v0.6.1 was released in 2022-08-03.
+v0.6.1 was released in 2022-08-04.
 
 1. ArT dataset is available for text detection and recognition!
 2. Fixed several bugs that affects the correctness of the models.
