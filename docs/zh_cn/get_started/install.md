@@ -99,7 +99,7 @@ pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 根据安装方式的不同，我们提供了两个可以验证安装正确性的方法。若 MMOCR 的安装无误，你在这一节完成后应当能看到以图片和文字形式表示的识别结果，示意如下：
 
 <div align="center">
-    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/resources/verification.jpg"/><br>
+    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/resources/verification.png"/><br>
 </div>
 <br>
 
