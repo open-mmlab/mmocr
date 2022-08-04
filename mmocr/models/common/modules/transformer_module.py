@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from mmocr.models.builder import build_activation_layer
+from mmocr.registry import MODELS
 
 
 class ScaledDotProductAttention(nn.Module):
@@ -115,7 +115,7 @@ class PositionwiseFeedForward(nn.Module):
         super().__init__()
         self.w_1 = nn.Linear(d_in, d_hid)
         self.w_2 = nn.Linear(d_hid, d_in)
-        self.act = build_activation_layer(act_cfg)
+        self.act = MODELS.build(act_cfg)
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
