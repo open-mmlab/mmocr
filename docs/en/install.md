@@ -9,115 +9,82 @@
 - CUDA 10.1
 - NCCL 2
 - GCC 5.4.0 or higher
-- [MMCV](https://mmcv.readthedocs.io/en/latest/#installation)
-- [MMDetection](https://mmdetection.readthedocs.io/en/latest/#installation)
 
-MMOCR has different version requirements on MMCV and MMDetection at each release to guarantee the implementation correctness. Please refer to the table below and ensure the package versions fit the requirement.
-
-| MMOCR        | MMCV                     | MMDetection                 |
-| ------------ | ------------------------ | --------------------------- |
-| main         | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.6.0        | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.5.0        | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 3.0.0  |
-| 0.4.0, 0.4.1 | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.3.0        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.2.1        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.13.0 \<= mmdet \<= 2.20.0 |
-| 0.2.0        | 1.3.4 \<= mmcv \<= 1.4.0 | 2.11.0 \<= mmdet \<= 2.13.0 |
-| 0.1.0        | 1.2.6 \<= mmcv \<= 1.3.4 | 2.9.0 \<= mmdet \<= 2.11.0  |
-
-We have tested the following versions of OS and software:
-
-- OS: Ubuntu 16.04
-- CUDA: 10.1
-- GCC(G++): 5.4.0
-- MMCV 1.3.8
-- MMDetection 2.14.0
-- PyTorch 1.6.0
-- torchvision 0.7.0
-
-MMOCR depends on PyTorch and mmdetection.
-
-## Step-by-Step Installation Instructions
-
-a. Create a Conda virtual environment and activate it.
-
-```shell
-conda create -n open-mmlab python=3.7 -y
-conda activate open-mmlab
-```
-
-b. Install PyTorch and torchvision following the [official instructions](https://pytorch.org/), e.g.,
-
-```shell
-conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.1 -c pytorch
-```
+## Environment Setup
 
 ```{note}
-Make sure that your compilation CUDA version and runtime CUDA version matches.
-You can check the supported CUDA version for precompiled packages on the [PyTorch website](https://pytorch.org/).
+If you are experienced with PyTorch and have already installed it, just skip this part and jump to the [next section](#installation-steps). Otherwise, you can follow these steps for the preparation.
 ```
 
-c. Install [mmcv](https://github.com/open-mmlab/mmcv), we recommend you to install the pre-build mmcv as below.
+**Step 0.** Download and install Miniconda from the [official website](https://docs.conda.io/en/latest/miniconda.html).
+
+**Step 1.** Create a conda environment and activate it.
 
 ```shell
-pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
+conda create --name openmmlab python=3.8 -y
+conda activate openmmlab
 ```
 
-Please replace `{cu_version}` and `{torch_version}` in the url with your desired one. For example, to install the latest `mmcv-full` with CUDA 11 and PyTorch 1.7.0, use the following command:
+**Step 2.** Install PyTorch following [official instructions](https://pytorch.org/get-started/locally/), e.g.
+
+On GPU platforms:
 
 ```shell
-pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
+conda install pytorch torchvision -c pytorch
 ```
 
-````{note}
-mmcv-full is only compiled on PyTorch 1.x.0 because the compatibility usually holds between 1.x.0 and 1.x.1. If your PyTorch version is 1.x.1, you can install mmcv-full compiled with PyTorch 1.x.0 and it usually works well.
+On CPU platforms:
 
-```bash
-# We can ignore the micro version of PyTorch
-pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7/index.html
+```shell
+conda install pytorch torchvision cpuonly -c pytorch
 ```
 
-````
+## Installation Steps
 
-```{note}
+We recommend that users follow our best practices to install MMOCR. However, the whole process is highly customizable. See [Customize Installation](#customize-installation) section for more information.
 
-If it compiles during installation, then please check that the CUDA version and PyTorch version **exactly** matches the version in the `mmcv-full` installation command.
+### Best Practices
 
-See official [installation guide](https://github.com/open-mmlab/mmcv#installation) for different versions of MMCV compatible to different PyTorch and CUDA versions.
+**Step 0.** Install [MMCV](https://github.com/open-mmlab/mmcv) using [MIM](https://github.com/open-mmlab/mim).
+
+```shell
+pip install -U openmim
+mim install mmcv-full
 ```
 
-```{warning}
-You need to run `pip uninstall mmcv` first if you have `mmcv` installed. If `mmcv` and `mmcv-full` are both installed, there will be `ModuleNotFoundError`.
-```
-
-d. Install [mmdet](https://github.com/open-mmlab/mmdetection), we recommend you to install the latest `mmdet` with pip.
-See [here](https://pypi.org/project/mmdet/) for different versions of `mmdet`.
+**Step 1.** Install [MMDetection](https://github.com/open-mmlab/mmdetection) as a dependency.
 
 ```shell
 pip install mmdet
 ```
 
-Optionally you can choose to install `mmdet` following the official installation guide \[[en](https://github.com/open-mmlab/mmdetection/blob/master/docs/en/get_started.md)/[zh_cn](https://github.com/open-mmlab/mmdetection/blob/master/docs/zh_cn/get_started.md)\].
+**Step 2.** Install MMOCR.
 
-e. Clone the MMOCR repository.
+Case A: If you wish to run and develop MMOCR directly, install it from source:
 
 ```shell
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
-```
-
-f. Install build requirements and then install MMOCR.
-
-```shell
 pip install -r requirements.txt
-pip install -v -e . # or "python setup.py develop"
-export PYTHONPATH=$(pwd):$PYTHONPATH
+pip install -v -e .
+# "-v" increases pip's verbosity.
+# "-e" means installing the project in editable mode,
+# That is, any local modifications on the code will take effect immediately.
 ```
 
-g. (optional) If you would like to use any transform involving `albumentations` (For example, `Albu` in ABINet's pipeline):
+Case B: If you use MMOCR as a dependency or third-party package, install it with pip:
 
 ```shell
+pip install mmocr
+```
+
+**Step 3. (Optional)** If you wish to use any transform involving `albumentations` (For example, `Albu` in ABINet's pipeline), install the dependency using the following command:
+
+```shell
+# If MMOCR is installed from source
 pip install -r requirements/albu.txt
+# If MMOCR is installed via pip
+pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 ```
 
 ```{note}
@@ -130,36 +97,103 @@ to ['albumentations`'s official documentation](https://albumentations.ai/docs/ge
 
 ```
 
-## Full Set-up Script
+### Verify the installation
 
-Here is the full script for setting up MMOCR with Conda.
+We provide two options to verify the installation via inference demo, depending on your installation method. You should be able to see a pop-up image and the inference result upon successful verification.
 
-```shell
-conda create -n open-mmlab python=3.7 -y
-conda activate open-mmlab
+<div align="center">
+    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/resources/verification.jpg"/><br>
+</div>
+<br>
 
-# install latest pytorch prebuilt with the default prebuilt CUDA version (usually the latest)
-conda install pytorch==1.6.0 torchvision==0.7.0 cudatoolkit=10.1 -c pytorch
-
-# install the latest mmcv-full
-pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu101/torch1.6.0/index.html
-
-# install mmdetection
-pip install mmdet
-
-# install mmocr
-git clone https://github.com/open-mmlab/mmocr.git
-cd mmocr
-
-pip install -r requirements.txt
-pip install -v -e .  # or "python setup.py develop"
-export PYTHONPATH=$(pwd):$PYTHONPATH
-
-# for albumentations
-pip install -r requirements/albu.txt
+```bash
+# Inference result
+[{'filename': 'demo_text_det', 'text': ['yther', 'doyt', 'nan', 'heraies', '188790', 'cadets', 'army', 'ipioneered', 'and', 'icottages', 'land', 'hall', 'sgardens', 'established', 'ithis', 'preformer', 'social', 'octavial', 'hill', 'pm', 'ct', 'lof', 'aborought']}]
 ```
 
-## Another option: Docker Image
+#### Case A - Installed from Source
+
+Run the following in MMOCR's directory:
+
+```bash
+python mmocr/utils/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --imshow
+```
+
+#### Case B - Installed as a Package:
+
+**Step 1.** We need to download configs, checkpoints and an image necessary for the verification.
+
+```shell
+mim download mmocr --config dbnet_r18_fpnc_1200e_icdar2015 --dest .
+mim download mmocr --config crnn_academic_dataset --dest .
+wget https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/demo_text_det.jpg
+```
+
+The downloading will take several seconds or more, depending on your network environment. The directory tree should look like the following once everything is done:
+
+```bash
+├── crnn_academic-a723a1c5.pth
+├── crnn_academic_dataset.py
+├── dbnet_r18_fpnc_1200e_icdar2015.py
+├── dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth
+└── demo_text_det.jpg
+```
+
+**Step 2.** Run the following codes in your Python interpreter:
+
+```python
+from mmocr.utils.ocr import MMOCR
+ocr = MMOCR(recog='CRNN', recog_ckpt='crnn_academic-a723a1c5.pth', recog_config='crnn_academic_dataset.py', det='DB_r18', det_ckpt='dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth', det_config='dbnet_r18_fpnc_1200e_icdar2015.py')
+ocr.readtext('demo_text_det.jpg', imshow=True)
+```
+
+## Customize Installation
+
+### CUDA versions
+
+When installing PyTorch, you need to specify the version of CUDA. If you are not clear on which to choose, follow our recommendations:
+
+- For Ampere-based NVIDIA GPUs, such as GeForce 30 series and NVIDIA A100, CUDA 11 is a must.
+- For older NVIDIA GPUs, CUDA 11 is backward compatible, but CUDA 10.2 offers better compatibility and is more lightweight.
+
+Please make sure the GPU driver satisfies the minimum version requirements. See [this table](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#cuda-major-component-versions__table-cuda-toolkit-driver-versions) for more information.
+
+```{note}
+Installing CUDA runtime libraries is enough if you follow our best practices, because no CUDA code will be compiled locally. However if you hope to compile MMCV from source or develop other CUDA operators, you need to install the complete CUDA toolkit from NVIDIA's [website](https://developer.nvidia.com/cuda-downloads), and its version should match the CUDA version of PyTorch. i.e., the specified version of cudatoolkit in `conda install` command.
+```
+
+### Install MMCV without MIM
+
+MMCV contains C++ and CUDA extensions, thus depending on PyTorch in a complex way. MIM solves such dependencies automatically and makes the installation easier. However, it is not a must.
+
+To install MMCV with pip instead of MIM, please follow [MMCV installation guides](https://mmcv.readthedocs.io/en/latest/get_started/installation.html). This requires manually specifying a find-url based on PyTorch version and its CUDA version.
+
+For example, the following command install mmcv-full built for PyTorch 1.10.x and CUDA 11.3.
+
+```shell
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
+```
+
+### Install on CPU-only platforms
+
+MMOCR can be built for CPU-only environment. In CPU mode you can train (requires MMCV version >= 1.4.4), test or inference a model.
+
+However, some functionalities are gone in this mode:
+
+- Deformable Convolution
+- Modulated Deformable Convolution
+- ROI pooling
+- SyncBatchNorm
+
+If you try to train/test/inference a model containing above ops, an error will be raised.
+The following table lists affected algorithms.
+
+|                        Operator                         |                          Model                          |
+| :-----------------------------------------------------: | :-----------------------------------------------------: |
+| Deformable Convolution/Modulated Deformable Convolution | DBNet (r50dcnv2), DBNet++ (r50dcnv2), FCENet (r50dcnv2) |
+|                      SyncBatchNorm                      |                      PANet, PSENet                      |
+
+### Using MMOCR with Docker
 
 We provide a [Dockerfile](https://github.com/open-mmlab/mmocr/blob/master/docker/Dockerfile) to build an image.
 
@@ -174,26 +208,17 @@ Run it with
 docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmocr/data mmocr
 ```
 
-## Prepare Datasets
+## Dependency on MMCV & MMDetection
 
-It is recommended to symlink the dataset root to `mmocr/data`. Please refer to [datasets.md](datasets.md) to prepare your datasets.
-If your folder structure is different, you may need to change the corresponding paths in config files.
+MMOCR has different version requirements on MMCV and MMDetection at each release to guarantee the implementation correctness. Please refer to the table below and ensure the package versions fit the requirement.
 
-The `mmocr` folder is organized as follows:
-
-```
-├── configs/
-├── demo/
-├── docker/
-├── docs/
-├── LICENSE
-├── mmocr/
-├── README.md
-├── requirements/
-├── requirements.txt
-├── resources/
-├── setup.cfg
-├── setup.py
-├── tests/
-├── tools/
-```
+| MMOCR        | MMCV                     | MMDetection                 |
+| ------------ | ------------------------ | --------------------------- |
+| main         | 1.3.8 \<= mmcv \<= 1.7.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
+| 0.6.0        | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
+| 0.5.0        | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 3.0.0  |
+| 0.4.0, 0.4.1 | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
+| 0.3.0        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
+| 0.2.1        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.13.0 \<= mmdet \<= 2.20.0 |
+| 0.2.0        | 1.3.4 \<= mmcv \<= 1.4.0 | 2.11.0 \<= mmdet \<= 2.13.0 |
+| 0.1.0        | 1.2.6 \<= mmcv \<= 1.3.4 | 2.9.0 \<= mmdet \<= 2.11.0  |
