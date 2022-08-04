@@ -5,7 +5,7 @@
 ### Highlights
 
 1. ArT dataset is available for text detection and recognition!
-2. Fixed several bugs that affects the correctness of the models.
+2. Fix several bugs that affects the correctness of the models.
 3. Thanks to [MIM](https://github.com/open-mmlab/mim), our installation is much simpler now! The [docs](https://mmocr.readthedocs.io/en/latest/install.html) has been renewed as well.
 
 ### New Features & Enhancements
