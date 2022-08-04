@@ -102,7 +102,7 @@ to ['albumentations`'s official documentation](https://albumentations.ai/docs/ge
 We provide two options to verify the installation via inference demo, depending on your installation method. You should be able to see a pop-up image and the inference result upon successful verification.
 
 <div align="center">
-    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/resources/verification.jpg"/><br>
+    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/resources/verification.png"/><br>
 </div>
 <br>
 
