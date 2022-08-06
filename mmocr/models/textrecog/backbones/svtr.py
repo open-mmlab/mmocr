@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
+from mmcv.cnn.bricks import DropPath
 from mmengine.model import BaseModule
 
 
@@ -66,7 +67,7 @@ class OverlapPatchEmbed(BaseModule):
             x (Tensor): A Tensor of shape :math:`(N, C, H, W)`.
 
         Returns:
-            Tensor: A tensor of shape math:`(N, HW_m, C)`.
+            Tensor: A tensor of shape math:`(N, HW//16, C)`.
         """
         B, C, H, W = x.shape
         assert H == self.img_size[0] and W == self.img_size[1], \
@@ -180,10 +181,10 @@ class AttnMixer(BaseModule):
         """Forward function.
 
         Args:
-            x (torch.Tensor): A Tensor of shape :math:`(N, C, H, W)`.
+            x (torch.Tensor): A Tensor of shape :math:`(N, H, W, C)`.
 
         Returns:
-            torch.Tensor: A Tensor of shape :math:`(N, C, H, W)`.
+            torch.Tensor: A Tensor of shape :math:`(N, H, W, C)`.
         """
         if self.HW is not None:
             N, C = self.N, self.C
@@ -203,3 +204,191 @@ class AttnMixer(BaseModule):
         x = self.proj(x)
         x = self.proj_drop(x)
         return x
+
+
+class Mlp(BaseModule):
+    """The MLP block.
+
+    Args:
+        in_features (int): The input features.
+        hidden_features (int, optional): The hidden features.
+            Defaults to None.
+        out_features (int, optional): The output features.
+            Defaults to None.
+        drop (float, optional): cfg of dropout function. Defaults to 0.0.
+    """
+
+    def __init__(self,
+                 in_features: int,
+                 hidden_features: int = None,
+                 out_features: int = None,
+                 drop: float = 0.,
+                 init_cfg=None):
+        super().__init__(init_cfg)
+        hidden_features = hidden_features or in_features
+        out_features = out_features or in_features
+        self.fc1 = nn.Linear(in_features, hidden_features)
+        self.act = nn.GELU()
+        self.fc2 = nn.Linear(hidden_features, out_features)
+        self.drop = nn.Dropout(drop)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward function.
+
+        Args:
+            x (torch.Tensor): A Tensor of shape :math:`(N, H, W, C)`.
+
+        Returns:
+            torch.Tensor: A Tensor of shape :math:`(N, H, W, C)`.
+        """
+        x = self.fc1(x)
+        x = self.act(x)
+        x = self.drop(x)
+        x = self.fc2(x)
+        x = self.drop(x)
+        return x
+
+
+class MixingBlock(BaseModule):
+    """The Mixing block.
+
+    Args:
+        embed_dims (int): Number of character components.
+        num_heads (int): Number of heads
+        mixer (str, optional): The mixer type. Defaults to 'Global'.
+        local_mixer (Tuple[int ,int], optional): Local window size.
+            Defaults to [7, 11].
+        HW (Tuple[int, int], optional): The size of [H, W].
+            Defaults to [8, 25].
+        mlp_ratio (float, optional): The ratio of hidden features to input.
+            Defaults to 4.0.
+        qkv_bias (bool, optional): Whether a additive bias is required.
+            Defaults to False.
+        qk_scale (float, optional): A scaling factor. Defaults to None.
+        drop (float, optional): _description_. Defaults to 0..
+        attn_drop (float, optional): A Dropout layer. Defaults to 0.0.
+        drop_path (_type_, optional): The probability of drop path.
+            Defaults to 0.0.
+        pernorm (bool, optional): Mixing layer before norm. Defaults to True.
+    """
+
+    def __init__(self,
+                 embed_dims: int,
+                 num_heads: int,
+                 mixer: str = 'Global',
+                 local_mixer: Tuple[int, int] = [7, 11],
+                 HW: Tuple[int, int] = [8, 25],
+                 mlp_ratio: float = 4.,
+                 qkv_bias: bool = False,
+                 qk_scale: float = None,
+                 drop: float = 0.,
+                 attn_drop: float = 0.,
+                 drop_path=0.,
+                 prenorm: bool = True,
+                 init_cfg=None):
+        super().__init__(init_cfg)
+        self.norm1 = nn.LayerNorm(embed_dims, eps=1e-6)
+        if mixer in {'Global', 'Local'}:
+            self.mixer = AttnMixer(
+                embed_dims,
+                num_heads=num_heads,
+                mixer=mixer,
+                HW=HW,
+                local_k=local_mixer,
+                qkv_bias=qkv_bias,
+                qk_scale=qk_scale,
+                attn_drop=attn_drop,
+                proj_drop=drop)
+        elif mixer == 'Conv':
+            self.mixer = ConvMixer(
+                embed_dims, num_heads=num_heads, HW=HW, local_k=local_mixer)
+        else:
+            raise TypeError('The mixer must be one of [Global, Local, Conv]')
+        self.drop_path = DropPath(drop_path)
+        self.norm2 = nn.LayerNorm(embed_dims, eps=1e-6)
+        mlp_hidden_dim = int(embed_dims * mlp_ratio)
+        self.mlp_ratio = mlp_ratio
+        self.mlp = Mlp(
+            in_features=embed_dims, hidden_features=mlp_hidden_dim, drop=drop)
+        self.prenorm = prenorm
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward function.
+
+        Args:
+            x (torch.Tensor): A Tensor of shape :math:`(N, H*W, C)`.
+
+        Returns:
+            torch.Tensor: A Tensor of shape :math:`(N, H*W, C)`.
+        """
+        if self.prenorm:
+            x = self.norm1(x + self.drop_path(self.mixer(x)))
+            x = self.norm2(x + self.drop_path(self.mlp(x)))
+        else:
+            x = x + self.drop_path(self.mixer(self.norm1(x)))
+            x = x + self.drop_path(self.mlp(self.norm2(x)))
+        return x
+
+
+class DownSample(BaseModule):
+    """The last layer of any stage, one of the {'Merging', 'Combing'}.
+
+    Args:
+        in_channels (int): The channels of input.
+        out_channels (int): The channels of output.
+        types (str, optional): Which operation of ['Merging', 'Combing'].
+            Defaults to 'Merging'.
+        stride (Union[int, Tuple[int, int]], optional): Stride of the Conv.
+            Defaults to [2, 1].
+        act (bool, optional): activation function. Defaults to None.
+    """
+
+    def __init__(self,
+                 in_channels: int,
+                 out_channels: int,
+                 types: str = 'Merging',
+                 stride: Union[int, Tuple[int, int]] = [2, 1],
+                 act: bool = None,
+                 init_cfg=None):
+        super().__init__(init_cfg)
+        self.types = types
+        if types == 'Combing':
+            self.avgpool = nn.AvgPool2d(
+                kernel_size=[3, 5], stride=stride, padding=[1, 2])
+            self.maxpool = nn.MaxPool2d(
+                kernel_size=[3, 5], stride=stride, padding=[1, 2])
+            self.proj = nn.Linear(in_channels, out_channels)
+        elif types == 'Merging':
+            self.conv = ConvModule(
+                in_channels,
+                out_channels,
+                kernel_size=3,
+                stride=stride,
+                padding=1)
+        self.norm = nn.LayerNorm(out_channels)
+        if act is not None:
+            self.act = act()
+        else:
+            self.act = None
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward function.
+
+        Args:
+            x (torch.Tensor): A Tensor of shape :math:`(N, H, W, C)`.
+
+        Returns:
+            torch.Tensor: A Tensor of shape :math:`(N, H/2, W, 2C)`.
+        """
+        if self.types == 'Combing':
+            x = (self.avgpool(x) + self.maxpool(x)) * 0.5
+            out = self.proj(x.flatten(2).permute(0, 2, 1))
+
+        else:
+            x = self.conv(x)
+            out = x.flatten(2).permute(0, 2, 1)
+        out = self.norm(out)
+        if self.act is not None:
+            out = self.act(out)
+
+        return out
