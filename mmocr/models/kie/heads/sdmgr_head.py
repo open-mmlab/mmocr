@@ -118,7 +118,7 @@ class SDMGRHead(BaseModule):
               confidence scores for node label predictions.
             - edge_labels (Tensor): An integer tensor of shape (N, N)
               indicating the connection between nodes. Options are 0, 1.
-            - edge_scores (Tensor): A float tensor of shape (N, ), indicating
+            - edge_scores (Tensor): A float tensor of shape (N, N), indicating
               the confidence scores for edge predictions.
         """
         preds = self.forward(batch_inputs, batch_data_samples)
