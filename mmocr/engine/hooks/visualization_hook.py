@@ -52,6 +52,8 @@ class VisualizationHook(Hook):
         self.file_client = None
         self.enable = enable
 
+    # TODO after MultiDatasetWrapper, rewrites this function and try to merge
+    # with after_val_iter and after_test_iter
     def after_val_iter(self, runner: Runner, batch_idx: int,
                        data_batch: Sequence[dict],
                        outputs: Sequence[Union[TextDetDataSample,
