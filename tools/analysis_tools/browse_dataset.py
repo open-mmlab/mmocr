@@ -3,7 +3,7 @@ import argparse
 import os.path as osp
 
 import mmcv
-from mmcv import Config, DictAction
+from mmengine import Config, DictAction
 
 from mmocr.registry import DATASETS, VISUALIZERS
 from mmocr.utils import register_all_modules
@@ -64,7 +64,7 @@ def main():
         visualizer.add_datasample(
             name=osp.basename(img_path),
             image=img,
-            gt_sample=data_sample,
+            data_sample=data_sample,
             draw_pred=False,
             show=not args.not_show,
             wait_time=args.show_interval,
