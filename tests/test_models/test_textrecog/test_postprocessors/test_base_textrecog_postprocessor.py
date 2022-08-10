@@ -87,7 +87,7 @@ class TestBaseTextRecogPostprocessor(TestCase):
                     type='Dictionary',
                     dict_file=dict_file,
                     with_unknown=True,
-                    unkown_token=None),
+                    unknown_token=None),
                 ignore_chars=['M'])
 
         with self.assertWarnsRegex(Warning,

@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import re
 from typing import List, Optional, Sequence
 
 from mmocr.registry import TASK_UTILS
@@ -50,8 +49,7 @@ class Dictionary:
                  end_token: str = '<EOS>',
                  start_end_token: str = '<BOS/EOS>',
                  padding_token: str = '<PAD>',
-                 unknown_token: Optional[str] = '<UKN>',
-                 **kwargs) -> None:
+                 unknown_token: Optional[str] = '<UKN>') -> None:
         self.with_start = with_start
         self.with_end = with_end
         self.same_start_end = same_start_end
@@ -75,10 +73,8 @@ class Dictionary:
                 self._dict.append(line)
 
         self._char2idx = {char: idx for idx, char in enumerate(self._dict)}
-        self._contain_uppercase = len(re.findall('[A-Z]', ''.join(
-            self.dict))) > 0
 
-        self._update_dict(**kwargs)
+        self._update_dict()
         assert len(set(self._dict)) == len(self._dict), \
             'Invalid dictionary: Has duplicated characters.'
 
@@ -90,15 +86,9 @@ class Dictionary:
 
     @property
     def dict(self) -> list:
-        """list: The list of all character to recognize, which Special tokens
-        are counted."""
+        """list: Returns a list of characters to recognize, where special
+        tokens are counted."""
         return self._dict
-
-    @property
-    def contain_uppercase(self) -> bool:
-        """bool: Whether all the English characters in dict file are in lowercase.
-        """
-        return self._contain_uppercase
 
     def char2idx(self, char: str, strict: bool = True) -> int:
         """Convert a character to an index via ``Dictionary.dict``.
@@ -161,7 +151,7 @@ class Dictionary:
             string += self._dict[i]
         return string
 
-    def _update_dict(self, **kwargs):
+    def _update_dict(self):
         """Update the dict with tokens according to parameters."""
         # BOS/EOS
         self.start_idx = None
