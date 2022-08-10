@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import List, Optional, Sequence
+from typing import List, Sequence
 
 from mmocr.registry import TASK_UTILS
 from mmocr.utils import list_from_file
@@ -49,7 +49,7 @@ class Dictionary:
                  end_token: str = '<EOS>',
                  start_end_token: str = '<BOS/EOS>',
                  padding_token: str = '<PAD>',
-                 unknown_token: Optional[str] = '<UKN>') -> None:
+                 unknown_token: str = '<UKN>') -> None:
         self.with_start = with_start
         self.with_end = with_end
         self.same_start_end = same_start_end
