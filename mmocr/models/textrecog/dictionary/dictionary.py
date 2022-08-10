@@ -148,6 +148,8 @@ class Dictionary:
         assert isinstance(index, (list, tuple))
         string = ''
         for i in index:
+            assert i < len(self._dict), f'Index: {i} out of range! Index ' \
+                                        f'must be less than {len(self._dict)}'
             string += self._dict[i]
         return string
 

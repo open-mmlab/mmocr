@@ -139,3 +139,5 @@ class TestDictionary(TestCase):
             self.assertEqual(dict_gen.idx2str([0, 1, 2, 3, 4]), '01234')
             with self.assertRaises(AssertionError):
                 dict_gen.idx2str('01234')
+            with self.assertRaises(AssertionError):
+                dict_gen.idx2str([40])
