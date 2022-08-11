@@ -89,17 +89,6 @@ class TestDictionary(TestCase):
             dict_gen = Dictionary(dict_file=dict_file)
             assert dict_gen.num_classes == 36
 
-    def test_contain_uppercase(self):
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            # create dummy data
-            dict_file = osp.join(tmp_dir, 'fake_chars.txt')
-            create_dummy_dict_file(dict_file)
-            dict_gen = Dictionary(dict_file=dict_file)
-            assert dict_gen.contain_uppercase is False
-            create_dummy_dict_file(dict_file, chars='abcdABCD')
-            dict_gen = Dictionary(dict_file=dict_file)
-            assert dict_gen.contain_uppercase is True
-
     def test_char2idx(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
 
@@ -150,3 +139,5 @@ class TestDictionary(TestCase):
             self.assertEqual(dict_gen.idx2str([0, 1, 2, 3, 4]), '01234')
             with self.assertRaises(AssertionError):
                 dict_gen.idx2str('01234')
+            with self.assertRaises(AssertionError):
+                dict_gen.idx2str([40])

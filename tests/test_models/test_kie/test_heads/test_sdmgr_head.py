@@ -40,6 +40,7 @@ class TestSDMGRHead(TestCase):
             self.assertEqual(edge_cls.shape, torch.Size([4, 2]))
 
             # When input image is None
+            del (dict_cfg['type'])
             head = SDMGRHead(dictionary=Dictionary(**dict_cfg))
             node_cls, edge_cls = head(None, [data_sample])
             self.assertEqual(node_cls.shape, torch.Size([2, 26]))
