@@ -62,6 +62,7 @@ class F1Metric(BaseMetric):
         assert isinstance(mode, (list, str))
         assert not (len(cared_classes) > 0 and len(ignored_classes) > 0), \
             'cared_classes and ignored_classes cannot be both non-empty'
+
         if isinstance(mode, str):
             mode = [mode]
         assert set(mode).issubset({'micro', 'macro'})
@@ -82,9 +83,6 @@ class F1Metric(BaseMetric):
             self.cared_labels = list(range(num_classes))
         self.num_classes = num_classes
         self.key = key
-        if isinstance(mode, str):
-            mode = [mode]
-        self.mode = mode
 
     def process(self, data_batch: Sequence[Dict],
                 predictions: Sequence[Dict]) -> None:
