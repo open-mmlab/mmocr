@@ -9,8 +9,8 @@ import torch
 from mmengine import InstanceData
 from numpy import ndarray
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 from .base_postprocessor import BaseTextDetPostProcessor
 
 

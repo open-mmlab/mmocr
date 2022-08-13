@@ -8,8 +8,8 @@ from mmdet.structures.mask import bitmap_to_polygon
 from mmengine import InstanceData
 from mmengine.model import BaseModel
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 from mmocr.utils.bbox_utils import bbox2poly
 
 ForwardResults = Union[Dict[str, torch.Tensor], List[DetDataSample],

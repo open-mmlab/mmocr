@@ -5,7 +5,7 @@ from typing import Dict, Optional, Sequence, Union
 
 import mmcv
 from mmengine.evaluator import BaseMetric
-from rapidfuzz import string_metric
+from rapidfuzz.distance import Levenshtein
 
 from mmocr.registry import METRICS
 
@@ -60,12 +60,12 @@ class WordMetric(BaseMetric):
             data_batch (Sequence[Dict]): A batch of gts.
             predictions (Sequence[Dict]): A batch of outputs from the model.
         """
-        for gt, pred in zip(data_batch, predictions):
+        for data_sample in predictions:
             match_num = 0
             match_ignore_case_num = 0
             match_ignore_case_symbol_num = 0
-            pred_text = pred.get('pred_text').get('item')
-            gt_text = gt.get('data_sample').get('instances')[0].get('text')
+            pred_text = data_sample.get('pred_text').get('item')
+            gt_text = data_sample.get('gt_text').get('item')
             if 'ignore_case' in self.mode or 'ignore_case_symbol' in self.mode:
                 pred_text_lower = pred_text.lower()
                 gt_text_lower = gt_text.lower()
@@ -158,9 +158,9 @@ class CharMetric(BaseMetric):
             data_batch (Sequence[Dict]): A batch of gts.
             predictions (Sequence[Dict]): A batch of outputs from the model.
         """
-        for gt, pred in zip(data_batch, predictions):
-            pred_text = pred.get('pred_text').get('item')
-            gt_text = gt.get('data_sample').get('instances')[0].get('text')
+        for data_sample in predictions:
+            pred_text = data_sample.get('pred_text').get('item')
+            gt_text = data_sample.get('gt_text').get('item')
             gt_text_lower = gt_text.lower()
             pred_text_lower = pred_text.lower()
             gt_text_lower_ignore = self.valid_symbol.sub('', gt_text_lower)
@@ -258,17 +258,15 @@ class OneMinusNEDMetric(BaseMetric):
             data_batch (Sequence[Dict]): A batch of gts.
             predictions (Sequence[Dict]): A batch of outputs from the model.
         """
-        for gt, pred in zip(data_batch, predictions):
-            pred_text = pred.get('pred_text').get('item')
-            gt_text = gt.get('data_sample').get('instances')[0].get('text')
+        for data_sample in predictions:
+            pred_text = data_sample.get('pred_text').get('item')
+            gt_text = data_sample.get('gt_text').get('item')
             gt_text_lower = gt_text.lower()
             pred_text_lower = pred_text.lower()
             gt_text_lower_ignore = self.valid_symbol.sub('', gt_text_lower)
             pred_text_lower_ignore = self.valid_symbol.sub('', pred_text_lower)
-            edit_dist = string_metric.levenshtein(pred_text_lower_ignore,
-                                                  gt_text_lower_ignore)
-            norm_ed = float(edit_dist) / max(1, len(gt_text_lower_ignore),
-                                             len(pred_text_lower_ignore))
+            norm_ed = Levenshtein.normalized_distance(pred_text_lower_ignore,
+                                                      gt_text_lower_ignore)
             result = dict(norm_ed=norm_ed)
             self.results.append(result)
 

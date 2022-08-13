@@ -5,10 +5,10 @@ import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
 
-from mmocr.data import TextRecogDataSample
 from mmocr.models.common.modules import PositionalEncoding
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 from .base_decoder import BaseDecoder
 
 
@@ -17,7 +17,7 @@ class ABIVisionDecoder(BaseDecoder):
     """Converts visual features into text characters.
 
     Implementation of VisionEncoder in
-        `ABINet <https://arxiv.org/abs/1910.04396>`_.
+        `ABINet <https://arxiv.org/abs/2103.06495>`_.
 
     Args:
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or

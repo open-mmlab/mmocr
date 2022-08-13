@@ -5,8 +5,8 @@ import mmcv
 import numpy as np
 from mmengine import Visualizer
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import VISUALIZERS
+from mmocr.structures import TextDetDataSample
 
 
 @VISUALIZERS.register_module()
@@ -65,8 +65,7 @@ class TextDetLocalVisualizer(Visualizer):
     def add_datasample(self,
                        name: str,
                        image: np.ndarray,
-                       gt_sample: Optional['TextDetDataSample'] = None,
-                       pred_sample: Optional['TextDetDataSample'] = None,
+                       data_sample: Optional['TextDetDataSample'] = None,
                        draw_gt: bool = True,
                        draw_pred: bool = True,
                        show: bool = False,
@@ -88,10 +87,9 @@ class TextDetLocalVisualizer(Visualizer):
         Args:
             name (str): The image identifier.
             image (np.ndarray): The image to draw.
-            gt_sample (:obj:`TextDetDataSample`, optional): GT
-                TextDetDataSample. Defaults to None.
-            pred_sample (:obj:`TextDetDataSample`, optional): Predicted
-                TextDetDataSample. Defaults to None.
+            data_sample (:obj:`TextDetDataSample`, optional):
+                TextDetDataSample which contains gt and prediction. Defaults
+                    to None.
             draw_gt (bool): Whether to draw GT TextDetDataSample.
                 Defaults to True.
             draw_pred (bool): Whether to draw Predicted TextDetDataSample.
@@ -106,8 +104,9 @@ class TextDetLocalVisualizer(Visualizer):
         gt_img_data = None
         pred_img_data = None
 
-        if draw_gt and gt_sample is not None and 'gt_instances' in gt_sample:
-            gt_instances = gt_sample.gt_instances
+        if (draw_gt and data_sample is not None
+                and 'gt_instances' in data_sample):
+            gt_instances = data_sample.gt_instances
 
             self.set_image(image)
 
@@ -132,9 +131,9 @@ class TextDetLocalVisualizer(Visualizer):
 
             gt_img_data = self.get_image()
 
-        if draw_pred and pred_sample is not None \
-                and 'pred_instances' in pred_sample:
-            pred_instances = pred_sample.pred_instances
+        if draw_pred and data_sample is not None \
+                and 'pred_instances' in data_sample:
+            pred_instances = data_sample.pred_instances
             pred_instances = pred_instances[
                 pred_instances.scores > pred_score_thr].cpu()
 
@@ -166,8 +165,10 @@ class TextDetLocalVisualizer(Visualizer):
             drawn_img = np.concatenate((gt_img_data, pred_img_data), axis=1)
         elif gt_img_data is not None:
             drawn_img = gt_img_data
-        else:
+        elif pred_img_data is not None:
             drawn_img = pred_img_data
+        else:
+            drawn_img = image
 
         if show:
             self.show(drawn_img, win_name=name, wait_time=wait_time)
