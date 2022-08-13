@@ -7,8 +7,8 @@ import torch
 from mmengine import InstanceData
 from numpy.fft import ifft
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 from mmocr.utils import fill_hole
 from .base_postprocessor import BaseTextDetPostProcessor
 

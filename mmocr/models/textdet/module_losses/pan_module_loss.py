@@ -8,8 +8,8 @@ import torch.nn.functional as F
 from mmdet.models.utils import multi_apply
 from torch import nn
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 from .text_kernel_mixin import TextKernelMixin
 
 

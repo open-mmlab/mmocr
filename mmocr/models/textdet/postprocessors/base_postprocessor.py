@@ -6,7 +6,7 @@ import mmcv
 import numpy as np
 from torch import Tensor
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.utils import boundary_iou, rescale_polygons
 
 

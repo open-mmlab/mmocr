@@ -8,7 +8,7 @@ from mmocr.registry import MODELS
 from mmocr.utils.typing import (ConfigType, InitConfigType, OptConfigType,
                                 OptRecSampleList, RecForwardResults,
                                 RecSampleList)
-from .base import BaseRecognizer
+from .base_recognizer import BaseRecognizer
 
 
 @MODELS.register_module()

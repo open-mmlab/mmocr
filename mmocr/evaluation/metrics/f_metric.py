@@ -62,6 +62,7 @@ class F1Metric(BaseMetric):
         assert isinstance(mode, (list, str))
         assert not (len(cared_classes) > 0 and len(ignored_classes) > 0), \
             'cared_classes and ignored_classes cannot be both non-empty'
+
         if isinstance(mode, str):
             mode = [mode]
         assert set(mode).issubset({'micro', 'macro'})
@@ -82,9 +83,6 @@ class F1Metric(BaseMetric):
             self.cared_labels = list(range(num_classes))
         self.num_classes = num_classes
         self.key = key
-        if isinstance(mode, str):
-            mode = [mode]
-        self.mode = mode
 
     def process(self, data_batch: Sequence[Dict],
                 predictions: Sequence[Dict]) -> None:
@@ -96,9 +94,11 @@ class F1Metric(BaseMetric):
             data_batch (Sequence[Dict]): A batch of gts.
             predictions (Sequence[Dict]): A batch of outputs from the model.
         """
-        for gt, pred in zip(data_batch, predictions):
-            pred_labels = pred.get('pred_instances').get(self.key).cpu()
-            gt_labels = gt.get('data_sample').get('gt_instances').get(self.key)
+        for data_samples in predictions:
+            pred_labels = data_samples.get('pred_instances').get(
+                self.key).cpu()
+            gt_labels = data_samples.get('gt_instances').get(self.key).cpu()
+
             result = dict(
                 pred_labels=pred_labels.flatten(),
                 gt_labels=gt_labels.flatten())

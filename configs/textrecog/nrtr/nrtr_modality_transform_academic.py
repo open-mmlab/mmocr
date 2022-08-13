@@ -6,7 +6,7 @@ _base_ = [
 ]
 
 # optimizer settings
-optimizer = dict(type='Adam', lr=3e-4)
+optim_wrapper = dict(type='OptimWrapper', optimizer=dict(type='Adam', lr=3e-4))
 
 # dataset settings
 train_list = {{_base_.train_list}}
@@ -15,7 +15,11 @@ file_client_args = dict(backend='disk')
 default_hooks = dict(logger=dict(type='LoggerHook', interval=50), )
 
 train_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        ignore_empty=True,
+        min_size=5),
     dict(type='LoadOCRAnnotations', with_text=True),
     dict(
         type='RescaleToHeight',
@@ -38,10 +42,12 @@ test_pipeline = [
         max_width=160,
         width_divisor=16),
     dict(type='PadToWidth', width=160),
+    # add loading annotation after ``Resize`` because ground truth
+    # does not need to do resize data transform
+    dict(type='LoadOCRAnnotations', with_text=True),
     dict(
         type='PackTextRecogInputs',
-        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio',
-                   'instances'))
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
 ]
 
 train_dataloader = dict(
@@ -50,7 +56,7 @@ train_dataloader = dict(
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
-        type='ConcatDataset', datasets=train_list, pipeline=test_pipeline))
+        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
 
 test_cfg = dict(type='MultiTestLoop')
 val_cfg = dict(type='MultiValLoop')

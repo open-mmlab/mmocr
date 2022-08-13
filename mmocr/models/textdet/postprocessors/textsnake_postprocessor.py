@@ -9,8 +9,8 @@ from mmengine.data import InstanceData
 from numpy.linalg import norm
 from skimage.morphology import skeletonize
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 from mmocr.utils import fill_hole
 from .base_postprocessor import BaseTextDetPostProcessor
 
