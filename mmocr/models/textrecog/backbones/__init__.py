@@ -5,9 +5,10 @@ from .resnet import ResNet
 from .resnet31_ocr import ResNet31OCR
 from .resnet_abi import ResNetABI
 from .shallow_cnn import ShallowCNN
+from .svtr import SVTRNet
 from .very_deep_vgg import VeryDeepVgg
 
 __all__ = [
     'ResNet31OCR', 'VeryDeepVgg', 'NRTRModalityTransform', 'ShallowCNN',
-    'ResNetABI', 'ResNet', 'MobileNetV2'
+    'ResNetABI', 'ResNet', 'MobileNetV2', 'SVTRNet'
 ]

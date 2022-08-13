@@ -4,8 +4,8 @@ from unittest import TestCase
 import torch
 
 from mmocr.models.textrecog.backbones.svtr import (AttnMixer, ConvMixer,
-                                                   DownSample, MixingBlock,
-                                                   OverlapPatchEmbed)
+                                                   MerigingBlock, MixingBlock,
+                                                   OverlapPatchEmbed, SVTRNet)
 
 
 class TestOverlapPatchEmbed(TestCase):
@@ -53,19 +53,32 @@ class TestMixingBlock(TestCase):
             mixing_block(self.img).shape, torch.Size([1, 8 * 25, 768]))
 
 
-class TestDownSample(TestCase):
+class TestMergingBlock(TestCase):
 
     def setUp(self) -> None:
-        self.img = torch.rand(1, 768, 8, 25)
+        self.img = torch.rand(1, 64, 8, 25)
 
-    def test_downsample(self):
-        downsample1 = DownSample(
-            self.img.shape[1], self.img.shape[1] * 2, types='Combing')
-        downsample2 = DownSample(
-            self.img.shape[1], self.img.shape[1] * 2, types='Merging')
+    def test_mergingblock(self):
+        mergingblock1 = MerigingBlock(
+            self.img.shape[1], self.img.shape[1] * 2, types='Pool')
+        mergingblock2 = MerigingBlock(
+            self.img.shape[1], self.img.shape[1] * 2, types='Conv')
         self.assertEqual(
-            [downsample1(self.img).shape,
-             downsample2(self.img).shape], [
-                 torch.Size([1, 4 * 25, 768 * 2]),
-                 torch.Size([1, 4 * 25, 768 * 2])
-             ])
+            [mergingblock1(self.img).shape,
+             mergingblock2(self.img).shape],
+            [torch.Size([1, 4 * 25, 64 * 2]),
+             torch.Size([1, 4 * 25, 64 * 2])])
+
+
+class TestSvtrNet(TestCase):
+
+    def setUp(self) -> None:
+        self.img = torch.rand(1, 3, 32, 100)
+
+    def test_svtrnet(self):
+        model = SVTRNet(
+            img_size=self.img.shape[-2:],
+            in_channels=self.img.shape[1],
+        )
+        model.train()
+        self.assertEqual(model(self.img).shape, torch.Size([1, 192, 1, 25]))
