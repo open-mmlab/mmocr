@@ -78,7 +78,7 @@ class BaseTextRecogPostprocessor:
            data_sample (TextRecogDataSample): Datasample of an image.
 
         Returns:
-            tuple(list[int], list[float]): index and score.
+            tuple(list[int], list[float]): Index and scores per-character.
         """
         raise NotImplementedError
 
