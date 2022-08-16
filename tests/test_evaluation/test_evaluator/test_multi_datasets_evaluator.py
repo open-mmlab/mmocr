@@ -79,7 +79,7 @@ def generate_test_results(size, batch_size, pred, label):
 class TestMultiDatasetsEvaluator(TestCase):
 
     def test_composed_metrics(self):
-        DefaultScope.get_instance('mmocr', scope_name='mmocr')
+        DefaultScope.get_instance('mmocr_metric', scope_name='mmocr')
         cfg = [
             dict(type='ToyMetric'),
             dict(type='ToyMetric', dummy_metrics=dict(mAP=0.0))
