@@ -13,7 +13,7 @@ from mmocr.evaluation import MultiDatasetsEvaluator
 
 @METRICS.register_module()
 class ToyMetric(BaseMetric):
-    """Evaluaotr that calculates the metric `accuracy` from predictions and
+    """Evaluator that calculates the metric `accuracy` from predictions and
     labels. Alternatively, this evaluator can return arbitrary dummy metrics
     set in the config.
 
