@@ -69,3 +69,4 @@ class ConcatDataset(MMENGINE_CONCATDATASET):
         self._fully_initialized = False
         if not lazy_init:
             self.full_init()
+            self._metainfo.update(dict(cumulative_sizes=self.cumulative_sizes))
