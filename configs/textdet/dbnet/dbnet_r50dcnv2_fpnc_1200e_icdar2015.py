@@ -5,30 +5,27 @@ _base_ = [
     '../../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
-# dataset settings
-train_list = [_base_.ic15_det_train]
-test_list = [_base_.ic15_det_test]
-
+# TODO: Replace the link
 load_from = 'https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r50dcnv2_fpnc_sbn_2e_synthtext_20210325-aa96e477.pth'  # noqa
+
+# dataset settings
+ic15_det_train = _base_.ic15_det_train
+ic15_det_train.pipeline = _base_.train_pipeline
+ic15_det_test = _base_.ic15_det_test
+ic15_det_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=dict(
-        type='ConcatDataset',
-        datasets=train_list,
-        pipeline=_base_.train_pipeline))
+    dataset=ic15_det_train)
 
 val_dataloader = dict(
-    batch_size=16,
-    num_workers=8,
+    batch_size=1,
+    num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dict(
-        type='ConcatDataset',
-        datasets=test_list,
-        pipeline=_base_.test_pipeline))
+    dataset=ic15_det_test)
 
 test_dataloader = val_dataloader
