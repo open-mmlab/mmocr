@@ -85,7 +85,7 @@ class TestMultiDatasetsEvaluator(TestCase):
             dict(type='ToyMetric', dummy_metrics=dict(mAP=0.0))
         ]
 
-        evaluator = MultiDatasetsEvaluator(cfg, datasets_prefix=['Fake'])
+        evaluator = MultiDatasetsEvaluator(cfg, dataset_prefixes=['Fake'])
         evaluator.dataset_meta = {}
         size = 10
         batch_size = 4
@@ -104,7 +104,7 @@ class TestMultiDatasetsEvaluator(TestCase):
 
         cfg = [dict(type='ToyMetric'), dict(type='ToyMetric')]
 
-        evaluator = MultiDatasetsEvaluator(cfg, datasets_prefix=['Fake'])
+        evaluator = MultiDatasetsEvaluator(cfg, dataset_prefixes=['Fake'])
         evaluator.dataset_meta = {}
 
         for data_samples, predictions in generate_test_results(
@@ -115,7 +115,7 @@ class TestMultiDatasetsEvaluator(TestCase):
 
         cfg = [dict(type='ToyMetric'), dict(type='ToyMetric', prefix=None)]
 
-        evaluator = MultiDatasetsEvaluator(cfg, datasets_prefix=['Fake'])
+        evaluator = MultiDatasetsEvaluator(cfg, dataset_prefixes=['Fake'])
         evaluator.dataset_meta = {}
 
         for data_samples, predictions in generate_test_results(

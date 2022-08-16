@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import copy
 from typing import Callable, List, Sequence, Union
 
 from mmengine import BaseDataset, Compose
@@ -70,15 +69,4 @@ class ConcatDataset(MMENGINE_CONCATDATASET):
         self._fully_initialized = False
         if not lazy_init:
             self.full_init()
-
-    @property
-    def metainfo(self) -> dict:
-        """Get the meta information of the first dataset in ``self.datasets``.
-
-        Returns:
-            dict: Meta information of first dataset.
-        """
-        # Prevent `self._metainfo` from being modified by outside.
-        metainfo = copy.deepcopy(self._metainfo)
-        metainfo.update(dict(cumulative_sizes=self.cumulative_sizes))
-        return metainfo
+            self._metainfo.update(dict(cumulative_sizes=self.cumulative_sizes))
