@@ -11,8 +11,7 @@ import scipy.io as scio
 import yaml
 from shapely.geometry import Polygon
 
-from mmocr.utils.fileio import list_to_file
-from mmocr.utils.img_utils import crop_img
+from mmocr.utils import crop_img, dump_ocr_data
 
 
 def collect_files(img_dir, gt_dir):
@@ -285,12 +284,12 @@ def generate_ann(root_path, split, image_infos):
 
     dst_image_root = osp.join(root_path, 'dst_imgs', split)
     if split == 'training':
-        dst_label_file = osp.join(root_path, 'train_label.txt')
+        dst_label_file = osp.join(root_path, 'train_label.json')
     elif split == 'test':
-        dst_label_file = osp.join(root_path, 'test_label.txt')
+        dst_label_file = osp.join(root_path, 'test_label.json')
     os.makedirs(dst_image_root, exist_ok=True)
 
-    lines = []
+    img_info = []
     for image_info in image_infos:
         index = 1
         src_img_path = osp.join(root_path, 'imgs', image_info['file_name'])
@@ -309,9 +308,14 @@ def generate_ann(root_path, split, image_infos):
             index += 1
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
-            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                         f'{word}')
-    list_to_file(dst_label_file, lines)
+            img_info.append({
+                'file_name': dst_img_name,
+                'anno_info': [{
+                    'text': word
+                }]
+            })
+
+    dump_ocr_data(img_info, dst_label_file, 'textrecog')
 
 
 def load_img_info(files):

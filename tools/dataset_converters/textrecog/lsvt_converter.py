@@ -1,13 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import json
 import math
 import os.path as osp
 from functools import partial
 
 import mmcv
 
-from mmocr.utils.fileio import list_to_file
+from mmocr.utils import dump_ocr_data
 
 
 def parse_args():
@@ -22,21 +21,16 @@ def parse_args():
         '--preserve-vertical',
         help='Preserve samples containing vertical texts',
         action='store_true')
-    parser.add_argument(
-        '--format',
-        default='jsonl',
-        help='Use jsonl or string to format annotations',
-        choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
 
 
 def process_img(args, dst_image_root, ignore_image_root, preserve_vertical,
-                split, format):
+                split):
     # Dirty hack for multi-processing
     img_idx, img_info, anns = args
     src_img = mmcv.imread(img_info['file_name'])
-    labels = []
+    img_info = []
     for ann_idx, ann in enumerate(anns):
         segmentation = []
         for x, y in ann['points']:
@@ -57,27 +51,21 @@ def process_img(args, dst_image_root, ignore_image_root, preserve_vertical,
 
         dst_img_path = osp.join(dst_image_root, dst_img_name)
         mmcv.imwrite(dst_img, dst_img_path)
-        if format == 'txt':
-            labels.append(f'{osp.basename(dst_image_root)}/{dst_img_name}'
-                          f' {text_label}')
-        elif format == 'jsonl':
-            labels.append(
-                json.dumps({
-                    'filename':
-                    f'{osp.basename(dst_image_root)}/{dst_img_name}',
-                    'text': text_label
-                }))
-        else:
-            raise NotImplementedError
 
-    return labels
+        img_info.append({
+            'file_name': dst_img_name,
+            'anno_info': [{
+                'text': text_label
+            }]
+        })
+
+    return img_info
 
 
 def convert_lsvt(root_path,
                  split,
                  ratio,
                  preserve_vertical,
-                 format,
                  nproc,
                  img_start_idx=0):
     """Collect the annotation information and crop the images.
@@ -101,7 +89,6 @@ def convert_lsvt(root_path,
         split (str): The split of dataset. Namely: training or val
         ratio (float): Split ratio for val set
         preserve_vertical (bool): Whether to preserve vertical texts
-        format (str): Annotation format, whether be txt or jsonl
         nproc (int): The number of process to collect annotations
         img_start_idx (int): Index of start image
 
@@ -116,7 +103,7 @@ def convert_lsvt(root_path,
 
     annotation = mmcv.load(annotation_path)
     # outputs
-    dst_label_file = osp.join(root_path, f'{split}_label.{format}')
+    dst_label_file = osp.join(root_path, f'{split}_label.json')
     dst_image_root = osp.join(root_path, 'crops', split)
     ignore_image_root = osp.join(root_path, 'ignores', split)
     src_image_root = osp.join(root_path, 'imgs')
@@ -128,8 +115,7 @@ def convert_lsvt(root_path,
         dst_image_root=dst_image_root,
         ignore_image_root=ignore_image_root,
         preserve_vertical=preserve_vertical,
-        split=split,
-        format=format)
+        split=split)
 
     img_prefixes = annotation.keys()
 
@@ -167,7 +153,8 @@ def convert_lsvt(root_path,
     final_labels = []
     for label_list in labels_list:
         final_labels += label_list
-    list_to_file(dst_label_file, final_labels)
+
+    dump_ocr_data(final_labels, dst_label_file, 'textrecog')
 
     return idx
 
@@ -181,7 +168,6 @@ def main():
         split='train',
         ratio=args.val_ratio,
         preserve_vertical=args.preserve_vertical,
-        format=args.format,
         nproc=args.nproc)
     if args.val_ratio > 0:
         print('Processing validation set...')
@@ -190,7 +176,6 @@ def main():
             split='val',
             ratio=args.val_ratio,
             preserve_vertical=args.preserve_vertical,
-            format=args.format,
             nproc=args.nproc,
             img_start_idx=num_train_imgs)
     print('Finish')

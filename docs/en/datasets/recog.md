@@ -76,10 +76,10 @@
   unzip -q Challenge1_Test_Task3_Images.zip -d crops/test
 
   # For annotations
-  mv Challenge1_Test_Task3_GT.txt annotations && mv train/gt.txt annotations/Challenge1_Train_Task3_GT.txt
+  mv Challenge1_Test_Task3_GT.txt annotations && mv crops/train/gt.txt annotations/Challenge1_Train_Task3_GT.txt
   ```
 
-- Step2: Convert original annotations to `Train_label.jsonl` and `Test_label.jsonl` with the following command:
+- Step2: Convert original annotations to `train_label.json` and `test_label.json` with the following command:
 
   ```bash
   python tools/dataset_converters/textrecog/ic11_converter.py PATH/TO/icdar2011
@@ -90,8 +90,8 @@
   ```text
   ├── icdar2011
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
+  │   ├── train_label.json
+  │   └── test_label.json
   ```
 
 ## ICDAR 2013 (Focused Scene Text)
@@ -106,18 +106,19 @@
   wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task3_Images_GT.zip --no-check-certificate
   wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_Images.zip --no-check-certificate
   wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_GT.txt --no-check-certificate
+  wget https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt
 
   # For images
   mkdir crops
   unzip -q Challenge2_Training_Task3_Images_GT.zip -d crops/train
   unzip -q Challenge2_Test_Task3_Images.zip -d crops/test
   # For annotations
-  mv Challenge2_Test_Task3_GT.txt annotations && mv crops/train/gt.txt annotations/Challenge2_Train_Task3_GT.txt
+  mv Challenge2_Test_Task3_GT.txt annotations && mv crops/train/gt.txt annotations/Challenge2_Train_Task3_GT.txt && mv test_label_1015.txt annotations/Challenge2_Test1015_Task3_GT.txt
 
   rm Challenge2_Training_Task3_Images_GT.zip && rm Challenge2_Test_Task3_Images.zip
   ```
 
-- Step 2: Generate `Train_label.jsonl` and `Test_label.jsonl` with the following command:
+- Step 2: Generate `train_label.json`, `test_label.json`, `test1015_label.json` with the following command:
 
   ```bash
   python tools/dataset_converters/textrecog/ic13_converter.py PATH/TO/icdar2013
@@ -128,26 +129,9 @@
   ```text
   ├── icdar2013
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
-  ```
-
-## ICDAR 2013 \[Deprecated\]
-
-- Step1: Download `Challenge2_Test_Task3_Images.zip` and `Challenge2_Training_Task3_Images_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads)
-
-- Step2: Download [test_label_1015.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt) and [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/train_label.txt)
-
-- After running the above codes, the directory structure
-  should be as follows:
-
-  ```text
-  ├── icdar_2013
-  │   ├── train_label.txt
-  │   ├── test_label_1015.txt
-  │   ├── test_label_1095.txt
-  │   ├── Challenge2_Training_Task3_Images_GT
-  │   └──  Challenge2_Test_Task3_Images
+  │   ├── train_label.json
+  │   ├── test_label.json
+  │   └── test1015_label.json
   ```
 
 ## ICDAR 2015
@@ -553,7 +537,7 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   rm ch9_training_images.zip && rm ch9_training_localization_transcription_gt.zip && rm ch9_validation_images.zip && rm ch9_validation_localization_transcription_gt.zip
   ```
 
-- Step2: Generate `instances_training.json` and `instances_val.json` with following command:
+- Step2: Generate `train_label.json` and `test_label.json` with following command:
 
   ```bash
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
@@ -567,8 +551,8 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   ├── detext
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
+  │   ├── train_label.json
+  │   └── test_label.json
   ```
 
 ## NAF
@@ -635,7 +619,7 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
   ```
 
-- Step3: Generate `train_label.jsonl` and `test_label.jsonl` and crop images using 4 processes with the following command:
+- Step3: Generate `train_label.json` and `test_label.json` and crop images using 4 processes with the following command:
 
   ```bash
   python tools/dataset_converters/textrecog/sroie_converter.py PATH/TO/sroie --nproc 4
@@ -646,8 +630,8 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   ```text
   ├── sroie
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
+  │   ├── train_label.json
+  │   └── test_label.json
   ```
 
 ## Lecture Video DB
@@ -674,7 +658,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm IIIT-CVid.zip
   ```
 
-- Step2: Generate `train_label.jsonl`, `val.jsonl`, and `test.jsonl` with following command:
+- Step2: Generate `train_label.json`, `val.json`, and `test.json` with following command:
 
   ```bash
   python tools/dataset_converters/textdreog/lv_converter.py PATH/TO/lv
@@ -685,8 +669,8 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```text
   ├── lv
   │   ├── Crops
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
+  │   ├── train_label.json
+  │   └── test_label.json
   ```
 
 ## LSVT
@@ -709,7 +693,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
   ```
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+- Step2: Generate `train_label.json` and `val_label.json` (optional) with the following command:
 
   ```bash
   # Annotations of LSVT test split is not publicly available, split a validation
@@ -725,8 +709,8 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── lsvt
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_label.json
+  │   └── val_label.json (optional)
   ```
 
 ## FUNSD
@@ -750,7 +734,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm dataset.zip && rm -rf dataset
   ```
 
-- Step2: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
+- Step2: Generate `train_label.json` and `test_label.json` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
 
   ```bash
   python tools/dataset_converters/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
@@ -762,10 +746,10 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```text
   ├── funsd
   │   ├── imgs
-  │   ├── dst_imgs
+  │   ├── crops
   │   ├── annotations
-  │   ├── train_label.txt
-  │   └── test_label.txt
+  │   ├── train_label.json
+  │   └── test_label.json
   ```
 
 ## IMGUR
@@ -798,9 +782,9 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```text
   ├── imgur
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   ├── test_label.jsonl
-  │   └── val_label.jsonl
+  │   ├── train_label.json
+  │   ├── test_label.json
+  │   └── val_label.json
   ```
 
 ## KAIST
@@ -824,7 +808,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   python tools/dataset_converters/common/extract_kaist.py PATH/TO/kaist
   ```
 
-- Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with following command:
+- Step3: Generate `train_label.json` and `val_label.json` (optional) with following command:
 
   ```bash
   # Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
@@ -839,8 +823,8 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── kaist
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_label.json
+  │   └── val_label.json (optional)
   ```
 
 ## MTWI
@@ -856,7 +840,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm mtwi_2018_train.zip
   ```
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+- Step2: Generate `train_label.json` and `val_label.json` (optional) with the following command:
 
   ```bash
   # Annotations of MTWI test split is not publicly available, split a validation
@@ -871,8 +855,8 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```text
   ├── mtwi
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_label.json
+  │   └── val_label.json (optional)
   ```
 
 ## COCO Text v2
@@ -893,7 +877,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm train2014.zip && rm -rf cocotext.v2.zip
   ```
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` with the following command:
+- Step2: Generate `train_label.json` and `val_label.json` with the following command:
 
   ```bash
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
@@ -907,8 +891,8 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── coco_textv2
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl
+  │   ├── train_label.json
+  │   └── val_label.json
   ```
 
 ## ReCTS
@@ -928,7 +912,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm ReCTS.zip -f && rm -rf gt
   ```
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+- Step2: Generate `train_label.json` and `val_label.json` (optional) with the following command:
 
   ```bash
   # Annotations of ReCTS test split is not publicly available, split a validation
@@ -944,8 +928,8 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── rects
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_label.json
+  │   └── val_label.json (optional)
   ```
 
 ## ILST
@@ -973,7 +957,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm -rf README.txt
   ```
 
-- Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step3: Generate `train_label.json` and `val_label.json` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
   python tools/dataset_converters/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4
@@ -985,8 +969,8 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── IIIT-ILST
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_label.json
+  │   └── val_label.json (optional)
   ```
 
 ## VinText
@@ -1010,7 +994,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   mv training imgs/ && mv test imgs/ && mv unseen_test imgs/
   ```
 
-- Step2: Generate `train_label.jsonl`, `test_label.jsonl`, `unseen_test_label.jsonl`,  and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts).
+- Step2: Generate `train_label.json`, `test_label.json`, `unseen_test_label.json`,  and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts).
 
   ```bash
   python tools/dataset_converters/textrecog/vintext_converter.py PATH/TO/vietnamese --nproc 4
@@ -1022,9 +1006,9 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── vintext
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   ├── test_label.jsonl
-  │   └── unseen_test_label.jsonl
+  │   ├── train_label.json
+  │   ├── test_label.json
+  │   └── unseen_test_label.json
   ```
 
 ## BID
@@ -1061,10 +1045,10 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm -rf desktop.ini
   ```
 
-- Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step3: Generate `train_label.json` and `val_label.json` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
-  python tools/dataset_converters/textrecog/bid_converter.py dPATH/TO/BID --nproc 4
+  python tools/dataset_converters/textrecog/bid_converter.py PATH/TO/BID --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -1073,15 +1057,15 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── BID
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_label.json
+  │   └── val_label.json (optional)
   ```
 
 ## RCTW
 
 - Step1: Download `train_images.zip.001`, `train_images.zip.002`, and `train_gts.zip` from the [homepage](https://rctw.vlrlab.net/dataset.html), extract the zips to `rctw/imgs` and `rctw/annotations`, respectively.
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step2: Generate `train_label.json` and `val_label.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
   # Annotations of RCTW test split is not publicly available, split a validation set by adding --val-ratio 0.2
@@ -1095,8 +1079,8 @@ The LV dataset has already provided cropped images and the corresponding annotat
   │── rctw
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_label.json
+  │   └── val_label.json (optional)
   ```
 
 ## HierText
@@ -1124,8 +1108,8 @@ The LV dataset has already provided cropped images and the corresponding annotat
   mv hiertext/gt ./
   rm -rf hiertext
   mv gt annotations
-  gzip -d annotations/train.jsonl.gz
-  gzip -d annotations/validation.jsonl.gz
+  gzip -d annotations/train.json.gz
+  gzip -d annotations/validation.json.gz
   # process images
   mkdir imgs
   mv train.tgz imgs/
@@ -1134,7 +1118,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   tar -xzvf imgs/validation.tgz
   ```
 
-- Step5: Generate `train_label.jsonl` and `val_label.jsonl`. HierText includes different levels of annotation, including `paragraph`, `line`, and `word`. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph-level annotation. Set `--level line` to get line-level annotation. set `--level word` to get word-level annotation.
+- Step5: Generate `train_label.json` and `val_label.json`. HierText includes different levels of annotation, including `paragraph`, `line`, and `word`. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph-level annotation. Set `--level line` to get line-level annotation. set `--level word` to get word-level annotation.
 
   ```bash
   # Collect word annotation from HierText  --level word
@@ -1148,8 +1132,8 @@ The LV dataset has already provided cropped images and the corresponding annotat
   │── HierText
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl
+  │   ├── train_label.json
+  │   └── val_label.json
   ```
 
 ## ArT
@@ -1173,11 +1157,11 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm train_images.tar.gz
   ```
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional). Since the test annotations are not publicly available, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step2: Generate `train_label.json` and `val_label.json` (optional). Since the test annotations are not publicly available, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
   # Annotations of ArT test split is not publicly available, split a validation set by adding --val-ratio 0.2
-  python tools/data/textrecog/art_converter.py PATH/TO/art
+  python tools/dataset_converters/textrecog/art_converter.py PATH/TO/art
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -1185,6 +1169,6 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```text
   │── art
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_label.json
+  │   └── val_label.json (optional)
   ```

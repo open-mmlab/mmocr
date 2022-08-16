@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import json
 import math
 import os
 import os.path as osp
@@ -8,19 +7,13 @@ import os.path as osp
 import mmcv
 import numpy as np
 
-from mmocr.utils.fileio import list_to_file
-from mmocr.utils.img_utils import crop_img
+from mmocr.utils import crop_img, dump_ocr_data
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
         description='Generate training, validation and test set of IMGUR ')
     parser.add_argument('root_path', help='Root dir path of IMGUR')
-    parser.add_argument(
-        '--format',
-        default='jsonl',
-        help='Use jsonl or string to format annotations',
-        choices=['jsonl', 'txt'])
     args = parser.parse_args()
 
     return args
@@ -128,13 +121,13 @@ def cal_line_length(point1, point2):
         math.pow(point1[1] - point2[1], 2))
 
 
-def generate_ann(root_path, split, image_infos, format):
+def generate_ann(root_path, split, image_infos):
 
     dst_image_root = osp.join(root_path, 'crops', split)
-    dst_label_file = osp.join(root_path, f'{split}_label.{format}')
+    dst_label_file = osp.join(root_path, f'{split}_label.json')
     os.makedirs(dst_image_root, exist_ok=True)
 
-    lines = []
+    img_info = []
     for image_info in image_infos:
         index = 1
         src_img_path = osp.join(root_path, 'imgs', image_info['file_name'])
@@ -154,20 +147,14 @@ def generate_ann(root_path, split, image_infos, format):
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
 
-            if format == 'txt':
-                lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                             f'{word}')
-            elif format == 'jsonl':
-                lines.append(
-                    json.dumps({
-                        'filename':
-                        f'{osp.basename(dst_image_root)}/{dst_img_name}',
-                        'text': word
-                    }))
-            else:
-                raise NotImplementedError
+            img_info.append({
+                'file_name': dst_img_name,
+                'anno_info': [{
+                    'text': word
+                }]
+            })
 
-    list_to_file(dst_label_file, lines)
+    dump_ocr_data(img_info, dst_label_file, 'textrecog')
 
 
 def main():
@@ -179,7 +166,7 @@ def main():
         with mmcv.Timer(print_tmpl='It takes {}s to convert IMGUR annotation'):
             anno_infos = collect_imgur_info(
                 root_path, f'imgur5k_annotations_{split}.json')
-            generate_ann(root_path, split, anno_infos, args.format)
+            generate_ann(root_path, split, anno_infos)
 
 
 if __name__ == '__main__':

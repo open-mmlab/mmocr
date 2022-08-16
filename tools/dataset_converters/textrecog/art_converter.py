@@ -1,12 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import json
 import math
 import os.path as osp
 
 import mmcv
 
-from mmocr.utils.fileio import list_to_file
+from mmocr.utils import dump_ocr_data
 
 
 def parse_args():
@@ -17,16 +16,11 @@ def parse_args():
         '--val-ratio', help='Split ratio for val set', default=0.0, type=float)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
-    parser.add_argument(
-        '--format',
-        default='jsonl',
-        help='Use jsonl or string to format annotations',
-        choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
 
 
-def convert_art(root_path, split, ratio, format):
+def convert_art(root_path, split, ratio):
     """Collect the annotation information and crop the images.
 
     The annotation format is as the following:
@@ -46,12 +40,10 @@ def convert_art(root_path, split, ratio, format):
         ], ...
     }
 
-
     Args:
         root_path (str): The root path of the dataset
         split (str): The split of dataset. Namely: training or val
         ratio (float): Split ratio for val set
-        format (str): Annotation format, whether be txt or jsonl
 
     Returns:
         img_info (dict): The dict of the img and annotation information
@@ -64,9 +56,6 @@ def convert_art(root_path, split, ratio, format):
             f'{annotation_path} not exists, please check and try again.')
 
     annotation = mmcv.load(annotation_path)
-    # outputs
-    dst_label_file = osp.join(root_path, f'{split}_label.{format}')
-
     img_prefixes = annotation.keys()
 
     trn_files, val_files = [], []
@@ -87,41 +76,30 @@ def convert_art(root_path, split, ratio, format):
     else:
         raise NotImplementedError
 
-    labels = []
+    img_info = []
     for prefix in img_prefixes:
         text_label = annotation[prefix][0]['transcription']
         dst_img_name = prefix + '.jpg'
 
-        if format == 'txt':
-            labels.append(f'crops/{dst_img_name}' f' {text_label}')
-        elif format == 'jsonl':
-            labels.append(
-                json.dumps(
-                    {
-                        'filename': f'crops/{dst_img_name}',
-                        'text': text_label
-                    },
-                    ensure_ascii=False))
+        img_info.append({
+            'file_name': dst_img_name,
+            'anno_info': [{
+                'text': text_label
+            }]
+        })
 
-    list_to_file(dst_label_file, labels)
+    dump_ocr_data(img_info, osp.join(root_path, f'{split.lower()}_label.json'),
+                  'textrecog')
 
 
 def main():
     args = parse_args()
     root_path = args.root_path
     print('Processing training set...')
-    convert_art(
-        root_path=root_path,
-        split='train',
-        ratio=args.val_ratio,
-        format=args.format)
+    convert_art(root_path=root_path, split='train', ratio=args.val_ratio)
     if args.val_ratio > 0:
         print('Processing validation set...')
-        convert_art(
-            root_path=root_path,
-            split='val',
-            ratio=args.val_ratio,
-            format=args.format)
+        convert_art(root_path=root_path, split='val', ratio=args.val_ratio)
     print('Finish')
 
 

@@ -7,7 +7,7 @@ from functools import partial
 
 import mmcv
 
-from mmocr.utils.fileio import list_to_file
+from mmocr.utils import dump_ocr_data
 
 
 def parse_args():
@@ -40,8 +40,12 @@ def process_img(args, src_image_root, dst_image_root):
         dst_img_name = f'img_{img_idx}_{ann_idx}.jpg'
         dst_img_path = osp.join(dst_image_root, dst_img_name)
         mmcv.imwrite(dst_img, dst_img_path)
-        labels.append(f'{osp.basename(dst_image_root)}/{dst_img_name}'
-                      f' {text_label}')
+        labels.append({
+            'file_name': dst_img_name,
+            'anno_info': [{
+                'text': text_label
+            }]
+        })
     return labels
 
 
@@ -79,7 +83,7 @@ def convert_textocr(root_path,
     final_labels = []
     for label_list in labels_list:
         final_labels += label_list
-    list_to_file(dst_label_file, final_labels)
+    dump_ocr_data(final_labels, dst_label_file, 'textrecog')
     return len(annotation['imgs'])
 
 
@@ -90,14 +94,14 @@ def main():
     num_train_imgs = convert_textocr(
         root_path=root_path,
         dst_image_path='image',
-        dst_label_filename='train_label.txt',
+        dst_label_filename='train_label.json',
         annotation_filename='TextOCR_0.1_train.json',
         nproc=args.n_proc)
     print('Processing validation set...')
     convert_textocr(
         root_path=root_path,
         dst_image_path='image',
-        dst_label_filename='val_label.txt',
+        dst_label_filename='val_label.json',
         annotation_filename='TextOCR_0.1_val.json',
         img_start_idx=num_train_imgs,
         nproc=args.n_proc)
