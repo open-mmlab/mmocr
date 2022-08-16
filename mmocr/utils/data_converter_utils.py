@@ -122,7 +122,8 @@ def dump_ocr_data(image_infos: Sequence[Dict], out_json_name: str,
 
         out_json['data_list'].append(single_info)
 
-    mmcv.dump(out_json, out_json_name)
+    ensure_ascii = dict(ensure_ascii=False)
+    mmcv.dump(out_json, out_json_name, **ensure_ascii)
 
     return out_json
 

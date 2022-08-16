@@ -215,16 +215,15 @@ def generate_ann(root_path, image_infos, preserve_vertical, val_ratio):
 
                 dst_img_path = osp.join(dst_image_root, dst_img_name)
                 mmcv.imwrite(dst_img, dst_img_path)
-                filename = f'{osp.basename(dst_image_root)}/{dst_img_name}'
-
                 img_info.append({
-                    'file_name': filename,
+                    'file_name': dst_img_name,
                     'anno_info': [{
                         'text': word
                     }]
                 })
 
-        dump_ocr_data(img_info, dst_label_file, 'textrecog')
+        ensure_ascii = dict(ensure_ascii=False)
+        dump_ocr_data(img_info, dst_label_file, 'textrecog', **ensure_ascii)
 
 
 def parse_args():
@@ -239,7 +238,7 @@ def parse_args():
         '--val-ratio', help='Split ratio for val set', default=0., type=float)
     parser.add_argument(
         '--nproc', default=1, type=int, help='Number of processes')
-    args = parser.parse_args()
+    args = parser.parse_args(['data/IIIT-ILST'])
     return args
 
 

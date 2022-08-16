@@ -88,8 +88,9 @@ def convert_art(root_path, split, ratio):
             }]
         })
 
+    ensure_ascii = dict(ensure_ascii=False)
     dump_ocr_data(img_info, osp.join(root_path, f'{split.lower()}_label.json'),
-                  'textrecog')
+                  'textrecog', **ensure_ascii)
 
 
 def main():
