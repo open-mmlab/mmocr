@@ -1,13 +1,23 @@
 _base_ = [
-    'satrn.py',
-    '../../_base_/recog_datasets/ST_MJ_train.py',
-    '../../_base_/recog_datasets/academic_test.py',
+    '../../_base_/recog_datasets/mjsynth.py',
+    '../../_base_/recog_datasets/synthtext.py',
+    '../../_base_/recog_datasets/cute80.py',
+    '../../_base_/recog_datasets/iiit5k.py',
+    '../../_base_/recog_datasets/svt.py',
+    '../../_base_/recog_datasets/svtp.py',
+    '../../_base_/recog_datasets/icdar2013.py',
+    '../../_base_/recog_datasets/icdar2015.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_5e.py',
+    'satrn.py',
 ]
 
 # dataset settings
-train_list = {{_base_.train_list}}
+train_list = [_base_.mj_rec_train, _base_.st_rec_train]
+test_list = [
+    _base_.cute80_rec_test, _base_.iiit5k_rec_test, _base_.svt_rec_test,
+    _base_.svtp_rec_test, _base_.ic13_rec_test, _base_.ic15_rec_test
+]
 file_client_args = dict(backend='disk')
 default_hooks = dict(logger=dict(type='LoggerHook', interval=50))
 
@@ -73,13 +83,25 @@ train_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=4,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=dict(
+        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
+val_dataloader = test_dataloader
 
-test_cfg = dict(type='MultiTestLoop')
-val_cfg = dict(type='MultiValLoop')
-val_dataloader = _base_.val_dataloader
-test_dataloader = _base_.test_dataloader
-for dataloader in test_dataloader:
-    dataloader['dataset']['pipeline'] = test_pipeline
-for dataloader in val_dataloader:
-    dataloader['dataset']['pipeline'] = test_pipeline
+val_evaluator = dict(
+    type='MultiDatasetsEvaluator',
+    metrics=[
+        dict(
+            type='WordMetric',
+            mode=['exact', 'ignore_case', 'ignore_case_symbol']),
+        dict(type='CharMetric')
+    ],
+    datasets_prefix=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
+test_evaluator = val_evaluator
+
 visualizer = dict(type='TextRecogLocalVisualizer', name='visualizer')

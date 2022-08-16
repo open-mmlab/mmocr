@@ -1,7 +1,8 @@
 _base_ = [
-    'nrtr_modality_transform.py', '../../_base_/default_runtime.py',
     '../../_base_/recog_datasets/toy_data.py',
-    '../../_base_/schedules/schedule_adam_step_6e.py'
+    '../../_base_/default_runtime.py',
+    '../../_base_/schedules/schedule_adam_step_6e.py',
+    'nrtr_modality_transform.py',
 ]
 
 # dataset settings

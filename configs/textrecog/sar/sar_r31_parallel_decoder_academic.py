@@ -1,12 +1,18 @@
 _base_ = [
-    'sar.py',
-    '../../_base_/recog_datasets/ST_SA_MJ_real_train.py',
-    '../../_base_/recog_datasets/academic_test.py',
+    '../../_base_/recog_datasets/mjsynth.py',
+    '../../_base_/recog_datasets/synthtext.py',
+    '../../_base_/recog_datasets/coco_text_v1.py'
+    '../../_base_/recog_datasets/cute80.py',
+    '../../_base_/recog_datasets/iiit5k.py',
+    '../../_base_/recog_datasets/svt.py',
+    '../../_base_/recog_datasets/svtp.py',
+    '../../_base_/recog_datasets/icdar2013.py',
+    '../../_base_/recog_datasets/icdar2015.py',
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_5e.py',
+    'sar.py',
 ]
 
-# dataset settings
 file_client_args = dict(backend='disk')
 default_hooks = dict(logger=dict(type='LoggerHook', interval=100))
 
@@ -47,47 +53,54 @@ test_pipeline = [
 ]
 
 # dataset settings
-ic11_rec_train = _base_.ic11_rec_train
-ic13_rec_train = _base_.ic13_rec_train
-ic15_rec_train = _base_.ic15_rec_train
-cocov1_rec_train = _base_.cocov1_rec_train
-iiit5k_rec_train = _base_.iiit5k_rec_train
-st_add_rec_train = _base_.st_add_rec_train
-st_rec_train = _base_.st_rec_train
-mj_rec_trian = _base_.mj_rec_trian
+train_list = [
+    _base_.ic11_rec_train, _base_.ic13_rec_train, _base_.ic15_rec_train,
+    _base_.cocov1_rec_train, _base_.iiit5k_rec_train, _base_.mj_sub_rec_train,
+    _base_.st_sub_rec_train, _base_.st_add_rec_train
+]
+test_list = [
+    _base_.cute80_rec_test, _base_.iiit5k_rec_test, _base_.svt_rec_test,
+    _base_.svtp_rec_test, _base_.ic13_rec_test, _base_.ic15_rec_test
+]
 
-ic11_rec_train.pipeline = test_pipeline
-ic13_rec_train.pipeline = test_pipeline
-ic15_rec_train.pipeline = test_pipeline
-cocov1_rec_train.pipeline = test_pipeline
-iiit5k_rec_train.pipeline = test_pipeline
-st_add_rec_train.pipeline = test_pipeline
-st_rec_train.pipeline = test_pipeline
-mj_rec_trian.pipeline = test_pipeline
-repeat_ic11 = dict(type='RepeatDataset', dataset=ic11_rec_train, times=20)
-repeat_ic13 = dict(type='RepeatDataset', dataset=ic13_rec_train, times=20)
-repeat_ic15 = dict(type='RepeatDataset', dataset=ic15_rec_train, times=20)
-repeat_cocov1 = dict(type='RepeatDataset', dataset=cocov1_rec_train, times=20)
-repeat_iiit5k = dict(type='RepeatDataset', dataset=iiit5k_rec_train, times=20)
+train_list = [
+    dict(
+        type='RepeatDataset',
+        dataset=dict(
+            type='ConcatDataset',
+            datasets=train_list[:5],
+            pipeline=train_pipeline),
+        times=20),
+    dict(
+        type='ConcatDataset', datasets=train_list[5:],
+        pipeline=train_pipeline),
+]
 
 train_dataloader = dict(
     batch_size=64,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
+    dataset=dict(type='ConcatDataset', datasets=train_list))
+test_dataloader = dict(
+    batch_size=1,
+    num_workers=4,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type='ConcatDataset',
-        datasets=[
-            repeat_ic11, repeat_ic13, repeat_ic15, repeat_cocov1,
-            repeat_iiit5k, st_add_rec_train, st_rec_train, mj_rec_trian
-        ]))
+        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
+val_dataloader = test_dataloader
 
-test_cfg = dict(type='MultiTestLoop')
-val_cfg = dict(type='MultiValLoop')
-val_dataloader = _base_.val_dataloader
-test_dataloader = _base_.test_dataloader
-for dataloader in test_dataloader:
-    dataloader['dataset']['pipeline'] = test_pipeline
-for dataloader in val_dataloader:
-    dataloader['dataset']['pipeline'] = test_pipeline
+val_evaluator = dict(
+    type='MultiDatasetsEvaluator',
+    metrics=[
+        dict(
+            type='WordMetric',
+            mode=['exact', 'ignore_case', 'ignore_case_symbol']),
+        dict(type='CharMetric')
+    ],
+    datasets_prefix=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
+test_evaluator = val_evaluator
+
 visualizer = dict(type='TextRecogLocalVisualizer', name='visualizer')
