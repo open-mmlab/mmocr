@@ -6,27 +6,23 @@ _base_ = [
 ]
 
 # dataset settings
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
+ic15_det_train = _base_.ic15_det_train
+ic15_det_train.pipeline = _base_.train_pipeline
+ic15_det_test = _base_.ic15_det_test
+ic15_det_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=dict(
-        type='ConcatDataset',
-        datasets=train_list,
-        pipeline=_base_.train_pipeline_r18))
+    dataset=ic15_det_train)
 
 val_dataloader = dict(
-    batch_size=16,
-    num_workers=8,
+    batch_size=1,
+    num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dict(
-        type='ConcatDataset',
-        datasets=test_list,
-        pipeline=_base_.test_pipeline_1333_736))
+    dataset=ic15_det_test)
 
 test_dataloader = val_dataloader

@@ -26,7 +26,7 @@ model = dict(
         bgr_to_rgb=True,
         pad_size_divisor=32))
 
-train_pipeline_r18 = [
+train_pipeline = [
     dict(
         type='LoadImageFromFile',
         file_client_args=file_client_args,
@@ -54,14 +54,19 @@ train_pipeline_r18 = [
         meta_keys=('img_path', 'ori_shape', 'img_shape'))
 ]
 
-test_pipeline_1333_736 = [
+test_pipeline = [
     dict(
         type='LoadImageFromFile',
         file_client_args=file_client_args,
         color_type='color_ignore_orientation'),
     dict(type='Resize', scale=(1333, 736), keep_ratio=True),
     dict(
+        type='LoadOCRAnnotations',
+        with_polygon=True,
+        with_bbox=True,
+        with_label=True,
+    ),
+    dict(
         type='PackTextDetInputs',
-        meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor',
-                   'instances'))
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]

@@ -6,8 +6,8 @@ _base_ = [
 ]
 
 # dataset settings
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
+train_list = [_base_.st_det_train]
+test_list = [_base_.st_det_test]
 
 train_dataloader = dict(
     batch_size=16,
@@ -17,7 +17,7 @@ train_dataloader = dict(
     dataset=dict(
         type='ConcatDataset',
         datasets=train_list,
-        pipeline=_base_.train_pipeline_r50dcnv2))
+        pipeline=_base_.train_pipeline))
 
 val_dataloader = dict(
     batch_size=16,
@@ -27,6 +27,6 @@ val_dataloader = dict(
     dataset=dict(
         type='ConcatDataset',
         datasets=test_list,
-        pipeline=_base_.test_pipeline_4068_1024))
+        pipeline=_base_.test_pipeline))
 
 test_dataloader = val_dataloader
