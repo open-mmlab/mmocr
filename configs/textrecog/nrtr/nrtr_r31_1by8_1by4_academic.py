@@ -89,7 +89,7 @@ val_evaluator = dict(
             mode=['exact', 'ignore_case', 'ignore_case_symbol']),
         dict(type='CharMetric')
     ],
-    datasets_prefix=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
+    dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
 test_evaluator = val_evaluator
 
 visualizer = dict(type='TextRecogLocalVisualizer', name='visualizer')
