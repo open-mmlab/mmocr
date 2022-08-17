@@ -1,4 +1,4 @@
-mj_rec_data_root = 'data/rec/'
+mj_rec_data_root = 'data/rec/Synth'
 
 mj_rec_train = dict(
     type='OCRDataset',
