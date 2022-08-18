@@ -212,7 +212,8 @@ def generate_ann(root_path, split, image_infos, preserve_vertical):
                 }]
             })
 
-    dump_ocr_data(img_info, dst_label_file, 'textrecog')
+    ensure_ascii = dict(ensure_ascii=False)
+    dump_ocr_data(img_info, dst_label_file, 'textrecog', **ensure_ascii)
 
 
 def parse_args():

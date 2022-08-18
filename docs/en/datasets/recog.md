@@ -789,7 +789,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
 
 ## KAIST
 
-- Step1: Complete download [KAIST_all.zip](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) to `kaist/`.
+- Step1: Download [KAIST_all.zip](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) to `kaist/`.
 
   ```bash
   mkdir kaist && cd kaist
@@ -797,9 +797,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
 
   # Download KAIST dataset
   wget http://www.iapr-tc11.org/dataset/KAIST_SceneText/KAIST_all.zip
-  unzip -q KAIST_all.zip
-
-  rm KAIST_all.zip
+  unzip -q KAIST_all.zip && rm KAIST_all.zip
   ```
 
 - Step2: Extract zips:
