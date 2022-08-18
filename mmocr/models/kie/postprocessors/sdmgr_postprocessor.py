@@ -23,7 +23,7 @@ class SDMGRPostProcessor:
             Defaults to 'none'. Options are:
 
             - 'none': The simplest link type involving no edge
-              postprocessing. The edge prediction will be returned as it is.
+              postprocessing. The edge prediction will be returned as-is.
             - 'one-to-one': One key node can be connected to one value node.
             - 'one-to-many': One key node can be connected to multiple value
               nodes.
@@ -167,4 +167,4 @@ class SDMGRPostProcessor:
                 elif self.link_type == 'many-to-one':
                     tmp_edge_scores[i, :] = -1
 
-        return new_edge_scores, new_edge_labels
+        return new_edge_scores.cpu(), new_edge_labels.cpu()

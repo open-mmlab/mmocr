@@ -17,6 +17,7 @@ InputType = Union[str, np.ndarray]
 InputsType = Union[InputType, Sequence[InputType]]
 PredType = Union[InstanceData, InstanceList]
 ImgType = Union[np.ndarray, Sequence[np.ndarray]]
+ResType = Union[Dict, List[Dict]]
 
 
 class BaseInferencer:
@@ -93,9 +94,10 @@ class BaseInferencer:
         pipeline_cfg = cfg.test_dataloader.dataset.pipeline
 
         # For inference, the key of ``instances`` is not used.
-        pipeline_cfg[-1]['meta_keys'] = tuple(
-            meta_key for meta_key in pipeline_cfg[-1]['meta_keys']
-            if meta_key != 'instances')
+        if 'meta_keys' in pipeline_cfg[-1]:
+            pipeline_cfg[-1]['meta_keys'] = tuple(
+                meta_key for meta_key in pipeline_cfg[-1]['meta_keys']
+                if meta_key != 'instances')
 
         # Loading annotations is also not applicable
         idx = self._get_transform_idx(pipeline_cfg, 'LoadOCRAnnotations')
@@ -207,7 +209,7 @@ class BaseInferencer:
                   wait_time: int = 0,
                   draw_pred: bool = True,
                   pred_score_thr: float = 0.3,
-                  img_out_dir: str = '') -> ImgType:
+                  img_out_dir: str = '') -> List[np.ndarray]:
         """Visualize predictions.
 
         Args:
@@ -222,7 +224,7 @@ class BaseInferencer:
                 Defaults to 0.3.
             img_out_dir (str): Output directory of images. Defaults to ''.
         """
-        if not show and img_out_dir == '':
+        if self.visualizer is None or not show and img_out_dir == '':
             return None
 
         if getattr(self, 'visualizer') is None:
@@ -264,10 +266,11 @@ class BaseInferencer:
 
     def postprocess(self,
                     preds: PredType,
-                    imgs: Optional[ImgType] = None,
+                    imgs: Optional[List[np.ndarray]] = None,
                     is_batch: bool = False,
                     print_result: bool = False,
-                    pred_out_file: str = '') -> Union[Dict, List[Dict]]:
+                    pred_out_file: str = ''
+                    ) -> Union[ResType, Tuple[ResType, np.ndarray]]:
         """Postprocess predictions.
 
         Args:
@@ -280,22 +283,24 @@ class BaseInferencer:
             pred_out_file (str): Output file name to store predictions
                 without images. Supported file formats are “json”, “yaml/yml”
                 and “pickle/pkl”. Defaults to ''.
-        """
 
+        Returns:
+            TODO
+        """
         results = []
-        for i, pred in enumerate(preds):
+        for pred in preds:
             result = self._pred2dict(pred)
             results.append(result)
-        if print_result:
-            print(results)
-        if pred_out_file != '':
-            mmcv.dump(results, pred_out_file)
-        if imgs is not None:
-            for i, img in enumerate(imgs):
-                results[i]['img'] = img
         if not is_batch:
             results = results[0]
-        return results
+        if print_result:
+            print(results)
+        # Add img to the results after printing
+        if pred_out_file != '':
+            mmcv.dump(results, pred_out_file)
+        if imgs is None:
+            return results
+        return results, imgs
 
     def _pred2dict(self, data_sample: InstanceData) -> Dict:
         """Extract elements necessary to represent a prediction into a

@@ -23,5 +23,5 @@ class TextDetInferencer(BaseInferencer):
         result['polygons'] = []
         for polygon in pred_instances.polygons:
             result['polygons'].append(polygon.tolist())
-        result['scores'] = pred_instances.scores.numpy().tolist()
+        result['scores'] = pred_instances.scores.cpu().numpy().tolist()
         return result
