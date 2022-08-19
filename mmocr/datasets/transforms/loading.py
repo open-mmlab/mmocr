@@ -498,9 +498,9 @@ class LoadImageFromLMDB(BaseTransform):
         self.file_client_args = file_client_args
 
     def _get_client(self, db_path: str) -> mmengine.FileClient:
-        """Get a FileClient for a given db_path.
+        """Get a FileClient bound to the given db_path.
 
-        If the client is not initialized, initialize it.
+        If the client for this db_path is not initialized, initialize it.
         """
         if self.file_clients.get(db_path) is None:
             self.file_clients[db_path] = mmengine.FileClient(
