@@ -1,7 +1,8 @@
-# model settings
+file_client_args = dict(backend='disk')
+
 model = dict(
     type='MMDetWrapper',
-    text_repr_type='poly',
+    text_repr_type='quad',
     cfg=dict(
         type='MaskRCNN',
         data_preprocessor=dict(
@@ -132,3 +133,50 @@ model = dict(
                 nms=dict(type='nms', iou_threshold=0.5),
                 max_per_img=100,
                 mask_thr_binary=0.5))))
+
+train_pipeline = [
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        color_type='color_ignore_orientation'),
+    dict(
+        type='LoadOCRAnnotations',
+        with_polygon=True,
+        with_bbox=True,
+        with_label=True,
+    ),
+    dict(
+        type='TorchVisionWrapper',
+        op='ColorJitter',
+        brightness=32.0 / 255,
+        saturation=0.5,
+        contrast=0.5),
+    dict(
+        type='RandomResize',
+        scale=(640, 640),
+        ratio_range=(1.0, 4.125),
+        keep_ratio=True),
+    dict(type='RandomFlip', prob=0.5),
+    dict(type='TextDetRandomCrop', target_size=(640, 640)),
+    dict(type='MMOCR2MMDet', poly2mask=True),
+    dict(
+        type='mmdet.PackDetInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'flip',
+                   'scale_factor', 'flip_direction'))
+]
+
+test_pipeline = [
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        color_type='color_ignore_orientation'),
+    dict(type='Resize', scale=(1920, 1920), keep_ratio=True),
+    dict(
+        type='LoadOCRAnnotations',
+        with_polygon=True,
+        with_bbox=True,
+        with_label=True),
+    dict(
+        type='PackTextDetInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
+]

@@ -1,19 +1,16 @@
 _base_ = [
-    'psenet_r50_fpnf.py',
+    '_base_psenet_resnet50_fpnf.py',
     '../../_base_/det_datasets/icdar2015.py',
-    '../../_base_/default_runtime.py',
+    '../../_base_/textdet_default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_600e.py',
 ]
 
-# dataset settings
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
 file_client_args = dict(backend='disk')
-default_hooks = dict(
-    checkpoint=dict(type='CheckpointHook', interval=100),
-    logger=dict(type='LoggerHook', interval=20))
+# dataset settings
+ic15_det_train = _base_.ic15_det_train
+ic15_det_test = _base_.ic15_det_test
 
-model = {{_base_.model_quad}}
+model = _base_.model_quad
 
 train_pipeline_icdar2015 = [
     dict(
@@ -46,8 +43,6 @@ test_pipeline_icdar2015 = [
         file_client_args=file_client_args,
         color_type='color_ignore_orientation'),
     dict(type='Resize', scale=(2240, 2240), keep_ratio=True),
-    # add loading annotation after ``Resize`` because ground truth
-    # does not need to do resize data transform
     dict(
         type='LoadOCRAnnotations',
         with_polygon=True,
@@ -58,27 +53,22 @@ test_pipeline_icdar2015 = [
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
 
+# pipeline settings
+ic15_det_train.pipeline = train_pipeline_icdar2015
+ic15_det_test.pipeline = test_pipeline_icdar2015
+
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=False,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=dict(
-        type='ConcatDataset',
-        datasets=train_list,
-        pipeline=train_pipeline_icdar2015))
+    dataset=ic15_det_train)
+
 val_dataloader = dict(
     batch_size=1,
-    num_workers=4,
+    num_workers=1,
     persistent_workers=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dict(
-        type='ConcatDataset',
-        datasets=test_list,
-        pipeline=test_pipeline_icdar2015))
+    dataset=ic15_det_test)
+
 test_dataloader = val_dataloader
-
-val_evaluator = dict(type='HmeanIOUMetric')
-test_evaluator = val_evaluator
-
-visualizer = dict(type='TextDetLocalVisualizer', name='visualizer')

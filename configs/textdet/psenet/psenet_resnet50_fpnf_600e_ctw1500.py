@@ -1,22 +1,18 @@
-# TODO Train on ICDAR 2017
 _base_ = [
-    'psenet_r50_fpnf.py',
-    '../../_base_/default_runtime.py',
-    '../../_base_/schedules/schedule_sgd_600e.py',
-    '../../_base_/det_datasets/icdar2017.py',
+    '_base_psenet_resnet50_fpnf.py',
+    '../../_base_/det_datasets/ctw1500.py',
+    '../../_base_/textdet_default_runtime.py',
+    '../../_base_/schedules/schedule_adam_step_600e.py',
 ]
 
-# dataset settings
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
 file_client_args = dict(backend='disk')
-default_hooks = dict(
-    checkpoint=dict(type='CheckpointHook', interval=100),
-    logger=dict(type='LoggerHook', interval=20))
+# dataset settings
+ctw_det_train = _base_.ctw_det_train
+ctw_det_test = _base_.ctw_det_test
 
-model = {{_base_.model_quad}}
+model = _base_.model_poly
 
-train_pipeline = [
+train_pipeline_ctw = [
     dict(
         type='LoadImageFromFile',
         file_client_args=file_client_args,
@@ -41,35 +37,34 @@ train_pipeline = [
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
 
-test_pipeline = [
+test_pipeline_ctw = [
     dict(
         type='LoadImageFromFile',
         file_client_args=file_client_args,
         color_type='color_ignore_orientation'),
-    dict(type='Resize', scale=(2240, 2240), keep_ratio=True),
+    dict(type='Resize', scale=(1280, 1280), keep_ratio=True),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor',
                    'instances'))
 ]
 
+# pipeline settings
+ctw_det_train.pipeline = train_pipeline_ctw
+ctw_det_test.pipeline = test_pipeline_ctw
+
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=False,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=dict(
-        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
+    dataset=ctw_det_train)
+
 val_dataloader = dict(
     batch_size=1,
-    num_workers=4,
+    num_workers=1,
     persistent_workers=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dict(
-        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
+    dataset=ctw_det_test)
+
 test_dataloader = val_dataloader
-
-val_evaluator = dict(type='HmeanIOUMetric')
-test_evaluator = val_evaluator
-
-visualizer = dict(type='TextDetLocalVisualizer', name='visualizer')
