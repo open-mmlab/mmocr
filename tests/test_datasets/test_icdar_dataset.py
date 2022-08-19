@@ -3,7 +3,7 @@ import os.path as osp
 import tempfile
 from unittest import TestCase
 
-import mmcv
+import mmengine
 
 from mmocr.datasets.icdar_dataset import IcdarDataset
 
@@ -116,7 +116,7 @@ class TestIcdarDataset(TestCase):
             categories
         }
         self.metainfo = dict(CLASSES=('text'))
-        mmcv.dump(fake_json, json_name)
+        mmengine.dump(fake_json, json_name)
 
     def test_icdar_dataset(self):
         tmp_dir = tempfile.TemporaryDirectory()

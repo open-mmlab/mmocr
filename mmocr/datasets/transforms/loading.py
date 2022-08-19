@@ -5,6 +5,7 @@ import warnings
 from typing import Optional
 
 import mmcv
+import mmengine
 import numpy as np
 from mmcv.transforms import BaseTransform
 from mmcv.transforms import LoadAnnotations as MMCV_LoadAnnotations
@@ -38,7 +39,7 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
             See :func:``mmcv.imfrombytes`` for details.
             Defaults to 'cv2'.
         file_client_args (dict): Arguments to instantiate a FileClient.
-            See :class:`mmcv.fileio.FileClient` for details.
+            See :class:`mmengine.fileio.FileClient` for details.
             Defaults to ``dict(backend='disk')``.
         ignore_empty (bool): Whether to allow loading empty image or file path
             not existent. Defaults to False.
@@ -59,7 +60,7 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
         self.color_type = color_type
         self.imdecode_backend = imdecode_backend
         self.file_client_args = file_client_args.copy()
-        self.file_client = mmcv.FileClient(**self.file_client_args)
+        self.file_client = mmengine.FileClient(**self.file_client_args)
         self.min_size = min_size
 
     def transform(self, results: dict) -> Optional[dict]:
@@ -473,7 +474,7 @@ class LoadImageFromLMDB(BaseTransform):
             See :func:``mmcv.imfrombytes`` for details.
             Defaults to 'cv2'.
         file_client_args (dict): Arguments to instantiate a FileClient.
-            See :class:`mmcv.fileio.FileClient` for details.
+            See :class:`mmengine.fileio.FileClient` for details.
             Defaults to ``dict(backend='lmdb', db_path='')``.
         ignore_empty (bool): Whether to allow loading empty image or file path
             not existent. Defaults to False.
@@ -490,7 +491,7 @@ class LoadImageFromLMDB(BaseTransform):
         self.color_type = color_type
         self.imdecode_backend = imdecode_backend
         self.file_client_args = file_client_args.copy()
-        self.file_client = mmcv.FileClient(**self.file_client_args)
+        self.file_client = mmengine.FileClient(**self.file_client_args)
 
     def transform(self, results: dict) -> Optional[dict]:
         """Functions to load image from LMDB file.

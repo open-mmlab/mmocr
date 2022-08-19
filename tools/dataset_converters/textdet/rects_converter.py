@@ -5,6 +5,7 @@ import os
 import os.path as osp
 
 import mmcv
+import mmengine
 
 from mmocr.utils import dump_ocr_data
 
@@ -142,7 +143,7 @@ def load_json_info(gt_file, img_info):
         img_info (dict): The dict of the img and annotation information
     """
 
-    annotation = mmcv.load(gt_file)
+    annotation = mmengine.load(gt_file)
     anno_info = []
     for line in annotation['lines']:
         segmentation = line['points']

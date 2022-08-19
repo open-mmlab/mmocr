@@ -3,7 +3,7 @@ import argparse
 import math
 import os.path as osp
 
-import mmcv
+import mmengine
 
 from mmocr.utils import dump_ocr_data
 
@@ -23,7 +23,7 @@ def collect_textocr_info(root_path, annotation_filename, print_every=1000):
         raise Exception(
             f'{annotation_path} not exists, please check and try again.')
 
-    annotation = mmcv.load(annotation_path)
+    annotation = mmengine.load(annotation_path)
 
     # img_idx = img_start_idx
     img_infos = []

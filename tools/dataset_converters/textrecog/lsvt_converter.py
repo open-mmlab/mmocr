@@ -6,6 +6,7 @@ import os.path as osp
 from functools import partial
 
 import mmcv
+import mmengine
 
 from mmocr.utils.fileio import list_to_file
 
@@ -114,7 +115,7 @@ def convert_lsvt(root_path,
         raise Exception(
             f'{annotation_path} not exists, please check and try again.')
 
-    annotation = mmcv.load(annotation_path)
+    annotation = mmengine.load(annotation_path)
     # outputs
     dst_label_file = osp.join(root_path, f'{split}_label.{format}')
     dst_image_root = osp.join(root_path, 'crops', split)

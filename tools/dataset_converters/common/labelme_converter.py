@@ -7,6 +7,7 @@ import warnings
 from functools import partial
 
 import mmcv
+import mmengine
 
 from mmocr.utils import list_to_file
 from mmocr.utils.img_utils import crop_img, warp_img
@@ -21,7 +22,7 @@ def parse_labelme_json(json_file,
                        warp_flag=False):
     invalid_res = [[], [], []]
 
-    json_obj = mmcv.load(json_file)
+    json_obj = mmengine.load(json_file)
 
     img_file = osp.basename(json_obj['imagePath'])
     img_full_path = osp.join(img_dir, img_file)
