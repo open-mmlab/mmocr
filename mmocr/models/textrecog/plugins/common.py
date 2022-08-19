@@ -3,11 +3,11 @@ from typing import Tuple, Union
 
 import torch
 import torch.nn as nn
-from mmcv.cnn import PLUGIN_LAYERS
+
+from mmocr.registry import MODELS
 
 
-# TODO: Replace PLUGIN_LAYERS with MODELS
-@PLUGIN_LAYERS.register_module()
+@MODELS.register_module()
 class Maxpool2d(nn.Module):
     """A wrapper around nn.Maxpool2d().
 
@@ -36,7 +36,7 @@ class Maxpool2d(nn.Module):
         return self.model(x)
 
 
-@PLUGIN_LAYERS.register_module()
+@MODELS.register_module()
 class GCAModule(nn.Module):
     """GCAModule in MASTER.
 
