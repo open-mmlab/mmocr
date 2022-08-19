@@ -2,13 +2,13 @@
 import argparse
 import json
 
-import mmcv
+import mmengine
 
 from mmocr.utils import list_to_file
 
 
 def parse_coco_json(in_path):
-    json_obj = mmcv.load(in_path)
+    json_obj = mmengine.load(in_path)
     image_infos = json_obj['images']
     annotations = json_obj['annotations']
     imgid2imgname = {}

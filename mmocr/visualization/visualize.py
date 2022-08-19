@@ -7,6 +7,7 @@ import warnings
 
 import cv2
 import mmcv
+import mmengine
 import numpy as np
 import torch
 from matplotlib import pyplot as plt
@@ -884,6 +885,6 @@ def imshow_edge(img,
             'edges': result['edges'].detach().cpu(),
             'metas': result['img_metas'][0]
         }
-        mmcv.dump(res_dic, f'{out_file}_res.pkl')
+        mmengine.dump(res_dic, f'{out_file}_res.pkl')
 
     return vis_img

@@ -6,6 +6,7 @@ import os.path as osp
 from functools import partial
 
 import mmcv
+import mmengine
 
 from mmocr.utils.fileio import list_to_file
 
@@ -63,7 +64,7 @@ def convert_textocr(root_path,
     dst_image_root = osp.join(root_path, dst_image_path)
     os.makedirs(dst_image_root, exist_ok=True)
 
-    annotation = mmcv.load(annotation_path)
+    annotation = mmengine.load(annotation_path)
 
     process_img_with_path = partial(
         process_img,

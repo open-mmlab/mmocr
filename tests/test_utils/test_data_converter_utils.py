@@ -3,7 +3,7 @@ import os.path as osp
 import tempfile
 from unittest import TestCase
 
-import mmcv
+import mmengine
 
 from mmocr.utils.data_converter_utils import (dump_ocr_data,
                                               recog_anno_to_imginfo)
@@ -127,15 +127,15 @@ class TestDataConverterUtils(TestCase):
                 self._create_dummy_data()
 
             dump_ocr_data(input_data, output_path, 'textdet')
-            result = mmcv.load(output_path)
+            result = mmengine.load(output_path)
             self.assertDictEqual(result, det_target)
 
             dump_ocr_data(input_data, output_path, 'textspotter')
-            result = mmcv.load(output_path)
+            result = mmengine.load(output_path)
             self.assertDictEqual(result, spotter_target)
 
             dump_ocr_data(input_data, output_path, 'textrecog')
-            result = mmcv.load(output_path)
+            result = mmengine.load(output_path)
             self.assertDictEqual(result, recog_target)
 
     def test_recog_anno_to_imginfo(self):

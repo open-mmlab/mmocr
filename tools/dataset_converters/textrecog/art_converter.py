@@ -4,7 +4,7 @@ import json
 import math
 import os.path as osp
 
-import mmcv
+import mmengine
 
 from mmocr.utils.fileio import list_to_file
 
@@ -63,7 +63,7 @@ def convert_art(root_path, split, ratio, format):
         raise Exception(
             f'{annotation_path} not exists, please check and try again.')
 
-    annotation = mmcv.load(annotation_path)
+    annotation = mmengine.load(annotation_path)
     # outputs
     dst_label_file = osp.join(root_path, f'{split}_label.{format}')
 
