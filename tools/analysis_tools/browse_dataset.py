@@ -50,6 +50,7 @@ def main():
     dataset = DATASETS.build(cfg.train_dataloader.dataset)
     visualizer = VISUALIZERS.build(cfg.visualizer)
 
+    visualizer.dataset_meta = dataset.metainfo
     progress_bar = mmengine.ProgressBar(len(dataset))
     for item in dataset:
         img = item['inputs'].permute(1, 2, 0).numpy()
