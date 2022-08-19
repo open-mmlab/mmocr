@@ -5,13 +5,14 @@ import mmcv
 import numpy as np
 
 from mmocr.utils import ConfigType, bbox2poly, crop_img, poly2bbox
-from .base_inferencer import BaseInferencer, InputsType, PredType, ResType
+from .base_mmocr_inferencer import (BaseMMOCRInferencer, InputsType, PredType,
+                                    ResType)
 from .kie_inferencer import KIEInferencer
 from .textdet_inferencer import TextDetInferencer
 from .textrec_inferencer import TextRecInferencer
 
 
-class MMOCRInferencer(BaseInferencer):
+class MMOCRInferencer(BaseMMOCRInferencer):
 
     def __init__(self,
                  det_config: Optional[Union[ConfigType, str]] = None,

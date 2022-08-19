@@ -7,13 +7,13 @@ from mmengine.dataset import Compose
 
 from mmocr.structures import KIEDataSample
 from mmocr.utils import ConfigType
-from .base_inferencer import BaseInferencer
+from .base_mmocr_inferencer import BaseMMOCRInferencer
 
 InputType = Dict
 InputsType = Sequence[Dict]
 
 
-class KIEInferencer(BaseInferencer):
+class KIEInferencer(BaseMMOCRInferencer):
     """
     Inputs:
         dict or list[dict]: A dictionary containing the following keys:

@@ -2,10 +2,10 @@
 from typing import Dict
 
 from mmocr.structures import TextDetDataSample
-from .base_inferencer import BaseInferencer
+from .base_mmocr_inferencer import BaseMMOCRInferencer
 
 
-class TextDetInferencer(BaseInferencer):
+class TextDetInferencer(BaseMMOCRInferencer):
 
     def _pred2dict(self, data_sample: TextDetDataSample) -> Dict:
         """Extract elements necessary to represent a prediction into a
