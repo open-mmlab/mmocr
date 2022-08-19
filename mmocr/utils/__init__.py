@@ -1,6 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmcv.utils import Registry, build_from_cfg
-
 from .bbox_utils import (bbox2poly, bbox_center_distance, bbox_diag_distance,
                          bezier2polygon, is_on_same_line, rescale_bboxes,
                          stitch_boxes_into_lines)
@@ -28,11 +26,10 @@ from .typing import (ColorType, ConfigType, DetSampleList, InitConfigType,
                      RecForwardResults, RecSampleList)
 
 __all__ = [
-    'Registry', 'build_from_cfg', 'collect_env', 'is_3dlist', 'is_type_list',
-    'is_none_or_type', 'equal_len', 'is_2dlist', 'valid_boundary',
-    'list_to_file', 'list_from_file', 'is_on_same_line',
-    'stitch_boxes_into_lines', 'StringStripper', 'bezier2polygon',
-    'sort_points', 'dump_ocr_data', 'recog_anno_to_imginfo',
+    'collect_env', 'is_3dlist', 'is_type_list', 'is_none_or_type', 'equal_len',
+    'is_2dlist', 'valid_boundary', 'list_to_file', 'list_from_file',
+    'is_on_same_line', 'stitch_boxes_into_lines', 'StringStripper',
+    'bezier2polygon', 'sort_points', 'dump_ocr_data', 'recog_anno_to_imginfo',
     'rescale_polygons', 'rescale_polygon', 'rescale_bboxes', 'bbox2poly',
     'crop_polygon', 'is_poly_inside_rect', 'poly2bbox', 'poly_intersection',
     'poly_iou', 'poly_make_valid', 'poly_union', 'poly2shapely',
