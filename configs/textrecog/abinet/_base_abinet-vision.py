@@ -1,24 +1,45 @@
-_base_ = [
-    '../../_base_/recog_datasets/mjsynth.py',
-    '../../_base_/recog_datasets/synthtext.py',
-    '../../_base_/recog_datasets/cute80.py',
-    '../../_base_/recog_datasets/iiit5k.py',
-    '../../_base_/recog_datasets/svt.py',
-    '../../_base_/recog_datasets/svtp.py',
-    '../../_base_/recog_datasets/icdar2013.py',
-    '../../_base_/recog_datasets/icdar2015.py',
-    '../../_base_/default_runtime.py',
-    '../../_base_/schedules/schedule_adam_step_20e.py',
-]
+dictionary = dict(
+    type='Dictionary',
+    dict_file='dicts/lower_english_digits.txt',
+    with_start=True,
+    with_end=True,
+    same_start_end=True,
+    with_padding=False,
+    with_unknown=False)
 
-# dataset settings
-train_list = [_base_.mj_rec_train, _base_.st_an_rec_train]
-test_list = [
-    _base_.cute80_rec_test, _base_.iiit5k_rec_test, _base_.svt_rec_test,
-    _base_.svtp_rec_test, _base_.ic13_rec_test, _base_.ic15_rec_test
-]
+model = dict(
+    type='ABINet',
+    backbone=dict(type='ResNetABI'),
+    encoder=dict(
+        type='ABIEncoder',
+        n_layers=3,
+        n_head=8,
+        d_model=512,
+        d_inner=2048,
+        dropout=0.1,
+        max_len=8 * 32,
+    ),
+    decoder=dict(
+        type='ABIFuser',
+        vision_decoder=dict(
+            type='ABIVisionDecoder',
+            in_channels=512,
+            num_channels=64,
+            attn_height=8,
+            attn_width=32,
+            attn_mode='nearest',
+            init_cfg=dict(type='Xavier', layer='Conv2d')),
+        module_loss=dict(type='ABIModuleLoss', letter_case='lower'),
+        postprocessor=dict(type='AttentionPostprocessor'),
+        dictionary=dictionary,
+        max_seq_len=26,
+    ),
+    data_preprocessor=dict(
+        type='TextRecogDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375]))
+
 file_client_args = dict(backend='disk')
-default_hooks = dict(logger=dict(type='LoggerHook', interval=100))
 
 train_pipeline = [
     dict(
@@ -84,6 +105,7 @@ train_pipeline = [
         type='PackTextRecogInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
 ]
+
 test_pipeline = [
     dict(type='LoadImageFromFile', file_client_args=file_client_args),
     dict(type='Resize', scale=(128, 32)),
@@ -94,34 +116,3 @@ test_pipeline = [
         type='PackTextRecogInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
 ]
-
-train_dataloader = dict(
-    batch_size=192 * 4,
-    num_workers=32,
-    persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=dict(
-        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
-
-test_dataloader = dict(
-    batch_size=1,
-    num_workers=4,
-    persistent_workers=True,
-    drop_last=False,
-    sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dict(
-        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
-val_dataloader = test_dataloader
-
-val_evaluator = dict(
-    type='MultiDatasetsEvaluator',
-    metrics=[
-        dict(
-            type='WordMetric',
-            mode=['exact', 'ignore_case', 'ignore_case_symbol']),
-        dict(type='CharMetric')
-    ],
-    dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
-test_evaluator = val_evaluator
-
-visualizer = dict(type='TextRecogLocalVisualizer', name='visualizer')

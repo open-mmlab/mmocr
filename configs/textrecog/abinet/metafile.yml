@@ -20,7 +20,7 @@ Collections:
 Models:
   - Name: abinet_vision_only_academic
     In Collection: ABINet
-    Config: configs/textrecog/abinet/abinet_vision_only_academic.py
+    Config: configs/textrecog/abinet/abinet-vision_6e_st-an_mj.py
     Metadata:
       Training Data:
         - SynthText
@@ -54,7 +54,7 @@ Models:
 
   - Name: abinet_academic
     In Collection: ABINet
-    Config: configs/textrecog/abinet/abinet_academic.py
+    Config: configs/textrecog/abinet/abinet_6e_st-an_mj.py
     Metadata:
       Training Data:
         - SynthText
