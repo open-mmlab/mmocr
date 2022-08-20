@@ -17,7 +17,7 @@ Collections:
 Models:
   - Name: dbnet_r18_fpnc_1200e_icdar2015
     In Collection: DBNet
-    Config: configs/textdet/dbnet/dbnet_r18_fpnc_1200e_icdar2015.py
+    Config: configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:
@@ -29,7 +29,7 @@ Models:
 
   - Name: dbnet_r50dcnv2_fpnc_1200e_icdar2015
     In Collection: DBNet
-    Config: configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py
+    Config: configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:

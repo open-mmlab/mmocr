@@ -1,9 +1,12 @@
 _base_ = [
-    '_base_dbnet_r18_fpnc.py',
+    '_base_dbnet_resnet50-dcnv2_fpnc.py',
     '../../_base_/det_datasets/icdar2015.py',
     '../../_base_/textdet_default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1200e.py',
 ]
+
+# TODO: Replace the link
+load_from = 'https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r50dcnv2_fpnc_sbn_2e_synthtext_20210325-aa96e477.pth'  # noqa
 
 # dataset settings
 ic15_det_train = _base_.ic15_det_train

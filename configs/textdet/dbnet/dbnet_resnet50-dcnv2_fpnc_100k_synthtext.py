@@ -1,7 +1,7 @@
 _base_ = [
-    '_base_dbnet_r18_fpnc.py',
-    '../../_base_/det_datasets/synthtext.py',
+    '_base_dbnet_resnet50-dcnv2_fpnc.py',
     '../../_base_/textdet_default_runtime.py',
+    '../../_base_/det_datasets/synthtext.py',
     '../../_base_/schedules/schedule_sgd_100k_iters.py',
 ]
 

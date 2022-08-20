@@ -16,7 +16,7 @@ Collections:
 Models:
   - Name: drrg_r50_fpn_unet_1200e_ctw1500
     In Collection: DRRG
-    Config: configs/textdet/drrg/drrg_r50_fpn_unet_1200e_ctw1500.py
+    Config: configs/textdet/drrg/drrg_resnet50_fpn-unet_1200e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:
