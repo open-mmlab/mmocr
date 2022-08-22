@@ -109,7 +109,7 @@ class PackTextDetInputs(BaseTransform):
         for key in self.meta_keys:
             img_meta[key] = results[key]
         data_sample.set_metainfo(img_meta)
-        packed_results['data_sample'] = data_sample
+        packed_results['data_samples'] = data_sample
 
         return packed_results
 
@@ -195,7 +195,7 @@ class PackTextRecogInputs(BaseTransform):
                 img_meta[key] = results[key]
         data_sample.set_metainfo(img_meta)
 
-        packed_results['data_sample'] = data_sample
+        packed_results['data_samples'] = data_sample
 
         return packed_results
 
@@ -295,7 +295,7 @@ class PackKIEInputs(BaseTransform):
         for key in self.meta_keys:
             img_meta[key] = results[key]
         data_sample.set_metainfo(img_meta)
-        packed_results['data_sample'] = data_sample
+        packed_results['data_samples'] = data_sample
 
         return packed_results
 
