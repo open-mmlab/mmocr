@@ -11,9 +11,6 @@ ic15_det_test = _base_.ic15_det_test
 ic15_det_train.pipeline = _base_.train_pipeline
 ic15_det_test.pipeline = _base_.test_pipeline
 
-# use quadrilaterals for icdar2015
-model = dict(text_repr_type='quad')
-
 train_dataloader = dict(
     batch_size=8,
     num_workers=4,
