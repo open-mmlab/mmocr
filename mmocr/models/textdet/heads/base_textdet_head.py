@@ -6,9 +6,7 @@ from mmengine.model import BaseModule
 from torch import Tensor
 
 from mmocr.registry import MODELS
-from mmocr.structures import TextDetDataSample
-
-SampleList = List[TextDetDataSample]
+from mmocr.utils.typing import DetSampleList
 
 
 @MODELS.register_module()
@@ -65,7 +63,8 @@ class BaseTextDetHead(BaseModule):
         self.module_loss = MODELS.build(module_loss)
         self.postprocessor = MODELS.build(postprocessor)
 
-    def loss(self, x: Tuple[Tensor], batch_data_samples: SampleList) -> dict:
+    def loss(self, x: Tuple[Tensor],
+             batch_data_samples: DetSampleList) -> dict:
         """Perform forward propagation and loss calculation of the detection
         head on the features of the upstream network.
 
@@ -79,12 +78,13 @@ class BaseTextDetHead(BaseModule):
         Returns:
             dict: A dictionary of loss components.
         """
-        outs = self(x)
+        outs = self(x, batch_data_samples)
         losses = self.module_loss(outs, batch_data_samples)
         return losses
 
-    def loss_and_predict(self, x: Tuple[Tensor], batch_data_samples: SampleList
-                         ) -> Tuple[dict, SampleList]:
+    def loss_and_predict(self, x: Tuple[Tensor],
+                         batch_data_samples: DetSampleList
+                         ) -> Tuple[dict, DetSampleList]:
         """Perform forward propagation of the head, then calculate loss and
         predictions from the features and data samples.
 
@@ -101,14 +101,14 @@ class BaseTextDetHead(BaseModule):
                 - predictions (list[:obj:`InstanceData`]): Detection
                   results of each image after the post process.
         """
-        outs = self(x)
+        outs = self(x, batch_data_samples)
         losses = self.module_loss(outs, batch_data_samples)
 
         predictions = self.postprocessor(outs, batch_data_samples)
         return losses, predictions
 
     def predict(self, x: torch.Tensor,
-                batch_data_samples: SampleList) -> SampleList:
+                batch_data_samples: DetSampleList) -> DetSampleList:
         """Perform forward propagation of the detection head and predict
         detection results on the features of the upstream network.
 

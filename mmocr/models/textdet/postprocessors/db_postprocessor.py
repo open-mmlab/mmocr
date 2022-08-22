@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import List, Sequence
+from typing import Sequence
 
 import cv2
 import numpy as np
@@ -58,27 +58,6 @@ class DBPostprocessor(BaseTextDetPostProcessor):
         self.unclip_ratio = unclip_ratio
         self.epsilon_ratio = epsilon_ratio
         self.max_candidates = max_candidates
-
-    def __call__(self,
-                 pred_results: List[Tensor],
-                 data_samples: Sequence[TextDetDataSample],
-                 training: bool = False) -> Sequence[TextDetDataSample]:
-        """Postprocess pred_results according to metainfos in data_samples.
-
-        Args:
-            pred_results (Union[Tensor, List[Tensor]]): DBNet's prediction
-                results as a list of tensor. The first tensor should be
-                ``prob_logits`` of shape :math:`(N, H, W)`.
-            data_samples (list[TextDetDataSample]): Batch of data_samples,
-                each corresponding to a prediction result.
-            training (bool): Whether the model is in training mode. Defaults to
-                False.
-
-        Returns:
-            list[TextDetDataSample]: Batch of post-processed datasamples.
-        """
-        prob_maps = pred_results[0].sigmoid()
-        return super().__call__(prob_maps, data_samples, training)
 
     def get_text_instances(self, prob_map: Tensor,
                            data_sample: TextDetDataSample

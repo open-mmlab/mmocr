@@ -9,6 +9,7 @@ from torch import Tensor
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
+from mmocr.utils.typing import DetSampleList
 
 
 @MODELS.register_module()
@@ -70,28 +71,6 @@ class DBHead(BaseTextDetHead):
         """
         return torch.reciprocal(1.0 + torch.exp(-k * (prob_map - thr_map)))
 
-    def forward(
-        self,
-        img: Tensor,
-        data_samples: Optional[List[TextDetDataSample]] = None
-    ) -> Tuple[Tensor, Tensor, Tensor]:
-        """
-        Args:
-            img (Tensor): Shape :math:`(N, C, H, W)`.
-            data_samples (list[TextDetDataSample], optional): A list of data
-                samples. Defaults to None.
-
-        Returns:
-            tuple(Tensor, Tensor, Tensor): A tuple of ``prob_logits``,
-            ``thr_map`` and ``binary_map``, each has the shape of
-            :math:`(N, 4H, 4W)`.
-        """
-        prob_logits = self.binarize(img).squeeze(1)
-        thr_map = self.threshold(img).squeeze(1)
-        binary_map = self._diff_binarize(
-            prob_logits.sigmoid(), thr_map, k=50).squeeze(1)
-        return (prob_logits, thr_map, binary_map)
-
     def _init_thr(self,
                   inner_channels: int,
                   bias: bool = False) -> nn.ModuleList:
@@ -105,3 +84,101 @@ class DBHead(BaseTextDetHead):
             nn.BatchNorm2d(inner_channels // 4), nn.ReLU(inplace=True),
             nn.ConvTranspose2d(inner_channels // 4, 1, 2, 2), nn.Sigmoid())
         return seq
+
+    def forward(self,
+                img: Tensor,
+                data_samples: Optional[List[TextDetDataSample]] = None,
+                mode: str = 'loss') -> Tuple[Tensor, Tensor, Tensor]:
+        """
+        Args:
+            img (Tensor): Shape :math:`(N, C, H, W)`.
+            data_samples (list[TextDetDataSample], optional): A list of data
+                samples. Defaults to None.
+            mode (str): Forward mode. It affects the return values. Options are
+                "loss", "predict" and "both".
+
+                - ``loss``: Run the full network and return the prob
+                  logits, threshold map and binary map.
+                - ``predict``: Run the binarzation part and return the prob
+                  map only.
+                - ``both``: Run the full network and return prob logits,
+                  threshold map, binary map and prob map.
+
+        Returns:
+            Tensor or tuple(Tensor): Its type depends on ``mode``, read its
+            docstring for details. Each has the shape of
+            :math:`(N, 4H, 4W)`.
+        """
+        prob_logits = self.binarize(img).squeeze(1)
+        prob_map = prob_logits.sigmoid()
+        if mode == 'predict':
+            return prob_map
+        thr_map = self.threshold(img).squeeze(1)
+        binary_map = self._diff_binarize(
+            prob_logits.sigmoid(), thr_map, k=50).squeeze(1)
+        if mode == 'loss':
+            return prob_logits, thr_map, binary_map
+        return prob_logits, thr_map, binary_map, prob_map
+
+    def loss(self, x: Tuple[Tensor],
+             batch_data_samples: DetSampleList) -> Dict:
+        """Perform forward propagation and loss calculation of the detection
+        head on the features of the upstream network.
+
+        Args:
+            x (tuple[Tensor]): Features from the upstream network, each is
+                a 4D-tensor.
+            batch_data_samples (List[:obj:`DetDataSample`]): The Data
+                Samples. It usually includes information such as
+                `gt_instance`, `gt_panoptic_seg` and `gt_sem_seg`.
+
+        Returns:
+            dict: A dictionary of loss components.
+        """
+        outs = self(x, batch_data_samples, mode='loss')
+        losses = self.module_loss(outs, batch_data_samples)
+        return losses
+
+    def loss_and_predict(self, x: Tuple[Tensor],
+                         batch_data_samples: DetSampleList
+                         ) -> Tuple[dict, DetSampleList]:
+        """Perform forward propagation of the head, then calculate loss and
+        predictions from the features and data samples.
+
+        Args:
+            x (tuple[Tensor]): Features from FPN.
+            batch_data_samples (list[:obj:`DetDataSample`]): Each item contains
+                the meta information of each image and corresponding
+                annotations.
+
+        Returns:
+            tuple: the return value is a tuple contains:
+
+                - losses: (dict[str, Tensor]): A dictionary of loss components.
+                - predictions (list[:obj:`InstanceData`]): Detection
+                  results of each image after the post process.
+        """
+        outs = self(x, batch_data_samples, mode='both')
+        losses = self.module_loss(outs[:3], batch_data_samples)
+        predictions = self.postprocessor(outs[3], batch_data_samples)
+        return losses, predictions
+
+    def predict(self, x: torch.Tensor,
+                batch_data_samples: DetSampleList) -> DetSampleList:
+        """Perform forward propagation of the detection head and predict
+        detection results on the features of the upstream network.
+
+        Args:
+            x (tuple[Tensor]): Multi-level features from the
+                upstream network, each is a 4D-tensor.
+            batch_data_samples (List[:obj:`DetDataSample`]): The Data
+                Samples. It usually includes information such as
+                `gt_instance`, `gt_panoptic_seg` and `gt_sem_seg`.
+
+        Returns:
+            SampleList: Detection results of each image
+            after the post process.
+        """
+        outs = self(x, batch_data_samples, mode='predict')
+        predictions = self.postprocessor(outs, batch_data_samples)
+        return predictions
