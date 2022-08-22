@@ -1,13 +1,13 @@
 _base_ = [
-    '_base_dbnetpp_r50dcnv2_fpnc.py',
+    '_base_dbnetpp_resnet50-dcnv2_fpnc.py',
     '../../_base_/textdet_default_runtime.py',
-    '../../_base_/det_datasets/synthtext.py',
-    '../../_base_/schedules/schedule_sgd_100k_iters.py',
+    '../../_base_/det_datasets/icdar2015.py',
+    '../../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
 # dataset settings
-train_list = [_base_.st_det_train]
-test_list = [_base_.st_det_test]
+train_list = [_base_.ic15_det_train]
+test_list = [_base_.ic15_det_test]
 
 train_dataloader = dict(
     batch_size=16,

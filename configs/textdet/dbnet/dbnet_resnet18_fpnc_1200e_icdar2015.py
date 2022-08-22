@@ -1,28 +1,28 @@
 _base_ = [
-    '_base_drrg_r50_fpn_unet.py',
-    '../../_base_/det_datasets/ctw1500.py',
+    '_base_dbnet_resnet18_fpnc.py',
+    '../../_base_/det_datasets/icdar2015.py',
     '../../_base_/textdet_default_runtime.py',
     '../../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
 # dataset settings
-ctw_det_train = _base_.ctw_det_train
-ctw_det_train.pipeline = _base_.train_pipeline
-ctw_det_test = _base_.ctw_det_test
-ctw_det_test.pipeline = _base_.test_pipeline
+ic15_det_train = _base_.ic15_det_train
+ic15_det_train.pipeline = _base_.train_pipeline
+ic15_det_test = _base_.ic15_det_test
+ic15_det_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
-    batch_size=4,
-    num_workers=4,
+    batch_size=16,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=ctw_det_train)
+    dataset=ic15_det_train)
 
 val_dataloader = dict(
     batch_size=1,
-    num_workers=1,
+    num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=ctw_det_test)
+    dataset=ic15_det_test)
 
 test_dataloader = val_dataloader
