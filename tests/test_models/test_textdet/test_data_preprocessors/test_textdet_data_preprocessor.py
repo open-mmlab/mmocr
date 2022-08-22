@@ -47,58 +47,63 @@ class TestTextDetDataPreprocessor(TestCase):
     def test_forward(self):
         processor = TextDetDataPreprocessor(mean=[0, 0, 0], std=[1, 1, 1])
 
-        data = [{
-            'inputs':
-            torch.randint(0, 256, (3, 11, 10)),
-            'data_sample':
-            TextDetDataSample(
-                metainfo=dict(img_shape=(11, 10), valid_ratio=1.0))
-        }]
-        inputs, data_samples = processor(data)
-        print(inputs.dtype)
+        data = {
+            'inputs': [
+                torch.randint(0, 256, (3, 11, 10)),
+            ],
+            'data_samples': [
+                TextDetDataSample(
+                    metainfo=dict(img_shape=(11, 10), valid_ratio=1.0)),
+            ]
+        }
+        out = processor(data)
+        inputs, data_samples = out['inputs'], out['data_samples']
         self.assertEqual(inputs.shape, (1, 3, 11, 10))
         self.assertEqual(len(data_samples), 1)
 
         # test channel_conversion
         processor = TextDetDataPreprocessor(
             mean=[0., 0., 0.], std=[1., 1., 1.], bgr_to_rgb=True)
-        inputs, data_samples = processor(data)
+        out = processor(data)
+        inputs, data_samples = out['inputs'], out['data_samples']
         self.assertEqual(inputs.shape, (1, 3, 11, 10))
         self.assertEqual(len(data_samples), 1)
 
         # test padding
-        data = [{
-            'inputs': torch.randint(0, 256, (3, 10, 11))
-        }, {
-            'inputs': torch.randint(0, 256, (3, 9, 14))
-        }]
+        data = {
+            'inputs': [
+                torch.randint(0, 256, (3, 10, 11)),
+                torch.randint(0, 256, (3, 9, 14))
+            ]
+        }
         processor = TextDetDataPreprocessor(
             mean=[0., 0., 0.], std=[1., 1., 1.], bgr_to_rgb=True)
-        inputs, data_samples = processor(data)
+        out = processor(data)
+        inputs, data_samples = out['inputs'], out['data_samples']
         self.assertEqual(inputs.shape, (2, 3, 10, 14))
         self.assertIsNone(data_samples)
 
         # test pad_size_divisor
-        data = [{
-            'inputs':
-            torch.randint(0, 256, (3, 10, 11)),
-            'data_sample':
-            TextDetDataSample(
-                metainfo=dict(img_shape=(10, 11), valid_ratio=1.0))
-        }, {
-            'inputs':
-            torch.randint(0, 256, (3, 9, 24)),
-            'data_sample':
-            TextDetDataSample(
-                metainfo=dict(img_shape=(9, 24), valid_ratio=1.0))
-        }]
+        data = {
+            'inputs': [
+                torch.randint(0, 256, (3, 10, 11)),
+                torch.randint(0, 256, (3, 9, 24))
+            ],
+            'data_samples': [
+                TextDetDataSample(
+                    metainfo=dict(img_shape=(10, 11), valid_ratio=1.0)),
+                TextDetDataSample(
+                    metainfo=dict(img_shape=(9, 24), valid_ratio=1.0))
+            ]
+        }
         aug_cfg = [dict(type='TDAugment')]
         processor = TextDetDataPreprocessor(
             mean=[0., 0., 0.],
             std=[1., 1., 1.],
             pad_size_divisor=5,
             batch_augments=aug_cfg)
-        inputs, data_samples = processor(data, training=True)
+        out = processor(data)
+        inputs, data_samples = out['inputs'], out['data_samples']
         self.assertEqual(inputs.shape, (2, 3, 10, 25))
         self.assertEqual(len(data_samples), 2)
         for data_sample, expected_shape in zip(data_samples, [(10, 25),
