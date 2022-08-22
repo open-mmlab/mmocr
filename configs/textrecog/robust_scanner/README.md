@@ -43,7 +43,7 @@ The attention-based encoder-decoder framework has recently achieved impressive r
 |                                  Methods                                   | GPUs |        | Regular Text |      |     |      | Irregular Text |      |                                  download                                   |
 | :------------------------------------------------------------------------: | :--: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :-------------------------------------------------------------------------: |
 |                                                                            |      | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |                                                                             |
-| [RobustScanner](configs/textrecog/robust_scanner/robustscanner_r31_academic.py) |  16  |  95.1  |     89.2     | 93.1 |     | 77.8 |      80.3      | 90.3 | [model](https://download.openmmlab.com/mmocr/textrecog/robustscanner/robustscanner_r31_academic-5f05874f.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/robustscanner/20210401_170932.log.json) |
+| [RobustScanner](configs/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real.py) |  16  |  95.1  |     89.2     | 93.1 |     | 77.8 |      80.3      | 90.3 | [model](https://download.openmmlab.com/mmocr/textrecog/robustscanner/robustscanner_r31_academic-5f05874f.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/robustscanner/20210401_170932.log.json) |
 
 ## References
 
