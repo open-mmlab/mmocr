@@ -5,6 +5,7 @@ import os
 import os.path as osp
 
 import mmcv
+import mmengine
 import numpy as np
 
 from mmocr.utils.fileio import list_to_file
@@ -52,10 +53,10 @@ def collect_annotations(files, nproc=1):
     assert isinstance(nproc, int)
 
     if nproc > 1:
-        images = mmcv.track_parallel_progress(
+        images = mmengine.track_parallel_progress(
             load_img_info, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info, files)
+        images = mmengine.track_progress(load_img_info, files)
 
     return images
 
@@ -141,8 +142,8 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
         dst_label_file = osp.join(root_path, f'train_label.{format}')
     elif split == 'val':
         dst_label_file = osp.join(root_path, f'val_label.{format}')
-    mmcv.mkdir_or_exist(dst_image_root)
-    mmcv.mkdir_or_exist(ignore_image_root)
+    mmengine.mkdir_or_exist(dst_image_root)
+    mmengine.mkdir_or_exist(ignore_image_root)
 
     lines = []
     for image_info in image_infos:
@@ -211,7 +212,7 @@ def main():
 
     for split in ['training', 'val']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(
+        with mmengine.Timer(
                 print_tmpl='It takes {}s to convert DeText annotation'):
             files = collect_files(
                 osp.join(root_path, 'imgs', split),

@@ -6,6 +6,7 @@ import os.path as osp
 from functools import partial
 
 import mmcv
+import mmengine
 import numpy as np
 from shapely.geometry import Polygon
 
@@ -180,8 +181,8 @@ def convert_hiertext(
     dst_image_root = osp.join(root_path, 'crops', split)
     ignore_image_root = osp.join(root_path, 'ignores', split)
     src_image_root = osp.join(root_path, 'imgs', split)
-    mmcv.mkdir_or_exist(dst_image_root)
-    mmcv.mkdir_or_exist(ignore_image_root)
+    mmengine.mkdir_or_exist(dst_image_root)
+    mmengine.mkdir_or_exist(ignore_image_root)
 
     process_img_with_path = partial(
         process_img,
@@ -195,7 +196,7 @@ def convert_hiertext(
     tasks = []
     for img_idx, img_info in enumerate(annotation):
         tasks.append((img_idx, img_info))
-    labels_list = mmcv.track_parallel_progress(
+    labels_list = mmengine.track_parallel_progress(
         process_img_with_path, tasks, keep_order=True, nproc=nproc)
 
     final_labels = []

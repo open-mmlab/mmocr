@@ -177,7 +177,8 @@ def main():
 
     for split in ['train', 'val', 'test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert IMGUR annotation'):
+        with mmengine.Timer(
+                print_tmpl='It takes {}s to convert IMGUR annotation'):
             anno_infos = collect_imgur_info(
                 root_path, f'imgur5k_annotations_{split}.json')
             generate_ann(root_path, split, anno_infos, args.format)

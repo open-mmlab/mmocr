@@ -33,7 +33,7 @@ def parse_labelme_json(json_file,
         src_img = mmcv.imread(img_full_path)
         img_basename = osp.splitext(img_file)[0]
         sub_dir = osp.join(out_dir, 'crops', img_basename)
-        mmcv.mkdir_or_exist(sub_dir)
+        mmengine.mkdir_or_exist(sub_dir)
 
     det_line_json_list = []
     recog_crop_line_str_list = []
@@ -143,7 +143,7 @@ def process(json_dir,
             nproc=1,
             recog_format='jsonl',
             warp=False):
-    mmcv.mkdir_or_exist(out_dir)
+    mmengine.mkdir_or_exist(out_dir)
 
     json_file_list = glob.glob(osp.join(json_dir, '*.json'))
 
@@ -156,10 +156,10 @@ def process(json_dir,
         warp_flag=warp)
 
     if nproc <= 1:
-        total_results = mmcv.track_progress(parse_labelme_json_func,
-                                            json_file_list)
+        total_results = mmengine.track_progress(parse_labelme_json_func,
+                                                json_file_list)
     else:
-        total_results = mmcv.track_parallel_progress(
+        total_results = mmengine.track_parallel_progress(
             parse_labelme_json_func,
             json_file_list,
             keep_order=True,
@@ -174,7 +174,7 @@ def process(json_dir,
             total_recog_crop_line_str.extend(res[1])
             total_recog_warp_line_str.extend(res[2])
 
-    mmcv.mkdir_or_exist(out_dir)
+    mmengine.mkdir_or_exist(out_dir)
     det_out_file = osp.join(out_dir, 'instances_training.txt')
     list_to_file(det_out_file, total_det_line_json_list)
 

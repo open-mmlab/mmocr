@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 from functools import partial
 
 import mmcv
+import mmengine
 import numpy as np
 from shapely.geometry import Polygon
 
@@ -72,10 +73,10 @@ def collect_annotations(files, split, nproc=1):
 
     load_img_info_with_split = partial(load_img_info, split=split)
     if nproc > 1:
-        images = mmcv.track_parallel_progress(
+        images = mmengine.track_parallel_progress(
             load_img_info_with_split, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info_with_split, files)
+        images = mmengine.track_progress(load_img_info_with_split, files)
 
     return images
 
@@ -208,7 +209,7 @@ def main():
     args = parse_args()
     root_path = args.root_path
     out_dir = args.out_dir if args.out_dir else root_path
-    mmcv.mkdir_or_exist(out_dir)
+    mmengine.mkdir_or_exist(out_dir)
 
     img_dir = osp.join(root_path, 'imgs')
     gt_dir = osp.join(root_path, 'annotations')
@@ -220,7 +221,8 @@ def main():
 
     for split, json_name in set_name.items():
         print(f'Converting {split} into {json_name}')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert icdar annotation'):
+        with mmengine.Timer(
+                print_tmpl='It takes {}s to convert icdar annotation'):
             files = collect_files(
                 osp.join(img_dir, split), osp.join(gt_dir, split), split)
             image_infos = collect_annotations(files, split, nproc=args.nproc)

@@ -5,6 +5,7 @@ import os.path as osp
 from functools import partial
 
 import mmcv
+import mmengine
 import numpy as np
 from shapely.geometry import Polygon
 
@@ -62,10 +63,10 @@ def collect_annotations(files, dataset, nproc=1):
 
     load_img_info_with_dataset = partial(load_img_info, dataset=dataset)
     if nproc > 1:
-        images = mmcv.track_parallel_progress(
+        images = mmengine.track_parallel_progress(
             load_img_info_with_dataset, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info_with_dataset, files)
+        images = mmengine.track_progress(load_img_info_with_dataset, files)
 
     return images
 
@@ -159,7 +160,7 @@ def main():
     args = parse_args()
     icdar_path = args.icdar_path
     out_dir = args.out_dir if args.out_dir else icdar_path
-    mmcv.mkdir_or_exist(out_dir)
+    mmengine.mkdir_or_exist(out_dir)
 
     img_dir = osp.join(icdar_path, 'imgs')
     gt_dir = osp.join(icdar_path, 'annotations')
@@ -171,7 +172,8 @@ def main():
 
     for split, json_name in set_name.items():
         print(f'Converting {split} into {json_name}')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert icdar annotation'):
+        with mmengine.Timer(
+                print_tmpl='It takes {}s to convert icdar annotation'):
             files = collect_files(
                 osp.join(img_dir, split), osp.join(gt_dir, split))
             image_infos = collect_annotations(
