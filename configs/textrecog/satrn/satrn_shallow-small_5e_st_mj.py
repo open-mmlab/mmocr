@@ -1,4 +1,4 @@
-_base_ = ['satrn_academic.py']
+_base_ = ['satrn_shallow_5e_st_mj.py']
 
 model = dict(
     backbone=dict(type='ShallowCNN', input_channels=3, hidden_dim=256),
