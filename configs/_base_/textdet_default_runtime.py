@@ -6,6 +6,13 @@ default_hooks = dict(
     param_scheduler=dict(type='ParamSchedulerHook'),
     checkpoint=dict(type='CheckpointHook', interval=20),
     sampler_seed=dict(type='DistSamplerSeedHook'),
+    visualization=dict(
+        type='VisualizationHook',
+        interval=1,
+        enable=False,
+        show=False,
+        draw_gt=False,
+        draw_pred=False),
 )
 
 env_cfg = dict(
