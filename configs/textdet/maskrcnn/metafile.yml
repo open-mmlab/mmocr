@@ -16,9 +16,9 @@ Collections:
   README: configs/textdet/maskrcnn/README.md
 
 Models:
-  - Name: mask_rcnn_r50_fpn_160e_ctw1500
+  - Name: mask-rcnn_r50_fpn_160e_ctw1500
     In Collection: Mask R-CNN
-    Config: configs/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_ctw1500.py
+    Config: configs/textdet/maskrcnn/mask-rcnn_r50_fpn_160e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:
@@ -28,9 +28,9 @@ Models:
           hmean: 0.7486
     Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_ctw1500_20210219-96497a76.pth
 
-  - Name: mask_rcnn_r50_fpn_160e_icdar2015
+  - Name: mask-rcnn_r50_fpn_160e_icdar2015
     In Collection: Mask R-CNN
-    Config: configs/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015.py
+    Config: configs/textdet/maskrcnn/mask-rcnn_r50_fpn_160e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:
@@ -40,9 +40,9 @@ Models:
           hmean: 0.8280
     Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015_20210219-8eb340a3.pth
 
-  - Name: mask_rcnn_r50_fpn_160e_icdar2017
+  - Name: mask-rcnn_r50_fpn_160e_icdar2017
     In Collection: Mask R-CNN
-    Config: configs/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017.py
+    Config: configs/textdet/maskrcnn/mask-rcnn_r50_fpn_160e_icdar2017.py
     Metadata:
       Training Data: ICDAR2017
     Results:

@@ -15,9 +15,9 @@ Collections:
   README: configs/textdet/fcenet/README.md
 
 Models:
-  - Name: fcenet_r50dcnv2_fpn_1500e_ctw1500
+  - Name: fcenet_resnet50-dcnv2_fpn_1500e_ctw1500
     In Collection: FCENet
-    Config: configs/textdet/fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500.py
+    Config: configs/textdet/fcenet/fcenet_resnet50-dcnv2_fpn_1500e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:
@@ -26,9 +26,9 @@ Models:
         Metrics:
           hmean-iou: 0.8500
     Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500_20211022-e326d7ec.pth
-  - Name: fcenet_r50_fpn_1500e_icdar2015
+  - Name: fcenet_resnet50_fpn_1500e_icdar2015
     In Collection: FCENet
-    Config: configs/textdet/fcenet/fcenet_r50_fpn_1500e_icdar2015.py
+    Config: configs/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:

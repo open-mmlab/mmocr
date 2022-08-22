@@ -2,7 +2,7 @@ file_client_args = dict(backend='disk')
 
 model = dict(
     type='MMDetWrapper',
-    text_repr_type='quad',
+    text_repr_type='poly',
     cfg=dict(
         type='MaskRCNN',
         data_preprocessor=dict(

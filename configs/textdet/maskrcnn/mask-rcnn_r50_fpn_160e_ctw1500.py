@@ -28,9 +28,6 @@ ctw_test_pipeline = [
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
 
-# use polygon for CTW1500
-model = dict(text_repr_type='poly')
-
 ctw_det_train.pipeline = _base_.train_pipeline
 ctw_det_test.pipeline = ctw_test_pipeline
 
