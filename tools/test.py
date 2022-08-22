@@ -99,6 +99,11 @@ def main():
 
     cfg.load_from = args.checkpoint
 
+    # TODO: It will be supported after refactoring the visualizer
+    if args.show and args.show_dir:
+        raise NotImplementedError('--show and --show-dir cannot be set '
+                                  'at the same time')
+
     if args.show or args.show_dir:
         cfg = trigger_visualization_hook(cfg, args)
 
