@@ -40,3 +40,7 @@ test_dataloader = dict(
     dataset=test_dataset)
 
 val_dataloader = test_dataloader
+
+val_evaluator = dict(
+    dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
+test_evaluator = val_evaluator

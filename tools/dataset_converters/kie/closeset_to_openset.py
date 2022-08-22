@@ -3,7 +3,7 @@ import argparse
 import json
 from functools import partial
 
-import mmcv
+import mmengine
 
 from mmocr.utils import list_from_file, list_to_file
 
@@ -89,7 +89,7 @@ def process(closeset_file, openset_file, merge_bg_others=False, n_proc=10):
 
     convert_func = partial(convert, merge_bg_others=merge_bg_others)
 
-    openset_lines = mmcv.track_parallel_progress(
+    openset_lines = mmengine.track_parallel_progress(
         convert_func, closeset_lines, nproc=n_proc)
 
     list_to_file(openset_file, openset_lines)

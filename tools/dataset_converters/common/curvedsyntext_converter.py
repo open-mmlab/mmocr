@@ -3,7 +3,6 @@ import argparse
 import os.path as osp
 from functools import partial
 
-import mmcv
 import mmengine
 import numpy as np
 
@@ -84,14 +83,14 @@ def convert_annotations(data,
         start_img_id=start_img_id,
         start_ann_id=start_ann_id)
     if nproc > 1:
-        data['annotations'] = mmcv.track_parallel_progress(
+        data['annotations'] = mmengine.track_parallel_progress(
             modify_annotation_with_params, data['annotations'], nproc=nproc)
-        data['images'] = mmcv.track_parallel_progress(
+        data['images'] = mmengine.track_parallel_progress(
             modify_image_info_with_params, data['images'], nproc=nproc)
     else:
-        data['annotations'] = mmcv.track_progress(
+        data['annotations'] = mmengine.track_progress(
             modify_annotation_with_params, data['annotations'])
-        data['images'] = mmcv.track_progress(
+        data['images'] = mmengine.track_progress(
             modify_image_info_with_params,
             data['images'],
         )
@@ -103,7 +102,7 @@ def main():
     args = parse_args()
     root_path = args.root_path
     out_dir = args.out_dir if args.out_dir else root_path
-    mmcv.mkdir_or_exist(out_dir)
+    mmengine.mkdir_or_exist(out_dir)
 
     anns = mmengine.load(osp.join(root_path, 'train1.json'))
     data1 = convert_annotations(anns, 'syntext_word_eng', args.num_sample,
