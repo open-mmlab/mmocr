@@ -8,17 +8,18 @@ _base_ = [
 # dataset settings
 train_list = {{_base_.train_list}}
 test_list = {{_base_.test_list}}
-file_client_args = dict(backend='disk')
+
+train_dataset = dict(
+    type='ConcatDataset', datasets=train_list, pipeline=_base_.train_pipeline)
+test_dataset = dict(
+    type='ConcatDataset', datasets=test_list, pipeline=_base_.test_pipeline)
 
 train_dataloader = dict(
     batch_size=2,
     num_workers=1,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=dict(
-        type='ConcatDataset',
-        datasets=train_list,
-        pipeline=_base_.train_pipeline))
+    dataset=train_dataset)
 
 val_dataloader = dict(
     batch_size=2,
@@ -26,10 +27,7 @@ val_dataloader = dict(
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dict(
-        type='ConcatDataset',
-        datasets=test_list,
-        pipeline=_base_.test_pipeline))
+    dataset=test_dataset)
 
 test_dataloader = val_dataloader
 

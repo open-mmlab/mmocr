@@ -22,15 +22,17 @@ test_list = [
     _base_.svtp_rec_test, _base_.ic13_rec_test, _base_.ic15_rec_test
 ]
 
+train_dataset = dict(
+    type='ConcatDataset', datasets=train_list, pipeline=_base_.train_pipeline)
+test_dataset = dict(
+    type='ConcatDataset', datasets=test_list, pipeline=_base_.test_pipeline)
+
 train_dataloader = dict(
     batch_size=512,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=dict(
-        type='ConcatDataset',
-        datasets=train_list,
-        pipeline=_base_.train_pipeline))
+    dataset=train_dataset)
 
 test_dataloader = dict(
     batch_size=1,
@@ -38,9 +40,6 @@ test_dataloader = dict(
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dict(
-        type='ConcatDataset',
-        datasets=test_list,
-        pipeline=_base_.test_pipeline))
+    dataset=test_dataset)
 
 val_dataloader = test_dataloader
