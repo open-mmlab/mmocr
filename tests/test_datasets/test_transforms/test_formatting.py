@@ -37,9 +37,9 @@ class TestPackTextDetInputs(TestCase):
         results = transform(copy.deepcopy(datainfo))
         self.assertIn('inputs', results)
         self.assertTupleEqual(tuple(results['inputs'].shape), (1, 10, 10))
-        self.assertIn('data_sample', results)
+        self.assertIn('data_samples', results)
 
-        data_sample = results['data_sample']
+        data_sample = results['data_samples']
         self.assertIn('bboxes', data_sample.gt_instances)
         self.assertIsInstance(data_sample.gt_instances.bboxes, torch.Tensor)
         self.assertEqual(data_sample.gt_instances.bboxes.dtype, torch.float32)
@@ -56,9 +56,9 @@ class TestPackTextDetInputs(TestCase):
         transform = PackTextDetInputs(meta_keys=('img_path', ))
         results = transform(copy.deepcopy(datainfo))
         self.assertIn('inputs', results)
-        self.assertIn('data_sample', results)
+        self.assertIn('data_samples', results)
 
-        data_sample = results['data_sample']
+        data_sample = results['data_samples']
         self.assertIn('bboxes', data_sample.gt_instances)
         self.assertIn('img_path', data_sample)
         self.assertNotIn('flip', data_sample)
@@ -66,14 +66,14 @@ class TestPackTextDetInputs(TestCase):
         datainfo.pop('gt_texts')
         transform = PackTextDetInputs()
         results = transform(copy.deepcopy(datainfo))
-        data_sample = results['data_sample']
+        data_sample = results['data_samples']
         self.assertNotIn('texts', data_sample.gt_instances)
 
         datainfo = dict(img_shape=(10, 10))
         transform = PackTextDetInputs(meta_keys=('img_shape', ))
         results = transform(copy.deepcopy(datainfo))
         self.assertNotIn('inputs', results)
-        data_sample = results['data_sample']
+        data_sample = results['data_samples']
         self.assertNotIn('texts', data_sample.gt_instances)
 
     def test_repr(self):
@@ -108,8 +108,8 @@ class TestPackTextRecogInputs(TestCase):
         results = transform(copy.deepcopy(datainfo))
         self.assertIn('inputs', results)
         self.assertTupleEqual(tuple(results['inputs'].shape), (1, 10, 10))
-        self.assertIn('data_sample', results)
-        data_sample = results['data_sample']
+        self.assertIn('data_samples', results)
+        data_sample = results['data_samples']
         self.assertEqual(data_sample.gt_text.item, 'mmocr')
         self.assertIn('img_path', data_sample)
         self.assertIn('valid_ratio', data_sample)
@@ -118,8 +118,8 @@ class TestPackTextRecogInputs(TestCase):
         transform = PackTextRecogInputs(meta_keys=('img_path', ))
         results = transform(copy.deepcopy(datainfo))
         self.assertIn('inputs', results)
-        self.assertIn('data_sample', results)
-        data_sample = results['data_sample']
+        self.assertIn('data_samples', results)
+        data_sample = results['data_samples']
         self.assertEqual(data_sample.gt_text.item, 'mmocr')
         self.assertIn('img_path', data_sample)
         self.assertNotIn('valid_ratio', data_sample)
@@ -129,7 +129,7 @@ class TestPackTextRecogInputs(TestCase):
         transform = PackTextRecogInputs(meta_keys=('img_shape', ))
         results = transform(copy.deepcopy(datainfo))
         self.assertNotIn('inputs', results)
-        data_sample = results['data_sample']
+        data_sample = results['data_samples']
         self.assertNotIn('item', data_sample.gt_text)
 
     def test_repr(self):
@@ -165,8 +165,8 @@ class TestPackKIEInputs(TestCase):
         results = self.transform(copy.deepcopy(datainfo))
         self.assertIn('inputs', results)
         self.assertTupleEqual(tuple(results['inputs'].shape), (1, 10, 10))
-        self.assertIn('data_sample', results)
-        data_sample = results['data_sample']
+        self.assertIn('data_samples', results)
+        data_sample = results['data_samples']
         self.assertIsInstance(data_sample.gt_instances.bboxes, torch.Tensor)
         self.assertEqual(data_sample.gt_instances.bboxes.dtype, torch.float32)
         self.assertEqual(data_sample.gt_instances.labels.dtype, torch.int64)
@@ -179,9 +179,9 @@ class TestPackKIEInputs(TestCase):
         transform = PackKIEInputs(meta_keys=('img_path', ))
         results = transform(copy.deepcopy(datainfo))
         self.assertIn('inputs', results)
-        self.assertIn('data_sample', results)
+        self.assertIn('data_samples', results)
 
-        data_sample = results['data_sample']
+        data_sample = results['data_samples']
         self.assertIn('bboxes', data_sample.gt_instances)
         self.assertIn('img_path', data_sample)
 
