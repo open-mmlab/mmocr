@@ -16,7 +16,7 @@ from mmocr.utils import register_all_modules
 class TestDRRG(unittest.TestCase):
 
     def setUp(self):
-        cfg_path = 'textdet/drrg/drrg_r50_fpn_unet_1200e_ctw1500.py'
+        cfg_path = 'textdet/drrg/drrg_resnet50_fpn-unet_1200e_ctw1500.py'
         self.model_cfg = self._get_detector_cfg(cfg_path)
         register_all_modules()
         self.model = MODELS.build(self.model_cfg)
