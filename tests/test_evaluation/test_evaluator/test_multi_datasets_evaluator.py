@@ -92,7 +92,7 @@ class TestMultiDatasetsEvaluator(TestCase):
 
         for data_samples, predictions in generate_test_results(
                 size, batch_size, pred=1, label=1):
-            evaluator.process(data_samples, predictions)
+            evaluator.process(predictions, data_samples)
 
         metrics = evaluator.evaluate(size=size)
 
@@ -109,7 +109,7 @@ class TestMultiDatasetsEvaluator(TestCase):
 
         for data_samples, predictions in generate_test_results(
                 size, batch_size, pred=1, label=1):
-            evaluator.process(data_samples, predictions)
+            evaluator.process(predictions, data_samples)
         with self.assertRaises(ValueError):
             evaluator.evaluate(size=size)
 
@@ -120,7 +120,7 @@ class TestMultiDatasetsEvaluator(TestCase):
 
         for data_samples, predictions in generate_test_results(
                 size, batch_size, pred=1, label=1):
-            evaluator.process(data_samples, predictions)
+            evaluator.process(predictions, data_samples)
         metrics = evaluator.evaluate(size=size)
         self.assertIn('Fake/Toy/accuracy', metrics)
         self.assertIn('Fake/accuracy', metrics)
