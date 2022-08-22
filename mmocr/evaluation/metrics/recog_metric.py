@@ -51,16 +51,16 @@ class WordMetric(BaseMetric):
         self.mode = set(mode)
 
     def process(self, data_batch: Sequence[Dict],
-                predictions: Sequence[Dict]) -> None:
+                data_samples: Sequence[Dict]) -> None:
         """Process one batch of predictions. The processed results should be
         stored in ``self.results``, which will be used to compute the metrics
         when all batches have been processed.
 
         Args:
             data_batch (Sequence[Dict]): A batch of gts.
-            predictions (Sequence[Dict]): A batch of outputs from the model.
+            data_samples (Sequence[Dict]): A batch of outputs from the model.
         """
-        for data_sample in predictions:
+        for data_sample in data_samples:
             match_num = 0
             match_ignore_case_num = 0
             match_ignore_case_symbol_num = 0
