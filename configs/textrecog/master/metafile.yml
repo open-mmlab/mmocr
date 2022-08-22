@@ -16,9 +16,9 @@ Collections:
     README: configs/textrecog/master/README.md
 
 Models:
-  - Name: master_r31_12e_ST_MJ_SA
+  - Name: master_resnet31_12e_st_mj_sa
     In Collection: MASTER
-    Config: configs/textrecog/master/master_r31_12e_ST_MJ_SA.py
+    Config: configs/textrecog/master/master_resnet31_12e_st_mj_sa.py
     Metadata:
       Training Data:
         - SynthText
@@ -49,4 +49,4 @@ Models:
         Dataset: CT80
         Metrics:
           word_acc: 88.54
-    Weights: https://download.openmmlab.com/mmocr/textrecog/master/master_r31_12e_ST_MJ_SA-787edd36.pth
+    Weights: https://download.openmmlab.com/mmocr/textrecog/master/master_resnet31_12e_st_mj_sa-787edd36.pth
