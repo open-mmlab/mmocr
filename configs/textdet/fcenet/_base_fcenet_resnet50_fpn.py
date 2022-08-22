@@ -1,17 +1,44 @@
-_base_ = [
-    'fcenet_r50_fpn.py',
-    '../../_base_/det_datasets/icdar2015.py',
-    '../../_base_/default_runtime.py',
-    '../../_base_/schedules/schedule_sgd_1500e.py',
-]
-
-# dataset settings
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
 file_client_args = dict(backend='disk')
-default_hooks = dict(
-    checkpoint=dict(type='CheckpointHook', interval=20),
-    logger=dict(type='LoggerHook', interval=20))
+
+model = dict(
+    type='FCENet',
+    backbone=dict(
+        type='mmdet.ResNet',
+        depth=50,
+        num_stages=4,
+        out_indices=(1, 2, 3),
+        frozen_stages=-1,
+        norm_cfg=dict(type='BN', requires_grad=True),
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
+        norm_eval=False,
+        style='pytorch'),
+    neck=dict(
+        type='mmdet.FPN',
+        in_channels=[512, 1024, 2048],
+        out_channels=256,
+        add_extra_convs='on_output',
+        num_outs=3,
+        relu_before_extra_convs=True,
+        act_cfg=None),
+    det_head=dict(
+        type='FCEHead',
+        in_channels=256,
+        fourier_degree=5,
+        module_loss=dict(type='FCEModuleLoss', num_sample=50),
+        postprocessor=dict(
+            type='FCEPostprocessor',
+            scales=(8, 16, 32),
+            text_repr_type='quad',
+            num_reconstr_points=50,
+            alpha=1.2,
+            beta=1.0,
+            score_thr=0.3)),
+    data_preprocessor=dict(
+        type='TextDetDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        bgr_to_rgb=True,
+        pad_size_divisor=32))
 
 train_pipeline = [
     dict(
@@ -39,10 +66,15 @@ train_pipeline = [
         transforms=[dict(type='RandomCrop', min_side_ratio=0.3)],
         prob=0.8),
     dict(
-        type='RandomRotate',
-        max_angle=30,
-        pad_with_fixed_color=False,
-        use_canvas=True),
+        type='RandomApply',
+        transforms=[
+            dict(
+                type='RandomRotate',
+                max_angle=30,
+                pad_with_fixed_color=False,
+                use_canvas=True)
+        ],
+        prob=0.5),
     dict(
         type='RandomChoice',
         transforms=[[
@@ -62,6 +94,7 @@ train_pipeline = [
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
+
 test_pipeline = [
     dict(
         type='LoadImageFromFile',
@@ -79,25 +112,3 @@ test_pipeline = [
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
-
-train_dataloader = dict(
-    batch_size=8,
-    num_workers=4,
-    persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=dict(
-        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
-val_dataloader = dict(
-    batch_size=1,
-    num_workers=4,
-    persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dict(
-        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
-test_dataloader = val_dataloader
-
-val_evaluator = dict(type='HmeanIOUMetric')
-test_evaluator = val_evaluator
-
-visualizer = dict(
-    type='TextDetLocalVisualizer', name='visualizer', save_dir='imgs')
