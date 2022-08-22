@@ -7,7 +7,7 @@ _base_ = [
     '../../_base_/recog_datasets/svtp.py',
     '../../_base_/recog_datasets/icdar2013.py',
     '../../_base_/recog_datasets/icdar2015.py',
-    '../../_base_/default_runtime.py',
+    '../../_base_/textrec_default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_6e.py',
     '_base_nrtr_resnet31.py',
 ]
