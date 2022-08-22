@@ -2,7 +2,7 @@
 from functools import partial
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 
-import mmcv
+import mmengine
 import numpy as np
 from torch import Tensor
 
@@ -138,10 +138,10 @@ class BaseTextDetPostProcessor:
                 is a tensor, or a list of N lists of tensors if
                 ``pred_results`` is a list of tensors.
         """
-        assert isinstance(pred_results, Tensor) or mmcv.is_seq_of(
+        assert isinstance(pred_results, Tensor) or mmengine.is_seq_of(
             pred_results, Tensor)
 
-        if mmcv.is_seq_of(pred_results, Tensor):
+        if mmengine.is_seq_of(pred_results, Tensor):
             for i in range(1, len(pred_results)):
                 assert pred_results[0].shape[0] == pred_results[i].shape[0], \
                     'The first dimension of all tensors should be the same'

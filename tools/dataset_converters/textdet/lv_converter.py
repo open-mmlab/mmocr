@@ -5,6 +5,7 @@ import os.path as osp
 import xml.etree.ElementTree as ET
 
 import mmcv
+import mmengine
 
 from mmocr.utils import dump_ocr_data
 
@@ -59,10 +60,10 @@ def collect_annotations(files, nproc=1):
     assert isinstance(nproc, int)
 
     if nproc > 1:
-        images = mmcv.track_parallel_progress(
+        images = mmengine.track_parallel_progress(
             load_img_info, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info, files)
+        images = mmengine.track_progress(load_img_info, files)
 
     return images
 
@@ -168,7 +169,8 @@ def main():
 
     for split in ['train', 'val', 'test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert LV annotation'):
+        with mmengine.Timer(
+                print_tmpl='It takes {}s to convert LV annotation'):
             files = collect_files(osp.join(root_path, 'imgs', split))
             image_infos = collect_annotations(files, nproc=args.nproc)
             dump_ocr_data(image_infos,
