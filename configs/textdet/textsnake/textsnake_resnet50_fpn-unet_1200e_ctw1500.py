@@ -5,7 +5,6 @@ _base_ = [
     '../../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
-
 # dataset settings
 ctw_det_train = _base_.ctw_det_train
 ctw_det_train.pipeline = _base_.train_pipeline
