@@ -22,5 +22,3 @@ class TestDBHead(TestCase):
         self.assertEqual(results[0].shape, (2, 160, 200))
         self.assertEqual(results[1].shape, (2, 160, 200))
         self.assertEqual(results[2].shape, (2, 160, 200))
-        self.assertEqual(results[3].shape, (2, 160, 200))
-        self.assertTrue(torch.equal(results[3].sigmoid(), results[0]))

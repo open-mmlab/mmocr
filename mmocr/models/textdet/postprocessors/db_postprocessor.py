@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Sequence, Tuple
+from typing import List, Sequence
 
 import cv2
 import numpy as np
@@ -59,14 +59,35 @@ class DBPostprocessor(BaseTextDetPostProcessor):
         self.epsilon_ratio = epsilon_ratio
         self.max_candidates = max_candidates
 
-    def get_text_instances(self, pred_results: Tuple[Tensor, Tensor, Tensor],
+    def __call__(self,
+                 pred_results: List[Tensor],
+                 data_samples: Sequence[TextDetDataSample],
+                 training: bool = False) -> Sequence[TextDetDataSample]:
+        """Postprocess pred_results according to metainfos in data_samples.
+
+        Args:
+            pred_results (Union[Tensor, List[Tensor]]): DBNet's prediction
+                results as a list of tensor. The first tensor should be
+                ``prob_logits`` of shape :math:`(N, H, W)`.
+            data_samples (list[TextDetDataSample]): Batch of data_samples,
+                each corresponding to a prediction result.
+            training (bool): Whether the model is in training mode. Defaults to
+                False.
+
+        Returns:
+            list[TextDetDataSample]: Batch of post-processed datasamples.
+        """
+        prob_maps = pred_results[0].sigmoid()
+        return super().__call__(prob_maps, data_samples, training)
+
+    def get_text_instances(self, prob_map: Tensor,
                            data_sample: TextDetDataSample
                            ) -> TextDetDataSample:
         """Get text instance predictions of one image.
 
         Args:
-            pred_result (tuple(Tensor)): A tuple of 4 tensors where the first
-                tensor is ``prob_map`` of shape :math:`(N, H, W)`.
+            pred_result (Tensor): DBNet's output ``prob_map`` of shape
+                :math:`(H, W)`.
             data_sample (TextDetDataSample): Datasample of an image.
 
         Returns:
@@ -80,7 +101,6 @@ class DBPostprocessor(BaseTextDetPostProcessor):
         data_sample.pred_instances.polygons = []
         data_sample.pred_instances.scores = []
 
-        prob_map = pred_results[0]
         text_mask = prob_map > self.mask_thr
 
         score_map = prob_map.data.cpu().numpy().astype(np.float32)

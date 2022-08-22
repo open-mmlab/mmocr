@@ -67,7 +67,7 @@ class DBModuleLoss(nn.Module, TextKernelMixin):
 
         Args:
             preds (tuple(tensor)): Raw predictions from model, containing
-                ``prob_map``, ``thr_map``, ``binary_map`` and ``prob_logits``.
+                ``prob_logits``, ``thr_map`` and ``binary_map``.
                 Each is a tensor of shape :math:`(N, H, W)`.
             data_samples (list[TextDetDataSample]): The data samples.
 
@@ -75,7 +75,7 @@ class DBModuleLoss(nn.Module, TextKernelMixin):
             results(dict): The dict for dbnet losses with loss_prob, \
                 loss_db and loss_thr.
         """
-        _, thr_map, binary_map, prob_logits = preds
+        prob_logits, thr_map, binary_map = preds
         gt_shrinks, gt_shrink_masks, gt_thrs, gt_thr_masks = self.get_targets(
             data_samples)
         gt_shrinks = gt_shrinks.to(prob_logits.device)

@@ -82,15 +82,15 @@ class DBHead(BaseTextDetHead):
                 samples. Defaults to None.
 
         Returns:
-            tuple(Tensor, Tensor, Tensor, Tensor): A tuple of ``prob_map``,
-            ``thr_map``, ``binary_map`` and ``prob_logits``, each of shape
-            :math:`(N, 4H, 4W)`. ``prob_map`` is sigmoided ``prob_logits``.
+            tuple(Tensor, Tensor, Tensor): A tuple of ``prob_logits``,
+            ``thr_map`` and ``binary_map``, each has the shape of
+            :math:`(N, 4H, 4W)`.
         """
         prob_logits = self.binarize(img).squeeze(1)
-        prob_map = prob_logits.sigmoid()
         thr_map = self.threshold(img).squeeze(1)
-        binary_map = self._diff_binarize(prob_map, thr_map, k=50).squeeze(1)
-        return (prob_map, thr_map, binary_map, prob_logits)
+        binary_map = self._diff_binarize(
+            prob_logits.sigmoid(), thr_map, k=50).squeeze(1)
+        return (prob_logits, thr_map, binary_map)
 
     def _init_thr(self,
                   inner_channels: int,

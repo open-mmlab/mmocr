@@ -23,8 +23,7 @@ class TestDBPostProcessor(unittest.TestCase):
     def test_get_text_instances(self, text_repr_type):
 
         postprocessor = DBPostprocessor(text_repr_type=text_repr_type)
-        pred_result = (torch.rand(4, 5), torch.rand(4, 5), torch.rand(4, 5),
-                       torch.rand(4, 5))
+        pred_result = torch.rand(4, 5)
         data_sample = TextDetDataSample(
             metainfo=dict(scale_factor=(0.5, 1)),
             gt_instances=InstanceData(polygons=[
@@ -37,12 +36,11 @@ class TestDBPostProcessor(unittest.TestCase):
         self.assertTrue(
             isinstance(results.pred_instances['scores'], torch.FloatTensor))
 
-        preds = (torch.FloatTensor([[0.8, 0.8, 0.8, 0.8, 0],
-                                    [0.8, 0.8, 0.8, 0.8, 0],
-                                    [0.8, 0.8, 0.8, 0.8, 0],
-                                    [0.8, 0.8, 0.8, 0.8, 0],
-                                    [0.8, 0.8, 0.8, 0.8, 0]]),
-                 torch.rand([1, 10]), torch.rand([1, 10]), torch.rand([1, 10]))
+        preds = torch.FloatTensor([[0.8, 0.8, 0.8, 0.8, 0],
+                                   [0.8, 0.8, 0.8, 0.8, 0],
+                                   [0.8, 0.8, 0.8, 0.8, 0],
+                                   [0.8, 0.8, 0.8, 0.8, 0],
+                                   [0.8, 0.8, 0.8, 0.8, 0]])
         postprocessor = DBPostprocessor(
             text_repr_type=text_repr_type, min_text_width=0)
         results = postprocessor.get_text_instances(preds, data_sample)
@@ -50,10 +48,29 @@ class TestDBPostProcessor(unittest.TestCase):
 
         postprocessor = DBPostprocessor(
             min_text_score=1, text_repr_type=text_repr_type)
-        pred_result = (torch.rand(4, 5) * 0.8, torch.rand(4, 5) * 0.8,
-                       torch.rand(4, 5) * 0.8, torch.rand(4, 5) * 0.8)
+        pred_result = torch.rand(4, 5) * 0.8
         results = postprocessor.get_text_instances(pred_result, data_sample)
         self.assertEqual(results.pred_instances.polygons, [])
         self.assertTrue(
             isinstance(results.pred_instances['scores'], torch.FloatTensor))
         self.assertEqual(len(results.pred_instances.scores), 0)
+
+    @parameterized.expand([('poly'), ('quad')])
+    def test_call(self, text_repr_type):
+
+        postprocessor = DBPostprocessor(text_repr_type=text_repr_type)
+        pred_result = (torch.rand(1, 5), torch.rand(1, 5), torch.rand(1, 5),
+                       torch.rand(1, 5))
+        data_samples = [
+            TextDetDataSample(
+                metainfo=dict(scale_factor=(0.5, 1)),
+                gt_instances=InstanceData(polygons=[
+                    np.array([0, 0, 0, 1, 2, 1, 2, 0]),
+                    np.array([1, 1, 1, 2, 3, 2, 3, 1])
+                ]))
+        ]
+        results = postprocessor(pred_result, data_samples)
+        self.assertIn('polygons', results[0].pred_instances)
+        self.assertIn('scores', results[0].pred_instances)
+        self.assertTrue(
+            isinstance(results[0].pred_instances['scores'], torch.FloatTensor))
