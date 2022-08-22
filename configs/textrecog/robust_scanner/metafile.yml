@@ -17,9 +17,9 @@ Collections:
   README: configs/textrecog/robust_scanner/README.md
 
 Models:
-  - Name: robustscanner_r31_academic
+  - Name: robustscanner_resnet31_5e_st-sub_st-sub_sa_real
     In Collection: RobustScanner
-    Config: configs/textrecog/robust_scanner/robustscanner_r31_academic.py
+    Config: configs/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_st-sub_sa_real.py
     Metadata:
       Training Data:
         - ICDAR2011

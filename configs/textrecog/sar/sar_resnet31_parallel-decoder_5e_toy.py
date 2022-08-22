@@ -1,25 +1,24 @@
 _base_ = [
     '../../_base_/recog_datasets/toy_data.py',
     '../../_base_/textrec_default_runtime.py',
-    '../../_base_/schedules/schedule_adam_step_6e.py',
-    '_base_nrtr_modality-transform.py',
+    '../../_base_/schedules/schedule_adam_step_5e.py',
+    '_base_sar_resnet31_parallel-decoder.py',
 ]
 
 # dataset settings
 train_list = [_base_.toy_rec_train]
 test_list = [_base_.toy_rec_test]
-
-train_dataset = dict(
-    type='ConcatDataset', datasets=train_list, pipeline=_base_.train_pipeline)
-test_dataset = dict(
-    type='ConcatDataset', datasets=test_list, pipeline=_base_.test_pipeline)
+default_hooks = dict(logger=dict(type='LoggerHook', interval=1))
 
 train_dataloader = dict(
-    batch_size=8,
+    batch_size=1,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=train_dataset)
+    dataset=dict(
+        type='ConcatDataset',
+        datasets=train_list,
+        pipeline=_base_.train_pipeline))
 
 val_dataloader = dict(
     batch_size=1,
@@ -27,8 +26,10 @@ val_dataloader = dict(
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=test_dataset)
-
+    dataset=dict(
+        type='ConcatDataset',
+        datasets=test_list,
+        pipeline=_base_.test_pipeline))
 test_dataloader = val_dataloader
 
 val_evaluator = dict(dataset_prefixes=['Toy'])

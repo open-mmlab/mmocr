@@ -6,8 +6,8 @@ _base_ = [
 ]
 
 # dataset settings
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
+train_list = [_base_.toy_rec_train]
+test_list = [_base_.toy_rec_test]
 
 train_dataset = dict(
     type='ConcatDataset', datasets=train_list, pipeline=_base_.train_pipeline)
@@ -31,11 +31,5 @@ val_dataloader = dict(
 
 test_dataloader = val_dataloader
 
-val_evaluator = [
-    dict(
-        type='WordMetric', mode=['exact', 'ignore_case',
-                                 'ignore_case_symbol']),
-    dict(type='CharMetric')
-]
-
+val_evaluator = dict(dataset_prefixes=['Toy'])
 test_evaluator = val_evaluator
