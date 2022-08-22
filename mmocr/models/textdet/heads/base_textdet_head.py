@@ -65,14 +65,14 @@ class BaseTextDetHead(BaseModule):
         self.module_loss = MODELS.build(module_loss)
         self.postprocessor = MODELS.build(postprocessor)
 
-    def loss(self, x: Tuple[Tensor], batch_data_samples: SampleList) -> dict:
+    def loss(self, x: Tuple[Tensor], data_samples: SampleList) -> dict:
         """Perform forward propagation and loss calculation of the detection
         head on the features of the upstream network.
 
         Args:
             x (tuple[Tensor]): Features from the upstream network, each is
                 a 4D-tensor.
-            batch_data_samples (List[:obj:`DetDataSample`]): The Data
+            data_samples (List[:obj:`DetDataSample`]): The Data
                 Samples. It usually includes information such as
                 `gt_instance`, `gt_panoptic_seg` and `gt_sem_seg`.
 
@@ -80,17 +80,17 @@ class BaseTextDetHead(BaseModule):
             dict: A dictionary of loss components.
         """
         outs = self(x)
-        losses = self.module_loss(outs, batch_data_samples)
+        losses = self.module_loss(outs, data_samples)
         return losses
 
-    def loss_and_predict(self, x: Tuple[Tensor], batch_data_samples: SampleList
-                         ) -> Tuple[dict, SampleList]:
+    def loss_and_predict(self, x: Tuple[Tensor],
+                         data_samples: SampleList) -> Tuple[dict, SampleList]:
         """Perform forward propagation of the head, then calculate loss and
         predictions from the features and data samples.
 
         Args:
             x (tuple[Tensor]): Features from FPN.
-            batch_data_samples (list[:obj:`DetDataSample`]): Each item contains
+            data_samples (list[:obj:`DetDataSample`]): Each item contains
                 the meta information of each image and corresponding
                 annotations.
 
@@ -102,20 +102,19 @@ class BaseTextDetHead(BaseModule):
                   results of each image after the post process.
         """
         outs = self(x)
-        losses = self.module_loss(outs, batch_data_samples)
+        losses = self.module_loss(outs, data_samples)
 
-        predictions = self.postprocessor(outs, batch_data_samples)
+        predictions = self.postprocessor(outs, data_samples)
         return losses, predictions
 
-    def predict(self, x: torch.Tensor,
-                batch_data_samples: SampleList) -> SampleList:
+    def predict(self, x: torch.Tensor, data_samples: SampleList) -> SampleList:
         """Perform forward propagation of the detection head and predict
         detection results on the features of the upstream network.
 
         Args:
             x (tuple[Tensor]): Multi-level features from the
                 upstream network, each is a 4D-tensor.
-            batch_data_samples (List[:obj:`DetDataSample`]): The Data
+            data_samples (List[:obj:`DetDataSample`]): The Data
                 Samples. It usually includes information such as
                 `gt_instance`, `gt_panoptic_seg` and `gt_sem_seg`.
 
@@ -123,7 +122,7 @@ class BaseTextDetHead(BaseModule):
             SampleList: Detection results of each image
             after the post process.
         """
-        outs = self(x, batch_data_samples)
+        outs = self(x, data_samples)
 
-        predictions = self.postprocessor(outs, batch_data_samples)
+        predictions = self.postprocessor(outs, data_samples)
         return predictions

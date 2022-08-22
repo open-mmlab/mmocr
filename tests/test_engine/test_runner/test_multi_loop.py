@@ -25,9 +25,9 @@ class ToyModel(BaseModel):
         self.linear1 = nn.Linear(2, 2)
         self.linear2 = nn.Linear(2, 1)
 
-    def forward(self, batch_inputs, labels, mode='tensor'):
+    def forward(self, inputs, labels, mode='tensor'):
         labels = torch.stack(labels)
-        outputs = self.linear1(batch_inputs)
+        outputs = self.linear1(inputs)
         outputs = self.linear2(outputs)
 
         if mode == 'tensor':

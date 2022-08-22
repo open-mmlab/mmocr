@@ -11,8 +11,8 @@ from mmocr.structures import TextRecogDataSample
 @MODELS.register_module()
 class Augment(torch.nn.Module):
 
-    def forward(self, batch_inputs, batch_data_samples):
-        return batch_inputs, batch_data_samples
+    def forward(self, inputs, data_samples):
+        return inputs, data_samples
 
 
 class TestTextRecogDataPreprocessor(TestCase):

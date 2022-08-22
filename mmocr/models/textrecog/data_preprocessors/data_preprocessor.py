@@ -24,7 +24,7 @@ class TextRecogDataPreprocessor(ImgDataPreprocessor):
     - Pad inputs to the maximum size of current batch with defined
       ``pad_value``. The padding size can be divisible by a defined
       ``pad_size_divisor``
-    - Stack inputs to batch_inputs.
+    - Stack inputs to inputs.
     - Convert inputs from bgr to rgb if the shape of input is (3, H, W).
     - Normalize image with defined std and mean.
     - Do batch augmentations during training.
