@@ -17,9 +17,9 @@ Collections:
   README: configs/textrecog/nrtr/README.md
 
 Models:
-  - Name: nrtr_r31_1by16_1by8_academic
+  - Name: nrtr_resnet31-1by16-1by8_6e_st_mj
     In Collection: NRTR
-    Config: configs/textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py
+    Config: configs/textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj.py
     Metadata:
       Training Data:
         - SynthText
@@ -51,9 +51,9 @@ Models:
           word_acc: 87.15
     Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_r31_1by16_1by8_academic_20211124-f60cebf4.pth
 
-  - Name: nrtr_r31_1by8_1by4_academic
+  - Name: nrtr_resnet31-1by8-1by4_6e_st_mj
     In Collection: NRTR
-    Config: configs/textrecog/nrtr/nrtr_r31_1by8_1by4_academic.py
+    Config: configs/textrecog/nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj.py
     Metadata:
       Training Data:
         - SynthText
