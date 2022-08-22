@@ -72,19 +72,16 @@ class TextDetDataPreprocessor(ImgDataPreprocessor):
         else:
             self.batch_augments = None
 
-    def forward(self,
-                data: Sequence[Dict],
-                training: bool = False) -> Sequence[Dict]:
+    def forward(self, data: Dict, training: bool = False) -> Dict:
         """Perform normalization、padding and bgr2rgb conversion based on
         ``BaseDataPreprocessor``.
 
         Args:
-            data (Sequence[dict]): data sampled from dataloader.
+            data (dict): data sampled from dataloader.
             training (bool): Whether to enable training time augmentation.
 
         Returns:
-            Sequence[dict]: Data in the same format as the
-            model input.
+            dict: Data in the same format as the model input.
         """
         data = super().forward(data=data, training=training)
         inputs, data_samples = data['inputs'], data['data_samples']
