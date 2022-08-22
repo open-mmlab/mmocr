@@ -1,3 +1,5 @@
+file_client_args = dict(backend='disk')
+
 dictionary = dict(
     type='Dictionary',
     dict_file='dicts/english_digits_symbols.txt',
@@ -71,3 +73,39 @@ model = dict(
         type='TextRecogDataPreprocessor',
         mean=[127.5, 127.5, 127.5],
         std=[127.5, 127.5, 127.5]))
+
+train_pipeline = [
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        ignore_empty=True,
+        min_size=5),
+    dict(type='LoadOCRAnnotations', with_text=True),
+    dict(
+        type='RescaleToHeight',
+        height=48,
+        min_width=48,
+        max_width=160,
+        width_divisor=16),
+    dict(type='PadToWidth', width=160),
+    dict(
+        type='PackTextRecogInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
+]
+
+test_pipeline = [
+    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(
+        type='RescaleToHeight',
+        height=48,
+        min_width=48,
+        max_width=160,
+        width_divisor=16),
+    dict(type='PadToWidth', width=160),
+    # add loading annotation after ``Resize`` because ground truth
+    # does not need to do resize data transform
+    dict(type='LoadOCRAnnotations', with_text=True),
+    dict(
+        type='PackTextRecogInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
+]
