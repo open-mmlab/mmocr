@@ -1,4 +1,4 @@
-_base_ = 'abinet_vision_only.py'
+_base_ = '_base_abinet-vision.py'
 
 model = dict(
     decoder=dict(
