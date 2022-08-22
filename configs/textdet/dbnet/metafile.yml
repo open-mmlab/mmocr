@@ -15,7 +15,7 @@ Collections:
   README: configs/textdet/dbnet/README.md
 
 Models:
-  - Name: dbnet_r18_fpnc_1200e_icdar2015
+  - Name: dbnet_resnet18_fpnc_1200e_icdar2015
     In Collection: DBNet
     Config: configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py
     Metadata:
@@ -27,7 +27,7 @@ Models:
           hmean-iou: 0.795
     Weights: https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth
 
-  - Name: dbnet_r50dcnv2_fpnc_1200e_icdar2015
+  - Name: dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015
     In Collection: DBNet
     Config: configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
     Metadata:

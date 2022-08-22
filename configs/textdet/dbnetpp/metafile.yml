@@ -15,7 +15,7 @@ Collections:
   README: configs/textdet/dbnetpp/README.md
 
 Models:
-  - Name: dbnetpp_r50dcnv2_fpnc_1200e_icdar2015.py
+  - Name: dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015
     In Collection: DBNetpp
     Config: configs/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015.py
     Metadata:
