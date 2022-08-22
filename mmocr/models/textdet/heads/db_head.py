@@ -74,7 +74,7 @@ class DBHead(BaseTextDetHead):
         self,
         img: Tensor,
         data_samples: Optional[List[TextDetDataSample]] = None
-    ) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
+    ) -> Tuple[Tensor, Tensor, Tensor]:
         """
         Args:
             img (Tensor): Shape :math:`(N, C, H, W)`.
