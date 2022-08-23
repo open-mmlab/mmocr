@@ -10,12 +10,12 @@ MMOCR 0.x 版本中，我们在 `mmocr/datasets/pipelines/xxx_transforms.py` 中
 
 `PackxxxInputs` 同时囊括了 `Collect` 和 `CustomFormatBundle` 两个功能，且不再有 `key` 参数，训练目标 target 的生成被转移至在 `loss` 中完成。
 
-<table>
+<table class="docutils">
 <thead>
   <tr>
     <th>MMOCR 0.x 旧版配置</th>
     <th>MMOCR 1.x 新版配置</th>
-  <tr>
+  <tbody><tr>
   <td valign="top">
 
 ```python
