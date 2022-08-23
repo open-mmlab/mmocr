@@ -17,8 +17,8 @@ MMOCR 0.x 版本中，我们在 `mmocr/datasets/pipelines/xxx_transforms.py` 中
 <table class="docutils">
 <thead>
   <tr>
-    <th>MMOCR 0.x 旧版配置</th>
-    <th>MMOCR 1.x 新版配置</th>
+    <th>MMOCR 0.x 配置</th>
+    <th>MMOCR 1.x 配置</th>
   </tr>
   <tbody><tr>
   <td valign="top">
@@ -57,8 +57,8 @@ dict(
 <table class="docutils">
 <thead>
   <tr>
-    <th>MMOCR 0.x 旧版配置</th>
-    <th>MMOCR 1.x 新版配置</th>
+    <th>MMOCR 0.x 配置</th>
+    <th>MMOCR 1.x 配置</th>
   </tr>
   <tbody><tr>
   <td valign="top">
@@ -90,8 +90,8 @@ dict(
 <table class="docutils">
 <thead>
   <tr>
-    <th>MMOCR 0.x 旧版配置</th>
-    <th>MMOCR 1.x 新版配置</th>
+    <th>MMOCR 0.x 配置</th>
+    <th>MMOCR 1.x 配置</th>
   </tr>
   <tbody><tr>
   <td valign="top">
@@ -126,8 +126,8 @@ dict(
 <table class="docutils">
 <thead>
   <tr>
-    <th>MMOCR 0.x 旧版配置</th>
-    <th>MMOCR 1.x 新版配置</th>
+    <th>MMOCR 0.x 配置</th>
+    <th>MMOCR 1.x 配置</th>
   </tr>
   <tbody><tr>
   <td valign="top">
@@ -171,8 +171,8 @@ dict(
 <table class="docutils">
 <thead>
   <tr>
-    <th>MMOCR 0.x 旧版配置</th>
-    <th>MMOCR 1.x 新版配置</th>
+    <th>MMOCR 0.x 配置</th>
+    <th>MMOCR 1.x 配置</th>
   </tr>
   <tbody><tr>
   <td valign="top">
@@ -196,8 +196,8 @@ dict(type='RandomRotate', max_angle=10)
 <table class="docutils">
 <thead>
   <tr>
-    <th>MMOCR 0.x 旧版配置</th>
-    <th>MMOCR 1.x 新版配置</th>
+    <th>MMOCR 0.x 配置</th>
+    <th>MMOCR 1.x 配置</th>
   </tr>
   <tbody><tr>
   <td valign="top">
