@@ -39,15 +39,15 @@ class BaseTextDetPostProcessor:
         self.test_cfg = test_cfg
 
     def __call__(self,
-                 pred_results: dict,
+                 pred_results: Union[Tensor, List[Tensor]],
                  data_samples: Sequence[TextDetDataSample],
                  training: bool = False) -> Sequence[TextDetDataSample]:
         """Postprocess pred_results according to metainfos in data_samples.
 
         Args:
-            pred_results (dict): The prediction results stored in a dictionary.
-                Usually each item to be post-processed is expected to be a
-                batched tensor.
+            pred_results (Union[Tensor, List[Tensor]]): The prediction results
+                stored in a tensor or a list of tensor. Usually each item to
+                be post-processed is expected to be a batched tensor.
             data_samples (list[TextDetDataSample]): Batch of data_samples,
                 each corresponding to a prediction result.
             training (bool): Whether the model is in training mode. Defaults to
@@ -65,13 +65,14 @@ class BaseTextDetPostProcessor:
 
         return results
 
-    def _process_single(self, pred_result: dict,
+    def _process_single(self, pred_result: Union[Tensor, List[Tensor]],
                         data_sample: TextDetDataSample,
                         **kwargs) -> TextDetDataSample:
         """Process prediction results from one image.
 
         Args:
-            pred_result (dict): Prediction results of an image.
+            pred_result (Union[Tensor, List[Tensor]]): Prediction results of an
+                image.
             data_sample (TextDetDataSample): Datasample of an image.
         """
 
@@ -103,13 +104,13 @@ class BaseTextDetPostProcessor:
                 results.pred_instances[key], scale_factor, mode='div')
         return results
 
-    def get_text_instances(self, pred_results: dict,
+    def get_text_instances(self, pred_results: Union[Tensor, List[Tensor]],
                            data_sample: TextDetDataSample,
                            **kwargs) -> TextDetDataSample:
         """Get text instance predictions of one image.
 
         Args:
-            pred_result (dict): Prediction results of an image.
+            pred_result (tuple(Tensor)): Prediction results of an image.
             data_sample (TextDetDataSample): Datasample of an image.
             **kwargs: Other parameters. Configurable via ``__init__.train_cfg``
                 and ``__init__.test_cfg``.

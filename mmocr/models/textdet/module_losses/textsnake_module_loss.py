@@ -47,8 +47,10 @@ class TextSnakeModuleLoss(nn.Module, TextKernelMixin):
         resample_step: float = 4.0,
         center_region_shrink_ratio: float = 0.3,
         loss_text: Dict = dict(
-            type='MaskedBalancedBCELoss', fallback_negative_num=100, eps=1e-5),
-        loss_center: Dict = dict(type='MaskedBCELoss'),
+            type='MaskedBalancedBCEWithLogitsLoss',
+            fallback_negative_num=100,
+            eps=1e-5),
+        loss_center: Dict = dict(type='MaskedBCEWithLogitsLoss'),
         loss_radius: Dict = dict(type='MaskedSmoothL1Loss'),
         loss_sin: Dict = dict(type='MaskedSmoothL1Loss'),
         loss_cos: Dict = dict(type='MaskedSmoothL1Loss')
@@ -146,11 +148,11 @@ class TextSnakeModuleLoss(nn.Module, TextKernelMixin):
         pred_sin_map = pred_sin_map * scale
         pred_cos_map = pred_cos_map * scale
 
-        loss_text = self.loss_text(pred_text_region.sigmoid(),
-                                   gt['gt_text_masks'], gt['gt_masks'])
+        loss_text = self.loss_text(pred_text_region, gt['gt_text_masks'],
+                                   gt['gt_masks'])
 
         text_mask = (gt['gt_text_masks'] * gt['gt_masks']).float()
-        loss_center = self.loss_center(pred_center_region.sigmoid(),
+        loss_center = self.loss_center(pred_center_region,
                                        gt['gt_center_region_masks'], text_mask)
 
         center_mask = (gt['gt_center_region_masks'] * gt['gt_masks']).float()
