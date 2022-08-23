@@ -56,6 +56,7 @@ class DBHead(BaseTextDetHead):
             nn.BatchNorm2d(in_channels // 4), nn.ReLU(inplace=True),
             nn.ConvTranspose2d(in_channels // 4, 1, 2, 2))
         self.threshold = self._init_thr(in_channels)
+        self.sigmoid = nn.Sigmoid()
 
     def _diff_binarize(self, prob_map: Tensor, thr_map: Tensor,
                        k: int) -> Tensor:
@@ -88,14 +89,14 @@ class DBHead(BaseTextDetHead):
     def forward(self,
                 img: Tensor,
                 data_samples: Optional[List[TextDetDataSample]] = None,
-                mode: str = 'loss') -> Tuple[Tensor, Tensor, Tensor]:
+                mode: str = 'predict') -> Tuple[Tensor, Tensor, Tensor]:
         """
         Args:
             img (Tensor): Shape :math:`(N, C, H, W)`.
             data_samples (list[TextDetDataSample], optional): A list of data
                 samples. Defaults to None.
             mode (str): Forward mode. It affects the return values. Options are
-                "loss", "predict" and "both".
+                "loss", "predict" and "both". Defaults to "predict".
 
                 - ``loss``: Run the full network and return the prob
                   logits, threshold map and binary map.
@@ -110,12 +111,11 @@ class DBHead(BaseTextDetHead):
             :math:`(N, 4H, 4W)`.
         """
         prob_logits = self.binarize(img).squeeze(1)
-        prob_map = prob_logits.sigmoid()
+        prob_map = self.sigmoid(prob_logits)
         if mode == 'predict':
             return prob_map
         thr_map = self.threshold(img).squeeze(1)
-        binary_map = self._diff_binarize(
-            prob_logits.sigmoid(), thr_map, k=50).squeeze(1)
+        binary_map = self._diff_binarize(prob_map, thr_map, k=50).squeeze(1)
         if mode == 'loss':
             return prob_logits, thr_map, binary_map
         return prob_logits, thr_map, binary_map, prob_map
