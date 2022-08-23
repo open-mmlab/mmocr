@@ -1,16 +1,38 @@
-_base_ = [
-    '_base_panet_r18_fpem_ffm.py',
-    '../../_base_/default_runtime.py',
-    '../../_base_/det_datasets/icdar2015.py',
-    '../../_base_/schedules/schedule_adam_600e.py',
-]
+# BasicBlock has a little difference from official PANet
+# BasicBlock in mmdet lacks RELU in the last convolution.
+model = dict(
+    type='PANet',
+    data_preprocessor=dict(
+        type='TextDetDataPreprocessor',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        bgr_to_rgb=True,
+        pad_size_divisor=32),
+    backbone=dict(
+        type='mmdet.ResNet',
+        depth=18,
+        num_stages=4,
+        stem_channels=128,
+        deep_stem=True,
+        out_indices=(0, 1, 2, 3),
+        frozen_stages=-1,
+        norm_eval=False,
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet18'),
+        style='pytorch'),
+    neck=dict(type='FPEM_FFM', in_channels=[64, 128, 256, 512]),
+    det_head=dict(
+        type='PANHead',
+        in_channels=[128, 128, 128, 128],
+        hidden_dim=128,
+        out_channel=6,
+        module_loss=dict(
+            type='PANModuleLoss',
+            loss_text=dict(type='MaskedSquareDiceLoss'),
+            loss_kernel=dict(type='MaskedSquareDiceLoss'),
+        ),
+        postprocessor=dict(type='PANPostprocessor', text_repr_type='quad')))
 
-# dataset settings
-train_list = {{_base_.train_list}}
-test_list = {{_base_.test_list}}
 file_client_args = dict(backend='disk')
-default_hooks = dict(checkpoint=dict(type='CheckpointHook', interval=20), )
-
 train_pipeline = [
     dict(
         type='LoadImageFromFile',
@@ -60,25 +82,3 @@ test_pipeline = [
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
-
-train_dataloader = dict(
-    batch_size=64,
-    num_workers=8,
-    persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=dict(
-        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
-val_dataloader = dict(
-    batch_size=1,
-    num_workers=4,
-    persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=dict(
-        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
-test_dataloader = val_dataloader
-
-val_evaluator = dict(
-    type='HmeanIOUMetric', pred_score_thrs=dict(start=0.3, stop=1, step=0.05))
-test_evaluator = val_evaluator
-
-visualizer = dict(type='TextDetLocalVisualizer', name='visualizer')

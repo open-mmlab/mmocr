@@ -70,3 +70,7 @@ test_pipeline = [
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
+
+val_evaluator = dict(
+    type='HmeanIOUMetric', pred_score_thrs=dict(start=0.3, stop=1, step=0.05))
+test_evaluator = val_evaluator
