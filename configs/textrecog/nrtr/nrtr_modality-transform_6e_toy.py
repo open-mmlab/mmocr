@@ -1,8 +1,16 @@
 _base_ = [
-    '../../_base_/recog_datasets/toy_data.py',
-    '../../_base_/textrec_default_runtime.py',
-    '../../_base_/schedules/schedule_adam_step_6e.py',
+    '../_base_/datasets/toy_data.py',
+    '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_adam_step_5e.py',
     '_base_nrtr_modality-transform.py',
+]
+
+# optimizer settings
+optim_wrapper = dict(optimizer=dict(lr=3e-4))
+train_cfg = dict(max_epochs=6)
+# learning policy
+param_scheduler = [
+    dict(end=6),
 ]
 
 # dataset settings

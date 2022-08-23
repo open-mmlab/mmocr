@@ -1,15 +1,25 @@
 _base_ = [
-    '../../_base_/recog_datasets/mjsynth.py',
-    '../../_base_/recog_datasets/synthtext.py',
-    '../../_base_/recog_datasets/cute80.py',
-    '../../_base_/recog_datasets/iiit5k.py',
-    '../../_base_/recog_datasets/svt.py',
-    '../../_base_/recog_datasets/svtp.py',
-    '../../_base_/recog_datasets/icdar2013.py',
-    '../../_base_/recog_datasets/icdar2015.py',
-    '../../_base_/textrec_default_runtime.py',
-    '../../_base_/schedules/schedule_adam_step_20e.py',
-    '_base_abinet.py',
+    '../_base_/datasets/mjsynth.py',
+    '../_base_/datasets/synthtext.py',
+    '../_base_/datasets/cute80.py',
+    '../_base_/datasets/iiit5k.py',
+    '../_base_/datasets/svt.py',
+    '../_base_/datasets/svtp.py',
+    '../_base_/datasets/icdar2013.py',
+    '../_base_/datasets/icdar2015.py',
+    '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_adam_step_5e.py',
+    '_base_abinet-vision.py',
+]
+
+optim_wrapper = dict(optimizer=dict(lr=1e-4))
+train_cfg = dict(max_epochs=20)
+# learning policy
+param_scheduler = [
+    dict(
+        type='LinearLR', end=2, start_factor=0.001,
+        convert_to_iter_based=True),
+    dict(type='MultiStepLR', milestones=[16, 18], end=20),
 ]
 
 # dataset settings
