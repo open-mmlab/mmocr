@@ -17,7 +17,7 @@ class PackTextDetInputs(BaseTransform):
     The type of outputs is `dict`:
 
     - inputs: image converted to tensor, whose shape is (C, H, W).
-    - data_sample: Two components of ``TextDetDataSample`` will be updated:
+    - data_samples: Two components of ``TextDetDataSample`` will be updated:
 
       - gt_instances (InstanceData): Depending on annotations, a subset of the
         following keys will be updated:
@@ -82,7 +82,7 @@ class PackTextDetInputs(BaseTransform):
             dict:
 
             - 'inputs' (obj:`torch.Tensor`): Data for model forwarding.
-            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+            - 'data_samples' (obj:`DetDataSample`): The annotation info of the
               sample.
         """
         packed_results = dict()
@@ -126,7 +126,7 @@ class PackTextRecogInputs(BaseTransform):
     The type of outputs is `dict`:
 
     - inputs: Image as a tensor, whose shape is (C, H, W).
-    - data_sample: Two components of ``TextRecogDataSample`` will be updated:
+    - data_samples: Two components of ``TextRecogDataSample`` will be updated:
 
       - gt_text (LabelData):
 
@@ -166,7 +166,7 @@ class PackTextRecogInputs(BaseTransform):
             dict:
 
             - 'inputs' (obj:`torch.Tensor`): Data for model forwarding.
-            - 'data_sample' (obj:`TextRecogDataSample`): The annotation info
+            - 'data_samples' (obj:`TextRecogDataSample`): The annotation info
                 of the sample.
         """
         packed_results = dict()
@@ -212,7 +212,7 @@ class PackKIEInputs(BaseTransform):
     The type of outputs is `dict`:
 
     - inputs: image converted to tensor, whose shape is (C, H, W).
-    - data_sample: Two components of ``TextDetDataSample`` will be updated:
+    - data_samples: Two components of ``TextDetDataSample`` will be updated:
 
       - gt_instances (InstanceData): Depending on annotations, a subset of the
         following keys will be updated:
@@ -266,7 +266,7 @@ class PackKIEInputs(BaseTransform):
             dict:
 
             - 'inputs' (obj:`torch.Tensor`): Data for model forwarding.
-            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+            - 'data_samples' (obj:`DetDataSample`): The annotation info of the
               sample.
         """
         packed_results = dict()

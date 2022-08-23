@@ -52,7 +52,7 @@ class WordMetric(BaseMetric):
 
     def process(self, data_batch: Sequence[Dict],
                 data_samples: Sequence[Dict]) -> None:
-        """Process one batch of predictions. The processed results should be
+        """Process one batch of data_samples. The processed results should be
         stored in ``self.results``, which will be used to compute the metrics
         when all batches have been processed.
 
@@ -149,16 +149,16 @@ class CharMetric(BaseMetric):
         self.valid_symbol = re.compile(valid_symbol)
 
     def process(self, data_batch: Sequence[Dict],
-                predictions: Sequence[Dict]) -> None:
-        """Process one batch of predictions. The processed results should be
+                data_samples: Sequence[Dict]) -> None:
+        """Process one batch of data_samples. The processed results should be
         stored in ``self.results``, which will be used to compute the metrics
         when all batches have been processed.
 
         Args:
             data_batch (Sequence[Dict]): A batch of gts.
-            predictions (Sequence[Dict]): A batch of outputs from the model.
+            data_samples (Sequence[Dict]): A batch of outputs from the model.
         """
-        for data_sample in predictions:
+        for data_sample in data_samples:
             pred_text = data_sample.get('pred_text').get('item')
             gt_text = data_sample.get('gt_text').get('item')
             gt_text_lower = gt_text.lower()
@@ -249,16 +249,16 @@ class OneMinusNEDMetric(BaseMetric):
         self.valid_symbol = re.compile(valid_symbol)
 
     def process(self, data_batch: Sequence[Dict],
-                predictions: Sequence[Dict]) -> None:
-        """Process one batch of predictions. The processed results should be
+                data_samples: Sequence[Dict]) -> None:
+        """Process one batch of data_samples. The processed results should be
         stored in ``self.results``, which will be used to compute the metrics
         when all batches have been processed.
 
         Args:
             data_batch (Sequence[Dict]): A batch of gts.
-            predictions (Sequence[Dict]): A batch of outputs from the model.
+            data_samples (Sequence[Dict]): A batch of outputs from the model.
         """
-        for data_sample in predictions:
+        for data_sample in data_samples:
             pred_text = data_sample.get('pred_text').get('item')
             gt_text = data_sample.get('gt_text').get('item')
             gt_text_lower = gt_text.lower()
