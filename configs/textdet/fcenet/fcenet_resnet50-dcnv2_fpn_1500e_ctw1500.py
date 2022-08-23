@@ -2,6 +2,14 @@ _base_ = [
     '_base_fcenet_resnet50-dcnv2_fpn.py',
     '../_base_/datasets/ctw1500.py',
     '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_sgd_1200e.py',
+]
+
+optim_wrapper = dict(optimizer=dict(lr=1e-3, weight_decay=5e-4))
+train_cfg = dict(max_epochs=1500)
+# learning policy
+param_scheduler = [
+    dict(type='PolyLR', power=0.9, eta_min=1e-7, end=1500),
 ]
 
 file_client_args = dict(backend='disk')
