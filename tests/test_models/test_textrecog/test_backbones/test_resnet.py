@@ -4,12 +4,14 @@ from unittest import TestCase
 import torch
 
 from mmocr.models.textrecog.backbones import ResNet
+from mmocr.utils import register_all_modules
 
 
 class TestResNet(TestCase):
 
     def setUp(self) -> None:
         self.img = torch.rand(1, 3, 32, 100)
+        register_all_modules()
 
     def test_resnet45_aster(self):
         resnet45_aster = ResNet(

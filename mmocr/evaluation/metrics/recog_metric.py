@@ -3,7 +3,7 @@ import re
 from difflib import SequenceMatcher
 from typing import Dict, Optional, Sequence, Union
 
-import mmcv
+import mmengine
 from mmengine.evaluator import BaseMetric
 from rapidfuzz.distance import Levenshtein
 
@@ -45,7 +45,7 @@ class WordMetric(BaseMetric):
         self.valid_symbol = re.compile(valid_symbol)
         if isinstance(mode, str):
             mode = [mode]
-        assert mmcv.is_seq_of(mode, str)
+        assert mmengine.is_seq_of(mode, str)
         assert set(mode).issubset(
             {'exact', 'ignore_case', 'ignore_case_symbol'})
         self.mode = set(mode)

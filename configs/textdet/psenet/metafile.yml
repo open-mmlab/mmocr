@@ -15,9 +15,9 @@ Collections:
   README: configs/textdet/psenet/README.md
 
 Models:
-  - Name: psenet_r50_fpnf_600e_ctw1500
+  - Name: psenet_resnet50_fpnf_600e_ctw1500
     In Collection: PSENet
-    Config: configs/textdet/psenet/psenet_r50_fpnf_600e_ctw1500.py
+    Config: configs/textdet/psenet/psenet_resnet50_fpnf_600e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:
@@ -27,9 +27,9 @@ Models:
           hmean-iou: 0.784
     Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_ctw1500_20210401-216fed50.pth
 
-  - Name: psenet_r50_fpnf_600e_icdar2015
+  - Name: psenet_resnet50_fpnf_600e_icdar2015
     In Collection: PSENet
-    Config: configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py
+    Config: configs/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:
@@ -37,11 +37,11 @@ Models:
         Dataset: ICDAR2015
         Metrics:
           hmean-iou: 0.806
-    Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015-c6131f0d.pth
+    Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015-c6131f0d.pth
 
-  - Name: psenet_r50_fpnf_600e_icdar2015
+  - Name: psenet_resnet50_fpnf_600e_icdar2015
     In Collection: PSENet
-    Config: configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py
+    Config: configs/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015.py
     Metadata:
       Training Data: ICDAR2017 ICDAR2015
     Results:

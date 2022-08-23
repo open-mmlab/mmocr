@@ -36,9 +36,11 @@ class TestLoadImageFromFile(TestCase):
         self.assertEquals(results['img'].dtype, np.float32)
 
         # min_size
+        transform = LoadImageFromFile(min_size=26, ignore_empty=True)
+        self.assertIsNone(transform(copy.deepcopy(results)))
         transform = LoadImageFromFile(min_size=26)
-        results = transform(copy.deepcopy(results))
-        self.assertIsNone(results)
+        with self.assertRaises(IOError):
+            transform(copy.deepcopy(results))
 
         # test load empty
         fake_img_path = osp.join(data_prefix, 'fake.jpg')
@@ -197,11 +199,18 @@ class TestLoadImageFromLMDB(TestCase):
         self.results1 = {
             'img_path': f'tests/data/rec_toy_dataset/imgs.lmdb/{img_key}'
         }
+        self.broken_results = {
+            'img_path': f'tests/data/rec_toy_dataset/broken.lmdb/{img_key}'
+        }
 
         img_key = 'image-%09d' % 100
         self.results2 = {
             'img_path': f'tests/data/rec_toy_dataset/imgs.lmdb/{img_key}'
         }
+
+    def test_init(self):
+        with self.assertRaises(ValueError):
+            LoadImageFromLMDB(file_client_args=dict(backend='disk'))
 
     def test_transform(self):
         transform = LoadImageFromLMDB()
@@ -212,9 +221,18 @@ class TestLoadImageFromLMDB(TestCase):
         self.assertEqual(results['ori_shape'], results['img_shape'])
 
     def test_invalid_key(self):
+        # This test also tests its capability of implicitly switching between
+        # different backends (due to different lmdb path)
         transform = LoadImageFromLMDB()
+        with self.assertRaises(KeyError):
+            results = transform(copy.deepcopy(self.results2))
+        with self.assertRaises(IOError):
+            transform(copy.deepcopy(self.broken_results))
+        transform = LoadImageFromLMDB(ignore_empty=True)
         results = transform(copy.deepcopy(self.results2))
-        self.assertEqual(results, None)
+        self.assertIsNone(results)
+        results = transform(copy.deepcopy(self.broken_results))
+        self.assertIsNone(results)
 
     def test_to_float32(self):
         transform = LoadImageFromLMDB(to_float32=True)
@@ -227,8 +245,7 @@ class TestLoadImageFromLMDB(TestCase):
 
     def test_repr(self):
         transform = LoadImageFromLMDB()
-        assert repr(transform) == (
-            'LoadImageFromLMDB(ignore_empty=False, '
-            "to_float32=False, color_type='color', "
-            "imdecode_backend='cv2', "
-            "file_client_args={'backend': 'lmdb', 'db_path': ''})")
+        assert repr(transform) == ('LoadImageFromLMDB(ignore_empty=False, '
+                                   "to_float32=False, color_type='color', "
+                                   "imdecode_backend='cv2', "
+                                   'file_client_args={})')

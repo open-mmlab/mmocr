@@ -2,7 +2,7 @@
 import warnings
 from typing import Dict, Optional, Sequence, Tuple, Union
 
-import mmcv
+import mmengine
 import torch
 from mmengine.data import LabelData
 
@@ -48,7 +48,7 @@ class BaseTextRecogPostprocessor:
             'end': self.dictionary.end_idx,
             'unknown': self.dictionary.unknown_idx,
         }
-        if not mmcv.is_list_of(ignore_chars, str):
+        if not mmengine.is_list_of(ignore_chars, str):
             raise TypeError('ignore_chars must be list of str')
         ignore_indexes = list()
         for ignore_char in ignore_chars:

@@ -1,23 +1,17 @@
-data_root = 'data/det/synthtext'
+st_det_data_root = 'data/det/synthtext'
 
-train_anno_path = 'instances_training.json'
-test_anno_path = 'instances_test.json'
-
-train_dataset = dict(
+st_det_train = dict(
     type='OCRDataset',
-    data_root=data_root,
-    ann_file=train_anno_path,
+    data_root=st_det_data_root,
+    ann_file='instances_training.json',
     data_prefix=dict(img_path='imgs/'),
     filter_cfg=dict(filter_empty_gt=True, min_size=32),
     pipeline=None)
 
-test_dataset = dict(
+st_det_test = dict(
     type='OCRDataset',
-    data_root=data_root,
-    ann_file=test_anno_path,
+    data_root=st_det_data_root,
+    ann_file='instances_test.json',
     data_prefix=dict(img_path='imgs/'),
     test_mode=True,
     pipeline=None)
-
-train_list = [train_dataset]
-test_list = [test_dataset]

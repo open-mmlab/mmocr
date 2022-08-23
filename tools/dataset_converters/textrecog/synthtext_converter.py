@@ -4,6 +4,7 @@ import os
 from functools import partial
 
 import mmcv
+import mmengine
 import numpy as np
 from scipy.io import loadmat
 
@@ -80,7 +81,7 @@ def load_gt_data(filename, n_proc):
     txt = mat_data['txt']
     wordBB = mat_data['wordBB']
     charBB = mat_data['charBB']
-    return mmcv.track_parallel_progress(
+    return mmengine.track_parallel_progress(
         load_gt_datum, list(zip(imnames, txt, wordBB, charBB)), nproc=n_proc)
 
 
@@ -136,7 +137,8 @@ def main():
     process_with_outdir = partial(
         process, img_path_prefix=args.img_path, out_dir=args.out_dir)
     print('Creating cropped images and gold labels...')
-    mmcv.track_parallel_progress(process_with_outdir, data, nproc=args.n_proc)
+    mmengine.track_parallel_progress(
+        process_with_outdir, data, nproc=args.n_proc)
     print('Done')
 
 

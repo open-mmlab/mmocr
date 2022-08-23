@@ -3,6 +3,7 @@ import os.path as osp
 from typing import Sequence, Union
 
 import mmcv
+import mmengine
 from mmengine.hooks import Hook
 from mmengine.runner import Runner
 from mmengine.visualization import Visualizer
@@ -26,7 +27,7 @@ class VisualizationHook(Hook):
         wait_time (float): The interval of show in seconds. Defaults
             to 0.
         file_client_args (dict): Arguments to instantiate a FileClient.
-            See :class:`mmcv.fileio.FileClient` for details.
+            See :class:`mmengine.fileio.FileClient` for details.
             Defaults to ``dict(backend='disk')``.
     """
 
@@ -72,7 +73,7 @@ class VisualizationHook(Hook):
             return
 
         if self.file_client is None:
-            self.file_client = mmcv.FileClient(**self.file_client_args)
+            self.file_client = mmengine.FileClient(**self.file_client_args)
 
         # There is no guarantee that the same batch of images
         # is visualized for each evaluation.
@@ -113,7 +114,7 @@ class VisualizationHook(Hook):
             return
 
         if self.file_client is None:
-            self.file_client = mmcv.FileClient(**self.file_client_args)
+            self.file_client = mmengine.FileClient(**self.file_client_args)
 
         for output in outputs:
             img_path = output.img_path

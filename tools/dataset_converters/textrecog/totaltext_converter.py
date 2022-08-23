@@ -6,6 +6,7 @@ import os.path as osp
 import re
 
 import mmcv
+import mmengine
 import numpy as np
 import scipy.io as scio
 import yaml
@@ -64,10 +65,10 @@ def collect_annotations(files, nproc=1):
     assert isinstance(nproc, int)
 
     if nproc > 1:
-        images = mmcv.track_parallel_progress(
+        images = mmengine.track_parallel_progress(
             load_img_info, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info, files)
+        images = mmengine.track_progress(load_img_info, files)
 
     return images
 
@@ -375,7 +376,7 @@ def main():
 
     for split, ann_name in set_name.items():
         print(f'Converting {split} into {ann_name}')
-        with mmcv.Timer(
+        with mmengine.Timer(
                 print_tmpl='It takes {}s to convert totaltext annotation'):
             files = collect_files(
                 osp.join(img_dir, split), osp.join(gt_dir, split))

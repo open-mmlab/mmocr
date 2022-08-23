@@ -7,6 +7,7 @@ import warnings
 from functools import partial
 
 import mmcv
+import mmengine
 
 from mmocr.utils import list_to_file
 from mmocr.utils.img_utils import crop_img, warp_img
@@ -21,7 +22,7 @@ def parse_labelme_json(json_file,
                        warp_flag=False):
     invalid_res = [[], [], []]
 
-    json_obj = mmcv.load(json_file)
+    json_obj = mmengine.load(json_file)
 
     img_file = osp.basename(json_obj['imagePath'])
     img_full_path = osp.join(img_dir, img_file)
@@ -32,7 +33,7 @@ def parse_labelme_json(json_file,
         src_img = mmcv.imread(img_full_path)
         img_basename = osp.splitext(img_file)[0]
         sub_dir = osp.join(out_dir, 'crops', img_basename)
-        mmcv.mkdir_or_exist(sub_dir)
+        mmengine.mkdir_or_exist(sub_dir)
 
     det_line_json_list = []
     recog_crop_line_str_list = []
@@ -142,7 +143,7 @@ def process(json_dir,
             nproc=1,
             recog_format='jsonl',
             warp=False):
-    mmcv.mkdir_or_exist(out_dir)
+    mmengine.mkdir_or_exist(out_dir)
 
     json_file_list = glob.glob(osp.join(json_dir, '*.json'))
 
@@ -155,10 +156,10 @@ def process(json_dir,
         warp_flag=warp)
 
     if nproc <= 1:
-        total_results = mmcv.track_progress(parse_labelme_json_func,
-                                            json_file_list)
+        total_results = mmengine.track_progress(parse_labelme_json_func,
+                                                json_file_list)
     else:
-        total_results = mmcv.track_parallel_progress(
+        total_results = mmengine.track_parallel_progress(
             parse_labelme_json_func,
             json_file_list,
             keep_order=True,
@@ -173,7 +174,7 @@ def process(json_dir,
             total_recog_crop_line_str.extend(res[1])
             total_recog_warp_line_str.extend(res[2])
 
-    mmcv.mkdir_or_exist(out_dir)
+    mmengine.mkdir_or_exist(out_dir)
     det_out_file = osp.join(out_dir, 'instances_training.txt')
     list_to_file(det_out_file, total_det_line_json_list)
 

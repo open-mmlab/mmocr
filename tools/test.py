@@ -4,12 +4,12 @@ import os
 import os.path as osp
 
 from mmengine.config import Config, DictAction
+from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
 
 from mmocr.utils import register_all_modules
 
 
-# TODO: support fuse_conv_bn, visualization, and format_only
 def parse_args():
     parser = argparse.ArgumentParser(description='Test (and eval) a model')
     parser.add_argument('config', help='Test config file path')
@@ -21,6 +21,15 @@ def parse_args():
         '--save-preds',
         action='store_true',
         help='Dump predictions to a pickle file for offline evaluation')
+    parser.add_argument(
+        '--show', action='store_true', help='Show prediction results')
+    parser.add_argument(
+        '--show-dir',
+        help='Directory where painted images will be saved. '
+        'If specified, it will be automatically saved '
+        'to the work_dir/timestamp/show_dir')
+    parser.add_argument(
+        '--wait-time', type=float, default=2, help='The interval of show (s)')
     parser.add_argument(
         '--cfg-options',
         nargs='+',
@@ -41,6 +50,29 @@ def parse_args():
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
     return args
+
+
+def trigger_visualization_hook(cfg, args):
+    default_hooks = cfg.default_hooks
+    if 'visualization' in default_hooks:
+        visualization_hook = default_hooks['visualization']
+        # Turn on visualization
+        visualization_hook['enable'] = True
+        visualization_hook['draw_gt'] = True
+        visualization_hook['draw_pred'] = True
+        if args.show:
+            visualization_hook['show'] = True
+            visualization_hook['wait_time'] = args.wait_time
+        if args.show_dir:
+            cfg.visualizer['save_dir'] = args.show_dir
+            cfg.visualizer['vis_backends'] = [dict(type='LocalVisBackend')]
+    else:
+        raise RuntimeError(
+            'VisualizationHook must be included in default_hooks.'
+            'refer to usage '
+            '"visualization=dict(type=\'VisualizationHook\')"')
+
+    return cfg
 
 
 def main():
@@ -67,6 +99,14 @@ def main():
 
     cfg.load_from = args.checkpoint
 
+    # TODO: It will be supported after refactoring the visualizer
+    if args.show and args.show_dir:
+        raise NotImplementedError('--show and --show-dir cannot be set '
+                                  'at the same time')
+
+    if args.show or args.show_dir:
+        cfg = trigger_visualization_hook(cfg, args)
+
     # save predictions
     if args.save_preds:
         dump_metric = dict(
@@ -81,7 +121,13 @@ def main():
             cfg.test_evaluator = [cfg.test_evaluator, dump_metric]
 
     # build the runner from config
-    runner = Runner.from_cfg(cfg)
+    if 'runner_type' not in cfg:
+        # build the default runner
+        runner = Runner.from_cfg(cfg)
+    else:
+        # build customized runner from the registry
+        # if 'runner_type' is set in the cfg
+        runner = RUNNERS.build(cfg)
 
     # start testing
     runner.test()

@@ -17,9 +17,9 @@ Collections:
   README: configs/textrecog/satrn/README.md
 
 Models:
-  - Name: satrn_academic
+  - Name: satrn_shallow_5e_st_mj
     In Collection: SATRN
-    Config: configs/textrecog/satrn/satrn_academic.py
+    Config: configs/textrecog/satrn/satrn_shallow_5e_st_mj.py
     Metadata:
       Training Data:
         - SynthText
@@ -51,9 +51,9 @@ Models:
           word_acc: 90.6
     Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_academic_20211009-cb8b1580.pth
 
-  - Name: satrn_small
+  - Name: satrn_shallow-small_5e_st_mj
     In Collection: SATRN
-    Config: configs/textrecog/satrn/satrn_small.py
+    Config: configs/textrecog/satrn/satrn_shallow-small_5e_st_mj.py
     Metadata:
       Training Data:
         - SynthText

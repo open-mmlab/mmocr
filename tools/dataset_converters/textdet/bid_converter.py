@@ -4,6 +4,7 @@ import os
 import os.path as osp
 
 import mmcv
+import mmengine
 
 from mmocr.utils import dump_ocr_data
 
@@ -50,10 +51,10 @@ def collect_annotations(files, nproc=1):
     assert isinstance(nproc, int)
 
     if nproc > 1:
-        images = mmcv.track_parallel_progress(
+        images = mmengine.track_parallel_progress(
             load_img_info, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info, files)
+        images = mmengine.track_progress(load_img_info, files)
 
     return images
 
@@ -164,7 +165,7 @@ def parse_args():
 def main():
     args = parse_args()
     root_path = args.root_path
-    with mmcv.Timer(print_tmpl='It takes {}s to convert BID annotation'):
+    with mmengine.Timer(print_tmpl='It takes {}s to convert BID annotation'):
         files = collect_files(
             osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'))
         image_infos = collect_annotations(files, nproc=args.nproc)

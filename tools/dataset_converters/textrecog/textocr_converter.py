@@ -6,6 +6,7 @@ import os.path as osp
 from functools import partial
 
 import mmcv
+import mmengine
 
 from mmocr.utils import dump_ocr_data
 
@@ -67,7 +68,7 @@ def convert_textocr(root_path,
     dst_image_root = osp.join(root_path, dst_image_path)
     os.makedirs(dst_image_root, exist_ok=True)
 
-    annotation = mmcv.load(annotation_path)
+    annotation = mmengine.load(annotation_path)
 
     process_img_with_path = partial(
         process_img,
@@ -78,7 +79,7 @@ def convert_textocr(root_path,
         ann_ids = annotation['imgToAnns'][img_info['id']]
         anns = [annotation['anns'][ann_id] for ann_id in ann_ids]
         tasks.append((img_idx + img_start_idx, img_info, anns))
-    labels_list = mmcv.track_parallel_progress(
+    labels_list = mmengine.track_parallel_progress(
         process_img_with_path, tasks, keep_order=True, nproc=nproc)
     final_labels = []
     for label_list in labels_list:

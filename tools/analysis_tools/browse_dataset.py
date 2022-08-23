@@ -2,7 +2,7 @@
 import argparse
 import os.path as osp
 
-import mmcv
+import mmengine
 from mmengine import Config, DictAction
 
 from mmocr.registry import DATASETS, VISUALIZERS
@@ -50,7 +50,7 @@ def main():
     dataset = DATASETS.build(cfg.train_dataloader.dataset)
     visualizer = VISUALIZERS.build(cfg.visualizer)
 
-    progress_bar = mmcv.ProgressBar(len(dataset))
+    progress_bar = mmengine.ProgressBar(len(dataset))
     for item in dataset:
         img = item['inputs'].permute(1, 2, 0).numpy()
         data_sample = item['data_sample'].numpy()

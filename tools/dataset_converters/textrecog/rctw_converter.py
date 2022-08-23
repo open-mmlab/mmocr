@@ -5,6 +5,7 @@ import os
 import os.path as osp
 
 import mmcv
+import mmengine
 
 from mmocr.utils import crop_img, dump_ocr_data
 
@@ -63,10 +64,10 @@ def collect_annotations(files, nproc=1):
     assert isinstance(nproc, int)
 
     if nproc > 1:
-        images = mmcv.track_parallel_progress(
+        images = mmengine.track_parallel_progress(
             load_img_info, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info, files)
+        images = mmengine.track_progress(load_img_info, files)
 
     return images
 
@@ -156,8 +157,8 @@ def generate_ann(root_path, split, image_infos, preserve_vertical):
         dst_label_file = osp.join(root_path, f'train_label.{format}')
     elif split == 'val':
         dst_label_file = osp.join(root_path, f'val_label.{format}')
-    mmcv.mkdir_or_exist(dst_image_root)
-    mmcv.mkdir_or_exist(ignore_image_root)
+    mmengine.mkdir_or_exist(dst_image_root)
+    mmengine.mkdir_or_exist(ignore_image_root)
 
     img_info = []
     for image_info in image_infos:
@@ -220,14 +221,14 @@ def main():
         osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'), ratio)
 
     # Train set
-    with mmcv.Timer(
+    with mmengine.Timer(
             print_tmpl='It takes {}s to convert RCTW Training annotation'):
         trn_infos = collect_annotations(trn_files, nproc=args.nproc)
         generate_ann(root_path, 'training', trn_infos, args.preserve_vertical)
 
     # Val set
     if len(val_files) > 0:
-        with mmcv.Timer(
+        with mmengine.Timer(
                 print_tmpl='It takes {}s to convert RCTW Val annotation'):
             val_infos = collect_annotations(val_files, nproc=args.nproc)
             generate_ann(root_path, 'val', val_infos, args.preserve_vertical)
