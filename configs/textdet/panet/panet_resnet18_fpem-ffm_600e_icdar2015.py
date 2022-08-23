@@ -1,7 +1,7 @@
 _base_ = [
-    '../../_base_/det_datasets/icdar2015.py',
-    '../../_base_/textdet_default_runtime.py',
-    '../../_base_/schedules/schedule_adam_600e.py',
+    '../_base_/datasets/icdar2015.py',
+    '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_adam_600e.py',
     '_base_panet_resnet18_fpem-ffm.py',
 ]
 
@@ -27,3 +27,7 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=ic15_det_test)
 test_dataloader = val_dataloader
+
+val_evaluator = dict(
+    type='HmeanIOUMetric', pred_score_thrs=dict(start=0.3, stop=1, step=0.05))
+test_evaluator = val_evaluator

@@ -1,8 +1,8 @@
 _base_ = [
     '_base_dbnetpp_resnet50-dcnv2_fpnc.py',
-    '../../_base_/textdet_default_runtime.py',
-    '../../_base_/det_datasets/icdar2015.py',
-    '../../_base_/schedules/schedule_sgd_1200e.py',
+    '../_base_/default_runtime.py',
+    '../_base_/datasets/icdar2015.py',
+    '../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
 # dataset settings
