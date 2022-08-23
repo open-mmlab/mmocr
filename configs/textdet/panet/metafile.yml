@@ -16,7 +16,7 @@ Collections:
 Models:
   - Name: panet_resnet18_fpem-ffm_600e_ctw1500
     In Collection: PANet
-    Config: configs/textdet/panet/panet_resnet18_fpem_-ffm_600e_ctw1500.py
+    Config: configs/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:

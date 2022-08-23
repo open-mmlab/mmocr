@@ -78,9 +78,3 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=ctw_det_test)
 test_dataloader = val_dataloader
-
-val_evaluator = dict(
-    type='HmeanIOUMetric', pred_score_thrs=dict(start=0.3, stop=1, step=0.05))
-test_evaluator = val_evaluator
-
-visualizer = dict(type='TextDetLocalVisualizer', name='visualizer')

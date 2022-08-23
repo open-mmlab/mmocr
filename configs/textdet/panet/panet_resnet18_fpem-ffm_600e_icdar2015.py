@@ -2,7 +2,7 @@ _base_ = [
     '../../_base_/det_datasets/icdar2015.py',
     '../../_base_/textdet_default_runtime.py',
     '../../_base_/schedules/schedule_adam_600e.py',
-    '_base_panet_r18_fpem_ffm.py',
+    '_base_panet_resnet18_fpem-ffm.py',
 ]
 
 default_hooks = dict(checkpoint=dict(type='CheckpointHook', interval=20), )
@@ -27,9 +27,3 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=ic15_det_test)
 test_dataloader = val_dataloader
-
-val_evaluator = dict(
-    type='HmeanIOUMetric', pred_score_thrs=dict(start=0.3, stop=1, step=0.05))
-test_evaluator = val_evaluator
-
-visualizer = dict(type='TextDetLocalVisualizer', name='visualizer')
