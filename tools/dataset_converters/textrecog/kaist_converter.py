@@ -177,8 +177,8 @@ def generate_ann(root_path, split, image_infos, preserve_vertical):
         dst_label_file = osp.join(root_path, 'train_label.json')
     elif split == 'val':
         dst_label_file = osp.join(root_path, 'val_label.json')
-    mmcv.mkdir_or_exist(dst_image_root)
-    mmcv.mkdir_or_exist(ignore_image_root)
+    mmengine.mkdir_or_exist(dst_image_root)
+    mmengine.mkdir_or_exist(ignore_image_root)
 
     img_info = []
     for image_info in image_infos:
