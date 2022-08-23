@@ -1,8 +1,15 @@
 _base_ = [
     '_base_psenet_resnet50_fpnf.py',
-    '../../_base_/det_datasets/ctw1500.py',
-    '../../_base_/textdet_default_runtime.py',
-    '../../_base_/schedules/schedule_adam_step_600e.py',
+    '../_base_/datasets/ctw1500.py',
+    '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_adam_600e.py',
+]
+
+# optimizer
+optim_wrapper = dict(optimizer=dict(lr=1e-4))
+train_cfg = dict(val_interval=40)
+param_scheduler = [
+    dict(type='MultiStepLR', milestones=[200, 400], end=600),
 ]
 
 # dataset settings

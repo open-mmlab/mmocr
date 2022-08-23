@@ -1,8 +1,8 @@
 _base_ = [
     '_base_dbnet_resnet18_fpnc.py',
-    '../../_base_/det_datasets/synthtext.py',
-    '../../_base_/textdet_default_runtime.py',
-    '../../_base_/schedules/schedule_sgd_100k_iters.py',
+    '../_base_/datasets/synthtext.py',
+    '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_sgd_100k.py',
 ]
 
 # dataset settings

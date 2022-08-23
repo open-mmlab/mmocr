@@ -1,8 +1,8 @@
 _base_ = [
     '_base_textsnake_resnet50_fpn-unet.py',
-    '../../_base_/det_datasets/ctw1500.py',
-    '../../_base_/textdet_default_runtime.py',
-    '../../_base_/schedules/schedule_sgd_1200e.py',
+    '../_base_/datasets/ctw1500.py',
+    '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
 # dataset settings

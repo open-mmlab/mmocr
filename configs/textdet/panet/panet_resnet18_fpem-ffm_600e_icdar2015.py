@@ -1,7 +1,7 @@
 _base_ = [
-    '../../_base_/det_datasets/icdar2015.py',
-    '../../_base_/textdet_default_runtime.py',
-    '../../_base_/schedules/schedule_adam_600e.py',
+    '../_base_/datasets/icdar2015.py',
+    '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_adam_600e.py',
     '_base_panet_resnet18_fpem-ffm.py',
 ]
 

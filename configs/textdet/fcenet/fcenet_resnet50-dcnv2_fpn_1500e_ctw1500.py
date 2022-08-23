@@ -1,8 +1,7 @@
 _base_ = [
     '_base_fcenet_resnet50-dcnv2_fpn.py',
-    '../../_base_/det_datasets/ctw1500.py',
-    '../../_base_/textdet_default_runtime.py',
-    '../../_base_/schedules/schedule_sgd_1500e.py',
+    '../_base_/datasets/ctw1500.py',
+    '../_base_/default_runtime.py',
 ]
 
 file_client_args = dict(backend='disk')
