@@ -5,7 +5,7 @@ from typing import List, Sequence
 import cv2
 import numpy as np
 import torch
-from mmengine.data import InstanceData
+from mmengine.structures import InstanceData
 from numpy.linalg import norm
 from skimage.morphology import skeletonize
 

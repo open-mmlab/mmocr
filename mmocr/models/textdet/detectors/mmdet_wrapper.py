@@ -5,8 +5,8 @@ import cv2
 import torch
 from mmdet.structures import DetDataSample, OptSampleList
 from mmdet.structures.mask import bitmap_to_polygon
-from mmengine import InstanceData
 from mmengine.model import BaseModel
+from mmengine.structures import InstanceData
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample

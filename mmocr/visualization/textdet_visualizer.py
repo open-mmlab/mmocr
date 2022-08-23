@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import mmcv
 import numpy as np
-from mmengine import Visualizer
+from mmengine.visualization import Visualizer
 
 from mmocr.registry import VISUALIZERS
 from mmocr.structures import TextDetDataSample

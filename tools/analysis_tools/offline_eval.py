@@ -3,7 +3,7 @@ import argparse
 import json
 
 import mmengine
-from mmengine import Config, DictAction
+from mmengine.config import Config, DictAction
 from mmengine.evaluator import Evaluator
 
 from mmocr.registry import DATASETS

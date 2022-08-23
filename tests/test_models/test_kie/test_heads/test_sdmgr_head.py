@@ -4,7 +4,7 @@ import tempfile
 from unittest import TestCase
 
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 
 from mmocr.models.kie.heads import SDMGRHead
 from mmocr.models.textrecog.dictionary import Dictionary

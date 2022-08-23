@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Sequence
 
 import numpy as np
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 
 from mmocr.structures import TextDetDataSample
 

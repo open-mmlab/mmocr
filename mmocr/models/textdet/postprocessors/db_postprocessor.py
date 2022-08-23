@@ -4,7 +4,7 @@ from typing import Sequence
 import cv2
 import numpy as np
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 from shapely.geometry import Polygon
 from torch import Tensor
 

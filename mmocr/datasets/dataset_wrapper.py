@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Callable, List, Sequence, Union
 
-from mmengine import BaseDataset, Compose
-from mmengine import ConcatDataset as MMENGINE_CONCATDATASET
+from mmengine.dataset import BaseDataset, Compose
+from mmengine.dataset import ConcatDataset as MMENGINE_CONCATDATASET
 
 from mmocr.registry import DATASETS
 

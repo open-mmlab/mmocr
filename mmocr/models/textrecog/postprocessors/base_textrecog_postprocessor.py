@@ -4,7 +4,7 @@ from typing import Dict, Optional, Sequence, Tuple, Union
 
 import mmengine
 import torch
-from mmengine.data import LabelData
+from mmengine.structures import LabelData
 
 from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import TASK_UTILS
