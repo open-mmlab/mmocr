@@ -162,9 +162,7 @@ dict(
 
 2. `RandomRotateTextDet` &  `RandomRotatePolyInstances` -> `RandomRotate`
 
-`RandomRotateTextDet` 与 `RandomRotatePolyInstances` 被合并至 `RanomRotate`。
-
-`RandomRotate` 默认行为与 `RandomRotateTextDet` 保持一致。此时仅需指定最大旋转角度 `max_angle` 即可。
+随机旋转数据增强策略已被整合至 `RanomRotate`。该方法的默认行为与 0.x 版本中的 `RandomRotateTextDet` 保持一致。此时仅需指定最大旋转角度 `max_angle` 即可。
 
 ```{note}
   新旧版本 'max_angle' 的默认值不同，因此需要重新进行指定。
@@ -186,7 +184,6 @@ dict(type='RandomRotateTextDet')
 </td><td>
 
 ```python
-# 默认执行概率为 1
 dict(type='RandomRotate', max_angle=10)
 ```
 
@@ -194,7 +191,7 @@ dict(type='RandomRotate', max_angle=10)
 </thead>
 </table>
 
-对于 `RandomRotatePolyInstances`，则需在新版中设置 `use_canvas=True`。
+对于 `RandomRotatePolyInstances`，则需要指定参数 `use_canvas=True`。
 
 <table class="docutils">
 <thead>
