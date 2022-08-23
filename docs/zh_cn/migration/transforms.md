@@ -62,8 +62,7 @@ dict(
   <tr><td valign="top">
 
 ```python
-# keep_aspect_ratio=False 时，等价为
-# 1.x 版本中的 Resize
+# keep_aspect_ratio=False 时，等价为 1.x 版本中的 Resize
 dict(
     type='ResizeOCR',
     height=32,
@@ -85,8 +84,7 @@ dict(
 <tr><td>
 
 ```python
-# keep_aspect_ratio=True，且
-# max_width=None 时，将图片的
+# keep_aspect_ratio=True，且 max_width=None 时，将图片的
 # 高缩放至固定值，并等比例缩放图像的宽
 dict(
     type='ResizeOCR',
@@ -112,12 +110,9 @@ dict(
 <tr><td>
 
 ```python
-# keep_aspect_ratio=True，且
-# max_width 为固定值时，将图片的
-# 高缩放至固定值，并等比例缩放图像的宽。
-# 若缩放后的图像宽小于 max_width,
-# 则 padding 至 max_width, 反之
-# 则 crop 至 max_width。即，输出
+# keep_aspect_ratio=True，且 max_width 为固定值时，将图片的
+# 高缩放至固定值，并等比例缩放图像的宽。若缩放后的图像宽小于 max_width,
+# 则 padding 至 max_width, 反之则 crop 至 max_width。即，输出
 # 图像的尺寸固定为 (height, max_width)。
 dict(
     type='ResizeOCR',
