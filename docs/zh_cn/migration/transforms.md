@@ -12,7 +12,7 @@ MMOCR 0.x 版本中，我们在 `mmocr/datasets/pipelines/xxx_transforms.py` 中
 
 1. `Collect` + `CustomFormatBundle` -> `PackTextDetInputs/PackTextRecogInputs`
 
-   `PackxxxInputs` 同时囊括了 `Collect` 和 `CustomFormatBundle` 两个功能，且不再有 `key` 参数，训练目标 target 的生成被转移至在 `loss` 中完成。
+`PackxxxInputs` 同时囊括了 `Collect` 和 `CustomFormatBundle` 两个功能，且不再有 `key` 参数，训练目标 target 的生成被转移至在 `loss` 中完成。
 
 <table class="docutils">
 <thead>
@@ -50,7 +50,9 @@ dict(
 
 1. `ResizeOCR` -> `Resize`, `RescaleToHeight`, `PadToWidth`
 
-   原有的 `ResizeOCR` 现在被拆分为三个独立数据增强模块。
+原有的 `ResizeOCR` 现在被拆分为三个独立的数据增强模块。
+
+`keep_aspect_ratio=False` 时，等价为 1.x 版本中的 Resize，其配置可按如下方式修改。
 
 <table class="docutils">
 <thead>
@@ -58,85 +60,177 @@ dict(
     <th>MMOCR 0.x 旧版配置</th>
     <th>MMOCR 1.x 新版配置</th>
   </tr>
-  <tbody>
-  <tr><td valign="top">
+  <tbody><tr>
+  <td valign="top">
 
 ```python
-# keep_aspect_ratio=False 时，等价为 1.x 版本中的 Resize
 dict(
-    type='ResizeOCR',
-    height=32,
-    min_width=100,
-    max_width=100,
-    keep_aspect_ratio=False)
+  type='ResizeOCR',
+  height=32,
+  min_width=100,
+  max_width=100,
+  keep_aspect_ratio=False)
 ```
 
 </td><td>
 
 ```python
 dict(
-    type='Resize',
-    scale=(100, 32),
-    keep_ratio=False)
-```
-
-</td></tr>
-<tr><td>
-
-```python
-# keep_aspect_ratio=True，且 max_width=None 时，将图片的
-# 高缩放至固定值，并等比例缩放图像的宽
-dict(
-    type='ResizeOCR',
-    height=32,
-    min_width=32,
-    max_width=None,
-    width_downsample_ratio = 1.0 / 16
-    keep_aspect_ratio=True)
-```
-
-</td><td>
-
-```python
-dict(
-    type='RescaleToHeight',
-    height=32,
-    min_width=32,
-    max_width=None,
-    width_divisor=16),
-```
-
-</td></tr>
-<tr><td>
-
-```python
-# keep_aspect_ratio=True，且 max_width 为固定值时，将图片的
-# 高缩放至固定值，并等比例缩放图像的宽。若缩放后的图像宽小于 max_width,
-# 则 padding 至 max_width, 反之则 crop 至 max_width。即，输出
-# 图像的尺寸固定为 (height, max_width)。
-dict(
-    type='ResizeOCR',
-    height=32,
-    min_width=32,
-    max_width=100,
-    width_downsample_ratio = 1.0 / 16,
-    keep_aspect_ratio=True)
-```
-
-</td><td>
-
-```python
-dict(
-    type='RescaleToHeight',
-    height=32,
-    min_width=32,
-    max_width=100,
-    width_divisor=16),
-dict(
-    type='PadToWidth',
-    width=100)
+  type='Resize',
+  scale=(100, 32),
+  keep_ratio=False)
 ```
 
 </td></tr>
 </thead>
 </table>
+
+`keep_aspect_ratio=True`，且 `max_width=None` 时。将图片的高缩放至固定值，并等比例缩放图像的宽。
+
+<table class="docutils">
+<thead>
+  <tr>
+    <th>MMOCR 0.x 旧版配置</th>
+    <th>MMOCR 1.x 新版配置</th>
+  </tr>
+  <tbody><tr>
+  <td valign="top">
+
+```python
+dict(
+  type='ResizeOCR',
+  height=32,
+  min_width=32,
+  max_width=None,
+  width_downsample_ratio = 1.0 / 16
+  keep_aspect_ratio=True)
+```
+
+</td><td>
+
+```python
+dict(
+  type='RescaleToHeight',
+  height=32,
+  min_width=32,
+  max_width=None,
+  width_divisor=16),
+```
+
+</td></tr>
+</thead>
+</table>
+
+`keep_aspect_ratio=True`，且 `max_width` 为固定值时。将图片的高缩放至固定值，并等比例缩放图像的宽。若缩放后的图像宽小于 `max_width`, 则将其 `padding` 至 `max_width`, 反之则将其裁剪至 `max_width`。即，输出图像的尺寸固定为 `(height, max_width)`。
+
+<table class="docutils">
+<thead>
+  <tr>
+    <th>MMOCR 0.x 旧版配置</th>
+    <th>MMOCR 1.x 新版配置</th>
+  </tr>
+  <tbody><tr>
+  <td valign="top">
+
+```python
+dict(
+  type='ResizeOCR',
+  height=32,
+  min_width=32,
+  max_width=100,
+  width_downsample_ratio = 1.0 / 16,
+  keep_aspect_ratio=True)
+```
+
+</td><td>
+
+```python
+dict(
+  type='RescaleToHeight',
+  height=32,
+  min_width=32,
+  max_width=100,
+  width_divisor=16),
+dict(
+  type='PadToWidth',
+  width=100)
+```
+
+</td></tr>
+</thead>
+</table>
+
+2. `RandomRotateTextDet` &  `RandomRotatePolyInstances` -> `RandomRotate`
+
+`RandomRotateTextDet` 与 `RandomRotatePolyInstances` 被合并至 `RanomRotate`。
+
+`RandomRotate` 默认行为与 `RandomRotateTextDet` 保持一致。此时仅需指定最大旋转角度 `max_angle` 即可。
+
+```{note}
+  新旧版本 'max_angle' 的默认值不同，因此需要重新进行指定。
+```
+
+<table class="docutils">
+<thead>
+  <tr>
+    <th>MMOCR 0.x 旧版配置</th>
+    <th>MMOCR 1.x 新版配置</th>
+  </tr>
+  <tbody><tr>
+  <td valign="top">
+
+```python
+dict(type='RandomRotateTextDet')
+```
+
+</td><td>
+
+```python
+# 默认执行概率为 1
+dict(type='RandomRotate', max_angle=10)
+```
+
+</td></tr>
+</thead>
+</table>
+
+对于 `RandomRotatePolyInstances`，则需在新版中设置 `use_canvas=True`。
+
+<table class="docutils">
+<thead>
+  <tr>
+    <th>MMOCR 0.x 旧版配置</th>
+    <th>MMOCR 1.x 新版配置</th>
+  </tr>
+  <tbody><tr>
+  <td valign="top">
+
+```python
+dict(
+  type='RandomRotatePolyInstances',
+  rotate_ratio=0.5,
+  max_angle=60,
+  pad_with_fixed_color=False)
+```
+
+</td><td>
+
+```python
+# 用 RandomApply 对数据变换进行包装，并指定执行概率
+dict(
+  type='RandomApply',
+  transforms=[
+    dict(type='RandomRotate',
+    max_angle=60,
+    pad_with_fixed_color=False,
+    use_canvas=True)],
+  prob=0.5) # 设置执行概率为 0.5
+```
+
+</td></tr>
+</thead>
+</table>
+
+```{note}
+在 0.x 版本中，部分数据变化通过定义一个内部变量来指定执行概率，如 'rotate_ratio' 等。在 1.x 版本中，这些参数已被统一删除。现在，我们可以通过 'RandomApply' 来对不同的数据变换方法进行包装，并指定其执行概率。
+```
