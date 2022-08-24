@@ -2,7 +2,7 @@ _base_ = [
     '_base_master_resnet31.py',
     '../_base_/datasets/toy_data.py',
     '../_base_/default_runtime.py',
-    '../_base_/schedules/schedule_adam_step_5e.py',
+    '../_base_/schedules/schedule_adam_base.py',
 ]
 
 optim_wrapper = dict(optimizer=dict(lr=4e-4))

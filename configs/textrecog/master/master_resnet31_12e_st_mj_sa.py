@@ -9,7 +9,7 @@ _base_ = [
     '../_base_/datasets/icdar2013.py',
     '../_base_/datasets/icdar2015.py',
     '../_base_/default_runtime.py',
-    '../_base_/schedules/schedule_adam_step_5e.py',
+    '../_base_/schedules/schedule_adam_base.py',
     '_base_master_resnet31.py',
 ]
 
