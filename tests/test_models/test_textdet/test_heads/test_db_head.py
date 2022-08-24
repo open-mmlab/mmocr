@@ -31,27 +31,15 @@ class TestDBHead(TestCase):
 
     def test_forward(self):
         data = torch.randn((2, 10, 40, 50))
-        results = self.db_head(data, None)
-        self.assertEqual(results[0].shape, (2, 160, 200))
-        self.assertEqual(results[1].shape, (2, 160, 200))
-        self.assertEqual(results[2].shape, (2, 160, 200))
 
-    def test_loss(self):
-        data = torch.randn((2, 10, 40, 50))
-        results = self.db_head.loss(data, None)
+        results = self.db_head(data, None, 'loss')
         for i in range(3):
             self.assertEqual(results[i].shape, (2, 160, 200))
 
-    def test_predict(self):
-        data = torch.randn((2, 10, 40, 50))
-        results = self.db_head.predict(data, None)
+        results = self.db_head(data, None, 'predict')
         self.assertEqual(results.shape, (2, 160, 200))
 
-    def test_loss_and_predict(self):
-        data = torch.randn((2, 10, 40, 50))
-        loss_results, pred_results = self.db_head.loss_and_predict(data, None)
-        for i in range(3):
-            self.assertEqual(loss_results[i].shape, (2, 160, 200))
-        self.assertEqual(pred_results.shape, (2, 160, 200))
-        self.assertTrue(
-            torch.allclose(pred_results, loss_results[0].sigmoid()))
+        results = self.db_head(data, None, 'both')
+        for i in range(4):
+            self.assertEqual(results[i].shape, (2, 160, 200))
+        self.assertTrue(torch.allclose(results[3], results[0].sigmoid()))
