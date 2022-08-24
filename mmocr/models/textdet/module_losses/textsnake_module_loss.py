@@ -8,15 +8,16 @@ from mmcv.image import impad, imrescale
 from mmdet.models.utils import multi_apply
 from numpy import ndarray
 from numpy.linalg import norm
-from torch import Tensor, nn
+from torch import Tensor
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
+from .base import BaseTextDetModuleLoss
 from .text_kernel_mixin import TextKernelMixin
 
 
 @MODELS.register_module()
-class TextSnakeModuleLoss(nn.Module, TextKernelMixin):
+class TextSnakeModuleLoss(BaseTextDetModuleLoss, TextKernelMixin):
     """The class for implementing TextSnake loss. This is partially adapted
     from https://github.com/princewang1994/TextSnake.pytorch.
 

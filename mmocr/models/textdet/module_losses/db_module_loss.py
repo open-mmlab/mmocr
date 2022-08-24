@@ -6,17 +6,18 @@ import numpy as np
 import torch
 from mmdet.models.utils import multi_apply
 from shapely.geometry import Polygon
-from torch import Tensor, nn
+from torch import Tensor
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from mmocr.utils import offset_polygon
 from mmocr.utils.typing import ArrayLike
+from .base import BaseTextDetModuleLoss
 from .text_kernel_mixin import TextKernelMixin
 
 
 @MODELS.register_module()
-class DBModuleLoss(nn.Module, TextKernelMixin):
+class DBModuleLoss(BaseTextDetModuleLoss, TextKernelMixin):
     r"""The class for implementing DBNet loss.
 
     This is partially adapted from https://github.com/MhLiao/DB.
