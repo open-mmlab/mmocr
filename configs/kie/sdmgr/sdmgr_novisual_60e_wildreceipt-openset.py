@@ -5,14 +5,15 @@ _base_ = [
     '_base_sdmgr_novisual.py',
 ]
 
-num_classes = 4
+node_num_classes = 4  # 4 classes: bg, key, value and other
+edge_num_classes = 2  # edge connectivity
 key_node_idx = 1
 value_node_idx = 2
 
 model = dict(
     type='SDMGR',
     kie_head=dict(
-        num_classes=num_classes,
+        num_classes=node_num_classes,
         postprocessor=dict(
             link_type='one-to-many',
             key_node_idx=key_node_idx,
@@ -53,7 +54,7 @@ val_evaluator = [
         prefix='node',
         key='labels',
         mode=['micro', 'macro'],
-        num_classes=num_classes,
+        num_classes=node_num_classes,
         cared_classes=[key_node_idx, value_node_idx]),
     dict(
         type='F1Metric',
@@ -61,6 +62,6 @@ val_evaluator = [
         mode='micro',
         key='edge_labels',
         cared_classes=[1],  # Collapse to binary F1 score
-        num_classes=2)
+        num_classes=edge_num_classes)
 ]
 test_evaluator = val_evaluator
