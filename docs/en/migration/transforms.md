@@ -27,7 +27,7 @@ Since some of the modules were renamed, merged or separated during the refactori
 dict(
     type='CustomFormatBundle',
     keys=['gt_shrink', 'gt_shrink_mask', 'gt_thr', 'gt_thr_mask'],
-    meta_keys=['img_path', 'ori_shape', 'img_shape', 'scale_factor', 'flip', 'flip_direction'],
+    meta_keys=['img_path', 'ori_shape', 'img_shape'],
     visualize=dict(flag=False, boundary_key='gt_shrink')),
 dict(
     type='Collect',
@@ -39,7 +39,7 @@ dict(
 ```python
 dict(
   type='PackTextDetInputs',
-  meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor', 'flip', 'flip_direction'))
+  meta_keys=('img_path', 'ori_shape', 'img_shape'))
 ```
 
 </td></tr>
