@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .abinet import ABINet
-from .base_recognizer import BaseRecognizer
+from .base import BaseRecognizer
 from .crnn import CRNN
 from .encoder_decoder_recognizer import EncoderDecoderRecognizer
 from .master import MASTER
