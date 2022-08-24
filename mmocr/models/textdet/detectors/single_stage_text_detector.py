@@ -2,14 +2,14 @@
 from typing import Dict, Optional, Sequence
 
 import torch
-from mmdet.models.detectors.base import BaseDetector as MMDET_BaseDetector
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
+from .base import BaseTextDetector
 
 
 @MODELS.register_module()
-class SingleStageTextDetector(MMDET_BaseDetector):
+class SingleStageTextDetector(BaseTextDetector):
     """The class for implementing single stage text detector.
 
     Single-stage text detectors directly and densely predict bounding boxes or

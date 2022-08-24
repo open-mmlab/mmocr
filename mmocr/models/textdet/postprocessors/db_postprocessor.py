@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Sequence, Tuple
+from typing import Sequence
 
 import cv2
 import numpy as np
@@ -59,14 +59,14 @@ class DBPostprocessor(BaseTextDetPostProcessor):
         self.epsilon_ratio = epsilon_ratio
         self.max_candidates = max_candidates
 
-    def get_text_instances(self, pred_results: Tuple[Tensor, Tensor, Tensor],
+    def get_text_instances(self, prob_map: Tensor,
                            data_sample: TextDetDataSample
                            ) -> TextDetDataSample:
         """Get text instance predictions of one image.
 
         Args:
-            pred_result (tuple(Tensor)): A tuple of 3 tensors where the first
-                tensor is ``prob_map`` of shape :math:`(N, H, W)`.
+            pred_result (Tensor): DBNet's output ``prob_map`` of shape
+                :math:`(H, W)`.
             data_sample (TextDetDataSample): Datasample of an image.
 
         Returns:
@@ -80,7 +80,6 @@ class DBPostprocessor(BaseTextDetPostProcessor):
         data_sample.pred_instances.polygons = []
         data_sample.pred_instances.scores = []
 
-        prob_map = pred_results[0]
         text_mask = prob_map > self.mask_thr
 
         score_map = prob_map.data.cpu().numpy().astype(np.float32)

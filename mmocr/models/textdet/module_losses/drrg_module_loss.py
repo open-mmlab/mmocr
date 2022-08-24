@@ -56,10 +56,10 @@ class DRRGModuleLoss(TextSnakeModuleLoss):
         jitter_level (float): The jitter level of text component geometric
             features. Defaults to 0.2.
         loss_text (dict): The loss config used to calculate the text loss.
-            Defaults to ``dict(
-            type='Normal', override=dict(name='out_conv'), mean=0, std=0.01)``.
+            Defaults to ``dict(type='MaskedBalancedBCEWithLogitsLoss',
+            fallback_negative_num=100, eps=1e-5)``.
         loss_center (dict): The loss config used to calculate the center loss.
-            Defaults to ``dict(type='MaskedBCELoss')``.
+            Defaults to ``dict(type='MaskedBCEWithLogitsLoss')``.
         loss_top (dict): The loss config used to calculate the top loss, which
             is a part of the height loss. Defaults to
             ``dict(type='SmoothL1Loss', reduction='none')``.
@@ -92,8 +92,10 @@ class DRRGModuleLoss(TextSnakeModuleLoss):
         max_rand_half_height: float = 24.0,
         jitter_level: float = 0.2,
         loss_text: Dict = dict(
-            type='MaskedBalancedBCELoss', fallback_negative_num=100, eps=1e-5),
-        loss_center: Dict = dict(type='MaskedBCELoss'),
+            type='MaskedBalancedBCEWithLogitsLoss',
+            fallback_negative_num=100,
+            eps=1e-5),
+        loss_center: Dict = dict(type='MaskedBCEWithLogitsLoss'),
         loss_top: Dict = dict(type='SmoothL1Loss', reduction='none'),
         loss_btm: Dict = dict(type='SmoothL1Loss', reduction='none'),
         loss_sin: Dict = dict(type='MaskedSmoothL1Loss'),
@@ -185,16 +187,16 @@ class DRRGModuleLoss(TextSnakeModuleLoss):
         pred_sin_map = pred_sin_map * scale
         pred_cos_map = pred_cos_map * scale
 
-        loss_text = self.loss_text(pred_text_region.sigmoid(),
-                                   gt['gt_text_masks'], gt['gt_masks'])
+        loss_text = self.loss_text(pred_text_region, gt['gt_text_masks'],
+                                   gt['gt_masks'])
 
         text_mask = (gt['gt_text_masks'] * gt['gt_masks']).float()
         negative_text_mask = ((1 - gt['gt_text_masks']) *
                               gt['gt_masks']).float()
-        loss_center_positive = self.loss_center(pred_center_region.sigmoid(),
+        loss_center_positive = self.loss_center(pred_center_region,
                                                 gt['gt_center_region_masks'],
                                                 text_mask)
-        loss_center_negative = self.loss_center(pred_center_region.sigmoid(),
+        loss_center_negative = self.loss_center(pred_center_region,
                                                 gt['gt_center_region_masks'],
                                                 negative_text_mask)
         loss_center = loss_center_positive + 0.5 * loss_center_negative

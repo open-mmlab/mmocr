@@ -14,9 +14,9 @@ Collections:
   README: configs/textdet/panet/README.md
 
 Models:
-  - Name: panet_r18_fpem_ffm_600e_ctw1500
+  - Name: panet_resnet18_fpem-ffm_600e_ctw1500
     In Collection: PANet
-    Config: configs/textdet/panet/panet_r18_fpem_ffm_600e_ctw1500.py
+    Config: configs/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:
@@ -26,9 +26,9 @@ Models:
           hmean-iou: 0.806
     Weights: https://download.openmmlab.com/mmocr/textdet/panet/panet_r18_fpem_ffm_sbn_600e_ctw1500_20210219-3b3a9aa3.pth
 
-  - Name: panet_r18_fpem_ffm_600e_icdar2015
+  - Name: panet_resnet18_fpem-ffm_600e_icdar2015
     In Collection: PANet
-    Config: configs/textdet/panet/panet_r18_fpem_ffm_600e_icdar2015.py
+    Config: configs/textdet/panet/panet_resnet18_fpem-ffm_600e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:
