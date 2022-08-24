@@ -40,7 +40,7 @@ class ToyMetric(BaseMetric):
 
     def process(self, data_batch, predictions):
         results = [{
-            'pred': prediction['label'],
+            'pred': prediction['pred'],
             'label': prediction['label']
         } for prediction in predictions]
         self.results.extend(results)
