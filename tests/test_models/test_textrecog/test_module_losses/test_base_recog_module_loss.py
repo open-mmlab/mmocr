@@ -7,7 +7,7 @@ import numpy as np
 import torch
 from mmengine.data import LabelData
 
-from mmocr.models.textrecog.dictionary import Dictionary
+from mmocr.models.common.dictionary import Dictionary
 from mmocr.models.textrecog.module_losses import BaseRecogModuleLoss
 from mmocr.structures import TextRecogDataSample
 from mmocr.testing import create_dummy_dict_file
