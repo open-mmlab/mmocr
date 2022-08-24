@@ -7,7 +7,7 @@ import torch.nn as nn
 from mmengine.model import ModuleList
 
 from mmocr.models.common import PositionalEncoding, TFDecoderLayer
-from mmocr.models.textrecog.dictionary import Dictionary
+from mmocr.models.common.dictionary import Dictionary
 from mmocr.registry import MODELS
 from mmocr.structures import TextRecogDataSample
 from .base_decoder import BaseDecoder
