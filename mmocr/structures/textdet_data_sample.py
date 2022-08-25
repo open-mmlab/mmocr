@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmengine.data import BaseDataElement, InstanceData
+from mmengine.structures import BaseDataElement, InstanceData
 
 
 class TextDetDataSample(BaseDataElement):
@@ -14,7 +14,7 @@ class TextDetDataSample(BaseDataElement):
     Examples:
          >>> import torch
          >>> import numpy as np
-         >>> from mmengine.data import InstanceData
+         >>> from mmengine.structures import InstanceData
          >>> from mmocr.data import TextDetDataSample
          >>> # gt_instances
          >>> data_sample = TextDetDataSample()

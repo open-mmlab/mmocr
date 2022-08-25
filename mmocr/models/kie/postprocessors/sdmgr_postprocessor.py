@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 from torch import Tensor, nn
 
 from mmocr.registry import MODELS
@@ -52,8 +52,7 @@ class SDMGRPostProcessor:
         self.softmax = nn.Softmax(dim=-1)
 
     def __call__(self, preds: Tuple[Tensor, Tensor],
-                 batch_data_samples: List[KIEDataSample]
-                 ) -> List[KIEDataSample]:
+                 data_samples: List[KIEDataSample]) -> List[KIEDataSample]:
         """Postprocess raw outputs from SDMGR heads and pack the results into a
         list of KIEDataSample.
 
@@ -83,7 +82,7 @@ class SDMGRPostProcessor:
         all_edge_scores = self.softmax(edge_preds)
         chunk_size = [
             data_sample.gt_instances.bboxes.shape[0]
-            for data_sample in batch_data_samples
+            for data_sample in data_samples
         ]
         node_scores, node_preds = torch.max(all_node_scores, dim=-1)
         edge_scores, edge_preds = torch.max(all_edge_scores, dim=-1)
@@ -97,17 +96,17 @@ class SDMGRPostProcessor:
             edge_preds[i] = edge_preds[i].reshape((chunk, chunk))
             edge_scores[i] = edge_scores[i].reshape((chunk, chunk))
 
-        for i in range(len(batch_data_samples)):
-            batch_data_samples[i].pred_instances = InstanceData()
-            batch_data_samples[i].pred_instances.labels = node_preds[i]
-            batch_data_samples[i].pred_instances.scores = node_scores[i]
+        for i in range(len(data_samples)):
+            data_samples[i].pred_instances = InstanceData()
+            data_samples[i].pred_instances.labels = node_preds[i]
+            data_samples[i].pred_instances.scores = node_scores[i]
             if self.link_type != 'none':
                 edge_scores[i], edge_preds[i] = self.decode_edges(
                     node_preds[i], edge_scores[i], edge_preds[i])
-            batch_data_samples[i].pred_instances.edge_labels = edge_preds[i]
-            batch_data_samples[i].pred_instances.edge_scores = edge_scores[i]
+            data_samples[i].pred_instances.edge_labels = edge_preds[i]
+            data_samples[i].pred_instances.edge_scores = edge_scores[i]
 
-        return batch_data_samples
+        return data_samples
 
     def decode_edges(self, node_labels: Tensor, edge_scores: Tensor,
                      edge_labels: Tensor) -> Tuple[Tensor, Tensor]:

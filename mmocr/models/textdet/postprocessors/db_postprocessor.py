@@ -4,14 +4,14 @@ from typing import Sequence
 import cv2
 import numpy as np
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 from shapely.geometry import Polygon
 from torch import Tensor
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from mmocr.utils import offset_polygon
-from .base_postprocessor import BaseTextDetPostProcessor
+from .base import BaseTextDetPostProcessor
 
 
 @MODELS.register_module()

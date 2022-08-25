@@ -52,8 +52,8 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         pass
 
     def forward(self,
-                batch_inputs: torch.Tensor,
-                batch_data_samples: OptRecSampleList = None,
+                inputs: torch.Tensor,
+                data_samples: OptRecSampleList = None,
                 mode: str = 'tensor',
                 **kwargs) -> RecForwardResults:
         """The unified entry for a forward process in both training and test.
@@ -71,9 +71,9 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
         optimizer updating, which are done in the :meth:`train_step`.
 
         Args:
-            batch_inputs (torch.Tensor): The input tensor with shape
+            inputs (torch.Tensor): The input tensor with shape
                 (N, C, ...) in general.
-            batch_data_samples (list[:obj:`DetDataSample`], optional): The
+            data_samples (list[:obj:`DetDataSample`], optional): The
                 annotation data of every samples. Defaults to None.
             mode (str): Return what kind of value. Defaults to 'tensor'.
 
@@ -85,33 +85,32 @@ class BaseRecognizer(BaseModel, metaclass=ABCMeta):
             - If ``mode="loss"``, return a dict of tensor.
         """
         if mode == 'loss':
-            return self.loss(batch_inputs, batch_data_samples, **kwargs)
+            return self.loss(inputs, data_samples, **kwargs)
         elif mode == 'predict':
-            return self.predict(batch_inputs, batch_data_samples, **kwargs)
+            return self.predict(inputs, data_samples, **kwargs)
         elif mode == 'tensor':
-            return self._forward(batch_inputs, batch_data_samples, **kwargs)
+            return self._forward(inputs, data_samples, **kwargs)
         else:
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')
 
     @abstractmethod
-    def loss(self, batch_inputs: torch.Tensor,
-             batch_data_samples: RecSampleList,
+    def loss(self, inputs: torch.Tensor, data_samples: RecSampleList,
              **kwargs) -> Union[dict, tuple]:
         """Calculate losses from a batch of inputs and data samples."""
         pass
 
     @abstractmethod
-    def predict(self, batch_inputs: torch.Tensor,
-                batch_data_samples: RecSampleList, **kwargs) -> RecSampleList:
+    def predict(self, inputs: torch.Tensor, data_samples: RecSampleList,
+                **kwargs) -> RecSampleList:
         """Predict results from a batch of inputs and data samples with post-
         processing."""
         pass
 
     @abstractmethod
     def _forward(self,
-                 batch_inputs: torch.Tensor,
-                 batch_data_samples: OptRecSampleList = None,
+                 inputs: torch.Tensor,
+                 data_samples: OptRecSampleList = None,
                  **kwargs):
         """Network forward process.
 

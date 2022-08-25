@@ -4,7 +4,7 @@ import unittest
 
 import numpy as np
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 from parameterized import parameterized
 
 from mmocr.models.textdet.postprocessors import TextSnakePostprocessor

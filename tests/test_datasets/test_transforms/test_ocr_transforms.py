@@ -200,9 +200,3 @@ class TestResize(unittest.TestCase):
         resize = Resize(scale=(40, 30))
         result = resize(dummy_result)
         self.assertEqual(result['gt_bboxes'].dtype, np.float32)
-
-
-if __name__ == '__main__':
-    t = TestRandomCrop()
-    t.test_sample_crop_box()
-    t.test_transform()

@@ -5,7 +5,7 @@ import torch
 from mmdet.structures import DetDataSample
 from mmdet.testing import demo_mm_inputs
 from mmengine.config import Config
-from mmengine.data import InstanceData
+from mmengine.structures import InstanceData
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
@@ -262,9 +262,3 @@ class TestMMDetWrapper(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertIsInstance(results[0], TextDetDataSample)
         self.assertTrue('polygons' in results[0].pred_instances.keys())
-
-
-if __name__ == '__main__':
-    test = TestMMDetWrapper()
-    test.setUp()
-    test.test_mask_two_stage_wrapper()

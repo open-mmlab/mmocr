@@ -1,8 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from numbers import Number
-from typing import List, Optional, Sequence, Tuple, Union
+from typing import Dict, List, Optional, Sequence, Union
 
-import torch
 import torch.nn as nn
 from mmengine.model import ImgDataPreprocessor
 
@@ -59,7 +58,7 @@ class TextDetDataPreprocessor(ImgDataPreprocessor):
                  pad_value: Union[float, int] = 0,
                  bgr_to_rgb: bool = False,
                  rgb_to_bgr: bool = False,
-                 batch_augments: Optional[List[dict]] = None):
+                 batch_augments: Optional[List[Dict]] = None) -> None:
         super().__init__(
             mean=mean,
             std=std,
@@ -73,32 +72,28 @@ class TextDetDataPreprocessor(ImgDataPreprocessor):
         else:
             self.batch_augments = None
 
-    def forward(self,
-                data: Sequence[dict],
-                training: bool = False) -> Tuple[torch.Tensor, Optional[list]]:
+    def forward(self, data: Dict, training: bool = False) -> Dict:
         """Perform normalization、padding and bgr2rgb conversion based on
         ``BaseDataPreprocessor``.
 
         Args:
-            data (Sequence[dict]): data sampled from dataloader.
+            data (dict): data sampled from dataloader.
             training (bool): Whether to enable training time augmentation.
 
         Returns:
-            Tuple[torch.Tensor, Optional[list]]: Data in the same format as the
-            model input.
+            dict: Data in the same format as the model input.
         """
-        batch_inputs, batch_data_samples = super().forward(
-            data=data, training=training)
+        data = super().forward(data=data, training=training)
+        inputs, data_samples = data['inputs'], data['data_samples']
 
-        if batch_data_samples is not None:
-            batch_input_shape = tuple(batch_inputs[0].size()[-2:])
-            for data_samples in batch_data_samples:
-                data_samples.set_metainfo(
+        if data_samples is not None:
+            batch_input_shape = tuple(inputs[0].size()[-2:])
+            for data_sample in data_samples:
+                data_sample.set_metainfo(
                     {'batch_input_shape': batch_input_shape})
 
         if training and self.batch_augments is not None:
             for batch_aug in self.batch_augments:
-                batch_inputs, batch_data_samples = batch_aug(
-                    batch_inputs, batch_data_samples)
+                inputs, data_samples = batch_aug(inputs, data_samples)
 
-        return batch_inputs, batch_data_samples
+        return data

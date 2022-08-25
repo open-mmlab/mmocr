@@ -261,15 +261,13 @@ class DRRGHead(BaseTextDetHead):
             self.in_channels + self.out_channels) + self.node_geo_feat_len
         self.gcn = GCN(node_feat_len)
 
-    def loss(
-        self, batch_inputs: torch.Tensor,
-        batch_data_samples: List[TextDetDataSample]
-    ) -> Tuple[Tensor, Tensor, Tensor]:
+    def loss(self, inputs: torch.Tensor, data_samples: List[TextDetDataSample]
+             ) -> Tuple[Tensor, Tensor, Tensor]:
         """Loss function.
 
         Args:
-            batch_inputs (Tensor): Shape of :math:`(N, C, H, W)`.
-            batch_data_samples (List[TextDetDataSample]): List of data samples.
+            inputs (Tensor): Shape of :math:`(N, C, H, W)`.
+            data_samples (List[TextDetDataSample]): List of data samples.
 
         Returns:
             tuple(pred_maps, gcn_pred, gt_labels):
@@ -281,27 +279,26 @@ class DRRGHead(BaseTextDetHead):
             - gt_labels (Tensor): Ground-truth label of shape
                 :math:`(m, n)` where :math:`m * n = N`.
         """
-        targets = self.module_loss.get_targets(batch_data_samples)
+        targets = self.module_loss.get_targets(data_samples)
         gt_comp_attribs = targets[-1]
 
-        pred_maps = self.out_conv(batch_inputs)
-        feat_maps = torch.cat([batch_inputs, pred_maps], dim=1)
+        pred_maps = self.out_conv(inputs)
+        feat_maps = torch.cat([inputs, pred_maps], dim=1)
         node_feats, adjacent_matrices, knn_inds, gt_labels = self.graph_train(
             feat_maps, np.stack(gt_comp_attribs))
 
         gcn_pred = self.gcn(node_feats, adjacent_matrices, knn_inds)
 
-        return self.module_loss((pred_maps, gcn_pred, gt_labels),
-                                batch_data_samples)
+        return self.module_loss((pred_maps, gcn_pred, gt_labels), data_samples)
 
     def forward(
         self,
-        batch_inputs: Tensor,
+        inputs: Tensor,
         data_samples: Optional[List[TextDetDataSample]] = None
     ) -> Tuple[Tensor, Tensor, Tensor]:
         r"""Run DRRG head in prediction mode, and return the raw tensors only.
         Args:
-            batch_inputs (Tensor): Shape of :math:`(1, C, H, W)`.
+            inputs (Tensor): Shape of :math:`(1, C, H, W)`.
             data_samples (list[TextDetDataSample], optional): A list of data
                 samples. Defaults to None.
 
@@ -317,10 +314,10 @@ class DRRGHead(BaseTextDetHead):
               :math:`(M, 9)` where each row corresponds to one box and
               its score: (x1, y1, x2, y2, x3, y3, x4, y4, score).
         """
-        pred_maps = self.out_conv(batch_inputs)
-        batch_inputs = torch.cat([batch_inputs, pred_maps], dim=1)
+        pred_maps = self.out_conv(inputs)
+        inputs = torch.cat([inputs, pred_maps], dim=1)
 
-        none_flag, graph_data = self.graph_test(pred_maps, batch_inputs)
+        none_flag, graph_data = self.graph_test(pred_maps, inputs)
 
         (local_graphs_node_feat, adjacent_matrices, pivots_knn_inds,
          pivot_local_graphs, text_comps) = graph_data

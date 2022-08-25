@@ -3,7 +3,7 @@ import argparse
 import os.path as osp
 
 import mmengine
-from mmengine import Config, DictAction
+from mmengine.config import Config, DictAction
 
 from mmocr.registry import DATASETS, VISUALIZERS
 from mmocr.utils import register_all_modules
