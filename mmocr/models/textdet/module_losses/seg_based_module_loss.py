@@ -9,10 +9,12 @@ from mmengine.logging import MMLogger
 from shapely.geometry import Polygon
 
 from mmocr.utils.polygon_utils import offset_polygon
+from .base import BaseTextDetModuleLoss
 
 
-class TextKernelMixin:
-    """Mixin class for text detection models that use text instance kernels."""
+class SegBasedModuleLoss(BaseTextDetModuleLoss):
+    """Base class for the module loss of segmentation-based text detection
+    algorithms with some handy utilities."""
 
     def _generate_kernels(
         self,

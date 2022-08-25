@@ -10,11 +10,11 @@ from torch import nn
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
-from .text_kernel_mixin import TextKernelMixin
+from .seg_based_module_loss import SegBasedModuleLoss
 
 
 @MODELS.register_module()
-class PANModuleLoss(nn.Module, TextKernelMixin):
+class PANModuleLoss(SegBasedModuleLoss):
     """The class for implementing PANet loss. This was partially adapted from
     https://github.com/whai362/pan_pp.pytorch and
     https://github.com/WenmuZhou/PAN.pytorch.
