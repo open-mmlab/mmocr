@@ -40,3 +40,5 @@ val_dataloader = dict(
     dataset=ic15_det_test)
 
 test_dataloader = val_dataloader
+
+auto_scale_lr = dict(base_batch_size=64 * 4)

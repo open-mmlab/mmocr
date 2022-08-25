@@ -68,3 +68,4 @@ test_evaluator = val_evaluator
 
 visualizer = dict(
     type='KIELocalVisualizer', name='visualizer', is_openset=True)
+auto_scale_lr = dict(base_batch_size=4)
