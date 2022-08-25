@@ -6,9 +6,10 @@ from mmocr.registry import MODELS
 
 
 @MODELS.register_module()
-class VeryDeepVgg(BaseModule):
-    """Implement VGG-VeryDeep backbone for text recognition, modified from
-    `VGG-VeryDeep <https://arxiv.org/pdf/1409.1556.pdf>`_
+class MiniVGG(BaseModule):
+    """A mini VGG backbone for text recognition, modified from `VGG-VeryDeep.
+
+    <https://arxiv.org/pdf/1409.1556.pdf>`_
 
     Args:
         leaky_relu (bool): Use leakyRelu or not.
