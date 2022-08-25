@@ -10,7 +10,7 @@ from mmocr.models.textrecog.layers import (DotProductAttentionLayer,
                                            PositionAwareLayer)
 from mmocr.registry import MODELS
 from mmocr.structures import TextRecogDataSample
-from .base_decoder import BaseDecoder
+from .base import BaseDecoder
 
 
 @MODELS.register_module()

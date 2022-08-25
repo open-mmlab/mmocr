@@ -8,7 +8,7 @@ import torch
 from mmengine.data import LabelData
 
 from mmocr.models.common.dictionary import Dictionary
-from mmocr.models.textrecog.module_losses import BaseRecogModuleLoss
+from mmocr.models.textrecog.module_losses import BaseTextRecogModuleLoss
 from mmocr.structures import TextRecogDataSample
 from mmocr.testing import create_dummy_dict_file
 
@@ -34,27 +34,30 @@ class TestBaseRecogModuleLoss(TestCase):
             same_start_end=False,
             with_padding=True,
             with_unknown=True)
-        base_recog_loss = BaseRecogModuleLoss(dict_cfg)
+        base_recog_loss = BaseTextRecogModuleLoss(dict_cfg)
         self.assertIsInstance(base_recog_loss.dictionary, Dictionary)
         # test case mode
         with self.assertRaises(AssertionError):
-            base_recog_loss = BaseRecogModuleLoss(dict_cfg, letter_case='no')
+            base_recog_loss = BaseTextRecogModuleLoss(
+                dict_cfg, letter_case='no')
         # test invalid pad_with
         with self.assertRaises(AssertionError):
-            base_recog_loss = BaseRecogModuleLoss(dict_cfg, pad_with='test')
+            base_recog_loss = BaseTextRecogModuleLoss(
+                dict_cfg, pad_with='test')
         # test invalid combination of dictionary and pad_with
         dict_cfg = dict(type='Dictionary', dict_file=dict_file, with_end=False)
         for pad_with in ['end', 'padding']:
             with self.assertRaisesRegex(
                     ValueError, f'pad_with="{pad_with}", but'
                     f' dictionary.{pad_with}_idx is None'):
-                base_recog_loss = BaseRecogModuleLoss(
+                base_recog_loss = BaseTextRecogModuleLoss(
                     dict_cfg, pad_with=pad_with)
         with self.assertRaisesRegex(
                 ValueError, 'pad_with="auto", but'
                 ' dictionary.end_idx and dictionary.padding_idx are both'
                 ' None'):
-            base_recog_loss = BaseRecogModuleLoss(dict_cfg, pad_with='auto')
+            base_recog_loss = BaseTextRecogModuleLoss(
+                dict_cfg, pad_with='auto')
 
         # test dictionary is invalid type
         dict_cfg = ['tmp']
@@ -62,7 +65,7 @@ class TestBaseRecogModuleLoss(TestCase):
                 TypeError, ('The type of dictionary should be `Dictionary`'
                             ' or dict, '
                             f'but got {type(dict_cfg)}')):
-            base_recog_loss = BaseRecogModuleLoss(dict_cfg)
+            base_recog_loss = BaseTextRecogModuleLoss(dict_cfg)
 
         tmp_dir.cleanup()
 
@@ -81,7 +84,7 @@ class TestBaseRecogModuleLoss(TestCase):
             same_start_end=False,
             with_padding=True,
             with_unknown=True)
-        base_recog_loss = BaseRecogModuleLoss(dictionary, max_seq_len=10)
+        base_recog_loss = BaseTextRecogModuleLoss(dictionary, max_seq_len=10)
         target_data_samples = base_recog_loss.get_targets([data_sample])
         assert self._equal(target_data_samples[0].gt_text.indexes,
                            torch.LongTensor([0, 1, 2, 3]))
@@ -104,7 +107,7 @@ class TestBaseRecogModuleLoss(TestCase):
             same_start_end=False,
             with_padding=True,
             with_unknown=True)
-        base_recog_loss = BaseRecogModuleLoss(dictionary, max_seq_len=3)
+        base_recog_loss = BaseTextRecogModuleLoss(dictionary, max_seq_len=3)
         data_sample.gt_text.item = '0123'
         target_data_samples = base_recog_loss.get_targets([data_sample])
         assert self._equal(target_data_samples[0].gt_text.indexes,
@@ -122,7 +125,7 @@ class TestBaseRecogModuleLoss(TestCase):
             same_start_end=False,
             with_padding=True,
             with_unknown=True)
-        base_recog_loss = BaseRecogModuleLoss(
+        base_recog_loss = BaseTextRecogModuleLoss(
             dict_cfg, max_seq_len=10, letter_case='lower', pad_with='none')
         data_sample.gt_text.item = '0123'
         target_data_samples = base_recog_loss.get_targets([data_sample])
