@@ -3,14 +3,14 @@ from unittest import TestCase
 
 import torch
 
-from mmocr.models.textrecog.backbones import VeryDeepVgg
+from mmocr.models.textrecog.backbones import MiniVGG
 
 
-class TestVeryDeepVgg(TestCase):
+class TestMiniVGG(TestCase):
 
     def test_forward(self):
 
-        model = VeryDeepVgg()
+        model = MiniVGG()
         model.init_weights()
         model.train()
 
