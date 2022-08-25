@@ -19,9 +19,7 @@
    :maxdepth: 2
    :caption: 教程
 
-   tutorials/config.md
-   tutorials/dataset_types.md
-   tutorials/kie_closeset_openset.md
+   tutorials/train_test.md
 
 .. toctree::
    :maxdepth: 2
