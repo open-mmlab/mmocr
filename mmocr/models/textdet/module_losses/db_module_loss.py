@@ -12,12 +12,11 @@ from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from mmocr.utils import offset_polygon
 from mmocr.utils.typing import ArrayLike
-from .base import BaseTextDetModuleLoss
-from .text_kernel_mixin import TextKernelMixin
+from .seg_based_module_loss import SegBasedModuleLoss
 
 
 @MODELS.register_module()
-class DBModuleLoss(BaseTextDetModuleLoss, TextKernelMixin):
+class DBModuleLoss(SegBasedModuleLoss):
     r"""The class for implementing DBNet loss.
 
     This is partially adapted from https://github.com/MhLiao/DB.

@@ -12,12 +12,11 @@ from torch import Tensor
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
-from .base import BaseTextDetModuleLoss
-from .text_kernel_mixin import TextKernelMixin
+from .seg_based_module_loss import SegBasedModuleLoss
 
 
 @MODELS.register_module()
-class TextSnakeModuleLoss(BaseTextDetModuleLoss, TextKernelMixin):
+class TextSnakeModuleLoss(SegBasedModuleLoss):
     """The class for implementing TextSnake loss. This is partially adapted
     from https://github.com/princewang1994/TextSnake.pytorch.
 

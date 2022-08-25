@@ -12,7 +12,7 @@ ic15_det_test = _base_.ic15_det_test
 ic15_det_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
-    batch_size=16,
+    batch_size=1,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
