@@ -10,8 +10,6 @@ You can switch between English and Chinese in the lower-left corner of the layou
    install.md
    getting_started.md
    demo.md
-   training.md
-   testing.md
    deployment.md
    model_serving.md
 
@@ -23,6 +21,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    tutorials/dataset_types.md
    tutorials/kie_closeset_openset.md
    tutorials/blank_recog.md
+   tutorials/train_test.md
 
 .. toctree::
    :maxdepth: 2

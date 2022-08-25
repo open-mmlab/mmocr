@@ -15,6 +15,7 @@ CUDA_VISIBLE_DEVICES= python tools/train.py ${CONFIG_FILE} [PY_ARGS]
 # 训练
 # 示例 1：使用 CPU 训练 DBNet
 CUDA_VISIBLE_DEVICES=-1 python tools/train.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
+
 # 示例 2：指定使用 gpu:0 训练 DBNet，指定工作目录为 dbnet/，并打开混合精度（amp）训练
 CUDA_VISIBLE_DEVICES=0 python tools/train.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py --work-dir dbnet/ --amp
 ```
@@ -137,33 +138,33 @@ MMOCR 基于[torch.distributed](https://pytorch.org/docs/stable/distributed.html
 
    以下命令演示了如何在两台机器上分别使用 2 张 GPU 合计 4 卡训练 DBNet：
 
-```bash
-# 示例：在两台机器上分别使用 2 张 GPU 合计 4 卡训练 DBNet
-# 在 “机器1” 上运行以下命令
-NNODES=2 NODE_RANK=0 PORT=29501 MASTER_ADDR=10.140.0.169 tools/dist_train.sh configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py 2
-# 在 “机器2” 上运行以下命令
-NNODES=2 NODE_RANK=1 PORT=29501 MASTER_ADDR=10.140.0.169 tools/dist_train.sh configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py 2
-```
+   ```bash
+   # 示例：在两台机器上分别使用 2 张 GPU 合计 4 卡训练 DBNet
+   # 在 “机器1” 上运行以下命令
+   NNODES=2 NODE_RANK=0 PORT=29501 MASTER_ADDR=10.140.0.169 tools/dist_train.sh configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py 2
+   # 在 “机器2” 上运行以下命令
+   NNODES=2 NODE_RANK=1 PORT=29501 MASTER_ADDR=10.140.0.169 tools/dist_train.sh configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py 2
+   ```
 
 2. **测试**
 
    以下命令演示了如何在两台机器上分别使用 2 张 GPU 合计 4 卡测试：
 
-```bash
-# 示例：在两台机器上分别使用 2 张 GPU 合计 4 卡测试
-# 在 “机器1” 上运行以下命令
-NNODES=2 NODE_RANK=0 PORT=29500 MASTER_ADDR=10.140.0.169 tools/dist_test.sh configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py dbnet_r50.pth 2
-# 在 “机器2” 上运行以下命令
-NNODES=2 NODE_RANK=1 PORT=29501 MASTER_ADDR=10.140.0.169 tools/dist_test.sh configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py dbnet_r50.pth 2
-```
+   ```bash
+   # 示例：在两台机器上分别使用 2 张 GPU 合计 4 卡测试
+   # 在 “机器1” 上运行以下命令
+   NNODES=2 NODE_RANK=0 PORT=29500 MASTER_ADDR=10.140.0.169 tools/dist_test.sh configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py dbnet_r50.pth 2
+   # 在 “机器2” 上运行以下命令
+   NNODES=2 NODE_RANK=1 PORT=29501 MASTER_ADDR=10.140.0.169 tools/dist_test.sh configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py dbnet_r50.pth 2
+   ```
 
-```{note}
-需要注意的是，采用多机多卡训练时，机器间的网络传输速度可能成为训练速度的瓶颈。
-```
+   ```{note}
+   需要注意的是，采用多机多卡训练时，机器间的网络传输速度可能成为训练速度的瓶颈。
+   ```
 
 ## 集群训练及测试
 
-针对 slurm 调度系统管理的计算集群，MMOCR 提供了对应的训练和测试任务提交脚本 `tools/slurm_train.sh` 及 `tools/slurm_test.sh`。
+针对 [Slurm](https://slurm.schedmd.com/) 调度系统管理的计算集群，MMOCR 提供了对应的训练和测试任务提交脚本 `tools/slurm_train.sh` 及 `tools/slurm_test.sh`。
 
 ```bash
 # tools/slurm_train.sh 提供基于 slurm 调度系统管理的计算集群上提交训练任务的脚本
@@ -178,7 +179,7 @@ GPUS=${GPUS} GPUS_PER_NODE=${GPUS_PER_NODE} CPUS_PER_TASK=${CPUS_PER_TASK} SRUN_
 | GPUS            | int  | 使用的 GPU 数目，默认为8。                                                |
 | GPUS_PER_NODE   | int  | 每台节点机器上搭载的 GPU 数目，默认为8。                                  |
 | CPUS_PER_TASK   | int  | 任务使用的 CPU 个数，默认为5。                                            |
-| SRUN_ARGS       | str  | 其他 srun 支持的参数。                                                    |
+| SRUN_ARGS       | str  | 其他 srun 支持的参数。详见[这里](https://slurm.schedmd.com/srun.html)     |
 | PARTITION       | str  | （必须）指定使用的集群分区。                                              |
 | JOB_NAME        | str  | （必须）提交任务的名称。                                                  |
 | WORK_DIR        | str  | （必须）任务的工作目录，训练日志以及模型的 checkpoints 将被保存至该目录。 |
@@ -188,6 +189,7 @@ GPUS=${GPUS} GPUS_PER_NODE=${GPUS_PER_NODE} CPUS_PER_TASK=${CPUS_PER_TASK} SRUN_
 这两个脚本可以实现 slurm 集群上的训练和测试，下面演示了它们在不同场景下的用法。
 
 1. 训练
+
    以下示例为在 slurm 集群 dev 分区申请 1 块 GPU 进行 DBNet 训练。
 
 ```bash
@@ -196,6 +198,7 @@ GPUS=1 GPUS_PER_NODE=1 CPUS_PER_TASK=5 tools/slurm_train.sh dev db_r50 configs/t
 ```
 
 2. 测试
+
    同理， 则提供了测试任务提交脚本。以下示例为在 slurm 集群 dev 分区申请 1 块 GPU 资源进行 DBNet 测试。
 
 ```bash
@@ -214,7 +217,7 @@ GPUS=1 GPUS_PER_NODE=1 CPUS_PER_TASK=5 tools/slurm_train.sh dev db_r50 configs/t
 python tools/train.py configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py 4 --resume
 ```
 
-默认地，程序将自动从上次训练过程中最后成功保存的断点，即 latest.pth 处开始继续训练。如果用户希望指定从特定的断点处开始恢复训练，则可以按如下格式在模型的配置文件中设定该断点的路径。
+默认地，程序将自动从上次训练过程中最后成功保存的断点，即 `latest.pth` 处开始继续训练。如果用户希望指定从特定的断点处开始恢复训练，则可以按如下格式在模型的配置文件中设定该断点的路径。
 
 ```python
 # 示例：在配置文件中设置想要加载的断点路径
@@ -254,7 +257,7 @@ python tools/train.py configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.
 
 ### 自动学习率缩放
 
-MMOCR 在配置文件中为每一个模型设置了默认的初始学习率，然而，当用户使用不同于我们预设的 `base_batch_size` 时，这些初始学习率可能不再完全适用。因此，我们提供了自动学习率缩放工具。当使用不同于 MMOCR 预设的 `base_batch_size` 进行训练时，用户仅需添加 `--auto-scale-lr` 参数即可自动依据新的 `batch_size` 将学习率缩放至对应尺度。
+MMOCR 在配置文件中为每一个模型设置了默认的初始学习率，然而，当用户使用的 `batch_size` 不同于我们预设的 `base_batch_size` 时，这些初始学习率可能不再完全适用。因此，我们提供了自动学习率缩放工具。当使用不同于 MMOCR 预设的 `base_batch_size` 进行训练时，用户仅需添加 `--auto-scale-lr` 参数即可自动依据新的 `batch_size` 将学习率缩放至对应尺度。
 
 ```bash
 # 示例：使用自动学习率缩放
