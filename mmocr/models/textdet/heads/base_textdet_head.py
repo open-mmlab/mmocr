@@ -77,7 +77,7 @@ class BaseTextDetHead(BaseModule):
         Returns:
             dict: A dictionary of loss components.
         """
-        outs = self(x)
+        outs = self(x, data_samples)
         losses = self.module_loss(outs, data_samples)
         return losses
 
