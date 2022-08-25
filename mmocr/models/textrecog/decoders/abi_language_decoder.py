@@ -7,11 +7,11 @@ import torch.nn as nn
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
 from mmengine.model import ModuleList
 
+from mmocr.models.common.dictionary import Dictionary
 from mmocr.models.common.modules import PositionalEncoding
-from mmocr.models.textrecog.dictionary import Dictionary
 from mmocr.registry import MODELS
 from mmocr.structures import TextRecogDataSample
-from .base_decoder import BaseDecoder
+from .base import BaseDecoder
 
 
 @MODELS.register_module()

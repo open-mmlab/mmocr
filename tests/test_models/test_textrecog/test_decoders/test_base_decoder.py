@@ -3,8 +3,8 @@ import os.path as osp
 import tempfile
 from unittest import TestCase, mock
 
+from mmocr.models.common.dictionary import Dictionary
 from mmocr.models.textrecog.decoders import BaseDecoder
-from mmocr.models.textrecog.dictionary.dictionary import Dictionary
 from mmocr.registry import MODELS, TASK_UTILS
 from mmocr.testing import create_dummy_dict_file
 

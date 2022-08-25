@@ -5,12 +5,12 @@ from typing import Dict, Sequence, Union
 import torch
 import torch.nn as nn
 
-from mmocr.models.textrecog.dictionary import Dictionary
+from mmocr.models.common.dictionary import Dictionary
 from mmocr.registry import TASK_UTILS
 from mmocr.structures import TextRecogDataSample
 
 
-class BaseRecogModuleLoss(nn.Module):
+class BaseTextRecogModuleLoss(nn.Module):
     """Base recognition loss.
 
     Args:
