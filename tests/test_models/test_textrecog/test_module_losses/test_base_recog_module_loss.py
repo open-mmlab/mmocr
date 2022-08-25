@@ -5,7 +5,7 @@ from unittest import TestCase
 
 import numpy as np
 import torch
-from mmengine.data import LabelData
+from mmengine.structures import LabelData
 
 from mmocr.models.common.dictionary import Dictionary
 from mmocr.models.textrecog.module_losses import BaseTextRecogModuleLoss

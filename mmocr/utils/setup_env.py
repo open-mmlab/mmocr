@@ -2,7 +2,7 @@
 import datetime
 import warnings
 
-from mmengine import DefaultScope
+from mmengine.registry import DefaultScope
 
 
 def register_all_modules(init_default_scope: bool = True) -> None:

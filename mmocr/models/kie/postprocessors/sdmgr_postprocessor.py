@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 from torch import Tensor, nn
 
 from mmocr.registry import MODELS

@@ -4,7 +4,7 @@ from unittest import TestCase
 import numpy as np
 import torch
 import torch.nn as nn
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 from parameterized import parameterized
 
 from mmocr.models.textdet.module_losses import PSEModuleLoss

@@ -4,7 +4,7 @@ from typing import Dict, List, Sequence
 import cv2
 import numpy as np
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 from numpy.fft import ifft
 
 from mmocr.registry import MODELS

@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmengine.data import BaseDataElement, LabelData
+from mmengine.structures import BaseDataElement, LabelData
 
 
 class TextRecogDataSample(BaseDataElement):
@@ -14,7 +14,7 @@ class TextRecogDataSample(BaseDataElement):
     Examples:
          >>> import torch
          >>> import numpy as np
-         >>> from mmengine.data import LabelData
+         >>> from mmengine.structures import LabelData
          >>> from mmocr.data import TextRecogDataSample
          >>> # gt_text
          >>> data_sample = TextRecogDataSample()

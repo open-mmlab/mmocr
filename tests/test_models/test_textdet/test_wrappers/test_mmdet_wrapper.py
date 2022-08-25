@@ -5,7 +5,7 @@ import torch
 from mmdet.structures import DetDataSample
 from mmdet.testing import demo_mm_inputs
 from mmengine.config import Config
-from mmengine.data import InstanceData
+from mmengine.structures import InstanceData
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample

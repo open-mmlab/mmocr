@@ -3,7 +3,7 @@ from unittest import TestCase
 
 import numpy as np
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 
 from mmocr.models.textdet.module_losses import TextSnakeModuleLoss
 from mmocr.structures import TextDetDataSample
