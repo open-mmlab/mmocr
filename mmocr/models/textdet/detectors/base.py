@@ -56,8 +56,9 @@ class BaseTextDetector(BaseModel, metaclass=ABCMeta):
         Args:
             inputs (torch.Tensor): The input tensor with shape
                 (N, C, ...) in general.
-            data_samples (list[:obj:`TextDetDataSample`], optional): The
-                annotation data of every samples. Defaults to None.
+            data_samples (list[:obj:`TextDetDataSample`], optional): A batch of
+                data samples that contain annotations and predictions.
+                Defaults to None.
             mode (str): Return what kind of value. Defaults to 'tensor'.
 
         Returns:
