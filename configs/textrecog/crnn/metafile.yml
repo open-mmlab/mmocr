@@ -8,7 +8,7 @@ Collections:
     Batch Size: 256
     Training Resources: 4x GeForce GTX 1080 Ti
     Architecture:
-      - VeryDeepVgg
+      - MiniVGG
       - CRNNDecoder
   Paper:
     URL: https://arxiv.org/pdf/1507.05717.pdf
