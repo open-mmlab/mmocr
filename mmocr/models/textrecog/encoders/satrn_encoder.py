@@ -10,7 +10,7 @@ from mmocr.models.textrecog.layers import (Adaptive2DPositionalEncoding,
                                            SATRNEncoderLayer)
 from mmocr.registry import MODELS
 from mmocr.structures import TextRecogDataSample
-from .base_encoder import BaseEncoder
+from .base import BaseEncoder
 
 
 @MODELS.register_module()

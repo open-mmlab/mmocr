@@ -2,7 +2,7 @@ _base_ = [
     '_base_mask-rcnn_resnet50_fpn.py',
     '../_base_/datasets/icdar2015.py',
     '../_base_/default_runtime.py',
-    '../_base_/schedules/schedule_sgd_1200e.py',
+    '../_base_/schedules/schedule_sgd_base.py',
 ]
 
 # optimizer

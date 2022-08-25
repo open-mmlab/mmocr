@@ -12,7 +12,7 @@ from skimage.morphology import skeletonize
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from mmocr.utils import fill_hole
-from .base_postprocessor import BaseTextDetPostProcessor
+from .base import BaseTextDetPostProcessor
 
 
 @MODELS.register_module()

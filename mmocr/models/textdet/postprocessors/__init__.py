@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .base_postprocessor import BaseTextDetPostProcessor
+from .base import BaseTextDetPostProcessor
 from .db_postprocessor import DBPostprocessor
 from .drrg_postprocessor import DRRGPostprocessor
 from .fce_postprocessor import FCEPostprocessor

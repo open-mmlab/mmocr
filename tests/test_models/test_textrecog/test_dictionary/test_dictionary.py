@@ -3,7 +3,7 @@ import os.path as osp
 import tempfile
 from unittest import TestCase
 
-from mmocr.models.textrecog import Dictionary
+from mmocr.models.common import Dictionary
 from mmocr.testing import create_dummy_dict_file
 
 
