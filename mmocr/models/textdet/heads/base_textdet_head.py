@@ -99,7 +99,7 @@ class BaseTextDetHead(BaseModule):
                 - predictions (list[:obj:`InstanceData`]): Detection
                   results of each image after the post process.
         """
-        outs = self(x)
+        outs = self(x, data_samples)
         losses = self.module_loss(outs, data_samples)
 
         predictions = self.postprocessor(outs, data_samples)
