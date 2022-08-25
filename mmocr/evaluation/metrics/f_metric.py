@@ -85,19 +85,18 @@ class F1Metric(BaseMetric):
         self.key = key
 
     def process(self, data_batch: Sequence[Dict],
-                predictions: Sequence[Dict]) -> None:
-        """Process one batch of predictions. The processed results should be
+                data_samples: Sequence[Dict]) -> None:
+        """Process one batch of data_samples. The processed results should be
         stored in ``self.results``, which will be used to compute the metrics
         when all batches have been processed.
 
         Args:
             data_batch (Sequence[Dict]): A batch of gts.
-            predictions (Sequence[Dict]): A batch of outputs from the model.
+            data_samples (Sequence[Dict]): A batch of outputs from the model.
         """
-        for data_samples in predictions:
-            pred_labels = data_samples.get('pred_instances').get(
-                self.key).cpu()
-            gt_labels = data_samples.get('gt_instances').get(self.key).cpu()
+        for data_sample in data_samples:
+            pred_labels = data_sample.get('pred_instances').get(self.key).cpu()
+            gt_labels = data_sample.get('gt_instances').get(self.key).cpu()
 
             result = dict(
                 pred_labels=pred_labels.flatten(),

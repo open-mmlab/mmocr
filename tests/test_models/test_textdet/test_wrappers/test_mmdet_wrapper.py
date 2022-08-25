@@ -262,9 +262,3 @@ class TestMMDetWrapper(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertIsInstance(results[0], TextDetDataSample)
         self.assertTrue('polygons' in results[0].pred_instances.keys())
-
-
-if __name__ == '__main__':
-    test = TestMMDetWrapper()
-    test.setUp()
-    test.test_mask_two_stage_wrapper()
