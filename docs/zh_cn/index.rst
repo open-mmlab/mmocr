@@ -41,7 +41,6 @@
    datasets/det.md
    datasets/recog.md
    datasets/kie.md
-   datasets/ner.md
 
 .. toctree::
    :maxdepth: 2
@@ -49,6 +48,12 @@
 
    tools.md
    changelog.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 1.0 版本迁移指南
+
+   migration/dataset.md
 
 .. toctree::
    :caption: API 参考

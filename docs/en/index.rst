@@ -52,6 +52,12 @@ You can switch between English and Chinese in the lower-left corner of the layou
    changelog.md
 
 .. toctree::
+   :maxdepth: 2
+   :caption: Version 1.x Migration Guide
+
+   migration/dataset.md
+
+.. toctree::
    :caption: API Reference
 
    api.rst
