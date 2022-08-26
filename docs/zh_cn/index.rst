@@ -4,62 +4,57 @@
 您可以在页面左下角切换中英文文档。
 
 .. toctree::
-   :maxdepth: 2
-   :caption: 开始
+   :maxdepth: 1
+   :caption: 新手入门
 
-   install.md
-   getting_started.md
-   demo.md
-   training.md
-   testing.md
-   deployment.md
-   model_serving.md
+   overview.md
+   get_started.md
 
 .. toctree::
    :maxdepth: 2
-   :caption: 教程
+   :caption: 用户指南
 
-   tutorials/config.md
-   tutorials/dataset_types.md
-   tutorials/kie_closeset_openset.md
+   user_guides/index.rst
 
 .. toctree::
    :maxdepth: 2
-   :caption: 模型库
+   :caption: 高级用户文档
 
-   modelzoo.md
-   model_summary.md
-   textdet_models.md
-   textrecog_models.md
-   kie_models.md
-   ner_models.md
+   advanced_guides/index.rst
 
 .. toctree::
    :maxdepth: 2
-   :caption: 数据集
+   :caption: 迁移指南
 
-   datasets/det.md
-   datasets/recog.md
-   datasets/kie.md
-   datasets/ner.md
-
-.. toctree::
-   :maxdepth: 2
-   :caption: 杂项
-
-   tools.md
-   changelog.md
+   migration_guides/code.md
+   migration_guides/dataset.md
+   migration_guides/model.md
 
 .. toctree::
-   :caption: API 参考
+   :maxdepth: 1
+   :caption: API 文档
 
    api.rst
 
 .. toctree::
+   :maxdepth: 1
+   :caption: 模型
+
+   model_zoo.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: 记录
+
+   notes/contribution_guide.md
+   notes/projects.md
+   notes/changelog.md
+   notes/faq.md
+
+.. toctree::
    :caption: 切换语言
 
-   English <https://mmocr.readthedocs.io/en/latest/>
-   简体中文 <https://mmocr.readthedocs.io/zh_CN/latest/>
+   switch_language.md
 
 导引
 ==================

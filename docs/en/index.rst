@@ -4,63 +4,58 @@ Welcome to MMOCR's documentation!
 You can switch between English and Chinese in the lower-left corner of the layout.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Getting Started
+   :maxdepth: 1
+   :caption: Get Started
 
-   install.md
-   getting_started.md
-   demo.md
-   training.md
-   testing.md
-   deployment.md
-   model_serving.md
+   overview.md
+   get_started.md
 
 .. toctree::
    :maxdepth: 2
-   :caption: Tutorials
+   :caption: User Guides
 
-   tutorials/config.md
-   tutorials/dataset_types.md
-   tutorials/kie_closeset_openset.md
-   tutorials/blank_recog.md
+   user_guides/index.rst
 
 .. toctree::
    :maxdepth: 2
-   :caption: Model Zoo
+   :caption: Advanced Guides
 
-   modelzoo.md
-   model_summary.md
-   textdet_models.md
-   textrecog_models.md
-   kie_models.md
-   ner_models.md
+   advanced_guides/index.rst
 
 .. toctree::
    :maxdepth: 2
-   :caption: Dataset Zoo
+   :caption: Migration Guides
 
-   datasets/det.md
-   datasets/recog.md
-   datasets/kie.md
-   datasets/ner.md
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Miscellaneous
-
-   tools.md
-   changelog.md
+   migration_guides/code.md
+   migration_guides/dataset.md
+   migration_guides/model.md
 
 .. toctree::
+   :maxdepth: 1
    :caption: API Reference
 
    api.rst
 
 .. toctree::
+   :maxdepth: 1
+   :caption: Model Zoo
+
+   model_zoo.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Notes
+
+   notes/contribution_guide.md
+   notes/projects.md
+   notes/changelog.md
+   notes/faq.md
+
+.. toctree::
    :caption: Switch Language
 
-   English <https://mmocr.readthedocs.io/en/latest/>
-   简体中文 <https://mmocr.readthedocs.io/zh_CN/latest/>
+   switch_language.md
+
 
 Indices and tables
 ==================
