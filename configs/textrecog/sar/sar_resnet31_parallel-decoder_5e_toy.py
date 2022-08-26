@@ -29,7 +29,8 @@ val_dataloader = dict(
     dataset=dict(
         type='ConcatDataset',
         datasets=test_list,
-        pipeline=_base_.test_pipeline))
+        pipeline=_base_.test_pipeline,
+        test_mode=True))
 test_dataloader = val_dataloader
 
 val_evaluator = dict(dataset_prefixes=['Toy'])

@@ -22,7 +22,10 @@ test_list = [
 train_dataset = dict(
     type='ConcatDataset', datasets=train_list, pipeline=_base_.train_pipeline)
 test_dataset = dict(
-    type='ConcatDataset', datasets=test_list, pipeline=_base_.test_pipeline)
+    type='ConcatDataset',
+    datasets=test_list,
+    pipeline=_base_.test_pipeline,
+    test_mode=True)
 
 # optimizer
 optim_wrapper = dict(type='OptimWrapper', optimizer=dict(type='Adam', lr=3e-4))

@@ -27,6 +27,8 @@ class ConcatDataset(MMENGINE_CONCATDATASET):
             of the concatenated datasets. Defaults to [].
         force_apply (bool): Whether to force apply pipeline to all datasets if
             any of them already has the pipeline configured. Defaults to False.
+        test_mode (bool): Whether to set ``cumulative_sizes`` for
+            metainfo. Defaults to False.
         lazy_init (bool, optional): Whether to load annotation during
             instantiation. Defaults to False.
     """
@@ -35,6 +37,7 @@ class ConcatDataset(MMENGINE_CONCATDATASET):
                  datasets: Sequence[Union[BaseDataset, dict]],
                  pipeline: List[Union[dict, Callable]] = [],
                  force_apply: bool = False,
+                 test_mode=False,
                  lazy_init: bool = False):
         self.datasets: List[BaseDataset] = []
 
@@ -69,4 +72,6 @@ class ConcatDataset(MMENGINE_CONCATDATASET):
         self._fully_initialized = False
         if not lazy_init:
             self.full_init()
-            self._metainfo.update(dict(cumulative_sizes=self.cumulative_sizes))
+            if test_mode:
+                self._metainfo.update(
+                    dict(cumulative_sizes=self.cumulative_sizes))

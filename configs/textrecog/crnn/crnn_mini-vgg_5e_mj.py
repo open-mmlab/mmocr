@@ -39,7 +39,8 @@ test_dataloader = dict(
     dataset=dict(
         type='ConcatDataset',
         datasets=test_list,
-        pipeline=_base_.test_pipeline))
+        pipeline=_base_.test_pipeline,
+        test_mode=True))
 val_dataloader = test_dataloader
 
 val_evaluator = dict(

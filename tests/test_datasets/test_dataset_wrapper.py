@@ -115,3 +115,17 @@ class TestConcatDataset(TestCase):
         ])
         self.assertEqual(cat_datasets[0], 1)
         self.assertEqual(cat_datasets[-1], 2)
+
+    def test_metainfo(self):
+        cat_datasets = ConcatDataset(
+            datasets=[deepcopy(self.dataset_a),
+                      deepcopy(self.dataset_b)],
+            pipeline=[dict(type='MockTransform', return_value=3)])
+        self.assertNotIn('cumulative_sizes', cat_datasets.metainfo)
+
+        cat_datasets = ConcatDataset(
+            datasets=[deepcopy(self.dataset_a),
+                      deepcopy(self.dataset_b)],
+            pipeline=[dict(type='MockTransform', return_value=3)],
+            test_mode=True)
+        self.assertIn('cumulative_sizes', cat_datasets.metainfo)
