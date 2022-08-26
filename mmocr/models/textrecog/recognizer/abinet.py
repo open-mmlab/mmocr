@@ -181,7 +181,7 @@ class ABINet(EncodeDecodeRecognizer):
             return ret['logits']
 
         label_indexes, label_scores = self.label_convertor.tensor2idx(
-            ret['logits'], img_metas)
+            ret['logits'].softmax(dim=-1), img_metas)
         label_strings = self.label_convertor.idx2str(label_indexes)
 
         # flatten batch results
