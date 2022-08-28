@@ -98,13 +98,13 @@ class SDMGRPostProcessor:
 
         for i in range(len(data_samples)):
             data_samples[i].pred_instances = InstanceData()
-            data_samples[i].pred_instances.labels = node_preds[i]
-            data_samples[i].pred_instances.scores = node_scores[i]
+            data_samples[i].pred_instances.labels = node_preds[i].cpu()
+            data_samples[i].pred_instances.scores = node_scores[i].cpu()
             if self.link_type != 'none':
                 edge_scores[i], edge_preds[i] = self.decode_edges(
                     node_preds[i], edge_scores[i], edge_preds[i])
-            data_samples[i].pred_instances.edge_labels = edge_preds[i]
-            data_samples[i].pred_instances.edge_scores = edge_scores[i]
+            data_samples[i].pred_instances.edge_labels = edge_preds[i].cpu()
+            data_samples[i].pred_instances.edge_scores = edge_scores[i].cpu()
 
         return data_samples
 

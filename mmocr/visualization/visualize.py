@@ -4,7 +4,6 @@ import os
 import shutil
 import urllib
 import warnings
-from typing import List
 
 import cv2
 import mmcv
@@ -15,8 +14,9 @@ from matplotlib import pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 
 import mmocr.utils as utils
-from mmocr.data.textdet_data_sample import TextDetDataSample
-from mmocr.data.textrecog_data_sample import TextRecogDataSample
+
+# from mmocr.data.textdet_data_sample import TextDetDataSample
+# from mmocr.data.textrecog_data_sample import TextRecogDataSample
 
 
 # TODO remove after KieVisualizer and TextSpotterVisualizer
@@ -642,40 +642,41 @@ def is_contain_chinese(check_str):
     return False
 
 
-def det_recog_show_result(img: np.ndarray,
-                          det_results: TextDetDataSample,
-                          recog_results: List[TextRecogDataSample],
-                          out_file=None):
-    """Draw `result`(boxes and texts) on `img`.
+# def det_recog_show_result(img: np.ndarray,
+#                           det_results: TextDetDataSample,
+#                           recog_results: List[TextRecogDataSample],
+#                           out_file=None):
+#     """Draw `result`(boxes and texts) on `img`.
 
-    Args:
-        img (np.ndarray): The image to be displayed.
-        det_results (TextDetDataSample): The detection results.
-        recog_results (List[TextRecogDataSample]): The recognition results.
-        out_file (str): Image path where the visualized image should be saved.
-    Return:
-        out_img (np.ndarray): Visualized image.
-    """
-    polygons = det_results[0].pred_instances.polygons
-    texts = []
-    for i, polygon in enumerate(polygons):
-        texts.append(recog_results[i].pred_text.item)
-    box_vis_img = draw_polygons(img, polygons)
+#     Args:
+#         img (np.ndarray): The image to be displayed.
+#         det_results (TextDetDataSample): The detection results.
+#         recog_results (List[TextRecogDataSample]): The recognition results.
+#         out_file (str): Image path where the visualized image should be
+# saved.
+#     Return:
+#         out_img (np.ndarray): Visualized image.
+#     """
+#     polygons = det_results[0].pred_instances.polygons
+#     texts = []
+#     for i, polygon in enumerate(polygons):
+#         texts.append(recog_results[i].pred_text.item)
+#     box_vis_img = draw_polygons(img, polygons)
 
-    if is_contain_chinese(''.join(texts)):
-        text_vis_img = draw_texts_by_pil(img, texts, polygons)
-    else:
-        text_vis_img = draw_texts(img, texts, polygons)
+#     if is_contain_chinese(''.join(texts)):
+#         text_vis_img = draw_texts_by_pil(img, texts, polygons)
+#     else:
+#         text_vis_img = draw_texts(img, texts, polygons)
 
-    h, w = img.shape[:2]
-    out_img = np.ones((h, w * 2, 3), dtype=np.uint8)
-    out_img[:, :w, :] = box_vis_img
-    out_img[:, w:, :] = text_vis_img
+#     h, w = img.shape[:2]
+#     out_img = np.ones((h, w * 2, 3), dtype=np.uint8)
+#     out_img[:, :w, :] = box_vis_img
+#     out_img[:, w:, :] = text_vis_img
 
-    if out_file:
-        mmcv.imwrite(out_img, out_file)
+#     if out_file:
+#         mmcv.imwrite(out_img, out_file)
 
-    return out_img
+#     return out_img
 
 
 def draw_edge_result(img, result, edge_thresh=0.5, keynode_thresh=0.5):

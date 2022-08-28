@@ -1,11 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import os
 import os.path as osp
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import mmcv
 import numpy as np
-from mmengine import InstanceData
 from mmengine.dataset import Compose
+from mmengine.structures import InstanceData
 
 from mmocr.utils import ConfigType
 from .base_inferencer import BaseInferencer
@@ -93,19 +94,30 @@ class BaseMMOCRInferencer(BaseInferencer):
                 return i
         return -1
 
-    def preprocess(self, inputs: InputsType) -> List[Dict]:
+    def preprocess(self, inputs: InputsType) -> Dict:
         """Process the inputs into a model-feedable format."""
         results = []
         for single_input in inputs:
             if isinstance(single_input, str):
-                data_ = dict(img_path=single_input)
-                results.append(self.file_pipeline(data_))
+                if osp.isdir(single_input):
+                    for img_path in os.listdir(single_input):
+                        data_ = dict(img_path=img_path)
+                        results.append(self.file_pipeline(data_))
+                else:
+                    data_ = dict(img_path=single_input)
+                    results.append(self.file_pipeline(data_))
             elif isinstance(single_input, np.ndarray):
                 data_ = dict(img=single_input)
                 results.append(self.ndarray_pipeline(data_))
             else:
                 raise ValueError(
                     f'Unsupported input type: {type(single_input)}')
+
+        return self._collate(results)
+
+    def _collate(self, results: List[Dict]) -> Dict:
+        """Collate the results from different images."""
+        results = {key: [d[key] for d in results] for key in results[0]}
         return results
 
     def __call__(self, user_inputs: InputsType,
