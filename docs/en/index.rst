@@ -24,18 +24,18 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
-   :caption: Advanced Guides
+   :caption: Basic Concepts
 
-   advanced_guides/overview.md
-   advanced_guides/data_flow.md
-   advanced_guides/dataset.md
-   advanced_guides/structures.md
-   advanced_guides/models.md
-   advanced_guides/transforms.md
-   advanced_guides/visualizers.md
-   advanced_guides/evaluation.md
-   advanced_guides/convention.md
-   advanced_guides/engine.md
+   basic_concepts/overview.md
+   basic_concepts/data_flow.md
+   basic_concepts/dataset.md
+   basic_concepts/structures.md
+   basic_concepts/models.md
+   basic_concepts/transforms.md
+   basic_concepts/visualizers.md
+   basic_concepts/evaluation.md
+   basic_concepts/convention.md
+   basic_concepts/engine.md
 
 .. toctree::
    :maxdepth: 2
