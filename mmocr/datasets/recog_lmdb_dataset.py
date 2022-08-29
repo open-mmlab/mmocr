@@ -80,7 +80,7 @@ class RecogLMDBDataset(BaseDataset):
         self.parser = TASK_UTILS.build(parser_cfg)
         self.ann_file = ann_file
         self.deprecated_format = False
-        env = self._get_env()
+        env = self._get_env(root=data_root)
         with env.begin(write=False) as txn:
             try:
                 self.total_number = int(
@@ -162,14 +162,17 @@ class RecogLMDBDataset(BaseDataset):
         """
         data_info = {}
         parsed_anno = self.parser(raw_anno_info)
-        img_path = osp.join(self.data_prefix['img_path'],
-                            parsed_anno[self.parser.keys[0]])
+        if self.label_only and not self.deprecated_format:
+            img_path = osp.join(self.data_prefix['img_path'],
+                                parsed_anno[self.parser.keys[0]])
+        else:
+            img_path = parsed_anno[self.parser.keys[0]]
 
         data_info['img_path'] = img_path
         data_info['instances'] = [dict(text=parsed_anno[self.parser.keys[1]])]
         return data_info
 
-    def _get_env(self):
+    def _get_env(self, root=''):
         """Get lmdb environment from self.ann_file.
 
         Returns:
@@ -181,7 +184,7 @@ class RecogLMDBDataset(BaseDataset):
             raise ImportError(
                 'Please install lmdb to enable RecogLMDBDataset.')
         return lmdb.open(
-            self.ann_file,
+            osp.join(root, self.ann_file),
             max_readers=1,
             readonly=True,
             lock=False,
