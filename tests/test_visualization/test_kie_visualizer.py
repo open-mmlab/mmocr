@@ -6,14 +6,14 @@ import unittest
 import cv2
 import numpy as np
 import torch
-from mmengine.data import InstanceData
+from mmengine.structures import InstanceData
 
 from mmocr.structures import KIEDataSample
 from mmocr.utils import bbox2poly
-from mmocr.visualization import KieLocalVisualizer
+from mmocr.visualization import KIELocalVisualizer
 
 
-class TestTextKieLocalVisualizer(unittest.TestCase):
+class TestTextKIELocalVisualizer(unittest.TestCase):
 
     def setUp(self):
         h, w = 12, 10
@@ -64,7 +64,7 @@ class TestTextKieLocalVisualizer(unittest.TestCase):
         image = self.image
         h, w, c = image.shape
 
-        visualizer = KieLocalVisualizer(is_openset=True)
+        visualizer = KIELocalVisualizer(is_openset=True)
         visualizer.dataset_meta = dict(category=[
             dict(id=0, name='bg'),
             dict(id=1, name='key'),

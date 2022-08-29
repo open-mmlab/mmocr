@@ -24,5 +24,3 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=wildreceipt_test)
 test_dataloader = val_dataloader
-<<<<<<< HEAD
-=======

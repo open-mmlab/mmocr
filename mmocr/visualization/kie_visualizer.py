@@ -39,7 +39,7 @@ PALETTE = [(220, 20, 60), (119, 11, 32), (0, 0, 142), (0, 0, 230),
 
 
 @VISUALIZERS.register_module()
-class KieLocalVisualizer(Visualizer):
+class KIELocalVisualizer(Visualizer):
     """The MMOCR Text Detection Local Visualizer.
 
     Args:
