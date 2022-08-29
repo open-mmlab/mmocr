@@ -23,7 +23,7 @@ class SDMGRPostProcessor:
             Defaults to 'none'. Options are:
 
             - 'none': The simplest link type involving no edge
-              postprocessing. The edge prediction will be returned as it is.
+              postprocessing. The edge prediction will be returned as-is.
             - 'one-to-one': One key node can be connected to one value node.
             - 'one-to-many': One key node can be connected to multiple value
               nodes.
@@ -98,13 +98,13 @@ class SDMGRPostProcessor:
 
         for i in range(len(data_samples)):
             data_samples[i].pred_instances = InstanceData()
-            data_samples[i].pred_instances.labels = node_preds[i]
-            data_samples[i].pred_instances.scores = node_scores[i]
+            data_samples[i].pred_instances.labels = node_preds[i].cpu()
+            data_samples[i].pred_instances.scores = node_scores[i].cpu()
             if self.link_type != 'none':
                 edge_scores[i], edge_preds[i] = self.decode_edges(
                     node_preds[i], edge_scores[i], edge_preds[i])
-            data_samples[i].pred_instances.edge_labels = edge_preds[i]
-            data_samples[i].pred_instances.edge_scores = edge_scores[i]
+            data_samples[i].pred_instances.edge_labels = edge_preds[i].cpu()
+            data_samples[i].pred_instances.edge_scores = edge_scores[i].cpu()
 
         return data_samples
 
@@ -167,4 +167,4 @@ class SDMGRPostProcessor:
                 elif self.link_type == 'many-to-one':
                     tmp_edge_scores[i, :] = -1
 
-        return new_edge_scores, new_edge_labels
+        return new_edge_scores.cpu(), new_edge_labels.cpu()

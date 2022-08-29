@@ -251,9 +251,7 @@ class PackKIEInputs(BaseTransform):
         'gt_texts': 'texts',
     }
 
-    def __init__(self,
-                 meta_keys=('img_path', 'ori_shape', 'img_shape',
-                            'scale_factor')):
+    def __init__(self, meta_keys=()):
         self.meta_keys = meta_keys
 
     def transform(self, results: dict) -> dict:
