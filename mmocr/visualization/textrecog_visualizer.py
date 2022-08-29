@@ -4,7 +4,7 @@ from typing import Dict, Optional, Tuple, Union
 import cv2
 import mmcv
 import numpy as np
-from mmengine import Visualizer
+from mmengine.visualization import Visualizer
 
 from mmocr.registry import VISUALIZERS
 from mmocr.structures import TextRecogDataSample

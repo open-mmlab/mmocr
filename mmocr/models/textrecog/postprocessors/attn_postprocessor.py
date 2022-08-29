@@ -5,7 +5,7 @@ import torch
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextRecogDataSample
-from .base_textrecog_postprocessor import BaseTextRecogPostprocessor
+from .base import BaseTextRecogPostprocessor
 
 
 @MODELS.register_module()

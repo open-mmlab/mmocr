@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import unittest
 
-from mmengine.data import LabelData
+from mmengine.structures import LabelData
 
 from mmocr.evaluation import CharMetric, OneMinusNEDMetric, WordMetric
 from mmocr.structures import TextRecogDataSample
