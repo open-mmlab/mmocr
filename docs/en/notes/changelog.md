@@ -496,7 +496,7 @@ Similarly, using `AnnFileLoader` with `file_format='lmdb'` instead of `LmdbLoade
 - Recog dataset doc by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/893
 - Reorganize the directory structure section in det.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/894
 
-## New Contributors
+### New Contributors
 
 - @GPhilo made their first contribution in https://github.com/open-mmlab/mmocr/pull/763
 - @xinke-wang made their first contribution in https://github.com/open-mmlab/mmocr/pull/801
