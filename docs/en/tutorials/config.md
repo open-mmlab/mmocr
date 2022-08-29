@@ -243,14 +243,14 @@ This part mainly includes saving the checkpoint strategy, log configuration, tra
 # Config to set the checkpoint hook, Refer to https://github.com/open-mmlab/mmcv/blob/master/mmcv/runner/hooks/checkpoint.py for implementation.
 checkpoint_config = dict(interval=1)    # The save interval is 1
 # config to register logger hook
-log_config = dict(
-    interval=100,                       # Interval to print the log
+log_config = dict(  # Config to register logger hook
+    interval=50,  # Interval to print the log
     hooks=[
         dict(type='TextLoggerHook', by_epoch=False),
         dict(type='TensorboardLoggerHook', by_epoch=False),
         dict(type='WandbLoggerHook', by_epoch=False, # The Wandb logger is also supported, It requires `wandb` to be installed.
-             init_kwargs={'entity': "entity", # The entity used to log on Wandb
-                          'project': "project", # Project name in WandB 
+             init_kwargs={'entity': "OpenMMLab", # The entity used to log on Wandb
+                          'project': "MMOCR", # Project name in WandB 
                           'config': cfg_dict}), # Check https://docs.wandb.ai/ref/python/init for more init arguments.
         # ClearMLLoggerHook, DvcliveLoggerHook, MlflowLoggerHook, NeptuneLoggerHook, PaviLoggerHook, SegmindLoggerHook are also supported based on MMCV implementation.
     ])
