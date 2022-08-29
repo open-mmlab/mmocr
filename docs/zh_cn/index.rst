@@ -24,7 +24,7 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: 高级用户文档
+   :caption: 高级开发文档
 
    advanced_guides/overview.md
    advanced_guides/data_flow.md
