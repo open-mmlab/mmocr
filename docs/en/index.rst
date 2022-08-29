@@ -31,16 +31,21 @@ You can switch between English and Chinese in the lower-left corner of the layou
    migration_guides/model.md
 
 .. toctree::
-   :maxdepth: 1
-   :caption: API Reference
+   :maxdepth: 2
+   :caption: Dataset Zoo
 
-   api.rst
+   data_prepare/det.md
+   data_prepare/recog.md
+   data_prepare/kie.md
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Model Zoo
 
-   model_zoo.md
+   modelzoo.md
+   textdet_models.md
+   textrecog_models.md
+   kie_models.md
 
 .. toctree::
    :maxdepth: 1
@@ -50,6 +55,12 @@ You can switch between English and Chinese in the lower-left corner of the layou
    notes/projects.md
    notes/changelog.md
    notes/faq.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: API Reference
+
+   api.rst
 
 .. toctree::
    :caption: Switch Language

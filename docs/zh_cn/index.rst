@@ -31,16 +31,21 @@
    migration_guides/model.md
 
 .. toctree::
-   :maxdepth: 1
-   :caption: API 文档
+   :maxdepth: 2
+   :caption: 数据集支持
 
-   api.rst
+   data_prepare/det.md
+   data_prepare/recog.md
+   data_prepare/kie.md
 
 .. toctree::
-   :maxdepth: 1
-   :caption: 模型
+   :maxdepth: 2
+   :caption: 模型支持
 
-   model_zoo.md
+   modelzoo.md
+   textdet_models.md
+   textrecog_models.md
+   kie_models.md
 
 .. toctree::
    :maxdepth: 1
@@ -50,6 +55,12 @@
    notes/projects.md
    notes/changelog.md
    notes/faq.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: API 文档
+
+   api.rst
 
 .. toctree::
    :caption: 切换语言
