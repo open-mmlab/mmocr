@@ -1,4 +1,4 @@
-# Getting Started
+# Quick Run
 
 In this guide we will show you some useful commands and familiarize you with MMOCR. We also provide [a notebook](https://github.com/open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb) that can help you get the most out of MMOCR.
 
