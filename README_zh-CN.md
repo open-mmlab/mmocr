@@ -137,13 +137,6 @@ pip3 install -e .
 
 </details>
 
-<details open>
-<summary>命名实体识别</summary>
-
-- [x] [Bert-Softmax](configs/ner/bert_softmax/README.md) (NAACL'2019)
-
-</details>
-
 请点击[模型库](https://mmocr.readthedocs.io/en/latest/modelzoo.html)查看更多关于上述算法的详细信息。
 
 ## 贡献指南

@@ -4,7 +4,8 @@ import unittest
 from os.path import dirname, exists, join
 
 import torch
-from mmengine import Config, ConfigDict, InstanceData
+from mmengine.config import Config, ConfigDict
+from mmengine.structures import InstanceData
 
 from mmocr.registry import MODELS
 from mmocr.structures import KIEDataSample
@@ -46,8 +47,9 @@ class TestSDMGR(unittest.TestCase):
         return model
 
     def forward_wrapper(self, model, data, mode):
-        inputs, data_sample = model.data_preprocessor(data, False)
-        return model.forward(inputs, data_sample, mode)
+        out = model.data_preprocessor(data, False)
+        inputs, data_samples = out['inputs'], out['data_samples']
+        return model.forward(inputs, data_samples, mode)
 
     def setUp(self):
 
@@ -66,14 +68,11 @@ class TestSDMGR(unittest.TestCase):
             edge_labels=torch.LongTensor([[0, 1], [1, 0]]),
             texts=['text1', 'text2'],
             relations=torch.rand((2, 2, 5)))
-        self.visual_data = [
-            dict(inputs=torch.rand((3, 10, 10)), data_sample=data_sample)
-        ]
-        self.novisual_data = [
-            dict(
-                inputs=torch.Tensor([]).reshape((0, 0, 0)),
-                data_sample=data_sample)
-        ]
+        self.visual_data = dict(
+            inputs=[torch.rand((3, 10, 10))], data_samples=[data_sample])
+        self.novisual_data = dict(
+            inputs=[torch.Tensor([]).reshape((0, 0, 0))],
+            data_samples=[data_sample])
 
     def test_forward_loss(self):
         result = self.forward_wrapper(

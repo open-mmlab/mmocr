@@ -1,7 +1,7 @@
 _base_ = [
-    '../../_base_/recog_datasets/toy_data.py',
-    '../../_base_/textrec_default_runtime.py',
-    '../../_base_/schedules/schedule_adam_step_5e.py',
+    '../_base_/datasets/toy_data.py',
+    '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_adam_step_5e.py',
     '_base_sar_resnet31_parallel-decoder.py',
 ]
 

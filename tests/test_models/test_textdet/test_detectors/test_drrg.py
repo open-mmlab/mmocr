@@ -6,7 +6,7 @@ from unittest import mock
 
 import numpy as np
 import torch
-from mmengine import Config, ConfigDict
+from mmengine.config import Config, ConfigDict
 
 from mmocr.registry import MODELS
 from mmocr.testing.data import create_dummy_textdet_inputs

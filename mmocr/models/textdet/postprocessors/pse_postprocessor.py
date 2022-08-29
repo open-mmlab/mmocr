@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 import torch
 from mmcv.ops import contour_expand
-from mmengine.data import InstanceData
+from mmengine.structures import InstanceData
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample

@@ -1,12 +1,12 @@
 dictionary = dict(
     type='Dictionary',
-    dict_file='dicts/lower_english_digits.txt',
+    dict_file='{{ fileDirname }}/../../../dicts/lower_english_digits.txt',
     with_padding=True)
 
 model = dict(
     type='CRNN',
     preprocessor=None,
-    backbone=dict(type='VeryDeepVgg', leaky_relu=False, input_channels=1),
+    backbone=dict(type='MiniVGG', leaky_relu=False, input_channels=1),
     encoder=None,
     decoder=dict(
         type='CRNNDecoder',

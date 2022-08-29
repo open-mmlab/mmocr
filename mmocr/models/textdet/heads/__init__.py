@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .base_textdet_head import BaseTextDetHead
+from .base import BaseTextDetHead
 from .db_head import DBHead
 from .drrg_head import DRRGHead
 from .fce_head import FCEHead

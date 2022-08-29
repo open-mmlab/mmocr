@@ -1,8 +1,17 @@
 _base_ = [
     '_base_mask-rcnn_resnet50_fpn.py',
-    '../../_base_/det_datasets/icdar2015.py',
-    '../../_base_/textdet_default_runtime.py',
-    '../../_base_/schedules/schedule_sgd_160e.py',
+    '../_base_/datasets/icdar2015.py',
+    '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_sgd_base.py',
+]
+
+# optimizer
+optim_wrapper = dict(optimizer=dict(lr=0.08))
+train_cfg = dict(max_epochs=160)
+# learning policy
+param_scheduler = [
+    dict(type='LinearLR', end=500, start_factor=0.001, by_epoch=False),
+    dict(type='MultiStepLR', milestones=[80, 128], end=160),
 ]
 
 # dataset settings

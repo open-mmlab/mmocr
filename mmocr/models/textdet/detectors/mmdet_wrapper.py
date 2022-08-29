@@ -5,8 +5,8 @@ import cv2
 import torch
 from mmdet.structures import DetDataSample, OptSampleList
 from mmdet.structures.mask import bitmap_to_polygon
-from mmengine import InstanceData
 from mmengine.model import BaseModel
+from mmengine.structures import InstanceData
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
@@ -35,8 +35,8 @@ class MMDetWrapper(BaseModel):
         self.text_repr_type = text_repr_type
 
     def forward(self,
-                batch_inputs: torch.Tensor,
-                batch_data_samples: OptSampleList = None,
+                inputs: torch.Tensor,
+                data_samples: OptSampleList = None,
                 mode: str = 'tensor',
                 **kwargs) -> ForwardResults:
         """The unified entry for a forward process in both training and test.
@@ -54,9 +54,9 @@ class MMDetWrapper(BaseModel):
         optimizer updating, which are done in the :meth:`train_step`.
 
         Args:
-            batch_inputs (torch.Tensor): The input tensor with shape
+            inputs (torch.Tensor): The input tensor with shape
                 (N, C, ...) in general.
-            batch_data_samples (list[:obj:`DetDataSample`], optional): The
+            data_samples (list[:obj:`DetDataSample`], optional): The
                 annotation data of every samples. Defaults to None.
             mode (str): Return what kind of value. Defaults to 'tensor'.
 
@@ -67,8 +67,8 @@ class MMDetWrapper(BaseModel):
             - If ``mode="predict"``, return a list of :obj:`TextDetDataSample`.
             - If ``mode="loss"``, return a dict of tensor.
         """
-        results = self.wrapped_model.forward(batch_inputs, batch_data_samples,
-                                             mode, **kwargs)
+        results = self.wrapped_model.forward(inputs, data_samples, mode,
+                                             **kwargs)
         if mode == 'predict':
             results = self.adapt_predictions(results)
 

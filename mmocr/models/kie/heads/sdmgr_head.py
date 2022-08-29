@@ -6,7 +6,7 @@ from mmengine.model import BaseModule
 from torch import Tensor, nn
 from torch.nn import functional as F
 
-from mmocr.models.textrecog.dictionary import Dictionary
+from mmocr.models.common.dictionary import Dictionary
 from mmocr.registry import MODELS, TASK_UTILS
 from mmocr.structures import KIEDataSample
 
@@ -83,28 +83,26 @@ class SDMGRHead(BaseModule):
         self.postprocessor = MODELS.build(postprocessor)
         self.relation_norm = relation_norm
 
-    def loss(self, batch_inputs: Tensor,
-             batch_data_samples: List[KIEDataSample]) -> Dict:
+    def loss(self, inputs: Tensor, data_samples: List[KIEDataSample]) -> Dict:
         """Calculate losses from a batch of inputs and data samples.
         Args:
-            batch_inputs (torch.Tensor): Shape :math:`(N, E)`.
-            batch_data_samples (List[KIEDataSample]): List of data samples.
+            inputs (torch.Tensor): Shape :math:`(N, E)`.
+            data_samples (List[KIEDataSample]): List of data samples.
 
         Returns:
             dict[str, tensor]: A dictionary of loss components.
         """
-        preds = self.forward(batch_inputs, batch_data_samples)
-        return self.module_loss(preds, batch_data_samples)
+        preds = self.forward(inputs, data_samples)
+        return self.module_loss(preds, data_samples)
 
-    def predict(self, batch_inputs: Tensor,
-                batch_data_samples: List[KIEDataSample]
-                ) -> List[KIEDataSample]:
+    def predict(self, inputs: Tensor,
+                data_samples: List[KIEDataSample]) -> List[KIEDataSample]:
         """Predict results from a batch of inputs and data samples with post-
         processing.
 
         Args:
-            batch_inputs (torch.Tensor): Shape :math:`(N, E)`.
-            batch_data_samples (List[KIEDataSample]): List of data samples.
+            inputs (torch.Tensor): Shape :math:`(N, E)`.
+            data_samples (List[KIEDataSample]): List of data samples.
 
         Returns:
             List[KIEDataSample]: A list of datasamples of prediction results.
@@ -121,16 +119,15 @@ class SDMGRHead(BaseModule):
             - edge_scores (Tensor): A float tensor of shape (N, ), indicating
               the confidence scores for edge predictions.
         """
-        preds = self.forward(batch_inputs, batch_data_samples)
-        return self.postprocessor(preds, batch_data_samples)
+        preds = self.forward(inputs, data_samples)
+        return self.postprocessor(preds, data_samples)
 
-    def forward(self, batch_inputs: Tensor,
-                batch_data_samples: List[KIEDataSample]
-                ) -> Tuple[Tensor, Tensor]:
+    def forward(self, inputs: Tensor,
+                data_samples: List[KIEDataSample]) -> Tuple[Tensor, Tensor]:
         """
         Args:
-            batch_inputs (torch.Tensor): Shape :math:`(N, E)`.
-            batch_data_samples (List[KIEDataSample]): List of data samples.
+            inputs (torch.Tensor): Shape :math:`(N, E)`.
+            data_samples (List[KIEDataSample]): List of data samples.
 
         Returns:
             tuple(Tensor, Tensor):
@@ -143,8 +140,7 @@ class SDMGRHead(BaseModule):
 
         device = self.node_embed.weight.device
 
-        node_nums, char_nums, all_nodes = self.convert_texts(
-            batch_data_samples)
+        node_nums, char_nums, all_nodes = self.convert_texts(data_samples)
 
         embed_nodes = self.node_embed(all_nodes.to(device).long())
         rnn_nodes, _ = self.rnn(embed_nodes)
@@ -156,10 +152,10 @@ class SDMGRHead(BaseModule):
             1, (all_nums[valid] - 1).unsqueeze(-1).unsqueeze(-1).expand(
                 -1, -1, rnn_nodes.size(-1))).squeeze(1)
 
-        if batch_inputs is not None:
-            nodes = self.fusion([batch_inputs, nodes])
+        if inputs is not None:
+            nodes = self.fusion([inputs, nodes])
 
-        relations = self.compute_relations(batch_data_samples)
+        relations = self.compute_relations(data_samples)
         all_edges = torch.cat(
             [relation.view(-1, relation.size(-1)) for relation in relations],
             dim=0)
