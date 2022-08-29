@@ -303,7 +303,7 @@ dict(
 </thead>
 </table>
 
-6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + [`Pad`](mmocr.datasets.transforms.Pad)
+6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + `mmcv.Pad`
 
    原有的 `EastRandomCrop` 内同时对图像进行了剪裁、缩放以及填充。在新版本中，我们可以通过组合三种数据增强策略来达到相同的效果。
 
