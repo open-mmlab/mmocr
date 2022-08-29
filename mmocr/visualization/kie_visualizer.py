@@ -172,26 +172,26 @@ class KIELocalVisualizer(Visualizer):
         Args:
             image (np.ndarray): The origin image to draw. The format
                 should be RGB.
-        edge_labels (np.ndarray, torch.Tensor): The edge labels to draw.
-            The shape of edge_labels should be (N, N), where N is the
-            number of texts.
-        bboxes (np.ndarray, torch.Tensor): The bboxes to draw. The shape of
-            bboxes should be (N, 4), where N is the number of texts.
-        texts (Sequence[str]): The texts to draw. The length of texts
-            should be the same as the number of bboxes.
-        arrow_colors (str, optional): The colors of arrows. Refer to
-            `matplotlib.colors` for full list of formats that are accepted.
-            Defaults to 'g'.
+            edge_labels (np.ndarray or torch.Tensor): The edge labels to draw.
+                The shape of edge_labels should be (N, N), where N is the
+                number of texts.
+            bboxes (np.ndarray or torch.Tensor): The bboxes to draw. The shape
+                of bboxes should be (N, 4), where N is the number of texts.
+            texts (Sequence[str]): The texts to draw. The length of texts
+                should be the same as the number of bboxes.
+            arrow_colors (str, optional): The colors of arrows. Refer to
+                `matplotlib.colors` for full list of formats that are accepted.
+                Defaults to 'g'.
         """
         pairs = np.where(edge_labels > 0)
         key_bboxes = bboxes[pairs[0]]
         value_bboxes = bboxes[pairs[1]]
-        x_datas = np.stack([(key_bboxes[:, 2] + key_bboxes[:, 0]) / 2,
-                            (value_bboxes[:, 0] + value_bboxes[:, 2]) / 2],
-                           axis=-1)
-        y_datas = np.stack([(key_bboxes[:, 1] + key_bboxes[:, 3]) / 2,
-                            (value_bboxes[:, 1] + value_bboxes[:, 3]) / 2],
-                           axis=-1)
+        x_data = np.stack([(key_bboxes[:, 2] + key_bboxes[:, 0]) / 2,
+                           (value_bboxes[:, 0] + value_bboxes[:, 2]) / 2],
+                          axis=-1)
+        y_data = np.stack([(key_bboxes[:, 1] + key_bboxes[:, 3]) / 2,
+                           (value_bboxes[:, 1] + value_bboxes[:, 3]) / 2],
+                          axis=-1)
         key_index = np.array(list(set(pairs[0])))
         val_index = np.array(list(set(pairs[1])))
         key_texts = [texts[i] for i in key_index]
@@ -211,8 +211,8 @@ class KIELocalVisualizer(Visualizer):
                 horizontal_alignments='center',
                 vertical_alignments='center')
         self.draw_arrows(
-            x_datas,
-            y_datas,
+            x_data,
+            y_data,
             colors=arrow_colors,
             line_widths=0.3,
             arrow_tail_widths=0.05,
@@ -238,20 +238,21 @@ class KIELocalVisualizer(Visualizer):
         Args:
             image (np.ndarray): The origin image to draw. The format
                 should be RGB.
-            bbox_labels (np.ndarray, torch.Tensor): The bbox labels to draw.
+            bbox_labels (np.ndarray or torch.Tensor): The bbox labels to draw.
                 The shape of bbox_labels should be (N,), where N is the
                 number of texts.
-            bboxes (np.ndarray, torch.Tensor): The bboxes to draw. The shape of
-                bboxes should be (N, 4), where N is the number of texts.
+            bboxes (np.ndarray or torch.Tensor): The bboxes to draw. The shape
+                of bboxes should be (N, 4), where N is the number of texts.
             polygons (Sequence[np.ndarray]): The polygons to draw. The length
                 of polygons should be the same as the number of bboxes.
-            edge_labels (np.ndarray, torch.Tensor): The edge labels to draw.
+            edge_labels (np.ndarray or torch.Tensor): The edge labels to draw.
                 The shape of edge_labels should be (N, N), where N is the
                 number of texts.
             texts (Sequence[str]): The texts to draw. The length of texts
                 should be the same as the number of bboxes.
             class_names (dict): The class names for bbox labels.
-            is_openset (bool): Whether the dataset is openset. Default: False.
+            is_openset (bool): Whether the dataset is openset. Defaults to
+                False.
         """
         img_shape = image.shape[:2]
         empty_shape = (img_shape[0], img_shape[1], 3)
@@ -321,18 +322,18 @@ class KIELocalVisualizer(Visualizer):
         Args:
             name (str): The image identifier.
             image (np.ndarray): The image to draw.
-            data_sample (:obj:`TextDetDataSample`, optional):
-                TextDetDataSample which contains gt and prediction. Defaults
+            data_sample (:obj:`KIEDataSample`, optional):
+                KIEDataSample which contains gt and prediction. Defaults
                     to None.
-            draw_gt (bool): Whether to draw GT TextDetDataSample.
+            draw_gt (bool): Whether to draw GT KIEDataSample.
                 Defaults to True.
-            draw_pred (bool): Whether to draw Predicted TextDetDataSample.
+            draw_pred (bool): Whether to draw Predicted KIEDataSample.
                 Defaults to True.
             show (bool): Whether to display the drawn image. Default to False.
             wait_time (float): The interval of show (s). Defaults to 0.
-            out_file (str): Path to output file. Defaults to None.
             pred_score_thr (float): The threshold to visualize the bboxes
                 and masks. Defaults to 0.3.
+            out_file (str): Path to output file. Defaults to None.
             step (int): Global step value to record. Defaults to 0.
         """
         gt_img_data = None
@@ -379,8 +380,8 @@ class KIELocalVisualizer(Visualizer):
             mmcv.imwrite(drawn_img[..., ::-1], out_file)
 
     def draw_arrows(self,
-                    x_datas: Union[np.ndarray, torch.Tensor],
-                    y_datas: Union[np.ndarray, torch.Tensor],
+                    x_data: Union[np.ndarray, torch.Tensor],
+                    y_data: Union[np.ndarray, torch.Tensor],
                     colors: Union[str, tuple, List[str], List[tuple]] = 'C1',
                     line_widths: Union[Union[int, float],
                                        List[Union[int, float]]] = 1,
@@ -396,9 +397,9 @@ class KIELocalVisualizer(Visualizer):
         """Draw single or multiple arrows.
 
         Args:
-            x_datas (np.ndarray or torch.Tensor): The x coordinate of
+            x_data (np.ndarray or torch.Tensor): The x coordinate of
                 each line' start and end points.
-            y_datas (np.ndarray, torch.Tensor): The y coordinate of
+            y_data (np.ndarray, torch.Tensor): The y coordinate of
                 each line' start and end points.
             colors (str or tuple or list[str or tuple]): The colors of
                 lines. ``colors`` can have the same length with lines or just
@@ -439,19 +440,18 @@ class KIELocalVisualizer(Visualizer):
                 single value. If ``overhangs`` is single value, all the lines
                 will have the same overhangs. Defaults to 0.
         """
-        check_type('x_datas', x_datas, (np.ndarray, torch.Tensor))
-        x_datas = tensor2ndarray(x_datas)
-        check_type('y_datas', y_datas, (np.ndarray, torch.Tensor))
-        y_datas = tensor2ndarray(y_datas)
-        assert x_datas.shape == y_datas.shape, (
-            '`x_datas` and `y_datas` should have the same shape')
-        assert x_datas.shape[-1] == 2, (
-            f'The shape of `x_datas` should be (N, 2), but got {x_datas.shape}'
-        )
-        if len(x_datas.shape) == 1:
-            x_datas = x_datas[None]
-            y_datas = y_datas[None]
-        number_arrow = x_datas.shape[0]
+        check_type('x_data', x_data, (np.ndarray, torch.Tensor))
+        x_data = tensor2ndarray(x_data)
+        check_type('y_data', y_data, (np.ndarray, torch.Tensor))
+        y_data = tensor2ndarray(y_data)
+        assert x_data.shape == y_data.shape, (
+            '`x_data` and `y_data` should have the same shape')
+        assert x_data.shape[-1] == 2, (
+            f'The shape of `x_data` should be (N, 2), but got {x_data.shape}')
+        if len(x_data.shape) == 1:
+            x_data = x_data[None]
+            y_data = y_data[None]
+        number_arrow = x_data.shape[0]
         check_type_and_length('colors', colors, (str, tuple, list),
                               number_arrow)
         colors = value2list(colors, (str, tuple), number_arrow)
@@ -480,7 +480,7 @@ class KIELocalVisualizer(Visualizer):
         overhangs = value2list(overhangs, int, number_arrow)
 
         lines = np.concatenate(
-            (x_datas.reshape(-1, 2, 1), y_datas.reshape(-1, 2, 1)), axis=-1)
+            (x_data.reshape(-1, 2, 1), y_data.reshape(-1, 2, 1)), axis=-1)
         if not self._is_posion_valid(lines):
             warnings.warn(
                 'Warning: The line is out of bounds,'

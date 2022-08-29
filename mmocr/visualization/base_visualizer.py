@@ -147,4 +147,4 @@ class BaseLocalVisualizer(Visualizer):
         return visualizer.get_image()
 
     def _draw_instances(self) -> np.ndarray:
-        pass
+        raise NotImplementedError
