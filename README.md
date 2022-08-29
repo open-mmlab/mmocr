@@ -137,13 +137,6 @@ Supported algorithms:
 
 </details>
 
-<details open>
-<summary>Named Entity Recognition</summary>
-
-- [x] [Bert-Softmax](configs/ner/bert_softmax/README.md) (NAACL'2019)
-
-</details>
-
 Please refer to [model_zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html) for more details.
 
 ## Contributing
