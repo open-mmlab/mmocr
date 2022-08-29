@@ -248,8 +248,10 @@ log_config = dict(
     hooks=[
         dict(type='TextLoggerHook', by_epoch=False),
         dict(type='TensorboardLoggerHook', by_epoch=False),
-        dict(type='WandbLoggerHook', by_epoch=False,
-             init_kwargs={'entity': entity, 'project': project, 'config': cfg_dict}), # The Wandb logger is also supported, It requires `wandb` to be installed.
+        dict(type='WandbLoggerHook', by_epoch=False, # The Wandb logger is also supported, It requires `wandb` to be installed.
+             init_kwargs={'entity': "entity", # The entity used to log on Wandb
+                          'project': "project", # Project name in WandB 
+                          'config': cfg_dict}), # Check https://docs.wandb.ai/ref/python/init for more init arguments.
         # ClearMLLoggerHook, DvcliveLoggerHook, MlflowLoggerHook, NeptuneLoggerHook, PaviLoggerHook, SegmindLoggerHook are also supported based on MMCV implementation.
     ])
 
