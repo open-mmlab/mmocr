@@ -250,6 +250,5 @@ Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.Icd
 
    ```python
     # Set the file backend to lmdb and specify the db_path
-    file_client_args = dict(
-        backend='lmdb', db_path='tests/data/rec_toy_dataset/imgs.lmdb')
+    file_client_args = dict(backend='lmdb', db_path='tests/data/rec_toy_dataset/imgs.lmdb')
    ```

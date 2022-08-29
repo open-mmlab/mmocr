@@ -249,6 +249,5 @@ python tools/dataset_converters/textrecog/data_migrator.py ${IN_PATH} ${OUT_PATH
 
    ```python
     # 将文件后端设置为 lmdb，并指定 lmdb 标注文件的路径
-    file_client_args = dict(
-        backend='lmdb', db_path='tests/data/rec_toy_dataset/imgs.lmdb')
+    file_client_args = dict(backend='lmdb', db_path='tests/data/rec_toy_dataset/imgs.lmdb')
    ```
