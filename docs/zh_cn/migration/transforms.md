@@ -10,9 +10,9 @@ MMOCR 0.x 版本中，我们在 `mmocr/datasets/pipelines/xxx_transforms.py` 中
 
 ### 数据格式化相关数据变换
 
-1. `Collect` + `CustomFormatBundle` -> [PackTextDetInputs/PackTextRecogInputs](mmocr.datasets.transforms.formatting.PackTextDetInputs)
+1. `Collect` + `CustomFormatBundle` -> [`PackTextDetInputs`](mmocr.datasets.transforms.PackTextDetInputs)/[`PackTextRecogInputs`](mmocr.datasets.transforms.PackTextRecogInputs)
 
-`PackxxxInputs` 同时囊括了 `Collect` 和 `CustomFormatBundle` 两个功能，且不再有 `key` 参数，训练目标 target 的生成被转移至在 `loss` 中完成。
+`PackxxxInputs` 同时囊括了 `Collect` 和 `CustomFormatBundle` 两个功能，且不再有 `key` 参数，而训练目标 target 的生成现在被转移至在 `loss` 中完成。
 
 <table class="docutils">
 <thead>
@@ -48,7 +48,7 @@ dict(
 
 ### 数据增强相关数据变换
 
-1. `ResizeOCR` -> `Resize`, `RescaleToHeight`, `PadToWidth`
+1. `ResizeOCR` -> [`Resize`](mmocr.datasets.transforms.Resize), [`RescaleToHeight`](mmocr.datasets.transforms.RescaleToHeight), [`PadToWidth`](mmocr.datasets.transforms.PadToWidth)
 
    原有的 `ResizeOCR` 现在被拆分为三个独立的数据增强模块。
 
@@ -160,7 +160,7 @@ dict(
 </thead>
 </table>
 
-1. `RandomRotateTextDet` &  `RandomRotatePolyInstances` -> `RandomRotate`
+2. `RandomRotateTextDet` &  `RandomRotatePolyInstances` -> [`RandomRotate`](mmocr.datasets.transforms.RandomRotate)
 
    随机旋转数据增强策略已被整合至 `RanomRotate`。该方法的默认行为与 0.x 版本中的 `RandomRotateTextDet` 保持一致。此时仅需指定最大旋转角度 `max_angle` 即可。
 
@@ -232,11 +232,11 @@ dict(
 在 0.x 版本中，部分数据增强方法通过定义一个内部变量 'xxx_ratio' 来指定执行概率，如 'rotate_ratio', 'crop_ratio' 等。在 1.x 版本中，这些参数已被统一删除。现在，我们可以通过 'RandomApply' 来对不同的数据变换方法进行包装，并指定其执行概率。
 ```
 
-3. `RandomCropFlip` -> `TextDetRandomCropFlip`
+3. `RandomCropFlip` -> [`TextDetRandomCropFlip`](mmocr.datasets.transforms.TextDetRandomCropFlip)
 
    目前仅对方法名进行了更改，其他参数保持一致。
 
-4. `RandomCropPolyInstances` -> `RandomCrop`
+4. `RandomCropPolyInstances` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop)
 
    新版本移除了 `crop_ratio` 以及 `instance_key`，并统一使用 `gt_polygons` 为目标进行裁剪。
 
@@ -271,7 +271,7 @@ dict(
 </thead>
 </table>
 
-5. `RandomCropInstances` -> `TextDetRandomCrop`
+5. `RandomCropInstances` -> [`TextDetRandomCrop`](mmocr.datasets.transforms.TextDetRandomCrop)
 
    新版本移除了 `instance_key` 和 `mask_type`，并统一使用 `gt_polygons` 为目标进行裁剪。
 
@@ -303,7 +303,7 @@ dict(
 </thead>
 </table>
 
-6. `EastRandomCrop` -> `RandomCrop` + `Resize` + `Pad`
+6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + [`Pad`](mmocr.datasets.transforms.Pad)
 
    原有的 `EastRandomCrop` 内同时对图像进行了剪裁、缩放以及填充。在新版本中，我们可以通过组合三种数据增强策略来达到相同的效果。
 
@@ -374,7 +374,7 @@ dict(
 默认地，数据流水线会从当前 'scope' 的注册器中搜索对应的数据变换，如果不存在该数据变化，则将继续在上游库，如 MMCV 中进行搜索。例如，mmocr 中并未实现 'RandomResize' 方法，但我们仍然可以在配置中直接引用该数据增强方法，因为程序将自动从上游的 MMCV 中搜索该方法。此外，用户也可以通过添加前缀的形式来指定 'scope'。例如，'mmcv.RandomResize' 将强制指定使用 MMCV 库中实现的 'RandomResize'，当上下游库中存在同名方法时，则可以通过这种形式强制使用特定的版本。
 ```
 
-8. `SquareResizePad` -> `Resize` + `SourceImagePad`
+8. `SquareResizePad` -> [`Resize`](mmocr.datasets.transforms.Resize) + [`SourceImagePad`](mmocr.datasets.transforms.SourceImagePad)
 
    原有的 `SquareResizePad` 内部实现了两个分支，并依据概率 `pad_ratio` 随机使用其中的一个分支进行数据增强。具体而言，一个分支先对图像缩放再填充；另一个分支则直接对图像进行缩放。为增强不同模块的复用性，我们在 1.x 版本中将该方法拆分成了 `Resize` + `SourceImagePad` 的组合形式，并通过 MMCV 中的 `RandomChoice` 来控制分支。
 
@@ -468,7 +468,7 @@ dict(
 
     随机选择包装器现在被重命名为 `RandomChoice`，并且使用方法和原来完全一致。
 
-11. `ScaleAspectJitter` -> `ShortScaleAspectJitter`, `BoundedScaleAspectJitter`
+11. `ScaleAspectJitter` -> [`ShortScaleAspectJitter`](mmocr.datasets.transforms.ShortScaleAspectJitter), [`BoundedScaleAspectJitter`](mmocr.datasets.transforms.BoundedScaleAspectJitter)
 
     原有的 `ScaleAspectJitter` 实现了多种不同的图像尺寸抖动数据增强策略，在新版本中，我们将其拆分为数个逻辑更加清晰的独立数据变化方法。
 

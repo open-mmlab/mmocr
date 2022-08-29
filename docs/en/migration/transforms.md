@@ -10,7 +10,7 @@ Since some of the modules were renamed, merged or separated during the refactori
 
 ### Data Formatting Related Data Transforms
 
-1. `Collect` + `CustomFormatBundle` -> `PackTextDetInputs/PackTextRecogInputs`
+1. `Collect` + `CustomFormatBundle` -> [`PackTextDetInputs`](mmocr.datasets.transforms.formatting.PackTextDetInputs)/[`PackTextRecogInputs`](mmocr.datasets.transforms.formatting.PackTextRecogInputs)
 
 `PackxxxInputs` implements both `Collect` and `CustomFormatBundle` functions, and no longer has `key` parameters, the generation of training targets is moved to be done in `loss` modules.
 
@@ -48,7 +48,7 @@ dict(
 
 ### Data Augmentation Related Data Transforms
 
-1. `ResizeOCR` -> `Resize`, `RescaleToHeight`, `PadToWidth`
+1. `ResizeOCR` -> [`Resize`](mmocr.datasets.transforms.Resize), [`RescaleToHeight`](mmocr.datasets.transforms.RescaleToHeight), [`PadToWidth`](mmocr.datasets.transforms.PadToWidth)
 
    The original `ResizeOCR` is now split into three data augmentation modules.
 
@@ -160,7 +160,7 @@ dict(
 </thead>
 </table>
 
-2. `RandomRotateTextDet` &  `RandomRotatePolyInstances` -> `RandomRotate`
+2. `RandomRotateTextDet` &  `RandomRotatePolyInstances` -> [`RandomRotate`](mmocr.datasets.transforms.RandomRotate)
 
    We implemented all random rotation-related data augmentation in `RandomRotate` in version 1.x. Its default behavior is identical to the `RandomRotateTextDet` in version 0.x.
 
@@ -232,11 +232,11 @@ dict(
 In version 0.x, some data augmentation methods specified execution probability by defining an internal variable 'xxx_ratio', such as 'rotate_ratio', 'crop_ratio', etc. In version 1.x, these parameters have been removed. Now we can use 'RandomApply' to wrap different data transforms and specify their execution probabilities.
 ```
 
-3. `RandomCropFlip` -> `TextDetRandomCropFlip`
+3. `RandomCropFlip` -> [`TextDetRandomCropFlip`](mmocr.datasets.transforms.TextDetRandomCropFlip)
 
    Currently, only the method name has been changed, and other parameters remain the same.
 
-4. `RandomCropPolyInstances` -> `RandomCrop`
+4. `RandomCropPolyInstances` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop)
 
    In MMOCR version 1.x, `crop_ratio` and `instance_key` are removed. The `gt_polygons` is now used as the target for cropping.
 
@@ -271,7 +271,7 @@ dict(
 </thead>
 </table>
 
-5. `RandomCropInstances` -> `TextDetRandomCrop`
+5. `RandomCropInstances` -> [`TextDetRandomCrop`](mmocr.datasets.transforms.TextDetRandomCrop)
 
    In MMOCR version 1.x, `crop_ratio` and `instance_key` are removed. The `gt_polygons` is now used as the target for cropping.
 
@@ -303,7 +303,7 @@ dict(
 </thead>
 </table>
 
-6. `EastRandomCrop` -> `RandomCrop` + `Resize` + `Pad`
+6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + [`Pad`](mmocr.datasets.transforms.Pad)
 
    The `EastRandomCrop` was implemented by applying cropping, scaling and padding to the input image. Now, the same effect can be achieved by combining three data transforms.
 
@@ -374,7 +374,7 @@ dict(
 By default, the data pipeline will search for the corresponding data transforms from the register of the current 'scope', and if that data transform does not exist, it will continue to search in the upstream library, such as MMCV. For example, the 'RandomResize' function is not implemented in mmocr, but it can be directly called in the configuration, as the program will automatically search for it from MMCV. In addition, the user can also specify 'scope' by adding a prefix. For example, 'mmcv.RandomResize' will force the it to use 'RandomResize' implemented in MMCV, which is useful when a method of the same name exists in both upstream and downstream libraries.
 ```
 
-8. `SquareResizePad` -> `Resize` + `SourceImagePad`
+8. `SquareResizePad` -> [`Resize`](mmocr.datasets.transforms.Resize) + [`SourceImagePad`](mmocr.datasets.transforms.SourceImagePad)
 
    The `SquareResizePad` implements two branches and uses one of them randomly based on the `pad_ratio`. Specifically, one branch firstly resize the image and then padding it to a certain size; the other branch only resize the image. To enhance the reusability of the different modules, we split this data transform into a combination of `Resize` + `SourceImagePad` in version 1.x, and control the branches via `RandomChoice`.
 
@@ -468,7 +468,7 @@ dict(
 
     The random choice wrapper is now renamed to `RandomChoice` and is used in exactly the same way as before.
 
-11. `ScaleAspectJitter` -> `ShortScaleAspectJitter`, `BoundedScaleAspectJitter`
+11. `ScaleAspectJitter` -> [`ShortScaleAspectJitter`](mmocr.datasets.transforms.ShortScaleAspectJitter), [`BoundedScaleAspectJitter`](mmocr.datasets.transforms.BoundedScaleAspectJitter)
 
     The `ScaleAspectJitter` implemented several different image size jittering strategies, which has now been split into several independent data transforms.
 
