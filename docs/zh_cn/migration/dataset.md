@@ -1,6 +1,6 @@
 # 数据集迁移
 
-在 OpenMMLab 2.0 系列算法库基于 [MMEngine](https://github.com/open-mmlab/mmengine) 设计了统一的[数据集基类](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/basedataset.md)，并制定了数据集标注文件规范。基于此，我们在 MMOCR 1.0 版本中重构了 OCR 任务数据集基类 `OCRDataset`。以下文档将介绍 MMOCR 中新旧数据集格式的区别，以及如何将旧数据集迁移至新版本中。
+在 OpenMMLab 2.0 系列算法库基于 [MMEngine](https://github.com/open-mmlab/mmengine) 设计了统一的[数据集基类](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/basedataset.md)，并制定了数据集标注文件规范。基于此，我们在 MMOCR 1.0 版本中重构了 OCR 任务数据集基类 [`OCRDataset`](mmocr.datasets.OCRDataset)。以下文档将介绍 MMOCR 中新旧数据集格式的区别，以及如何将旧数据集迁移至新版本中。对于暂不方便进行数据迁移的用户，我们也在[第三节](#兼容性)提供了临时的代码兼容方案。
 
 ```{note}
 关键信息抽取任务仍采用原有的 WildReceipt 数据集标注格式。
@@ -187,57 +187,68 @@ python tools/dataset_converters/textrecog/data_migrator.py ${IN_PATH} ${OUT_PATH
 用于兼容旧数据格式的代码和组件可能在未来的版本中被完全移除。因此，我们强烈建议用户将数据集迁移至新的数据格式标准。
 ```
 
-具体而言，我们提供了三个临时的数据集类 [IcdarDataset](https://github.com/open-mmlab/mmocr/blob/dev-1.x/mmocr/datasets/icdar_dataset.py#L11), [RecogTextDataset](https://github.com/open-mmlab/mmocr/blob/dev-1.x/mmocr/datasets/recog_text_dataset.py#L14), [RecogLMDBDataset](https://github.com/open-mmlab/mmocr/blob/dev-1.x/mmocr/datasets/recog_lmdb_dataset.py#L13) 来兼容旧格式的标注文件。分别对应了 MMOCR 0.x 版本中的文本检测数据集 `IcdarDataset`，`.txt`、`.jsonl` 和 `LMDB` 格式的文本识别数据标注。其使用方式与 0.x 版本一致。
+具体而言，我们提供了三个临时的数据集类 [IcdarDataset](mmocr.datasets.IcdarDataset), [RecogTextDataset](mmocr.datasets.RecogTextDataset), [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) 来兼容旧格式的标注文件。分别对应了 MMOCR 0.x 版本中的文本检测数据集 `IcdarDataset`，`.txt`、`.jsonl` 和 `LMDB` 格式的文本识别数据标注。其使用方式与 0.x 版本一致。
 
-1. `IcdarDataset` 支持 0.x 版本文本检测任务的 COCO 标注格式。
+1. [IcdarDataset](mmocr.datasets.IcdarDataset) 支持 0.x 版本文本检测任务的 COCO 标注格式。只需要在 `configs/textdet/_base_/datasets` 中添加新的数据集配置文件，并指定其数据集类型为 `IcdarDataset` 即可。
 
    ```python
      data_root = 'data/det/icdar2015'
-     train_anno_path = 'instances_training.json'
 
      train_dataset = dict(
          type='IcdarDataset',
          data_root=data_root,
-         ann_file=train_anno_path,
+         ann_file='instances_training.json',
          data_prefix=dict(img_path='imgs/'),
          filter_cfg=dict(filter_empty_gt=True, min_size=32),
          pipeline=None)
    ```
 
-2. `RecogTextDataset` 支持 0.x 版本文本识别任务的 txt 和 jsonl 标注格式。
+2. [RecogTextDataset](mmocr.datasets.RecogTextDataset) 支持 0.x 版本文本识别任务的 `txt` 和 `jsonl` 标注格式。只需要在 `configs/textrecog/_base_/datasets` 中添加新的数据集配置文件，并指定其数据集类型为 `RecogTextDataset` 即可。例如，以下示例展示了如何配置并读取 toy dataset 中的旧格式标签 `old_label.txt` 以及 `old_label.jsonl`。
 
    ```python
-   # txt
-   data_root = 'tests/data/rec_toy_dataset/'
-   train_anno_path = 'old_label.txt'
+    data_root = 'tests/data/rec_toy_dataset/'
 
-   txt_dataset = RecogTextDataset(
-       ann_file=train_anno_path,
-       data_prefix=dict(img_path='imgs'),
-       parser_cfg=dict(
-           type='LineStrParser',
-           keys=['filename', 'text'],
-           keys_idx=[0, 1]),
-       pipeline=[])
+    # 读取旧版 txt 格式识别数据标签
+    txt_dataset = dict(
+        type='RecogTextDataset',
+        data_root=data_root,
+        ann_file='old_label.txt',
+        data_prefix=dict(img_path='imgs'),
+        parser_cfg=dict(
+            type='LineStrParser',
+            keys=['filename', 'text'],
+            keys_idx=[0, 1]),
+        pipeline=[])
 
-   # json line
-   data_root = 'tests/data/rec_toy_dataset/'
-   train_anno_path = 'old_label.jsonl'
-
-   jsonl_dataset = RecogTextDataset(
-       ann_file=train_anno_path,
-       data_prefix=dict(img_path='imgs'),
-       parser_cfg=dict(type='LineJsonParser', keys=['filename', 'text']),
-       pipeline=[])
+    # 读取旧版 json line 格式识别数据标签
+    jsonl_dataset = dict(
+        type='RecogTextDataset',
+        data_root=data_root,
+        ann_file='old_label.jsonl',
+        data_prefix=dict(img_path='imgs'),
+        parser_cfg=dict(
+            type='LineJsonParser',
+            keys=['filename', 'text'],
+        pipeline=[])
    ```
 
-3. `RecogLMDBDataset` 支持 0.x 版本文本识别任务的 LMDB 标注格式。
+3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) 支持 0.x 版本文本识别任务的 `LMDB` 标注格式。只需要在 `configs/textrecog/_base_/datasets` 中添加新的数据集配置文件，并指定其数据集类型为 `RecogLMDBDataset` 即可。例如，以下示例展示了如何配置并读取 toy dataset 中的 `label.lmdb`，该 `lmdb` 文件**仅包含标签信息**。
 
    ```python
-   data_root = 'tests/data/rec_toy_dataset/'
-   train_anno_path = 'imgs.lmdb'
-   dataset = RecogLMDBDataset(
-       ann_file=train_anno_path,
-       data_prefix=dict(img_path='imgs'),
-       pipeline=[])
+    data_root = 'tests/data/rec_toy_dataset/'
+
+    lmdb_dataset = dict(
+        type='RecogLMDBDataset',
+        data_root=toy_data_root,
+        ann_file='label.lmdb',
+        data_prefix=dict(img_path='imgs'),
+        pipeline=[])
+   ```
+
+   当 `lmdb` 文件中既包含标签信息又包含图像时，我们除了按照以上示例将数据集类型设定为 `RecogLMDBDataset` 以外，还需按照如下示例在训练及测试数据流水线中将文件后端参数 `file_client_args` 配置为 `lmdb`，并指定 `db_path` 为 `lmdb` 标注文件的路径：
+
+   ```python
+    # 将文件后端设置为 lmdb，并指定 lmdb 标注文件的路径
+    file_client_args = dict(
+        backend='lmdb', db_path='tests/data/rec_toy_dataset/imgs.lmdb')
    ```

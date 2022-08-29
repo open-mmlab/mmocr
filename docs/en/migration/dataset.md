@@ -1,6 +1,6 @@
 # Dataset Migration
 
-Based on the new design of [BaseDataset](<>) in [MMEngine](https://github.com/open-mmlab/mmengine), we have refactored the base OCR dataset class `OCRDataset` in MMOCR 1.0. The following document describes the differences between the old and new dataset formats in MMOCR, and how to migrate from the deprecated version to the latest.
+Based on the new design of [BaseDataset](<>) in [MMEngine](https://github.com/open-mmlab/mmengine), we have refactored the base OCR dataset class [`OCRDataset`](mmocr.datasets.OCRDataset) in MMOCR 1.0. The following document describes the differences between the old and new dataset formats in MMOCR, and how to migrate from the deprecated version to the latest. For users who do not want to migrate datasets at this time, we also provide a temporary solution in [Section Compatibility](#compatibility).
 
 ```{note}
 The Key Information Extraction task still uses the original WildReceipt dataset annotation format.
@@ -187,9 +187,9 @@ In consideration of the cost to users for data migration, we have temporarily ma
 The code and components used for compatibility with the old data format may be completely removed in a future release. Therefore, we strongly recommend that users migrate their datasets to the new data format.
 ```
 
-Specifically, we provide three dataset classes [IcdarDataset](https://github.com/open-mmlab/mmocr/blob/dev-1.x/mmocr/datasets/icdar_dataset.py#L11), [ RecogTextDataset](https://github.com/open-mmlab/mmocr/blob/dev-1.x/mmocr/datasets/recog_text_dataset.py#L14), [RecogLMDBDataset](https://github.com/open-mmlab/mmocr/blob/dev-1.x/mmocr/datasets/recog_lmdb_dataset.py#L13) to support the old formats.
+Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.IcdarDataset), [RecogTextDataset](mmocr.datasets.RecogTextDataset), [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) to support the old formats.
 
-1. `IcdarDataset` supports the COCO-like format annotations for text detection.
+1. [IcdarDataset](mmocr.datasets.IcdarDataset) supports the COCO-like format annotations for text detection. The users just need to add a new dataset config to `configs/textdet/_base_/datasets` and specify its dataset type as `IcdarDataset`.
 
    ```python
    data_root = 'data/det/icdar2015'
@@ -204,40 +204,52 @@ Specifically, we provide three dataset classes [IcdarDataset](https://github.com
        pipeline=None)
    ```
 
-2. `RecogTextDataset` supports `.txt` and `.jsonl` format annotations for text recognition.
+2. [RecogTextDataset](mmocr.datasets.RecogTextDataset) supports `.txt` and `.jsonl` format annotations for text recognition. The users just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogTextDataset`. For example, the following example shows how to configure and load the 0.x format labels `old_label.txt` and `old_label.jsonl` from the toy dataset.
 
    ```python
-   # txt
-   data_root = 'tests/data/rec_toy_dataset/'
-   train_anno_path = 'old_label.txt'
+    data_root = 'tests/data/rec_toy_dataset/'
 
-   txt_dataset = RecogTextDataset(
-       ann_file=train_anno_path,
-       data_prefix=dict(img_path='imgs'),
-       parser_cfg=dict(
-           type='LineStrParser',
-           keys=['filename', 'text'],
-           keys_idx=[0, 1]),
-       pipeline=[])
+    # loading 0.x txt format annos
+    txt_dataset = dict(
+        type='RecogTextDataset',
+        data_root=data_root,
+        ann_file='old_label.txt',
+        data_prefix=dict(img_path='imgs'),
+        parser_cfg=dict(
+            type='LineStrParser',
+            keys=['filename', 'text'],
+            keys_idx=[0, 1]),
+        pipeline=[])
 
-   # json line
-   data_root = 'tests/data/rec_toy_dataset/'
-   train_anno_path = 'old_label.jsonl'
-
-   jsonl_dataset = RecogTextDataset(
-       ann_file=train_anno_path,
-       data_prefix=dict(img_path='imgs'),
-       parser_cfg=dict(type='LineJsonParser', keys=['filename', 'text']),
-       pipeline=[])
+    # loading 0.x json line format annos
+    jsonl_dataset = dict(
+        type='RecogTextDataset',
+        data_root=data_root,
+        ann_file='old_label.jsonl',
+        data_prefix=dict(img_path='imgs'),
+        parser_cfg=dict(
+            type='LineJsonParser',
+            keys=['filename', 'text'],
+        pipeline=[])
    ```
 
-3. `RecogLMDBDataset` supports LMDB format annotations for text recognition。
+3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) supports LMDB format annotations for text recognition. The users just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogLMDBDataset`. For example, the following example shows how to configure and load the **label-only lmdb** `label.lmdb` from the toy dataset.
 
    ```python
-   data_root = 'tests/data/rec_toy_dataset/'
-   train_anno_path = 'imgs.lmdb'
-   dataset = RecogLMDBDataset(
-       ann_file=train_anno_path,
-       data_prefix=dict(img_path='imgs'),
-       pipeline=[])
+    data_root = 'tests/data/rec_toy_dataset/'
+
+    lmdb_dataset = dict(
+        type='RecogLMDBDataset',
+        data_root=toy_data_root,
+        ann_file='label.lmdb',
+        data_prefix=dict(img_path='imgs'),
+        pipeline=[])
+   ```
+
+   When the `lmdb` file contains **both labels and images**, in addition to setting the dataset type to `RecogLMDBDataset` as in the above example, we also need to configure the file backend in `file_client_args` to `lmdb` in the data pipelines and specify `db_path` as the path to the `lmdb` annotation file as in the following example.
+
+   ```python
+    # Set the file backend to lmdb and specify the db_path
+    file_client_args = dict(
+        backend='lmdb', db_path='tests/data/rec_toy_dataset/imgs.lmdb')
    ```
