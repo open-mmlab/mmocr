@@ -4,7 +4,7 @@ from typing import Sequence, Union
 
 import numpy as np
 import torch
-from mmengine import Visualizer
+from mmengine.visualization import Visualizer
 
 from mmocr.registry import VISUALIZERS
 

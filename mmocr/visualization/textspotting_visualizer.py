@@ -5,11 +5,13 @@ import mmcv
 import numpy as np
 import torch
 
+from mmocr.registry import VISUALIZERS
 from mmocr.structures import TextDetDataSample
 from mmocr.utils.polygon_utils import poly2bbox
 from .base_visualizer import BaseLocalVisualizer
 
 
+@VISUALIZERS.register_module()
 class TextSpottingLocalVisualizer(BaseLocalVisualizer):
 
     def _draw_instances(
