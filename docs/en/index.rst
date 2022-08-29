@@ -41,9 +41,9 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :maxdepth: 2
    :caption: Migration Guides
 
-   migration_guides/code.md
-   migration_guides/dataset.md
-   migration_guides/model.md
+   migration/code.md
+   migration/dataset.md
+   migration/model.md
 
 .. toctree::
    :maxdepth: 2

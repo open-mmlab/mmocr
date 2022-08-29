@@ -41,9 +41,9 @@
    :maxdepth: 2
    :caption: 迁移指南
 
-   migration_guides/code.md
-   migration_guides/dataset.md
-   migration_guides/model.md
+   migration/code.md
+   migration/dataset.md
+   migration/model.md
 
 .. toctree::
    :maxdepth: 2
