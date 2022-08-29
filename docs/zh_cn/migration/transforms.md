@@ -10,7 +10,7 @@ MMOCR 0.x 版本中，我们在 `mmocr/datasets/pipelines/xxx_transforms.py` 中
 
 ### 数据格式化相关数据变换
 
-1. `Collect` + `CustomFormatBundle` -> `PackTextDetInputs/PackTextRecogInputs`
+1. `Collect` + `CustomFormatBundle` -> [PackTextDetInputs/PackTextRecogInputs](mmocr.datasets.transforms.formatting.PackTextDetInputs)
 
 `PackxxxInputs` 同时囊括了 `Collect` 和 `CustomFormatBundle` 两个功能，且不再有 `key` 参数，训练目标 target 的生成被转移至在 `loss` 中完成。
 
