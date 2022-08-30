@@ -8,11 +8,11 @@ Functional boundaries of modules has not been clearly defined in MMOCR 0.x. In M
 
 - MMOCR 1.0 no longer supports named entity recognition tasks since it's not in the scope of OCR.
 
-- The module that computes the loss in a model is named as *Module Loss*, which is also responsbile for the conversion of gold annotations into loss targets. Another module, *Postprocessor*, is responsible for decoding the model raw output into `DataSample` for the corresponding task at prediction time.
+- The module that computes the loss in a model is named as *Module Loss*, which is also responsible for the conversion of gold annotations into loss targets. Another module, *Postprocessor*, is responsible for decoding the model raw output into `DataSample` for the corresponding task at prediction time.
 
-- The inputs of all models are reduced to two: `inputs`, containing the original features of the images and `List[DataSample]`, containing the meta-information of the images. At training time, the output format of a model is standardized to a dictionary containing the loss tensors. Similarly, a model generates a sequence of `DataSample`s containing the prediction outputs in testing.
+- The inputs of all models are now organized as a dictionary that consists of two keys: `inputs`, containing the original features of the images, and `List[DataSample]`, containing the meta-information of the images. At training time, the output format of a model is standardized to a dictionary containing the loss tensors. Similarly, a model generates a sequence of `DataSample`s containing the prediction outputs in testing.
 
-- in MMOCR 0.x, the majority of classes named `XXLoss` have the implementations closely bound to the corresponding model, while their names made users hard to tell them apart from other generic losses like `DiceLoss`. In 1.0, they are renamed to the form `XXModuleLoss`. (e.g. `DBLoss` was renamed to `DBModuleLoss`). The key to their configurations in config files is also changed from `loss` to `module_loss`.
+- In MMOCR 0.x, the majority of classes named `XXLoss` have the implementations closely bound to the corresponding model, while their names made users hard to tell them apart from other generic losses like `DiceLoss`. In 1.0, they are renamed to the form `XXModuleLoss`. (e.g. `DBLoss` was renamed to `DBModuleLoss`). The key to their configurations in config files is also changed from `loss` to `module_loss`.
 
 - The names of generic loss classes that are not related to the model implementation are kept as `XXLoss`. (e.g. [`MaskedBCELoss`](mmocr.models.common.losses.MaskedBCELoss)) They are all placed under `mmocr/models/common/losses`.
 
@@ -24,11 +24,10 @@ Functional boundaries of modules has not been clearly defined in MMOCR 0.x. In M
 
 ### Key Changes (TL;DR)
 
-- 旧版的模型权重仍然适用于新版，但需要将权重字典 `state_dict` 中以 `bbox_head` 开头的字段重命名为 `det_head`。
 
 - The model weights from MMOCR 0.x still works in the 1.0, but the fields starting with `bbox_head` in the state dict `state_dict` need to be renamed to `det_head`.
 
-- `XXTargets` transforms, which were responsbile for genearting detection targets, have been merged into `XXModuleLoss`.
+- `XXTargets` transforms, which were responsible for genearting detection targets, have been merged into `XXModuleLoss`.
 
 ### SingleStageTextDetector
 
@@ -83,7 +82,6 @@ Functional boundaries of modules has not been clearly defined in MMOCR 0.x. In M
   | `AttnConvertor`, `ABIConvertor` | <UKN>, \<BOS/EOS>, <PAD>, characters |
   | `CTCConvertor`                  | <BLK>, <UKN>, characters             |
 
-在 1.0 中，我们不再以任务为边界设计不同的字典和字符序，取而代之的是统一了字符序的 Dictionary，其字符序为 characters, \<BOS/EOS>, , 。`CTCConvertor` 中 被等价替换为 。
 
 In 1.0, instead of designing different dictionaries and character orders for different tasks, we have a unified *Dictionary* implementation with the character order always as characters, \<BOS/EOS>, <PAD>, <UKN>. <BLK> in `CTCConvertor` has been equivalently replaced by <PAD>.
 
@@ -100,7 +98,7 @@ In 1.0, instead of designing different dictionaries and character orders for dif
 
   | MMOCR 0.x                                                 | MMOCR 1.0                               | Note                                                                                                     |
   | --------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-  | `ABIConvertor.str2tensor()`, `AttnConvertor.str2tensor()` | `BaseTextRecogModuleLoss.get_targets()` | The differences that existed between the implementations of the two classes have been unified in the new version |
+  | `ABIConvertor.str2tensor()`, `AttnConvertor.str2tensor()` | `BaseTextRecogModuleLoss.get_targets()` | The different implementations between `ABIConvertor.str2tensor()` and `AttnConvertor.str2tensor()` have been unified in the new version. |
   | `CTCConvertor.str2tensor()`                               | `CTCModuleLoss.get_targets()`           |                                                                                                          |
 
 - The implementation of `tensor2str()` in *label converter* has been moved to `Postprocessor.get_single_prediction()`. The following table shows the correspondence between the old and new method implementations. Note that the old and new implementations are not identical.
