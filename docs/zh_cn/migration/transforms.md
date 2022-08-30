@@ -303,7 +303,7 @@ dict(
 </thead>
 </table>
 
-6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + [`mmcv.Pad`](mmcv.transforms.Pad)
+6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + [`mmengine.Pad`](mmcv.transforms.Pad)
 
    原有的 `EastRandomCrop` 内同时对图像进行了剪裁、缩放以及填充。在新版本中，我们可以通过组合三种数据增强策略来达到相同的效果。
 
@@ -336,9 +336,9 @@ dict(type='Pad', size=(640,640))
 </thead>
 </table>
 
-7. `RandomScaling` -> `mmcv.RandomResize`
+7. `RandomScaling` -> [`mmengine.RandomResize`](mmcv.transforms.RandomResize)
 
-   在新版本中，我们直接使用 mmcv 中实现的 `RandomResize` 来代替原有的实现。
+   在新版本中，我们直接使用 MMEngine 中实现的 `RandomResize` 来代替原有的实现。
 
 <table class="docutils">
 <thead>
@@ -371,7 +371,7 @@ dict(
 </table>
 
 ```{note}
-默认地，数据流水线会从当前 *scope* 的注册器中搜索对应的数据变换，如果不存在该数据变化，则将继续在上游库，如 MMCV 中进行搜索。例如，MMOCR 中并未实现 `RandomResize` 方法，但我们仍然可以在配置中直接引用该数据增强方法，因为程序将自动从上游的 MMCV 中搜索该方法。此外，用户也可以通过添加前缀的形式来指定 *scope*。例如，`mmcv.RandomResize` 将强制指定使用 MMCV 库中实现的 `RandomResize`，当上下游库中存在同名方法时，则可以通过这种形式强制使用特定的版本。
+默认地，数据流水线会从当前 *scope* 的注册器中搜索对应的数据变换，如果不存在该数据变换，则将继续在上游库，如 MMCV 及 MMEngine 中进行搜索。例如，MMOCR 中并未实现 `RandomResize` 方法，但我们仍然可以在配置中直接引用该数据增强方法，因为程序将自动从上游的 MMCV 中搜索该方法。此外，用户也可以通过添加前缀的形式来指定 *scope*。例如，`mmengine.RandomResize` 将强制指定使用 MMCV 库中实现的 `RandomResize`，当上下游库中存在同名方法时，则可以通过这种形式强制使用特定的版本。另外需要注意的是，MMCV 中所有的数据变换方法都被注册至 MMEngine 中，因为我们使用 `mmengine.RandomResize` 而不是 `mmcv.RandomResize`。
 ```
 
 8. `SquareResizePad` -> [`Resize`](mmocr.datasets.transforms.Resize) + [`SourceImagePad`](mmocr.datasets.transforms.SourceImagePad)
@@ -427,7 +427,7 @@ dict(
 在 1.x 版本中，随机选择包装器 "RandomChoice" 代替了 "OneOfWrapper"，可以从一系列数据变换组合中随机抽取一组并应用。
 ```
 
-9. `RandomWrapper` -> `mmcv.RandomApply`
+9. `RandomWrapper` -> [`mmegnine.RandomApply`](mmcv.transforms.RandomApply)
 
    在 1.x 版本中，`RandomWrapper` 包装器被替换为由 MMCV 实现的 `RandomApply`，用以指定数据变换的执行概率。其中概率 `p` 现在被命名为 `prob`。
 
@@ -464,7 +464,7 @@ dict(
 </thead>
 </table>
 
-10. `OneOfWrapper` -> `mmcv.RandomChoice`
+10. `OneOfWrapper` -> \[`mmegnine.RandomChoice`\]mmcv.transforms.RandomChoice)
 
 ```
 随机选择包装器现在被重命名为 `RandomChoice`，并且使用方法和原来完全一致。

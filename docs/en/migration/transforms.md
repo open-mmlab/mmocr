@@ -303,7 +303,7 @@ dict(
 </thead>
 </table>
 
-6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + [`mmcv.Pad`](mmcv.transforms.Pad)
+6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + [`mmengine.Pad`](mmcv.transforms.Pad)
 
    `EastRandomCrop` was implemented by applying cropping, scaling and padding to the input image. Now, the same effect can be achieved by combining three data transforms.
 
@@ -336,9 +336,9 @@ dict(type='Pad', size=(640,640))
 </thead>
 </table>
 
-7. `RandomScaling` -> `mmcv.RandomResize`
+7. `RandomScaling` -> [`mmengine.RandomResize`](mmcv.transforms.RandomResize)
 
-   The `RandomScaling` is now replaced with `mmcv.RandomResize`.
+   The `RandomScaling` is now replaced with [`mmengine.RandomResize`](mmcv.transforms.RandomResize).
 
 <table class="docutils">
 <thead>
@@ -371,7 +371,7 @@ dict(
 </table>
 
 ```{note}
-By default, the data pipeline will search for the corresponding data transforms from the register of the current *scope*, and if that data transform does not exist, it will continue to search in the upstream library, such as MMCV. For example, the `RandomResize` transform is not implemented in MMOCR, but it can be directly called in the configuration, as the program will automatically search for it from MMCV. In addition, you can also specify *scope* by adding a prefix. For example, `mmcv.RandomResize` will force it to use `RandomResize` implemented in MMCV, which is useful when a method of the same name exists in both upstream and downstream libraries.
+By default, the data pipeline will search for the corresponding data transforms from the register of the current *scope*, and if that data transform does not exist, it will continue to search in the upstream library, such as MMCV and MMEngine. For example, the `RandomResize` transform is not implemented in MMOCR, but it can be directly called in the configuration, as the program will automatically search for it from MMCV. In addition, you can also specify *scope* by adding a prefix. For example, `mmengine.RandomResize` will force it to use `RandomResize` implemented in MMEngine, which is useful when a method of the same name exists in both upstream and downstream libraries. It is noteworthy that all of the data transforms implemented in MMCV are registered to MMEngine, that is why we use `mmengine.RandomResize` but not `mmcv.RandomResize`.
 ```
 
 8. `SquareResizePad` -> [`Resize`](mmocr.datasets.transforms.Resize) + [`SourceImagePad`](mmocr.datasets.transforms.SourceImagePad)
@@ -427,9 +427,9 @@ dict(
 In version 1.x, the random choice wrapper "RandomChoice" replaces "OneOfWrapper", allowing random selection of data transform combinations.
 ```
 
-9. `RandomWrapper` -> `mmcv.RandomApply`
+9. `RandomWrapper` -> [`mmengine.RandomApply`](mmcv.transforms.RandomApply)
 
-   In version 1.x, the `RandomWrapper` wrapper has been replaced with `RandomApply` in MMCV, which is used to specify the probability of performing a data transform. And the probability `p` is now named `prob`.
+   In version 1.x, the `RandomWrapper` wrapper has been replaced with `RandomApply` in MMEngine, which is used to specify the probability of performing a data transform. And the probability `p` is now named `prob`.
 
 <table class="docutils">
 <thead>
@@ -464,7 +464,7 @@ dict(
 </thead>
 </table>
 
-10. `OneOfWrapper` -> `mmcv.RandomChoice`
+10. `OneOfWrapper` -> [`mmengine.RandomChoice`](mmcv.transforms.RandomChoice)
 
     The random choice wrapper is now renamed to `RandomChoice` and is used in exactly the same way as before.
 
