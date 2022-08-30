@@ -165,7 +165,7 @@ dict(
    随机旋转数据增强策略已被整合至 `RanomRotate`。该方法的默认行为与 0.x 版本中的 `RandomRotateTextDet` 保持一致。此时仅需指定最大旋转角度 `max_angle` 即可。
 
 ```{note}
-  新旧版本 'max_angle' 的默认值不同，因此需要重新进行指定。
+  新旧版本 "max_angle" 的默认值不同，因此需要重新进行指定。
 ```
 
 <table class="docutils">
@@ -287,7 +287,7 @@ dict(
 ```python
 dict(
   type='RandomCropInstances',
-  target_size=（800，800）,
+  target_size=(800，800),
   instance_key='gt_kernels')
 ```
 
@@ -296,14 +296,14 @@ dict(
 ```python
 dict(
   type='TextDetRandomCrop',
-  target_size=（800，800))
+  target_size=(800，800))
 ```
 
 </td></tr>
 </thead>
 </table>
 
-6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + `mmcv.Pad`
+6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + [`mmcv.Pad`](mmcv.transforms.Pad)
 
    原有的 `EastRandomCrop` 内同时对图像进行了剪裁、缩放以及填充。在新版本中，我们可以通过组合三种数据增强策略来达到相同的效果。
 
@@ -371,7 +371,7 @@ dict(
 </table>
 
 ```{note}
-默认地，数据流水线会从当前 'scope' 的注册器中搜索对应的数据变换，如果不存在该数据变化，则将继续在上游库，如 MMCV 中进行搜索。例如，mmocr 中并未实现 'RandomResize' 方法，但我们仍然可以在配置中直接引用该数据增强方法，因为程序将自动从上游的 MMCV 中搜索该方法。此外，用户也可以通过添加前缀的形式来指定 'scope'。例如，'mmcv.RandomResize' 将强制指定使用 MMCV 库中实现的 'RandomResize'，当上下游库中存在同名方法时，则可以通过这种形式强制使用特定的版本。
+默认地，数据流水线会从当前 *scope* 的注册器中搜索对应的数据变换，如果不存在该数据变化，则将继续在上游库，如 MMCV 中进行搜索。例如，MMOCR 中并未实现 `RandomResize` 方法，但我们仍然可以在配置中直接引用该数据增强方法，因为程序将自动从上游的 MMCV 中搜索该方法。此外，用户也可以通过添加前缀的形式来指定 *scope*。例如，`mmcv.RandomResize` 将强制指定使用 MMCV 库中实现的 `RandomResize`，当上下游库中存在同名方法时，则可以通过这种形式强制使用特定的版本。
 ```
 
 8. `SquareResizePad` -> [`Resize`](mmocr.datasets.transforms.Resize) + [`SourceImagePad`](mmocr.datasets.transforms.SourceImagePad)
@@ -429,7 +429,7 @@ dict(
 
 9. `RandomWrapper` -> `mmcv.RandomApply`
 
-   在 1.x 版本中，`RandomWrapper` 包装器被重命名为 `RandomApply`，用以指定数据变换的执行概率。其中概率 `p` 现在被命名为 `prob`。
+   在 1.x 版本中，`RandomWrapper` 包装器被替换为由 MMCV 实现的 `RandomApply`，用以指定数据变换的执行概率。其中概率 `p` 现在被命名为 `prob`。
 
 <table class="docutils">
 <thead>
@@ -466,13 +466,17 @@ dict(
 
 10. `OneOfWrapper` -> `mmcv.RandomChoice`
 
-    随机选择包装器现在被重命名为 `RandomChoice`，并且使用方法和原来完全一致。
+```
+随机选择包装器现在被重命名为 `RandomChoice`，并且使用方法和原来完全一致。
+```
 
 11. `ScaleAspectJitter` -> [`ShortScaleAspectJitter`](mmocr.datasets.transforms.ShortScaleAspectJitter), [`BoundedScaleAspectJitter`](mmocr.datasets.transforms.BoundedScaleAspectJitter)
 
-    原有的 `ScaleAspectJitter` 实现了多种不同的图像尺寸抖动数据增强策略，在新版本中，我们将其拆分为数个逻辑更加清晰的独立数据变化方法。
+```
+原有的 `ScaleAspectJitter` 实现了多种不同的图像尺寸抖动数据增强策略，在新版本中，我们将其拆分为数个逻辑更加清晰的独立数据变化方法。
 
-    `resize_type='indep_sample_in_range'` 时，其等价于图像在指定范围内的随机缩放。
+`resize_type='indep_sample_in_range'` 时，其等价于图像在指定范围内的随机缩放。
+```
 
 <table class="docutils">
 <thead>

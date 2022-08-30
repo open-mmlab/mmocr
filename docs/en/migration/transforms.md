@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In MMOCR version 0.x, we implemented a series of **Data Transform** methods in `mmocr/datasets/pipelines/xxx_transforms.py`. However, these modules are scattered all over the place and lack a standardized design. Therefore, we refactored all the data transform modules in MMOCR version 1.x. According to the task type, they are now defined in `ocr_transforms.py`, `textdet_transforms.py`, and `recog_transforms.py`, respectively, under `mmocr/datasets/transforms`.
+In MMOCR version 0.x, we implemented a series of **Data Transform** methods in `mmocr/datasets/pipelines/xxx_transforms.py`. However, these modules are scattered all over the place and lack a standardized design. Therefore, we refactored all the data transform modules in MMOCR version 1.x. According to the task type, they are now defined in `ocr_transforms.py`, `textdet_transforms.py`, and `recog_transforms.py`, respectively, under `mmocr/datasets/transforms`. Specifically, `ocr_transforms.py` implements the data augmentation methods for OCR-related tasks in general, while `textdet_transforms.py` and `textrecog_transforms.py` implement data augmentation transforms related to text detection and text recognition tasks, respectively.
 
 Since some of the modules were renamed, merged or separated during the refactoring process, the new interface and default parameters may be inconsistent with the old version. Therefore, this migration guide will introduce how to configure the new data transforms to achieve the identical behavior as the old version.
 
@@ -165,7 +165,7 @@ dict(
    We implemented all random rotation-related data augmentation in `RandomRotate` in version 1.x. Its default behavior is identical to the `RandomRotateTextDet` in version 0.x.
 
 ```{note}
-  The default value of 'max_angle' might be different from the old version, so the users are suggested to manually set the number.
+  The default value of "max_angle" might be different from the old version, so the users are suggested to manually set the number.
 ```
 
 <table class="docutils">
@@ -287,7 +287,7 @@ dict(
 ```python
 dict(
   type='RandomCropInstances',
-  target_size=（800，800）,
+  target_size=(800，800),
   instance_key='gt_kernels')
 ```
 
@@ -296,14 +296,14 @@ dict(
 ```python
 dict(
   type='TextDetRandomCrop',
-  target_size=（800，800))
+  target_size=(800，800))
 ```
 
 </td></tr>
 </thead>
 </table>
 
-6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + `mmcv.Pad`
+6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + [`mmcv.Pad`](mmcv.transforms.Pad)
 
    The `EastRandomCrop` was implemented by applying cropping, scaling and padding to the input image. Now, the same effect can be achieved by combining three data transforms.
 
@@ -371,12 +371,12 @@ dict(
 </table>
 
 ```{note}
-By default, the data pipeline will search for the corresponding data transforms from the register of the current 'scope', and if that data transform does not exist, it will continue to search in the upstream library, such as MMCV. For example, the 'RandomResize' function is not implemented in mmocr, but it can be directly called in the configuration, as the program will automatically search for it from MMCV. In addition, the user can also specify 'scope' by adding a prefix. For example, 'mmcv.RandomResize' will force the it to use 'RandomResize' implemented in MMCV, which is useful when a method of the same name exists in both upstream and downstream libraries.
+By default, the data pipeline will search for the corresponding data transforms from the register of the current *scope*, and if that data transform does not exist, it will continue to search in the upstream library, such as MMCV. For example, the `RandomResize` transform is not implemented in MMOCR, but it can be directly called in the configuration, as the program will automatically search for it from MMCV. In addition, you can also specify *scope* by adding a prefix. For example, `mmcv.RandomResize` will force it to use `RandomResize` implemented in MMCV, which is useful when a method of the same name exists in both upstream and downstream libraries.
 ```
 
 8. `SquareResizePad` -> [`Resize`](mmocr.datasets.transforms.Resize) + [`SourceImagePad`](mmocr.datasets.transforms.SourceImagePad)
 
-   The `SquareResizePad` implements two branches and uses one of them randomly based on the `pad_ratio`. Specifically, one branch firstly resize the image and then padding it to a certain size; the other branch only resize the image. To enhance the reusability of the different modules, we split this data transform into a combination of `Resize` + `SourceImagePad` in version 1.x, and control the branches via `RandomChoice`.
+   `SquareResizePad` implements two branches and uses one of them randomly based on the `pad_ratio`. Specifically, one branch first resizes the image and then pads it to a certain size; while the other branch only resizes the image. To enhance the reusability of the different modules, we split this data transform into a combination of `Resize` + `SourceImagePad` in version 1.x, and control the branches via `RandomChoice`.
 
 <table class="docutils">
 <thead>
@@ -429,7 +429,7 @@ In version 1.x, the random choice wrapper 'RandomChoice' replaces 'OneOfWrapper'
 
 9. `RandomWrapper` -> `mmcv.RandomApply`
 
-   In version 1.x, the `RandomWrapper` wrapper has been renamed to `RandomApply`, which is used to specify the probability of performing a data transform. And the probability `p` is now named `prob`.
+   In version 1.x, the `RandomWrapper` wrapper has been replaced with `RandomApply` in MMCV, which is used to specify the probability of performing a data transform. And the probability `p` is now named `prob`.
 
 <table class="docutils">
 <thead>
@@ -507,7 +507,7 @@ dict(
 </thead>
 </table>
 
-When `resize_type='long_short_bound'`, we implemented `BoundedScaleAspectJitter`, which randomly rescales the image so that the long and short sides of the image are around the bound; then jitter the aspect ratio.
+When `resize_type='long_short_bound'`, we implemented `BoundedScaleAspectJitter`, which randomly rescales the image so that the long and short sides of the image are around the bound; then jitters the aspect ratio.
 
 <table class="docutils">
 <thead>
@@ -546,7 +546,7 @@ dict(
 </thead>
 </table>
 
-When `resize_type='round_min_img_scale'`, we implemented `ShortScaleAspectJitter`, which firstly rescales the image for its shorter side to reach the `short_size` and then jitters its aspect ratio, final rescale the shape guaranteed to be divided by scale_divisor.
+When `resize_type='round_min_img_scale'`, we implemented `ShortScaleAspectJitter`, which rescales the image for its shorter side to reach the `short_size` and then jitters its aspect ratio, finally rescales the shape guaranteed to be divided by scale_divisor.
 
 <table class="docutils">
 <thead>
