@@ -124,6 +124,16 @@ html_css_files = ['css/readthedocs.css']
 
 myst_heading_anchors = 3
 
+# Configuration for intersphinx
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'numpy': ('https://numpy.org/doc/stable', None),
+    'torch': ('https://pytorch.org/docs/stable/', None),
+    'mmcv': ('https://mmcv.readthedocs.io/en/dev-2.x/', None),
+    'mmengine': ('https://mmengine.readthedocs.io/en/master/', None),
+    'mmdetection': ('https://mmdetection.readthedocs.io/en/dev-3.x/', None),
+}
+
 
 def builder_inited_handler(app):
     subprocess.run(['./cp_origin_docs.sh'])
