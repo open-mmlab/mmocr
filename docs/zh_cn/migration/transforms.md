@@ -371,7 +371,7 @@ dict(
 </table>
 
 ```{note}
-默认地，数据流水线会从当前 *scope* 的注册器中搜索对应的数据变换，如果不存在该数据变换，则将继续在上游库，如 MMCV 及 MMEngine 中进行搜索。例如，MMOCR 中并未实现 `RandomResize` 方法，但我们仍然可以在配置中直接引用该数据增强方法，因为程序将自动从上游的 MMCV 中搜索该方法。此外，用户也可以通过添加前缀的形式来指定 *scope*。例如，`mmengine.RandomResize` 将强制指定使用 MMCV 库中实现的 `RandomResize`，当上下游库中存在同名方法时，则可以通过这种形式强制使用特定的版本。另外需要注意的是，MMCV 中所有的数据变换方法都被注册至 MMEngine 中，因为我们使用 `mmengine.RandomResize` 而不是 `mmcv.RandomResize`。
+默认地，数据流水线会从当前 *scope* 的注册器中搜索对应的数据变换，如果不存在该数据变换，则将继续在上游库，如 MMCV 及 MMEngine 中进行搜索。例如，MMOCR 中并未实现 `RandomResize` 方法，但我们仍然可以在配置中直接引用该数据增强方法，因为程序将自动从上游的 MMCV 中搜索该方法。此外，用户也可以通过添加前缀的形式来指定 *scope*。例如，`mmengine.RandomResize` 将强制指定使用 MMCV 库中实现的 `RandomResize`，当上下游库中存在同名方法时，则可以通过这种形式强制使用特定的版本。另外需要注意的是，MMCV 中所有的数据变换方法都被注册至 MMEngine 中，因此我们使用 `mmengine.RandomResize` 而不是 `mmcv.RandomResize`。
 ```
 
 8. `SquareResizePad` -> [`Resize`](mmocr.datasets.transforms.Resize) + [`SourceImagePad`](mmocr.datasets.transforms.SourceImagePad)
