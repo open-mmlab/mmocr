@@ -44,6 +44,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    migration/code.md
    migration/dataset.md
    migration/model.md
+   migration/transforms.md
 
 .. toctree::
    :maxdepth: 2
