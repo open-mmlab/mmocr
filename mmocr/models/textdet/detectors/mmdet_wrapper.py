@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import cv2
 import torch
@@ -10,7 +10,6 @@ from mmengine.model import BaseModel
 from mmengine.structures import InstanceData
 
 from mmocr.registry import MODELS
-from mmocr.structures import TextDetDataSample
 from mmocr.utils.bbox_utils import bbox2poly
 from mmocr.utils.typing import DetSampleList
 
@@ -38,7 +37,8 @@ class MMDetWrapper(BaseModel):
 
     def forward(self,
                 inputs: torch.Tensor,
-                data_samples: Union[DetDataSample, MMDET_SampleList] = None,
+                data_samples: Optional[Union[DetSampleList,
+                                             MMDET_SampleList]] = None,
                 mode: str = 'tensor',
                 **kwargs) -> ForwardResults:
         """The unified entry for a forward process in both training and test.
@@ -87,9 +87,8 @@ class MMDetWrapper(BaseModel):
 
         return results
 
-    def adapt_predictions(self, data: List[DetDataSample],
-                          data_samples: DetSampleList
-                          ) -> List[TextDetDataSample]:
+    def adapt_predictions(self, data: MMDET_SampleList,
+                          data_samples: DetSampleList) -> DetSampleList:
         """Convert Instance datas from MMDet into MMOCR's format.
 
         Args:
@@ -104,8 +103,8 @@ class MMDetWrapper(BaseModel):
                 - bboxes (Tensor): Has a shape (num_instances, 4),
                     the last dimension 4 arrange as (x1, y1, x2, y2).
                 - masks (Tensor, Optional): Has a shape (num_instances, H, W).
-        data_samples (list[:obj:`TextDetDataSample`]): The annotation data of
-            every samples. Defaults to None.
+            data_samples (list[:obj:`TextDetDataSample`]): The annotation data
+                of every samples.
 
         Returns:
             list[TextDetDataSample]: A list of N datasamples containing ground
