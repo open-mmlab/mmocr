@@ -1,142 +1,56 @@
 # Useful Tools
 
-We provide some useful tools under `mmocr/tools` directory.
+## Analysis Tools
 
-## Publish a Model
+### Dataset Visualization Tool "browse_datasets.py"
 
-Before you upload a model to AWS, you may want to
-(1) convert the model weights to CPU tensors, (2) delete the optimizer states and
-(3) compute the hash of the checkpoint file and append the hash id to the filename. These functionalities could be achieved by `tools/publish_model.py`.
+MMOCR provides a dataset visualization tool `tools/analysis_tools/browse_datasets.py` to help users troubleshoot possible dataset-related problems. You just need to specify the path to the training config and the tool will automatically plots the images transformed by corresponding data pipelines with the GT labels. The following example demonstrates how to use the tool to visualize the training data used by the "DBNet_R50_icdar2015" model.
 
-```shell
-python tools/publish_model.py ${INPUT_FILENAME} ${OUTPUT_FILENAME}
+```Bash
+# Example: Visualizing the training data used by dbnet_r50dcn_v2_fpnc_1200e_icadr2015
+python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py
 ```
 
-For example,
+The visualization results will be like:
 
-```shell
-python tools/publish_model.py work_dirs/psenet/latest.pth psenet_r50_fpnf_sbn_1x_20190801.pth
+<div align="center">
+
+![browse dataset](https://aicarrier.feishu.cn/space/api/box/stream/download/asynccode/?code=N2E3NzhlY2Q2YmY3OGMzODA4M2IxZWNkY2Q0ZjcyMGVfNWViVUlaUnBraVV3NkJ4dkRLSmRhSDVyZVVnY1dmUEpfVG9rZW46Ym94Y25rNzdCUHNtV1M5Z1hSYUVRRW14OGNiXzE2NjE4NDQzODU6MTY2MTg0Nzk4NV9WNA)
+
+</div>
+
+Based on this tool, users can easily verify if the annotation of a custom dataset is correct; Also, you can verify if the data augmentation strategies are running as you expected by modifying `train_pipeline` in the configuration file. The optional parameters of `browse_dataset.py` are as follows.
+
+|                 |       |                                                                                       |
+| --------------- | ----- | ------------------------------------------------------------------------------------- |
+| ARGS            | Type  | Description                                                                           |
+| config          | str   | (required) Path to the config.                                                        |
+| --output-dir    | str   | If GUI is not available, specifying an output path to save the visualization results. |
+| --show-interval | float | Interval of visualization (s), defaults to 2.                                         |
+
+### Offline Evaluation Tool "offline_eval.py"
+
+For saved prediction results, we provide an offline evaluation script `tools/analysis_tools/offline_eval.py`. The following example demonstrates how to use this tool to evaluate the output of the "PSENet" model offline.
+
+```Bash
+# When running the test script for the first time, you can save the output of the model by specifying the --save-preds parameter
+python tools/test.py ${CONFIG_FILE} ${CHECKPOINT_FILE} --save-preds
+# Example: Testing on PSENet
+python tools/test.py configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py epoch_600.pth --save-preds
+
+# Then, using the saved outputs for offline evaluation
+python tools/analysis_tool/offline_eval.py ${CONFIG_FILE} ${PRED_FILE}
+# Example: Offline evaluation of saved PSENet results
+python tools/analysis_tools/offline_eval.py configs/textdet/psenet/psenet_r50_fpnf_600e_icdar2015.py work_dirs/psenet_r50_fpnf_600e_icdar2015/epoch_600.pth_predictions.pkl
 ```
 
-The final output filename will be `psenet_r50_fpnf_sbn_1x_20190801-{hash id}.pth`.
+`-save-preds` saves the output to `work_dir/CONFIG_NAME/MODEL_NAME_predictions.pkl` by default
 
-## Convert text recognition dataset to lmdb format
+In addition, based on this tool, users can also convert predictions obtained from other libraries into MMOCR-supported formats, then use MMOCR's built-in metrics to evaluate them.
 
-Reading images or labels from files can be slow when data are excessive, e.g. on a scale of millions. Besides, in academia, most of the scene text recognition datasets are stored in lmdb format, including images and labels. To get closer to the mainstream practice and enhance the data storage efficiency, MMOCR now provides `tools/data/utils/lmdb_converter.py` to convert text recognition datasets to lmdb format.
-
-| Arguments         | Type | Description                                                               |
-| ----------------- | ---- | ------------------------------------------------------------------------- |
-| `label_path`      | str  | Path to label file.                                                       |
-| `output`          | str  | Output lmdb path.                                                         |
-| `--img-root`      | str  | Input imglist path.                                                       |
-| `--label-only`    | bool | Only converter label to lmdb                                              |
-| `--label-format`  | str  | The format of the label file, either txt or jsonl.                        |
-| `--batch-size`    | int  | Processing batch size, defaults to 1000                                   |
-| `--encoding`      | str  | Bytes coding scheme, defaults to utf8.                                    |
-| `--lmdb-map-size` | int  | Maximum size database may grow to , defaults to 1099511627776 bytes (1TB) |
-
-### Examples
-
-Generate a mixed lmdb file with label.txt and images in `imgs/`:
-
-```bash
-python tools/data/utils/lmdb_converter.py label.txt imgs.lmdb -i imgs
-```
-
-Generate a mixed lmdb file with label.jsonl and images in `imgs/`:
-
-```bash
-python tools/data/utils/lmdb_converter.py label.json imgs.lmdb -i imgs -f jsonl
-```
-
-Generate a label-only lmdb file with label.txt:
-
-```bash
-python tools/data/utils/lmdb_converter.py label.txt label.lmdb --label-only
-```
-
-Generate a label-only lmdb file with label.jsonl:
-
-```bash
-python tools/data/utils/lmdb_converter.py label.json label.lmdb --label-only -f jsonl
-```
-
-## Convert annotations from Labelme
-
-[Labelme](https://github.com/wkentaro/labelme) is a popular graphical image annotation tool. You can convert the labels generated by labelme to the MMOCR data format using `tools/data/common/labelme_converter.py`. Both detection and recognition tasks are supported.
-
-```bash
-# tasks can be "det" or both "det", "recog"
-python tools/data/common/labelme_converter.py <json_dir> <image_dir> <out_dir> --tasks <tasks>
-```
-
-For example, converting the labelme format annotation in `tests/data/toy_dataset/labelme` to MMOCR detection labels `instances_training.txt` and cropping the image patches for recognition task to `tests/data/toy_dataset/crops` with the labels `train_label.jsonl`:
-
-```bash
-python tools/data/common/labelme_converter.py tests/data/toy_dataset/labelme tests/data/toy_dataset/imgs tests/data/toy_dataset --tasks det recog
-```
-
-## Log Analysis
-
-You can use `tools/analyze_logs.py` to plot loss/hmean curves given a training log file. Run `pip install seaborn` first to install the dependency.
-
-![](../../demo/resources/log_analysis_demo.png)
-
-```shell
-python tools/analyze_logs.py plot_curve [--keys ${KEYS}] [--title ${TITLE}] [--legend ${LEGEND}] [--backend ${BACKEND}] [--style ${STYLE}] [--out ${OUT_FILE}]
-```
-
-| Arguments   | Type | Description                                                                                                     |
-| ----------- | ---- | --------------------------------------------------------------------------------------------------------------- |
-| `--keys`    | str  | The metric that you want to plot. Defaults to `loss`.                                                           |
-| `--title`   | str  | Title of figure.                                                                                                |
-| `--legend`  | str  | Legend of each plot.                                                                                            |
-| `--backend` | str  | Backend of the plot. [more info](https://matplotlib.org/stable/users/explain/backends.html)                     |
-| `--style`   | str  | Style of the plot. Defaults to `dark`. [more info](https://seaborn.pydata.org/generated/seaborn.set_style.html) |
-| `--out`     | str  | Path of output figure.                                                                                          |
-
-**Examples:**
-
-Download the following DBNet and CRNN training logs to run demos.
-
-```shell
-wget https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.log.json -O DBNet_log.json
-
-wget https://download.openmmlab.com/mmocr/textrecog/crnn/20210326_111035.log.json -O CRNN_log.json
-```
-
-Please specify an output path if you are running the codes on systems without a GUI.
-
-- Plot loss metric.
-
-  ```shell
-  python tools/analyze_logs.py plot_curve DBNet_log.json --keys loss --legend loss
-  ```
-
-- Plot hmean-iou:hmean metric of text detection.
-
-  ```shell
-  python tools/analyze_logs.py plot_curve DBNet_log.json --keys hmean-iou:hmean --legend hmean-iou:hmean
-  ```
-
-- Plot 0_1-N.E.D metric of text recognition.
-
-  ```shell
-  python tools/analyze_logs.py plot_curve CRNN_log.json --keys 0_1-N.E.D --legend 0_1-N.E.D
-  ```
-
-- Compute the average training speed.
-
-  ```shell
-  python tools/analyze_logs.py cal_train_time CRNN_log.json --include-outliers
-  ```
-
-  The output is expected to be like the following.
-
-  ```text
-  -----Analyze train time of CRNN_log.json-----
-  slowest epoch 4, average time is 0.3464
-  fastest epoch 5, average time is 0.2365
-  time std over epochs is 0.0356
-  average iter time: 0.2906 s/iter
-  ```
+|               |       |                                   |
+| ------------- | ----- | --------------------------------- |
+| ARGS          | Type  | Description                       |
+| config        | str   | (required) Path to the config.    |
+| pkl_results   | str   | (required) The saved predictions. |
+| --cfg-options | float | Override configs. [Example](<>)   |
