@@ -424,7 +424,7 @@ dict(
 </table>
 
 ```{note}
-在 1.x 版本中，随机选择包装器 'RandomChoice' 代替了 'OneOfWrapper'，可以从一系列数据变换组合中随机抽取一组并应用。
+在 1.x 版本中，随机选择包装器 "RandomChoice" 代替了 "OneOfWrapper"，可以从一系列数据变换组合中随机抽取一组并应用。
 ```
 
 9. `RandomWrapper` -> `mmcv.RandomApply`

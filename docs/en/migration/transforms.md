@@ -305,7 +305,7 @@ dict(
 
 6. `EastRandomCrop` -> [`RandomCrop`](mmocr.datasets.transforms.RandomCrop) + [`Resize`](mmocr.datasets.transforms.Resize) + [`mmcv.Pad`](mmcv.transforms.Pad)
 
-   The `EastRandomCrop` was implemented by applying cropping, scaling and padding to the input image. Now, the same effect can be achieved by combining three data transforms.
+   `EastRandomCrop` was implemented by applying cropping, scaling and padding to the input image. Now, the same effect can be achieved by combining three data transforms.
 
 <table class="docutils">
 <thead>
@@ -424,7 +424,7 @@ dict(
 </table>
 
 ```{note}
-In version 1.x, the random choice wrapper 'RandomChoice' replaces 'OneOfWrapper', allowing random selection of data transform combinations.
+In version 1.x, the random choice wrapper "RandomChoice" replaces "OneOfWrapper", allowing random selection of data transform combinations.
 ```
 
 9. `RandomWrapper` -> `mmcv.RandomApply`
