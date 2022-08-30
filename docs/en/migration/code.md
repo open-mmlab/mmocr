@@ -24,7 +24,6 @@ Functional boundaries of modules has not been clearly defined in MMOCR 0.x. In M
 
 ### Key Changes (TL;DR)
 
-
 - The model weights from MMOCR 0.x still works in the 1.0, but the fields starting with `bbox_head` in the state dict `state_dict` need to be renamed to `det_head`.
 
 - `XXTargets` transforms, which were responsible for genearting detection targets, have been merged into `XXModuleLoss`.
@@ -77,13 +76,12 @@ Functional boundaries of modules has not been clearly defined in MMOCR 0.x. In M
 
 - In older versions, different label converters would have different special character sets and character order. In version 0.x, the character order was as follows.
 
-- | Converter                       | Character order                      |
-  | ------------------------------- | ------------------------------------ |
-  | `AttnConvertor`, `ABIConvertor` | <UKN>, \<BOS/EOS>, <PAD>, characters |
-  | `CTCConvertor`                  | <BLK>, <UKN>, characters             |
+| Converter                       | Character order                        |
+| ------------------------------- | -------------------------------------- |
+| `AttnConvertor`, `ABIConvertor` | \<UKN>, \<BOS/EOS>, \<PAD>, characters |
+| `CTCConvertor`                  | \<BLK>, \<UKN>, characters             |
 
-
-In 1.0, instead of designing different dictionaries and character orders for different tasks, we have a unified *Dictionary* implementation with the character order always as characters, \<BOS/EOS>, <PAD>, <UKN>. <BLK> in `CTCConvertor` has been equivalently replaced by <PAD>.
+In 1.0, instead of designing different dictionaries and character orders for different tasks, we have a unified *Dictionary* implementation with the character order always as characters, \<BOS/EOS>, \<PAD>, \<UKN>. \<BLK> in `CTCConvertor` has been equivalently replaced by \<PAD>.
 
 - *Label convertor* originally supported three ways to initialize dictionaries: `dict_type`, `dict_file` and `dict_list`, which are now reduced to `dict_file` only in `Dictionary`. Also, we have put those pre-defined character sets originally supported in `dict_type` into `dicts/` directory now. The corresponding mapping is as follows:
 
@@ -101,12 +99,12 @@ In 1.0, instead of designing different dictionaries and character orders for dif
   | `ABIConvertor.str2tensor()`, `AttnConvertor.str2tensor()` | `BaseTextRecogModuleLoss.get_targets()` | The different implementations between `ABIConvertor.str2tensor()` and `AttnConvertor.str2tensor()` have been unified in the new version. |
   | `CTCConvertor.str2tensor()`                               | `CTCModuleLoss.get_targets()`           |                                                                                                          |
 
-- The implementation of `tensor2str()` in *label converter* has been moved to `Postprocessor.get_single_prediction()`. The following table shows the correspondence between the old and new method implementations. Note that the old and new implementations are not identical.
+- The implementation of `tensor2idx()` in *label converter* has been moved to `Postprocessor.get_single_prediction()`. The following table shows the correspondence between the old and new method implementations. Note that the old and new implementations are not identical.
 
-  | MMOCR 0.x                                                 | MMOCR 1.0                               | Note                                                                                                     |
-  | --------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-  | `ABIConvertor.str2tensor()`, `AttnConvertor.str2tensor()` | `BaseTextRecogModuleLoss.get_targets()` | The differences that existed between the implementations of the two classes have been unified in the new version |
-  | `CTCConvertor.str2tensor()`                               | `CTCModuleLoss.get_targets()`           |                                                                                                          |
+  | MMOCR 0.x                                                 | MMOCR 1.0                                        |
+  | --------------------------------------------------------- | ------------------------------------------------ |
+  | `ABIConvertor.tensor2idx()`, `AttnConvertor.tensor2idx()` | `AttentionPostprocessor.get_single_prediction()` |
+  | `CTCConvertor.tensor2idx()`                               | `CTCPostProcessor.get_single_prediction()`       |
 
 ## Key Information Extraction
 

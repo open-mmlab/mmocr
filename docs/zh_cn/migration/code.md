@@ -72,16 +72,16 @@ MMOCR 0.x 存在着对模块功能边界定义不清晰的问题。在 MMOCR 1.0
 
 - 原有的 label converter 存在拼写错误 (label convertor)，我们通过删除掉这个类规避了这个问题。
 
-- 负责对字符/字符串与数字索引互相转换的部分被提取至 [`Dictionary`](<>) 类中。
+- 负责对字符/字符串与数字索引互相转换的部分被提取至 [`Dictionary`](mmocr.models.common.Dictionary) 类中。
 
 - 在旧版本中，不同的 label converter 会有不一样的特殊字符集和字符序。在 0.x 版本中，字符序如下：
 
-  | Converter                       | 字符序                               |
-  | ------------------------------- | ------------------------------------ |
-  | `AttnConvertor`, `ABIConvertor` | <UKN>, \<BOS/EOS>, <PAD>, characters |
-  | `CTCConvertor`                  | <BLK>, <UKN>, characters             |
+  | Converter                       | 字符序                                 |
+  | ------------------------------- | -------------------------------------- |
+  | `AttnConvertor`, `ABIConvertor` | \<UKN>, \<BOS/EOS>, \<PAD>, characters |
+  | `CTCConvertor`                  | \<BLK>, \<UKN>, characters             |
 
-在 1.0 中，我们不再以任务为边界设计不同的字典和字符序，取而代之的是统一了字符序的 Dictionary，其字符序为 characters, \<BOS/EOS>, <PAD>, <UKN>。`CTCConvertor` 中 <BLK> 被等价替换为 <PAD>。
+在 1.0 中，我们不再以任务为边界设计不同的字典和字符序，取而代之的是统一了字符序的 Dictionary，其字符序为 characters, \<BOS/EOS>, \<PAD>, \<UKN>。`CTCConvertor` 中 \<BLK> 被等价替换为 \<PAD>。
 
 - `label_convertor` 中原本支持三种方式初始化字典：`dict_type`、`dict_file` 和 `dict_list`，现在在 `Dictionary` 中被简化为 `dict_file` 一种。同时，我们也把原本在 `dict_type` 中支持的字典格式转化为现在 `dicts/` 目录下的预设字典文件。对应映射如下：
 
@@ -99,12 +99,12 @@ MMOCR 0.x 存在着对模块功能边界定义不清晰的问题。在 MMOCR 1.0
   | `ABIConvertor.str2tensor()`, `AttnConvertor.str2tensor()` | `BaseTextRecogModuleLoss.get_targets()` | 原本两个类中的实现存在的差异在新版本中被统一 |
   | `CTCConvertor.str2tensor()`                               | `CTCModuleLoss.get_targets()`           |                                              |
 
-- `label_converter` 中 `tensor2str()` 的实现被转移到 `Postprocessor.get_single_prediction()` 中。下面的表格列出了旧版与新版方法实现的对应关系。注意，新旧版的实现并非完全一致。
+- `label_converter` 中 `tensor2idx()` 的实现被转移到 `Postprocessor.get_single_prediction()` 中。下面的表格列出了旧版与新版方法实现的对应关系。注意，新旧版的实现并非完全一致。
 
-  | MMOCR 0.x                                                 | MMOCR 1.0                               | 备注                                         |
-  | --------------------------------------------------------- | --------------------------------------- | -------------------------------------------- |
-  | `ABIConvertor.str2tensor()`, `AttnConvertor.str2tensor()` | `BaseTextRecogModuleLoss.get_targets()` | 原本两个类中的实现存在的差异在新版本中被统一 |
-  | `CTCConvertor.str2tensor()`                               | `CTCModuleLoss.get_targets()`           |                                              |
+  | MMOCR 0.x                                                 | MMOCR 1.0                                        |
+  | --------------------------------------------------------- | ------------------------------------------------ |
+  | `ABIConvertor.tensor2idx()`, `AttnConvertor.tensor2idx()` | `AttentionPostprocessor.get_single_prediction()` |
+  | `CTCConvertor.tensor2idx()`                               | `CTCPostProcessor.get_single_prediction()`       |
 
 ## 关键信息提取
 
