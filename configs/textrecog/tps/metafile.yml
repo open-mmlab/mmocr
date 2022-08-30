@@ -9,7 +9,7 @@ Collections:
     Training Resources: 4x GeForce GTX 1080 Ti
     Architecture:
       - TPSPreprocessor
-      - VeryDeepVgg
+      - MiniVGG
       - CRNNDecoder
       - CTCLoss
   Paper:

@@ -9,11 +9,13 @@ from mmengine.structures import InstanceData
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
+from mmocr.utils import register_all_modules
 
 
 class TestMMDetWrapper(unittest.TestCase):
 
     def setUp(self):
+        register_all_modules()
         model_cfg_fcos = dict(
             type='MMDetWrapper',
             cfg=dict(
@@ -215,7 +217,8 @@ class TestMMDetWrapper(unittest.TestCase):
         packed_inputs = demo_mm_inputs(
             2, [[3, 128, 128], [3, 128, 128]], num_classes=2)
         # Test forward train
-        bi, ds = self.FCOS.data_preprocessor(packed_inputs, True)
+        data = self.FCOS.data_preprocessor(packed_inputs, True)
+        bi, ds = data['inputs'], data['data_samples']
         losses = self.FCOS.forward(bi, ds, mode='loss')
         assert isinstance(losses, dict)
         # Test forward test
@@ -229,7 +232,8 @@ class TestMMDetWrapper(unittest.TestCase):
         packed_inputs = demo_mm_inputs(
             2, [[3, 128, 128], [3, 128, 128]], num_classes=2, with_mask=True)
         # Test forward train
-        bi, ds = self.MRCNN.data_preprocessor(packed_inputs, True)
+        data = self.MRCNN.data_preprocessor(packed_inputs, True)
+        bi, ds = data['inputs'], data['data_samples']
         losses = self.MRCNN.forward(bi, ds, mode='loss')
         assert isinstance(losses, dict)
         # Test forward test

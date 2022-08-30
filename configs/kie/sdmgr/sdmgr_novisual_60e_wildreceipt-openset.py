@@ -65,3 +65,6 @@ val_evaluator = [
         num_classes=edge_num_classes)
 ]
 test_evaluator = val_evaluator
+
+visualizer = dict(
+    type='KIELocalVisualizer', name='visualizer', is_openset=True)
