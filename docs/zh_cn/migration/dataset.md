@@ -239,10 +239,28 @@ python tools/dataset_converters/textrecog/data_migrator.py ${IN_PATH} ${OUT_PATH
 
     lmdb_dataset = dict(
         type='RecogLMDBDataset',
-        data_root=toy_data_root,
+        data_root=data_root,
         ann_file='label.lmdb',
         data_prefix=dict(img_path='imgs'),
         pipeline=[])
    ```
 
-   当 `lmdb` 文件中既包含标签信息又包含图像时，我们除了按照以上示例将数据集类型设定为 `RecogLMDBDataset` 以外，还需要将数据流水线中的图像读取方法由 [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) 替换为 [`LoadImageFromLMDB`](mmocr.datasets.transforms.LoadImageFromLMDB)。
+   当 `lmdb` 文件中既包含标签信息又包含图像时，我们除了需要将数据集类型设定为 `RecogLMDBDataset` 以外，还需要将数据流水线中的图像读取方法由 [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) 替换为 [`LoadImageFromLMDB`](mmocr.datasets.transforms.LoadImageFromLMDB)。
+
+   ```python
+   # 将数据集类型设定为 RecogLMDBDataset
+    data_root = 'tests/data/rec_toy_dataset/'
+
+    lmdb_dataset = dict(
+        type='RecogLMDBDataset',
+        data_root=data_root,
+        ann_file='imgs.lmdb',
+        data_prefix=dict(img_path='imgs.lmdb'), # 将 img_path 设定为 lmdb 文件名
+        pipeline=[])
+   ```
+
+   还需把 `train_pipeline` 及 `test_pipeline` 中的数据读取方法进行替换：
+
+   ```python
+    train_pipeline = [dict(type='LoadImageFromLMDB', color_type='grayscale', ignore_empty=True)]
+   ```

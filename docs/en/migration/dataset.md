@@ -240,10 +240,28 @@ Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.Icd
 
     lmdb_dataset = dict(
         type='RecogLMDBDataset',
-        data_root=toy_data_root,
+        data_root=data_root,
         ann_file='label.lmdb',
         data_prefix=dict(img_path='imgs'),
         pipeline=[])
    ```
 
    When the `lmdb` file contains **both labels and images**, in addition to setting the dataset type to `RecogLMDBDataset` as in the above example, you also need to replace the [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) with [`LoadImageFromLMDB`](mmocr.datasets.transforms.LoadImageFromLMDB) in the data pipelines.
+
+   ```python
+   # Specify the dataset type as RecogLMDBDataset
+    data_root = 'tests/data/rec_toy_dataset/'
+
+    lmdb_dataset = dict(
+        type='RecogLMDBDataset',
+        data_root=data_root,
+        ann_file='imgs.lmdb',
+        data_prefix=dict(img_path='imgs.lmdb'), # setting the img_path as the lmdb name
+        pipeline=[])
+   ```
+
+   Also, replacing the image loading transforms in `train_pipeline` and `test_pipeline`, for example：
+
+   ```python
+    train_pipeline = [dict(type='LoadImageFromLMDB', color_type='grayscale', ignore_empty=True)]
+   ```
