@@ -21,7 +21,7 @@ CUDA_VISIBLE_DEVICES=0 python tools/train.py configs/textdet/dbnet/dbnet_resnet5
 ```
 
 ```{note}
-If multiple GPUs are available, you can specify a certain GPU, for example, the third one, by setting CUDA_VISIBLE_DEVICES=3.
+If multiple GPUs are available, you can specify a certain GPU, e.g. the third one, by setting CUDA_VISIBLE_DEVICES=3.
 ```
 
 The following table lists all the arguments supported by `train.py`. Args without the `--` prefix are mandatory, while others are optional.
