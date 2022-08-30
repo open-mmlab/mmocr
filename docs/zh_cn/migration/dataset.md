@@ -1,6 +1,6 @@
 # 数据集迁移
 
-在 OpenMMLab 2.0 系列算法库基于 [MMEngine](https://github.com/open-mmlab/mmengine) 设计了统一的[数据集基类](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/basedataset.md)，并制定了数据集标注文件规范。基于此，我们在 MMOCR 1.0 版本中重构了 OCR 任务数据集基类 [`OCRDataset`](mmocr.datasets.OCRDataset)。以下文档将介绍 MMOCR 中新旧数据集格式的区别，以及如何将旧数据集迁移至新版本中。对于暂不方便进行数据迁移的用户，我们也在[第三节](#兼容性)提供了临时的代码兼容方案。
+在 OpenMMLab 2.0 系列算法库基于 [MMEngine](https://github.com/open-mmlab/mmengine) 设计了统一的数据集基类 [BaseDataset](mmengine.dataset.BaseDataset)，并制定了数据集标注文件规范。基于此，我们在 MMOCR 1.0 版本中重构了 OCR 任务数据集基类 [`OCRDataset`](mmocr.datasets.OCRDataset)。以下文档将介绍 MMOCR 中新旧数据集格式的区别，以及如何将旧数据集迁移至新版本中。对于暂不方便进行数据迁移的用户，我们也在[第三节](#兼容性)提供了临时的代码兼容方案。
 
 ```{note}
 关键信息抽取任务仍采用原有的 WildReceipt 数据集标注格式。

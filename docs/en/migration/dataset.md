@@ -1,6 +1,6 @@
 # Dataset Migration
 
-Based on the new design of [BaseDataset](<>) in [MMEngine](https://github.com/open-mmlab/mmengine), we have refactored the base OCR dataset class [`OCRDataset`](mmocr.datasets.OCRDataset) in MMOCR 1.0. The following document describes the differences between the old and new dataset formats in MMOCR, and how to migrate from the deprecated version to the latest. For users who do not want to migrate datasets at this time, we also provide a temporary solution in [Section Compatibility](#compatibility).
+Based on the new design of [BaseDataset](mmengine.dataset.BaseDataset) in [MMEngine](https://github.com/open-mmlab/mmengine), we have refactored the base OCR dataset class [`OCRDataset`](mmocr.datasets.OCRDataset) in MMOCR 1.0. The following document describes the differences between the old and new dataset formats in MMOCR, and how to migrate from the deprecated version to the latest. For users who do not want to migrate datasets at this time, we also provide a temporary solution in [Section Compatibility](#compatibility).
 
 ```{note}
 The Key Information Extraction task still uses the original WildReceipt dataset annotation format.
