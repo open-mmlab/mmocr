@@ -162,11 +162,8 @@ class RecogLMDBDataset(BaseDataset):
         """
         data_info = {}
         parsed_anno = self.parser(raw_anno_info)
-        if self.label_only or self.deprecated_format:
-            img_path = osp.join(self.data_prefix['img_path'],
-                                parsed_anno[self.parser.keys[0]])
-        else:
-            img_path = parsed_anno[self.parser.keys[0]]
+        img_path = osp.join(self.data_prefix['img_path'],
+                            parsed_anno[self.parser.keys[0]])
 
         data_info['img_path'] = img_path
         data_info['instances'] = [dict(text=parsed_anno[self.parser.keys[1]])]
