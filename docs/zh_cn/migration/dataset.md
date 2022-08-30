@@ -90,40 +90,40 @@ img2.jpg MMOCR
 
 ### 文本检测
 
-1. **新版格式介绍**
+#### 新版格式介绍
 
 `TextDetDataset` 中存放了文本检测任务所需的边界盒标注、文件名等信息。由于文本检测任务中只有 1 个类别，因此我们将其类别 id 默认设置为 0，而背景类则为 1。`tests/data/det_toy_dataset/instances_test.json` 中存放了一个文本检测任务的数据标注示例，用户可以参考该文件来将自己的数据集转换为我们支持的格式。
 
 ```json
 {
   "metainfo":
-  {
-    "dataset_type": "TextDetDataset",
-    "task_name": "textdet",
-    "category": [{"id": 0, "name": "text"}]
-  },
-  "data_list":
-  [
     {
-      "img_path": "test_img.jpg",
-      "height": 640,
-      "width": 640,
-      "instances":
-        [
-          {
-            "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
-            "bbox": [0, 0, 10, 20],
-            "bbox_label": 0,
-            "ignore": False
-          }，
-          ...
-        ]
-    }
-  ]
+      "dataset_type": "TextDetDataset",
+      "task_name": "textdet",
+      "category": [{"id": 0, "name": "text"}]
+    },
+  "data_list":
+    [
+      {
+        "img_path": "test_img.jpg",
+        "height": 640,
+        "width": 640,
+        "instances":
+          [
+            {
+              "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
+              "bbox": [0, 0, 10, 20],
+              "bbox_label": 0,
+              "ignore": False
+            }，
+            ...
+          ]
+      }
+    ]
 }
 ```
 
-2. **迁移脚本**
+#### 迁移脚本
 
 为帮助用户将旧版本标注文件迁移至新格式，我们提供了迁移脚本。使用方法如下：
 
@@ -139,7 +139,7 @@ python tools/dataset_converters/textdet/data_migrator.py ${IN_PATH} ${OUT_PATH}
 
 ### 文本识别
 
-1. **新版格式介绍**
+#### 新版格式介绍
 
 `TextRecogDataset` 中存放了文本识别任务所需的文本内容，通常而言，文本识别数据集中的每一张图片都仅包含一个文本实例。我们在 `tests/data/rec_toy_dataset/labels.json` 提供了一个简单的识别数据格式示例，用户可以参考该文件以进一步了解其中的细节。
 
@@ -165,7 +165,7 @@ python tools/dataset_converters/textdet/data_migrator.py ${IN_PATH} ${OUT_PATH}
 }
 ```
 
-2. **迁移脚本**
+#### 迁移脚本
 
 为帮助用户将旧版本标注文件迁移至新格式，我们提供了迁移脚本。使用方法如下：
 
@@ -245,9 +245,4 @@ python tools/dataset_converters/textrecog/data_migrator.py ${IN_PATH} ${OUT_PATH
         pipeline=[])
    ```
 
-   当 `lmdb` 文件中既包含标签信息又包含图像时，我们除了按照以上示例将数据集类型设定为 `RecogLMDBDataset` 以外，还需按照如下示例在训练及测试数据流水线中将文件后端参数 `file_client_args` 配置为 `lmdb`，并指定 `db_path` 为 `lmdb` 标注文件的路径：
-
-   ```python
-    # 将文件后端设置为 lmdb，并指定 lmdb 标注文件的路径
-    file_client_args = dict(backend='lmdb', db_path='tests/data/rec_toy_dataset/imgs.lmdb')
-   ```
+   当 `lmdb` 文件中既包含标签信息又包含图像时，我们除了按照以上示例将数据集类型设定为 `RecogLMDBDataset` 以外，还需要将数据流水线中的图像读取方法由 [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) 替换为 [`LoadImageFromLMDB`](mmocr.datasets.transforms.LoadImageFromLMDB)。

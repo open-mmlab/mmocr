@@ -40,7 +40,7 @@ For the text detection task, `IcdarDataset` uses a COCO-like annotation format.
 }
 ```
 
-The `TextDetDataset` converts COCO-like annotations to text strings then saved in `.txt` or `.jsonl` formats.
+The `TextDetDataset` uses the JSON Line storage format, converting COCO-like labels to strings and saves them in `.txt` or `.jsonl` format files.
 
 ```text
 {"file_name": "test/img_2.jpg", "height": 720, "width": 1280,  "annotations": [{"iscrowd": 0, "category_id": 1, "bbox": [602.0, 173.0,  33.0, 24.0], "segmentation": [[602, 173, 635, 175, 634, 197, 602,  196]]}, {"iscrowd": 0, "category_id": 1, "bbox": [734.0, 310.0, 58.0,  54.0], "segmentation": [[734, 310, 792, 320, 792, 364, 738, 361]]}]}
@@ -90,40 +90,40 @@ Based on the above structure, we introduced `TextDetDataset`, `TextRecogDataset`
 
 ### Text Detection
 
-1. **Introduction of the New Format**
+#### Introduction of the New Format
 
 The `TextDetDataset` holds the information required by the text detection task, such as bounding boxes and labels. We refer users to `tests/data/det_toy_dataset/instances_test.json` which is an example annotation for `TextDetDataset`.
 
 ```json
 {
   "metainfo":
-  {
-    "dataset_type": "TextDetDataset",
-    "task_name": "textdet",
-    "category": [{"id": 0, "name": "text"}]
-  },
-  "data_list":
-  [
     {
-      "img_path": "test_img.jpg",
-      "height": 640,
-      "width": 640,
-      "instances":
-        [
-          {
-            "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
-            "bbox": [0, 0, 10, 20],
-            "bbox_label": 0,
-            "ignore": False
-          }，
-          ...
-        ]
-    }
-  ]
+      "dataset_type": "TextDetDataset",
+      "task_name": "textdet",
+      "category": [{"id": 0, "name": "text"}]
+    },
+  "data_list":
+    [
+      {
+        "img_path": "test_img.jpg",
+        "height": 640,
+        "width": 640,
+        "instances":
+          [
+            {
+              "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
+              "bbox": [0, 0, 10, 20],
+              "bbox_label": 0,
+              "ignore": False
+            }，
+            ...
+          ]
+      }
+    ]
 }
 ```
 
-1. **Migration Script**
+#### Migration Script
 
 We provide a migration script to help users migrate old annotation files to the new format.
 
@@ -139,7 +139,7 @@ python tools/dataset_converters/textdet/data_migrator.py ${IN_PATH} ${OUT_PATH}
 
 ### Text Recognition
 
-1. **Introduction of the New Format**
+#### Introduction of the New Format
 
 The `TextRecogDataset` holds the information required by the text detection task, such as text and image path. We refer users to `tests/data/rec_toy_dataset/labels.json` which is an example annotation for `TextRecogDataset`.
 
@@ -165,7 +165,7 @@ The `TextRecogDataset` holds the information required by the text detection task
 }
 ```
 
-1. **Migration Script**
+#### Migration Script
 
 We provide a migration script to help users migrate old annotation files to the new format.
 
@@ -189,7 +189,7 @@ The code and components used for compatibility with the old data format may be c
 
 Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.IcdarDataset), [RecogTextDataset](mmocr.datasets.RecogTextDataset), [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) to support the old formats.
 
-1. [IcdarDataset](mmocr.datasets.IcdarDataset) supports the COCO-like format annotations for text detection. The users just need to add a new dataset config to `configs/textdet/_base_/datasets` and specify its dataset type as `IcdarDataset`.
+1. [IcdarDataset](mmocr.datasets.IcdarDataset) supports COCO-like format annotations for text detection. You just need to add a new dataset config to `configs/textdet/_base_/datasets` and specify its dataset type as `IcdarDataset`.
 
    ```python
    data_root = 'data/det/icdar2015'
@@ -204,7 +204,7 @@ Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.Icd
        pipeline=None)
    ```
 
-2. [RecogTextDataset](mmocr.datasets.RecogTextDataset) supports `.txt` and `.jsonl` format annotations for text recognition. The users just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogTextDataset`. For example, the following example shows how to configure and load the 0.x format labels `old_label.txt` and `old_label.jsonl` from the toy dataset.
+2. [RecogTextDataset](mmocr.datasets.RecogTextDataset) supports `.txt` and `.jsonl` format annotations for text recognition. You just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogTextDataset`. For example, the following example shows how to configure and load the 0.x format labels `old_label.txt` and `old_label.jsonl` from the toy dataset.
 
    ```python
     data_root = 'tests/data/rec_toy_dataset/'
@@ -233,7 +233,7 @@ Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.Icd
         pipeline=[])
    ```
 
-3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) supports LMDB format annotations for text recognition. The users just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogLMDBDataset`. For example, the following example shows how to configure and load the **label-only lmdb** `label.lmdb` from the toy dataset.
+3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) supports LMDB format annotations for text recognition. You just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogLMDBDataset`. For example, the following example shows how to configure and load the **label-only lmdb** `label.lmdb` from the toy dataset.
 
    ```python
     data_root = 'tests/data/rec_toy_dataset/'
@@ -246,9 +246,4 @@ Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.Icd
         pipeline=[])
    ```
 
-   When the `lmdb` file contains **both labels and images**, in addition to setting the dataset type to `RecogLMDBDataset` as in the above example, we also need to configure the file backend in `file_client_args` to `lmdb` in the data pipelines and specify `db_path` as the path to the `lmdb` annotation file as in the following example.
-
-   ```python
-    # Set the file backend to lmdb and specify the db_path
-    file_client_args = dict(backend='lmdb', db_path='tests/data/rec_toy_dataset/imgs.lmdb')
-   ```
+   When the `lmdb` file contains **both labels and images**, in addition to setting the dataset type to `RecogLMDBDataset` as in the above example, you also need to replace the [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) with [`LoadImageFromLMDB`](mmocr.datasets.transforms.LoadImageFromLMDB) in the data pipelines.
