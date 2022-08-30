@@ -28,3 +28,6 @@ log_processor = dict(type='LogProcessor', window_size=10, by_epoch=True)
 
 load_from = None
 resume = False
+
+visualizer = dict(
+    type='KIELocalVisualizer', name='visualizer', is_openset=False)
