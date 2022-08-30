@@ -129,9 +129,9 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'numpy': ('https://numpy.org/doc/stable', None),
     'torch': ('https://pytorch.org/docs/stable/', None),
-    'mmcv': ('https://mmcv.readthedocs.io/en/dev-2.x/', None),
-    'mmengine': ('https://mmengine.readthedocs.io/en/master/', None),
-    'mmdetection': ('https://mmdetection.readthedocs.io/en/dev-3.x/', None),
+    'mmcv': ('https://mmcv.readthedocs.io/zh_CN/dev-2.x/', None),
+    'mmengine': ('https://mmengine.readthedocs.io/zh_CN/main/', None),
+    'mmdetection': ('https://mmdetection.readthedocs.io/zh_CN/dev-3.x/', None),
 }
 
 
