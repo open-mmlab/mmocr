@@ -112,7 +112,31 @@ pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 在 MMOCR 的目录运行以下命令：
 
 ```bash
+<<<<<<< HEAD
 python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --show
+=======
+python mmocr/utils/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --show
+```
+
+#### 若以包形式安装 MMOCR
+
+**第一步** 下载必要的配置，权重和图片：
+
+```shell
+mim download mmocr --config dbnet_r18_fpnc_1200e_icdar2015 --dest .
+mim download mmocr --config crnn_academic_dataset --dest .
+wget https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/demo_text_det.jpg
+```
+
+取决于你的网络环境，下载过程可能会持续几十秒或者更长。一切就绪后，当前目录树应当包含以下文件：
+
+```bash
+├── crnn_academic-a723a1c5.pth
+├── crnn_academic_dataset.py
+├── dbnet_r18_fpnc_1200e_icdar2015.py
+├── dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth
+└── demo_text_det.jpg
+>>>>>>> updata install
 ```
 
 也可以在 Python 解释器中运行以下代码：
