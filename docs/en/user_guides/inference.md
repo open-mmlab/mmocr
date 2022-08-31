@@ -1,6 +1,6 @@
 # Inference
 
-We provide an easy-to-use API for the demo and application purpose in [ocr.py](/mmocr/demo/ocr.py) script.
+We provide an easy-to-use API for the demo and application purpose in [ocr.py](/mmocr/ocr.py) script.
 
 The API can be called through command line (CL) or by calling it from another python script.
 It exposes all the models in MMOCR to API as individual modules that can be called and chained together.
@@ -19,19 +19,19 @@ ______________________________________________________________________
 - CL interface:
 
 ```shell
-python mmocr/demo/ocr.py demo/demo_text_det.jpg --output demo/det_out.jpg --det TextSnake --img-out-dir demo/ --pred-out-file result.json
+python mmocr/ocr.py demo/demo_text_det.jpg --det TextSnake --img-out-dir demo/
 ```
 
 - Python interface:
 
 ```python
-from mmocr.demo.ocr import MMOCR
+from mmocr.ocr import MMOCR
 
 # Load models into memory
 ocr = MMOCR(det='TextSnake')
 
 # Inference
-results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/', pred_out_file='result.json')
+results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/')
 ```
 
 ## Example 2: Text Detection + Recognition
@@ -46,7 +46,7 @@ results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/', pred_out_f
 - CL interface:
 
 ```shell
-python mmocr/demo/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --print-result --show
+python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --print-result --show
 ```
 
 ```{note}
@@ -58,7 +58,7 @@ When calling the script from the command line, the script assumes configs are sa
 - Python interface:
 
 ```python
-from mmocr.demo.ocr import MMOCR
+from mmocr.ocr import MMOCR
 
 # Load models into memory
 ocr = MMOCR()
@@ -69,7 +69,7 @@ results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, show=True)
 
 ______________________________________________________________________
 
-## Example 4: Text Detection + Recognition + Key Information Extraction
+## Example 3: Text Detection + Recognition + Key Information Extraction
 
 <div align="center">
     <img src=""/><br>
@@ -81,7 +81,7 @@ ______________________________________________________________________
 - CL interface:
 
 ```shell
-python mmocr/demo/ocr.py demo/demo_kie.jpeg  --det DB_r18 --recog CRNN --kie SDMGR --print-result --show
+python mmocr/ocr.py demo/demo_kie.jpeg  --det DB_r18 --recog CRNN --kie SDMGR --print-result --show
 ```
 
 ```{note}
@@ -93,7 +93,7 @@ Note: When calling the script from the command line, the script assumes configs 
 - Python interface:
 
 ```python
-from mmocr.demo.ocr import MMOCR
+from mmocr.ocr import MMOCR
 
 # Load models into memory
 ocr = MMOCR(det='DB_r18', recog='CRNN', kie='SDMGR')

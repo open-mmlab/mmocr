@@ -1,6 +1,6 @@
 # 推理
 
-MMOCR 为示例和应用，以 [ocr.py](/mmocr/demo/ocr.py) 脚本形式，提供了方便使用的 API。
+MMOCR 为示例和应用，以 [ocr.py](/mmocr/ocr.py) 脚本形式，提供了方便使用的 API。
 
 该 API 可以通过命令行执行，也可以在 python 脚本内调用。在该 API 里，MMOCR 里的所有模型能以独立模块的形式被调用或串联。
 
@@ -13,24 +13,24 @@ ______________________________________________________________________
 </div>
 <br>
 
-**注：** 使用 TextSnake 检测模型对图像上的文本进行检测，结果用 json 格式的文件导出，并保存可视化的文件。
+**注：** 使用 TextSnake 检测模型对图像上的文本进行检测，并保存可视化的文件。
 
 - 命令行执行：
 
 ```shell
-python mmocr/demo/ocr.py demo/demo_text_det.jpg --output demo/det_out.jpg --det TextSnake --img-out-dir demo/ --pred-out-file result.json
+python mmocr/ocr.py demo/demo_text_det.jpg --det TextSnake --img-out-dir demo/
 ```
 
 - Python 调用：
 
 ```python
-from mmocr.demo.ocr import MMOCR
+from mmocr.ocr import MMOCR
 
 # 导入模型到内存
 ocr = MMOCR(det='TextSnake')
 
 # 推理
-results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/', pred_out_file='result.json')
+results = ocr.readtext('demo/emo_text_det.jpg', img_out_dir='demo/')
 ```
 
 ## 案例二：文本检测+识别
@@ -45,7 +45,7 @@ results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/', pred_out_f
 - 命令行执行：
 
 ```shell
-python mmocr/demo/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --print-result --show
+python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --print-result --show
 ```
 
 ```{note}
@@ -57,7 +57,7 @@ python mmocr/demo/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --prin
 - Python 调用：
 
 ```python
-from mmocr.demo.ocr import MMOCR
+from mmocr.ocr import MMOCR
 
 # 导入模型到内存
 ocr = MMOCR()
@@ -68,7 +68,7 @@ results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, show=True)
 
 ______________________________________________________________________
 
-## 案例 4： 文本检测+识别+关键信息提取
+## 案例三： 文本检测+识别+关键信息提取
 
 <div align="center">
     <img src=""/><br>
@@ -80,7 +80,7 @@ ______________________________________________________________________
 - 命令行执行：
 
 ```shell
-python mmocr/demo/ocr.py demo/demo_kie.jpeg  --det DB_r18 --recog CRNN --kie SDMGR --print-result --show
+python mmocr/ocr.py demo/demo_kie.jpeg  --det DB_r18 --recog CRNN --kie SDMGR --print-result --show
 ```
 
 ```{note}
@@ -92,7 +92,7 @@ python mmocr/demo/ocr.py demo/demo_kie.jpeg  --det DB_r18 --recog CRNN --kie SDM
 - Python 调用：
 
 ```python
-from mmocr.demo.ocr import MMOCR
+from mmocr.ocr import MMOCR
 
 # 导入模型到内存
 ocr = MMOCR(det='DB_r18', recog='CRNN', kie='SDMGR')
@@ -133,13 +133,12 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 
 ### readtext()
 
-| 参数            | 类型                    | 默认值   | 描述                                                                  |
-| --------------- | ----------------------- | -------- | --------------------------------------------------------------------- |
-| `img`           | str/list/tuple/np.array | **必填** | 图像，文件夹路径，np array 或 list/tuple （包含图片路径或 np arrays） |
-| `img_out_dir`   | str                     | None     | 存放导出图片结果的文件夹                                              |
-| `pred_out_file` | str                     | json     | 导出的结果文件                                                        |
-| `show`          | bool                    | False    | 是否在屏幕展示可视化结果                                              |
-| `print_result`  | bool                    | False    | 是否展示每个图片的结果                                                |
+| 参数           | 类型                    | 默认值   | 描述                                                                  |
+| -------------- | ----------------------- | -------- | --------------------------------------------------------------------- |
+| `img`          | str/list/tuple/np.array | **必填** | 图像，文件夹路径，np array 或 list/tuple （包含图片路径或 np arrays） |
+| `img_out_dir`  | str                     | None     | 存放导出图片结果的文件夹                                              |
+| `show`         | bool                    | False    | 是否在屏幕展示可视化结果                                              |
+| `print_result` | bool                    | False    | 是否展示每个图片的结果                                                |
 
 以上所有参数在命令行同样适用，只需要在参数前简单添加两个连接符，并且将下参数中的下划线替换为连接符即可。
 （*例如：* `img_out_dir` 变成了 `--img-out-dir`）
