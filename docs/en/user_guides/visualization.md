@@ -1,6 +1,6 @@
 # Visualization
 
-Before reading this tutorial, it is recommended to read MMEngine's [Visualization](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/visualization.md) documentation to get a first glimpse of the `Visualizer` definition and usage.
+Before reading this tutorial, it is recommended to read MMEngine's [Visualization](https://github.com/open-mmlab/mmengine/blob/main/docs/en/tutorials/visualization.md) documentation to get a first glimpse of the `Visualizer` definition and usage.
 
 In brief, the [`Visualizer`](mmengine.visualization.Visualizer) is implemented in MMEngine to meet the daily visualization needs, and contains three main functions:
 
@@ -16,7 +16,7 @@ Based on MMEngine's Visualizer, MMOCR comes with a variety of pre-built visualiz
 
 ## Configuration
 
-Thanks to the use of the registration mechanism, in MMOCR we can set the behavior of the visualizer `Visualizer` by modifying the configuration file. Usually, we define the default configuration for the visualizer in `task/_base_/default_runtime.py`, see [configuration tutorial](config.md) for details.
+Thanks to the use of the registration mechanism, in MMOCR we can set the behavior of the `Visualizer` by modifying the configuration file. Usually, we define the default configuration for the visualizer in `task/_base_/default_runtime.py`, see [configuration tutorial](config.md) for details.
 
 ```Python
 vis_backends = [dict(type='LocalVisBackend')]
@@ -33,7 +33,7 @@ Based on the above example, we can see that the configuration of `Visualizer` co
 
 ## Storage
 
-MMOCR uses the local visualization backend [`LocalVisBackend`](mmengine.visualization.LocalVisBackend) by default, and the model loss, learning rate, model evaluation accuracy and visualization The information stored in `VisualizerHook` and `LoggerHook` will be saved to the `{work_dir}/{config_name}/{time}/{vis_data}` folder by default. In addition, MMOCR also supports other common visualization backends, such as `TensorboardVisBackend` and `WandbVisBackend`, and you only need to change the `vis_backends` type in the configuration file to the corresponding visualization backend. For example, you can store data to `TensorBoard` and `Wandb` by simply inserting the following code block into the configuration file.
+MMOCR uses the local visualization backend [`LocalVisBackend`](mmengine.visualization.LocalVisBackend) by default, and the model loss, learning rate, model evaluation accuracy and visualization The information stored in `VisualizerHook` and `LoggerHook`, including loss, learning rate, evaluation accuracy will be saved to the `{work_dir}/{config_name}/{time}/{vis_data}` folder by default. In addition, MMOCR also supports other common visualization backends, such as `TensorboardVisBackend` and `WandbVisBackend`, and you only need to change the `vis_backends` type in the configuration file to the corresponding visualization backend. For example, you can store data to `TensorBoard` and `Wandb` by simply inserting the following code block into the configuration file.
 
 ```Python
 _base_.Visualizer.vis_backends = [
@@ -44,12 +44,12 @@ _base_.Visualizer.vis_backends = [
 
 ## Plot
 
-### Plot the prediction result information
+### Plot the prediction results
 
-MMOCR mainly uses [`VisualizationHook`](mmocr.engine.hooks.VisualizationHook) to plot the prediction results of valuation and test, by default `VisualizationHook` is off, and the default configuration is as follows.
+MMOCR mainly uses [`VisualizationHook`](mmocr.engine.hooks.VisualizationHook) to plot the prediction results of validation and test, by default `VisualizationHook` is off, and the default configuration is as follows.
 
 ```Python
-visualization=dict( # user visualization of valuation and test results
+visualization=dict( # user visualization of validation and test results
     type='VisualizationHook',
     enable=False,
     interval=1,
@@ -60,14 +60,13 @@ visualization=dict( # user visualization of valuation and test results
 
 The following table shows the parameters supported by `VisualizationHook`.
 
-| parameters      | type  | description                                                                                                                                                                          |
-| --------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| task            | str   | Algorithm task, optionally 'textdet', 'textrec', 'kie'                                                                                                                               |
-| data-root       | str   | The root directory where images and annotations are stored                                                                                                                           |
-| ann-file        | str   | The directory where the annotations are stored. This can be either a relative path or an absolute path, if relative then the final ann_file will be data_root/ann_file               |
-| --data-prefix   | str   | The path to the image is {data_root}/{data_pefix}/{img_path}                                                                                                                         |
-| --output-dir    | str   | The path to save the visualization results. For devices that do not have a graphical interface, such as server clusters, the user can specify the output path to save the visualization results. |
-| --show-interval | float | The number of seconds between visualization images.                                                                                                                                  |
+| Parameters |                                                  Description                                                  |
+| :--------: | :-----------------------------------------------------------------------------------------------------------: |
+|   enable   |        The VisualizationHook is turned on and off by the enable parameter, which is the default state.        |
+|  interval  | Controls how much iteration to store or display the results of a val or test if VisualizationHook is enabled. |
+|    show    |                           Controls whether to visualize the results of val or test.                           |
+|  draw_gt   |               Whether the results of val or test are drawn with or without labeling information               |
+| draw_pred  |                              whether to draw predictions for val or test results                              |
 
 If you want to enable `VisualizationHook` related functions and configurations during training or testing, you only need to modify the configuration, take `dbnet_resnet18_fpnc_1200e_icdar2015.py` as an example, draw annotations and predictions at the same time, and display the images, the configuration can be modified as follows
 
@@ -93,7 +92,7 @@ visualization.update(
 <img src="https://user-images.githubusercontent.com/24622904/187428385-e6a23120-6445-4c55-a265-c550da692087.png" height="300"/>
 </div>
 
-The `` test.py` procedure is further simplified by providing the  ``-show``` ' and ``-show-dir ``` parameters to visualize the annotation and prediction results during the test without modifying the configuration.
+The `test.py` procedure is further simplified by providing the  `--show` and `--show-dir` parameters to visualize the annotation and prediction results during the test without modifying the configuration.
 
 ```Shell
 # Show test results

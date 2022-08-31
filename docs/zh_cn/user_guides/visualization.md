@@ -26,7 +26,7 @@ visualizer = dict(
     name='visualizer')
 ```
 
-依据以上示例，我们可以看出`Visualizer` 的配置主要由两个部分组成，即，`Visualizer`的类型以及其采用的可视化后端 `vis_backends`。
+依据以上示例，我们可以看出 `Visualizer` 的配置主要由两个部分组成，即，`Visualizer`的类型以及其采用的可视化后端 `vis_backends`。
 
 - 针对不同的 OCR 任务，MMOCR 中预置了多种可视化器件，包括 [`TextDetLocalVisualizer`](mmocr.visualization.TextDetLocalVisualizer)，[`TextRecogLocalVisualizer`](mmocr.visualization.TextRecogLocalVisualizer)，[`TextSpottingLocalVisualizer`](mmocr.visualization.TextSpottingLocalVisualizer) 以及[`KIELocalVisualizer`](mmocr.visualization.KIELocalVisualizer)。这些可视化器件依照自身任务的特点对基础的 Visulizer API 进行了拓展，并实现了相应的标签信息接口 `add_datasamples`。例如，用户可以直接使用 `TextDetLocalVisualizer` 来可视化文本检测任务的标签或预测结果。
 - MMOCR 默认将可视化后端 `vis_backend` 设置为本地可视化后端 `LocalVisBackend`，将所有可视化结果及其他训练信息保存在本地文件夹中。
@@ -46,10 +46,10 @@ _base_.Visualizer.vis_backends = [
 
 ### 绘制预测结果信息
 
-MMOCR 主要利用 [`VisualizationHook`](mmocr.engine.hooks.VisualizationHook)，绘制valuation 和 test 的预测结果, 默认情况下 `VisualizationHook`为关闭状态，默认配置如下：
+MMOCR 主要利用 [`VisualizationHook`](mmocr.engine.hooks.VisualizationHook)validation 和 test 的预测结果, 默认情况下 `VisualizationHook`为关闭状态，默认配置如下：
 
 ```Python
-visualization=dict( # 用户可视化val 和 test 的结果
+visualization=dict( # 用户可视化 validation 和 test 的结果
     type='VisualizationHook',
     enable=False,
     interval=1,
@@ -60,14 +60,13 @@ visualization=dict( # 用户可视化val 和 test 的结果
 
 下表为 `VisualizationHook` 支持的参数：
 
-| 参数            | 类型  | 说明                                                                                                 |
-| --------------- | ----- | ---------------------------------------------------------------------------------------------------- |
-| task            | str   | 算法任务, 可选择项为 'textdet', 'textrec', 'kie'                                                     |
-| data-root       | str   | 图像与标注存放的根目录                                                                               |
-| ann-file        | str   | 标注存放的目录。可以为相对路径和绝对路径， 如果为相对路径则最终的ann_file为 data_root/ann_file       |
-| --data-prefix   | str   | 图像的路径为{data_root}/{data_pefix}/{img_path}                                                      |
-| --output-dir    | str   | 可视化结果保存路径。对于不存在图形界面的设备，如服务器集群等，用户可以指定输出路径来保存可视化结果。 |
-| --show-interval | float | 可视化图像间隔秒数。                                                                                 |
+|   参数    |                                        说明                                         |
+| :-------: | :---------------------------------------------------------------------------------: |
+|  enable   |          VisualizationHook 的开启和关闭由参数enable控制默认是关闭的状态，           |
+| interval  | 在VisualizationHook开启的情况下,用以控制多少iteration 存储或展示 val 或 test 的结果 |
+|   show    |                          控制是否可视化 val 或 test 的结果                          |
+|  draw_gt  |                         val 或 test 的结果是否绘制标注信息                          |
+| draw_pred |                         val 或 test 的结果是否绘制预测结果                          |
 
 如果在训练或者测试过程中想开启 `VisualizationHook` 相关功能和配置，仅需修改配置即可，以 `dbnet_resnet18_fpnc_1200e_icdar2015.py`为例， 同时绘制标注和预测，并且将图像展示，配置可进行如下修改
 
