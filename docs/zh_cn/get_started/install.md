@@ -113,15 +113,15 @@ pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 在 MMOCR 的目录运行以下命令：
 
 ```bash
-python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --show
+python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --show
 ```
 
-**第二步** 在 Python 解释器中运行以下代码：
+也可以在 Python 解释器中运行以下代码：
 
 ```python
 from mmocr.utils.ocr import MMOCR
-ocr = MMOCR(recog='CRNN', recog_ckpt='crnn_academic-a723a1c5.pth', recog_config='crnn_academic_dataset.py', det='DB_r18', det_ckpt='dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth', det_config='dbnet_r18_fpnc_1200e_icdar2015.py')
-ocr.readtext('demo_text_det.jpg', imshow=True)
+ocr = MMOCR(recog='CRNN', det='DB_r18')
+ocr.readtext('demo_text_ocr.jpg', show=True)
 ```
 
 ## 自定义安装
