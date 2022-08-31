@@ -75,6 +75,7 @@
 
   ```bash
   # 下载数据集
+  mkdir data/det/icdar2015 && cd data/det/icdar2015
   wget https://rrc.cvc.uab.es/downloads/ch4_training_images.zip --no-check-certificate
   wget https://rrc.cvc.uab.es/downloads/ch4_training_localization_transcription_gt.zip --no-check-certificate
   wget https://rrc.cvc.uab.es/downloads/ch4_test_images.zip --no-check-certificate
@@ -91,13 +92,13 @@
 - 使用 MMOCR 提供的格式转换脚本将原始的标注文件转换为 MMOCR 统一的数据格式
 
   ```bash
-  python tools/dataset_converters/textdet/icdar_converter.py data/ic15/ -o data/icdar15/ --split-list training test -d icdar2015
+  python tools/dataset_converters/textdet/icdar_converter.py data/det/icdar15/ -o data/det/icdar15/ --split-list training test -d icdar2015
   ```
 
 - 完成上述步骤后，数据集标签将被转换为 MMOCR 使用的统一格式，文件目录结构如下：
 
   ```text
-  data/ic15/
+  data/det/icdar2015/
   ├── annotations
   │   ├── test
   │   └── training

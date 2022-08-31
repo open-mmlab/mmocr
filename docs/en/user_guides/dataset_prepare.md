@@ -75,6 +75,7 @@ As an example of the data preparation steps, you can perform the following steps
 
   ```bash
   # Downloading datasets
+  mkdir data/det/icdar2015 && cd data/det/icdar2015
   wget https://rrc.cvc.uab.es/downloads/ch4_training_images.zip --no-check-certificate
   wget https://rrc.cvc.uab.es/downloads/ch4_training_localization_transcription_gt.zip --no-check-certificate
   wget https://rrc.cvc.uab.es/downloads/ch4_test_images.zip --no-check-certificate
@@ -91,13 +92,13 @@ As an example of the data preparation steps, you can perform the following steps
 - Using the scripts provided by us to convert the annotations to MMOCR supported formats.
 
   ```bash
-  python tools/dataset_converters/textdet/icdar_converter.py data/ic15/ -o data/icdar15/ --split-list training test -d icdar2015
+  python tools/dataset_converters/textdet/icdar_converter.py data/det/icdar15/ -o data/det/icdar15/ --split-list training test -d icdar2015
   ```
 
 - After completing the above steps, the annotation format has been converted, and the file directory structure is as follows
 
   ```text
-  data/ic15/
+  data/det/icdar2015/
   ├── annotations
   │   ├── test
   │   └── training
