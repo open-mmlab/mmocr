@@ -118,7 +118,7 @@ We provide two options to verify the installation via inference demo, depending 
 Run the following in MMOCR's directory:
 
 ```bash
-python mmocr/utils/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --show
+python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --show
 ```
 
 #### Case B - Installed as a Package:

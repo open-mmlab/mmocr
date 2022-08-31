@@ -115,7 +115,7 @@ pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 在 MMOCR 的目录运行以下命令：
 
 ```bash
-python mmocr/utils/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --show
+python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --show
 ```
 
 #### 若以包形式安装 MMOCR
