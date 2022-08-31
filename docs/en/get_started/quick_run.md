@@ -4,11 +4,11 @@
 
 In addition to using our well-provided pre-trained models, you can also train models on your own datasets. In the next section, we will take you through the basic functions of MMOCR by training DBNet on the mini [ICDAR 2015](https://rrc.cvc.uab.es/?ch=4&com=downloads) dataset as an example.
 
-The next sections assume that you are using the editorial approach to install the MMOCR codebase.
+The next sections assume that you are using the [editorial approach to install](install.md) the MMOCR codebase.
 
 ## Prepare a Dataset
 
-Since the variety of OCR dataset formats are not conducive to either switching or joint training of multiple datasets, MMOCR proposes a uniform data format, and provides conversion scripts and tutorials for all commonly used OCR datasets (see the **Datasets** section). Usually, to use those datasets in MMOCR, you just need to follow the steps to get them ready for use.
+Since the variety of OCR dataset formats are not conducive to either switching or joint training of multiple datasets, MMOCR proposes a uniform [data format](../user_guides/dataset_prepare.md), and provides conversion scripts and [tutorials](../user_guides/dataset_prepare.md) for all commonly used OCR datasets. Usually, to use those datasets in MMOCR, you just need to follow the steps to get them ready for use.
 
 ```{note}
 But here, efficiency means everything.
@@ -26,7 +26,7 @@ tar xzvf mini_icdar2015.tar.gz -C data/det/
 
 Once the dataset is prepared, we will then specify the location of the training set and the training parameters by modifying the config file.
 
-In this example, we will train a DBNet using resnet18 as its backbone. Since MMOCR already has a config file for the full ICDAR 2015 dataset (`configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_ icdar2015.py`), we just need to make some modifications on top of it.
+In this example, we will train a DBNet using resnet18 as its backbone. Since MMOCR already has a config file for the full ICDAR 2015 dataset (`configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py`), we just need to make some modifications on top of it.
 
 We first need to modify the path to the dataset. In this config, most of the key config files are imported in `_base_`, such as the database configuration from `configs/_base_/det_datasets/icdar2015.py`. Open that file and replace the path pointed to by `ic15_det_data_root` in the first line with:
 
@@ -48,12 +48,12 @@ param_scheduler = [dict(type='ConstantLR', factor=1.0),]
 Here, we have rewritten the corresponding parameters in the base configuration directly through the [inheritance](https://mmengine.readthedocs.io/en/latest/tutorials/config.html) mechanism of the configuration. The original fields are distributed in `configs/_base_/schedules/schedule_sgd_1200e.py` and `configs/_base_/textdet_default_runtime.py`. You may check them out if interested.
 
 ```{tip}
-For a more detailed description of config, please refer to [here](. /user_guides/config.md).
+For a more detailed description of config, please refer to [here](../user_guides/config.md).
 ```
 
 ## Browse the Dataset
 
-Before we start the training, we can also visualize the image processed by training-time \[data transforms\](... /basic_concepts/transforms.md). It's quite simple: pass the config file we need to visualize into the [browse_dataset.py](/tools/analysis_tools/browse_dataset.py) script.
+Before we start the training, we can also visualize the image processed by training-time [data transforms](../basic_concepts/transforms.md). It's quite simple: pass the config file we need to visualize into the [browse_dataset.py](/tools/analysis_tools/browse_dataset.py) script.
 
 ```Bash
 python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py
@@ -61,11 +61,11 @@ python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet
 
 The transformed images and annotations will be displayed one by one in a pop-up window.
 
-<div align="center">
-    <img src="https://user-images.githubusercontent.com/22607038/187423441-20ea83bb-3f01-487f-af36-89b6c19fd1fc.png"/><br>
-</div>
+<center class="half">
+    <img src="https://user-images.githubusercontent.com/24622904/187611542-01e9aa94-fc12-4756-964b-a0e472522a3a.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611555-3f5ea616-863d-4538-884f-bccbebc2f7e7.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611581-88be3970-fbfe-4f62-8cdf-7a8a7786af29.jpg" width="250"/>
+</center>
 
-For details on the parameters and usage of this script, please refer to here.
+For details on the parameters and usage of this script, please refer to [here](../user_guides/useful_tools.md).
 
 ```{tip}
 In addition to satisfying our curiosity, visualization can also help us check the parts that may affect the model's performance before training, such as problems in configs, datasets and data transforms.
@@ -93,7 +93,7 @@ Depending on the system environment, MMOCR will automatically use the best devic
 Without extra configurations, model weights will be saved to `work_dirs/dbnet_resnet18_fpnc_1200e_icdar2015/`, while the logs will be stored in `work_dirs/dbnet_resnet18_fpnc_1200e_icdar2015/TIMESTAMP/`. Next, we just need to wait with some patience for training to finish.
 
 ```{tip}
-For advanced usage of training, such as CPU training, multi-GPU training, and cluster training, please refer to [Training and Testing] (... /user_guides/train_test.md).
+For advanced usage of training, such as CPU training, multi-GPU training, and cluster training, please refer to [Training and Testing](../user_guides/train_test.md).
 ```
 
 ## Testing
@@ -117,7 +117,8 @@ Before testing, we also need to make some changes to the location of the dataset
 ic15_det_test = dict(
     type='OCRDataset',
     data_root='tests/data/det_toy_dataset',
-# ...
+    #  ...
+    )
 ```
 
 Start testing:
@@ -145,7 +146,7 @@ And get the outputs:
 The model achieves an hmean of 0.6667 on this dataset.
 
 ```{tip}
-For advanced usage of testing, such as CPU testing, multi-GPU testing, and cluster testing, please refer to [Training and Testing] (... /user_guides/train_test.md).
+For advanced usage of testing, such as CPU testing, multi-GPU testing, and cluster testing, please refer to [Training and Testing] (../user_guides/train_test.md).
 ```
 
 ## Visualize the Outputs
@@ -163,5 +164,5 @@ The true labels and predicted values are displayed in a tiled fashion in the vis
 </div>
 
 ```{tip}
-For a description of more visualization features, see [here](... /user_guides/visualization.md).
+For a description of more visualization features, see [here](../user_guides/visualization.md).
 ```

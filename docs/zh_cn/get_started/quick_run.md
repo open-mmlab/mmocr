@@ -2,13 +2,13 @@
 
 ## 推理
 
-除了使用我们提供好的预训练模型，用户也可以在自己的数据集上训练流行模型。接下来我们以在迷你的 \[ICDAR 2015\] 数据集上训练 DBNet 为例，带大家熟悉 MMOCR 的基本功能。
+除了使用我们提供好的预训练模型，用户也可以在自己的数据集上训练流行模型。接下来我们以在迷你的 [ICDAR 2015](https://rrc.cvc.uab.es/?ch=4&com=downloads) 数据集上训练 DBNet 为例，带大家熟悉 MMOCR 的基本功能。
 
-接下来的部分都假设你使用的是[编辑方式安装 MMOCR 代码库](<>)。
+接下来的部分都假设你使用的是[编辑方式安装 MMOCR 代码库](install.md)。
 
 ## 准备数据集
 
-由于 OCR 任务的数据集种类多样，格式不一，不利于多数据集的切换和联合训练，因此 MMOCR 约定了一种[统一的数据格式](<>)，并针对常用的 OCR 数据集都提供了对应的转换脚本和教程（见**数据集**一栏）。通常，要在 MMOCR 中使用数据集，你只需要按照对应步骤运行指令即可。
+由于 OCR 任务的数据集种类多样，格式不一，不利于多数据集的切换和联合训练，因此 MMOCR 约定了一种[统一的数据格式](../user_guides/dataset_prepare.md)，并针对常用的 OCR 数据集都提供了对应的转换脚本和[教程](../user_guides/dataset_prepare.md)。通常，要在 MMOCR 中使用数据集，你只需要按照对应步骤运行指令即可。
 
 ```{note}
 但我们亦深知，效率就是生命——尤其对想要快速上手 MMOCR 的你来说。
@@ -61,11 +61,11 @@ python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet
 
 数据变换后的图片和标签会在弹窗中逐张被展示出来。
 
-<div align="center">
-    <img src="https://user-images.githubusercontent.com/22607038/187423441-20ea83bb-3f01-487f-af36-89b6c19fd1fc.png"/><br>
-</div>
+<center class="half">
+    <img src="https://user-images.githubusercontent.com/24622904/187611542-01e9aa94-fc12-4756-964b-a0e472522a3a.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611555-3f5ea616-863d-4538-884f-bccbebc2f7e7.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611581-88be3970-fbfe-4f62-8cdf-7a8a7786af29.jpg" width="250"/>
+</center>
 
-有关该脚本更详细的指南，请参考[此处](<>).
+有关该脚本更详细的指南，请参考[此处](../user_guides/useful_tools.md).
 
 ```{tip}
 除了满足好奇心之外，可视化还可以帮助我们在训练前检查可能影响到模型表现的部分，如配置文件、数据集及数据变换中的问题。
@@ -117,7 +117,8 @@ python tools/train.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.
 ic15_det_test = dict(
     type='OCRDataset',
     data_root='tests/data/det_toy_dataset',
-# ...
+    # ...
+    )
 ```
 
 修改完毕，运行命令启动测试。
