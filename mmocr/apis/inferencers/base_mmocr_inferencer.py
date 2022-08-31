@@ -80,7 +80,7 @@ class BaseMMOCRInferencer(BaseInferencer):
         if load_img_idx == -1:
             raise ValueError(
                 'LoadImageFromFile is not found in the test pipeline')
-        pipeline_cfg[load_img_idx] = dict(type='mmdet.LoadImageFromNDArray')
+        pipeline_cfg[load_img_idx]['type'] = 'LoadImageFromNDArray'
         self.ndarray_pipeline = Compose(pipeline_cfg)
 
     def _get_transform_idx(self, pipeline_cfg: ConfigType, name: str) -> int:
@@ -184,6 +184,7 @@ class BaseMMOCRInferencer(BaseInferencer):
         for single_input, pred in zip(inputs, preds):
             if isinstance(single_input, str):
                 img = mmcv.imread(single_input)
+                img = img[:, :, ::-1]
                 img_name = osp.basename(single_input)
             elif isinstance(single_input, np.ndarray):
                 img = single_input.copy()
