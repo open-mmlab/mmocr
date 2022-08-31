@@ -6,4 +6,4 @@
 
 - 如果你需要把 0.x 版本中训练的模型直接迁移到 1.0 版本中使用，请阅读 [预训练模型迁移](./model.md)
 - 如果你需要训练模型，请阅读 [数据集迁移](./dataset.md) 和 [数据增强迁移](./transforms.md)
-- 如果你需要在 MMOCR 上进行开发，请阅读 [模型设计变动](<>)， [Utils 变动](<>) 和 [上游依赖库变更](<>)
+- 如果你需要在 MMOCR 上进行开发，请阅读 [代码迁移](code.md) 和 [上游依赖库变更](https://github.com/open-mmlab/mmengine/tree/main/docs/zh_cn/migration)

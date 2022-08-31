@@ -6,4 +6,4 @@ Next, please read the sections according to your requirements.
 
 - If you want to migrate a model trained in version 0.x to use it directly in version 1.0, please read [Pre-trained Model Migration](./model.md).
 - If you want to train the model, please read [dataset migration](./dataset.md) and [data augmentation migration](./transforms.md).
-- If you want to develop on MMOCR, please read [Model Design Changes](<>), [Utils Changes](<>) and [Upstream Dependency Library Changes](<>).
+- If you want to develop on MMOCR, please read [Code Migration](code.md) and [Upstream Dependency Library Changes](https://github.com/open-mmlab/mmengine/tree/main/docs/en/migration).

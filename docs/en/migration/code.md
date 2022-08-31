@@ -131,3 +131,21 @@ In 1.0, instead of designing different dictionaries and character orders for dif
 - `show_result()` is integrated into `KIEVisualizer`.
 
 - The part of `forward_test()` that post-processes the output is organized in `SDMGRPostProcessor`.
+
+## Utils Migration
+
+Utility functions are now grouped together under `mmocr/utils/`. Here are the scopes of the files in this directory:
+
+- bbox_utils.py: bounding box related functions.
+- check_argument.py: used to check argument type.
+- collect_env.py: used to collect running environment.
+- data_converter_utils.py: used for data format conversion.
+- fileio.py: file input and output related functions.
+- img_utils.py: image processing related functions.
+- mask_utils.py: mask related functions.
+- ocr.py: used for MMOCR inference.
+- parsers.py: used for parsing datasets.
+- polygon_utils.py: polygon related functions.
+- setup_env.py: used for initialize MMOCR.
+- string_utils.py: string related functions.
+- typing.py: defines the abbreviation of types used in MMOCR.
