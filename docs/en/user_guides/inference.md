@@ -10,7 +10,7 @@ ______________________________________________________________________
 ## Example 1: Text Detection
 
 <div align="center">
-    <img src=""/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187707619-49ec07ce-00f6-4696-a60b-ec334a05fe31.png"/><br>
 </div>
 <br>
 
