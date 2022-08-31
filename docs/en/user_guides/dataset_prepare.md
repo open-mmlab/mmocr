@@ -28,10 +28,10 @@ In the following, we provide a brief overview of the data formats defined in MMO
                 "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
                 "bbox": [0, 0, 10, 20],
                 "bbox_label": 0,
-                "ignore": False,
+                "ignore": false,
               },
             ],
-            ...
+            //...
         }
       ]
   }
@@ -104,7 +104,7 @@ As an example of the data preparation steps, you can perform the following steps
 
 ## Dataset Configuration
 
-### Single Dataset Training and Evaluation
+### Single Dataset Training
 
 When training or evaluating a model on new datasets, we need to write the dataset config where the image path, annotation path, and image prefix are set. The path `configs/xxx/_base_/datasets/` is pre-configured with the commonly used datasets in MMOCR, here we take the ICDAR 2015 dataset as an example (see `configs/_base_/det_datasets/icdar2015.py`).
 
@@ -161,7 +161,7 @@ val_dataloader = dict(
 test_dataloader = val_dataloader
 ```
 
-### Multi-dataset Training and Evaluation
+### Multi-dataset Training
 
 In addition, [`ConcatDataset`](mmocr.datasets.ConcatDataset) enables users to train or test the model on a combination of multiple datasets. You just need to set the dataset type in the dataloader to `ConcatDataset` in the configuration file and specify the corresponding list of datasets.
 
@@ -218,11 +218,4 @@ test_dataloader = dict(
     dataset=test_dataset)
 
 val_dataloader = test_dataloader
-
-# The order of the prefixes here must match the order of the datasets in the test_list list
-val_evaluator = dict(
-    dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
-test_evaluator = val_evaluator
 ```
-
-Note that when using multi-dataset for testing, we need to specify the evaluator type as [`MultiDatasetsEvaluator`](mmocr.evaluation.MultiDatasetsEvaluator). Also, the order of names in `dataset_prefixes` must be consistent with the order of datasets in the `test_list` so that the prefix name of test scores can be printed correctly in the log.

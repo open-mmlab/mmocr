@@ -28,10 +28,10 @@
                 "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
                 "bbox": [0, 0, 10, 20],
                 "bbox_label": 0,
-                "ignore": False
+                "ignore": false
               }
             ],
-            ...
+            //...
         }
       ]
     }
@@ -104,7 +104,7 @@
 
 ## 数据集配置文件
 
-### 单数据集训练及评测
+### 单数据集训练
 
 在使用新的数据集时，我们需要对其图像、标注文件的路径等基础信息进行配置。`configs/xxx/_base_/datasets/` 路径下已预先配置了 MMOCR 中常用的数据集，这里我们以 ICDAR 2015 数据集为例（见 `configs/_base_/det_datasets/icdar2015.py`）：
 
@@ -161,7 +161,7 @@ val_dataloader = dict(
 test_dataloader = val_dataloader
 ```
 
-### 多数据集训练及评测
+### 多数据集训练
 
 此外，基于 [`ConcatDataset`](mmocr.datasets.ConcatDataset)，用户还可以使用多个数据集组合来训练或测试模型。用户只需在配置文件中将 dataloader 中的 dataset 类型设置为 `ConcatDataset`，并指定对应的数据集列表即可。
 
@@ -218,11 +218,4 @@ test_dataloader = dict(
     dataset=test_dataset)
 
 val_dataloader = test_dataloader
-
-# 此处的 prefix 顺序需要与 test_list 列表中的数据集顺序一致
-val_evaluator = dict(
-    dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
-test_evaluator = val_evaluator
 ```
-
-需要注意的是，在使用多数据集测试时，我们需要将 evaluator 的类型指定为 [`MultiDatasetsEvaluator`](mmocr.evaluation.MultiDatasetsEvaluator)。并且，`dataset_prefixes` 中的名称顺序需要与 `test_list` 列表中的数据集顺序保持一致，这样在输出测试精度时，每项得分的前缀名才能被正确地打印在日志中。
