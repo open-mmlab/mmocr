@@ -45,17 +45,18 @@ We recommend that users follow our best practices to install MMOCR. However, the
 
 ### Best Practices
 
-**Step 0.** Install [MMCV](https://github.com/open-mmlab/mmcv) using [MIM](https://github.com/open-mmlab/mim).
+**Step 0.** Install  [MMEngine](https://github.com/open-mmlab/mmengine) and [MMCV](https://github.com/open-mmlab/mmcv) using [MIM](https://github.com/open-mmlab/mim).
 
 ```shell
 pip install -U openmim
-mim install mmcv-full
+mim install mmengine
+mim install 'mmcv>=2.0.0rc1'
 ```
 
 **Step 1.** Install [MMDetection](https://github.com/open-mmlab/mmdetection) as a dependency.
 
 ```shell
-pip install mmdet
+pip install 'mmdet>=3.0.0rc0'
 ```
 
 **Step 2.** Install MMOCR.
@@ -65,6 +66,7 @@ Case A: If you wish to run and develop MMOCR directly, install it from source:
 ```shell
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
+git checkout 1.x
 pip install -r requirements.txt
 pip install -v -e .
 # "-v" increases pip's verbosity.
@@ -75,7 +77,7 @@ pip install -v -e .
 Case B: If you use MMOCR as a dependency or third-party package, install it with pip:
 
 ```shell
-pip install mmocr
+pip install 'mmocr>=1.0.0rc0'
 ```
 
 **Step 3. (Optional)** If you wish to use any transform involving `albumentations` (For example, `Albu` in ABINet's pipeline), install the dependency using the following command:
@@ -116,7 +118,7 @@ We provide two options to verify the installation via inference demo, depending 
 Run the following in MMOCR's directory:
 
 ```bash
-python mmocr/utils/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --imshow
+python mmocr/utils/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --show
 ```
 
 #### Case B - Installed as a Package:
@@ -171,7 +173,7 @@ To install MMCV with pip instead of MIM, please follow [MMCV installation guides
 For example, the following command install mmcv-full built for PyTorch 1.10.x and CUDA 11.3.
 
 ```shell
-pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
+pip install `mmcv>=2.0.0rc1`  -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
 ```
 
 ### Install on CPU-only platforms
@@ -212,13 +214,7 @@ docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmocr/data mmocr
 
 MMOCR has different version requirements on MMCV and MMDetection at each release to guarantee the implementation correctness. Please refer to the table below and ensure the package versions fit the requirement.
 
-| MMOCR        | MMCV                     | MMDetection                 |
-| ------------ | ------------------------ | --------------------------- |
-| main         | 1.3.8 \<= mmcv \<= 1.7.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.6.0        | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.5.0        | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 3.0.0  |
-| 0.4.0, 0.4.1 | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.3.0        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.2.1        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.13.0 \<= mmdet \<= 2.20.0 |
-| 0.2.0        | 1.3.4 \<= mmcv \<= 1.4.0 | 2.11.0 \<= mmdet \<= 2.13.0 |
-| 0.1.0        | 1.2.6 \<= mmcv \<= 1.3.4 | 2.9.0 \<= mmdet \<= 2.11.0  |
+| MMOCR    | MMCV              | MMDetection        |
+| -------- | ----------------- | ------------------ |
+| dev-1.x  | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
+| 1.0.0rc0 | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
