@@ -5,6 +5,7 @@ import warnings
 from typing import Callable, List, Optional, Sequence, Union
 
 from mmengine.dataset import BaseDataset
+from mmengine.utils import is_abs
 
 from mmocr.registry import DATASETS, TASK_UTILS
 
@@ -80,7 +81,7 @@ class RecogLMDBDataset(BaseDataset):
         self.parser = TASK_UTILS.build(parser_cfg)
         self.ann_file = ann_file
         self.deprecated_format = False
-        env = self._get_env()
+        env = self._get_env(root=data_root)
         with env.begin(write=False) as txn:
             try:
                 self.total_number = int(
@@ -169,7 +170,7 @@ class RecogLMDBDataset(BaseDataset):
         data_info['instances'] = [dict(text=parsed_anno[self.parser.keys[1]])]
         return data_info
 
-    def _get_env(self):
+    def _get_env(self, root=''):
         """Get lmdb environment from self.ann_file.
 
         Returns:
@@ -180,8 +181,10 @@ class RecogLMDBDataset(BaseDataset):
         except ImportError:
             raise ImportError(
                 'Please install lmdb to enable RecogLMDBDataset.')
+        lmdb_path = self.ann_file if is_abs(self.ann_file) else osp.join(
+            root, self.ann_file)
         return lmdb.open(
-            self.ann_file,
+            lmdb_path,
             max_readers=1,
             readonly=True,
             lock=False,
