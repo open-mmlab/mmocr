@@ -50,9 +50,9 @@
    :maxdepth: 2
    :caption: 数据集支持
 
-   data_prepare/det.md
-   data_prepare/recog.md
-   data_prepare/kie.md
+   user_guides/data_prepare/det.md
+   user_guides/data_prepare/recog.md
+   user_guides/data_prepare/kie.md
 
 .. toctree::
    :maxdepth: 2
