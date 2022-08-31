@@ -10,30 +10,30 @@ In the following, we provide a brief overview of the data formats defined in MMO
 
   ```json
   {
-  "metainfo":
-    {
-      "dataset_type": "TextDetDataset",
-      "task_name": "textdet",
-      "category": [{"id": 0, "name": "text"}]
-    },
-  "data_list":
-    [
+    "metainfo":
       {
-        "img_path": "test_img.jpg",
-        "height": 640,
-        "width": 640,
-        "instances":
-          [
-            {
-              "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
-              "bbox": [0, 0, 10, 20],
-              "bbox_label": 0,
-              "ignore": False
-            }，
-              ...
-          ]
-      }
-    ]
+        "dataset_type": "TextDetDataset",
+        "task_name": "textdet",
+        "category": [{"id": 0, "name": "text"}]
+      },
+    "data_list":
+      [
+        {
+          "img_path": "test_img.jpg",
+          "height": 640,
+          "width": 640,
+          "instances":
+            [
+              {
+                "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
+                "bbox": [0, 0, 10, 20],
+                "bbox_label": 0,
+                "ignore": False,
+              },
+            ],
+            ...
+        }
+      ]
   }
   ```
 

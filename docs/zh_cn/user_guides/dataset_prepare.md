@@ -9,32 +9,32 @@
 - 如以下代码块所示，文本检测任务采用数据格式 `TextDetDataset`，其中存放了文本检测任务所需的边界盒标注、文件名等信息。我们在 `tests/data/det_toy_dataset/instances_test.json` 路径中提供了一个示例标注文件。
 
   ```json
-  {
-  "metainfo":
     {
-      "dataset_type": "TextDetDataset",
-      "task_name": "textdet",
-      "category": [{"id": 0, "name": "text"}]
-    },
-  "data_list":
-    [
+    "metainfo":
       {
-        "img_path": "test_img.jpg",
-        "height": 640,
-        "width": 640,
-        "instances":
-          [
-            {
-              "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
-              "bbox": [0, 0, 10, 20],
-              "bbox_label": 0,
-              "ignore": False
-            }，
-              ...
-          ]
-      }
-    ]
-  }
+        "dataset_type": "TextDetDataset",
+        "task_name": "textdet",
+        "category": [{"id": 0, "name": "text"}]
+      },
+    "data_list":
+      [
+        {
+          "img_path": "test_img.jpg",
+          "height": 640,
+          "width": 640,
+          "instances":
+            [
+              {
+                "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
+                "bbox": [0, 0, 10, 20],
+                "bbox_label": 0,
+                "ignore": False
+              }
+            ],
+            ...
+        }
+      ]
+    }
   ```
 
 - 如以下代码块所示，文本识别任务采用数据格式 `TextRecogDataset`，其中存放了文本识别任务所需的文本内容及图片路径等信息。我们在 `tests/data/rec_toy_dataset/labels.json` 路径中提供了一个示例标注文件。
