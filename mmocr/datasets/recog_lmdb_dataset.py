@@ -5,6 +5,7 @@ import warnings
 from typing import Callable, List, Optional, Sequence, Union
 
 from mmengine.dataset import BaseDataset
+from mmengine.utils import is_abs
 
 from mmocr.registry import DATASETS, TASK_UTILS
 
@@ -180,8 +181,10 @@ class RecogLMDBDataset(BaseDataset):
         except ImportError:
             raise ImportError(
                 'Please install lmdb to enable RecogLMDBDataset.')
+        lmdb_path = self.ann_file if is_abs(self.ann_file) else osp.join(
+            root, self.ann_file)
         return lmdb.open(
-            osp.join(root, self.ann_file),
+            lmdb_path,
             max_readers=1,
             readonly=True,
             lock=False,
