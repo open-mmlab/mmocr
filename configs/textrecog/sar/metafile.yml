@@ -34,28 +34,28 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 95.0
+          word_acc:
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 89.6
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 93.7
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 79.0
+          word_acc:
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 82.2
+          word_acc:
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 88.9
-    Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth
+          word_acc:
+    Weights:
 
   - Name: sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real
     In Collection: SAR
@@ -74,25 +74,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 95.2
+          word_acc:
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 88.7
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 92.4
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 78.2
+          word_acc:
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 81.9
+          word_acc:
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 89.6
-    Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_sequential_decoder_academic-d06c9a8e.pth
+          word_acc:
+    Weights:

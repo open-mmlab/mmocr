@@ -1,10 +1,10 @@
 Collections:
 - Name: PANet
   Metadata:
-    Training Data: ICDAR SCUT-CTW1500
+    Training Data: ICDAR2015 SCUT-CTW1500
     Training Techniques:
       - Adam
-    Training Resources: 8x GeForce GTX 1080 Ti
+    Training Resources: 1x NVIDIA A100-SXM4-80GB
     Architecture:
       - ResNet
       - FPEM_FFM
@@ -23,8 +23,8 @@ Models:
       - Task: Text Detection
         Dataset: CTW1500
         Metrics:
-          hmean-iou: 0.806
-    Weights: https://download.openmmlab.com/mmocr/textdet/panet/panet_r18_fpem_ffm_sbn_600e_ctw1500_20210219-3b3a9aa3.pth
+          hmean-iou: 0.7770
+    Weights: https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500/panet_resnet18_fpem-ffm_600e_ctw1500_20220826_144818-980f32d0.pth
 
   - Name: panet_resnet18_fpem-ffm_600e_icdar2015
     In Collection: PANet
@@ -35,5 +35,5 @@ Models:
       - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
-          hmean-iou: 0.791
-    Weights: https://download.openmmlab.com/mmocr/textdet/panet/panet_r18_fpem_ffm_sbn_600e_icdar2015_20210219-42dbe46a.pth
+          hmean-iou: 0.7848
+    Weights: https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_icdar2015/panet_resnet18_fpem-ffm_600e_icdar2015_20220826_144817-be2acdb4.pth

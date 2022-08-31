@@ -5,8 +5,8 @@ Collections:
     Training Techniques:
       - Adadelta
     Epochs: 5
-    Batch Size: 256
-    Training Resources: 4x GeForce GTX 1080 Ti
+    Batch Size: 64
+    Training Resources: 1x NVIDIA A100-SXM4-80GB
     Architecture:
       - MiniVGG
       - CRNNDecoder
@@ -25,13 +25,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 80.5
+          word_acc: 0.8053
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 81.5
+          word_acc: 0.8053
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 86.5
-    Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth
+          word_acc: 0.8739
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 0.5556
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 0.6093
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 0.5694
+    Weights: https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_mini-vgg_5e_mj/crnn_mini-vgg_5e_mj_20220826_224120-8afbedbb.pth
