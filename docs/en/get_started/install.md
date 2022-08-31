@@ -101,10 +101,10 @@ to ['albumentations`'s official documentation](https://albumentations.ai/docs/ge
 
 ### Verify the installation
 
-We provide two options to verify the installation via inference demo, depending on your installation method. You should be able to see a pop-up image and the inference result upon successful verification.
+We provide a method to verify the installation via inference demo, depending on your installation method. You should be able to see a pop-up image and the inference result upon successful verification.
 
 <div align="center">
-    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/resources/verification.png"/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187707213-2d49611f-fd46-46ff-b5d9-a3e5d1979a48.png"/><br>
 </div>
 <br>
 
@@ -113,32 +113,10 @@ We provide two options to verify the installation via inference demo, depending 
 [{'filename': 'demo_text_det', 'text': ['yther', 'doyt', 'nan', 'heraies', '188790', 'cadets', 'army', 'ipioneered', 'and', 'icottages', 'land', 'hall', 'sgardens', 'established', 'ithis', 'preformer', 'social', 'octavial', 'hill', 'pm', 'ct', 'lof', 'aborought']}]
 ```
 
-#### Case A - Installed from Source
-
 Run the following in MMOCR's directory:
 
 ```bash
 python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --show
-```
-
-#### Case B - Installed as a Package:
-
-**Step 1.** We need to download configs, checkpoints and an image necessary for the verification.
-
-```shell
-mim download mmocr --config dbnet_r18_fpnc_1200e_icdar2015 --dest .
-mim download mmocr --config crnn_academic_dataset --dest .
-wget https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/demo_text_det.jpg
-```
-
-The downloading will take several seconds or more, depending on your network environment. The directory tree should look like the following once everything is done:
-
-```bash
-├── crnn_academic-a723a1c5.pth
-├── crnn_academic_dataset.py
-├── dbnet_r18_fpnc_1200e_icdar2015.py
-├── dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth
-└── demo_text_det.jpg
 ```
 
 **Step 2.** Run the following codes in your Python interpreter:

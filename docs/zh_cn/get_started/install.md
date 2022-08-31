@@ -98,10 +98,10 @@ pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 
 ### 检验
 
-根据安装方式的不同，我们提供了两个可以验证安装正确性的方法。若 MMOCR 的安装无误，你在这一节完成后应当能看到以图片和文字形式表示的识别结果，示意如下：
+根据安装方式的不同，我们提供了验证安装正确性的方法。若 MMOCR 的安装无误，你在这一节完成后应当能看到以图片和文字形式表示的识别结果，示意如下：
 
 <div align="center">
-    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/resources/verification.png"/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187707213-2d49611f-fd46-46ff-b5d9-a3e5d1979a48.png"/><br>
 </div>
 <br>
 
@@ -110,32 +110,10 @@ pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 [{'filename': 'demo_text_det', 'text': ['yther', 'doyt', 'nan', 'heraies', '188790', 'cadets', 'army', 'ipioneered', 'and', 'icottages', 'land', 'hall', 'sgardens', 'established', 'ithis', 'preformer', 'social', 'octavial', 'hill', 'pm', 'ct', 'lof', 'aborought']}]
 ```
 
-#### 若从源码安装 MMOCR
-
 在 MMOCR 的目录运行以下命令：
 
 ```bash
 python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --show
-```
-
-#### 若以包形式安装 MMOCR
-
-**第一步** 下载必要的配置，权重和图片：
-
-```shell
-mim download mmocr --config dbnet_r18_fpnc_1200e_icdar2015 --dest .
-mim download mmocr --config crnn_academic_dataset --dest .
-wget https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/demo_text_det.jpg
-```
-
-取决于你的网络环境，下载过程可能会持续几十秒或者更长。一切就绪后，当前目录树应当包含以下文件：
-
-```bash
-├── crnn_academic-a723a1c5.pth
-├── crnn_academic_dataset.py
-├── dbnet_r18_fpnc_1200e_icdar2015.py
-├── dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth
-└── demo_text_det.jpg
 ```
 
 **第二步** 在 Python 解释器中运行以下代码：
