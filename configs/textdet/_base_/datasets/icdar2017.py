@@ -1,4 +1,4 @@
-ic17_det_data_root = 'data/det/icdar2017'
+ic17_det_data_root = 'data/det/icdar_2017'
 
 ic17_det_train = dict(
     type='OCRDataset',
