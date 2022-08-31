@@ -76,10 +76,10 @@ Functional boundaries of modules has not been clearly defined in MMOCR 0.x. In M
 
 - In older versions, different label converters would have different special character sets and character order. In version 0.x, the character order was as follows.
 
-| Converter                       | Character order                        |
-| ------------------------------- | -------------------------------------- |
-| `AttnConvertor`, `ABIConvertor` | \<UKN>, \<BOS/EOS>, \<PAD>, characters |
-| `CTCConvertor`                  | \<BLK>, \<UKN>, characters             |
+| Converter                       | Character order                           |
+| ------------------------------- | ----------------------------------------- |
+| `AttnConvertor`, `ABIConvertor` | `<UKN>`, `<BOS/EOS>`, `<PAD>`, characters |
+| `CTCConvertor`                  | `<BLK>`, `<UKN>`, characters              |
 
 In 1.0, instead of designing different dictionaries and character orders for different tasks, we have a unified *Dictionary* implementation with the character order always as characters, \<BOS/EOS>, \<PAD>, \<UKN>. \<BLK> in `CTCConvertor` has been equivalently replaced by \<PAD>.
 

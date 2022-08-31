@@ -76,10 +76,10 @@ MMOCR 0.x 存在着对模块功能边界定义不清晰的问题。在 MMOCR 1.0
 
 - 在旧版本中，不同的 label converter 会有不一样的特殊字符集和字符序。在 0.x 版本中，字符序如下：
 
-  | Converter                       | 字符序                                 |
-  | ------------------------------- | -------------------------------------- |
-  | `AttnConvertor`, `ABIConvertor` | \<UKN>, \<BOS/EOS>, \<PAD>, characters |
-  | `CTCConvertor`                  | \<BLK>, \<UKN>, characters             |
+  | Converter                       | 字符序                                    |
+  | ------------------------------- | ----------------------------------------- |
+  | `AttnConvertor`, `ABIConvertor` | `<UKN>`, `<BOS/EOS>`, `<PAD>`, characters |
+  | `CTCConvertor`                  | `<BLK>`, `<UKN>`, characters              |
 
 在 1.0 中，我们不再以任务为边界设计不同的字典和字符序，取而代之的是统一了字符序的 Dictionary，其字符序为 characters, \<BOS/EOS>, \<PAD>, \<UKN>。`CTCConvertor` 中 \<BLK> 被等价替换为 \<PAD>。
 
