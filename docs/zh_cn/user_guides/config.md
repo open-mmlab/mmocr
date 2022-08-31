@@ -683,7 +683,7 @@ config
 │   └── crnn
 │       ├── _base_crnn_mini-vgg.py
 │       └── crnn_mini-vgg_5e_mj.py
-└── Kie
+└── kie
     ├── _base_
     │   ├──datasets
     │   └── default_runtime.py
