@@ -144,7 +144,7 @@ train_dataloader = dict(
 python tools/train.py example.py --cfg-options optim_wrapper.optimizer.lr=1
 ```
 
-更多详细用法参考[命令行修改配置](https://github.com/open-mmlab/mmengine/blob/5389c115025303400aa26bfa412f6bb796b932ff/docs/zh_cn/tutorials/config.md#%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE)
+更多详细用法参考[命令行修改配置](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/config.md#%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE)
 
 ## 配置内容
 
