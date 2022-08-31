@@ -19,7 +19,7 @@ The visualization results will be like:
 
 </div>
 
-Based on this tool, users can easily verify if the annotation of a custom dataset is correct; Also, you can verify if the data augmentation strategies are running as you expected by modifying `train_pipeline` in the configuration file. The optional parameters of `browse_dataset.py` are as follows.
+Based on this tool, users can easily verify if the annotation of a custom dataset is correct. Also, you can verify if the data augmentation strategies are running as you expected by modifying `train_pipeline` in the configuration file. The optional parameters of `browse_dataset.py` are as follows.
 
 |                 |       |                                                                                       |
 | --------------- | ----- | ------------------------------------------------------------------------------------- |
