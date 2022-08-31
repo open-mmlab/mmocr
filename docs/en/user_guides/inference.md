@@ -37,7 +37,7 @@ results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/')
 ## Example 2: Text Detection + Recognition
 
 <div align="center">
-    <img src=""/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187707213-2d49611f-fd46-46ff-b5d9-a3e5d1979a48.png"/><br>
 </div>
 <br>
 
@@ -72,7 +72,7 @@ ______________________________________________________________________
 ## Example 3: Text Detection + Recognition + Key Information Extraction
 
 <div align="center">
-    <img src=""/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187707190-4a20a570-efa8-4f0e-970d-747194c61c5e.png"/><br>
 </div>
 <br>
 
@@ -134,13 +134,12 @@ User can use default pretrained models by specifying `det` and/or `recog`, which
 
 ### readtext()
 
-| Arguments       | Type                    | Default      | Description                                                                  |
-| --------------- | ----------------------- | ------------ | ---------------------------------------------------------------------------- |
-| `img`           | str/list/tuple/np.array | **required** | img, folder path, np array or list/tuple (with img paths or np arrays)       |
-| `img_out_dir`   | str                     | None         | Output directory of images.                                                  |
-| `pred_out_file` | str                     | None         | File to save the inference results. If left as empty, no file will be saved. |
-| `show`          | bool                    | False        | Whether to show the result visualization on screen                           |
-| `print_result`  | bool                    | False        | Whether to show the result for each image                                    |
+| Arguments      | Type                    | Default      | Description                                                            |
+| -------------- | ----------------------- | ------------ | ---------------------------------------------------------------------- |
+| `img`          | str/list/tuple/np.array | **required** | img, folder path, np array or list/tuple (with img paths or np arrays) |
+| `img_out_dir`  | str                     | None         | Output directory of images.                                            |
+| `show`         | bool                    | False        | Whether to show the result visualization on screen                     |
+| `print_result` | bool                    | False        | Whether to show the result for each image                              |
 
 All arguments are the same for the cli, all you need to do is add 2 hyphens at the beginning of the argument and replace underscores by hyphens.
 (*Example:* `img_out_dir` becomes `--img-out-dir`)

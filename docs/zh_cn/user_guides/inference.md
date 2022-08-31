@@ -30,13 +30,13 @@ from mmocr.ocr import MMOCR
 ocr = MMOCR(det='TextSnake')
 
 # 推理
-results = ocr.readtext('demo/emo_text_det.jpg', img_out_dir='demo/')
+results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/')
 ```
 
 ## 案例二：文本检测+识别
 
 <div align="center">
-    <img src=""/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187707213-2d49611f-fd46-46ff-b5d9-a3e5d1979a48.png"/><br>
 </div>
 <br>
 
@@ -71,7 +71,7 @@ ______________________________________________________________________
 ## 案例三： 文本检测+识别+关键信息提取
 
 <div align="center">
-    <img src=""/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187707190-4a20a570-efa8-4f0e-970d-747194c61c5e.png"/><br>
 </div>
 <br>
 
