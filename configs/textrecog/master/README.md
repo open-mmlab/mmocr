@@ -35,10 +35,12 @@ Attention-based scene text recognizers have gained huge success, which leverages
 
 ## Results and Models
 
-|                               Methods                               |   Backbone    |        | Regular Text |       |     |       | Irregular Text |       |                                download                                |
-| :-----------------------------------------------------------------: | :-----------: | :----: | :----------: | :---: | :-: | :---: | :------------: | :---: | :--------------------------------------------------------------------: |
-|                                                                     |               | IIIT5K |     SVT      | IC13  |     | IC15  |      SVTP      | CT80  |                                                                        |
-| [MASTER](/configs/textrecog/master/master_resnet31_12e_st_mj_sa.py) | R31-GCAModule | 94.63  |    90.42     | 94.98 |     | 75.54 |     82.79      | 88.54 | [model](https://download.openmmlab.com/mmocr/textrecog/master/master_r31_12e_ST_MJ_SA-787edd36.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/master/master_r31_12e_ST_MJ_SA-787edd36.log.json) |
+Coming Soon!
+
+|                               Methods                               |   Backbone    |        | Regular Text |      |     |      | Irregular Text |      |         download         |
+| :-----------------------------------------------------------------: | :-----------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :----------------------: |
+|                                                                     |               | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |                          |
+| [MASTER](/configs/textrecog/master/master_resnet31_12e_st_mj_sa.py) | R31-GCAModule |        |              |      |     |      |                |      | [model](<>) \| [log](<>) |
 
 ## Citation
 

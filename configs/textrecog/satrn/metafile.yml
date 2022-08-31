@@ -28,28 +28,28 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 95.1
+          word_acc:
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 92.0
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 95.8
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 81.4
+          word_acc:
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 87.6
+          word_acc:
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 90.6
-    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_academic_20211009-cb8b1580.pth
+          word_acc:
+    Weights:
 
   - Name: satrn_shallow-small_5e_st_mj
     In Collection: SATRN
@@ -62,25 +62,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 94.7
+          word_acc:
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 91.3
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 95.4
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 81.9
+          word_acc:
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 85.9
+          word_acc:
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 86.5
-    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_small_20211009-2cf13355.pth
+          word_acc:
+    Weights:

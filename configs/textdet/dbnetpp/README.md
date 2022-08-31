@@ -16,9 +16,9 @@ Recently, segmentation-based scene text detection methods have drawn extensive a
 
 ### ICDAR2015
 
-|                  Method                   |                  Pretrained Model                   |  Training set   |    Test set    | #epochs | Test size | Recall | Precision | Hmean |                  Download                   |
-| :---------------------------------------: | :-------------------------------------------------: | :-------------: | :------------: | :-----: | :-------: | :----: | :-------: | :---: | :-----------------------------------------: |
-| [DBNetpp_r50dcn](/configs/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015.py) | [Synthtext](/configs/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_100k_synthtext.py) ([model](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_100k_iter_synthtext-20220502-db297554.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_100k_iter_synthtext-20220502-db297554.log.json)) | ICDAR2015 Train | ICDAR2015 Test |  1200   |   1024    | 0.822  |   0.901   | 0.860 | [model](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.log.json) |
+|                  Method                  |                  Pretrained Model                   |  Training set   |    Test set    | #epochs | Test size | Precision | Recall | Hmean  |                  Download                   |
+| :--------------------------------------: | :-------------------------------------------------: | :-------------: | :------------: | :-----: | :-------: | :-------: | :----: | :----: | :-----------------------------------------: |
+| [DBNetpp_r50dcn](/configs/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015.py) | [Synthtext](/configs/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_100k_synthtext.py) ([model](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_100k_iter_synthtext-20220502-db297554.pth)) | ICDAR2015 Train | ICDAR2015 Test |  1200   |   1024    |  0.9116   | 0.8291 | 0.8684 | [model](https://download.openmmlab.com/mmocr/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015_20220829_230108-f289bd20.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015/20220829_230108.log) |
 
 ## Citation
 
