@@ -154,33 +154,33 @@ ______________________________________________________________________
 
 **Text detection:**
 
-| Name          |                                                                        Reference                                                                         |
-| ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| DB_r18        |            [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
-| DB_r50        |            [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
-| DBPP_r50      |                                        [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#dbnetpp)                                        |
-| DRRG          |                                         [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#drrg)                                          |
-| FCE_IC15      |             [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
-| FCE_CTW_DCNv2 |             [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
-| MaskRCNN_CTW  |                                      [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |
-| MaskRCNN_IC15 |                                      [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |
-| PANet_CTW     | [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
-| PANet_IC15    | [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
-| PS_CTW        |                                        [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |
-| PS_IC15       |                                        [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |
-| TextSnake     |                                       [link](https://mmocr.readthedocs.io/en/latest/textdet_models.html#textsnake)                                       |
+| Name          |                                                                         Reference                                                                         |
+| ------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| DB_r18        |            [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
+| DB_r50        |            [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
+| DBPP_r50      |                                        [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnetpp)                                        |
+| DRRG          |                                         [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#drrg)                                          |
+| FCE_IC15      |             [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
+| FCE_CTW_DCNv2 |             [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
+| MaskRCNN_CTW  |                                      [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn)                                       |
+| MaskRCNN_IC15 |                                      [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn)                                       |
+| PANet_CTW     | [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
+| PANet_IC15    | [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
+| PS_CTW        |                                        [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)                                         |
+| PS_IC15       |                                        [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)                                         |
+| TextSnake     |                                       [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#textsnake)                                       |
 
 **Text recognition:**
 
-| Name |                                                                                           Reference                                                                                            |
-| ---- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| CRNN | [link](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |
+| Name |                                                                                            Reference                                                                                            |
+| ---- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| CRNN | [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |
 
 **Key information extraction:**
 
-| Name  |                                                              Reference                                                              |
-| ----- | :---------------------------------------------------------------------------------------------------------------------------------: |
-| SDMGR | [link](https://mmocr.readthedocs.io/en/latest/kie_models.html#spatial-dual-modality-graph-reasoning-for-key-information-extraction) |
+| Name  |                                                              Reference                                                               |
+| ----- | :----------------------------------------------------------------------------------------------------------------------------------: |
+| SDMGR | [link](https://mmocr.readthedocs.io/en/dev-1.x/kie_models.html#spatial-dual-modality-graph-reasoning-for-key-information-extraction) |
 
 ## Additional info
 

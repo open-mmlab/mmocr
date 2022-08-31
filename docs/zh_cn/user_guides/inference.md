@@ -152,33 +152,33 @@ ______________________________________________________________________
 
 **文本检测：**
 
-| 名称          |                                                                           引用                                                                           |
-| ------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| DB_r18        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
-| DB_r50        |            [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
-| DBPP_r50      |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#dbnetpp)                                        |
-| DRRG          |                                         [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#drrg)                                          |
-| FCE_IC15      |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
-| FCE_CTW_DCNv2 |             [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
-| MaskRCNN_CTW  |                                      [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |
-| MaskRCNN_IC15 |                                      [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#mask-r-cnn)                                       |
-| PANet_CTW     | [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
-| PANet_IC15    | [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
-| PS_CTW        |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |
-| PS_IC15       |                                        [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#psenet)                                         |
-| TextSnake     |                                       [链接](https://mmocr.readthedocs.io/en/latest/textdet_models.html#textsnake)                                       |
+| 名称          |                                                                           引用                                                                            |
+| ------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| DB_r18        |            [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
+| DB_r50        |            [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
+| DBPP_r50      |                                        [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnetpp)                                        |
+| DRRG          |                                         [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#drrg)                                          |
+| FCE_IC15      |             [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
+| FCE_CTW_DCNv2 |             [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
+| MaskRCNN_CTW  |                                      [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn)                                       |
+| MaskRCNN_IC15 |                                      [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn)                                       |
+| PANet_CTW     | [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
+| PANet_IC15    | [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
+| PS_CTW        |                                        [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)                                         |
+| PS_IC15       |                                        [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)                                         |
+| TextSnake     |                                       [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#textsnake)                                       |
 
 **文本识别：**
 
-| 名称 |                                                                                              引用                                                                                              |
-| ---- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| CRNN | [链接](https://mmocr.readthedocs.io/en/latest/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |
+| 名称 |                                                                                              引用                                                                                               |
+| ---- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| CRNN | [链接](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |
 
 **关键信息提取：**
 
-| 名称                                                                                                                                 |
-| ------------------------------------------------------------------------------------------------------------------------------------ |
-| [SDMGR](https://mmocr.readthedocs.io/en/latest/kie_models.html#spatial-dual-modality-graph-reasoning-for-key-information-extraction) |
+| 名称                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------- |
+| [SDMGR](https://mmocr.readthedocs.io/en/dev-1.x/kie_models.html#spatial-dual-modality-graph-reasoning-for-key-information-extraction) |
 
 ## 其他需要注意
 
