@@ -5,7 +5,7 @@ MMOCR 主要使用 Python 文件作为配置文件。其配置文件系统的设
 ## 常见用法
 
 ```{note}
-本小节建议结合 [配置(Config)](https://github.com/open-mmlab/mmengine/blob/5389c115025303400aa26bfa412f6bb796b932ff/docs/zh_cn/tutorials/config.md) 中的初级用法共同阅读。
+本小节建议结合 [配置(Config)](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/config.md) 中的初级用法共同阅读。
 ```
 
 MMOCR 最常用的操作为三种：配置文件的继承，对 `_base_` 变量的引用以及对 `_base_` 变量的修改。对于 `_base_` 的继承与修改, MMEngine.Config 提供了两种语法，一种是针对 Python，Json， Yaml 均可使用的操作；另一种则仅适用于 Python 配置文件。在 MMOCR 中，我们**更推荐使用只针对Python的语法**，因此下文将以此为基础作进一步介绍。
@@ -167,7 +167,7 @@ random_cfg = dict(seed=None)
 
 主要包含三个部分：
 
-- 设置所有注册器的默认 `scope` 为 `mmocr`， 保证所有的模块首先从 `MMOCR` 代码库中进行搜索。若果该模块不存在，则继续从上游算法库 `MMEngine` 和 `MMCV` 中进行搜索（详见[注册器](#https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/registry.md)）。
+- 设置所有注册器的默认 `scope` 为 `mmocr`， 保证所有的模块首先从 `MMOCR` 代码库中进行搜索。若果该模块不存在，则继续从上游算法库 `MMEngine` 和 `MMCV` 中进行搜索（详见[注册器](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/registry.md)。
 
 - `env_cfg` 设置分布式环境配置， 更多配置可以详见 [MMEngine Runner](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/runner.md)
 
@@ -222,7 +222,7 @@ log_processor = dict(type='LogProcessor',
 
 - 日志配置等级与 [logging](https://docs.python.org/3/library/logging.html) 的配置一致，
 
-- 日志处理器主要用来控制输出的格式，详细功能可参考[记录日志](https://github.com/open-mmlab/mmengine/blob/f0d8d3f5d92bc3a1f948bc025e3c50f7958b180e/docs/zh_cn/tutorials/logging.md)：
+- 日志处理器主要用来控制输出的格式，详细功能可参考[记录日志](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/advanced_tutorials/logging.md)：
 
   - `by_epoch=True` 表示按照epoch输出日志，日志格式需要和 `train_cfg` 中的 `type='EpochBasedTrainLoop'` 参数保持一致。例如想按迭代次数输出日志，就需要令  `log_processor` 中的 ` by_epoch=False` 的同时 `train_cfg` 中的 `type = 'IterBasedTrainLoop'`。
 
@@ -256,7 +256,7 @@ test_cfg = dict(type='TestLoop')
 
 - `param_scheduler` : 学习率调整策略，支持大部分 PyTorch 中的学习率调度器，例如 `ExponentialLR`，`LinearLR`，`StepLR`，`MultiStepLR` 等，使用方式也基本一致，所有支持的调度器见[调度器接口文档](mmengine.optim.scheduler), 更多功能可以[参考优化器参数调整策略](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/param_scheduler.md)
 
-- `train/test/val_cfg` : 任务的执行流程，MMEngine 提供了四种流程：`EpochBasedTrainLoop`, `IterBasedTrainLoop`, `ValLoop`, `TestLoop` 更多可以参考[循环控制器](https://github.com/open-mmlab/mmengine/blob/5e1ef1dd6cfd7b8ecbf051b052504b8c35a05b04/docs/zh_cn/design/runner.md#%E5%BE%AA%E7%8E%AF%E6%8E%A7%E5%88%B6%E5%99%A8)。
+- `train/test/val_cfg` : 任务的执行流程，MMEngine 提供了四种流程：`EpochBasedTrainLoop`, `IterBasedTrainLoop`, `ValLoop`, `TestLoop` 更多可以参考[循环控制器](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/runner.md)。
 
 ### 数据相关配置
 
@@ -325,7 +325,7 @@ MMOCR 中，数据集的构建与数据准备是相互解耦的。也就是说�
 
 测试流水线的数据增强流程通常为：数据读取(LoadImageFromFile)->数据增强->标注信息读取(LoadXXXAnntation)->数据格式化(PackXXXInputs)。
 
-更多信息可以参考[数据流水线](#TODO)
+更多信息可以参考[数据流水线](../basic_concepts/transforms.md)
 
 由于 OCR 任务的特殊性，一般情况下不同模型有不同数据增强的方式，相同模型在不同数据集一般也会有不同的数据增强方式。以 CRNN 为例：
 
@@ -493,13 +493,13 @@ load_from = None # 加载checkpoint的路径
 resume = False # 是否 resume
 ```
 
-更多可以参考[加载权重或恢复训练](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/runner.md#%E5%8A%A0%E8%BD%BD%E6%9D%83%E9%87%8D%E6%88%96%E6%81%A2%E5%A4%8D%E8%AE%AD%E7%BB%83)与[OCR进阶技巧-断点恢复训练](https://mmocr.readthedocs.io/en/1.x/user_guides/train_test.html#resume-training-from-a-checkpoint)。
+更多可以参考[加载权重或恢复训练](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/runner.md)与[OCR进阶技巧-断点恢复训练](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/train_test.html#id11)。
 
 <div id="eval_config"></id>
 
 ### 评测配置
 
-在模型验证和模型测试中，通常需要对模型精度做定量评测。MMOCR 通过评测指标(Metric)和评测器(Evaluator)来完成这一功能。更多可以参考[评测指标（Metric）和评测器（Evaluator）](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/metric_and_evaluator.md)
+在模型验证和模型测试中，通常需要对模型精度做定量评测。MMOCR 通过评测指标(Metric)和评测器(Evaluator)来完成这一功能。更多可以参考[评测指标（Metric）和评测器（Evaluator）](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/evaluation.md)
 
 评测部分包含两个部分，评测器和评测指标。接下来我们分部分展开讲解。
 
@@ -531,7 +531,7 @@ val_evaluator = dict()
 val_evaluator = [...]
 ```
 
-多数据集评测与单数据集评测存在两个位置上的不同：评测器类别与前缀。评测器类别必须为`MultiDatasetsEvaluator`且不能省略，前缀主要用来区分不同数据集在相同评测指标下的结果，请参考[多数据集评测](#TODO)。
+多数据集评测与单数据集评测存在两个位置上的不同：评测器类别与前缀。评测器类别必须为`MultiDatasetsEvaluator`且不能省略，前缀主要用来区分不同数据集在相同评测指标下的结果，请参考[多数据集评测](../basic_concepts/evaluation.md)。
 
 假设我们需要在 IC13 和 IC15 情况下测试精度，则配置如下：
 
