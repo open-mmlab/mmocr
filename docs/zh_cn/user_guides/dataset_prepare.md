@@ -1,24 +1,106 @@
 # 数据集准备
 
+## 前言
+
+经过数十年的发展，OCR 领域涌现出了一系列的相关数据集，这些数据集往往采用风格各异的格式来提供文本的标注文件，使得用户在使用这些数据集时不得不进行格式转换。MMOCR 支持了数十种常用的文本相关数据集，并提供了详细的数据下载及准备教程，同时我们给常用的[检测](./data_prepare/det.md)。[识别](./data_prepare/recog.md)及[关键信息抽取](./data_prepare/kie.md)提供了格式转换脚本，以方便用户将这些数据集转换为 MMOCR 支持的格式。
+
+下面，我们对 MMOCR 内支持的各任务的数据格式进行简要的介绍。
+
+- 如以下代码块所示，文本检测任务采用数据格式 `TextDetDataset`，其中存放了文本检测任务所需的边界盒标注、文件名等信息。我们在 `tests/data/det_toy_dataset/instances_test.json` 路径中提供了一个示例标注文件。
+
+  ```json
+  {
+  "metainfo":
+    {
+      "dataset_type": "TextDetDataset",
+      "task_name": "textdet",
+      "category": [{"id": 0, "name": "text"}]
+    },
+  "data_list":
+    [
+      {
+        "img_path": "test_img.jpg",
+        "height": 640,
+        "width": 640,
+        "instances":
+          [
+            {
+              "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
+              "bbox": [0, 0, 10, 20],
+              "bbox_label": 0,
+              "ignore": False
+            }，
+              ...
+          ]
+      }
+    ]
+  }
+  ```
+
+- 如以下代码块所示，文本识别任务采用数据格式 `TextRecogDataset`，其中存放了文本识别任务所需的文本内容及图片路径等信息。我们在 `tests/data/rec_toy_dataset/labels.json` 路径中提供了一个示例标注文件。
+
+  ```json
+  {
+    "metainfo":
+      {
+        "dataset_type": "TextRecogDataset",
+        "task_name": "textrecog",
+      },
+    "data_list":
+      [
+        {
+          "img_path": "test_img.jpg",
+          "instances":
+            [
+              {
+                "text": "GRAND"
+              }
+            ]
+          }
+      ]
+  }
+  ```
+
 ## 数据集下载及格式转换
 
-MMOCR 支持了数十种常用的文本[检测](../data_prepare/det.md)及[识别](../data_prepare/recog.md)数据集，并提供了详细的数据下载及准备教程。
-
-以 ICDAR 2015 文本检测数据集的准备步骤为例，你可以依次执行以下步骤来完成数据集准备：
+以 ICDAR 2015 **文本检测数据集**的准备步骤为例，你可以依次执行以下步骤来完成数据集准备：
 
 - 从 [ICDAR 官方网站](https://rrc.cvc.uab.es/?ch=4&com=downloads)下载 ICDAR 2015 数据集。将训练集`ch4_training_word_images_gt.zip` 与测试集压缩包`ch4_test_word_images_gt.zip` 分别解压至路径 `data/icdar2015`。
 
-- 下载 MMOCR 格式的标注文件 [train_label.json](#需要上传并更新链接) 和 [test_label.json](#需要上传并更新链接)。
+  ```bash
+  # 下载数据集
+  wget https://rrc.cvc.uab.es/downloads/ch4_training_images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/ch4_training_localization_transcription_gt.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/ch4_test_images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge4_Test_Task1_GT.zip --no-check-certificate
 
-- 完成上述步骤后，文件目录结构如下
+  # 解压数据集
+  mkdir imgs && mkdir annotations
+  unzip ch4_training_images.zip -d imgs/training
+  unzip ch4_training_localization_transcription_gt.zip -d annotations/training
+  unzip ch4_test_images.zip -d imgs/test
+  unzip Challenge4_Test_Task1_GT.zip -d annotations/test
+  ```
 
-```text
-├── data/icdar2015
-│   ├── train_label.json
-│   ├── test_label.json
-│   ├── ch4_training_word_images_gt
-│   └── ch4_test_word_images_gt
-```
+- 使用 MMOCR 提供的格式转换脚本将原始的标注文件转换为 MMOCR 统一的数据格式
+
+  ```bash
+  python tools/dataset_converters/textdet/icdar_converter.py data/ic15/ -o data/icdar15/ --split-list training test -d icdar2015
+  ```
+
+- 完成上述步骤后，数据集标签将被转换为 MMOCR 使用的统一格式，文件目录结构如下：
+
+  ```text
+  data/ic15/
+  ├── annotations
+  │   ├── test
+  │   └── training
+  ├── imgs
+  │   ├── test
+  │   └── training
+  ├── instances_test.json
+  └── instances_training.json
+  ```
 
 ## 数据集配置文件
 

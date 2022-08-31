@@ -1,24 +1,106 @@
 # Dataset Preparation
 
-## Downloading Datasets and Format Conversion
+## Introduction
 
-MMOCR supports dozens of widely used text [detection](../data_prepare/det.md) and [recognition](../data_prepare/recog.md) datasets, and provides detailed tutorials on data preparation.
+After decades of development, the OCR community has produced a series of related datasets that often provide annotations of text in a variety of styles, making it necessary for users to convert these datasets to the required format when using them. MMOCR supports dozens of commonly used text-related datasets and provides detailed tutorials for downloading and preparing the data. In addition, we provide data conversion scripts for [Detection](./data_prepare/det.md), [Recognition](./data_prepare/recog.md), and [Key Information Extraction](./data_prepare/kie.md), which can help the users to convert the annotations of widely-used OCR datasets to MMOCR formats.
+
+In the following, we provide a brief overview of the data formats defined in MMOCR for each task.
+
+- As shown in the following code block, the text detection task uses the data format `TextDetDataset`, which holds the bounding box annotations, file names, and other information required for the text detection task. We provide a sample annotation file in the `tests/data/det_toy_dataset/instances_test.json` path.
+
+  ```json
+  {
+  "metainfo":
+    {
+      "dataset_type": "TextDetDataset",
+      "task_name": "textdet",
+      "category": [{"id": 0, "name": "text"}]
+    },
+  "data_list":
+    [
+      {
+        "img_path": "test_img.jpg",
+        "height": 640,
+        "width": 640,
+        "instances":
+          [
+            {
+              "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
+              "bbox": [0, 0, 10, 20],
+              "bbox_label": 0,
+              "ignore": False
+            }，
+              ...
+          ]
+      }
+    ]
+  }
+  ```
+
+- As shown in the following code block, the text recognition task uses the data format `TextRecogDataset`, which holds information such as text instances and image paths required by the text recognition task. An example annotation file is provided in the `tests/data/rec_toy_dataset/labels.json` path.
+
+  ```json
+  {
+    "metainfo":
+      {
+        "dataset_type": "TextRecogDataset",
+        "task_name": "textrecog",
+      },
+    "data_list":
+      [
+        {
+          "img_path": "test_img.jpg",
+          "instances":
+            [
+              {
+                "text": "GRAND"
+              }
+            ]
+          }
+      ]
+  }
+  ```
+
+## Downloading Datasets and Format Conversion
 
 As an example of the data preparation steps, you can perform the following steps to prepare the ICDAR 2015 dataset for text detection task.
 
 - Download the ICDAR 2015 dataset from the [official ICDAR website](https://rrc.cvc.uab.es/?ch=4&com=downloads). Extract the training set `ch4_training_word_images_gt.zip` and the test set zip `ch4_test_word_images_gt.zip` to the path `data/icdar2015` respectively.
 
-- Download the MMOCR format annotation files [train_label.json](<>) and [test_label.json](<>).
+  ```bash
+  # Downloading datasets
+  wget https://rrc.cvc.uab.es/downloads/ch4_training_images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/ch4_training_localization_transcription_gt.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/ch4_test_images.zip --no-check-certificate
+  wget https://rrc.cvc.uab.es/downloads/Challenge4_Test_Task1_GT.zip --no-check-certificate
 
-- After completing the above steps, the file directory structure is as follows
+  # Extracting the zips
+  mkdir imgs && mkdir annotations
+  unzip ch4_training_images.zip -d imgs/training
+  unzip ch4_training_localization_transcription_gt.zip -d annotations/training
+  unzip ch4_test_images.zip -d imgs/test
+  unzip Challenge4_Test_Task1_GT.zip -d annotations/test
+  ```
 
-```text
-├── data/icdar2015
-│   ├── train_label.json
-│   ├── test_label.json
-│   ├── ch4_training_word_images_gt
-│   └── ch4_test_word_images_gt
-```
+- Using the scripts provided by us to convert the annotations to MMOCR supported formats.
+
+  ```bash
+  python tools/dataset_converters/textdet/icdar_converter.py data/ic15/ -o data/icdar15/ --split-list training test -d icdar2015
+  ```
+
+- After completing the above steps, the annotation format has been converted, and the file directory structure is as follows
+
+  ```text
+  data/ic15/
+  ├── annotations
+  │   ├── test
+  │   └── training
+  ├── imgs
+  │   ├── test
+  │   └── training
+  ├── instances_test.json
+  └── instances_training.json
+  ```
 
 ## Dataset Configuration
 
