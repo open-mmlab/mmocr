@@ -22,9 +22,9 @@ One of the main challenges for arbitrary-shaped text detection is to design a go
 
 ### ICDAR2015
 
-|                          Method                          | Backbone | Pretrained Model | Training set | Test set  | #epochs |  Test size   | Recall | Precision | Hmean  |                          Download                           |
-| :------------------------------------------------------: | :------: | :--------------: | :----------: | :-------: | :-----: | :----------: | :----: | :-------: | :----: | :---------------------------------------------------------: |
-| [FCENet](/configs/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015.py) | ResNet50 |     ImageNet     |  IC15 Train  | IC15 Test |  1500   | (2260, 2260) | 0.8243 |  0.8834   | 0.8528 | [model](https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015/fcenet_resnet50_fpn_1500e_icdar2015_20220826_140941-167d9042.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015/20220826_140941.log) |
+|                          Method                          | Backbone | Pretrained Model | Training set | Test set  | #epochs |  Test size   | Precision | Recall | Hmean  |                          Download                           |
+| :------------------------------------------------------: | :------: | :--------------: | :----------: | :-------: | :-----: | :----------: | :-------: | :----: | :----: | :---------------------------------------------------------: |
+| [FCENet](/configs/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015.py) | ResNet50 |     ImageNet     |  IC15 Train  | IC15 Test |  1500   | (2260, 2260) |  0.8243   | 0.8834 | 0.8528 | [model](https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015/fcenet_resnet50_fpn_1500e_icdar2015_20220826_140941-167d9042.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015/20220826_140941.log) |
 
 ## Citation
 

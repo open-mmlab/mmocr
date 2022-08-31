@@ -22,9 +22,9 @@ Scene text detection has witnessed rapid progress especially with the recent dev
 
 ### ICDAR2015
 
-|                            Method                             | Backbone | Extra Data | Training set | Test set  | #epochs | Test size | Recall | Precision | Hmean  |                            Download                             |
-| :-----------------------------------------------------------: | :------: | :--------: | :----------: | :-------: | :-----: | :-------: | :----: | :-------: | :----: | :-------------------------------------------------------------: |
-| [PSENet](/configs/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015.py) | ResNet50 |     -      |  IC15 Train  | IC15 Test |   600   |   2240    | 0.8396 |  0.7636   | 0.7998 | [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015/psenet_resnet50_fpnf_600e_icdar2015_20220825_222709-b6741ec3.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015/20220825_222709.log) |
+|                            Method                             | Backbone | Extra Data | Training set | Test set  | #epochs | Test size | Precision | Recall | Hmean  |                            Download                             |
+| :-----------------------------------------------------------: | :------: | :--------: | :----------: | :-------: | :-----: | :-------: | :-------: | :----: | :----: | :-------------------------------------------------------------: |
+| [PSENet](/configs/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015.py) | ResNet50 |     -      |  IC15 Train  | IC15 Test |   600   |   2240    |  0.8396   | 0.7636 | 0.7998 | [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015/psenet_resnet50_fpnf_600e_icdar2015_20220825_222709-b6741ec3.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015/20220825_222709.log) |
 
 ## Citation
 
