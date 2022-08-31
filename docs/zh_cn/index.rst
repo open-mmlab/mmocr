@@ -45,6 +45,7 @@
    migration/code.md
    migration/dataset.md
    migration/model.md
+   migration/transforms.md
 
 .. toctree::
    :maxdepth: 2
