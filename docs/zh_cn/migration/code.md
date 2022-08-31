@@ -131,3 +131,21 @@ MMOCR 0.x 存在着对模块功能边界定义不清晰的问题。在 MMOCR 1.0
 - `show_result()` 被整合到 `KIEVisualizer` 中。
 
 - `forward_test()` 中对输出进行后处理的部分被整理到 `SDMGRPostProcessor`中。
+
+## Utils 变动
+
+原本散布在各处的功能函数现已被统一归类在 `mmocr/utils/` 下。以下为该目录下各文件的作用域：
+
+- bbox_utils.py：四边界定框（bounding box）有关的功能函数。
+- check_argument.py：检查参数类型的功能函数。
+- collect_env.py：收集运行环境的功能函数。
+- data_converter_utils.py：用于数据集转换的功能函数。
+- fileio.py：输入/输出有关的功能函数。
+- img_utils.py：处理图片的功能函数。
+- mask_utils.py：与掩码有关的功能函数。
+- ocr.py：用于 MMOCR 推理的功能函数。
+- parsers.py：解码文件的功能函数。
+- polygon_utils.py：多边形的功能函数。
+- setup_env.py：存放初始化 MMOCR 的功能函数。
+- string_utils.py：存放字符串的功能函数。
+- typing.py：存放 MMOCR 中常用数据类型的缩写。
