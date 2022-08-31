@@ -229,7 +229,7 @@ dict(
 </table>
 
 ```{note}
-在 0.x 版本中，部分数据增强方法通过定义一个内部变量 'xxx_ratio' 来指定执行概率，如 'rotate_ratio', 'crop_ratio' 等。在 1.x 版本中，这些参数已被统一删除。现在，我们可以通过 'RandomApply' 来对不同的数据变换方法进行包装，并指定其执行概率。
+在 0.x 版本中，部分数据增强方法通过定义一个内部变量 "xxx_ratio" 来指定执行概率，如 "rotate_ratio", "crop_ratio" 等。在 1.x 版本中，这些参数已被统一删除。现在，我们可以通过 "RandomApply" 来对不同的数据变换方法进行包装，并指定其执行概率。
 ```
 
 3. `RandomCropFlip` -> [`TextDetRandomCropFlip`](mmocr.datasets.transforms.TextDetRandomCropFlip)
@@ -464,19 +464,15 @@ dict(
 </thead>
 </table>
 
-10. `OneOfWrapper` -> \[`mmegnine.RandomChoice`\]mmcv.transforms.RandomChoice)
+10. `OneOfWrapper` -> [`mmegnine.RandomChoice`](mmcv.transforms.RandomChoice)
 
-```
 随机选择包装器现在被重命名为 `RandomChoice`，并且使用方法和原来完全一致。
-```
 
 11. `ScaleAspectJitter` -> [`ShortScaleAspectJitter`](mmocr.datasets.transforms.ShortScaleAspectJitter), [`BoundedScaleAspectJitter`](mmocr.datasets.transforms.BoundedScaleAspectJitter)
 
-```
 原有的 `ScaleAspectJitter` 实现了多种不同的图像尺寸抖动数据增强策略，在新版本中，我们将其拆分为数个逻辑更加清晰的独立数据变化方法。
 
 `resize_type='indep_sample_in_range'` 时，其等价于图像在指定范围内的随机缩放。
-```
 
 <table class="docutils">
 <thead>

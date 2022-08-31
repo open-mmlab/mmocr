@@ -229,7 +229,7 @@ dict(
 </table>
 
 ```{note}
-In version 0.x, some data augmentation methods specified execution probability by defining an internal variable 'xxx_ratio', such as 'rotate_ratio', 'crop_ratio', etc. In version 1.x, these parameters have been removed. Now we can use 'RandomApply' to wrap different data transforms and specify their execution probabilities.
+In version 0.x, some data augmentation methods specified execution probability by defining an internal variable "xxx_ratio", such as "rotate_ratio", "crop_ratio", etc. In version 1.x, these parameters have been removed. Now we can use "RandomApply" to wrap different data transforms and specify their execution probabilities.
 ```
 
 3. `RandomCropFlip` -> [`TextDetRandomCropFlip`](mmocr.datasets.transforms.TextDetRandomCropFlip)
