@@ -2,7 +2,13 @@
 
 ## Introduction
 
-After decades of development, the OCR community has produced a series of related datasets that often provide annotations of text in a variety of styles, making it necessary for users to convert these datasets to the required format when using them. MMOCR supports dozens of commonly used text-related datasets and provides detailed tutorials for downloading and preparing the data. In addition, we provide data conversion scripts for [Detection](./data_prepare/det.md), [Recognition](./data_prepare/recog.md), and [Key Information Extraction](./data_prepare/kie.md), which can help the users to convert the annotations of widely-used OCR datasets to MMOCR formats.
+After decades of development, the OCR community has produced a series of related datasets that often provide annotations of text in a variety of styles, making it necessary for users to convert these datasets to the required format when using them. MMOCR supports dozens of commonly used text-related datasets and provides detailed tutorials for downloading and preparing the data.
+
+In addition, we provide data conversion scripts to help users convert the annotations of widely-used OCR datasets to MMOCR formats.
+
+- [Detection Dataset Preparation](./data_prepare/det.md)
+- [Recognition Dataset Preparation](./data_prepare/recog.md)
+- [Key Information Extraction Dataset Preparation](./data_prepare/kie.md)
 
 In the following, we provide a brief overview of the data formats defined in MMOCR for each task.
 
