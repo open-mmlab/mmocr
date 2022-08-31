@@ -51,9 +51,9 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :maxdepth: 2
    :caption: Dataset Zoo
 
-   data_prepare/det.md
-   data_prepare/recog.md
-   data_prepare/kie.md
+   user_guides/data_prepare/det.md
+   user_guides/data_prepare/recog.md
+   user_guides/data_prepare/kie.md
 
 .. toctree::
    :maxdepth: 2

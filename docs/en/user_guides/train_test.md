@@ -28,7 +28,7 @@ The following table lists all the arguments supported by `train.py`. Args withou
 
 | ARGS            | Type | Description                                                                 |
 | --------------- | ---- | --------------------------------------------------------------------------- |
-| config          | str  | (required)Path to config.                                                   |
+| config          | str  | (required) Path to config.                                                  |
 | --work-dir      | str  | Specify the working directory for the training logs and models checkpoints. |
 | --resume        | bool | Whether to resume training from the latest checkpoint.                      |
 | --amp           | bool | Whether to use automatic mixture precision for training.                    |
@@ -57,8 +57,8 @@ The following table lists all the arguments supported by `test.py`. Args without
 
 | ARGS          | Type  | Description                                                          |
 | ------------- | ----- | -------------------------------------------------------------------- |
-| config        | str   | (required)Path to config.                                            |
-| checkpoint    | str   | (required)The model to be tested.                                    |
+| config        | str   | (required) Path to config.                                           |
+| checkpoint    | str   | (required) The model to be tested.                                   |
 | --work-dir    | str   | Specify the working directory for the logs.                          |
 | --save-preds  | bool  | Whether to save the predictions to a pkl file.                       |
 | --show        | bool  | Whether to visualize the predictions.                                |
@@ -88,9 +88,9 @@ The following table lists the arguments supported by `dist_*.sh`.
 | NODE_RANK       | int  | The rank of current node. Defaults to 0.                                                      |
 | PORT            | int  | The master port that will be used by rank 0 node, ranging from 0 to 65535. Defaults to 29500. |
 | MASTER_ADDR     | str  | The address of rank 0 node. Defaults to "127.0.0.1".                                          |
-| CONFIG_FILE     | str  | (required)The path to config.                                                                 |
+| CONFIG_FILE     | str  | (required) The path to config.                                                                |
 | CHECKPOINT_FILE | str  | (required，only used in dist_test.sh)The path to checkpoint to be tested.                     |
-| GPU_NUM         | int  | (required)The number of GPUs to be used per node.                                             |
+| GPU_NUM         | int  | (required) The number of GPUs to be used per node.                                            |
 | \[PY_ARGS\]     | str  | Arguments to be parsed by tools/train.py and tools/test.py.                                   |
 
 These two scripts enable training and testing on **single-machine multi-GPU** or **multi-machine multi-GPU**. See the following example for usage.
@@ -181,9 +181,9 @@ GPUS=${GPUS} GPUS_PER_NODE=${GPUS_PER_NODE} CPUS_PER_TASK=${CPUS_PER_TASK} SRUN_
 | GPUS_PER_NODE   | int  | The number of GPUs to be allocated per node. Defaults to 8.                                                 |
 | CPUS_PER_TASK   | int  | The number of CPUs to be allocated per task. Defaults to 5.                                                 |
 | SRUN_ARGS       | str  | Arguments to be parsed by srun. Available options can be found [here](https://slurm.schedmd.com/srun.html). |
-| PARTITION       | str  | (required)Specify the partition on cluster.                                                                 |
-| JOB_NAME        | str  | (required)Name of the submitted job.                                                                        |
-| WORK_DIR        | str  | (required)Specify the working directory for saving the logs and checkpoints.                                |
+| PARTITION       | str  | (required) Specify the partition on cluster.                                                                |
+| JOB_NAME        | str  | (required) Name of the submitted job.                                                                       |
+| WORK_DIR        | str  | (required) Specify the working directory for saving the logs and checkpoints.                               |
 | CHECKPOINT_FILE | str  | (required，only used in slurm_test.sh)Path to the checkpoint to be tested.                                  |
 | PY_ARGS         | str  | Arguments to be parsed by `tools/train.py` and `tools/test.py`.                                             |
 
