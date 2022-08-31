@@ -16,13 +16,16 @@ Key information extraction from document images is of paramount importance in of
 
 ### WildReceipt
 
-|                               Method                               |     Modality     | Macro F1-Score |                                                 Download                                                 |
-| :----------------------------------------------------------------: | :--------------: | :------------: | :------------------------------------------------------------------------------------------------------: |
-| [sdmgr_unet16](/configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py) | Visual + Textual |     0.890      | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt/sdmgr_unet16_60e_wildreceipt_20220825_151648-22419f37.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt/20220825_151648.log) |
+|                                 Method                                 |     Modality     | Macro F1-Score |                                               Download                                               |
+| :--------------------------------------------------------------------: | :--------------: | :------------: | :--------------------------------------------------------------------------------------------------: |
+|   [sdmgr_unet16](/configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py)   | Visual + Textual |     0.890      | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt/sdmgr_unet16_60e_wildreceipt_20220825_151648-22419f37.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_unet16_60e_wildreceipt/20220825_151648.log) |
+| [sdmgr_novisual](/configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt.py) |     Textual      |     0.873      | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt/sdmgr_novisual_60e_wildreceipt_20220831_193317-827649d8.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt/20220831_193317.log) |
 
-```{note}
-1. For `sdmgr_novisual`, images are not needed for training and testing. So fake `img_prefix` can be used in configs. As well, fake `file_name` can be used in annotation files.
-```
+### WildReceiptOpenset
+
+|                                Method                                 | Modality | Edge F1-Score | Node Macro F1-Score | Node Micro F1-Score |                                 Download                                 |
+| :-------------------------------------------------------------------: | :------: | :-----------: | :-----------------: | :-----------------: | :----------------------------------------------------------------------: |
+| [sdmgr_novisual_openset](/configs/kie/sdmgr/sdmgr_novisual_60e_wildreceipt-openset.py) | Textual  |     0.792     |        0.931        |        0.940        | [model](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt-openset/sdmgr_novisual_60e_wildreceipt-openset_20220831_200807-dedf15ec.pth) \| [log](https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt-openset/20220831_200807.log) |
 
 ## Citation
 
