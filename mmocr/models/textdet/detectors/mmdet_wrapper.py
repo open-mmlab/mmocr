@@ -115,7 +115,6 @@ class MMDetWrapper(BaseModel):
                 ``TextDetDataSample.pred_instances.scores``.
         """
         for i, det_data_sample in enumerate(data):
-            # result = TextDetDataSample()
             data_samples[i].pred_instances = InstanceData()
             # convert mask to polygons if mask exists
             if 'masks' in det_data_sample.pred_instances.keys():
