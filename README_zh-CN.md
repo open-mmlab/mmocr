@@ -28,9 +28,9 @@
 <a href="https://console.tiyaro.ai/explore?q=mmocr&pub=mmocr"> <img src="https://tiyaro-public-docs.s3.us-west-2.amazonaws.com/assets/try_on_tiyaro_badge.svg"></a>
 
 [📘文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/) |
-[🛠️安装](https://mmocr.readthedocs.io/zh_CN/dev-1.x/install.html) |
+[🛠️安装](https://mmocr.readthedocs.io/zh_CN/dev-1.x/get_started/install.html) |
 [👀模型库](https://mmocr.readthedocs.io/zh_CN/dev-1.x/modelzoo.html) |
-[🆕更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/changelog.html) |
+[🆕更新日志](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) |
 [🤔报告问题](https://github.com/open-mmlab/mmocr/issues/new/choose)
 
 </div>
@@ -71,6 +71,16 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 该工具箱提供了一套全面的实用程序，可以帮助用户评估模型的性能。它包括可对图像，标注的真值以及预测结果进行可视化的可视化工具，以及用于在训练过程中评估模型的验证工具。它还包括数据转换器，演示了如何将用户自建的标注数据转换为 MMOCR 支持的标注文件。
 
 ## 最新进展
+
+1. 架构升级：MMOCR 1.x 是基于 [MMEngine](https://github.com/open-mmlab/mmengine)，提供了一个通用的、强大的执行器，允许更灵活的定制，提供了统一的训练和测试入口。
+
+2. 统一接口：MMOCR 1.x 统一了数据集、模型、评估和可视化的接口和内部逻辑。支持更强的扩展性。
+
+3. 跨项目调用：受益于统一的设计，你可以使用其他OpenMMLab项目中实现的模型，如MMDet。 我们提供了一个例子，说明如何通过MMDetWrapper使用MMDetection的Mask R-CNN。查看我们的文档以了解更多细节。更多的包装器将在未来发布。
+
+4. 更强的可视化：我们提供了一系列可视化工具， 用户现在可以更方便可视化数据。
+
+5. 更多的文档和教程：我们增加了更多的教程，降低用户的学习门槛。详见[教程](https://mmocr.readthedocs.io/zh_CN/dev-1.x/)。
 
 阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
 
