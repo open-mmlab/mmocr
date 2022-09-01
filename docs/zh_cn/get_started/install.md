@@ -106,7 +106,7 @@ pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 
 ```bash
 # 识别结果
-[{'filename': 'demo_text_ocr', 'text': ['cbanke', 'docece', 'sroumats', 'chounsonse', 'doceca', 'c', '', 'sond', 'abrandso', 'sretane', '1', 'tosl', 'roundi', 'slen', 'yet', 'ally', 's', 'sue', 'salle', 'v']}]
+{'rec_texts': ['cbanke', 'docece', 'sroumats', 'chounsonse', 'doceca', 'c', '', 'sond', 'abrandso', 'sretane', '1', 'tosl', 'roundi', 'slen', 'yet', 'ally', 's', 'sue', 'salle', 'v'], 'rec_scores': [...], 'det_polygons': [...], 'det_scores': tensor([...])}
 ```
 
 在 MMOCR 的目录运行以下命令：
