@@ -17,7 +17,7 @@ MMOCR 1.x unifies the interfaces of dataset, models, evaluation, and visualizati
 
 4. **Stronger visualization**. We provide a series of useful tools which are mostly based on brand-new visualizers. As a result, it is more convenient for the users to explore the models and datasets now.
 
-5. **More documentation and tutorials**. We add a bunch of documentation and tutorials to help users get started more smoothly. Read it [here](https://mmocr.readthedocs.io/en/1.x/).
+5. **More documentation and tutorials**. We add a bunch of documentation and tutorials to help users get started more smoothly. Read it [here](https://mmocr.readthedocs.io/en/dev-1.x/).
 
 ### Breaking Changes
 
@@ -53,7 +53,7 @@ The Dataset classes implemented in MMOCR 1.x all inherits from the `BaseDetDatas
 The data transforms in MMOCR 1.x all inherits from those in MMCV>=2.0.0rc0, which follows a new convention in OpenMMLab 2.0 projects.
 The changes are listed as below:
 
-- The interfaces are also changed. Please refer to the [API doc](https://mmocr.readthedocs.io/en/1.x/)
+- The interfaces are also changed. Please refer to the [API Reference](https://mmocr.readthedocs.io/en/dev-1.x/)
 - The functionality of some data transforms (e.g., `Resize`) are decomposed into several transforms.
 - The same data transforms in different OpenMMLab 2.0 libraries have the same augmentation implementation and the logic of the same arguments, i.e., `Resize` in MMDet 3.x and MMOCR 1.x will resize the image in the exact same manner given the same arguments.
 
