@@ -10,7 +10,7 @@ import mmengine
 import numpy as np
 from shapely.geometry import Polygon
 
-from mmocr.utils.fileio import list_to_file
+from mmocr.utils import dump_ocr_data
 
 
 def seg2bbox(seg):
@@ -39,7 +39,6 @@ def process_level(
     ignore_image_root,
     preserve_vertical,
     split,
-    format,
     para_idx,
     img_idx,
     line_idx,
@@ -64,21 +63,13 @@ def process_level(
     dst_img_path = osp.join(dst_image_root, dst_img_name)
     mmcv.imwrite(dst_img, dst_img_path)
 
-    if format == 'txt':
-        label = (f'{osp.basename(dst_image_root)}/{dst_img_name}'
-                 f' {text_label}')
-    elif format == 'jsonl':
-        label = json.dumps({
-            'filename': f'{osp.basename(dst_image_root)}/{dst_img_name}',
-            'text': text_label
-        })
-    else:
-        raise NotImplementedError
+    label = {'file_name': dst_img_name, 'anno_info': [{'text': text_label}]}
+
     return label
 
 
 def process_img(args, src_image_root, dst_image_root, ignore_image_root, level,
-                preserve_vertical, split, format):
+                preserve_vertical, split):
     # Dirty hack for multi-processing
     img_idx, img_annos = args
     src_img = mmcv.imread(
@@ -92,8 +83,7 @@ def process_img(args, src_image_root, dst_image_root, ignore_image_root, level,
 
                     label = process_level(src_img, line, dst_image_root,
                                           ignore_image_root, preserve_vertical,
-                                          split, format, para_idx, img_idx,
-                                          line_idx)
+                                          split, para_idx, img_idx, line_idx)
                     if label is not None:
                         labels.append(label)
             elif level == 'word':
@@ -102,8 +92,8 @@ def process_img(args, src_image_root, dst_image_root, ignore_image_root, level,
                         continue
                     label = process_level(src_img, word, dst_image_root,
                                           ignore_image_root, preserve_vertical,
-                                          split, format, para_idx, img_idx,
-                                          line_idx, word_idx)
+                                          split, para_idx, img_idx, line_idx,
+                                          word_idx)
                     if label is not None:
                         labels.append(label)
     return labels
@@ -114,7 +104,6 @@ def convert_hiertext(
     split,
     level,
     preserve_vertical,
-    format,
     nproc,
 ):
     """Collect the annotation information and crop the images.
@@ -163,7 +152,6 @@ def convert_hiertext(
         split (str): Dataset split, which should be 'train' or 'val'
         level (str): Crop word or line level instances
         preserve_vertical (bool): Whether to preserve vertical texts
-        format (str): Annotation format, should be either 'jsonl' or 'txt'
         nproc (int): Number of processes
 
     Returns:
@@ -177,7 +165,7 @@ def convert_hiertext(
 
     annotation = json.load(open(annotation_path))['annotations']
     # outputs
-    dst_label_file = osp.join(root_path, f'{split}_label.{format}')
+    dst_label_file = osp.join(root_path, f'{split}_label.json')
     dst_image_root = osp.join(root_path, 'crops', split)
     ignore_image_root = osp.join(root_path, 'ignores', split)
     src_image_root = osp.join(root_path, 'imgs', split)
@@ -191,8 +179,7 @@ def convert_hiertext(
         ignore_image_root=ignore_image_root,
         level=level,
         preserve_vertical=preserve_vertical,
-        split=split,
-        format=format)
+        split=split)
     tasks = []
     for img_idx, img_info in enumerate(annotation):
         tasks.append((img_idx, img_info))
@@ -202,7 +189,8 @@ def convert_hiertext(
     final_labels = []
     for label_list in labels_list:
         final_labels += label_list
-    list_to_file(dst_label_file, final_labels)
+
+    dump_ocr_data(final_labels, dst_label_file, 'textrecog')
 
 
 def parse_args():
@@ -220,11 +208,6 @@ def parse_args():
         default='word',
         help='Crop word or line level instance',
         choices=['word', 'line'])
-    parser.add_argument(
-        '--format',
-        default='jsonl',
-        help='Use jsonl or string to format annotations',
-        choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
 
@@ -238,7 +221,6 @@ def main():
         split='train',
         level=args.level,
         preserve_vertical=args.preserve_vertical,
-        format=args.format,
         nproc=args.nproc)
     print('Processing validation set...')
     convert_hiertext(
@@ -246,7 +228,6 @@ def main():
         split='val',
         level=args.level,
         preserve_vertical=args.preserve_vertical,
-        format=args.format,
         nproc=args.nproc)
     print('Finish')
 

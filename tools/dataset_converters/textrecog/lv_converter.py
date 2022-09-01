@@ -1,12 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import json
 import os.path as osp
 
-from mmocr.utils.fileio import list_to_file
+from mmocr.utils import dump_ocr_data
 
 
-def convert_annotations(root_path, split, format):
+def convert_annotations(root_path, split):
     """Convert original annotations to mmocr format.
 
     The annotation format is as the following:
@@ -24,45 +23,34 @@ def convert_annotations(root_path, split, format):
     Args:
         root_path (str): The root path of the dataset
         split (str): The split of dataset. Namely: training or test
-        format (str): Annotation format, should be either 'txt' or 'jsonl'
     """
     assert isinstance(root_path, str)
     assert isinstance(split, str)
 
-    if format == 'txt':  # LV has already provided txt format annos
-        return
-
-    if format == 'jsonl':
-        lines = []
-        with open(
-                osp.join(root_path, f'{split}_label.txt'),
-                encoding='"utf-8-sig') as f:
-            annos = f.readlines()
-        for anno in annos:
-            if anno:
-                # Text may contain spaces
-                dst_img_name, word = anno.split('png ')
-                word = word.strip('\n')
-                lines.append(
-                    json.dumps({
-                        'filename': dst_img_name + 'png',
-                        'text': word
-                    }))
-    else:
-        raise NotImplementedError
-
-    list_to_file(osp.join(root_path, f'{split}_label.{format}'), lines)
+    img_info = []
+    with open(
+            osp.join(root_path, f'{split}_label.txt'),
+            encoding='"utf-8-sig') as f:
+        annos = f.readlines()
+    for anno in annos:
+        if anno:
+            # Text may contain spaces
+            dst_img_name, word = anno.split('png ')
+            word = word.strip('\n')
+            img_info.append({
+                'file_name': dst_img_name + 'png',
+                'anno_info': [{
+                    'text': word
+                }]
+            })
+    dump_ocr_data(img_info, osp.join(root_path, f'{split.lower()}_label.json'),
+                  'textrecog')
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
         description='Generate training and test set of Lecture Video DB')
     parser.add_argument('root_path', help='Root dir path of Lecture Video DB')
-    parser.add_argument(
-        '--format',
-        default='jsonl',
-        help='Use jsonl or string to format annotations',
-        choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
 
@@ -72,7 +60,7 @@ def main():
     root_path = args.root_path
 
     for split in ['train', 'val', 'test']:
-        convert_annotations(root_path, split, args.format)
+        convert_annotations(root_path, split)
         print(f'{split} split converted.')
 
 

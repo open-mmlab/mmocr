@@ -5,17 +5,17 @@
 |        Dataset        |                        images                         |                         annotation file                         |                         annotation file                         |
 | :-------------------: | :---------------------------------------------------: | :-------------------------------------------------------------: | :-------------------------------------------------------------: |
 |                       |                                                       |                            training                             |                              test                               |
-|       coco_text       | [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads) | [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt) |                                -                                |
+|       coco_text       | [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads) |                   [train_labels.json](#TODO)                    |                                -                                |
 |       ICDAR2011       |       [homepage](https://rrc.cvc.uab.es/?ch=1)        |                                -                                |                                -                                |
 |       ICDAR2013       |       [homepage](https://rrc.cvc.uab.es/?ch=2)        |                                -                                |                                -                                |
-|      icdar_2015       | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads) | [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt) | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt) |
-|        IIIT5K         | [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html) | [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt) | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt) |
-|         ct80          | [homepage](http://cs-chan.com/downloads_CUTE80_dataset.html) |                                -                                | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt) |
-|          svt          | [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset) |                                -                                | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt) |
-|         svtp          | [unofficial homepage\[1\]](https://github.com/Jyouhou/Case-Sensitive-Scene-Text-Recognition-Datasets) |                                -                                | [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt) |
-|   MJSynth (Syn90k)    | [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/) | [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt) |                                -                                |
-| SynthText (Synth800k) | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/) | [alphanumeric_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/alphanumeric_labels.txt) \|[shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) \| [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) \| [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) |                                -                                |
-|       SynthAdd        | [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x) | [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt) |                                -                                |
+|      icdar_2015       | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads) | [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/icdar_2015/train_labels.json) | [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/icdar_2015/test_labels.json) |
+|        IIIT5K         | [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html) | [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/IIIT5K/train_labels.json) | [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/IIIT5K/test_labels.json) |
+|         ct80          | [homepage](http://cs-chan.com/downloads_CUTE80_dataset.html) |                                -                                | [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/ct80/test_labels.json) |
+|          svt          | [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset) |                                -                                | [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/svt/test_labels.json) |
+|         svtp          | [unofficial homepage\[1\]](https://github.com/Jyouhou/Case-Sensitive-Scene-Text-Recognition-Datasets) |                                -                                | [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/svtp/test_labels.json) |
+|   MJSynth (Syn90k)    | [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/) | [subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/subset_train_labels.json) \| [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/train_labels.json) |                                -                                |
+| SynthText (Synth800k) | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/) | [alphanumeric_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/alphanumeric_train_labels.json) \|[subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/subset_train_labels.json) \|  [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/train_labels.json) |                                -                                |
+|       SynthAdd        | [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x) | [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/synthtext_add/train_labels.json) |                                -                                |
 |        TextOCR        |    [homepage](https://textvqa.org/textocr/dataset)    |                                -                                |                                -                                |
 |       Totaltext       | [homepage](https://github.com/cs-chan/Total-Text-Dataset) |                                -                                |                                -                                |
 |       OpenVINO        | [Open Images](https://github.com/cvdfoundation/open-images-dataset) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |
@@ -76,10 +76,10 @@
   unzip -q Challenge1_Test_Task3_Images.zip -d crops/test
 
   # For annotations
-  mv Challenge1_Test_Task3_GT.txt annotations && mv train/gt.txt annotations/Challenge1_Train_Task3_GT.txt
+  mv Challenge1_Test_Task3_GT.txt annotations && mv crops/train/gt.txt annotations/Challenge1_Train_Task3_GT.txt
   ```
 
-- Step2: Convert original annotations to `Train_label.jsonl` and `Test_label.jsonl` with the following command:
+- Step2: Convert original annotations to `train_labels.json` and `test_labels.json` with the following command:
 
   ```bash
   python tools/dataset_converters/textrecog/ic11_converter.py PATH/TO/icdar2011
@@ -90,8 +90,8 @@
   ```text
   ├── icdar2011
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
+  │   ├── train_labels.json
+  │   └── test_labels.json
   ```
 
 ## ICDAR 2013 (Focused Scene Text)
@@ -106,18 +106,19 @@
   wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task3_Images_GT.zip --no-check-certificate
   wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_Images.zip --no-check-certificate
   wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_GT.txt --no-check-certificate
+  wget https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt
 
   # For images
   mkdir crops
   unzip -q Challenge2_Training_Task3_Images_GT.zip -d crops/train
   unzip -q Challenge2_Test_Task3_Images.zip -d crops/test
   # For annotations
-  mv Challenge2_Test_Task3_GT.txt annotations && mv crops/train/gt.txt annotations/Challenge2_Train_Task3_GT.txt
+  mv Challenge2_Test_Task3_GT.txt annotations && mv crops/train/gt.txt annotations/Challenge2_Train_Task3_GT.txt && mv test_label_1015.txt annotations/Challenge2_Test1015_Task3_GT.txt
 
   rm Challenge2_Training_Task3_Images_GT.zip && rm Challenge2_Test_Task3_Images.zip
   ```
 
-- Step 2: Generate `Train_label.jsonl` and `Test_label.jsonl` with the following command:
+- Step 2: Generate `train_labels.json`, `test_labels.json`, `test1015_label.json` with the following command:
 
   ```bash
   python tools/dataset_converters/textrecog/ic13_converter.py PATH/TO/icdar2013
@@ -128,41 +129,24 @@
   ```text
   ├── icdar2013
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
-  ```
-
-## ICDAR 2013 \[Deprecated\]
-
-- Step1: Download `Challenge2_Test_Task3_Images.zip` and `Challenge2_Training_Task3_Images_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads)
-
-- Step2: Download [test_label_1015.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt) and [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/train_label.txt)
-
-- After running the above codes, the directory structure
-  should be as follows:
-
-  ```text
-  ├── icdar_2013
-  │   ├── train_label.txt
-  │   ├── test_label_1015.txt
-  │   ├── test_label_1095.txt
-  │   ├── Challenge2_Training_Task3_Images_GT
-  │   └──  Challenge2_Test_Task3_Images
+  │   ├── train_labels.json
+  │   ├── test_labels.json
+  │   └── test1015_label.json
   ```
 
 ## ICDAR 2015
 
 - Step1: Download `ch4_training_word_images_gt.zip` and `ch4_test_word_images_gt.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
 
-- Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/icdar_2015/test_label.txt)
+- Step2: Download [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/icdar_2015/train_labels.json) and [test_label.json](https://download.openmmlab.com/mmocr/data/1.x/recog/icdar_2015/test_labels.json)
 
 - After running the above codes, the directory structure
   should be as follows:
 
   ```text
   ├── icdar_2015
-  │   ├── train_label.txt
-  │   ├── test_label.txt
+  │   ├── train_labels.json
+  │   ├── test_labels.json
   │   ├── ch4_training_word_images_gt
   │   └── ch4_test_word_images_gt
   ```
@@ -171,15 +155,15 @@
 
 - Step1: Download `IIIT5K-Word_V3.0.tar.gz` from [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html)
 
-- Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/train_label.txt) and [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/test_label.txt)
+- Step2: Download [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/IIIT5K/train_labels.json) and [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/IIIT5K/test_labels.json)
 
 - After running the above codes, the directory structure
   should be as follows:
 
   ```text
   ├── III5K
-  │   ├── train_label.txt
-  │   ├── test_label.txt
+  │   ├── train_labels.json
+  │   ├── test_labels.json
   │   ├── train
   │   └── test
   ```
@@ -188,7 +172,7 @@
 
 - Step1: Download `svt.zip` form [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset)
 
-- Step2: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svt/test_label.txt)
+- Step2: Download [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/svt/test_labels.json)
 
 - Step3:
 
@@ -201,13 +185,13 @@
 
   ```text
   ├── svt
-  │   ├── test_label.txt
+  │   ├── test_labels.json
   │   └── image
   ```
 
 ## ct80
 
-- Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/ct80/test_label.txt)
+- Step1: Download [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/ct80/test_labels.json)
 
 - Step2: Download [timage.tar.gz](https://download.openmmlab.com/mmocr/data/mixture/ct80/timage.tar.gz)
 
@@ -215,7 +199,7 @@
 
   ```bash
   mkdir ct80 && cd ct80
-  mv /path/to/test_label.txt .
+  mv /path/to/test_labels.json .
   mv /path/to/timage.tar.gz .
   tar -xvf timage.tar.gz
   # create soft link
@@ -228,20 +212,20 @@
 
   ```text
   ├── ct80
-  │   ├── test_label.txt
+  │   ├── test_labels.json
   │   └── timage
   ```
 
 ## svtp
 
-- Step1: Download [test_label.txt](https://download.openmmlab.com/mmocr/data/mixture/svtp/test_label.txt)
+- Step1: Download [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/svtp/test_labels.json)
 
 - After running the above codes, the directory structure
   should be as follows:
 
   ```text
   ├── svtp
-  │   ├── test_label.txt
+  │   ├── test_labels.json
   │   └── image
   ```
 
@@ -249,21 +233,21 @@
 
 - Step1: Download from [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads)
 
-- Step2: Download [train_label.txt](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_label.txt)
+- Step2: Download [train_labels.json](https://download.openmmlab.com/mmocr/data/mixture/coco_text/train_labels.json)
 
 - After running the above codes, the directory structure
   should be as follows:
 
   ```text
   ├── coco_text
-  │   ├── train_label.txt
+  │   ├── train_labels.json
   │   └── train_words
   ```
 
 ## MJSynth (Syn90k)
 
 - Step1: Download `mjsynth.tar.gz` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)
-- Step2: Download [label.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/label.txt) (8,919,273 annotations) and [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/Syn90k/shuffle_labels.txt) (2,400,000 randomly sampled annotations).
+- Step2: Download [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/train_labels.json) (8,919,273 annotations) and [subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/subset_train_labels.json) (2,400,000 randomly sampled annotations).
 
 ```{note}
 Please make sure you're using the right annotation to train the model by checking its dataset specs in Model Zoo.
@@ -278,17 +262,14 @@ Please make sure you're using the right annotation to train the model by checkin
 
   tar -xzf mjsynth.tar.gz
 
-  mv /path/to/shuffle_labels.txt .
-  mv /path/to/label.txt .
+  mv /path/to/subset_train_labels.json .
+  mv /path/to/train_labels.json .
 
   # create soft link
-  cd /path/to/mmocr/data/mixture
+  cd /path/to/mmocr/data/recog/
 
   ln -s /path/to/Syn90k Syn90k
 
-  # Convert 'txt' format annos to 'lmdb' (optional)
-  cd /path/to/mmocr
-  python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt data/mixture/Syn90k/label.lmdb --label-only
   ```
 
 - After running the above codes, the directory structure
@@ -296,9 +277,8 @@ Please make sure you're using the right annotation to train the model by checkin
 
   ```text
   ├── Syn90k
-  │   ├── shuffle_labels.txt
-  │   ├── label.txt
-  │   ├── label.lmdb (optional)
+  │   ├── subset_train_labels.json
+  │   ├── train_labels.json
   │   └── mnt
   ```
 
@@ -306,7 +286,7 @@ Please make sure you're using the right annotation to train the model by checkin
 
 - Step1: Download `SynthText.zip` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)
 
-- Step2: According to your actual needs, download the most appropriate one from the following options: [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/label.txt) (7,266,686 annotations), [shuffle_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/shuffle_labels.txt) (2,400,000 randomly sampled annotations), [alphanumeric_labels.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/alphanumeric_labels.txt) (7,239,272 annotations with alphanumeric characters only) and [instances_train.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthText/instances_train.txt) (7,266,686 character-level annotations).
+- Step2: According to your actual needs, download the most appropriate one from the following options: [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/train_labels.json) (7,266,686 annotations), [subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/subset_train_labels.json) (2,400,000 randomly sampled annotations) and [alphanumeric_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/alphanumeric_train_labels.json) (7,239,272 annotations with alphanumeric characters only).
 
 ```{warning}
 Please make sure you're using the right annotation to train the model by checking its dataset specs in Model Zoo.
@@ -320,13 +300,12 @@ Please make sure you're using the right annotation to train the model by checkin
   unzip SynthText.zip
   mv SynthText synthtext
 
-  mv /path/to/shuffle_labels.txt .
-  mv /path/to/label.txt .
-  mv /path/to/alphanumeric_labels.txt .
-  mv /path/to/instances_train.txt .
+  mv /path/to/subset_train_labels.json .
+  mv /path/to/train_labels.json .
+  mv /path/to/alphanumeric_train_labels.json .
 
   # create soft link
-  cd /path/to/mmocr/data/mixture
+  cd /path/to/mmocr/data/recog
   ln -s /path/to/SynthText SynthText
   ```
 
@@ -335,11 +314,7 @@ Please make sure you're using the right annotation to train the model by checkin
   ```bash
   cd /path/to/mmocr
 
-  python tools/dataset_converters/textrecog/synthtext_converter.py data/mixture/SynthText/gt.mat data/mixture/SynthText/ data/mixture/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
-
-  # Convert 'txt' format annos to 'lmdb' (optional)
-  cd /path/to/mmocr
-  python tools/dataset_converters/lmdb_converter.py data/mixture/SynthText/label.txt data/mixture/SynthText/label.lmdb --label-only
+  python tools/dataset_converters/textrecog/synthtext_converter.py data/recog/SynthText/gt.mat data/recog/SynthText/ data/recog/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
   ```
 
 - After running the above codes, the directory structure
@@ -347,11 +322,9 @@ Please make sure you're using the right annotation to train the model by checkin
 
   ```text
   ├── SynthText
-  │   ├── alphanumeric_labels.txt
-  │   ├── shuffle_labels.txt
-  │   ├── instances_train.txt
-  │   ├── label.txt
-  │   ├── label.lmdb (optional)
+  │   ├── alphanumeric_train_labels.json
+  │   ├── subset_train_labels.json
+  │   ├── train_labels.json
   │   └── synthtext
   ```
 
@@ -359,7 +332,7 @@ Please make sure you're using the right annotation to train the model by checkin
 
 - Step1: Download `SynthText_Add.zip` from [SynthAdd](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg) (code:627x))
 
-- Step2: Download [label.txt](https://download.openmmlab.com/mmocr/data/mixture/SynthAdd/label.txt)
+- Step2: Download [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/synthtext_add/train_labels.json)
 
 - Step3:
 
@@ -370,16 +343,13 @@ Please make sure you're using the right annotation to train the model by checkin
 
   unzip SynthText_Add.zip
 
-  mv /path/to/label.txt .
+  mv /path/to/train_labels.json .
 
   # create soft link
-  cd /path/to/mmocr/data/mixture
+  cd /path/to/mmocr/data/recog
 
   ln -s /path/to/SynthAdd SynthAdd
 
-  # Convert 'txt' format annos to 'lmdb' (optional)
-  cd /path/to/mmocr
-  python tools/dataset_converters/lmdb_converter.py data/mixture/SynthAdd/label.txt data/mixture/SynthAdd/label.lmdb --label-only
   ```
 
 - After running the above codes, the directory structure
@@ -387,25 +357,9 @@ Please make sure you're using the right annotation to train the model by checkin
 
   ```text
   ├── SynthAdd
-  │   ├── label.txt
-  │   ├── label.lmdb (optional)
+  │   ├── train_labels.json
   │   └── SynthText_Add
   ```
-
-````{tip}
-To convert label file from `txt` format to `lmdb` format,
-
-```bash
-python tools/dataset_converters/lmdb_converter.py <txt_label_path> <lmdb_label_path> --label-only
-```
-
-For example,
-
-```bash
-python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt data/mixture/Syn90k/label.lmdb --label-only
-```
-
-````
 
 ## TextOCR
 
@@ -424,7 +378,7 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   mv train_images train
   ```
 
-- Step2: Generate `train_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
+- Step2: Generate `train_labels.json`, `val_labels.json` and crop images using 4 processes with the following command:
 
   ```bash
   python tools/dataset_converters/textrecog/textocr_converter.py /path/to/textocr 4
@@ -436,8 +390,8 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   ```text
   ├── TextOCR
   │   ├── image
-  │   ├── train_label.txt
-  │   └── val_label.txt
+  │   ├── train_labels.json
+  │   └── val_labels.json
   ```
 
 ## Totaltext
@@ -465,7 +419,7 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   mv Train annotations/training
   ```
 
-- Step2: Generate cropped images, `train_label.txt` and `test_label.txt` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`):
+- Step2: Generate cropped images, `train_labels.json` and `test_labels.json` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`):
 
   ```bash
   python tools/dataset_converters/textrecog/totaltext_converter.py /path/to/totaltext
@@ -476,8 +430,8 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   ```text
   ├── totaltext
   │   ├── dst_imgs
-  │   ├── train_label.txt
-  │   └── test_label.txt
+  │   ├── train_labels.json
+  │   └── test_labels.json
   ```
 
 ## OpenVINO
@@ -509,7 +463,7 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   tar zxf validation.tar.gz -C openimages_v5/val
   ```
 
-- Step3: Generate `train_{1,2,5,f}_label.txt`, `val_label.txt` and crop images using 4 processes with the following command:
+- Step3: Generate `train_{1,2,5,f}_labels.json`, `val_labels.json` and crop images using 4 processes with the following command:
 
   ```bash
   python tools/dataset_converters/textrecog/openvino_converter.py /path/to/openvino 4
@@ -525,11 +479,11 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   │   ├── image_5
   │   ├── image_f
   │   ├── image_val
-  │   ├── train_1_label.txt
-  │   ├── train_2_label.txt
-  │   ├── train_5_label.txt
-  │   ├── train_f_label.txt
-  │   └── val_label.txt
+  │   ├── train_1_labels.json
+  │   ├── train_2_labels.json
+  │   ├── train_5_labels.json
+  │   ├── train_f_labels.json
+  │   └── val_labels.json
   ```
 
 ## DeText
@@ -553,7 +507,7 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   rm ch9_training_images.zip && rm ch9_training_localization_transcription_gt.zip && rm ch9_validation_images.zip && rm ch9_validation_localization_transcription_gt.zip
   ```
 
-- Step2: Generate `instances_training.json` and `instances_val.json` with following command:
+- Step2: Generate `train_labels.json` and `test_labels.json` with following command:
 
   ```bash
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
@@ -567,8 +521,8 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   ├── detext
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
+  │   ├── train_labels.json
+  │   └── test_labels.json
   ```
 
 ## NAF
@@ -592,7 +546,7 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   rm -rf NAF_dataset && rm labeled_images.tar.gz
   ```
 
-- Step2: Generate `train_label.txt`, `val_label.txt`, and `test_label.txt` with following command:
+- Step2: Generate `train_labels.json`, `val_labels.json`, and `test_labels.json` with following command:
 
   ```bash
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
@@ -606,9 +560,9 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   ```text
   ├── naf
   │   ├── crops
-  │   ├── train_label.txt
-  │   ├── val_label.txt
-  │   └── test_label.txt
+  │   ├── train_labels.json
+  │   ├── val_labels.json
+  │   └── test_labels.json
   ```
 
 ## SROIE
@@ -635,7 +589,7 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
   ```
 
-- Step3: Generate `train_label.jsonl` and `test_label.jsonl` and crop images using 4 processes with the following command:
+- Step3: Generate `train_labels.json` and `test_labels.json` and crop images using 4 processes with the following command:
 
   ```bash
   python tools/dataset_converters/textrecog/sroie_converter.py PATH/TO/sroie --nproc 4
@@ -646,11 +600,15 @@ python tools/dataset_converters/lmdb_converter.py data/mixture/Syn90k/label.txt 
   ```text
   ├── sroie
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
+  │   ├── train_labels.json
+  │   └── test_labels.json
   ```
 
 ## Lecture Video DB
+
+```{warning}
+This section is not fully tested yet.
+```
 
 ```{note}
 The LV dataset has already provided cropped images and the corresponding annotations
@@ -669,12 +627,12 @@ The LV dataset has already provided cropped images and the corresponding annotat
   mv IIIT-CVid/Crops ./
 
   # For annotation
-  mv IIIT-CVid/train.txt train_label.txt && mv IIIT-CVid/val.txt val_label.txt && mv IIIT-CVid/test.txt test_label.txt
+  mv IIIT-CVid/train.txt train_labels.json && mv IIIT-CVid/val.txt val_label.txt && mv IIIT-CVid/test.txt test_labels.json
 
   rm IIIT-CVid.zip
   ```
 
-- Step2: Generate `train_label.jsonl`, `val.jsonl`, and `test.jsonl` with following command:
+- Step2: Generate `train_labels.json`, `val.json`, and `test.json` with following command:
 
   ```bash
   python tools/dataset_converters/textdreog/lv_converter.py PATH/TO/lv
@@ -685,11 +643,15 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```text
   ├── lv
   │   ├── Crops
-  │   ├── train_label.jsonl
-  │   └── test_label.jsonl
+  │   ├── train_labels.json
+  │   └── test_labels.json
   ```
 
 ## LSVT
+
+```{warning}
+This section is not fully tested yet.
+```
 
 - Step1: Download [train_full_images_0.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_0.tar.gz), [train_full_images_1.tar.gz](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_images_1.tar.gz), and [train_full_labels.json](https://dataset-bj.cdn.bcebos.com/lsvt/train_full_labels.json) to `lsvt/`.
 
@@ -709,7 +671,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm train_full_images_0.tar.gz && rm train_full_images_1.tar.gz && rm -rf train_full_images_1
   ```
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+- Step2: Generate `train_labels.json` and `val_label.json` (optional) with the following command:
 
   ```bash
   # Annotations of LSVT test split is not publicly available, split a validation
@@ -725,11 +687,15 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── lsvt
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_labels.json
+  │   └── val_label.json (optional)
   ```
 
 ## FUNSD
+
+```{warning}
+This section is not fully tested yet.
+```
 
 - Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
 
@@ -750,7 +716,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm dataset.zip && rm -rf dataset
   ```
 
-- Step2: Generate `train_label.txt` and `test_label.txt` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
+- Step2: Generate `train_labels.json` and `test_labels.json` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
 
   ```bash
   python tools/dataset_converters/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
@@ -762,13 +728,17 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```text
   ├── funsd
   │   ├── imgs
-  │   ├── dst_imgs
+  │   ├── crops
   │   ├── annotations
-  │   ├── train_label.txt
-  │   └── test_label.txt
+  │   ├── train_labels.json
+  │   └── test_labels.json
   ```
 
 ## IMGUR
+
+```{warning}
+This section is not fully tested yet.
+```
 
 - Step1: Run `download_imgur5k.py` to download images. You can merge [PR#5](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset/pull/5) in your local repository to enable a **much faster** parallel execution of image download.
 
@@ -787,7 +757,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm -rf IMGUR5K-Handwriting-Dataset
   ```
 
-- Step2: Generate `train_label.txt`, `val_label.txt` and `test_label.txt` and crop images with the following command:
+- Step2: Generate `train_labels.json`, `val_label.txt` and `test_labels.json` and crop images with the following command:
 
   ```bash
   python tools/dataset_converters/textrecog/imgur_converter.py PATH/TO/imgur
@@ -798,14 +768,18 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```text
   ├── imgur
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   ├── test_label.jsonl
-  │   └── val_label.jsonl
+  │   ├── train_labels.json
+  │   ├── test_labels.json
+  │   └── val_label.json
   ```
 
 ## KAIST
 
-- Step1: Complete download [KAIST_all.zip](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) to `kaist/`.
+```{warning}
+This section is not fully tested yet.
+```
+
+- Step1: Download [KAIST_all.zip](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) to `kaist/`.
 
   ```bash
   mkdir kaist && cd kaist
@@ -813,9 +787,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
 
   # Download KAIST dataset
   wget http://www.iapr-tc11.org/dataset/KAIST_SceneText/KAIST_all.zip
-  unzip -q KAIST_all.zip
-
-  rm KAIST_all.zip
+  unzip -q KAIST_all.zip && rm KAIST_all.zip
   ```
 
 - Step2: Extract zips:
@@ -824,7 +796,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   python tools/dataset_converters/common/extract_kaist.py PATH/TO/kaist
   ```
 
-- Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with following command:
+- Step3: Generate `train_labels.json` and `val_label.json` (optional) with following command:
 
   ```bash
   # Since KAIST does not provide an official split, you can split the dataset by adding --val-ratio 0.2
@@ -839,11 +811,15 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── kaist
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_labels.json
+  │   └── val_label.json (optional)
   ```
 
 ## MTWI
+
+```{warning}
+This section is not fully tested yet.
+```
 
 - Step1: Download `mtwi_2018_train.zip` from [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us).
 
@@ -856,7 +832,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm mtwi_2018_train.zip
   ```
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+- Step2: Generate `train_labels.json` and `val_label.json` (optional) with the following command:
 
   ```bash
   # Annotations of MTWI test split is not publicly available, split a validation
@@ -871,11 +847,15 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```text
   ├── mtwi
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_labels.json
+  │   └── val_label.json (optional)
   ```
 
 ## COCO Text v2
+
+```{warning}
+This section is not fully tested yet.
+```
 
 - Step1: Download image [train2014.zip](http://images.cocodataset.org/zips/train2014.zip) and annotation [cocotext.v2.zip](https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip) to `coco_textv2/`.
 
@@ -893,7 +873,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm train2014.zip && rm -rf cocotext.v2.zip
   ```
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` with the following command:
+- Step2: Generate `train_labels.json` and `val_label.json` with the following command:
 
   ```bash
   # Add --preserve-vertical to preserve vertical texts for training, otherwise
@@ -907,11 +887,15 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── coco_textv2
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl
+  │   ├── train_labels.json
+  │   └── val_label.json
   ```
 
 ## ReCTS
+
+```{warning}
+This section is not fully tested yet.
+```
 
 - Step1: Download [ReCTS.zip](https://datasets.cvc.uab.es/rrc/ReCTS.zip) to `rects/` from the [homepage](https://rrc.cvc.uab.es/?ch=12&com=downloads).
 
@@ -928,7 +912,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm ReCTS.zip -f && rm -rf gt
   ```
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional) with the following command:
+- Step2: Generate `train_labels.json` and `val_label.json` (optional) with the following command:
 
   ```bash
   # Annotations of ReCTS test split is not publicly available, split a validation
@@ -944,11 +928,15 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── rects
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_labels.json
+  │   └── val_label.json (optional)
   ```
 
 ## ILST
+
+```{warning}
+This section is not fully tested yet.
+```
 
 - Step1: Download `IIIT-ILST.zip` from [onedrive link](https://iiitaphyd-my.sharepoint.com/:f:/g/personal/minesh_mathew_research_iiit_ac_in/EtLvCozBgaBIoqglF4M-lHABMgNcCDW9rJYKKWpeSQEElQ?e=zToXZP)
 
@@ -973,7 +961,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm -rf Devanagari && rm -rf Malayalam && rm -rf Telugu && rm -rf README.txt
   ```
 
-- Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step3: Generate `train_labels.json` and `val_label.json` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
   python tools/dataset_converters/textrecog/ilst_converter.py PATH/TO/IIIT-ILST --nproc 4
@@ -985,11 +973,15 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── IIIT-ILST
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_labels.json
+  │   └── val_label.json (optional)
   ```
 
 ## VinText
+
+```{warning}
+This section is not fully tested yet.
+```
 
 - Step1: Download [vintext.zip](https://drive.google.com/drive/my-drive) to `vintext`
 
@@ -1010,7 +1002,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   mv training imgs/ && mv test imgs/ && mv unseen_test imgs/
   ```
 
-- Step2: Generate `train_label.jsonl`, `test_label.jsonl`, `unseen_test_label.jsonl`,  and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts).
+- Step2: Generate `train_labels.json`, `test_labels.json`, `unseen_test_labels.json`,  and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts).
 
   ```bash
   python tools/dataset_converters/textrecog/vintext_converter.py PATH/TO/vietnamese --nproc 4
@@ -1022,12 +1014,16 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── vintext
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   ├── test_label.jsonl
-  │   └── unseen_test_label.jsonl
+  │   ├── train_labels.json
+  │   ├── test_labels.json
+  │   └── unseen_test_labels.json
   ```
 
 ## BID
+
+```{warning}
+This section is not fully tested yet.
+```
 
 - Step1: Download [BID Dataset.zip](https://drive.google.com/file/d/1Oi88TRcpdjZmJ79WDLb9qFlBNG8q2De6/view)
 
@@ -1061,10 +1057,10 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm -rf desktop.ini
   ```
 
-- Step3: Generate `train_label.jsonl` and `val_label.jsonl` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step3: Generate `train_labels.json` and `val_label.json` (optional) and crop images using 4 processes with the following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if test-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
-  python tools/dataset_converters/textrecog/bid_converter.py dPATH/TO/BID --nproc 4
+  python tools/dataset_converters/textrecog/bid_converter.py PATH/TO/BID --nproc 4
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -1073,15 +1069,19 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ├── BID
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_labels.json
+  │   └── val_label.json (optional)
   ```
 
 ## RCTW
 
+```{warning}
+This section is not fully tested yet.
+```
+
 - Step1: Download `train_images.zip.001`, `train_images.zip.002`, and `train_gts.zip` from the [homepage](https://rctw.vlrlab.net/dataset.html), extract the zips to `rctw/imgs` and `rctw/annotations`, respectively.
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step2: Generate `train_labels.json` and `val_label.json` (optional). Since the original dataset doesn't have a validation set, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
   # Annotations of RCTW test split is not publicly available, split a validation set by adding --val-ratio 0.2
@@ -1095,11 +1095,15 @@ The LV dataset has already provided cropped images and the corresponding annotat
   │── rctw
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_labels.json
+  │   └── val_label.json (optional)
   ```
 
 ## HierText
+
+```{warning}
+This section is not fully tested yet.
+```
 
 - Step1 (optional): Install [AWS CLI](https://mmocr.readthedocs.io/en/latest/datasets/recog.html#install-aws-cli-optional).
 
@@ -1124,8 +1128,8 @@ The LV dataset has already provided cropped images and the corresponding annotat
   mv hiertext/gt ./
   rm -rf hiertext
   mv gt annotations
-  gzip -d annotations/train.jsonl.gz
-  gzip -d annotations/validation.jsonl.gz
+  gzip -d annotations/train.json.gz
+  gzip -d annotations/validation.json.gz
   # process images
   mkdir imgs
   mv train.tgz imgs/
@@ -1134,7 +1138,7 @@ The LV dataset has already provided cropped images and the corresponding annotat
   tar -xzvf imgs/validation.tgz
   ```
 
-- Step5: Generate `train_label.jsonl` and `val_label.jsonl`. HierText includes different levels of annotation, including `paragraph`, `line`, and `word`. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph-level annotation. Set `--level line` to get line-level annotation. set `--level word` to get word-level annotation.
+- Step5: Generate `train_labels.json` and `val_label.json`. HierText includes different levels of annotation, including `paragraph`, `line`, and `word`. Check the original [paper](https://arxiv.org/pdf/2203.15143.pdf) for details. E.g. set `--level paragraph` to get paragraph-level annotation. Set `--level line` to get line-level annotation. set `--level word` to get word-level annotation.
 
   ```bash
   # Collect word annotation from HierText  --level word
@@ -1148,11 +1152,15 @@ The LV dataset has already provided cropped images and the corresponding annotat
   │── HierText
   │   ├── crops
   │   ├── ignores
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl
+  │   ├── train_labels.json
+  │   └── val_label.json
   ```
 
 ## ArT
+
+```{warning}
+This section is not fully tested yet.
+```
 
 - Step1: Download `train_images.tar.gz`, and `train_labels.json` from the [homepage](https://rrc.cvc.uab.es/?ch=14&com=downloads) to `art/`
 
@@ -1173,11 +1181,11 @@ The LV dataset has already provided cropped images and the corresponding annotat
   rm train_images.tar.gz
   ```
 
-- Step2: Generate `train_label.jsonl` and `val_label.jsonl` (optional). Since the test annotations are not publicly available, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
+- Step2: Generate `train_labels.json` and `val_label.json` (optional). Since the test annotations are not publicly available, you may specify `--val-ratio` to split the dataset. E.g., if val-ratio is 0.2, then 20% of the data are left out as the validation set in this example.
 
   ```bash
   # Annotations of ArT test split is not publicly available, split a validation set by adding --val-ratio 0.2
-  python tools/data/textrecog/art_converter.py PATH/TO/art
+  python tools/dataset_converters/textrecog/art_converter.py PATH/TO/art
   ```
 
 - After running the above codes, the directory structure should be as follows:
@@ -1185,6 +1193,6 @@ The LV dataset has already provided cropped images and the corresponding annotat
   ```text
   │── art
   │   ├── crops
-  │   ├── train_label.jsonl
-  │   └── val_label.jsonl (optional)
+  │   ├── train_labels.json
+  │   └── val_label.json (optional)
   ```
