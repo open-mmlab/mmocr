@@ -9,14 +9,11 @@ It exposes all the models in MMOCR to API as individual modules that can be call
 This interface is being refactored is much likely to be changed in the upcoming release.
 ```
 
-______________________________________________________________________
-
 ## Example 1: Text Detection
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187707619-49ec07ce-00f6-4696-a60b-ec334a05fe31.png"/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187707619-49ec07ce-00f6-4696-a60b-ec334a05fe31.png"/>
 </div>
-<br>
 
 **Instruction:** Perform detection inference on an image with the TextSnake recognition model, export the result in a json file (default) and save the visualization file.
 
@@ -41,9 +38,8 @@ results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/')
 ## Example 2: Text Detection + Recognition
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187707213-2d49611f-fd46-46ff-b5d9-a3e5d1979a48.png"/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187707213-2d49611f-fd46-46ff-b5d9-a3e5d1979a48.png"/>
 </div>
-<br>
 
 **Instruction:** Perform ocr (det + recog) inference on the demo/demo_text_det.jpg image with the DB_r18 detection model and CRNN recognition model, print the result in the terminal and show the visualization.
 
@@ -71,14 +67,11 @@ ocr = MMOCR()
 results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, show=True)
 ```
 
-______________________________________________________________________
-
 ## Example 3: Text Detection + Recognition + Key Information Extraction
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187707190-4a20a570-efa8-4f0e-970d-747194c61c5e.png"/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187707190-4a20a570-efa8-4f0e-970d-747194c61c5e.png"/>
 </div>
-<br>
 
 **Instruction:** Perform end-to-end ocr (det + recog) inference first with DB_r18 detection model and CRNN recognition model, then run KIE inference with SDMGR model on the ocr result and show the visualization.
 
@@ -105,8 +98,6 @@ ocr = MMOCR(det='DB_r18', recog='CRNN', kie='SDMGR')
 # Inference
 results = ocr.readtext('demo/demo_kie.jpeg', print_result=True, show=True)
 ```
-
-______________________________________________________________________
 
 ## API Arguments
 
@@ -151,8 +142,6 @@ All arguments are the same for the cli, all you need to do is add 2 hyphens at t
 For bool type arguments, putting the argument in the command stores it as true.
 (*Example:* `python mmocr/demo/ocr.py --det DB_r18 demo/demo_text_det.jpg --print_result`
 means that `print_result` is set to `True`)
-
-______________________________________________________________________
 
 ## Models
 
