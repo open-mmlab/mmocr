@@ -45,17 +45,18 @@ conda install pytorch torchvision cpuonly -c pytorch
 
 ### 推荐步骤
 
-**第一步** 使用 [MIM](https://github.com/open-mmlab/mim) 安装 [MMCV](https://github.com/open-mmlab/mmcv).
+**第一步** 使用 [MIM](https://github.com/open-mmlab/mim) 安装 [MMEngine](https://github.com/open-mmlab/mmengine) and [MMCV](https://github.com/open-mmlab/mmcv).
 
 ```shell
 pip install -U openmim
-mim install mmcv-full
+mim install mmengine
+mim install 'mmcv>=2.0.0rc1'
 ```
 
 **第二步** 将 [MMDetection](https://github.com/open-mmlab/mmdetection) 以依赖库的形式安装。
 
 ```shell
-pip install mmdet
+pip install 'mmdet>=3.0.0rc0'
 ```
 
 **第三步** 安装 MMOCR.
@@ -65,6 +66,7 @@ pip install mmdet
 ```shell
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
+git checkout 1.x
 pip install -r requirements.txt
 pip install -v -e .
 # "-v" 会让安装过程产生更详细的输出
@@ -74,7 +76,7 @@ pip install -v -e .
 情况2：如果你将 MMOCR 作为一个外置依赖库使用，通过 pip 安装即可：
 
 ```shell
-pip install mmocr
+pip install 'mmocr>=1.0.0rc0'
 ```
 
 **第四步（可选）** 如果你需要使用与 `albumentations` 有关的变换，比如 ABINet 数据流水线中的 `Albu`，请使用以下命令安装依赖：
@@ -96,52 +98,29 @@ pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 
 ### 检验
 
-根据安装方式的不同，我们提供了两个可以验证安装正确性的方法。若 MMOCR 的安装无误，你在这一节完成后应当能看到以图片和文字形式表示的识别结果，示意如下：
+根据安装方式的不同，我们提供了验证安装正确性的方法。若 MMOCR 的安装无误，你在这一节完成后应当能看到以图片和文字形式表示的识别结果，示意如下：
 
 <div align="center">
-    <img src="https://raw.githubusercontent.com/open-mmlab/mmocr/main/resources/verification.png"/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
 </div>
-<br>
 
 ```bash
 # 识别结果
-[{'filename': 'demo_text_det', 'text': ['yther', 'doyt', 'nan', 'heraies', '188790', 'cadets', 'army', 'ipioneered', 'and', 'icottages', 'land', 'hall', 'sgardens', 'established', 'ithis', 'preformer', 'social', 'octavial', 'hill', 'pm', 'ct', 'lof', 'aborought']}]
+[{'filename': 'demo_text_ocr', 'text': ['cbanke', 'docece', 'sroumats', 'chounsonse', 'doceca', 'c', '', 'sond', 'abrandso', 'sretane', '1', 'tosl', 'roundi', 'slen', 'yet', 'ally', 's', 'sue', 'salle', 'v']}]
 ```
-
-#### 若从源码安装 MMOCR
 
 在 MMOCR 的目录运行以下命令：
 
 ```bash
-python mmocr/utils/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --imshow
+python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --show
 ```
 
-#### 若以包形式安装 MMOCR
-
-**第一步** 下载必要的配置，权重和图片：
-
-```shell
-mim download mmocr --config dbnet_r18_fpnc_1200e_icdar2015 --dest .
-mim download mmocr --config crnn_academic_dataset --dest .
-wget https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/demo_text_det.jpg
-```
-
-取决于你的网络环境，下载过程可能会持续几十秒或者更长。一切就绪后，当前目录树应当包含以下文件：
-
-```bash
-├── crnn_academic-a723a1c5.pth
-├── crnn_academic_dataset.py
-├── dbnet_r18_fpnc_1200e_icdar2015.py
-├── dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth
-└── demo_text_det.jpg
-```
-
-**第二步** 在 Python 解释器中运行以下代码：
+也可以在 Python 解释器中运行以下代码：
 
 ```python
 from mmocr.utils.ocr import MMOCR
-ocr = MMOCR(recog='CRNN', recog_ckpt='crnn_academic-a723a1c5.pth', recog_config='crnn_academic_dataset.py', det='DB_r18', det_ckpt='dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth', det_config='dbnet_r18_fpnc_1200e_icdar2015.py')
-ocr.readtext('demo_text_det.jpg', imshow=True)
+ocr = MMOCR(recog='CRNN', det='DB_r18')
+ocr.readtext('demo_text_ocr.jpg', show=True)
 ```
 
 ## 自定义安装
@@ -173,7 +152,7 @@ MMCV 包含 C++ 和 CUDA 扩展，因此其对 PyTorch 的依赖比较复杂。M
 举个例子，如下命令将会安装基于 PyTorch 1.10.x 和 CUDA 11.3 编译的 mmcv-full。
 
 ```shell
-pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
+pip install 'mmcv>=2.0.0rc1' -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.10/index.html
 ```
 
 ### 在 CPU 环境中安装
@@ -213,13 +192,7 @@ docker run --gpus all --shm-size=8g -it -v {实际数据目录}:/mmocr/data mmoc
 
 为了确保代码实现的正确性，MMOCR 每个版本都有可能改变对 MMCV 和 MMDetection 版本的依赖。请根据以下表格确保版本之间的相互匹配。
 
-| MMOCR        | MMCV                     | MMDetection                 |
-| ------------ | ------------------------ | --------------------------- |
-| main         | 1.3.8 \<= mmcv \<= 1.7.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.6.0        | 1.3.8 \<= mmcv \<= 1.6.0 | 2.21.0 \<= mmdet \<= 3.0.0  |
-| 0.5.0        | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 3.0.0  |
-| 0.4.0, 0.4.1 | 1.3.8 \<= mmcv \<= 1.5.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.3.0        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.14.0 \<= mmdet \<= 2.20.0 |
-| 0.2.1        | 1.3.8 \<= mmcv \<= 1.4.0 | 2.13.0 \<= mmdet \<= 2.20.0 |
-| 0.2.0        | 1.3.4 \<= mmcv \<= 1.4.0 | 2.11.0 \<= mmdet \<= 2.13.0 |
-| 0.1.0        | 1.2.6 \<= mmcv \<= 1.3.4 | 2.9.0 \<= mmdet \<= 2.11.0  |
+| MMOCR    | MMCV              | MMDetection        |
+| -------- | ----------------- | ------------------ |
+| dev-1.x  | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
+| 1.0.0rc0 | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
