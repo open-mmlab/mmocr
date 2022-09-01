@@ -1,5 +1,9 @@
 # 文字识别
 
+```{warning}
+该章节翻译落后于[英文版文档](../../en/user_guides/../../user_guides/data_prepare/recog.md)。
+```
+
 ## 概览
 
 **文字识别任务的数据集应按如下目录配置：**
