@@ -12,7 +12,7 @@ This interface is being refactored is much likely to be changed in the upcoming 
 ## Example 1: Text Detection
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187707619-49ec07ce-00f6-4696-a60b-ec334a05fe31.png"/>
+    <img src="https://user-images.githubusercontent.com/24622904/187825864-8ead5acb-c3c5-443b-bd90-3f4b188fa315.jpg"  height="250"/>
 </div>
 
 **Instruction:** Perform detection inference on an image with the TextSnake recognition model, export the result in a json file (default) and save the visualization file.
@@ -38,7 +38,7 @@ results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/')
 ## Example 2: Text Detection + Recognition
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187707213-2d49611f-fd46-46ff-b5d9-a3e5d1979a48.png"/>
+    <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
 </div>
 
 **Instruction:** Perform ocr (det + recog) inference on the demo/demo_text_det.jpg image with the DB_r18 detection model and CRNN recognition model, print the result in the terminal and show the visualization.
@@ -70,7 +70,7 @@ results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, show=True)
 ## Example 3: Text Detection + Recognition + Key Information Extraction
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187707190-4a20a570-efa8-4f0e-970d-747194c61c5e.png"/>
+    <img src="https://user-images.githubusercontent.com/24622904/187825451-6b043df9-10f7-4656-a528-45fe043df92b.jpg" height="250"/>
 </div>
 
 **Instruction:** Perform end-to-end ocr (det + recog) inference first with DB_r18 detection model and CRNN recognition model, then run KIE inference with SDMGR model on the ocr result and show the visualization.

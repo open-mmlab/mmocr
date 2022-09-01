@@ -11,7 +11,7 @@ MMOCR 为示例和应用，以 [ocr.py](/mmocr/ocr.py) 脚本形式，提供了�
 ## 案例一：文本检测
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187707619-49ec07ce-00f6-4696-a60b-ec334a05fe31.png"/>
+    <img src="https://user-images.githubusercontent.com/24622904/187825864-8ead5acb-c3c5-443b-bd90-3f4b188fa315.jpg"  height="250"/>
 </div>
 
 **注：** 使用 TextSnake 检测模型对图像上的文本进行检测，并保存可视化的文件。
@@ -37,7 +37,7 @@ results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/')
 ## 案例二：文本检测+识别
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187707213-2d49611f-fd46-46ff-b5d9-a3e5d1979a48.png"/>
+    <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
 </div>
 
 **注：** 使用 DB_r18 检测模型和 CRNN 识别模型，对 demo/demo_text_det.jpg 图片执行 ocr（检测+识别）推理，在终端打印结果并展示可视化结果。
@@ -69,7 +69,7 @@ results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, show=True)
 ## 案例三： 文本检测+识别+关键信息提取
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187707190-4a20a570-efa8-4f0e-970d-747194c61c5e.png"/>
+    <img src="https://user-images.githubusercontent.com/24622904/187825451-6b043df9-10f7-4656-a528-45fe043df92b.jpg" height="250"/>
 </div>
 
 **注：** 首先，使用 DB_r18 检测模型和 CRNN 识别模型，进行端到端的 ocr （检测+识别）推理，然后对得到的结果，使用 SDMGR 模型提取关键信息（KIE），并展示可视化结果。
