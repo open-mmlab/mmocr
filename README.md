@@ -48,7 +48,7 @@ MMOCR is an open-source toolbox based on PyTorch and mmdetection for text detect
 The main branch works with **PyTorch 1.6+**.
 
 <div align="center">
-  <img src="resources/illustration.jpg"/>
+  <img src="https://user-images.githubusercontent.com/24622904/187838618-1fdc61c0-2d46-49f9-8502-976ffdf01f28.png"/>
 </div>
 
 ### Major Features
