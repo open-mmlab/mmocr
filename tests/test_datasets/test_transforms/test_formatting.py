@@ -174,8 +174,6 @@ class TestPackKIEInputs(TestCase):
                          torch.int64)
         self.assertIsInstance(data_sample.gt_instances.texts, list)
 
-        self.assertIn('img_path', data_sample)
-
         transform = PackKIEInputs(meta_keys=('img_path', ))
         results = transform(copy.deepcopy(datainfo))
         self.assertIn('inputs', results)
@@ -191,7 +189,4 @@ class TestPackKIEInputs(TestCase):
         self.assertEqual(results['inputs'].shape, torch.Size((0, 0, 0)))
 
     def test_repr(self):
-        self.assertEqual(
-            repr(self.transform),
-            ("PackKIEInputs(meta_keys=('img_path', 'ori_shape', "
-             "'img_shape', 'scale_factor'))"))
+        self.assertEqual(repr(self.transform), ('PackKIEInputs(meta_keys=())'))
