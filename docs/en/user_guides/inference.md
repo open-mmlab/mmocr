@@ -5,6 +5,10 @@ We provide an easy-to-use API for the demo and application purpose in [ocr.py](/
 The API can be called through command line (CL) or by calling it from another python script.
 It exposes all the models in MMOCR to API as individual modules that can be called and chained together.
 
+```{warning}
+This interface is being refactored is much likely to be changed in the upcoming release.
+```
+
 ______________________________________________________________________
 
 ## Example 1: Text Detection
