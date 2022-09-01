@@ -115,31 +115,7 @@ We provide a method to verify the installation via inference demo, depending on 
 Run the following in MMOCR's directory:
 
 ```bash
-<<<<<<< HEAD
 python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --show
-=======
-python mmocr/utils/ocr.py --det DB_r18 --recog CRNN demo/demo_text_det.jpg --show
-```
-
-#### Case B - Installed as a Package:
-
-**Step 1.** We need to download configs, checkpoints and an image necessary for the verification.
-
-```shell
-mim download mmocr --config dbnet_r18_fpnc_1200e_icdar2015 --dest .
-mim download mmocr --config crnn_academic_dataset --dest .
-wget https://raw.githubusercontent.com/open-mmlab/mmocr/main/demo/demo_text_det.jpg
-```
-
-The downloading will take several seconds or more, depending on your network environment. The directory tree should look like the following once everything is done:
-
-```bash
-├── crnn_academic-a723a1c5.pth
-├── crnn_academic_dataset.py
-├── dbnet_r18_fpnc_1200e_icdar2015.py
-├── dbnet_r18_fpnc_sbn_1200e_icdar2015_20210329-ba3ab597.pth
-└── demo_text_det.jpg
->>>>>>> updata install
 ```
 
 Also can run the following codes in your Python interpreter:

@@ -19,7 +19,7 @@
   <div>&nbsp;</div>
 
 [![build](https://github.com/open-mmlab/mmocr/workflows/build/badge.svg)](https://github.com/open-mmlab/mmocr/actions)
-[![docs](https://readthedocs.org/projects/mmocr/badge/?version=latest)](https://mmocr.readthedocs.io/en/latest/?badge=latest)
+[![docs](https://readthedocs.org/projects/mmocr/badge/?version=dev-1.x)](https://mmocr.readthedocs.io/en/dev-1.x/?badge=dev-1.x)
 [![codecov](https://codecov.io/gh/open-mmlab/mmocr/branch/main/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmocr)
 [![license](https://img.shields.io/github/license/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/blob/main/LICENSE)
 [![PyPI](https://badge.fury.io/py/mmocr.svg)](https://pypi.org/project/mmocr/)
@@ -27,10 +27,10 @@
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 <a href="https://console.tiyaro.ai/explore?q=mmocr&pub=mmocr"> <img src="https://tiyaro-public-docs.s3.us-west-2.amazonaws.com/assets/try_on_tiyaro_badge.svg"></a>
 
-[📘文档](https://mmocr.readthedocs.io/zh_CN/latest/) |
-[🛠️安装](https://mmocr.readthedocs.io/zh_CN/latest/install.html) |
-[👀模型库](https://mmocr.readthedocs.io/zh_CN/latest/modelzoo.html) |
-[🆕更新日志](https://mmocr.readthedocs.io/zh_CN/latest/changelog.html) |
+[📘文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/) |
+[🛠️安装](https://mmocr.readthedocs.io/zh_CN/dev-1.x/install.html) |
+[👀模型库](https://mmocr.readthedocs.io/zh_CN/dev-1.x/modelzoo.html) |
+[🆕更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/changelog.html) |
 [🤔报告问题](https://github.com/open-mmlab/mmocr/issues/new/choose)
 
 </div>
@@ -64,7 +64,7 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 -**模块化设计**
 
 MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处理器，模型组件如主干模块，颈部模块和头部模块，以及损失函数。有关如何构建自定义模型的信
-息，请参考[快速入门](https://mmocr.readthedocs.io/zh_CN/latest/getting_started.html)。
+息，请参考[概览](https://mmocr.readthedocs.io/zh_CN/dev-1.x/get_started/overview.html)。
 
 -**众多实用工具**
 
@@ -72,36 +72,31 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 
 ## 最新进展
 
-最新的月度版本 v0.6.0 在 2022.05.05 发布。
-
-1. 支持了两个新模型：[MASTER](https://arxiv.org/abs/1910.02562) 和 [DBNet++](https://arxiv.org/abs/2202.10304)
-2. 新支持了三个数据集：LSVT, RCTW 和 HierText
-3. 支持从 LMDB 数据集读取数据 [查看文档](https://mmocr.readthedocs.io/en/latest/tools.html#convert-text-recognition-dataset-to-lmdb-format)
-4. 提供了 Labelme 数据格式转换脚本，可使 MMOCR 支持由 Labelme 标注的数据
-
-阅读[更新日志](https://mmocr.readthedocs.io/en/latest/changelog.html)以获取更多信息。
+阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
 
 ## 安装
 
-MMOCR 依赖 [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv) 和 [MMDetection](https://github.com/open-mmlab/mmdetection)，以下是安装的简要步骤。
-更详细的安装指南请参考 [安装文档](https://mmocr.readthedocs.io/zh_CN/latest/install.html)。
+MMOCR 依赖 [PyTorch](https://pytorch.org/), [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv) 和 [MMDetection](https://github.com/open-mmlab/mmdetection)，以下是安装的简要步骤。
+更详细的安装指南请参考 [安装文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/get_started/install.html)。
 
 ```shell
 conda create -n open-mmlab python=3.8 pytorch=1.10 cudatoolkit=11.3 torchvision -c pytorch -y
 conda activate open-mmlab
 pip3 install openmim
-mim install mmcv-full
-mim install mmdet
+mim install mmengine
+mim install 'mmcv>=2.0.0rc1'
+mim install 'mmdet>=3.0.0rc0'
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
+git checkout 1.x
 pip3 install -e .
 ```
 
 ## 快速入门
 
-请参考[快速入门](https://mmocr.readthedocs.io/zh_CN/latest/getting_started.html)文档学习 MMOCR 的基本使用。
+请参考[快速入门](https://mmocr.readthedocs.io/zh_CN/dev-1.x/get_started/quick_run.html)文档学习 MMOCR 的基本使用。
 
-## [模型库](https://mmocr.readthedocs.io/en/latest/modelzoo.html)
+## [模型库](https://mmocr.readthedocs.io/zh_CN/dev-1.x/modelzoo.html)
 
 支持的算法：
 
@@ -138,7 +133,7 @@ pip3 install -e .
 
 </details>
 
-请点击[模型库](https://mmocr.readthedocs.io/en/latest/modelzoo.html)查看更多关于上述算法的详细信息。
+请点击[模型库](https://mmocr.readthedocs.io/zh_CN/dev-1.x/modelzoo.html)查看更多关于上述算法的详细信息。
 
 ## 贡献指南
 
@@ -167,6 +162,7 @@ MMOCR 是一款由来自不同高校和企业的研发人员共同参与贡献�
 
 ## OpenMMLab 的其他项目
 
+- [MMEngine](https://github.com/open-mmlab/mmengine): OpenMMLab 深度学习模型训练基础库
 - [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab 计算机视觉基础库
 - [MIM](https://github.com/open-mmlab/mim): MIM 是 OpenMMlab 项目、算法、模型的统一入口
 - [MMClassification](https://github.com/open-mmlab/mmclassification): OpenMMLab 图像分类工具箱
