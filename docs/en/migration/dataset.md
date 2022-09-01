@@ -72,16 +72,16 @@ To solve the dataset issues, MMOCR 1.x adopts a unified dataset design introduce
   "metainfo":
     {
       "classes": ("cat", "dog"),
-      ...
+      // ...
     },
   "data_list":
     [
       {
         "img_path": "xxx/xxx_0.jpg",
         "img_label": 0,
-        ...
+        // ...
       },
-      ...
+      // ...
     ]
 }
 ```
@@ -116,7 +116,7 @@ The `TextDetDataset` holds the information required by the text detection task, 
               "bbox_label": 0,
               "ignore": False
             }，
-            ...
+            // ...
           ]
       }
     ]

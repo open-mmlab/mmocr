@@ -72,16 +72,16 @@ img2.jpg MMOCR
   "metainfo":
     {
       "classes": ("cat", "dog"),
-      ...
+      // ...
     },
   "data_list":
     [
       {
         "img_path": "xxx/xxx_0.jpg",
         "img_label": 0,
-        ...
+        // ...
       },
-      ...
+      // ...
     ]
 }
 ```
@@ -116,7 +116,7 @@ img2.jpg MMOCR
               "bbox_label": 0,
               "ignore": False
             }，
-            ...
+            // ...
           ]
       }
     ]
