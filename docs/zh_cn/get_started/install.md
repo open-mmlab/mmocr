@@ -101,13 +101,12 @@ pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 根据安装方式的不同，我们提供了验证安装正确性的方法。若 MMOCR 的安装无误，你在这一节完成后应当能看到以图片和文字形式表示的识别结果，示意如下：
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187707213-2d49611f-fd46-46ff-b5d9-a3e5d1979a48.png"/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
 </div>
-<br>
 
 ```bash
 # 识别结果
-[{'filename': 'demo_text_det', 'text': ['yther', 'doyt', 'nan', 'heraies', '188790', 'cadets', 'army', 'ipioneered', 'and', 'icottages', 'land', 'hall', 'sgardens', 'established', 'ithis', 'preformer', 'social', 'octavial', 'hill', 'pm', 'ct', 'lof', 'aborought']}]
+[{'filename': 'demo_text_ocr', 'text': ['cbanke', 'docece', 'sroumats', 'chounsonse', 'doceca', 'c', '', 'sond', 'abrandso', 'sretane', '1', 'tosl', 'roundi', 'slen', 'yet', 'ally', 's', 'sue', 'salle', 'v']}]
 ```
 
 在 MMOCR 的目录运行以下命令：

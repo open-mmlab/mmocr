@@ -104,13 +104,12 @@ to ['albumentations`'s official documentation](https://albumentations.ai/docs/ge
 We provide a method to verify the installation via inference demo, depending on your installation method. You should be able to see a pop-up image and the inference result upon successful verification.
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187707213-2d49611f-fd46-46ff-b5d9-a3e5d1979a48.png"/><br>
+    <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
 </div>
-<br>
 
 ```bash
 # Inference result
-[{'filename': 'demo_text_det', 'text': ['yther', 'doyt', 'nan', 'heraies', '188790', 'cadets', 'army', 'ipioneered', 'and', 'icottages', 'land', 'hall', 'sgardens', 'established', 'ithis', 'preformer', 'social', 'octavial', 'hill', 'pm', 'ct', 'lof', 'aborought']}]
+[{'filename': 'demo_text_ocr', 'text': ['cbanke', 'docece', 'sroumats', 'chounsonse', 'doceca', 'c', '', 'sond', 'abrandso', 'sretane', '1', 'tosl', 'roundi', 'slen', 'yet', 'ally', 's', 'sue', 'salle', 'v']}]
 ```
 
 Run the following in MMOCR's directory:
