@@ -5,7 +5,7 @@ import unittest
 
 import cv2
 import numpy as np
-from mmengine.data import LabelData
+from mmengine.structures import LabelData
 
 from mmocr.structures import TextRecogDataSample
 from mmocr.visualization import TextRecogLocalVisualizer

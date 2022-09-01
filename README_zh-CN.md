@@ -25,6 +25,7 @@
 [![PyPI](https://badge.fury.io/py/mmocr.svg)](https://pypi.org/project/mmocr/)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
+<a href="https://console.tiyaro.ai/explore?q=mmocr&pub=mmocr"> <img src="https://tiyaro-public-docs.s3.us-west-2.amazonaws.com/assets/try_on_tiyaro_badge.svg"></a>
 
 [📘文档](https://mmocr.readthedocs.io/zh_CN/latest/) |
 [🛠️安装](https://mmocr.readthedocs.io/zh_CN/latest/install.html) |
@@ -134,13 +135,6 @@ pip3 install -e .
 <summary>关键信息提取</summary>
 
 - [x] [SDMG-R](configs/kie/sdmgr/README.md) (ArXiv'2021)
-
-</details>
-
-<details open>
-<summary>命名实体识别</summary>
-
-- [x] [Bert-Softmax](configs/ner/bert_softmax/README.md) (NAACL'2019)
 
 </details>
 

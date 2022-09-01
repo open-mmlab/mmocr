@@ -34,17 +34,17 @@ Linguistic knowledge is of great benefit to scene text recognition. However, how
 
 ## Results and models
 
-|                      methods                       |                       pretrained                       |        | Regular Text |      |      | Irregular Text |      | download                                             |
-| :------------------------------------------------: | :----------------------------------------------------: | :----: | :----------: | :--: | :--: | :------------: | :--: | :--------------------------------------------------- |
-|                                                    |                                                        | IIIT5K |     SVT      | IC13 | IC15 |      SVTP      | CT80 |                                                      |
-| [ABINet-Vision](/configs/textrecog/abinet/abinet-vision_6e_st-an_mj.py) |                           -                            |  94.7  |     91.7     | 93.6 | 83.0 |      85.1      | 86.5 | [model](https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_vision_only_academic-e6b9ea89.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/abinet/20211201_195512.log) |
-| [ABINet](/configs/textrecog/abinet/abinet_6e_st-an_mj.py) | [Pretrained](https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_pretrain-1bed979b.pth) |  95.7  |     94.6     | 95.7 | 85.1 |      90.4      | 90.3 | [model](https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_academic-f718abf6.pth) \| [log1](https://download.openmmlab.com/mmocr/textrecog/abinet/20211210_095832.log) \| [log2](https://download.openmmlab.com/mmocr/textrecog/abinet/20211213_131724.log) |
+Coming Soon!
+
+|                                 methods                                  |    pretrained    |        | Regular Text |      |      | Irregular Text |      | download                 |
+| :----------------------------------------------------------------------: | :--------------: | :----: | :----------: | :--: | :--: | :------------: | :--: | :----------------------- |
+|                                                                          |                  | IIIT5K |     SVT      | IC13 | IC15 |      SVTP      | CT80 |                          |
+| [ABINet-Vision](/configs/textrecog/abinet/abinet-vision_20e_st-an_mj.py) |        -         |        |              |      |      |                |      | [model](<>) \| [log](<>) |
+|        [ABINet](/configs/textrecog/abinet/abinet_20e_st-an_mj.py)        | [Pretrained](<>) |        |              |      |      |                |      | [model](<>) \| [log](<>) |
 
 ```{note}
 1. ABINet allows its encoder to run and be trained without decoder and fuser. Its encoder is designed to recognize texts as a stand-alone model and therefore can work as an independent text recognizer. We release it as ABINet-Vision.
 2. Facts about the pretrained model: MMOCR does not have a systematic pipeline to pretrain the language model (LM) yet, thus the weights of LM are converted from [the official pretrained model](https://github.com/FangShancheng/ABINet). The weights of ABINet-Vision are directly used as the vision model of ABINet.
-3. Due to some technical issues, the training process of ABINet was interrupted at the 13th epoch and we resumed it later. Both logs are released for full reference.
-4. The model architecture in the logs looks slightly different from the final released version, since it was refactored afterward. However, both architectures are essentially equivalent.
 ```
 
 ## Citation

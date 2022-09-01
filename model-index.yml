@@ -13,6 +13,5 @@ Import:
   - configs/textrecog/nrtr/metafile.yml
   - configs/textrecog/robust_scanner/metafile.yml
   - configs/textrecog/sar/metafile.yml
-  - configs/textrecog/tps/metafile.yml
   - configs/textrecog/satrn/metafile.yml
   - configs/kie/sdmgr/metafile.yml

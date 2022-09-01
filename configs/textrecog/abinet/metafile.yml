@@ -29,28 +29,28 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 94.7
+          word_acc:
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 91.7
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 93.6
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 83.0
+          word_acc:
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 85.1
+          word_acc:
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 86.5
-    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_vision_only_academic-e6b9ea89.pth
+          word_acc:
+    Weights:
 
   - Name: abinet_6e_st-an_mj
     In Collection: ABINet
@@ -63,25 +63,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 95.7
+          word_acc:
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 94.6
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 95.7
+          word_acc:
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 85.1
+          word_acc:
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 90.4
+          word_acc:
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 90.3
-    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_academic-f718abf6.pth
+          word_acc:
+    Weights:

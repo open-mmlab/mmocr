@@ -2,7 +2,7 @@
 import unittest
 
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 
 from mmocr.evaluation import F1Metric
 from mmocr.structures import KIEDataSample

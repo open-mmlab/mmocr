@@ -1,10 +1,10 @@
 Collections:
 - Name: PSENet
   Metadata:
-    Training Data: ICDAR SCUT-CTW1500
+    Training Data: ICDAR2015 SCUT-CTW1500
     Training Techniques:
       - Adam
-    Training Resources: 1x Tesla A100
+    Training Resources: 1x NVIDIA A100-SXM4-80GB
     Architecture:
       - ResNet
       - FPNF
@@ -24,8 +24,8 @@ Models:
       - Task: Text Detection
         Dataset: CTW1500
         Metrics:
-          hmean-iou: 0.784
-    Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_ctw1500_20210401-216fed50.pth
+          hmean-iou: 0.7793
+    Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_ctw1500/psenet_resnet50_fpnf_600e_ctw1500_20220825_221459-7f974ac8.pth
 
   - Name: psenet_resnet50_fpnf_600e_icdar2015
     In Collection: PSENet
@@ -36,17 +36,5 @@ Models:
       - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
-          hmean-iou: 0.806
-    Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015-c6131f0d.pth
-
-  - Name: psenet_resnet50_fpnf_600e_icdar2015
-    In Collection: PSENet
-    Config: configs/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015.py
-    Metadata:
-      Training Data: ICDAR2017 ICDAR2015
-    Results:
-      - Task: Text Detection
-        Dataset: ICDAR2017 ICDAR2015
-        Metrics:
-          hmean-iou: 0.847
-    Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_r50_fpnf_600e_icdar2015_pretrain-eefd8fe6.pth
+          hmean-iou: 0.7998
+    Weights:

@@ -5,15 +5,17 @@ import torch
 from mmdet.structures import DetDataSample
 from mmdet.testing import demo_mm_inputs
 from mmengine.config import Config
-from mmengine.data import InstanceData
+from mmengine.structures import InstanceData
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
+from mmocr.utils import register_all_modules
 
 
 class TestMMDetWrapper(unittest.TestCase):
 
     def setUp(self):
+        register_all_modules()
         model_cfg_fcos = dict(
             type='MMDetWrapper',
             cfg=dict(
@@ -215,11 +217,16 @@ class TestMMDetWrapper(unittest.TestCase):
         packed_inputs = demo_mm_inputs(
             2, [[3, 128, 128], [3, 128, 128]], num_classes=2)
         # Test forward train
-        bi, ds = self.FCOS.data_preprocessor(packed_inputs, True)
+        data = self.FCOS.data_preprocessor(packed_inputs, True)
+        bi, ds = data['inputs'], data['data_samples']
         losses = self.FCOS.forward(bi, ds, mode='loss')
-        assert isinstance(losses, dict)
+        self.assertIsInstance(losses, dict)
         # Test forward test
         self.FCOS.eval()
+        ds = [
+            TextDetDataSample(metainfo=d.metainfo, **dict(d.items()))
+            for d in ds
+        ]
         with torch.no_grad():
             batch_results = self.FCOS.forward(bi, ds, mode='predict')
             self.assertEqual(len(batch_results), 2)
@@ -229,42 +236,44 @@ class TestMMDetWrapper(unittest.TestCase):
         packed_inputs = demo_mm_inputs(
             2, [[3, 128, 128], [3, 128, 128]], num_classes=2, with_mask=True)
         # Test forward train
-        bi, ds = self.MRCNN.data_preprocessor(packed_inputs, True)
+        data = self.MRCNN.data_preprocessor(packed_inputs, True)
+        bi, ds = data['inputs'], data['data_samples']
         losses = self.MRCNN.forward(bi, ds, mode='loss')
         assert isinstance(losses, dict)
         # Test forward test
         self.MRCNN.eval()
+        ds = [
+            TextDetDataSample(metainfo=d.metainfo, **dict(d.items()))
+            for d in ds
+        ]
         with torch.no_grad():
             batch_results = self.MRCNN.forward(bi, ds, mode='predict')
             self.assertEqual(len(batch_results), 2)
             self.assertIsInstance(batch_results[0], TextDetDataSample)
 
     def test_adapt_predictions(self):
-        data_sample = DetDataSample()
+        data_sample = DetDataSample
+        data = TextDetDataSample()
+
         pred_instances = InstanceData()
         pred_instances.scores = torch.randn(1)
         pred_instances.labels = torch.Tensor([1])
         pred_instances.bboxes = torch.Tensor([[0, 0, 2, 2]])
         pred_instances.masks = torch.rand(1, 10, 10)
         data_sample.pred_instances = pred_instances
-        results = self.MRCNN.adapt_predictions([data_sample])
+        results = self.MRCNN.adapt_predictions([data_sample], [data])
         self.assertEqual(len(results), 1)
         self.assertIsInstance(results[0], TextDetDataSample)
         self.assertTrue('polygons' in results[0].pred_instances.keys())
 
-        data_sample = DetDataSample()
+        data_sample = TextDetDataSample()
+        data = TextDetDataSample()
         pred_instances = InstanceData()
         pred_instances.scores = torch.randn(1)
         pred_instances.labels = torch.Tensor([1])
         pred_instances.bboxes = torch.Tensor([[0, 0, 2, 2]])
         data_sample.pred_instances = pred_instances
-        results = self.FCOS.adapt_predictions([data_sample])
+        results = self.FCOS.adapt_predictions([data_sample], [data])
         self.assertEqual(len(results), 1)
         self.assertIsInstance(results[0], TextDetDataSample)
         self.assertTrue('polygons' in results[0].pred_instances.keys())
-
-
-if __name__ == '__main__':
-    test = TestMMDetWrapper()
-    test.setUp()
-    test.test_mask_two_stage_wrapper()

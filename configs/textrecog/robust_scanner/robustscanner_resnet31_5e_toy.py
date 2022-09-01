@@ -1,13 +1,13 @@
 _base_ = [
-    '../../_base_/recog_datasets/toy_data.py',
-    '../../_base_/textrec_default_runtime.py',
-    '../../_base_/schedules/schedule_adam_step_5e.py',
+    '../_base_/datasets/toy_data.py',
+    '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_adam_step_5e.py',
     '_base_robustscanner_resnet31.py',
 ]
 
 # dataset settings
-train_list = [_base_.train_list]
-test_list = [_base_.test_list]
+train_list = [_base_.toy_rec_train]
+test_list = [_base_.toy_rec_test]
 
 default_hooks = dict(logger=dict(type='LoggerHook', interval=100))
 

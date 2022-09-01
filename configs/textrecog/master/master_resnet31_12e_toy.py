@@ -1,8 +1,16 @@
 _base_ = [
     '_base_master_resnet31.py',
-    '../../_base_/recog_datasets/toy_data.py',
-    '../../_base_/textrec_default_runtime.py',
-    '../../_base_/schedules/schedule_adam_step_12e.py',
+    '../_base_/datasets/toy_data.py',
+    '../_base_/default_runtime.py',
+    '../_base_/schedules/schedule_adam_base.py',
+]
+
+optim_wrapper = dict(optimizer=dict(lr=4e-4))
+train_cfg = dict(max_epochs=12)
+# learning policy
+param_scheduler = [
+    dict(type='LinearLR', end=100, by_epoch=False),
+    dict(type='MultiStepLR', milestones=[11], end=12),
 ]
 
 # dataset settings

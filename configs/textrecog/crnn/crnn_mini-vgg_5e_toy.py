@@ -1,8 +1,8 @@
 # training schedule for 1x
 _base_ = [
-    '../../_base_/textrec_default_runtime.py',
-    '../../_base_/recog_datasets/toy_data.py',
-    '../../_base_/schedules/schedule_adadelta_5e.py',
+    '../_base_/default_runtime.py',
+    '../_base_/datasets/toy_data.py',
+    '../_base_/schedules/schedule_adadelta_5e.py',
     '_base_crnn_mini-vgg.py',
 ]
 

@@ -5,7 +5,7 @@ Collections:
     Training Techniques:
       - SGD with Momentum
       - Weight Decay
-    Training Resources: 1x Nvidia A100
+    Training Resources: 1x NVIDIA A100-SXM4-80GB
     Architecture:
       - ResNet
       - FPNC
@@ -24,5 +24,5 @@ Models:
       - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
-          hmean-iou: 0.860
-    Weights: https://download.openmmlab.com/mmocr/textdet/dbnet/dbnetpp_r50dcnv2_fpnc_1200e_icdar2015-20220502-d7a76fff.pth
+          hmean-iou: 0.8684
+    Weights: https://download.openmmlab.com/mmocr/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015_20220829_230108-f289bd20.pth

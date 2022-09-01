@@ -1,6 +1,6 @@
 _base_ = [
     'mask-rcnn_resnet50_fpn_160e_icdar2015.py',
-    '../../_base_/det_datasets/icdar2017.py',
+    '../_base_/datasets/icdar2017.py',
 ]
 
 ic17_det_train = _base_.ic17_det_train

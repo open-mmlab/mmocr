@@ -5,14 +5,14 @@ from typing import Dict, Sequence, Union
 import torch
 import torch.nn as nn
 
-from mmocr.models.textrecog.dictionary.dictionary import Dictionary
+from mmocr.models.common.dictionary import Dictionary
 from mmocr.registry import MODELS
 from mmocr.structures import TextRecogDataSample
-from .base_recog_module_loss import BaseRecogModuleLoss
+from .base import BaseTextRecogModuleLoss
 
 
 @MODELS.register_module()
-class CTCModuleLoss(BaseRecogModuleLoss):
+class CTCModuleLoss(BaseTextRecogModuleLoss):
     """Implementation of loss module for CTC-loss based text recognition.
 
     Args:

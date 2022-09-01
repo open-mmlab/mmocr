@@ -46,6 +46,7 @@ train_pipeline = [
         op='ColorJitter',
         brightness=32.0 / 255,
         saturation=0.5),
+    dict(type='FixInvalidPolygon'),
     dict(type='ShortScaleAspectJitter', short_size=736, scale_divisor=32),
     dict(type='RandomFlip', prob=0.5, direction='horizontal'),
     dict(type='RandomRotate', max_angle=10),
