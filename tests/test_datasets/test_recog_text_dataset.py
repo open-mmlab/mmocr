@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import os.path as osp
 from unittest import TestCase
 
 from mmocr.datasets import RecogTextDataset
@@ -24,7 +23,8 @@ class TestRecogTextDataset(TestCase):
 
         # test load_data_list
         anno = dataset.load_data_list()
-        self.assertTrue(osp.samefile(anno[0]['img_path'], 'imgs/1223731.jpg'))
+        self.assertIn(anno[0]['img_path'],
+                      ['imgs/1223731.jpg', 'imgs\\1223731.jpg'])
         self.assertEqual(anno[0]['instances'][0]['text'], 'GRAND')
         self.assertEqual(anno[1]['img_path'], 'imgs/1223733.jpg')
         self.assertEqual(anno[1]['instances'][0]['text'], 'HOTEL')

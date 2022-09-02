@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os
-import os.path as osp
 import tempfile
 from unittest import TestCase
 
@@ -38,7 +37,8 @@ class TestRecogLMDBDataset(TestCase):
 
         # test load_data_list
         anno = dataset.load_data_list()[0]
-        self.assertTrue(osp.samefile(anno['img_path'], 'imgs/1223731.jpg'))
+        self.assertIn(anno['img_path'],
+                      ['imgs/1223731.jpg', 'imgs\\1223731.jpg'])
         self.assertEqual(anno['instances'][0]['text'], 'GRAND')
 
     def test_label_and_image_dataset(self):
@@ -54,7 +54,8 @@ class TestRecogLMDBDataset(TestCase):
 
         # test load_data_list
         anno = dataset.load_data_list()[0]
-        self.assertTrue(osp.samefile(anno['img_path'], f'imgs/image-{1:09d}'))
+        self.assertIn(anno['img_path'],
+                      [f'imgs/image-{1:09d}', f'imgs\\image-{1:09d}'])
         self.assertEqual(anno['instances'][0]['text'], 'GRAND')
 
     def test_deprecated_format(self):
