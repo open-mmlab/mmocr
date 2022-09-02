@@ -81,7 +81,6 @@ jobs:
           apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
       - name: Install system dependencies
         run: |
-          python -V
           apt-get update
           apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libxrender-dev
       - name: Install mmocr dependencies
@@ -113,6 +112,8 @@ jobs:
         run: pip install pip --upgrade
       - name: Install lmdb
         run: pip install lmdb
+      - name: Install PyTorch
+        run: pip install torch==1.8.1+${{matrix.platform}} torchvision==0.9.1+${{matrix.platform}} -f https://download.pytorch.org/whl/lts/1.8/torch_lts.html
       - name: Install mmocr dependencies
         run: |
           pip install git+https://github.com/open-mmlab/mmengine.git@main
