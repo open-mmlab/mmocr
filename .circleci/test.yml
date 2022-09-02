@@ -59,10 +59,10 @@ jobs:
       - run:
           name: Install mmocr dependencies
           command: |
-            python -m pip install git+ssh://git@github.com/open-mmlab/mmengine.git@main
+            python -m pip install git+https://github.com/open-mmlab/mmengine.git@main
             python -m pip install -U openmim
-            mim install 'mmcv >= 2.0.0rc1'
-            python -m pip install git+ssh://git@github.com/open-mmlab/mmdetection.git@dev-3.x
+            python -m mim install 'mmcv >= 2.0.0rc1'
+            python -m pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
             python -m pip install -r requirements.txt
       - run:
           name: Build and install
@@ -94,8 +94,8 @@ jobs:
           # Cloning repos in VM since Docker doesn't have access to the private key
           name: Clone Repos
           command: |
-            git clone -b main --depth 1 ssh://git@github.com/open-mmlab/mmengine.git /home/circleci/mmengine
-            git clone -b dev-3.x --depth 1 ssh://git@github.com/open-mmlab/mmdetection.git /home/circleci/mmdetection
+            git clone -b main --depth 1 https://github.com/open-mmlab/mmengine.git /home/circleci/mmengine
+            git clone -b dev-3.x --depth 1 https://github.com/open-mmlab/mmdetection.git /home/circleci/mmdetection
       - run:
           name: Build Docker image
           command: |
