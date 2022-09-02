@@ -49,31 +49,31 @@ jobs:
       - run:
           name: Configure Python & pip
           command: |
-            python -m pip install --upgrade pip
-            python -m pip install wheel
+            pip install --upgrade pip
+            pip install wheel
       - run:
           name: Install PyTorch
           command: |
             python -V
-            python -m pip install torch==<< parameters.torch >>+cpu torchvision==<< parameters.torchvision >>+cpu -f https://download.pytorch.org/whl/torch_stable.html
+            pip install torch==<< parameters.torch >>+cpu torchvision==<< parameters.torchvision >>+cpu -f https://download.pytorch.org/whl/torch_stable.html
       - run:
           name: Install mmocr dependencies
           command: |
-            python -m pip install git+https://github.com/open-mmlab/mmengine.git@main
-            python -m pip install -U openmim
-            python -m mim install 'mmcv >= 2.0.0rc1'
-            python -m pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
-            python -m pip install -r requirements.txt
+            pip install git+https://github.com/open-mmlab/mmengine.git@main
+            pip install -U openmim
+            mim install 'mmcv >= 2.0.0rc1'
+            pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
+            pip install -r requirements.txt
       - run:
           name: Build and install
           command: |
-            python -m pip install -e .
+            pip install -e .
       - run:
           name: Run unittests
           command: |
-            python -m coverage run --branch --source mmocr -m pytest tests/
-            python -m coverage xml
-            python -m coverage report -m
+            coverage run --branch --source mmocr -m pytest tests/
+            coverage xml
+            coverage report -m
   build_cuda:
     parameters:
       torch:
