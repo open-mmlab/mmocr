@@ -191,3 +191,9 @@ class RecogLMDBDataset(BaseDataset):
             readahead=False,
             meminit=False,
         )
+
+    def close(self):
+        """Close lmdb environment."""
+        if hasattr(self, 'env'):
+            self.env.close()
+            del self.env
