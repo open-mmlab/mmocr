@@ -1,22 +1,59 @@
+mmocr.datasets
+---------------------------------------------
+.. automodule:: mmocr.datasets
+    :members:
+
+Dataset Types
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: mmocr.datasets.ocr_dataset
+    :members:
+
+.. automodule:: mmocr.datasets.icdar_dataset
+    :members:
+
+.. automodule:: mmocr.datasets.recog_lmdb_dataset
+    :members:
+
+.. automodule:: mmocr.datasets.recog_text_dataset
+    :members:
+
+.. automodule:: mmocr.datasets.wildreceipt_dataset
+    :members:
+
+Transforms
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.datasets.transforms
+    :members:
+
+
 mmocr.engine
--------------
+---------------------------------------------
+Hooks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.engine.hooks
     :members:
 
 
 mmocr.evaluation
--------------
+---------------------------------------------
+Evaluator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.evaluation.evaluator
     :members:
 
+Functional
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.evaluation.functional
     :members:
 
-.. automodule:: mmocr.evaluation.metircs
+Metric
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.evaluation.metrics
     :members:
 
 mmocr.utils
--------------
+---------------------------------------------
 Point utils
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.utils.point_utils
@@ -66,8 +103,9 @@ Others
 .. automodule:: mmocr.utils.parsers
     :members:
 
+
 mmocr.models
----------------
+---------------------------------------------
 Common
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.common.backbones
@@ -105,7 +143,7 @@ Text Detection Module Losses
 .. automodule:: mmocr.models.textdet.module_losses
     :members:
 
-Text Detection Preprocessors
+Text Detection Data Preprocessors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textdet.data_preprocessors
     :members:
@@ -125,7 +163,7 @@ Text Recognition Backbones
 .. automodule:: mmocr.models.textrecog.backbones
     :members:
 
-Text Recognition Preprocessors
+Text Recognition Data Preprocessors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.textrecog.data_preprocessors
     :members:
@@ -156,80 +194,59 @@ Text Recognition Module Losses
     :members:
 
 KIE Extractors
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.kie.extractors
     :members:
 
 KIE Heads
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.kie.heads
     :members:
 
 KIE Module Losses
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.models.kie.module_losses
     :members:
 
-mmocr.datasets
------------------
-.. automodule:: mmocr.datasets
-    :members:
-
-Dataset Types
-^^^^^^^^^^^
-
-.. automodule:: mmocr.datasets.ocr_dataset
-    :members:
-
-.. automodule:: mmocr.datasets.icdar_dataset
-    :members:
-
-.. automodule:: mmocr.datasets.recog_lmdb_dataset
-    :members:
-
-.. automodule:: mmocr.datasets.recog_text_dataset
-    :members:
-
-.. automodule:: mmocr.datasets.wildreceipt_dataset
-    :members:
-
-Transforms
-^^^^^^^^^^^
-.. automodule:: mmocr.datasets.transforms
-    :members:
 
 mmocr.structures
------------------
+---------------------------------------------
 
 Text Detection Data Sample
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.structures.textdet_data_sample
     :members:
 
 Text Recognition Data Sample
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.structures.textrecog_data_sample
     :members:
 
 KIE Data Sample
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.structures.kie_data_sample
     :members:
 
-mmocr.visualization
------------------
 
-visualize
-^^^^^^^^^^^
-.. automodule:: mmocr.visualization.visualize
-    :members:
+mmocr.visualization
+---------------------------------------------
 
 Text Detection Visualizer
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.visualization.textdet_visualizer
     :members:
 
 Text Recognition Visualizer
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.visualization.textrecog_visualizer
+    :members:
+
+Text Spotting Visualizer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.visualization.textspotting_visualizer
+    :members:
+
+KIE Visualizer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: mmocr.visualization.kie_visualizer
     :members:

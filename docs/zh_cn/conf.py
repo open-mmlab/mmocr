@@ -39,8 +39,10 @@ release = __version__
 # ones.
 extensions = [
     'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode',
-    'sphinx_markdown_tables', 'sphinx_copybutton', 'myst_parser'
+    'sphinx_markdown_tables', 'sphinx_copybutton', 'myst_parser',
+    'sphinx.ext.intersphinx', 'sphinx.ext.autodoc.typehints'
 ]
+autodoc_typehints = 'description'
 
 autodoc_mock_imports = ['mmcv._ext']
 
@@ -130,7 +132,7 @@ intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable', None),
     'torch': ('https://pytorch.org/docs/stable/', None),
     'mmcv': ('https://mmcv.readthedocs.io/zh_CN/dev-2.x/', None),
-    'mmengine': ('https://mmengine.readthedocs.io/zh_CN/main/', None),
+    'mmengine': ('https://mmengine.readthedocs.io/zh_CN/latest/', None),
     'mmdetection': ('https://mmdetection.readthedocs.io/zh_CN/dev-3.x/', None),
 }
 

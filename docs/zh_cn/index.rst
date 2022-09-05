@@ -28,7 +28,7 @@
 
    basic_concepts/overview.md
    basic_concepts/data_flow.md
-   basic_concepts/dataset.md
+   basic_concepts/datasets.md
    basic_concepts/structures.md
    basic_concepts/models.md
    basic_concepts/transforms.md
