@@ -116,7 +116,7 @@ jobs:
       - run:
           name: Run unittests
           command: |
-            docker exec mmocr pytest tests/
+            docker exec mmocr python -m pytest tests/
 workflows:
   pr_stage_lint:
     when: << pipeline.parameters.lint_only >>
