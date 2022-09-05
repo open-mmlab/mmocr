@@ -231,11 +231,6 @@ KIE Data Sample
 mmocr.visualization
 ---------------------------------------------
 
-visualize
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. automodule:: mmocr.visualization.visualize
-    :members:
-
 Text Detection Visualizer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: mmocr.visualization.textdet_visualizer
