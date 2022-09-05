@@ -72,6 +72,8 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 
 ## 最新进展
 
+### 💎 稳定版本
+
 最新的月度版本 v0.6.1 在 2022.08.04 发布。
 
 1. 对文本检测和识别任务，新支持了 ArT 数据集。
@@ -79,6 +81,22 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 3. 使用 MIM 对安装步骤进行了简化，我们的[安装文档](https://mmocr.readthedocs.io/zh_CN/latest/install.html)亦有了同步更新。
 
 阅读[更新日志](https://mmocr.readthedocs.io/en/latest/changelog.html)以获取更多信息。
+
+### 🌟 1.x 预览版本
+
+全新的 **v1.0.0rc0** 版本已经在 2022.09.01 发布：
+
+1. 架构升级：MMOCR 1.x 是基于 [MMEngine](https://github.com/open-mmlab/mmengine)，提供了一个通用的、强大的执行器，允许更灵活的定制，提供了统一的训练和测试入口。
+
+2. 统一接口：MMOCR 1.x 统一了数据集、模型、评估和可视化的接口和内部逻辑。支持更强的扩展性。
+
+3. 跨项目调用：受益于统一的设计，你可以使用其他OpenMMLab项目中实现的模型，如MMDet。 我们提供了一个例子，说明如何通过 `MMDetWrapper` 使用 MMDetection 的 Mask R-CNN。查看我们的文档以了解更多细节。更多的包装器将在未来发布。
+
+4. 更强的可视化：我们提供了一系列可视化工具， 用户现在可以更方便可视化数据。
+
+5. 更多的文档和教程：我们增加了更多的教程，降低用户的学习门槛。详见[教程](https://mmocr.readthedocs.io/zh_CN/dev-1.x/)。
+
+可以在 [1.x 分支](https://github.com/open-mmlab/mmocr/tree/1.x) 获取更多新特性。欢迎试用并提出反馈。
 
 ## 安装
 

@@ -71,6 +71,8 @@ The main branch works with **PyTorch 1.6+**.
 
 ## What's New
 
+### 💎 Stable version
+
 v0.6.1 was released in 2022-08-04.
 
 1. ArT dataset is available for text detection and recognition!
@@ -78,6 +80,22 @@ v0.6.1 was released in 2022-08-04.
 3. Thanks to [MIM](https://github.com/open-mmlab/mim), our installation is much simpler now! The [docs](https://mmocr.readthedocs.io/en/latest/install.html) has been renewed as well.
 
 Read [Changelog](https://mmocr.readthedocs.io/en/latest/changelog.html) for more details!
+
+### 🌟 Preview of 1.x version
+
+A brand new version of **MMOCR v1.0.0rc0** was released in 2022-09-01:
+
+1. **New engines**. MMOCR 1.x is based on [MMEngine](https://github.com/open-mmlab/mmengine), which provides a general and powerful runner that allows more flexible customizations and significantly simplifies the entrypoints of high-level interfaces.
+
+2. **Unified interfaces**. As a part of the OpenMMLab 2.0 projects, MMOCR 1.x unifies and refactors the interfaces and internal logics of train, testing, datasets, models, evaluation, and visualization. All the OpenMMLab 2.0 projects share the same design in those interfaces and logics to allow the emergence of multi-task/modality algorithms.
+
+3. **Cross project calling**. Benefiting from the unified design, you can use the models implemented in other OpenMMLab projects, such as MMDet. We provide an example of how to use MMDetection's Mask R-CNN through `MMDetWrapper`. Check our documents for more details. More wrappers will be released in the future.
+
+4. **Stronger visualization**. We provide a series of useful tools which are mostly based on brand-new visualizers. As a result, it is more convenient for the users to explore the models and datasets now.
+
+5. **More documentation and tutorials**. We add a bunch of documentation and tutorials to help users get started more smoothly. Read it [here](https://mmocr.readthedocs.io/en/dev-1.x/).
+
+Find more new features in [1.x branch](https://github.com/open-mmlab/mmocr/tree/1.x). Issues and PRs are welcome!
 
 ## Installation
 
