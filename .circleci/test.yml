@@ -117,36 +117,6 @@ jobs:
           name: Run unittests
           command: |
             docker exec mmocr pytest tests/
-  build_windows_cuda:
-    machine:
-      image: windows-server-2019-nvidia:stable
-    resource_class: gpu.nvidia.small
-    steps:
-      - checkout
-      - run:
-          name: Configure Python & pip
-          command: |
-            pip install --upgrade pip
-      - run:
-          name: Install PyTorch
-          command: |
-            pip install torch==1.8.1+cu101 torchvision==0.9.1+cu101 -f https://download.pytorch.org/whl/lts/1.8/torch_lts.html
-      - run:
-          name: Install mmocr dependencies
-          command: |
-            pip install git+https://github.com/open-mmlab/mmengine.git@main
-            pip install -U openmim
-            mim install 'mmcv >= 2.0.0rc1'
-            pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
-            pip install -r requirements/tests.txt
-      - run:
-          name: Build and install
-          command: |
-            pip install -e .
-      - run:
-          name: Run unittests
-          command: |
-            pytest tests/
 
 workflows:
   pr_stage_lint:
@@ -197,8 +167,6 @@ workflows:
           cuda: "10.2"
           requires:
             - hold
-      - build_windows_cuda:
-          name: windows_gpu
   merge_stage_test:
     when:
       not:
