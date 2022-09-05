@@ -5,7 +5,7 @@ MMOCR 主要使用 Python 文件作为配置文件。其配置文件系统的设
 ## 常见用法
 
 ```{note}
-本小节建议结合 [配置(Config)](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/config.md) 中的初级用法共同阅读。
+本小节建议结合 {external+mmengine:doc}`配置(Config) <tutorials/config>` 中的初级用法共同阅读。
 ```
 
 MMOCR 最常用的操作为三种：配置文件的继承，对 `_base_` 变量的引用以及对 `_base_` 变量的修改。对于 `_base_` 的继承与修改, MMEngine.Config 提供了两种语法，一种是针对 Python，Json， Yaml 均可使用的操作；另一种则仅适用于 Python 配置文件。在 MMOCR 中，我们**更推荐使用只针对Python的语法**，因此下文将以此为基础作进一步介绍。
@@ -144,7 +144,7 @@ train_dataloader = dict(
 python tools/train.py example.py --cfg-options optim_wrapper.optimizer.lr=1
 ```
 
-更多详细用法参考[命令行修改配置](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/config.md#%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE)
+更多详细用法参考 {external+mmengine:ref}`命令行修改配置 <命令行修改配置>`.
 
 ## 配置内容
 
@@ -167,11 +167,11 @@ random_cfg = dict(seed=None)
 
 主要包含三个部分：
 
-- 设置所有注册器的默认 `scope` 为 `mmocr`， 保证所有的模块首先从 `MMOCR` 代码库中进行搜索。若果该模块不存在，则继续从上游算法库 `MMEngine` 和 `MMCV` 中进行搜索（详见[注册器](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/registry.md)。
+- 设置所有注册器的默认 `scope` 为 `mmocr`， 保证所有的模块首先从 `MMOCR` 代码库中进行搜索。若果该模块不存在，则继续从上游算法库 `MMEngine` 和 `MMCV` 中进行搜索，详见 {external+mmengine:doc}`注册器 <tutorials/registry>`。
 
-- `env_cfg` 设置分布式环境配置， 更多配置可以详见 [MMEngine Runner](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/runner.md)
+- `env_cfg` 设置分布式环境配置， 更多配置可以详见 {external+mmengine:doc}`Runner <tutorials/runner>`。
 
-- `random_cfg` 设置 numpy， torch，cudnn 等随机种子，更多配置详见 [Runner](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/runner.md)
+- `random_cfg` 设置 numpy， torch，cudnn 等随机种子，更多配置详见 {external+mmengine:doc}`Runner <tutorials/runner>`。
 
 <div id="hook_config"></div>
 
@@ -203,9 +203,9 @@ default_hooks = dict(
 
 - `CheckpointHook`：用于配置模型断点保存相关的行为，如保存最优权重，保存最新权重等。同样可以修改 `interval` 控制保存 checkpoint 的间隔。更多设置可参考 [CheckpointHook API](mmengine.hooks.CheckpointHook)
 
-- `VisualizationHook`：用于配置可视化相关行为，例如在验证或测试时可视化预测结果，默认为关。同时该 Hook 依赖[可视化配置](#TODO)。想要了解详细功能可以参考 [Visualizer](visualization.md)。更多配置可以参考 [VisualizationHook API](mmocr.engine.hooks.VisualizationHook)。
+- `VisualizationHook`：用于配置可视化相关行为，例如在验证或测试时可视化预测结果，默认为关。同时该 Hook 依赖[可视化配置](#可视化配置)。想要了解详细功能可以参考 [Visualizer](visualization.md)。更多配置可以参考 [VisualizationHook API](mmocr.engine.hooks.VisualizationHook)。
 
-如果想进一步了解默认 hook 的配置以及功能，可以参考[钩子(Hook)](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/hook.md)。
+如果想进一步了解默认 hook 的配置以及功能，可以参考 {external+mmengine:doc}`钩子(Hook) <tutorials/hook>`。
 
 <div id="log_config"></div>
 
@@ -220,9 +220,9 @@ log_processor = dict(type='LogProcessor',
                         by_epoch=True)
 ```
 
-- 日志配置等级与 [logging](https://docs.python.org/3/library/logging.html) 的配置一致，
+- 日志配置等级与 {external+python:doc}`logging <library/logging>` 的配置一致，
 
-- 日志处理器主要用来控制输出的格式，详细功能可参考[记录日志](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/advanced_tutorials/logging.md)：
+- 日志处理器主要用来控制输出的格式，详细功能可参考 {external+mmengine:doc}`记录日志 <advanced_tutorials/logging>`：
 
   - `by_epoch=True` 表示按照epoch输出日志，日志格式需要和 `train_cfg` 中的 `type='EpochBasedTrainLoop'` 参数保持一致。例如想按迭代次数输出日志，就需要令  `log_processor` 中的 ` by_epoch=False` 的同时 `train_cfg` 中的 `type = 'IterBasedTrainLoop'`。
 
@@ -248,15 +248,15 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 ```
 
-- `optim_wrapper` : 主要包含两个部分，优化器封装 (OptimWrapper) 以及优化器 (Optimizer)。详情使用信息可见 [MMEngine 优化器封装](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/optim_wrapper.md)
+- `optim_wrapper` : 主要包含两个部分，优化器封装 (OptimWrapper) 以及优化器 (Optimizer)。详情使用信息可见 {external+mmengine:doc}`MMEngine 优化器封装 <tutorials/optim_wrapper>`
 
   - 优化器封装支持不同的训练策略，包括混合精度训练(AMP)、梯度累加和梯度截断。
 
-  - 优化器设置中支持了 PyTorch 所有的优化器，所有支持的优化器见 [PyTorch 优化器列表](torch.optim.algorithms)。
+  - 优化器设置中支持了 PyTorch 所有的优化器，所有支持的优化器见 {external+torch:ref}`PyTorch 优化器列表 <optim:algorithms>`。
 
-- `param_scheduler` : 学习率调整策略，支持大部分 PyTorch 中的学习率调度器，例如 `ExponentialLR`，`LinearLR`，`StepLR`，`MultiStepLR` 等，使用方式也基本一致，所有支持的调度器见[调度器接口文档](mmengine.optim.scheduler), 更多功能可以[参考优化器参数调整策略](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/param_scheduler.md)
+- `param_scheduler` : 学习率调整策略，支持大部分 PyTorch 中的学习率调度器，例如 `ExponentialLR`，`LinearLR`，`StepLR`，`MultiStepLR` 等，使用方式也基本一致，所有支持的调度器见[调度器接口文档](mmengine.optim.scheduler), 更多功能可以参考 {external+mmengine:doc}`优化器参数调整策略 <tutorials/param_scheduler>`。
 
-- `train/test/val_cfg` : 任务的执行流程，MMEngine 提供了四种流程：`EpochBasedTrainLoop`, `IterBasedTrainLoop`, `ValLoop`, `TestLoop` 更多可以参考[循环控制器](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/runner.md)。
+- `train/test/val_cfg` : 任务的执行流程，MMEngine 提供了四种流程：`EpochBasedTrainLoop`, `IterBasedTrainLoop`, `ValLoop`, `TestLoop` 更多可以参考 {external+mmengine:doc}`循环控制器 <advanced_tutorials/runner>`。
 
 ### 数据相关配置
 
@@ -367,7 +367,7 @@ test_pipeline = [
 
 #### Dataloader 配置
 
-主要为构造数据集加载器(dataloader)所需的配置信息，更多教程看参考[PyTorch 数据加载器](torch.data)。
+主要为构造数据集加载器(dataloader)所需的配置信息，更多教程看参考 {external+torch:doc}`PyTorch 数据加载器 <data>`。
 
 ```Python
 # Dataloader 部分
@@ -399,7 +399,7 @@ test_dataloader = val_dataloader
 
 #### 网络配置
 
-用于配置模型的网络结构，不同的算法任务有不同的网络结构，
+用于配置模型的网络结构，不同的算法任务有不同的网络结构。
 
 ##### 文本检测
 
@@ -493,13 +493,13 @@ load_from = None # 加载checkpoint的路径
 resume = False # 是否 resume
 ```
 
-更多可以参考[加载权重或恢复训练](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/runner.md)与[OCR进阶技巧-断点恢复训练](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/train_test.html#id11)。
+更多可以参考 {external+mmengine:ref}`加载权重或恢复训练 <加载权重或恢复训练>` 与 [OCR 进阶技巧-断点恢复训练](train_test.md#从断点恢复训练)。
 
 <div id="eval_config"></id>
 
 ### 评测配置
 
-在模型验证和模型测试中，通常需要对模型精度做定量评测。MMOCR 通过评测指标(Metric)和评测器(Evaluator)来完成这一功能。更多可以参考[评测指标（Metric）和评测器（Evaluator）](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/evaluation.md)
+在模型验证和模型测试中，通常需要对模型精度做定量评测。MMOCR 通过评测指标(Metric)和评测器(Evaluator)来完成这一功能。更多可以参考{external+mmengine:doc}`评测指标(Metric)和评测器(Evaluator) <tutorials/evaluation>`
 
 评测部分包含两个部分，评测器和评测指标。接下来我们分部分展开讲解。
 
@@ -551,13 +551,13 @@ val_evaluator = dict(
 
 #### 评测指标
 
-评测指标指不同度量精度的方法，同时可以多个评测指标共同使用，更多评测指标原理参考[评测指标](https://github.com/open-mmlab/mmengine/blob/main/docs/zh_cn/tutorials/evaluation.md)，在 MMOCR 中不同算法任务有不同的评测指标。
+评测指标指不同度量精度的方法，同时可以多个评测指标共同使用，更多评测指标原理参考 {external+mmengine:doc}`评测指标 <tutorials/evaluation>`，在 MMOCR 中不同算法任务有不同的评测指标。
 
-文字检测: `HmeanIOU`
+文字检测: [`HmeanIOUMetric`](mmocr.evaluation.metrics.HmeanIOUMetric)
 
-文字识别: `WordMetric`，`CharMetric`， `OneMinusNEDMetric`
+文字识别: [`WordMetric`](mmocr.evaluation.metrics.WordMetric)，[`CharMetric`](mmocr.evaluation.metrics.CharMetric)， [`OneMinusNEDMetric`](mmocr.evaluation.metrics.OneMinusNEDMetric)
 
-关键信息提取: `F1Metric`
+关键信息提取: [`F1Metric`](mmocr.evaluation.metrics.F1Metric)
 
 以文本检测为例说明，在单数据集评测情况下，使用单个 `Metric`：
 
