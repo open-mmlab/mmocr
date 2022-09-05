@@ -23,9 +23,12 @@ class TestRecogTextDataset(TestCase):
 
         # test load_data_list
         anno = dataset.load_data_list()
-        self.assertEqual(anno[0]['img_path'], 'imgs/1223731.jpg')
+        self.assertIn(anno[0]['img_path'],
+                      ['imgs/1223731.jpg', 'imgs\\1223731.jpg'])
         self.assertEqual(anno[0]['instances'][0]['text'], 'GRAND')
-        self.assertEqual(anno[1]['img_path'], 'imgs/1223733.jpg')
+        self.assertIn(anno[1]['img_path'],
+                      ['imgs/1223733.jpg', 'imgs\\1223733.jpg'])
+
         self.assertEqual(anno[1]['instances'][0]['text'], 'HOTEL')
 
     def test_jsonl_dataset(self):
@@ -40,7 +43,9 @@ class TestRecogTextDataset(TestCase):
 
         # test load_data_list
         anno = dataset.load_data_list()
-        self.assertEqual(anno[0]['img_path'], 'imgs/1223731.jpg')
+        self.assertIn(anno[0]['img_path'],
+                      ['imgs/1223731.jpg', 'imgs\\1223731.jpg'])
         self.assertEqual(anno[0]['instances'][0]['text'], 'GRAND')
-        self.assertEqual(anno[1]['img_path'], 'imgs/1223733.jpg')
+        self.assertIn(anno[1]['img_path'],
+                      ['imgs/1223733.jpg', 'imgs\\1223733.jpg'])
         self.assertEqual(anno[1]['instances'][0]['text'], 'HOTEL')
