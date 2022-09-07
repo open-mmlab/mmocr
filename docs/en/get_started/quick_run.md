@@ -146,7 +146,7 @@ And get the outputs:
 The model achieves an hmean of 0.6667 on this dataset.
 
 ```{tip}
-For advanced usage of testing, such as CPU testing, multi-GPU testing, and cluster testing, please refer to [Training and Testing] (../user_guides/train_test.md).
+For advanced usage of testing, such as CPU testing, multi-GPU testing, and cluster testing, please refer to [Training and Testing](../user_guides/train_test.md).
 ```
 
 ## Visualize the Outputs
