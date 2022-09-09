@@ -5,7 +5,7 @@ MMOCR mainly uses Python files as configuration files. The design of its configu
 ## Common Usage
 
 ```{note}
-This section is recommended to be read together with the primary usage in {external+mmengine:doc}`Config <tutorials/config>`.
+This section is recommended to be read together with the primary usage in {external+mmengine:doc}`MMEngine: Config <tutorials/config>`.
 ```
 
 There are three most common operations in MMOCR: inheritance of configuration files, reference to `_base_` variables, and modification of `_base_` variables. Config provides two syntaxes for inheriting and modifying `_base_`, one for Python, Json, and Yaml, and one for Python configuration files only. In MMOCR, we **prefer the Python-only syntax**, so this will be the basis for further description.
@@ -67,7 +67,7 @@ print(db_config)
 It can be found that the parsed configuration contains all the fields and information in the base configuration.
 
 ```{note}
-Please note: Variables with the same name cannot exist in each _base_ profile.
+Variables with the same name cannot exist in each `_base_` profile.
 ```
 
 ### `_base_` Variable References
@@ -84,13 +84,15 @@ train_dataloader = dict(
     dataset=ic15_det_train)
 ```
 
+<div id="base_variable_modification"></div>
+
 ### `_base_` Variable Modification
 
 In MMOCR, different algorithms usually have different pipelines in different datasets, so there are often scenarios to modify the `pipeline` in the dataset. There are also many scenarios where you need to modify variables in the `_base_` configuration, for example, modifying the training strategy of an algorithm, replacing some modules of an algorithm(backbone, etc.). Users can directly modify the referenced `_base_` variables using Python syntax. For dict, we also provide a method similar to class attribute modification to modify the contents of the dictionary directly.
 
 1. Dictionary
 
-   Here is an example of modifying a `pipeline` in a dataset.
+   Here is an example of modifying `pipeline` in a dataset.
 
    The dictionary can be modified using Python syntax:
 
@@ -101,7 +103,7 @@ In MMOCR, different algorithms usually have different pipelines in different dat
    ic15_det_train.update(pipeline=_base_.train_pipeline)
    ```
 
-   Changes can also be made using the methods of the class attribute.
+   It can also be modified in the same way as changing Python class attributes.
 
    ```Python
    # Get the dataset in _base_
@@ -138,17 +140,17 @@ In MMOCR, different algorithms usually have different pipelines in different dat
 
 Sometimes we only want to fix part of the configuration and do not want to modify the configuration file itself. For example, if you want to change the learning rate during an experiment but do not want to write a new configuration file, you can pass in parameters on the command line to override the relevant configuration.
 
-We can pass `--cfg-options` on the command line and modify the corresponding fields directly with the arguments after it. For example, if we want to modify the learning rate while running train, we just need to execute on the command line.
+We can pass `--cfg-options` on the command line and modify the corresponding fields directly with the arguments after it. For example, we can run the following command to modify the learning rate temporarily for this training session.
 
 ```Shell
 python tools/train.py example.py --cfg-options optim_wrapper.optimizer.lr=1
 ```
 
-For more detailed usage, refer to {external+mmengine:doc}`Command Line Modification <tutorials/config>`.
+For more detailed usage, refer to {external+mmengine:doc}`MMEngine: Command Line Modification <tutorials/config>`.
 
 ## Configuration Content
 
-Through the configuration file with the registrar, MMOCR can modify the training parameters as well as the model configuration without invading the code. Specifically, users can customize the following modules in the configuration file: environment configuration, Hook configuration, logging configuration, training strategy configuration, data-related configuration, model-related configuration, evaluation configuration, and visualization configuration.
+With config files and Registry, MMOCR can modify the training parameters as well as the model configuration without invading the code. Specifically, users can customize the following modules in the configuration file: environment configuration, hook configuration, log configuration, training strategy configuration, data-related configuration, model-related configuration, evaluation configuration, and visualization configuration.
 
 This document will take the text detection algorithm `DBNet` and the text recognition algorithm `CRNN` as examples to introduce the contents of Config in detail.
 
@@ -167,11 +169,11 @@ random_cfg = dict(seed=None)
 
 There are three main components:
 
-- Set the default `scope` of all registrars to `mmocr`, ensuring that all modules are searched first from the `MMOCR` codebase. If the module does not exist, the search will continue from the upstream algorithm libraries `MMEngine` and `MMCV`, see {external+mmengine:doc}`Registry <tutorials/registry>` for more details.
+- Set the default `scope` of all registries to `mmocr`, ensuring that all modules are searched first from the `MMOCR` codebase. If the module does not exist, the search will continue from the upstream algorithm libraries `MMEngine` and `MMCV`, see {external+mmengine:doc}`MMEngine: Registry <tutorials/registry>` for more details.
 
-- `env_cfg` sets the distributed environment configuration, see {external+mmengine:doc}`Runner <tutorials/runner>` for more details.
+- `env_cfg` configures the distributed environment, see {external+mmengine:doc}`MMEngine: Runner <tutorials/runner>` for more details.
 
-- `random_cfg` set random seeds for numpy, torch, cudnn, etc., see {external+mmengine:doc}`Runner <tutorials/runner>` for more details.
+- `env_cfg` configures the distributed environment, see {external+mmengine:doc}`MMEngine: Runner <tutorials/runner>` for more details.
 
 <div id="hook_config"></div>
 
@@ -181,13 +183,13 @@ Hooks are divided into two main parts, default hooks, which are required for all
 
 ```Python
 default_hooks = dict(
-    timer=dict(type='IterTimerHook'), # 时间记录，包括数据增强时间以及模型推理时间
-    logger=dict(type='LoggerHook', interval=1), # 日志打印间隔
-    param_scheduler=dict(type='ParamSchedulerHook'), # 与param_scheduler 更新学习率等超参
-    checkpoint=dict(type='CheckpointHook', interval=1),# 保存 checkpoint， interval控制保存间隔
-    sampler_seed=dict(type='DistSamplerSeedHook'), # 多机情况下设置种子
-    sync_buffer=dict(type='SyncBuffersHook'), # 同步多卡情况下，buffer
-    visualization=dict( # 用户可视化val 和 test 的结果
+    timer=dict(type='IterTimerHook'), # Time recording, including data enhancement time as well as model inference time
+    logger=dict(type='LoggerHook', interval=1), # Logging printing interval
+    param_scheduler=dict(type='ParamSchedulerHook'), # Update learning rates and other super-references
+    checkpoint=dict(type='CheckpointHook', interval=1),#  Save checkpoint. `interval` control save interval
+    sampler_seed=dict(type='DistSamplerSeedHook'), # Set random seeds in multi-machine situations
+    sync_buffer=dict(type='SyncBuffersHook'), # Synchronize buffer in case of multiple GPUS
+    visualization=dict( # Visualize the results of val and test
         type='VisualizationHook',
         interval=1,
         enable=False,
@@ -197,44 +199,44 @@ default_hooks = dict(
  custom_hooks = []
 ```
 
-Here is a brief description of a few hooks that may change frequently. For a general modification method, refer to [Modify configuration](#base-variable-modification).
+Here is a brief description of a few hooks whose parameters may be changed frequently. For a general modification method, refer to <a href="#base_variable_modification">Modify configuration</a>.
 
 - `LoggerHook`: Used to configure the behavior of the logger. For example, by modifying `interval` you can control the interval of log printing, so that the log is printed once per `interval` iteration, for more settings refer to [LoggerHook API](mmengine.hooks.LoggerHook).
 
-- `CheckpointHook`: Used to configure model breakpoint saving related behavior, such as saving optimal weights, saving latest weights, etc. You can also modify `interval` to control the checkpoint saving interval. More settings can be found in [CheckpointHook API](mmengine.hooks.CheckpointHook)
+- `CheckpointHook`: Used to configure checkpoint-related behavior, such as saving optimal and/or latest weights. You can also modify `interval` to control the checkpoint saving interval. More settings can be found in [CheckpointHook API](mmengine.hooks.CheckpointHook)
 
-- `VisualizationHook`: Used to configure visualization-related behavior, such as visualizing predicted results during validation or testing, default is off. This Hook also depends on [Visualizaiton Configuration](#visualizaiton-configuration). You can refer to [Visualizer](visualization.md) for more details. For more configuration, you can refer to [VisualizationHook API](mmocr.engine.hooks.VisualizationHook).
+- `VisualizationHook`: Used to configure visualization-related behavior, such as visualizing predicted results during validation or testing. **Default is off**. This Hook also depends on [Visualizaiton Configuration](#visualizaiton-configuration). You can refer to [Visualizer](visualization.md) for more details. For more configuration, you can refer to [VisualizationHook API](mmocr.engine.hooks.VisualizationHook).
 
-If you want to learn more about the configuration of the default hooks and their functions, you can refer to {external+mmengine:doc}`Hooks <tutorials/hook>`.
+If you want to learn more about the configuration of the default hooks and their functions, you can refer to {external+mmengine:doc}`MMEngine: Hooks <tutorials/hook>`.
 
 <div id="log_config"></div>
 
 ### Log Configuration
 
-This section is mainly used to configure the logging configuration level and the logging processor.
+This section is mainly used to configure the log level and the log processor.
 
 ```Python
-log_level = 'INFO' # 日志记录等级
+log_level = 'INFO' # Logging Level
 log_processor = dict(type='LogProcessor',
                         window_size=10,
                         by_epoch=True)
 ```
 
-- The configuration level of logging is the same as that of {external+python:doc}`logging <library/logging>`.
+- The logging severity level is the same as that of {external+python:doc}`Python: logging <library/logging>`
 
-- The log processor is mainly used to control the format of the output, detailed functions can be found in {external+mmengine:doc}`logging <advanced_tutorials/logging>`.
+- The log processor is mainly used to control the format of the output, detailed functions can be found in {external+mmengine:doc}`MMEngine: logging <advanced_tutorials/logging>`.
 
-  - `by_epoch=True` indicates that the logs are output according to epoch, and the log format needs to be consistent with the `type='EpochBasedTrainLoop'` parameter in `train_cfg`. For example, if you want to output logs by iteration number, you need to make ` by_epoch=False` in `log_processor` and `type='IterBasedTrainLoop'` in `train_cfg`.
+  - `by_epoch=True` indicates that the logs are output in accordance to "epoch", and the log format needs to be consistent with the `type='EpochBasedTrainLoop'` parameter in `train_cfg`. For example, if you want to output logs by iteration number, you need to set ` by_epoch=False` in `log_processor` and `type='IterBasedTrainLoop'` in `train_cfg`.
 
-  - `window_size` indicates the smoothing window of the loss, i.e. the average value of the various losses for the last `window_size` iterations. the final loss value printed in logger is the average value after the various losses.
+  - `window_size` indicates the smoothing window of the loss, i.e. the average value of the various losses for the last `window_size` iterations. the final loss value printed in logger is the average of all the losses.
 
   <div id="schedule_config"></div>
 
 ### Training Strategy Configuration
 
-This section mainly contains optimizer settings, learning rate strategy and `Loop` settings.
+This section mainly contains optimizer settings, learning rate schedules and `Loop` settings.
 
-For different algorithm tasks (text detection, text recognition, key information extraction), there are usually common tuning strategies for their own tasks. The corresponding configurations involved for `CRNN` in text recognition are listed here.
+Training strategies usually vary for different tasks (text detection, text recognition, key information extraction). Here we explain the example configuration in `CRNN`, which is a text recognition model.
 
 ```Python
 # optimizer
@@ -248,15 +250,15 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 ```
 
-- `optim_wrapper` : It contains two main parts, OptimWrapper and Optimizer. Detailed usage information can be found in {external+mmengine:doc}`MMEngine Optimizer Wrapper <tutorials/optim_wrapper>`.
+- `optim_wrapper` : It contains two main parts, OptimWrapper and Optimizer. Detailed usage information can be found in {external+mmengine:doc}`MMEngine: Optimizer Wrapper <tutorials/optim_wrapper>`.
 
   - The Optimizer wrapper supports different training strategies, including mixed-accuracy training (AMP), gradient accumulation, and gradient truncation.
 
   - All PyTorch optimizers are supported in the optimizer settings. All supported optimizers are available in {external+torch:ref}`PyTorch Optimizer List <optim:algorithms>`.
 
-- `param_scheduler` : learning rate tuning strategy, supports most of the learning rate schedulers in PyTorch, such as `ExponentialLR`, `LinearLR`, `StepLR`, `MultiStepLR`, etc., and is used in much the same way, see [scheduler interface](mmengine.optim.scheduler), and more features can be found in the {external+mmengine:doc}`Optimizer Parameter Tuning Strategy <tutorials/param_scheduler>`.
+- `param_scheduler` : learning rate tuning strategy, supports most of the learning rate schedulers in PyTorch, such as `ExponentialLR`, `LinearLR`, `StepLR`, `MultiStepLR`, etc., and is used in much the same way, see [scheduler interface](mmengine.optim.scheduler), and more features can be found in the {external+mmengine:doc}`MMEngine: Optimizer Parameter Tuning Strategy <tutorials/param_scheduler>`.
 
-- `train/test/val_cfg` : the execution flow of the task, MMEngine provides four kinds of flow: `EpochBasedTrainLoop`, `IterBasedTrainLoop`, `ValLoop`, `TestLoop` More can be found in {external+mmengine:doc}`loop controller <advanced_tutorials/runner>`.
+- `train/test/val_cfg` : the execution flow of the task, MMEngine provides four kinds of flow: `EpochBasedTrainLoop`, `IterBasedTrainLoop`, `ValLoop`, `TestLoop` More can be found in {external+mmengine:doc}`MMEngine: loop controller <design/runner>`.
 
 ### Data-related Configuration
 
@@ -264,9 +266,9 @@ test_cfg = dict(type='TestLoop')
 
 #### Dataset Configuration
 
-It is mainly used to configure two directions.
+It is mainly about two parts.
 
-- The image of the dataset and the location of the annotation file.
+- The location of the dataset(s), including images and annotation files.
 
 - Data augmentation related configurations. In the OCR domain, data augmentation is usually strongly associated with the model.
 
@@ -275,19 +277,19 @@ More parameter configurations can be found in [Data Base Class](#TODO).
 The naming convention for dataset fields in MMOCR is
 
 ```Python
-{dataset name abbreviation}_{algorithm task}_{training/testing} = dict(...)
+{dataset}_{task}_{train/val/test} = dict(...)
 ```
 
-- Dataset abbreviations: see [table corresponding to dataset names](#TODO)
+- dataset: See [dataset abbreviations](#TODO)
 
-- Algorithm tasks: text detection-det, text recognition-rec, key information extraction-kie
+- task: `det`(text detection), `rec`(text recognition), `kie`(key information extraction)
 
-- Training/testing: dataset for training or testing
+- train/val/test: Dataset split.
 
-For the recognition example, Syn90k is used as the training set and icdar2013 and icdar2015 as the test sets are configured as follows.
+For example, for text recognition tasks, Syn90k is used as the training set, while icdar2013 and icdar2015 serve as the test sets. These are configured as follows.
 
 ```Python
-# Recognition of dataset configuration
+# text recognition dataset configuration
 mj_rec_train = dict(
     type='OCRDataset',
     data_root='data/rec/Syn90k/',
@@ -317,15 +319,13 @@ ic15_rec_test = dict(
 
 #### Data Pipeline Configuration
 
-In MMOCR, dataset construction and data preparation are decoupled from each other. In other words, dataset construction classes such as `OCRDataset` are responsible for reading and parsing annotation files, while Data Transforms further implement data reading, data enhancement, data formatting and other related functions.
+In MMOCR, dataset construction and data preparation are decoupled from each other. In other words, dataset classes such as `OCRDataset` are responsible for reading and parsing annotation files, while Data Transforms further implement data loading, data augmentation, data formatting and other related functions.
 
-In general, there are different enhancement strategies for training and testing, so there are generally training_pipeline and testing_pipeline.
+In general, there are different augmentation strategies for training and testing, so there are usually `training_pipeline` and `testing_pipeline`. More information can be found in [Data Pipeline](../basic_concepts/transforms.md)
 
-The data enhancement process of the training pipeline is usually: data reading (LoadImageFromFile) -> annotation information reading (LoadXXXAnntation) -> data enhancement -> data formatting (PackXXXInputs).
+- The data augmentation process of the training pipeline is usually: data loading (LoadImageFromFile) -> annotation information loading (LoadXXXAnntation) -> data augmentation -> data formatting (PackXXXInputs).
 
-The data enhancement flow of the test pipeline is usually: Data Read (LoadImageFromFile) -> Data Enhancement -> Annotation Read (LoadXXXAnntation) -> Data Formatting (PackXXXInputs).
-
-More information can be found in [Data Pipeline](../basic_concepts/transforms.md)
+- The data augmentation flow of the test pipeline is usually: Data Loading (LoadImageFromFile) -> Data Augmentation -> Annotation Loading (LoadXXXAnntation) -> Data Formatting (PackXXXInputs).
 
 Due to the specificity of the OCR task, in general different models have different ways of data augmentation, and the same model will generally have different ways of data augmentation in different datasets. Take `CRNN` as an example.
 
@@ -397,7 +397,7 @@ test_dataloader = val_dataloader
 
 #### Network Configuration
 
-The network structure used to configure the model. Different network structures for different algorithmic tasks.
+This section configures the network architecture. Different algorithmic tasks use different network architectures.
 
 ##### Text Detection
 
@@ -491,17 +491,17 @@ load_from = None # Path to load checkpoint
 resume = False # whether resume
 ```
 
-More can be found in {external+mmengine:doc}`Load Weights or Recover Training <tutorials/runner>` and [OCR Advanced Tips - Breakpoint Recovery Training](train_test.md#resume-training-from-a-checkpoint).
+More can be found in {external+mmengine:doc}`MMEngine: Load Weights or Recover Training <tutorials/runner>` and [OCR Advanced Tips - Resume Training from Checkpoints](train_test.md#resume-training-from-a-checkpoint).
 
 <div id="eval_config"></id>
 
 ### Evaluation Configuration
 
-In model validation and model testing, quantitative measurement of model accuracy is often required. MMOCR performs this function by means of `Metric` and `Evaluator`. For more information, please refer to {external+mmengine:doc}`Metric and Evaluator <tutorials/evaluation>`.
+In model validation and model testing, quantitative measurement of model accuracy is often required. MMOCR performs this function by means of `Metric` and `Evaluator`. For more information, please refer to {external+mmengine:doc}`MMEngine: Metric and Evaluator <tutorials/evaluation>`.
 
 #### Evaluator
 
-Raters are mainly used to manage multiple datasets and multiple `Metric`s. For single and multiple dataset cases, there are single and multiple dataset reviewers, both of which can manage multiple `Metric`.
+Raters are mainly used to manage multiple datasets and multiple `Metric`s. For single and multiple dataset cases, there are single and multiple dataset evaluators, both of which can manage multiple `Metric`.
 
 The single-dataset evaluator is configured as follows.
 
@@ -519,7 +519,7 @@ val_evaluator = dict(
 
 `MultiDatasetsEvaluator` differs from single-dataset evaluation in two positions: rater category and prefix. The evaluator category must be `MultiDatasetsEvaluator` and cannot be omitted. The prefix is mainly used to distinguish the results of different datasets with the same evaluation metrics, see [MultiDatasetsEvaluation](../basic_concepts/evaluation.md).
 
-Assuming that we need to test accuracy in the IC13 and IC15 cases, the configuration is as follows.
+Assuming that we need to test accuracy on IC13 and IC15 datasets, the configuration is as follows.
 
 ```Python
 #  Multiple datasets, single Metric
@@ -537,7 +537,7 @@ val_evaluator = dict(
 
 #### Metric
 
-Metrics refer to different measures of accuracy, while multiple metrics can be used together, for more metrics principles refer to {external+mmengine:doc}`Metric <tutorials/evaluation>`, there are different metrics for different algorithmic tasks in MMOCR.
+Metrics refer to different measures of accuracy, while multiple metrics can be used together, for more metrics principles refer to {external+mmengine:doc}`MMEngine: Metric <tutorials/evaluation>`, there are different metrics for different algorithmic tasks in MMOCR. More OCR-related  metrics can be found in [Evaluation](../basic_concepts/evaluation.md).
 
 Text detection: [`HmeanIOUMetric`](mmocr.evaluation.metrics.HmeanIOUMetric)
 
@@ -584,7 +584,7 @@ visualizer = dict(
 
 ## Directory Structure
 
-All configuration files of `MMOCR` are placed under the `configs` folder. To avoid long configuration files and to improve the reusability and clarity of configuration files, MMOCR takes advantage of the inheritance property of Config files to split the eight sections of configuration content. Since each section is related to an algorithm task, MMOCR provides a task folder for each task in Config, namely `textdet` (text detection task), `textrec` (text recognition task), and `kie` (key information extraction). Also the individual task algorithm configuration folder is further divided into two parts: `_base_` folder and many algorithm folders.
+All configuration files of `MMOCR` are placed under the `configs` folder. To avoid long configuration files and to improve the reusability and clarity of configuration files, MMOCR takes advantage of the inheritance property of Config files to split the eight sections of configuration content. Since each section is related to an algorithm task, MMOCR provides a task folder for each task in Config, namely `textdet` (text detection task), `textrecog` (text recognition task), and `kie` (key information extraction). Also the individual task algorithm configuration folder is further divided into two parts: `_base_` folder and many algorithm folders.
 
 1. the `_base_` folder mainly stores some general configuration files unrelated to specific algorithms, and each section is divided into common datasets, common training strategies and common running configurations by directory.
 
@@ -617,12 +617,12 @@ The final configuration content of each module is distributed in different confi
     <td class="tg-0pky"><a href="#dataset_config">Dataset configuration</a></td>
   </tr>
   <tr>
-    <td class="tg-9wq8">schedulers</td>
+    <td class="tg-9wq8">schedules</td>
     <td class="tg-0pky">schedule_adam_600e.py<br>...</td>
     <td class="tg-0pky"><a href="#schedule_config">Training Strategy Configuration</a></td>
   </tr>
   <tr>
-    <td class="tg-9wq8">defaults_runtime.py<br></td>
+    <td class="tg-9wq8">default_runtime.py<br></td>
     <td class="tg-0pky">-</td>
     <td class="tg-0pky"><a href="#env_config">Environment Configuration</a><br><a href="#hook_config">Hook Configuration</a><br><a href="#log_config">Log Configuration</a> <br><a href="#weight_config">Weight Loading Configuration</a> <br><a href="#eval_config">Evaluation Configuration</a> <br><a href="#vis_config">Visualizaiton Configuration</a></td>
   </tr>
@@ -702,7 +702,7 @@ MMOCR follows the following style for profile naming, and contributors to the co
     {{algorithm info}}_{{backbone}}_{{encoder}}_{{decoder}}_{{training info}}_{{data info}}.py
     ```
 
-    In general the encode and decoder positions are generally exclusive to the algorithm, so they are generally omitted.
+    In general the encoder and decoder positions are generally exclusive to the algorithm, so they are generally omitted.
 
 - training info: some settings of the training strategy, including batch size, schedule, etc.
 
