@@ -82,7 +82,6 @@ class MultiDatasetsEvaluator(Evaluator):
                         for k, v in metric_results.items()
                     }
 
-                    metric.results.clear()
                     # Check metric name conflicts
                     for name in metric_results.keys():
                         if name in metrics_results:
@@ -91,6 +90,7 @@ class MultiDatasetsEvaluator(Evaluator):
                                 f'the same metric name {name}. Please make '
                                 'sure all metrics have different prefixes.')
                     metrics_results.update(metric_results)
+            metric.results.clear()
         if is_main_process():
             metrics_results = [metrics_results]
         else:
