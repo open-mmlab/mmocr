@@ -107,10 +107,10 @@ jobs:
         platform: [cpu, cu111]
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python }}
       - name: Upgrade pip
         run: pip install pip --upgrade
       - name: Install lmdb
