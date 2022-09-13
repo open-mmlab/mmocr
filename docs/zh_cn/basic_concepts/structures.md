@@ -105,7 +105,7 @@ MMOCR 中对 `LabelData` 字段的约定如下表所示：
 
 通过定义统一的数据结构，我们可以方便地将标注数据和预测结果进行统一封装，使代码库不同模块间的数据传递更加便捷。在 MMOCR 中，我们基于现在支持的三个任务及其所需要的数据分别封装了三种数据抽象，包括文本检测任务数据抽象 [`TextDetDataSample`](mmocr.structures.TextDetDataSample)，文本识别任务数据抽象 [`TextRecogDataSample`](mmocr.structures.TextRecogDataSample)，以及关键信息抽取任务数据抽象 [`KIEDataSample`](mmocr.structures.KIEDataSample)。这些数据抽象均继承自 {external+mmengine:doc}`MMEngine: 数据基类 <advanced_tutorials/data_element.md>` `BaseDataElement`，用于保存单个任务的训练或测试样本的所有标注及预测信息。
 
-### **文本检测任务数据抽象 TextDetDataSample**
+### 文本检测任务数据抽象 TextDetDataSample
 
 [TextDetDataSample](mmocr.structures.TextDetDataSample) 用于封装文字检测任务所需的数据，其主要包含了两个字段 `gt_instances` 与 `pred_instances`，分别用于存放预测结果与标注信息。
 
@@ -169,7 +169,7 @@ def get_text_instances(self, pred_results: Tuple[Tensor, Tensor, Tensor],
 
 从以上示例中可以看到，[`TextDetDataSample`](mmocr.structures.TextRecogDataSample) 贯穿了整个检测模型的训练和测试过程，其封装了文本检测任务全流程所需的数据。
 
-### **文本识别任务数据抽象 TextRecogDataSample**
+### 文本识别任务数据抽象 TextRecogDataSample
 
 [`TextRecogDataSample`](mmocr.structures.TextRecogDataSample) 用于封装文字识别任务的数据。它有两个属性，`gt_text` 和 `pred_text` , 分别用于存放预测结果和标注信息。
 
