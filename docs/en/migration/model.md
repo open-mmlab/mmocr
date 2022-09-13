@@ -1,4 +1,4 @@
-# Pretrained Models Migration
+# Pretrained Model Migration
 
 Due to the extensive refactoring and fixing of the model structure in the new version, MMOCR 1.x does not support load weights trained by the old version. We have updated the pre-training weights and logs of all models on our website.
 
