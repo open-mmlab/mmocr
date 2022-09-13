@@ -2,9 +2,15 @@
 
 ## 推理
 
+如果想快速运行一个推理，请直接阅读安装文档的[检验](install.md#检验)。对 MMOCR 中推理接口更为详细说明，可以在[这里](../user_guides/inference.md)找到。
+
+```{note}
+
 除了使用我们提供好的预训练模型，用户也可以在自己的数据集上训练流行模型。接下来我们以在迷你的 [ICDAR 2015](https://rrc.cvc.uab.es/?ch=4&com=downloads) 数据集上训练 DBNet 为例，带大家熟悉 MMOCR 的基本功能。
 
 接下来的部分都假设你使用的是[编辑方式安装 MMOCR 代码库](install.md)。
+
+```
 
 ## 准备数据集
 
@@ -65,7 +71,9 @@ python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet
     <img src="https://user-images.githubusercontent.com/24622904/187611542-01e9aa94-fc12-4756-964b-a0e472522a3a.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611555-3f5ea616-863d-4538-884f-bccbebc2f7e7.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611581-88be3970-fbfe-4f62-8cdf-7a8a7786af29.jpg" width="250"/>
 </center>
 
+```{note}
 有关该脚本更详细的指南，请参考[此处](../user_guides/useful_tools.md).
+```
 
 ```{tip}
 除了满足好奇心之外，可视化还可以帮助我们在训练前检查可能影响到模型表现的部分，如配置文件、数据集及数据变换中的问题。
