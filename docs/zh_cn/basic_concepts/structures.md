@@ -5,28 +5,28 @@
 ```python
 # 文本检测任务
 for img, img_metas, gt_bboxes in dataloader:
-    loss = detector(img, img_metas, gt_bboxes)
+  loss = detector(img, img_metas, gt_bboxes)
 
 # 文本识别任务
 for img, img_metas, gt_texts in dataloader:
-    loss = recognizer(img, img_metas, gt_labels)
+  loss = recognizer(img, img_metas, gt_labels)
 
 # 关键信息抽取任务
 for img, img_metas, gt_bboxes, gt_texts, gt_labels, gt_relations in dataloader:
-    loss = kie(img, img_metas, gt_bboxes, gt_texts, gt_labels, gt_relations)
+  loss = kie(img, img_metas, gt_bboxes, gt_texts, gt_labels, gt_relations)
 ```
 
-从以上代码示例我们可以发现，在不进行封装的情况下，不同任务和算法所需的不同数据导致了其模块之间的接口不一致的情况，严重影响了算法库的拓展性及复用性。因此，为了解决上述问题，我们基于 {external+mmengine:doc}`MMEngine: 抽象数据接口 <advanced_tutorials/data_element.md>` 将各任务所需的数据统一封装入 `data_sample` 中。MMEngine 的抽象数据接口实现了基础的增/删/改/查功能，且支持不同设备间的数据迁移，也支持了类字典和张量的操作，充分满足了数据的日常使用需求，这也使得不同算法的接口可以统一为以下形式：
+从以上代码示例我们可以发现，在不进行封装的情况下，不同任务和算法所需的不同数据导致了其模块之间的接口不一致的情况，严重影响了算法库的拓展性及复用性。因此，为了解决上述问题，我们基于 {external+mmengine:doc}`MMEngine: 抽象数据接口 <advanced_tutorials/data_element>` 将各任务所需的数据统一封装入 `data_sample` 中。MMEngine 的抽象数据接口实现了基础的增/删/改/查功能，且支持不同设备间的数据迁移，也支持了类字典和张量的操作，充分满足了数据的日常使用需求，这也使得不同算法的接口可以统一为以下形式：
 
 ```python
 for img, data_sample in dataloader:
-    loss = model(img, data_sample)
+  loss = model(img, data_sample)
 ```
 
-得益于统一的数据封装，算法库内的 `visualizer`，`evaluator`，`dataset` 等各个模块间的数据流通都得到了极大的简化。在 MMOCR 中，我们对数据接口类型作出以下约定：
+得益于统一的数据封装，算法库内的 [`visualizer`](./visualizers.md)，[`evaluator`](./evaluation.md)，[`dataset`](./datasets.md) 等各个模块间的数据流通都得到了极大的简化。在 MMOCR 中，我们对数据接口类型作出以下约定：
 
-- **xxxData**: 单一粒度的数据标注或模型输出。目前 MMEngine 内置了三种粒度的[数据元素](<>)，包括实例级数据（`InstanceData`），像素级数据（`PixelData`）以及图像级的标签数据（`LabelData`）。在 MMOCR 目前支持的任务中，文本检测任务使用 `InstanceData` 来封装文本实例的检测框及对应标签，而文本识别任务则使用了 `LabelData` 来封装文本内容。
-- **xxxDataSample**: 继承自 {external+mmengine:doc}`MMEngine: 数据基类 <advanced_tutorials/data_element.md>` `BaseDataElement`，用于保存单个任务的训练或测试样本的所有标注及预测信息。如文本检测任务的数据样本类 [`TextDetDataSample`](mmocr.structures.TextDetDataSample)，文本识别任务的数据样本类 [`TextRecogDataSample`](mmocr.structures.TextRecogDataSample)，以及关键信息抽任务的数据样本类 [`KIEDataSample`](mmocr.structures.KIEDataSample)。
+- **xxxData**: 单一粒度的数据标注或模型输出。目前 MMEngine 内置了三种粒度的{external+mmengine:doc}`MMEngine: 数据元素 <advanced_tutorials/data_element#xxxdata>`，包括实例级数据（`InstanceData`），像素级数据（`PixelData`）以及图像级的标签数据（`LabelData`）。在 MMOCR 目前支持的任务中，文本检测任务使用 `InstanceData` 来封装文本实例的检测框及对应标签，而文本识别任务则使用了 `LabelData` 来封装文本内容。
+- **xxxDataSample**: 继承自 {external+mmengine:doc}`MMEngine: 数据基类 <advanced_tutorials/data_element>` `BaseDataElement`，用于保存单个任务的训练或测试样本的所有标注及预测信息。如文本检测任务的数据样本类 [`TextDetDataSample`](mmocr.structures.TextDetDataSample)，文本识别任务的数据样本类 [`TextRecogDataSample`](mmocr.structures.TextRecogDataSample)，以及关键信息抽任务的数据样本类 [`KIEDataSample`](mmocr.structures.KIEDataSample)。
 
 下面，我们将分别介绍数据元素 **xxxData** 与数据样本 **xxxDataSample** 在 MMOCR 中的实际应用。
 
@@ -62,7 +62,7 @@ MMOCR 中对 `InstanceData` 字段的约定如下表所示。值得注意的是�
 | ----------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | 字段        | 类型                               | 说明                                                                                                                                     |
 | bboxes      | `torch.Tensor(float32)`            | 文本边界框 `[x1, x2, y1, y2]`，形状为 `(N, 4)`。                                                                                         |
-| labels      | `torch.LongTensor(int64)`          | 实例的类别，长度为 `(N, )`。MMOCR 中默认使用 `0` 来表示正样本类，即 “text” 类。                                                          |
+| labels      | `torch.LongTensor`                 | 实例的类别，长度为 `(N, )`。MMOCR 中默认使用 `0` 来表示正样本类，即 “text” 类。                                                          |
 | polygons    | `list[np.array(dtype=np.float32)]` | 表示文本实例的多边形，列表长度为 `(N, )`。                                                                                               |
 | scores      | `torch.Tensor`                     | 文本实例检测框的置信度，长度为 `(N, )`。                                                                                                 |
 | ignored     | `torch.BoolTensor`                 | 是否在训练中忽略当前文本实例，长度为 `(N, )`。                                                                                           |
@@ -169,7 +169,7 @@ def get_text_instances(self, pred_results: Tuple[Tensor, Tensor, Tensor],
 
 从以上示例中可以看到，[`TextDetDataSample`](mmocr.structures.TextRecogDataSample) 贯穿了整个检测模型的训练和测试过程，其封装了文本检测任务全流程所需的数据。
 
-#### **文本识别任务数据抽象 TextRecogDataSample**
+### **文本识别任务数据抽象 TextRecogDataSample**
 
 [`TextRecogDataSample`](mmocr.structures.TextRecogDataSample) 用于封装文字识别任务的数据。它有两个属性，`gt_text` 和 `pred_text` , 分别用于存放预测结果和标注信息。
 
@@ -232,7 +232,7 @@ def get_single_prediction(
     ) -> Tuple[Sequence[int], Sequence[float]]:
 ```
 
-#### 关键信息抽取任务数据抽象 KIEDataSample
+### 关键信息抽取任务数据抽象 KIEDataSample
 
 [`KIEDataSample`](mmocr.structures.KIEDataSample) 用于封装 KIE 任务所需的数据，其同样约定了两个属性，即 `gt_instances` 与 `pred_instances`，分别用于存放标注信息与预测结果。
 
@@ -253,7 +253,7 @@ def get_single_prediction(
 | edge_labels | `torch.IntTensor`   | 节点之间的邻接矩阵，形状为 (N, N)。在 KIE 任务中，节点之间状态的可选值为 -1 （不关心，且不参与 loss 计算），0 （断开）和 1 （连接） |
 | edge_scores | `torch.FloatTensor` | 每条边的预测置信度，形状为 (N, N)                                                                                                   |
 
-由于 KIE 任务的模型实现尚未有统一标准，该设计目前仅考虑了 [SDMGR](<>) 模型的使用场景。因此，该设计有可能在我们支持更多 KIE 模型后产生变动。
+由于 KIE 任务的模型实现尚未有统一标准，该设计目前仅考虑了 [SDMGR](../../../configs/kie/sdmgr/README.md) 模型的使用场景。因此，该设计有可能在我们支持更多 KIE 模型后产生变动。
 
 以下示例代码展示了 [`KIEDataSample`](mmocr.structures.KIEDataSample) 的使用方法。
 
