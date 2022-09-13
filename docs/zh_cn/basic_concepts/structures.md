@@ -25,7 +25,7 @@ for img, data_sample in dataloader:
 
 得益于统一的数据封装，算法库内的 [`visualizer`](./visualizers.md)，[`evaluator`](./evaluation.md)，[`dataset`](./datasets.md) 等各个模块间的数据流通都得到了极大的简化。在 MMOCR 中，我们对数据接口类型作出以下约定：
 
-- **xxxData**: 单一粒度的数据标注或模型输出。目前 MMEngine 内置了三种粒度的{external+mmengine:doc}`MMEngine: 数据元素 <advanced_tutorials/data_element#xxxdata>`，包括实例级数据（`InstanceData`），像素级数据（`PixelData`）以及图像级的标签数据（`LabelData`）。在 MMOCR 目前支持的任务中，文本检测任务使用 `InstanceData` 来封装文本实例的检测框及对应标签，而文本识别任务则使用了 `LabelData` 来封装文本内容。
+- **xxxData**: 单一粒度的数据标注或模型输出。目前 MMEngine 内置了三种粒度的{external+mmengine:doc}`数据元素 <advanced_tutorials/data_element>`，包括实例级数据（`InstanceData`），像素级数据（`PixelData`）以及图像级的标签数据（`LabelData`）。在 MMOCR 目前支持的任务中，文本检测任务使用 `InstanceData` 来封装文本实例的检测框及对应标签，而文本识别任务则使用了 `LabelData` 来封装文本内容。
 - **xxxDataSample**: 继承自 {external+mmengine:doc}`MMEngine: 数据基类 <advanced_tutorials/data_element>` `BaseDataElement`，用于保存单个任务的训练或测试样本的所有标注及预测信息。如文本检测任务的数据样本类 [`TextDetDataSample`](mmocr.structures.TextDetDataSample)，文本识别任务的数据样本类 [`TextRecogDataSample`](mmocr.structures.TextRecogDataSample)，以及关键信息抽任务的数据样本类 [`KIEDataSample`](mmocr.structures.KIEDataSample)。
 
 下面，我们将分别介绍数据元素 **xxxData** 与数据样本 **xxxDataSample** 在 MMOCR 中的实际应用。
@@ -103,7 +103,7 @@ MMOCR 中对 `LabelData` 字段的约定如下表所示：
 
 ## 数据样本 xxxDataSample
 
-通过定义统一的数据结构，我们可以方便地将标注数据和预测结果进行统一封装，使代码库不同模块间的数据传递更加便捷。在 MMOCR 中，我们基于现在支持的三个任务及其所需要的数据分别封装了三种数据抽象，包括文本检测任务数据抽象 [`TextDetDataSample`](mmocr.structures.TextDetDataSample)，文本识别任务数据抽象 [`TextRecogDataSample`](mmocr.structures.TextRecogDataSample)，以及关键信息抽取任务数据抽象 [`KIEDataSample`](mmocr.structures.KIEDataSample)。这些数据抽象均继承自 {external+mmengine:doc}`MMEngine: 数据基类 <advanced_tutorials/data_element.md>` `BaseDataElement`，用于保存单个任务的训练或测试样本的所有标注及预测信息。
+通过定义统一的数据结构，我们可以方便地将标注数据和预测结果进行统一封装，使代码库不同模块间的数据传递更加便捷。在 MMOCR 中，我们基于现在支持的三个任务及其所需要的数据分别封装了三种数据抽象，包括文本检测任务数据抽象 [`TextDetDataSample`](mmocr.structures.TextDetDataSample)，文本识别任务数据抽象 [`TextRecogDataSample`](mmocr.structures.TextRecogDataSample)，以及关键信息抽取任务数据抽象 [`KIEDataSample`](mmocr.structures.KIEDataSample)。这些数据抽象均继承自 {external+mmengine:doc}`MMEngine: 数据基类 <advanced_tutorials/data_element>` `BaseDataElement`，用于保存单个任务的训练或测试样本的所有标注及预测信息。
 
 ### 文本检测任务数据抽象 TextDetDataSample
 
