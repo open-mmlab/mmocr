@@ -1,6 +1,6 @@
 # Data Structures and Elements
 
-During the training/testing process of a model, there is often a large amount of data to be passed between modules, and the data required by different tasks or algorithms is usually different. For example, in MMOCR, the text detection task needs to obtain the bounding box annotations of text instances during training, the recognition task needs text content annotations, while the key information extraction task needs text category labels and the relationship between items, etc. This makes the interfaces of different tasks or models may be inconsistent, for example:
+During the training/testing process of a model, there is often a large amount of data to be passed between modules, and the data required by different tasks or algorithms is usually different. For example, in MMOCR, the text detection task needs to obtain the bounding box annotations of text instances during training, the recognition task needs text annotations, while the key information extraction task needs text category labels and the relationship between items, etc. This makes the interfaces of different tasks or models may be inconsistent, for example:
 
 ```python
 # Text Detection
@@ -16,17 +16,17 @@ for img, img_metas, gt_bboxes, gt_texts, gt_labels, gt_relations in dataloader:
   loss = kie(img, img_metas, gt_bboxes, gt_texts, gt_labels, gt_relations)
 ```
 
-From the above code examples, we can see that without encapsulation, the different data required by different tasks and algorithms lead to inconsistent interfaces between their modules, which seriously affects the extensibility and reusability of the library. Therefore, in order to solve the above problem, we use {external+mmengine:doc}`MMEngine: Abstract Data Element <advanced_tutorials/data_element>` to encapsulate the data required for each task into `data_sample`. The base class has implemented basic add/delete/update/check functions and supports data migration between different devices, as well as dictionary-like and tensor-like operations, fully satisfying the daily use requirements of data, which also allows the interfaces of different algorithms to be unified in the following form.
+From the above code examples, we can see that without encapsulation, the different data required by different tasks and algorithms lead to inconsistent interfaces between their modules, which seriously affects the extensibility and reusability of the library. Therefore, in order to solve the above problem, we use {external+mmengine:doc}`MMEngine: Abstract Data Element <advanced_tutorials/data_element>` to encapsulate the data required for each task into `data_sample`. The base class has implemented basic add/delete/update/check functions and supports data migration between different devices, as well as dictionary-like and tensor-like operations, which also allows the interfaces of different algorithms to be unified in the following form.
 
 ```python
 for img, data_sample in dataloader:
   loss = model(img, data_sample)
 ```
 
-Thanks to the unified data structures, the data flow between each module in the algorithm libraries, such as [`visualizer`](./visualizers.md), [`evaluator`](./evaluation.md), [`dataset`](./datasets.md), is greatly simplified. In MMOCR, we make the following conventions for data interface types.
+Thanks to the unified data structures, the data flow between each module in the algorithm libraries, such as [`visualizer`](./visualizers.md), [`evaluator`](./evaluation.md), [`dataset`](./datasets.md), is greatly simplified. In MMOCR, we have the following conventions for different data types.
 
-- **xxxData**: Single granularity data annotation or model output. Currently MMEngine has three built-in granularities of {external+mmengine:doc}`data elements <advanced_tutorials/data_element>`, including instance-level data (`InstanceData`), pixel-level data (`PixelData`) and image-level label data (`LabelData`). Among the tasks currently supported by MMOCR, the text detection task uses `InstanceData` to encapsulate the bounding boxes and the corresponding box label, while the text recognition task uses `LabelData` to encapsulate the text content.
-- **xxxDataSample**: inherited from {external+mmengine:doc}`MMEngine: data base class <advanced_tutorials/data_element>` `BaseDataElement`, used to hold **all** annotation and prediction information that required by a single task. For example, [`TextDetDataSample`](mmocr.structures.TextDetDataSample) for the text detection, \[`TextRecogDataSample`\](mmocr.structures. TextRecogDataSample) for text recognition, and [`KIEDataSample`](mmocr.structures.KIEDataSample) for the key information extraction task.
+- **xxxData**: Single granularity data annotation or model output. Currently MMEngine has three built-in granularities of {external+mmengine:doc}`data elements <advanced_tutorials/data_element>`, including instance-level data (`InstanceData`), pixel-level data (`PixelData`) and image-level label data (`LabelData`). Among the tasks currently supported by MMOCR, text detection and key information extraction tasks use `InstanceData` to encapsulate the bounding boxes and the corresponding box label, while the text recognition task uses `LabelData` to encapsulate the text content.
+- **xxxDataSample**: inherited from {external+mmengine:doc}`MMEngine: data base class <advanced_tutorials/data_element>` `BaseDataElement`, used to hold **all** annotation and prediction information that required by a single task. For example, [`TextDetDataSample`](mmocr.structures.textdet_data_sample.TextDetDataSample) for the text detection, [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample) for text recognition, and [`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample) for the key information extraction task.
 
 In the following, we will introduce the practical application of data elements **xxxData** and data samples **xxxDataSample** in MMOCR, respectively.
 
@@ -36,7 +36,7 @@ In the following, we will introduce the practical application of data elements *
 
 ### Text Detection InstanceData
 
-In the text detection task, the detector concentrate on instance-level text samples, so we use `InstanceData` to encapsulate the data needed for this task. Typically, its required training annotation and prediction output contains rectangular or polygonal bounding boxes, as well as bounding box labels. Since the text detection task has only one positive sample class, "text", in MMOCR we use `0` to number this class by default. The following code example shows how to use the `InstanceData` data abstraction interface to encapsulate the data types used in the text detection task.
+In the text detection task, the detector concentrate on instance-level text samples, so we use `InstanceData` to encapsulate the data needed for this task. Typically, its required training annotation and prediction output contain rectangular or polygonal bounding boxes, as well as bounding box labels. Since the text detection task has only one positive sample class, "text", in MMOCR we use `0` to number this class by default. The following code example shows how to use the `InstanceData` to encapsulate the data used in the text detection task.
 
 ```python
 import torch
@@ -56,7 +56,7 @@ pred_instances.polygons = pred_polygons
 pred_instances.scores = scores
 ```
 
-The conventions for the `InstanceData` fields in MMOCR are shown in the table below. It is important to note that the length of each field in `InstanceData` must be equal to the number of instances in the sample `N`.
+The conventions for the fields in `InstanceData` in MMOCR are shown in the table below. It is important to note that the length of each field in `InstanceData` must be equal to the number of instances `N` in the sample.
 
 |             |                                    |                                                                                                                                                             |
 | ----------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -68,7 +68,7 @@ The conventions for the `InstanceData` fields in MMOCR are shown in the table be
 | ignored     | `torch.BoolTensor`                 | Whether to ignore the current sample with the shape `(N, )`.                                                                                                |
 | texts       | `list[str]`                        | The textual content of each instance with the shape `(N, )`，used for e2e text spotting or KIE task.                                                        |
 | text_scores | `torch.FloatTensor`                | Confidence score of the predictions of text contents with the shape `(N, )`，used for e2e text spotting task.                                               |
-| edge_labels | `torch.IntTensor`                  | The adjacency matrix between nodes with the shape `(N, N)`. In the KIE task, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
+| edge_labels | `torch.IntTensor`                  | The node adjacency matrix with the shape `(N, N)`. In KIE, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
 | edge_scores | `torch.FloatTensor`                | The prediction confidence of each edge in the KIE task, with the shape `(N, N)`.                                                                            |
 
 ### Text Recognition LabelData
