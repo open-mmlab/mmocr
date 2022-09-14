@@ -66,7 +66,7 @@ The conventions for the fields in `InstanceData` in MMOCR are shown in the table
 | polygons    | `list[np.array(dtype=np.float32)]` | Polygonal bounding boxes with the shape `(N, )`.                                                                                                            |
 | scores      | `torch.Tensor`                     | Confidence scores of the predictions of bounding boxes. `(N, )`.                                                                                            |
 | ignored     | `torch.BoolTensor`                 | Whether to ignore the current sample with the shape `(N, )`.                                                                                                |
-| texts       | `list[str]`                        | The textual content of each instance with the shape `(N, )`，used for e2e text spotting or KIE task.                                                        |
+| texts       | `list[str]`                        | The text content of each instance with the shape `(N, )`，used for e2e text spotting or KIE task.                                                           |
 | text_scores | `torch.FloatTensor`                | Confidence score of the predictions of text contents with the shape `(N, )`，used for e2e text spotting task.                                               |
 | edge_labels | `torch.IntTensor`                  | The node adjacency matrix with the shape `(N, N)`. In KIE, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
 | edge_scores | `torch.FloatTensor`                | The prediction confidence of each edge in the KIE task, with the shape `(N, N)`.                                                                            |
@@ -79,11 +79,11 @@ For **text recognition** tasks, both labeled content and predicted content are w
 import torch
 from mmengine.data import LabelData
 
-# defining gt_text for encapsulate the ground truth data
+# defining gt_text for encapsulating the ground truth data
 gt_text = LabelData()
 gt_text.item = 'MMOCR'
 
-# defining pred_text for encapsulate the prediction data
+# defining pred_text for encapsulating the prediction data
 pred_text = LabelData()
 index, score = model(input)
 text = dictionary.idx2str(index)
@@ -120,7 +120,7 @@ The fields of [`InstanceData`](#instancedata) that will be used are:
 |          |                                    |                                                                                                  |
 | -------- | ---------------------------------- | ------------------------------------------------------------------------------------------------ |
 | Field    | Type                               | Description                                                                                      |
-| bboxes   | `torch.Tensor(float32)`            | Bounding boxes `[x1, x2, y1, y2]` with the shape `(N, 4)`.                                       |
+| bboxes   | `torch.FloatTensor`                | Bounding boxes `[x1, x2, y1, y2]` with the shape `(N, 4)`.                                       |
 | labels   | `torch.LongTensor`                 | Instance label with the shape `(N, )`. By default, MMOCR uses `0` to represent the "text" class. |
 | polygons | `list[np.array(dtype=np.float32)]` | Polygonal bounding boxes with the shape `(N, )`.                                                 |
 | scores   | `torch.Tensor`                     | Confidence scores of the predictions of bounding boxes. `(N, )`.                                 |
@@ -153,11 +153,11 @@ data_sample.pred_instances = pred_instances
 
 [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample) is used to encapsulate the data for the text recognition task. It has two fields, `gt_text` and `pred_text` , which are used to store annotation information and prediction results, respectively.
 
-|           |                      |                     |
-| --------- | -------------------- | ------------------- |
-| Field     | Type                 | Description         |
-| gt_text   | [`LabelData`](#todo) | Label information.  |
-| pred_text | [`LabelData`](#todo) | Prediction results. |
+|           |                                            |                     |
+| --------- | ------------------------------------------ | ------------------- |
+| Field     | Type                                       | Description         |
+| gt_text   | [`LabelData`](#text-recognition-labeldata) | Label information.  |
+| pred_text | [`LabelData`](#text-recognition-labeldata) | Prediction results. |
 
 The following sample code demonstrates the use of [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample).
 
@@ -192,13 +192,13 @@ The fields of `LabelData` that will be used are:
 
 [`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample) is used to encapsulate the data needed for the KIE task. It also contains two fields, `gt_instances` and `pred_instances`, which are used to store annotation information and prediction results respectively.
 
-|                |                         |                         |
-| -------------- | ----------------------- | ----------------------- |
-| Field          | Type                    | Description             |
-| gt_instances   | [`InstanceData`](#todo) | Annotation information. |
-| pred_instances | [`InstanceData`](#todo) | Prediction results.     |
+|                |                                                |                         |
+| -------------- | ---------------------------------------------- | ----------------------- |
+| Field          | Type                                           | Description             |
+| gt_instances   | [`InstanceData`](#text-detection-instancedata) | Annotation information. |
+| pred_instances | [`InstanceData`](#text-detection-instancedata) | Prediction results.     |
 
-The [`InstanceData`](#todo) fields that will be used by this task are shown in the following table.
+The [`InstanceData`](#text-detection-instancedata) fields that will be used by this task are shown in the following table.
 
 |             |                         |                                                                                                                                                                        |
 | ----------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

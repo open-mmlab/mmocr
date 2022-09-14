@@ -109,18 +109,18 @@ MMOCR 中对 `LabelData` 字段的约定如下表所示：
 
 [TextDetDataSample](mmocr.structures.TextDetDataSample) 用于封装文字检测任务所需的数据，其主要包含了两个字段 `gt_instances` 与 `pred_instances`，分别用于存放标注信息与预测结果。
 
-|                |                         |            |
-| -------------- | ----------------------- | ---------- |
-| 字段           | 类型                    | 说明       |
-| gt_instances   | [`InstanceData`](#todo) | 标注信息。 |
-| pred_instances | [`InstanceData`](#todo) | 预测结果。 |
+|                |                                 |            |
+| -------------- | ------------------------------- | ---------- |
+| 字段           | 类型                            | 说明       |
+| gt_instances   | [`InstanceData`](#instancedata) | 标注信息。 |
+| pred_instances | [`InstanceData`](#instancedata) | 预测结果。 |
 
-其中会用到的 [`InstanceData`](#todo) 约定字段有：
+其中会用到的 [`InstanceData`](#instancedata) 约定字段有：
 
 |          |                                    |                                                                                  |
 | -------- | ---------------------------------- | -------------------------------------------------------------------------------- |
 | 字段     | 类型                               | 说明                                                                             |
-| bboxes   | `torch.Tensor`                     | 文本边界框 `[x1, x2, y1, y2]`，形状为 `(N, 4)`。                                 |
+| bboxes   | `torch.FloatTensor`                | 文本边界框 `[x1, x2, y1, y2]`，形状为 `(N, 4)`。                                 |
 | labels   | `torch.LongTensor`                 | 实例的类别，长度为 `(N, )`。在 MMOCR 中通常使用 `0` 来表示正样本类，即 “text” 类 |
 | polygons | `list[np.array(dtype=np.float32)]` | 表示文本实例的多边形，列表长度为 `(N, )`。                                       |
 | scores   | `torch.Tensor`                     | 文本实例任务预测的检测框的置信度，长度为 `(N, )`。                               |
@@ -153,11 +153,11 @@ data_sample.pred_instances = pred_instances
 
 [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample) 用于封装文字识别任务的数据。它有两个属性，`gt_text` 和 `pred_text` , 分别用于存放标注信息和预测结果。
 
-|           |                      |            |
-| --------- | -------------------- | ---------- |
-| 字段      | 类型                 | 说明       |
-| gt_text   | [`LabelData`](#todo) | 标注信息。 |
-| pred_text | [`LabelData`](#todo) | 预测结果。 |
+|           |                           |            |
+| --------- | ------------------------- | ---------- |
+| 字段      | 类型                      | 说明       |
+| gt_text   | [`LabelData`](#labeldata) | 标注信息。 |
+| pred_text | [`LabelData`](#labeldata) | 预测结果。 |
 
 以下示例代码展示了 [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample) 的使用方法：
 
