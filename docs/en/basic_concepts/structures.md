@@ -30,11 +30,11 @@ Thanks to the unified data structures, the data flow between each module in the 
 
 In the following, we will introduce the practical application of data elements **xxxData** and data samples **xxxDataSample** in MMOCR, respectively.
 
-## Data elements xxxData
+## Data Elements - xxxData
 
 `InstanceData` and `LabelData` are the base data elements defined in `MMEngine` to encapsulate different granularity of annotation data or model output. In MMOCR, we have used `InstanceData` and `LabelData` for encapsulating the data types actually used in OCR-related tasks.
 
-### Text Detection InstanceData
+### Text Detection - InstanceData
 
 In the text detection task, the detector concentrate on instance-level text samples, so we use `InstanceData` to encapsulate the data needed for this task. Typically, its required training annotation and prediction output contain rectangular or polygonal bounding boxes, as well as bounding box labels. Since the text detection task has only one positive sample class, "text", in MMOCR we use `0` to number this class by default. The following code example shows how to use the `InstanceData` to encapsulate the data used in the text detection task.
 
@@ -42,14 +42,14 @@ In the text detection task, the detector concentrate on instance-level text samp
 import torch
 from mmengine.data import InstanceData
 
-# defining gt_instance for encapsulate the ground truth data
+# defining gt_instance for encapsulating the ground truth data
 gt_instance = InstanceData()
 gt_instance.bbox = torch.Tensor([[0, 0, 10, 10], [10, 10, 20, 20]])
 gt_instance.polygons = torch.Tensor([[[0, 0], [10, 0], [10, 10], [0, 10]],
                                     [[10, 10], [20, 10], [20, 20], [10, 20]]])
 gt_instance.label = torch.Tensor([0, 0])
 
-# defining pred_instance for encapsulate the prediction data
+# defining pred_instance for encapsulating the prediction data
 pred_instances = InstanceData()
 pred_polygons, scores = model(input)
 pred_instances.polygons = pred_polygons
@@ -61,7 +61,7 @@ The conventions for the fields in `InstanceData` in MMOCR are shown in the table
 |             |                                    |                                                                                                                                                             |
 | ----------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Field       | Type                               | Description                                                                                                                                                 |
-| bboxes      | `torch.Tensor(float32)`            | Bounding boxes `[x1, x2, y1, y2]` with the shape `(N, 4)`.                                                                                                  |
+| bboxes      | `torch.FloatTensor`                | Bounding boxes `[x1, x2, y1, y2]` with the shape `(N, 4)`.                                                                                                  |
 | labels      | `torch.LongTensor`                 | Instance label with the shape `(N, )`. By default, MMOCR uses `0` to represent the "text" class.                                                            |
 | polygons    | `list[np.array(dtype=np.float32)]` | Polygonal bounding boxes with the shape `(N, )`.                                                                                                            |
 | scores      | `torch.Tensor`                     | Confidence scores of the predictions of bounding boxes. `(N, )`.                                                                                            |
@@ -71,7 +71,7 @@ The conventions for the fields in `InstanceData` in MMOCR are shown in the table
 | edge_labels | `torch.IntTensor`                  | The node adjacency matrix with the shape `(N, N)`. In KIE, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
 | edge_scores | `torch.FloatTensor`                | The prediction confidence of each edge in the KIE task, with the shape `(N, N)`.                                                                            |
 
-### Text Recognition LabelData
+### Text Recognition - LabelData
 
 For **text recognition** tasks, both labeled content and predicted content are wrapped using `LabelData`.
 
@@ -91,29 +91,29 @@ pred_text.score = score
 pred_text.item = text
 ```
 
-The conventions for the `LabelData` field in MMOCR are shown in the following table.
+The conventions for the `LabelData` fields in MMOCR are shown in the following table.
 
 |                |                    |                                                                                                                                                                          |
 | -------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Field          | Type               | Description                                                                                                                                                              |
 | item           | `str`              | Text content.                                                                                                                                                            |
 | score          | `list[float]`      | Confidence socre of the predicted text.                                                                                                                                  |
-| indexes        | `torch.LongTensor` | A sequence of text characters encoded by [dictionary](#TODO) and containing all special characters except `<UNK>`.                                                       |
+| indexes        | `torch.LongTensor` | A sequence of text characters encoded by [dictionary](../basic_concepts/models.md#dictionary) and containing all special characters except `<UNK>`.                      |
 | padded_indexes | `torch.LongTensor` | If the length of indexes is less than the maximum sequence length and `pad_idx` exists, this field holds the encoded text sequence padded to the maximum sequence length of `max_seq_len`. |
 
 ## DataSample xxxDataSample
 
-By defining a uniform data structure, we can easily encapsulate the annotation data and prediction results in a uniform way, making data transfer between different modules of the code base easier. In MMOCR, we have encapsulated three data abstractions based on the three tasks we now support and the data they need, including the text detection data abstraction [`TextDetDataSample`](mmocr.structures.TextDetDataSample), the text recognition data abstraction [`TextRecogDataSample`](mmocr.structures.TextRecogDataSample), and the key information extraction data abstraction [`KIEDataSample`](mmocr.structures.KIEDataSample). These data abstractions all inherit from {external+mmengine:doc}`MMEngine: data base class <advanced_tutorials/data_element>` `BaseDataElement`, which is used to hold all annotation and prediction information required by each task.
+By defining a uniform data structure, we can easily encapsulate the annotation data and prediction results in a unified way, making data transfer between different modules of the code base easier. In MMOCR, we have designed three data structures based on the data needed in three tasks: [`TextDetDataSample`](mmocr.structures.textdet_data_sample.TextDetDataSample), [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample), and [`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample). These data structures all inherit from {external+mmengine:doc}`MMEngine: data base class <advanced_tutorials/data_element>` `BaseDataElement`, which is used to hold all annotation and prediction information required by each task.
 
-### Text Detection Data Abstraction TextDetDataSample
+### Text Detection - TextDetDataSample
 
-[TextDetDataSample](mmocr.structures.TextDetDataSample) is used to encapsulate the data needed for the text detection task. It contains two main fields `gt_instances` and `pred_instances`, which are used to store the prediction results and annotation information respectively.
+[TextDetDataSample](mmocr.structures.textdet_data_sample.TextDetDataSample) is used to encapsulate the data needed for the text detection task. It contains two main fields `gt_instances` and `pred_instances`, which are used to store the annotation information and prediction results respectively.
 
 |                |                                 |                         |
 | -------------- | ------------------------------- | ----------------------- |
 | Field          | Type                            | Description             |
 | gt_instances   | [`InstanceData`](#instancedata) | Annotation information. |
-| pred_instances | [`InstanceData`](#instancedata) | The predicted result.   |
+| pred_instances | [`InstanceData`](#instancedata) | Prediction results.     |
 
 The fields of [`InstanceData`](#instancedata) that will be used are:
 
@@ -124,7 +124,7 @@ The fields of [`InstanceData`](#instancedata) that will be used are:
 | labels   | `torch.LongTensor`                 | Instance label with the shape `(N, )`. By default, MMOCR uses `0` to represent the "text" class. |
 | polygons | `list[np.array(dtype=np.float32)]` | Polygonal bounding boxes with the shape `(N, )`.                                                 |
 | scores   | `torch.Tensor`                     | Confidence scores of the predictions of bounding boxes. `(N, )`.                                 |
-| ignored  | `torch.BoolTensor`                 | Whether to ignore the current sample with the shape `(N, )`.                                     |
+| ignored  | `torch.BoolTensor`                 | Boolean flags with the shape `(N, )`, indicating whether to ignore the current sample.           |
 
 Since text detection models usually only output one of the bboxes/polygons, we only need to make sure that one of these two is assigned a value.
 
@@ -149,37 +149,17 @@ pred_instances.labels = torch.zeros((5,), dtype=torch.long)
 data_sample.pred_instances = pred_instances
 ```
 
-[`TextDetDataSample`](mmocr.structures.TextRecogDataSample) is the basic data structure used for model inference and training in text detection tasks. The following code shows the flow of [`TextDetDataSample`](mmocr.structures.TextRecogDataSample) between the modules of the model, using DBNet as an example.
+### Text Recognition - TextRecogDataSample
 
-```python
-# Step 1: DBHead, input the initial image img and data_samples from the data pipeline, and return the output of the network part of the model
-def forward(self, img: Tensor,
-        data_samples: Optional[List[TextDetDataSample]] = None
-    ) -> Tuple[Tensor, Tensor, Tensor]:
+[`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample) is used to encapsulate the data for the text recognition task. It has two fields, `gt_text` and `pred_text` , which are used to store annotation information and prediction results, respectively.
 
-# (Training) Step 2: DBModuleLoss, input the output of the DBNet network part and data_samples
-def forward(self, preds: Tuple[Tensor, Tensor, Tensor],
-                data_samples: Sequence[TextDetDataSample]) -> Dict:
+|           |                      |                     |
+| --------- | -------------------- | ------------------- |
+| Field     | Type                 | Description         |
+| gt_text   | [`LabelData`](#todo) | Label information.  |
+| pred_text | [`LabelData`](#todo) | Prediction results. |
 
-# (Test) Step 2: DBPostProcessor
-def get_text_instances(self, pred_results: Tuple[Tensor, Tensor, Tensor],
-                           data_sample: TextDetDataSample
-                           ) -> TextDetDataSample:
-```
-
-As you can see from the above example, [`TextDetDataSample`](mmocr.structures.TextRecogDataSample) is used throughout the training and testing process of the detection model, and it encapsulates the data needed for the whole process of the text detection task.
-
-### Text Recognition Task Data Abstraction TextRecogDataSample
-
-[`TextRecogDataSample`](mmocr.structures.TextRecogDataSample) is used to encapsulate the data for the text recognition task. It has two properties, `gt_text` and `pred_text` , which are used to store prediction results and annotation information respectively.
-
-|           |                           |                        |
-| --------- | ------------------------- | ---------------------- |
-| Field     | Type                      | Description            |
-| gt_text   | [`LabelData`](#labeldata) | Label information.     |
-| pred_text | [`LabelData`](#labeldata) | The prediction result. |
-
-The following sample code demonstrates the use of [`TextRecogDataSample`](mmocr.structures.TextRecogDataSample).
+The following sample code demonstrates the use of [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample).
 
 ```python
 import torch
@@ -198,64 +178,43 @@ pred_text.item = 'mmocr'
 data_sample.pred_text = pred_text
 ```
 
-The fields of `Labelata` that will be used are:
+The fields of `LabelData` that will be used are:
 
-|       |                     |                                                                                           |
-| ----- | ------------------- | ----------------------------------------------------------------------------------------- |
-| Field | Type                | Description                                                                               |
-| item  | `list[str]`         | The text corresponding to the instance, of length (N, ), for end-to-end OCR tasks and KIE |
-| score | `torch.FloatTensor` | Confidence of the text prediction, of length (N, ), for the end-to-end OCR task           |
+|                |                     |                                                                                                                                                                         |
+| -------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Field          | Type                | Description                                                                                                                                                             |
+| item           | `list[str]`         | The text corresponding to the instance, of length (N, ), for end-to-end OCR tasks and KIE                                                                               |
+| score          | `torch.FloatTensor` | Confidence of the text prediction, of length (N, ), for the end-to-end OCR task                                                                                         |
+| indexes        | `torch.LongTensor`  | A sequence of text characters encoded by [dictionary](../basic_concepts/models.md#dictionary) and containing all special characters except `<UNK>`.                     |
+| padded_indexes | `torch.LongTensor`  | If the length of indexes is less than the maximum sequence length and `pad_idx` exists, this field holds the encoded text sequence padded to the maximum sequence length of `max_seq_len`. |
 
-Similarly, [`TextRecogDataSample`](mmocr.structures.TextRecogDataSample) runs through the entire training and testing process of the recognition model, as follows.
+### Key Information Extraction - KIEDataSample
 
-```python
-# Encoder
-def forward(self, feature: torch.Tensor,
-                data_samples: List[TextRecogDataSample]) -> torch.Tensor:
+[`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample) is used to encapsulate the data needed for the KIE task. It also contains two fields, `gt_instances` and `pred_instances`, which are used to store annotation information and prediction results respectively.
 
-# Decoder
-def forward_train(self,
-                      feat: Optional[torch.Tensor] = None,
-                      out_enc: torch.Tensor = None,
-                      data_samples: Sequence[TextRecogDataSample] = None
-                      ) -> torch.Tensor:
+|                |                         |                         |
+| -------------- | ----------------------- | ----------------------- |
+| Field          | Type                    | Description             |
+| gt_instances   | [`InstanceData`](#todo) | Annotation information. |
+| pred_instances | [`InstanceData`](#todo) | Prediction results.     |
 
-# Module Loss
-def forward(self, outputs: torch.Tensor,
-                data_samples: Sequence[TextRecogDataSample]) -> Dict:
-
-# Post Processor
-def get_single_prediction(
-        self,
-        probs: torch.Tensor,
-        data_sample: Optional[TextRecogDataSample] = None,
-    ) -> Tuple[Sequence[int], Sequence[float]]:
-```
-
-### Key Information Extraction Task Data Abstraction KIEDataSample
-
-[`KIEDataSample`](mmocr.structures.KIEDataSample) is used to encapsulate the data needed for the KIE task. It also agrees on two properties, `gt_instances` and `pred_instances`, which are used to store annotation information and prediction results respectively.
-
-|                |                                 |             |
-| -------------- | ------------------------------- | ----------- |
-| Field          | Type                            | Description |
-| gt_instances   | [`InstanceData`](#instancedata) | Annotation  |
-| pred_instances | [`InstanceData`](#instancedata) | Prediction  |
-
-The [`InstanceData`](#instancedata) fields that will be used by this task are shown in the following table.
+The [`InstanceData`](#todo) fields that will be used by this task are shown in the following table.
 
 |             |                         |                                                                                                                                                                        |
 | ----------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Field       | Type                    | Description                                                                                                                                                            |
 | bboxes      | `torch.Tensor(float32)` | Bounding boxes `[x1, x2, y1, y2]` with the shape `(N, 4)`.                                                                                                             |
-| labels      | `torch.LongTensor`      | Instance label with the shape `(N, )`. By default, MMOCR uses `0` to represent the "text" class.                                                                       |
-| texts       | `list[str]`             | The textual content of each instance with the shape `(N, )`，used for e2e text spotting or KIE task.                                                                   |
-| edge_labels | `torch.IntTensor`       | The adjacency matrix between nodes with the shape `(N, N)`. In the KIE task, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
+| labels      | `torch.LongTensor`      | Instance label with the shape `(N, )`.                                                                                                                                 |
+| texts       | `list[str]`             | The text content of each instance with the shape `(N, )`，used for e2e text spotting or KIE task.                                                                      |
+| edge_labels | `torch.IntTensor`       | The node adjacency matrix with the shape `(N, N)`. In the KIE task, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
 | edge_scores | `torch.FloatTensor`     | The prediction confidence of each edge in the KIE task, with the shape `(N, N)`.                                                                                       |
+| scores      | `torch.FloatTensor`     | The confidence scores for node label predictions, with the shape `(N,)`.                                                                                               |
 
+```{warning}
 Since there is no unified standard for model implementation of KIE tasks, the design currently considers only [SDMGR](../../../configs/kie/sdmgr/README.md) model usage scenarios. Therefore, the design is subject to change as we support more KIE models.
+```
 
-The following sample code shows the use of [`KIEDataSample`](mmocr.structures.KIEDataSample).
+The following sample code shows the use of [`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample).
 
 ```python
 import torch
