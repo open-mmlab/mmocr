@@ -1,6 +1,6 @@
 # Data Structures and Elements
 
-During the training/testing process of a model, there is often a large amount of data to be passed between modules, and the data required by different tasks or algorithms is usually different. For example, in MMOCR, the text detection task needs to obtain the bounding box annotations of text instances during training, the recognition task needs text content annotations, while the key information extraction task needs text category labels and the relationship between items, etc. This makes the interfaces of different tasks or models may be inconsistent, for example:
+During the training/testing process of a model, there is often a large amount of data to be passed between modules, and the data required by different tasks or algorithms is usually different. For example, in MMOCR, the text detection task needs to obtain the bounding box annotations of text instances during training, the recognition task needs text annotations, while the key information extraction task needs text category labels and the relationship between items, etc. This makes the interfaces of different tasks or models may be inconsistent, for example:
 
 ```python
 # Text Detection
