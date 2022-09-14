@@ -56,7 +56,7 @@ pred_instances.polygons = pred_polygons
 pred_instances.scores = scores
 ```
 
-The conventions for the `InstanceData` fields in MMOCR are shown in the table below. It is important to note that the length of each field in `InstanceData` must be equal to the number of instances in the sample `N`.
+The conventions for the fields in `InstanceData` in MMOCR are shown in the table below. It is important to note that the length of each field in `InstanceData` must be equal to the number of instances `N` in the sample.
 
 |             |                                    |                                                                                                                                                             |
 | ----------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
