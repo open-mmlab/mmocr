@@ -5,7 +5,8 @@ from .bbox_utils import (bbox2poly, bbox_center_distance, bbox_diag_distance,
 from .check_argument import (equal_len, is_2dlist, is_3dlist, is_none_or_type,
                              is_type_list, valid_boundary)
 from .collect_env import collect_env
-from .data_converter_utils import dump_ocr_data, recog_anno_to_imginfo
+from .data_converter_utils import (dump_ocr_data, recog_anno_to_imginfo,
+                                   txt_loader)
 from .fileio import list_from_file, list_to_file
 from .img_utils import crop_img, warp_img
 from .mask_utils import fill_hole
@@ -40,5 +41,5 @@ __all__ = [
     'ConfigType', 'DetSampleList', 'RecForwardResults', 'InitConfigType',
     'OptConfigType', 'OptDetSampleList', 'OptInitConfigType', 'OptMultiConfig',
     'OptRecSampleList', 'RecSampleList', 'MultiConfig', 'OptTensor',
-    'ColorType', 'OptKIESampleList', 'KIESampleList'
+    'ColorType', 'OptKIESampleList', 'KIESampleList', 'txt_loader'
 ]

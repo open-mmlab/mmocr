@@ -1,4 +1,4 @@
-ic15_rec_data_root = 'data/rec/icdar_2015/'
+ic15_rec_data_root = 'data/rec/icdar2015/'
 
 ic15_rec_train = dict(
     type='OCRDataset',

@@ -2,6 +2,7 @@
 from .dataset_wrapper import ConcatDataset
 from .icdar_dataset import IcdarDataset
 from .ocr_dataset import OCRDataset
+from .preparers import *  # NOQA
 from .recog_lmdb_dataset import RecogLMDBDataset
 from .recog_text_dataset import RecogTextDataset
 from .transforms import *  # NOQA

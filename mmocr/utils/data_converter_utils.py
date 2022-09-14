@@ -187,3 +187,15 @@ def recog_anno_to_imginfo(
         results.append(result)
 
     return results
+
+
+def txt_loader(file_path: str,
+               separator: str = ',',
+               format: str = 'x1,y1,x2,y2,x3,y3,x4,y4,trans',
+               encoding='utf-8'):
+    keys = format.split(separator)
+    with open(file_path, 'r', encoding=encoding) as f:
+        for line in f.readlines():
+            line = line.strip()
+            if line:
+                yield dict(zip(keys, line.split(separator)))

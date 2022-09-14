@@ -1,0 +1,75 @@
+Name: 'Incidental Scene Text IC15'
+Task:
+  - det
+  - rec
+Paper:
+  Title: ICDAR 2015 Competition on Robust Reading
+  URL: https://rrc.cvc.uab.es/files/short_rrc_2015.pdf
+  Venue: ICDAR
+  Year: '2015'
+  BibTeX: '@inproceedings{karatzas2015icdar,
+  title={ICDAR 2015 competition on robust reading},
+  author={Karatzas, Dimosthenis and Gomez-Bigorda, Lluis and Nicolaou, Anguelos and Ghosh, Suman and Bagdanov, Andrew and Iwamura, Masakazu and Matas, Jiri and Neumann, Lukas and Chandrasekhar, Vijay Ramaseshan and Lu, Shijian and others},
+  booktitle={2015 13th international conference on document analysis and recognition (ICDAR)},
+  pages={1156--1160},
+  year={2015},
+  organization={IEEE}}'
+Data:
+  Size: 130MB
+  Language:
+    - English
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Annotation:
+    File: txt
+    Encoding: utf-8-sig
+    Format: 'x1,y1,x2,y2,x3,y3,x4,y4,trans'
+    Separator: ','
+    Ignore: '###'
+  License:
+    Type: CC BY 4.0
+    Link: https://creativecommons.org/licenses/by/4.0/
+  Splits:
+    - train
+    - test
+Link:
+  Website: https://rrc.cvc.uab.es/?ch=4
+  Det:
+    Image:
+      Train:
+        - https://rrc.cvc.uab.es/downloads/ch4_training_images.zip
+        - c51cbace155dcc4d98c8dd19d378f30d
+      Val:
+        -
+      Test:
+        - https://rrc.cvc.uab.es/downloads/ch4_test_images.zip
+        - 97e4c1ddcf074ffcc75feff2b63c35dd
+    Annotation:
+      Train:
+        - https://rrc.cvc.uab.es/downloads/ch4_training_localization_transcription_gt.zip
+        - 3bfaf1988960909014f7987d2343060b
+      Val:
+        -
+      Test:
+        - https://rrc.cvc.uab.es/downloads/Challenge4_Test_Task4_GT.zip
+        - 8bce173b06d164b98c357b0eb96ef430
+  Rec:
+    Image:
+      Train:
+        - https://rrc.cvc.uab.es/downloads/ch4_training_word_images_gt.zip
+        - 600caf8c6a64a3dcf638839820edcca9
+      Val:
+        -
+      Test:
+        - https://rrc.cvc.uab.es/downloads/ch4_test_word_images_gt.zip
+        - d7a71585f4cc69f89edbe534e7706d5d
+    Annotation:
+      Train:
+        -
+      Val:
+        -
+      Test:
+        - https://rrc.cvc.uab.es/downloads/Challenge4_Test_Task3_GT.txt
+        - e28bb9c6b82561e171b460c815821cb2
