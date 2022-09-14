@@ -200,15 +200,15 @@ The fields of `LabelData` that will be used are:
 
 The [`InstanceData`](#text-detection-instancedata) fields that will be used by this task are shown in the following table.
 
-|             |                         |                                                                                                                                                                        |
-| ----------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Field       | Type                    | Description                                                                                                                                                            |
-| bboxes      | `torch.Tensor(float32)` | Bounding boxes `[x1, x2, y1, y2]` with the shape `(N, 4)`.                                                                                                             |
-| labels      | `torch.LongTensor`      | Instance label with the shape `(N, )`.                                                                                                                                 |
-| texts       | `list[str]`             | The text content of each instance with the shape `(N, )`，used for e2e text spotting or KIE task.                                                                      |
-| edge_labels | `torch.IntTensor`       | The node adjacency matrix with the shape `(N, N)`. In the KIE task, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
-| edge_scores | `torch.FloatTensor`     | The prediction confidence of each edge in the KIE task, with the shape `(N, N)`.                                                                                       |
-| scores      | `torch.FloatTensor`     | The confidence scores for node label predictions, with the shape `(N,)`.                                                                                               |
+|             |                     |                                                                                                                                                                            |
+| ----------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Field       | Type                | Description                                                                                                                                                                |
+| bboxes      | `torch.FloatTensor` | Bounding boxes `[x1, x2, y1, y2]` with the shape `(N, 4)`.                                                                                                                 |
+| labels      | `torch.LongTensor`  | Instance label with the shape `(N, )`.                                                                                                                                     |
+| texts       | `list[str]`         | The text content of each instance with the shape `(N, )`，used for e2e text spotting or KIE task.                                                                          |
+| edge_labels | `torch.IntTensor`   | The node adjacency matrix with the shape `(N, N)`. In the KIE task, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
+| edge_scores | `torch.FloatTensor` | The prediction confidence of each edge in the KIE task, with the shape `(N, N)`.                                                                                           |
+| scores      | `torch.FloatTensor` | The confidence scores for node label predictions, with the shape `(N,)`.                                                                                                   |
 
 ```{warning}
 Since there is no unified standard for model implementation of KIE tasks, the design currently considers only [SDMGR](../../../configs/kie/sdmgr/README.md) model usage scenarios. Therefore, the design is subject to change as we support more KIE models.
