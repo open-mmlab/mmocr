@@ -68,7 +68,7 @@ The conventions for the fields in `InstanceData` in MMOCR are shown in the table
 | ignored     | `torch.BoolTensor`                 | Whether to ignore the current sample with the shape `(N, )`.                                                                                                |
 | texts       | `list[str]`                        | The textual content of each instance with the shape `(N, )`，used for e2e text spotting or KIE task.                                                        |
 | text_scores | `torch.FloatTensor`                | Confidence score of the predictions of text contents with the shape `(N, )`，used for e2e text spotting task.                                               |
-| edge_labels | `torch.IntTensor`                  | The adjacency matrix between nodes with the shape `(N, N)`. In the KIE task, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
+| edge_labels | `torch.IntTensor`                  | The node adjacency matrix with the shape `(N, N)`. In KIE, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
 | edge_scores | `torch.FloatTensor`                | The prediction confidence of each edge in the KIE task, with the shape `(N, N)`.                                                                            |
 
 ### Text Recognition LabelData
