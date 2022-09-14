@@ -36,7 +36,7 @@ In the following, we will introduce the practical application of data elements *
 
 ### Text Detection InstanceData
 
-In the text detection task, the detector concentrate on instance-level text samples, so we use `InstanceData` to encapsulate the data needed for this task. Typically, its required training annotation and prediction output contains rectangular or polygonal bounding boxes, as well as bounding box labels. Since the text detection task has only one positive sample class, "text", in MMOCR we use `0` to number this class by default. The following code example shows how to use the `InstanceData` data abstraction interface to encapsulate the data types used in the text detection task.
+In the text detection task, the detector concentrate on instance-level text samples, so we use `InstanceData` to encapsulate the data needed for this task. Typically, its required training annotation and prediction output contain rectangular or polygonal bounding boxes, as well as bounding box labels. Since the text detection task has only one positive sample class, "text", in MMOCR we use `0` to number this class by default. The following code example shows how to use the `InstanceData` to encapsulate the data used in the text detection task.
 
 ```python
 import torch
