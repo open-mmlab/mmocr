@@ -16,7 +16,7 @@ for img, img_metas, gt_bboxes, gt_texts, gt_labels, gt_relations in dataloader:
   loss = kie(img, img_metas, gt_bboxes, gt_texts, gt_labels, gt_relations)
 ```
 
-From the above code examples, we can see that without encapsulation, the different data required by different tasks and algorithms lead to inconsistent interfaces between their modules, which seriously affects the extensibility and reusability of the library. Therefore, in order to solve the above problem, we use {external+mmengine:doc}`MMEngine: Abstract Data Element <advanced_tutorials/data_element>` to encapsulate the data required for each task into `data_sample`. The base class has implemented basic add/delete/update/check functions and supports data migration between different devices, as well as dictionary-like and tensor-like operations, fully satisfying the daily use requirements of data, which also allows the interfaces of different algorithms to be unified in the following form.
+From the above code examples, we can see that without encapsulation, the different data required by different tasks and algorithms lead to inconsistent interfaces between their modules, which seriously affects the extensibility and reusability of the library. Therefore, in order to solve the above problem, we use {external+mmengine:doc}`MMEngine: Abstract Data Element <advanced_tutorials/data_element>` to encapsulate the data required for each task into `data_sample`. The base class has implemented basic add/delete/update/check functions and supports data migration between different devices, as well as dictionary-like and tensor-like operations, which also allows the interfaces of different algorithms to be unified in the following form.
 
 ```python
 for img, data_sample in dataloader:
