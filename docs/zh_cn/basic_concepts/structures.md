@@ -68,7 +68,7 @@ MMOCR 中对 `InstanceData` 字段的约定如下表所示。值得注意的是�
 | ignored     | `torch.BoolTensor`                 | 是否在训练中忽略当前文本实例，长度为 `(N, )`。                                                                                           |
 | texts       | `list[str]`                        | 实例对应的文本，长度为 `(N, )`，用于端到端 OCR 任务和 KIE。                                                                              |
 | text_scores | `torch.FloatTensor`                | 文本预测的置信度，长度为`(N, )`，用于端到端 OCR 任务。                                                                                   |
-| edge_labels | `torch.IntTensor`                  | 节点之间的邻接矩阵，形状为 `(N, N)`。在 KIE 任务中，节点之间状态的可选值为 `-1` （忽略，不参与 loss 计算），`0` （断开）和 `1`（连接）。 |
+| edge_labels | `torch.IntTensor`                  | 节点的邻接矩阵，形状为 `(N, N)`。在 KIE 任务中，节点之间状态的可选值为 `-1` （忽略，不参与 loss 计算），`0` （断开）和 `1`（连接）。 |
 | edge_scores | `torch.FloatTensor`                | 用于 KIE 任务中每条边的预测置信度，形状为 `(N, N)`。                                                                                     |
 
 ### 文本识别 LabelData
