@@ -188,32 +188,6 @@ data_sample.pred_text = pred_text
 | indexes        | `torch.LongTensor`  | 文本字符经过[字典](../basic_concepts/models.md#dictionary)编码后的序列，且包含了除 `<UNK>` 以外的所有特殊字符。            |
 | padded_indexes | `torch.LongTensor`  | 如果 indexes 的长度小于最大序列长度，且 `pad_idx` 存在时，该字段保存了填充至最大序列长度 `max_seq_len`的编码后的文本序列。 |
 
-同理，[`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample) 也贯穿了整个识别模型的训练和测试流程，如下所示：
-
-```python
-# Encoder
-def forward(self, feature: torch.Tensor,
-                data_samples: List[TextRecogDataSample]) -> torch.Tensor:
-
-# Decoder
-def forward_train(self,
-                      feat: Optional[torch.Tensor] = None,
-                      out_enc: torch.Tensor = None,
-                      data_samples: Sequence[TextRecogDataSample] = None
-                      ) -> torch.Tensor:
-
-# Module Loss
-def forward(self, outputs: torch.Tensor,
-                data_samples: Sequence[TextRecogDataSample]) -> Dict:
-
-# Post Processor
-def get_single_prediction(
-        self,
-        probs: torch.Tensor,
-        data_sample: Optional[TextRecogDataSample] = None,
-    ) -> Tuple[Sequence[int], Sequence[float]]:
-```
-
 ### 关键信息抽取任务数据抽象 KIEDataSample
 
 [`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample) 用于封装 KIE 任务所需的数据，其同样约定了两个属性，即 `gt_instances` 与 `pred_instances`，分别用于存放标注信息与预测结果。
