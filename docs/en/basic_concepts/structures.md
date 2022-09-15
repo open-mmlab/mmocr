@@ -26,17 +26,17 @@ for img, data_sample in dataloader:
 Thanks to the unified data structures, the data flow between each module in the algorithm libraries, such as [`visualizer`](./visualizers.md), [`evaluator`](./evaluation.md), [`dataset`](./datasets.md), is greatly simplified. In MMOCR, we have the following conventions for different data types.
 
 - **xxxData**: Single granularity data annotation or model output. Currently MMEngine has three built-in granularities of {external+mmengine:doc}`data elements <advanced_tutorials/data_element>`, including instance-level data (`InstanceData`), pixel-level data (`PixelData`) and image-level label data (`LabelData`). Among the tasks currently supported by MMOCR, text detection and key information extraction tasks use `InstanceData` to encapsulate the bounding boxes and the corresponding box label, while the text recognition task uses `LabelData` to encapsulate the text content.
-- **xxxDataSample**: inherited from {external+mmengine:doc}`MMEngine: data base class <advanced_tutorials/data_element>` `BaseDataElement`, used to hold **all** annotation and prediction information that required by a single task. For example, [`TextDetDataSample`](mmocr.structures.textdet_data_sample.TextDetDataSample) for the text detection, [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample) for text recognition, and [`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample) for the key information extraction task.
+- **xxxDataSample**: inherited from {external+mmengine:doc}`MMEngine: Base Data Element <advanced_tutorials/data_element>`, used to hold **all** annotation and prediction information that required by a single task. For example, [`TextDetDataSample`](mmocr.structures.textdet_data_sample.TextDetDataSample) for the text detection, [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample) for text recognition, and [`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample) for the key information extraction task.
 
 In the following, we will introduce the practical application of data elements **xxxData** and data samples **xxxDataSample** in MMOCR, respectively.
 
 ## Data Elements - xxxData
 
-`InstanceData` and `LabelData` are the base data elements defined in `MMEngine` to encapsulate different granularity of annotation data or model output. In MMOCR, we have used `InstanceData` and `LabelData` for encapsulating the data types actually used in OCR-related tasks.
+`InstanceData` and `LabelData` are the `BaseDataElement` defined in `MMEngine` to encapsulate different granularity of annotation data or model output. In MMOCR, we have used `InstanceData` and `LabelData` for encapsulating the data types actually used in OCR-related tasks.
 
 ### Text Detection - InstanceData
 
-In the text detection task, the detector concentrate on instance-level text samples, so we use `InstanceData` to encapsulate the data needed for this task. Typically, its required training annotation and prediction output contain rectangular or polygonal bounding boxes, as well as bounding box labels. Since the text detection task has only one positive sample class, "text", in MMOCR we use `0` to number this class by default. The following code example shows how to use the `InstanceData` to encapsulate the data used in the text detection task.
+In the **text detection** task, the detector concentrate on instance-level text samples, so we use `InstanceData` to encapsulate the data needed for this task. Typically, its required training annotation and prediction output contain rectangular or polygonal bounding boxes, as well as bounding box labels. Since the text detection task has only one positive sample class, "text", in MMOCR we use `0` to number this class by default. The following code example shows how to use the `InstanceData` to encapsulate the data used in the text detection task.
 
 ```python
 import torch
@@ -103,7 +103,7 @@ The conventions for the `LabelData` fields in MMOCR are shown in the following t
 
 ## DataSample xxxDataSample
 
-By defining a uniform data structure, we can easily encapsulate the annotation data and prediction results in a unified way, making data transfer between different modules of the code base easier. In MMOCR, we have designed three data structures based on the data needed in three tasks: [`TextDetDataSample`](mmocr.structures.textdet_data_sample.TextDetDataSample), [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample), and [`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample). These data structures all inherit from {external+mmengine:doc}`MMEngine: data base class <advanced_tutorials/data_element>` `BaseDataElement`, which is used to hold all annotation and prediction information required by each task.
+By defining a uniform data structure, we can easily encapsulate the annotation data and prediction results in a unified way, making data transfer between different modules of the code base easier. In MMOCR, we have designed three data structures based on the data needed in three tasks: [`TextDetDataSample`](mmocr.structures.textdet_data_sample.TextDetDataSample), [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample), and [`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample). These data structures all inherit from {external+mmengine:doc}`MMEngine: Base Data Element <advanced_tutorials/data_element>`, which is used to hold all annotation and prediction information required by each task.
 
 ### Text Detection - TextDetDataSample
 

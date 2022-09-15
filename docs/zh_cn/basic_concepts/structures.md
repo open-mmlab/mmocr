@@ -26,7 +26,7 @@ for img, data_sample in dataloader:
 得益于统一的数据封装，算法库内的 [`visualizer`](./visualizers.md)，[`evaluator`](./evaluation.md)，[`dataset`](./datasets.md) 等各个模块间的数据流通都得到了极大的简化。在 MMOCR 中，我们对数据接口类型作出以下约定：
 
 - **xxxData**: 单一粒度的数据标注或模型输出。目前 MMEngine 内置了三种粒度的{external+mmengine:doc}`数据元素 <advanced_tutorials/data_element>`，包括实例级数据（`InstanceData`），像素级数据（`PixelData`）以及图像级的标签数据（`LabelData`）。在 MMOCR 目前支持的任务中，文本检测以及关键信息抽取任务使用 `InstanceData` 来封装文本实例的检测框及对应标签，而文本识别任务则使用了 `LabelData` 来封装文本内容。
-- **xxxDataSample**: 继承自 {external+mmengine:doc}`MMEngine: 数据基类 <advanced_tutorials/data_element>` `BaseDataElement`，用于保存单个任务的训练或测试样本的所有标注及预测信息。如文本检测任务的数据样本类 [`TextDetDataSample`](mmocr.structures.textdet_data_sample.TextDetDataSample)，文本识别任务的数据样本类 [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample)，以及关键信息抽任务的数据样本类 [`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample)。
+- **xxxDataSample**: 继承自 {external+mmengine:doc}`MMEngine: 数据基类 <advanced_tutorials/data_element>` `BaseDataElement`，用于保存单个任务的训练或测试样本的**所有**标注及预测信息。如文本检测任务的数据样本类 [`TextDetDataSample`](mmocr.structures.textdet_data_sample.TextDetDataSample)，文本识别任务的数据样本类 [`TextRecogDataSample`](mmocr.structures.textrecog_data_sample.TextRecogDataSample)，以及关键信息抽任务的数据样本类 [`KIEDataSample`](mmocr.structures.kie_data_sample.KIEDataSample)。
 
 下面，我们将分别介绍数据元素 **xxxData** 与数据样本 **xxxDataSample** 在 MMOCR 中的实际应用。
 
@@ -36,7 +36,7 @@ for img, data_sample in dataloader:
 
 ### 文本检测 InstanceData
 
-在文本检测任务中，检测器关注的是实例级别的文字样本，因此我们使用 `InstanceData` 来封装该任务所需的数据。其所需的训练标注和预测输出通常包含了矩形或多边形边界盒，以及边界盒标签。由于文本检测任务只有一种正样本类，即 “text”，在 MMOCR 中我们默认使用 `0` 来编号该类别。以下代码示例展示了如何使用 `InstanceData` 数据抽象接口来封装文本检测任务中使用的数据类型。
+在**文本检测**任务中，检测器关注的是实例级别的文字样本，因此我们使用 `InstanceData` 来封装该任务所需的数据。其所需的训练标注和预测输出通常包含了矩形或多边形边界盒，以及边界盒标签。由于文本检测任务只有一种正样本类，即 “text”，在 MMOCR 中我们默认使用 `0` 来编号该类别。以下代码示例展示了如何使用 `InstanceData` 数据抽象接口来封装文本检测任务中使用的数据类型。
 
 ```python
 import torch
@@ -107,7 +107,7 @@ MMOCR 中对 `LabelData` 字段的约定如下表所示：
 
 ### 文本检测任务数据抽象 TextDetDataSample
 
-[TextDetDataSample](mmocr.structures.TextDetDataSample) 用于封装文字检测任务所需的数据，其主要包含了两个字段 `gt_instances` 与 `pred_instances`，分别用于存放标注信息与预测结果。
+[TextDetDataSample](mmocr.structures.textdet_data_sample.TextDetDataSample) 用于封装文字检测任务所需的数据，其主要包含了两个字段 `gt_instances` 与 `pred_instances`，分别用于存放标注信息与预测结果。
 
 |                |                                 |            |
 | -------------- | ------------------------------- | ---------- |
@@ -226,15 +226,15 @@ def get_single_prediction(
 
 该任务会用到的 [`InstanceData`](#instancedata) 字段如下表所示：
 
-|             |                     |                                                                                                                                     |
-| ----------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| 字段        | 类型                | 说明                                                                                                                                |
-| bboxes      | `torch.Tensor`      | 文本边界框 \[x1, x2, y1, y2\]，形状为 (N, 4)                                                                                        |
-| labels      | `torch.LongTensor`  | 实例的类别，长度为 (N, )。在 MMOCR 中通常为 0，即 “text” 类                                                                         |
-| texts       | `list[str]`         | 实例对应的文本，长度为 (N, ) ，用于端到端 OCR 任务和 KIE                                                                            |
-| edge_labels | `torch.IntTensor`   | 节点之间的邻接矩阵，形状为 (N, N)。在 KIE 任务中，节点之间状态的可选值为 -1 （不关心，且不参与 loss 计算），0 （断开）和 1 （连接） |
-| edge_scores | `torch.FloatTensor` | 每条边的预测置信度，形状为 (N, N)                                                                                                   |
-| scores      | `torch.FloatTensor` | The confidence scores for node label predictions, with the shape `(N,)`.                                                            |
+|             |                     |                                                                                                                                               |
+| ----------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 字段        | 类型                | 说明                                                                                                                                          |
+| bboxes      | `torch.Tensor`      | 文本边界框 `[x1, x2, y1, y2]`，形状为 `(N, 4)`。                                                                                              |
+| labels      | `torch.LongTensor`  | 实例的类别，长度为 `(N, )`。在 MMOCR 中通常为 0，即 “text” 类。                                                                               |
+| texts       | `list[str]`         | 实例对应的文本，长度为 `(N, )` ，用于端到端 OCR 任务和 KIE 任务。                                                                             |
+| edge_labels | `torch.IntTensor`   | 节点之间的邻接矩阵，形状为 `(N, N)`。在 KIE 任务中，节点之间状态的可选值为 `-1` （不关心，且不参与 loss 计算），`0` （断开）和 `1` （连接）。 |
+| edge_scores | `torch.FloatTensor` | 每条边的预测置信度，形状为 `(N, N)`。                                                                                                         |
+| scores      | `torch.FloatTensor` | 节点标签的预测置信度, 形状为 `(N,)`。                                                                                                         |
 
 ```{warning}
 由于 KIE 任务的模型实现尚未有统一标准，该设计目前仅考虑了 [SDMGR](../../../configs/kie/sdmgr/README.md) 模型的使用场景。因此，该设计有可能在我们支持更多 KIE 模型后产生变动。
