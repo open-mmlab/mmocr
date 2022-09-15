@@ -2,14 +2,14 @@
 
 In the design of MMOCR, dataset construction and preparation are decoupled. That is, dataset construction classes such as [`OCRDataset`](mmocr.datasets.ocr_dataset.OCRDataset) are responsible for loading and parsing annotation files; while data transforms further apply data preprocessing, enhancement, formatting, and other related functions. Currently, there are five types of data transforms implemented in MMOCR, as shown in the following table.
 
-|                                  |                                                                                      |                                                                                      |
-| -------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
-| Transforms Type                  | File                                                                                 | Function Description                                                                 |
-| Data Loading                     | [loading.py](../../../mmocr/datasets/transforms/loading.py)                          | Implemented the data loading functions.                                              |
-| Data Formatting                  | [formatting.py](../../../mmocr/datasets/transforms/formatting.py)                    | Formatting the data required by different tasks.                                     |
-| Cross Project Data Adapter       | [adapters.py](../../../mmocr/datasets/transforms/adapters.py)                        | Converting the data format between other OpenMMLab projects and MMOCR.               |
-| Data Augmentation Functions      | [ocr_transforms.py](../../../mmocr/datasets/transforms/ocr_transforms.py)<br>[textdet_transforms.py](../../../mmocr/datasets/transforms/textdet_transforms.py)<br>[textrecog_transforms.py](../../../mmocr/datasets/transforms/textrecog_transforms.py) | Various of built-in data augmentation methods designed for different tasks.          |
-| Wrappers of Third Party Packages | [wrappers.py](../../../mmocr/datasets/transforms/wrappers.py)                        | Wrapping the transforms implemented in popular third party packages such as [ImgAug](https://github.com/aleju/imgaug), and adapting them to MMOCR format. |
+|                                  |                                                                       |                                                                                                     |
+| -------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Transforms Type                  | File                                                                  | Function Description                                                                                |
+| Data Loading                     | loading.py                                                            | Implemented the data loading functions.                                                             |
+| Data Formatting                  | formatting.py                                                         | Formatting the data required by different tasks.                                                    |
+| Cross Project Data Adapter       | adapters.py                                                           | Converting the data format between other OpenMMLab projects and MMOCR.                              |
+| Data Augmentation Functions      | ocr_transforms.py<br>textdet_transforms.py<br>textrecog_transforms.py | Various of built-in data augmentation methods designed for different tasks.                         |
+| Wrappers of Third Party Packages | wrappers.py                                                           | Wrapping the transforms implemented in popular third party packages such as [ImgAug](https://github.com/aleju/imgaug), and adapting them to MMOCR format. |
 
 For each data transform, MMOCR provides a detailed docstring. For example, in the header of each data transform class, we annotate `Required Keys`, `Modified Keys` and `Added Keys`. The `Required Keys` represent the mandatory fields that should be included in the input required by the data transform, while the `Modified Keys` and `Added Keys` indicate that the transform may modify or add the fields into the original data. For example, `LoadImageFromFile` implements the image loading function, whose `Required Keys` is the image path `img_path`, and the `Modified Keys` includes the loaded image `img`, the current size of the image `img_shape`, the original size of the image `ori_shape`, and other image attributes.
 
@@ -101,27 +101,6 @@ Data loading transforms mainly implement the functions of loading data from diff
 | LoadKIEAnnotations | `bboxes` `bbox_labels` `edge_labels`<br>`texts`           | `gt_bboxes`<br>`gt_bboxes_labels`<br>`gt_edge_labels`<br>`gt_texts`<br>`ori_shape` | Parsing the annotation required by KIE task.                    |
 | LoadImageFromLMDB  | `img_path`                                                | `img`<br>`img_shape`<br>`ori_shape`                            | Loading images from LMDB.                                       |
 
-## Data Formatting
-
-Data formatting transforms are responsible for packaging images, ground truth labels, and other information into a dictionary. Depending on different tasks or algorithms, users can freely choose the parameters they want to pass in. For example:
-
-|                     |               |                     |                                                  |
-| ------------------- | ------------- | ------------------- | ------------------------------------------------ |
-| Transforms Name     | Required Keys | Modified/Added Keys | Description                                      |
-| PackTextDetInputs   | -             | -                   | Packing the inputs required by text detection.   |
-| PackTextRecogInputs | -             | -                   | Packing the inputs required by text recognition. |
-| PackKIEInputs       | -             | -                   | Packing the inputs required by KIE.              |
-
-## Cross Project Data Adapter
-
-The cross-project data adapters bridge the data formats between MMOCR and other OpenMMLab libraries such as [MMDetection](https://github.com/open-mmlab/mmdetection), making it possible to call models implemented in other OpenMMLab projects. Currently, MMOCR has implemented [`MMDet2MMOCR`](mmocr.datasets.transforms.MMDet2MMOCR) and [`MMOCR2MMDet`](mmocr.datasets.transforms.MMOCR2MMDet), allowing data to be converted between MMDetection and MMOCR formats; with these adapters, users can easily train any detectors supported by MMDetection in MMOCR. For example, we provide a [tutorial](#todo) to show how to train Mask R-CNN as a text detector in MMOCR.
-
-|                 |                                              |                               |                                               |
-| --------------- | -------------------------------------------- | ----------------------------- | --------------------------------------------- |
-| Transforms Name | Required Keys                                | Modified/Added Keys           | Description                                   |
-| MMDet2MMOCR     | `gt_masks` `gt_ignore_flags`                 | `gt_polygons`<br>`gt_ignored` | Converting the fields used in MMDet to MMOCR. |
-| MMOCR2MMDet     | `img_shape`<br>`gt_polygons`<br>`gt_ignored` | `gt_masks` `gt_ignore_flags`  | Converting the fields used in MMOCR to MMDet. |
-
 ## Data Augmentation
 
 Data augmentation is an indispensable process in text detection and recognition tasks. Currently, MMOCR has implemented dozens of data augmentation modules commonly used in OCR fields, which are classified into [ocr_transforms.py](../../../mmocr/datasets/transforms/ocr_transforms.py), [textdet_transforms.py](../../../mmocr/datasets/transforms/textdet_transforms.py), and [textrecog_transforms.py](../../../mmocr/datasets/transforms/textrecog_transforms.py).
@@ -151,9 +130,30 @@ Specifically, `ocr_transforms.py` implements generic OCR data augmentation modul
 | RescaleToHeight | `img`         | `img`<br>`img_shape`<br>`scale`<br>`scale_factor`<br>`keep_ratio` | Scales the image to the specified height while keeping the aspect ratio. When `min_width` and `max_width` are specified, the aspect ratio may be changed. |
 |                 |               |                                                                   |                                                                                                             |
 
-```{note}
+```{warning}
 The above table only briefly introduces some selected data augmentation methods, for more information please refer to the [API documentation](../api.rst) or the code docstrings.
 ```
+
+## Data Formatting
+
+Data formatting transforms are responsible for packaging images, ground truth labels, and other information into a dictionary. Depending on different tasks or algorithms, users can freely choose the parameters they want to pass in. For example:
+
+|                     |               |                     |                                                  |
+| ------------------- | ------------- | ------------------- | ------------------------------------------------ |
+| Transforms Name     | Required Keys | Modified/Added Keys | Description                                      |
+| PackTextDetInputs   | -             | -                   | Packing the inputs required by text detection.   |
+| PackTextRecogInputs | -             | -                   | Packing the inputs required by text recognition. |
+| PackKIEInputs       | -             | -                   | Packing the inputs required by KIE.              |
+
+## Cross Project Data Adapter
+
+The cross-project data adapters bridge the data formats between MMOCR and other OpenMMLab libraries such as [MMDetection](https://github.com/open-mmlab/mmdetection), making it possible to call models implemented in other OpenMMLab projects. Currently, MMOCR has implemented [`MMDet2MMOCR`](mmocr.datasets.transforms.MMDet2MMOCR) and [`MMOCR2MMDet`](mmocr.datasets.transforms.MMOCR2MMDet), allowing data to be converted between MMDetection and MMOCR formats; with these adapters, users can easily train any detectors supported by MMDetection in MMOCR. For example, we provide a [tutorial](#todo) to show how to train Mask R-CNN as a text detector in MMOCR.
+
+|                 |                                              |                               |                                               |
+| --------------- | -------------------------------------------- | ----------------------------- | --------------------------------------------- |
+| Transforms Name | Required Keys                                | Modified/Added Keys           | Description                                   |
+| MMDet2MMOCR     | `gt_masks` `gt_ignore_flags`                 | `gt_polygons`<br>`gt_ignored` | Converting the fields used in MMDet to MMOCR. |
+| MMOCR2MMDet     | `img_shape`<br>`gt_polygons`<br>`gt_ignored` | `gt_masks` `gt_ignore_flags`  | Converting the fields used in MMOCR to MMDet. |
 
 ## Wrappers
 

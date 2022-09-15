@@ -2,14 +2,14 @@
 
 在 MMOCR 的设计中，数据集的构建与数据准备是相互解耦的。也就是说，[`OCRDataset`](mmocr.datasets.ocr_dataset.OCRDataset) 等数据集构建类负责完成标注文件的读取与解析功能；而数据变换方法（Data Transforms）则进一步实现了数据预处理、数据增强、数据格式化等相关功能。目前，如下表所示，MMOCR 中共实现了 5 类数据变换方法：
 
-|                |                                                                                               |                                                                                               |
-| -------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| 数据变换类型   | 对应文件                                                                                      | 功能说明                                                                                      |
-| 数据读取       | [loading.py](../../../mmocr/datasets/transforms/loading.py)                                   | 实现了不同格式数据的读取功能。                                                                |
-| 数据格式化     | [formatting.py](../../../mmocr/datasets/transforms/formatting.py)                             | 完成不同任务所需数据的格式化功能。                                                            |
-| 跨库数据适配器 | [adapters.py](../../../mmocr/datasets/transforms/adapters.py)                                 | 负责 OpenMMLab 项目内跨库调用的数据格式转换功能。                                             |
-| 数据增强       | [ocr_transforms.py](../../../mmocr/datasets/transforms/ocr_transforms.py)<br>[textdet_transforms.py](../../../mmocr/datasets/transforms/textdet_transforms.py)<br>[textrecog_transforms.py](../../../mmocr/datasets/transforms/textrecog_transforms.py) | 实现了不同任务下的各类数据增强方法。                                                          |
-| 包装类         | [wrappers.py](../../../mmocr/datasets/transforms/wrappers.py)                                 | 实现了对 [ImgAug](https://github.com/aleju/imgaug) 等常用算法库的包装，使其适配 MMOCR 的内部数据格式。 |
+|                |                                                                       |                                                                     |
+| -------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| 数据变换类型   | 对应文件                                                              | 功能说明                                                            |
+| 数据读取       | loading.py                                                            | 实现了不同格式数据的读取功能。                                      |
+| 数据格式化     | formatting.py                                                         | 完成不同任务所需数据的格式化功能。                                  |
+| 跨库数据适配器 | adapters.py                                                           | 负责 OpenMMLab 项目内跨库调用的数据格式转换功能。                   |
+| 数据增强       | ocr_transforms.py<br>textdet_transforms.py<br>textrecog_transforms.py | 实现了不同任务下的各类数据增强方法。                                |
+| 包装类         | wrappers.py                                                           | 实现了对 ImgAug 等常用算法库的包装，使其适配 MMOCR 的内部数据格式。 |
 
 对于每一个数据变换方法，MMOCR 都严格按照文档字符串（docstring）规范在源码中提供了详细的代码注释。例如，每一个数据转换类的头部我们都注释了 “需求字段”（`Required keys`）， “修改字段”（`Modified Keys`）与 “添加字段”（`Added Keys`）。其中，“需求字段”代表该数据转换方法对于输入数据所需包含字段的强制需求，而“修改字段”与“添加字段”则表明该方法可能会在原有数据基础之上修改或添加的字段。例如，`LoadImageFromFile` 实现了图片的读取功能，其需求字段为图像的存储路径 `img_path`，而修改字段则包括了读入的图像信息 `img`，以及图片当前尺寸 `img_shape`，图片原始尺寸 `ori_shape` 等图片属性。
 
@@ -102,27 +102,6 @@ train_pipeline_r18 = [
 | LoadKIEAnnotations | `bboxes` `bbox_labels` `edge_labels`<br>`texts`           | `gt_bboxes`<br>`gt_bboxes_labels`<br>`gt_edge_labels`<br>`gt_texts`<br>`ori_shape` | 解析 KIE 任务所需的标注信息。                                   |
 | LoadImageFromLMDB  | `img_path`                                                | `img`<br>`img_shape`<br>`ori_shape`                            | 从 LMDB 格式标注文件中读取图片。                                |
 
-## 数据格式化 - formatting.py
-
-数据格式化负责将图像、真实标签以及其它常用信息等打包成一个字典。依据不同的任务或算法，用户可以基于对应的需求自由选择想要传入的参数。例如：
-
-|                     |          |               |                                            |
-| ------------------- | -------- | ------------- | ------------------------------------------ |
-| 数据转换类名称      | 需求字段 | 修改/添加字段 | 说明                                       |
-| PackTextDetInputs   | -        | -             | 用于打包文本检测任务所需要的输入信息。     |
-| PackTextRecogInputs | -        | -             | 用于打包文本识别任务所需要的输入信息。     |
-| PackKIEInputs       | -        | -             | 用于打包关键信息抽取任务所需要的输入信息。 |
-
-## 跨库数据适配器 - adapters.py
-
-跨库数据适配器打通了 MMOCR 与其他 OpenMMLab 系列算法库如 [MMDetection](https://github.com/open-mmlab/mmdetection) 之间的数据格式，使得跨项目调用其它开源算法库的配置文件及算法成为了可能。目前，MMOCR 实现了 `MMDet2MMOCR` 以及 `MMOCR2MMDet`，使得数据可以在 MMDetection 与 MMOCR 的格式之间自由转换；借助这些适配转换器，用户可以在 MMOCR 算法库内部轻松调用任何 MMDetection 已支持的检测算法，并在 OCR 相关数据集上进行训练。例如，我们以 Mask R-CNN 为例提供了[教程](#todo)，展示了如何在 MMOCR 中使用 MMDetection 的检测算法训练文本检测器。
-
-|                |                                              |                               |                                                |
-| -------------- | -------------------------------------------- | ----------------------------- | ---------------------------------------------- |
-| 数据转换类名称 | 需求字段                                     | 修改/添加字段                 | 说明                                           |
-| MMDet2MMOCR    | `gt_masks` `gt_ignore_flags`                 | `gt_polygons`<br>`gt_ignored` | 将 MMDet 中采用的字段转换为对应的 MMOCR 字段。 |
-| MMOCR2MMDet    | `img_shape`<br>`gt_polygons`<br>`gt_ignored` | `gt_masks` `gt_ignore_flags`  | 将 MMOCR 中采用的字段转换为对应的 MMDet 字段。 |
-
 ## 数据增强 - xxx_transforms.py
 
 数据增强是文本检测、识别等任务中必不可少的流程之一。目前，MMOCR 中共实现了数十种文本领域内常用的数据增强模块，依据其任务类型，分别为通用 OCR 数据增强模块 [ocr_transforms.py](../../../mmocr/datasets/transforms/ocr_transforms.py)，文本检测数据增强模块 [textdet_transforms.py](../../../mmocr/datasets/transforms/textdet_transforms.py)，以及文本识别数据增强模块 [textrecog_transforms.py](../../../mmocr/datasets/transforms/textrecog_transforms.py)。
@@ -152,9 +131,30 @@ train_pipeline_r18 = [
 | RescaleToHeight | `img`    | `img`<br>`img_shape`<br>`scale`<br>`scale_factor`<br>`keep_ratio` | 缩放图像至指定高度，并尽可能保持长宽比不变。当 `min_width` 及 `max_width` 被指定时，长宽比则可能会被改变。 |
 |                 |          |                                                                   |                                                                                                            |
 
-```{note}
+```{warning}
 以上表格仅选择性地对部分数据增强方法作简要介绍，更多数据增强方法介绍请参考[API 文档](../api.rst)或阅读代码内的文档注释。
 ```
+
+## 数据格式化 - formatting.py
+
+数据格式化负责将图像、真实标签以及其它常用信息等打包成一个字典。依据不同的任务或算法，用户可以基于对应的需求自由选择想要传入的参数。例如：
+
+|                     |          |               |                                            |
+| ------------------- | -------- | ------------- | ------------------------------------------ |
+| 数据转换类名称      | 需求字段 | 修改/添加字段 | 说明                                       |
+| PackTextDetInputs   | -        | -             | 用于打包文本检测任务所需要的输入信息。     |
+| PackTextRecogInputs | -        | -             | 用于打包文本识别任务所需要的输入信息。     |
+| PackKIEInputs       | -        | -             | 用于打包关键信息抽取任务所需要的输入信息。 |
+
+## 跨库数据适配器 - adapters.py
+
+跨库数据适配器打通了 MMOCR 与其他 OpenMMLab 系列算法库如 [MMDetection](https://github.com/open-mmlab/mmdetection) 之间的数据格式，使得跨项目调用其它开源算法库的配置文件及算法成为了可能。目前，MMOCR 实现了 `MMDet2MMOCR` 以及 `MMOCR2MMDet`，使得数据可以在 MMDetection 与 MMOCR 的格式之间自由转换；借助这些适配转换器，用户可以在 MMOCR 算法库内部轻松调用任何 MMDetection 已支持的检测算法，并在 OCR 相关数据集上进行训练。例如，我们以 Mask R-CNN 为例提供了[教程](#todo)，展示了如何在 MMOCR 中使用 MMDetection 的检测算法训练文本检测器。
+
+|                |                                              |                               |                                                |
+| -------------- | -------------------------------------------- | ----------------------------- | ---------------------------------------------- |
+| 数据转换类名称 | 需求字段                                     | 修改/添加字段                 | 说明                                           |
+| MMDet2MMOCR    | `gt_masks` `gt_ignore_flags`                 | `gt_polygons`<br>`gt_ignored` | 将 MMDet 中采用的字段转换为对应的 MMOCR 字段。 |
+| MMOCR2MMDet    | `img_shape`<br>`gt_polygons`<br>`gt_ignored` | `gt_masks` `gt_ignore_flags`  | 将 MMOCR 中采用的字段转换为对应的 MMDet 字段。 |
 
 ## 包装类 - wrappers.py
 
