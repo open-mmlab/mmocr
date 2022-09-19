@@ -54,7 +54,7 @@ Since each data transform class is independent of each other, we can easily comb
 
 <div align="center">
 
-![Flowchart](https://user-images.githubusercontent.com/45810070/190378863-ba6dc1c1-359a-4dc7-a456-b2fd843f34fb.jpg)
+![Flowchart](https://user-images.githubusercontent.com/45810070/190945061-1d8c35a1-7fb0-4f3d-8adc-8285f6421968.png)
 
 </div>
 
