@@ -327,7 +327,7 @@ In general, there are different augmentation strategies for training and testing
 
 - The data augmentation flow of the test pipeline is usually: Data Loading (LoadImageFromFile) -> Data Augmentation -> Annotation Loading (LoadXXXAnntation) -> Data Formatting (PackXXXInputs).
 
-Due to the specificity of the OCR task, in general different models have different ways of data augmentation, and the same model will generally have different ways of data augmentation in different datasets. Take `CRNN` as an example.
+Due to the specificity of the OCR task, different models have different data augmentation techniques, and even the same model can have different data augmentation strategies for different datasets. Take `CRNN` as an example.
 
 ```Python
 # Data Augmentation
@@ -386,7 +386,7 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type='ConcatDataset',
-        datasets=[ic13_rec_test，ic15_rec_test],
+        datasets=[ic13_rec_test, ic15_rec_test],
         pipeline=test_pipeline))
 test_dataloader = val_dataloader
 ```
@@ -404,11 +404,11 @@ This section configures the network architecture. Different algorithmic tasks us
 Text detection consists of several parts:
 
 - `data_preprocessor`: [data_preprocessor](mmocr.models.textdet.data_preprocessors.TextDetDataPreprocessor)
-- `backbone`: feature extraction network
+- `backbone`: backbone network configuration
 - `neck`: neck network configuration
 - `det_head`: detection head network configuration
-  - `module_loss`: model loss function configuration
-  - `postprocessor`: model prediction result post-processing configuration
+  - `module_loss`: module loss configuration
+  - `postprocessor`: postprocessor configuration
 
 We present the model configuration in text detection using DBNet as an example.
 
@@ -442,15 +442,15 @@ model = dict(
 
 ##### Text Recognition
 
-Text recognition mainly contains.
+Text recognition mainly contains:
 
-- `data_processor`: [data preprocessor configuration](mmocr.models.textrec.data_processors.TextRecDataPreprocessor)
+- `data_processor`: [data preprocessor configuration](mmocr.models.textrecog.data_processors.TextRecDataPreprocessor)
 - `preprocessor`: network preprocessor configuration, e.g. TPS
-- `backbone`: feature extraction configuration
+- `backbone`: backbone configuration
 - `encoder`: encoder configuration
 - `decoder`: decoder configuration
-  - `module_loss`: decoder loss
-  - `postprocessor`: decoder postprocessor
+  - `module_loss`: decoder module loss configuration
+  - `postprocessor`: decoder postprocessor configuration
   - `dictionary`: dictionary configuration
 
 Using CRNN as an example.
@@ -476,13 +476,17 @@ model = dict(
             with_padding=True)))
 ```
 
+```{note}
+Find more info about network architecture in [structures](../basic_concepts/structures.md)
+```
+
 <div id="weight_config"></div>
 
-#### Weight Loading Configuration
+#### Checkpoint Loading Configuration
 
 The model weights in the checkpoint file can be loaded via the `load_from` parameter, simply by setting the `load_from` parameter to the path of the checkpoint file.
 
-You can also resume training by setting `resume=True` to load the training status information in the checkpoint. When both `load_from` and `resume=True` are set, the actuator will load the training state from the checkpoint file corresponding to the `load_from` path.
+You can also resume training by setting `resume=True` to load the training status information in the checkpoint. When both `load_from` and `resume=True` are set, MMEngine will load the training state from the checkpoint file at the `load_from` path.
 
 If only `resume=True` is set, the executor will try to find and read the latest checkpoint file from the `work_dir` folder
 
@@ -497,7 +501,7 @@ More can be found in {external+mmengine:doc}`MMEngine: Load Weights or Recover T
 
 ### Evaluation Configuration
 
-In model validation and model testing, quantitative measurement of model accuracy is often required. MMOCR performs this function by means of `Metric` and `Evaluator`. For more information, please refer to {external+mmengine:doc}`MMEngine: Metric and Evaluator <tutorials/evaluation>`.
+In model validation and model testing, quantitative measurement of model accuracy is often required. MMOCR performs this function by means of `Metric` and `Evaluator`. For more information, please refer to {external+mmengine:doc}`MMEngine: Evaluation <tutorials/evaluation>`.
 
 #### Evaluator
 
@@ -517,7 +521,7 @@ val_evaluator = dict(
     metrics=[...])
 ```
 
-`MultiDatasetsEvaluator` differs from single-dataset evaluation in two positions: rater category and prefix. The evaluator category must be `MultiDatasetsEvaluator` and cannot be omitted. The prefix is mainly used to distinguish the results of different datasets with the same evaluation metrics, see [MultiDatasetsEvaluation](../basic_concepts/evaluation.md).
+`MultiDatasetsEvaluator` differs from single-dataset evaluation in two aspects: `type` and `dataset_prefixes`. The evaluator type must be `MultiDatasetsEvaluator` and cannot be omitted. The `dataset_prefixes` is mainly used to distinguish the results of different datasets with the same evaluation metrics, see [MultiDatasetsEvaluation](../basic_concepts/evaluation.md).
 
 Assuming that we need to test accuracy on IC13 and IC15 datasets, the configuration is as follows.
 
@@ -528,7 +532,7 @@ val_evaluator = dict(
     metrics=dict(),
     dataset_prefixes=['IC13', 'IC15'])
 
-# Multiple datasets, multiple Metric
+# Multiple datasets, multiple Metrics
 val_evaluator = dict(
     type='MultiDatasetsEvaluator',
     metrics=[...],
@@ -537,13 +541,13 @@ val_evaluator = dict(
 
 #### Metric
 
-Metrics refer to different measures of accuracy, while multiple metrics can be used together, for more metrics principles refer to {external+mmengine:doc}`MMEngine: Metric <tutorials/evaluation>`, there are different metrics for different algorithmic tasks in MMOCR. More OCR-related  metrics can be found in [Evaluation](../basic_concepts/evaluation.md).
+A metric evaluates a model's performance from a specific perspective. While there is no such common metric that fits all the tasks, MMOCR provides enough flexibility such that multiple metrics serving the same task can be used simultaneously. Here we list task-specific metrics for reference.
 
 Text detection: [`HmeanIOUMetric`](mmocr.evaluation.metrics.HmeanIOUMetric)
 
 Text recognition: [`WordMetric`](mmocr.evaluation.metrics.WordMetric), [`CharMetric`](mmocr.evaluation.metrics.CharMetric), [`OneMinusNEDMetric`](mmocr.evaluation.metrics.OneMinusNEDMetric)
 
-Key information extraction: `F1Metric`
+Key information extraction: [`F1Metric`](mmocr.evaluation.metrics.F1Metric)
 
 Text detection as an example, using a single `Metric` in the case of single dataset evaluation.
 
@@ -551,7 +555,7 @@ Text detection as an example, using a single `Metric` in the case of single data
 val_evaluator = dict(type='HmeanIOUMetric')
 ```
 
-Taking text recognition as an example, multiple datasets are evaluated using multiple `Metric`.
+Take text recognition as an example, multiple datasets (`IC13` and `IC15`) are evaluated using multiple `Metric`s (`WordMetric` and `CharMetric`).
 
 ```Python
 val_evaluator = dict(
@@ -566,11 +570,15 @@ val_evaluator = dict(
 test_evaluator = val_evaluator
 ```
 
+```{note}
+For more information, please refer to {external+mmengine:doc}`MMEngine: Evaluation <tutorials/evaluation>` and [Evaluation](../basic_concepts/evaluation.md)
+```
+
 <div id="vis_config"></div>
 
 ### Visualizaiton Configuration
 
-Each task is configured with a visualizer corresponding to that task. The visualizer is mainly used for visualizing or storing intermediate results of user models and visualizing val and test prediction results. The visualization results can also be stored in different backends such as WandB, TensorBoard, etc. through the visualization backend. Commonly used modification operations can be found in [visualization](visualization.md).
+Each task is bound to a task-specific visualizer. The visualizer is mainly used for visualizing or storing intermediate results of user models and visualizing val and test prediction results. The visualization results can also be stored in different backends such as WandB, TensorBoard, etc. through the corresponding visualization backend. Commonly used modification operations can be found in [visualization](visualization.md).
 
 The default configuration of visualization for text detection is as follows.
 
@@ -584,17 +592,17 @@ visualizer = dict(
 
 ## Directory Structure
 
-All configuration files of `MMOCR` are placed under the `configs` folder. To avoid long configuration files and to improve the reusability and clarity of configuration files, MMOCR takes advantage of the inheritance property of Config files to split the eight sections of configuration content. Since each section is related to an algorithm task, MMOCR provides a task folder for each task in Config, namely `textdet` (text detection task), `textrecog` (text recognition task), and `kie` (key information extraction). Also the individual task algorithm configuration folder is further divided into two parts: `_base_` folder and many algorithm folders.
+All configuration files of `MMOCR` are placed under the `configs` folder. To avoid config files from being too long and improve their reusability and clarity, MMOCR takes advantage of the inheritance mechanism and split config files into eight sections. Since each section is closely related to the task type, MMOCR provides a task folder for each task in `configs/`, namely `textdet` (text detection task), `textrecog` (text recognition task), and `kie` (key information extraction). Each folder is further divided into two parts: `_base_` folder and algorithm configuration folders.
 
-1. the `_base_` folder mainly stores some general configuration files unrelated to specific algorithms, and each section is divided into common datasets, common training strategies and common running configurations by directory.
+1. the `_base_` folder stores some general config files unrelated to specific algorithms, and each section is divided into datasets, training strategies and runtime configurations by directory.
 
-2. The algorithm configuration folder stores configuration items that are strongly related to the algorithm. The algorithm configuration folder is divided into two main sections.
+2. The algorithm configuration folder stores config files that are strongly related to the algorithm. The algorithm configuration folder has two kinds of config files.
 
-   1. the model and data pipeline of the algorithm: in the OCR domain, in general, data enhancement strategies are strongly related to the algorithm, so the model and data pipeline are usually placed in a unified location.
+   1. Config files starting with `_base_`: Configures the model and data pipeline of an algorithm. In OCR domain, data augmentation strategies are generally strongly related to the algorithm, so the model and data pipeline are usually placed in the same config file.
 
-   2. Algorithm-specific configurations on the developed dataset: configurations for training and testing, aggregating configurations that are scattered in different locations. Also modify or configure some configurations specific to the dataset such as batch size and some possible modifications such as data pipeline, training strategy, etc.
+   2. Other config files, i.e. the algorithm-specific configurations on the specific dataset(s): These are the full config files that further configure training and testing settings, aggregating *base* configurations that are scattered in different locations. Inside some modifications to the fields in `_base_` configs may be performed, such as data pipeline, training strategy, etc.
 
-The final configuration content of each module is distributed in different configuration files, and the final content of each configuration file is as follows:
+All these config files are distributed in different folders according to their contents as follows:
 
 <style type="text/css">
 .tg  {border-collapse:collapse;border-spacing:0;}
@@ -624,7 +632,7 @@ The final configuration content of each module is distributed in different confi
   <tr>
     <td class="tg-9wq8">default_runtime.py<br></td>
     <td class="tg-0pky">-</td>
-    <td class="tg-0pky"><a href="#env_config">Environment Configuration</a><br><a href="#hook_config">Hook Configuration</a><br><a href="#log_config">Log Configuration</a> <br><a href="#weight_config">Weight Loading Configuration</a> <br><a href="#eval_config">Evaluation Configuration</a> <br><a href="#vis_config">Visualizaiton Configuration</a></td>
+    <td class="tg-0pky"><a href="#env_config">Environment Configuration</a><br><a href="#hook_config">Hook Configuration</a><br><a href="#log_config">Log Configuration</a> <br><a href="#weight_config">Checkpoint Loading Configuration</a> <br><a href="#eval_config">Evaluation Configuration</a> <br><a href="#vis_config">Visualizaiton Configuration</a></td>
   </tr>
   <tr>
     <td class="tg-lboi" rowspan="2">dbnet</td>
@@ -643,7 +651,7 @@ The final configuration content of each module is distributed in different confi
 The final directory structure is as follows.
 
 ```Python
-config
+configs
 ├── textdet
 │   ├── _base_
 │   │   ├── datasets
@@ -676,17 +684,17 @@ config
         └── sdmgr_novisual_60e_wildreceipt_openset.py
 ```
 
-## Naming Rules
+## Naming Conventions
 
-MMOCR follows the following style for profile naming, and contributors to the code base need to follow the same naming rules. The file names are generally divided into four sections: algorithm information, module information, training information, and data information. Words that logically belong to different sections are connected by an underscore `'_'`, and multiple words in the same section are connected by a short horizontal line `'-'`.
+MMOCR has a convention to name config files, and contributors to the code base need to follow the same naming rules. The file names are divided into four sections: algorithm information, module information, training information, and data information. Words that logically belong to different sections are connected by an underscore `'_'`, and multiple words in the same section are connected by a hyphen `'-'`.
 
 ```Python
 {{algorithm info}}_{{module info}}_{{training info}}_{{data info}}.py
 ```
 
-- algorithm info: the name of the algorithm, such as DBNet, CRNN, etc.
+- algorithm info: the name of the algorithm, such as dbnet, crnn, etc.
 
-- Module info: list some intermediate modules in the order of data flow, whose content depends on the algorithm task, and some modules strongly related to the model will be omitted to avoid overly long Config. The following examples are given.
+- module info: list some intermediate modules in the order of data flow. Its content depends on the algorithm, and some modules strongly related to the model will be omitted to avoid an overly long name. For example:
 
   - For the text detection task and the key information extraction task :
 
@@ -694,7 +702,7 @@ MMOCR follows the following style for profile naming, and contributors to the co
     {{algorithm info}}_{{backbone}}_{{neck}}_{{head}}_{{training info}}_{{data info}}.py
     ```
 
-    In general the head position is usually the algorithm's proprietary head, so it is usually omitted.
+    `{head}` is usually omitted since it's algorithm-specific.
 
   - For text recognition tasks.
 
@@ -702,8 +710,8 @@ MMOCR follows the following style for profile naming, and contributors to the co
     {{algorithm info}}_{{backbone}}_{{encoder}}_{{decoder}}_{{training info}}_{{data info}}.py
     ```
 
-    In general the encoder and decoder positions are generally exclusive to the algorithm, so they are generally omitted.
+    Since encoder and decoder are generally bound to the algorithm, they are usually omitted.
 
 - training info: some settings of the training strategy, including batch size, schedule, etc.
 
-- data info: dataset name, modality, input size, etc., such as icdar2015, synthtext, etc.
+- data info: dataset name, modality, input size, etc., such as icdar2015 and synthtext.

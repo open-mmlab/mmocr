@@ -386,7 +386,7 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type='ConcatDataset',
-        datasets=[ic13_rec_test，ic15_rec_test],
+        datasets=[ic13_rec_test, ic15_rec_test],
         pipeline=test_pipeline))
 test_dataloader = val_dataloader
 ```
@@ -476,6 +476,10 @@ model = dict(
             with_padding=True)))
 ```
 
+```{note}
+更多信息可以参考[网络结构](../basic_concepts/structures.md)
+```
+
 <div id="weight_config"></div>
 
 #### 权重加载配置
@@ -563,7 +567,7 @@ val_evaluator = dict(
 val_evaluator = dict(type='HmeanIOUMetric')
 ```
 
-以文本识别为例，多数据集使用多个 `Metric` 评测：
+以文本识别为例，对多个数据集(IC13 和 IC15)用多个 `Metric` (`WordMetric` 和 `CharMetric`)进行评测：
 
 ```Python
 # 评测部分
@@ -579,11 +583,15 @@ val_evaluator = dict(
 test_evaluator = val_evaluator
 ```
 
+```{note}
+更多信息，请参考{external+mmengine:doc}`MMEngine: 评测器<tutorials/evaluation>`和[评测器](../basic_concepts/evaluation.md)
+```
+
 <div id="vis_config"></div>
 
 ### 可视化配置
 
-每个任务配置该任务对应的可视化器。可视化器主要用于用户模型中间结果的可视化或存储，及 val 和 test 预测结果的可视化。同时可视化的结果可以通过可视化后端储存到不同的后端，比如 Wandb，TensorBoard 等。常用修改操作可见[可视化](visualization.md)。
+每个任务配置该任务对应的可视化器。可视化器主要用于用户模型中间结果的可视化或存储，及 val 和 test 预测结果的可视化。同时可视化的结果可以通过可视化后端储存到不同的后端，比如 WandB，TensorBoard 等。常用修改操作可见[可视化](visualization.md)。
 
 文本检测的可视化默认配置如下：
 
@@ -605,7 +613,7 @@ visualizer = dict(
 
    1. 算法的模型与数据流水线：OCR 领域中一般情况下数据增强策略与算法强相关，因此模型与数据流水线通常置于统一位置。
 
-   2. 算法在制定数据集上的特定配置：用于训练和测试的配置，将分散在不同位置的配置汇总。同时修改或配置一些在该数据集特有的配置比如batch size以及一些可能修改如数据流水线，训练策略等
+   2. 算法在制定数据集上的特定配置：用于训练和测试的配置，将分散在不同位置的 *base* 配置汇总。同时可能会修改一些`_base_`中的变量，如batch size, 数据流水线，训练策略等
 
 最后的将配置内容中的各个模块分布在不同配置文件中，最终各配置文件内容如下:
 
@@ -656,7 +664,7 @@ visualizer = dict(
 最终目录结构如下：
 
 ```Python
-config
+configs
 ├── textdet
 │   ├── _base_
 │   │   ├── datasets
@@ -697,7 +705,7 @@ MMOCR 按照以下风格进行配置文件命名，代码库的贡献者需要�
 {{算法信息}}_{{模块信息}}_{{训练信息}}_{{数据信息}}.py
 ```
 
-- 算法信息(algorithm info)：算法名称，如 DBNet，CRNN 等
+- 算法信息(algorithm info)：算法名称，如 dbnet, crnn 等
 
 - 模块信息(module info)：按照数据流的顺序列举一些中间的模块，其内容依赖于算法任务，同时为了避免Config过长，会省略一些与模型强相关的模块。下面举例说明：
 
