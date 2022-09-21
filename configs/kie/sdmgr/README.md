@@ -43,4 +43,4 @@ Key information extraction from document images is of paramount importance in of
 
 ## Third-party implementation
 
-[SDMGR implementation with PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_en/algorithm_sdmgr_en.md)
+* [SDMGR implementation with PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_en/algorithm_sdmgr_en.md)
