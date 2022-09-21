@@ -30,11 +30,15 @@ test_evaluator = val_evaluator
 
 `HmeanIOUMetric` 是文本检测任务中应用最广泛的评测指标之一，因其计算了检测精度（Precision）与召回率（Recall）之间的调和平均数（Harmonic mean, H-mean），故得名 `HmeanIOUMetric`。记精度为 *P*，召回率为 *R*，则 `HmeanIOUMetric` 可由下式计算得到：
 
-$$H=\\frac{2}{\\frac{1}{P}+\\frac{1}{R}}=\\frac{2PR}{P+R}$$
+```{math}
+H = \frac{2}{\frac{1}{P} + \frac{1}{R}} = \frac{2PR}{P+R}
+```
 
-另外，由于其等价于 $$\\beta = 1$$ 时的 F-score (又称 F-measure 或 F-metric)，`HmeanIOUMetric` 有时也被写作 `F1Metric` 或 `f1-score` 等：
+另外，由于其等价于 {math}`\beta = 1` 时的 F-score (又称 F-measure 或 F-metric)，`HmeanIOUMetric` 有时也被写作 `F1Metric` 或 `f1-score` 等：
 
-$$F_1=(1+\\beta^2)\\cdot\\frac{PR}{\\beta^2\\cdot P+R} = \\frac{2PR}{P+R}$$
+```{math}
+F_1=(1+\beta^2)\cdot\frac{PR}{\beta^2\cdot P+R} = \frac{2PR}{P+R}
+```
 
 在 MMOCR 的设计中，`HmeanIOUMetric` 的计算可以概括为以下几个步骤：
 
@@ -52,7 +56,7 @@ $$F_1=(1+\\beta^2)\\cdot\\frac{PR}{\\beta^2\\cdot P+R} = \\frac{2PR}{P+R}$$
 
 2. 计算 IoU 矩阵
 
-   - 在数据处理阶段，`HmeanIOUMetric` 会计算并维护一个$$M \\times N$$的 IoU 矩阵 `iou_metric`，以方便后续的边界盒配对步骤。其中，M 和 N 分别为标签边界盒与预测边界盒的数量。由此，该矩阵的每个元素都存放了第 m 个标签边界盒与第 n 个预测边界盒之间的交并比（IoU）。
+   - 在数据处理阶段，`HmeanIOUMetric` 会计算并维护一个 {math}`M \times N` 的 IoU 矩阵 `iou_metric`，以方便后续的边界盒配对步骤。其中，M 和 N 分别为标签边界盒与预测边界盒的数量。由此，该矩阵的每个元素都存放了第 m 个标签边界盒与第 n 个预测边界盒之间的交并比（IoU）。
 
 3. 基于相应的配对策略统计能被准确匹配的 GT 样本数
 
@@ -114,23 +118,29 @@ val_evaluator = [
 ]
 ```
 
-具体而言，`CharMetric` 会输出两个评测评测指标，即字符精度 `char_precision` 和字符召回率 `char_recall`。设正确预测的字符（True Positive）数量为$$\\sigma\_{tp}$$，则精度 *P* 和召回率 *R* 可由下式计算取得：
+具体而言，`CharMetric` 会输出两个评测评测指标，即字符精度 `char_precision` 和字符召回率 `char_recall`。设正确预测的字符（True Positive）数量为 {math}`\sigma_{tp}`，则精度 *P* 和召回率 *R* 可由下式计算取得：
 
-$$P=\\frac{\\sigma\_{tp}}{\\sigma\_{gt}}, R = \\frac{\\sigma\_{tp}}{\\sigma\_{pred}}$$
+```{math}
+P=\frac{\sigma_{tp}}{\sigma_{gt}}, R = \frac{\sigma_{tp}}{\sigma_{pred}}
+```
 
-其中，$$\\sigma\_{gt}$$与$$\\sigma\_{pred}$$分别为标签文本与预测文本所包含的字符总数。
+其中，{math}`\sigma_{gt}` 与 {math}`\sigma_{pred}` 分别为标签文本与预测文本所包含的字符总数。
 
 例如，假设标签文本为 "MM**O**CR"，预测文本为 "mm**0**cR**1**"，则使用 `CharMetric` 评测指标的得分为：
 
-$$P=\\frac{4}{5}, R=\\frac{4}{6}$$
+```{math}
+P=\frac{4}{5}, R=\frac{4}{6}
+```
 
 ### OneMinusNEDMetric
 
-`OneMinusNEDMetric（1-N.E.D）` 常用于中文或英文**文本行级别**标注的文本识别评测，不同于全匹配的评测标准要求预测与真实样本完全一致，该评测指标使用归一化的[编辑距离](https://en.wikipedia.org/wiki/Edit_distance)（Editing Distance，又名莱温斯坦距离 Levenshtein Distance）来测量预测文本与真实文本之间的差异性，从而在评测长文本样本时能够更好地区分出模型的性能差异。假设真实和预测文本分别为$$s_i$$和$$\\hat{s_i}$$，其长度分别为$$l\_{i}$$和$$\\hat{l_i}$$，则 `OneMinusNEDMetric` 得分可由下式计算得到：
+`OneMinusNEDMetric（1-N.E.D）` 常用于中文或英文**文本行级别**标注的文本识别评测，不同于全匹配的评测标准要求预测与真实样本完全一致，该评测指标使用归一化的[编辑距离](https://en.wikipedia.org/wiki/Edit_distance)（Edit Distance，又名莱温斯坦距离 Levenshtein Distance）来测量预测文本与真实文本之间的差异性，从而在评测长文本样本时能够更好地区分出模型的性能差异。假设真实和预测文本分别为 {math}`s_i` 和 {math}`\hat{s_i}`，其长度分别为 {math}`l_{i}` 和 {math}`\hat{l_i}`，则 `OneMinusNEDMetric` 得分可由下式计算得到：
 
-$$score = 1 - \\frac{1}{N}\\sum\_{i=1}^{N}\\frac{D(s_i, \\hat{s\_{i}})}{max(l\_{i},\\hat{l\_{i}})}$$
+```{math}
+score = 1 - \frac{1}{N}\sum_{i=1}^{N}\frac{D(s_i, \hat{s_{i}})}{max(l_{i},\hat{l_{i}})}
+```
 
-其中，*N* 是样本总数，$$D(s_1, s_2)$$为两个字符串之间的编辑距离。
+其中，*N* 是样本总数，{math}`D(s_1, s_2)` 为两个字符串之间的编辑距离。
 
 例如，假设真实标签为 "OpenMMLabMMOCR"，模型 A 的预测结果为 "0penMMLabMMOCR", 模型 B 的预测结果为 "uvwxyz"，则采用全匹配和 `OneMinusNEDMetric` 评测指标的结果分别为:
 

@@ -30,11 +30,15 @@ In general, the evaluation metric used in each task is conventionally determined
 
 `HmeanIOUMetric` is one of the most widely used evaluation metrics in text detection tasks, because it calculates the harmonic mean (H-mean) between the detection precision (P) and recall rate (R). The `HmeanIOUMetric` can be calculated by the following equation:
 
-$$H=\\frac{2}{\\frac{1}{P}+\\frac{1}{R}}=\\frac{2PR}{P+R}$$
+```{math}
+H = \frac{2}{\frac{1}{P} + \frac{1}{R}} = \frac{2PR}{P+R}
+```
 
-In addition, since it is equivalent to the F-score (also known as F-measure or F-metric) when $$\\beta = 1$$, `HmeanIOUMetric` is sometimes written as `F1Metric` or `f1-score`:
+In addition, since it is equivalent to the F-score (also known as F-measure or F-metric) when {math}`\beta = 1`, `HmeanIOUMetric` is sometimes written as `F1Metric` or `f1-score`:
 
-$$F_1=(1+\\beta^2)\\cdot\\frac{PR}{\\beta^2\\cdot P+R} = \\frac{2PR}{P+R}$$
+```{math}
+F_1=(1+\beta^2)\cdot\frac{PR}{\beta^2\cdot P+R} = \frac{2PR}{P+R}
+```
 
 In MMOCR, the calculation of `HmeanIOUMetric` can be summarized as the following steps:
 
@@ -52,7 +56,7 @@ In MMOCR, the calculation of `HmeanIOUMetric` can be summarized as the following
 
 2. Calculate the IoU matrix
 
-   - At the data processing stage, `HmeanIOUMetric` will calculate and maintain an $$M \\times N$$ IoU matrix `iou_metric` for the convenience of the subsequent bounding box pairing step. Here, M and N represent the number of label bounding boxes and prediction bounding boxes, respectively. Therefore, each element of this matrix stores the IoU between the m-th label bounding box and the n-th prediction bounding box.
+   - At the data processing stage, `HmeanIOUMetric` will calculate and maintain an {math}`M \times N` IoU matrix `iou_metric` for the convenience of the subsequent bounding box pairing step. Here, M and N represent the number of label bounding boxes and prediction bounding boxes, respectively. Therefore, each element of this matrix stores the IoU between the m-th label bounding box and the n-th prediction bounding box.
 
 3. Compute the number of GT samples that can be accurately matched based on the corresponding pairing strategy
 
@@ -114,23 +118,29 @@ val_evaluator = [
 ]
 ```
 
-Specifically, `CharMetric` will output two evaluation metrics, namely `char_precision` and `char_recall`. Let the number of correctly predicted characters (True Positive) be $$\\sigma\_{tp}$$, then the precision *P* and recall *R* can be calculated by the following equation:
+Specifically, `CharMetric` will output two evaluation metrics, namely `char_precision` and `char_recall`. Let the number of correctly predicted characters (True Positive) be {math}`\sigma_{tp}`, then the precision *P* and recall *R* can be calculated by the following equation:
 
-$$P=\\frac{\\sigma\_{tp}}{\\sigma\_{gt}}, R = \\frac{\\sigma\_{tp}}{\\sigma\_{pred}}$$
+```{math}
+P=\frac{\sigma_{tp}}{\sigma_{gt}}, R = \frac{\sigma_{tp}}{\sigma_{pred}}
+```
 
-where $$\\sigma\_{gt}$$ and $$\\sigma\_{pred}$$ represent the total number of characters in the label text and the predicted text, respectively.
+where {math}`\sigma_{gt}` and {math}`\sigma_{pred}` represent the total number of characters in the label text and the predicted text, respectively.
 
 For example, assume that the label text is "MM**O**CR" and the predicted text is "mm**0**cR**1**". The score of the `CharMetric` is:
 
-$$P=\\frac{4}{5}, R=\\frac{4}{6}$$
+```{math}
+P=\frac{4}{5}, R=\frac{4}{6}
+```
 
 ### OneMinusNEDMetric
 
-`OneMinusNEDMetric（1-N.E.D）` is commonly used for text recognition evaluation of Chinese or English **text line-level** annotations. Unlike the full matching metric that requires the prediction and the gt text to be exactly the same, `1-N.E.D` uses the normalized [editing distance](https://en.wikipedia.org/wiki/Edit_distance) (also known as Levenshtein Distance) to measure the difference between the predicted and the gt text, so that the performance difference of the model can be better distinguished when evaluating long texts. Assume that the real and predicted texts are $$s_i$$ and $$\\hat{s_i}$$, respectively, and their lengths are $$l\_{i}$$ and $$\\hat{l_i}$$, respectively. The `OneMinusNEDMetric` score can be calculated by the following formula:
+`OneMinusNEDMetric（1-N.E.D）` is commonly used for text recognition evaluation of Chinese or English **text line-level** annotations. Unlike the full matching metric that requires the prediction and the gt text to be exactly the same, `1-N.E.D` uses the normalized [edit distance](https://en.wikipedia.org/wiki/Edit_distance) (also known as Levenshtein Distance) to measure the difference between the predicted and the gt text, so that the performance difference of the model can be better distinguished when evaluating long texts. Assume that the real and predicted texts are {math}`s_i` and {math}`\hat{s_i}`, respectively, and their lengths are {math}`l_{i}` and {math}`\hat{l_i}`, respectively. The `OneMinusNEDMetric` score can be calculated by the following formula:
 
-$$score = 1 - \\frac{1}{N}\\sum\_{i=1}^{N}\\frac{D(s_i, \\hat{s\_{i}})}{max(l\_{i},\\hat{l\_{i}})}$$
+```{math}
+score = 1 - \frac{1}{N}\sum_{i=1}^{N}\frac{D(s_i, \hat{s_{i}})}{max(l_{i},\hat{l_{i}})}
+```
 
-where *N* is the total number of samples, and $$D(s_1, s_2)$$ is the \[editing distance\] between two strings.
+where *N* is the total number of samples, and {math}`D(s_1, s_2)` is the edit distance between two strings.
 
 For example, assume that the real label is "OpenMMLabMMOCR", the prediction of model A is "0penMMLabMMOCR", and the prediction of model B is "uvwxyz". The results of the full matching and `OneMinusNEDMetric` evaluation metrics are as follows:
 
