@@ -9,20 +9,20 @@ val_evaluator = dict(type='HmeanIOUMetric')
 test_evaluator = val_evaluator
 ```
 
-```{tips}
+```{tip}
 更多评测相关配置请参考评[测配置教程](../user_guides/config.md#评测配置)。
 ```
 
 如下表所示，MMOCR 目前针对文本检测、识别、及关键信息抽取等任务共内置了 5 种评测指标，分别为 `HmeanIOUMetric`，`WordMetric`，`CharMetric`，`OneMinusNEDMetric`，和 `F1Metric`。
 
-|                                                                 |              |                                                   |                                                                       |
-| --------------------------------------------------------------- | ------------ | ------------------------------------------------- | --------------------------------------------------------------------- |
-| 评测指标                                                        | 任务类型     | 输入字段                                          | 输出字段                                                              |
-| [HmeanIOUMetric](mmocr.evaluation.metrics.HmeanIOUMetric)       | 文本检测     | `pred_polygons`<br>`pred_scores`<br>`gt_polygons` | `recall`<br>`precision`<br>`hmean`                                    |
-| [WordMetric](mmocr.evaluation.metrics.WordMetric)               | 文本识别     | `pred_text`<br>`gt_text`                          | `word_acc`<br>`word_acc_ignore_case`<br>`word_acc_ignore_case_symbol` |
-| [CharMetric](mmocr.evaluation.metrics.CharMetric)               | 文本识别     | `pred_text`<br>`gt_text`                          | `char_recall`<br>`char_precision`                                     |
-| [OneMinusNEDMetric](mmocr.evaluation.metrics.OneMinusNEDMetric) | 文本识别     | `pred_text`<br>`gt_text`                          | `1-N.E.D`                                                             |
-| [F1Metric](mmocr.evaluation.metrics.F1Metric)                   | 关键信息抽取 | `pred_labels`<br>`gt_labels`                      | `macro_f1`<br>`micro_f1`                                              |
+|                                                                        |              |                                                   |                                                                       |
+| ---------------------------------------------------------------------- | ------------ | ------------------------------------------------- | --------------------------------------------------------------------- |
+| 评测指标                                                               | 任务类型     | 输入字段                                          | 输出字段                                                              |
+| [HmeanIOUMetric](mmocr.evaluation.metrics.hmean_iou_metric.HmeanIOUMetric) | 文本检测     | `pred_polygons`<br>`pred_scores`<br>`gt_polygons` | `recall`<br>`precision`<br>`hmean`                                    |
+| [WordMetric](mmocr.evaluation.metrics.recog_metric.WordMetric)         | 文本识别     | `pred_text`<br>`gt_text`                          | `word_acc`<br>`word_acc_ignore_case`<br>`word_acc_ignore_case_symbol` |
+| [CharMetric](mmocr.evaluation.metrics.recog_metric.CharMetric)         | 文本识别     | `pred_text`<br>`gt_text`                          | `char_recall`<br>`char_precision`                                     |
+| [OneMinusNEDMetric](mmocr.evaluation.metrics.recog_metric.OneMinusNEDMetric) | 文本识别     | `pred_text`<br>`gt_text`                          | `1-N.E.D`                                                             |
+| [F1Metric](mmocr.evaluation.metrics.f_metric.F1Metric)                 | 关键信息抽取 | `pred_labels`<br>`gt_labels`                      | `macro_f1`<br>`micro_f1`                                              |
 
 通常来说，每一类任务所采用的评测标准是约定俗成的，用户一般无须深入了解或手动修改评测方法的内部实现。然而，为了方便用户实现更加定制化的需求，本文档将进一步介绍了 MMOCR 内置评测算法的具体实现策略，以及可配置参数。
 

@@ -9,20 +9,20 @@ val_evaluator = dict(type='HmeanIOUMetric')
 test_evaluator = val_evaluator
 ```
 
-```{tips}
+```{tip}
 More evaluation related configurations can be found in the [evaluation configuration tutorial](../user_guides/config.md#evaluation-configuration).
 ```
 
 As shown in the following table, MMOCR currently supports 5 evaluation metrics for text detection, text recognition, and key information extraction tasks, including `HmeanIOUMetric`, `WordMetric`, `CharMetric`, `OneMinusNEDMetric`, and `F1Metric`.
 
-|                                                                 |         |                                                   |                                                                       |
-| --------------------------------------------------------------- | ------- | ------------------------------------------------- | --------------------------------------------------------------------- |
-| Metric                                                          | Task    | Input Field                                       | Output Field                                                          |
-| [HmeanIOUMetric](mmocr.evaluation.metrics.HmeanIOUMetric)       | TextDet | `pred_polygons`<br>`pred_scores`<br>`gt_polygons` | `recall`<br>`precision`<br>`hmean`                                    |
-| [WordMetric](mmocr.evaluation.metrics.WordMetric)               | TextRec | `pred_text`<br>`gt_text`                          | `word_acc`<br>`word_acc_ignore_case`<br>`word_acc_ignore_case_symbol` |
-| [CharMetric](mmocr.evaluation.metrics.CharMetric)               | TextRec | `pred_text`<br>`gt_text`                          | `char_recall`<br>`char_precision`                                     |
-| [OneMinusNEDMetric](mmocr.evaluation.metrics.OneMinusNEDMetric) | TextRec | `pred_text`<br>`gt_text`                          | `1-N.E.D`                                                             |
-| [F1Metric](mmocr.evaluation.metrics.F1Metric)                   | KIE     | `pred_labels`<br>`gt_labels`                      | `macro_f1`<br>`micro_f1`                                              |
+|                                                                             |         |                                                   |                                                                       |
+| --------------------------------------------------------------------------- | ------- | ------------------------------------------------- | --------------------------------------------------------------------- |
+| Metric                                                                      | Task    | Input Field                                       | Output Field                                                          |
+| [HmeanIOUMetric](mmocr.evaluation.metrics.hmean_iou_metric.HmeanIOUMetric)  | TextDet | `pred_polygons`<br>`pred_scores`<br>`gt_polygons` | `recall`<br>`precision`<br>`hmean`                                    |
+| [WordMetric](mmocr.evaluation.metrics.recog_metric.WordMetric)              | TextRec | `pred_text`<br>`gt_text`                          | `word_acc`<br>`word_acc_ignore_case`<br>`word_acc_ignore_case_symbol` |
+| [CharMetric](mmocr.evaluation.metrics.recog_metric.CharMetric)              | TextRec | `pred_text`<br>`gt_text`                          | `char_recall`<br>`char_precision`                                     |
+| [OneMinusNEDMetric](mmocr.evaluation.metrics.recog_metric.OneMinusNEDMetric) | TextRec | `pred_text`<br>`gt_text`                          | `1-N.E.D`                                                             |
+| [F1Metric](mmocr.evaluation.metrics.f_metric.F1Metric)                      | KIE     | `pred_labels`<br>`gt_labels`                      | `macro_f1`<br>`micro_f1`                                              |
 
 In general, the evaluation metric used in each task is conventionally determined. Users usually do not need to understand or manually modify the internal implementation of the evaluation metric. However, to facilitate more customized requirements, this document will further introduce the specific implementation details and configurable parameters of the built-in metrics in MMOCR.
 
