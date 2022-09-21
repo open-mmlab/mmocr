@@ -34,13 +34,11 @@ Scene text recognition (STR) is the task of recognizing character sequences in n
 
 ## Results and Models
 
-Coming Soon!
-
-|                                 Methods                                 |        | Regular Text |      |     |      | Irregular Text |      |         download         |
-| :---------------------------------------------------------------------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :----------------------: |
-|                                                                         | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |                          |
-|       [Satrn](/configs/textrecog/satrn/satrn_shallow_5e_st_mj.py)       |        |              |      |     |      |                |      | [model](<>) \| [log](<>) |
-| [Satrn_small](/configs/textrecog/satrn/satrn_shallow-small_5e_st_mj.py) |        |              |      |     |      |                |      | [model](<>) \| [log](<>) |
+|                                 Methods                                 |        | Regular Text |        |     |        | Irregular Text |        |         download         |
+| :---------------------------------------------------------------------: | :----: | :----------: | :----: | :-: | :----: | :------------: | :----: | :----------------------: |
+|                                                                         | IIIT5K |     SVT      |  IC13  |     |  IC15  |      SVTP      |  CT80  |                          |
+|       [Satrn](/configs/textrecog/satrn/satrn_shallow_5e_st_mj.py)       | 0.9600 |    0.9196    | 0.9606 |     | 0.8031 |     0.8837     | 0.8993 | [model](<>) \| [log](<>) |
+| [Satrn_small](/configs/textrecog/satrn/satrn_shallow-small_5e_st_mj.py) | 0.9423 |    0.8995    | 0.9567 |     | 0.7877 |     0.8574     | 0.8507 | [model](<>) \| [log](<>) |
 
 ## Citation
 

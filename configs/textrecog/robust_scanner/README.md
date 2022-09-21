@@ -40,12 +40,10 @@ The attention-based encoder-decoder framework has recently achieved impressive r
 
 ## Results and Models
 
-Coming Soon!
-
-|                                               Methods                                                | GPUs |        | Regular Text |      |     |      | Irregular Text |      |         download         |
-| :--------------------------------------------------------------------------------------------------: | :--: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :----------------------: |
-|                                                                                                      |      | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |                          |
-| [RobustScanner](configs/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real.py) |      |        |              |      |     |      |                |      | [model](<>) \| [log](<>) |
+|                                               Methods                                                | GPUs |        | Regular Text |        |     |        | Irregular Text |        |         download         |
+| :--------------------------------------------------------------------------------------------------: | :--: | :----: | :----------: | :----: | :-: | :----: | :------------: | :----: | :----------------------: |
+|                                                                                                      |      | IIIT5K |     SVT      |  IC13  |     |  IC15  |      SVTP      |  CT80  |                          |
+| [RobustScanner](configs/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real.py) |  2   | 0.9510 |    0.8934    | 0.9320 |     | 0.7559 |     0.8078     | 0.8715 | [model](<>) \| [log](<>) |
 
 ## References
 

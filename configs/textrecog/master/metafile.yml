@@ -6,7 +6,7 @@ Collections:
         - Adam
       Epochs: 12
       Batch Size: 512
-      Training Resources: 4x Tesla A100
+      Training Resources: 4x NVIDIA A100-SXM4-80GB
       Architecture:
         - ResNet31-GCAModule
         - MASTERDecoder
@@ -28,25 +28,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc:
+          word_acc: 0.9490
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc:
+          word_acc: 0.8967
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc:
+          word_acc: 0.9517
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc:
+          word_acc: 0.7631
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc:
+          word_acc: 0.8465
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc:
+          word_acc: 0.8854
     Weights:

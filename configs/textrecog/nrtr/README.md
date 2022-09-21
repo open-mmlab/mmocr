@@ -34,13 +34,11 @@ Scene text recognition has attracted a great many researches due to its importan
 
 ## Results and Models
 
-Coming Soon!
-
-|                               Methods                                |   Backbone   |        | Regular Text |      |     |      | Irregular Text |      |         download         |
-| :------------------------------------------------------------------: | :----------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :----------------------: |
-|                                                                      |              | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |                          |
-| [NRTR](/configs/textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj.py) | R31-1/16-1/8 |        |              |      |     |      |                |      | [model](<>) \| [log](<>) |
-| [NRTR](/configs/textrecog/nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj.py)  | R31-1/8-1/4  |        |              |      |     |      |                |      | [model](<>) \| [log](<>) |
+|                               Methods                               |       Backbone        |        | Regular Text |        |     |        | Irregular Text |        |         download         |
+| :-----------------------------------------------------------------: | :-------------------: | :----: | :----------: | :----: | :-: | :----: | :------------: | :----: | :----------------------: |
+|                                                                     |                       | IIIT5K |     SVT      |  IC13  |     |  IC15  |      SVTP      |  CT80  |                          |
+| [NRTR](/configs/textrecog/nrtr/nrtr_modality-transform_6e_st_mj.py) | NRTRModalityTransform | 0.9150 |    0.8825    | 0.9369 |     | 0.7232 |     0.7783     | 0.7500 | [model](<>) \| [log](<>) |
+| [NRTR](/configs/textrecog/nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj.py) |      R31-1/8-1/4      | 0.9483 |    0.8825    | 0.9507 |     | 0.7559 |     0.8016     | 0.8889 | [model](<>) \| [log](<>) |
 
 ## Citation
 

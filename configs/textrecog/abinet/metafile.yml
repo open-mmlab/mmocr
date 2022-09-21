@@ -6,7 +6,7 @@ Collections:
       - Adam
     Epochs: 20
     Batch Size: 1536
-    Training Resources: 8x Tesla V100
+    Training Resources: 2 x NVIDIA A100-SXM4-80GB
     Architecture:
       - ResNetABI
       - ABIVisionModel
@@ -18,9 +18,9 @@ Collections:
   README: configs/textrecog/abinet/README.md
 
 Models:
-  - Name: abinet-vision_6e_st-an_mj
+  - Name: abinet-vision_20e_st-an_mj
     In Collection: ABINet
-    Config: configs/textrecog/abinet/abinet-vision_6e_st-an_mj.py
+    Config: configs/textrecog/abinet/abinet-vision_20e_st-an_mj.py
     Metadata:
       Training Data:
         - SynthText
@@ -29,59 +29,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc:
+          word_acc: 0.9523
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc:
+          word_acc: 0.9057
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc:
+          word_acc: 0.9369
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc:
+          word_acc: 0.7886
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc:
+          word_acc: 0.8403
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc:
-    Weights:
-
-  - Name: abinet_6e_st-an_mj
-    In Collection: ABINet
-    Config: configs/textrecog/abinet/abinet_6e_st-an_mj.py
-    Metadata:
-      Training Data:
-        - SynthText
-        - Syn90k
-    Results:
-      - Task: Text Recognition
-        Dataset: IIIT5K
-        Metrics:
-          word_acc:
-      - Task: Text Recognition
-        Dataset: SVT
-        Metrics:
-          word_acc:
-      - Task: Text Recognition
-        Dataset: ICDAR2013
-        Metrics:
-          word_acc:
-      - Task: Text Recognition
-        Dataset: ICDAR2015
-        Metrics:
-          word_acc:
-      - Task: Text Recognition
-        Dataset: SVTP
-        Metrics:
-          word_acc:
-      - Task: Text Recognition
-        Dataset: CT80
-        Metrics:
-          word_acc:
+          word_acc: 0.8437
     Weights:

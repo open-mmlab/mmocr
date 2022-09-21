@@ -4,9 +4,9 @@ Collections:
     Training Data: OCRDataset
     Training Techniques:
       - Adam
-    Training Resources: 48x GeForce GTX 1080 Ti
+    Training Resources: 8x NVIDIA A100-SXM4-80GB
     Epochs: 5
-    Batch Size: 3072
+    Batch Size: 384
     Architecture:
       - ResNet31OCR
       - SAREncoder
@@ -34,27 +34,27 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc:
+          word_acc: 0.9533
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc:
+          word_acc: 0.8841
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc:
+          word_acc: 0.9369
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc:
+          word_acc: 0.7602
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc:
+          word_acc: 0.8326
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc:
+          word_acc: 0.9028
     Weights:
 
   - Name: sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real
@@ -74,25 +74,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc:
+          word_acc: 0.9553
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc:
+          word_acc: 0.8717
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc:
+          word_acc: 0.9409
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc:
+          word_acc: 0.7737
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc:
+          word_acc: 0.8093
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc:
+          word_acc: 0.8924
     Weights:
