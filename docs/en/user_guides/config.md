@@ -164,7 +164,7 @@ env_cfg = dict(
     cudnn_benchmark=True,
     mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0),
     dist_cfg=dict(backend='nccl'))
-random_cfg = dict(seed=None)
+randomness = dict(seed=None)
 ```
 
 There are three main components:
@@ -173,7 +173,8 @@ There are three main components:
 
 - `env_cfg` configures the distributed environment, see {external+mmengine:doc}`MMEngine: Runner <tutorials/runner>` for more details.
 
-- `env_cfg` configures the distributed environment, see {external+mmengine:doc}`MMEngine: Runner <tutorials/runner>` for more details.
+- `randomness`: Some settings to make the experiment as reproducible
+  as possible like seed and deterministic. see {external+mmengine:doc}`MMEngine: Runner <tutorials/runner>` for more details.
 
 <div id="hook_config"></div>
 
@@ -183,12 +184,12 @@ Hooks are divided into two main parts, default hooks, which are required for all
 
 ```Python
 default_hooks = dict(
-    timer=dict(type='IterTimerHook'), # Time recording, including data enhancement time as well as model inference time
-    logger=dict(type='LoggerHook', interval=1), # Logging printing interval
-    param_scheduler=dict(type='ParamSchedulerHook'), # Update learning rates and other super-references
-    checkpoint=dict(type='CheckpointHook', interval=1),#  Save checkpoint. `interval` control save interval
-    sampler_seed=dict(type='DistSamplerSeedHook'), # Set random seeds in multi-machine situations
-    sync_buffer=dict(type='SyncBuffersHook'), # Synchronize buffer in case of multiple GPUS
+    timer=dict(type='IterTimerHook'), # Time recording, including data time as well as model inference time
+    logger=dict(type='LoggerHook', interval=1), # Collect logs from different components
+    param_scheduler=dict(type='ParamSchedulerHook'), # Update some hyper-parameters in optimizer
+    checkpoint=dict(type='CheckpointHook', interval=1),# Save checkpoint. `interval` control save interval
+    sampler_seed=dict(type='DistSamplerSeedHook'), # Data-loading sampler for distributed training.
+    sync_buffer=dict(type='SyncBuffersHook'), # Synchronize buffer in case of distributed training
     visualization=dict( # Visualize the results of val and test
         type='VisualizationHook',
         interval=1,
@@ -321,7 +322,7 @@ ic15_rec_test = dict(
 
 In MMOCR, dataset construction and data preparation are decoupled from each other. In other words, dataset classes such as `OCRDataset` are responsible for reading and parsing annotation files, while Data Transforms further implement data loading, data augmentation, data formatting and other related functions.
 
-In general, there are different augmentation strategies for training and testing, so there are usually `training_pipeline` and `testing_pipeline`. More information can be found in [Data Pipeline](../basic_concepts/transforms.md)
+In general, there are different augmentation strategies for training and testing, so there are usually `training_pipeline` and `testing_pipeline`. More information can be found in [Data Transforms](../basic_concepts/transforms.md)
 
 - The data augmentation process of the training pipeline is usually: data loading (LoadImageFromFile) -> annotation information loading (LoadXXXAnntation) -> data augmentation -> data formatting (PackXXXInputs).
 
@@ -397,7 +398,7 @@ test_dataloader = val_dataloader
 
 #### Network Configuration
 
-This section configures the network architecture. Different algorithmic tasks use different network architectures.
+This section configures the network architecture. Different algorithmic tasks use different network architectures. Find more info about network architecture in [structures](../basic_concepts/structures.md)
 
 ##### Text Detection
 
@@ -476,10 +477,6 @@ model = dict(
             with_padding=True)))
 ```
 
-```{note}
-Find more info about network architecture in [structures](../basic_concepts/structures.md)
-```
-
 <div id="weight_config"></div>
 
 #### Checkpoint Loading Configuration
@@ -501,11 +498,11 @@ More can be found in {external+mmengine:doc}`MMEngine: Load Weights or Recover T
 
 ### Evaluation Configuration
 
-In model validation and model testing, quantitative measurement of model accuracy is often required. MMOCR performs this function by means of `Metric` and `Evaluator`. For more information, please refer to {external+mmengine:doc}`MMEngine: Evaluation <tutorials/evaluation>`.
+In model validation and model testing, quantitative measurement of model accuracy is often required. MMOCR performs this function by means of `Metric` and `Evaluator`. For more information, please refer to {external+mmengine:doc}`MMEngine: Evaluation <tutorials/evaluation>` and [Evaluation](../basic_concepts/evaluation.md)
 
 #### Evaluator
 
-Raters are mainly used to manage multiple datasets and multiple `Metric`s. For single and multiple dataset cases, there are single and multiple dataset evaluators, both of which can manage multiple `Metric`.
+Evaluator is mainly used to manage multiple datasets and multiple `Metrics`. For single and multiple dataset cases, there are single and multiple dataset evaluators, both of which can manage multiple `Metrics`.
 
 The single-dataset evaluator is configured as follows.
 
@@ -570,10 +567,6 @@ val_evaluator = dict(
 test_evaluator = val_evaluator
 ```
 
-```{note}
-For more information, please refer to {external+mmengine:doc}`MMEngine: Evaluation <tutorials/evaluation>` and [Evaluation](../basic_concepts/evaluation.md)
-```
-
 <div id="vis_config"></div>
 
 ### Visualizaiton Configuration
@@ -600,7 +593,7 @@ All configuration files of `MMOCR` are placed under the `configs` folder. To avo
 
    1. Config files starting with `_base_`: Configures the model and data pipeline of an algorithm. In OCR domain, data augmentation strategies are generally strongly related to the algorithm, so the model and data pipeline are usually placed in the same config file.
 
-   2. Other config files, i.e. the algorithm-specific configurations on the specific dataset(s): These are the full config files that further configure training and testing settings, aggregating *base* configurations that are scattered in different locations. Inside some modifications to the fields in `_base_` configs may be performed, such as data pipeline, training strategy, etc.
+   2. Other config files, i.e. the algorithm-specific configurations on the specific dataset(s): These are the full config files that further configure training and testing settings, aggregating `_base_` configurations that are scattered in different locations. Inside some modifications to the fields in `_base_` configs may be performed, such as data pipeline, training strategy, etc.
 
 All these config files are distributed in different folders according to their contents as follows:
 

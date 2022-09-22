@@ -162,7 +162,7 @@ env_cfg = dict(
     cudnn_benchmark=True,
     mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0),
     dist_cfg=dict(backend='nccl'))
-random_cfg = dict(seed=None)
+randomness = dict(seed=None)
 ```
 
 主要包含三个部分：
@@ -171,7 +171,7 @@ random_cfg = dict(seed=None)
 
 - `env_cfg` 设置分布式环境配置， 更多配置可以详见 {external+mmengine:doc}`MMEngine: Runner <tutorials/runner>`。
 
-- `random_cfg` 设置 numpy， torch，cudnn 等随机种子，更多配置详见 {external+mmengine:doc}`MMEngine: Runner <tutorials/runner>`。
+- `randomness` 设置 numpy， torch，cudnn 等随机种子，更多配置详见 {external+mmengine:doc}`MMEngine: Runner <tutorials/runner>`。
 
 <div id="hook_config"></div>
 
@@ -397,7 +397,7 @@ test_dataloader = val_dataloader
 
 #### 网络配置
 
-用于配置模型的网络结构，不同的算法任务有不同的网络结构。
+用于配置模型的网络结构，不同的算法任务有不同的网络结构。更多信息可以参考[网络结构](../basic_concepts/structures.md)
 
 ##### 文本检测
 
@@ -476,10 +476,6 @@ model = dict(
             with_padding=True)))
 ```
 
-```{note}
-更多信息可以参考[网络结构](../basic_concepts/structures.md)
-```
-
 <div id="weight_config"></div>
 
 #### 权重加载配置
@@ -501,7 +497,7 @@ resume = False # 是否 resume
 
 ### 评测配置
 
-在模型验证和模型测试中，通常需要对模型精度做定量评测。MMOCR 通过评测指标(Metric)和评测器(Evaluator)来完成这一功能。更多可以参考{external+mmengine:doc}`MMEngine: 评测指标(Metric)和评测器(Evaluator) <tutorials/evaluation>`
+在模型验证和模型测试中，通常需要对模型精度做定量评测。MMOCR 通过评测指标(Metric)和评测器(Evaluator)来完成这一功能。更多可以参考{external+mmengine:doc}`MMEngine: 评测指标(Metric)和评测器(Evaluator) <tutorials/evaluation>` 和 [评测器](../basic_concepts/evaluation.md)
 
 评测部分包含两个部分，评测器和评测指标。接下来我们分部分展开讲解。
 
@@ -581,10 +577,6 @@ val_evaluator = dict(
     ],
     dataset_prefixes=['IC13', 'IC15'])
 test_evaluator = val_evaluator
-```
-
-```{note}
-更多信息，请参考{external+mmengine:doc}`MMEngine: 评测器<tutorials/evaluation>`和[评测器](../basic_concepts/evaluation.md)
 ```
 
 <div id="vis_config"></div>
