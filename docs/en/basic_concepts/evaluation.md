@@ -111,7 +111,7 @@ Assume that the real label is `MMOCR!` and the model output is `mmocr`. The `Wor
 # Use CharMetric for text recognition task
 val_evaluator = [dict(type='CharMetric')]
 
-# In addition, MMOCR also supports the combination evaluation of multiple metrics for the same task, such as using WordMetric and CharMetric at the same time
+# In addition, MMOCR also supports the combined evaluation of multiple metrics for the same task, such as using WordMetric and CharMetric at the same time
 val_evaluator = [
     dict(type='WordMetric', mode=['exact', 'ignore_case', 'ignore_case_symbol']),
     dict(type='CharMetric')
