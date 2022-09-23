@@ -42,7 +42,7 @@ In MMOCR, the calculation of `HmeanIOUMetric` can be summarized as the following
 
 1. Filter out invalid predictions
 
-   - Filter out predictions with a score lower than `pred_score_thrs`
+   - Filter out predictions with a score is lower than `pred_score_thrs`
    - Filter out predictions overlapping with `ignored` ground truth boxes with an overlap ratio higher than `ignore_precision_thr`
 
    It is worth noting that `pred_score_thrs` will **automatically search** for the **best threshold** within a certain range by default, and users can also customize the search range by manually modifying the configuration file:
@@ -109,7 +109,7 @@ Assume that the real label is `MMOCR!` and the model output is `mmocr`. The `Wor
 # Use CharMetric for text recognition task
 val_evaluator = [dict(type='CharMetric')]
 
-# In addition, MMOCR also supports the combination evaluation of multiple metrics for the same task, such as using WordMetric and CharMetric at the same time
+# In addition, MMOCR also supports the combined evaluation of multiple metrics for the same task, such as using WordMetric and CharMetric at the same time
 val_evaluator = [
     dict(type='WordMetric', mode=['exact', 'ignore_case', 'ignore_case_symbol']),
     dict(type='CharMetric')

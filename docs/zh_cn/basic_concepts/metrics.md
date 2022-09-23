@@ -8,7 +8,7 @@ test_evaluator = val_evaluator
 ```
 
 ```{tip}
-更多评测相关配置请参考评[测配置教程](../user_guides/config.md#评测配置)。
+更多评测相关配置请参考[评测配置教程](../user_guides/config.md#评测配置)。
 ```
 
 如下表所示，MMOCR 目前针对文本检测、识别、及关键信息抽取等任务共内置了 5 种评测指标，分别为 `HmeanIOUMetric`，`WordMetric`，`CharMetric`，`OneMinusNEDMetric`，和 `F1Metric`。
