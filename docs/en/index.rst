@@ -34,7 +34,6 @@ You can switch between English and Chinese in the lower-left corner of the layou
    basic_concepts/transforms.md
    basic_concepts/visualizers.md
    basic_concepts/evaluation.md
-   basic_concepts/metrics.md
    basic_concepts/convention.md
    basic_concepts/engine.md
 
