@@ -174,7 +174,7 @@ There are three main components:
 - `env_cfg` configures the distributed environment, see {external+mmengine:doc}`MMEngine: Runner <tutorials/runner>` for more details.
 
 - `randomness`: Some settings to make the experiment as reproducible
-  as possible like seed and deterministic. see {external+mmengine:doc}`MMEngine: Runner <tutorials/runner>` for more details.
+  as possible like seed and deterministic. See {external+mmengine:doc}`MMEngine: Runner <tutorials/runner>` for more details.
 
 <div id="hook_config"></div>
 
