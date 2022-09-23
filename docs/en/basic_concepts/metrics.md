@@ -5,6 +5,12 @@ MMOCR implements widely-used evaluation metrics for text detection, text recogni
 ```python
 val_evaluator = dict(type='HmeanIOUMetric')
 test_evaluator = val_evaluator
+
+# In addition, MMOCR also supports the combined evaluation of multiple metrics for the same task, such as using WordMetric and CharMetric at the same time
+val_evaluator = [
+    dict(type='WordMetric', mode=['exact', 'ignore_case', 'ignore_case_symbol']),
+    dict(type='CharMetric')
+]
 ```
 
 ```{tip}
@@ -108,12 +114,6 @@ Assume that the real label is `MMOCR!` and the model output is `mmocr`. The `Wor
 ```python
 # Use CharMetric for text recognition task
 val_evaluator = [dict(type='CharMetric')]
-
-# In addition, MMOCR also supports the combined evaluation of multiple metrics for the same task, such as using WordMetric and CharMetric at the same time
-val_evaluator = [
-    dict(type='WordMetric', mode=['exact', 'ignore_case', 'ignore_case_symbol']),
-    dict(type='CharMetric')
-]
 ```
 
 Specifically, `CharMetric` will output two evaluation metrics, namely `char_precision` and `char_recall`. Let the number of correctly predicted characters (True Positive) be {math}`\sigma_{tp}`, then the precision *P* and recall *R* can be calculated by the following equation:

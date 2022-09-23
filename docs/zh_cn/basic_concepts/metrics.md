@@ -5,6 +5,12 @@ MMOCR 基于 {external+mmengine:doc}`MMEngine: BaseMetric <design/evaluation>` �
 ```python
 val_evaluator = dict(type='HmeanIOUMetric')
 test_evaluator = val_evaluator
+
+# 此外，MMOCR 也支持相同任务下的多种指标组合评测，如同时使用 WordMetric 及 CharMetric
+val_evaluator = [
+    dict(type='WordMetric', mode=['exact', 'ignore_case', 'ignore_case_symbol']),
+    dict(type='CharMetric')
+]
 ```
 
 ```{tip}
@@ -108,12 +114,6 @@ val_evaluator = [
 ```python
 # 在文本识别任务中使用 CharMetric 评测
 val_evaluator = [dict(type='CharMetric')]
-
-# 此外，MMOCR 也支持相同任务下的多种指标组合评测，如同时使用 WordMetric 及 CharMetric
-val_evaluator = [
-    dict(type='WordMetric', mode=['exact', 'ignore_case', 'ignore_case_symbol']),
-    dict(type='CharMetric')
-]
 ```
 
 具体而言，`CharMetric` 会输出两个评测评测指标，即字符精度 `char_precision` 和字符召回率 `char_recall`。设正确预测的字符（True Positive）数量为 {math}`\sigma_{tp}`，则精度 *P* 和召回率 *R* 可由下式计算取得：
