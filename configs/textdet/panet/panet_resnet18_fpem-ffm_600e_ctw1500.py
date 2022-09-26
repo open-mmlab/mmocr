@@ -82,3 +82,5 @@ test_dataloader = val_dataloader
 val_evaluator = dict(
     type='HmeanIOUMetric', pred_score_thrs=dict(start=0.3, stop=1, step=0.05))
 test_evaluator = val_evaluator
+
+auto_scale_lr = dict(base_batch_size=16)

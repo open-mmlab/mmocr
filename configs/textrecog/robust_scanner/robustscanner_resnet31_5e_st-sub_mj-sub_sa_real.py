@@ -64,3 +64,5 @@ val_dataloader = test_dataloader
 val_evaluator = dict(
     dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
 test_evaluator = val_evaluator
+
+auto_scale_lr = dict(base_batch_size=64 * 16)
