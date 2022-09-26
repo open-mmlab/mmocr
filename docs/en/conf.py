@@ -117,7 +117,7 @@ html_theme_options = {
                 },
                 {
                     'name': 'MMOCR 1.x',
-                    'url': 'https://mmocr.readthedocs.io/zh_CN/latest/',
+                    'url': 'https://mmocr.readthedocs.io/en/dev-1.x/',
                     'description': 'docs at 1.x branch'
                 },
             ],

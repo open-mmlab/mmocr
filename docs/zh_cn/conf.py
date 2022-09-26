@@ -117,7 +117,7 @@ html_theme_options = {
                 },
                 {
                     'name': 'MMOCR 1.x',
-                    'url': 'https://github.com/open-mmlab/mmcv',
+                    'url': 'https://mmocr.readthedocs.io/zh_CN/dev-1.x/',
                     'description': '1.x 分支文档'
                 },
             ],
