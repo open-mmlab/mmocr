@@ -1,14 +1,14 @@
 # Data Transforms and Pipeline
 
-In the design of MMOCR, dataset construction and preparation are decoupled. That is, dataset construction classes such as [`OCRDataset`](mmocr.datasets.ocr_dataset.OCRDataset) are responsible for loading and parsing annotation files; while data transforms further apply data preprocessing, enhancement, formatting, and other related functions. Currently, there are five types of data transforms implemented in MMOCR, as shown in the following table.
+In the design of MMOCR, dataset construction and preparation are decoupled. That is, dataset construction classes such as [`OCRDataset`](mmocr.datasets.ocr_dataset.OCRDataset) are responsible for loading and parsing annotation files; while data transforms further apply data preprocessing, augmentation, formatting, and other related functions. Currently, there are five types of data transforms implemented in MMOCR, as shown in the following table.
 
 |                                  |                                                                       |                                                                                                     |
 | -------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Transforms Type                  | File                                                                  | Function Description                                                                                |
+| Transforms Type                  | File                                                                  | Description                                                                                         |
 | Data Loading                     | loading.py                                                            | Implemented the data loading functions.                                                             |
 | Data Formatting                  | formatting.py                                                         | Formatting the data required by different tasks.                                                    |
 | Cross Project Data Adapter       | adapters.py                                                           | Converting the data format between other OpenMMLab projects and MMOCR.                              |
-| Data Augmentation Functions      | ocr_transforms.py<br>textdet_transforms.py<br>textrecog_transforms.py | Various of built-in data augmentation methods designed for different tasks.                         |
+| Data Augmentation Functions      | ocr_transforms.py<br>textdet_transforms.py<br>textrecog_transforms.py | Various built-in data augmentation methods designed for different tasks.                            |
 | Wrappers of Third Party Packages | wrappers.py                                                           | Wrapping the transforms implemented in popular third party packages such as [ImgAug](https://github.com/aleju/imgaug), and adapting them to MMOCR format. |
 
 For each data transform, MMOCR provides a detailed docstring. For example, in the header of each data transform class, we annotate `Required Keys`, `Modified Keys` and `Added Keys`. The `Required Keys` represent the mandatory fields that should be included in the input required by the data transform, while the `Modified Keys` and `Added Keys` indicate that the transform may modify or add the fields into the original data. For example, `LoadImageFromFile` implements the image loading function, whose `Required Keys` is the image path `img_path`, and the `Modified Keys` includes the loaded image `img`, the current size of the image `img_shape`, the original size of the image `ori_shape`, and other image attributes.
@@ -39,8 +39,8 @@ For your convenience, the following table lists the conventional keys used in MM
 | img              | `np.array(dtype=np.uint8)`        | Image array, shape of `(h, w, c)`.                                                                                                                      |
 | img_shape        | `tuple(int, int)`                 | Current image size `(h, w)`.                                                                                                                            |
 | ori_shape        | `tuple(int, int)`                 | Original image size `(h, w)`.                                                                                                                           |
-| scale            | `tuple(int, int)`                 | Stores the target image size `(h, w)` specified by the user in the Resize series data transform. Note: This value may not correspond to the actual image size after the transformation. |
-| scale_factor     | `tuple(float, float)`             | Stores the target image scale factor `(w_scale, h_scale)` specified by the user in the Resize series data transform. Note: This value may not correspond to the actual image size after the transformation. |
+| scale            | `tuple(int, int)`                 | Stores the target image size `(h, w)` specified by the user in the `Resize` data transform series. Note: This value may not correspond to the actual image size after the transformation. |
+| scale_factor     | `tuple(float, float)`             | Stores the target image scale factor `(w_scale, h_scale)` specified by the user in the `Resize` data transform series. Note: This value may not correspond to the actual image size after the transformation. |
 | keep_ratio       | `bool`                            | Boolean flag determines whether to keep the aspect ratio while scaling images.                                                                          |
 | flip             | `bool`                            | Boolean flags to indicate whether the image has been flipped.                                                                                           |
 | flip_direction   | `str`                             | Flipping direction, options are `horizontal`, `vertical`, `diagonal`.                                                                                   |
@@ -50,7 +50,7 @@ For your convenience, the following table lists the conventional keys used in MM
 | gt_texts         | `list[str]`                       | Ground-truth text content of the instance.                                                                                                              |
 | gt_ignored       | `np.array(dtype=np.bool_)`        | Boolean flag indicating whether ignoring the instance (used in text detection).                                                                         |
 
-Since each data transform class is independent of each other, we can easily combine any data transforms to build a data pipeline after we have defined the data fields. As shown in the following figure, in MMOCR, a typical training data pipeline consists of **data loading**, **image augmentation**, and **data formatting**. Users only need to define the data pipeline list in the configuration file and specify the specific data transform class and its parameters:
+Since each data transform class is independent of each other, we can easily combine any data transforms to build a data pipeline after we have defined the data fields. As shown in the following figure, in MMOCR, a typical training data pipeline consists of three stages: **data loading**, **data augmentation**, and **data formatting**. Users only need to define the data pipeline list in the configuration file and specify the specific data transform class and its parameters:
 
 <div align="center">
 
@@ -87,7 +87,7 @@ train_pipeline_r18 = [
 ]
 ```
 
-More tutorials about data pipeline configuration can be found in the [Config Doc](#todo). Next, we will briefly introduce the data transforms supported in MMOCR according to their categories.
+More tutorials about data pipeline configuration can be found in the [Config Doc](../user_guides/config.md#data-pipeline-configuration). Next, we will briefly introduce the data transforms supported in MMOCR according to their categories.
 
 ## Data Loading
 
@@ -96,16 +96,16 @@ Data loading transforms mainly implement the functions of loading data from diff
 |                    |                                                           |                                                                |                                                                 |
 | ------------------ | --------------------------------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------- |
 | Transforms Name    | Required Keys                                             | Modified/Added Keys                                            | Description                                                     |
-| LoadImageFromFile  | `img_path`                                                | `img`<br>`img_shape`<br>`ori_shape`                            | Loading image from the specified path，supporting different file storage backends(e.g. `disk`, `http`, `petrel`)and decoding backends(e.g. `cv2`, `turbojpeg`, `pillow`, `tifffile`). |
-| LoadOCRAnnotations | `bbox`<br>`bbox_label`<br>`polygon`<br>`ignore`<br>`text` | `gt_bboxes`<br>`gt_bboxes_labels`<br>`gt_polygons`<br>`gt_ignored`<br>`gt_texts` | Parsing the annotation required by OCR task.                    |
-| LoadKIEAnnotations | `bboxes` `bbox_labels` `edge_labels`<br>`texts`           | `gt_bboxes`<br>`gt_bboxes_labels`<br>`gt_edge_labels`<br>`gt_texts`<br>`ori_shape` | Parsing the annotation required by KIE task.                    |
-| LoadImageFromLMDB  | `img_path`                                                | `img`<br>`img_shape`<br>`ori_shape`                            | Loading images from LMDB.                                       |
+| LoadImageFromFile  | `img_path`                                                | `img`<br>`img_shape`<br>`ori_shape`                            | Load image from the specified path，supporting different file storage backends (e.g. `disk`, `http`, `petrel`) and decoding backends (e.g. `cv2`, `turbojpeg`, `pillow`, `tifffile`). |
+| LoadOCRAnnotations | `bbox`<br>`bbox_label`<br>`polygon`<br>`ignore`<br>`text` | `gt_bboxes`<br>`gt_bboxes_labels`<br>`gt_polygons`<br>`gt_ignored`<br>`gt_texts` | Parse the annotation required by OCR task.                      |
+| LoadKIEAnnotations | `bboxes` `bbox_labels` `edge_labels`<br>`texts`           | `gt_bboxes`<br>`gt_bboxes_labels`<br>`gt_edge_labels`<br>`gt_texts`<br>`ori_shape` | Parse the annotation required by KIE task.                      |
+| LoadImageFromLMDB  | `img_path`                                                | `img`<br>`img_shape`<br>`ori_shape`                            | Load images from LMDB.                                          |
 
 ## Data Augmentation
 
-Data augmentation is an indispensable process in text detection and recognition tasks. Currently, MMOCR has implemented dozens of data augmentation modules commonly used in OCR fields, which are classified into [ocr_transforms.py](../../../mmocr/datasets/transforms/ocr_transforms.py), [textdet_transforms.py](../../../mmocr/datasets/transforms/textdet_transforms.py), and [textrecog_transforms.py](../../../mmocr/datasets/transforms/textrecog_transforms.py).
+Data augmentation is an indispensable process in text detection and recognition tasks. Currently, MMOCR has implemented dozens of data augmentation modules commonly used in OCR fields, which are classified into [ocr_transforms.py](/mmocr/datasets/transforms/ocr_transforms.py), [textdet_transforms.py](/mmocr/datasets/transforms/textdet_transforms.py), and [textrecog_transforms.py](/mmocr/datasets/transforms/textrecog_transforms.py).
 
-Specifically, `ocr_transforms.py` implements generic OCR data augmentation modules such as random cropping and random rotation:
+Specifically, `ocr_transforms.py` implements generic OCR data augmentation modules such as `RandomCrop` and `RandomRotate`:
 
 |                 |                                                               |                                                                |                                                                |
 | --------------- | ------------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------------- |
@@ -136,24 +136,24 @@ The above table only briefly introduces some selected data augmentation methods,
 
 ## Data Formatting
 
-Data formatting transforms are responsible for packaging images, ground truth labels, and other information into a dictionary. Depending on different tasks or algorithms, users can freely choose the parameters they want to pass in. For example:
+Data formatting transforms are responsible for packaging images, ground truth labels, and other information into a dictionary. Different tasks usually rely on different formatting transforms. For example:
 
-|                     |               |                     |                                                  |
-| ------------------- | ------------- | ------------------- | ------------------------------------------------ |
-| Transforms Name     | Required Keys | Modified/Added Keys | Description                                      |
-| PackTextDetInputs   | -             | -                   | Packing the inputs required by text detection.   |
-| PackTextRecogInputs | -             | -                   | Packing the inputs required by text recognition. |
-| PackKIEInputs       | -             | -                   | Packing the inputs required by KIE.              |
+|                     |               |                     |                                               |
+| ------------------- | ------------- | ------------------- | --------------------------------------------- |
+| Transforms Name     | Required Keys | Modified/Added Keys | Description                                   |
+| PackTextDetInputs   | -             | -                   | Pack the inputs required by text detection.   |
+| PackTextRecogInputs | -             | -                   | Pack the inputs required by text recognition. |
+| PackKIEInputs       | -             | -                   | Pack the inputs required by KIE.              |
 
-## Cross Project Data Adapter
+## Cross Project Data Adapters
 
 The cross-project data adapters bridge the data formats between MMOCR and other OpenMMLab libraries such as [MMDetection](https://github.com/open-mmlab/mmdetection), making it possible to call models implemented in other OpenMMLab projects. Currently, MMOCR has implemented [`MMDet2MMOCR`](mmocr.datasets.transforms.MMDet2MMOCR) and [`MMOCR2MMDet`](mmocr.datasets.transforms.MMOCR2MMDet), allowing data to be converted between MMDetection and MMOCR formats; with these adapters, users can easily train any detectors supported by MMDetection in MMOCR. For example, we provide a [tutorial](#todo) to show how to train Mask R-CNN as a text detector in MMOCR.
 
-|                 |                                              |                               |                                               |
-| --------------- | -------------------------------------------- | ----------------------------- | --------------------------------------------- |
-| Transforms Name | Required Keys                                | Modified/Added Keys           | Description                                   |
-| MMDet2MMOCR     | `gt_masks` `gt_ignore_flags`                 | `gt_polygons`<br>`gt_ignored` | Converting the fields used in MMDet to MMOCR. |
-| MMOCR2MMDet     | `img_shape`<br>`gt_polygons`<br>`gt_ignored` | `gt_masks` `gt_ignore_flags`  | Converting the fields used in MMOCR to MMDet. |
+|                 |                                              |                               |                                            |
+| --------------- | -------------------------------------------- | ----------------------------- | ------------------------------------------ |
+| Transforms Name | Required Keys                                | Modified/Added Keys           | Description                                |
+| MMDet2MMOCR     | `gt_masks` `gt_ignore_flags`                 | `gt_polygons`<br>`gt_ignored` | Convert the fields used in MMDet to MMOCR. |
+| MMOCR2MMDet     | `img_shape`<br>`gt_polygons`<br>`gt_ignored` | `gt_masks` `gt_ignore_flags`  | Convert the fields used in MMOCR to MMDet. |
 
 ## Wrappers
 

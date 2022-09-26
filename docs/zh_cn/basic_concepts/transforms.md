@@ -88,7 +88,7 @@ train_pipeline_r18 = [
 ]
 ```
 
-更多有关数据流水线配置的教程可见[配置文档](#todo)。下面，我们将简单介绍 MMOCR 中已支持的数据变换类型。
+更多有关数据流水线配置的教程可见[配置文档](../user_guides/config.md#数据流水线配置)。下面，我们将简单介绍 MMOCR 中已支持的数据变换类型。
 
 ## 数据读取 - loading.py
 
@@ -104,7 +104,7 @@ train_pipeline_r18 = [
 
 ## 数据增强 - xxx_transforms.py
 
-数据增强是文本检测、识别等任务中必不可少的流程之一。目前，MMOCR 中共实现了数十种文本领域内常用的数据增强模块，依据其任务类型，分别为通用 OCR 数据增强模块 [ocr_transforms.py](../../../mmocr/datasets/transforms/ocr_transforms.py)，文本检测数据增强模块 [textdet_transforms.py](../../../mmocr/datasets/transforms/textdet_transforms.py)，以及文本识别数据增强模块 [textrecog_transforms.py](../../../mmocr/datasets/transforms/textrecog_transforms.py)。
+数据增强是文本检测、识别等任务中必不可少的流程之一。目前，MMOCR 中共实现了数十种文本领域内常用的数据增强模块，依据其任务类型，分别为通用 OCR 数据增强模块 [ocr_transforms.py](/mmocr/datasets/transforms/ocr_transforms.py)，文本检测数据增强模块 [textdet_transforms.py](/mmocr/datasets/transforms/textdet_transforms.py)，以及文本识别数据增强模块 [textrecog_transforms.py](/mmocr/datasets/transforms/textrecog_transforms.py)。
 
 具体而言，`ocr_transforms.py` 中实现了随机剪裁、随机旋转等各任务通用的数据增强模块：
 
@@ -137,7 +137,7 @@ train_pipeline_r18 = [
 
 ## 数据格式化 - formatting.py
 
-数据格式化负责将图像、真实标签以及其它常用信息等打包成一个字典。依据不同的任务或算法，用户可以基于对应的需求自由选择想要传入的参数。例如：
+数据格式化负责将图像、真实标签以及其它常用信息等打包成一个字典。不同的任务通常依赖于不同的数据格式化数据变换类。例如：
 
 |                     |          |               |                                            |
 | ------------------- | -------- | ------------- | ------------------------------------------ |
