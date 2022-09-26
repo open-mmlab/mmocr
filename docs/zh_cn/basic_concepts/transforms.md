@@ -15,7 +15,7 @@
 
 <div align="center">
 
-![Flowchart](https://user-images.githubusercontent.com/45810070/192191884-ff2a3ee0-642e-47a2-8a86-d0dac7fc55e9.png)
+![Flowchart](https://user-images.githubusercontent.com/45810070/192262896-b239e844-cf6f-4b70-a8fc-4bdfa592fa16.jpg)
 
 </div>
 

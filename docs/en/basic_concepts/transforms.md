@@ -15,7 +15,7 @@ Since each data transform class is independent of each other, we can easily comb
 
 <div align="center">
 
-![Flowchart](https://user-images.githubusercontent.com/45810070/192191884-ff2a3ee0-642e-47a2-8a86-d0dac7fc55e9.png)
+![Flowchart](https://user-images.githubusercontent.com/45810070/192262974-db62c46b-8d81-4fee-affe-42ec72a742fa.jpg)
 
 </div>
 
