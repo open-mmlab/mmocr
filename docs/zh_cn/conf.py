@@ -97,6 +97,11 @@ html_theme_options = {
             '上游库',
             'children': [
                 {
+                    'name': 'MMEngine',
+                    'url': 'https://github.com/open-mmlab/mmengine',
+                    'description': '深度学习模型训练基础库'
+                },
+                {
                     'name': 'MMCV',
                     'url': 'https://github.com/open-mmlab/mmcv',
                     'description': '基础视觉库'
@@ -107,6 +112,24 @@ html_theme_options = {
                     'description': '目标检测工具箱'
                 },
             ]
+        },
+        {
+            'name':
+            '版本',
+            'children': [
+                {
+                    'name': 'MMOCR 0.x',
+                    'url': 'https://mmocr.readthedocs.io/zh_CN/latest/',
+                    'description': 'main 分支文档'
+                },
+                {
+                    'name': 'MMOCR 1.x',
+                    'url': 'https://github.com/open-mmlab/mmcv',
+                    'description': '1.x 分支文档'
+                },
+            ],
+            'active':
+            True,
         },
     ],
     # Specify the language of shared menu

@@ -96,6 +96,15 @@ html_theme_options = {
             'Upstream',
             'children': [
                 {
+                    'name':
+                    'MMEngine',
+                    'url':
+                    'https://github.com/open-mmlab/mmengine',
+                    'description':
+                    'Foundational library for training deep '
+                    'learning models'
+                },
+                {
                     'name': 'MMCV',
                     'url': 'https://github.com/open-mmlab/mmcv',
                     'description': 'Foundational library for computer vision'
@@ -106,6 +115,24 @@ html_theme_options = {
                     'description': 'Object detection toolbox and benchmark'
                 },
             ]
+        },
+        {
+            'name':
+            'Version',
+            'children': [
+                {
+                    'name': 'MMOCR 0.x',
+                    'url': 'https://mmocr.readthedocs.io/en/latest/',
+                    'description': 'Main branch'
+                },
+                {
+                    'name': 'MMOCR 1.x',
+                    'url': 'https://github.com/open-mmlab/mmcv',
+                    'description': '1.x branch'
+                },
+            ],
+            'active':
+            True,
         },
     ],
     # Specify the language of shared menu
