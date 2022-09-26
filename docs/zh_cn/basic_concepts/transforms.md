@@ -11,50 +11,11 @@
 | 数据增强       | ocr_transforms.py<br>textdet_transforms.py<br>textrecog_transforms.py | 实现了不同任务下的各类数据增强方法。                                |
 | 包装类         | wrappers.py                                                           | 实现了对 ImgAug 等常用算法库的包装，使其适配 MMOCR 的内部数据格式。 |
 
-对于每一个数据变换方法，MMOCR 都严格按照文档字符串（docstring）规范在源码中提供了详细的代码注释。例如，每一个数据转换类的头部我们都注释了 “需求字段”（`Required keys`）， “修改字段”（`Modified Keys`）与 “添加字段”（`Added Keys`）。其中，“需求字段”代表该数据转换方法对于输入数据所需包含字段的强制需求，而“修改字段”与“添加字段”则表明该方法可能会在原有数据基础之上修改或添加的字段。例如，`LoadImageFromFile` 实现了图片的读取功能，其需求字段为图像的存储路径 `img_path`，而修改字段则包括了读入的图像信息 `img`，以及图片当前尺寸 `img_shape`，图片原始尺寸 `ori_shape` 等图片属性。
-
-```python
-@TRANSFORMS.register_module()
-class LoadImageFromFile(MMCV_LoadImageFromFile):
-    # 在每一个数据变换方法的头部，我们都提供了详细的代码注释。
-    """Load an image from file.
-
-    Required Keys:
-
-    - img_path
-
-    Modified Keys:
-
-    - img
-    - img_shape
-    - ori_shape
-    """
-```
-
-为方便用户查询，下表列出了 MMOCR 中各数据转换（Data Transform）类常用的字段约定和说明。
-
-|                  |                                   |                                                                                                                                      |
-| ---------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| 字段             | 类型                              | 说明                                                                                                                                 |
-| img              | `np.array(dtype=np.uint8)`        | 图像信息，形状为 `(h, w, c)`。                                                                                                       |
-| img_shape        | `tuple(int, int)`                 | 当前图像尺寸 `(h, w)`。                                                                                                              |
-| ori_shape        | `tuple(int, int)`                 | 图像在初始化时的尺寸 `(h, w)`。                                                                                                      |
-| scale            | `tuple(int, int)`                 | 存放用户在 Resize 系列数据变换（Transform）中指定的目标图像尺寸 `(h, w)`。注意：该值未必与变换后的实际图像尺寸相符。                 |
-| scale_factor     | `tuple(float, float)`             | 存放用户在 Resize 系列数据变换（Transform）中指定的目标图像缩放因子 `(w_scale, h_scale)`。注意：该值未必与变换后的实际图像尺寸相符。 |
-| keep_ratio       | `bool`                            | 是否按等比例对图像进行缩放。                                                                                                         |
-| flip             | `bool`                            | 图像是否被翻转。                                                                                                                     |
-| flip_direction   | `str`                             | 翻转方向。可选项为 `horizontal`, `vertical`, `diagonal`。                                                                            |
-| gt_bboxes        | `np.array(dtype=np.float32)`      | 文本实例边界框的真实标签。                                                                                                           |
-| gt_polygons      | `list[np.array(dtype=np.float32)` | 文本实例边界多边形的真实标签。                                                                                                       |
-| gt_bboxes_labels | `np.array(dtype=np.int64)`        | 文本实例对应的类别标签。在 MMOCR 中通常为 0，代指 "text" 类别。                                                                      |
-| gt_texts         | `list[str]`                       | 与文本实例对应的字符串标注。                                                                                                         |
-| gt_ignored       | `np.array(dtype=np.bool_)`        | 是否要在计算目标时忽略该实例（用于检测任务中）。                                                                                     |
-
 由于每一个数据变换类之间都是相互独立的，因此，在约定好固定的数据存储字段后，我们可以便捷地采用任意的数据变换组合来构建数据流水线（Pipeline）。如下图所示，在 MMOCR 中，一个典型的训练数据流水线主要由**数据读取**、**图像增强**以及**数据格式化**三部分构成，用户只需要在配置文件中定义相关的数据流水线列表，并指定具体所需的数据变换类及其参数即可：
 
 <div align="center">
 
-![Flowchart](https://user-images.githubusercontent.com/45810070/190945061-1d8c35a1-7fb0-4f3d-8adc-8285f6421968.png)
+![Flowchart](https://user-images.githubusercontent.com/45810070/192191884-ff2a3ee0-642e-47a2-8a86-d0dac7fc55e9.png)
 
 </div>
 
@@ -88,7 +49,52 @@ train_pipeline_r18 = [
 ]
 ```
 
+```{tip}
 更多有关数据流水线配置的教程可见[配置文档](../user_guides/config.md#数据流水线配置)。下面，我们将简单介绍 MMOCR 中已支持的数据变换类型。
+```
+
+对于每一个数据变换方法，MMOCR 都严格按照文档字符串（docstring）规范在源码中提供了详细的代码注释。例如，每一个数据转换类的头部我们都注释了 “需求字段”（`Required keys`）， “修改字段”（`Modified Keys`）与 “添加字段”（`Added Keys`）。其中，“需求字段”代表该数据转换方法对于输入数据所需包含字段的强制需求，而“修改字段”与“添加字段”则表明该方法可能会在原有数据基础之上修改或添加的字段。例如，`LoadImageFromFile` 实现了图片的读取功能，其需求字段为图像的存储路径 `img_path`，而修改字段则包括了读入的图像信息 `img`，以及图片当前尺寸 `img_shape`，图片原始尺寸 `ori_shape` 等图片属性。
+
+```python
+@TRANSFORMS.register_module()
+class LoadImageFromFile(MMCV_LoadImageFromFile):
+    # 在每一个数据变换方法的头部，我们都提供了详细的代码注释。
+    """Load an image from file.
+
+    Required Keys:
+
+    - img_path
+
+    Modified Keys:
+
+    - img
+    - img_shape
+    - ori_shape
+    """
+```
+
+```{note}
+在 MMOCR 的数据流水线中，图像及标签等信息被统一保存在字典中。通过统一的字段名，我们可以在不同的数据变换方法间灵活地传递数据。因此，了解 MMOCR 中常用的约定字段名是非常重要的。
+```
+
+为方便用户查询，下表列出了 MMOCR 中各数据转换（Data Transform）类常用的字段约定和说明。
+
+|                  |                                   |                                                                                                                                      |
+| ---------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 字段             | 类型                              | 说明                                                                                                                                 |
+| img              | `np.array(dtype=np.uint8)`        | 图像信息，形状为 `(h, w, c)`。                                                                                                       |
+| img_shape        | `tuple(int, int)`                 | 当前图像尺寸 `(h, w)`。                                                                                                              |
+| ori_shape        | `tuple(int, int)`                 | 图像在初始化时的尺寸 `(h, w)`。                                                                                                      |
+| scale            | `tuple(int, int)`                 | 存放用户在 Resize 系列数据变换（Transform）中指定的目标图像尺寸 `(h, w)`。注意：该值未必与变换后的实际图像尺寸相符。                 |
+| scale_factor     | `tuple(float, float)`             | 存放用户在 Resize 系列数据变换（Transform）中指定的目标图像缩放因子 `(w_scale, h_scale)`。注意：该值未必与变换后的实际图像尺寸相符。 |
+| keep_ratio       | `bool`                            | 是否按等比例对图像进行缩放。                                                                                                         |
+| flip             | `bool`                            | 图像是否被翻转。                                                                                                                     |
+| flip_direction   | `str`                             | 翻转方向。可选项为 `horizontal`, `vertical`, `diagonal`。                                                                            |
+| gt_bboxes        | `np.array(dtype=np.float32)`      | 文本实例边界框的真实标签。                                                                                                           |
+| gt_polygons      | `list[np.array(dtype=np.float32)` | 文本实例边界多边形的真实标签。                                                                                                       |
+| gt_bboxes_labels | `np.array(dtype=np.int64)`        | 文本实例对应的类别标签。在 MMOCR 中通常为 0，代指 "text" 类别。                                                                      |
+| gt_texts         | `list[str]`                       | 与文本实例对应的字符串标注。                                                                                                         |
+| gt_ignored       | `np.array(dtype=np.bool_)`        | 是否要在计算目标时忽略该实例（用于检测任务中）。                                                                                     |
 
 ## 数据读取 - loading.py
 

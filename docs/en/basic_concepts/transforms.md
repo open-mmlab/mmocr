@@ -11,50 +11,11 @@ In the design of MMOCR, dataset construction and preparation are decoupled. That
 | Data Augmentation Functions      | ocr_transforms.py<br>textdet_transforms.py<br>textrecog_transforms.py | Various built-in data augmentation methods designed for different tasks.                            |
 | Wrappers of Third Party Packages | wrappers.py                                                           | Wrapping the transforms implemented in popular third party packages such as [ImgAug](https://github.com/aleju/imgaug), and adapting them to MMOCR format. |
 
-For each data transform, MMOCR provides a detailed docstring. For example, in the header of each data transform class, we annotate `Required Keys`, `Modified Keys` and `Added Keys`. The `Required Keys` represent the mandatory fields that should be included in the input required by the data transform, while the `Modified Keys` and `Added Keys` indicate that the transform may modify or add the fields into the original data. For example, `LoadImageFromFile` implements the image loading function, whose `Required Keys` is the image path `img_path`, and the `Modified Keys` includes the loaded image `img`, the current size of the image `img_shape`, the original size of the image `ori_shape`, and other image attributes.
-
-```python
-@TRANSFORMS.register_module()
-class LoadImageFromFile(MMCV_LoadImageFromFile):
-    # We provide detailed docstring for each data transform.
-    """Load an image from file.
-
-    Required Keys:
-
-    - img_path
-
-    Modified Keys:
-
-    - img
-    - img_shape
-    - ori_shape
-    """
-```
-
-For your convenience, the following table lists the conventional keys used in MMOCR data transforms.
-
-|                  |                                   |                                                                                                                                                         |
-| ---------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Key              | Type                              | Description                                                                                                                                             |
-| img              | `np.array(dtype=np.uint8)`        | Image array, shape of `(h, w, c)`.                                                                                                                      |
-| img_shape        | `tuple(int, int)`                 | Current image size `(h, w)`.                                                                                                                            |
-| ori_shape        | `tuple(int, int)`                 | Original image size `(h, w)`.                                                                                                                           |
-| scale            | `tuple(int, int)`                 | Stores the target image size `(h, w)` specified by the user in the `Resize` data transform series. Note: This value may not correspond to the actual image size after the transformation. |
-| scale_factor     | `tuple(float, float)`             | Stores the target image scale factor `(w_scale, h_scale)` specified by the user in the `Resize` data transform series. Note: This value may not correspond to the actual image size after the transformation. |
-| keep_ratio       | `bool`                            | Boolean flag determines whether to keep the aspect ratio while scaling images.                                                                          |
-| flip             | `bool`                            | Boolean flags to indicate whether the image has been flipped.                                                                                           |
-| flip_direction   | `str`                             | Flipping direction, options are `horizontal`, `vertical`, `diagonal`.                                                                                   |
-| gt_bboxes        | `np.array(dtype=np.float32)`      | Ground-truth bounding boxes.                                                                                                                            |
-| gt_polygons      | `list[np.array(dtype=np.float32)` | Ground-truth polygons.                                                                                                                                  |
-| gt_bboxes_labels | `np.array(dtype=np.int64)`        | Category label of bounding boxes. By default, MMOCR uses `0` to represent "text" instances.                                                             |
-| gt_texts         | `list[str]`                       | Ground-truth text content of the instance.                                                                                                              |
-| gt_ignored       | `np.array(dtype=np.bool_)`        | Boolean flag indicating whether ignoring the instance (used in text detection).                                                                         |
-
 Since each data transform class is independent of each other, we can easily combine any data transforms to build a data pipeline after we have defined the data fields. As shown in the following figure, in MMOCR, a typical training data pipeline consists of three stages: **data loading**, **data augmentation**, and **data formatting**. Users only need to define the data pipeline list in the configuration file and specify the specific data transform class and its parameters:
 
 <div align="center">
 
-![Flowchart](https://user-images.githubusercontent.com/45810070/190945061-1d8c35a1-7fb0-4f3d-8adc-8285f6421968.png)
+![Flowchart](https://user-images.githubusercontent.com/45810070/192191884-ff2a3ee0-642e-47a2-8a86-d0dac7fc55e9.png)
 
 </div>
 
@@ -87,7 +48,52 @@ train_pipeline_r18 = [
 ]
 ```
 
+```{tip}
 More tutorials about data pipeline configuration can be found in the [Config Doc](../user_guides/config.md#data-pipeline-configuration). Next, we will briefly introduce the data transforms supported in MMOCR according to their categories.
+```
+
+For each data transform, MMOCR provides a detailed docstring. For example, in the header of each data transform class, we annotate `Required Keys`, `Modified Keys` and `Added Keys`. The `Required Keys` represent the mandatory fields that should be included in the input required by the data transform, while the `Modified Keys` and `Added Keys` indicate that the transform may modify or add the fields into the original data. For example, `LoadImageFromFile` implements the image loading function, whose `Required Keys` is the image path `img_path`, and the `Modified Keys` includes the loaded image `img`, the current size of the image `img_shape`, the original size of the image `ori_shape`, and other image attributes.
+
+```python
+@TRANSFORMS.register_module()
+class LoadImageFromFile(MMCV_LoadImageFromFile):
+    # We provide detailed docstring for each data transform.
+    """Load an image from file.
+
+    Required Keys:
+
+    - img_path
+
+    Modified Keys:
+
+    - img
+    - img_shape
+    - ori_shape
+    """
+```
+
+```{note}
+In the data pipeline of MMOCR, the image and label information are saved in a dictionary. By using the unified fields, the data can be freely transferred between different data transforms. Therefore, it is very important to understand the conventional fields used in MMOCR.
+```
+
+For your convenience, the following table lists the conventional keys used in MMOCR data transforms.
+
+|                  |                                   |                                                                                                                                                         |
+| ---------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Key              | Type                              | Description                                                                                                                                             |
+| img              | `np.array(dtype=np.uint8)`        | Image array, shape of `(h, w, c)`.                                                                                                                      |
+| img_shape        | `tuple(int, int)`                 | Current image size `(h, w)`.                                                                                                                            |
+| ori_shape        | `tuple(int, int)`                 | Original image size `(h, w)`.                                                                                                                           |
+| scale            | `tuple(int, int)`                 | Stores the target image size `(h, w)` specified by the user in the `Resize` data transform series. Note: This value may not correspond to the actual image size after the transformation. |
+| scale_factor     | `tuple(float, float)`             | Stores the target image scale factor `(w_scale, h_scale)` specified by the user in the `Resize` data transform series. Note: This value may not correspond to the actual image size after the transformation. |
+| keep_ratio       | `bool`                            | Boolean flag determines whether to keep the aspect ratio while scaling images.                                                                          |
+| flip             | `bool`                            | Boolean flags to indicate whether the image has been flipped.                                                                                           |
+| flip_direction   | `str`                             | Flipping direction, options are `horizontal`, `vertical`, `diagonal`.                                                                                   |
+| gt_bboxes        | `np.array(dtype=np.float32)`      | Ground-truth bounding boxes.                                                                                                                            |
+| gt_polygons      | `list[np.array(dtype=np.float32)` | Ground-truth polygons.                                                                                                                                  |
+| gt_bboxes_labels | `np.array(dtype=np.int64)`        | Category label of bounding boxes. By default, MMOCR uses `0` to represent "text" instances.                                                             |
+| gt_texts         | `list[str]`                       | Ground-truth text content of the instance.                                                                                                              |
+| gt_ignored       | `np.array(dtype=np.bool_)`        | Boolean flag indicating whether ignoring the instance (used in text detection).                                                                         |
 
 ## Data Loading
 
