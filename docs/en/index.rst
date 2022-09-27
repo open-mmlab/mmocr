@@ -77,7 +77,14 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :maxdepth: 1
    :caption: API Reference
 
-   api.rst
+   mmocr.structures <api/structures>
+   mmocr.datasets <api/datasets>
+   mmocr.transforms <api/transforms>
+   mmocr.models <api/models>
+   mmocr.evaluation <api/evaluation>
+   mmocr.visualization <api/visualization>
+   mmocr.engine <api/engine>
+   mmocr.utils <api/utils>
 
 .. toctree::
    :caption: Switch Language

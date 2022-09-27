@@ -38,14 +38,21 @@ release = __version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode',
-    'sphinx_markdown_tables', 'sphinx_copybutton', 'myst_parser',
-    'sphinx.ext.intersphinx', 'sphinx.ext.autodoc.typehints'
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+    'sphinx_markdown_tables',
+    'sphinx_copybutton',
+    'myst_parser',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.autodoc.typehints',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.autosectionlabel',
 ]
 autodoc_typehints = 'description'
 
 autodoc_mock_imports = ['mmcv._ext']
-
+autosummary_generate = True  # Turn on sphinx.ext.autosummary
 # Ignore >>> when copying code
 copybutton_prompt_text = r'>>> |\.\.\. '
 copybutton_prompt_is_regexp = True
