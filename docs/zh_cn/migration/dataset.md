@@ -115,7 +115,7 @@ img2.jpg MMOCR
               "bbox": [0, 0, 10, 20],
               "bbox_label": 0,
               "ignore": False
-            }，
+            },
             // ...
           ]
       }
