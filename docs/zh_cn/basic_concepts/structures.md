@@ -1,27 +1,6 @@
 # 数据元素与数据结构
 
-在模型的训练/测试过程中，组件之间往往有大量的数据需要传递，不同的任务或算法传递的数据通常是不一样的。例如，在 MMOCR 中，文本检测任务在训练时需要获取文本实例的边界盒标注，识别任务则需要文本内容标注，而关键信息抽取任务则还需要文本类别标签以及文本项间的关系图等。这使得不同任务或模型的接口可能存在不一致，例如：
-
-```python
-# 文本检测任务
-for img, img_metas, gt_bboxes in dataloader:
-  loss = detector(img, img_metas, gt_bboxes)
-
-# 文本识别任务
-for img, img_metas, gt_texts in dataloader:
-  loss = recognizer(img, img_metas, gt_labels)
-
-# 关键信息抽取任务
-for img, img_metas, gt_bboxes, gt_texts, gt_labels, gt_relations in dataloader:
-  loss = kie(img, img_metas, gt_bboxes, gt_texts, gt_labels, gt_relations)
-```
-
-从以上代码示例我们可以发现，在不进行封装的情况下，不同任务和算法所需的不同数据导致了其模块之间的接口不一致的情况，严重影响了算法库的拓展性及复用性。因此，为了解决上述问题，我们基于 {external+mmengine:doc}`MMEngine: 抽象数据接口 <advanced_tutorials/data_element>` 将各任务所需的数据统一封装入 `data_sample` 中。MMEngine 的抽象数据接口实现了基础的增/删/改/查功能，且支持不同设备间的数据迁移，也支持了类字典和张量的操作，充分满足了数据的日常使用需求，这也使得不同算法的接口可以统一为以下形式：
-
-```python
-for img, data_sample in dataloader:
-  loss = model(img, data_sample)
-```
+MMOCR 基于 {external+mmengine:doc}`MMEngine: 抽象数据接口 <advanced_tutorials/data_element>` 将各任务所需的数据统一封装入 `data_sample` 中。MMEngine 的抽象数据接口实现了基础的增/删/改/查功能，且支持不同设备间的数据迁移，也支持了类字典和张量的操作，充分满足了数据的日常使用需求，这也使得不同算法的数据接口可以得到统一。
 
 得益于统一的数据封装，算法库内的 [`visualizer`](./visualizers.md)，[`evaluator`](./evaluation.md)，[`dataset`](./datasets.md) 等各个模块间的数据流通都得到了极大的简化。在 MMOCR 中，我们对数据接口类型作出以下约定：
 
@@ -34,7 +13,7 @@ for img, data_sample in dataloader:
 
 `InstanceData` 和 `LabelData` 是 `MMEngine`中定义的基础数据元素，用于封装不同粒度的标注数据或模型输出。在 MMOCR 中，我们针对不同任务中实际使用的数据类型，分别采用了 `InstanceData` 与 `LabelData` 进行了封装。
 
-### 文本检测 InstanceData
+### InstanceData
 
 在**文本检测**任务中，检测器关注的是实例级别的文字样本，因此我们使用 `InstanceData` 来封装该任务所需的数据。其所需的训练标注和预测输出通常包含了矩形或多边形边界盒，以及边界盒标签。由于文本检测任务只有一种正样本类，即 “text”，在 MMOCR 中我们默认使用 `0` 来编号该类别。以下代码示例展示了如何使用 `InstanceData` 数据抽象接口来封装文本检测任务中使用的数据类型。
 
@@ -56,22 +35,7 @@ pred_instances.polygons = pred_polygons
 pred_instances.scores = scores
 ```
 
-MMOCR 中对 `InstanceData` 字段的约定如下表所示。值得注意的是，`InstanceData` 中的各字段的长度必须为与样本中的实例个数 `N` 相等。
-
-|             |                                    |                                                                                                                                      |
-| ----------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| 字段        | 类型                               | 说明                                                                                                                                 |
-| bboxes      | `torch.FloatTensor`                | 文本边界框 `[x1, x2, y1, y2]`，形状为 `(N, 4)`。                                                                                     |
-| labels      | `torch.LongTensor`                 | 实例的类别，长度为 `(N, )`。MMOCR 中默认使用 `0` 来表示正样本类，即 “text” 类。                                                      |
-| polygons    | `list[np.array(dtype=np.float32)]` | 表示文本实例的多边形，列表长度为 `(N, )`。                                                                                           |
-| scores      | `torch.Tensor`                     | 文本实例检测框的置信度，长度为 `(N, )`。                                                                                             |
-| ignored     | `torch.BoolTensor`                 | 是否在训练中忽略当前文本实例，长度为 `(N, )`。                                                                                       |
-| texts       | `list[str]`                        | 实例对应的文本，长度为 `(N, )`，用于端到端 OCR 任务和 KIE。                                                                          |
-| text_scores | `torch.FloatTensor`                | 文本预测的置信度，长度为`(N, )`，用于端到端 OCR 任务。                                                                               |
-| edge_labels | `torch.IntTensor`                  | 节点的邻接矩阵，形状为 `(N, N)`。在 KIE 任务中，节点之间状态的可选值为 `-1` （忽略，不参与 loss 计算），`0` （断开）和 `1`（连接）。 |
-| edge_scores | `torch.FloatTensor`                | 用于 KIE 任务中每条边的预测置信度，形状为 `(N, N)`。                                                                                 |
-
-### 文本识别 LabelData
+### LabelData
 
 对于**文字识别**任务，标注内容和预测内容都会使用 `LabelData` 进行封装。
 
@@ -90,16 +54,6 @@ text = dictionary.idx2str(index)
 pred_text.score = score
 pred_text.item = text
 ```
-
-MMOCR 中对 `LabelData` 字段的约定如下表所示：
-
-|                |                    |                                                                                                                            |
-| -------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| 字段           | 类型               | 说明                                                                                                                       |
-| item           | `str`              | 文本内容。                                                                                                                 |
-| score          | `list[float]`      | 预测的文本内容的置信度。                                                                                                   |
-| indexes        | `torch.LongTensor` | 文本字符经过[字典](../basic_concepts/models.md#dictionary)编码后的序列，且包含了除 `<UNK>` 以外的所有特殊字符。            |
-| padded_indexes | `torch.LongTensor` | 如果 indexes 的长度小于最大序列长度，且 `pad_idx` 存在时，该字段保存了填充至最大序列长度 `max_seq_len`的编码后的文本序列。 |
 
 ## 数据样本 xxxDataSample
 
