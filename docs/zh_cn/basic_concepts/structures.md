@@ -35,6 +35,21 @@ pred_instances.polygons = pred_polygons
 pred_instances.scores = scores
 ```
 
+MMOCR 中对 `InstanceData` 字段的约定如下表所示。值得注意的是，`InstanceData` 中的各字段的长度必须为与样本中的实例个数 `N` 相等。
+
+|             |                                    |                                                                                                                                      |
+| ----------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 字段        | 类型                               | 说明                                                                                                                                 |
+| bboxes      | `torch.FloatTensor`                | 文本边界框 `[x1, x2, y1, y2]`，形状为 `(N, 4)`。                                                                                     |
+| labels      | `torch.LongTensor`                 | 实例的类别，长度为 `(N, )`。MMOCR 中默认使用 `0` 来表示正样本类，即 “text” 类。                                                      |
+| polygons    | `list[np.array(dtype=np.float32)]` | 表示文本实例的多边形，列表长度为 `(N, )`。                                                                                           |
+| scores      | `torch.Tensor`                     | 文本实例检测框的置信度，长度为 `(N, )`。                                                                                             |
+| ignored     | `torch.BoolTensor`                 | 是否在训练中忽略当前文本实例，长度为 `(N, )`。                                                                                       |
+| texts       | `list[str]`                        | 实例对应的文本，长度为 `(N, )`，用于端到端 OCR 任务和 KIE。                                                                          |
+| text_scores | `torch.FloatTensor`                | 文本预测的置信度，长度为`(N, )`，用于端到端 OCR 任务。                                                                               |
+| edge_labels | `torch.IntTensor`                  | 节点的邻接矩阵，形状为 `(N, N)`。在 KIE 任务中，节点之间状态的可选值为 `-1` （忽略，不参与 loss 计算），`0` （断开）和 `1`（连接）。 |
+| edge_scores | `torch.FloatTensor`                | 用于 KIE 任务中每条边的预测置信度，形状为 `(N, N)`。                                                                                 |
+
 ### LabelData
 
 对于**文字识别**任务，标注内容和预测内容都会使用 `LabelData` 进行封装。
@@ -54,6 +69,16 @@ text = dictionary.idx2str(index)
 pred_text.score = score
 pred_text.item = text
 ```
+
+MMOCR 中对 `LabelData` 字段的约定如下表所示：
+
+|                |                    |                                                                                                                            |
+| -------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| 字段           | 类型               | 说明                                                                                                                       |
+| item           | `str`              | 文本内容。                                                                                                                 |
+| score          | `list[float]`      | 预测的文本内容的置信度。                                                                                                   |
+| indexes        | `torch.LongTensor` | 文本字符经过[字典](../basic_concepts/models.md#dictionary)编码后的序列，且包含了除 `<UNK>` 以外的所有特殊字符。            |
+| padded_indexes | `torch.LongTensor` | 如果 indexes 的长度小于最大序列长度，且 `pad_idx` 存在时，该字段保存了填充至最大序列长度 `max_seq_len`的编码后的文本序列。 |
 
 ## 数据样本 xxxDataSample
 

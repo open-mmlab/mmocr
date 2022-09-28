@@ -35,6 +35,21 @@ pred_instances.polygons = pred_polygons
 pred_instances.scores = scores
 ```
 
+The conventions for the fields in `InstanceData` in MMOCR are shown in the table below. It is important to note that the length of each field in `InstanceData` must be equal to the number of instances `N` in the sample.
+
+|             |                                    |                                                                                                                                                             |
+| ----------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Field       | Type                               | Description                                                                                                                                                 |
+| bboxes      | `torch.FloatTensor`                | Bounding boxes `[x1, x2, y1, y2]` with the shape `(N, 4)`.                                                                                                  |
+| labels      | `torch.LongTensor`                 | Instance label with the shape `(N, )`. By default, MMOCR uses `0` to represent the "text" class.                                                            |
+| polygons    | `list[np.array(dtype=np.float32)]` | Polygonal bounding boxes with the shape `(N, )`.                                                                                                            |
+| scores      | `torch.Tensor`                     | Confidence scores of the predictions of bounding boxes. `(N, )`.                                                                                            |
+| ignored     | `torch.BoolTensor`                 | Whether to ignore the current sample with the shape `(N, )`.                                                                                                |
+| texts       | `list[str]`                        | The text content of each instance with the shape `(N, )`，used for e2e text spotting or KIE task.                                                           |
+| text_scores | `torch.FloatTensor`                | Confidence score of the predictions of text contents with the shape `(N, )`，used for e2e text spotting task.                                               |
+| edge_labels | `torch.IntTensor`                  | The node adjacency matrix with the shape `(N, N)`. In KIE, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
+| edge_scores | `torch.FloatTensor`                | The prediction confidence of each edge in the KIE task, with the shape `(N, N)`.                                                                            |
+
 ### LabelData
 
 For **text recognition** tasks, both labeled content and predicted content are wrapped using `LabelData`.
@@ -54,6 +69,16 @@ text = dictionary.idx2str(index)
 pred_text.score = score
 pred_text.item = text
 ```
+
+The conventions for the `LabelData` fields in MMOCR are shown in the following table.
+
+|                |                    |                                                                                                                                                                          |
+| -------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Field          | Type               | Description                                                                                                                                                              |
+| item           | `str`              | Text content.                                                                                                                                                            |
+| score          | `list[float]`      | Confidence socre of the predicted text.                                                                                                                                  |
+| indexes        | `torch.LongTensor` | A sequence of text characters encoded by [dictionary](../basic_concepts/models.md#dictionary) and containing all special characters except `<UNK>`.                      |
+| padded_indexes | `torch.LongTensor` | If the length of indexes is less than the maximum sequence length and `pad_idx` exists, this field holds the encoded text sequence padded to the maximum sequence length of `max_seq_len`. |
 
 ## DataSample xxxDataSample
 
