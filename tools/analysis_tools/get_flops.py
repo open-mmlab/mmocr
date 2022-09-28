@@ -1,7 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 
-import numpy as np
 import torch
 from fvcore.nn import FlopCountAnalysis, flop_count_table
 from mmengine import Config
@@ -34,12 +33,7 @@ def main():
     elif len(args.shape) == 2:
         h, w = args.shape
     else:
-        raise ValueError('invalid input shape')
-    # ori_shape = (1, 3, h, w)
-    divisor = args.size_divisor
-    if divisor > 0:
-        h = int(np.ceil(h / divisor)) * divisor
-        w = int(np.ceil(w / divisor)) * divisor
+        raise ValueError('invalid input shape, please use --shape h w')
 
     input_shape = (1, 3, h, w)
 
