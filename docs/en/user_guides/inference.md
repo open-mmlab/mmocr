@@ -61,7 +61,7 @@ When calling the script from the command line, the script assumes configs are sa
 from mmocr.ocr import MMOCR
 
 # Load models into memory
-ocr = MMOCR()
+ocr = MMOCR(det='DB_r18', recog='CRNN')
 
 # Inference
 results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, show=True)

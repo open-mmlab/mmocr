@@ -60,7 +60,7 @@ python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --print-res
 from mmocr.ocr import MMOCR
 
 # 导入模型到内存
-ocr = MMOCR()
+ocr = MMOCR(det='DB_r18', recog='CRNN')
 
 # 推理
 results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, show=True)
