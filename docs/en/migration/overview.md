@@ -7,3 +7,11 @@ Next, please read the sections according to your requirements.
 - If you want to migrate a model trained in version 0.x to use it directly in version 1.0, please read [Pretrained Model Migration](./model.md).
 - If you want to train the model, please read [Dataset Migration](./dataset.md) and [Data Transform Migration](./transforms.md).
 - If you want to develop on MMOCR, please read [Code Migration](code.md) and [Upstream Library Changes](https://github.com/open-mmlab/mmengine/tree/main/docs/en/migration).
+
+```{note}
+It should be noted that MMOCR 1.0 depends on the new foundational library for training deep learning models [MMEngine](https://github.com/open-mmlab/mmengine). Therefore, you need to create a new python environment to install the dependencies for MMOCR 1.0. We provide a detailed [installation guide](../get_started/install.md) for reference.
+```
+
+As shown in the following figure, the maintenance plan of MMOCR 1.x version is mainly divided into three stages, namely "Public Beta Period", "Compatibility Period" and "Maintenance Period". For old versions, we will no longer add major new features. Therefore, we strongly recommend users to migrate to MMOCR 1.x version as soon as possible.
+
+![plan](https://user-images.githubusercontent.com/45810070/192681297-747a503b-f8c7-46e4-a91e-818cb20d2fb1.png)
