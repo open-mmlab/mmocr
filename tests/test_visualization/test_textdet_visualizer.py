@@ -101,6 +101,10 @@ class TestTextDetLocalVisualizer(unittest.TestCase):
                 out_file=out_file)
             self._assert_image_and_shape(out_file, (h, w, c))
 
+            det_local_visualizer.add_datasample(
+                'image', image, None, out_file=out_file)
+            self._assert_image_and_shape(out_file, (h, w, c))
+
     def _assert_image_and_shape(self, out_file, out_shape):
         self.assertTrue(osp.exists(out_file))
         drawn_img = cv2.imread(out_file)

@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import math
 import warnings
 from typing import Dict, List, Optional, Sequence, Union
 
@@ -15,31 +14,11 @@ from mmengine.visualization.utils import (check_type, check_type_and_length,
 
 from mmocr.registry import VISUALIZERS
 from mmocr.structures import KIEDataSample
-
-PALETTE = [(220, 20, 60), (119, 11, 32), (0, 0, 142), (0, 0, 230),
-           (106, 0, 228), (0, 60, 100), (0, 80, 100), (0, 0, 70), (0, 0, 192),
-           (250, 170, 30), (100, 170, 30), (220, 220, 0), (175, 116, 175),
-           (250, 0, 30), (165, 42, 42), (255, 77, 255), (0, 226, 252),
-           (182, 182, 255), (0, 82, 0), (120, 166, 157), (110, 76, 0),
-           (174, 57, 255), (199, 100, 0), (72, 0, 118), (255, 179, 240),
-           (0, 125, 92), (209, 0, 151), (188, 208, 182), (0, 220, 176),
-           (255, 99, 164), (92, 0, 73), (133, 129, 255), (78, 180, 255),
-           (0, 228, 0), (174, 255, 243), (45, 89, 255), (134, 134, 103),
-           (145, 148, 174), (255, 208, 186), (197, 226, 255), (171, 134, 1),
-           (109, 63, 54), (207, 138, 255), (151, 0, 95), (9, 80, 61),
-           (84, 105, 51), (74, 65, 105), (166, 196, 102), (208, 195, 210),
-           (255, 109, 65), (0, 143, 149), (179, 0, 194), (209, 99, 106),
-           (5, 121, 0), (227, 255, 205), (147, 186, 208), (153, 69, 1),
-           (3, 95, 161), (163, 255, 0), (119, 0, 170), (0, 182, 199),
-           (0, 165, 120), (183, 130, 88), (95, 32, 0), (130, 114, 135),
-           (110, 129, 133), (166, 74, 118), (219, 142, 185), (79, 210, 114),
-           (178, 90, 62), (65, 70, 15), (127, 167, 115), (59, 105, 106),
-           (142, 108, 45), (196, 172, 0), (95, 54, 80), (128, 76, 255),
-           (201, 57, 1), (246, 0, 122), (191, 162, 208)]
+from .base_visualizer import BaseLocalVisualizer
 
 
 @VISUALIZERS.register_module()
-class KIELocalVisualizer(Visualizer):
+class KIELocalVisualizer(BaseLocalVisualizer):
     """The MMOCR Text Detection Local Visualizer.
 
     Args:
@@ -64,102 +43,6 @@ class KIELocalVisualizer(Visualizer):
                  **kwargs) -> None:
         super().__init__(name=name, **kwargs)
         self.is_openset = is_openset
-
-    @staticmethod
-    def _draw_labels(visualizer: Visualizer,
-                     image: np.ndarray,
-                     labels: Union[np.ndarray, torch.Tensor],
-                     bboxes: Union[np.ndarray, torch.Tensor],
-                     colors: Union[str, Sequence[str]] = 'k',
-                     font_size: Union[int, float] = 10,
-                     auto_font_size: bool = False) -> np.ndarray:
-        """Draw labels on image.
-
-        Args:
-            image (np.ndarray): The origin image to draw. The format
-                should be RGB.
-            labels (Union[np.ndarray, torch.Tensor]): The labels to draw.
-            bboxes (Union[np.ndarray, torch.Tensor]): The bboxes to draw.
-            colors (Union[str, Sequence[str]]): The colors of labels.
-                ``colors`` can have the same length with labels or just single
-                value. If ``colors`` is single value, all the labels will have
-                the same colors. Refer to `matplotlib.colors` for full list of
-                formats that are accepted. Defaults to 'k'.
-            font_size (Union[int, float]): The font size of labels. Defaults
-                to 10.
-            auto_font_size (bool): Whether to automatically adjust font size.
-                Defaults to False.
-        """
-        if colors is not None and isinstance(colors, Sequence):
-            size = math.ceil(len(labels) / len(colors))
-            colors = (colors * size)[:len(labels)]
-        if auto_font_size:
-            assert font_size is not None and isinstance(
-                font_size, (int, float))
-            font_size = (bboxes[:, 2:] - bboxes[:, :2]).min(-1) * font_size
-            font_size = font_size.tolist()
-        visualizer.set_image(image)
-        visualizer.draw_texts(
-            labels, (bboxes[:, :2] + bboxes[:, 2:]) / 2,
-            vertical_alignments='center',
-            horizontal_alignments='center',
-            colors='k',
-            font_sizes=font_size)
-        return visualizer.get_image()
-
-    @staticmethod
-    def _draw_polygons(visualizer: Visualizer,
-                       image: np.ndarray,
-                       polygons: Sequence[np.ndarray],
-                       colors: Union[str, Sequence[str]] = 'g',
-                       filling: bool = False,
-                       line_width: Union[int, float] = 0.5,
-                       alpha: float = 0.5) -> np.ndarray:
-        if colors is not None and isinstance(colors, Sequence):
-            size = math.ceil(len(polygons) / len(colors))
-            colors = (colors * size)[:len(polygons)]
-        visualizer.set_image(image)
-        if filling:
-            visualizer.draw_polygons(
-                polygons,
-                face_colors=colors,
-                edge_colors=colors,
-                line_widths=line_width,
-                alpha=alpha)
-        else:
-            visualizer.draw_polygons(
-                polygons,
-                edge_colors=colors,
-                line_widths=line_width,
-                alpha=alpha)
-        return visualizer.get_image()
-
-    @staticmethod
-    def _draw_bboxes(visualizer: Visualizer,
-                     image: np.ndarray,
-                     bboxes: Union[np.ndarray, torch.Tensor],
-                     colors: Union[str, Sequence[str]] = 'g',
-                     filling: bool = False,
-                     line_width: Union[int, float] = 0.5,
-                     alpha: float = 0.5) -> np.ndarray:
-        if colors is not None and isinstance(colors, Sequence):
-            size = math.ceil(len(bboxes) / len(colors))
-            colors = (colors * size)[:len(bboxes)]
-        visualizer.set_image(image)
-        if filling:
-            visualizer.draw_bboxes(
-                bboxes,
-                face_colors=colors,
-                edge_colors=colors,
-                line_widths=line_width,
-                alpha=alpha)
-        else:
-            visualizer.draw_bboxes(
-                bboxes,
-                edge_colors=colors,
-                line_widths=line_width,
-                alpha=alpha)
-        return visualizer.get_image()
 
     def _draw_edge_label(self,
                          image: np.ndarray,
@@ -257,45 +140,35 @@ class KIELocalVisualizer(Visualizer):
         img_shape = image.shape[:2]
         empty_shape = (img_shape[0], img_shape[1], 3)
 
-        if polygons:
-            polygons = [polygon.reshape(-1, 2) for polygon in polygons]
-        if polygons:
-            image = self._draw_polygons(
-                self, image, polygons, filling=True, colors=PALETTE)
-        else:
-            image = self._draw_bboxes(
-                self, image, bboxes, filling=True, colors=PALETTE)
-
         text_image = np.full(empty_shape, 255, dtype=np.uint8)
-        text_image = self._draw_labels(self, text_image, texts, bboxes)
-        if polygons:
-            text_image = self._draw_polygons(
-                self, text_image, polygons, colors=PALETTE)
-        else:
-            text_image = self._draw_bboxes(
-                self, text_image, bboxes, colors=PALETTE)
+        text_image = self.get_labels_image(text_image, texts, bboxes)
 
         classes_image = np.full(empty_shape, 255, dtype=np.uint8)
         bbox_classes = [class_names[int(i)]['name'] for i in bbox_labels]
-        classes_image = self._draw_labels(self, classes_image, bbox_classes,
-                                          bboxes)
+        classes_image = self.get_labels_image(classes_image, bbox_classes,
+                                              bboxes)
         if polygons:
-            classes_image = self._draw_polygons(
-                self, classes_image, polygons, colors=PALETTE)
+            polygons = [polygon.reshape(-1, 2) for polygon in polygons]
+            image = self.get_polygons_image(
+                image, polygons, filling=True, colors=self.PALETTE)
+            text_image = self.get_polygons_image(
+                text_image, polygons, colors=self.PALETTE)
+            classes_image = self.get_polygons_image(
+                classes_image, polygons, colors=self.PALETTE)
         else:
-            classes_image = self._draw_bboxes(
-                self, classes_image, bboxes, colors=PALETTE)
-
-        edge_image = None
+            image = self.get_bboxes_image(
+                image, bboxes, filling=True, colors=self.PALETTE)
+            text_image = self.get_bboxes_image(
+                text_image, bboxes, colors=self.PALETTE)
+            classes_image = self.get_bboxes_image(
+                classes_image, bboxes, colors=self.PALETTE)
+        cat_image = [image, text_image, classes_image]
         if is_openset:
             edge_image = np.full(empty_shape, 255, dtype=np.uint8)
             edge_image = self._draw_edge_label(edge_image, edge_labels, bboxes,
                                                texts, arrow_colors)
-        cat_image = []
-        for i in [image, text_image, classes_image, edge_image]:
-            if i is not None:
-                cat_image.append(i)
-        return np.concatenate(cat_image, axis=1)
+            cat_image.append(edge_image)
+        return self._cat_image(cat_image, axis=1)
 
     def add_datasample(self,
                        name: str,
@@ -336,8 +209,7 @@ class KIELocalVisualizer(Visualizer):
             out_file (str): Path to output file. Defaults to None.
             step (int): Global step value to record. Defaults to 0.
         """
-        gt_img_data = None
-        pred_img_data = None
+        cat_images = list()
 
         if draw_gt:
             gt_bboxes = data_sample.gt_instances.bboxes
@@ -350,6 +222,7 @@ class KIELocalVisualizer(Visualizer):
                                                gt_texts,
                                                self.dataset_meta['category'],
                                                self.is_openset, 'g')
+            cat_images.append(gt_img_data)
         if draw_pred:
             gt_bboxes = data_sample.gt_instances.bboxes
             pred_labels = data_sample.pred_instances.labels
@@ -362,22 +235,19 @@ class KIELocalVisualizer(Visualizer):
                                                  gt_texts,
                                                  self.dataset_meta['category'],
                                                  self.is_openset, 'r')
-        if gt_img_data is not None and pred_img_data is not None:
-            drawn_img = np.concatenate((gt_img_data, pred_img_data), axis=0)
-        elif gt_img_data is not None:
-            drawn_img = gt_img_data
-        elif pred_img_data is not None:
-            drawn_img = pred_img_data
-        else:
-            drawn_img = image
+            cat_images.append(pred_img_data)
+
+        cat_images = self._cat_image(cat_images, axis=0)
+        if cat_images is None:
+            cat_images = image
 
         if show:
-            self.show(drawn_img, win_name=name, wait_time=wait_time)
+            self.show(cat_images, win_name=name, wait_time=wait_time)
         else:
-            self.add_image(name, drawn_img, step)
+            self.add_image(name, cat_images, step)
 
         if out_file is not None:
-            mmcv.imwrite(drawn_img[..., ::-1], out_file)
+            mmcv.imwrite(cat_images[..., ::-1], out_file)
 
     def draw_arrows(self,
                     x_data: Union[np.ndarray, torch.Tensor],

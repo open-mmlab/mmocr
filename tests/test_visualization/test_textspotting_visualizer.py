@@ -8,9 +8,9 @@ import numpy as np
 import torch
 from mmengine.structures import InstanceData
 
-from mmocr.structures import KIEDataSample
+from mmocr.structures import TextDetDataSample
 from mmocr.utils import bbox2poly
-from mmocr.visualization import KIELocalVisualizer
+from mmocr.visualization import TextSpottingLocalVisualizer
 
 
 class TestTextKIELocalVisualizer(unittest.TestCase):
@@ -18,15 +18,13 @@ class TestTextKIELocalVisualizer(unittest.TestCase):
     def setUp(self):
         h, w = 12, 10
         self.image = np.random.randint(0, 256, size=(h, w, 3)).astype('uint8')
-        edge_labels = torch.rand((5, 5)) > 0.5
         # gt_instances
-        data_sample = KIEDataSample()
+        data_sample = TextDetDataSample()
         gt_instances_data = dict(
             bboxes=self._rand_bboxes(5, h, w),
             polygons=self._rand_polys(5, h, w),
             labels=torch.zeros(5, ),
-            texts=['text1', 'text2', 'text3', 'text4', 'text5'],
-            edge_labels=edge_labels)
+            texts=['text1', 'text2', 'text3', 'text4', 'text5'])
         gt_instances = InstanceData(**gt_instances_data)
         data_sample.gt_instances = gt_instances
 
@@ -34,8 +32,7 @@ class TestTextKIELocalVisualizer(unittest.TestCase):
             bboxes=self._rand_bboxes(5, h, w),
             labels=torch.zeros(5, ),
             scores=torch.rand((5, )),
-            texts=['text1', 'text2', 'text3', 'text4', 'text5'],
-            edge_labels=edge_labels)
+            texts=['text1', 'text2', 'text3', 'text4', 'text5'])
         pred_instances = InstanceData(**pred_instances_data)
         data_sample.pred_instances = pred_instances
         data_sample = data_sample.numpy()
@@ -64,13 +61,7 @@ class TestTextKIELocalVisualizer(unittest.TestCase):
         image = self.image
         h, w, c = image.shape
 
-        visualizer = KIELocalVisualizer(is_openset=True)
-        visualizer.dataset_meta = dict(category=[
-            dict(id=0, name='bg'),
-            dict(id=1, name='key'),
-            dict(id=2, name='value'),
-            dict(id=3, name='other')
-        ])
+        visualizer = TextSpottingLocalVisualizer()
         visualizer.add_datasample('image', image, self.data_sample)
 
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -87,7 +78,7 @@ class TestTextKIELocalVisualizer(unittest.TestCase):
 
             visualizer.add_datasample(
                 'image', image, self.data_sample, out_file=out_file)
-            self._assert_image_and_shape(out_file, (h * 2, w * 4, c))
+            self._assert_image_and_shape(out_file, (h * 2, w * 2, c))
 
             visualizer.add_datasample(
                 'image',
@@ -95,7 +86,7 @@ class TestTextKIELocalVisualizer(unittest.TestCase):
                 self.data_sample,
                 draw_gt=False,
                 out_file=out_file)
-            self._assert_image_and_shape(out_file, (h, w * 4, c))
+            self._assert_image_and_shape(out_file, (h, w * 2, c))
 
             visualizer.add_datasample(
                 'image',
@@ -103,22 +94,18 @@ class TestTextKIELocalVisualizer(unittest.TestCase):
                 self.data_sample,
                 draw_pred=False,
                 out_file=out_file)
-            self._assert_image_and_shape(out_file, (h, w * 4, c))
-
-            visualizer = KIELocalVisualizer(is_openset=False)
-            visualizer.dataset_meta = dict(category=[
-                dict(id=0, name='bg'),
-                dict(id=1, name='key'),
-                dict(id=2, name='value'),
-                dict(id=3, name='other')
-            ])
+            self._assert_image_and_shape(out_file, (h, w * 2, c))
+            bboxes = self.data_sample.pred_instances.pop('bboxes')
+            bboxes = bboxes.tolist()
+            polys = [bbox2poly(bbox) for bbox in bboxes]
+            self.data_sample.pred_instances.polygons = polys
             visualizer.add_datasample(
                 'image',
                 image,
                 self.data_sample,
-                draw_pred=False,
+                draw_gt=False,
                 out_file=out_file)
-            self._assert_image_and_shape(out_file, (h, w * 3, c))
+            self._assert_image_and_shape(out_file, (h, w * 2, c))
 
     def _assert_image_and_shape(self, out_file, out_shape):
         self.assertTrue(osp.exists(out_file))
