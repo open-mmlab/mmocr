@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 import torch
 from fvcore.nn import FlopCountAnalysis, flop_count_table
-from mmengine import Config, DictAction
+from mmengine import Config
 
 from mmocr.registry import MODELS
 from mmocr.utils import register_all_modules
@@ -21,22 +21,6 @@ def parse_args():
         nargs='+',
         default=[640, 640],
         help='input image size')
-    parser.add_argument(
-        '--cfg-options',
-        nargs='+',
-        action=DictAction,
-        help='override some settings in the used config, the key-value pair '
-        'in xxx=yyy format will be merged into config file. If the value to '
-        'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
-        'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
-        'Note that the quotation marks are necessary and that no white space '
-        'is allowed.')
-    parser.add_argument(
-        '--size-divisor',
-        type=int,
-        default=32,
-        help='Pad the input image, the minimum size that is divisible '
-        'by size_divisor, -1 means do not pad the image.')
     args = parser.parse_args()
     return args
 
