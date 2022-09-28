@@ -53,13 +53,24 @@ python tools/analysis_tools/offline_eval.py configs/textdet/psenet/psenet_r50_fp
 
 ### 计算FLOPs和参数量
 
-安装依赖
+我们提供一个计算 FLOPs 和参数量的方法，首先我们使用以下命令安装依赖。
 
 ```shell
 pip install fvcore
 ```
 
-获取 `dbnet_resnet18_fpnc_100k_synthtext.py` flops 和参数量的示例命令。
+计算 FLOPs 和参数量的脚本使用方法如下：
+
+```shell
+python tools/analysis_tools/get_flops.py ${config} --shape ${IMAMGE_SHAPE}
+```
+
+| 参数    | 类型 | 说明                                                                 |
+| ------- | ---- | -------------------------------------------------------------------- |
+| config  | str  | （必须) 配置文件路径。                                               |
+| --shape | int  | 计算 FLOPs 使用的图片尺寸，实例用法 `--shape 320 320` 默认为 640 640 |
+
+获取 `dbnet_resnet18_fpnc_100k_synthtext.py` FLOPs 和参数量的示例命令如下。
 
 ```shell
 python tools/analysis_tools/get_flops.py configs/textdet/dbnet/dbnet_resnet18_fpnc_100k_synthtext.py --shape 1024 1024
