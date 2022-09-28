@@ -53,6 +53,14 @@ python tools/analysis_tools/offline_eval.py configs/textdet/psenet/psenet_r50_fp
 
 ### 计算flops和参数量
 
+安装依赖
+
+```shell
+pip install fvcore
+```
+
+获取 `dbnet_resnet18_fpnc_100k_synthtext.py` flops 和参数量的示例命令。
+
 ```shell
 python tools/analysis_tools/get_flops.py configs/textdet/dbnet/dbnet_resnet18_fpnc_100k_synthtext.py --shape 1024 1024
 ```
