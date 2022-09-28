@@ -51,7 +51,7 @@ python tools/analysis_tools/offline_eval.py configs/textdet/psenet/psenet_r50_fp
 | pkl_results   | str   | （必须）预先保存的预测结果文件。         |
 | --cfg-options | float | 用于覆写配置文件中的指定参数。[示例](<>) |
 
-### 计算flops和参数量
+### 计算FLOPs和参数量
 
 安装依赖
 
