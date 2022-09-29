@@ -171,7 +171,6 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
 | 数据转换类名称     | 需求字段                                                     | 修改/添加字段                                                 | 说明                                                          |
 | ImgAugWrapper      | `img`<br>`gt_polygons` (optional for text recognition)<br>`gt_bboxes` (optional for text recognition)<br>`gt_bboxes_labels` (optional for text recognition)<br>`gt_ignored` (optional for text recognition)<br>`gt_texts` (optional) | `img`<br>`gt_polygons` (optional for text recognition)<br>`gt_bboxes` (optional for text recognition)<br>`gt_bboxes_labels` (optional for text recognition)<br>`gt_ignored` (optional for text recognition)<br>`img_shape` (optional)<br>`gt_texts` (optional) | [ImgAug](https://github.com/aleju/imgaug) 包装类，用于打通 ImgAug 与 MMOCR 的数据格式及配置，方便用户调用 ImgAug 实现的一系列数据增强方法。 |
 | TorchVisionWrapper | `img`                                                        | `img`<br>`img_shape`                                          | [TorchVision](https://github.com/pytorch/vision) 包装类，用于打通 TorchVision 与 MMOCR 的数据格式及配置，方便用户调用 `torchvision.transforms` 中实现的一系列数据变换方法。 |
-|                    |                                                              |                                                               |                                                               |
 
 ### `ImgAugWrapper` 示例
 

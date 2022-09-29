@@ -150,7 +150,7 @@ master_doc = 'index'
 html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
 
-myst_heading_anchors = 3
+myst_heading_anchors = 4
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
