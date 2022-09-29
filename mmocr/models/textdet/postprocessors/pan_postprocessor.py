@@ -116,18 +116,6 @@ class PANPostprocessor(BaseTextDetPostProcessor):
         data_sample.set_metainfo(dict(scale_factor=scale_factor))
         return data_sample
 
-    def split_results(self, pred_results: torch.Tensor) -> List[torch.Tensor]:
-        """Split the prediction results into text score and kernel score.
-
-        Args:
-            pred_results (torch.Tensor): The prediction results.
-
-        Returns:
-            List[torch.Tensor]: The text score and kernel score.
-        """
-        pred_results = [pred_result for pred_result in pred_results]
-        return pred_results
-
     def _points2boundary(self,
                          points: np.ndarray,
                          min_width: int = 0) -> List[float]:
