@@ -7,3 +7,11 @@
 - 如果你需要把 0.x 版本中训练的模型直接迁移到 1.0 版本中使用，请阅读 [预训练模型迁移](./model.md)
 - 如果你需要训练模型，请阅读 [数据集迁移](./dataset.md) 和 [数据增强迁移](./transforms.md)
 - 如果你需要在 MMOCR 上进行开发，请阅读 [代码迁移](code.md) 和 [上游依赖库变更](https://github.com/open-mmlab/mmengine/tree/main/docs/zh_cn/migration)
+
+```{note}
+需要注意的是，MMOCR 1.0 依赖于新的基础训练框架 [MMEngine](https://github.com/open-mmlab/mmengine)。因此，你需要创建新的 python 环境来安装 MMOCR 1.0 版本所需要的依赖库。我们提供了详细的[安装文档](../get_started/install.md)以供参考。
+```
+
+如下图所示，MMOCR 1.x 版本的维护计划主要分为三个阶段，即“公测期”，“兼容期”以及“维护期”。对于旧版本，我们将不再增加主要新功能。因此，我们强烈建议用户尽早迁移至 MMOCR 1.x 版本。
+
+![plan](https://user-images.githubusercontent.com/45810070/192678159-f8965f73-552b-48a1-bf65-659e8f519bdd.png)

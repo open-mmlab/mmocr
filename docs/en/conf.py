@@ -96,6 +96,15 @@ html_theme_options = {
             'Upstream',
             'children': [
                 {
+                    'name':
+                    'MMEngine',
+                    'url':
+                    'https://github.com/open-mmlab/mmengine',
+                    'description':
+                    'Foundational library for training deep '
+                    'learning models'
+                },
+                {
                     'name': 'MMCV',
                     'url': 'https://github.com/open-mmlab/mmcv',
                     'description': 'Foundational library for computer vision'
@@ -106,6 +115,24 @@ html_theme_options = {
                     'description': 'Object detection toolbox and benchmark'
                 },
             ]
+        },
+        {
+            'name':
+            'Version',
+            'children': [
+                {
+                    'name': 'MMOCR 0.x',
+                    'url': 'https://mmocr.readthedocs.io/en/latest/',
+                    'description': 'Main branch'
+                },
+                {
+                    'name': 'MMOCR 1.x',
+                    'url': 'https://mmocr.readthedocs.io/en/dev-1.x/',
+                    'description': '1.x branch'
+                },
+            ],
+            'active':
+            True,
         },
     ],
     # Specify the language of shared menu
@@ -123,7 +150,7 @@ master_doc = 'index'
 html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
 
-myst_heading_anchors = 3
+myst_heading_anchors = 4
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
