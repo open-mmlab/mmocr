@@ -6,7 +6,7 @@ _base_ = [
 ]
 
 # TODO: Replace the link
-load_from = 'https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_r50dcnv2_fpnc_sbn_2e_synthtext_20210325-aa96e477.pth'  # noqa
+load_from = 'https://download.openmmlab.com/mmocr/textdet/dbnet/tmp_1.0_pretrain/dbnet_r50dcnv2_fpnc_sbn_2e_synthtext_20210325-ed322016.pth'  # noqa
 
 # dataset settings
 ic15_det_train = _base_.ic15_det_train
