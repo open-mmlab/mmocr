@@ -14,4 +14,4 @@ It should be noted that MMOCR 1.0 depends on the new foundational library for tr
 
 As shown in the following figure, the maintenance plan of MMOCR 1.x version is mainly divided into three stages, namely "Public Beta Period", "Compatibility Period" and "Maintenance Period". For old versions, we will no longer add major new features. Therefore, we strongly recommend users to migrate to MMOCR 1.x version as soon as possible.
 
-![plan](https://user-images.githubusercontent.com/45810070/192681297-747a503b-f8c7-46e4-a91e-818cb20d2fb1.png)
+![plan](https://user-images.githubusercontent.com/45810070/192926302-ad1355da-6a6c-4fc5-bdcb-e9a9560da40c.png)
