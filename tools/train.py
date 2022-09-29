@@ -220,7 +220,7 @@ def run_train_cmd(args):
         else:
             val_dataset.pipeline = train_pipeline
         datasets.append(build_dataset(val_dataset))
-    if cfg.checkpoint_config is not None:
+    if cfg.get('checkpoint_config', None) is not None:
         # save mmdet version, config file content and class names in
         # checkpoints as meta data
         cfg.checkpoint_config.meta = dict(

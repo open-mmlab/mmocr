@@ -106,10 +106,38 @@ html_theme_options = {
                 },
             ]
         },
+        {
+            'name':
+            'Version',
+            'children': [
+                {
+                    'name': 'MMOCR 0.x',
+                    'url': 'https://mmocr.readthedocs.io/en/latest/',
+                    'description': 'docs at main branch'
+                },
+                {
+                    'name': 'MMOCR 1.x',
+                    'url': 'https://mmocr.readthedocs.io/en/dev-1.x/',
+                    'description': 'docs at 1.x branch'
+                },
+            ],
+            'active':
+            True,
+        },
     ],
     # Specify the language of shared menu
     'menu_lang':
-    'en'
+    'en',
+    'header_note': {
+        'content':
+        'You are reading the documentation for MMOCR 0.x, which '
+        'will soon be deprecated by the end of 2022. We recommend you upgrade '
+        'to MMOCR 1.0 to enjoy fruitful new features and better performance '
+        ' brought by OpenMMLab 2.0. Check out the '
+        '<a href="https://github.com/open-mmlab/mmocr/releases">changelog</a>, '  # noqa
+        '<a href="https://github.com/open-mmlab/mmocr/tree/1.x">code</a> '  # noqa
+        'and <a href="https://mmocr.readthedocs.io/en/dev-1.x/">documentation</a> of MMOCR 1.0 for more details.',  # noqa
+    }
 }
 
 language = 'en'

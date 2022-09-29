@@ -47,11 +47,11 @@ def digit_version(version_str: str, length: int = 4):
 
 
 mmcv_minimum_version = '1.3.8'
-mmcv_maximum_version = '1.6.0'
+mmcv_maximum_version = '1.7.0'
 mmcv_version = digit_version(mmcv.__version__)
 
 assert (mmcv_version >= digit_version(mmcv_minimum_version)
-        and mmcv_version <= digit_version(mmcv_maximum_version)), \
+        and mmcv_version < digit_version(mmcv_maximum_version)), \
     f'MMCV {mmcv.__version__} is incompatible with MMOCR {__version__}. ' \
     f'Please use MMCV >= {mmcv_minimum_version}, ' \
     f'<= {mmcv_maximum_version} instead.'
@@ -61,7 +61,7 @@ mmdet_maximum_version = '3.0.0'
 mmdet_version = digit_version(mmdet.__version__)
 
 assert (mmdet_version >= digit_version(mmdet_minimum_version)
-        and mmdet_version <= digit_version(mmdet_maximum_version)), \
+        and mmdet_version < digit_version(mmdet_maximum_version)), \
     f'MMDetection {mmdet.__version__} is incompatible ' \
     f'with MMOCR {__version__}. ' \
     f'Please use MMDetection >= {mmdet_minimum_version}, ' \

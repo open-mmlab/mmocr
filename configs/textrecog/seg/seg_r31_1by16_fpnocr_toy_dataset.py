@@ -3,6 +3,7 @@ _base_ = [
     '../../_base_/recog_datasets/seg_toy_data.py',
     '../../_base_/recog_models/seg.py',
     '../../_base_/recog_pipelines/seg_pipeline.py',
+    '../../_base_/schedules/schedule_adam_step_5e.py'
 ]
 
 train_list = {{_base_.train_list}}
@@ -16,7 +17,6 @@ optimizer = dict(type='Adam', lr=1e-4)
 optimizer_config = dict(grad_clip=None)
 # learning policy
 lr_config = dict(policy='step', step=[3, 4])
-total_epochs = 5
 
 data = dict(
     samples_per_gpu=8,

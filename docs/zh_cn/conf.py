@@ -106,10 +106,39 @@ html_theme_options = {
                 },
             ]
         },
+        {
+            'name':
+            '版本',
+            'children': [
+                {
+                    'name': 'MMOCR 0.x',
+                    'url': 'https://mmocr.readthedocs.io/zh_CN/latest/',
+                    'description': 'main 分支文档'
+                },
+                {
+                    'name': 'MMOCR 1.x',
+                    'url': 'https://mmocr.readthedocs.io/zh_CN/dev-1.x/',
+                    'description': '1.x 分支文档'
+                },
+            ],
+            'active':
+            True,
+        },
     ],
     # Specify the language of shared menu
     'menu_lang':
     'cn',
+    'header_note': {
+        'title':
+        '注意',
+        'content':
+        '您正在阅读 MMOCR 0.x 版本的文档。MMOCR 0.x 会在 2022 年末开始'
+        '逐步停止维护，建议您及时升级到 MMOCR 1.0 版本，享受由 OpenMMLab '
+        '2.0 带来的更多新特性和更佳的性能表现。阅读 MMOCR 1.0 的'
+        '<a href="https://github.com/open-mmlab/mmocr/releases">发版日志</a>、 '  # noqa
+        '<a href="https://github.com/open-mmlab/mmocr/tree/1.x">代码</a> '  # noqa
+        '和 <a href="https://mmocr.readthedocs.io/zh_CN/dev-1.x/">文档</a> 以了解更多。',  # noqa
+    }
 }
 
 language = 'zh_CN'
