@@ -37,9 +37,6 @@ def main():
 
     input_shape = (1, 3, h, w)
 
-    print('input shape is ', input_shape)
-
-    # model = init_detector(args.config, device='cpu')  # or device='cuda:0'
     cfg = Config.fromfile(args.config)
     model = MODELS.build(cfg.model)
 
