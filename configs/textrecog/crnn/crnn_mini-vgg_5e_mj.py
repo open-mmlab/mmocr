@@ -23,7 +23,7 @@ default_hooks = dict(logger=dict(type='LoggerHook', interval=50), )
 
 train_dataloader = dict(
     batch_size=64,
-    num_workers=8,
+    num_workers=24,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
