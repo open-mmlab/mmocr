@@ -12,6 +12,8 @@ _base_ = [
     '_base_abinet.py',
 ]
 
+load_from = 'https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_pretrain-45deac15.pth'  # noqa
+
 optim_wrapper = dict(optimizer=dict(lr=1e-4))
 train_cfg = dict(max_epochs=20)
 # learning policy

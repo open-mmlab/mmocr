@@ -5,6 +5,8 @@ _base_ = [
     '../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
+load_from = 'https://download.openmmlab.com/mmocr/textdet/dbnetpp/tmp_1.0_pretrain/dbnetpp_r50dcnv2_fpnc_100k_iter_synthtext-20220502-352fec8a.pth'  # noqa
+
 # dataset settings
 train_list = [_base_.ic15_det_train]
 test_list = [_base_.ic15_det_test]
