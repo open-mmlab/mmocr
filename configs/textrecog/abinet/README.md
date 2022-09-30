@@ -34,10 +34,10 @@ Linguistic knowledge is of great benefit to scene text recognition. However, how
 
 ## Results and models
 
-|                                 methods                                  | pretrained |        | Regular Text |        |        | Irregular Text |        | download                 |
-| :----------------------------------------------------------------------: | :--------: | :----: | :----------: | :----: | :----: | :------------: | :----: | :----------------------- |
-|                                                                          |            | IIIT5K |     SVT      |  IC13  |  IC15  |      SVTP      |  CT80  |                          |
-| [ABINet-Vision](/configs/textrecog/abinet/abinet-vision_20e_st-an_mj.py) |     -      | 0.9523 |    0.9057    | 0.9369 | 0.7886 |     0.8403     | 0.8437 | [model](<>) \| [log](<>) |
+|                                methods                                | pretrained |        | Regular Text |        |        | Irregular Text |        | download                                                                |
+| :-------------------------------------------------------------------: | :--------: | :----: | :----------: | :----: | :----: | :------------: | :----: | :---------------------------------------------------------------------- |
+|                                                                       |            | IIIT5K |     SVT      |  IC13  |  IC15  |      SVTP      |  CT80  |                                                                         |
+| [ABINet-Vision](/configs/textrecog/abinet/abinet-vision_20e_st-an_mj.py) |     -      | 0.9523 |    0.9057    | 0.9369 | 0.7886 |     0.8403     | 0.8437 | [model](https://download.openmmlab.com/mmocr/textrecog/abinet/abinet-vision_20e_st-an_mj/abinet-vision_20e_st-an_mj_20220915_152445-85cfb03d.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/abinet/abinet-vision_20e_st-an_mj/20220915_152445.log) |
 
 ```{note}
 1. ABINet allows its encoder to run and be trained without decoder and fuser. Its encoder is designed to recognize texts as a stand-alone model and therefore can work as an independent text recognizer. We release it as ABINet-Vision.

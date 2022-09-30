@@ -49,7 +49,7 @@ Models:
         Dataset: CT80
         Metrics:
           word_acc: 0.8993
-    Weights:
+    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow_5e_st_mj/satrn_shallow_5e_st_mj_20220915_152443-5fd04a4c.pth
 
   - Name: satrn_shallow-small_5e_st_mj
     In Collection: SATRN
@@ -83,4 +83,4 @@ Models:
         Dataset: CT80
         Metrics:
           word_acc: 0.8507
-    Weights:
+    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow-small_5e_st_mj/satrn_shallow-small_5e_st_mj_20220915_152442-5591bf27.pth

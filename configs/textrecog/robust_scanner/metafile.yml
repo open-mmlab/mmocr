@@ -5,8 +5,8 @@ Collections:
     Training Techniques:
       - Adam
     Epochs: 5
-    Batch Size: 512
-    Training Resources: 2x NVIDIA A100-SXM4-80GB
+    Batch Size: 1024
+    Training Resources: 4x NVIDIA A100-SXM4-80GB
     Architecture:
       - ResNet31OCR
       - ChannelReductionEncoder

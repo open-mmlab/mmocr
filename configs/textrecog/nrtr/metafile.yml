@@ -5,8 +5,8 @@ Collections:
     Training Techniques:
       - Adam
     Epochs: 6
-    Batch Size: 6144
-    Training Resources: 4x NVIDIA A100-SXM4-80GB
+    Batch Size: 384
+    Training Resources: 1x NVIDIA A100-SXM4-80GB
     Architecture:
       - CNN
       - NRTREncoder
@@ -49,8 +49,7 @@ Models:
         Dataset: CT80
         Metrics:
           word_acc: 0.7500
-    Weights:
-
+    Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_modality-transform_6e_st_mj/nrtr_modality-transform_6e_st_mj_20220916_103322-bd9425be.pth
   - Name: nrtr_resnet31-1by8-1by4_6e_st_mj
     In Collection: NRTR
     Config: configs/textrecog/nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj.py
@@ -83,4 +82,37 @@ Models:
         Dataset: CT80
         Metrics:
           word_acc: 0.8889
+    Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj/nrtr_resnet31-1by8-1by4_6e_st_mj_20220916_103322-a6a2a123.pth
+  - Name: nrtr_resnet31-1by16-1by8_6e_st_mj
+    In Collection: NRTR
+    Config: configs/textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj.py
+    Metadata:
+      Training Data:
+        - SynthText
+        - Syn90k
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 0.9470
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 0.8964
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 0.9399
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 0.7357
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 0.7969
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 0.8854
     Weights:

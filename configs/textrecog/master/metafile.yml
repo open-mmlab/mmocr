@@ -5,7 +5,7 @@ Collections:
       Training Techniques:
         - Adam
       Epochs: 12
-      Batch Size: 512
+      Batch Size: 2048
       Training Resources: 4x NVIDIA A100-SXM4-80GB
       Architecture:
         - ResNet31-GCAModule
@@ -49,4 +49,4 @@ Models:
         Dataset: CT80
         Metrics:
           word_acc: 0.8854
-    Weights:
+    Weights: https://download.openmmlab.com/mmocr/textrecog/master/master_resnet31_12e_st_mj_sa/master_resnet31_12e_st_mj_sa_20220915_152443-f4a5cabc.pth

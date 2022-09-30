@@ -50,4 +50,4 @@ Models:
         Dataset: CT80
         Metrics:
           word_acc: 0.8437
-    Weights:
+    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet-vision_20e_st-an_mj/abinet-vision_20e_st-an_mj_20220915_152445-85cfb03d.pth
