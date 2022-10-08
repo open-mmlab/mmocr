@@ -16,6 +16,23 @@ Collections:
     URL: https://arxiv.org/pdf/2103.06495.pdf
     Title: 'Read Like Humans: Autonomous, Bidirectional and Iterative Language Modeling for Scene Text Recognition'
   README: configs/textrecog/abinet/README.md
+- Name: ABINet
+  Metadata:
+    Training Data: OCRDataset
+    Training Techniques:
+      - Adam
+    Epochs: 20
+    Batch Size: 1536
+    Training Resources: 8 x NVIDIA A100-SXM4-80GB
+    Architecture:
+      - ResNetABI
+      - ABIVisionModel
+      - ABILanguageDecoder
+      - ABIFuser
+  Paper:
+    URL: https://arxiv.org/pdf/2103.06495.pdf
+    Title: 'Read Like Humans: Autonomous, Bidirectional and Iterative Language Modeling for Scene Text Recognition'
+  README: configs/textrecog/abinet/README.md
 
 Models:
   - Name: abinet-vision_20e_st-an_mj
