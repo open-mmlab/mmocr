@@ -115,4 +115,4 @@ Models:
         Dataset: CT80
         Metrics:
           word_acc: 0.8854
-    Weights:
+    Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj/nrtr_resnet31-1by16-1by8_6e_st_mj_20220920_143358-43767036.pth
