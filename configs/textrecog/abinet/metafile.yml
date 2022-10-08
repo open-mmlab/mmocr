@@ -10,8 +10,6 @@ Collections:
     Architecture:
       - ResNetABI
       - ABIVisionModel
-      - ABILanguageDecoder
-      - ABIFuser
   Paper:
     URL: https://arxiv.org/pdf/2103.06495.pdf
     Title: 'Read Like Humans: Autonomous, Bidirectional and Iterative Language Modeling for Scene Text Recognition'
