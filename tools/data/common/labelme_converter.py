@@ -205,7 +205,7 @@ def parse_args():
         choices=['jsonl', 'txt'])
     parser.add_argument(
         '--warp',
-        help='Store wrapped img for recognition task',
+        help='Store warped img for recognition task',
         action='store_true')
     args = parser.parse_args()
     return args
