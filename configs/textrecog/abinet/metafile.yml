@@ -1,5 +1,5 @@
 Collections:
-- Name: ABINet
+- Name: ABINet-vision
   Metadata:
     Training Data: OCRDataset
     Training Techniques:
@@ -19,7 +19,7 @@ Collections:
 
 Models:
   - Name: abinet-vision_20e_st-an_mj
-    In Collection: ABINet
+    In Collection: ABINet-vision
     Config: configs/textrecog/abinet/abinet-vision_20e_st-an_mj.py
     Metadata:
       Training Data:
@@ -51,3 +51,36 @@ Models:
         Metrics:
           word_acc: 0.8437
     Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet-vision_20e_st-an_mj/abinet-vision_20e_st-an_mj_20220915_152445-85cfb03d.pth
+  - Name: abinet_20e_st-an_mj
+    In Collection: ABINet
+    Config: configs/textrecog/abinet/abinet_20e_st-an_mj.py
+    Metadata:
+      Training Data:
+        - SynthText
+        - Syn90k
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 0.9603
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 0.9382
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 0.9547
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 0.8122
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 0.8868
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 0.8785
+    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_20e_st-an_mj/abinet_20e_st-an_mj_20221005_012617-ead8c139.pth
