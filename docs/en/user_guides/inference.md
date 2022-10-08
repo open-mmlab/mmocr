@@ -147,27 +147,36 @@ means that `print_result` is set to `True`)
 
 **Text detection:**
 
-| Name          |                                                                         Reference                                                                         |
-| ------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| DB_r18        |            [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
-| DB_r50        |            [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
-| DBPP_r50      |                                        [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnetpp)                                        |
-| DRRG          |                                         [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#drrg)                                          |
-| FCE_IC15      |             [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
-| FCE_CTW_DCNv2 |             [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
-| MaskRCNN_CTW  |                                      [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn)                                       |
-| MaskRCNN_IC15 |                                      [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn)                                       |
-| PANet_CTW     | [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
-| PANet_IC15    | [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
-| PS_CTW        |                                        [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)                                         |
-| PS_IC15       |                                        [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)                                         |
-| TextSnake     |                                       [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#textsnake)                                       |
+| Name          |                                   Reference                                    |
+| ------------- | :----------------------------------------------------------------------------: |
+| DB_r18        |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnet)    |
+| DB_r50        |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnet)    |
+| DBPP_r50      |  [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnetpp)   |
+| DRRG          |    [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#drrg)    |
+| FCE_IC15      |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fcenet)   |
+| FCE_CTW_DCNv2 |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fcenet)   |
+| MaskRCNN_CTW  | [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn) |
+| MaskRCNN_IC15 | [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn) |
+| PANet_CTW     |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#panet)    |
+| PANet_IC15    |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#panet)    |
+| PS_CTW        |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)   |
+| PS_IC15       |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)   |
+| TextSnake     | [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#textsnake)  |
 
 **Text recognition:**
 
-| Name |                                                                                            Reference                                                                                            |
-| ---- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| CRNN | [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |
+| Name          |                                      Reference                                      |
+| ------------- | :---------------------------------------------------------------------------------: |
+| ABINet        |    [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#abinet)     |
+| ABINet_Vision |    [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#abinet)     |
+| CRNN          |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#crnn)      |
+| MASTER        |    [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#master)     |
+| NRTR_1/16-1/8 |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#nrtr)      |
+| NRTR_1/8-1/4  |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#nrtr)      |
+| RobustScanner | [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#robustscanner) |
+| SAR           |      [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#sar)      |
+| SATRN         |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#satrn)     |
+| SATRN_sm      |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#satrn)     |
 
 **Key information extraction:**
 
