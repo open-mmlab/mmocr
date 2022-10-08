@@ -55,4 +55,4 @@ Models:
         Dataset: CT80
         Metrics:
           word_acc: 0.8715
-    Weights:
+    Weights: https://download.openmmlab.com/mmocr/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real_20220915_152447-7fc35929.pth
