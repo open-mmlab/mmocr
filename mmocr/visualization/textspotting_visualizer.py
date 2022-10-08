@@ -37,6 +37,9 @@ class TextSpottingLocalVisualizer(BaseLocalVisualizer):
                 should be the same as the number of bboxes.
             class_names (dict): The class names for bbox labels.
             is_openset (bool): Whether the dataset is openset. Default: False.
+
+        Returns:
+            np.ndarray: The image with instances drawn.
         """
         img_shape = image.shape[:2]
         empty_shape = (img_shape[0], img_shape[1], 3)
@@ -67,6 +70,34 @@ class TextSpottingLocalVisualizer(BaseLocalVisualizer):
                        pred_score_thr: float = 0.5,
                        out_file: Optional[str] = None,
                        step: int = 0) -> None:
+        """Draw datasample and save to all backends.
+
+        - If GT and prediction are plotted at the same time, they are
+        displayed in a stitched image where the left image is the
+        ground truth and the right image is the prediction.
+        - If ``show`` is True, all storage backends are ignored, and
+        the images will be displayed in a local window.
+        - If ``out_file`` is specified, the drawn image will be
+        saved to ``out_file``. This is usually used when the display
+        is not available.
+
+        Args:
+            name (str): The image identifier.
+            image (np.ndarray): The image to draw.
+            data_sample (:obj:`TextSpottingDataSample`, optional):
+                TextDetDataSample which contains gt and prediction. Defaults
+                    to None.
+            draw_gt (bool): Whether to draw GT TextDetDataSample.
+                Defaults to True.
+            draw_pred (bool): Whether to draw Predicted TextDetDataSample.
+                Defaults to True.
+            show (bool): Whether to display the drawn image. Default to False.
+            wait_time (float): The interval of show (s). Defaults to 0.
+            out_file (str): Path to output file. Defaults to None.
+            pred_score_thr (float): The threshold to visualize the bboxes
+                and masks. Defaults to 0.3.
+            step (int): Global step value to record. Defaults to 0.
+        """
         cat_images = []
 
         if draw_gt:

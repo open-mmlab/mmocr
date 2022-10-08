@@ -103,7 +103,7 @@ class BaseLocalVisualizer(Visualizer):
         Args:
             image (np.ndarray): The origin image to draw. The format
                 should be RGB.
-            polygons (Sequence[np.ndarray]): The polygons to draw. The format
+            polygons (Sequence[np.ndarray]): The polygons to draw. The shape
                 should be (N, 2).
             colors (Union[str, Sequence[str]]): The colors of polygons.
                 ``colors`` can have the same length with polygons or just
@@ -114,6 +114,9 @@ class BaseLocalVisualizer(Visualizer):
             line_width (Union[int, float]): The line width of polygons.
                 Defaults to 0.5.
             alpha (float): The alpha of polygons. Defaults to 0.5.
+
+        Returns:
+            np.ndarray: The image with polygons drawn.
         """
         if colors is not None and isinstance(colors, (list, tuple)):
             size = math.ceil(len(polygons) / len(colors))
@@ -156,6 +159,9 @@ class BaseLocalVisualizer(Visualizer):
             line_width (Union[int, float]): The line width of bboxes.
                 Defaults to 0.5.
             alpha (float): The alpha of bboxes. Defaults to 0.5.
+
+        Returns:
+            np.ndarray: The image with bboxes drawn.
         """
         if colors is not None and isinstance(colors, (list, tuple)):
             size = math.ceil(len(bboxes) / len(colors))
@@ -185,6 +191,9 @@ class BaseLocalVisualizer(Visualizer):
         Args:
             imgs (Sequence[np.ndarray]): The images to concatenate.
             axis (int): The axis to concatenate.
+
+        Returns:
+            np.ndarray: The concatenated image.
         """
         cat_image = list()
         for img in imgs:

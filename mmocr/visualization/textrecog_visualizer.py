@@ -47,6 +47,15 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
         self.pred_color = pred_color
 
     def _draw_instances(self, image: np.ndarray, text: str) -> np.ndarray:
+        """Draw text on image.
+
+        Args:
+            image (np.ndarray): The image to draw.
+            text (str): The text to draw.
+
+        Returns:
+            np.ndarray: The image with text drawn.
+        """
         height, width = image.shape[:2]
         empty_img = np.full_like(image, 255)
         self.set_image(empty_img)

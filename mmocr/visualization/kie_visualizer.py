@@ -65,6 +65,9 @@ class KIELocalVisualizer(BaseLocalVisualizer):
             arrow_colors (str, optional): The colors of arrows. Refer to
                 `matplotlib.colors` for full list of formats that are accepted.
                 Defaults to 'g'.
+
+        Returns:
+            np.ndarray: The image with edge labels drawn.
         """
         pairs = np.where(edge_labels > 0)
         key_bboxes = bboxes[pairs[0]]
@@ -136,6 +139,12 @@ class KIELocalVisualizer(BaseLocalVisualizer):
             class_names (dict): The class names for bbox labels.
             is_openset (bool): Whether the dataset is openset. Defaults to
                 False.
+            arrow_colors (str, optional): The colors of arrows. Refer to
+                `matplotlib.colors` for full list of formats that are accepted.
+                Defaults to 'g'.
+
+        Returns:
+            np.ndarray: The image with instances drawn.
         """
         img_shape = image.shape[:2]
         empty_shape = (img_shape[0], img_shape[1], 3)

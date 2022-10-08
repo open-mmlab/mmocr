@@ -70,7 +70,22 @@ class TextDetLocalVisualizer(BaseLocalVisualizer):
         polygons: Sequence[np.ndarray],
         color: Union[str, Tuple, List[str], List[Tuple]] = 'g',
     ) -> np.ndarray:
+        """Draw bboxes and polygons on image.
 
+        Args:
+            image (np.ndarray): The origin image to draw.
+            bboxes (Union[np.ndarray, torch.Tensor]): The bboxes to draw.
+            polygons (Sequence[np.ndarray]): The polygons to draw.
+            color (Union[str, tuple, list[str], list[tuple]]): The
+                colors of polygons and bboxes. ``colors`` can have the same
+                length with lines or just single value. If ``colors`` is
+                single value, all the lines will have the same colors. Refer
+                to `matplotlib.colors` for full list of formats that are
+                accepted. Defaults to 'g'.
+
+        Returns:
+            np.ndarray: The image with bboxes and polygons drawn.
+        """
         if polygons is not None and self.with_poly:
             polygons = [polygon.reshape(-1, 2) for polygon in polygons]
             image = self.get_polygons_image(
