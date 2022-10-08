@@ -46,7 +46,7 @@ MMOCR implements **distributed** training with `MMDistributedDataParallel`. (Ple
 
 | Arguments     | Type | Description                                                                                                                                                                             |
 | ------------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PORT`        | int  | The master port that will be used by the machine with rank 0. Defaults to 29500. **Note:** If you are launching multiple distrbuted training jobs on a single machine, you need to specify different ports for each job to avoid port conflicts. |
+| `PORT`        | int  | The master port that will be used by the machine with rank 0. Defaults to 29500. **Note:** If you are launching multiple distributed training jobs on a single machine, you need to specify different ports for each job to avoid port conflicts. |
 | `CONFIG_FILE` | str  | The path to config.                                                                                                                                                                     |
 | `WORK_DIR`    | str  | The path to the working directory.                                                                                                                                                      |
 | `GPU_NUM`     | int  | The number of GPUs to be used per node. Defaults to 8.                                                                                                                                  |

@@ -93,7 +93,8 @@ def convert_art(root_path, split, ratio, format):
         dst_img_name = prefix + '.jpg'
 
         if format == 'txt':
-            labels.append(f'crops/{dst_img_name}' f' {text_label}')
+            labels.append(f'crops/{dst_img_name}'
+                          f' {text_label}')
         elif format == 'jsonl':
             labels.append(
                 json.dumps(

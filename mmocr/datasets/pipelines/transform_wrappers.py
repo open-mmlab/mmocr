@@ -73,7 +73,7 @@ class RandomWrapper:
 
 @PIPELINES.register_module()
 class TorchVisionWrapper:
-    """A wrapper of torchvision trasnforms. It applies specific transform to
+    """A wrapper of torchvision transforms. It applies specific transform to
     ``img`` and updates ``img_shape`` accordingly.
 
     Warning:
