@@ -206,7 +206,7 @@ Here is a brief description of a few hooks whose parameters may be changed frequ
 
 - `CheckpointHook`: Used to configure checkpoint-related behavior, such as saving optimal and/or latest weights. You can also modify `interval` to control the checkpoint saving interval. More settings can be found in [CheckpointHook API](mmengine.hooks.CheckpointHook)
 
-- `VisualizationHook`: Used to configure visualization-related behavior, such as visualizing predicted results during validation or testing. **Default is off**. This Hook also depends on [Visualizaiton Configuration](#visualizaiton-configuration). You can refer to [Visualizer](visualization.md) for more details. For more configuration, you can refer to [VisualizationHook API](mmocr.engine.hooks.VisualizationHook).
+- `VisualizationHook`: Used to configure visualization-related behavior, such as visualizing predicted results during validation or testing. **Default is off**. This Hook also depends on [Visualization Configuration](#Visualization-configuration). You can refer to [Visualizer](visualization.md) for more details. For more configuration, you can refer to [VisualizationHook API](mmocr.engine.hooks.VisualizationHook).
 
 If you want to learn more about the configuration of the default hooks and their functions, you can refer to {external+mmengine:doc}`MMEngine: Hooks <tutorials/hook>`.
 
@@ -569,7 +569,7 @@ test_evaluator = val_evaluator
 
 <div id="vis_config"></div>
 
-### Visualizaiton Configuration
+### Visualization Configuration
 
 Each task is bound to a task-specific visualizer. The visualizer is mainly used for visualizing or storing intermediate results of user models and visualizing val and test prediction results. The visualization results can also be stored in different backends such as WandB, TensorBoard, etc. through the corresponding visualization backend. Commonly used modification operations can be found in [visualization](visualization.md).
 
@@ -625,7 +625,7 @@ All these config files are distributed in different folders according to their c
   <tr>
     <td class="tg-9wq8">default_runtime.py<br></td>
     <td class="tg-0pky">-</td>
-    <td class="tg-0pky"><a href="#env_config">Environment Configuration</a><br><a href="#hook_config">Hook Configuration</a><br><a href="#log_config">Log Configuration</a> <br><a href="#weight_config">Checkpoint Loading Configuration</a> <br><a href="#eval_config">Evaluation Configuration</a> <br><a href="#vis_config">Visualizaiton Configuration</a></td>
+    <td class="tg-0pky"><a href="#env_config">Environment Configuration</a><br><a href="#hook_config">Hook Configuration</a><br><a href="#log_config">Log Configuration</a> <br><a href="#weight_config">Checkpoint Loading Configuration</a> <br><a href="#eval_config">Evaluation Configuration</a> <br><a href="#vis_config">Visualization Configuration</a></td>
   </tr>
   <tr>
     <td class="tg-lboi" rowspan="2">dbnet</td>

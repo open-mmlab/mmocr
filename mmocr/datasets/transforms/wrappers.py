@@ -223,7 +223,7 @@ class ImgAugWrapper(BaseTransform):
 
 @TRANSFORMS.register_module()
 class TorchVisionWrapper(BaseTransform):
-    """A wrapper around torchvision trasnforms. It applies specific transform
+    """A wrapper around torchvision transforms. It applies specific transform
     to ``img`` and updates ``height`` and ``width`` accordingly.
 
     Required Keys:
