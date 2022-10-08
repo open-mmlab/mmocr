@@ -1,5 +1,10 @@
+max_seq_len = 30
+
 label_convertor = dict(
-    type='AttnConvertor', dict_type='DICT90', with_unknown=True)
+    type='AttnConvertor',
+    dict_type='DICT90',
+    with_unknown=True,
+    max_seq_len=max_seq_len)
 
 model = dict(
     type='SARNet',
@@ -21,4 +26,4 @@ model = dict(
         pred_concat=True),
     loss=dict(type='SARLoss'),
     label_convertor=label_convertor,
-    max_seq_len=30)
+    max_seq_len=max_seq_len)

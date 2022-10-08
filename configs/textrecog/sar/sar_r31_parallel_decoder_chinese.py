@@ -2,10 +2,13 @@ _base_ = [
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_5e.py'
 ]
-
+max_seq_len = 30
 dict_file = 'data/chineseocr/labels/dict_printed_chinese_english_digits.txt'
 label_convertor = dict(
-    type='AttnConvertor', dict_file=dict_file, with_unknown=True)
+    type='AttnConvertor',
+    dict_file=dict_file,
+    with_unknown=True,
+    max_seq_len=max_seq_len)
 
 model = dict(
     type='SARNet',
@@ -27,7 +30,7 @@ model = dict(
         pred_concat=True),
     loss=dict(type='SARLoss'),
     label_convertor=label_convertor,
-    max_seq_len=30)
+    max_seq_len=max_seq_len)
 
 img_norm_cfg = dict(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 train_pipeline = [
