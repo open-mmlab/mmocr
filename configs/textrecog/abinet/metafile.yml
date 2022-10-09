@@ -1,4 +1,19 @@
 Collections:
+- Name: ABINet-vision
+  Metadata:
+    Training Data: OCRDataset
+    Training Techniques:
+      - Adam
+    Epochs: 20
+    Batch Size: 1536
+    Training Resources: 2 x NVIDIA A100-SXM4-80GB
+    Architecture:
+      - ResNetABI
+      - ABIVisionModel
+  Paper:
+    URL: https://arxiv.org/pdf/2103.06495.pdf
+    Title: 'Read Like Humans: Autonomous, Bidirectional and Iterative Language Modeling for Scene Text Recognition'
+  README: configs/textrecog/abinet/README.md
 - Name: ABINet
   Metadata:
     Training Data: OCRDataset
@@ -6,7 +21,7 @@ Collections:
       - Adam
     Epochs: 20
     Batch Size: 1536
-    Training Resources: 8x Tesla V100
+    Training Resources: 8 x NVIDIA A100-SXM4-80GB
     Architecture:
       - ResNetABI
       - ABIVisionModel
@@ -18,9 +33,9 @@ Collections:
   README: configs/textrecog/abinet/README.md
 
 Models:
-  - Name: abinet-vision_6e_st-an_mj
-    In Collection: ABINet
-    Config: configs/textrecog/abinet/abinet-vision_6e_st-an_mj.py
+  - Name: abinet-vision_20e_st-an_mj
+    In Collection: ABINet-vision
+    Config: configs/textrecog/abinet/abinet-vision_20e_st-an_mj.py
     Metadata:
       Training Data:
         - SynthText
@@ -29,32 +44,31 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc:
+          word_acc: 0.9523
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc:
+          word_acc: 0.9057
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc:
+          word_acc: 0.9369
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc:
+          word_acc: 0.7886
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc:
+          word_acc: 0.8403
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc:
-    Weights:
-
-  - Name: abinet_6e_st-an_mj
+          word_acc: 0.8437
+    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet-vision_20e_st-an_mj/abinet-vision_20e_st-an_mj_20220915_152445-85cfb03d.pth
+  - Name: abinet_20e_st-an_mj
     In Collection: ABINet
-    Config: configs/textrecog/abinet/abinet_6e_st-an_mj.py
+    Config: configs/textrecog/abinet/abinet_20e_st-an_mj.py
     Metadata:
       Training Data:
         - SynthText
@@ -63,25 +77,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc:
+          word_acc: 0.9603
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc:
+          word_acc: 0.9382
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc:
+          word_acc: 0.9547
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc:
+          word_acc: 0.8122
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc:
+          word_acc: 0.8868
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc:
-    Weights:
+          word_acc: 0.8785
+    Weights: https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_20e_st-an_mj/abinet_20e_st-an_mj_20221005_012617-ead8c139.pth

@@ -50,14 +50,13 @@ class BaseLocalVisualizer(Visualizer):
                (95, 54, 80), (128, 76, 255), (201, 57, 1), (246, 0, 122),
                (191, 162, 208)]
 
-    @staticmethod
-    def _draw_labels(visualizer: Visualizer,
-                     image: np.ndarray,
-                     labels: Union[np.ndarray, torch.Tensor],
-                     bboxes: Union[np.ndarray, torch.Tensor],
-                     colors: Union[str, Sequence[str]] = 'k',
-                     font_size: Union[int, float] = 10,
-                     auto_font_size: bool = False) -> np.ndarray:
+    def get_labels_image(self,
+                         image: np.ndarray,
+                         labels: Union[np.ndarray, torch.Tensor],
+                         bboxes: Union[np.ndarray, torch.Tensor],
+                         colors: Union[str, Sequence[str]] = 'k',
+                         font_size: Union[int, float] = 10,
+                         auto_font_size: bool = False) -> np.ndarray:
         """Draw labels on image.
 
         Args:
@@ -75,7 +74,7 @@ class BaseLocalVisualizer(Visualizer):
             auto_font_size (bool): Whether to automatically adjust font size.
                 Defaults to False.
         """
-        if colors is not None and isinstance(colors, Sequence):
+        if colors is not None and isinstance(colors, (list, tuple)):
             size = math.ceil(len(labels) / len(colors))
             colors = (colors * size)[:len(labels)]
         if auto_font_size:
@@ -83,68 +82,124 @@ class BaseLocalVisualizer(Visualizer):
                 font_size, (int, float))
             font_size = (bboxes[:, 2:] - bboxes[:, :2]).min(-1) * font_size
             font_size = font_size.tolist()
-        visualizer.set_image(image)
-        visualizer.draw_texts(
+        self.set_image(image)
+        self.draw_texts(
             labels, (bboxes[:, :2] + bboxes[:, 2:]) / 2,
             vertical_alignments='center',
             horizontal_alignments='center',
             colors='k',
             font_sizes=font_size)
-        return visualizer.get_image()
+        return self.get_image()
 
-    @staticmethod
-    def _draw_polygons(visualizer: Visualizer,
-                       image: np.ndarray,
-                       polygons: Sequence[np.ndarray],
-                       colors: Union[str, Sequence[str]] = 'g',
-                       filling: bool = False,
-                       line_width: Union[int, float] = 0.5,
-                       alpha: float = 0.5) -> np.ndarray:
-        if colors is not None and isinstance(colors, Sequence):
+    def get_polygons_image(self,
+                           image: np.ndarray,
+                           polygons: Sequence[np.ndarray],
+                           colors: Union[str, Sequence[str]] = 'g',
+                           filling: bool = False,
+                           line_width: Union[int, float] = 0.5,
+                           alpha: float = 0.5) -> np.ndarray:
+        """Draw polygons on image.
+
+        Args:
+            image (np.ndarray): The origin image to draw. The format
+                should be RGB.
+            polygons (Sequence[np.ndarray]): The polygons to draw. The shape
+                should be (N, 2).
+            colors (Union[str, Sequence[str]]): The colors of polygons.
+                ``colors`` can have the same length with polygons or just
+                single value. If ``colors`` is single value, all the polygons
+                will have the same colors. Refer to `matplotlib.colors` for
+                full list of formats that are accepted. Defaults to 'g'.
+            filling (bool): Whether to fill the polygons. Defaults to False.
+            line_width (Union[int, float]): The line width of polygons.
+                Defaults to 0.5.
+            alpha (float): The alpha of polygons. Defaults to 0.5.
+
+        Returns:
+            np.ndarray: The image with polygons drawn.
+        """
+        if colors is not None and isinstance(colors, (list, tuple)):
             size = math.ceil(len(polygons) / len(colors))
             colors = (colors * size)[:len(polygons)]
-        visualizer.set_image(image)
+        self.set_image(image)
         if filling:
-            visualizer.draw_polygons(
+            self.draw_polygons(
                 polygons,
                 face_colors=colors,
                 edge_colors=colors,
                 line_widths=line_width,
                 alpha=alpha)
         else:
-            visualizer.draw_polygons(
+            self.draw_polygons(
                 polygons,
                 edge_colors=colors,
                 line_widths=line_width,
                 alpha=alpha)
-        return visualizer.get_image()
+        return self.get_image()
 
-    @staticmethod
-    def _draw_bboxes(visualizer: Visualizer,
-                     image: np.ndarray,
-                     bboxes: Union[np.ndarray, torch.Tensor],
-                     colors: Union[str, Sequence[str]] = 'g',
-                     filling: bool = False,
-                     line_width: Union[int, float] = 0.5,
-                     alpha: float = 0.5) -> np.ndarray:
-        if colors is not None and isinstance(colors, Sequence):
+    def get_bboxes_image(self: Visualizer,
+                         image: np.ndarray,
+                         bboxes: Union[np.ndarray, torch.Tensor],
+                         colors: Union[str, Sequence[str]] = 'g',
+                         filling: bool = False,
+                         line_width: Union[int, float] = 0.5,
+                         alpha: float = 0.5) -> np.ndarray:
+        """Draw bboxes on image.
+
+        Args:
+            image (np.ndarray): The origin image to draw. The format
+                should be RGB.
+            bboxes (Union[np.ndarray, torch.Tensor]): The bboxes to draw.
+            colors (Union[str, Sequence[str]]): The colors of bboxes.
+                ``colors`` can have the same length with bboxes or just single
+                value. If ``colors`` is single value, all the bboxes will have
+                the same colors. Refer to `matplotlib.colors` for full list of
+                formats that are accepted. Defaults to 'g'.
+            filling (bool): Whether to fill the bboxes. Defaults to False.
+            line_width (Union[int, float]): The line width of bboxes.
+                Defaults to 0.5.
+            alpha (float): The alpha of bboxes. Defaults to 0.5.
+
+        Returns:
+            np.ndarray: The image with bboxes drawn.
+        """
+        if colors is not None and isinstance(colors, (list, tuple)):
             size = math.ceil(len(bboxes) / len(colors))
             colors = (colors * size)[:len(bboxes)]
-        visualizer.set_image(image)
+        self.set_image(image)
         if filling:
-            visualizer.draw_bboxes(
+            self.draw_bboxes(
                 bboxes,
                 face_colors=colors,
                 edge_colors=colors,
                 line_widths=line_width,
                 alpha=alpha)
         else:
-            visualizer.draw_bboxes(
+            self.draw_bboxes(
                 bboxes,
                 edge_colors=colors,
                 line_widths=line_width,
                 alpha=alpha)
-        return visualizer.get_image()
+        return self.get_image()
 
     def _draw_instances(self) -> np.ndarray:
         raise NotImplementedError
+
+    def _cat_image(self, imgs: Sequence[np.ndarray], axis: int) -> np.ndarray:
+        """Concatenate images.
+
+        Args:
+            imgs (Sequence[np.ndarray]): The images to concatenate.
+            axis (int): The axis to concatenate.
+
+        Returns:
+            np.ndarray: The concatenated image.
+        """
+        cat_image = list()
+        for img in imgs:
+            if img is not None:
+                cat_image.append(img)
+        if len(cat_image):
+            return np.concatenate(cat_image, axis=axis)
+        else:
+            return None

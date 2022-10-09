@@ -28,23 +28,23 @@ class KIEDataSample(BaseDataElement):
          >>> len(data_sample.gt_instances)
          5
          >>> print(data_sample)
-        <KIEDataSample(
-            META INFORMATION
-            DATA FIELDS
-            gt_instances: <InstanceData(
-                    META INFORMATION
-                    pad_shape: (800, 1216, 3)
-                    img_shape: (800, 1196, 3)
-                    DATA FIELDS
-                    labels: tensor([0.8533, 0.1550, 0.5433, 0.7294, 0.5098])
-                    bboxes:
-                    tensor([[9.7725e-01, 5.8417e-01, 1.7269e-01, 6.5694e-01],
-                            [1.7894e-01, 5.1780e-01, 7.0590e-01, 4.8589e-01],
-                            [7.0392e-01, 6.6770e-01, 1.7520e-01, 1.4267e-01],
-                            [2.2411e-01, 5.1962e-01, 9.6953e-01, 6.6994e-01],
-                            [4.1338e-01, 2.1165e-01, 2.7239e-04, 6.8477e-01]])
-                ) at 0x7f21fb1b9190>
-        ) at 0x7f21fb1b9880>
+         <KIEDataSample(
+             META INFORMATION
+             DATA FIELDS
+             gt_instances: <InstanceData(
+                     META INFORMATION
+                     pad_shape: (800, 1216, 3)
+                     img_shape: (800, 1196, 3)
+                     DATA FIELDS
+                     labels: tensor([0.8533, 0.1550, 0.5433, 0.7294, 0.5098])
+                     bboxes:
+                     tensor([[9.7725e-01, 5.8417e-01, 1.7269e-01, 6.5694e-01],
+                             [1.7894e-01, 5.1780e-01, 7.0590e-01, 4.8589e-01],
+                             [7.0392e-01, 6.6770e-01, 1.7520e-01, 1.4267e-01],
+                             [2.2411e-01, 5.1962e-01, 9.6953e-01, 6.6994e-01],
+                             [4.1338e-01, 2.1165e-01, 2.7239e-04, 6.8477e-01]])
+                 ) at 0x7f21fb1b9190>
+         ) at 0x7f21fb1b9880>
          >>> # pred_instances
          >>> pred_instances = InstanceData(metainfo=img_meta)
          >>> pred_instances.bboxes = torch.rand((5, 4))

@@ -4,14 +4,14 @@ from typing import Dict, Optional, Tuple, Union
 import cv2
 import mmcv
 import numpy as np
-from mmengine.visualization import Visualizer
 
 from mmocr.registry import VISUALIZERS
 from mmocr.structures import TextRecogDataSample
+from .base_visualizer import BaseLocalVisualizer
 
 
 @VISUALIZERS.register_module()
-class TextRecogLocalVisualizer(Visualizer):
+class TextRecogLocalVisualizer(BaseLocalVisualizer):
     """MMOCR Text Detection Local Visualizer.
 
     Args:
@@ -45,6 +45,30 @@ class TextRecogLocalVisualizer(Visualizer):
             save_dir=save_dir)
         self.gt_color = gt_color
         self.pred_color = pred_color
+
+    def _draw_instances(self, image: np.ndarray, text: str) -> np.ndarray:
+        """Draw text on image.
+
+        Args:
+            image (np.ndarray): The image to draw.
+            text (str): The text to draw.
+
+        Returns:
+            np.ndarray: The image with text drawn.
+        """
+        height, width = image.shape[:2]
+        empty_img = np.full_like(image, 255)
+        self.set_image(empty_img)
+        font_size = 0.5 * width / (len(text) + 1)
+        self.draw_texts(
+            text,
+            np.array([width / 2, height / 2]),
+            colors=self.gt_color,
+            font_sizes=font_size,
+            vertical_alignments='center',
+            horizontal_alignments='center')
+        text_image = self.get_image()
+        return text_image
 
     def add_datasample(self,
                        name: str,
@@ -85,59 +109,28 @@ class TextRecogLocalVisualizer(Visualizer):
             pred_score_thr (float): Threshold of prediction score. It's not
                 used in this function. Defaults to None.
         """
-        gt_img_data = None
-        pred_img_data = None
         height, width = image.shape[:2]
         resize_height = 64
         resize_width = int(1.0 * width / height * resize_height)
         image = cv2.resize(image, (resize_width, resize_height))
+
         if image.ndim == 2:
             image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
+        cat_images = [image]
         if draw_gt and data_sample is not None and 'gt_text' in data_sample:
             gt_text = data_sample.gt_text.item
-            empty_img = np.full_like(image, 255)
-            self.set_image(empty_img)
-            font_size = 0.5 * resize_width / (len(gt_text) + 1)
-            self.draw_texts(
-                gt_text,
-                np.array([resize_width / 2, resize_height / 2]),
-                colors=self.gt_color,
-                font_sizes=font_size,
-                vertical_alignments='center',
-                horizontal_alignments='center')
-            gt_text_image = self.get_image()
-            gt_img_data = np.concatenate((image, gt_text_image), axis=0)
-
+            cat_images.append(self._draw_instances(image, gt_text))
         if (draw_pred and data_sample is not None
                 and 'pred_text' in data_sample):
             pred_text = data_sample.pred_text.item
-            empty_img = np.full_like(image, 255)
-            self.set_image(empty_img)
-            font_size = 0.5 * resize_width / (len(pred_text) + 1)
-            self.draw_texts(
-                pred_text,
-                np.array([resize_width / 2, resize_height / 2]),
-                colors=self.pred_color,
-                font_sizes=font_size,
-                vertical_alignments='center',
-                horizontal_alignments='center')
-            pred_text_image = self.get_image()
-            pred_img_data = np.concatenate((image, pred_text_image), axis=0)
-
-        if gt_img_data is not None and pred_img_data is not None:
-            drawn_img = np.concatenate((gt_img_data, pred_text_image), axis=0)
-        elif gt_img_data is not None:
-            drawn_img = gt_img_data
-        elif pred_img_data is not None:
-            drawn_img = pred_img_data
-        else:
-            drawn_img = image
+            cat_images.append(self._draw_instances(image, pred_text))
+        cat_images = self._cat_image(cat_images, axis=0)
 
         if show:
-            self.show(drawn_img, win_name=name, wait_time=wait_time)
+            self.show(cat_images, win_name=name, wait_time=wait_time)
         else:
-            self.add_image(name, drawn_img, step)
+            self.add_image(name, cat_images, step)
 
         if out_file is not None:
-            mmcv.imwrite(drawn_img[..., ::-1], out_file)
+            mmcv.imwrite(cat_images[..., ::-1], out_file)

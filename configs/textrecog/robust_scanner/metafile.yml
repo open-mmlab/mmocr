@@ -6,7 +6,7 @@ Collections:
       - Adam
     Epochs: 5
     Batch Size: 1024
-    Training Resources: 16x GeForce GTX 1080 Ti
+    Training Resources: 4x NVIDIA A100-SXM4-80GB
     Architecture:
       - ResNet31OCR
       - ChannelReductionEncoder
@@ -34,25 +34,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc:
+          word_acc: 0.9510
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc:
+          word_acc: 0.8934
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc:
+          word_acc: 0.9320
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc:
+          word_acc: 0.7559
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc:
+          word_acc: 0.8078
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc:
-    Weights:
+          word_acc: 0.8715
+    Weights: https://download.openmmlab.com/mmocr/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real_20220915_152447-7fc35929.pth

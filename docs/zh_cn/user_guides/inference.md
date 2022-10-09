@@ -60,7 +60,7 @@ python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --print-res
 from mmocr.ocr import MMOCR
 
 # 导入模型到内存
-ocr = MMOCR()
+ocr = MMOCR(det='DB_r18', recog='CRNN')
 
 # 推理
 results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, show=True)
@@ -145,33 +145,42 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 
 **文本检测：**
 
-| 名称          |                                                                           引用                                                                            |
-| ------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| DB_r18        |            [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
-| DB_r50        |            [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#real-time-scene-text-detection-with-differentiable-binarization)            |
-| DBPP_r50      |                                        [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnetpp)                                        |
-| DRRG          |                                         [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#drrg)                                          |
-| FCE_IC15      |             [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
-| FCE_CTW_DCNv2 |             [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fourier-contour-embedding-for-arbitrary-shaped-text-detection)             |
-| MaskRCNN_CTW  |                                      [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn)                                       |
-| MaskRCNN_IC15 |                                      [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn)                                       |
-| PANet_CTW     | [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
-| PANet_IC15    | [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#efficient-and-accurate-arbitrary-shaped-text-detection-with-pixel-aggregation-network) |
-| PS_CTW        |                                        [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)                                         |
-| PS_IC15       |                                        [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)                                         |
-| TextSnake     |                                       [链接](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#textsnake)                                       |
+| 名称          |                                       引用                                        |
+| ------------- | :-------------------------------------------------------------------------------: |
+| DB_r18        |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnet)    |
+| DB_r50        |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnet)    |
+| DBPP_r50      |  [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnetpp)   |
+| DRRG          |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#drrg)    |
+| FCE_IC15      |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#fcenet)   |
+| FCE_CTW_DCNv2 |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#fcenet)   |
+| MaskRCNN_CTW  | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#mask-r-cnn) |
+| MaskRCNN_IC15 | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#mask-r-cnn) |
+| PANet_CTW     |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#panet)    |
+| PANet_IC15    |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#panet)    |
+| PS_CTW        |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#psenet)   |
+| PS_IC15       |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#psenet)   |
+| TextSnake     | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#textsnake)  |
 
 **文本识别：**
 
-| 名称 |                                                                                              引用                                                                                               |
-| ---- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| CRNN | [链接](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#an-end-to-end-trainable-neural-network-for-image-based-sequence-recognition-and-its-application-to-scene-text-recognition) |
+| 名称          |                                          引用                                          |
+| ------------- | :------------------------------------------------------------------------------------: |
+| ABINet        |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#abinet)     |
+| ABINet_Vision |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#abinet)     |
+| CRNN          |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#crnn)      |
+| MASTER        |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#master)     |
+| NRTR_1/16-1/8 |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#nrtr)      |
+| NRTR_1/8-1/4  |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#nrtr)      |
+| RobustScanner | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#robustscanner) |
+| SAR           |      [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#sar)      |
+| SATRN         |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#satrn)     |
+| SATRN_sm      |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#satrn)     |
 
 **关键信息提取：**
 
-| 名称                                                                                                                                  |
-| ------------------------------------------------------------------------------------------------------------------------------------- |
-| [SDMGR](https://mmocr.readthedocs.io/en/dev-1.x/kie_models.html#spatial-dual-modality-graph-reasoning-for-key-information-extraction) |
+| 名称                                                                |
+| ------------------------------------------------------------------- |
+| [SDMGR](https://mmocr.readthedocs.io/zh_CN/dev-1.x/kie_models.html) |
 
 ## 其他需要注意
 

@@ -39,8 +39,10 @@ release = __version__
 # ones.
 extensions = [
     'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode',
-    'sphinx_markdown_tables', 'sphinx_copybutton', 'myst_parser'
+    'sphinx_markdown_tables', 'sphinx_copybutton', 'myst_parser',
+    'sphinx.ext.intersphinx', 'sphinx.ext.autodoc.typehints'
 ]
+autodoc_typehints = 'description'
 
 autodoc_mock_imports = ['mmcv._ext']
 
@@ -95,6 +97,11 @@ html_theme_options = {
             '上游库',
             'children': [
                 {
+                    'name': 'MMEngine',
+                    'url': 'https://github.com/open-mmlab/mmengine',
+                    'description': '深度学习模型训练基础库'
+                },
+                {
                     'name': 'MMCV',
                     'url': 'https://github.com/open-mmlab/mmcv',
                     'description': '基础视觉库'
@@ -105,6 +112,24 @@ html_theme_options = {
                     'description': '目标检测工具箱'
                 },
             ]
+        },
+        {
+            'name':
+            '版本',
+            'children': [
+                {
+                    'name': 'MMOCR 0.x',
+                    'url': 'https://mmocr.readthedocs.io/zh_CN/latest/',
+                    'description': 'main 分支文档'
+                },
+                {
+                    'name': 'MMOCR 1.x',
+                    'url': 'https://mmocr.readthedocs.io/zh_CN/dev-1.x/',
+                    'description': '1.x 分支文档'
+                },
+            ],
+            'active':
+            True,
         },
     ],
     # Specify the language of shared menu
@@ -122,7 +147,7 @@ master_doc = 'index'
 html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
 
-myst_heading_anchors = 3
+myst_heading_anchors = 4
 
 # Configuration for intersphinx
 intersphinx_mapping = {
@@ -130,7 +155,7 @@ intersphinx_mapping = {
     'numpy': ('https://numpy.org/doc/stable', None),
     'torch': ('https://pytorch.org/docs/stable/', None),
     'mmcv': ('https://mmcv.readthedocs.io/zh_CN/dev-2.x/', None),
-    'mmengine': ('https://mmengine.readthedocs.io/zh_CN/main/', None),
+    'mmengine': ('https://mmengine.readthedocs.io/zh_CN/latest/', None),
     'mmdetection': ('https://mmdetection.readthedocs.io/zh_CN/dev-3.x/', None),
 }
 

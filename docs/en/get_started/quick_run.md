@@ -2,9 +2,13 @@
 
 ## Inference
 
+Please refer to [here](install.md#verify-the-installation) for a quick inference run. A detailed description of MMOCR's inference interface can be found [here](../user_guides/inference.md)
+
+```{note}
 In addition to using our well-provided pre-trained models, you can also train models on your own datasets. In the next section, we will take you through the basic functions of MMOCR by training DBNet on the mini [ICDAR 2015](https://rrc.cvc.uab.es/?ch=4&com=downloads) dataset as an example.
 
-The next sections assume that you are using the [editorial approach to install](install.md) the MMOCR codebase.
+The following sections assume that you [installed MMOCR from source](install.md#best-practices).
+```
 
 ## Prepare a Dataset
 
@@ -65,7 +69,9 @@ The transformed images and annotations will be displayed one by one in a pop-up 
     <img src="https://user-images.githubusercontent.com/24622904/187611542-01e9aa94-fc12-4756-964b-a0e472522a3a.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611555-3f5ea616-863d-4538-884f-bccbebc2f7e7.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611581-88be3970-fbfe-4f62-8cdf-7a8a7786af29.jpg" width="250"/>
 </center>
 
+```{note}
 For details on the parameters and usage of this script, please refer to [here](../user_guides/useful_tools.md).
+```
 
 ```{tip}
 In addition to satisfying our curiosity, visualization can also help us check the parts that may affect the model's performance before training, such as problems in configs, datasets and data transforms.
@@ -146,7 +152,7 @@ And get the outputs:
 The model achieves an hmean of 0.6667 on this dataset.
 
 ```{tip}
-For advanced usage of testing, such as CPU testing, multi-GPU testing, and cluster testing, please refer to [Training and Testing] (../user_guides/train_test.md).
+For advanced usage of testing, such as CPU testing, multi-GPU testing, and cluster testing, please refer to [Training and Testing](../user_guides/train_test.md).
 ```
 
 ## Visualize the Outputs

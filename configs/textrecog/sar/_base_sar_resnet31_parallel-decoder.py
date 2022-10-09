@@ -41,7 +41,7 @@ train_pipeline = [
         type='LoadImageFromFile',
         file_client_args=file_client_args,
         ignore_empty=True,
-        min_size=5),
+        min_size=2),
     dict(type='LoadOCRAnnotations', with_text=True),
     dict(
         type='RescaleToHeight',
