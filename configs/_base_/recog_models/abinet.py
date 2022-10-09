@@ -11,7 +11,7 @@ label_convertor = dict(
     with_unknown=False,
     with_padding=False,
     lower=True,
-)
+    max_seq_len=max_seq_len)
 
 model = dict(
     type='ABINet',

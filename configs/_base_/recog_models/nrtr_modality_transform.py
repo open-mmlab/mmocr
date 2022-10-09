@@ -1,5 +1,11 @@
+max_seq_len = 40
+
 label_convertor = dict(
-    type='AttnConvertor', dict_type='DICT36', with_unknown=True, lower=True)
+    type='AttnConvertor',
+    dict_type='DICT36',
+    with_unknown=True,
+    lower=True,
+    max_seq_len=max_seq_len)
 
 model = dict(
     type='NRTR',
@@ -8,4 +14,4 @@ model = dict(
     decoder=dict(type='NRTRDecoder'),
     loss=dict(type='TFLoss'),
     label_convertor=label_convertor,
-    max_seq_len=40)
+    max_seq_len=max_seq_len)

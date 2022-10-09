@@ -12,8 +12,13 @@ test_list = {{_base_.test_list}}
 train_pipeline = {{_base_.train_pipeline}}
 test_pipeline = {{_base_.test_pipeline}}
 
+max_seq_len = 25
+
 label_convertor = dict(
-    type='AttnConvertor', dict_type='DICT90', with_unknown=True)
+    type='AttnConvertor',
+    dict_type='DICT90',
+    with_unknown=True,
+    max_seq_len=max_seq_len)
 
 model = dict(
     type='SATRN',
@@ -39,7 +44,7 @@ model = dict(
         d_v=512 // 8),
     loss=dict(type='TFLoss'),
     label_convertor=label_convertor,
-    max_seq_len=25)
+    max_seq_len=max_seq_len)
 
 # optimizer
 optimizer = dict(type='Adam', lr=3e-4)
