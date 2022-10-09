@@ -53,7 +53,7 @@ In addition, based on this tool, users can also convert predictions obtained fro
 
 ### Calculate FLOPs and Parameters
 
-We provide a method to calculate the FLOPs and Parameters, first we install the dependencies using the following command.
+We provide a method to calculate the FLOPs and the number of parameters, first we install the dependencies using the following command.
 
 ```shell
 pip install fvcore
