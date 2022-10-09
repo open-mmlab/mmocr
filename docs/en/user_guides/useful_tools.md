@@ -45,11 +45,11 @@ python tools/analysis_tools/offline_eval.py configs/textdet/psenet/psenet_r50_fp
 
 In addition, based on this tool, users can also convert predictions obtained from other libraries into MMOCR-supported formats, then use MMOCR's built-in metrics to evaluate them.
 
-| ARGS          | Type  | Description                                                      |
-| ------------- | ----- | ---------------------------------------------------------------- |
-| config        | str   | (required) Path to the config.                                   |
-| pkl_results   | str   | (required) The saved predictions.                                |
-| --cfg-options | float | Override configs. [Example](config.md#command-line-modification) |
+| ARGS          | Type  | Description                                                        |
+| ------------- | ----- | ------------------------------------------------------------------ |
+| config        | str   | (required) Path to the config.                                     |
+| pkl_results   | str   | (required) The saved predictions.                                  |
+| --cfg-options | float | Override configs. [Example](./config.md#command-line-modification) |
 
 ### Calculate FLOPs and the Number of Parameters
 
