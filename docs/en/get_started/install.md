@@ -191,7 +191,7 @@ docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmocr/data mmocr
 
 MMOCR has different version requirements on MMCV and MMDetection at each release to guarantee the implementation correctness. Please refer to the table below and ensure the package versions fit the requirement.
 
-| MMOCR    | MMCV              | MMDetection        |
-| -------- | ----------------- | ------------------ |
-| dev-1.x  | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
-| 1.0.0rc0 | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
+| MMOCR         | MMCV              | MMDetection        |
+| ------------- | ----------------- | ------------------ |
+| dev-1.x       | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
+| 1.0.0rc0, rc1 | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |

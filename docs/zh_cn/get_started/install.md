@@ -192,7 +192,7 @@ docker run --gpus all --shm-size=8g -it -v {实际数据目录}:/mmocr/data mmoc
 
 为了确保代码实现的正确性，MMOCR 每个版本都有可能改变对 MMCV 和 MMDetection 版本的依赖。请根据以下表格确保版本之间的相互匹配。
 
-| MMOCR    | MMCV              | MMDetection        |
-| -------- | ----------------- | ------------------ |
-| dev-1.x  | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
-| 1.0.0rc0 | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
+| MMOCR         | MMCV              | MMDetection        |
+| ------------- | ----------------- | ------------------ |
+| dev-1.x       | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
+| 1.0.0rc0, rc1 | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
