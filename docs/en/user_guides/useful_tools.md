@@ -70,7 +70,7 @@ python tools/analysis_tools/get_flops.py ${config} --shape ${IMAMGE_SHAPE}
 | config  | str  | (required) Path to the config.                                                               |
 | --shape | int  | Image size to use when calculating FLOPs, example usage `--shape 320 320` Default is 640 640 |
 
-The sample command to get `dbnet_resnet18_fpnc_100k_synthtext.py` FLOPs and the number of parameters is as follows.
+For example, you can run the following command to get FLOPs and the number of parameters of `dbnet_resnet18_fpnc_100k_synthtext.py`:
 
 ```shell
 python tools/analysis_tools/get_flops.py configs/textdet/dbnet/dbnet_resnet18_fpnc_100k_synthtext.py --shape 1024 1024
