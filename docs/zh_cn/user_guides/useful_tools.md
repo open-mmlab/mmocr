@@ -62,7 +62,7 @@ pip install fvcore
 计算 FLOPs 和参数量的脚本使用方法如下：
 
 ```shell
-python tools/analysis_tools/get_flops.py ${config} --shape ${IMAMGE_SHAPE}
+python tools/analysis_tools/get_flops.py ${config} --shape ${IMAGE_SHAPE}
 ```
 
 | 参数    | 类型 | 说明                                                                 |
