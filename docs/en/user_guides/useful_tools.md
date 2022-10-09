@@ -59,7 +59,7 @@ We provide a method to calculate the FLOPs and the number of parameters, first w
 pip install fvcore
 ```
 
-The script to calculate the FLOPs and Parameters is used as follows.
+The usage of the script to calculate FLOPs and the number of parameters is as follows.
 
 ```shell
 python tools/analysis_tools/get_flops.py ${config} --shape ${IMAMGE_SHAPE}
