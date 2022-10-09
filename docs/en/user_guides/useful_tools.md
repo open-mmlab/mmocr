@@ -51,7 +51,7 @@ In addition, based on this tool, users can also convert predictions obtained fro
 | pkl_results   | str   | (required) The saved predictions. |
 | --cfg-options | float | Override configs. [Example](<>)   |
 
-### Calculate FLOPs and Parameters
+### Calculate FLOPs and the Number of Parameters
 
 We provide a method to calculate the FLOPs and the number of parameters, first we install the dependencies using the following command.
 
