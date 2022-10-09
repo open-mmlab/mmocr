@@ -151,7 +151,8 @@ class ImgAugWrapper(BaseTransform):
         new_polys = []
         removed_poly_inds = []
         for i, poly in enumerate(imgaug_polys.polygons):
-            if poly.is_out_of_image(imgaug_polys.shape):
+            # Sometimes imgaug may produce some invalid polygons with no points
+            if not poly.is_valid or poly.is_out_of_image(imgaug_polys.shape):
                 removed_poly_inds.append(i)
                 continue
             new_poly = []
