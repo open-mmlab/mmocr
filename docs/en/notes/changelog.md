@@ -16,6 +16,7 @@ We release the weights for all the text recognition models in MMOCR 1.0 architec
 * Update model links in ocr.py and inference.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1431
 * Update rec configs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1417
 * Visualizer refine by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1411
+* Support get flops and parameters in dev-1.x by @vansin in https://github.com/open-mmlab/mmocr/pull/1414
 
 ### Docs
 
