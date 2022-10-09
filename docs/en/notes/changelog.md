@@ -4,6 +4,7 @@
 
 ### Highlights
 
+This release fixes a severe bug leading to inaccurate metric report in multi-GPU training.
 We release the weights for all the text recognition models in MMOCR 1.0 architecture. The inference shorthand for them are also added back to `ocr.py`. Besides, more documentation chapters are available now.
 
 ### New Features & Enhancements
