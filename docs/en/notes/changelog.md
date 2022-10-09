@@ -13,6 +13,10 @@ We release the weights for all the text recognition models in MMOCR 1.0 architec
 - Update paths to pretrain weights by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1416
 - Streamline duplicated split_result in pan_postprocessor by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1418
 
+* Update model links in ocr.py and inference.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1431
+* Update rec configs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1417
+* Visualizer refine by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1411
+
 ### Docs
 
 - intersphinx and api by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1367
@@ -40,6 +44,8 @@ We release the weights for all the text recognition models in MMOCR 1.0 architec
 - Test windows cu111 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1373
 - Fix windows CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1387
 - Upgrade pre commit hooks by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1429
+
+* Skip invalid augmented polygons in ImgAugWrapper by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1434
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc0...v1.0.0rc1
 
