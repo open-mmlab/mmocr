@@ -43,8 +43,8 @@ train_list = [
 ]
 
 train_dataloader = dict(
-    batch_size=64,
-    num_workers=8,
+    batch_size=64 * 6,
+    num_workers=24,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(type='ConcatDataset', datasets=train_list, verify_meta=False))

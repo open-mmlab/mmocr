@@ -28,8 +28,8 @@ test_dataset = dict(
 optim_wrapper = dict(type='OptimWrapper', optimizer=dict(type='Adam', lr=3e-4))
 
 train_dataloader = dict(
-    batch_size=64,
-    num_workers=8,
+    batch_size=128,
+    num_workers=24,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=train_dataset)

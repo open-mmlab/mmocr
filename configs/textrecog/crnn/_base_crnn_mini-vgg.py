@@ -25,7 +25,7 @@ train_pipeline = [
         color_type='grayscale',
         file_client_args=file_client_args,
         ignore_empty=True,
-        min_size=5),
+        min_size=2),
     dict(type='LoadOCRAnnotations', with_text=True),
     dict(type='Resize', scale=(100, 32), keep_ratio=False),
     dict(
