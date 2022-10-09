@@ -379,71 +379,87 @@ class MMOCR:
                 'ckpt':
                 'textrecog/crnn/crnn_mini-vgg_5e_mj/crnn_mini-vgg_5e_mj_20220826_224120-8afbedbb.pth'  # noqa: E501
             },
-            # 'SAR': {
-            #     'config':
-            #     'textrecog/sar/'
-            #     'sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real.py',
-            #     'ckpt':
-            #     ''
-            # },
+            'SAR': {
+                'config':
+                'textrecog/sar/'
+                'sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real.py',
+                'ckpt':
+                'textrecog/sar/sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real/sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real_20220915_171910-04eb4e75.pth'  # noqa: E501
+            },
             # 'SAR_CN': {
             #     'config':
             #     'textrecog/'
             #     'sar/sar_r31_parallel_decoder_chinese.py',
             #     'ckpt':
-            #     'textrecog/'
+            #     'textrecog/'  # noqa: E501
             #     ''
             # },
-            # 'NRTR_1/16-1/8': {
-            #     'config':
-            #     'textrecog/'
-            #     'nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj.py',
-            #     'ckpt':
-            #     'textrecog/'
-            #     ''
-            # },
-            # 'NRTR_1/8-1/4': {
-            #     'config':
-            #     'textrecog/'
-            #     'nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj.py',
-            #     'ckpt':
-            #     'textrecog/'
-            #     ''
-            # },
-            # 'RobustScanner': {
-            #     'config':
-            #     'textrecog/robust_scanner/'
-            #     'robustscanner_resnet31_5e_st-sub_mj-sub_sa_real.py',
-            #     'ckpt':
-            #     'textrecog/'
-            #     ''
-            # },
-            # 'SATRN': {
-            #     'config': 'textrecog/satrn/satrn_shallow_5e_st_mj.py',
-            #     'ckpt': ''
-            # },
-            # 'SATRN_sm': {
-            #     'config': 'textrecog/satrn/satrn_shallow-small_5e_st_mj.py',
-            #     'ckpt': ''
-            # },
-            # 'ABINet': {
-            #     'config': 'textrecog/abinet/abinet_20e_st-an_mj.py',
-            #     'ckpt': ''
-            # },
-            # 'ABINet_Vision': {
-            #     'config': 'textrecog/abinet/abinet-vision_20e_st-an_mj.py',
-            #     'ckpt': ''
-            # },
+            'NRTR_1/16-1/8': {
+                'config':
+                'textrecog/'
+                'nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj.py',
+                'ckpt':
+                'textrecog/'
+                'nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj/nrtr_resnet31-1by16-1by8_6e_st_mj_20220920_143358-43767036.pth'  # noqa: E501
+            },
+            'NRTR_1/8-1/4': {
+                'config':
+                'textrecog/'
+                'nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj.py',
+                'ckpt':
+                'textrecog/'
+                'nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj/nrtr_resnet31-1by8-1by4_6e_st_mj_20220916_103322-a6a2a123.pth'  # noqa: E501
+            },
+            'RobustScanner': {
+                'config':
+                'textrecog/robust_scanner/'
+                'robustscanner_resnet31_5e_st-sub_mj-sub_sa_real.py',
+                'ckpt':
+                'textrecog/'
+                'robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real_20220915_152447-7fc35929.pth'  # noqa: E501
+            },
+            'SATRN': {
+                'config':
+                'textrecog/satrn/satrn_shallow_5e_st_mj.py',
+                'ckpt':
+                'textrecog/'
+                'satrn/satrn_shallow_5e_st_mj/satrn_shallow_5e_st_mj_20220915_152443-5fd04a4c.pth'  # noqa: E501
+            },
+            'SATRN_sm': {
+                'config':
+                'textrecog/satrn/satrn_shallow-small_5e_st_mj.py',
+                'ckpt':
+                'textrecog/'
+                'satrn/satrn_shallow-small_5e_st_mj/satrn_shallow-small_5e_st_mj_20220915_152442-5591bf27.pth'  # noqa: E501
+            },
+            'ABINet': {
+                'config':
+                'textrecog/abinet/abinet_20e_st-an_mj.py',
+                'ckpt':
+                'textrecog/'
+                'abinet/abinet_20e_st-an_mj/abinet_20e_st-an_mj_20221005_012617-ead8c139.pth'  # noqa: E501
+            },
+            'ABINet_Vision': {
+                'config':
+                'textrecog/abinet/abinet-vision_20e_st-an_mj.py',
+                'ckpt':
+                'textrecog/'
+                'abinet/abinet-vision_20e_st-an_mj/abinet-vision_20e_st-an_mj_20220915_152445-85cfb03d.pth'  # noqa: E501
+            },
             # 'CRNN_TPS': {
             #     'config':
             #     'textrecog/tps/crnn_tps_academic_dataset.py',
             #     'ckpt':
+            #     'textrecog/'
             #     ''
             # },
-            # 'MASTER': {
-            #     'config': 'textrecog/master/master_resnet31_12e_st_mj_sa.py',
-            #     'ckpt': ''
-            # },
+            'MASTER': {
+                'config':
+                'textrecog/master/master_resnet31_12e_st_mj_sa.py',
+                'ckpt':
+                'textrecog/'
+                'master/master_resnet31_12e_st_mj_sa/master_resnet31_12e_st_mj_sa_20220915_152443-f4a5cabc.pth'  # noqa: E501
+            },
             # KIE models
             'SDMGR': {
                 'config':
