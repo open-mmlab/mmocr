@@ -68,7 +68,7 @@ python tools/analysis_tools/get_flops.py ${config} --shape ${IMAGE_SHAPE}
 | 参数    | 类型 | 说明                                                                 |
 | ------- | ---- | -------------------------------------------------------------------- |
 | config  | str  | （必须) 配置文件路径。                                               |
-| --shape | int  | 计算 FLOPs 使用的图片尺寸，实例用法 `--shape 320 320` 默认为 640 640 |
+| --shape | int*2 | 计算 FLOPs 使用的图片尺寸，如 `--shape 320 320`。 默认为 `640 640` |
 
 获取 `dbnet_resnet18_fpnc_100k_synthtext.py` FLOPs 和参数量的示例命令如下。
 
