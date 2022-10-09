@@ -145,36 +145,36 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 
 **文本检测：**
 
-| 名称          |                                      引用                                      |
-| ------------- | :----------------------------------------------------------------------------: |
-| DB_r18        |  [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnet)  |
-| DB_r50        |  [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnet)  |
-| DBPP_r50      | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnetpp) |
+| 名称          |                                       引用                                        |
+| ------------- | :-------------------------------------------------------------------------------: |
+| DB_r18        |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnet)    |
+| DB_r50        |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnet)    |
+| DBPP_r50      |  [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnetpp)   |
 | DRRG          |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#drrg)    |
-| FCE_IC15      | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#fcenet)  |
-| FCE_CTW_DCNv2 | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#fcenet)  |
+| FCE_IC15      |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#fcenet)   |
+| FCE_CTW_DCNv2 |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#fcenet)   |
 | MaskRCNN_CTW  | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#mask-r-cnn) |
 | MaskRCNN_IC15 | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#mask-r-cnn) |
-| PANet_CTW     |  [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#panet)  |
-| PANet_IC15    |  [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#panet)  |
+| PANet_CTW     |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#panet)    |
+| PANet_IC15    |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#panet)    |
 | PS_CTW        |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#psenet)   |
 | PS_IC15       |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#psenet)   |
 | TextSnake     | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#textsnake)  |
 
 **文本识别：**
 
-| 名称          |                                                                                            引用                                                                                             |
-| ------------- | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| ABINet        |                                                       [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#abinet)                                                       |
-| ABINet_Vision |                                                       [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#abinet)                                                       |
-| CRNN          | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#crnn) |
-| MASTER        |                                                       [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#master)                                                       |
-| NRTR_1/16-1/8 |                                                        [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#nrtr)                                                        |
-| NRTR_1/8-1/4  |                                                        [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#nrtr)                                                        |
-| RobustScanner |                                                   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#robustscanner)                                                    |
-| SAR           |                                                        [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#sar)                                                         |
-| SATRN         |                                                       [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#satrn)                                                        |
-| SATRN_sm      |                                                       [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#satrn)                                                        |
+| 名称          |                                          引用                                          |
+| ------------- | :------------------------------------------------------------------------------------: |
+| ABINet        |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#abinet)     |
+| ABINet_Vision |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#abinet)     |
+| CRNN          |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#crnn)      |
+| MASTER        |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#master)     |
+| NRTR_1/16-1/8 |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#nrtr)      |
+| NRTR_1/8-1/4  |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#nrtr)      |
+| RobustScanner | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#robustscanner) |
+| SAR           |      [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#sar)      |
+| SATRN         |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#satrn)     |
+| SATRN_sm      |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#satrn)     |
 
 **关键信息提取：**
 
