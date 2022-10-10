@@ -74,10 +74,17 @@
    notes/faq.md
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: API 文档
 
-   api.rst
+   mmocr.structures <api/structures>
+   mmocr.datasets <api/datasets>
+   mmocr.transforms <api/transforms>
+   mmocr.models <api/models>
+   mmocr.evaluation <api/evaluation>
+   mmocr.visualization <api/visualization>
+   mmocr.engine <api/engine>
+   mmocr.utils <api/utils>
 
 .. toctree::
    :caption: 切换语言
