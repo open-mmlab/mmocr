@@ -33,14 +33,17 @@ def test_resize_ocr():
 
     # test img_pad_value
     rci = transforms.ResizeOCR(
-        32, min_width=32, max_width=160, keep_aspect_ratio=True,
+        32,
+        min_width=32,
+        max_width=160,
+        keep_aspect_ratio=True,
         img_pad_value=(127, 127, 127))
     results = {'img_shape': input_img.shape, 'img': input_img}
     results = rci(results)
     assert results['img'].shape == (32, 160, 3)
-    assert np.all(results['img'][:32,:128,:] == np.array([1]))
-    assert np.all(results['img'][:32,128:,:] == np.array([127]))
-    
+    assert np.all(results['img'][:32, :128, :] == np.array([1]))
+    assert np.all(results['img'][:32, 128:, :] == np.array([127]))
+
 
 def test_to_tensor():
     input_img = np.ones((64, 256, 3), dtype=np.uint8)

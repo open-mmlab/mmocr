@@ -28,13 +28,14 @@ class ResizeOCR:
         keep_aspect_ratio (bool): Keep image aspect ratio if True
             during resizing, Otherwise resize to the size height *
             max_width.
-        img_pad_value (Number | Sequence[Number]): Values to be filled in padding
-            areas when padding_mode is 'constant'. Default: 0.
+        img_pad_value (Number | Sequence[Number]): Values to be filled in
+            padding areas when padding_mode is 'constant'. Default: 0.
         width_downsample_ratio (float): Downsample ratio in horizontal
             direction from input image to output feature.
-        backend (str | None): The image resize backend type. Options are `cv2`,
-            `pillow`, `None`. If backend is None, the global imread_backend
-            specified by ``mmcv.use_backend()`` will be used. Default: None.
+        backend (str | None): The image resize backend type. Options are
+            `cv2`, `pillow`, `None`. If backend is None, the global
+            imread_backend specified by ``mmcv.use_backend()`` will be used.
+            Default: None.
         padding_mode (str): Type of padding. Should be: constant, edge,
             reflect or symmetric. Default: constant.
 
