@@ -227,6 +227,7 @@ def poly_union(
     return_poly: bool = False
 ) -> Tuple[float, Optional[Union[Polygon, MultiPolygon]]]:
     """Calculate the union area between two polygons.
+
     Args:
         poly_a (Polygon): Polygon a.
         poly_b (Polygon): Polygon b.
