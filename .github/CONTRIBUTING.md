@@ -1,1 +1,1 @@
-We appreciate all contributions to improve MMOCR. Please refer to [CONTRIBUTING.md](https://github.com/open-mmlab/mmcv/blob/master/CONTRIBUTING.md) in MMCV for more details about the contributing guideline.
+We appreciate all contributions to improve MMOCR. Please read [Contribution Guide](/docs/en/notes/contribution_guide.md) for step-by-step instructions to make a contribution to MMOCR, and [CONTRIBUTING.md](https://github.com/open-mmlab/mmcv/blob/master/CONTRIBUTING.md) in MMCV for more details about the contributing guideline.

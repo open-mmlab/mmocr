@@ -73,8 +73,9 @@ To make commit history clear, we strongly recommend you checkout the `main`/`dev
 - Commit your changes as usual. Pre-commit hooks will be triggered to stylize your code before each commit.
 
   ```bash
-  git add .
-  git commit -m "commit message"
+  # coding
+  git add [files]
+  git commit -m 'messages'
   ```
 
   ```{note}
@@ -113,7 +114,7 @@ To make commit history clear, we strongly recommend you checkout the `main`/`dev
   git push origin --delete branchname # delete remote branch
   ```
 
-### PR Specs
+## PR Specs
 
 1. Use [pre-commit](https://pre-commit.com) hook to avoid issues of code style
 
