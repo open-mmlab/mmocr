@@ -1,5 +1,7 @@
 # Contribution Guide
 
+OpenMMLab welcomes everyone who is interested in contributing to our projects and accepts contribution in the form of PR.
+
 ## What is PR
 
 `PR` is the abbreviation of `Pull Request`. Here's the definition of `PR` in the [official document](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) of Github.
@@ -12,7 +14,7 @@ Pull requests let you tell others about changes you have pushed to a branch in a
 
 1. Get the most recent codebase
 2. Checkout a new branch from `main` or `dev-1.x` branch, depending on the version of the codebase you want to contribute to (see [Maintenance Plan](../migration/overview.md) for more details)
-3. Commit your changes
+3. Commit your changes ([Don't forget to use pre-commit hooks!](#3-commit-your-changes))
 4. Push your changes and create a PR
 5. Discuss and review your code
 6. Merge your branch to `main` or `dev-1.x` branch
@@ -61,11 +63,23 @@ To make commit history clear, we strongly recommend you checkout the `main`/`dev
 
 ### 3. Commit your changes
 
-```bash
-# coding
-git add [files]
-git commit -m 'messages'
-```
+- If you are a first-time contributor, please install and initialize pre-commit hooks from the repository root directory first.
+
+  ```bash
+  pip install -U pre-commit
+  pre-commit install
+  ```
+
+- Commit your changes as usual. Pre-commit hooks will be triggered to stylize your code before each commit.
+
+  ```bash
+  git add .
+  git commit -m "commit message"
+  ```
+
+  ```{note}
+  Sometimes your code may be changed by pre-commit hooks. In this case, please remember to re-stage the modified files and commit again.
+  ```
 
 ### 4. Push your changes to the forked repository and create a PR
 
@@ -76,23 +90,28 @@ git commit -m 'messages'
   ```
 
 - Create a PR
-  ![avatar](<>)
+  ![avatar](https://user-images.githubusercontent.com/22607038/195053564-71bd3cb4-b8d4-4ed9-9075-051e138b7fd4.png)
 
 - Revise PR message template to describe your motivation and modifications made in this PR. You can also link the related issue to the PR manually in the PR message (For more information, checkout the [official guidance](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue)).
 
+- Specifically, if you are contributing to `dev-1.x`, you will have to change the base branch of the PR to `dev-1.x` in the PR page, since the default base branch is `main`.
+
+  ![avatar](https://user-images.githubusercontent.com/22607038/195045928-f3ceedc8-0162-46a7-ae1a-7e22829fe189.png)
+
+- You can also ask a specific person to review the changes you've proposed.
+
 ### 5. Discuss and review your code
 
-- After creating a pull request, you can ask a specific person to review the changes you've proposed
-  ![avatar](<>)
-
-- Modify your codes according to reviewers' suggestions and then push your changes
+- Modify your codes according to reviewers' suggestions and then push your changes.
 
 ### 6.  Merge your branch to the `main` / `dev-1.x` branch and delete the branch
 
-```bash
-git branch -d branchname # delete local branch
-git push origin --delete branchname # delete remote branch
-```
+- After the PR is merged by the maintainer, you can delete the branch you created in your forked repository.
+
+  ```bash
+  git branch -d branchname # delete local branch
+  git push origin --delete branchname # delete remote branch
+  ```
 
 ### PR Specs
 
