@@ -51,14 +51,12 @@ Pull requests let you tell others about changes you have pushed to a branch in a
 
 ### 2. Checkout a new branch from the `main` branch or `dev-1.x` branch
 
-````bash
-
 ```bash
 git checkout -b branchname
-````
+```
 
 ```{tip}
-To make commit history clear, we strongly recommend you checkout the `main`/`dev-1.x` branch before creating a new branch.
+To make commit history clear, we strongly recommend you checkout the `main` or `dev-1.x` branch before creating a new branch.
 ```
 
 ### 3. Commit your changes
