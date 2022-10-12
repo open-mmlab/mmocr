@@ -2,9 +2,8 @@ _base_ = [
     '../../_base_/default_runtime.py',
     '../../_base_/schedules/schedule_adam_step_20e.py',
     '../../_base_/recog_pipelines/abinet_pipeline.py',
-    '../../_base_/recog_datasets/toy_data.py'
-    # '../../_base_/recog_datasets/ST_MJ_alphanumeric_train.py',
-    # '../../_base_/recog_datasets/academic_test.py'
+    '../../_base_/recog_datasets/ST_MJ_alphanumeric_train.py',
+    '../../_base_/recog_datasets/academic_test.py'
 ]
 
 train_list = {{_base_.train_list}}
@@ -22,7 +21,7 @@ label_convertor = dict(
     with_unknown=False,
     with_padding=False,
     lower=True,
-)
+    max_seq_len=max_seq_len)
 
 model = dict(
     type='ABINet',

@@ -123,7 +123,6 @@ class AttnConvertor(BaseConvertor):
         indexes, scores = [], []
         for idx in range(batch_size):
             seq = outputs[idx, :, :]
-            seq = seq.softmax(dim=-1)
             max_value, max_idx = torch.max(seq, -1)
             str_index, str_score = [], []
             output_index = max_idx.cpu().detach().numpy().tolist()

@@ -13,7 +13,7 @@ class ABIVisionDecoder(BaseDecoder):
     """Converts visual features into text characters.
 
     Implementation of VisionEncoder in
-        `ABINet <https://arxiv.org/abs/1910.04396>`_.
+        `ABINet <https://arxiv.org/pdf/2103.06495>`_.
 
     Args:
         in_channels (int): Number of channels :math:`E` of input vector.

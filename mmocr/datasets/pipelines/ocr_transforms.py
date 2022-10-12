@@ -28,12 +28,28 @@ class ResizeOCR:
         keep_aspect_ratio (bool): Keep image aspect ratio if True
             during resizing, Otherwise resize to the size height *
             max_width.
-        img_pad_value (int): Scalar to fill padding area.
+        img_pad_value (Number | Sequence[Number]): Values to be filled in
+            padding areas when padding_mode is 'constant'. Default: 0.
         width_downsample_ratio (float): Downsample ratio in horizontal
             direction from input image to output feature.
-        backend (str | None): The image resize backend type. Options are `cv2`,
-            `pillow`, `None`. If backend is None, the global imread_backend
-            specified by ``mmcv.use_backend()`` will be used. Default: None.
+        backend (str | None): The image resize backend type. Options are
+            `cv2`, `pillow`, `None`. If backend is None, the global
+            imread_backend specified by ``mmcv.use_backend()`` will be used.
+            Default: None.
+        padding_mode (str): Type of padding. Should be: constant, edge,
+            reflect or symmetric. Default: constant.
+
+            - constant: pads with a constant value, this value is specified
+              with img_pad_value.
+            - edge: pads with the last value at the edge of the image.
+            - reflect: pads with reflection of image without repeating the last
+              value on the edge. For example, padding [1, 2, 3, 4] with 2
+              elements on both sides in reflect mode will result in
+              [3, 2, 1, 2, 3, 4, 3, 2].
+            - symmetric: pads with reflection of image repeating the last value
+              on the edge. For example, padding [1, 2, 3, 4] with 2 elements on
+              both sides in symmetric mode will result in
+              [2, 1, 1, 2, 3, 4, 4, 3]
     """
 
     def __init__(self,
@@ -43,14 +59,14 @@ class ResizeOCR:
                  keep_aspect_ratio=True,
                  img_pad_value=0,
                  width_downsample_ratio=1.0 / 16,
-                 backend=None):
+                 backend=None,
+                 padding_mode='constant'):
         assert isinstance(height, (int, tuple))
         assert utils.is_none_or_type(min_width, (int, tuple))
         assert utils.is_none_or_type(max_width, (int, tuple))
         if not keep_aspect_ratio:
             assert max_width is not None, ('"max_width" must assigned '
                                            'if "keep_aspect_ratio" is False')
-        assert isinstance(img_pad_value, int)
         if isinstance(height, tuple):
             assert isinstance(min_width, tuple)
             assert isinstance(max_width, tuple)
@@ -63,6 +79,7 @@ class ResizeOCR:
         self.img_pad_value = img_pad_value
         self.width_downsample_ratio = width_downsample_ratio
         self.backend = backend
+        self.padding_mode = padding_mode
 
     def __call__(self, results):
         rank, _ = get_dist_info()
@@ -105,7 +122,8 @@ class ResizeOCR:
                     img_resize = mmcv.impad(
                         img_resize,
                         shape=(dst_height, dst_max_width),
-                        pad_val=self.img_pad_value)
+                        pad_val=self.img_pad_value,
+                        padding_mode=self.padding_mode)
                     pad_shape = img_resize.shape
             else:
                 img_resize = mmcv.imresize(

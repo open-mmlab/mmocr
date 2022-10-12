@@ -2,7 +2,8 @@ _base_ = [
     '../../_base_/default_runtime.py',
     '../../_base_/recog_pipelines/satrn_pipeline.py',
     '../../_base_/recog_datasets/ST_MJ_train.py',
-    '../../_base_/recog_datasets/academic_test.py'
+    '../../_base_/recog_datasets/academic_test.py',
+    '../../_base_/schedules/schedule_adam_step_6e.py',
 ]
 
 train_list = {{_base_.train_list}}
@@ -11,8 +12,13 @@ test_list = {{_base_.test_list}}
 train_pipeline = {{_base_.train_pipeline}}
 test_pipeline = {{_base_.test_pipeline}}
 
+max_seq_len = 25
+
 label_convertor = dict(
-    type='AttnConvertor', dict_type='DICT90', with_unknown=True)
+    type='AttnConvertor',
+    dict_type='DICT90',
+    with_unknown=True,
+    max_seq_len=max_seq_len)
 
 model = dict(
     type='SATRN',
@@ -38,14 +44,13 @@ model = dict(
         d_v=256 // 8),
     loss=dict(type='TFLoss'),
     label_convertor=label_convertor,
-    max_seq_len=25)
+    max_seq_len=max_seq_len)
 
 # optimizer
 optimizer = dict(type='Adam', lr=3e-4)
 optimizer_config = dict(grad_clip=None)
 # learning policy
 lr_config = dict(policy='step', step=[3, 4])
-total_epochs = 6
 
 data = dict(
     samples_per_gpu=64,
