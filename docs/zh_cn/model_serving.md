@@ -53,7 +53,7 @@ torchserve --start --model-store ./checkpoints --models dbnet=dbnet.mar
 | Metrics    | `http://127.0.0.1:8082` |
 
 ````{note}
-TorchServe 默认会将服务绑定到端口 `8080`、 `8081` 、 `8082` 上。你可以通过修改 `config.properties` 来更改端口及存储位置等内容，并通过可选项 `--ts-config config.preperties` 来运行 TorchServe 服务。
+TorchServe 默认会将服务绑定到端口 `8080`、 `8081` 、 `8082` 上。你可以通过修改 `config.properties` 来更改端口及存储位置等内容，并通过可选项 `--ts-config config.properties` 来运行 TorchServe 服务。
 
 ```bash
 inference_address=http://0.0.0.0:8080
