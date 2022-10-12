@@ -162,8 +162,10 @@ def bezier_to_polygon(bezier_points, num_sample=20):
 
 
 def sort_points(points):
-    """Sort arbitory points in clockwise order. Reference:
+    """Sort arbitrary points in clockwise order. Reference:
     https://github.com/novioleo/Savior/blob/master/Utils/GeometryUtils.py.
+
+    Warning: this function can only sort convex polygons.
 
     Args:
         points (list[ndarray] or ndarray or list[list]): A list of unsorted
