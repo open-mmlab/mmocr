@@ -58,7 +58,7 @@ You can find their usages in [TorchServe REST API](https://github.com/pytorch/se
 
 ````{note}
 By default, TorchServe binds port number `8080`, `8081` and `8082` to its services.
-You can change such behavior by modifying and saving the contents below to `config.properties`, and running TorchServe with option `--ts-config config.preperties`.
+You can change such behavior by modifying and saving the contents below to `config.properties`, and running TorchServe with option `--ts-config config.properties`.
 
 ```bash
 inference_address=http://0.0.0.0:8080
