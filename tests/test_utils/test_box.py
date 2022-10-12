@@ -148,7 +148,3 @@ def test_sort_points():
 
     with pytest.raises(AssertionError):
         sort_points([1, 2])
-
-
-if __name__ == '__main__':
-    test_sort_points()
