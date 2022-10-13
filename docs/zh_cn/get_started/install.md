@@ -195,4 +195,4 @@ docker run --gpus all --shm-size=8g -it -v {实际数据目录}:/mmocr/data mmoc
 | MMOCR         | MMEngine                    | MMCV                        | MMDetection                 |
 | ------------- | --------------------------- | --------------------------- | --------------------------- |
 | dev-1.x       | 0.1.0 \<= mmengine \< 0.3.0 | 2.0.0rc1 \<= mmcv \< 2.1.0> | 3.0.0rc0 \<= mmdet \< 3.1.0 |
-| 1.0.0rc0, rc1 | 0.1.0 \<= mmengine \< 0.2.0 | 2.0.0rc1 \<= mmcv \< 2.1.0  | 3.0.0rc0 \<= mmdet \< 3.1.0 |
+| 1.0.0rc0, rc1 | 0.0.0 \<= mmengine \< 0.2.0 | 2.0.0rc1 \<= mmcv \< 2.1.0  | 3.0.0rc0 \<= mmdet \< 3.1.0 |
