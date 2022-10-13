@@ -7,7 +7,7 @@
 It's now possible to train/test models through Python Interface. For example, you can train a model under mmocr/ directory in this way:
 
 ```python
-an example of how to use such modifications is shown as the following:
+# an example of how to use such modifications is shown as the following:
 from mmocr.tools.train import TrainArg, parse_args, run_train_cmd
 args = TrainArg(config='/path/to/config.py')
 args.add_arg('--work-dir', '/path/to/dir')
@@ -29,7 +29,7 @@ Besides, release candidates for MMOCR 1.0 with tons of new features are availabl
 - Fix ABINet config by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1256
 - Fix Recognition Score Normalization Issue by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1333
 - Remove max_seq_len inconsistency by @antoniolanza1996 in https://github.com/open-mmlab/mmocr/pull/1433
-- box points ordering  by @yjmm10 in https://github.com/open-mmlab/mmocr/pull/1205
+- box points ordering by @yjmm10 in https://github.com/open-mmlab/mmocr/pull/1205
 - Correct spelling by misspelling 'preperties' to 'properties' by @JunYao1020 in https://github.com/open-mmlab/mmocr/pull/1446
 
 ### Docs
