@@ -249,9 +249,9 @@ log_config = dict(  # Config to register logger hook
         dict(type='TextLoggerHook', by_epoch=False),
         dict(type='TensorboardLoggerHook', by_epoch=False),
         dict(type='WandbLoggerHook', by_epoch=False, # The Wandb logger is also supported, It requires `wandb` to be installed.
-             init_kwargs={'entity': "OpenMMLab", # The entity used to log on Wandb
+             init_kwargs={
                           'project': "MMOCR", # Project name in WandB
-                          'config': cfg_dict}), # Check https://docs.wandb.ai/ref/python/init for more init arguments.
+                          }), # Check https://docs.wandb.ai/ref/python/init for more init arguments.
         # ClearMLLoggerHook, DvcliveLoggerHook, MlflowLoggerHook, NeptuneLoggerHook, PaviLoggerHook, SegmindLoggerHook are also supported based on MMCV implementation.
     ])
 
@@ -356,7 +356,7 @@ The migration example is as below.
 model = dict(
     type=...,
     ...
-train_cfg=dict(...),
-          test_cfg=dict(...),
+    train_cfg=dict(...),
+    test_cfg=dict(...),
 )
 ```
