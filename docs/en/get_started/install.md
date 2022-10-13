@@ -193,5 +193,5 @@ MMOCR has different version requirements on MMEngine, MMCV and MMDetection at ea
 
 | MMOCR         | MMEngine                    | MMCV                        | MMDetection                 |
 | ------------- | --------------------------- | --------------------------- | --------------------------- |
-| dev-1.x       | 0.1.0 \<= mmengine \< 1.0.0 | 2.0.0rc1 \<= mmcv \< 2.1.0> | 3.0.0rc0 \<= mmdet \< 3.1.0 |
+| dev-1.x       | 0.1.0 \<= mmengine \< 1.0.0 | 2.0.0rc1 \<= mmcv \< 2.1.0 | 3.0.0rc0 \<= mmdet \< 3.1.0 |
 | 1.0.0rc0, rc1 | 0.0.0 \<= mmengine \< 0.2.0 | 2.0.0rc1 \<= mmcv \< 2.1.0  | 3.0.0rc0 \<= mmdet \< 3.1.0 |
