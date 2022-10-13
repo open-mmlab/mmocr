@@ -1,5 +1,55 @@
 # Changelog
 
+## 0.6.2 (13/08/2022)
+
+### Highlights
+
+It's now possible to train/test models through Python Interface. For example, you can train a model under mmocr/ directory in this way:
+
+```python
+an example of how to use such modifications is shown as the following:
+from mmocr.tools.train import TrainArg, parse_args, run_train_cmd
+args = TrainArg(config='/path/to/config.py')
+args.add_arg('--work-dir', '/path/to/dir')
+args = parse_args(args.arg_list)
+run_train_cmd(args)
+```
+
+See PR [#1138](https://github.com/open-mmlab/mmocr/pull/1138) for more details.
+
+Besides, release candidates for MMOCR 1.0 with tons of new features are available at [1.x branch](https://github.com/open-mmlab/mmocr/tree/1.x) now! Check out the [changelog](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) for more information about the features, and [maintenance plan](https://mmocr.readthedocs.io/en/dev-1.x/migration/overview.html) for how we will maintain MMOCR in the future.
+
+### New Features
+
+- Adding test & train API to be used directly in code by @wybryan in https://github.com/open-mmlab/mmocr/pull/1138
+- Let ResizeOCR full support mmcv.impad's pad_val parameters by @hsiehpinghan in https://github.com/open-mmlab/mmocr/pull/1437
+
+### Bug Fixes
+
+- Fix ABINet config by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1256
+- Fix Recognition Score Normalization Issue by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1333
+- Remove max_seq_len inconsistency by @antoniolanza1996 in https://github.com/open-mmlab/mmocr/pull/1433
+- box points ordering  by @yjmm10 in https://github.com/open-mmlab/mmocr/pull/1205
+- Correct spelling by misspelling 'preperties' to 'properties' by @JunYao1020 in https://github.com/open-mmlab/mmocr/pull/1446
+
+### Docs
+
+- Demo, experiments and live inference API on Tiyaro by @Venkat2811 in https://github.com/open-mmlab/mmocr/pull/1272
+- Update 1.x info by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1369
+- Add global notes to the docs and the version switcher menu by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1406
+- Logger Hook Config Updated to Add WandB by @Nourollah in https://github.com/open-mmlab/mmocr/pull/1345
+
+### New Contributors
+
+- @Venkat2811 made their first contribution in https://github.com/open-mmlab/mmocr/pull/1272
+- @wybryan made their first contribution in https://github.com/open-mmlab/mmocr/pull/1139
+- @hsiehpinghan made their first contribution in https://github.com/open-mmlab/mmocr/pull/1437
+- @yjmm10 made their first contribution in https://github.com/open-mmlab/mmocr/pull/1205
+- @JunYao1020 made their first contribution in https://github.com/open-mmlab/mmocr/pull/1446
+- @Nourollah made their first contribution in https://github.com/open-mmlab/mmocr/pull/1345
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v0.6.1...v0.6.2
+
 ## 0.6.1 (04/08/2022)
 
 ### Highlights
