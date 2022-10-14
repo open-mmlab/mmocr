@@ -841,7 +841,7 @@ class MMOCR:
         num_res = len(img_list)
         if args.output:
             output_path = Path(args.output)
-            if output_path.is_dir():
+            if output_path.is_dir() or '.' not in args.output:
                 args.output = [
                     str(output_path / f'out_{x}.png') for x in args.filenames
                 ]
