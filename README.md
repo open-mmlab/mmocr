@@ -71,19 +71,20 @@ The main branch works with **PyTorch 1.6+**.
 
 ## What's New
 
+While the stable version (0.6.2) and the preview version (1.0.0) are being maintained concurrently now, the former version will be deprecated by the end of 2022. Therefore, we recommend users upgrade to [MMOCR 1.0](https://github.com/open-mmlab/mmocr/tree/1.x) to fruitful new features and better performance brought by the new architecture. Check out our [maintenance plan](https://mmocr.readthedocs.io/en/dev-1.x/migration/overview.html) for how we will maintain them in the future.
+
 ### 💎 Stable version
 
-v0.6.1 was released in 2022-08-04.
+v0.6.2 was released in 2022-10-14.
 
-1. ArT dataset is available for text detection and recognition!
-2. Fix several bugs that affects the correctness of the models.
-3. Thanks to [MIM](https://github.com/open-mmlab/mim), our installation is much simpler now! The [docs](https://mmocr.readthedocs.io/en/latest/install.html) has been renewed as well.
+1. It's now possible to train/test models through Python Interface.
+2. ResizeOCR now fully supports all the parameters in mmcv.impad.
 
 Read [Changelog](https://mmocr.readthedocs.io/en/latest/changelog.html) for more details!
 
 ### 🌟 Preview of 1.x version
 
-A brand new version of **MMOCR v1.0.0rc0** was released in 2022-09-01:
+A brand new version of **MMOCR v1.0.0rc2** was released in 2022-10-14:
 
 1. **New engines**. MMOCR 1.x is based on [MMEngine](https://github.com/open-mmlab/mmengine), which provides a general and powerful runner that allows more flexible customizations and significantly simplifies the entrypoints of high-level interfaces.
 
