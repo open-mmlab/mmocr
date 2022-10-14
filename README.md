@@ -75,7 +75,7 @@ While the stable version (0.6.2) and the preview version (1.0.0) are being maint
 
 ### 💎 Stable version
 
-v0.6.2 was released in 2022-10-13.
+v0.6.2 was released in 2022-10-14.
 
 1. It's now possible to train/test models through Python Interface.
 2. ResizeOCR now fully supports all the parameters in mmcv.impad.
@@ -84,7 +84,7 @@ Read [Changelog](https://mmocr.readthedocs.io/en/latest/changelog.html) for more
 
 ### 🌟 Preview of 1.x version
 
-A brand new version of **MMOCR v1.0.0rc1** was released in 2022-10-09:
+A brand new version of **MMOCR v1.0.0rc2** was released in 2022-10-14:
 
 1. **New engines**. MMOCR 1.x is based on [MMEngine](https://github.com/open-mmlab/mmengine), which provides a general and powerful runner that allows more flexible customizations and significantly simplifies the entrypoints of high-level interfaces.
 
