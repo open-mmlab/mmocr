@@ -1,5 +1,9 @@
 # Changelog of v1.x
 
+## v1.0.0rc2 (14/10/2022)
+
+This release relaxes the version requirement of `MMEngine` to `>=0.1.0, < 1.0.0`.
+
 ## v1.0.0rc1 (9/10/2022)
 
 ### Highlights
