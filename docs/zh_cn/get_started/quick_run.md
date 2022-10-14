@@ -53,7 +53,7 @@ param_scheduler = [dict(type='ConstantLR', factor=1.0),]
 
 这里，我们通过配置的[继承](https://mmengine.readthedocs.io/zh_CN/latest/tutorials/config.html)机制将基础配置中的相应参数直接进行了改写。原本的字段分布在 `configs/_base_/schedules/schedule_sgd_1200e.py` 和 `configs/_base_/textdet_default_runtime.py` 中，感兴趣的读者可以自行查看。
 
-```{tip}
+```{note}
 关于配置文件更加详尽的说明，请参考[此处](../user_guides/config.md)。
 ```
 
@@ -100,7 +100,7 @@ python tools/train.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.
 
 在不指定额外参数时，训练的权重默认会被保存到 `work_dirs/dbnet_resnet18_fpnc_1200e_icdar2015/` 下面，而日志则会保存在`work_dirs/dbnet_resnet18_fpnc_1200e_icdar2015/开始训练的时间戳/`里。接下来，我们只需要耐心等待模型训练完成即可。
 
-```{tip}
+```{note}
 若需要了解训练的高级用法，如 CPU 训练、多卡训练及集群训练等，请查阅[训练与测试](../user_guides/train_test.md)。
 ```
 
@@ -153,7 +153,7 @@ python tools/test.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.p
 
 可以发现，模型在这个数据集上能达到的 hmean 为 0.6667，效果还是不错的。
 
-```{tip}
+```{note}
 若需要了解测试的高级用法，如 CPU 测试、多卡测试及集群测试等，请查阅[训练与测试](../user_guides/train_test.md)。
 ```
 
@@ -171,6 +171,6 @@ python tools/test.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.p
     <img src="https://user-images.githubusercontent.com/22607038/187423562-6a85e209-4b12-46ee-8a41-5c67b1ba83f9.png"/><br>
 </div>
 
-```{tip}
+```{note}
 有关更多可视化功能的介绍，请参阅[这里](../user_guides/visualization.md)。
 ```
