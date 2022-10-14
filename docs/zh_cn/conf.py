@@ -161,7 +161,7 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'numpy': ('https://numpy.org/doc/stable', None),
     'torch': ('https://pytorch.org/docs/stable/', None),
-    'mmcv': ('https://mmcv.readthedocs.io/zh_CN/dev-2.x/', None),
+    'mmcv': ('https://mmcv.readthedocs.io/zh_CN/2.x/', None),
     'mmengine': ('https://mmengine.readthedocs.io/zh_CN/latest/', None),
     'mmdetection': ('https://mmdetection.readthedocs.io/zh_CN/dev-3.x/', None),
 }
