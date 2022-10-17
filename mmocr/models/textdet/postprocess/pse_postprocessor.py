@@ -74,7 +74,7 @@ class PSEPostprocessor(BasePostprocessor):
         for i in range(1, label_num + 1):
             points = np.array(np.where(labels == i)).transpose((1, 0))[:, ::-1]
             area = points.shape[0]
-            score_instance = np.mean(score[labels == i])
+            score_instance = np.mean(score[labels == i]).item()
             if not self.is_valid_instance(area, score_instance,
                                           self.min_text_area,
                                           self.min_text_avg_confidence):
