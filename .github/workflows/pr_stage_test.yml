@@ -90,6 +90,8 @@ jobs:
           apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libxrender-dev
       - name: Install mmocr dependencies
         run: |
+          # Some dependencies may be required for the build of pycocotools
+          export CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`
           python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}/index.html
           python -m pip install mmdet
           python -m pip install -r requirements.txt
