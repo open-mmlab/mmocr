@@ -841,15 +841,9 @@ class MMOCR:
         num_res = len(img_list)
         if args.output:
             output_path = Path(args.output)
-            if output_path.is_dir() or '.' not in args.output:
-                args.output = [
-                    str(output_path / f'out_{x}.png') for x in args.filenames
-                ]
-            else:
-                args.output = [str(args.output)]
-                if args.batch_mode:
-                    raise AssertionError('Output of multiple images inference'
-                                         ' must be a directory')
+            args.output = [
+                str(output_path / f'out_{x}.png') for x in args.filenames
+            ]
         else:
             args.output = [None] * num_res
 
