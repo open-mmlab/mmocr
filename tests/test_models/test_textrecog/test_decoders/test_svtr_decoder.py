@@ -4,7 +4,7 @@ import tempfile
 from unittest import TestCase
 
 import torch
-from mmengine.data import LabelData
+from mmengine.structures import LabelData
 
 from mmocr.models.textrecog.decoders.svtr_decoder import SVTRDecoder
 from mmocr.structures import TextRecogDataSample
@@ -91,4 +91,4 @@ class TestSVTRDecoder(TestCase):
             module_loss=loss_cfg,
             max_seq_len=25)
         output = decoder.forward_test(feat=feat, data_samples=self.data_info)
-        self.assertTupleEqual(tuple(output.shape), (1, 25, 39))
+        self.assertTupleEqual(tuple(output.shape), (25, 1, 39))

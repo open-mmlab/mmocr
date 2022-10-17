@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from mmocr.models.textrecog.dictionary import Dictionary
+from mmocr.models.common.dictionary import Dictionary
 from mmocr.registry import MODELS
 from mmocr.structures import TextRecogDataSample
 from .base import BaseDecoder
@@ -102,7 +102,7 @@ class SVTRDecoder(BaseDecoder):
 
         Returns:
             Tensor: Character probabilities. of shape
-            :math:`(N, self.max_seq_len, C)` where :math:`C` is
+            :math:`(self.max_seq_len, N, C)` where :math:`C` is
             ``num_classes``.
         """
         feat = self.forward_train(feat, out_enc, data_samples).permute(1, 0, 2)
