@@ -80,7 +80,7 @@ git checkout -b branchname
   有时你的文件可能会在提交时被 pre-commit hooks 自动修改。这时请重新添加并提交修改后的文件。
   ```
 
-### 4. 推送你的修改到复刻的代码库，并创建一个`拉取请求`
+### 4. 推送你的修改到复刻的代码库，并创建一个拉取请求
 
 - 推送当前分支到远端复刻的代码库
 
@@ -88,12 +88,13 @@ git checkout -b branchname
   git push origin branchname
   ```
 
-- 创建一个`拉取请求`
+- 创建一个拉取请求
+
   ![avatar](https://user-images.githubusercontent.com/22607038/195053564-71bd3cb4-b8d4-4ed9-9075-051e138b7fd4.png)
 
-- 修改`拉取请求`信息模板，描述修改原因和修改内容。还可以在 PR 描述中，手动关联到相关的`议题` (issue),（更多细节，请参考[官方文档](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue)）。
+- 修改拉取请求信息模板，描述修改原因和修改内容。还可以在 PR 描述中，手动关联到相关的议题 (issue),（更多细节，请参考[官方文档](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue)）。
 
-- 另外，如果你正在往 `dev-1.x` 分支提交代码，你还需要在创建 PR 的界面中将基础分支改为 \`\`dev-1.x`，因为现在默认的基础分支是 `main\`。
+- 另外，如果你正在往 `dev-1.x` 分支提交代码，你还需要在创建 PR 的界面中将基础分支改为 `dev-1.x`，因为现在默认的基础分支是 `main`。
 
   ![avatar](https://user-images.githubusercontent.com/22607038/195045928-f3ceedc8-0162-46a7-ae1a-7e22829fe189.png)
 

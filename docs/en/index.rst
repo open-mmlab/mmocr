@@ -26,14 +26,14 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :maxdepth: 2
    :caption: Basic Concepts
 
+   basic_concepts/structures.md
+   basic_concepts/transforms.md
+   basic_concepts/evaluation.md
    basic_concepts/overview.md
    basic_concepts/data_flow.md
    basic_concepts/datasets.md
-   basic_concepts/structures.md
    basic_concepts/models.md
-   basic_concepts/transforms.md
    basic_concepts/visualizers.md
-   basic_concepts/evaluation.md
    basic_concepts/convention.md
    basic_concepts/engine.md
 
