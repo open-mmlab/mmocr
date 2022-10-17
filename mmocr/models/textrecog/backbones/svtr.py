@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.cnn.bricks import DropPath
 from mmengine.model import BaseModule
-from mmengine.model.utils import trunc_normal_
+from mmengine.model.weight_init import trunc_normal_
 
 from mmocr.registry import MODELS
 
@@ -190,13 +190,13 @@ class AttnMixer(BaseModule):
             hk = local_k[0]
             wk = local_k[1]
             mask = torch.ones([H * W, H + hk - 1, W + wk - 1],
-                              dtype=torch.float32).to(device)
+                              dtype=torch.float32)
             for h in range(0, H):
                 for w in range(0, W):
                     mask[h * w + w, h:h + hk, w:w + wk] = 0.
             mask = mask[:, hk // 2:H + hk // 2, wk // 2:W + wk // 2].flatten(1)
             mask[mask < -1] = -np.inf
-            self.mask = mask[None, None, :, :].to(device)
+            self.mask = mask[None, None, :, :]
         self.mixer = mixer
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
