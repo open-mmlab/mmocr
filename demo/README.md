@@ -19,7 +19,7 @@ ______________________________________________________________________
 - CL interface:
 
 ```shell
-python mmocr/utils/ocr.py demo/demo_text_det.jpg --output demo/det_out.jpg --det TextSnake --recog None --export demo/
+python mmocr/utils/ocr.py demo/demo_text_det.jpg --output demo/ --det TextSnake --recog None --export demo/
 ```
 
 - Python interface:
@@ -31,7 +31,7 @@ from mmocr.utils.ocr import MMOCR
 ocr = MMOCR(det='TextSnake', recog=None)
 
 # Inference
-results = ocr.readtext('demo/demo_text_det.jpg', output='demo/det_out.jpg', export='demo/')
+results = ocr.readtext('demo/demo_text_det.jpg', output='demo/', export='demo/')
 ```
 
 ## Example 2: Text Recognition
@@ -165,7 +165,7 @@ User can use default pretrained models by specifying `det` and/or `recog`, which
 | Arguments           | Type                    | Default      | Description                                                            |
 | ------------------- | ----------------------- | ------------ | ---------------------------------------------------------------------- |
 | `img`               | str/list/tuple/np.array | **required** | img, folder path, np array or list/tuple (with img paths or np arrays) |
-| `output`            | str                     | None         | Output result visualization - img path or folder path                  |
+| `output`            | str                     | None         | Folder where visualization results are output for each image           |
 | `batch_mode`        | bool                    | False        | Whether use batch mode for inference \[1\]                             |
 | `det_batch_size`    | int                     | 0            | Batch size for text detection (0 for max size)                         |
 | `recog_batch_size`  | int                     | 0            | Batch size for text recognition (0 for max size)                       |
