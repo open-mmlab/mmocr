@@ -841,9 +841,13 @@ class MMOCR:
         num_res = len(img_list)
         if args.output:
             output_path = Path(args.output)
-            args.output = [
-                str(output_path / f'out_{x}.png') for x in args.filenames
-            ]
+            if output_path.is_dir() or not output_path.exists():
+                args.output = [
+                    str(output_path / f'out_{x}.png') for x in args.filenames
+                ]
+            else:
+                raise TypeError(
+                    f'output {output_path} cannot be an existing file!')
         else:
             args.output = [None] * num_res
 
