@@ -18,7 +18,7 @@ ______________________________________________________________________
 - 命令行执行：
 
 ```shell
-python mmocr/utils/ocr.py demo/demo_text_det.jpg --output demo/det_out.jpg --det TextSnake --recog None --export demo/
+python mmocr/utils/ocr.py demo/demo_text_det.jpg --output demo/ --det TextSnake --recog None --export demo/
 ```
 
 - Python 调用：
@@ -30,7 +30,7 @@ from mmocr.utils.ocr import MMOCR
 ocr = MMOCR(det='TextSnake', recog=None)
 
 # 推理
-results = ocr.readtext('demo/demo_text_det.jpg', output='demo/det_out.jpg', export='demo/')
+results = ocr.readtext('demo/demo_text_det.jpg', output='demo/', export='demo/')
 ```
 
 ## 案例二：文本识别
@@ -163,7 +163,7 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 | 参数                | 类型                    | 默认值   | 描述                                                                  |
 | ------------------- | ----------------------- | -------- | --------------------------------------------------------------------- |
 | `img`               | str/list/tuple/np.array | **必填** | 图像，文件夹路径，np array 或 list/tuple （包含图片路径或 np arrays） |
-| `output`            | str                     | None     | 可视化输出结果 - 图片路径或文件夹路径                                 |
+| `output`            | str                     | None     | 存放图片可视化结果的文件夹                                            |
 | `batch_mode`        | bool                    | False    | 是否使用批处理模式推理 \[1\]                                          |
 | `det_batch_size`    | int                     | 0        | 文本检测的批处理大小（设置为 0 则与待推理图片个数相同）               |
 | `recog_batch_size`  | int                     | 0        | 文本识别的批处理大小（设置为 0 则与待推理图片个数相同）               |
