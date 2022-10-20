@@ -90,6 +90,12 @@ You can switch between English and Chinese in the lower-left corner of the layou
    mmocr.utils <api/utils>
 
 .. toctree::
+   :maxdepth: 2
+   :caption: Contact US
+
+   contact.md
+
+.. toctree::
    :caption: Switch Language
 
    switch_language.md
