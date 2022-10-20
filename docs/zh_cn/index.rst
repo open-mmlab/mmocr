@@ -56,6 +56,12 @@
    api.rst
 
 .. toctree::
+   :maxdepth: 2
+   :caption: 联系我们
+
+   contact.md
+
+.. toctree::
    :caption: 切换语言
 
    English <https://mmocr.readthedocs.io/en/latest/>
