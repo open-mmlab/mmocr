@@ -57,6 +57,12 @@ You can switch between English and Chinese in the lower-left corner of the layou
    api.rst
 
 .. toctree::
+   :maxdepth: 2
+   :caption: Contact US
+
+   contact.md
+
+.. toctree::
    :caption: Switch Language
 
    English <https://mmocr.readthedocs.io/en/latest/>
