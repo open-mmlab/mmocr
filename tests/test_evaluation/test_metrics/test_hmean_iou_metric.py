@@ -73,28 +73,8 @@ class TestHmeanIOU(unittest.TestCase):
         recall = 3 / 4
         hmean = 2 * precision * recall / (precision + recall)
         target_result = {
-            'mmocr/precision': precision,
-            'mmocr/recall': recall,
-            'mmocr/hmean': hmean
+            'precision': precision,
+            'recall': recall,
+            'hmean': hmean
         }
-        self.assertDictEqual(target_result, eval_results)
-
-    def test_compute_metrics(self):
-        # Test different strategies
-        fake_results = [
-            dict(
-                iou_metric=np.array([[1, 1], [1, 0]]),
-                pred_scores=np.array([1., 1.]))
-        ]
-
-        # Vanilla
-        metric = HmeanIOUMetric(strategy='vanilla')
-        eval_results = metric.compute_metrics(fake_results)
-        target_result = {'precision': 0.5, 'recall': 0.5, 'hmean': 0.5}
-        self.assertDictEqual(target_result, eval_results)
-
-        # Max matching
-        metric = HmeanIOUMetric(strategy='max_matching')
-        eval_results = metric.compute_metrics(fake_results)
-        target_result = {'precision': 1, 'recall': 1, 'hmean': 1}
         self.assertDictEqual(target_result, eval_results)
