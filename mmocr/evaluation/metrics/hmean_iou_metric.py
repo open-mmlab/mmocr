@@ -124,7 +124,12 @@ class HmeanIOUMetric(mmeval.HmeanIoU):
         logger.info('Evaluating hmean-iou...')
         metric_results = self.compute(*args, **kwargs)
         self.reset()
+
         best_eval_results = metric_results.pop('best')
+        best_eval_results = {
+            f'{self.name}/{k}': v
+            for k, v in best_eval_results.items()
+        }
 
         for pred_score_thr in sorted(list(metric_results.keys())):
             result = metric_results[pred_score_thr]

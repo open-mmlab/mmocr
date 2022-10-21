@@ -65,7 +65,7 @@ class TestHmeanIOU(unittest.TestCase):
 
     def test_hmean_iou(self):
 
-        metric = HmeanIOUMetric(prefix='mmocr')
+        metric = HmeanIOUMetric()
         metric.process(None, self.predictions)
         eval_results = metric.evaluate(size=2)
 
@@ -73,8 +73,8 @@ class TestHmeanIOU(unittest.TestCase):
         recall = 3 / 4
         hmean = 2 * precision * recall / (precision + recall)
         target_result = {
-            'precision': precision,
-            'recall': recall,
-            'hmean': hmean
+            'HmeanIOUMetric/precision': precision,
+            'HmeanIOUMetric/recall': recall,
+            'HmeanIOUMetric/hmean': hmean
         }
         self.assertDictEqual(target_result, eval_results)
