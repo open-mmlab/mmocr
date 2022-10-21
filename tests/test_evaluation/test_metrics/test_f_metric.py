@@ -57,20 +57,20 @@ class TestF1Metric(unittest.TestCase):
             metric = F1Metric(num_classes=5, mode=mode)
             metric.process(None, preds)
             result = metric.evaluate(size=len(preds))
-            self.assertAlmostEqual(result['kie/macro_f1'], 0.4)
+            self.assertAlmostEqual(result['F1Metric/macro_f1'], 0.4)
 
             # Test ignored_classes
             metric = F1Metric(num_classes=5, ignored_classes=[1], mode=mode)
             metric.process(None, preds)
             result = metric.evaluate(size=len(preds))
-            self.assertAlmostEqual(result['kie/macro_f1'], 0.25)
+            self.assertAlmostEqual(result['F1Metric/macro_f1'], 0.25)
 
             # Test cared_classes
             metric = F1Metric(
                 num_classes=5, cared_classes=[0, 2, 3, 4], mode=mode)
             metric.process(None, preds)
             result = metric.evaluate(size=len(preds))
-            self.assertAlmostEqual(result['kie/macro_f1'], 0.25)
+            self.assertAlmostEqual(result['F1Metric/macro_f1'], 0.25)
 
     def test_micro_f1(self):
         mode = 'micro'
@@ -110,12 +110,14 @@ class TestF1Metric(unittest.TestCase):
             metric = F1Metric(num_classes=3, mode=mode)
             metric.process(None, preds)
             result = metric.evaluate(size=len(preds))
-            self.assertAlmostEqual(result['kie/micro_f1'], 0.4, delta=0.01)
+            self.assertAlmostEqual(
+                result['F1Metric/micro_f1'], 0.4, delta=0.01)
 
             metric = F1Metric(num_classes=5, mode=mode)
             metric.process(None, preds)
             result = metric.evaluate(size=len(preds))
-            self.assertAlmostEqual(result['kie/micro_f1'], 0.4, delta=0.01)
+            self.assertAlmostEqual(
+                result['F1Metric/micro_f1'], 0.4, delta=0.01)
 
             # class 0: tp: 1, fp: 1, fn: 1
             # class 2: tp: 0, fp: 1, fn: 2
@@ -125,13 +127,15 @@ class TestF1Metric(unittest.TestCase):
             metric = F1Metric(num_classes=5, ignored_classes=[1], mode=mode)
             metric.process(None, preds)
             result = metric.evaluate(size=len(preds))
-            self.assertAlmostEqual(result['kie/micro_f1'], 0.285, delta=0.001)
+            self.assertAlmostEqual(
+                result['F1Metric/micro_f1'], 0.285, delta=0.001)
 
             metric = F1Metric(
                 num_classes=5, cared_classes=[0, 2, 3, 4], mode=mode)
             metric.process(None, preds)
             result = metric.evaluate(size=len(preds))
-            self.assertAlmostEqual(result['kie/micro_f1'], 0.285, delta=0.001)
+            self.assertAlmostEqual(
+                result['F1Metric/micro_f1'], 0.285, delta=0.001)
 
     def test_arguments(self):
         mode = ['micro', 'macro']
@@ -153,5 +157,5 @@ class TestF1Metric(unittest.TestCase):
         metric = F1Metric(num_classes=3, mode=mode, key='test_labels')
         metric.process(None, preds)
         result = metric.evaluate(size=1)
-        self.assertAlmostEqual(result['kie/micro_f1'], 0.4, delta=0.01)
-        self.assertAlmostEqual(result['kie/macro_f1'], 0.39, delta=0.01)
+        self.assertAlmostEqual(result['F1Metric/micro_f1'], 0.4, delta=0.01)
+        self.assertAlmostEqual(result['F1Metric/macro_f1'], 0.39, delta=0.01)
