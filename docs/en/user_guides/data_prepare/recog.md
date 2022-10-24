@@ -1,4 +1,8 @@
-# Text Recognition
+# Text Recognition\[Deprecated\]
+
+```{warning}
+This page is deprecated and will soon be removed. Please refer to our new [dataset preparer](./dataset_preparer.md).
+```
 
 ## Overview
 

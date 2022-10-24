@@ -1,0 +1,29 @@
+Name: 'WildReceipt'
+Paper:
+  Title: "Spatial Dual-Modality Graph Reasoning for Key Information Extraction"
+  URL: https://link.springer.com/article/10.1007/s10032-019-00334-z
+  Venue: arXiv
+  Year: '2021'
+  BibTeX: '@article{sun2021spatial,
+  title={Spatial Dual-Modality Graph Reasoning for Key Information Extraction},
+  author={Sun, Hongbin and Kuang, Zhanghui and Yue, Xiaoyu and Lin, Chenhao and Zhang, Wayne},
+  journal={arXiv preprint arXiv:2103.14470},
+  year={2021}
+}
+'
+Data:
+  Website: https://github.com/cs-chan/Total-Text-Dataset
+  Language:
+    - English
+  Scene:
+    - Receipt
+  Granularity:
+    - Word
+  Tasks:
+    - kie
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: N/A
+    Link: N/A

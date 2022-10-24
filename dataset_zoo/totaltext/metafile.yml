@@ -1,0 +1,29 @@
+Name: 'Total Text'
+Paper:
+  Title: "Total-Text: Towards Orientation Robustness in Scene Text Detection"
+  URL: https://link.springer.com/article/10.1007/s10032-019-00334-z
+  Venue: IJDAR
+  Year: '2020'
+  BibTeX: '@article{CK2019,
+  author = {Chee Kheng Chng and Chee Seng Chan and Chenglin Liu},
+  title = {Total-Text: Towards Orientation Robustness in Scene Text Detection},
+  journal = {International Journal on Document Analysis and Recognition (IJDAR)},
+  volume = {23},
+  pages = {31-52},
+  year = {2020},
+  doi = {10.1007/s10032-019-00334-z}}'
+Data:
+  Website: https://github.com/cs-chan/Total-Text-Dataset
+  Language:
+    - English
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Tasks:
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: BSD-3
+    Link: https://github.com/cs-chan/Total-Text-Dataset/blob/master/LICENSE

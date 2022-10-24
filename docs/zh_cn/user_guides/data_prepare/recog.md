@@ -1,7 +1,7 @@
-# 文字识别
+# 文字识别\[过时\]
 
 ```{warning}
-该章节翻译落后于[英文版文档](../../en/user_guides/../../user_guides/data_prepare/recog.md)。
+该页面内容已经过时并将在近期删除，请查看我们全新的[数据准备](./dataset_preparer.md)页面。
 ```
 
 ## 概览

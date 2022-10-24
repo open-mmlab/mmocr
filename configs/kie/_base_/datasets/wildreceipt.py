@@ -1,4 +1,4 @@
-wildreceipt_data_root = 'data/kie/wildreceipt/'
+wildreceipt_data_root = 'data/wildreceipt/'
 
 wildreceipt_train = dict(
     type='WildReceiptDataset',
