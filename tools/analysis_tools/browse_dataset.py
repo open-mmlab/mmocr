@@ -33,10 +33,7 @@ def parse_args():
         'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
         'Note that the quotation marks are necessary and that no white space '
         'is allowed.')
-    args = parser.parse_args([
-        'configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py',
-        '--output-dir', 'tools/analysis_tools/save', '--not-show'
-    ])
+    args = parser.parse_args()
     return args
 
 

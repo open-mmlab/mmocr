@@ -1,5 +1,62 @@
 # Changelog of v1.x
 
+## v1.0.0rc2 (14/10/2022)
+
+This release relaxes the version requirement of `MMEngine` to `>=0.1.0, < 1.0.0`.
+
+## v1.0.0rc1 (9/10/2022)
+
+### Highlights
+
+This release fixes a severe bug leading to inaccurate metric report in multi-GPU training.
+We release the weights for all the text recognition models in MMOCR 1.0 architecture. The inference shorthand for them are also added back to `ocr.py`. Besides, more documentation chapters are available now.
+
+### New Features & Enhancements
+
+- Simplify the Mask R-CNN config by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1391
+- auto scale lr by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1326
+- Update paths to pretrain weights by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1416
+- Streamline duplicated split_result in pan_postprocessor by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1418
+- Update model links in ocr.py and inference.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1431
+- Update rec configs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1417
+- Visualizer refine by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1411
+- Support get flops and parameters in dev-1.x by @vansin in https://github.com/open-mmlab/mmocr/pull/1414
+
+### Docs
+
+- intersphinx and api by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1367
+- Fix quickrun by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1374
+- Fix some docs issues by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1385
+- Add Documents for DataElements by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1381
+- config english by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1372
+- Metrics by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1399
+- Add version switcher to menu by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1407
+- Data Transforms by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1392
+- Fix inference docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1415
+- Fix some docs by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1410
+- Add maintenance plan to migration guide by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1413
+- Update Recog Models by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1402
+
+### Bug Fixes
+
+- clear metric.results only done in main process by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1379
+- Fix a bug in MMDetWrapper by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1393
+- Fix browse_dataset.py by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1398
+- ImgAugWrapper: Do not cilp polygons if not applicable by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1231
+- Fix CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1365
+- Fix merge stage test by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1370
+- Del CI support for torch 1.5.1 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1371
+- Test windows cu111 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1373
+- Fix windows CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1387
+- Upgrade pre commit hooks by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1429
+- Skip invalid augmented polygons in ImgAugWrapper by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1434
+
+## New Contributors
+
+- @vansin made their first contribution in https://github.com/open-mmlab/mmocr/pull/1414
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc0...v1.0.0rc1
+
 ## v1.0.0rc0 (1/9/2022)
 
 We are excited to announce the release of MMOCR 1.0.0rc0.

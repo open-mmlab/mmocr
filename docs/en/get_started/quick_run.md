@@ -51,7 +51,7 @@ param_scheduler = [dict(type='ConstantLR', factor=1.0),]
 
 Here, we have rewritten the corresponding parameters in the base configuration directly through the [inheritance](https://mmengine.readthedocs.io/en/latest/tutorials/config.html) mechanism of the configuration. The original fields are distributed in `configs/_base_/schedules/schedule_sgd_1200e.py` and `configs/_base_/textdet_default_runtime.py`. You may check them out if interested.
 
-```{tip}
+```{note}
 For a more detailed description of config, please refer to [here](../user_guides/config.md).
 ```
 
@@ -98,7 +98,7 @@ Depending on the system environment, MMOCR will automatically use the best devic
 
 Without extra configurations, model weights will be saved to `work_dirs/dbnet_resnet18_fpnc_1200e_icdar2015/`, while the logs will be stored in `work_dirs/dbnet_resnet18_fpnc_1200e_icdar2015/TIMESTAMP/`. Next, we just need to wait with some patience for training to finish.
 
-```{tip}
+```{note}
 For advanced usage of training, such as CPU training, multi-GPU training, and cluster training, please refer to [Training and Testing](../user_guides/train_test.md).
 ```
 
@@ -151,7 +151,7 @@ And get the outputs:
 
 The model achieves an hmean of 0.6667 on this dataset.
 
-```{tip}
+```{note}
 For advanced usage of testing, such as CPU testing, multi-GPU testing, and cluster testing, please refer to [Training and Testing](../user_guides/train_test.md).
 ```
 
@@ -169,6 +169,6 @@ The true labels and predicted values are displayed in a tiled fashion in the vis
     <img src="https://user-images.githubusercontent.com/22607038/187423562-6a85e209-4b12-46ee-8a41-5c67b1ba83f9.png"/><br>
 </div>
 
-```{tip}
+```{note}
 For a description of more visualization features, see [here](../user_guides/visualization.md).
 ```

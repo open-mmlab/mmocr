@@ -105,6 +105,21 @@ class TestTextKIELocalVisualizer(unittest.TestCase):
                 out_file=out_file)
             self._assert_image_and_shape(out_file, (h, w * 4, c))
 
+            visualizer = KIELocalVisualizer(is_openset=False)
+            visualizer.dataset_meta = dict(category=[
+                dict(id=0, name='bg'),
+                dict(id=1, name='key'),
+                dict(id=2, name='value'),
+                dict(id=3, name='other')
+            ])
+            visualizer.add_datasample(
+                'image',
+                image,
+                self.data_sample,
+                draw_pred=False,
+                out_file=out_file)
+            self._assert_image_and_shape(out_file, (h, w * 3, c))
+
     def _assert_image_and_shape(self, out_file, out_shape):
         self.assertTrue(osp.exists(out_file))
         drawn_img = cv2.imread(out_file)

@@ -25,17 +25,17 @@ class TextRecogDataSample(BaseDataElement):
          >>> data_sample.gt_text = gt_text
          >>> assert 'img_shape' in data_sample.gt_text.metainfo_keys()
          >>> print(data_sample)
-        <TextRecogDataSample(
-            META INFORMATION
-            DATA FIELDS
-            gt_text: <LabelData(
-                    META INFORMATION
-                    pad_shape: (800, 1216, 3)
-                    img_shape: (800, 1196, 3)
-                    DATA FIELDS
-                    item: 'mmocr'
-                ) at 0x7f21fb1b9190>
-        ) at 0x7f21fb1b9880>
+         <TextRecogDataSample(
+             META INFORMATION
+             DATA FIELDS
+             gt_text: <LabelData(
+                     META INFORMATION
+                     pad_shape: (800, 1216, 3)
+                     img_shape: (800, 1196, 3)
+                     DATA FIELDS
+                     item: 'mmocr'
+                 ) at 0x7f21fb1b9190>
+         ) at 0x7f21fb1b9880>
          >>> # pred_text
          >>> pred_text = LabelData(metainfo=img_meta)
          >>> pred_text.item = 'mmocr'

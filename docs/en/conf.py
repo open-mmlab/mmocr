@@ -38,12 +38,20 @@ release = __version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode',
-    'sphinx_markdown_tables', 'sphinx_copybutton', 'myst_parser',
-    'sphinx.ext.intersphinx', 'sphinx.ext.autodoc.typehints'
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+    'sphinx_markdown_tables',
+    'sphinx_copybutton',
+    'myst_parser',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.autodoc.typehints',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.autosectionlabel',
 ]
 autodoc_typehints = 'description'
 autodoc_mock_imports = ['mmcv._ext']
+autosummary_generate = True  # Turn on sphinx.ext.autosummary
 
 # Ignore >>> when copying code
 copybutton_prompt_text = r'>>> |\.\.\. '
@@ -96,6 +104,15 @@ html_theme_options = {
             'Upstream',
             'children': [
                 {
+                    'name':
+                    'MMEngine',
+                    'url':
+                    'https://github.com/open-mmlab/mmengine',
+                    'description':
+                    'Foundational library for training deep '
+                    'learning models'
+                },
+                {
                     'name': 'MMCV',
                     'url': 'https://github.com/open-mmlab/mmcv',
                     'description': 'Foundational library for computer vision'
@@ -106,6 +123,24 @@ html_theme_options = {
                     'description': 'Object detection toolbox and benchmark'
                 },
             ]
+        },
+        {
+            'name':
+            'Version',
+            'children': [
+                {
+                    'name': 'MMOCR 0.x',
+                    'url': 'https://mmocr.readthedocs.io/en/latest/',
+                    'description': 'Main branch'
+                },
+                {
+                    'name': 'MMOCR 1.x',
+                    'url': 'https://mmocr.readthedocs.io/en/dev-1.x/',
+                    'description': '1.x branch'
+                },
+            ],
+            'active':
+            True,
         },
     ],
     # Specify the language of shared menu
@@ -123,13 +158,13 @@ master_doc = 'index'
 html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
 
-myst_heading_anchors = 3
+myst_heading_anchors = 4
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'numpy': ('https://numpy.org/doc/stable', None),
     'torch': ('https://pytorch.org/docs/stable/', None),
-    'mmcv': ('https://mmcv.readthedocs.io/en/dev-2.x/', None),
+    'mmcv': ('https://mmcv.readthedocs.io/en/2.x/', None),
     'mmengine': ('https://mmengine.readthedocs.io/en/latest/', None),
     'mmdetection': ('https://mmdetection.readthedocs.io/en/dev-3.x/', None),
 }

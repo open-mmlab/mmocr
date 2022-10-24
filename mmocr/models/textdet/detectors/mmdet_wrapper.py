@@ -137,11 +137,11 @@ class MMDetWrapper(BaseModel):
                     keep_idx.append(poly_idx)
                 # convert by text_repr_type
                 if self.text_repr_type == 'quad':
-                    for i, poly in enumerate(filterd_polygons):
+                    for j, poly in enumerate(filterd_polygons):
                         rect = cv2.minAreaRect(poly)
                         vertices = cv2.boxPoints(rect)
                         poly = vertices.flatten()
-                        filterd_polygons[i] = poly
+                        filterd_polygons[j] = poly
 
                 data_samples[i].pred_instances.polygons = filterd_polygons
                 data_samples[i].pred_instances.scores = torch.FloatTensor(

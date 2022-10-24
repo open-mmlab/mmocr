@@ -187,11 +187,11 @@ Run it with
 docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmocr/data mmocr
 ```
 
-## Dependency on MMCV & MMDetection
+## Dependency on MMEngine, MMCV & MMDetection
 
-MMOCR has different version requirements on MMCV and MMDetection at each release to guarantee the implementation correctness. Please refer to the table below and ensure the package versions fit the requirement.
+MMOCR has different version requirements on MMEngine, MMCV and MMDetection at each release to guarantee the implementation correctness. Please refer to the table below and ensure the package versions fit the requirement.
 
-| MMOCR    | MMCV              | MMDetection        |
-| -------- | ----------------- | ------------------ |
-| dev-1.x  | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
-| 1.0.0rc0 | 2.0.0rc1 \<= mmcv | 3.0.0rc0 \<= mmdet |
+| MMOCR         | MMEngine                    | MMCV                       | MMDetection                 |
+| ------------- | --------------------------- | -------------------------- | --------------------------- |
+| dev-1.x       | 0.1.0 \<= mmengine \< 1.0.0 | 2.0.0rc1 \<= mmcv \< 2.1.0 | 3.0.0rc0 \<= mmdet \< 3.1.0 |
+| 1.0.0rc0, rc1 | 0.0.0 \<= mmengine \< 0.2.0 | 2.0.0rc1 \<= mmcv \< 2.1.0 | 3.0.0rc0 \<= mmdet \< 3.1.0 |

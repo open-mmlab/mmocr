@@ -33,7 +33,7 @@ test_dataset = dict(
 
 train_dataloader = dict(
     batch_size=384,
-    num_workers=32,
+    num_workers=24,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=train_dataset)
@@ -51,3 +51,5 @@ val_dataloader = test_dataloader
 val_evaluator = dict(
     dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
 test_evaluator = val_evaluator
+
+auto_scale_lr = dict(base_batch_size=384)

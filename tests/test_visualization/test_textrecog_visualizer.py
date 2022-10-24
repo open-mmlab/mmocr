@@ -46,7 +46,7 @@ class TestTextDetLocalVisualizer(unittest.TestCase):
                 draw_pred=False)
             self._assert_image_and_shape(out_file, (h * 2, w, 3))
 
-            # draw_gt = True + gt_sample + pred_sample
+            # draw_gt = True
             recog_local_visualizer.add_datasample(
                 'image',
                 image,
@@ -56,7 +56,13 @@ class TestTextDetLocalVisualizer(unittest.TestCase):
                 draw_pred=True)
             self._assert_image_and_shape(out_file, (h * 3, w, 3))
 
-            # draw_gt = False + gt_sample + pred_sample
+            # draw_gt = False
+            recog_local_visualizer.add_datasample(
+                'image', image, data_sample, draw_gt=False, out_file=out_file)
+            self._assert_image_and_shape(out_file, (h * 2, w, 3))
+
+            # gray image
+            image = np.random.randint(0, 256, size=(h, w)).astype('uint8')
             recog_local_visualizer.add_datasample(
                 'image', image, data_sample, draw_gt=False, out_file=out_file)
             self._assert_image_and_shape(out_file, (h * 2, w, 3))
