@@ -18,10 +18,10 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 def truncated_normal_(tensor, mean=0, std=0.02):
     with torch.no_grad():
         size = tensor.size()
-        tmp = tensor.new_empty(size + (4, )).normal_().cuda()
+        tmp = tensor.new_empty(size + (4, )).normal_().to(device)
         valid = (tmp < 2) & (tmp > -2)
         ind = valid.max(-1, keepdim=True)[1]
-        tensor.data.copy_(tmp.gather(-1, ind.cuda()).squeeze(-1))
+        tensor.data.copy_(tmp.gather(-1, ind.to(device)).squeeze(-1))
         tensor.data.mul_(std).add_(mean)
         return tensor
 
