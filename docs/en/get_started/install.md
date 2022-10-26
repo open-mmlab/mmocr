@@ -121,7 +121,7 @@ python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --show
 Also can run the following codes in your Python interpreter:
 
 ```python
-from mmocr.utils.ocr import MMOCR
+from mmocr.ocr import MMOCR
 ocr = MMOCR(recog='CRNN', det='DB_r18')
 ocr.readtext('demo_text_ocr.jpg', show=True)
 ```
