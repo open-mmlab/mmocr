@@ -1,5 +1,5 @@
 data_root = './data/wildreceipt'
-cache_path = './data/.cache'
+cache_path = './data/cache'
 
 data_obtainer = dict(
     type='NaiveDataObtainer',
@@ -25,8 +25,8 @@ data_converter = dict(
     type='WildReceiptConverter',
     splits=['train', 'test'],
     data_root=data_root,
-    gather=dict(
+    gatherer=dict(
         type='mono_gather', mapping="f'{split}.txt'", ann_path=data_root),
-    parser=dict(type='WildreceiptKIEParser', data_root=data_root),
+    parser=dict(type='WildreceiptKIEAnnParser', data_root=data_root),
     dumper=dict(type='WildreceiptOpensetDumper'),
     delete=['wildreceipt'])

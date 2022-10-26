@@ -1,18 +1,28 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Dict, List, Tuple
 
-from ..data_preparer import DATA_PARSER
+from ..data_preparer import DATA_PARSERS
 from .base import BaseParser
-from .loaders import txt_loader
 
 
-@DATA_PARSER.register_module()
-class ICDAR2015TextDetParser(BaseParser):
+@DATA_PARSERS.register_module()
+class ICDAR2015TextDetAnnParser(BaseParser):
     """ICDAR2015 Text Detection Parser.
 
     The original annotation format of this dataset is stored in txt files,
-    which is formed as the following format: x1, y1, x2, y2, x3, y3, x4, y4,
-    transcription
+    which is formed as the following format:
+        x1, y1, x2, y2, x3, y3, x4, y4, transcription
+
+    Args:
+        separator (str): The separator between each element in a line. Defaults
+            to ','.
+        ignore (str): The text to be ignored. Defaults to '###'.
+        format (str): The format of the annotation. Defaults to
+            'x1,y1,x2,y2,x3,y3,x4,trans'.
+        encoding (str): The encoding of the annotation file. Defaults to
+            'utf-8-sig'.
+        nproc (int): The number of processes to parse the annotation. Defaults
+            to 1.
     """
 
     def __init__(self,
@@ -31,7 +41,8 @@ class ICDAR2015TextDetParser(BaseParser):
         """Parse single annotation."""
         img_file, txt_file = file
         instances = list()
-        for anno in txt_loader(txt_file, self.sep, self.format, self.encoding):
+        for anno in self.loader(txt_file, self.sep, self.format,
+                                self.encoding):
             anno = list(anno.values())
             poly = list(map(float, anno[0:-1]))
             text = anno[-1]
@@ -41,12 +52,23 @@ class ICDAR2015TextDetParser(BaseParser):
         return img_file, instances
 
 
-@DATA_PARSER.register_module()
-class ICDAR2015TextRecogParser(BaseParser):
+@DATA_PARSERS.register_module()
+class ICDAR2015TextRecogAnnParser(BaseParser):
     """ICDAR2015 Text Detection Parser.
 
     The original annotation format of this dataset is stored in txt files,
-    which is formed as the following format: img_path, transcription
+    which is formed as the following format:
+        img_path, transcription
+
+    Args:
+        separator (str): The separator between each element in a line. Defaults
+            to ','.
+        ignore (str): The text to be ignored. Defaults to '#'.
+        format (str): The format of the annotation. Defaults to 'img, text'.
+        encoding (str): The encoding of the annotation file. Defaults to
+            'utf-8-sig'.
+        nproc (int): The number of processes to parse the annotation. Defaults
+            to 1.
     """
 
     def __init__(self,
@@ -65,7 +87,7 @@ class ICDAR2015TextRecogParser(BaseParser):
         """Parse annotations."""
         assert isinstance(files, str)
         samples = list()
-        for anno in txt_loader(
+        for anno in self.loader(
                 file_path=files, format=self.format, encoding=self.encoding):
             text = anno['text'].strip().replace('"', '')
             samples.append((anno['img'], text))

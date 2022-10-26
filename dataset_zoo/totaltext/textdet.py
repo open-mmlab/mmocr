@@ -1,5 +1,5 @@
 data_root = './data/totaltext'
-cache_path = './data/.cache'
+cache_path = './data/cache'
 
 data_obtainer = dict(
     type='NaiveDataObtainer',
@@ -30,10 +30,10 @@ data_converter = dict(
     type='TextDetDataConverter',
     splits=['train', 'test'],
     data_root=data_root,
-    gather=dict(
+    gatherer=dict(
         type='pair_gather',
         suffixes=['.jpg', '.JPG'],
         rule=[r'img(\d+)\.([jJ][pP][gG])', r'poly_gt_img\1.txt']),
-    parser=dict(type='TotaltextTextDetParser', data_root=data_root),
+    parser=dict(type='TotaltextTextDetAnnParser', data_root=data_root),
     dumper=dict(type='JsonDumper'),
     delete=['totaltext', 'txt_format', 'annotations'])

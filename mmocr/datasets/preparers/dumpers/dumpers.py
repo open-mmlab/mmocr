@@ -5,10 +5,10 @@ from typing import List
 import mmengine
 
 from mmocr.utils import list_to_file
-from ..data_preparer import DATA_DUMPER
+from ..data_preparer import DATA_DUMPERS
 
 
-@DATA_DUMPER.register_module()
+@DATA_DUMPERS.register_module()
 class JsonDumper:
 
     def __init__(self, task: str) -> None:
@@ -20,7 +20,7 @@ class JsonDumper:
         mmengine.dump(data, dst_file)
 
 
-@DATA_DUMPER.register_module()
+@DATA_DUMPERS.register_module()
 class WildreceiptOpensetDumper:
 
     def __init__(self, task: str) -> None:

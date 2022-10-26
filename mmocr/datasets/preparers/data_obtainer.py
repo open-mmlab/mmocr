@@ -8,13 +8,13 @@ from typing import Dict, List, Optional, Tuple
 
 from mmengine import mkdir_or_exist
 
-from mmocr.utils import check_integrity, iszip
-from .data_preparer import DATA_OBTAINER
+from mmocr.utils import check_integrity, is_archive
+from .data_preparer import DATA_OBTAINERS
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
-@DATA_OBTAINER.register_module()
+@DATA_OBTAINERS.register_module()
 class NaiveDataObtainer:
     """A naive pipeline for obtaining dataset.
 
@@ -93,7 +93,7 @@ class NaiveDataObtainer:
                 to False.
         """
 
-        if not iszip(src_path):
+        if not is_archive(src_path):
             # Move the file to the destination folder if it is not a zip
             shutil.move(src_path, dst_path)
             return

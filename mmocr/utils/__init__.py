@@ -6,7 +6,7 @@ from .check_argument import (equal_len, is_2dlist, is_3dlist, is_none_or_type,
                              is_type_list, valid_boundary)
 from .collect_env import collect_env
 from .data_converter_utils import dump_ocr_data, recog_anno_to_imginfo
-from .fileio import (check_integrity, iszip, list_from_file, list_to_file,
+from .fileio import (check_integrity, is_archive, list_from_file, list_to_file,
                      retrieve_files)
 from .img_utils import crop_img, warp_img
 from .mask_utils import fill_hole
@@ -41,6 +41,6 @@ __all__ = [
     'ConfigType', 'DetSampleList', 'RecForwardResults', 'InitConfigType',
     'OptConfigType', 'OptDetSampleList', 'OptInitConfigType', 'OptMultiConfig',
     'OptRecSampleList', 'RecSampleList', 'MultiConfig', 'OptTensor',
-    'ColorType', 'OptKIESampleList', 'KIESampleList', 'iszip',
+    'ColorType', 'OptKIESampleList', 'KIESampleList', 'is_archive',
     'check_integrity', 'retrieve_files'
 ]

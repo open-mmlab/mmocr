@@ -5,10 +5,10 @@ import time
 from mmengine import Registry
 from mmengine.config import Config
 
-DATA_OBTAINER = Registry('data_obtainer')
-DATA_CONVERTER = Registry('data_converter')
-DATA_PARSER = Registry('data_parser')
-DATA_DUMPER = Registry('data_dumper')
+DATA_OBTAINERS = Registry('data_obtainer')
+DATA_CONVERTERS = Registry('data_converter')
+DATA_PARSERS = Registry('data_parser')
+DATA_DUMPERS = Registry('data_dumper')
 
 
 class DatasetPreparer:
@@ -93,19 +93,17 @@ class DatasetPreparer:
         cfg = Config.fromfile(osp.join(cfg_path, self.task + '.py'))
 
         if 'data_obtainer' in cfg:
-            self.data_obtainer = DATA_OBTAINER.build(cfg.data_obtainer)
+            self.data_obtainer = DATA_OBTAINERS.build(cfg.data_obtainer)
         if 'data_converter' in cfg:
             cfg.data_converter.update(dict(nproc=self.nproc))
-            self.data_converter = DATA_CONVERTER.build(cfg.data_converter)
+            self.data_converter = DATA_CONVERTERS.build(cfg.data_converter)
 
     @property
     def with_obtainer(self) -> bool:
         """bool: whether the data preparer has an obtainer"""
-        return hasattr(self,
-                       'data_obtainer') and self.data_obtainer is not None
+        return getattr(self, 'data_obtainer', None) is not None
 
     @property
     def with_processor(self) -> bool:
         """bool: whether the data preparer has an obtainer"""
-        return hasattr(self,
-                       'data_converter') and self.data_converter is not None
+        return getattr(self, 'data_converter', None) is not None

@@ -11,7 +11,7 @@ import mmcv
 from mmengine import mkdir_or_exist, track_parallel_progress
 
 from mmocr.utils import bbox2poly, crop_img, poly2bbox, retrieve_files
-from .data_preparer import DATA_CONVERTER, DATA_DUMPER, DATA_PARSER
+from .data_preparer import DATA_CONVERTERS, DATA_DUMPERS, DATA_PARSERS
 
 
 class BaseDataConverter:
@@ -20,7 +20,7 @@ class BaseDataConverter:
     Args:
         splits (List): A list of splits to be processed.
         data_root (str): Path to the data root.
-        gather (Dict): Config dict for gathering the dataset files.
+        gatherer (Dict): Config dict for gathering the dataset files.
         parser (Dict): Config dict for parsing the dataset files.
         dumper (Dict): Config dict for dumping the dataset files.
         nproc (int): Number of processes to process the data.
@@ -32,7 +32,7 @@ class BaseDataConverter:
     def __init__(self,
                  splits: List,
                  data_root: str,
-                 gather: Dict,
+                 gatherer: Dict,
                  parser: Dict,
                  dumper: Dict,
                  nproc: int,
@@ -47,14 +47,14 @@ class BaseDataConverter:
         self.delete = delete
         parser.update(dict(nproc=nproc))
         dumper.update(dict(task=task))
-        self.parser = DATA_PARSER.build(parser)
-        self.dumper = DATA_DUMPER.build(dumper)
-        gather_type = gather.pop('type')
-        self.gather_args = gather
+        self.parser = DATA_PARSERS.build(parser)
+        self.dumper = DATA_DUMPERS.build(dumper)
+        gather_type = gatherer.pop('type')
+        self.gatherer_args = gatherer
         if gather_type == 'pair_gather':
-            self.gather = self.pair_gather
+            self.gatherer = self.pair_gather
         elif gather_type == 'mono_gather':
-            self.gather = self.mono_gather
+            self.gatherer = self.mono_gather
         else:
             raise NotImplementedError
 
@@ -66,10 +66,10 @@ class BaseDataConverter:
             # Gather the info such as file names required by parser
             img_path = osp.join(self.data_root, 'imgs', split)
             ann_path = osp.join(self.data_root, 'annotations')
-            gather_args = dict(
+            gatherer_args = dict(
                 img_path=img_path, ann_path=ann_path, split=split)
-            gather_args.update(self.gather_args)
-            files = self.gather(**gather_args)
+            gatherer_args.update(self.gatherer_args)
+            files = self.gatherer(**gatherer_args)
             # Convert dataset annotations to MMOCR format
             samples = self.parser.parse_files(files, split)
             print(f'Packing {split} annotations...')
@@ -107,7 +107,7 @@ class BaseDataConverter:
 
     def mono_gather(self, ann_path: str, mapping: str, split: str,
                     **kwargs) -> str:
-        """Gathering the dataset file. Specifically for the case that only one
+        """Gather the dataset file. Specifically for the case that only one
         annotation file is needed. For example,
 
             img_001.jpg \
@@ -127,22 +127,26 @@ class BaseDataConverter:
 
         return osp.join(ann_path, eval(mapping))
 
-    def pair_gather(self, img_path, suffixes, rule: Sequence,
+    def pair_gather(self, img_path: str, suffixes: List, rule: Sequence,
                     **kwargs) -> List[Tuple]:
-        """Gathering the dataset files. Specifically for the paired
-        annotations. That is to say, each image has a corresponding annotation
-        file. For example,
+        """Gather the dataset files. Specifically for the paired annotations.
+        That is to say, each image has a corresponding annotation file. For
+        example,
 
-            img_001.jpg <---> gt_img_001.txt
-            img_002.jpg <---> gt_img_002.txt
-            img_003.jpg <---> gt_img_003.txt
+            img_1.jpg <---> gt_img_1.txt
+            img_2.jpg <---> gt_img_2.txt
+            img_3.jpg <---> gt_img_3.txt
 
         Args:
             img_path (str): Path to the images.
             suffixes (List[str]): File suffixes that used for searching.
             rule (Sequence): The rule for pairing the files. The
                     first element is the matching pattern for the file, and the
-                    second element is the replacement pattern.
+                    second element is the replacement pattern, which should
+                    be a regular expression. For example, to map the image
+                    name img_1.jpg to the annotation name gt_img_1.txt,
+                    the rule is
+                        [r'img_(\d+)\.([jJ][pP][gG])', r'gt_img_\1.txt'] # noqa: W605 E501
 
         Returns:
             List[Tuple]: A list of tuples (img_path, ann_path).
@@ -163,14 +167,14 @@ class BaseDataConverter:
                 shutil.rmtree(delete_file)
 
 
-@DATA_CONVERTER.register_module()
+@DATA_CONVERTERS.register_module()
 class TextDetDataConverter(BaseDataConverter):
     """Text detection data converter.
 
     Args:
         splits (List): A list of splits to be processed.
         data_root (str): Path to the data root.
-        gather (Dict): Config dict for gathering the dataset files.
+        gatherer (Dict): Config dict for gathering the dataset files.
         parser (Dict): Config dict for parsing the dataset files.
         dumper (Dict): Config dict for dumping the dataset files.
         nproc (int): Number of processes to process the data.
@@ -181,7 +185,7 @@ class TextDetDataConverter(BaseDataConverter):
     def __init__(self,
                  splits: List,
                  data_root: str,
-                 gather: Dict,
+                 gatherer: Dict,
                  parser: Dict,
                  dumper: Dict,
                  nproc: int,
@@ -189,7 +193,7 @@ class TextDetDataConverter(BaseDataConverter):
         super().__init__(
             splits=splits,
             data_root=data_root,
-            gather=gather,
+            gatherer=gatherer,
             parser=parser,
             dumper=dumper,
             nproc=nproc,
@@ -203,13 +207,13 @@ class TextDetDataConverter(BaseDataConverter):
         """Pack the parsed annotation info to an MMOCR format instance.
 
         Args:
-            sample (Tuple): A tuple of (img_file, ann_file).
-               - img_path (str): Path to image file.
+            sample (Tuple): A tuple of (img_file, instances).
+               - img_path (str): Path to the image file.
                - instances (Sequence[Dict]): A list of converted annos. Each
                     element should be a dict with the following keys:
                         - 'poly' or 'box'
-                        - ignore
-                        - bbox_label (optional)
+                        - 'ignore'
+                        - 'bbox_label' (optional)
             split (str): The split of the instance.
 
         Returns:
@@ -236,7 +240,7 @@ class TextDetDataConverter(BaseDataConverter):
 
         packed_instances = dict(
             instances=packed_instances,
-            img_path=img_path.replace(self.data_root, ''),
+            img_path=img_path.replace(self.data_root + '/', ''),
             height=h,
             width=w)
 
@@ -257,14 +261,14 @@ class TextDetDataConverter(BaseDataConverter):
         return meta
 
 
-@DATA_CONVERTER.register_module()
+@DATA_CONVERTERS.register_module()
 class TextSpottingDataConverter(BaseDataConverter):
     """Text spotting data converter.
 
     Args:
         splits (List): A list of splits to be processed.
         data_root (str): Path to the data root.
-        gather (Dict): Config dict for gathering the dataset files.
+        gatherer (Dict): Config dict for gathering the dataset files.
         parser (Dict): Config dict for parsing the dataset files.
         dumper (Dict): Config dict for dumping the dataset files.
         nproc (int): Number of processes to process the data.
@@ -275,7 +279,7 @@ class TextSpottingDataConverter(BaseDataConverter):
     def __init__(self,
                  splits: List,
                  data_root: str,
-                 gather: Dict,
+                 gatherer: Dict,
                  parser: Dict,
                  dumper: Dict,
                  nproc: int,
@@ -283,7 +287,7 @@ class TextSpottingDataConverter(BaseDataConverter):
         super().__init__(
             splits=splits,
             data_root=data_root,
-            gather=gather,
+            gatherer=gatherer,
             parser=parser,
             dumper=dumper,
             nproc=nproc,
@@ -302,8 +306,9 @@ class TextSpottingDataConverter(BaseDataConverter):
                - instances (Sequence[Dict]): A list of converted annos. Each
                     element should be a dict with the following keys:
                         - 'poly' or 'box'
-                        - ignore
-                        - bbox_label (optional)
+                        - 'text'
+                        - 'ignore'
+                        - 'bbox_label' (optional)
             split (str): The split of the instance.
 
         Returns:
@@ -350,14 +355,14 @@ class TextSpottingDataConverter(BaseDataConverter):
         return meta
 
 
-@DATA_CONVERTER.register_module()
+@DATA_CONVERTERS.register_module()
 class TextRecogDataConverter(BaseDataConverter):
     """Text recognition data converter.
 
     Args:
         splits (List): A list of splits to be processed.
         data_root (str): Path to the data root.
-        gather (Dict): Config dict for gathering the dataset files.
+        gatherer (Dict): Config dict for gathering the dataset files.
         parser (Dict): Config dict for parsing the dataset annotations.
         dumper (Dict): Config dict for dumping the dataset files.
         nproc (int): Number of processes to process the data.
@@ -368,7 +373,7 @@ class TextRecogDataConverter(BaseDataConverter):
     def __init__(self,
                  splits: List,
                  data_root: str,
-                 gather: Dict,
+                 gatherer: Dict,
                  parser: Dict,
                  dumper: Dict,
                  nproc: int,
@@ -376,7 +381,7 @@ class TextRecogDataConverter(BaseDataConverter):
         super().__init__(
             splits=splits,
             data_root=data_root,
-            gather=gather,
+            gatherer=gatherer,
             parser=parser,
             dumper=dumper,
             nproc=nproc,
@@ -418,7 +423,7 @@ class TextRecogDataConverter(BaseDataConverter):
         return meta
 
 
-@DATA_CONVERTER.register_module()
+@DATA_CONVERTERS.register_module()
 class TextRecogCropConverter(TextRecogDataConverter):
     """Text recognition crop converter. This converter will crop the text from
     the original image. The parser used for this Converter should be a TextDet
@@ -427,7 +432,7 @@ class TextRecogCropConverter(TextRecogDataConverter):
     Args:
         splits (List): A list of splits to be processed.
         data_root (str): Path to the data root.
-        gather (Dict): Config dict for gathering the dataset files.
+        gatherer (Dict): Config dict for gathering the dataset files.
         parser (Dict): Config dict for parsing the dataset annotations.
         dumper (Dict): Config dict for dumping the dataset files.
         nproc (int): Number of processes to process the data.
@@ -444,7 +449,7 @@ class TextRecogCropConverter(TextRecogDataConverter):
     def __init__(self,
                  splits: List,
                  data_root: str,
-                 gather: Dict,
+                 gatherer: Dict,
                  parser: Dict,
                  dumper: Dict,
                  nproc: int,
@@ -455,7 +460,7 @@ class TextRecogCropConverter(TextRecogDataConverter):
         super().__init__(
             splits=splits,
             data_root=data_root,
-            gather=gather,
+            gatherer=gatherer,
             parser=parser,
             dumper=dumper,
             nproc=nproc,
@@ -507,7 +512,7 @@ class TextRecogCropConverter(TextRecogDataConverter):
         return data_list
 
 
-@DATA_CONVERTER.register_module()
+@DATA_CONVERTERS.register_module()
 class WildReceiptConverter(BaseDataConverter):
     """MMOCR only supports wildreceipt dataset for KIE task now. This converter
     converts the wildreceipt dataset from close set to open set.
@@ -515,7 +520,7 @@ class WildReceiptConverter(BaseDataConverter):
     Args:
         splits (List): A list of splits to be processed.
         data_root (str): Path to the data root.
-        gather (Dict): Config dict for gathering the dataset files.
+        gatherer (Dict): Config dict for gathering the dataset files.
         parser (Dict): Config dict for parsing the dataset annotations.
         dumper (Dict): Config dict for dumping the dataset files.
         nproc (int): Number of processes to process the data.
@@ -530,7 +535,7 @@ class WildReceiptConverter(BaseDataConverter):
     def __init__(self,
                  splits: List,
                  data_root: str,
-                 gather: Dict,
+                 gatherer: Dict,
                  parser: Dict,
                  dumper: Dict,
                  nproc: int,
@@ -545,12 +550,16 @@ class WildReceiptConverter(BaseDataConverter):
         super().__init__(
             splits=splits,
             data_root=data_root,
-            gather=gather,
+            gatherer=gatherer,
             parser=parser,
             dumper=dumper,
             nproc=nproc,
             task='kie',
             delete=delete)
+
+    def add_meta(self, samples: List) -> List:
+        """No meta info is required for the wildreceipt dataset."""
+        return samples
 
     def pack_instance(self, sample: str, split: str):
         """Pack line-json str of close set to line-json str of open set.

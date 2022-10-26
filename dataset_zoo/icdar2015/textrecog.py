@@ -1,5 +1,5 @@
 data_root = './data/icdar2015'
-cache_path = './data/.cache'
+cache_path = './data/cache'
 
 data_obtainer = dict(
     type='NaiveDataObtainer',
@@ -37,6 +37,6 @@ data_converter = dict(
     type='TextRecogDataConverter',
     splits=['train', 'test'],
     data_root=data_root,
-    gather=dict(type='mono_gather', mapping="f'{split}.txt'"),
-    parser=dict(type='ICDAR2015TextRecogParser'),
+    gatherer=dict(type='mono_gather', mapping="f'{split}.txt'"),
+    parser=dict(type='ICDAR2015TextRecogAnnParser'),
     dumper=dict(type='JsonDumper'))

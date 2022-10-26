@@ -1,5 +1,5 @@
 data_root = './data/icdar2015'
-cache_path = './data/.cache'
+cache_path = './data/cache'
 
 data_obtainer = dict(
     type='NaiveDataObtainer',
@@ -42,10 +42,10 @@ data_converter = dict(
     type='TextDetDataConverter',
     splits=['train', 'test'],
     data_root=data_root,
-    gather=dict(
+    gatherer=dict(
         type='pair_gather',
         suffixes=['.jpg', '.JPG'],
         rule=[r'img_(\d+)\.([jJ][pP][gG])', r'gt_img_\1.txt']),
-    parser=dict(type='ICDAR2015TextDetParser'),
+    parser=dict(type='ICDAR2015TextDetAnnParser'),
     dumper=dict(type='JsonDumper'),
     delete=['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img'])

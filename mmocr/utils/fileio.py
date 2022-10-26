@@ -42,14 +42,14 @@ def list_from_file(filename, encoding='utf-8'):
     return item_list
 
 
-def iszip(file_path: str) -> bool:
-    """Check whether the file is a supported zip format.
+def is_archive(file_path: str) -> bool:
+    """Check whether the file is a supported archive format.
 
     Args:
         file_path (str): Path to the file.
 
     Returns:
-        bool: Whether the file is a zip.
+        bool: Whether the file is an archive.
     """
 
     suffixes = ['zip', 'tar', 'tar.gz']

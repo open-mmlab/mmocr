@@ -4,12 +4,12 @@ import os.path as osp
 from typing import Dict, Tuple
 
 from mmocr.utils import list_from_file
-from ..data_preparer import DATA_PARSER
+from ..data_preparer import DATA_PARSERS
 from .base import BaseParser
 
 
-@DATA_PARSER.register_module()
-class WildreceiptTextDetParser(BaseParser):
+@DATA_PARSERS.register_module()
+class WildreceiptTextDetAnnParser(BaseParser):
     """Wildreceipt Text Detection Parser.
 
     The original annotation format of this dataset is stored in txt files,
@@ -22,6 +22,12 @@ class WildreceiptTextDetParser(BaseParser):
             "text": "xxx",
             "label": 25,
         ]}
+
+    Args:
+        data_root (str): The root path of the dataset.
+        ignore (int): The label to be ignored. Defaults to 0.
+        nproc (int): The number of processes to parse the annotation. Defaults
+            to 1.
     """
 
     def __init__(self,
@@ -50,8 +56,8 @@ class WildreceiptTextDetParser(BaseParser):
         return samples
 
 
-@DATA_PARSER.register_module()
-class WildreceiptKIEParser(BaseParser):
+@DATA_PARSERS.register_module()
+class WildreceiptKIEAnnParser(BaseParser):
     """Wildreceipt KIE Parser.
 
     The original annotation format of this dataset is stored in txt files,
@@ -64,6 +70,12 @@ class WildreceiptKIEParser(BaseParser):
             "text": "xxx",
             "label": 25,
         ]}
+
+    Args:
+        data_root (str): The root path of the dataset.
+        ignore (int): The label to be ignored. Defaults to 0.
+        nproc (int): The number of processes to parse the annotation. Defaults
+            to 1.
     """
 
     def __init__(self,
