@@ -37,8 +37,16 @@ class IcdarDataset(CocoDataset):
         assert ann_file_backend in ['disk', 'petrel', 'http']
         self.ann_file_backend = ann_file_backend
 
-        super().__init__(ann_file, pipeline, classes, data_root, img_prefix,
-                         seg_prefix, proposal_file, test_mode, filter_empty_gt)
+        super().__init__(
+            ann_file=ann_file,
+            pipeline=pipeline,
+            classes=classes,
+            data_root=data_root,
+            img_prefix=img_prefix,
+            seg_prefix=seg_prefix,
+            proposal_file=proposal_file,
+            test_mode=test_mode,
+            filter_empty_gt=filter_empty_gt)
 
         # Set dummy flags just to be compatible with MMDet
         self.flag = np.zeros(len(self), dtype=np.uint8)
