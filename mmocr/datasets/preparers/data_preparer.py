@@ -17,11 +17,12 @@ class DatasetPreparer:
     Dataset preparer is used to prepare dataset for MMOCR. It mainly consists
     of two steps:
 
-      1. Obtaining the dataset
+      1. Obtain the dataset
             - Download
             - Extract
             - Move/Rename
       2. Process the dataset
+            - Parse original annotations
             - Convert to mmocr format
             - Dump the annotation file
             - Clean useless files
@@ -55,7 +56,7 @@ class DatasetPreparer:
         """Prepare the dataset."""
         if self.with_obtainer:
             self.data_obtainer()
-        if self.with_processor:
+        if self.with_converter:
             self.data_converter()
 
     def parse_meta(self, cfg_path: str) -> None:
@@ -64,7 +65,10 @@ class DatasetPreparer:
         Args:
             cfg_path (str): Path to meta file.
         """
-        meta = Config.fromfile(osp.join(cfg_path, 'metafile.yml'))
+        try:
+            meta = Config.fromfile(osp.join(cfg_path, 'metafile.yml'))
+        except FileNotFoundError:
+            return
         assert self.task in meta['Data']['Tasks'], \
             f'Task {self.task} not supported!'
         # License related
@@ -104,6 +108,6 @@ class DatasetPreparer:
         return getattr(self, 'data_obtainer', None) is not None
 
     @property
-    def with_processor(self) -> bool:
-        """bool: whether the data preparer has an obtainer"""
+    def with_converter(self) -> bool:
+        """bool: whether the data preparer has an converter"""
         return getattr(self, 'data_converter', None) is not None

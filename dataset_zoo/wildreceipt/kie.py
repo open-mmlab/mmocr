@@ -1,5 +1,5 @@
-data_root = './data/wildreceipt'
-cache_path = './data/cache'
+data_root = 'data/wildreceipt'
+cache_path = 'data/cache'
 
 data_obtainer = dict(
     type='NaiveDataObtainer',
