@@ -27,3 +27,10 @@ Data:
   License:
     Type: N/A
     Link: N/A
+  Format:
+    - "{'file_name': 'xxx/xxx/xx/xxxx.jpeg', 'height': 1200, 'width': 1600,
+        'annotations': [
+            'box': [x1, y1, x2, y2, x3, y3, x4, y4],
+            'text': 'xxx',
+            'label': 25,
+        ]}"

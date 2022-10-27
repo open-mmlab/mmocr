@@ -27,3 +27,5 @@ Data:
   License:
     Type: BSD-3
     Link: https://github.com/cs-chan/Total-Text-Dataset/blob/master/LICENSE
+  Format:
+    - "x: [[x1 x2 x3 ... xn]], y: [[y1 y2 y3 ... yn]], ornt: [u'c'], transcriptions: [u'transcription']"

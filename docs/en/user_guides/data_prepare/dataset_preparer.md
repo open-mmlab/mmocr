@@ -28,13 +28,7 @@ Also, the script supports preparing multiple datasets at the same time. For exam
 python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task textrecog
 ```
 
-The following table shows the supported datasets.
-
-| Dataset Name | Text Detection | Text Recognition | Text Spotting | KIE |
-| ------------ | -------------- | ---------------- | ------------- | --- |
-| icdar2015    | ✓              | ✓                | ✓             |     |
-| totaltext    | ✓              | ✓                | ✓             |     |
-| wildreceipt  | ✓              | ✓                | ✓             | ✓   |
+To check the supported datasets in MMOCR, please refer to [Dataset Zoo](./datasetzoo.md).
 
 ## Advanced Usage
 
@@ -58,6 +52,45 @@ dataset_zoo/
 ```
 
 `metafile.yml` is the metafile of the dataset, which contains the basic information of the dataset, including the year of publication, the author of the paper, and other information such as license. The other files named by the task are the configuration files of the dataset preparer, which are used to configure the download, decompression, format conversion, etc. of the dataset. These configs are in Python format, and their usage is completely consistent with the configuration files in MMOCR repo. See [Configuration File Documentation](../config.md) for detailed usage.
+
+#### Metafile
+
+Take the ICDAR2015 dataset as an example, the `metafile.yml` stores the basic information of the dataset:
+
+```yaml
+Name: 'Incidental Scene Text IC15'
+Paper:
+  Title: ICDAR 2015 Competition on Robust Reading
+  URL: https://rrc.cvc.uab.es/files/short_rrc_2015.pdf
+  Venue: ICDAR
+  Year: '2015'
+  BibTeX: '@inproceedings{karatzas2015icdar,
+  title={ICDAR 2015 competition on robust reading},
+  author={Karatzas, Dimosthenis and Gomez-Bigorda, Lluis and Nicolaou, Anguelos and Ghosh, Suman and Bagdanov, Andrew and Iwamura, Masakazu and Matas, Jiri and Neumann, Lukas and Chandrasekhar, Vijay Ramaseshan and Lu, Shijian and others},
+  booktitle={2015 13th international conference on document analysis and recognition (ICDAR)},
+  pages={1156--1160},
+  year={2015},
+  organization={IEEE}}'
+Data:
+  Website: https://rrc.cvc.uab.es/?ch=4
+  Language:
+    - English
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Tasks:
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: CC BY 4.0
+    Link: https://creativecommons.org/licenses/by/4.0/
+```
+
+It is not mandatory to use the metafile in the dataset preparation process (so users can ignore this file when prepare private datasets), but in order to better understand the information of each public dataset, we recommend that users read the metafile before before preparing the dataset, which will help to understand whether the datasets meet their needs.
+
+#### Config of Dataset Preparer
 
 Next, we will introduce the conventional fields and usage of the dataset preparer configuration files.
 

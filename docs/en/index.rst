@@ -51,6 +51,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :maxdepth: 2
    :caption: Dataset Zoo
 
+   user_guides/data_prepare/datasetzoo.md
    user_guides/data_prepare/dataset_preparer.md
    user_guides/data_prepare/det.md
    user_guides/data_prepare/recog.md

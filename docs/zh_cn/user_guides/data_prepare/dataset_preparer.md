@@ -28,13 +28,7 @@ python tools/dataset_converters/prepare_dataset.py icdar2015 --task textdet
 python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task textrecog
 ```
 
-下表展示了目前支持一键下载及格式转换的数据集。
-
-| 数据集名称  | 文本检测任务 | 文本识别任务 | 端到端文本检测识别任务 | 关键信息抽取任务 |
-| ----------- | ------------ | ------------ | ---------------------- | ---------------- |
-| icdar2015   | ✓            | ✓            | ✓                      |                  |
-| totaltext   | ✓            | ✓            | ✓                      |                  |
-| wildreceipt | ✓            | ✓            | ✓                      | ✓                |
+进一步了解 MMOCR 支持的数据集，您可以浏览[支持的数据集文档](./datasetzoo.md)
 
 ## 进阶用法
 
@@ -59,7 +53,46 @@ dataset_zoo/
 
 其中，`metafile.yml` 是数据集的元信息文件，其中存放了对应数据集的基本信息，包括发布年份，论文作者，以及版权等其他信息。其它以任务名命名的则是数据集准备脚本的配置文件，用于配置数据集的下载、解压、格式转换等操作。这些配置文件采用了 Python 格式，其使用方法与 MMOCR 算法库的其他配置文件完全一致，详见[配置文件文档](../config.md)。
 
-下面，我们将介绍数据集准备脚本配置文件的默认字段与使用方法。
+#### 数据集元文件
+
+以数据集 ICDAR2015 为例，`metafile.yml` 中存储了基础的数据集信息：
+
+```yaml
+Name: 'Incidental Scene Text IC15'
+Paper:
+  Title: ICDAR 2015 Competition on Robust Reading
+  URL: https://rrc.cvc.uab.es/files/short_rrc_2015.pdf
+  Venue: ICDAR
+  Year: '2015'
+  BibTeX: '@inproceedings{karatzas2015icdar,
+  title={ICDAR 2015 competition on robust reading},
+  author={Karatzas, Dimosthenis and Gomez-Bigorda, Lluis and Nicolaou, Anguelos and Ghosh, Suman and Bagdanov, Andrew and Iwamura, Masakazu and Matas, Jiri and Neumann, Lukas and Chandrasekhar, Vijay Ramaseshan and Lu, Shijian and others},
+  booktitle={2015 13th international conference on document analysis and recognition (ICDAR)},
+  pages={1156--1160},
+  year={2015},
+  organization={IEEE}}'
+Data:
+  Website: https://rrc.cvc.uab.es/?ch=4
+  Language:
+    - English
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Tasks:
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: CC BY 4.0
+    Link: https://creativecommons.org/licenses/by/4.0/
+```
+
+该文件在数据集准备过程中并不是强制要求的（因此用户在使用添加自己的私有数据集时可以忽略该文件），但为了用户更好地了解各个公开数据集的信息，我们建议用户在使用数据集准备脚本前阅读对应的元文件信息，以了解该数据集的特征是否符合用户需求。
+
+#### 数据集准备脚本配置文件
+
+下面，我们将介绍数据集准备脚本配置文件 `textXXX.py` 的默认字段与使用方法。
 
 我们在配置文件中提供了 `data_root` 与 `cache_path` 两个默认字段，分别用于存放转换后的 MMOCR 格式的数据集文件，以及在数据准备过程中下载的压缩包等临时文件。
 

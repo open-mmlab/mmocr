@@ -173,6 +173,7 @@ intersphinx_mapping = {
 def builder_inited_handler(app):
     subprocess.run(['./merge_docs.sh'])
     subprocess.run(['./stats.py'])
+    subprocess.run(['./dataset_zoo.py'])
 
 
 def setup(app):
