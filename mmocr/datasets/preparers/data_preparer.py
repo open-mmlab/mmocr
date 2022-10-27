@@ -55,8 +55,10 @@ class DatasetPreparer:
     def __call__(self):
         """Prepare the dataset."""
         if self.with_obtainer:
+            print('Obtain Dataset...')
             self.data_obtainer()
         if self.with_converter:
+            print('Convert Dataset...')
             self.data_converter()
 
     def parse_meta(self, cfg_path: str) -> None:

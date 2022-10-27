@@ -211,9 +211,9 @@ class TextDetDataConverter(BaseDataConverter):
                - img_path (str): Path to the image file.
                - instances (Sequence[Dict]): A list of converted annos. Each
                     element should be a dict with the following keys:
-                        - 'poly' or 'box'
-                        - 'ignore'
-                        - 'bbox_label' (optional)
+                    - 'poly' or 'box'
+                    - 'ignore'
+                    - 'bbox_label' (optional)
             split (str): The split of the instance.
 
         Returns:
@@ -273,7 +273,7 @@ class TextSpottingDataConverter(BaseDataConverter):
         dumper (Dict): Config dict for dumping the dataset files.
         nproc (int): Number of processes to process the data.
         delete (Optional[List]): A list of files to be deleted after
-            conversion. Defaults to ['annotations].
+            conversion. Defaults to ['annotations'].
     """
 
     def __init__(self,
@@ -305,10 +305,10 @@ class TextSpottingDataConverter(BaseDataConverter):
                - img_path (str): Path to image file.
                - instances (Sequence[Dict]): A list of converted annos. Each
                     element should be a dict with the following keys:
-                        - 'poly' or 'box'
-                        - 'text'
-                        - 'ignore'
-                        - 'bbox_label' (optional)
+                    - 'poly' or 'box'
+                    - 'text'
+                    - 'ignore'
+                    - 'bbox_label' (optional)
             split (str): The split of the instance.
 
         Returns:
@@ -399,14 +399,11 @@ class TextRecogDataConverter(BaseDataConverter):
             Dict: The packed instance.
         """
 
-        def pack(img_name: str, text: str, split: str) -> Dict:
-            return dict(
-                instances=[dict(text=text)],
-                img_path=osp.join(split, img_name))
-
         img_name, text = sample
+        packed_instance = dict(
+            instances=[dict(text=text)], img_path=osp.join(split, img_name))
 
-        return pack(img_name, text, split)
+        return packed_instance
 
     def add_meta(self, sample: Dict) -> Dict:
         meta = {

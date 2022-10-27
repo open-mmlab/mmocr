@@ -33,19 +33,29 @@ for dataset in datasets:
     details += '### {}\n'.format(dataset_name)
     details += "> \"{}\", *{}*, {}.\n\n".format(paper['Title'], paper['Venue'],
                                                 paper['Year'])
-
+    # Basic Info
+    details += 'A. 数据集基础信息\n'
     details += ' - 官方网址: [{}]({})\n'.format(dataset, data['Website'])
     details += ' - 发布年份: {}\n'.format(paper['Year'])
     details += ' - 语言: {}\n'.format(data['Language'])
     details += ' - 场景: {}\n'.format(data['Scene'])
     details += ' - 标注粒度: {}\n'.format(data['Granularity'])
     details += ' - 支持任务: {}\n'.format(data['Tasks'])
-    details += ' - 数据集许可证: [{}]({})\n'.format(data['License']['Type'],
-                                              data['License']['Link'])
-    details += ' - 标注格式:\n'
-    for format in data['Format']:
-        details += '   - {}\n'.format(format)
+    details += ' - 数据集许可证: [{}]({})\n\n'.format(data['License']['Type'],
+                                                data['License']['Link'])
 
+    # Format
+    details += '<details> <summary>B. 标注格式</summary>\n\n</br>'
+    sample_path = osp.join(dataset_zoo_path, dataset, 'sample_anno.md')
+    if osp.exists(sample_path):
+        with open(sample_path, 'r') as f:
+            samples = f.readlines()
+            samples = ''.join(samples)
+            details += samples
+    details += '</details>\n\n</br>'
+
+    # Reference
+    details += 'C. 参考文献\n'
     details += '```bibtex\n{}\n```\n'.format(paper['BibTeX'])
 
 datasetzoo = table + details

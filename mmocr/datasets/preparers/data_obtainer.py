@@ -31,6 +31,7 @@ class NaiveDataObtainer:
         self.files = files
         self.cache_path = cache_path
         self.data_root = data_root
+        mkdir_or_exist(self.data_root)
         mkdir_or_exist(osp.join(self.data_root, 'imgs'))
         mkdir_or_exist(osp.join(self.data_root, 'annotations'))
         mkdir_or_exist(self.cache_path)
@@ -78,6 +79,8 @@ class NaiveDataObtainer:
                 ' Please manually download the required files'
                 ' following the guides.')
 
+        print(f'Start to download {osp.basename(dst_path)}...')
+        print('If you stuck here for a long time, please check your network.')
         request.urlretrieve(url, dst_path, progress)
 
     def extract(self,

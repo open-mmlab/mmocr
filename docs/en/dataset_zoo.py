@@ -8,7 +8,7 @@ dataset_zoo_path = '../../dataset_zoo'
 datasets = os.listdir(dataset_zoo_path)
 datasets.sort()
 
-table = '# Dataset Zoo\n'
+table = '# Overview\n'
 table += '## Supported Datasets\n'
 table += '| Dataset Name | Text Detection | Text Recognition | Text Spotting | KIE |\n' \
          '|--------------|----------------|------------------|---------------|-----|\n'  # noqa: E501
@@ -34,6 +34,8 @@ for dataset in datasets:
     details += "> \"{}\", *{}*, {}.\n\n".format(paper['Title'], paper['Venue'],
                                                 paper['Year'])
 
+    # Basic Info
+    details += 'A. Basic Info\n'
     details += ' - Official Website: [{}]({})\n'.format(
         dataset, data['Website'])
     details += ' - Year: {}\n'.format(paper['Year'])
@@ -43,10 +45,19 @@ for dataset in datasets:
     details += ' - Supported Tasks: {}\n'.format(data['Tasks'])
     details += ' - License: [{}]({})\n'.format(data['License']['Type'],
                                                data['License']['Link'])
-    details += ' - Annotation Format:\n'
-    for format in data['Format']:
-        details += '   - {}\n'.format(format)
 
+    # Format
+    details += '<details> <summary>B. Annotation Format</summary>\n\n</br>'
+    sample_path = osp.join(dataset_zoo_path, dataset, 'sample_anno.md')
+    if osp.exists(sample_path):
+        with open(sample_path, 'r') as f:
+            samples = f.readlines()
+            samples = ''.join(samples)
+            details += samples
+    details += '</details>\n\n</br>'
+
+    # Reference
+    details += 'C. Reference\n'
     details += '```bibtex\n{}\n```\n'.format(paper['BibTeX'])
 
 datasetzoo = table + details

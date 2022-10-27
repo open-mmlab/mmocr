@@ -175,7 +175,7 @@ one-to-many
 
 Therefore, we provide two built-in gatherers, `pair_gather` and `mono_gather`, to handle the two cases. `pair_gather` is used for the case of many-to-many, and `mono_gather` is used for the case of one-to-many. `pair_gather` needs to specify the `suffixes` parameter to indicate the suffix of the image, such as `suffixes=[.jpg,.JPG]` in the above example. In addition, we need to specify the corresponding relationship between the image and the annotation file through the regular expression, such as `rule=[r'img_(\d+)\.([jJ][pP][gG])'，r'gt_img_\1.txt']` in the above example. Where `\d+` is used to match the serial number of the image, `([jJ][pP][gG])` is used to match the suffix of the image, and `\_1` matches the serial number of the image and the serial number of the annotation file.
 
-When the image and annotation file are matched, the the original annotations will be parsed. Since the annotation format is usually varied from datasets to datasets, the parsers are usually dataset related. Then, the parser will pack the required data into the MMOCR format.
+When the image and annotation file are matched, the original annotations will be parsed. Since the annotation format is usually varied from dataset to dataset, the parsers are usually dataset related. Then, the parser will pack the required data into the MMOCR format.
 
 Finally, we can specify the dumpers to decide the data format. Currently, we only support `JsonDumper` and `WildreceiptOpensetDumper`, where the former is used to save the data in the standard MMOCR Json format, and the latter is used to save the data in the Wildreceipt format. In the future, we plan to support `LMDBDumper` to save the annotation files in LMDB format.
 
