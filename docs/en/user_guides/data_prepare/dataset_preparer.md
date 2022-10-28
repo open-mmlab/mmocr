@@ -88,7 +88,7 @@ Data:
     Link: https://creativecommons.org/licenses/by/4.0/
 ```
 
-It is not mandatory to use the metafile in the dataset preparation process (so users can ignore this file when prepare private datasets), but in order to better understand the information of each public dataset, we recommend that users read the metafile before before preparing the dataset, which will help to understand whether the datasets meet their needs.
+It is not mandatory to use the metafile in the dataset preparation process (so users can ignore this file when preparing private datasets), but in order to better understand the information of each public dataset, we recommend that users read the metafile before preparing the dataset, which will help to understand whether the datasets meet their needs.
 
 #### Config of Dataset Preparer
 
