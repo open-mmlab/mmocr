@@ -6,7 +6,6 @@ import mmengine
 from mmengine.config import Config, DictAction
 from mmengine.evaluator import Evaluator
 
-from mmocr.registry import DATASETS
 from mmocr.utils import register_all_modules
 
 
@@ -44,8 +43,7 @@ def main():
     predictions = mmengine.load(args.pkl_results)
 
     evaluator = Evaluator(cfg.test_evaluator)
-    dataset = DATASETS.build(cfg.test_dataloader.dataset)
-    eval_results = evaluator.offline_evaluate(dataset, predictions)
+    eval_results = evaluator.offline_evaluate(predictions)
     print(json.dumps(eval_results))
 
 
