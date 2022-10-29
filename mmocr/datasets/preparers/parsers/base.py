@@ -38,7 +38,7 @@ class BaseParser:
         """Convert annotations to MMOCR format.
 
         Args:
-            files (Tuple): A tuple of path to image and annotation.
+            files (Tuple): A list of tuple of path to image and annotation.
 
         Returns:
             List[Tuple]: A list of a tuple of (image_path, instances)
@@ -48,8 +48,21 @@ class BaseParser:
         return samples
 
     @abstractmethod
-    def parse_file(self, file: Tuple, split: str) -> Dict:
-        """Convert annotation for a single image."""
+    def parse_file(self, file: Tuple, split: str) -> Tuple:
+        """Convert annotation for a single image.
+
+        Args:
+            file (Tuple): A tuple of path to image and annotation
+            split (str): Current split.
+
+        Returns:
+            Tuple: A tuple of (img_path, instance). Instance is a dict
+            containing parsed annotations, which should contain the
+            following keys:
+            - 'poly' or 'box' (textdet or textspotting)
+            - 'text' (textspotting or textrecog)
+            - 'ignore' (all task)
+        """
         raise NotImplementedError
 
     def loader(self,

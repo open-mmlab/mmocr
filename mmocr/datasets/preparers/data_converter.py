@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 import mmcv
 from mmengine import mkdir_or_exist, track_parallel_progress
 
-from mmocr.utils import bbox2poly, crop_img, poly2bbox, retrieve_files
+from mmocr.utils import bbox2poly, crop_img, list_files, poly2bbox
 from .data_preparer import DATA_CONVERTERS, DATA_DUMPERS, DATA_PARSERS
 
 
@@ -45,6 +45,7 @@ class BaseDataConverter:
         self.nproc = nproc
         self.task = task
         self.delete = delete
+        self.img_dir = f'{task}_imgs'
         parser.update(dict(nproc=nproc))
         dumper.update(dict(task=task))
         self.parser = DATA_PARSERS.build(parser)
@@ -64,7 +65,7 @@ class BaseDataConverter:
         for split in self.splits:
             print(f'Parsing {split} split...')
             # Gather the info such as file names required by parser
-            img_path = osp.join(self.data_root, 'imgs', split)
+            img_path = osp.join(self.data_root, self.img_dir, split)
             ann_path = osp.join(self.data_root, 'annotations')
             gatherer_args = dict(
                 img_path=img_path, ann_path=ann_path, split=split)
@@ -152,10 +153,10 @@ class BaseDataConverter:
             List[Tuple]: A list of tuples (img_path, ann_path).
         """
         files = list()
-        for file in retrieve_files(img_path, suffixes):
+        for file in list_files(img_path, suffixes):
             file2 = re.sub(rule[0], rule[1], osp.basename(file))
             file2 = file.replace(osp.basename(file), file2)
-            file2 = file2.replace('imgs', 'annotations')
+            file2 = file2.replace(self.img_dir, 'annotations')
             files.append((file, file2))
 
         return files
@@ -293,6 +294,8 @@ class TextSpottingDataConverter(BaseDataConverter):
             nproc=nproc,
             delete=delete,
             task='textspotting')
+        # Textspotting task shares the same images with textdet task
+        self.img_dir = 'textdet_imgs'
 
     def pack_instance(self,
                       sample: Tuple,
@@ -401,7 +404,8 @@ class TextRecogDataConverter(BaseDataConverter):
 
         img_name, text = sample
         packed_instance = dict(
-            instances=[dict(text=text)], img_path=osp.join(split, img_name))
+            instances=[dict(text=text)],
+            img_path=osp.join(self.img_dir, split, img_name))
 
         return packed_instance
 
@@ -439,8 +443,6 @@ class TextRecogCropConverter(TextRecogDataConverter):
             the cropped image. Defaults to 0.05.
         delete (Optional[List]): A list of files to be deleted after
             conversion. Defaults to ['annotations].
-        crop_save_dir (str): The directory to save the cropped images.
-            Defaults to 'crops'.
     """
 
     def __init__(self,
@@ -452,8 +454,7 @@ class TextRecogCropConverter(TextRecogDataConverter):
                  nproc: int,
                  long_edge_pad_ratio: float = 0.1,
                  short_edge_pad_ratio: float = 0.05,
-                 delete: List = ['annotations'],
-                 crop_save_path: str = 'crops'):
+                 delete: List = ['annotations']):
         super().__init__(
             splits=splits,
             data_root=data_root,
@@ -465,7 +466,10 @@ class TextRecogCropConverter(TextRecogDataConverter):
         self.ignore = self.parser.ignore
         self.lepr = long_edge_pad_ratio
         self.sepr = short_edge_pad_ratio
-        self.crop_save_path = osp.join(self.data_root, crop_save_path)
+        # Crop converter crops the images of textdet to patches
+        self.img_dir = 'textdet_imgs'
+        self.cropped_img_dir = 'textrecog_imgs'
+        self.crop_save_path = osp.join(self.data_root, self.cropped_img_dir)
         mkdir_or_exist(self.crop_save_path)
         for split in splits:
             mkdir_or_exist(osp.join(self.crop_save_path, split))
@@ -503,7 +507,8 @@ class TextRecogCropConverter(TextRecogDataConverter):
             dst_path = osp.join(self.crop_save_path, split, patch_name)
             mmcv.imwrite(patch, dst_path)
             rec_instance = dict(
-                instances=[dict(text=text)], img_path=f'{split}/{patch_name}')
+                instances=[dict(text=text)],
+                img_path=osp.join(self.cropped_img_dir, split, patch_name))
             data_list.append(rec_instance)
 
         return data_list

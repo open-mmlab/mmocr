@@ -13,13 +13,13 @@ data_obtainer = dict(
             md5='5b56d71a4005a333cf200ff35ce87f75',
             split=['train', 'test'],
             content=['image'],
-            mapping=[['totaltext/Images/Train', 'imgs/train'],
-                     ['totaltext/Images/Test', 'imgs/test']]),
+            mapping=[['totaltext/Images/Train', 'textdet_imgs/train'],
+                     ['totaltext/Images/Test', 'textdet_imgs/test']]),
         dict(
             url='https://universityofadelaide.box.com/shared/static/'
             '2vmpvjb48pcrszeegx2eznzc4izan4zf.zip',
             save_name='txt_format.zip',
-            md5='97e4c1ddcf074ffcc75feff2b63c35dd',
+            md5='53377a83420b4a0244304467512134e8',
             split=['train', 'test'],
             content=['annotation'],
             mapping=[['txt_format/Train', 'annotations/train'],

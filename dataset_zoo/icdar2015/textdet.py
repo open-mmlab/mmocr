@@ -12,14 +12,14 @@ data_obtainer = dict(
             md5='c51cbace155dcc4d98c8dd19d378f30d',
             split=['train'],
             content=['image'],
-            mapping=[['ic15_textdet_train_img', 'imgs/train']]),
+            mapping=[['ic15_textdet_train_img', 'textdet_imgs/train']]),
         dict(
             url='https://rrc.cvc.uab.es/downloads/ch4_test_images.zip',
             save_name='ic15_textdet_test_img.zip',
             md5='97e4c1ddcf074ffcc75feff2b63c35dd',
             split=['test'],
             content=['image'],
-            mapping=[['ic15_textdet_test_img', 'imgs/test']]),
+            mapping=[['ic15_textdet_test_img', 'textdet_imgs/test']]),
         dict(
             url='https://rrc.cvc.uab.es/downloads/'
             'ch4_training_localization_transcription_gt.zip',

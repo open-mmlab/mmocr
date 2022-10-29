@@ -3,6 +3,7 @@ import hashlib
 import os.path as osp
 import sys
 from glob import glob
+from logging import warning
 from typing import List
 
 from mmengine import mkdir_or_exist
@@ -73,6 +74,9 @@ def check_integrity(file_path: str,
     Returns:
         bool: Whether the md5 is matched.
     """
+    if md5 is None:
+        warning.warn('MD5 is None, skip the integrity check.')
+        return True
     if not osp.exists(file_path):
         return False
 
@@ -87,7 +91,7 @@ def check_integrity(file_path: str,
     return hash.hexdigest() == md5
 
 
-def retrieve_files(path: str, suffixes: List) -> List:
+def list_files(path: str, suffixes: List) -> List:
     """Retrieve file list from the path.
 
     Args:

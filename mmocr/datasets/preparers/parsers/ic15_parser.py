@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 from ..data_preparer import DATA_PARSERS
 from .base import BaseParser
@@ -37,7 +37,7 @@ class ICDAR2015TextDetAnnParser(BaseParser):
         self.ignore = ignore
         super().__init__(nproc=nproc)
 
-    def parse_file(self, file: Tuple, split: str) -> Dict:
+    def parse_file(self, file: Tuple, split: str) -> Tuple:
         """Parse single annotation."""
         img_file, txt_file = file
         instances = list()

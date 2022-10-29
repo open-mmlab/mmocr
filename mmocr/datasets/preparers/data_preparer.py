@@ -55,10 +55,10 @@ class DatasetPreparer:
     def __call__(self):
         """Prepare the dataset."""
         if self.with_obtainer:
-            print('Obtain Dataset...')
+            print('Obtaining Dataset...')
             self.data_obtainer()
         if self.with_converter:
-            print('Convert Dataset...')
+            print('Converting Dataset...')
             self.data_converter()
 
     def parse_meta(self, cfg_path: str) -> None:
@@ -99,6 +99,7 @@ class DatasetPreparer:
         cfg = Config.fromfile(osp.join(cfg_path, self.task + '.py'))
 
         if 'data_obtainer' in cfg:
+            cfg.data_obtainer.update(task=self.task)
             self.data_obtainer = DATA_OBTAINERS.build(cfg.data_obtainer)
         if 'data_converter' in cfg:
             cfg.data_converter.update(dict(nproc=self.nproc))

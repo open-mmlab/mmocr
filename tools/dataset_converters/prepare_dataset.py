@@ -20,7 +20,8 @@ def parse_args():
         '--task',
         default='textdet',
         choices=['textdet', 'textrecog', 'textspotting', 'kie'],
-        help='Task type. Options are "textdet", "textrecog", "textspotting" and "kie".')
+        help='Task type. Options are "textdet", "textrecog", "textspotting"'
+        ' and "kie".')
     parser.add_argument(
         '--dataset-zoo-path',
         default='./dataset_zoo',

@@ -26,19 +26,22 @@ class NaiveDataObtainer:
         data_root (str): The root path of the dataset.
     """
 
-    def __init__(self, files: List[Dict], cache_path: str,
-                 data_root: str) -> None:
+    def __init__(self, files: List[Dict], cache_path: str, data_root: str,
+                 task: str) -> None:
         self.files = files
         self.cache_path = cache_path
         self.data_root = data_root
+        self.task = task
         mkdir_or_exist(self.data_root)
-        mkdir_or_exist(osp.join(self.data_root, 'imgs'))
+        mkdir_or_exist(osp.join(self.data_root, f'{task}_imgs'))
         mkdir_or_exist(osp.join(self.data_root, 'annotations'))
         mkdir_or_exist(self.cache_path)
 
     def __call__(self):
         for file in self.files:
-            save_name, url, md5 = file['save_name'], file['url'], file['md5']
+            save_name = file.get('save_name', None)
+            url = file.get('url', None)
+            md5 = file.get('md5', None)
             download_path = osp.join(
                 self.cache_path,
                 osp.basename(url) if save_name is None else save_name)
@@ -73,7 +76,7 @@ class NaiveDataObtainer:
             file_name = osp.basename(dst_path)
             print(f'\rDownloading {file_name}: {percent:.2f}%', end='')
 
-        if not url and not osp.exists(dst_path):
+        if url is None and not osp.exists(dst_path):
             raise FileNotFoundError(
                 'Direct url is not available for this dataset.'
                 ' Please manually download the required files'

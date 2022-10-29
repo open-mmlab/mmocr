@@ -15,14 +15,14 @@ data_obtainer = dict(
             content=['image', 'annotation'],
             mapping=[[
                 'ic15_textrecog_train_img_gt/gt.txt', 'annotations/train.txt'
-            ], ['ic15_textrecog_train_img_gt', 'crops/train']]),
+            ], ['ic15_textrecog_train_img_gt', 'textrecog_imgs/train']]),
         dict(
             url='https://rrc.cvc.uab.es/downloads/ch4_test_word_images_gt.zip',
             save_name='ic15_textrecog_test_img.zip',
             md5='d7a71585f4cc69f89edbe534e7706d5d',
             split=['test'],
             content=['image'],
-            mapping=[['ic15_textrecog_test_img', 'crops/test']]),
+            mapping=[['ic15_textrecog_test_img', 'textrecog_imgs/test']]),
         dict(
             url='https://rrc.cvc.uab.es/downloads/'
             'Challenge4_Test_Task3_GT.txt',
