@@ -1,8 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
 import tempfile
+import unittest
 
-from mmocr.utils import list_from_file, list_to_file
+from mmocr.utils import (check_integrity, is_archive, list_files,
+                         list_from_file, list_to_file)
 
 lists = [
     [],
@@ -102,3 +104,55 @@ def test_list_from_file():
             lines = list(map(str, lines))
             assert len(lines) == len(lines2)
             assert all(line1 == line2 for line1, line2 in zip(lines, lines2))
+
+
+class TestIsArchive(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.zip = 'data/annotations_123.zip'
+        self.tar = 'data/img.abc.tar'
+        self.targz = 'data/img12345_.tar.gz'
+        self.rar = '/m/abc/t.rar'
+        self.dir = '/a/b/c/'
+
+    def test_is_archive(self):
+        # test zip
+        self.assertTrue(is_archive(self.zip))
+        # test tar
+        self.assertTrue(is_archive(self.tar))
+        # test tar.gz
+        self.assertTrue(is_archive(self.targz))
+        # test rar
+        self.assertFalse(is_archive(self.rar))
+        # test dir
+        self.assertFalse(is_archive(self.dir))
+
+
+class TestCheckIntegrity(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.file1 = ('tests/data/det_toy_dataset/instances_test.json',
+                      '77b17b0125996af519ef82aaacc8d96b')
+        self.file2 = ('tests/data/det_toy_dataset/imgs/test/img_1.jpg',
+                      'abc123')
+
+    def test_check_integrity(self):
+        file, md5 = self.file1
+        self.assertTrue(check_integrity(file, md5))
+        file, md5 = self.file2
+        self.assertFalse(check_integrity(file, md5))
+
+
+class TestListFiles(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.path = 'tests/data/det_toy_dataset/imgs/test'
+        self.files = []
+        for i in range(1, 11):
+            self.files.append(f'{self.path}/img_{i}.jpg')
+        self.files.sort()
+
+    def test_check_integrity(self):
+        files = list_files(self.path, 'jpg')
+        files.sort()
+        self.assertEqual(files, self.files)
