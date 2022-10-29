@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
+import os
 import tempfile
 import unittest
 
@@ -147,12 +148,10 @@ class TestListFiles(unittest.TestCase):
 
     def setUp(self) -> None:
         self.path = 'tests/data/det_toy_dataset/imgs/test'
-        self.files = []
-        for i in range(1, 11):
-            self.files.append(f'{self.path}/img_{i}.jpg')
-        self.files.sort()
 
     def test_check_integrity(self):
-        files = list_files(self.path, 'jpg')
-        files.sort()
-        self.assertEqual(files, self.files)
+        suffix = 'jpg'
+        files = list_files(self.path, suffix)
+        for file in os.listdir(self.path):
+            if file.endswith(suffix):
+                self.assertIn(os.path.join(self.path, file), files)
