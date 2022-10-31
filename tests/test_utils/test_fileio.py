@@ -136,11 +136,15 @@ class TestCheckIntegrity(unittest.TestCase):
                       '77b17b0125996af519ef82aaacc8d96b')
         self.file2 = ('tests/data/det_toy_dataset/imgs/test/img_1.jpg',
                       'abc123')
+        self.file3 = ('abc/abc.jpg', 'abc123')
 
     def test_check_integrity(self):
         file, md5 = self.file1
         self.assertTrue(check_integrity(file, md5))
         file, md5 = self.file2
+        self.assertFalse(check_integrity(file, md5))
+        self.assertTrue(check_integrity(file, None))
+        file, md5 = self.file3
         self.assertFalse(check_integrity(file, md5))
 
 

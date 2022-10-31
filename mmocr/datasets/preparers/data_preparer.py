@@ -96,7 +96,9 @@ class DatasetPreparer:
         Args:
             cfg_path (str): Path to dataset config file.
         """
-        cfg = Config.fromfile(osp.join(cfg_path, self.task + '.py'))
+        cfg_path = osp.join(cfg_path, self.task + '.py')
+        assert osp.exists(cfg_path), f'Config file {cfg_path} not found!'
+        cfg = Config.fromfile(cfg_path)
 
         if 'data_obtainer' in cfg:
             cfg.data_obtainer.update(task=self.task)
