@@ -2,8 +2,8 @@
 import hashlib
 import os.path as osp
 import sys
+import warnings
 from glob import glob
-from logging import warning
 from typing import List
 
 from mmengine import mkdir_or_exist
@@ -75,7 +75,7 @@ def check_integrity(file_path: str,
         bool: Whether the md5 is matched.
     """
     if md5 is None:
-        warning.warn('MD5 is None, skip the integrity check.')
+        warnings.warn('MD5 is None, skip the integrity check.')
         return True
     if not osp.exists(file_path):
         return False
