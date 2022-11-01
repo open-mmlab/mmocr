@@ -28,6 +28,7 @@ class BaseDataConverter:
         dataset_name (str): Dataset name.
         delete (Optional[List]): A list of files to be deleted after
             conversion.
+        config_path (str): Path to the configs. Defaults to 'configs/'.
     """
 
     def __init__(self,
