@@ -3,7 +3,7 @@ import os.path as osp
 import tempfile
 import unittest
 
-from mmocr.datasets.preparers.parsers.ic15_parser import (
+from mmocr.datasets.preparers.parsers.icdar_txt_parser import (
     ICDARTxtTextDetAnnParser, ICDARTxtTextRecogAnnParser)
 from mmocr.utils import list_to_file
 

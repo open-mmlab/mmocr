@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .coco_parser import COCOTextDetAnnParser
-from .ic15_parser import ICDARTxtTextDetAnnParser, ICDARTxtTextRecogAnnParser
+from .icdar_txt_parser import (ICDARTxtTextDetAnnParser,
+                               ICDARTxtTextRecogAnnParser)
 from .totaltext_parser import TotaltextTextDetAnnParser
 from .wildreceipt_parser import WildreceiptKIEAnnParser
 
