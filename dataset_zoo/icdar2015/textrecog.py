@@ -38,5 +38,5 @@ data_converter = dict(
     splits=['train', 'test'],
     data_root=data_root,
     gatherer=dict(type='mono_gather', mapping="f'{split}.txt'"),
-    parser=dict(type='ICDAR2015TextRecogAnnParser'),
+    parser=dict(type='ICDARTxtTextRecogAnnParser'),
     dumper=dict(type='JsonDumper'))

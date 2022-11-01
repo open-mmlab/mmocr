@@ -1,12 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from ..data_preparer import DATA_PARSERS
 from .base import BaseParser
 
 
 @DATA_PARSERS.register_module()
-class ICDAR2015TextDetAnnParser(BaseParser):
+class ICDARTxtTextDetAnnParser(BaseParser):
     """ICDAR2015 Text Detection Parser.
 
     The original annotation format of this dataset is stored in txt files,
@@ -23,6 +23,8 @@ class ICDAR2015TextDetAnnParser(BaseParser):
             'utf-8-sig'.
         nproc (int): The number of processes to parse the annotation. Defaults
             to 1.
+        remove_flag (List[str], Optional): Used to remove redundant strings in
+            the transcription. Defaults to None.
     """
 
     def __init__(self,
@@ -30,11 +32,13 @@ class ICDAR2015TextDetAnnParser(BaseParser):
                  ignore: str = '###',
                  format: str = 'x1,y1,x2,y2,x3,y3,x4,y4,trans',
                  encoding: str = 'utf-8-sig',
-                 nproc: int = 1) -> None:
+                 nproc: int = 1,
+                 remove_flag: Optional[List[str]] = None) -> None:
         self.sep = separator
         self.format = format
         self.encoding = encoding
         self.ignore = ignore
+        self.remove_flag = remove_flag
         super().__init__(nproc=nproc)
 
     def parse_file(self, file: Tuple, split: str) -> Tuple:
@@ -46,6 +50,9 @@ class ICDAR2015TextDetAnnParser(BaseParser):
             anno = list(anno.values())
             poly = list(map(float, anno[0:-1]))
             text = anno[-1]
+            if self.remove_flag is not None:
+                for flag in self.remove_flag:
+                    text = text.replace(flag, '')
             instances.append(
                 dict(poly=poly, text=text, ignore=text == self.ignore))
 
@@ -53,7 +60,7 @@ class ICDAR2015TextDetAnnParser(BaseParser):
 
 
 @DATA_PARSERS.register_module()
-class ICDAR2015TextRecogAnnParser(BaseParser):
+class ICDARTxtTextRecogAnnParser(BaseParser):
     """ICDAR2015 Text Detection Parser.
 
     The original annotation format of this dataset is stored in txt files,

@@ -4,7 +4,7 @@ import tempfile
 import unittest
 
 from mmocr.datasets.preparers.parsers.ic15_parser import (
-    ICDAR2015TextDetAnnParser, ICDAR2015TextRecogAnnParser)
+    ICDARTxtTextDetAnnParser, ICDARTxtTextRecogAnnParser)
 from mmocr.utils import list_to_file
 
 
@@ -34,7 +34,7 @@ class TestIC15Parsers(unittest.TestCase):
         return ann_file
 
     def test_textdet_parsers(self):
-        parser = ICDAR2015TextDetAnnParser()
+        parser = ICDARTxtTextDetAnnParser()
         file = self._create_dummy_ic15_det()
         img, instances = parser.parse_file(file, 'train')
         self.assertEqual(img, file[0])
@@ -46,7 +46,7 @@ class TestIC15Parsers(unittest.TestCase):
         self.assertEqual(instances[2]['ignore'], True)
 
     def test_textrecog_parsers(self):
-        parser = ICDAR2015TextRecogAnnParser()
+        parser = ICDARTxtTextRecogAnnParser()
         file = self._create_dummy_ic15_recog()
         samples = parser.parse_files(file, 'train')
         self.assertEqual(len(samples), 3)

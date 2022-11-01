@@ -139,7 +139,7 @@ data_converter = dict(
         type='pair_gather',
         suffixes=['.jpg', '.JPG'],
         rule=[r'img_(\d+)\.([jJ][pP][gG])', r'gt_img_\1.txt']),
-    parser=dict(type='ICDAR2015TextDetAnnParser'),
+    parser=dict(type='ICDARTxtTextDetAnnParser'),
     dumper=dict(type='JsonDumper'),
     delete=['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img'])
 ```
