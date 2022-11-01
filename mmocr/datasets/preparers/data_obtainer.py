@@ -24,6 +24,7 @@ class NaiveDataObtainer:
         files (list[dict]): A list of file information.
         cache_path (str): The path to cache the downloaded files.
         data_root (str): The root path of the dataset.
+        task (str): The task of the dataset.
     """
 
     def __init__(self, files: List[Dict], cache_path: str, data_root: str,

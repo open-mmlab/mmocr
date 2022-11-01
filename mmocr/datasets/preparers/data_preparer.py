@@ -49,6 +49,7 @@ class DatasetPreparer:
         cfg_path = osp.join(cfg_path, dataset_name)
         self.nproc = nproc
         self.task = task
+        self.dataset_name = dataset_name
         self.parse_meta(cfg_path)
         self.parse_cfg(cfg_path)
 
@@ -104,7 +105,8 @@ class DatasetPreparer:
             cfg.data_obtainer.update(task=self.task)
             self.data_obtainer = DATA_OBTAINERS.build(cfg.data_obtainer)
         if 'data_converter' in cfg:
-            cfg.data_converter.update(dict(nproc=self.nproc))
+            cfg.data_converter.update(
+                dict(nproc=self.nproc, dataset_name=self.dataset_name))
             self.data_converter = DATA_CONVERTERS.build(cfg.data_converter)
 
     @property

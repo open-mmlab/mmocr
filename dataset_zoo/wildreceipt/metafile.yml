@@ -12,7 +12,7 @@ Paper:
 }
 '
 Data:
-  Website: https://github.com/cs-chan/Total-Text-Dataset
+  Website: https://download.openmmlab.com/mmocr/data/wildreceipt.tar
   Language:
     - English
   Scene:

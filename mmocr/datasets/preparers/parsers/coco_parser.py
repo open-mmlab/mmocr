@@ -12,11 +12,12 @@ class COCOTextDetAnnParser(BaseParser):
     """COCO Text Detection Parser.
 
     Args:
+        data_root (str): The root path of the dataset. Defaults to None.
         nproc (int): The number of processes to parse the annotation. Defaults
             to 1.
     """
 
-    def __init__(self, data_root=None, nproc: int = 1) -> None:
+    def __init__(self, data_root: str = None, nproc: int = 1) -> None:
 
         super().__init__(nproc=nproc, data_root=data_root)
 

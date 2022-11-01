@@ -23,7 +23,7 @@ class ICDARTxtTextDetAnnParser(BaseParser):
             'utf-8-sig'.
         nproc (int): The number of processes to parse the annotation. Defaults
             to 1.
-        remove_flag (List[str], Optional): Used to remove redundant strings in
+        remove_strs (List[str], Optional): Used to remove redundant strings in
             the transcription. Defaults to None.
     """
 
@@ -33,12 +33,12 @@ class ICDARTxtTextDetAnnParser(BaseParser):
                  format: str = 'x1,y1,x2,y2,x3,y3,x4,y4,trans',
                  encoding: str = 'utf-8-sig',
                  nproc: int = 1,
-                 remove_flag: Optional[List[str]] = None) -> None:
+                 remove_strs: Optional[List[str]] = None) -> None:
         self.sep = separator
         self.format = format
         self.encoding = encoding
         self.ignore = ignore
-        self.remove_flag = remove_flag
+        self.remove_strs = remove_strs
         super().__init__(nproc=nproc)
 
     def parse_file(self, file: Tuple, split: str) -> Tuple:
@@ -48,11 +48,13 @@ class ICDARTxtTextDetAnnParser(BaseParser):
         for anno in self.loader(txt_file, self.sep, self.format,
                                 self.encoding):
             anno = list(anno.values())
+            if self.remove_strs is not None:
+                for flag in self.remove_strs:
+                    for i in range(len(anno)):
+                        if flag in anno[i]:
+                            anno[i] = anno[i].replace(flag, '')
             poly = list(map(float, anno[0:-1]))
             text = anno[-1]
-            if self.remove_flag is not None:
-                for flag in self.remove_flag:
-                    text = text.replace(flag, '')
             instances.append(
                 dict(poly=poly, text=text, ignore=text == self.ignore))
 

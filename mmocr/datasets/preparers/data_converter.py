@@ -25,6 +25,7 @@ class BaseDataConverter:
         dumper (Dict): Config dict for dumping the dataset files.
         nproc (int): Number of processes to process the data.
         task (str): Task of the dataset.
+        dataset_name (str): Dataset name.
         delete (Optional[List]): A list of files to be deleted after
             conversion.
     """
@@ -37,17 +38,21 @@ class BaseDataConverter:
                  dumper: Dict,
                  nproc: int,
                  task: str,
-                 delete: Optional[List] = None):
+                 dataset_name: str,
+                 delete: Optional[List] = None,
+                 config_path: str = 'configs/'):
         assert isinstance(nproc, int) and nproc > 0, \
             'nproc must be a positive integer.'
         self.splits = splits
         self.data_root = data_root
         self.nproc = nproc
         self.task = task
+        self.dataset_name = dataset_name
         self.delete = delete
+        self.config_path = config_path
         self.img_dir = f'{task}_imgs'
         parser.update(dict(nproc=nproc))
-        dumper.update(dict(task=task))
+        dumper.update(dict(task=task, dataset_name=dataset_name))
         self.parser = DATA_PARSERS.build(parser)
         self.dumper = DATA_DUMPERS.build(dumper)
         gather_type = gatherer.pop('type')
@@ -62,6 +67,7 @@ class BaseDataConverter:
     def __call__(self):
         """Process the data."""
         # Convert and dump annotations to MMOCR format
+        dataset_config = dict()
         for split in self.splits:
             print(f'Parsing {split} split...')
             # Gather the info such as file names required by parser
@@ -78,8 +84,48 @@ class BaseDataConverter:
             samples = track_parallel_progress(func, samples, nproc=self.nproc)
             samples = self.add_meta(samples)
             # Dump annotation files
-            self.dumper.dump(samples, self.data_root, split)
+            dataset_config[split] = self.dumper.dump(samples, self.data_root,
+                                                     split)
+        self.generate_dataset_config(dataset_config)
         self.clean()
+
+    def generate_dataset_config(self, dataset_config: Dict) -> None:
+        """Generate dataset config file. Dataset config is a python file that
+        contains the dataset information.
+
+        Examples:
+        Generated dataset config
+        >>> ic15_rec_data_root = 'data/icdar2015/'
+        >>> ic15_rec_train = dict(
+        >>>     type='OCRDataset',
+        >>>     data_root=ic15_rec_data_root,
+        >>>     ann_file='textrecog_train.json',
+        >>>     test_mode=False,
+        >>>     pipeline=None)
+        >>> ic15_rec_test = dict(
+        >>>     type='OCRDataset',
+        >>>     data_root=ic15_rec_data_root,
+        >>>     ann_file='textrecog_test.json',
+        >>>     test_mode=True,
+        >>>     pipeline=None)
+
+        Args:
+            dataset_config (Dict): A dict contains the dataset config string of
+            each split.
+        """
+        if self.task == 'kie':
+            # Not supported yet
+            return
+        cfg_path = osp.join(self.config_path, self.task, '_base_', 'datasets',
+                            f'{self.dataset_name}.py')
+        if not osp.exists(cfg_path):
+            with open(cfg_path, 'w') as f:
+                f.write(
+                    f'{self.dataset_name}_{self.task}_data_root = \'{self.data_root}\'\n'  # noqa: E501
+                )
+            for split in self.splits:
+                with open(cfg_path, 'a') as f:
+                    f.write(dataset_config[split])
 
     @abstractmethod
     def pack_instance(self, sample: Tuple, split: str) -> Dict:
@@ -178,6 +224,7 @@ class TextDetDataConverter(BaseDataConverter):
         gatherer (Dict): Config dict for gathering the dataset files.
         parser (Dict): Config dict for parsing the dataset files.
         dumper (Dict): Config dict for dumping the dataset files.
+        dataset_name (str): Name of the dataset.
         nproc (int): Number of processes to process the data.
         delete (Optional[List]): A list of files to be deleted after
             conversion. Defaults to ['annotations].
@@ -189,6 +236,7 @@ class TextDetDataConverter(BaseDataConverter):
                  gatherer: Dict,
                  parser: Dict,
                  dumper: Dict,
+                 dataset_name: str,
                  nproc: int,
                  delete: List = ['annotations']) -> None:
         super().__init__(
@@ -197,6 +245,7 @@ class TextDetDataConverter(BaseDataConverter):
             gatherer=gatherer,
             parser=parser,
             dumper=dumper,
+            dataset_name=dataset_name,
             nproc=nproc,
             delete=delete,
             task='textdet')
@@ -272,6 +321,7 @@ class TextSpottingDataConverter(BaseDataConverter):
         gatherer (Dict): Config dict for gathering the dataset files.
         parser (Dict): Config dict for parsing the dataset files.
         dumper (Dict): Config dict for dumping the dataset files.
+        dataset_name (str): Name of the dataset.
         nproc (int): Number of processes to process the data.
         delete (Optional[List]): A list of files to be deleted after
             conversion. Defaults to ['annotations'].
@@ -283,6 +333,7 @@ class TextSpottingDataConverter(BaseDataConverter):
                  gatherer: Dict,
                  parser: Dict,
                  dumper: Dict,
+                 dataset_name: str,
                  nproc: int,
                  delete: List = ['annotations']) -> None:
         super().__init__(
@@ -291,6 +342,7 @@ class TextSpottingDataConverter(BaseDataConverter):
             gatherer=gatherer,
             parser=parser,
             dumper=dumper,
+            dataset_name=dataset_name,
             nproc=nproc,
             delete=delete,
             task='textspotting')
@@ -368,6 +420,7 @@ class TextRecogDataConverter(BaseDataConverter):
         gatherer (Dict): Config dict for gathering the dataset files.
         parser (Dict): Config dict for parsing the dataset annotations.
         dumper (Dict): Config dict for dumping the dataset files.
+        dataset_name (str): Name of the dataset.
         nproc (int): Number of processes to process the data.
         delete (Optional[List]): A list of files to be deleted after
             conversion. Defaults to ['annotations].
@@ -379,6 +432,7 @@ class TextRecogDataConverter(BaseDataConverter):
                  gatherer: Dict,
                  parser: Dict,
                  dumper: Dict,
+                 dataset_name: str,
                  nproc: int,
                  delete: List = ['annotations']):
         super().__init__(
@@ -387,6 +441,7 @@ class TextRecogDataConverter(BaseDataConverter):
             gatherer=gatherer,
             parser=parser,
             dumper=dumper,
+            dataset_name=dataset_name,
             nproc=nproc,
             task='textrecog',
             delete=delete)
@@ -436,6 +491,7 @@ class TextRecogCropConverter(TextRecogDataConverter):
         gatherer (Dict): Config dict for gathering the dataset files.
         parser (Dict): Config dict for parsing the dataset annotations.
         dumper (Dict): Config dict for dumping the dataset files.
+        dataset_name (str): Name of the dataset.
         nproc (int): Number of processes to process the data.
         long_edge_pad_ratio (float): The ratio of padding the long edge of the
             cropped image. Defaults to 0.1.
@@ -451,6 +507,7 @@ class TextRecogCropConverter(TextRecogDataConverter):
                  gatherer: Dict,
                  parser: Dict,
                  dumper: Dict,
+                 dataset_name: str,
                  nproc: int,
                  long_edge_pad_ratio: float = 0.1,
                  short_edge_pad_ratio: float = 0.05,
@@ -461,6 +518,7 @@ class TextRecogCropConverter(TextRecogDataConverter):
             gatherer=gatherer,
             parser=parser,
             dumper=dumper,
+            dataset_name=dataset_name,
             nproc=nproc,
             delete=delete)
         self.ignore = self.parser.ignore
@@ -540,6 +598,7 @@ class WildReceiptConverter(BaseDataConverter):
                  gatherer: Dict,
                  parser: Dict,
                  dumper: Dict,
+                 dataset_name: str,
                  nproc: int,
                  delete: Optional[List] = None,
                  merge_bg_others: bool = False,
@@ -555,6 +614,7 @@ class WildReceiptConverter(BaseDataConverter):
             gatherer=gatherer,
             parser=parser,
             dumper=dumper,
+            dataset_name=dataset_name,
             nproc=nproc,
             task='kie',
             delete=delete)
