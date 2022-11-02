@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 
 import torch
 import torch.nn as nn
@@ -12,17 +12,18 @@ class AvgPool2d(nn.Module):
     """Applies a 2D average pooling over an input signal composed of several
     input planes.
 
-    AvgPool2d class for plug-in manner usage
+    It can also be used as a network plugin.
 
     Args:
-        kernel_size (int | tuple(int)): the size of the window.
-        stride (int | tuple(int)): the stride of the window.
-        padding (int | tuple(int)): implicit zero padding.
+        kernel_size (int or tuple(int)): the size of the window.
+        stride (int or tuple(int), optional): the stride of the window.
+            Defaults to None.
+        padding (int or tuple(int)): implicit zero padding. Defaults to 0.
     """
 
     def __init__(self,
                  kernel_size: Union[int, Tuple[int]],
-                 stride: Union[int, Tuple[int]] = None,
+                 stride: Optional[Union[int, Tuple[int]]] = None,
                  padding: Union[int, Tuple[int]] = 0,
                  **kwargs) -> None:
         super().__init__()
@@ -34,6 +35,6 @@ class AvgPool2d(nn.Module):
             x (Tensor): Input feature map.
 
         Returns:
-            Tensor: Output tensor after Maxpooling layer.
+            Tensor: Output tensor after Avgpooling layer.
         """
         return self.model(x)

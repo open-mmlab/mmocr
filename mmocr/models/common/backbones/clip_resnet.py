@@ -10,10 +10,14 @@ from mmocr.registry import MODELS
 class CLIPBottleneck(Bottleneck):
     """Bottleneck for CLIPResNet.
 
-    It is a variant Bottleneck used in the variant ResNet of CLIP. After the
+    It is a Bottleneck variant used in the ResNet variant of CLIP. After the
     second convolution layer, there is an additional average pooling layer with
-    kernel_size 2 and stride 2, which is added in the plug-in manner when the
+    kernel_size 2 and stride 2, which is added as a plugin when the
     input stride > 1. The stride of each convolution layer is always set to 1.
+
+    Args:
+        **kwargs: Keyword arguments for
+            :class:``mmdet.models.backbones.resnet.Bottleneck``.
     """
 
     def __init__(self, **kwargs):
@@ -35,12 +39,12 @@ class CLIPBottleneck(Bottleneck):
 
 @MODELS.register_module()
 class CLIPResNet(ResNet):
-    """Implement the variant ResNet used in `oCLIP.
+    """Implement the ResNet variant used in `oCLIP.
 
-    <https://github.com/bytedance/oclip>`_
+    <https://github.com/bytedance/oclip>`_.
 
-    It is also the official structure in `CLIP
-    <https://github.com/openai/CLIP>`_.
+    It is also the official structure in
+    `CLIP <https://github.com/openai/CLIP>`_.
 
     Compared with ResNetV1d structure, CLIPResNet replaces the
     max pooling layer with an average pooling layer at the end
@@ -48,9 +52,20 @@ class CLIPResNet(ResNet):
 
     In the Bottleneck of CLIPResNet, after the second convolution
     layer, there is an additional average pooling layer with
-    kernel_size 2 and stride 2, which is added in the plug-in
-    manner when the input stride > 1.
+    kernel_size 2 and stride 2, which is added as a plugin
+    when the input stride > 1.
     The stride of each convolution layer is always set to 1.
+
+    Args:
+        depth (int): Depth of resnet, from {50}. Defaults to 50.
+        strides (sequence(int)): Strides of the first block of each stage.
+            Defaults to (1, 2, 2, 2).
+        deep_stem (bool): Replace 7x7 conv in input stem with 3 3x3 conv.
+            Defaults to True.
+        avg_down (bool): Use AvgPool instead of stride conv when
+            downsampling in the bottleneck. Defaults to True.
+        **kwargs: Keyword arguments for
+            :class:``mmdet.models.backbones.resnet.ResNet``.
     """
     arch_settings = {
         50: (CLIPBottleneck, (3, 4, 6, 3)),
@@ -70,9 +85,9 @@ class CLIPResNet(ResNet):
             **kwargs)
 
     def _make_stem_layer(self, in_channels, stem_channels):
-        """Build stem layer for CLIPResNet used in `CLIP.
+        """Build stem layer for CLIPResNet used in `CLIP
+        https://github.com/openai/CLIP>`_.
 
-        <https://github.com/openai/CLIP>`_.
         It uses an average pooling layer rather than a max pooling
         layer at the end of the input stem.
 

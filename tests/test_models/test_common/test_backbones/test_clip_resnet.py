@@ -27,9 +27,9 @@ class TestCLIPResNet(TestCase):
 class TestCLIPBottleneck(TestCase):
 
     def test_forward(self):
-        stride = 1
-        inplanes = 64
-        planes = 64
+        stride = 2
+        inplanes = 256
+        planes = 128
         conv_cfg = None
         norm_cfg = {'type': 'BN', 'requires_grad': True}
 
@@ -46,21 +46,21 @@ class TestCLIPBottleneck(TestCase):
                 inplanes,
                 planes * CLIPBottleneck.expansion,
                 kernel_size=1,
-                stride=stride,
+                stride=1,
                 bias=False),
             build_norm_layer(norm_cfg, planes * CLIPBottleneck.expansion)[1]
         ])
         downsample = nn.Sequential(*downsample)
 
         model = CLIPBottleneck(
-            inplanes=64,
-            planes=64,
+            inplanes=inplanes,
+            planes=planes,
             stride=stride,
             downsample=downsample,
             conv_cfg=conv_cfg,
             norm_cfg=norm_cfg)
         model.eval()
 
-        input_feat = torch.randn(1, 64, 8, 8)
+        input_feat = torch.randn(1, 256, 8, 8)
         output_feat = model(input_feat)
-        assert output_feat.shape == torch.Size([1, 256, 8, 8])
+        assert output_feat.shape == torch.Size([1, 512, 4, 4])
