@@ -2,13 +2,7 @@
 
 ## Introduction
 
-After decades of development, the OCR community has produced a series of related datasets that often provide annotations of text in a variety of styles, making it necessary for users to convert these datasets to the required format when using them. MMOCR supports dozens of commonly used text-related datasets and provides detailed tutorials for downloading and preparing the data.
-
-In addition, we provide data conversion scripts to help users convert the annotations of widely-used OCR datasets to MMOCR formats.
-
-- [Detection Dataset Preparation](./data_prepare/det.md)
-- [Recognition Dataset Preparation](./data_prepare/recog.md)
-- [Key Information Extraction Dataset Preparation](./data_prepare/kie.md)
+After decades of development, the OCR community has produced a series of related datasets that often provide annotations of text in a variety of styles, making it necessary for users to convert these datasets to the required format when using them. MMOCR supports dozens of commonly used text-related datasets and provides a [data preparation script](./data_prepare/dataset_preparer.md) to help users prepare the datasets with only one command.
 
 In the following, we provide a brief overview of the data formats defined in MMOCR for each task.
 
@@ -69,54 +63,31 @@ In the following, we provide a brief overview of the data formats defined in MMO
 
 ## Downloading Datasets and Format Conversion
 
-As an example of the data preparation steps, you can perform the following steps to prepare the ICDAR 2015 dataset for text detection task.
+As an example of the data preparation steps, you can use the following command to prepare the ICDAR 2015 dataset for text detection task.
 
-- Download the ICDAR 2015 dataset from the [official ICDAR website](https://rrc.cvc.uab.es/?ch=4&com=downloads). Extract the training set `ch4_training_word_images_gt.zip` and the test set zip `ch4_test_word_images_gt.zip` to the path `data/icdar2015` respectively.
+```shell
+python tools/dataset_converters/prepare_dataset.py icdar2015 --task textdet
+```
 
-  ```bash
-  # Downloading datasets
-  mkdir data/det/icdar2015 && cd data/det/icdar2015
-  wget https://rrc.cvc.uab.es/downloads/ch4_training_images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/ch4_training_localization_transcription_gt.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/ch4_test_images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge4_Test_Task1_GT.zip --no-check-certificate
+Then, the dataset has been downloaded and converted to MMOCR format, and the file directory structure is as follows:
 
-  # Extracting the zips
-  mkdir imgs && mkdir annotations
-  unzip ch4_training_images.zip -d imgs/training
-  unzip ch4_training_localization_transcription_gt.zip -d annotations/training
-  unzip ch4_test_images.zip -d imgs/test
-  unzip Challenge4_Test_Task1_GT.zip -d annotations/test
-  ```
-
-- Using the scripts provided by us to convert the annotations to MMOCR supported formats.
-
-  ```bash
-  python tools/dataset_converters/textdet/icdar_converter.py data/det/icdar15/ -o data/det/icdar15/ --split-list training test -d icdar2015
-  ```
-
-- After completing the above steps, the annotation format has been converted, and the file directory structure is as follows
-
-  ```text
-  data/det/icdar2015/
-  ├── annotations
-  │   ├── test
-  │   └── training
-  ├── imgs
-  │   ├── test
-  │   └── training
-  ├── instances_test.json
-  └── instances_training.json
-  ```
+```text
+data/icdar2015
+├── textdet_imgs
+│   ├── test
+│   └── train
+├── textdet_test.json
+└── textdet_train.json
+```
 
 ## Dataset Configuration
 
 ### Single Dataset Training
 
-When training or evaluating a model on new datasets, we need to write the dataset config where the image path, annotation path, and image prefix are set. The path `configs/xxx/_base_/datasets/` is pre-configured with the commonly used datasets in MMOCR, here we take the ICDAR 2015 dataset as an example (see `configs/_base_/det_datasets/icdar2015.py`).
+When training or evaluating a model on new datasets, we need to write the dataset config where the image path, annotation path, and image prefix are set. The path `configs/xxx/_base_/datasets/` is pre-configured with the commonly used datasets in MMOCR (if you use `prepare_dataset.py` to prepare dataset, this config will be generated automatically), here we take the ICDAR 2015 dataset as an example (see `configs/_base_/det_datasets/icdar2015.py`).
 
 ```Python
-ic15_det_data_root = 'data/det/icdar2015' # dataset root path
+ic15_det_data_root = 'data/icdar2015' # dataset root path
 
 # Train set config
 ic15_det_train = dict(

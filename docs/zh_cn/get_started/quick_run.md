@@ -14,7 +14,7 @@
 
 ## 准备数据集
 
-由于 OCR 任务的数据集种类多样，格式不一，不利于多数据集的切换和联合训练，因此 MMOCR 约定了一种[统一的数据格式](../user_guides/dataset_prepare.md)，并针对常用的 OCR 数据集都提供了对应的转换脚本和[教程](../user_guides/dataset_prepare.md)。通常，要在 MMOCR 中使用数据集，你只需要按照对应步骤运行指令即可。
+由于 OCR 任务的数据集种类多样，格式不一，不利于多数据集的切换和联合训练，因此 MMOCR 约定了一种[统一的数据格式](../user_guides/dataset_prepare.md)，并针对常用的 OCR 数据集提供了[一键式数据准备脚本](../user_guides/data_prepare/dataset_preparer.md)。通常，要在 MMOCR 中使用数据集，你只需要按照对应步骤运行指令即可。
 
 ```{note}
 但我们亦深知，效率就是生命——尤其对想要快速上手 MMOCR 的你来说。

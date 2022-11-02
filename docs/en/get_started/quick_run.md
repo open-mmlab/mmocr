@@ -12,7 +12,7 @@ The following sections assume that you [installed MMOCR from source](install.md#
 
 ## Prepare a Dataset
 
-Since the variety of OCR dataset formats are not conducive to either switching or joint training of multiple datasets, MMOCR proposes a uniform [data format](../user_guides/dataset_prepare.md), and provides conversion scripts and [tutorials](../user_guides/dataset_prepare.md) for all commonly used OCR datasets. Usually, to use those datasets in MMOCR, you just need to follow the steps to get them ready for use.
+Since the variety of OCR dataset formats are not conducive to either switching or joint training of multiple datasets, MMOCR proposes a uniform [data format](../user_guides/dataset_prepare.md), and provides [dataset preparer](../user_guides/data_prepare/dataset_preparer.md) for commonly used OCR datasets. Usually, to use those datasets in MMOCR, you just need to follow the steps to get them ready for use.
 
 ```{note}
 But here, efficiency means everything.
