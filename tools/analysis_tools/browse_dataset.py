@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import os.path as osp
+from typing import Tuple
 
 import mmengine
 from mmengine.config import Config, DictAction
@@ -10,8 +11,8 @@ from mmocr.utils import register_all_modules
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Browse a dataset')
-    parser.add_argument('config', help='Train config file path')
+    parser = argparse.ArgumentParser(description='Browse a dataset.')
+    parser.add_argument('config', help='Path to model or dataset config.')
     parser.add_argument(
         '--output-dir',
         default=None,
@@ -38,6 +39,8 @@ def parse_args():
 
 
 def main():
+    # Documentation of the usage of this tool can be found in
+    # https://mmocr.readthedocs.io/en/dev-1.x/user_guides/useful_tools.html#dataset-visualization-tool  # noqa: E501
 
     args = parse_args()
     cfg = Config.fromfile(args.config)
@@ -47,8 +50,9 @@ def main():
     # register all modules in mmocr into the registries
     register_all_modules()
 
-    dataset = DATASETS.build(cfg.train_dataloader.dataset)
-    visualizer = VISUALIZERS.build(cfg.visualizer)
+    dataset, visualizer = obtain_dataset_cfg(cfg)
+    dataset = DATASETS.build(dataset)
+    visualizer = VISUALIZERS.build(visualizer)
 
     visualizer.dataset_meta = dataset.metainfo
     progress_bar = mmengine.ProgressBar(len(dataset))
@@ -72,6 +76,111 @@ def main():
             out_file=out_file)
 
         progress_bar.update()
+
+
+def obtain_dataset_cfg(cfg: Config) -> Tuple:
+    """Obtain dataset and visualizer from config. Two modes are supported:
+    1. Model Config Mode:
+        In this mode, the input config should be a complete model config, which
+        includes a dataset within pipeline and a visualizer.
+    2. Dataset Config Mode:
+        In this mode, the input config should be a complete dataset config,
+        which only includes basic dataset information, and it may does not
+        contain a visualizer and dataset pipeline.
+
+    Examples:
+        Typically, the model config files are stored in
+        `configs/textdet/dbnet/xxx.py` and should be looked like:
+        >>> train_dataloader = dict(
+        >>>     batch_size=16,
+        >>>     num_workers=8,
+        >>>     persistent_workers=True,
+        >>>     sampler=dict(type='DefaultSampler', shuffle=True),
+        >>>     dataset=ic15_det_train)
+
+        while the dataset config files are stored in
+        `configs/textdet/_base_/datasets/xxx.py` and should be like:
+        >>> ic15_det_train = dict(
+        >>>     type='OCRDataset',
+        >>>     data_root=ic15_det_data_root,
+        >>>     ann_file='textdet_train.json',
+        >>>     filter_cfg=dict(filter_empty_gt=True, min_size=32),
+        >>>     pipeline=None)
+
+    Args:
+        cfg (Config): Config object.
+
+    Returns:
+        Tuple: Tuple of (dataset, visualizer).
+    """
+
+    # Model config mode
+    if 'train_dataloader' in cfg:
+        dataset = cfg.train_dataloader.dataset
+        visualizer = cfg.visualizer
+
+        return dataset, visualizer
+
+    # Dataset config mode
+    default_visualizer = dict(
+        type='TextDetLocalVisualizer',
+        name='visualizer',
+        vis_backends=[dict(type='LocalVisBackend')])
+
+    default_det_pipeline = [
+        dict(
+            type='LoadImageFromFile',
+            file_client_args=dict(backend='disk'),
+            color_type='color_ignore_orientation'),
+        dict(
+            type='LoadOCRAnnotations',
+            with_polygon=True,
+            with_bbox=True,
+            with_label=True,
+        ),
+        dict(
+            type='PackTextDetInputs',
+            meta_keys=('img_path', 'ori_shape', 'img_shape'))
+    ]
+
+    default_rec_pipeline = [
+        dict(
+            type='LoadImageFromFile',
+            file_client_args=dict(backend='disk'),
+            ignore_empty=True,
+            min_size=2),
+        dict(type='LoadOCRAnnotations', with_text=True),
+        dict(
+            type='PackTextRecogInputs',
+            meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
+    ]
+
+    for key in cfg.keys():
+        if key.endswith('train'):
+            dataset = cfg[key]
+            if 'det' in key.lower():
+                visualizer = default_visualizer
+                dataset['pipeline'] = default_det_pipeline if dataset[
+                    'pipeline'] is None else dataset['pipeline']
+            elif 'rec' in key.lower():
+                default_visualizer['type'] = 'TextRecogLocalVisualizer'
+                visualizer = default_visualizer
+                dataset['pipeline'] = default_rec_pipeline if dataset[
+                    'pipeline'] is None else dataset['pipeline']
+            else:
+                raise NotImplementedError(
+                    'Dataset config mode only supports text detection and '
+                    'recognition datasets yet. Please ensure the dataset '
+                    'config contains "det" or "rec" in its key.')
+
+            return dataset, visualizer
+
+    raise ValueError(
+        'Unexpected config file format. Please check your config '
+        'file and try again. More details can be found in the docstring of '
+        'obtain_dataset_cfg function. Or, you may visit the documentation via '
+        'https://mmocr.readthedocs.io/en/dev-1.x/user_guides/useful_tools.html#dataset-visualization-tool'  # noqa: E501
+    )
 
 
 if __name__ == '__main__':

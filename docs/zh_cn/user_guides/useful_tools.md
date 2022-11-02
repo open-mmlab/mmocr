@@ -4,10 +4,12 @@
 
 ### 数据集可视化工具
 
-MMOCR 提供了数据集可视化工具 `tools/analysis_tools/browse_datasets.py` 以辅助用户排查可能遇到的数据集相关的问题。用户只需要指定所使用的训练配置文件路径，该工具即可自动将经过数据流水线（data pipeline）处理过的图像及其对应的真实标签绘制出来。例如，以下命令演示了如何使用该工具对 "DBNet_R50_icdar2015" 模型使用的训练数据进行可视化操作：
+MMOCR 提供了数据集可视化工具 `tools/analysis_tools/browse_datasets.py` 以辅助用户排查可能遇到的数据集相关的问题。用户只需要指定所使用的训练配置文件（通常存放在如 `configs/textdet/dbnet/xxx.py` 文件中）或数据集配置（通常存放在 `configs/textdet/_base_/datasets/xxx.py` 文件中）路径。该工具将依据输入的配置文件类型自动将经过数据流水线（data pipeline）处理过的图像及其对应的标签，或原始图片及其对应的标签绘制出来。
+
+例如，以下命令演示了如何使用该工具对 "DBNet_R50_icdar2015" 模型使用的经过数据变换的训练数据进行可视化操作：
 
 ```Bash
-# 示例：可视化 dbnet_r50dcn_v2_fpnc_1200e_icadr2015 使用的训练数据
+# 示例：可视化 dbnet_r50dcn_v2_fpnc_1200e_icadr2015 模型使用的训练数据
 python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py
 ```
 
@@ -16,6 +18,12 @@ python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_r50dcn
 <center class="half">
     <img src="https://user-images.githubusercontent.com/24622904/187611542-01e9aa94-fc12-4756-964b-a0e472522a3a.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611555-3f5ea616-863d-4538-884f-bccbebc2f7e7.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611581-88be3970-fbfe-4f62-8cdf-7a8a7786af29.jpg" width="250"/>
 </center>
+
+另外，用户也可以通过输入数据集配置文件路径来可视化数据集的原始图像及其对应的标签：
+
+```Bash
+python tools/analysis_tools/browse_dataset.py configs/textdet/_base_/datasets/icdar2015.py
+```
 
 基于此工具，用户可以方便地验证自定义数据集的标注格式是否正确；也可以通过修改配置文件中的 `train_pipeline` 来验证不同的数据增强策略组合是否符合自己的预期。`browse_dataset.py` 的可选参数如下：
 

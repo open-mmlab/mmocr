@@ -80,6 +80,12 @@ data/icdar2015
 └── textdet_train.json
 ```
 
+Once your dataset has been prepared, you can use the [browse_dataset.py](./useful_tools.md#dataset-visualization-tool) to visualize the dataset and check if the annotations are correct.
+
+```bash
+python tools/analysis_tools/browse_dataset.py configs/textdet/_base_/datasets/icdar2015.py
+```
+
 ## Dataset Configuration
 
 ### Single Dataset Training
