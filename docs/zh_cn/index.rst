@@ -51,6 +51,8 @@
    :maxdepth: 2
    :caption: 数据集支持
 
+   user_guides/data_prepare/datasetzoo.md
+   user_guides/data_prepare/dataset_preparer.md
    user_guides/data_prepare/det.md
    user_guides/data_prepare/recog.md
    user_guides/data_prepare/kie.md
