@@ -26,3 +26,15 @@ Models:
         Metrics:
           hmean-iou: 0.8684
     Weights: https://download.openmmlab.com/mmocr/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015_20220829_230108-f289bd20.pth
+
+  - Name: dbnetpp_oclip-resnet50_fpnc_1200e_icdar2015
+    In Collection: DBNetpp
+    Config: configs/textdet/dbnetpp/dbnetpp_oclip-resnet50_fpnc_1200e_icdar2015.py
+    Metadata:
+      Training Data: ICDAR2015
+    Results:
+      - Task: Text Detection
+        Dataset: ICDAR2015
+        Metrics:
+          hmean-iou:
+    Weights:

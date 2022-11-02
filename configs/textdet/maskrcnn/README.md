@@ -19,12 +19,14 @@ We present a conceptually simple, flexible, and general framework for object ins
 |                            Method                            | Pretrained Model | Training set  |   Test set   | #epochs | Test size | Precision | Recall | Hmean  |                            Download                            |
 | :----------------------------------------------------------: | :--------------: | :-----------: | :----------: | :-----: | :-------: | :-------: | :----: | :----: | :------------------------------------------------------------: |
 | [MaskRCNN](/configs/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_ctw1500.py) |     ImageNet     | CTW1500 Train | CTW1500 Test |   160   |   1600    |  0.7165   | 0.7776 | 0.7458 | [model](https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_ctw1500/mask-rcnn_resnet50_fpn_160e_ctw1500_20220826_154755-ce68ee8e.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_ctw1500/20220826_154755.log) |
+| [MaskRCNN_oclip-r50](/configs/textdet/maskrcnn/mask-rcnn_oclip-resnet50_fpn_160e_ctw1500.py) |        -         | CTW1500 Train | CTW1500 Test |   160   |   1600    |           |        |        |                    [model](<>) \| [log](<>)                    |
 
 ### ICDAR2015
 
 |                           Method                           | Pretrained Model |  Training set   |    Test set    | #epochs | Test size | Precision | Recall | Hmean  |                           Download                           |
 | :--------------------------------------------------------: | :--------------: | :-------------: | :------------: | :-----: | :-------: | :-------: | :----: | :----: | :----------------------------------------------------------: |
 | [MaskRCNN](/configs/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_icdar2015.py) |     ImageNet     | ICDAR2015 Train | ICDAR2015 Test |   160   |   1920    |  0.8644   | 0.7766 | 0.8182 | [model](https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_icdar2015/mask-rcnn_resnet50_fpn_160e_icdar2015_20220826_154808-ff5c30bf.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_icdar2015/20220826_154808.log) |
+| [MaskRCNN_oclip-r50](/configs/textdet/maskrcnn/mask-rcnn_oclip-resnet50_fpn_160e_icdar2015.py) |        -         | ICDAR2015 Train | ICDAR2015 Test |   160   |   1920    |           |        |        |                   [model](<>) \| [log](<>)                   |
 
 ## Citation
 

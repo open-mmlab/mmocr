@@ -16,15 +16,17 @@ Scene text detection has witnessed rapid progress especially with the recent dev
 
 ### CTW1500
 
-|                           Method                            | Backbone | Extra Data | Training set  |   Test set   | #epochs | Test size | Precision | Recall | Hmean  |                           Download                            |
-| :---------------------------------------------------------: | :------: | :--------: | :-----------: | :----------: | :-----: | :-------: | :-------: | :----: | :----: | :-----------------------------------------------------------: |
-| [PSENet](/configs/textdet/psenet/psenet_resnet50_fpnf_600e_ctw1500.py) | ResNet50 |     -      | CTW1500 Train | CTW1500 Test |   600   |   1280    |  0.7705   | 0.7883 | 0.7793 | [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_ctw1500/psenet_resnet50_fpnf_600e_ctw1500_20220825_221459-7f974ac8.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_ctw1500/20220825_221459.log) |
+|                          Method                          |   Backbone    | Extra Data | Training set  |   Test set   | #epochs | Test size | Precision | Recall | Hmean  |                          Download                           |
+| :------------------------------------------------------: | :-----------: | :--------: | :-----------: | :----------: | :-----: | :-------: | :-------: | :----: | :----: | :---------------------------------------------------------: |
+| [PSENet](/configs/textdet/psenet/psenet_resnet50_fpnf_600e_ctw1500.py) |   ResNet50    |     -      | CTW1500 Train | CTW1500 Test |   600   |   1280    |  0.7705   | 0.7883 | 0.7793 | [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_ctw1500/psenet_resnet50_fpnf_600e_ctw1500_20220825_221459-7f974ac8.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_ctw1500/20220825_221459.log) |
+| [PSENet_oclip-r50](/configs/textdet/psenet/psenet_oclip-resnet50_fpnf_600e_ctw1500.py) | CLIP-ResNet50 |     -      | CTW1500 Train | CTW1500 Test |   600   |   1280    |           |        |        |                  [model](<>) \| [log](<>)                   |
 
 ### ICDAR2015
 
-|                            Method                             | Backbone | Extra Data | Training set | Test set  | #epochs | Test size | Precision | Recall | Hmean  |                            Download                             |
-| :-----------------------------------------------------------: | :------: | :--------: | :----------: | :-------: | :-----: | :-------: | :-------: | :----: | :----: | :-------------------------------------------------------------: |
-| [PSENet](/configs/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015.py) | ResNet50 |     -      |  IC15 Train  | IC15 Test |   600   |   2240    |  0.8396   | 0.7636 | 0.7998 | [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015/psenet_resnet50_fpnf_600e_icdar2015_20220825_222709-b6741ec3.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015/20220825_222709.log) |
+|                           Method                           |   Backbone    | Extra Data | Training set | Test set  | #epochs | Test size | Precision | Recall | Hmean  |                           Download                            |
+| :--------------------------------------------------------: | :-----------: | :--------: | :----------: | :-------: | :-----: | :-------: | :-------: | :----: | :----: | :-----------------------------------------------------------: |
+| [PSENet](/configs/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015.py) |   ResNet50    |     -      |  IC15 Train  | IC15 Test |   600   |   2240    |  0.8396   | 0.7636 | 0.7998 | [model](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015/psenet_resnet50_fpnf_600e_icdar2015_20220825_222709-b6741ec3.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015/20220825_222709.log) |
+| [PSENet_oclip-r50](/configs/textdet/psenet/psenet_oclip-resnet50_fpnf_600e_icdar2015.py) | CLIP-ResNet50 |     -      |  IC15 Train  | IC15 Test |   600   |   2240    |           |        |        |                   [model](<>) \| [log](<>)                    |
 
 ## Citation
 

@@ -27,6 +27,18 @@ Models:
           hmean-iou: 0.7793
     Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50_fpnf_600e_ctw1500/psenet_resnet50_fpnf_600e_ctw1500_20220825_221459-7f974ac8.pth
 
+  - Name: psenet_oclip-resnet50_fpnf_600e_ctw1500
+    In Collection: PSENet
+    Config: configs/textdet/psenet/psenet_oclip-resnet50_fpnf_600e_ctw1500.py
+    Metadata:
+      Training Data: CTW1500
+    Results:
+      - Task: Text Detection
+        Dataset: CTW1500
+        Metrics:
+          hmean-iou:
+    Weights:
+
   - Name: psenet_resnet50_fpnf_600e_icdar2015
     In Collection: PSENet
     Config: configs/textdet/psenet/psenet_resnet50_fpnf_600e_icdar2015.py
@@ -37,4 +49,16 @@ Models:
         Dataset: ICDAR2015
         Metrics:
           hmean-iou: 0.7998
+    Weights:
+
+  - Name: psenet_oclip-resnet50_fpnf_600e_icdar2015
+    In Collection: PSENet
+    Config: configs/textdet/psenet/psenet_oclip-resnet50_fpnf_600e_icdar2015.py
+    Metadata:
+      Training Data: ICDAR2015
+    Results:
+      - Task: Text Detection
+        Dataset: ICDAR2015
+        Metrics:
+          hmean-iou:
     Weights:
