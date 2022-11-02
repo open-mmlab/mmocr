@@ -179,6 +179,283 @@ data_converter = dict(
 
 最后，我们可以通过指定不同的 dumper 来决定要将数据保存为何种格式。目前，我们仅支持 `JsonDumper` 与 `WildreceiptOpensetDumper`，其中，前者用于将数据保存为标准的 MMOCR Json 格式，而后者用于将数据保存为 Wildreceipt 格式。未来，我们计划支持 `LMDBDumper` 用于保存 LMDB 格式的标注文件。
 
-### 使用 Data Preparer 准备自定义数据集
+## 向 Dataset Preparer 添加新的数据集
 
-\[待更新\]
+### 添加公开数据集
+
+MMOCR 已经支持了许多[常用的公开数据集](./datasetzoo.md)。如果你想用的数据集还没有被支持，并且你也愿意为 MMOCR 开源社区[贡献代码](../../notes/contribution_guide.md)，你可以按照以下步骤来添加一个新的数据集。
+
+接下来我们以添加 **ICDAR2013** 数据集为例，展示如何一步一步地添加一个新的公开数据集。
+
+1. 添加 `metafile.yml`
+
+   首先，我们确认 `dataset_zoo/` 中不存在我们准备添加的数据集。然后我们先新建以待添加数据集命名的文件夹，如 `icdar2013/`（通常，我们使用不包含符号的小写英文字母及数字来命名数据集）。在 `icdar2013/` 文件夹中，我们新建 `metafile.yml` 文件，并按照以下模板来填充数据集的基本信息：
+
+   ```yaml
+   Name: 'Incidental Scene Text IC13'
+   Paper:
+     Title: ICDAR 2013 Robust Reading Competition
+     URL: https://www.imlab.jp/publication_data/1352/icdar_competition_report.pdf
+     Venue: ICDAR
+     Year: '2013'
+     BibTeX: '@inproceedings{karatzas2013icdar,
+     title={ICDAR 2013 robust reading competition},
+     author={Karatzas, Dimosthenis and Shafait, Faisal and Uchida, Seiichi and Iwamura, Masakazu and i Bigorda, Lluis Gomez and Mestre, Sergi Robles and Mas, Joan and Mota, David Fernandez and Almazan, Jon Almazan and De Las Heras, Lluis Pere},
+     booktitle={2013 12th international conference on document analysis and recognition},
+     pages={1484--1493},
+     year={2013},
+     organization={IEEE}}'
+   Data:
+     Website: https://rrc.cvc.uab.es/?ch=2
+     Language:
+       - English
+     Scene:
+       - Natural Scene
+     Granularity:
+       - Word
+     Tasks:
+       - textdet
+       - textrecog
+       - textspotting
+     License:
+       Type: N/A
+       Link: N/A
+     Format: .txt
+   ```
+
+   `metafile.yml` 存储了数据集的基本信息，这些信息一方面可以帮助用户了解数据集的基本情况，另一方面也会被用于自动化脚本来生成相应的数据集文档。因此，当你向 MMOCR Dataset Preparer 添加新的数据集支持时，请按照以上模板来填充 `metafile.yml` 文件。具体地，我们在下表中列出每个字段对应的含义：
+
+   | 字段名           | 含义                                                                  |
+   | :--------------- | :-------------------------------------------------------------------- |
+   | Name             | 数据集的名称                                                          |
+   | Paper.Title      | 数据集论文的标题                                                      |
+   | Paper.URL        | 数据集论文的链接                                                      |
+   | Paper.Venue      | 数据集论文发表的会议/期刊名称                                         |
+   | Paper.Year       | 数据集论文发表的年份                                                  |
+   | Paper.BibTeX     | 数据集论文的引用的 BibTex                                             |
+   | Data.Website     | 数据集的官方网站                                                      |
+   | Data.Language    | 数据集支持的语言                                                      |
+   | Data.Scene       | 数据集支持的场景，如 `Natural Scene`, `Document`, `Handwritten` 等    |
+   | Data.Granularity | 数据集支持的粒度，如 `Character`, `Word`, `Line` 等                   |
+   | Data.Tasks       | 数据集支持的任务，如 `textdet`, `textrecog`, `textspotting`, `kie` 等 |
+   | Data.License     | 数据集的许可证信息，如果不存在许可证，则使用 `N/A` 填充               |
+   | Data.Format      | 数据集标注文件的格式，如 `.txt`, `.xml`, `.json` 等                   |
+
+2. 添加对应任务的配置文件 - 配置数据集获取方法 `data_obtainer`
+
+   在 `dataset_zoo/icdar2013` 中，我们接着添加以任务名称命名的 `.py` 配置文件。如 `textdet.py`，`textrecog.py`，`textspotting.py`，`kie.py` 等。在该文件中，我们需要对数据获取方式和转换方式进行配置。
+
+   以文本检测任务为例：
+
+   ```python
+   data_obtainer = dict(
+    type='NaiveDataObtainer',
+    cache_path=cache_path,
+    data_root=data_root,
+    files=[
+        dict(
+            url='https://rrc.cvc.uab.es/downloads/'
+            'Challenge2_Training_Task12_Images.zip',
+            save_name='ic13_textdet_train_img.zip',
+            md5='a443b9649fda4229c9bc52751bad08fb',
+            split=['train'],
+            content=['image'],
+            mapping=[['ic13_textdet_train_img', 'textdet_imgs/train']]),
+        dict(
+            url='https://rrc.cvc.uab.es/downloads/'
+            'Challenge2_Training_Task1_GT.zip',
+            save_name='ic13_textdet_test_img.zip',
+            md5='af2e9f070c4c6a1c7bdb7b36bacf23e3',
+            split=['test'],
+            content=['image'],
+            mapping=[['ic13_textdet_test_img', 'textdet_imgs/test']]),
+        dict(
+            url='https://rrc.cvc.uab.es/downloads/'
+            'Challenge2_Test_Task12_Images.zip',
+            save_name='ic13_textdet_train_gt.zip',
+            md5='f3a425284a66cd67f455d389c972cce4',
+            split=['train'],
+            content=['annotation'],
+            mapping=[['ic13_textdet_train_gt', 'annotations/train']]),
+        dict(
+            url='https://rrc.cvc.uab.es/downloads/'
+            'Challenge2_Test_Task1_GT.zip',
+            save_name='ic13_textdet_test_gt.zip',
+            md5='3191c34cd6ac28b60f5a7db7030190fb',
+            split=['test'],
+            content=['annotation'],
+            mapping=[['ic13_textdet_test_gt', 'annotations/test']]),
+    ])
+   ```
+
+我们首先需要配置数据集获取方法，即 `data_obtainer`，通常来说，内置的 `NaiveDataObtainer` 即可完成绝大部分可以通过直链访问的数据集的下载。`NaiveDataObtainer` 将完成下载、解压、移动文件和重命名等操作。目前，我们暂时不支持自动下载存储在百度或谷歌网盘等需要登陆才能访问资源的数据集。
+
+如下表所示，`data_obtainer` 主要由四个字段构成：
+
+| 字段名     | 含义                                                       |
+| ---------- | ---------------------------------------------------------- |
+| type       | 数据集获取方法，目前仅支持 `NaiveDataObtainer`             |
+| cache_path | 数据集缓存路径，用于存储数据集准备过程中下载的压缩包等文件 |
+| data_root  | 数据集存储的根目录                                         |
+| files      | 数据集文件列表，用于描述数据集的下载信息                   |
+
+`files` 字段是一个列表，列表中的每个元素都是一个字典，用于描述一个数据集文件的下载信息。如下表所示：
+
+| 字段名    | 含义                                                              |
+| --------- | ----------------------------------------------------------------- |
+| url       | 数据集文件的下载链接                                              |
+| save_name | 数据集文件的保存名称                                              |
+| md5       | 数据集文件的 md5 值，用于校验下载的文件是否完整                   |
+| split     | 数据集文件所属的数据集划分，如 `train`，`test` 等，该字段可以空缺 |
+| content   | 数据集文件的内容，如 `image`，`annotation` 等，该字段可以空缺     |
+| mapping   | 数据集文件的解压映射，用于指定解压后的文件存储的位置              |
+
+3. 添加数据集配置文件 - 配置数据集转换器 `data_converter`
+
+   数据集转换器 `data_converter` 主要由标注文件获取器 `gatherer`，原始标注解析器 `parser`，以及数据存储器 `dumper` 组成。其中 `gatherer` 负责将图片与标注文件进行匹配，`parser` 负责将原始标注文件解析为标准格式，`dumper` 负责将标准格式的标注文件存储为 MMOCR 支持的格式。
+
+   一般来说，用户无需重新实现新的 `gatherer` 或 `dumper`，但是通常需要根据数据集的标注格式实现新的 `parser`。
+
+   我们通过观察获取的 ICDAR2013 数据集文件发现，其每一张图片都有一个对应的 `.txt` 格式的标注文件：
+
+   ```text
+   data_root
+   ├── train_imgs
+   │   ├── img_1.jpg
+   │   ├── img_2.jpg
+   │   └── ...
+   ├── train_annos
+   │   ├── gt_img_1.txt
+   │   ├── gt_img_2.txt
+   │   └── ...
+   ```
+
+   且每个标注文件名与图片的对应关系为：`gt_img_1.txt` 对应 `img_1.jpg`，以此类推。因此，我们可以使用 `pair_gather` 来进行匹配。
+
+   ```python
+   gatherer=dict(
+         type='pair_gather',
+         suffixes=['.jpg'],
+         rule=[r'(\w+)\.jpg', r'gt_\1.txt'])
+   ```
+
+   其中，规则 `rule` 是一个正则表达式对，第一个正则表达式用于匹配图片文件名，第二个正则表达式用于匹配标注文件名。在这里，我们使用 `(\w+)` 来匹配图片文件名，使用 `gt_\1.txt` 来匹配标注文件名，其中 `\1` 表示第一个正则表达式匹配到的内容。即，实现了将 `img_xx.jpg` 替换为 `gt_img_xx.txt` 的功能。
+
+   接下来，我们需要实现 `parser`，即将原始标注文件解析为标准格式。通常来说，用户在添加新的数据集前，可以浏览已支持数据集的[详情页](./datasetzoo.md)，并查看是否已有相同格式的数据集。如果已有相同格式的数据集，则可以直接使用该数据集的 `parser`。否则，则需要实现新的格式解析器。
+
+   数据格式解析器被统一存储在 `mmocr/datasets/preparers/parsers` 目录下。所有的 `parser` 都需要继承 `BaseParser`，并实现 `parse_file` 或 `parse_files` 方法。
+
+   其中，`parse_file()` 方法用于解析单个标注文件，如下代码块所示，`parse_file()` 接受两个参数，`file` 是一个 `Tuple` 类型的变量，包含了由 `gatherer` 获取的图片文件路径和标注文件路径，而 `split` 则会传入当前处理的数据集划分，如 `train` 或 `test`。
+
+   ```python
+   def parse_file(self, file: Tuple, split: str) -> Tuple:
+       """Convert annotation for a single image.
+
+       Args:
+           file (Tuple): A tuple of path to image and annotation
+           split (str): Current split.
+
+       Returns:
+           Tuple: A tuple of (img_path, instance). Instance is a dict
+           containing parsed annotations, which should contain the
+           following keys:
+           - 'poly' or 'box' (textdet or textspotting)
+           - 'text' (textspotting or textrecog)
+           - 'ignore' (all task)
+       """
+   ```
+
+   `parse_file()` 方法的输出是一个 `Tuple` 类型的变量，包含了图片文件路径和标注信息 `instance`。其中，`instance` 是一个字典列表，包含了解析后的标注信息，依据不同的任务类型，该列表中的每一个字典必须包含以下键：
+
+   | 键名   | 任务类型               | 说明                                   |
+   | :----- | :--------------------- | :------------------------------------- |
+   | poly   | textdet/textspotting   | 矩形框坐标 `box` 或多边形框坐标 `poly` |
+   | text   | textrecog/textspotting | 文本内容 `text`                        |
+   | ignore | all task               | 是否忽略该样本                         |
+
+   以下代码块反映了一个 `parse_file()` 方法返回的数据示例：
+
+   ```python
+   ('imgs/train/xxx.jpg',
+    dict(
+       poly=[[[0, 1], [1, 1], [1, 0], [0, 0]]],
+       text='hello',
+       ignore=False)
+   )
+   ```
+
+   需要注意的是，`parse_file()` 方法解析单个标注文件，并返回单张图片的标注信息，仅能在标注图像与标注文件满足“多对多”关系时使用。当尽存在单个标注文件时，可以通过重写 `parse_files()` 方法的方式，直接返回所有样本的数据信息。用户可以参见 `mmocr/datasets/preparers/parsers/totaltext_parser.py` 中的实现。
+
+   通过观察 ICDAR2013 数据集的标注文件：
+
+   ```text
+   158 128 411 181 "Footpath"
+   443 128 501 169 "To"
+   64 200 363 243 "Colchester"
+   542, 710, 938, 841, "break"
+   87, 884, 457, 1021, "could"
+   517, 919, 831, 1024, "save"
+   ```
+
+   我们发现内置的 `ICDARTxtTextDetAnnParser` 已经可以满足我们的需求，因此我们可以直接使用该 `parser`，并将其配置到 `preparer` 中。
+
+   ```python
+   parser=dict(
+        type='ICDARTxtTextDetAnnParser',
+        remove_strs=[',', '"'],
+        encoding='utf-8',
+        format='x1 y1 x2 y2 trans',
+        separator=' ',
+        mode='xyxy')
+   ```
+
+   其中，由于标注文件中混杂了多余的引号 `“”` 和逗号 `,`，我们通过指定 `remove_strs=[',', '"']` 来进行移除。另外，我们在 `format` 中指定了标注文件的格式，其中 `x1 y1 x2 y2 trans` 表示标注文件中的每一行包含了四个坐标和一个文本内容，且坐标和文本内容之间使用空格分隔（`separator`=' '）。另外，我们需要指定 `mode` 为 `xyxy`，表示标注文件中的坐标是左上角和右下角的坐标，这样以来，`ICDARTxtTextDetAnnParser` 即可将该格式的标注解析为 MMOCR 统一格式。
+
+   最后，数据格式转换器 `data_converter` 的完整配置如下：
+
+   ```python
+   data_converter = dict(
+     type='TextDetDataConverter',
+     splits=['train', 'test'],
+     data_root=data_root,
+     gatherer=dict(
+         type='pair_gather',
+         suffixes=['.jpg'],
+         rule=[r'(\w+)\.jpg', r'gt_\1.txt']),
+     parser=dict(
+        type='ICDARTxtTextDetAnnParser',
+        remove_strs=[',', '"'],
+        encoding='utf-8',
+        format='x1 y1 x2 y2 trans',
+        separator=' ',
+        mode='xyxy'),
+     dumper=dict(type='JsonDumper'))
+   ```
+
+4. 添加标注示例
+
+   最后，我们可以在 `dataset_zoo/icdar2013/` 目录下添加标注示例文件 `sample_anno.md` 以帮助文档脚本在生成文档时添加标注示例，标注示例文件是一个 Markdown 文件，其内容通常包含了单个样本的原始数据格式。例如，以下代码块展示了 ICDAR2013 数据集的数据样例文件：
+
+````markdown
+  **Text Detection**
+
+  ```text
+  # train split
+  # x1 y1 x2 y2 "transcript"
+
+  158 128 411 181 "Footpath"
+  443 128 501 169 "To"
+  64 200 363 243 "Colchester"
+
+  # test split
+  # x1, y1, x2, y2, "transcript"
+
+  38, 43, 920, 215, "Tiredness"
+  275, 264, 665, 450, "kills"
+  0, 699, 77, 830, "A"
+  ```
+````
+
+### 添加私有数据集
+
+待更新...
