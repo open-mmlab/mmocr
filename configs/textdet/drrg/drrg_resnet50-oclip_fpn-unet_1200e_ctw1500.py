@@ -8,9 +8,8 @@ _base_.model.backbone = dict(
     type='CLIPResNet',
     init_cfg=dict(
         type='Pretrained',
-        checkpoint=
-        '/mnt/petrelfs/openaide-tech/gaotong/mmocr_github/r50_oclip.pth'),
-)
+        checkpoint='https://download.openmmlab.com/'
+        'mmocr/backbone/resnet50-oclip-7ba0c533.pth'))
 
 param_scheduler = [
     dict(type='LinearLR', end=100, start_factor=0.001),
