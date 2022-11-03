@@ -111,7 +111,7 @@ pip3 install -e .
 支持的算法：
 
 <details open>
-<summary>BackBone</summary>
+<summary>骨干网络</summary>
 
 - [x] [oCLIP](configs/backbone/oclip/README.md) (ECCV'2022)
 

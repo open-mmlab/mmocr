@@ -16,10 +16,10 @@ Driven by deep neural networks and large scale datasets, scene text detection me
 
 ### CTW1500
 
-|                            Method                            | Pretrained Model | Training set  |   Test set   | #epochs | Test size | Precision | Recall | Hmean  |                            Download                            |
-| :----------------------------------------------------------: | :--------------: | :-----------: | :----------: | :-----: | :-------: | :-------: | :----: | :----: | :------------------------------------------------------------: |
-| [TextSnake](/configs/textdet/textsnake/textsnake_resnet50_fpn-unet_1200e_ctw1500.py) |     ImageNet     | CTW1500 Train | CTW1500 Test |  1200   |    736    |  0.8535   | 0.8052 | 0.8286 | [model](https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_resnet50_fpn-unet_1200e_ctw1500/textsnake_resnet50_fpn-unet_1200e_ctw1500_20220825_221459-c0b6adc4.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_resnet50_fpn-unet_1200e_ctw1500/20220825_221459.log) |
-| [TextSnake_oclip-r50](/configs/textdet/textsnake/textsnake_oclip-resnet50_fpn-unet_1200e_ctw1500.py) |        -         | CTW1500 Train | CTW1500 Test |  1200   |    736    |           |        |        |                    [model](<>) \| [log](<>)                    |
+|                       Method                       |       BackBone       | Pretrained Model | Training set  |   Test set   | #epochs | Test size | Precision | Recall | Hmean  |                       Download                       |
+| :------------------------------------------------: | :------------------: | :--------------: | :-----------: | :----------: | :-----: | :-------: | :-------: | :----: | :----: | :--------------------------------------------------: |
+| [TextSnake](/configs/textdet/textsnake/textsnake_resnet50_fpn-unet_1200e_ctw1500.py) |       ResNet50       |        -         | CTW1500 Train | CTW1500 Test |  1200   |    736    |  0.8535   | 0.8052 | 0.8286 | [model](https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_resnet50_fpn-unet_1200e_ctw1500/textsnake_resnet50_fpn-unet_1200e_ctw1500_20220825_221459-c0b6adc4.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_resnet50_fpn-unet_1200e_ctw1500/20220825_221459.log) |
+| [TextSnake_oclip-r50](/configs/textdet/textsnake/textsnake_oclip-resnet50_fpn-unet_1200e_ctw1500.py) | [oCLIP-ResNet50](<>) |        -         | CTW1500 Train | CTW1500 Test |  1200   |    736    |           |        |        |               [model](<>) \| [log](<>)               |
 
 ## Citation
 

@@ -1,6 +1,6 @@
 # oCLIP
 
-> [Language Matters: A Weakly Supervised Vision-Language Pre-training Approach for Scene Text Detection and Spotting](https://arxiv.org/abs/2203.03911)
+> [Language Matters: A Weakly Supervised Vision-Language Pre-training Approach for Scene Text Detection and Spotting](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136880282.pdf)
 
 <!-- [ALGORITHM] -->
 
@@ -12,12 +12,22 @@ Recently, Vision-Language Pre-training (VLP) techniques have greatly benefited v
 <img src="https://user-images.githubusercontent.com/24622904/199475057-aa688422-518d-4d7a-86fc-1be0cc1b5dc6.png"/>
 </div>
 
-## Support Model
+## Models
 
-|           | DBNet | DBNet++ | FCENet | TextSnake | PSENet | DRRG | Mask R-CNN |
-| :-------: | :---: | :-----: | :----: | :-------: | :----: | :--: | :--------: |
-| ICDAR2015 |   ✓   |    ✓    |   ✓    |           |   ✓    |      |     ✓      |
-|  CTW1500  |       |         |        |     ✓     |   ✓    |  ✓   |     ✓      |
+| Backbone  | Pre-train Data | Model |
+| :-------: | :------------: | :---: |
+| ResNet-50 |   SynthText    |       |
+
+```{note}
+The model is converted from the official [oCLIP](ghttps://github.com/bytedance/oclip.it).
+```
+
+## Support Text Detection Models
+
+|           | [DBNet](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnet) | [DBNet++](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnetpp) | [FCENet](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fcenet) | [TextSnake](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fcenet) | [PSENet](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet) | [DRRG](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#drrg) | [Mask R-CNN](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn) |
+| :-------: | :------------------------------------------------------------------------: | :----------------------------------------------------------------------------: | :--------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: | :--------------------------------------------------------------------------: | :----------------------------------------------------------------------: | :----------------------------------------------------------------------------------: |
+| ICDAR2015 |                                     ✓                                      |                                       ✓                                        |                                      ✓                                       |                                                                                 |                                      ✓                                       |                                                                          |                                          ✓                                           |
+|  CTW1500  |                                                                            |                                                                                |                                                                              |                                        ✓                                        |                                      ✓                                       |                                    ✓                                     |                                          ✓                                           |
 
 ## Citation
 
