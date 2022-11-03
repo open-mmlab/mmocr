@@ -19,7 +19,7 @@ Recently, Vision-Language Pre-training (VLP) techniques have greatly benefited v
 | ResNet-50 |   SynthText    | [Link](https://download.openmmlab.com/mmocr/backbone/resnet50-oclip-7ba0c533.pth) |
 
 ```{note}
-The model is converted from the official [oCLIP](ghttps://github.com/bytedance/oclip.it).
+The model is converted from the official [oCLIP](https://github.com/bytedance/oclip.git).
 ```
 
 ## Supported Text Detection Models
