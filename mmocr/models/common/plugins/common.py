@@ -29,7 +29,7 @@ class AvgPool2d(nn.Module):
         super().__init__()
         self.model = nn.AvgPool2d(kernel_size, stride, padding)
 
-    def forward(self, x) -> torch.Tensor:
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward function.
         Args:
             x (Tensor): Input feature map.

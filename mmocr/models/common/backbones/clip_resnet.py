@@ -39,8 +39,7 @@ class CLIPBottleneck(Bottleneck):
 
 @MODELS.register_module()
 class CLIPResNet(ResNet):
-    """Implement the ResNet variant used in `oCLIP.
-
+    """Implement the ResNet variant used in `oCLIP
     <https://github.com/bytedance/oclip>`_.
 
     It is also the official structure in
@@ -57,13 +56,13 @@ class CLIPResNet(ResNet):
     The stride of each convolution layer is always set to 1.
 
     Args:
-        depth (int): Depth of resnet, from {50}. Defaults to 50.
+        depth (int): Depth of resnet, options are [50]. Defaults to 50.
         strides (sequence(int)): Strides of the first block of each stage.
             Defaults to (1, 2, 2, 2).
         deep_stem (bool): Replace 7x7 conv in input stem with 3 3x3 conv.
             Defaults to True.
-        avg_down (bool): Use AvgPool instead of stride conv when
-            downsampling in the bottleneck. Defaults to True.
+        avg_down (bool): Use AvgPool instead of stride conv at
+            the downsampling stage in the bottleneck. Defaults to True.
         **kwargs: Keyword arguments for
             :class:``mmdet.models.backbones.resnet.ResNet``.
     """
@@ -84,7 +83,7 @@ class CLIPResNet(ResNet):
             avg_down=avg_down,
             **kwargs)
 
-    def _make_stem_layer(self, in_channels, stem_channels):
+    def _make_stem_layer(self, in_channels: int, stem_channels: int):
         """Build stem layer for CLIPResNet used in `CLIP
         https://github.com/openai/CLIP>`_.
 
