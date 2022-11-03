@@ -39,7 +39,8 @@ class CLIPBottleneck(Bottleneck):
 
 @MODELS.register_module()
 class CLIPResNet(ResNet):
-    """Implement the ResNet variant used in `oCLIP
+    """Implement the ResNet variant used in `oCLIP.
+
     <https://github.com/bytedance/oclip>`_.
 
     It is also the official structure in
