@@ -2,8 +2,6 @@ _base_ = [
     'textsnake_resnet50_fpn-unet_1200e_ctw1500.py',
 ]
 
-load_from = None
-
 _base_.model.backbone = dict(
     type='CLIPResNet',
     init_cfg=dict(
