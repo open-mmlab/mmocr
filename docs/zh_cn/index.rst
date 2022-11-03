@@ -62,6 +62,7 @@
    :caption: 模型支持
 
    modelzoo.md
+   backbones.md
    textdet_models.md
    textrecog_models.md
    kie_models.md

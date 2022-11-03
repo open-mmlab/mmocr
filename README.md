@@ -111,6 +111,13 @@ Please see [Quick Run](https://mmocr.readthedocs.io/en/dev-1.x/get_started/quick
 Supported algorithms:
 
 <details open>
+<summary>BackBone</summary>
+
+- [x] [oCLIP](configs/backbone/oclip/README.md) (ECCV'2022)
+
+</details>
+
+<details open>
 <summary>Text Detection</summary>
 
 - [x] [DBNet](configs/textdet/dbnet/README.md) (AAAI'2020) / [DBNet++](configs/textdet/dbnetpp/README.md) (TPAMI'2022)

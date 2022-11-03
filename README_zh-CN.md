@@ -111,6 +111,13 @@ pip3 install -e .
 支持的算法：
 
 <details open>
+<summary>骨干网络</summary>
+
+- [x] [oCLIP](configs/backbone/oclip/README.md) (ECCV'2022)
+
+</details>
+
+<details open>
 <summary>文字检测</summary>
 
 - [x] [DBNet](configs/textdet/dbnet/README.md) (AAAI'2020) / [DBNet++](configs/textdet/dbnetpp/README.md) (TPAMI'2022)
