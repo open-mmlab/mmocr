@@ -36,8 +36,8 @@ Models:
       - Task: Text Detection
         Dataset: CTW1500
         Metrics:
-          hmean-iou:
-    Weights:
+          hmean-iou: 0.8037
+    Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50-oclip_fpnf_600e_ctw1500/psenet_resnet50-oclip_fpnf_600e_ctw1500_20221101_140406-d431710d.pth
 
   - Name: psenet_resnet50_fpnf_600e_icdar2015
     In Collection: PSENet
@@ -60,5 +60,5 @@ Models:
       - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
-          hmean-iou:
-    Weights:
+          hmean-iou: 0.8478
+    Weights: https://download.openmmlab.com/mmocr/textdet/psenet/psenet_resnet50-oclip_fpnf_600e_icdar2015/psenet_resnet50-oclip_fpnf_600e_icdar2015_20221101_131357-2bdca389.pth

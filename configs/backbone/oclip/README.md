@@ -14,20 +14,20 @@ Recently, Vision-Language Pre-training (VLP) techniques have greatly benefited v
 
 ## Models
 
-| Backbone  | Pre-train Data | Model |
-| :-------: | :------------: | :---: |
-| ResNet-50 |   SynthText    |       |
+| Backbone  | Pre-train Data |                                       Model                                       |
+| :-------: | :------------: | :-------------------------------------------------------------------------------: |
+| ResNet-50 |   SynthText    | [Link](https://download.openmmlab.com/mmocr/backbone/resnet50-oclip-7ba0c533.pth) |
 
 ```{note}
 The model is converted from the official [oCLIP](ghttps://github.com/bytedance/oclip.it).
 ```
 
-## Support Text Detection Models
+## Supported Text Detection Models
 
 |           | [DBNet](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnet) | [DBNet++](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnetpp) | [FCENet](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fcenet) | [TextSnake](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fcenet) | [PSENet](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet) | [DRRG](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#drrg) | [Mask R-CNN](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn) |
 | :-------: | :------------------------------------------------------------------------: | :----------------------------------------------------------------------------: | :--------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: | :--------------------------------------------------------------------------: | :----------------------------------------------------------------------: | :----------------------------------------------------------------------------------: |
 | ICDAR2015 |                                     ✓                                      |                                       ✓                                        |                                      ✓                                       |                                                                                 |                                      ✓                                       |                                                                          |                                          ✓                                           |
-|  CTW1500  |                                                                            |                                                                                |                                                                              |                                        ✓                                        |                                      ✓                                       |                                    ✓                                     |                                          ✓                                           |
+|  CTW1500  |                                                                            |                                                                                |                                      ✓                                       |                                        ✓                                        |                                      ✓                                       |                                    ✓                                     |                                          ✓                                           |
 
 ## Citation
 

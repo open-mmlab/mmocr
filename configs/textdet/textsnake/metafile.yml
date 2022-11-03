@@ -35,5 +35,5 @@ Models:
       - Task: Text Detection
         Dataset: CTW1500
         Metrics:
-          hmean-iou:
-    Weights:
+          hmean-iou: 0.8529
+    Weights: https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_resnet50-oclip_fpn-unet_1200e_ctw1500/textsnake_resnet50-oclip_fpn-unet_1200e_ctw1500_20221101_134814-a216e5b2.pth
