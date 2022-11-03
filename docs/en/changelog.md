@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.6.3 (03/11/2022)
+
+### Highlights
+
+This release enhances the inference script and fixes a bug that might cause failure on TorchServe.
+
+Besides, a new backbone, oCLIP-ResNet, and a dataset preparation tool, Dataset Preparer, have been released in
+MMOCR 1.0.0rc3 ([1.x branch](https://github.com/open-mmlab/mmocr/tree/1.x)). Check out the [changelog](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) for more information about the features, and [maintenance plan](https://mmocr.readthedocs.io/en/dev-1.x/migration/overview.html) for how we will maintain MMOCR in the future.
+
+### New Features & Enhancements
+
+- Convert numpy.float32 type to python built-in float type by @JunYao1020 in https://github.com/open-mmlab/mmocr/pull/1462
+- When '.' char not in output string, output is also considered to be a… by @JunYao1020 in https://github.com/open-mmlab/mmocr/pull/1457
+- Refactor issue template by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1449
+- issue template by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1489
+- Update maintainers by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1504
+- Support MMCV \< 1.8.0 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1508
+
+### Bug Fixes
+
+- fix ci by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1491
+- \[CI\] Fix CI by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1463
+
+### Docs
+
+- \[DOCs\] Add MMYOLO in Readme. by @ysh329 in https://github.com/open-mmlab/mmocr/pull/1475
+- \[Docs\] Update contributing.md by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1490
+
+### New Contributors
+
+- @ysh329 made their first contribution in https://github.com/open-mmlab/mmocr/pull/1475
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v0.6.2...v0.6.3
+
 ## 0.6.2 (14/10/2022)
 
 ### Highlights

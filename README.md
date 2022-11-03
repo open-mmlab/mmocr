@@ -71,30 +71,35 @@ The main branch works with **PyTorch 1.6+**.
 
 ## What's New
 
-While the stable version (0.6.2) and the preview version (1.0.0) are being maintained concurrently now, the former version will be deprecated by the end of 2022. Therefore, we recommend users upgrade to [MMOCR 1.0](https://github.com/open-mmlab/mmocr/tree/1.x) to fruitful new features and better performance brought by the new architecture. Check out our [maintenance plan](https://mmocr.readthedocs.io/en/dev-1.x/migration/overview.html) for how we will maintain them in the future.
+While the stable version (0.6.3) and the preview version (1.0.0) are being maintained concurrently now, the former version will be deprecated by the end of 2022. Therefore, we recommend users upgrade to [MMOCR 1.0](https://github.com/open-mmlab/mmocr/tree/1.x) to fruitful new features and better performance brought by the new architecture. Check out our [maintenance plan](https://mmocr.readthedocs.io/en/dev-1.x/migration/overview.html) for how we will maintain them in the future.
 
 ### 💎 Stable version
 
-v0.6.2 was released in 2022-10-14.
+v0.6.3 was released in 2022-11-03.
 
-1. It's now possible to train/test models through Python Interface.
-2. ResizeOCR now fully supports all the parameters in mmcv.impad.
+This release enhances the inference script and fixes a bug that might cause failure on TorchServe.
 
 Read [Changelog](https://mmocr.readthedocs.io/en/latest/changelog.html) for more details!
 
 ### 🌟 Preview of 1.x version
 
-A brand new version of **MMOCR v1.0.0rc2** was released in 2022-10-14:
+A brand new version of **MMOCR v1.0.0rc3** was released in 2022-11-03:
 
-1. **New engines**. MMOCR 1.x is based on [MMEngine](https://github.com/open-mmlab/mmengine), which provides a general and powerful runner that allows more flexible customizations and significantly simplifies the entrypoints of high-level interfaces.
+1. We release several pretrained models using [oCLIP-ResNet](https://github.com/open-mmlab/mmocr/blob/1.x/configs/backbone/oclip/README.md) as the backbone, which is a ResNet variant trained with [oCLIP](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136880282.pdf) and can significantly boost the performance of text detection models.
 
-2. **Unified interfaces**. As a part of the OpenMMLab 2.0 projects, MMOCR 1.x unifies and refactors the interfaces and internal logics of train, testing, datasets, models, evaluation, and visualization. All the OpenMMLab 2.0 projects share the same design in those interfaces and logics to allow the emergence of multi-task/modality algorithms.
+2. Preparing datasets is troublesome and tedious, especially in OCR domain where multiple datasets are usually required. In order to free our users from laborious work, we designed a [Dataset Preparer](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html) to help you get a bunch of datasets ready for use, with only **one line of command**! Dataset Preparer is also crafted to consist of a series of reusable modules, each responsible for handling one of the standardized phases throughout the preparation process, shortening the development cycle on supporting new datasets.
 
-3. **Cross project calling**. Benefiting from the unified design, you can use the models implemented in other OpenMMLab projects, such as MMDet. We provide an example of how to use MMDetection's Mask R-CNN through `MMDetWrapper`. Check our documents for more details. More wrappers will be released in the future.
+3. **New engines**. MMOCR 1.x is based on [MMEngine](https://github.com/open-mmlab/mmengine), which provides a general and powerful runner that allows more flexible customizations and significantly simplifies the entrypoints of high-level interfaces.
 
-4. **Stronger visualization**. We provide a series of useful tools which are mostly based on brand-new visualizers. As a result, it is more convenient for the users to explore the models and datasets now.
+4. **Unified interfaces**. As a part of the OpenMMLab 2.0 projects, MMOCR 1.x unifies and refactors the interfaces and internal logics of train, testing, datasets, models, evaluation, and visualization. All the OpenMMLab 2.0 projects share the same design in those interfaces and logics to allow the emergence of multi-task/modality algorithms.
 
-5. **More documentation and tutorials**. We add a bunch of documentation and tutorials to help users get started more smoothly. Read it [here](https://mmocr.readthedocs.io/en/dev-1.x/).
+5. **Cross project calling**. Benefiting from the unified design, you can use the models implemented in other OpenMMLab projects, such as MMDet. We provide an example of how to use MMDetection's Mask R-CNN through `MMDetWrapper`. Check our documents for more details. More wrappers will be released in the future.
+
+6. **Stronger visualization**. We provide a series of useful tools which are mostly based on brand-new visualizers. As a result, it is more convenient for the users to explore the models and datasets now.
+
+7. **More documentation and tutorials**. We add a bunch of documentation and tutorials to help users get started more smoothly. Read it [here](https://mmocr.readthedocs.io/en/dev-1.x/).
+
+8. **One-stop Dataset Preparaion**. Multiple datasets are instantly ready with only one line of command, via our [Dataset Preparer](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html).
 
 Find more new features in [1.x branch](https://github.com/open-mmlab/mmocr/tree/1.x). Issues and PRs are welcome!
 
