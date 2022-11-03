@@ -99,6 +99,8 @@ A brand new version of **MMOCR v1.0.0rc3** was released in 2022-11-03:
 
 7. **More documentation and tutorials**. We add a bunch of documentation and tutorials to help users get started more smoothly. Read it [here](https://mmocr.readthedocs.io/en/dev-1.x/).
 
+8. **One-stop Dataset Preparaion**. Multiple datasets are instantly ready with only one line of command, via our [Dataset Preparer](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html).
+
 Find more new features in [1.x branch](https://github.com/open-mmlab/mmocr/tree/1.x). Issues and PRs are welcome!
 
 ## Installation
