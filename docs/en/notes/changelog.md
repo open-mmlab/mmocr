@@ -6,21 +6,32 @@
 
 1. We release several pretrained models using [oCLIP-ResNet](<>) as the backbone, which is a ResNet variant trained with [oCLIP](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136880282.pdf) and can significantly boost the performance of text detection models.
 
-2. Preparing datasets is troublesome and tedious, especially in OCR domain where multiple datasets are usually required. In order to free users from laborious work, we designed a [Dataset Preparer](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html), which helps users get a bunch of datasets ready for use, with only **one line of command**!  Dataset Preparer consists of a series of reusable modules responsible for handling different standardized phases throughout the entire preparation process, shortening the development cycle on supporting new datasets.
+2. Preparing datasets is troublesome and tedious, especially in OCR domain where multiple datasets are usually required. In order to free our users from laborious work, we designed a [Dataset Preparer](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html) to help you get a bunch of datasets ready for use, with only **one line of command**!  Dataset Preparer is also crafted to consist of a series of reusable modules, each responsible for handling one of the standardized phases throughout the preparation process, shortening the development cycle on supporting new datasets.
 
 ### New Features & Enhancements
 
 - Add Dataset Preparer by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1484
+
+* support modified resnet structure used in oCLIP by @HannibalAPE in https://github.com/open-mmlab/mmocr/pull/1458
+* Add oCLIP configs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1509
 
 ### Docs
 
 - Update install.md by @rogachevai in https://github.com/open-mmlab/mmocr/pull/1494
 - Refine some docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1455
 - Update some dataset preparer related docs by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1502
+- oclip readme by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1505
 
 ### Bug Fixes
 
 - Fix offline_eval error caused by new data flow by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1500
+
+### New Contributors
+
+- @rogachevai made their first contribution in https://github.com/open-mmlab/mmocr/pull/1494
+- @HannibalAPE made their first contribution in https://github.com/open-mmlab/mmocr/pull/1458
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc2...v1.0.0rc3
 
 ## v1.0.0rc2 (14/10/2022)
 
