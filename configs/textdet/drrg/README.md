@@ -19,7 +19,7 @@ Arbitrary shape text detection is a challenging task due to the high variety and
 |                       Method                       |       BackBone       | Pretrained Model | Training set  |   Test set   | #epochs | Test size | Precision | Recall | Hmean  |                       Download                       |
 | :------------------------------------------------: | :------------------: | :--------------: | :-----------: | :----------: | :-----: | :-------: | :-------: | :----: | :----: | :--------------------------------------------------: |
 | [DRRG](/configs/textdet/drrg/drrg_resnet50_fpn-unet_1200e_ctw1500.py) |       ResNet50       |        -         | CTW1500 Train | CTW1500 Test |  1200   |    640    |  0.8775   | 0.8179 | 0.8467 | [model](https://download.openmmlab.com/mmocr/textdet/drrg/drrg_resnet50_fpn-unet_1200e_ctw1500/drrg_resnet50_fpn-unet_1200e_ctw1500_20220827_105233-d5c702dd.pth) \\ [log](https://download.openmmlab.com/mmocr/textdet/drrg/drrg_resnet50_fpn-unet_1200e_ctw1500/20220827_105233.log) |
-| [DRRG_oclip-r50](/configs/textdet/drrg/drrg_oclip-resnet50_fpn-unet_1200e_ctw1500.py) | [oCLIP-ResNet50](<>) |        -         | CTW1500 Train | CTW1500 Test |  1200   |           |           |        |        |               [model](<>) \\ [log](<>)               |
+| [DRRG_r50-oclip](/configs/textdet/drrg/drrg_resnet50-oclip_fpn-unet_1200e_ctw1500.py) | [ResNet50-oCLIP](<>) |        -         | CTW1500 Train | CTW1500 Test |  1200   |           |           |        |        |               [model](<>) \\ [log](<>)               |
 
 ## Citation
 

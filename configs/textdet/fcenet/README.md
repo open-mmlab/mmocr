@@ -19,14 +19,14 @@ One of the main challenges for arbitrary-shaped text detection is to design a go
 |                      Method                       |       Backbone       | Pretrained Model | Training set  |   Test set   | #epochs |  Test size  | Precision | Recall | Hmean  |                      Download                       |
 | :-----------------------------------------------: | :------------------: | :--------------: | :-----------: | :----------: | :-----: | :---------: | :-------: | :----: | :----: | :-------------------------------------------------: |
 | [FCENet](/configs/textdet/fcenet/fcenet_resnet50-dcnv2_fpn_1500e_ctw1500.py) |   ResNet50 + DCNv2   |        -         | CTW1500 Train | CTW1500 Test |  1500   | (736, 1080) |  0.8689   | 0.8296 | 0.8488 | [model](https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50-dcnv2_fpn_1500e_ctw1500/fcenet_resnet50-dcnv2_fpn_1500e_ctw1500_20220825_221510-4d705392.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50-dcnv2_fpn_1500e_ctw1500/20220825_221510.log) |
-| [FCENet_oclip-r50](/configs/textdet/fcenet/fcenet_oclip-resnet50-dcnv2_fpn_1500e_ctw1500.py) | [oCLIP-ResNet50](<>) |        -         | CTW1500 Train | CTW1500 Test |  1500   |             |           |        |        |              [model](<>) \| [log](<>)               |
+| [FCENet_r50-oclip](/configs/textdet/fcenet/fcenet_resnet50-oclip-dcnv2_fpn_1500e_ctw1500.py) | [ResNet50-oCLIP](<>) |        -         | CTW1500 Train | CTW1500 Test |  1500   |             |           |        |        |              [model](<>) \| [log](<>)               |
 
 ### ICDAR2015
 
 |                        Method                         |    Backbone    | Pretrained Model | Training set | Test set  | #epochs |  Test size   | Precision | Recall | Hmean  |                         Download                         |
 | :---------------------------------------------------: | :------------: | :--------------: | :----------: | :-------: | :-----: | :----------: | :-------: | :----: | :----: | :------------------------------------------------------: |
 | [FCENet](/configs/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015.py) |    ResNet50    |        -         |  IC15 Train  | IC15 Test |  1500   | (2260, 2260) |  0.8243   | 0.8834 | 0.8528 | [model](https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015/fcenet_resnet50_fpn_1500e_icdar2015_20220826_140941-167d9042.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015/20220826_140941.log) |
-| [FCENet_oclip-r50](/configs/textdet/fcenet/fcenet_oclip-resnet50_fpn_1500e_icdar2015.py) | oCLIP-ResNet50 |        -         |  IC15 Train  | IC15 Test |  1500   | (2260, 2260) |     -     |   -    |   -    |                 [model](<>) \| [log](<>)                 |
+| [FCENet_r50-oclip](/configs/textdet/fcenet/fcenet_resnet50-oclip_fpn_1500e_icdar2015.py) | ResNet50-oCLIP |        -         |  IC15 Train  | IC15 Test |  1500   | (2260, 2260) |     -     |   -    |   -    |                 [model](<>) \| [log](<>)                 |
 
 ## Citation
 

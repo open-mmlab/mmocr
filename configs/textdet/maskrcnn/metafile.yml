@@ -28,9 +28,9 @@ Models:
           hmean: 0.7458
     Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_ctw1500/mask-rcnn_resnet50_fpn_160e_ctw1500_20220826_154755-ce68ee8e.pth
 
-  - Name: mask-rcnn_oclip-resnet50_fpn_160e_ctw1500
+  - Name: mask-rcnn_resnet50-oclip_fpn_160e_ctw1500
     In Collection: Mask R-CNN
-    Config: configs/textdet/maskrcnn/mask-rcnn_oclip-resnet50_fpn_160e_ctw1500.py
+    Config: configs/textdet/maskrcnn/mask-rcnn_resnet50-oclip_fpn_160e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:
@@ -52,9 +52,9 @@ Models:
           hmean: 0.8182
     Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_icdar2015/mask-rcnn_resnet50_fpn_160e_icdar2015_20220826_154808-ff5c30bf.pth
 
-  - Name: mask-rcnn_oclip-resnet50_fpn_160e_icdar2015
+  - Name: mask-rcnn_resnet50-oclip_fpn_160e_icdar2015
     In Collection: Mask R-CNN
-    Config: configs/textdet/maskrcnn/mask-rcnn_oclip-resnet50_fpn_160e_icdar2015.py
+    Config: configs/textdet/maskrcnn/mask-rcnn_resnet50-oclip_fpn_160e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:

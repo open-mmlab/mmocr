@@ -39,7 +39,7 @@ Models:
           hmean-iou: 0.8543
     Weights: https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015_20220828_124917-452c443c.pth
 
-  - Name: dbnet_oclip-resnet50_fpnc_1200e_icdar2015
+  - Name: dbnet_resnet50-oclip_fpnc_1200e_icdar2015
     In Collection: DBNet
     Config: configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
     Metadata:

@@ -27,9 +27,9 @@ Models:
           hmean-iou: 0.8488
     Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50-dcnv2_fpn_1500e_ctw1500/fcenet_resnet50-dcnv2_fpn_1500e_ctw1500_20220825_221510-4d705392.pth
 
-  - Name: fcenet_oclip-resnet50_fpn_1500e_ctw1500
+  - Name: fcenet_resnet50-oclip_fpn_1500e_ctw1500
     In Collection: FCENet
-    Config: configs/textdet/fcenet/fcenet_oclip-resnet50_fpn_1500e_ctw1500.py
+    Config: configs/textdet/fcenet/fcenet_resnet50-oclip_fpn_1500e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:
@@ -51,9 +51,9 @@ Models:
           hmean-iou: 0.8528
     Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015/fcenet_resnet50_fpn_1500e_icdar2015_20220826_140941-167d9042.pth
 
-  - Name: fcenet_oclip-resnet50_fpn_1500e_icdar2015
+  - Name: fcenet_resnet50-oclip_fpn_1500e_icdar2015
     In Collection: FCENet
-    Config: configs/textdet/fcenet/fcenet_oclip-resnet50_fpn_1500e_icdar2015.py
+    Config: configs/textdet/fcenet/fcenet_resnet50-oclip_fpn_1500e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:
