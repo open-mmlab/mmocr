@@ -72,30 +72,33 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 
 ## 最新进展
 
-目前我们正同步维护稳定版 (0.6.2) 和预览版 (1.0.0) 的 MMOCR，但稳定版会在 2022 年末开始逐步停止维护。我们建议用户尽早升级至 [MMOCR 1.0](https://github.com/open-mmlab/mmocr/tree/1.x)，以享受到由新架构带来的更多新特性和更佳的性能表现。阅读我们的[维护计划](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/overview.html)以了解更多信息。
+目前我们正同步维护稳定版 (0.6.3) 和预览版 (1.0.0) 的 MMOCR，但稳定版会在 2022 年末开始逐步停止维护。我们建议用户尽早升级至 [MMOCR 1.0](https://github.com/open-mmlab/mmocr/tree/1.x)，以享受到由新架构带来的更多新特性和更佳的性能表现。阅读我们的[维护计划](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/overview.html)以了解更多信息。
 
 ### 💎 稳定版本
 
-最新的月度版本 v0.6.2 在 2022.10.14 发布。
+最新的月度版本 v0.6.3 在 2022.11.03 发布。
 
-1. 支持在 Python 内直接训练和测试模型。
-2. ResizeOCR 支持了 mmcv.impad 的所有参数。
+这个版本增强了推理脚本的稳定性，并修复了可能导致 TorchServe 运行错误的问题。
 
 阅读[更新日志](https://mmocr.readthedocs.io/en/latest/changelog.html)以获取更多信息。
 
 ### 🌟 1.x 预览版本
 
-全新的 **v1.0.0rc2** 版本已经在 2022.10.14 发布：
+全新的 **v1.0.0rc3** 版本已经在 2022.11.03 发布：
 
-1. 架构升级：MMOCR 1.x 是基于 [MMEngine](https://github.com/open-mmlab/mmengine)，提供了一个通用的、强大的执行器，允许更灵活的定制，提供了统一的训练和测试入口。
+1. 我们发布了数个以 [oCLIP-ResNet](https://github.com/open-mmlab/mmocr/blob/1.x/configs/backbone/oclip/README.md) 为骨干网络的预训练模型。该骨干网络是一种以 [oCLIP](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136880282.pdf) 技术训练的 ResNet 变体，可以显著提升检测模型的表现。
 
-2. 统一接口：MMOCR 1.x 统一了数据集、模型、评估和可视化的接口和内部逻辑。支持更强的扩展性。
+2. 准备数据集通常是一件很繁琐的事情，在 OCR 领域尤甚。我们推出了全新的 [Dataset Preparer](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html)，帮助大家脱离繁琐的手工作业，仅需一条命令即可自动准备好多个 OCR 常用数据集。同时，该组件也通过模块化的设计，极大地减少了未来支持新数据集的难度。
 
-3. 跨项目调用：受益于统一的设计，你可以使用其他OpenMMLab项目中实现的模型，如 MMDet。 我们提供了一个例子，说明如何通过 `MMDetWrapper` 使用 MMDetection 的 Mask R-CNN。查看我们的文档以了解更多细节。更多的包装器将在未来发布。
+3. 架构升级：MMOCR 1.x 是基于 [MMEngine](https://github.com/open-mmlab/mmengine)，提供了一个通用的、强大的执行器，允许更灵活的定制，提供了统一的训练和测试入口。
 
-4. 更强的可视化：我们提供了一系列可视化工具， 用户现在可以更方便可视化数据。
+4. 统一接口：MMOCR 1.x 统一了数据集、模型、评估和可视化的接口和内部逻辑。支持更强的扩展性。
 
-5. 更多的文档和教程：我们增加了更多的教程，降低用户的学习门槛。详见[教程](https://mmocr.readthedocs.io/zh_CN/dev-1.x/)。
+5. 跨项目调用：受益于统一的设计，你可以使用其他OpenMMLab项目中实现的模型，如 MMDet。 我们提供了一个例子，说明如何通过 `MMDetWrapper` 使用 MMDetection 的 Mask R-CNN。查看我们的文档以了解更多细节。更多的包装器将在未来发布。
+
+6. 更强的可视化：我们提供了一系列可视化工具， 用户现在可以更方便可视化数据。
+
+7. 更多的文档和教程：我们增加了更多的教程，降低用户的学习门槛。详见[教程](https://mmocr.readthedocs.io/zh_CN/dev-1.x/)。
 
 可以在 [1.x 分支](https://github.com/open-mmlab/mmocr/tree/1.x) 获取更多新特性。欢迎试用并提出反馈。
 
