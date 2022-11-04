@@ -8,7 +8,7 @@ from mmdet.models.utils import multi_apply
 from numpy.fft import fft
 from numpy.linalg import norm
 
-from mmocr.registry import MODELS
+from mmengine.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from mmocr.utils.typing import ArrayLike
 from .textsnake_module_loss import TextSnakeModuleLoss

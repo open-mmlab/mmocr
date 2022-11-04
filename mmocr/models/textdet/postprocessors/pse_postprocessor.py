@@ -8,7 +8,7 @@ import torch
 from mmcv.ops import contour_expand
 from mmengine.structures import InstanceData
 
-from mmocr.registry import MODELS
+from mmengine.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from .pan_postprocessor import PANPostprocessor
 

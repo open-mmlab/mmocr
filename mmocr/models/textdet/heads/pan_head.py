@@ -4,7 +4,7 @@ from typing import List, Optional
 import torch
 import torch.nn as nn
 
-from mmocr.registry import MODELS
+from mmengine.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from mmocr.utils import check_argument
 from .base import BaseTextDetHead

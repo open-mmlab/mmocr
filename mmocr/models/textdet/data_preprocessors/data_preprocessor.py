@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Sequence, Union
 import torch.nn as nn
 from mmengine.model import ImgDataPreprocessor
 
-from mmocr.registry import MODELS
+from mmengine.registry import MODELS
 
 
 @MODELS.register_module()

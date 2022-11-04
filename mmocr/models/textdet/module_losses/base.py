@@ -5,7 +5,7 @@ from typing import Dict, Sequence, Tuple, Union
 import torch
 from torch import nn
 
-from mmocr.registry import MODELS
+from mmengine.registry import MODELS
 from mmocr.utils.typing import DetSampleList
 
 INPUT_TYPES = Union[torch.Tensor, Sequence[torch.Tensor], Dict]

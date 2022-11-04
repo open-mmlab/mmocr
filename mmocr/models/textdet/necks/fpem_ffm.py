@@ -3,7 +3,7 @@ import torch.nn.functional as F
 from mmengine.model import BaseModule, ModuleList
 from torch import nn
 
-from mmocr.registry import MODELS
+from mmengine.registry import MODELS
 
 
 class FPEM(BaseModule):

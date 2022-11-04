@@ -5,7 +5,7 @@ import torch
 from mmengine.model import BaseModule
 from torch import Tensor
 
-from mmocr.registry import MODELS
+from mmengine.registry import MODELS
 from mmocr.utils.typing import DetSampleList
 
 

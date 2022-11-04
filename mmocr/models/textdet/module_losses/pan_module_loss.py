@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from mmdet.models.utils import multi_apply
 from torch import nn
 
-from mmocr.registry import MODELS
+from mmengine.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from .seg_based_module_loss import SegBasedModuleLoss
 
