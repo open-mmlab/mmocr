@@ -575,20 +575,7 @@ class TextRecogCropConverter(TextRecogDataConverter):
         # Since the TextRecogCropConverter packs all of the patches in a single
         # image into a list, we need to flatten the list.
         sample = [item for sublist in sample for item in sublist]
-
-        meta = {
-            'metainfo': {
-                'dataset_type': 'TextRecogDataset',
-                'task_name': 'textrecog',
-                'category': [{
-                    'id': 0,
-                    'name': 'text'
-                }]
-            },
-            'data_list': sample
-        }
-
-        return meta
+        return super().add_meta(sample)
 
 
 @DATA_CONVERTERS.register_module()
