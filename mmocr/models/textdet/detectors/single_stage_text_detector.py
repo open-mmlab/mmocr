@@ -3,7 +3,7 @@ from typing import Dict, Optional, Sequence
 
 import torch
 
-from mmocr.registry import MODELS
+from mmengine.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from .base import BaseTextDetector
 
