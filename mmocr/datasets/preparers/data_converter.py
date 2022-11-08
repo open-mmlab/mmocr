@@ -143,14 +143,14 @@ class BaseDataConverter:
         """
 
     @abstractmethod
-    def add_meta(self, sample: Dict) -> Dict:
+    def add_meta(self, sample: List) -> Dict:
         """Add meta information to the sample.
 
         Args:
-            sample (Dict): A sample of the dataset.
+            sample (List): A list of samples of the dataset.
 
         Returns:
-            Dict: A sample with meta information.
+            Dict: A dict contains the meta information and samples.
         """
 
     def mono_gather(self, ann_path: str, mapping: str, split: str,
@@ -297,7 +297,7 @@ class TextDetDataConverter(BaseDataConverter):
 
         return packed_instances
 
-    def add_meta(self, sample: Dict) -> Dict:
+    def add_meta(self, sample: List) -> Dict:
         meta = {
             'metainfo': {
                 'dataset_type': 'TextDetDataset',
@@ -396,7 +396,7 @@ class TextSpottingDataConverter(BaseDataConverter):
 
         return packed_instances
 
-    def add_meta(self, sample: Dict) -> Dict:
+    def add_meta(self, sample: List) -> Dict:
         meta = {
             'metainfo': {
                 'dataset_type': 'TextSpottingDataset',
@@ -465,7 +465,7 @@ class TextRecogDataConverter(BaseDataConverter):
 
         return packed_instance
 
-    def add_meta(self, sample: Dict) -> Dict:
+    def add_meta(self, sample: List) -> Dict:
         meta = {
             'metainfo': {
                 'dataset_type': 'TextRecogDataset',
@@ -522,7 +522,6 @@ class TextRecogCropConverter(TextRecogDataConverter):
             dataset_name=dataset_name,
             nproc=nproc,
             delete=delete)
-        self.ignore = self.parser.ignore
         self.lepr = long_edge_pad_ratio
         self.sepr = short_edge_pad_ratio
         # Crop converter crops the images of textdet to patches
@@ -555,7 +554,7 @@ class TextRecogCropConverter(TextRecogDataConverter):
         img = mmcv.imread(img_path)
         for i, instance in enumerate(instances):
             box, text = get_box(instance), instance['text']
-            if text == self.ignore:
+            if instance['ignore']:
                 continue
             patch = crop_img(img, box, self.lepr, self.sepr)
             if patch.shape[0] == 0 or patch.shape[1] == 0:
@@ -571,6 +570,12 @@ class TextRecogCropConverter(TextRecogDataConverter):
             data_list.append(rec_instance)
 
         return data_list
+
+    def add_meta(self, sample: List) -> Dict:
+        # Since the TextRecogCropConverter packs all of the patches in a single
+        # image into a list, we need to flatten the list.
+        sample = [item for sublist in sample for item in sublist]
+        return super().add_meta(sample)
 
 
 @DATA_CONVERTERS.register_module()
