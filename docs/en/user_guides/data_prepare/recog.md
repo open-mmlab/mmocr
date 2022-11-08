@@ -1,6 +1,6 @@
-# Text Recognition\[Deprecated\]
+# Text Recognition
 
-```{warning}
+```{note}
 This page is deprecated and all these scripts will be eventually migrated into dataset preparer, a brand new module designed to ease these lengthy dataset preparation steps. [Check it out](./dataset_preparer.md)!
 ```
 

@@ -119,6 +119,14 @@ class BaseDataConverter:
             return
         cfg_path = osp.join(self.config_path, self.task, '_base_', 'datasets',
                             f'{self.dataset_name}.py')
+        if osp.exists(cfg_path):
+            while True:
+                c = input(f'{cfg_path} already exists, overwrite? (Y/n)') \
+                    or 'Y'
+                if c.lower() == 'y':
+                    break
+                if c.lower() == 'n':
+                    return
         if not osp.exists(cfg_path):
             with open(cfg_path, 'w') as f:
                 f.write(
