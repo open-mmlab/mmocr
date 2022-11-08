@@ -121,20 +121,19 @@ class BaseDataConverter:
                             f'{self.dataset_name}.py')
         if osp.exists(cfg_path):
             while True:
-                c = input(f'{cfg_path} already exists, overwrite? (Y/n)') \
+                c = input(f'{cfg_path} already exists, overwrite? (Y/n) ') \
                     or 'Y'
                 if c.lower() == 'y':
                     break
                 if c.lower() == 'n':
                     return
-        if not osp.exists(cfg_path):
-            with open(cfg_path, 'w') as f:
-                f.write(
-                    f'{self.dataset_name}_{self.task}_data_root = \'{self.data_root}\'\n'  # noqa: E501
-                )
-            for split in self.splits:
-                with open(cfg_path, 'a') as f:
-                    f.write(dataset_config[split])
+        with open(cfg_path, 'w') as f:
+            f.write(
+                f'{self.dataset_name}_{self.task}_data_root = \'{self.data_root}\'\n'  # noqa: E501
+            )
+        for split in self.splits:
+            with open(cfg_path, 'a') as f:
+                f.write(dataset_config[split])
 
     @abstractmethod
     def pack_instance(self, sample: Tuple, split: str) -> Dict:
