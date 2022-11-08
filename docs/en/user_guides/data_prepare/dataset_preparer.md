@@ -1,4 +1,9 @@
-# Dataset Preparer
+# Dataset Preparer (Beta)
+
+```{note}
+Dataset Preparer is still in beta version and might not be stable enough. You
+are welcome to try it out and report any issues to us.
+```
 
 ## One-click data preparation script
 
