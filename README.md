@@ -81,6 +81,8 @@ The main branch works with **PyTorch 1.6+**.
 
 5. **More documentation and tutorials**. We add a bunch of documentation and tutorials to help users get started more smoothly. Read it [here](https://mmocr.readthedocs.io/en/dev-1.x/).
 
+6. **One-stop Dataset Preparaion**. Multiple datasets are instantly ready with only one line of command, via our [Dataset Preparer](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html).
+
 Read [Changelog](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) for more details!
 
 ## Installation
@@ -109,6 +111,13 @@ Please see [Quick Run](https://mmocr.readthedocs.io/en/dev-1.x/get_started/quick
 ## [Model Zoo](https://mmocr.readthedocs.io/en/dev-1.x/modelzoo.html)
 
 Supported algorithms:
+
+<details open>
+<summary>BackBone</summary>
+
+- [x] [oCLIP](configs/backbone/oclip/README.md) (ECCV'2022)
+
+</details>
 
 <details open>
 <summary>Text Detection</summary>

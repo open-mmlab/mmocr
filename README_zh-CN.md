@@ -82,6 +82,8 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 
 5. 更多的文档和教程：我们增加了更多的教程，降低用户的学习门槛。详见[教程](https://mmocr.readthedocs.io/zh_CN/dev-1.x/)。
 
+6. 一站式数据准备：准备数据集已经不再是难事。使用我们的 [Dataset Preparer](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/data_prepare/dataset_preparer.html)，一行命令即可让多个数据集准备就绪。
+
 阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
 
 ## 安装
@@ -109,6 +111,13 @@ pip3 install -e .
 ## [模型库](https://mmocr.readthedocs.io/zh_CN/dev-1.x/modelzoo.html)
 
 支持的算法：
+
+<details open>
+<summary>骨干网络</summary>
+
+- [x] [oCLIP](configs/backbone/oclip/README.md) (ECCV'2022)
+
+</details>
 
 <details open>
 <summary>文字检测</summary>
