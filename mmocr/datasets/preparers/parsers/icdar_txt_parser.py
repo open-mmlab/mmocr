@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import os.path as osp
 from typing import List, Optional, Tuple
 
 from ..data_preparer import DATA_PARSERS
@@ -7,7 +8,7 @@ from .base import BaseParser
 
 @DATA_PARSERS.register_module()
 class ICDARTxtTextDetAnnParser(BaseParser):
-    """ICDAR2015 Text Detection Parser.
+    """ICDAR Txt Format Text Detection Annotation Parser.
 
     The original annotation format of this dataset is stored in txt files,
     which is formed as the following format:
@@ -90,7 +91,7 @@ class ICDARTxtTextDetAnnParser(BaseParser):
 
 @DATA_PARSERS.register_module()
 class ICDARTxtTextRecogAnnParser(BaseParser):
-    """ICDAR2015 Text Detection Parser.
+    """ICDAR Txt Format Text Recognition Annotation Parser.
 
     The original annotation format of this dataset is stored in txt files,
     which is formed as the following format:
@@ -105,6 +106,8 @@ class ICDARTxtTextRecogAnnParser(BaseParser):
             'utf-8-sig'.
         nproc (int): The number of processes to parse the annotation. Defaults
             to 1.
+        base_name (bool): Whether to use the basename of the image path as the
+            image name. Defaults to False.
         remove_strs (List[str], Optional): Used to remove redundant strings in
             the transcription. Defaults to ['"'].
     """
@@ -115,11 +118,13 @@ class ICDARTxtTextRecogAnnParser(BaseParser):
                  format: str = 'img,text',
                  encoding: str = 'utf-8-sig',
                  nproc: int = 1,
+                 base_name: bool = False,
                  remove_strs: Optional[List[str]] = ['"']) -> None:
         self.sep = separator
         self.format = format
         self.encoding = encoding
         self.ignore = ignore
+        self.base_name = base_name
         self.remove_strs = remove_strs
         super().__init__(nproc=nproc)
 
@@ -128,11 +133,16 @@ class ICDARTxtTextRecogAnnParser(BaseParser):
         assert isinstance(files, str)
         samples = list()
         for anno in self.loader(
-                file_path=files, format=self.format, encoding=self.encoding):
+                file_path=files,
+                format=self.format,
+                encoding=self.encoding,
+                separator=self.sep):
             text = anno['text'].strip()
             if self.remove_strs is not None:
                 for strs in self.remove_strs:
                     text = text.replace(strs, '')
-            samples.append((anno['img'], text))
+            img_name = anno['img'] if not self.base_name else \
+                osp.basename(anno['img'])
+            samples.append((img_name, text))
 
         return samples
