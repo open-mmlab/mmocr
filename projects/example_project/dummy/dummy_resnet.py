@@ -1,10 +1,10 @@
-from mmdet.models.backbones import ResNet as MMDET_RESNET
+from mmdet.models.backbones import ResNet
 
 from mmocr.registry import MODELS
 
 
 @MODELS.register_module()
-class DummyResNet(MMDET_RESNET):
+class DummyResNet(ResNet):
     """Implements a dummy ResNet wrapper for demonstration purpose.
 
     Args:
