@@ -1,7 +1,7 @@
 Name: 'Street View Text Perspective (SVT-P)'
 Paper:
-  Title: https://openaccess.thecvf.com/content_iccv_2013/papers/Phan_Recognizing_Text_with_2013_ICCV_paper.pdf
-  URL: https://link.springer.com/content/pdf/10.1007/978-3-642-15549-9_43.pdf
+  Title: Recognizing Text with Perspective Distortion in Natural Scenes
+  URL: https://openaccess.thecvf.com/content_iccv_2013/papers/Phan_Recognizing_Text_with_2013_ICCV_paper.pdf
   Venue: ICCV
   Year: '2013'
   BibTeX: '@inproceedings{phan2013recognizing,
