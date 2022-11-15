@@ -468,7 +468,7 @@ class TextRecogDataConverter(BaseDataConverter):
         img_name, text = sample
         packed_instance = dict(
             instances=[dict(text=text)],
-            img_path=osp.join(self.img_dir, split, img_name))
+            img_path=osp.join(self.img_dir, split, osp.basename(img_name)))
 
         return packed_instance
 

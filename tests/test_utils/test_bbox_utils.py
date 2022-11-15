@@ -22,7 +22,8 @@ class TestBbox2poly(unittest.TestCase):
         # test np.array
         self.assertTrue(np.array_equal(bbox2poly(self.box_array), self.gt))
         # test list
-        self.assertTrue(np.array_equal(bbox2poly(self.box_list), self.gt))
+        self.assertTrue(
+            np.array_equal(bbox2poly(self.box_list, mode='xywh'), self.gt))
         # test tensor
         self.assertTrue(np.array_equal(bbox2poly(self.box_tensor), self.gt))
 
