@@ -476,11 +476,7 @@ class TextRecogDataConverter(BaseDataConverter):
         meta = {
             'metainfo': {
                 'dataset_type': 'TextRecogDataset',
-                'task_name': 'textrecog',
-                'category': [{
-                    'id': 0,
-                    'name': 'text'
-                }]
+                'task_name': 'textrecog'
             },
             'data_list': sample
         }
@@ -517,8 +513,8 @@ class TextRecogCropConverter(TextRecogDataConverter):
                  dumper: Dict,
                  dataset_name: str,
                  nproc: int,
-                 long_edge_pad_ratio: float = 0.1,
-                 short_edge_pad_ratio: float = 0.05,
+                 long_edge_pad_ratio: float = 0.0,
+                 short_edge_pad_ratio: float = 0.0,
                  delete: List = ['annotations']):
         super().__init__(
             splits=splits,
