@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import List, Optional, Tuple
 
-from mmocr.utils import convert_bbox
+from mmocr.utils import bbox2poly
 from ..data_preparer import DATA_PARSERS
 from .base import BaseParser
 
@@ -60,7 +60,7 @@ class ICDARTxtTextDetAnnParser(BaseParser):
                             anno[i] = anno[i].replace(strs, '')
             poly = list(map(float, anno[0:-1]))
             if self.mode is not None:
-                poly = convert_bbox(poly, self.mode)
+                poly = bbox2poly(poly, self.mode)
             text = anno[-1]
             instances.append(
                 dict(poly=poly, text=text, ignore=text == self.ignore))
