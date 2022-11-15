@@ -100,8 +100,8 @@ class NaiveDataObtainer:
                 to False.
         """
         if not is_archive(src_path) and not osp.exists(dst_path):
-            # Move the file to the destination folder if it is not a zip
-            shutil.move(src_path, dst_path)
+            # Copy the file to the destination folder if it is not a zip
+            shutil.copy(src_path, dst_path)
             return
 
         zip_name = osp.basename(src_path).split('.')[0]
