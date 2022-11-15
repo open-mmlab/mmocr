@@ -1,0 +1,29 @@
+Name: 'Street View Text Dataset (SVT)'
+Paper:
+  Title: Word Spotting in the Wild
+  URL: https://link.springer.com/content/pdf/10.1007/978-3-642-15549-9_43.pdf
+  Venue: ECCV
+  Year: '2010'
+  BibTeX: '@inproceedings{wang2010word,
+  title={Word spotting in the wild},
+  author={Wang, Kai and Belongie, Serge},
+  booktitle={European conference on computer vision},
+  pages={591--604},
+  year={2010},
+  organization={Springer}}'
+Data:
+  Website: http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset
+  Language:
+    - English
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Tasks:
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: N/A
+    Link: N/A
+  Format: .xml
