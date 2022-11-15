@@ -1,0 +1,29 @@
+Name: 'CUTE80'
+Paper:
+  Title: A Robust Arbitrary Text Detection System for Natural Scene Images
+  URL: http://cs-chan.com/doc/ESWA_2014A.pdf
+  Venue: ESWA
+  Year: '2014'
+  BibTeX: '@article{risnumawan2014robust,
+  title={A robust arbitrary text detection system for natural scene images},
+  author={Risnumawan, Anhar and Shivakumara, Palaiahankote and Chan, Chee Seng and Tan, Chew Lim},
+  journal={Expert Systems with Applications},
+  volume={41},
+  number={18},
+  pages={8027--8048},
+  year={2014},
+  publisher={Elsevier}}'
+Data:
+  Website: http://cs-chan.com/downloads_CUTE80_dataset.html
+  Language:
+    - English
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Tasks:
+    - textrecog
+  License:
+    Type: N/A
+    Link: N/A
+  Format: .txt
