@@ -71,6 +71,8 @@ def bbox2poly(bbox: ArrayLike, mode: str = 'xyxy') -> np.array:
         bbox (ArrayLike): A bbox. In any form can be accessed by 1-D indices.
          E.g. list[float], np.ndarray, or torch.Tensor. bbox is written in
             [x1, y1, x2, y2].
+        mode (str): Specify the format of bbox. Can be 'xyxy' or 'xywh'.
+            Defaults to 'xyxy'.
 
     Returns:
         np.array: The converted polygon [x1, y1, x2, y1, x2, y2, x1, y2].

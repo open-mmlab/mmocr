@@ -13,19 +13,40 @@ from mmocr.utils.bbox_utils import bbox_jitter
 class TestBbox2poly(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.box_array = np.array([0, 0, 1, 1])
-        self.box_list = [0, 0, 1, 1]
-        self.box_tensor = torch.tensor([0, 0, 1, 1])
-        self.gt = np.array([0, 0, 1, 0, 1, 1, 0, 1])
+        self.box_array = np.array([1, 1, 2, 2])
+        self.box_list = [1, 1, 2, 2]
+        self.box_tensor = torch.tensor([1, 1, 2, 2])
+        self.gt_xyxy = np.array([1, 1, 2, 1, 2, 2, 1, 2])
+        self.gt_xywh = np.array([1, 1, 3, 1, 3, 3, 1, 3])
 
     def test_bbox2poly(self):
+        # mode: xyxy
         # test np.array
-        self.assertTrue(np.array_equal(bbox2poly(self.box_array), self.gt))
+        self.assertTrue(
+            np.array_equal(bbox2poly(self.box_array), self.gt_xyxy))
+        # test list
+        self.assertTrue(np.array_equal(bbox2poly(self.box_list), self.gt_xyxy))
+        # test tensor
+        self.assertTrue(
+            np.array_equal(bbox2poly(self.box_tensor), self.gt_xyxy))
+
+        # mode: xywh
+        # test np.array
+        self.assertTrue(
+            np.array_equal(
+                bbox2poly(self.box_array, mode='xywh'), self.gt_xywh))
         # test list
         self.assertTrue(
-            np.array_equal(bbox2poly(self.box_list, mode='xywh'), self.gt))
+            np.array_equal(
+                bbox2poly(self.box_list, mode='xywh'), self.gt_xywh))
         # test tensor
-        self.assertTrue(np.array_equal(bbox2poly(self.box_tensor), self.gt))
+        self.assertTrue(
+            np.array_equal(
+                bbox2poly(self.box_tensor, mode='xywh'), self.gt_xywh))
+
+        # invalid mode
+        with self.assertRaises(NotImplementedError):
+            bbox2poly(self.box_tensor, mode='a')
 
 
 class TestBoxCenterDistance(unittest.TestCase):
