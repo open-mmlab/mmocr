@@ -46,6 +46,6 @@ data_converter = dict(
         type='pair_gather',
         suffixes=['.jpg', '.JPG'],
         rule=[r'img_(\d+)\.([jJ][pP][gG])', r'gt_img_\1.txt']),
-    parser=dict(type='ICDARTxtTextDetAnnParser'),
+    parser=dict(type='ICDARTxtTextDetAnnParser', encoding='utf-8-sig'),
     dumper=dict(type='JsonDumper'),
     delete=['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img'])

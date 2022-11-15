@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .bbox_utils import (bbox2poly, bbox_center_distance, bbox_diag_distance,
-                         bezier2polygon, is_on_same_line, rescale_bboxes,
-                         stitch_boxes_into_lines)
+                         bezier2polygon, convert_bbox, is_on_same_line,
+                         rescale_bboxes, stitch_boxes_into_lines)
 from .check_argument import (equal_len, is_2dlist, is_3dlist, is_none_or_type,
                              is_type_list, valid_boundary)
 from .collect_env import collect_env
@@ -42,5 +42,5 @@ __all__ = [
     'OptConfigType', 'OptDetSampleList', 'OptInitConfigType', 'OptMultiConfig',
     'OptRecSampleList', 'RecSampleList', 'MultiConfig', 'OptTensor',
     'ColorType', 'OptKIESampleList', 'KIESampleList', 'is_archive',
-    'check_integrity', 'list_files'
+    'check_integrity', 'list_files', 'convert_bbox'
 ]

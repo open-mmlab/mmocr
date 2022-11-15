@@ -2,6 +2,7 @@
 import os.path as osp
 from typing import List, Optional, Tuple
 
+from mmocr.utils import convert_bbox
 from ..data_preparer import DATA_PARSERS
 from .base import BaseParser
 
@@ -34,7 +35,7 @@ class ICDARTxtTextDetAnnParser(BaseParser):
                  separator: str = ',',
                  ignore: str = '###',
                  format: str = 'x1,y1,x2,y2,x3,y3,x4,y4,trans',
-                 encoding: str = 'utf-8-sig',
+                 encoding: str = 'utf-8',
                  nproc: int = 1,
                  remove_strs: Optional[List[str]] = None,
                  mode: str = None) -> None:
@@ -60,33 +61,12 @@ class ICDARTxtTextDetAnnParser(BaseParser):
                             anno[i] = anno[i].replace(strs, '')
             poly = list(map(float, anno[0:-1]))
             if self.mode is not None:
-                poly = self.convert_bbox(poly)
+                poly = convert_bbox(poly, self.mode)
             text = anno[-1]
             instances.append(
                 dict(poly=poly, text=text, ignore=text == self.ignore))
 
         return img_file, instances
-
-    def convert_bbox(self, poly: List) -> List:
-        """Convert bbox format.
-
-        Args:
-            poly (List): The original bbox.
-
-        Returns:
-            List: The converted bbox.
-        """
-        assert len(poly) == 4
-        if self.mode == 'xywh':
-            x, y, w, h = poly
-            poly = [x, y, x + w, y, x + w, y + h, x, y + h]
-        elif self.mode == 'xyxy':
-            x1, y1, x2, y2 = poly
-            poly = [x1, y1, x2, y1, x2, y2, x1, y2]
-        else:
-            raise NotImplementedError('Not supported mode.')
-
-        return poly
 
 
 @DATA_PARSERS.register_module()
@@ -116,9 +96,9 @@ class ICDARTxtTextRecogAnnParser(BaseParser):
                  separator: str = ',',
                  ignore: str = '#',
                  format: str = 'img,text',
-                 encoding: str = 'utf-8-sig',
+                 encoding: str = 'utf-8',
                  nproc: int = 1,
-                 base_name: bool = False,
+                 base_name: bool = True,
                  remove_strs: Optional[List[str]] = ['"']) -> None:
         self.sep = separator
         self.format = format
