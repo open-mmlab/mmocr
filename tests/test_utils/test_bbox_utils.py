@@ -5,27 +5,9 @@ import numpy as np
 import torch
 
 from mmocr.utils import (bbox2poly, bbox_center_distance, bbox_diag_distance,
-                         bezier2polygon, convert_bbox, is_on_same_line,
+                         bezier2polygon, is_on_same_line,
                          stitch_boxes_into_lines)
 from mmocr.utils.bbox_utils import bbox_jitter
-
-
-class TestConvertBox(unittest.TestCase):
-
-    def setUp(self) -> None:
-        self.box1 = np.array([0, 0, 1, 1])
-        self.box2 = [1, 1, 2, 2]
-
-    def test_convert_box(self):
-        self.assertTrue(
-            np.allclose(
-                convert_bbox(self.box1, 'xyxy'), [0, 0, 1, 0, 1, 1, 0, 1]))
-        self.assertTrue(
-            np.allclose(
-                convert_bbox(self.box2, 'xywh'), [1, 1, 3, 1, 3, 3, 1, 3]))
-        self.assertTrue(
-            np.allclose(
-                convert_bbox(self.box2, 'xyxy'), [1, 1, 2, 1, 2, 2, 1, 2]))
 
 
 class TestBbox2poly(unittest.TestCase):
@@ -40,7 +22,8 @@ class TestBbox2poly(unittest.TestCase):
         # test np.array
         self.assertTrue(np.array_equal(bbox2poly(self.box_array), self.gt))
         # test list
-        self.assertTrue(np.array_equal(bbox2poly(self.box_list), self.gt))
+        self.assertTrue(
+            np.array_equal(bbox2poly(self.box_list, mode='xywh'), self.gt))
         # test tensor
         self.assertTrue(np.array_equal(bbox2poly(self.box_tensor), self.gt))
 

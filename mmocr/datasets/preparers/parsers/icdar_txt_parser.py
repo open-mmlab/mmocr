@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import os.path as osp
 from typing import List, Optional, Tuple
 
 from mmocr.utils import convert_bbox
@@ -98,13 +97,11 @@ class ICDARTxtTextRecogAnnParser(BaseParser):
                  format: str = 'img,text',
                  encoding: str = 'utf-8',
                  nproc: int = 1,
-                 base_name: bool = True,
                  remove_strs: Optional[List[str]] = ['"']) -> None:
         self.sep = separator
         self.format = format
         self.encoding = encoding
         self.ignore = ignore
-        self.base_name = base_name
         self.remove_strs = remove_strs
         super().__init__(nproc=nproc)
 
@@ -121,8 +118,7 @@ class ICDARTxtTextRecogAnnParser(BaseParser):
             if self.remove_strs is not None:
                 for strs in self.remove_strs:
                     text = text.replace(strs, '')
-            img_name = anno['img'] if not self.base_name else \
-                osp.basename(anno['img'])
+            img_name = anno['img']
             samples.append((img_name, text))
 
         return samples
