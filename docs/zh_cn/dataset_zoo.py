@@ -31,8 +31,8 @@ for dataset in datasets:
     )
 
     details += '### {}\n'.format(dataset_name)
-    details += "> \"{}\", *{}*, {}.\n\n".format(paper['Title'], paper['Venue'],
-                                                paper['Year'])
+    details += "> \"{}\", *{}*, {}. [PDF]({})\n\n".format(
+        paper['Title'], paper['Venue'], paper['Year'], paper['URL'])
     # Basic Info
     details += 'A. 数据集基础信息\n'
     details += ' - 官方网址: [{}]({})\n'.format(dataset, data['Website'])
