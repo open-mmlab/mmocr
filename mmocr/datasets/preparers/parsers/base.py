@@ -56,21 +56,12 @@ class BaseParser:
             split (str): Current split.
 
         Returns:
-            Tuple: A tuple of (img_path, instance). Instance is a list of dict
+            Tuple: A tuple of (img_path, instance). Instance is a dict
             containing parsed annotations, which should contain the
             following keys:
             - 'poly' or 'box' (textdet or textspotting)
             - 'text' (textspotting or textrecog)
             - 'ignore' (all task)
-
-        Examples:
-        An example of returned values:
-        >>> ('imgs/train/xxx.jpg',
-        >>> dict(
-        >>>    poly=[[[0, 1], [1, 1], [1, 0], [0, 0]]],
-        >>>    text='hello',
-        >>>    ignore=False)
-        >>> )
         """
         raise NotImplementedError
 
