@@ -405,28 +405,3 @@ def bbox_jitter(points_x, points_y, jitter_ratio_x=0.5, jitter_ratio_y=0.1):
         jitter_pixel_y = (np.random.rand() - 0.5) * 2 * jitter_ratio_y * tmp_h
         points_x[i] += jitter_pixel_x
         points_y[i] += jitter_pixel_y
-
-
-def convert_bbox(poly: List, mode: str) -> List:
-    """Convert bbox format.
-
-    Args:
-        poly (List): The original bbox.
-        mode (str): The converting mode. Supported modes are:
-            - 'xywh': [x, y, width, height]
-            - 'xyxy': [x1, y1, x2, y2]
-
-    Returns:
-        List: The converted bbox.
-    """
-    assert len(poly) == 4
-    if mode == 'xywh':
-        x, y, w, h = poly
-        poly = [x, y, x + w, y, x + w, y + h, x, y + h]
-    elif mode == 'xyxy':
-        x1, y1, x2, y2 = poly
-        poly = [x1, y1, x2, y1, x2, y2, x1, y2]
-    else:
-        raise NotImplementedError('Not supported mode.')
-
-    return poly
