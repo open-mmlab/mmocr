@@ -81,7 +81,7 @@ def bbox2poly(bbox: ArrayLike, mode: str = 'xyxy') -> np.array:
         poly = np.array([x1, y1, x2, y1, x2, y2, x1, y2])
     elif mode == 'xywh':
         x, y, w, h = bbox
-        poly = [x, y, x + w, y, x + w, y + h, x, y + h]
+        poly = np.array([x, y, x + w, y, x + w, y + h, x, y + h])
     else:
         raise NotImplementedError('Not supported mode.')
 

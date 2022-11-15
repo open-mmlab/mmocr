@@ -61,6 +61,7 @@ class ICDARTxtTextDetAnnParser(BaseParser):
             poly = list(map(float, anno[0:-1]))
             if self.mode is not None:
                 poly = bbox2poly(poly, self.mode)
+                poly = poly.tolist()
             text = anno[-1]
             instances.append(
                 dict(poly=poly, text=text, ignore=text == self.ignore))
