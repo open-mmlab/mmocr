@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 import mmcv
+import mmengine
 import numpy as np
 
 from mmocr.registry import VISUALIZERS
@@ -210,7 +211,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         if print_result:
             print(results)
         if pred_out_file != '':
-            mmcv.dump(results, pred_out_file)
+            mmengine.dump(results, pred_out_file)
         if imgs is None:
             return results
         return results, imgs
