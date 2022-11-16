@@ -127,6 +127,7 @@ class BaseDataConverter:
                     break
                 if c.lower() == 'n':
                     return
+        mkdir_or_exist(osp.dirname(cfg_path))
         with open(cfg_path, 'w') as f:
             f.write(
                 f'{self.dataset_name}_{self.task}_data_root = \'{self.data_root}\'\n'  # noqa: E501
