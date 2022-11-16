@@ -34,6 +34,6 @@ data_converter = dict(
     gatherer=dict(type='mono_gather', mapping='"train.json"'),
     parser=dict(
         type='COCOTextDetAnnParser',
-        cocotext=True,
+        variant='cocotext',
         data_root=data_root + '/textdet_imgs/train'),
     dumper=dict(type='JsonDumper'))

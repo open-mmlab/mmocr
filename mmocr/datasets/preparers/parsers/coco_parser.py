@@ -10,28 +10,31 @@ from mmocr.datasets.preparers.parsers.base import BaseParser
 
 @DATA_PARSERS.register_module()
 class COCOTextDetAnnParser(BaseParser):
-    """COCO Text Detection Parser.
+    """COCO-like Format Text Detection Parser.
 
     Args:
         data_root (str): The root path of the dataset. Defaults to None.
         nproc (int): The number of processes to parse the annotation. Defaults
             to 1.
-        cocotext (bool): Whether to use the cocotext format. Defaults to False.
+        variant (str): Variant of COCO dataset, options are ['standard',
+            'cocotext', 'textocr']. Defaults to 'standard'.
     """
 
     def __init__(self,
                  data_root: str = None,
                  nproc: int = 1,
-                 cocotext: bool = False) -> None:
+                 variant: str = 'standard') -> None:
 
         super().__init__(nproc=nproc, data_root=data_root)
-        self.cocotext = cocotext
+        assert variant in ['standard', 'cocotext', 'textocr'], \
+            f'variant {variant} is not supported'
+        self.variant = variant
 
     def parse_files(self, files: Tuple, split: str = None) -> Dict:
         """Parse single annotation."""
         samples = list()
         coco = COCO(files)
-        if self.cocotext:
+        if self.variant == 'cocotext':
             for img in coco.dataset['imgs']:
                 if split == coco.dataset['imgs'][img]['set']:
                     coco.imgs[img] = coco.dataset['imgs'][img]
@@ -59,13 +62,13 @@ class COCOTextDetAnnParser(BaseParser):
             total_ann_ids.extend(ann_ids)
             instances = list()
             for ann in ann_info:
-                if self.cocotext:
+                if self.variant == 'cocotext':
                     instances.append(
                         dict(
                             poly=ann['mask'],
                             text=ann.get('utf8_string', None),
                             ignore=ann['legibility'] == 'illegible'))
-                else:
+                elif self.variant == 'standard':
                     instances.append(
                         dict(
                             poly=ann['segmentation'][0],
