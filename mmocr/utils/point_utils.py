@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import numpy as np
 
-from mmocr.utils.typing import ArrayLike
+from mmocr.utils.typing_utils import ArrayLike
 
 
 def points_center(points: ArrayLike) -> np.ndarray:

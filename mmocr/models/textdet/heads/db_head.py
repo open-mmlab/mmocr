@@ -9,7 +9,7 @@ from torch import Tensor
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
-from mmocr.utils.typing import DetSampleList
+from mmocr.utils.typing_utils import DetSampleList
 
 
 @MODELS.register_module()
