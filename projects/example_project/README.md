@@ -1,4 +1,4 @@
-This is an example README for community `projects/` with full comments on [README_template.md](README_template.md). If you wish to submit your project to our main repository, then all the fields in [README_template.md](README_template.md) are mandatory for others to understand what you have achieved in this implementation. Should you still feel unclear about details, feel free to approach us in [Discussions](https://github.com/open-mmlab/mmocr/discussions) for help.
+This is an example README for community `projects/` with full comments on [README_template.md](README_template.md). If you wish to submit your project to our main repository, then all the fields in [README_template.md](README_template.md) are mandatory for others to understand what you have achieved in this implementation. Should you still feel unclear about details, feel free to read our [contribution guide](https://mmocr.readthedocs.io/en/dev-1.x/notes/contribution_guide.html) or approach us in [Discussions](https://github.com/open-mmlab/mmocr/discussions) for help.
 
 # Description
 
@@ -33,6 +33,10 @@ python tools/test.py projects/example_project/configs/dbnet_dummy-resnet_fpnc_12
 List the results as usually done in other model's README. [Example](https://github.com/open-mmlab/mmocr/blob/1.x/configs/textdet/dbnet/README.md#results-and-models)
 
 You should claim whether this is based on the pre-trained weights, which are converted from the official release; or it's a reproduced result obtained from retraining the model in this project.
+
+|                              Method                               |  Backbone   | Pretrained Model |  Training set   |    Test set    | #epochs | Test size | Precision | Recall | Hmean  |         Download         |
+| :---------------------------------------------------------------: | :---------: | :--------------: | :-------------: | :------------: | :-----: | :-------: | :-------: | :----: | :----: | :----------------------: |
+| [DBNet_dummy](configs/dbnet_dummy-resnet_fpnc_1200e_icdar2015.py) | DummyResNet |        -         | ICDAR2015 Train | ICDAR2015 Test |  1200   |    736    |  0.8853   | 0.7583 | 0.8169 | [model](<>) \| [log](<>) |
 
 # Checklist
 
