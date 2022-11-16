@@ -6,8 +6,8 @@ _base_ = [
 ]
 
 # dataset settings
-train_list = [_base_.st_det_train]
-test_list = [_base_.st_det_test]
+train_list = [_base_.synthtext_textdet_train]
+test_list = [_base_.synthtext_textdet_test]
 
 train_dataloader = dict(
     batch_size=16,

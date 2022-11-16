@@ -14,8 +14,8 @@ param_scheduler = [
 
 file_client_args = dict(backend='disk')
 # dataset settings
-ctw_det_train = _base_.ctw_det_train
-ctw_det_test = _base_.ctw_det_test
+ctw1500_textdet_train = _base_.ctw1500_textdet_train
+ctw1500_textdet_test = _base_.ctw1500_textdet_test
 
 # test pipeline for CTW1500
 ctw_test_pipeline = [
@@ -36,22 +36,22 @@ ctw_test_pipeline = [
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
 
-ctw_det_train.pipeline = _base_.train_pipeline
-ctw_det_test.pipeline = ctw_test_pipeline
+ctw1500_textdet_train.pipeline = _base_.train_pipeline
+ctw1500_textdet_test.pipeline = ctw_test_pipeline
 
 train_dataloader = dict(
     batch_size=8,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=ctw_det_train)
+    dataset=ctw1500_textdet_train)
 
 val_dataloader = dict(
     batch_size=1,
     num_workers=1,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=ctw_det_test)
+    dataset=ctw1500_textdet_test)
 
 test_dataloader = val_dataloader
 

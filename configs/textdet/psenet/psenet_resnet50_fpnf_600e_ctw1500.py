@@ -13,8 +13,8 @@ param_scheduler = [
 ]
 
 # dataset settings
-ctw_det_train = _base_.ctw_det_train
-ctw_det_test = _base_.ctw_det_test
+ctw1500_textdet_train = _base_.ctw1500_textdet_train
+ctw1500_textdet_test = _base_.ctw1500_textdet_test
 
 test_pipeline_ctw = [
     dict(
@@ -33,22 +33,22 @@ test_pipeline_ctw = [
 ]
 
 # pipeline settings
-ctw_det_train.pipeline = _base_.train_pipeline
-ctw_det_test.pipeline = test_pipeline_ctw
+ctw1500_textdet_train.pipeline = _base_.train_pipeline
+ctw1500_textdet_test.pipeline = test_pipeline_ctw
 
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=False,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=ctw_det_train)
+    dataset=ctw1500_textdet_train)
 
 val_dataloader = dict(
     batch_size=1,
     num_workers=1,
     persistent_workers=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=ctw_det_test)
+    dataset=ctw1500_textdet_test)
 
 test_dataloader = val_dataloader
 

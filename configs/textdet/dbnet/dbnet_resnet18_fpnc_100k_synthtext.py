@@ -6,24 +6,24 @@ _base_ = [
 ]
 
 # dataset settings
-st_det_train = _base_.st_det_train
-st_det_train.pipeline = _base_.train_pipeline
-st_det_test = _base_.st_det_test
-st_det_test.pipeline = _base_.test_pipeline
+synthtext_textdet_train = _base_.synthtext_textdet_train
+synthtext_textdet_train.pipeline = _base_.train_pipeline
+synthtext_textdet_test = _base_.synthtext_textdet_test
+synthtext_textdet_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=st_det_train)
+    dataset=synthtext_textdet_train)
 
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=st_det_test)
+    dataset=synthtext_textdet_test)
 
 test_dataloader = val_dataloader
 

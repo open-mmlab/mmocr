@@ -29,7 +29,7 @@ class JsonDumper:
 
         Examples:
         The returned dataset config
-        >>> ic15_rec_train = dict(
+        >>> icdar2015_textrecog_train = dict(
         >>>     type='OCRDataset',
         >>>     data_root=ic15_rec_data_root,
         >>>     ann_file='textrecog_train.json',

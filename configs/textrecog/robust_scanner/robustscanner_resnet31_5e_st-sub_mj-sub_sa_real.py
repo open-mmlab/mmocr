@@ -19,13 +19,15 @@ default_hooks = dict(logger=dict(type='LoggerHook', interval=100))
 
 # dataset settings
 train_list = [
-    _base_.ic11_rec_train, _base_.ic13_rec_train, _base_.ic15_rec_train,
-    _base_.cocov1_rec_train, _base_.iiit5k_rec_train, _base_.mj_sub_rec_train,
-    _base_.st_sub_rec_train, _base_.st_add_rec_train
+    _base_.icdar2011_textrecog_train, _base_.icdar2013_textrecog_train,
+    _base_.icdar2015_textrecog_train, _base_.cocotextv1_textrecog_train,
+    _base_.iiit5k_textrecog_train, _base_.mjsynth_sub_textrecog_train,
+    _base_.synthtext_sub_textrecog_train, _base_.synthtext_add_textrecog_train
 ]
 test_list = [
-    _base_.cute80_rec_test, _base_.iiit5k_rec_test, _base_.svt_rec_test,
-    _base_.svtp_rec_test, _base_.ic13_rec_test, _base_.ic15_rec_test
+    _base_.cute80_textrecog_test, _base_.iiit5k_textrecog_test,
+    _base_.svt_textrecog_test, _base_.svtp_textrecog_test,
+    _base_.icdar2013_textrecog_test, _base_.icdar2015_textrecog_test
 ]
 
 train_list = [
