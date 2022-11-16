@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import os.path as osp
+import re
 
 import yaml
 
@@ -18,12 +19,14 @@ for dataset in datasets:
     meta = yaml.safe_load(
         open(osp.join(dataset_zoo_path, dataset, 'metafile.yml')))
     dataset_name = meta['Name']
+    detail_link = re.sub('[^A-Za-z0-9- ]', '',
+                         dataset_name).replace(' ', '-').lower()
     paper = meta['Paper']
     data = meta['Data']
 
     table += '| [{}](#{}) | {} | {} | {} | {} |\n'.format(
         dataset,
-        dataset_name.lower().replace(' ', '-'),
+        detail_link,
         '✓' if 'textdet' in data['Tasks'] else '',
         '✓' if 'textrecog' in data['Tasks'] else '',
         '✓' if 'textspotting' in data['Tasks'] else '',
