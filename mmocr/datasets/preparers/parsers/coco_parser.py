@@ -34,10 +34,18 @@ class COCOTextDetAnnParser(BaseParser):
         """Parse single annotation."""
         samples = list()
         coco = COCO(files)
-        if self.variant == 'cocotext':
-            for img in coco.dataset['imgs']:
-                if split == coco.dataset['imgs'][img]['set']:
-                    coco.imgs[img] = coco.dataset['imgs'][img]
+        if self.variant == 'cocotext' or self.variant == 'textocr':
+            # cocotext stores both 'train' and 'val' split in one annotation
+            # file, and uses the 'set' field to distinguish them.
+            if self.variant == 'cocotext':
+                for img in coco.dataset['imgs']:
+                    if split == coco.dataset['imgs'][img]['set']:
+                        coco.imgs[img] = coco.dataset['imgs'][img]
+            # textocr stores 'train' and 'val'split separately
+            elif self.variant == 'textocr':
+                coco.imgs = coco.dataset['imgs']
+            # both cocotext and textocr stores the annotation ID in the
+            # 'imgToAnns' field, so we need to convert it to the 'anns' field
             for img in coco.dataset['imgToAnns']:
                 ann_ids = coco.dataset['imgToAnns'][img]
                 anns = [
@@ -62,17 +70,32 @@ class COCOTextDetAnnParser(BaseParser):
             total_ann_ids.extend(ann_ids)
             instances = list()
             for ann in ann_info:
-                if self.variant == 'cocotext':
-                    instances.append(
-                        dict(
-                            poly=ann['mask'],
-                            text=ann.get('utf8_string', None),
-                            ignore=ann['legibility'] == 'illegible'))
-                elif self.variant == 'standard':
+                if self.variant == 'standard':
+                    # standard coco format use 'segmentation' field to store
+                    # the polygon and 'iscrowd' field to store the ignore flag,
+                    # and the 'text' field to store the text content.
                     instances.append(
                         dict(
                             poly=ann['segmentation'][0],
                             text=ann.get('text', None),
                             ignore=ann.get('iscrowd', False)))
+                elif self.variant == 'cocotext':
+                    # cocotext use 'utf8_string' field to store the text and
+                    # 'legibility' field to store the ignore flag, and the
+                    # 'mask' field to store the polygon.
+                    instances.append(
+                        dict(
+                            poly=ann['mask'],
+                            text=ann.get('utf8_string', None),
+                            ignore=ann['legibility'] == 'illegible'))
+                elif self.variant == 'textocr':
+                    # textocr use 'utf8_string' field to store the text and
+                    # the 'points' field to store the polygon, ignore flag
+                    # is not available.
+                    instances.append(
+                        dict(
+                            poly=ann['points'],
+                            text=ann.get('utf8_string', None),
+                            ignore=False))
             samples.append((img_path, instances))
         return samples
