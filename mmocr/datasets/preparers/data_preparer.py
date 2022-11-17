@@ -9,13 +9,14 @@ DATA_OBTAINERS = Registry('data_obtainer')
 DATA_CONVERTERS = Registry('data_converter')
 DATA_PARSERS = Registry('data_parser')
 DATA_DUMPERS = Registry('data_dumper')
+CFG_GENERATORS = Registry('cfg_generator')
 
 
 class DatasetPreparer:
     """Base class of dataset preparer.
 
     Dataset preparer is used to prepare dataset for MMOCR. It mainly consists
-    of two steps:
+    of three steps:
 
       1. Obtain the dataset
             - Download
@@ -26,6 +27,7 @@ class DatasetPreparer:
             - Convert to mmocr format
             - Dump the annotation file
             - Clean useless files
+      3. Generate the base config for this dataset
 
     After all these steps, the original datasets have been prepared for
     usage in MMOCR. Check out the dataset format used in MMOCR here:
@@ -55,12 +57,16 @@ class DatasetPreparer:
 
     def __call__(self):
         """Prepare the dataset."""
+        ann_dicts = {}
         if self.with_obtainer:
             print('Obtaining Dataset...')
             self.data_obtainer()
         if self.with_converter:
             print('Converting Dataset...')
-            self.data_converter()
+            ann_dicts = self.data_converter()
+        if self.with_config_generator:
+            print('Generating base configs...')
+            self.config_generator(ann_dicts)
 
     def parse_meta(self, cfg_path: str) -> None:
         """Parse meta file.
@@ -108,6 +114,9 @@ class DatasetPreparer:
             cfg.data_converter.update(
                 dict(nproc=self.nproc, dataset_name=self.dataset_name))
             self.data_converter = DATA_CONVERTERS.build(cfg.data_converter)
+        if 'config_generator' in cfg:
+            cfg.config_generator.update(dict(dataset_name=self.dataset_name))
+            self.config_generator = CFG_GENERATORS.build(cfg.config_generator)
 
     @property
     def with_obtainer(self) -> bool:
@@ -118,3 +127,8 @@ class DatasetPreparer:
     def with_converter(self) -> bool:
         """bool: whether the data preparer has an converter"""
         return getattr(self, 'data_converter', None) is not None
+
+    @property
+    def with_config_generator(self) -> bool:
+        """bool: whether the data preparer has a config generator"""
+        return getattr(self, 'config_generator', None) is not None

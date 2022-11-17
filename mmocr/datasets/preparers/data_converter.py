@@ -28,7 +28,6 @@ class BaseDataConverter:
         dataset_name (str): Dataset name.
         delete (Optional[List]): A list of files to be deleted after
             conversion.
-        config_path (str): Path to the configs. Defaults to 'configs/'.
     """
 
     def __init__(self,
@@ -53,7 +52,7 @@ class BaseDataConverter:
         self.config_path = config_path
         self.img_dir = f'{task}_imgs'
         parser.update(dict(nproc=nproc))
-        dumper.update(dict(task=task, dataset_name=dataset_name))
+        dumper.update(dict(task=task))
         self.parser = DATA_PARSERS.build(parser)
         self.dumper = DATA_DUMPERS.build(dumper)
         gather_type = gatherer.pop('type')
@@ -66,9 +65,14 @@ class BaseDataConverter:
             raise NotImplementedError
 
     def __call__(self):
-        """Process the data."""
+        """Process the data.
+
+        Returns:
+            Dict: A dict that maps each split to the path of the annotation
+                files.
+        """
         # Convert and dump annotations to MMOCR format
-        dataset_config = dict()
+        split2ann = dict()
         for split in self.splits:
             print(f'Parsing {split} split...')
             # Gather the info such as file names required by parser
@@ -85,56 +89,9 @@ class BaseDataConverter:
             samples = track_parallel_progress(func, samples, nproc=self.nproc)
             samples = self.add_meta(samples)
             # Dump annotation files
-            dataset_config[split] = self.dumper.dump(samples, self.data_root,
-                                                     split)
-        self.generate_dataset_config(dataset_config)
+            split2ann[split] = self.dumper.dump(samples, self.data_root, split)
         self.clean()
-
-    def generate_dataset_config(self, dataset_config: Dict) -> None:
-        """Generate dataset config file. Dataset config is a python file that
-        contains the dataset information.
-
-        Examples:
-        Generated dataset config
-        >>> ic15_rec_data_root = 'data/icdar2015/'
-        >>> icdar2015_textrecog_train = dict(
-        >>>     type='OCRDataset',
-        >>>     data_root=ic15_rec_data_root,
-        >>>     ann_file='textrecog_train.json',
-        >>>     test_mode=False,
-        >>>     pipeline=None)
-        >>> icdar2015_textrecog_test = dict(
-        >>>     type='OCRDataset',
-        >>>     data_root=ic15_rec_data_root,
-        >>>     ann_file='textrecog_test.json',
-        >>>     test_mode=True,
-        >>>     pipeline=None)
-
-        Args:
-            dataset_config (Dict): A dict contains the dataset config string of
-            each split.
-        """
-        if self.task == 'kie':
-            # Not supported yet
-            return
-        cfg_path = osp.join(self.config_path, self.task, '_base_', 'datasets',
-                            f'{self.dataset_name}.py')
-        if osp.exists(cfg_path):
-            while True:
-                c = input(f'{cfg_path} already exists, overwrite? (Y/n) ') \
-                    or 'Y'
-                if c.lower() == 'y':
-                    break
-                if c.lower() == 'n':
-                    return
-        mkdir_or_exist(osp.dirname(cfg_path))
-        with open(cfg_path, 'w') as f:
-            f.write(
-                f'{self.dataset_name}_{self.task}_data_root = \'{self.data_root}\'\n'  # noqa: E501
-            )
-        for split in self.splits:
-            with open(cfg_path, 'a') as f:
-                f.write(dataset_config[split])
+        return split2ann
 
     @abstractmethod
     def pack_instance(self, sample: Tuple, split: str) -> Dict:
