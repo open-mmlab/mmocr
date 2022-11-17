@@ -187,7 +187,8 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
             mmcv.imwrite(dst_img, dst_img_path)
 
             if format == 'txt':
-                lines.append(f'crops/{dst_img_name} ' f'{word}')
+                lines.append(f'crops/{dst_img_name} '
+                             f'{word}')
             elif format == 'jsonl':
                 lines.append(
                     json.dumps(
