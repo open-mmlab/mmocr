@@ -6,7 +6,7 @@ from mmdet.models.backbones import MobileNetV2 as MMDet_MobileNetV2
 from torch import Tensor
 
 from mmocr.registry import MODELS
-from mmocr.utils.typing import InitConfigType
+from mmocr.utils.typing_utils import InitConfigType
 
 
 @MODELS.register_module()

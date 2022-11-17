@@ -20,11 +20,11 @@ from .polygon_utils import (boundary_iou, crop_polygon, is_poly_inside_rect,
                             sort_vertex, sort_vertex8)
 from .setup_env import register_all_modules
 from .string_utils import StringStripper
-from .typing import (ColorType, ConfigType, DetSampleList, InitConfigType,
-                     KIESampleList, MultiConfig, OptConfigType,
-                     OptDetSampleList, OptInitConfigType, OptKIESampleList,
-                     OptMultiConfig, OptRecSampleList, OptTensor,
-                     RecForwardResults, RecSampleList)
+from .typing_utils import (ColorType, ConfigType, DetSampleList,
+                           InitConfigType, KIESampleList, MultiConfig,
+                           OptConfigType, OptDetSampleList, OptInitConfigType,
+                           OptKIESampleList, OptMultiConfig, OptRecSampleList,
+                           OptTensor, RecForwardResults, RecSampleList)
 
 __all__ = [
     'collect_env', 'is_3dlist', 'is_type_list', 'is_none_or_type', 'equal_len',
