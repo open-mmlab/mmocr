@@ -13,10 +13,11 @@ _base_ = [
 ]
 
 # dataset settings
-train_list = [_base_.mj_rec_train]
+train_list = [_base_.mjsynth_textrecog_test]
 test_list = [
-    _base_.cute80_rec_test, _base_.iiit5k_rec_test, _base_.svt_rec_test,
-    _base_.svtp_rec_test, _base_.ic13_rec_test, _base_.ic15_rec_test
+    _base_.cute80_textrecog_test, _base_.iiit5k_textrecog_test,
+    _base_.svt_textrecog_test, _base_.svtp_textrecog_test,
+    _base_.icdar2013_textrecog_test, _base_.icdar2015_textrecog_test
 ]
 
 default_hooks = dict(logger=dict(type='LoggerHook', interval=50), )

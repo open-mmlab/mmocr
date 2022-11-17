@@ -9,24 +9,24 @@ _base_ = [
 load_from = 'https://download.openmmlab.com/mmocr/textdet/dbnet/tmp_1.0_pretrain/dbnet_r50dcnv2_fpnc_sbn_2e_synthtext_20210325-ed322016.pth'  # noqa
 
 # dataset settings
-ic15_det_train = _base_.ic15_det_train
-ic15_det_train.pipeline = _base_.train_pipeline
-ic15_det_test = _base_.ic15_det_test
-ic15_det_test.pipeline = _base_.test_pipeline
+icdar2015_textdet_train = _base_.icdar2015_textdet_train
+icdar2015_textdet_train.pipeline = _base_.train_pipeline
+icdar2015_textdet_test = _base_.icdar2015_textdet_test
+icdar2015_textdet_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=ic15_det_train)
+    dataset=icdar2015_textdet_train)
 
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=ic15_det_test)
+    dataset=icdar2015_textdet_test)
 
 test_dataloader = val_dataloader
 

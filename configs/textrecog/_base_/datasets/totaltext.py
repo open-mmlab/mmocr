@@ -1,15 +1,15 @@
-tt_rec_data_root = 'data/totaltext/'
+totaltext_textrecog_data_root = 'data/totaltext/'
 
-tt_rec_train = dict(
+totaltext_textrecog_train = dict(
     type='OCRDataset',
-    data_root=tt_rec_data_root,
+    data_root=totaltext_textrecog_data_root,
     ann_file='textrecog_train.json',
     test_mode=False,
     pipeline=None)
 
-tt_rec_test = dict(
+totaltext_textrecog_test = dict(
     type='OCRDataset',
-    data_root=tt_rec_data_root,
+    data_root=totaltext_textrecog_data_root,
     ann_file='textrecog_test.json',
     test_mode=True,
     pipeline=None)

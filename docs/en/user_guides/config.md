@@ -21,24 +21,24 @@ _base_ = [
 ]
 
 # dataset settings
-ic15_det_train = _base_.ic15_det_train
-ic15_det_train.pipeline = _base_.train_pipeline
-ic15_det_test = _base_.ic15_det_test
-ic15_det_test.pipeline = _base_.test_pipeline
+icdar2015_textdet_train = _base_.icdar2015_textdet_train
+icdar2015_textdet_train.pipeline = _base_.train_pipeline
+icdar2015_textdet_test = _base_.icdar2015_textdet_test
+icdar2015_textdet_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=ic15_det_train)
+    dataset=icdar2015_textdet_train)
 
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=ic15_det_test)
+    dataset=icdar2015_textdet_test)
 ```
 
 ### Configuration Inheritance
@@ -77,11 +77,11 @@ Sometimes we may need to reference some fields in the `_base_` configuration dir
 This syntax has been used extensively in the configuration of MMOCR, and the dataset and pipeline configurations for each model in MMOCR are referenced in the *_base_* configuration. For example,
 
 ```Python
-ic15_det_train = _base_.ic15_det_train
+icdar2015_textdet_train = _base_.icdar2015_textdet_train
 # ...
 train_dataloader = dict(
     # ...
-    dataset=ic15_det_train)
+    dataset=icdar2015_textdet_train)
 ```
 
 <div id="base_variable_modification"></div>
@@ -98,18 +98,18 @@ In MMOCR, different algorithms usually have different pipelines in different dat
 
    ```Python
    # Get the dataset in _base_
-   ic15_det_train = _base_.ic15_det_train
+   icdar2015_textdet_train = _base_.icdar2015_textdet_train
    # You can modify the variables directly with Python's update
-   ic15_det_train.update(pipeline=_base_.train_pipeline)
+   icdar2015_textdet_train.update(pipeline=_base_.train_pipeline)
    ```
 
    It can also be modified in the same way as changing Python class attributes.
 
    ```Python
    # Get the dataset in _base_
-   ic15_det_train = _base_.ic15_det_train
+   icdar2015_textdet_train = _base_.icdar2015_textdet_train
    # The class property method is modified
-   ic15_det_train.pipeline = _base_.train_pipeline
+   icdar2015_textdet_train.pipeline = _base_.train_pipeline
    ```
 
 2. List
@@ -291,7 +291,7 @@ For example, for text recognition tasks, Syn90k is used as the training set, whi
 
 ```Python
 # text recognition dataset configuration
-mj_rec_train = dict(
+mjsynth_textrecog_test = dict(
     type='OCRDataset',
     data_root='data/rec/Syn90k/',
     data_prefix=dict(img_path='mnt/ramdisk/max/90kDICT32px'),
@@ -299,7 +299,7 @@ mj_rec_train = dict(
     test_mode=False,
     pipeline=None)
 
-ic13_rec_test = dict(
+icdar2013_textrecog_test = dict(
     type='OCRDataset',
     data_root='data/rec/icdar_2013/',
     data_prefix=dict(img_path='Challenge2_Test_Task3_Images/'),
@@ -307,7 +307,7 @@ ic13_rec_test = dict(
     test_mode=True,
     pipeline=None)
 
-ic15_rec_test = dict(
+icdar2015_textrecog_test = dict(
     type='OCRDataset',
     data_root='data/rec/icdar_2015/',
     data_prefix=dict(img_path='ch4_test_word_images_gt/'),
@@ -377,7 +377,7 @@ train_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type='ConcatDataset',
-        datasets=[mj_rec_train],
+        datasets=[mjsynth_textrecog_test],
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=1,
@@ -387,7 +387,7 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type='ConcatDataset',
-        datasets=[ic13_rec_test, ic15_rec_test],
+        datasets=[icdar2013_textrecog_test, icdar2015_textrecog_test],
         pipeline=test_pipeline))
 test_dataloader = val_dataloader
 ```

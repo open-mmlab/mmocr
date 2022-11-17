@@ -21,24 +21,24 @@ _base_ = [
 ]
 
 # dataset settings
-ic15_det_train = _base_.ic15_det_train
-ic15_det_train.pipeline = _base_.train_pipeline
-ic15_det_test = _base_.ic15_det_test
-ic15_det_test.pipeline = _base_.test_pipeline
+icdar2015_textdet_train = _base_.icdar2015_textdet_train
+icdar2015_textdet_train.pipeline = _base_.train_pipeline
+icdar2015_textdet_test = _base_.icdar2015_textdet_test
+icdar2015_textdet_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=ic15_det_train)
+    dataset=icdar2015_textdet_train)
 
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=ic15_det_test)
+    dataset=icdar2015_textdet_test)
 ```
 
 ### 配置文件的继承
@@ -77,11 +77,11 @@ print(db_config)
 该语法已广泛用于 MMOCR 的配置中。MMOCR 中各个模型的数据集和管道（pipeline）配置都引用于*基本*配置。如在
 
 ```Python
-ic15_det_train = _base_.ic15_det_train
+icdar2015_textdet_train = _base_.icdar2015_textdet_train
 # ...
 train_dataloader = dict(
     # ...
-    dataset=ic15_det_train)
+    dataset=icdar2015_textdet_train)
 ```
 
 ### `_base_` 变量的修改
@@ -96,18 +96,18 @@ train_dataloader = dict(
 
    ```python
    # 获取 _base_ 中的数据集
-   ic15_det_train = _base_.ic15_det_train
+   icdar2015_textdet_train = _base_.icdar2015_textdet_train
    # 可以直接利用 Python 的 update 修改变量
-   ic15_det_train.update(pipeline=_base_.train_pipeline)
+   icdar2015_textdet_train.update(pipeline=_base_.train_pipeline)
    ```
 
    也可以使用类属性的方法进行修改：
 
    ```Python
    # 获取 _base_ 中的数据集
-   ic15_det_train = _base_.ic15_det_train
+   icdar2015_textdet_train = _base_.icdar2015_textdet_train
    # 类属性方法修改
-   ic15_det_train.pipeline = _base_.train_pipeline
+   icdar2015_textdet_train.pipeline = _base_.train_pipeline
    ```
 
 2. 列表
@@ -288,7 +288,7 @@ test_cfg = dict(type='TestLoop')
 
 ```Python
 # 识别数据集配置
-mj_rec_train = dict(
+mjsynth_textrecog_test = dict(
     type='OCRDataset',
     data_root='data/rec/Syn90k/',
     data_prefix=dict(img_path='mnt/ramdisk/max/90kDICT32px'),
@@ -296,7 +296,7 @@ mj_rec_train = dict(
     test_mode=False,
     pipeline=None)
 
-ic13_rec_test = dict(
+icdar2013_textrecog_test = dict(
     type='OCRDataset',
     data_root='data/rec/icdar_2013/',
     data_prefix=dict(img_path='Challenge2_Test_Task3_Images/'),
@@ -304,7 +304,7 @@ ic13_rec_test = dict(
     test_mode=True,
     pipeline=None)
 
-ic15_rec_test = dict(
+icdar2015_textrecog_test = dict(
     type='OCRDataset',
     data_root='data/rec/icdar_2015/',
     data_prefix=dict(img_path='ch4_test_word_images_gt/'),
@@ -376,7 +376,7 @@ train_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type='ConcatDataset',
-        datasets=[mj_rec_train],
+        datasets=[mjsynth_textrecog_test],
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=1,
@@ -386,7 +386,7 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type='ConcatDataset',
-        datasets=[ic13_rec_test, ic15_rec_test],
+        datasets=[icdar2013_textrecog_test, icdar2015_textrecog_test],
         pipeline=test_pipeline))
 test_dataloader = val_dataloader
 ```

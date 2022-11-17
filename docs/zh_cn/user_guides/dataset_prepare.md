@@ -90,7 +90,7 @@ data/icdar2015
 ic15_det_data_root = 'data/icdar2015' # 数据集根目录
 
 # 训练集配置
-ic15_det_train = dict(
+icdar2015_textdet_train = dict(
     type='OCRDataset',
     data_root=ic15_det_data_root,                        # 数据根目录
     ann_file='instances_training.json',                  # 标注文件名称
@@ -98,7 +98,7 @@ ic15_det_train = dict(
     filter_cfg=dict(filter_empty_gt=True, min_size=32),  # 数据过滤
     pipeline=None)
 # 测试集配置
-ic15_det_test = dict(
+icdar2015_textdet_test = dict(
     type='OCRDataset',
     data_root=ic15_det_data_root,
     ann_file='instances_test.json',
@@ -117,24 +117,24 @@ _base_ = [
     '../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
-ic15_det_train = _base_.ic15_det_train            # 指定训练集
-ic15_det_train.pipeline = _base_.train_pipeline   # 指定训练集使用的数据流水线
-ic15_det_test = _base_.ic15_det_test              # 指定测试集
-ic15_det_test.pipeline = _base_.test_pipeline     # 指定测试集使用的数据流水线
+icdar2015_textdet_train = _base_.icdar2015_textdet_train            # 指定训练集
+icdar2015_textdet_train.pipeline = _base_.train_pipeline   # 指定训练集使用的数据流水线
+icdar2015_textdet_test = _base_.icdar2015_textdet_test              # 指定测试集
+icdar2015_textdet_test.pipeline = _base_.test_pipeline     # 指定测试集使用的数据流水线
 
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=ic15_det_train)    # 在 train_dataloader 中指定使用的训练数据集
+    dataset=icdar2015_textdet_train)    # 在 train_dataloader 中指定使用的训练数据集
 
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=ic15_det_test)    # 在 val_dataloader 中指定使用的验证数据集
+    dataset=icdar2015_textdet_test)    # 在 val_dataloader 中指定使用的验证数据集
 
 test_dataloader = val_dataloader
 ```
@@ -167,11 +167,11 @@ _base_ = [ # 导入所有需要使用的数据集配置
 ]
 
 # 训练集列表
-train_list = [_base_.mj_rec_train]
+train_list = [_base_.mjsynth_textrecog_test]
 # 测试集列表
 test_list = [
-    _base_.cute80_rec_test, _base_.iiit5k_rec_test, _base_.svt_rec_test,
-    _base_.svtp_rec_test, _base_.ic13_rec_test, _base_.ic15_rec_test
+    _base_.cute80_textrecog_test, _base_.iiit5k_textrecog_test, _base_.svt_textrecog_test,
+    _base_.svtp_textrecog_test, _base_.icdar2013_textrecog_test, _base_.icdar2015_textrecog_test
 ]
 
 # 使用 ConcatDataset 来级联列表中的多个数据集

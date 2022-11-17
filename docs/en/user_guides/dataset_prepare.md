@@ -90,7 +90,7 @@ When training or evaluating a model on new datasets, we need to write the datase
 ic15_det_data_root = 'data/icdar2015' # dataset root path
 
 # Train set config
-ic15_det_train = dict(
+icdar2015_textdet_train = dict(
     type='OCRDataset',
     data_root=ic15_det_data_root,                        # dataset root path
     ann_file='instances_training.json',                  # name of annotation
@@ -98,7 +98,7 @@ ic15_det_train = dict(
     filter_cfg=dict(filter_empty_gt=True, min_size=32),  # filtering empty images
     pipeline=None)
 # Test set config
-ic15_det_test = dict(
+icdar2015_textdet_test = dict(
     type='OCRDataset',
     data_root=ic15_det_data_root,
     ann_file='instances_test.json',
@@ -117,24 +117,24 @@ _base_ = [
     '../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
-ic15_det_train = _base_.ic15_det_train            # specify the training set
-ic15_det_train.pipeline = _base_.train_pipeline   # specify the training pipeline
-ic15_det_test = _base_.ic15_det_test              # specify the testing set
-ic15_det_test.pipeline = _base_.test_pipeline     # specify the testing pipeline
+icdar2015_textdet_train = _base_.icdar2015_textdet_train            # specify the training set
+icdar2015_textdet_train.pipeline = _base_.train_pipeline   # specify the training pipeline
+icdar2015_textdet_test = _base_.icdar2015_textdet_test              # specify the testing set
+icdar2015_textdet_test.pipeline = _base_.test_pipeline     # specify the testing pipeline
 
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=ic15_det_train)    # specify the dataset in train_dataloader
+    dataset=icdar2015_textdet_train)    # specify the dataset in train_dataloader
 
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=ic15_det_test)    # specify the dataset in val_dataloader
+    dataset=icdar2015_textdet_test)    # specify the dataset in val_dataloader
 
 test_dataloader = val_dataloader
 ```
@@ -167,11 +167,11 @@ _base_ = [ # Import all dataset configurations you want to use
 ]
 
 # List of training datasets
-train_list = [_base_.mj_rec_train]
+train_list = [_base_.mjsynth_textrecog_test]
 # List of testing datasets
 test_list = [
-    _base_.cute80_rec_test, _base_.iiit5k_rec_test, _base_.svt_rec_test,
-    _base_.svtp_rec_test, _base_.ic13_rec_test, _base_.ic15_rec_test
+    _base_.cute80_textrecog_test, _base_.iiit5k_textrecog_test, _base_.svt_textrecog_test,
+    _base_.svtp_textrecog_test, _base_.icdar2013_textrecog_test, _base_.icdar2015_textrecog_test
 ]
 
 # Use ConcatDataset to combine the datasets in the list
