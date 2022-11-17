@@ -56,8 +56,9 @@ class JsonDumper:
 @DATA_DUMPERS.register_module()
 class WildreceiptOpensetDumper:
 
-    def __init__(self, task: str) -> None:
+    def __init__(self, task: str, dataset_name: str) -> None:
         self.task = task
+        self.dataset_name = dataset_name
 
     def dump(self, data: List, data_root: str, split: str) -> str:
         """Dump data to txt file.
