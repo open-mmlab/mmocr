@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import mmengine
 
@@ -56,9 +56,8 @@ class JsonDumper:
 @DATA_DUMPERS.register_module()
 class WildreceiptOpensetDumper:
 
-    def __init__(self, task: str, dataset_name: str) -> None:
+    def __init__(self, task: str, dataset_name: Optional[str] = None) -> None:
         self.task = task
-        self.dataset_name = dataset_name
 
     def dump(self, data: List, data_root: str, split: str) -> str:
         """Dump data to txt file.
