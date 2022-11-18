@@ -68,7 +68,6 @@ class BaseDataConverter:
     def __call__(self):
         """Process the data."""
         # Convert and dump annotations to MMOCR format
-        dataset_config = dict()
         for split in self.splits:
             print(f'Parsing {split} split...')
             # Gather the info such as file names required by parser
@@ -85,12 +84,19 @@ class BaseDataConverter:
             samples = track_parallel_progress(func, samples, nproc=self.nproc)
             samples = self.add_meta(samples)
             # Dump annotation files
-            dataset_config[split] = self.dumper.dump(samples, self.data_root,
-                                                     split)
-        self.generate_dataset_config(dataset_config)
+            self.dumper.dump(samples, self.data_root, split)
+        self.generate_dataset_config()
         self.clean()
 
-    def generate_dataset_config(self, dataset_config: Dict) -> None:
+    def _generate_dataset_config_string(self) -> str:
+        """Generate the dataset config string.
+
+        Returns:
+            str: The dataset config string.
+        """
+        return None
+
+    def generate_dataset_config(self) -> None:
         """Generate dataset config file. Dataset config is a python file that
         contains the dataset information.
 
@@ -114,8 +120,8 @@ class BaseDataConverter:
             dataset_config (Dict): A dict contains the dataset config string of
             each split.
         """
-        if self.task == 'kie':
-            # Not supported yet
+        dataset_config = self._generate_dataset_config_string()
+        if dataset_config is None:
             return
         cfg_path = osp.join(self.config_path, self.task, '_base_', 'datasets',
                             f'{self.dataset_name}.py')
@@ -134,7 +140,7 @@ class BaseDataConverter:
             )
         for split in self.splits:
             with open(cfg_path, 'a') as f:
-                f.write(dataset_config[split])
+                f.write([split])
 
     @abstractmethod
     def pack_instance(self, sample: Tuple, split: str) -> Dict:
@@ -318,6 +324,21 @@ class TextDetDataConverter(BaseDataConverter):
             'data_list': sample
         }
         return meta
+
+    def _generate_dataset_config_string(self) -> str:
+        cfg = ''
+        for split in self.splits:
+            cfg = f'\n{self.dataset_name}_{self.task}_{split} = dict(\n'
+            cfg += '    type=\'OCRDataset\',\n'
+            cfg += '    data_root=' + f'{self.dataset_name}_{self.task}_data_root,\n'  # noqa: E501
+            cfg += f'    ann_file=\'{self.task}_{split}.json\',\n'
+            if split == 'train':
+                cfg += '    filter_cfg=dict(filter_empty_gt=True, min_size=32),\n'  # noqa: E501
+            elif split in ['test', 'val']:
+                cfg += '    test_mode=True,\n'
+            cfg += '    pipeline=None)\n'
+
+        return cfg
 
 
 @DATA_CONVERTERS.register_module()

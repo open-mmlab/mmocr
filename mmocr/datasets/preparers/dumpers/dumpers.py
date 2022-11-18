@@ -40,18 +40,6 @@ class JsonDumper:
         dst_file = osp.join(data_root, f'{self.task}_{split}.json')
         mmengine.dump(data, dst_file)
 
-        cfg = f'\n{self.dataset_name}_{self.task}_{split} = dict(\n'
-        cfg += '    type=\'OCRDataset\',\n'
-        cfg += '    data_root=' + f'{self.dataset_name}_{self.task}_data_root,\n'  # noqa: E501
-        cfg += f'    ann_file=\'{osp.basename(dst_file)}\',\n'
-        if split == 'train' and self.task == 'textdet':
-            cfg += '    filter_cfg=dict(filter_empty_gt=True, min_size=32),\n'
-        elif split in ['test', 'val']:
-            cfg += '    test_mode=True,\n'
-        cfg += '    pipeline=None)\n'
-
-        return cfg
-
 
 @DATA_DUMPERS.register_module()
 class WildreceiptOpensetDumper:
