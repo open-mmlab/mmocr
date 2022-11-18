@@ -160,7 +160,7 @@ class TextGetMD5(unittest.TestCase):
         file, md5 = self.file1
         self.assertEqual(get_md5(file), md5)
         file, md5 = self.file2
-        self.assertNotEqual(check_integrity(file), md5)
+        self.assertNotEqual(get_md5(file), md5)
 
 
 class TestListFiles(unittest.TestCase):
