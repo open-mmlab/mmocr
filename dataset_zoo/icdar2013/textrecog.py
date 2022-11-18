@@ -88,6 +88,6 @@ config_generator = dict(
     type='TextRecogConfigGenerator',
     data_root=data_root,
     test_anns=[
-        dict(file='textrecog_test.json'),
-        dict(prefix='icdar2013_857', file='textrecog_test_857.json')
+        dict(ann_file='textrecog_test.json'),
+        dict(dataset_postfix='857', ann_file='textrecog_test_857.json')
     ])

@@ -18,11 +18,13 @@ class BaseConfigGenerator:
         train_anns (List[Dict], optional): A list of train annotation files
             to appear in the base configs. Defaults to None.
             Each element is typically a dict with the following fields:
-            - file (str): The path to the annotation file relative to
+            - ann_file (str): The path to the annotation file relative to
               data_root.
-            - prefix (str, optional): Affects the prefix of the resulting
-              variable in the generated config. Defaults to be the same as
-              ``dataset_name``.
+            - dataset_postfix (str, optional): Affects the postfix of the
+              resulting variable in the generated config. If specified, the
+              dataset variable will be named in the form of
+              ``{dataset_name}_{dataset_postfix}_{task}_{split}``. Defaults to
+              None.
         val_anns (List[Dict], optional): A list of val annotation files
             to appear in the base configs, similar to ``train_anns``. Defaults
             to None.
@@ -56,13 +58,15 @@ class BaseConfigGenerator:
 
         ``self.anns`` is a dict that maps the name of a dataset config variable
         to a dict, which contains the following fields:
-        - file (str): The path to the annotation file relative to
+        - ann_file (str): The path to the annotation file relative to
           data_root.
         - split (str): The split the annotation belongs to. Usually
           it can be 'train', 'val' and 'test'.
-        - prefix (str, optional): Affects the prefix of the resulting
-          variable in the generated config. Defaults to be the same as
-          ``self.dataset_name``.
+        - dataset_postfix (str, optional): Affects the postfix of the
+          resulting variable in the generated config. If specified, the
+          dataset variable will be named in the form of
+          ``{dataset_name}_{dataset_postfix}_{task}_{split}``. Defaults to
+          None.
         """
         self.anns = {}
         for split, ann_list in zip(('train', 'val', 'test'),
@@ -73,15 +77,20 @@ class BaseConfigGenerator:
                 raise ValueError(f'{split}_anns must be either a list or'
                                  ' None!')
             for ann_dict in ann_list:
-                assert 'file' in ann_dict
-                if 'prefix' not in ann_dict:
-                    ann_dict['prefix'] = self.dataset_name
+                assert 'ann_file' in ann_dict
+                if ('dataset_postfix' not in ann_dict
+                        or ann_dict['dataset_postfix'] == ''):
+                    ann_dict['dataset_postfix'] = None
+                if ann_dict['dataset_postfix'] is None:
+                    key = f'{self.dataset_name}_{self.task}_{split}'
+                else:
+                    key = f'{self.dataset_name}_{ann_dict["dataset_postfix"]}_{self.task}_{split}'  # noqa
                 ann_dict['split'] = split
-                key = f'{ann_dict["prefix"]}_{self.task}_{split}'
                 if key in self.anns:
                     raise ValueError(
-                        f'Duplicate data prefix {ann_dict["prefix"]} in'
-                        f'{split} found!')
+                        f'Duplicate dataset variable {key} found! '
+                        'Please use different dataset_postfix to avoid '
+                        'conflict.')
                 self.anns[key] = ann_dict
 
     def __call__(self) -> None:
@@ -127,11 +136,13 @@ class TextDetConfigGenerator(BaseConfigGenerator):
             to appear in the base configs. Defaults to
             ``[dict(file='textdet_train.json')]``.
             Each element is typically a dict with the following fields:
-            - file (str): The path to the annotation file relative to
+            - ann_file (str): The path to the annotation file relative to
               data_root.
-            - prefix (str, optional): Affects the prefix of the resulting
-              variable in the generated config. Defaults to be the same as
-              ``dataset_name``.
+            - dataset_postfix (str, optional): Affects the postfix of the
+              resulting variable in the generated config. If specified, the
+              dataset variable will be named in the form of
+              ``{dataset_name}_{dataset_postfix}_{task}_{split}``. Defaults to
+              None.
         val_anns (List[Dict], optional): A list of val annotation files
             to appear in the base configs, similar to ``train_anns``. Defaults
             to [].
@@ -145,9 +156,11 @@ class TextDetConfigGenerator(BaseConfigGenerator):
         self,
         data_root: str,
         dataset_name: str,
-        train_anns: Optional[List[Dict]] = [dict(file='textdet_train.json')],
+        train_anns: Optional[List[Dict]] = [
+            dict(ann_file='textdet_train.json')
+        ],
         val_anns: Optional[List[Dict]] = [],
-        test_anns: Optional[List[Dict]] = [dict(file='textdet_test.json')],
+        test_anns: Optional[List[Dict]] = [dict(ann_file='textdet_test.json')],
         config_path: str = 'configs/',
     ) -> None:
         super().__init__(
@@ -169,12 +182,15 @@ class TextDetConfigGenerator(BaseConfigGenerator):
                 a config variable name (such as icdar2015_textrecog_train) to
                 its corresponding annotation information dict. Each dict
                 contains following keys:
-                - file (str): The path to the annotation file relative to
-                data_root.
+                - ann_file (str): The path to the annotation file relative to
+                  data_root.
+                - dataset_postfix (str, optional): Affects the postfix of the
+                  resulting variable in the generated config. If specified, the
+                  dataset variable will be named in the form of
+                  ``{dataset_name}_{dataset_postfix}_{task}_{split}``. Defaults
+                  to None.
                 - split (str): The split the annotation belongs to. Usually
-                it can be 'train', 'val' and 'test'.
-                - prefix (str): Affects the prefix of the resulting
-                variable in the generated config.
+                  it can be 'train', 'val' and 'test'.
 
         Returns:
             str: The generated dataset config.
@@ -184,7 +200,7 @@ class TextDetConfigGenerator(BaseConfigGenerator):
             cfg += f'\n{key_name} = dict(\n'
             cfg += '    type=\'OCRDataset\',\n'
             cfg += '    data_root=' + f'{self.dataset_name}_{self.task}_data_root,\n'  # noqa: E501
-            cfg += f'    ann_file=\'{ann_dict["file"]}\',\n'
+            cfg += f'    ann_file=\'{ann_dict["ann_file"]}\',\n'
             if ann_dict['split'] == 'train':
                 cfg += '    filter_cfg=dict(filter_empty_gt=True, min_size=32),\n'  # noqa: E501
             elif ann_dict['split'] in ['test', 'val']:
@@ -204,11 +220,13 @@ class TextRecogConfigGenerator(BaseConfigGenerator):
             to appear in the base configs. Defaults to
             ``[dict(file='textrecog_train.json')]``.
             Each element is typically a dict with the following fields:
-            - file (str): The path to the annotation file relative to
+            - ann_file (str): The path to the annotation file relative to
               data_root.
-            - prefix (str, optional): Affects the prefix of the resulting
-              variable in the generated config. Defaults to be the same as
-              ``dataset_name``.
+            - dataset_postfix (str, optional): Affects the postfix of the
+              resulting variable in the generated config. If specified, the
+              dataset variable will be named in the form of
+              ``{dataset_name}_{dataset_postfix}_{task}_{split}``. Defaults to
+              None.
         val_anns (List[Dict], optional): A list of val annotation files
             to appear in the base configs, similar to ``train_anns``. Defaults
             to [].
@@ -238,9 +256,13 @@ class TextRecogConfigGenerator(BaseConfigGenerator):
         self,
         data_root: str,
         dataset_name: str,
-        train_anns: Optional[List[Dict]] = [dict(file='textrecog_train.json')],
+        train_anns: Optional[List[Dict]] = [
+            dict(ann_file='textrecog_train.json')
+        ],
         val_anns: Optional[List[Dict]] = [],
-        test_anns: Optional[List[Dict]] = [dict(file='textrecog_test.json')],
+        test_anns: Optional[List[Dict]] = [
+            dict(ann_file='textrecog_test.json')
+        ],
         config_path: str = 'configs/',
     ) -> None:
         super().__init__(
@@ -261,12 +283,15 @@ class TextRecogConfigGenerator(BaseConfigGenerator):
                 a config variable name (such as icdar2015_textrecog_train) to
                 its corresponding annotation information dict. Each dict
                 contains following keys:
-                - file (str): The path to the annotation file relative to
-                data_root.
+                - ann_file (str): The path to the annotation file relative to
+                  data_root.
+                - dataset_postfix (str, optional): Affects the postfix of the
+                  resulting variable in the generated config. If specified, the
+                  dataset variable will be named in the form of
+                  ``{dataset_name}_{dataset_postfix}_{task}_{split}``. Defaults
+                  to None.
                 - split (str): The split the annotation belongs to. Usually
-                it can be 'train', 'val' and 'test'.
-                - prefix (str): Affects the prefix of the resulting
-                variable in the generated config.
+                  it can be 'train', 'val' and 'test'.
 
         Returns:
             str: The generated dataset config.
@@ -276,7 +301,7 @@ class TextRecogConfigGenerator(BaseConfigGenerator):
             cfg += f'\n{key_name} = dict(\n'
             cfg += '    type=\'OCRDataset\',\n'
             cfg += '    data_root=' + f'{self.dataset_name}_{self.task}_data_root,\n'  # noqa: E501
-            cfg += f'    ann_file=\'{ann_dict["file"]}\',\n'
+            cfg += f'    ann_file=\'{ann_dict["ann_file"]}\',\n'
             if ann_dict['split'] in ['test', 'val']:
                 cfg += '    test_mode=True,\n'
             cfg += '    pipeline=None)\n'
