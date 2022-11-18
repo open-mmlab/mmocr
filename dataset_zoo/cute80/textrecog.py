@@ -2,7 +2,7 @@
 # the fixed version as done in
 # https://github.com/clovaai/deep-text-recognition-benchmark by default.
 # If you want to use the original version, please comment out the following
-# lines: L31-L38, and uncomment L23-L30, L41-L50.
+# lines: L31-L38, and uncomment L23-L30, L40-L49.
 
 data_root = 'data/cute80'
 cache_path = 'data/cache'
