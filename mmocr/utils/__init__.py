@@ -6,8 +6,8 @@ from .check_argument import (equal_len, is_2dlist, is_3dlist, is_none_or_type,
                              is_type_list, valid_boundary)
 from .collect_env import collect_env
 from .data_converter_utils import dump_ocr_data, recog_anno_to_imginfo
-from .fileio import (check_integrity, is_archive, list_files, list_from_file,
-                     list_to_file)
+from .fileio import (check_integrity, get_md5, is_archive, list_files,
+                     list_from_file, list_to_file)
 from .img_utils import crop_img, warp_img
 from .mask_utils import fill_hole
 from .parsers import LineJsonParser, LineStrParser
@@ -42,5 +42,5 @@ __all__ = [
     'OptConfigType', 'OptDetSampleList', 'OptInitConfigType', 'OptMultiConfig',
     'OptRecSampleList', 'RecSampleList', 'MultiConfig', 'OptTensor',
     'ColorType', 'OptKIESampleList', 'KIESampleList', 'is_archive',
-    'check_integrity', 'list_files'
+    'check_integrity', 'list_files', 'get_md5'
 ]
