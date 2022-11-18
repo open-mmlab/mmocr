@@ -4,7 +4,7 @@ import os
 import tempfile
 import unittest
 
-from mmocr.utils import (check_integrity, is_archive, list_files,
+from mmocr.utils import (check_integrity, get_md5, is_archive, list_files,
                          list_from_file, list_to_file)
 
 lists = [
@@ -146,6 +146,21 @@ class TestCheckIntegrity(unittest.TestCase):
         self.assertTrue(check_integrity(file, None))
         file, md5 = self.file3
         self.assertFalse(check_integrity(file, md5))
+
+
+class TextGetMD5(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.file1 = ('tests/data/det_toy_dataset/instances_test.json',
+                      '77b17b0125996af519ef82aaacc8d96b')
+        self.file2 = ('tests/data/det_toy_dataset/imgs/test/img_1.jpg',
+                      'abc123')
+
+    def test_get_md5(self):
+        file, md5 = self.file1
+        self.assertEqual(get_md5(file), md5)
+        file, md5 = self.file2
+        self.assertNotEqual(check_integrity(file), md5)
 
 
 class TestListFiles(unittest.TestCase):
