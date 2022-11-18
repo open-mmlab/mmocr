@@ -72,7 +72,6 @@ class BaseDataConverter:
                 files.
         """
         # Convert and dump annotations to MMOCR format
-        split2ann = dict()
         for split in self.splits:
             print(f'Parsing {split} split...')
             # Gather the info such as file names required by parser
@@ -89,9 +88,8 @@ class BaseDataConverter:
             samples = track_parallel_progress(func, samples, nproc=self.nproc)
             samples = self.add_meta(samples)
             # Dump annotation files
-            split2ann[split] = self.dumper.dump(samples, self.data_root, split)
+            self.dumper.dump(samples, self.data_root, split)
         self.clean()
-        return split2ann
 
     @abstractmethod
     def pack_instance(self, sample: Tuple, split: str) -> Dict:

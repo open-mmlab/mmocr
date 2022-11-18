@@ -57,16 +57,15 @@ class DatasetPreparer:
 
     def __call__(self):
         """Prepare the dataset."""
-        ann_dicts = {}
         if self.with_obtainer:
             print('Obtaining Dataset...')
             self.data_obtainer()
         if self.with_converter:
             print('Converting Dataset...')
-            ann_dicts = self.data_converter()
+            self.data_converter()
         if self.with_config_generator:
             print('Generating base configs...')
-            self.config_generator(ann_dicts)
+            self.config_generator()
 
     def parse_meta(self, cfg_path: str) -> None:
         """Parse meta file.

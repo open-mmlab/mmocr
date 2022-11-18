@@ -63,6 +63,7 @@ data_obtainer = dict(
             split=['test'],
             content=['annotation'],
         ),
+        # 3. The 857 version further pruned words shorter than 3 characters.
         dict(
             url='https://download.openmmlab.com/mmocr/data/1.x/recog/'
             'icdar_2013/textrecog_test_857.json',
@@ -86,10 +87,7 @@ data_obtainer = dict(
 config_generator = dict(
     type='TextRecogConfigGenerator',
     data_root=data_root,
-    extra_anns=[
-        dict(split='test', file='textrecog_test.json'),
-        dict(
-            prefix='icdar2013_857',
-            split='test',
-            file='textrecog_test_857.json'),
+    test_anns=[
+        dict(file='textrecog_test.json'),
+        dict(prefix='icdar2013_857', file='textrecog_test_857.json')
     ])
