@@ -54,8 +54,8 @@ class BaseConfigGenerator:
         """Preprocess input arguments and stores these information into
         ``self.anns``.
 
-        ``self.anns`` is a that maps the name of a dataset config variable to
-        a dict, which contains the following fields:
+        ``self.anns`` is a dict that maps the name of a dataset config variable
+        to a dict, which contains the following fields:
         - file (str): The path to the annotation file relative to
           data_root.
         - split (str): The split the annotation belongs to. Usually
