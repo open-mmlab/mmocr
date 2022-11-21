@@ -8,13 +8,16 @@ from mmengine import mkdir_or_exist
 from .data_preparer import CFG_GENERATORS
 
 
-class BaseConfigGenerator:
-    """Base class for config generator.
+class BaseDatasetConfigGenerator:
+    """Base class for dataset config generator.
 
     Args:
         data_root (str): The root path of the dataset.
         task (str): The task of the dataset.
         dataset_name (str): The name of the dataset.
+        overwrite_cfg (bool): Whether to overwrite the dataset config file if
+            it already exists. If False, config generator will not generate new
+            config for datasets whose configs are already in base.
         train_anns (List[Dict], optional): A list of train annotation files
             to appear in the base configs. Defaults to None.
             Each element is typically a dict with the following fields:
@@ -39,6 +42,7 @@ class BaseConfigGenerator:
         data_root: str,
         task: str,
         dataset_name: str,
+        overwrite_cfg: bool = False,
         train_anns: Optional[List[Dict]] = None,
         val_anns: Optional[List[Dict]] = None,
         test_anns: Optional[List[Dict]] = None,
@@ -48,6 +52,7 @@ class BaseConfigGenerator:
         self.data_root = data_root
         self.task = task
         self.dataset_name = dataset_name
+        self.overwrite_cfg = overwrite_cfg
         self._prepare_anns(train_anns, val_anns, test_anns)
 
     def _prepare_anns(self, train_anns: Optional[List[Dict]],
@@ -78,13 +83,10 @@ class BaseConfigGenerator:
                                  ' None!')
             for ann_dict in ann_list:
                 assert 'ann_file' in ann_dict
-                if ('dataset_postfix' not in ann_dict
-                        or ann_dict['dataset_postfix'] == ''):
-                    ann_dict['dataset_postfix'] = None
-                if ann_dict['dataset_postfix'] is None:
-                    key = f'{self.dataset_name}_{self.task}_{split}'
-                else:
+                if ann_dict.get('dataset_postfix', ''):
                     key = f'{self.dataset_name}_{ann_dict["dataset_postfix"]}_{self.task}_{split}'  # noqa
+                else:
+                    key = f'{self.dataset_name}_{self.task}_{split}'
                 ann_dict['split'] = split
                 if key in self.anns:
                     raise ValueError(
@@ -100,14 +102,9 @@ class BaseConfigGenerator:
 
         cfg_path = osp.join(self.config_path, self.task, '_base_', 'datasets',
                             f'{self.dataset_name}.py')
-        if osp.exists(cfg_path):
-            while True:
-                c = input(f'{cfg_path} already exists, overwrite? (Y/n) ') \
-                    or 'Y'
-                if c.lower() == 'y':
-                    break
-                if c.lower() == 'n':
-                    return
+        if osp.exists(cfg_path) and not self.overwrite_cfg:
+            print(f'{cfg_path} found, skipping.')
+            return
         mkdir_or_exist(osp.dirname(cfg_path))
         with open(cfg_path, 'w') as f:
             f.write(
@@ -126,15 +123,18 @@ class BaseConfigGenerator:
 
 
 @CFG_GENERATORS.register_module()
-class TextDetConfigGenerator(BaseConfigGenerator):
+class TextDetConfigGenerator(BaseDatasetConfigGenerator):
     """Text detection config generator.
 
     Args:
         data_root (str): The root path of the dataset.
         dataset_name (str): The name of the dataset.
+        overwrite_cfg (bool): Whether to overwrite the dataset config file if
+            it already exists. If False, config generator will not generate new
+            config for datasets whose configs are already in base.
         train_anns (List[Dict], optional): A list of train annotation files
             to appear in the base configs. Defaults to
-            ``[dict(file='textdet_train.json')]``.
+            ``[dict(file='textdet_train.json', dataset_postfix='')]``.
             Each element is typically a dict with the following fields:
             - ann_file (str): The path to the annotation file relative to
               data_root.
@@ -156,16 +156,20 @@ class TextDetConfigGenerator(BaseConfigGenerator):
         self,
         data_root: str,
         dataset_name: str,
+        overwrite_cfg: bool = False,
         train_anns: Optional[List[Dict]] = [
-            dict(ann_file='textdet_train.json')
+            dict(ann_file='textdet_train.json', dataset_postfix='')
         ],
         val_anns: Optional[List[Dict]] = [],
-        test_anns: Optional[List[Dict]] = [dict(ann_file='textdet_test.json')],
+        test_anns: Optional[List[Dict]] = [
+            dict(ann_file='textdet_test.json', dataset_postfix='')
+        ],
         config_path: str = 'configs/',
     ) -> None:
         super().__init__(
             data_root=data_root,
             task='textdet',
+            overwrite_cfg=overwrite_cfg,
             dataset_name=dataset_name,
             train_anns=train_anns,
             val_anns=val_anns,
@@ -210,15 +214,18 @@ class TextDetConfigGenerator(BaseConfigGenerator):
 
 
 @CFG_GENERATORS.register_module()
-class TextRecogConfigGenerator(BaseConfigGenerator):
+class TextRecogConfigGenerator(BaseDatasetConfigGenerator):
     """Text recognition config generator.
 
     Args:
         data_root (str): The root path of the dataset.
         dataset_name (str): The name of the dataset.
+        overwrite_cfg (bool): Whether to overwrite the dataset config file if
+            it already exists. If False, config generator will not generate new
+            config for datasets whose configs are already in base.
         train_anns (List[Dict], optional): A list of train annotation files
             to appear in the base configs. Defaults to
-            ``[dict(file='textrecog_train.json')]``.
+            ``[dict(file='textrecog_train.json'), dataset_postfix='']``.
             Each element is typically a dict with the following fields:
             - ann_file (str): The path to the annotation file relative to
               data_root.
@@ -256,18 +263,20 @@ class TextRecogConfigGenerator(BaseConfigGenerator):
         self,
         data_root: str,
         dataset_name: str,
+        overwrite_cfg: bool = False,
         train_anns: Optional[List[Dict]] = [
-            dict(ann_file='textrecog_train.json')
+            dict(ann_file='textrecog_train.json', dataset_postfix='')
         ],
         val_anns: Optional[List[Dict]] = [],
         test_anns: Optional[List[Dict]] = [
-            dict(ann_file='textrecog_test.json')
+            dict(ann_file='textrecog_test.json', dataset_postfix='')
         ],
         config_path: str = 'configs/',
     ) -> None:
         super().__init__(
             data_root=data_root,
             task='textrecog',
+            overwrite_cfg=overwrite_cfg,
             dataset_name=dataset_name,
             train_anns=train_anns,
             val_anns=val_anns,
