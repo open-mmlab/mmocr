@@ -1,5 +1,5 @@
 # This configuration prepares the ICDAR15 1811 and 2077
-# version, and uses ICDAR13 2077 version by default.
+# version, and uses ICDAR15 2077 version by default.
 # Read https://arxiv.org/pdf/1904.01906.pdf for more info.
 data_root = 'data/icdar2015'
 cache_path = 'data/cache'
