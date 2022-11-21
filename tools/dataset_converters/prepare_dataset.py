@@ -23,6 +23,13 @@ def parse_args():
         help='Task type. Options are "textdet", "textrecog", "textspotting"'
         ' and "kie".')
     parser.add_argument(
+        '--overwrite-cfg',
+        action='store_true',
+        default=False,
+        help='Whether to overwrite the dataset config file if it already'
+        ' exists. If not specified, Dataset Preparer will not generate'
+        ' new config for datasets whose configs are already in base.')
+    parser.add_argument(
         '--dataset-zoo-path',
         default='./dataset_zoo',
         help='Path to dataset zoo config files.')
@@ -42,7 +49,8 @@ def main():
             cfg_path=args.dataset_zoo_path,
             dataset_name=dataset,
             task=args.task,
-            nproc=args.nproc)
+            nproc=args.nproc,
+            overwrite_cfg=args.overwrite_cfg)
         preparer()
 
 

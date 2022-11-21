@@ -86,6 +86,7 @@ class NaiveDataObtainer:
         print(f'Start to download {osp.basename(dst_path)}...')
         print('If you stuck here for a long time, please check your network.')
         request.urlretrieve(url, dst_path, progress)
+        print('')
 
     def extract(self,
                 src_path: str,
