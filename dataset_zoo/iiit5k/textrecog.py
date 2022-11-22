@@ -45,3 +45,5 @@ data_converter = dict(
         format='img text'),
     dumper=dict(type='JsonDumper'),
     delete=['annotations', 'IIIT5K'])
+
+config_generator = dict(type='TextRecogConfigGenerator', data_root=data_root)

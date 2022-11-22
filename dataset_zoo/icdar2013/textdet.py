@@ -55,3 +55,5 @@ data_converter = dict(
         separator=' ',
         mode='xyxy'),
     dumper=dict(type='JsonDumper'))
+
+config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)

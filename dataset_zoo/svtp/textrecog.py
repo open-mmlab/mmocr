@@ -25,3 +25,5 @@ data_converter = dict(
         type='ICDARTxtTextRecogAnnParser', separator=' ', format='img text'),
     dumper=dict(type='JsonDumper'),
     delete=['svtp', 'annotations'])
+
+config_generator = dict(type='TextRecogConfigGenerator', data_root=data_root)
