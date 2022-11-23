@@ -37,3 +37,5 @@ data_converter = dict(
     parser=dict(type='TotaltextTextDetAnnParser', data_root=data_root),
     dumper=dict(type='JsonDumper'),
     delete=['totaltext', 'txt_format', 'annotations'])
+
+config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)

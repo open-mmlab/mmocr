@@ -25,3 +25,5 @@ data_converter = dict(
     parser=dict(type='SVTTextDetAnnParser', data_root=data_root),
     dumper=dict(type='JsonDumper'),
     delete=['annotations', 'svt'])
+
+config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)
