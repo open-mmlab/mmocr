@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import math
-from typing import Sequence, Union
+from typing import List, Sequence, Union
 
 import numpy as np
 import torch
@@ -50,6 +50,13 @@ class BaseLocalVisualizer(Visualizer):
                (95, 54, 80), (128, 76, 255), (201, 57, 1), (246, 0, 122),
                (191, 162, 208)]
 
+    def __init__(self,
+                 name: str = 'visualizer',
+                 font_families: Union[str, List[str]] = 'sans-serif',
+                 **kwargs) -> None:
+        super().__init__(name=name, **kwargs)
+        self.font_families = font_families
+
     def get_labels_image(self,
                          image: np.ndarray,
                          labels: Union[np.ndarray, torch.Tensor],
@@ -88,7 +95,8 @@ class BaseLocalVisualizer(Visualizer):
             vertical_alignments='center',
             horizontal_alignments='center',
             colors='k',
-            font_sizes=font_size)
+            font_sizes=font_size,
+            font_families=self.font_families)
         return self.get_image()
 
     def get_polygons_image(self,

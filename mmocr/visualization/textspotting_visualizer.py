@@ -14,6 +14,9 @@ from .base_visualizer import BaseLocalVisualizer
 @VISUALIZERS.register_module()
 class TextSpottingLocalVisualizer(BaseLocalVisualizer):
 
+    def __init__(self, name: str = 'visualizer', **kwargs) -> None:
+        super().__init__(name=name, **kwargs)
+
     def _draw_instances(
         self,
         image: np.ndarray,

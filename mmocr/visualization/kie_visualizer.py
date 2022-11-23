@@ -38,7 +38,7 @@ class KIELocalVisualizer(BaseLocalVisualizer):
     """
 
     def __init__(self,
-                 name='kie_visualizer',
+                 name: str = 'kie_visualizer',
                  is_openset: bool = False,
                  **kwargs) -> None:
         super().__init__(name=name, **kwargs)
@@ -89,13 +89,15 @@ class KIELocalVisualizer(BaseLocalVisualizer):
                 key_texts, (bboxes[key_index, :2] + bboxes[key_index, 2:]) / 2,
                 colors='k',
                 horizontal_alignments='center',
-                vertical_alignments='center')
+                vertical_alignments='center',
+                font_families=self.font_families)
         if val_texts:
             self.draw_texts(
                 val_texts, (bboxes[val_index, :2] + bboxes[val_index, 2:]) / 2,
                 colors='k',
                 horizontal_alignments='center',
-                vertical_alignments='center')
+                vertical_alignments='center',
+                font_families=self.font_families)
         self.draw_arrows(
             x_data,
             y_data,
