@@ -59,7 +59,7 @@ data_obtainer = dict(
             url='https://download.openmmlab.com/mmocr/data/1.x/recog/'
             'icdar_2013/textrecog_test_1015.json',
             save_name='textrecog_test.json',
-            md5='5a384bf10ecaaa4021ca3d2e6263f5ca',
+            md5='68fdd818f63df8b93dc952478952009a',
             split=['test'],
             content=['annotation'],
         ),
@@ -68,7 +68,7 @@ data_obtainer = dict(
             url='https://download.openmmlab.com/mmocr/data/1.x/recog/'
             'icdar_2013/textrecog_test_857.json',
             save_name='textrecog_test_857.json',
-            md5='dc9f851db2eab02c77743674cf10df6a',
+            md5='3bed3985b0c51a989ad4006f6de8352b',
             split=['test'],
             content=['annotation'],
         ),
