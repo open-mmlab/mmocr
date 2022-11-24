@@ -86,7 +86,7 @@ html_theme = 'pytorch_sphinx_theme'
 html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
     'logo_url':
-    'https://mmocr.readthedocs.io/en/latest/',
+    'https://mmocr.readthedocs.io/en/dev-1.x/',
     'menu': [
         {
             'name':
@@ -157,6 +157,7 @@ master_doc = 'index'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
+html_js_files = ['js/collapsed.js']
 
 myst_heading_anchors = 4
 
