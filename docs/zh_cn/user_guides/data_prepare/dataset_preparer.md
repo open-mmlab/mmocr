@@ -8,28 +8,30 @@ Dataset Preparer 目前仍处在公测阶段，欢迎尝鲜试用！如遇到任
 
 MMOCR 提供了统一的一站式数据集准备脚本 `prepare_dataset.py`。
 
-仅需一行命令即可完成数据的下载、解压，以及格式转换。
+仅需一行命令即可完成数据的下载、解压、格式转换，及基础配置的生成。
 
 ```bash
-python tools/dataset_converters/prepare_dataset.py [$DATASET_NAME] --task [$TASK] --nproc [$NPROC]
+python tools/dataset_converters/prepare_dataset.py [$DATASET_NAME] --task [$TASK] --nproc [$NPROC] [--overwrite-cfg] --dataset-zoo-path [$DATASET_ZOO_PATH]
 ```
 
-| 参数         | 类型 | 说明                                                                                                  |
-| ------------ | ---- | ----------------------------------------------------------------------------------------------------- |
-| dataset_name | str  | （必须）需要准备的数据集名称。                                                                        |
-| --task       | str  | 将数据集格式转换为指定任务的 MMOCR 格式。可选项为： 'textdet', 'textrecog', 'textspotting' 和 'kie'。 |
-| --nproc      | str  | 使用的进程数，默认为 4。                                                                              |
+| 参数               | 类型 | 说明                                                                                                  |
+| ------------------ | ---- | ----------------------------------------------------------------------------------------------------- |
+| dataset_name       | str  | （必须）需要准备的数据集名称。                                                                        |
+| --task             | str  | 将数据集格式转换为指定任务的 MMOCR 格式。可选项为： 'textdet', 'textrecog', 'textspotting' 和 'kie'。 |
+| --nproc            | str  | 使用的进程数，默认为 4。                                                                              |
+| --overwrite-cfg    | str  | 若数据集的基础配置已经在 `configs/{task}/_base_/datasets` 中存在，依然重写该配置                      |
+| --dataset-zoo-path | str  | 存放数据库配置文件的路径。若不指定，则默认为 `./dataset_zoo`                                          |
 
 例如，以下命令展示了如何使用该脚本为 ICDAR2015 数据集准备文本检测任务所需的数据。
 
 ```bash
-python tools/dataset_converters/prepare_dataset.py icdar2015 --task textdet
+python tools/dataset_converters/prepare_dataset.py icdar2015 --task textdet --overwrite-cfg
 ```
 
 该脚本也支持同时准备多个数据集，例如，以下命令展示了如何使用该脚本同时为 ICDAR2015 和 TotalText 数据集准备文本识别任务所需的数据。
 
 ```bash
-python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task textrecog
+python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task textrecog --overwrite-cfg
 ```
 
 进一步了解 MMOCR 支持的数据集，您可以浏览[支持的数据集文档](./datasetzoo.md)
@@ -182,6 +184,58 @@ data_converter = dict(
 当获取了图像与标注文件的对应关系后，data preparer 将解析原始标注文件。由于不同数据集的标注格式通常有很大的区别，当我们需要支持新的数据集时，通常需要实现一个新的 `parser` 来解析原始标注文件。parser 将任务相关的数据解析后打包成 MMOCR 的统一格式。
 
 最后，我们可以通过指定不同的 dumper 来决定要将数据保存为何种格式。目前，我们仅支持 `JsonDumper` 与 `WildreceiptOpensetDumper`，其中，前者用于将数据保存为标准的 MMOCR Json 格式，而后者用于将数据保存为 Wildreceipt 格式。未来，我们计划支持 `LMDBDumper` 用于保存 LMDB 格式的标注文件。
+
+```python
+config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)
+```
+
+在准备好数据集的所有文件后，配置生成器 `TextDetConfigGenerator` 就会自动为 MMOCR 生成调用该数据集所需要的基础配置文件。生成后的文件默认会被置于 `configs/{task}/_base_/datasets/` 下。例如，本例中，icdar 2015 的基础配置文件就会被生成在 `configs/textdet/_base_/datasets/icdar2015.py` 下：
+
+```python
+icdar2015_textdet_data_root = 'data/icdar2015'
+
+icdar2015_textdet_train = dict(
+    type='OCRDataset',
+    data_root=icdar2015_textdet_data_root,
+    ann_file='textdet_train.json',
+    filter_cfg=dict(filter_empty_gt=True, min_size=32),
+    pipeline=None)
+
+icdar2015_textdet_test = dict(
+    type='OCRDataset',
+    data_root=icdar2015_textdet_data_root,
+    ann_file='textdet_test.json',
+    test_mode=True,
+    pipeline=None)
+```
+
+有了该文件后，我们就能从模型的配置文件中直接导入该数据集到 `dataloader` 中使用（以下样例节选自 [`configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py`](/configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py)）：
+
+```python
+_base_ = [
+    '../_base_/datasets/icdar2015.py',
+    # ...
+]
+
+# dataset settings
+icdar2015_textdet_train = _base_.icdar2015_textdet_train
+icdar2015_textdet_test = _base_.icdar2015_textdet_test
+# ...
+
+train_dataloader = dict(
+    dataset=icdar2015_textdet_train)
+
+val_dataloader = dict(
+    dataset=icdar2015_textdet_test)
+
+test_dataloader = val_dataloader
+```
+
+```{note}
+除非用户在运行脚本的时候手动指定了 `overwrite-cfg`，配置生成器默认不会自动覆盖已经存在的基础配置文件。
+```
+
+由于每个任务所需的基本数据集配置格式不一，我们也针对各个任务推出了 `TextRecogConfigGenerator` 及 `TextSpottingConfigGenerator` 等生成器。
 
 ## 向 Dataset Preparer 添加新的数据集
 
