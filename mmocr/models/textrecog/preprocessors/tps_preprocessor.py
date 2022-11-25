@@ -118,7 +118,7 @@ class TPStransform(nn.Module):
         Returns:
             (Tensor): The sampled image.
         """
-        output = F.grid_sample(input, grid)
+        output = F.grid_sample(input, grid, align_corners=True)
         if canvas is None:
             return output
         else:
