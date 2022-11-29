@@ -38,6 +38,6 @@ class TestRecogLMDBDataset(TestCase):
         anno = dataset.load_data_list()[0]
         self.assertIn(anno['img_path'], [
             f'tests/data/rec_toy_dataset/imgs.lmdb/image-{1:09d}',
-            f'tests\\data\\rec_toy_dataset\\imgs.lmdb\\image-{1:09d}'
+            f'tests/data/rec_toy_dataset/imgs.lmdb\\image-{1:09d}'
         ])
         self.assertEqual(anno['instances'][0]['text'], 'GRAND')
