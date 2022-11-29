@@ -490,8 +490,9 @@ class LoadKIEAnnotations(MMCV_LoadAnnotations):
 
 
 @TRANSFORMS.register_module()
-class LoadImageFromLMDB(BaseTransform):
-    """Load an image from lmdb file. Only support LMDB file at disk.
+class LoadImageFromRecogLMDB(BaseTransform):
+    """Load an image from textrecog lmdb file. It's designed to use with
+    :obj:`RecogLMDBDataset` and can only load LMDB file at disk.
 
     LMDB file is organized with the following structure:
         lmdb

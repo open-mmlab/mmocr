@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .adapters import MMDet2MMOCR, MMOCR2MMDet
 from .formatting import PackKIEInputs, PackTextDetInputs, PackTextRecogInputs
-from .loading import (LoadImageFromFile, LoadImageFromLMDB,
-                      LoadImageFromNDArray, LoadKIEAnnotations,
+from .loading import (LoadImageFromFile, LoadImageFromNDArray,
+                      LoadImageFromRecogLMDB, LoadKIEAnnotations,
                       LoadOCRAnnotations)
 from .ocr_transforms import (FixInvalidPolygon, RandomCrop, RandomRotate,
                              RemoveIgnored, Resize)
