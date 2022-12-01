@@ -79,7 +79,8 @@ class BaseParser:
                separator: str = ',',
                format: str = 'x1,y1,x2,y2,x3,y3,x4,y4,trans',
                encoding='utf-8') -> Union[Dict, str]:
-        """A basic loader designed for .txt format annotation.
+        """A basic loader designed for .txt format annotation. It greedily
+        extracts information separated by separators.
 
         Args:
             file_path (str): Path to the txt file.
@@ -96,5 +97,8 @@ class BaseParser:
         with open(file_path, 'r', encoding=encoding) as f:
             for line in f.readlines():
                 line = line.strip()
+                values = line.split(separator)
+                values = values[:len(keys) -
+                                1] + [separator.join(values[len(keys) - 1:])]
                 if line:
-                    yield dict(zip(keys, line.split(separator)))
+                    yield dict(zip(keys, values))
