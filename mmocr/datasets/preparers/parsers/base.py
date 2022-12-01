@@ -79,8 +79,8 @@ class BaseParser:
                separator: str = ',',
                format: str = 'x1,y1,x2,y2,x3,y3,x4,y4,trans',
                encoding='utf-8') -> Union[Dict, str]:
-        """A basic loader designed for .txt format annotation. It assert the
-        part except trans does not contain separator.
+        """A basic loader designed for .txt format annotation. It greedily
+        extracts information separated by separators.
 
         Args:
             file_path (str): Path to the txt file.
