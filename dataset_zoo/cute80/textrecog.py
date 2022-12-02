@@ -41,7 +41,7 @@ data_obtainer = dict(
 #     type='TextRecogDataConverter',
 #     splits=['test'],
 #     data_root=data_root,
-#     gatherer=dict(type='mono_gather', mapping="f'{split}.txt'"),
+#     gatherer=dict(type='mono_gather', test_ann='test.txt'),
 #     parser=dict(
 #         type='ICDARTxtTextRecogAnnParser',
 #         separator=' ',

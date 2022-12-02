@@ -116,7 +116,12 @@ class BaseDataConverter:
             Dict: A dict contains the meta information and samples.
         """
 
-    def mono_gather(self, ann_path: str, mapping: str, split: str,
+    def mono_gather(self,
+                    ann_path: str,
+                    split: str,
+                    train_ann: Optional[str] = None,
+                    val_ann: Optional[str] = None,
+                    test_ann: Optional[str] = None,
                     **kwargs) -> str:
         """Gather the dataset file. Specifically for the case that only one
         annotation file is needed. For example,
@@ -131,12 +136,21 @@ class BaseDataConverter:
                 "f'{split}.json'" will return 'train.json' when the split is
                 'train'.
             split (str): The current split.
+            train_ann (str, optional): The annotation file name of the train
+                split in the original dataset. Defaults to None.
+            val_ann (str, optional): The annotation file name of the val split
+                in the original dataset. Defaults to None.
+            test_ann (str, optional): The annotation file name of the test
+                split in the original dataset. Defaults to None.
 
         Returns:
             str: Path to the annotation file.
         """
 
-        return osp.join(ann_path, eval(mapping))
+        ann_file = eval(f'{split}_ann')
+        if ann_file is None:
+            raise ValueError(f'{split}_ann must be specified in gatherer!')
+        return osp.join(ann_path, ann_file)
 
     def pair_gather(self, img_path: str, suffixes: List, rule: Sequence,
                     **kwargs) -> List[Tuple]:
