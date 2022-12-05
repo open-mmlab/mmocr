@@ -53,15 +53,20 @@ class BaseTextDetHead(BaseModule):
     """
 
     def __init__(self,
-                 module_loss: Dict,
-                 postprocessor: Dict,
+                 module_loss: Optional[Dict],
+                 postprocessor: Optional[Dict],
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
         super().__init__(init_cfg=init_cfg)
-        assert isinstance(module_loss, dict)
-        assert isinstance(postprocessor, dict)
-
-        self.module_loss = MODELS.build(module_loss)
-        self.postprocessor = MODELS.build(postprocessor)
+        if module_loss is not None:
+            assert isinstance(module_loss, dict)
+            self.module_loss = MODELS.build(module_loss)
+        else:
+            self.module_loss = module_loss
+        if postprocessor is not None:
+            assert isinstance(postprocessor, dict)
+            self.postprocessor = MODELS.build(postprocessor)
+        else:
+            self.postprocessor = postprocessor
 
     def loss(self, x: Tuple[Tensor], data_samples: DetSampleList) -> dict:
         """Perform forward propagation and loss calculation of the detection
