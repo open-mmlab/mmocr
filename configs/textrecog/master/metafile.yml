@@ -5,8 +5,8 @@ Collections:
       Training Techniques:
         - Adam
       Epochs: 12
-      Batch Size: 512
-      Training Resources: 4x Tesla A100
+      Batch Size: 2048
+      Training Resources: 4x NVIDIA A100-SXM4-80GB
       Architecture:
         - ResNet31-GCAModule
         - MASTERDecoder
@@ -16,9 +16,9 @@ Collections:
     README: configs/textrecog/master/README.md
 
 Models:
-  - Name: master_r31_12e_ST_MJ_SA
+  - Name: master_resnet31_12e_st_mj_sa
     In Collection: MASTER
-    Config: configs/textrecog/master/master_r31_12e_ST_MJ_SA.py
+    Config: configs/textrecog/master/master_resnet31_12e_st_mj_sa.py
     Metadata:
       Training Data:
         - SynthText
@@ -28,25 +28,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 94.63
+          word_acc: 0.9490
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 90.42
+          word_acc: 0.8967
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 94.98
+          word_acc: 0.9517
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 75.54
+          word_acc: 0.7631
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 82.79
+          word_acc: 0.8465
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 88.54
-    Weights: https://download.openmmlab.com/mmocr/textrecog/master/master_r31_12e_ST_MJ_SA-787edd36.pth
+          word_acc: 0.8854
+    Weights: https://download.openmmlab.com/mmocr/textrecog/master/master_resnet31_12e_st_mj_sa/master_resnet31_12e_st_mj_sa_20220915_152443-f4a5cabc.pth

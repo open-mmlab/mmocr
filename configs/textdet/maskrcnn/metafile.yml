@@ -1,11 +1,11 @@
 Collections:
 - Name: Mask R-CNN
   Metadata:
-    Training Data: ICDAR SCUT-CTW1500
+    Training Data: ICDAR2015 SCUT-CTW1500
     Training Techniques:
       - SGD with Momentum
       - Weight Decay
-    Training Resources: 1x Tesla A100
+    Training Resources: 1x NVIDIA A100-SXM4-80GB
     Architecture:
       - ResNet
       - FPN
@@ -16,38 +16,50 @@ Collections:
   README: configs/textdet/maskrcnn/README.md
 
 Models:
-  - Name: mask_rcnn_r50_fpn_160e_ctw1500
+  - Name: mask-rcnn_resnet50_fpn_160e_ctw1500
     In Collection: Mask R-CNN
-    Config: configs/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_ctw1500.py
+    Config: configs/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:
       - Task: Text Detection
         Dataset: CTW1500
         Metrics:
-          hmean: 0.7486
-    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_ctw1500_20210219-96497a76.pth
+          hmean: 0.7458
+    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_ctw1500/mask-rcnn_resnet50_fpn_160e_ctw1500_20220826_154755-ce68ee8e.pth
 
-  - Name: mask_rcnn_r50_fpn_160e_icdar2015
+  - Name: mask-rcnn_resnet50-oclip_fpn_160e_ctw1500
     In Collection: Mask R-CNN
-    Config: configs/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015.py
+    Config: configs/textdet/maskrcnn/mask-rcnn_resnet50-oclip_fpn_160e_ctw1500.py
+    Metadata:
+      Training Data: CTW1500
+    Results:
+      - Task: Text Detection
+        Dataset: CTW1500
+        Metrics:
+          hmean: 0.7562
+    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50-oclip_fpn_160e_ctw1500/mask-rcnn_resnet50-oclip_fpn_160e_ctw1500_20221101_154448-6e9e991c.pth
+
+  - Name: mask-rcnn_resnet50_fpn_160e_icdar2015
+    In Collection: Mask R-CNN
+    Config: configs/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:
       - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
-          hmean: 0.8280
-    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2015_20210219-8eb340a3.pth
+          hmean: 0.8182
+    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_icdar2015/mask-rcnn_resnet50_fpn_160e_icdar2015_20220826_154808-ff5c30bf.pth
 
-  - Name: mask_rcnn_r50_fpn_160e_icdar2017
+  - Name: mask-rcnn_resnet50-oclip_fpn_160e_icdar2015
     In Collection: Mask R-CNN
-    Config: configs/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017.py
+    Config: configs/textdet/maskrcnn/mask-rcnn_resnet50-oclip_fpn_160e_icdar2015.py
     Metadata:
-      Training Data: ICDAR2017
+      Training Data: ICDAR2015
     Results:
       - Task: Text Detection
-        Dataset: ICDAR2017
+        Dataset: ICDAR2015
         Metrics:
-          hmean: 0.789
-    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask_rcnn_r50_fpn_160e_icdar2017_20210218-c6ec3ebb.pth
+          hmean: 0.8513
+    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50-oclip_fpn_160e_icdar2015/mask-rcnn_resnet50-oclip_fpn_160e_icdar2015_20221101_131357-a19f7802.pth

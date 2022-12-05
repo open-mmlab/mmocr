@@ -33,10 +33,10 @@ Image-based sequence recognition has been a long-standing research topic in comp
 
 ## Results and models
 
-|                         methods                          |        | Regular Text |      |     |      | Irregular Text |      |                                             download                                              |
-| :------------------------------------------------------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :-----------------------------------------------------------------------------------------------: |
-|                         methods                          | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |                                                                                                   |
-| [CRNN](/configs/textrecog/crnn/crnn_academic_dataset.py) |  80.5  |     81.5     | 86.5 |     | 54.1 |      59.1      | 55.6 | [model](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_academic-a723a1c5.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/crnn/20210326_111035.log.json) |
+|                        methods                         |        | Regular Text |        |     |        | Irregular Text |        |                                           download                                            |
+| :----------------------------------------------------: | :----: | :----------: | :----: | :-: | :----: | :------------: | :----: | :-------------------------------------------------------------------------------------------: |
+|                        methods                         | IIIT5K |     SVT      |  IC13  |     |  IC15  |      SVTP      |  CT80  |                                                                                               |
+| [CRNN](/configs/textrecog/crnn/crnn_mini-vgg_5e_mj.py) | 0.8053 |    0.8053    | 0.8739 |     | 0.5556 |     0.6093     | 0.5694 | [model](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_mini-vgg_5e_mj/crnn_mini-vgg_5e_mj_20220826_224120-8afbedbb.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_mini-vgg_5e_mj/20220826_224120.log) |
 
 ## Citation
 

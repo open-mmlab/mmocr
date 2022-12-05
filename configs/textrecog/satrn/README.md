@@ -34,11 +34,11 @@ Scene text recognition (STR) is the task of recognizing character sequences in n
 
 ## Results and Models
 
-|                        Methods                         |        | Regular Text |      |     |      | Irregular Text |      |                                              download                                               |
-| :----------------------------------------------------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :-------------------------------------------------------------------------------------------------: |
-|                                                        | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |                                                                                                     |
-|  [Satrn](/configs/textrecog/satrn/satrn_academic.py)   |  95.1  |     92.0     | 95.8 |     | 81.4 |      87.6      | 90.6 | [model](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_academic_20211009-cb8b1580.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/satrn/20210809_093244.log.json) |
-| [Satrn_small](/configs/textrecog/satrn/satrn_small.py) |  94.7  |     91.3     | 95.4 |     | 81.9 |      85.9      | 86.5 | [model](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_small_20211009-2cf13355.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/satrn/20210811_053047.log.json) |
+|                                 Methods                                 |        | Regular Text |        |     |        | Irregular Text |        |                                   download                                   |
+| :---------------------------------------------------------------------: | :----: | :----------: | :----: | :-: | :----: | :------------: | :----: | :--------------------------------------------------------------------------: |
+|                                                                         | IIIT5K |     SVT      |  IC13  |     |  IC15  |      SVTP      |  CT80  |                                                                              |
+|       [Satrn](/configs/textrecog/satrn/satrn_shallow_5e_st_mj.py)       | 0.9600 |    0.9196    | 0.9606 |     | 0.8031 |     0.8837     | 0.8993 | [model](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow_5e_st_mj/satrn_shallow_5e_st_mj_20220915_152443-5fd04a4c.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow_5e_st_mj/20220915_152443.log) |
+| [Satrn_small](/configs/textrecog/satrn/satrn_shallow-small_5e_st_mj.py) | 0.9423 |    0.8995    | 0.9567 |     | 0.7877 |     0.8574     | 0.8507 | [model](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow-small_5e_st_mj/satrn_shallow-small_5e_st_mj_20220915_152442-5591bf27.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow-small_5e_st_mj/20220915_152442.log) |
 
 ## Citation
 

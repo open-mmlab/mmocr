@@ -1,14 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
-import json
 import math
 import os
 import os.path as osp
 
 import mmcv
+import mmengine
 
-from mmocr.utils.fileio import list_to_file
-from mmocr.utils.img_utils import crop_img
+from mmocr.utils import crop_img, dump_ocr_data
 
 
 def collect_files(img_dir, gt_dir, ratio):
@@ -65,10 +64,10 @@ def collect_annotations(files, nproc=1):
     assert isinstance(nproc, int)
 
     if nproc > 1:
-        images = mmcv.track_parallel_progress(
+        images = mmengine.track_parallel_progress(
             load_img_info, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info, files)
+        images = mmengine.track_progress(load_img_info, files)
 
     return images
 
@@ -141,7 +140,7 @@ def load_txt_info(gt_file, img_info):
     return img_info
 
 
-def generate_ann(root_path, split, image_infos, preserve_vertical, format):
+def generate_ann(root_path, split, image_infos, preserve_vertical):
     """Generate cropped annotations and label txt file.
 
     Args:
@@ -150,7 +149,6 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
         image_infos (list[dict]): A list of dicts of the img and
             annotation information
         preserve_vertical (bool): Whether to preserve vertical texts
-        format (str): Annotation format, should be either 'txt' or 'jsonl'
     """
 
     dst_image_root = osp.join(root_path, 'crops', split)
@@ -159,10 +157,10 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
         dst_label_file = osp.join(root_path, f'train_label.{format}')
     elif split == 'val':
         dst_label_file = osp.join(root_path, f'val_label.{format}')
-    mmcv.mkdir_or_exist(dst_image_root)
-    mmcv.mkdir_or_exist(ignore_image_root)
+    mmengine.mkdir_or_exist(dst_image_root)
+    mmengine.mkdir_or_exist(ignore_image_root)
 
-    lines = []
+    img_info = []
     for image_info in image_infos:
         index = 1
         src_img_path = osp.join(root_path, 'imgs', image_info['file_name'])
@@ -187,20 +185,15 @@ def generate_ann(root_path, split, image_infos, preserve_vertical, format):
 
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             mmcv.imwrite(dst_img, dst_img_path)
-            if format == 'txt':
-                lines.append(f'crops/{dst_img_name} ' f'{word}')
-            elif format == 'jsonl':
-                lines.append(
-                    json.dumps(
-                        {
-                            'filename': f'crops/{dst_img_name}',
-                            'text': word
-                        },
-                        ensure_ascii=False))
-            else:
-                raise NotImplementedError
 
-    list_to_file(dst_label_file, lines)
+            img_info.append({
+                'file_name': dst_img_name,
+                'anno_info': [{
+                    'text': word
+                }]
+            })
+
+    dump_ocr_data(img_info, dst_label_file, 'textrecog')
 
 
 def parse_args():
@@ -215,11 +208,6 @@ def parse_args():
         '--preserve-vertical',
         help='Preserve samples containing vertical texts',
         action='store_true')
-    parser.add_argument(
-        '--format',
-        default='jsonl',
-        help='Use jsonl or string to format annotations',
-        choices=['jsonl', 'txt'])
     args = parser.parse_args()
     return args
 
@@ -233,19 +221,17 @@ def main():
         osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'), ratio)
 
     # Train set
-    with mmcv.Timer(
+    with mmengine.Timer(
             print_tmpl='It takes {}s to convert RCTW Training annotation'):
         trn_infos = collect_annotations(trn_files, nproc=args.nproc)
-        generate_ann(root_path, 'training', trn_infos, args.preserve_vertical,
-                     args.format)
+        generate_ann(root_path, 'training', trn_infos, args.preserve_vertical)
 
     # Val set
     if len(val_files) > 0:
-        with mmcv.Timer(
+        with mmengine.Timer(
                 print_tmpl='It takes {}s to convert RCTW Val annotation'):
             val_infos = collect_annotations(val_files, nproc=args.nproc)
-            generate_ann(root_path, 'val', val_infos, args.preserve_vertical,
-                         args.format)
+            generate_ann(root_path, 'val', val_infos, args.preserve_vertical)
 
 
 if __name__ == '__main__':

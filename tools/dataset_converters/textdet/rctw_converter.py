@@ -5,6 +5,7 @@ import os
 import os.path as osp
 
 import mmcv
+import mmengine
 
 from mmocr.utils import dump_ocr_data
 
@@ -63,10 +64,10 @@ def collect_annotations(files, nproc=1):
     assert isinstance(nproc, int)
 
     if nproc > 1:
-        images = mmcv.track_parallel_progress(
+        images = mmengine.track_parallel_progress(
             load_img_info, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info, files)
+        images = mmengine.track_progress(load_img_info, files)
 
     return images
 
@@ -172,7 +173,7 @@ def main():
         osp.join(root_path, 'imgs'), osp.join(root_path, 'annotations'), ratio)
 
     # Train set
-    with mmcv.Timer(
+    with mmengine.Timer(
             print_tmpl='It takes {}s to convert RCTW Training annotation'):
         trn_infos = collect_annotations(trn_files, nproc=args.nproc)
         dump_ocr_data(trn_infos, osp.join(root_path,
@@ -181,7 +182,7 @@ def main():
 
     # Val set
     if len(val_files) > 0:
-        with mmcv.Timer(
+        with mmengine.Timer(
                 print_tmpl='It takes {}s to convert RCTW Val annotation'):
             val_infos = collect_annotations(val_files, nproc=args.nproc)
             dump_ocr_data(val_infos, osp.join(root_path, 'instances_val.json'),

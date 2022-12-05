@@ -38,12 +38,21 @@ release = __version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.viewcode',
-    'sphinx_markdown_tables', 'sphinx_copybutton', 'myst_parser'
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+    'sphinx_markdown_tables',
+    'sphinx_copybutton',
+    'myst_parser',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.autodoc.typehints',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.autosectionlabel',
 ]
+autodoc_typehints = 'description'
 
 autodoc_mock_imports = ['mmcv._ext']
-
+autosummary_generate = True  # Turn on sphinx.ext.autosummary
 # Ignore >>> when copying code
 copybutton_prompt_text = r'>>> |\.\.\. '
 copybutton_prompt_is_regexp = True
@@ -77,7 +86,7 @@ html_theme = 'pytorch_sphinx_theme'
 html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
     'logo_url':
-    'https://mmocr.readthedocs.io/zh_CN/latest',
+    'https://mmocr.readthedocs.io/zh_CN/dev-1.x/',
     'menu': [
         {
             'name':
@@ -95,6 +104,11 @@ html_theme_options = {
             '上游库',
             'children': [
                 {
+                    'name': 'MMEngine',
+                    'url': 'https://github.com/open-mmlab/mmengine',
+                    'description': '深度学习模型训练基础库'
+                },
+                {
                     'name': 'MMCV',
                     'url': 'https://github.com/open-mmlab/mmcv',
                     'description': '基础视觉库'
@@ -105,6 +119,24 @@ html_theme_options = {
                     'description': '目标检测工具箱'
                 },
             ]
+        },
+        {
+            'name':
+            '版本',
+            'children': [
+                {
+                    'name': 'MMOCR 0.x',
+                    'url': 'https://mmocr.readthedocs.io/zh_CN/latest/',
+                    'description': 'main 分支文档'
+                },
+                {
+                    'name': 'MMOCR 1.x',
+                    'url': 'https://mmocr.readthedocs.io/zh_CN/dev-1.x/',
+                    'description': '1.x 分支文档'
+                },
+            ],
+            'active':
+            True,
         },
     ],
     # Specify the language of shared menu
@@ -121,14 +153,26 @@ master_doc = 'index'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ['css/readthedocs.css']
+html_js_files = ['js/collapsed.js']
 
-myst_heading_anchors = 3
+myst_heading_anchors = 4
+
+# Configuration for intersphinx
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'numpy': ('https://numpy.org/doc/stable', None),
+    'torch': ('https://pytorch.org/docs/stable/', None),
+    'mmcv': ('https://mmcv.readthedocs.io/zh_CN/2.x/', None),
+    'mmengine': ('https://mmengine.readthedocs.io/zh_CN/latest/', None),
+    'mmdetection': ('https://mmdetection.readthedocs.io/zh_CN/dev-3.x/', None),
+}
 
 
 def builder_inited_handler(app):
     subprocess.run(['./cp_origin_docs.sh'])
     subprocess.run(['./merge_docs.sh'])
     subprocess.run(['./stats.py'])
+    subprocess.run(['./dataset_zoo.py'])
 
 
 def setup(app):

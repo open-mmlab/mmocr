@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 
-from mmocr.utils.typing import ArrayLike
+from mmocr.utils.typing_utils import ArrayLike
 
 
 def fill_hole(input_mask: ArrayLike) -> np.array:

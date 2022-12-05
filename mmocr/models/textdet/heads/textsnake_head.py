@@ -4,9 +4,9 @@ from typing import Dict, List, Optional, Union
 import torch
 import torch.nn as nn
 
-from mmocr.data import TextDetDataSample
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 
 
 @MODELS.register_module()

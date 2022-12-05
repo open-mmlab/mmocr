@@ -2,14 +2,14 @@
 from typing import Dict, Optional, Sequence
 
 import torch
-from mmdet.models.detectors.base import BaseDetector as MMDET_BaseDetector
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
+from .base import BaseTextDetector
 
 
 @MODELS.register_module()
-class SingleStageTextDetector(MMDET_BaseDetector):
+class SingleStageTextDetector(BaseTextDetector):
     """The class for implementing single stage text detector.
 
     Single-stage text detectors directly and densely predict bounding boxes or
@@ -44,47 +44,46 @@ class SingleStageTextDetector(MMDET_BaseDetector):
             self.neck = MODELS.build(neck)
         self.det_head = MODELS.build(det_head)
 
-    def extract_feat(self, batch_inputs: torch.Tensor) -> torch.Tensor:
+    def extract_feat(self, inputs: torch.Tensor) -> torch.Tensor:
         """Extract features.
 
         Args:
-            batch_inputs (Tensor): Image tensor with shape (N, C, H ,W).
+            inputs (Tensor): Image tensor with shape (N, C, H ,W).
 
         Returns:
             Tensor or tuple[Tensor]: Multi-level features that may have
             different resolutions.
         """
-        batch_inputs = self.backbone(batch_inputs)
+        inputs = self.backbone(inputs)
         if self.with_neck:
-            batch_inputs = self.neck(batch_inputs)
-        return batch_inputs
+            inputs = self.neck(inputs)
+        return inputs
 
-    def loss(self, batch_inputs: torch.Tensor,
-             batch_data_samples: Sequence[TextDetDataSample]) -> Dict:
+    def loss(self, inputs: torch.Tensor,
+             data_samples: Sequence[TextDetDataSample]) -> Dict:
         """Calculate losses from a batch of inputs and data samples.
 
         Args:
-            batch_inputs (torch.Tensor): Input images of shape (N, C, H, W).
+            inputs (torch.Tensor): Input images of shape (N, C, H, W).
                 Typically these should be mean centered and std scaled.
-            batch_data_samples (list[TextDetDataSample]): A list of N
+            data_samples (list[TextDetDataSample]): A list of N
                 datasamples, containing meta information and gold annotations
                 for each of the images.
         Returns:
             dict[str, Tensor]: A dictionary of loss components.
         """
-        batch_inputs = self.extract_feat(batch_inputs)
-        return self.det_head.loss(batch_inputs, batch_data_samples)
+        inputs = self.extract_feat(inputs)
+        return self.det_head.loss(inputs, data_samples)
 
-    def predict(
-        self, batch_inputs: torch.Tensor,
-        batch_data_samples: Sequence[TextDetDataSample]
-    ) -> Sequence[TextDetDataSample]:
+    def predict(self, inputs: torch.Tensor,
+                data_samples: Sequence[TextDetDataSample]
+                ) -> Sequence[TextDetDataSample]:
         """Predict results from a batch of inputs and data samples with post-
         processing.
 
         Args:
-            batch_inputs (torch.Tensor): Images of shape (N, C, H, W).
-            batch_data_samples (list[TextDetDataSample]): A list of N
+            inputs (torch.Tensor): Images of shape (N, C, H, W).
+            data_samples (list[TextDetDataSample]): A list of N
                 datasamples, containing meta information and gold annotations
                 for each of the images.
 
@@ -104,20 +103,19 @@ class SingleStageTextDetector(MMDET_BaseDetector):
                     Each element represents the polygon of the
                     instance, in (xn, yn) order.
         """
-        x = self.extract_feat(batch_inputs)
-        return self.det_head.predict(x, batch_data_samples)
+        x = self.extract_feat(inputs)
+        return self.det_head.predict(x, data_samples)
 
     def _forward(self,
-                 batch_inputs: torch.Tensor,
-                 batch_data_samples: Optional[
-                     Sequence[TextDetDataSample]] = None,
+                 inputs: torch.Tensor,
+                 data_samples: Optional[Sequence[TextDetDataSample]] = None,
                  **kwargs) -> torch.Tensor:
         """Network forward process. Usually includes backbone, neck and head
         forward without any post-processing.
 
          Args:
-            batch_inputs (Tensor): Inputs with shape (N, C, H, W).
-            batch_data_samples (list[TextDetDataSample]): A list of N
+            inputs (Tensor): Inputs with shape (N, C, H, W).
+            data_samples (list[TextDetDataSample]): A list of N
                 datasamples, containing meta information and gold annotations
                 for each of the images.
 
@@ -125,5 +123,5 @@ class SingleStageTextDetector(MMDET_BaseDetector):
             Tensor or tuple[Tensor]: A tuple of features from ``det_head``
             forward.
         """
-        x = self.extract_feat(batch_inputs)
-        return self.det_head(x, batch_data_samples)
+        x = self.extract_feat(inputs)
+        return self.det_head(x, data_samples)

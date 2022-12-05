@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Callable, List, Sequence, Union
 
-from mmengine import BaseDataset, Compose
-from mmengine import ConcatDataset as MMENGINE_CONCATDATASET
+from mmengine.dataset import BaseDataset, Compose
+from mmengine.dataset import ConcatDataset as MMENGINE_CONCATDATASET
 
 from mmocr.registry import DATASETS
 
@@ -25,6 +25,8 @@ class ConcatDataset(MMENGINE_CONCATDATASET):
             which will be concatenated.
         pipeline (list, optional): Processing pipeline to be applied to all
             of the concatenated datasets. Defaults to [].
+        verify_meta (bool): Whether to verify the consistency of meta
+            information of the concatenated datasets. Defaults to True.
         force_apply (bool): Whether to force apply pipeline to all datasets if
             any of them already has the pipeline configured. Defaults to False.
         lazy_init (bool, optional): Whether to load annotation during
@@ -34,6 +36,7 @@ class ConcatDataset(MMENGINE_CONCATDATASET):
     def __init__(self,
                  datasets: Sequence[Union[BaseDataset, dict]],
                  pipeline: List[Union[dict, Callable]] = [],
+                 verify_meta: bool = True,
                  force_apply: bool = False,
                  lazy_init: bool = False):
         self.datasets: List[BaseDataset] = []
@@ -58,14 +61,17 @@ class ConcatDataset(MMENGINE_CONCATDATASET):
                         'please set `force_apply` to True.')
                 self.datasets[-1].pipeline = pipeline
 
-        # Only use metainfo of first dataset.
         self._metainfo = self.datasets[0].metainfo
-        for i, dataset in enumerate(self.datasets, 1):
-            if self._metainfo != dataset.metainfo:
-                raise ValueError(
-                    f'The meta information of the {i}-th dataset does not '
-                    'match meta information of the first dataset')
+
+        if verify_meta:
+            # Only use metainfo of first dataset.
+            for i, dataset in enumerate(self.datasets, 1):
+                if self._metainfo != dataset.metainfo:
+                    raise ValueError(
+                        f'The meta information of the {i}-th dataset does not '
+                        'match meta information of the first dataset')
 
         self._fully_initialized = False
         if not lazy_init:
             self.full_init()
+            self._metainfo.update(dict(cumulative_sizes=self.cumulative_sizes))

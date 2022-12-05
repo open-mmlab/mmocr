@@ -3,6 +3,7 @@ import argparse
 import os.path as osp
 
 import mmcv
+import mmengine
 
 from mmocr.utils import dump_ocr_data
 
@@ -60,10 +61,10 @@ def collect_annotations(files, nproc=1):
     assert isinstance(nproc, int)
 
     if nproc > 1:
-        images = mmcv.track_parallel_progress(
+        images = mmengine.track_parallel_progress(
             load_img_info, files, nproc=nproc)
     else:
-        images = mmcv.track_progress(load_img_info, files)
+        images = mmengine.track_progress(load_img_info, files)
 
     return images
 
@@ -127,7 +128,7 @@ def load_json_info(gt_file, img_info):
     assert isinstance(gt_file, str)
     assert isinstance(img_info, dict)
 
-    annotation = mmcv.load(gt_file)
+    annotation = mmengine.load(gt_file)
     anno_info = []
 
     # 'textBBs' contains the printed texts of the table while 'fieldBBs'
@@ -175,13 +176,14 @@ def parse_args():
 def main():
     args = parse_args()
     root_path = args.root_path
-    split_info = mmcv.load(
+    split_info = mmengine.load(
         osp.join(root_path, 'annotations', 'train_valid_test_split.json'))
     split_info['training'] = split_info.pop('train')
     split_info['val'] = split_info.pop('valid')
     for split in ['training', 'val', 'test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert NAF annotation'):
+        with mmengine.Timer(
+                print_tmpl='It takes {}s to convert NAF annotation'):
             files = collect_files(
                 osp.join(root_path, 'imgs'),
                 osp.join(root_path, 'annotations'), split_info[split])

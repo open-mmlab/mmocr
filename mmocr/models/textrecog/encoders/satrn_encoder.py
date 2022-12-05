@@ -3,15 +3,14 @@ import math
 from typing import Dict, List, Optional, Union
 
 import torch.nn as nn
-# from mmengine.model import ModuleList
 from mmengine.model import ModuleList
 from torch import Tensor
 
-from mmocr.data import TextRecogDataSample
 from mmocr.models.textrecog.layers import (Adaptive2DPositionalEncoding,
                                            SATRNEncoderLayer)
 from mmocr.registry import MODELS
-from .base_encoder import BaseEncoder
+from mmocr.structures import TextRecogDataSample
+from .base import BaseEncoder
 
 
 @MODELS.register_module()

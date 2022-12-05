@@ -3,10 +3,11 @@ import numpy as np
 import torch
 from mmcv.transforms import to_tensor
 from mmcv.transforms.base import BaseTransform
-from mmengine.data import InstanceData, LabelData
+from mmengine.structures import InstanceData, LabelData
 
-from mmocr.data import KIEDataSample, TextDetDataSample, TextRecogDataSample
 from mmocr.registry import TRANSFORMS
+from mmocr.structures import (KIEDataSample, TextDetDataSample,
+                              TextRecogDataSample)
 
 
 @TRANSFORMS.register_module()
@@ -16,7 +17,7 @@ class PackTextDetInputs(BaseTransform):
     The type of outputs is `dict`:
 
     - inputs: image converted to tensor, whose shape is (C, H, W).
-    - data_sample: Two components of ``TextDetDataSample`` will be updated:
+    - data_samples: Two components of ``TextDetDataSample`` will be updated:
 
       - gt_instances (InstanceData): Depending on annotations, a subset of the
         following keys will be updated:
@@ -81,7 +82,7 @@ class PackTextDetInputs(BaseTransform):
             dict:
 
             - 'inputs' (obj:`torch.Tensor`): Data for model forwarding.
-            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+            - 'data_samples' (obj:`DetDataSample`): The annotation info of the
               sample.
         """
         packed_results = dict()
@@ -108,7 +109,7 @@ class PackTextDetInputs(BaseTransform):
         for key in self.meta_keys:
             img_meta[key] = results[key]
         data_sample.set_metainfo(img_meta)
-        packed_results['data_sample'] = data_sample
+        packed_results['data_samples'] = data_sample
 
         return packed_results
 
@@ -125,7 +126,7 @@ class PackTextRecogInputs(BaseTransform):
     The type of outputs is `dict`:
 
     - inputs: Image as a tensor, whose shape is (C, H, W).
-    - data_sample: Two components of ``TextRecogDataSample`` will be updated:
+    - data_samples: Two components of ``TextRecogDataSample`` will be updated:
 
       - gt_text (LabelData):
 
@@ -165,7 +166,7 @@ class PackTextRecogInputs(BaseTransform):
             dict:
 
             - 'inputs' (obj:`torch.Tensor`): Data for model forwarding.
-            - 'data_sample' (obj:`TextRecogDataSample`): The annotation info
+            - 'data_samples' (obj:`TextRecogDataSample`): The annotation info
                 of the sample.
         """
         packed_results = dict()
@@ -194,7 +195,7 @@ class PackTextRecogInputs(BaseTransform):
                 img_meta[key] = results[key]
         data_sample.set_metainfo(img_meta)
 
-        packed_results['data_sample'] = data_sample
+        packed_results['data_samples'] = data_sample
 
         return packed_results
 
@@ -211,7 +212,7 @@ class PackKIEInputs(BaseTransform):
     The type of outputs is `dict`:
 
     - inputs: image converted to tensor, whose shape is (C, H, W).
-    - data_sample: Two components of ``TextDetDataSample`` will be updated:
+    - data_samples: Two components of ``TextDetDataSample`` will be updated:
 
       - gt_instances (InstanceData): Depending on annotations, a subset of the
         following keys will be updated:
@@ -250,9 +251,7 @@ class PackKIEInputs(BaseTransform):
         'gt_texts': 'texts',
     }
 
-    def __init__(self,
-                 meta_keys=('img_path', 'ori_shape', 'img_shape',
-                            'scale_factor')):
+    def __init__(self, meta_keys=()):
         self.meta_keys = meta_keys
 
     def transform(self, results: dict) -> dict:
@@ -265,7 +264,7 @@ class PackKIEInputs(BaseTransform):
             dict:
 
             - 'inputs' (obj:`torch.Tensor`): Data for model forwarding.
-            - 'data_sample' (obj:`DetDataSample`): The annotation info of the
+            - 'data_samples' (obj:`DetDataSample`): The annotation info of the
               sample.
         """
         packed_results = dict()
@@ -294,7 +293,7 @@ class PackKIEInputs(BaseTransform):
         for key in self.meta_keys:
             img_meta[key] = results[key]
         data_sample.set_metainfo(img_meta)
-        packed_results['data_sample'] = data_sample
+        packed_results['data_samples'] = data_sample
 
         return packed_results
 

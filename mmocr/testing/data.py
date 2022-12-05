@@ -3,9 +3,9 @@ from typing import Any, Dict, List, Optional, Sequence
 
 import numpy as np
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 
-from mmocr.data import TextDetDataSample
+from mmocr.structures import TextDetDataSample
 
 
 def create_dummy_textdet_inputs(input_shape: Sequence[int] = (1, 3, 300, 300),

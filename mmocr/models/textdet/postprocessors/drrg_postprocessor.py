@@ -6,12 +6,12 @@ from typing import Dict, List, Tuple, Union
 import cv2
 import numpy as np
 import torch
-from mmengine import InstanceData
+from mmengine.structures import InstanceData
 from numpy import ndarray
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
-from .base_postprocessor import BaseTextDetPostProcessor
+from mmocr.structures import TextDetDataSample
+from .base import BaseTextDetPostProcessor
 
 
 class Node:

@@ -19,17 +19,18 @@
   <div>&nbsp;</div>
 
 [![build](https://github.com/open-mmlab/mmocr/workflows/build/badge.svg)](https://github.com/open-mmlab/mmocr/actions)
-[![docs](https://readthedocs.org/projects/mmocr/badge/?version=latest)](https://mmocr.readthedocs.io/en/latest/?badge=latest)
+[![docs](https://readthedocs.org/projects/mmocr/badge/?version=dev-1.x)](https://mmocr.readthedocs.io/en/dev-1.x/?badge=dev-1.x)
 [![codecov](https://codecov.io/gh/open-mmlab/mmocr/branch/main/graph/badge.svg)](https://codecov.io/gh/open-mmlab/mmocr)
 [![license](https://img.shields.io/github/license/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/blob/main/LICENSE)
 [![PyPI](https://badge.fury.io/py/mmocr.svg)](https://pypi.org/project/mmocr/)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
 [![Percentage of issues still open](https://isitmaintained.com/badge/open/open-mmlab/mmocr.svg)](https://github.com/open-mmlab/mmocr/issues)
+<a href="https://console.tiyaro.ai/explore?q=mmocr&pub=mmocr"> <img src="https://tiyaro-public-docs.s3.us-west-2.amazonaws.com/assets/try_on_tiyaro_badge.svg"></a>
 
-[📘Documentation](https://mmocr.readthedocs.io/) |
-[🛠️Installation](https://mmocr.readthedocs.io/en/latest/install.html) |
-[👀Model Zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html) |
-[🆕Update News](https://mmocr.readthedocs.io/en/latest/changelog.html) |
+[📘Documentation](https://mmocr.readthedocs.io/en/dev-1.x/) |
+[🛠️Installation](https://mmocr.readthedocs.io/en/dev-1.x/get_started/install.html) |
+[👀Model Zoo](https://mmocr.readthedocs.io/en/dev-1.x/modelzoo.html) |
+[🆕Update News](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) |
 [🤔Reporting Issues](https://github.com/open-mmlab/mmocr/issues/new/choose)
 
 </div>
@@ -47,7 +48,7 @@ MMOCR is an open-source toolbox based on PyTorch and mmdetection for text detect
 The main branch works with **PyTorch 1.6+**.
 
 <div align="center">
-  <img src="resources/illustration.jpg"/>
+  <img src="https://user-images.githubusercontent.com/24622904/187838618-1fdc61c0-2d46-49f9-8502-976ffdf01f28.png"/>
 </div>
 
 ### Major Features
@@ -62,7 +63,7 @@ The main branch works with **PyTorch 1.6+**.
 
 - **Modular Design**
 
-  The modular design of MMOCR enables users to define their own optimizers, data preprocessors, and model components such as backbones, necks and heads as well as losses. Please refer to [Getting Started](https://mmocr.readthedocs.io/en/latest/getting_started.html) for how to construct a customized model.
+  The modular design of MMOCR enables users to define their own optimizers, data preprocessors, and model components such as backbones, necks and heads as well as losses. Please refer to [Overview](https://mmocr.readthedocs.io/en/dev-1.x/get_started/overview.html) for how to construct a customized model.
 
 - **Numerous Utilities**
 
@@ -70,39 +71,53 @@ The main branch works with **PyTorch 1.6+**.
 
 ## What's New
 
-v0.6.0 was released in 2022-05-05.
+1. **New engines**. MMOCR 1.x is based on [MMEngine](https://github.com/open-mmlab/mmengine), which provides a general and powerful runner that allows more flexible customizations and significantly simplifies the entrypoints of high-level interfaces.
 
-1. We support [MASTER](https://arxiv.org/abs/1910.02562) and [DBNet++](https://arxiv.org/abs/2202.10304) now!
-2. Three dataset converters are added: LSVT, RCTW, and HierText.
-3. MMOCR now can load data from LMDB dataset. [Doc](https://mmocr.readthedocs.io/en/latest/tools.html#convert-text-recognition-dataset-to-lmdb-format)
-4. We provide a script to convert .json labels obtained by **Labelme** into MMOCR-supported data format.
+2. **Unified interfaces**. As a part of the OpenMMLab 2.0 projects, MMOCR 1.x unifies and refactors the interfaces and internal logics of train, testing, datasets, models, evaluation, and visualization. All the OpenMMLab 2.0 projects share the same design in those interfaces and logics to allow the emergence of multi-task/modality algorithms.
 
-Read [Changelog](https://mmocr.readthedocs.io/en/latest/changelog.html) for more details!
+3. **Cross project calling**. Benefiting from the unified design, you can use the models implemented in other OpenMMLab projects, such as MMDet. We provide an example of how to use MMDetection's Mask R-CNN through `MMDetWrapper`. Check our documents for more details. More wrappers will be released in the future.
+
+4. **Stronger visualization**. We provide a series of useful tools which are mostly based on brand-new visualizers. As a result, it is more convenient for the users to explore the models and datasets now.
+
+5. **More documentation and tutorials**. We add a bunch of documentation and tutorials to help users get started more smoothly. Read it [here](https://mmocr.readthedocs.io/en/dev-1.x/).
+
+6. **One-stop Dataset Preparaion**. Multiple datasets are instantly ready with only one line of command, via our [Dataset Preparer](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html).
+
+Read [Changelog](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) for more details!
 
 ## Installation
 
-MMOCR depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv) and [MMDetection](https://github.com/open-mmlab/mmdetection).
+MMOCR depends on [PyTorch](https://pytorch.org/), [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv) and [MMDetection](https://github.com/open-mmlab/mmdetection).
 Below are quick steps for installation.
-Please refer to [Install Guide](https://mmocr.readthedocs.io/en/latest/install.html) for more detailed instruction.
+Please refer to [Install Guide](https://mmocr.readthedocs.io/en/dev-1.x/get_started/install.html) for more detailed instruction.
 
 ```shell
 conda create -n open-mmlab python=3.8 pytorch=1.10 cudatoolkit=11.3 torchvision -c pytorch -y
 conda activate open-mmlab
 pip3 install openmim
-mim install mmcv-full
-mim install mmdet
+mim install mmengine
+mim install 'mmcv>=2.0.0rc1'
+mim install 'mmdet>=3.0.0rc0'
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
+git checkout 1.x
 pip3 install -e .
 ```
 
 ## Get Started
 
-Please see [Getting Started](https://mmocr.readthedocs.io/en/latest/getting_started.html) for the basic usage of MMOCR.
+Please see [Quick Run](https://mmocr.readthedocs.io/en/dev-1.x/get_started/quick_run.html) for the basic usage of MMOCR.
 
-## [Model Zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html)
+## [Model Zoo](https://mmocr.readthedocs.io/en/dev-1.x/modelzoo.html)
 
 Supported algorithms:
+
+<details open>
+<summary>BackBone</summary>
+
+- [x] [oCLIP](configs/backbone/oclip/README.md) (ECCV'2022)
+
+</details>
 
 <details open>
 <summary>Text Detection</summary>
@@ -137,14 +152,7 @@ Supported algorithms:
 
 </details>
 
-<details open>
-<summary>Named Entity Recognition</summary>
-
-- [x] [Bert-Softmax](configs/ner/bert_softmax/README.md) (NAACL'2019)
-
-</details>
-
-Please refer to [model_zoo](https://mmocr.readthedocs.io/en/latest/modelzoo.html) for more details.
+Please refer to [model_zoo](https://mmocr.readthedocs.io/en/dev-1.x/modelzoo.html) for more details.
 
 ## Contributing
 
@@ -174,6 +182,7 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 ## Projects in OpenMMLab
 
+- [MMEngine](https://github.com/open-mmlab/mmengine): OpenMMLab foundational library for training deep learning models
 - [MMCV](https://github.com/open-mmlab/mmcv): OpenMMLab foundational library for computer vision.
 - [MIM](https://github.com/open-mmlab/mim): MIM installs OpenMMLab packages.
 - [MMClassification](https://github.com/open-mmlab/mmclassification): OpenMMLab image classification toolbox and benchmark.

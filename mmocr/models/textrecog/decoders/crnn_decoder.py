@@ -5,11 +5,11 @@ import torch
 import torch.nn as nn
 from mmengine.model import Sequential
 
-from mmocr.data import TextRecogDataSample
-from mmocr.models.textrecog.dictionary import Dictionary
+from mmocr.models.common.dictionary import Dictionary
 from mmocr.models.textrecog.layers import BidirectionalLSTM
 from mmocr.registry import MODELS
-from .base_decoder import BaseDecoder
+from mmocr.structures import TextRecogDataSample
+from .base import BaseDecoder
 
 
 @MODELS.register_module()

@@ -5,8 +5,8 @@ Collections:
     Training Techniques:
       - Adam
     Epochs: 6
-    Batch Size: 6144
-    Training Resources: 1x Tesla A100
+    Batch Size: 384
+    Training Resources: 1x NVIDIA A100-SXM4-80GB
     Architecture:
       - CNN
       - NRTREncoder
@@ -17,9 +17,9 @@ Collections:
   README: configs/textrecog/nrtr/README.md
 
 Models:
-  - Name: nrtr_r31_1by16_1by8_academic
+  - Name: nrtr_modality-transform_6e_st_mj
     In Collection: NRTR
-    Config: configs/textrecog/nrtr/nrtr_r31_1by16_1by8_academic.py
+    Config: configs/textrecog/nrtr/nrtr_modality-transform_6e_st_mj.py
     Metadata:
       Training Data:
         - SynthText
@@ -28,32 +28,31 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 94.8
+          word_acc: 0.9150
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 89.03
+          word_acc: 0.8825
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 93.79
+          word_acc: 0.9369
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 74.19
+          word_acc: 0.7232
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 80.31
+          word_acc: 0.7783
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 87.15
-    Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_r31_1by16_1by8_academic_20211124-f60cebf4.pth
-
-  - Name: nrtr_r31_1by8_1by4_academic
+          word_acc: 0.7500
+    Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_modality-transform_6e_st_mj/nrtr_modality-transform_6e_st_mj_20220916_103322-bd9425be.pth
+  - Name: nrtr_resnet31-1by8-1by4_6e_st_mj
     In Collection: NRTR
-    Config: configs/textrecog/nrtr/nrtr_r31_1by8_1by4_academic.py
+    Config: configs/textrecog/nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj.py
     Metadata:
       Training Data:
         - SynthText
@@ -62,25 +61,58 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 95.5
+          word_acc: 0.9483
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 90.01
+          word_acc: 0.8825
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 94.38
+          word_acc: 0.9507
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 74.05
+          word_acc: 0.7559
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 79.53
+          word_acc: 0.8016
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 87.15
-    Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_r31_1by8_1by4_academic_20211123-e1fdb322.pth
+          word_acc: 0.8889
+    Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj/nrtr_resnet31-1by8-1by4_6e_st_mj_20220916_103322-a6a2a123.pth
+  - Name: nrtr_resnet31-1by16-1by8_6e_st_mj
+    In Collection: NRTR
+    Config: configs/textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj.py
+    Metadata:
+      Training Data:
+        - SynthText
+        - Syn90k
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 0.9470
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 0.8964
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 0.9399
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 0.7357
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 0.7969
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 0.8854
+    Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj/nrtr_resnet31-1by16-1by8_6e_st_mj_20220920_143358-43767036.pth
