@@ -46,15 +46,16 @@ class BaseTextDetHead(BaseModule):
 
 
     Args:
-        loss (dict): Config to build loss.
-        postprocessor (dict): Config to build postprocessor.
+        loss (dict, optional): Config to build loss. Defaults to None.
+        postprocessor (dict, optional): Config to build postprocessor. Defaults
+            to None.
         init_cfg (dict or list[dict], optional): Initialization configs.
             Defaults to None.
     """
 
     def __init__(self,
-                 module_loss: Optional[Dict],
-                 postprocessor: Optional[Dict],
+                 module_loss: Optional[Dict] = None,
+                 postprocessor: Optional[Dict] = None,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
         super().__init__(init_cfg=init_cfg)
         if module_loss is not None:
