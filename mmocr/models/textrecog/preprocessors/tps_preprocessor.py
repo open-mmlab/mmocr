@@ -9,13 +9,14 @@ import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 
 from mmocr.registry import MODELS
-from .base_preprocessor import BasePreprocessor
+from .base import BasePreprocessor
 
 
 class TPStransform(nn.Module):
     """Implement TPS transform.
 
     This was partially adapted from https://github.com/ayumiymk/aster.pytorch
+
     Args:
         output_image_size (tuple[int, int]): The size of the output image.
             Defaults to (32, 128).
@@ -83,7 +84,7 @@ class TPStransform(nn.Module):
             source_control_points (Tensor): The control points of the source
                 image of shape (N, self.num_control_points, 2).
         Returns:
-            (Tensor): The output image after TPS transform.
+            Tensor: The output image after TPS transform.
         """
         assert source_control_points.ndimension() == 3
         assert source_control_points.size(1) == self.num_control_points
@@ -116,7 +117,7 @@ class TPStransform(nn.Module):
             grid (Tensor): The grid to sample the input image.
             canvas (Optional[Tensor]): The canvas to store the output image.
         Returns:
-            (Tensor): The sampled image.
+            Tensor: The sampled image.
         """
         output = F.grid_sample(input, grid, align_corners=True)
         if canvas is None:
@@ -135,7 +136,7 @@ class TPStransform(nn.Module):
             input_points (Tensor): The input points.
             control_points (Tensor): The control points.
         Returns:
-            (Tensor): The partial representation matrix.
+            Tensor: The partial representation matrix.
         """
         N = input_points.size(0)
         M = control_points.size(0)
@@ -162,7 +163,7 @@ class TPStransform(nn.Module):
             margins (Tuple[float, float]): The margins for control points to
                 the top and down side of the image.
         Returns:
-            (Tensor): The output control points.
+            Tensor: The output control points.
         """
         margin_x, margin_y = margins
         num_ctrl_pts_per_side = num_control_points // 2
@@ -172,8 +173,6 @@ class TPStransform(nn.Module):
         ctrl_pts_y_bottom = np.ones(num_ctrl_pts_per_side) * (1.0 - margin_y)
         ctrl_pts_top = np.stack([ctrl_pts_x, ctrl_pts_y_top], axis=1)
         ctrl_pts_bottom = np.stack([ctrl_pts_x, ctrl_pts_y_bottom], axis=1)
-        # ctrl_pts_top = ctrl_pts_top[1:-1,:]
-        # ctrl_pts_bottom = ctrl_pts_bottom[1:-1,:]
         output_ctrl_pts_arr = np.concatenate([ctrl_pts_top, ctrl_pts_bottom],
                                              axis=0)
         output_ctrl_pts = torch.Tensor(output_ctrl_pts_arr)
@@ -182,10 +181,10 @@ class TPStransform(nn.Module):
 
 @MODELS.register_module()
 class STN(BasePreprocessor):
-    """Implement STN module in `ASTER: An Attentional Scene Text Recognizer
-    with Flexible Rectification.
+    """Implement STN module in ASTER: An Attentional Scene Text Recognizer with
+    Flexible Rectification
+    (https://ieeexplore.ieee.org/abstract/document/8395027/)
 
-    <https://ieeexplore.ieee.org/abstract/document/8395027/`
     Args:
         in_channels (int): The number of input channels.
         resized_image_size (Tuple[int, int]): The resized image size. The input
@@ -256,8 +255,9 @@ class STN(BasePreprocessor):
 
         Args:
             img (Tensor): The input image tensor.
+
         Returns:
-            (Tensor): The rectified image tensor.
+            Tensor: The rectified image tensor.
         """
         resize_img = F.interpolate(
             img, self.resized_image_size, mode='bilinear', align_corners=True)
