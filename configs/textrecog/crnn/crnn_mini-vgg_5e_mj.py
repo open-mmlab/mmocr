@@ -17,7 +17,9 @@ train_list = [_base_.mjsynth_textrecog_test]
 test_list = [
     _base_.cute80_textrecog_test, _base_.iiit5k_textrecog_test,
     _base_.svt_textrecog_test, _base_.svtp_textrecog_test,
-    _base_.icdar2013_textrecog_test, _base_.icdar2015_textrecog_test
+    _base_.icdar2013_textrecog_test, _base_.icdar2013_857_textrecog_test,
+    _base_.icdar2015_textrecog_test,
+    _base_.icdar2015_1811_textrecog_test
 ]
 
 default_hooks = dict(logger=dict(type='LoggerHook', interval=50), )
@@ -44,7 +46,7 @@ test_dataloader = dict(
 val_dataloader = test_dataloader
 
 val_evaluator = dict(
-    dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
+    dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC13_857','IC15', 'IC15_1811'])
 test_evaluator = val_evaluator
 
 auto_scale_lr = dict(base_batch_size=64 * 4)
