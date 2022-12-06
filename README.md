@@ -85,7 +85,7 @@ The main branch works with **PyTorch 1.6+**.
 
 7. **Embracing more `projects/`**: We now introduce `projects/` folder, where some experimental features, frameworks and models can be placed, only needed to satisfy the minimum requirement on the code quality. Everyone is welcome to post their implementation of any great ideas in this folder! Learn more from our [example project](https://github.com/open-mmlab/mmocr/blob/dev-1.x/projects/example_project/).
 
-8. **More models**. MMOCR 1.0 supports more new model categories, and more state-of-the-art models!
+8. **More models**. MMOCR 1.0 supports more tasks and more state-of-the-art models!
 
 Read [Changelog](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) for more details!
 
