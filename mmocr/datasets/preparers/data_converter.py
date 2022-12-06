@@ -72,23 +72,23 @@ class BaseDataConverter:
                 files.
         """
         # Convert and dump annotations to MMOCR format
-        for split in self.splits:
-            print(f'Parsing {split} split...')
+        for self.current_split in self.splits:
+            print(f'Parsing {self.current_split} split...')
             # Gather the info such as file names required by parser
-            img_path = osp.join(self.data_root, self.img_dir, split)
+            img_path = osp.join(self.data_root, self.img_dir,
+                                self.current_split)
             ann_path = osp.join(self.data_root, 'annotations')
-            gatherer_args = dict(
-                img_path=img_path, ann_path=ann_path, split=split)
+            gatherer_args = dict(img_path=img_path, ann_path=ann_path)
             gatherer_args.update(self.gatherer_args)
             files = self.gatherer(**gatherer_args)
             # Convert dataset annotations to MMOCR format
-            samples = self.parser.parse_files(files, split)
-            print(f'Packing {split} annotations...')
-            func = partial(self.pack_instance, split=split)
+            samples = self.parser.parse_files(files, self.current_split)
+            print(f'Packing {self.current_split} annotations...')
+            func = partial(self.pack_instance, split=self.current_split)
             samples = track_parallel_progress(func, samples, nproc=self.nproc)
             samples = self.add_meta(samples)
             # Dump annotation files
-            self.dumper.dump(samples, self.data_root, split)
+            self.dumper.dump(samples, self.data_root, self.current_split)
         self.clean()
 
     @abstractmethod
@@ -116,7 +116,11 @@ class BaseDataConverter:
             Dict: A dict contains the meta information and samples.
         """
 
-    def mono_gather(self, ann_path: str, mapping: str, split: str,
+    def mono_gather(self,
+                    ann_path: str,
+                    train_ann: Optional[str] = None,
+                    val_ann: Optional[str] = None,
+                    test_ann: Optional[str] = None,
                     **kwargs) -> str:
         """Gather the dataset file. Specifically for the case that only one
         annotation file is needed. For example,
@@ -127,16 +131,22 @@ class BaseDataConverter:
 
         Args:
             anno_path (str): Path to the annotations.
-            mapping (str): Mapping rule of the annotation names. For example,
-                "f'{split}.json'" will return 'train.json' when the split is
-                'train'.
-            split (str): The current split.
+            train_ann (str, optional): The annotation file name of the train
+                split in the original dataset. Defaults to None.
+            val_ann (str, optional): The annotation file name of the val split
+                in the original dataset. Defaults to None.
+            test_ann (str, optional): The annotation file name of the test
+                split in the original dataset. Defaults to None.
 
         Returns:
             str: Path to the annotation file.
         """
 
-        return osp.join(ann_path, eval(mapping))
+        ann_file = eval(f'{self.current_split}_ann')
+        if ann_file is None:
+            raise ValueError(
+                f'{self.current_split}_ann must be specified in gatherer!')
+        return osp.join(ann_path, ann_file)
 
     def pair_gather(self, img_path: str, suffixes: List, rule: Sequence,
                     **kwargs) -> List[Tuple]:
