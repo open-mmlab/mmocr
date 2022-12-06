@@ -362,6 +362,7 @@ class TextSpottingConfigGenerator(TextDetConfigGenerator):
         config_path: str = 'configs/',
     ) -> None:
         BaseDatasetConfigGenerator.__init__(
+            self,
             data_root=data_root,
             task='textspotting',
             overwrite_cfg=overwrite_cfg,
