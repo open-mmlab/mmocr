@@ -23,7 +23,7 @@ This is an implementation of [ABCNet](https://github.com/aim-uofa/AdelaiDet) bas
 
 ### Testing commands
 
-Because of `BezierAlign` not supported by MMCV, we use `BezierAlign` in the third-party implement based on MMCV temporarily. You need to install third-party implement from source code by following:
+As of now, `BezierAlign` is not yet supported by MMCV, and we will use third-party MMCV with the implementation of `BezierAlign`. You will need to install it from the source code as follows:
 
 ```bash
 git clone -b lkk/bezier_align https://github.com/Harold-lkk/mmcv.git
