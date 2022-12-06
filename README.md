@@ -83,6 +83,8 @@ The main branch works with **PyTorch 1.6+**.
 
 6. **One-stop Dataset Preparaion**. Multiple datasets are instantly ready with only one line of command, via our [Dataset Preparer](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html).
 
+7. **New models**. MMOCR 1.0 supports more new model categories, and more state-of-the-art models!
+
 Read [Changelog](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) for more details!
 
 ## Installation
