@@ -13,7 +13,7 @@ from mmocr.utils import bbox2poly
 from mmocr.visualization import TextSpottingLocalVisualizer
 
 
-class TestTextKIELocalVisualizer(unittest.TestCase):
+class TestTextSpottingLocalVisualizer(unittest.TestCase):
 
     def setUp(self):
         h, w = 12, 10
@@ -95,7 +95,7 @@ class TestTextKIELocalVisualizer(unittest.TestCase):
                 draw_pred=False,
                 out_file=out_file)
             self._assert_image_and_shape(out_file, (h, w * 2, c))
-            bboxes = self.data_sample.pred_instances.pop('bboxes')
+            bboxes = self.data_sample.pred_instances.get('bboxes')
             bboxes = bboxes.tolist()
             polys = [bbox2poly(bbox) for bbox in bboxes]
             self.data_sample.pred_instances.polygons = polys
