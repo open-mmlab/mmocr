@@ -30,6 +30,8 @@
 - Update textrecog config and readme  by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1597
 - Support head loss or postprocessor is None for only infer by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1594
 - Textspotting datasample by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1593
+- Simplify mono_gather by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1588
+- ABCNet v1 infer by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1598
 
 ### Docs
 
@@ -59,6 +61,8 @@
 - Auto scale lr by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1584
 - Fix icdar data parse for text containing separator by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1587
 - Fix textspotting ut by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1599
+- Fix TextSpottingConfigGenerator and TextSpottingDataConverter by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1604
+- Keep E2E Inferencer output simple by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1559
 
 ### New Contributors
 
