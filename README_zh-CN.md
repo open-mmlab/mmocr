@@ -152,6 +152,13 @@ pip3 install -e .
 
 </details>
 
+<details open>
+<summary>端对端 OCR</summary>
+
+- [x] [ABCNet](projects/ABCNet/README.md) (CVPR'2020)
+
+</details>
+
 请点击[模型库](https://mmocr.readthedocs.io/zh_CN/dev-1.x/modelzoo.html)查看更多关于上述算法的详细信息。
 
 ## 贡献指南

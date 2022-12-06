@@ -152,6 +152,13 @@ Supported algorithms:
 
 </details>
 
+<details open>
+<summary>Text Spotting</summary>
+
+- [x] [ABCNet](projects/ABCNet/README.md) (CVPR'2020)
+
+</details>
+
 Please refer to [model_zoo](https://mmocr.readthedocs.io/en/dev-1.x/modelzoo.html) for more details.
 
 ## Contributing
