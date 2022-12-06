@@ -355,7 +355,10 @@ class TextSpottingDataConverter(BaseDataConverter):
             packed_instances.append(packed_sample)
 
         packed_instances = dict(
-            instances=packed_instances, img_path=img_path, height=h, width=w)
+            instances=packed_instances,
+            img_path=img_path.replace(self.data_root + '/', ''),
+            height=h,
+            width=w)
 
         return packed_instances
 
