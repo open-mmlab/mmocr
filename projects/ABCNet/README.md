@@ -19,6 +19,8 @@ This is an implementation of [ABCNet](https://github.com/aim-uofa/AdelaiDet) bas
 
 <!-- For a typical model, this section should contain the commands for training and testing. You are also suggested to dump your environment specification to env.yml by `conda env export > env.yml`. -->
 
+This ABCNet implementation works for inference only. Its full implementation will be available soon.
+
 ### Testing commands
 
 As of now, `BezierAlign` is not yet supported by MMCV, and we will use third-party MMCV with the implementation of `BezierAlign`. You will need to install it from the source code as follows:
@@ -41,9 +43,9 @@ Here we provide the baseline version of ABCNet with ResNet50 backbone.
 
 To find more variants, please visit the [official model zoo](https://github.com/aim-uofa/AdelaiDet/blob/master/configs/BAText/README.md).
 
-| Backbone | E2E-None-Hmean | det-Hmean |  Download   |
-| :------: | :------------: | :-------: | :---------: |
-|   R-50   |     0.5803     |  0.8818   | [model](<>) |
+|         Name          | E2E-None-Hmean | det-Hmean |                                                               Download                                                                |
+| :-------------------: | :------------: | :-------: | :-----------------------------------------------------------------------------------------------------------------------------------: |
+| v1-icdar2015-finetune |     0.5803     |  0.8818   | [model](https://download.openmmlab.com/mmocr/textspotting/abcnet/abcnet_resnet50_fpn/abcnet_resnet50_fpn_500e_icdar2015-e8c31510.pth) |
 
 ## Citation
 
@@ -55,7 +57,6 @@ If you find ABCNet useful in your research or applications, please cite ABCNet w
   author    =  {Liu, Yuliang and Chen, Hao and Shen, Chunhua and He, Tong and Jin, Lianwen and Wang, Liangwei},
   booktitle =  {Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR)},
   year      =  {2020}
-}
 }
 
 ```

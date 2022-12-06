@@ -30,7 +30,7 @@ load_from = None
 resume = False
 
 # Evaluation
-val_evaluator = dict(type='E2EHmeanIOUMetric')
+val_evaluator = [dict(type='E2EHmeanIOUMetric'), dict(type='HmeanIOUMetric')]
 test_evaluator = val_evaluator
 
 # Visualization

@@ -59,7 +59,7 @@ class E2EHmeanIOUMetric(BaseMetric):
             If prefix is not provided in the argument, self.default_prefix
             will be used instead. Defaults to None
     """
-    default_prefix: Optional[str] = 'icdar'
+    default_prefix: Optional[str] = 'e2e_icdar'
 
     def __init__(self,
                  match_iou_thr: float = 0.5,
