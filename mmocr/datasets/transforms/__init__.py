@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .adapters import MMDet2MMOCR, MMOCR2MMDet
 from .formatting import PackKIEInputs, PackTextDetInputs, PackTextRecogInputs
-from .loading import (LoadImageFromFile, LoadImageFromLMDB,
+from .loading import (InferencerLoader, LoadImageFromFile, LoadImageFromLMDB,
                       LoadImageFromNDArray, LoadKIEAnnotations,
                       LoadOCRAnnotations)
 from .ocr_transforms import RandomCrop, RandomRotate, Resize
@@ -20,5 +20,5 @@ __all__ = [
     'ShortScaleAspectJitter', 'RandomFlip', 'BoundedScaleAspectJitter',
     'PackKIEInputs', 'LoadKIEAnnotations', 'FixInvalidPolygon', 'MMDet2MMOCR',
     'MMOCR2MMDet', 'LoadImageFromLMDB', 'LoadImageFromFile',
-    'LoadImageFromNDArray'
+    'LoadImageFromNDArray', 'InferencerLoader'
 ]
