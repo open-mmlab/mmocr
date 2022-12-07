@@ -174,7 +174,7 @@ class KIEInferencer(BaseMMOCRInferencer):
 
         return results
 
-    def _pred2dict(self, data_sample: KIEDataSample) -> Dict:
+    def pred2dict(self, data_sample: KIEDataSample) -> Dict:
         """Extract elements necessary to represent a prediction into a
         dictionary. It's better to contain only basic data elements such as
         strings and numbers in order to guarantee it's json-serializable.

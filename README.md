@@ -83,6 +83,10 @@ The main branch works with **PyTorch 1.6+**.
 
 6. **One-stop Dataset Preparaion**. Multiple datasets are instantly ready with only one line of command, via our [Dataset Preparer](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html).
 
+7. **Embracing more `projects/`**: We now introduce `projects/` folder, where some experimental features, frameworks and models can be placed, only needed to satisfy the minimum requirement on the code quality. Everyone is welcome to post their implementation of any great ideas in this folder! Learn more from our [example project](https://github.com/open-mmlab/mmocr/blob/dev-1.x/projects/example_project/).
+
+8. **More models**. MMOCR 1.0 supports more tasks and more state-of-the-art models!
+
 Read [Changelog](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) for more details!
 
 ## Installation
@@ -149,6 +153,13 @@ Supported algorithms:
 <summary>Key Information Extraction</summary>
 
 - [x] [SDMG-R](configs/kie/sdmgr/README.md) (ArXiv'2021)
+
+</details>
+
+<details open>
+<summary>Text Spotting</summary>
+
+- [x] [ABCNet](projects/ABCNet/README.md) (CVPR'2020)
 
 </details>
 

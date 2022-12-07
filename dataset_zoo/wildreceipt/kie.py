@@ -26,7 +26,10 @@ data_converter = dict(
     splits=['train', 'test'],
     data_root=data_root,
     gatherer=dict(
-        type='mono_gather', mapping="f'{split}.txt'", ann_path=data_root),
+        type='mono_gather',
+        train_ann='train.txt',
+        test_ann='test.txt',
+        ann_path=data_root),
     parser=dict(type='WildreceiptKIEAnnParser', data_root=data_root),
     dumper=dict(type='WildreceiptOpensetDumper'),
     delete=['wildreceipt'])
