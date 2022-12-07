@@ -63,7 +63,9 @@ class BaseLocalVisualizer(Visualizer):
                          bboxes: Union[np.ndarray, torch.Tensor],
                          colors: Union[str, Sequence[str]] = 'k',
                          font_size: Union[int, float] = 10,
-                         auto_font_size: bool = False) -> np.ndarray:
+                         auto_font_size: bool = False,
+                         font_families: Union[str, List[str]] = 'sans-serif'
+                         ) -> np.ndarray:
         """Draw labels on image.
 
         Args:
@@ -80,6 +82,8 @@ class BaseLocalVisualizer(Visualizer):
                 to 10.
             auto_font_size (bool): Whether to automatically adjust font size.
                 Defaults to False.
+            font_families (Union[str, List[str]]): The font families of labels.
+                Defaults to 'sans-serif'.
         """
         if colors is not None and isinstance(colors, (list, tuple)):
             size = math.ceil(len(labels) / len(colors))
@@ -96,7 +100,7 @@ class BaseLocalVisualizer(Visualizer):
             horizontal_alignments='center',
             colors='k',
             font_sizes=font_size,
-            font_families=self.font_families)
+            font_families=font_families)
         return self.get_image()
 
     def get_polygons_image(self,
