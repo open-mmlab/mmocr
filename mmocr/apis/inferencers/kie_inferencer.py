@@ -1,12 +1,14 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-from typing import Dict, List, Sequence
+from typing import Dict, List, Optional, Sequence
 
 import mmcv
+import mmengine
 import numpy as np
 from mmengine.dataset import Compose
+from mmengine.visualization import Visualizer
 
-from mmocr.registry import DATASETS, VISUALIZERS
+from mmocr.registry import DATASETS
 from mmocr.structures import KIEDataSample
 from mmocr.utils import ConfigType
 from .base_mmocr_inferencer import BaseMMOCRInferencer, PredType
@@ -53,22 +55,30 @@ class KIEInferencer(BaseMMOCRInferencer):
         # If it's in non-visual mode, self.pipeline will be specified.
         # Otherwise, file_pipeline and ndarray_pipeline will be specified.
         if self.novisual:
-            self.pipeline = Compose(pipeline_cfg)
-        else:
-            return super()._init_pipeline(cfg)
+            return Compose(pipeline_cfg)
+        return super()._init_pipeline(cfg)
 
-    def _init_visualizer(self, cfg: ConfigType) -> None:
-        """Initialize visualizers."""
-        # TODO: We don't export images via backends since the interface
-        # of the visualizer will have to be refactored.
-        self.visualizer = None
-        if 'visualizer' in cfg:
-            self.visualizer = VISUALIZERS.build(cfg.visualizer)
-            dataset = DATASETS.build(cfg.test_dataloader.dataset)
-            self.visualizer.dataset_meta = dataset.metainfo
+    def _init_visualizer(self, cfg: ConfigType) -> Optional[Visualizer]:
+        """Initialize visualizers.
 
-    def preprocess(self, inputs: InputsType) -> List[Dict]:
-        results = []
+        Args:
+            cfg (ConfigType): Config containing the visualizer information.
+
+        Returns:
+            Visualizer or None: Visualizer initialized with config.
+        """
+        visualizer = super()._init_visualizer(cfg)
+        dataset = DATASETS.build(cfg.test_dataloader.dataset)
+        visualizer.dataset_meta = dataset.metainfo
+        return visualizer
+
+    def preprocess_inputs(self, inputs: InputsType) -> list:
+
+        processed_inputs = []
+
+        if not isinstance(inputs, (list, tuple)):
+            inputs = [inputs]
+
         for single_input in inputs:
             if self.novisual:
                 if 'img' not in single_input and \
@@ -78,15 +88,16 @@ class KIEInferencer(BaseMMOCRInferencer):
                         'requires input has "img" or "img_shape", but both are'
                         ' not found.')
                 if 'img' in single_input:
-                    new_input = {
+                    processed_input = {
                         k: v
                         for k, v in single_input.items() if k != 'img'
                     }
                     img = single_input['img']
                     if isinstance(img, str):
-                        img = mmcv.imread(img)
-                    new_input['img_shape'] = img.shape[::2]
-                results.append(self.pipeline(new_input))
+                        img_bytes = mmengine.fileio.get(img)
+                        img = mmcv.imfrombytes(img_bytes)
+                    processed_input['img_shape'] = img.shape[::2]
+                processed_inputs.append(processed_input)
             else:
                 if 'img' not in single_input:
                     raise ValueError(
@@ -94,22 +105,23 @@ class KIEInferencer(BaseMMOCRInferencer):
                         'accept image inputs, but the input does not contain '
                         '"img" key.')
                 if isinstance(single_input['img'], str):
-                    data_ = {
+                    processed_input = {
                         k: v
                         for k, v in single_input.items() if k != 'img'
                     }
-                    data_['img_path'] = single_input['img']
-                    results.append(self.file_pipeline(data_))
+                    processed_input['img_path'] = single_input['img']
+                    processed_inputs.append(processed_input)
                 elif isinstance(single_input['img'], np.ndarray):
-                    results.append(self.ndarray_pipeline(single_input))
+                    processed_inputs.append(single_input)
                 else:
                     atype = type(single_input['img'])
                     raise ValueError(f'Unsupported input type: {atype}')
-        return self._collate(results)
+        return processed_inputs
 
     def visualize(self,
                   inputs: InputsType,
                   preds: PredType,
+                  return_vis: bool = False,
                   show: bool = False,
                   wait_time: int = 0,
                   draw_pred: bool = True,
@@ -120,6 +132,8 @@ class KIEInferencer(BaseMMOCRInferencer):
         Args:
             inputs (List[Union[str, np.ndarray]]): Inputs for the inferencer.
             preds (List[Dict]): Predictions of the model.
+            return_vis (bool): Whether to return the visualization result.
+                Defaults to False.
             show (bool): Whether to display the image in a popup window.
                 Defaults to False.
             wait_time (float): The interval of show (s). Defaults to 0.
@@ -129,7 +143,8 @@ class KIEInferencer(BaseMMOCRInferencer):
                 Defaults to 0.3.
             img_out_dir (str): Output directory of images. Defaults to ''.
         """
-        if self.visualizer is None or not show and img_out_dir == '':
+        if self.visualizer is None or (not show and img_out_dir == ''
+                                       and not return_vis):
             return None
 
         if getattr(self, 'visualizer') is None:

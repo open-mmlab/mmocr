@@ -194,7 +194,7 @@ class InferencerLoader(BaseTransform):
         self.from_ndarray = TRANSFORMS.build(
             dict(type='LoadImageFromNDArray', **kwargs))
 
-    def transform(self, single_input: Union[str, np.ndarray]) -> dict:
+    def transform(self, single_input: Union[str, np.ndarray, dict]) -> dict:
         """Transform function to add image meta information.
 
         Args:
@@ -204,13 +204,18 @@ class InferencerLoader(BaseTransform):
         Returns:
             dict: The dict contains loaded image and meta information.
         """
-
         if isinstance(single_input, str):
-            return self.from_file(dict(img_path=single_input))
+            inputs = dict(img_path=single_input)
         elif isinstance(single_input, np.ndarray):
-            return self.from_ndarray(dict(img=single_input))
+            inputs = dict(img=single_input)
+        elif isinstance(single_input, dict):
+            inputs = single_input
         else:
             raise NotImplementedError
+
+        if 'img' in inputs:
+            return self.from_ndarray(inputs)
+        return self.from_file(inputs)
 
 
 @TRANSFORMS.register_module()
