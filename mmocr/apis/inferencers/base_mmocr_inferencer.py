@@ -3,12 +3,15 @@ import os.path as osp
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import mmcv
+import mmengine
 import numpy as np
 from mmengine.dataset import Compose
+from mmengine.infer.infer import BaseInferencer, ModelType
 from mmengine.structures import InstanceData
 
-from mmocr.utils import ConfigType
-from .base_inferencer import BaseInferencer
+from mmocr.utils import ConfigType, register_all_modules
+
+# from .base_inferencer import BaseInferencer
 
 InstanceList = List[InstanceData]
 InputType = Union[str, np.ndarray]
@@ -40,25 +43,28 @@ class BaseMMOCRInferencer(BaseInferencer):
             Defaults to False.
     """
 
-    func_kwargs = dict(
-        preprocess=[],
-        forward=[],
-        visualize=[
-            'show', 'wait_time', 'draw_pred', 'pred_score_thr', 'img_out_dir'
-        ],
-        postprocess=['print_result', 'pred_out_file', 'get_datasample'])
+    preprocess_kwargs: set = set()
+    forward_kwargs: set = set()
+    visualize_kwargs: set = {
+        'show', 'wait_time', 'draw_pred', 'pred_score_thr', 'img_out_dir'
+    }
+    postprocess_kwargs: set = {
+        'print_result', 'pred_out_file', 'return_datasample'
+    }
 
     def __init__(self,
-                 config: Union[ConfigType, str],
-                 ckpt: Optional[str],
+                 model: Union[ModelType, str],
+                 weights: Optional[str] = None,
                  device: Optional[str] = None,
-                 **kwargs) -> None:
+                 scope: Optional[str] = 'mmocr') -> None:
         # A global counter tracking the number of images processed, for
         # naming of the output images
         self.num_visualized_imgs = 0
-        super().__init__(config=config, ckpt=ckpt, device=device, **kwargs)
+        register_all_modules()
+        super().__init__(
+            model=model, weights=weights, device=device, scope=scope)
 
-    def _init_pipeline(self, cfg: ConfigType) -> None:
+    def _init_pipeline(self, cfg: ConfigType) -> Compose:
         """Initialize the test pipeline."""
         pipeline_cfg = cfg.test_dataloader.dataset.pipeline
 
@@ -73,15 +79,16 @@ class BaseMMOCRInferencer(BaseInferencer):
         if idx != -1:
             del pipeline_cfg[idx]
 
-        self.file_pipeline = Compose(pipeline_cfg)
-
         load_img_idx = self._get_transform_idx(pipeline_cfg,
                                                'LoadImageFromFile')
         if load_img_idx == -1:
             raise ValueError(
                 'LoadImageFromFile is not found in the test pipeline')
-        pipeline_cfg[load_img_idx]['type'] = 'LoadImageFromNDArray'
-        self.ndarray_pipeline = Compose(pipeline_cfg)
+        pipeline_cfg[load_img_idx]['type'] = 'InferencerLoader'
+        return Compose(pipeline_cfg)
+        # self.file_pipeline = Compose(pipeline_cfg)
+
+        # self.ndarray_pipeline = Compose(pipeline_cfg)
 
     def _get_transform_idx(self, pipeline_cfg: ConfigType, name: str) -> int:
         """Returns the index of the transform in a pipeline.
@@ -92,63 +99,6 @@ class BaseMMOCRInferencer(BaseInferencer):
             if transform['type'] == name:
                 return i
         return -1
-
-    def preprocess(self, inputs: InputsType) -> Dict:
-        """Process the inputs into a model-feedable format."""
-        results = []
-        for single_input in inputs:
-            if isinstance(single_input, str):
-                if osp.isdir(single_input):
-                    raise ValueError('Feeding a directory is not supported')
-                    # for img_path in os.listdir(single_input):
-                    #     data_ =dict(img_path=osp.join(single_input,img_path))
-                    #     results.append(self.file_pipeline(data_))
-                else:
-                    data_ = dict(img_path=single_input)
-                    results.append(self.file_pipeline(data_))
-            elif isinstance(single_input, np.ndarray):
-                data_ = dict(img=single_input)
-                results.append(self.ndarray_pipeline(data_))
-            else:
-                raise ValueError(
-                    f'Unsupported input type: {type(single_input)}')
-
-        return self._collate(results)
-
-    def _collate(self, results: List[Dict]) -> Dict:
-        """Collate the results from different images."""
-        results = {key: [d[key] for d in results] for key in results[0]}
-        return results
-
-    def __call__(self, user_inputs: InputsType,
-                 **kwargs) -> Union[Dict, List[Dict]]:
-        """Call the inferencer.
-
-        Args:
-            user_inputs: Inputs for the inferencer.
-            kwargs: Keyword arguments for the inferencer.
-        """
-
-        # Detect if user_inputs are in a batch
-        is_batch = isinstance(user_inputs, (list, tuple))
-        inputs = user_inputs if is_batch else [user_inputs]
-
-        params = self._dispatch_kwargs(**kwargs)
-        preprocess_kwargs = self.base_params[0].copy()
-        preprocess_kwargs.update(params[0])
-        forward_kwargs = self.base_params[1].copy()
-        forward_kwargs.update(params[1])
-        visualize_kwargs = self.base_params[2].copy()
-        visualize_kwargs.update(params[2])
-        postprocess_kwargs = self.base_params[3].copy()
-        postprocess_kwargs.update(params[3])
-
-        data = self.preprocess(inputs, **preprocess_kwargs)
-        preds = self.forward(data, **forward_kwargs)
-        imgs = self.visualize(inputs, preds, **visualize_kwargs)
-        results = self.postprocess(
-            preds, imgs, is_batch=is_batch, **postprocess_kwargs)
-        return results
 
     def visualize(self,
                   inputs: InputsType,
@@ -183,7 +133,8 @@ class BaseMMOCRInferencer(BaseInferencer):
 
         for single_input, pred in zip(inputs, preds):
             if isinstance(single_input, str):
-                img = mmcv.imread(single_input)
+                img_bytes = mmengine.FileClient.get(single_input)
+                img = mmcv.imfrombytes(img_bytes)
                 img = img[:, :, ::-1]
                 img_name = osp.basename(single_input)
             elif isinstance(single_input, np.ndarray):
@@ -216,46 +167,62 @@ class BaseMMOCRInferencer(BaseInferencer):
     def postprocess(
         self,
         preds: PredType,
-        imgs: Optional[List[np.ndarray]] = None,
-        is_batch: bool = False,
+        visualization: Optional[List[np.ndarray]] = None,
+        return_datasample: bool = False,
+        # is_batch: bool = False,
         print_result: bool = False,
         pred_out_file: str = '',
-        get_datasample: bool = False,
     ) -> Union[ResType, Tuple[ResType, np.ndarray]]:
-        """Postprocess predictions.
+        """Process the predictions and visualization results from ``forward``
+        and ``visualize``.
+
+        This method should be responsible for the following tasks:
+
+        1. Convert datasamples into a json-serializable dict if needed.
+        2. Pack the predictions and visualization results and return them.
+        3. Dump or log the predictions.
+
+        Customize your postprocess by overriding this method. Make sure
+        ``postprocess`` will return a dict with visualization results and
+        inference results.
 
         Args:
             preds (List[Dict]): Predictions of the model.
-            imgs (Optional[np.ndarray]): Visualized predictions.
-            is_batch (bool): Whether the inputs are in a batch.
-                Defaults to False.
+            visualization (Optional[np.ndarray]): Visualized predictions.
             print_result (bool): Whether to print the result.
                 Defaults to False.
             pred_out_file (str): Output file name to store predictions
                 without images. Supported file formats are “json”, “yaml/yml”
                 and “pickle/pkl”. Defaults to ''.
-            get_datasample (bool): Whether to use Datasample to store
+            return_datasample (bool): Whether to use Datasample to store
                 inference results. If False, dict will be used.
 
         Returns:
-            TODO
+            dict: Inference and visualization results with key ``predictions``
+            and ``visualization``
+
+            - ``visualization `` (Any): Returned by :meth:`visualize`
+            - ``predictions`` (dict or DataSample): Returned by
+                :meth:`forward` and processed in :meth:`postprocess`.
+                If ``return_datasample=False``, it usually should be a
+                json-serializable dict containing only basic data elements such
+                as strings and numbers.
         """
+        result_dict = {}
         results = preds
-        if not get_datasample:
+        if not return_datasample:
             results = []
             for pred in preds:
                 result = self.pred2dict(pred)
                 results.append(result)
-        if not is_batch:
-            results = results[0]
         if print_result:
             print(results)
         # Add img to the results after printing
         if pred_out_file != '':
-            mmcv.dump(results, pred_out_file)
-        if imgs is None:
-            return results
-        return results, imgs
+            mmengine.dump(results, pred_out_file)
+        result_dict['visualization'] = visualization
+        result_dict['predictions'] = results
+        return result_dict
 
     def pred2dict(self, data_sample: InstanceData) -> Dict:
         """Extract elements necessary to represent a prediction into a

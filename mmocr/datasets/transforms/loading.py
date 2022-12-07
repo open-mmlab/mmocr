@@ -2,7 +2,7 @@
 import copy
 import os
 import warnings
-from typing import Optional
+from typing import Optional, Union
 
 import mmcv
 import mmengine
@@ -160,6 +160,57 @@ class LoadImageFromNDArray(LoadImageFromFile):
         results['img_shape'] = img.shape[:2]
         results['ori_shape'] = img.shape[:2]
         return results
+
+
+@TRANSFORMS.register_module()
+class InferencerLoader(BaseTransform):
+    """Load an image from ``results['img']``.
+
+    Similar with :obj:`LoadImageFromFile`, but the image has been loaded as
+    :obj:`np.ndarray` in ``results['img']``. Can be used when loading image
+    from webcam.
+
+    Required Keys:
+
+    - img
+
+    Modified Keys:
+
+    - img
+    - img_path
+    - img_shape
+    - ori_shape
+
+    Args:
+        to_float32 (bool): Whether to convert the loaded image to a float32
+            numpy array. If set to False, the loaded image is an uint8 array.
+            Defaults to False.
+    """
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__()
+        self.from_file = TRANSFORMS.build(
+            dict(type='LoadImageFromFile', **kwargs))
+        self.from_ndarray = TRANSFORMS.build(
+            dict(type='LoadImageFromNDArray', **kwargs))
+
+    def transform(self, single_input: Union[str, np.ndarray]) -> dict:
+        """Transform function to add image meta information.
+
+        Args:
+            results (dict): Result dict with Webcam read image in
+                ``results['img']``.
+
+        Returns:
+            dict: The dict contains loaded image and meta information.
+        """
+
+        if isinstance(single_input, str):
+            return self.from_file(dict(img_path=single_input))
+        elif isinstance(single_input, np.ndarray):
+            return self.from_ndarray(dict(img=single_input))
+        else:
+            raise NotImplementedError
 
 
 @TRANSFORMS.register_module()
