@@ -76,7 +76,7 @@ def check_integrity(file_path: str,
     """
     if md5 is None:
         warnings.warn('MD5 is None, skip the integrity check.')
-        return False
+        return True
     if not osp.exists(file_path):
         return False
 
