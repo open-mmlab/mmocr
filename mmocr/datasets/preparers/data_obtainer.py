@@ -156,3 +156,38 @@ class NaiveDataObtainer:
         for root, dirs, files in os.walk(self.data_root, topdown=False):
             if not files and not dirs:
                 os.rmdir(root)
+
+
+@DATA_OBTAINERS.register_module()
+class NAFDataObtainer(NaiveDataObtainer):
+    """A specific pipeline for obtaining NAF dataset.
+
+    download -> extract -> move
+
+    Args:
+        files (list[dict]): A list of file information.
+        cache_path (str): The path to cache the downloaded files.
+        data_root (str): The root path of the dataset.
+        task (str): The task of the dataset.
+    """
+
+    def move(self, mapping: List[Tuple[str, str]]) -> None:
+        """Rename and move dataset files one by one.
+
+        Args:
+            mapping (List[Tuple[str, str]]): A list of tuples, each
+            tuple contains the source file name and the destination file name.
+        """
+        for src, dst in mapping:
+            src = osp.join(self.data_root, src)
+            dst = osp.join(self.data_root, dst)
+            if 'groups' in src:
+                # move every .json file in groups folder to dst. groups folder
+                # may contain subfolders.
+                for root, _, files in os.walk(src):
+                    for file in files:
+                        if file.endswith('.json'):
+                            shutil.move(osp.join(root, file), dst)
+            else:
+                if osp.exists(src) and not osp.exists(dst):
+                    shutil.move(src, dst)

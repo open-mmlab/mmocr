@@ -1,0 +1,32 @@
+Name: 'NAF'
+Paper:
+  Title: Deep Visual Template-Free Form Parsing
+  URL: https://ieeexplore.ieee.org/abstract/document/8977962
+  Venue: ICDAR
+  Year: '2019'
+  BibTeX: '@inproceedings{davis2019deep,
+            title={Deep visual template-free form parsing},
+            author={Davis, Brian and Morse, Bryan and Cohen, Scott and Price, Brian and Tensmeyer, Chris},
+            booktitle={2019 International Conference on Document Analysis and Recognition (ICDAR)},
+            pages={134--141},
+            year={2019},
+            organization={IEEE}}'
+Data:
+  Website: https://github.com/herobd/NAF_dataset
+  Language:
+    - English
+  Scene:
+    - Document
+    - Handwritten
+  Granularity:
+    - Word
+    - Line
+  Tasks:
+    - textrecog
+    - textdet
+    - textspotting
+    - kie
+  License:
+    Type: CDLA
+    Link: https://github.com/herobd/NAF_dataset/blob/master/LICENSE
+  Format: .json
