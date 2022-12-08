@@ -11,8 +11,6 @@ from mmengine.structures import InstanceData
 
 from mmocr.utils import ConfigType, register_all_modules
 
-# from .base_inferencer import BaseInferencer
-
 InstanceList = List[InstanceData]
 InputType = Union[str, np.ndarray]
 InputsType = Union[InputType, Sequence[InputType]]
@@ -25,11 +23,6 @@ class BaseMMOCRInferencer(BaseInferencer):
     """Base inferencer.
 
     Args:
-        model (str or ConfigType): Model config or the path to it.
-        weights (str, optional): Path to the checkpoint.
-        device (str, optional): Device to run inference. If None, the best
-            device will be automatically used.
-
         model (str, optional): Path to the config file or the model name
             defined in metafile. For example, it could be
             "dbnet_resnet18_fpnc_1200e_icdar2015" or
