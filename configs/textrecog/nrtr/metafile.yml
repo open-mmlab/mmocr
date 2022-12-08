@@ -51,6 +51,9 @@ Models:
           word_acc: 0.7500
     Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_modality-transform_6e_st_mj/nrtr_modality-transform_6e_st_mj_20220916_103322-bd9425be.pth
   - Name: nrtr_resnet31-1by8-1by4_6e_st_mj
+    Alias:
+      - NRTR
+      - NRTR_1/8-1/4
     In Collection: NRTR
     Config: configs/textrecog/nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj.py
     Metadata:
@@ -84,6 +87,7 @@ Models:
           word_acc: 0.8889
     Weights: https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_resnet31-1by8-1by4_6e_st_mj/nrtr_resnet31-1by8-1by4_6e_st_mj_20220916_103322-a6a2a123.pth
   - Name: nrtr_resnet31-1by16-1by8_6e_st_mj
+    Alias: NRTR_1/16-1/8
     In Collection: NRTR
     Config: configs/textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj.py
     Metadata:

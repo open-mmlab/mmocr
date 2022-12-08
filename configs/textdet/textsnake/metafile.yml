@@ -15,6 +15,7 @@ Collections:
 
 Models:
   - Name: textsnake_resnet50_fpn-unet_1200e_ctw1500
+    Alias: TextSnake
     In Collection: TextSnake
     Config: configs/textdet/textsnake/textsnake_resnet50_fpn-unet_1200e_ctw1500.py
     Metadata:
