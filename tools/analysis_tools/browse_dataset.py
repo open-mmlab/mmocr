@@ -1,34 +1,71 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
 import os.path as osp
+import sys
 from typing import Tuple
 
-import mmengine
+import cv2
+import mmcv
+import numpy as np
 from mmengine.config import Config, DictAction
+from mmengine.dataset import Compose
+from mmengine.utils import ProgressBar
+from mmengine.visualization import Visualizer
 
 from mmocr.registry import DATASETS, VISUALIZERS
 from mmocr.utils import register_all_modules
 
 
+# TODO: Support for printing the change in key of results
 def parse_args():
-    parser = argparse.ArgumentParser(description='Browse a dataset.')
+    parser = argparse.ArgumentParser(description='Browse a dataset')
     parser.add_argument('config', help='Path to model or dataset config.')
+    parser.add_argument(
+        '--phase',
+        '-p',
+        default='train',
+        type=str,
+        help='Phase of dataset to visualize. Use "train", "test" or "val" if '
+        "you just want to visualize the default split. It's also possible to "
+        'be a dataset variable name, which might be useful when a dataset '
+        'split has multiple variants in the config.')
+    parser.add_argument(
+        '--mode',
+        '-m',
+        default='transformed',
+        type=str,
+        choices=['original', 'transformed', 'pipeline'],
+        help='display mode; display original pictures or '
+        'transformed pictures or comparison pictures. "original" '
+        'means show images load from disk; "transformed" means '
+        'to show images after transformed; "pipeline" means show all '
+        'the intermediate images. Defaults to "transformed".')
     parser.add_argument(
         '--output-dir',
         default=None,
         type=str,
-        help='If there is no display interface, you can save it')
+        help='If there is no display interface, you can save it.')
     parser.add_argument('--not-show', default=False, action='store_true')
     parser.add_argument(
+        '--show-number',
+        '-n',
+        type=int,
+        default=sys.maxsize,
+        help='number of images selected to visualize, '
+        'must bigger than 0. if the number is bigger than length '
+        'of dataset, show all the images in dataset; '
+        'default "sys.maxsize", show all images in dataset')
+    parser.add_argument(
         '--show-interval',
+        '-i',
         type=float,
-        default=2,
-        help='The interval of show (s)')
+        default=3,
+        help='the interval of show (s)')
     parser.add_argument(
         '--cfg-options',
         nargs='+',
         action=DictAction,
-        help='Override some settings in the used config, the key-value pair '
+        help='override some settings in the used config, the key-value pair '
         'in xxx=yyy format will be merged into config file. If the value to '
         'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
         'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
@@ -38,47 +75,107 @@ def parse_args():
     return args
 
 
-def main():
-    # Documentation of the usage of this tool can be found in
-    # https://mmocr.readthedocs.io/en/dev-1.x/user_guides/useful_tools.html#dataset-visualization-tool  # noqa: E501
+def _get_adaptive_scale(img_shape: Tuple[int, int],
+                        min_scale: float = 0.3,
+                        max_scale: float = 3.0) -> float:
+    """Get adaptive scale according to image shape.
 
-    args = parse_args()
-    cfg = Config.fromfile(args.config)
-    if args.cfg_options is not None:
-        cfg.merge_from_dict(args.cfg_options)
+    The target scale depends on the the short edge length of the image. If the
+    short edge length equals 224, the output is 1.0. And output linear
+    scales according the short edge length. You can also specify the minimum
+    scale and the maximum scale to limit the linear scale.
 
-    # register all modules in mmocr into the registries
-    register_all_modules()
-
-    dataset, visualizer = obtain_dataset_cfg(cfg)
-    dataset = DATASETS.build(dataset)
-    visualizer = VISUALIZERS.build(visualizer)
-
-    visualizer.dataset_meta = dataset.metainfo
-    progress_bar = mmengine.ProgressBar(len(dataset))
-    for item in dataset:
-        img = item['inputs'].permute(1, 2, 0).numpy()
-        data_sample = item['data_samples'].numpy()
-        img_path = osp.basename(item['data_samples'].img_path)
-        out_file = osp.join(args.output_dir,
-                            img_path) if args.output_dir is not None else None
-
-        if img.ndim == 3 and img.shape[-1] == 3:
-            img = img[..., [2, 1, 0]]  # bgr to rgb
-
-        visualizer.add_datasample(
-            name=osp.basename(img_path),
-            image=img,
-            data_sample=data_sample,
-            draw_pred=False,
-            show=not args.not_show,
-            wait_time=args.show_interval,
-            out_file=out_file)
-
-        progress_bar.update()
+    Args:
+        img_shape (Tuple[int, int]): The shape of the canvas image.
+        min_scale (int): The minimum scale. Defaults to 0.3.
+        max_scale (int): The maximum scale. Defaults to 3.0.
+    Returns:
+        int: The adaptive scale.
+    """
+    short_edge_length = min(img_shape)
+    scale = short_edge_length / 224.
+    return min(max(scale, min_scale), max_scale)
 
 
-def obtain_dataset_cfg(cfg: Config) -> Tuple:
+def make_grid(imgs, names):
+    """Concat list of pictures into a single big picture, align height here."""
+    visualizer = Visualizer.get_current_instance()
+    ori_shapes = [img.shape[:2] for img in imgs]
+    max_height = int(max(img.shape[0] for img in imgs) * 1.1)
+    min_width = min(img.shape[1] for img in imgs)
+    horizontal_gap = min_width // 10
+    img_scale = _get_adaptive_scale((max_height, min_width))
+
+    texts = []
+    text_positions = []
+    start_x = 0
+    for i, img in enumerate(imgs):
+        pad_height = (max_height - img.shape[0]) // 2
+        pad_width = horizontal_gap // 2
+        # make border
+        imgs[i] = cv2.copyMakeBorder(
+            img,
+            pad_height,
+            max_height - img.shape[0] - pad_height + int(img_scale * 30 * 2),
+            pad_width,
+            pad_width,
+            cv2.BORDER_CONSTANT,
+            value=(255, 255, 255))
+        texts.append(f'{"execution: "}{i}\n{names[i]}\n{ori_shapes[i]}')
+        text_positions.append(
+            [start_x + img.shape[1] // 2 + pad_width, max_height])
+        start_x += img.shape[1] + horizontal_gap
+
+    display_img = np.concatenate(imgs, axis=1)
+    visualizer.set_image(display_img)
+    img_scale = _get_adaptive_scale(display_img.shape[:2])
+    visualizer.draw_texts(
+        texts,
+        positions=np.array(text_positions),
+        font_sizes=img_scale * 7,
+        colors='black',
+        horizontal_alignments='center',
+        font_families='monospace')
+    return visualizer.get_image()
+
+
+class InspectCompose(Compose):
+    """Compose multiple transforms sequentially.
+
+    And record "img" field of all results in one list.
+    """
+
+    def __init__(self, transforms, intermediate_imgs):
+        super().__init__(transforms=transforms)
+        self.intermediate_imgs = intermediate_imgs
+
+    def __call__(self, data):
+        if 'img' in data:
+            self.intermediate_imgs.append({
+                'name': 'original',
+                'img': data['img'].copy()
+            })
+        self.ptransforms = [
+            self.transforms[i] for i in range(len(self.transforms) - 1)
+        ]
+        for t in self.ptransforms:
+            data = t(data)
+            # Keep the same meta_keys in the PackDetInputs
+            self.transforms[-1].meta_keys = [key for key in data]
+            data_sample = self.transforms[-1](data)
+            if data is None:
+                return None
+            if 'img' in data:
+                self.intermediate_imgs.append({
+                    'name':
+                    t.__class__.__name__,
+                    'dataset_sample':
+                    data_sample['data_samples']
+                })
+        return data
+
+
+def obtain_dataset_cfg(cfg: Config, phase: str) -> Tuple:
     """Obtain dataset and visualizer from config. Two modes are supported:
     1. Model Config Mode:
         In this mode, the input config should be a complete model config, which
@@ -115,8 +212,9 @@ def obtain_dataset_cfg(cfg: Config) -> Tuple:
     """
 
     # Model config mode
-    if 'train_dataloader' in cfg:
-        dataset = cfg.train_dataloader.dataset
+    dataloader_name = f'{phase}_dataloader'
+    if dataloader_name in cfg:
+        dataset = cfg.get(dataloader_name).dataset
         visualizer = cfg.visualizer
 
         return dataset, visualizer
@@ -156,7 +254,7 @@ def obtain_dataset_cfg(cfg: Config) -> Tuple:
     ]
 
     for key in cfg.keys():
-        if key.endswith('train'):
+        if key.endswith(phase):
             dataset = cfg[key]
             if 'det' in key.lower():
                 visualizer = default_visualizer
@@ -181,6 +279,78 @@ def obtain_dataset_cfg(cfg: Config) -> Tuple:
         'obtain_dataset_cfg function. Or, you may visit the documentation via '
         'https://mmocr.readthedocs.io/en/dev-1.x/user_guides/useful_tools.html#dataset-visualization-tool'  # noqa: E501
     )
+
+
+def main():
+    args = parse_args()
+    cfg = Config.fromfile(args.config)
+    if args.cfg_options is not None:
+        cfg.merge_from_dict(args.cfg_options)
+
+    # register all modules in mmyolo into the registries
+    register_all_modules()
+
+    dataset_cfg, visualizer_cfg = obtain_dataset_cfg(cfg, args.phase)
+    dataset = DATASETS.build(dataset_cfg)
+    visualizer = VISUALIZERS.build(visualizer_cfg)
+    visualizer.dataset_meta = dataset.metainfo
+
+    intermediate_imgs = []
+
+    if dataset_cfg.type == 'ConcatDataset':
+        for sub_dataset in dataset.datasets:
+            sub_dataset.pipeline = InspectCompose(
+                sub_dataset.pipeline.transforms, intermediate_imgs)
+    else:
+        dataset.pipeline = InspectCompose(dataset.pipeline.transforms,
+                                          intermediate_imgs)
+
+    # init visualization image number
+    assert args.show_number > 0
+    display_number = min(args.show_number, len(dataset))
+
+    progress_bar = ProgressBar(display_number)
+    # fetching items from dataset is a must for visualization
+    for i, _ in zip(range(display_number), dataset):
+        image_i = []
+        result_i = [result['dataset_sample'] for result in intermediate_imgs]
+        for k, datasample in enumerate(result_i):
+            image = datasample.img
+            image = image[..., [2, 1, 0]]  # bgr to rgb
+            image_show = visualizer.add_datasample(
+                'result',
+                image,
+                datasample,
+                draw_pred=False,
+                draw_gt=True,
+                show=False)
+            image_i.append(image_show)
+
+        if args.mode == 'original':
+            image = image_i[0]
+        elif args.mode == 'transformed':
+            image = image_i[-1]
+        else:
+            image = make_grid([result for result in image_i],
+                              [result['name'] for result in intermediate_imgs])
+
+        if hasattr(datasample, 'img_path'):
+            filename = osp.basename(datasample.img_path)
+        else:
+            # some dataset have not image path
+            filename = f'{i}.jpg'
+        out_file = osp.join(args.output_dir,
+                            filename) if args.output_dir is not None else None
+
+        if out_file is not None:
+            mmcv.imwrite(image[..., ::-1], out_file)
+
+        if not args.not_show:
+            visualizer.show(
+                image, win_name=filename, wait_time=args.show_interval)
+
+        intermediate_imgs.clear()
+        progress_bar.update()
 
 
 if __name__ == '__main__':
