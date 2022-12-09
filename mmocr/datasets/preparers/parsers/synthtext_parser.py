@@ -132,15 +132,11 @@ class SynthTextTextDetAnnParser(BaseParser):
         """
         assert isinstance(files, str)
         gt = loadmat(files)
-        # for a in list(
-        #         zip(gt['imnames'][0], gt['wordBB'][0], gt['charBB'][0],
-        #             gt['txt'][0])):
-        #     self.parse_file(a)
         samples = track_parallel_progress(
             self.parse_file,
             list(
                 zip(gt['imnames'][0], gt['wordBB'][0], gt['charBB'][0],
-                    gt['txt'][0]))[:10],
+                    gt['txt'][0])),
             nproc=self.nproc)
         return samples
 
