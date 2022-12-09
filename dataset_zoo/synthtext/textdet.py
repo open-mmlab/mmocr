@@ -28,4 +28,5 @@ data_converter = dict(
 )
 # delete=['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img'])
 
-config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)
+config_generator = dict(
+    type='TextDetConfigGenerator', data_root=data_root, test_anns=None)
