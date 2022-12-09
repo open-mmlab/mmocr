@@ -8,7 +8,7 @@ from functools import partial
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import mmcv
-from mmengine import mkdir_or_exist, track_parallel_progress
+from mmengine import check_file_exist, mkdir_or_exist, track_parallel_progress
 
 from mmocr.utils import bbox2poly, crop_img, list_files, poly2bbox
 from .data_preparer import DATA_CONVERTERS, DATA_DUMPERS, DATA_PARSERS
@@ -245,6 +245,12 @@ class TextDetDataConverter(BaseDataConverter):
         """
 
         img_path, instances = sample
+
+        try:
+            check_file_exist(img_path)
+        except FileNotFoundError:
+            img_path = osp.join(self.data_root, f'{self.task}_imgs/{split}',
+                                img_path)
 
         img = mmcv.imread(img_path)
         h, w = img.shape[:2]
