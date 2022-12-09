@@ -4,6 +4,10 @@
 
 ### 数据集可视化工具
 
+```{note}
+本工具的中文文档已经过时，请以英文文档为准。如果您有兴趣参与本节中文文档的翻译，欢迎通过 [Issue: Documentation](https://github.com/open-mmlab/mmocr/issues/new?assignees=&labels=docs&template=4-documentation.yml&title=%5BDocs%5D+) 及时告知我们：）
+```
+
 MMOCR 提供了数据集可视化工具 `tools/analysis_tools/browse_datasets.py` 以辅助用户排查可能遇到的数据集相关的问题。用户只需要指定所使用的训练配置文件（通常存放在如 `configs/textdet/dbnet/xxx.py` 文件中）或数据集配置（通常存放在 `configs/textdet/_base_/datasets/xxx.py` 文件中）路径。该工具将依据输入的配置文件类型自动将经过数据流水线（data pipeline）处理过的图像及其对应的标签，或原始图片及其对应的标签绘制出来。
 
 例如，以下命令演示了如何使用该工具对 "DBNet_R50_icdar2015" 模型使用的经过数据变换的训练数据进行可视化操作：

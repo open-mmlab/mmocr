@@ -2,7 +2,7 @@
 import argparse
 import os.path as osp
 import sys
-from typing import Tuple
+from typing import Optional, Tuple
 
 import cv2
 import mmcv
@@ -35,16 +35,27 @@ def parse_args():
         default='transformed',
         type=str,
         choices=['original', 'transformed', 'pipeline'],
-        help='display mode; display original pictures or '
+        help='Display mode: display original pictures or '
         'transformed pictures or comparison pictures. "original" '
-        'means show images load from disk; "transformed" means '
-        'to show images after transformed; "pipeline" means show all '
-        'the intermediate images. Defaults to "transformed".')
+        'only visualizes the original dataset & annotations; '
+        '"transformed" shows the resulting images processed through all the '
+        'transforms; "pipeline" shows all the intermediate images. '
+        'Defaults to "transformed".')
     parser.add_argument(
         '--output-dir',
+        '-o',
         default=None,
         type=str,
         help='If there is no display interface, you can save it.')
+    parser.add_argument(
+        '--task',
+        '-t',
+        default='auto',
+        choices=['auto', 'textdet', 'textrecog'],
+        type=str,
+        help='Specify the task type of the dataset. If "auto", the task type '
+        'will be inferred from the config. If the script is unable to infer '
+        'the task type, you need to specify it manually. Defaults to "auto".')
     parser.add_argument('--not-show', default=False, action='store_true')
     parser.add_argument(
         '--show-number',
@@ -89,6 +100,7 @@ def _get_adaptive_scale(img_shape: Tuple[int, int],
         img_shape (Tuple[int, int]): The shape of the canvas image.
         min_scale (int): The minimum scale. Defaults to 0.3.
         max_scale (int): The maximum scale. Defaults to 3.0.
+
     Returns:
         int: The adaptive scale.
     """
@@ -175,7 +187,33 @@ class InspectCompose(Compose):
         return data
 
 
-def obtain_dataset_cfg(cfg: Config, phase: str) -> Tuple:
+def infer_dataset_task(task: str,
+                       dataset_cfg: Config,
+                       var_name: Optional[str] = None) -> str:
+    """Try to infer the dataset's task type from the config and the variable
+    name."""
+    if task != 'auto':
+        return task
+
+    if dataset_cfg.pipeline is not None:
+        if dataset_cfg.pipeline[-1].type == 'PackTextDetInputs':
+            return 'textdet'
+        elif dataset_cfg.pipeline[-1].type == 'PackTextRecogInputs':
+            return 'textrecog'
+
+    if var_name is not None:
+        if 'det' in var_name:
+            return 'textdet'
+        elif 'rec' in var_name:
+            return 'textrecog'
+
+    raise ValueError(
+        'Unable to infer the task type from dataset pipeline '
+        'or variable name. Please specify the task type with --task argument '
+        'explicitly.')
+
+
+def obtain_dataset_cfg(cfg: Config, phase: str, mode: str, task: str) -> Tuple:
     """Obtain dataset and visualizer from config. Two modes are supported:
     1. Model Config Mode:
         In this mode, the input config should be a complete model config, which
@@ -187,17 +225,17 @@ def obtain_dataset_cfg(cfg: Config, phase: str) -> Tuple:
 
     Examples:
         Typically, the model config files are stored in
-        `configs/textdet/dbnet/xxx.py` and should be looked like:
+        `configs/textdet/dbnet/xxx.py` and should look like:
         >>> train_dataloader = dict(
         >>>     batch_size=16,
         >>>     num_workers=8,
         >>>     persistent_workers=True,
         >>>     sampler=dict(type='DefaultSampler', shuffle=True),
-        >>>     dataset=ic15_det_train)
+        >>>     dataset=icdar2015_textdet_train)
 
         while the dataset config files are stored in
         `configs/textdet/_base_/datasets/xxx.py` and should be like:
-        >>> ic15_det_train = dict(
+        >>> icdar2015_textdet_train = dict(
         >>>     type='OCRDataset',
         >>>     data_root=ic15_det_data_root,
         >>>     ann_file='textdet_train.json',
@@ -206,10 +244,52 @@ def obtain_dataset_cfg(cfg: Config, phase: str) -> Tuple:
 
     Args:
         cfg (Config): Config object.
+        phase (str): The dataset phase to visualize.
+        mode (str): Script mode.
+        task (str): The current task type.
 
     Returns:
         Tuple: Tuple of (dataset, visualizer).
     """
+    default_cfgs = dict(
+        textdet=dict(
+            visualizer=dict(
+                type='TextDetLocalVisualizer',
+                name='visualizer',
+                vis_backends=[dict(type='LocalVisBackend')]),
+            pipeline=[
+                dict(
+                    type='LoadImageFromFile',
+                    file_client_args=dict(backend='disk'),
+                    color_type='color_ignore_orientation'),
+                dict(
+                    type='LoadOCRAnnotations',
+                    with_polygon=True,
+                    with_bbox=True,
+                    with_label=True,
+                ),
+                dict(
+                    type='PackTextDetInputs',
+                    meta_keys=('img_path', 'ori_shape', 'img_shape'))
+            ]),
+        textrecog=dict(
+            visualizer=dict(
+                type='TextRecogLocalVisualizer',
+                name='visualizer',
+                vis_backends=[dict(type='LocalVisBackend')]),
+            pipeline=[
+                dict(
+                    type='LoadImageFromFile',
+                    file_client_args=dict(backend='disk'),
+                    ignore_empty=True,
+                    min_size=2),
+                dict(type='LoadOCRAnnotations', with_text=True),
+                dict(
+                    type='PackTextRecogInputs',
+                    meta_keys=('img_path', 'ori_shape', 'img_shape',
+                               'valid_ratio'))
+            ]),
+    )
 
     # Model config mode
     dataloader_name = f'{phase}_dataloader'
@@ -217,65 +297,29 @@ def obtain_dataset_cfg(cfg: Config, phase: str) -> Tuple:
         dataset = cfg.get(dataloader_name).dataset
         visualizer = cfg.visualizer
 
+        if mode == 'original':
+            default_cfg = default_cfgs[infer_dataset_task(task, dataset)]
+            dataset.pipeline = default_cfg['pipeline']
+
         return dataset, visualizer
 
     # Dataset config mode
-    default_visualizer = dict(
-        type='TextDetLocalVisualizer',
-        name='visualizer',
-        vis_backends=[dict(type='LocalVisBackend')])
-
-    default_det_pipeline = [
-        dict(
-            type='LoadImageFromFile',
-            file_client_args=dict(backend='disk'),
-            color_type='color_ignore_orientation'),
-        dict(
-            type='LoadOCRAnnotations',
-            with_polygon=True,
-            with_bbox=True,
-            with_label=True,
-        ),
-        dict(
-            type='PackTextDetInputs',
-            meta_keys=('img_path', 'ori_shape', 'img_shape'))
-    ]
-
-    default_rec_pipeline = [
-        dict(
-            type='LoadImageFromFile',
-            file_client_args=dict(backend='disk'),
-            ignore_empty=True,
-            min_size=2),
-        dict(type='LoadOCRAnnotations', with_text=True),
-        dict(
-            type='PackTextRecogInputs',
-            meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
-    ]
 
     for key in cfg.keys():
-        if key.endswith(phase):
+        if key.endswith(phase) and cfg[key]['type'].endswith('Dataset'):
             dataset = cfg[key]
-            if 'det' in key.lower():
-                visualizer = default_visualizer
-                dataset['pipeline'] = default_det_pipeline if dataset[
-                    'pipeline'] is None else dataset['pipeline']
-            elif 'rec' in key.lower():
-                default_visualizer['type'] = 'TextRecogLocalVisualizer'
-                visualizer = default_visualizer
-                dataset['pipeline'] = default_rec_pipeline if dataset[
-                    'pipeline'] is None else dataset['pipeline']
-            else:
-                raise NotImplementedError(
-                    'Dataset config mode only supports text detection and '
-                    'recognition datasets yet. Please ensure the dataset '
-                    'config contains "det" or "rec" in its key.')
+            default_cfg = default_cfgs[infer_dataset_task(
+                task, dataset, key.lower())]
+            visualizer = default_cfg['visualizer']
+            dataset['pipeline'] = default_cfg['pipeline'] if dataset[
+                'pipeline'] is None else dataset['pipeline']
 
             return dataset, visualizer
 
     raise ValueError(
-        'Unexpected config file format. Please check your config '
-        'file and try again. More details can be found in the docstring of '
+        f'Unable to find "{phase}_dataloader" or any dataset variable ending '
+        f'with "{phase}". Please check your config file or --phase argument '
+        'and try again. More details can be found in the docstring of '
         'obtain_dataset_cfg function. Or, you may visit the documentation via '
         'https://mmocr.readthedocs.io/en/dev-1.x/user_guides/useful_tools.html#dataset-visualization-tool'  # noqa: E501
     )
@@ -290,7 +334,8 @@ def main():
     # register all modules in mmyolo into the registries
     register_all_modules()
 
-    dataset_cfg, visualizer_cfg = obtain_dataset_cfg(cfg, args.phase)
+    dataset_cfg, visualizer_cfg = obtain_dataset_cfg(cfg, args.phase,
+                                                     args.mode, args.task)
     dataset = DATASETS.build(dataset_cfg)
     visualizer = VISUALIZERS.build(visualizer_cfg)
     visualizer.dataset_meta = dataset.metainfo
@@ -326,13 +371,11 @@ def main():
                 show=False)
             image_i.append(image_show)
 
-        if args.mode == 'original':
-            image = image_i[0]
-        elif args.mode == 'transformed':
-            image = image_i[-1]
-        else:
+        if args.mode == 'pipeline':
             image = make_grid([result for result in image_i],
                               [result['name'] for result in intermediate_imgs])
+        else:
+            image = image_i[-1]
 
         if hasattr(datasample, 'img_path'):
             filename = osp.basename(datasample.img_path)
