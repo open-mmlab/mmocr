@@ -326,10 +326,11 @@ class RandomRotate(BaseTransform):
         return canvas_size
 
     @staticmethod
-    def _rotate_points(center: Tuple[float, float],
-                       points: np.array,
-                       theta: float,
-                       center_shift: Tuple[int, int] = (0, 0)) -> np.array:
+    def _rotate_points(
+        center: Tuple[float, float],
+        points: np.array,
+        theta: float,
+        center_shift: Tuple[int, int] = (0, 0)) -> np.array:
         """Rotating a set of points according to the given theta.
 
         Args:
