@@ -20,7 +20,7 @@ data_converter = dict(
     type='TextRecogDataConverter',
     splits=['test'],
     data_root=data_root,
-    gatherer=dict(type='mono_gather', test_ann='test.txt'),
+    gatherer=dict(type='MonoGatherer', test_ann_name='test.txt'),
     parser=dict(
         type='ICDARTxtTextRecogAnnParser', separator=' ', format='img text'),
     dumper=dict(type='JsonDumper'),

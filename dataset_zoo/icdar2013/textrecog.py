@@ -80,7 +80,9 @@ data_obtainer = dict(
 #     splits=['train', 'test'],
 #     data_root=data_root,
 #     gatherer=dict(
-#         type='mono_gather', train_ann='train.txt', test_ann='test.txt'),
+#         type='MonoGatherer',
+#         train_ann_name='train.txt',
+#         test_ann_name='test.txt'),
 #     parser=dict(
 #         type='ICDARTxtTextRecogAnnParser', separator=', ',
 #         format='img, text'),  # noqa

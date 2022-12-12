@@ -9,6 +9,7 @@ DATA_OBTAINERS = Registry('data_obtainer')
 DATA_CONVERTERS = Registry('data_converter')
 DATA_PARSERS = Registry('data_parser')
 DATA_DUMPERS = Registry('data_dumper')
+DATA_GATHER = Registry('data_gather')
 CFG_GENERATORS = Registry('cfg_generator')
 
 

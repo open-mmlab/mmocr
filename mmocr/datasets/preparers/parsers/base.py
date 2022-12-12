@@ -3,7 +3,7 @@ from abc import abstractmethod
 from functools import partial
 from typing import Dict, List, Optional, Tuple, Union
 
-from mmengine import track_parallel_progress
+from mmocr.utils.progressbar import track_parallel_progress_multi_args
 
 
 class BaseParser:
@@ -14,10 +14,7 @@ class BaseParser:
         nproc (int, optional): Number of processes. Defaults to 1.
     """
 
-    def __init__(self,
-                 data_root: Optional[str] = None,
-                 nproc: int = 1) -> None:
-        self.data_root = data_root
+    def __init__(self, nproc: int = 1) -> None:
         self.nproc = nproc
 
     def __call__(self, files: List[Tuple], split: str) -> List:
@@ -34,7 +31,10 @@ class BaseParser:
         samples = self.parse_files(files, split)
         return samples
 
-    def parse_files(self, files: List[Tuple], split: str) -> List[Tuple]:
+    def parse_files(self,
+                    img_paths: Union[List[str], str],
+                    ann_paths: Union[List[str], str],
+                    split: Optional[str] = None) -> List[Tuple]:
         """Convert annotations to MMOCR format.
 
         Args:
@@ -44,11 +44,13 @@ class BaseParser:
             List[Tuple]: A list of a tuple of (image_path, instances)
         """
         func = partial(self.parse_file, split=split)
-        samples = track_parallel_progress(func, files, nproc=self.nproc)
+        files = list(zip(img_paths, ann_paths))
+        samples = track_parallel_progress_multi_args(
+            func, files, nproc=self.nproc)
         return samples
 
     @abstractmethod
-    def parse_file(self, file: Tuple, split: str) -> Tuple:
+    def parse_file(self, img_path: str, ann_path: str, split: str) -> Tuple:
         """Convert annotation for a single image.
 
         Args:

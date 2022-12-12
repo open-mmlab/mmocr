@@ -17,15 +17,13 @@ class SVTTextDetAnnParser(BaseParser):
             to 1.
     """
 
-    def __init__(self, data_root: str = None, nproc: int = 1) -> None:
-        super().__init__(data_root=data_root, nproc=nproc)
-
-    def parse_files(self, files: str, split: str) -> List:
+    def parse_files(self, img_dir: str, ann_path: str, split: str) -> List:
         """Parse annotations."""
-        assert isinstance(files, str)
+        assert isinstance(ann_path, str)
         samples = list()
-        for img_name, instance in self.loader(files):
-            samples.append((img_name, instance))
+        for img_name, instance in self.loader(ann_path):
+            samples.append((osp.join(img_dir,
+                                     osp.basename(img_name)), instance))
 
         return samples
 
@@ -45,8 +43,7 @@ class SVTTextDetAnnParser(BaseParser):
         tree = ET.parse(file_path)
         root = tree.getroot()
         for image in root.findall('image'):
-            image_name = osp.join(self.data_root, 'textdet_imgs',
-                                  image.find('imageName').text)
+            image_name = image.find('imageName').text
             instances = list()
             for rectangle in image.find('taggedRectangles'):
                 x = int(rectangle.get('x'))

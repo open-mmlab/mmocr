@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, Tuple
+import os.path as osp
+from typing import Dict
 
 from mmdet.datasets.api_wrappers import COCO
 
@@ -17,14 +18,13 @@ class COCOTextDetAnnParser(BaseParser):
             to 1.
     """
 
-    def __init__(self, data_root: str = None, nproc: int = 1) -> None:
-
-        super().__init__(nproc=nproc, data_root=data_root)
-
-    def parse_files(self, files: Tuple, split: str = None) -> Dict:
+    def parse_files(self,
+                    img_dir: str,
+                    ann_path: str,
+                    split: str = None) -> Dict:
         """Parse single annotation."""
         samples = list()
-        coco = COCO(files)
+        coco = COCO(ann_path)
         img_ids = coco.get_img_ids()
 
         total_ann_ids = []
@@ -42,5 +42,6 @@ class COCOTextDetAnnParser(BaseParser):
                         poly=ann['segmentation'][0],
                         text=ann.get('text', None),
                         ignore=ann.get('iscrowd', False)))
-            samples.append((img_path, instances))
+            samples.append((osp.join(img_dir,
+                                     osp.basename(img_path)), instances))
         return samples

@@ -1,17 +1,17 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
 import os.path as osp
-import re
 import shutil
 from abc import abstractmethod
 from functools import partial
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import mmcv
 from mmengine import mkdir_or_exist, track_parallel_progress
 
-from mmocr.utils import bbox2poly, crop_img, list_files, poly2bbox
-from .data_preparer import DATA_CONVERTERS, DATA_DUMPERS, DATA_PARSERS
+from mmocr.utils import bbox2poly, crop_img, poly2bbox
+from .data_preparer import (DATA_CONVERTERS, DATA_DUMPERS, DATA_GATHER,
+                            DATA_PARSERS)
 
 
 class BaseDataConverter:
@@ -30,17 +30,20 @@ class BaseDataConverter:
             conversion.
     """
 
-    def __init__(self,
-                 splits: List,
-                 data_root: str,
-                 gatherer: Dict,
-                 parser: Dict,
-                 dumper: Dict,
-                 nproc: int,
-                 task: str,
-                 dataset_name: str,
-                 delete: Optional[List] = None,
-                 config_path: str = 'configs/'):
+    def __init__(
+        self,
+        splits: List,
+        data_root: str,
+        gatherer: Dict,
+        parser: Dict,
+        dumper: Dict,
+        nproc: int,
+        task: str,
+        dataset_name: str,
+        img_dir: str,
+        delete: Optional[List] = None,
+        config_path: str = 'configs/',
+    ):
         assert isinstance(nproc, int) and nproc > 0, \
             'nproc must be a positive integer.'
         self.splits = splits
@@ -50,19 +53,20 @@ class BaseDataConverter:
         self.dataset_name = dataset_name
         self.delete = delete
         self.config_path = config_path
-        self.img_dir = f'{task}_imgs'
-        parser.update(dict(nproc=nproc))
-        dumper.update(dict(task=task))
-        self.parser = DATA_PARSERS.build(parser)
-        self.dumper = DATA_DUMPERS.build(dumper)
-        gather_type = gatherer.pop('type')
-        self.gatherer_args = gatherer
-        if gather_type == 'pair_gather':
-            self.gatherer = self.pair_gather
-        elif gather_type == 'mono_gather':
-            self.gatherer = self.mono_gather
+        if img_dir is None:
+            self.img_dir = f'{task}_imgs'
         else:
-            raise NotImplementedError
+            self.img_dir = img_dir
+        parser.setdefault('nproc', default=nproc)
+        self.parser = DATA_PARSERS.build(parser)
+        dumper.setdefault('task', default=task)
+        self.dumper = DATA_DUMPERS.build(dumper)
+        gatherer.setdefault('splits', default=splits)
+        gatherer.setdefault(
+            'img_root', default=osp.join(self.data_root, self.img_dir))
+        gatherer.setdefault(
+            'ann_root', default=osp.join(self.data_root, 'annotations'))
+        self.gatherer = DATA_GATHER.build(gatherer)
 
     def __call__(self):
         """Process the data.
@@ -71,24 +75,21 @@ class BaseDataConverter:
             Dict: A dict that maps each split to the path of the annotation
                 files.
         """
+        gather_results = self.gatherer()
+        assert len(gather_results) == len(self.splits), \
+            'The number of splits does not match the number of gather results.'
+
         # Convert and dump annotations to MMOCR format
-        for self.current_split in self.splits:
-            print(f'Parsing {self.current_split} split...')
-            # Gather the info such as file names required by parser
-            img_path = osp.join(self.data_root, self.img_dir,
-                                self.current_split)
-            ann_path = osp.join(self.data_root, 'annotations')
-            gatherer_args = dict(img_path=img_path, ann_path=ann_path)
-            gatherer_args.update(self.gatherer_args)
-            files = self.gatherer(**gatherer_args)
+        for split, gather_result in zip(self.splits, gather_results):
+            print(f'Parsing {split} split...')
             # Convert dataset annotations to MMOCR format
-            samples = self.parser.parse_files(files, self.current_split)
-            print(f'Packing {self.current_split} annotations...')
-            func = partial(self.pack_instance, split=self.current_split)
+            samples = self.parser.parse_files(*gather_result, split=split)
+            print(f'Packing {split} annotations...')
+            func = partial(self.pack_instance, split=split)
             samples = track_parallel_progress(func, samples, nproc=self.nproc)
             samples = self.add_meta(samples)
             # Dump annotation files
-            self.dumper.dump(samples, self.data_root, self.current_split)
+            self.dumper.dump(samples, self.data_root, split)
         self.clean()
 
     @abstractmethod
@@ -115,71 +116,6 @@ class BaseDataConverter:
         Returns:
             Dict: A dict contains the meta information and samples.
         """
-
-    def mono_gather(self,
-                    ann_path: str,
-                    train_ann: Optional[str] = None,
-                    val_ann: Optional[str] = None,
-                    test_ann: Optional[str] = None,
-                    **kwargs) -> str:
-        """Gather the dataset file. Specifically for the case that only one
-        annotation file is needed. For example,
-
-            img_001.jpg \
-            img_002.jpg ---> train.json
-            img_003.jpg /
-
-        Args:
-            anno_path (str): Path to the annotations.
-            train_ann (str, optional): The annotation file name of the train
-                split in the original dataset. Defaults to None.
-            val_ann (str, optional): The annotation file name of the val split
-                in the original dataset. Defaults to None.
-            test_ann (str, optional): The annotation file name of the test
-                split in the original dataset. Defaults to None.
-
-        Returns:
-            str: Path to the annotation file.
-        """
-
-        ann_file = eval(f'{self.current_split}_ann')
-        if ann_file is None:
-            raise ValueError(
-                f'{self.current_split}_ann must be specified in gatherer!')
-        return osp.join(ann_path, ann_file)
-
-    def pair_gather(self, img_path: str, suffixes: List, rule: Sequence,
-                    **kwargs) -> List[Tuple]:
-        """Gather the dataset files. Specifically for the paired annotations.
-        That is to say, each image has a corresponding annotation file. For
-        example,
-
-            img_1.jpg <---> gt_img_1.txt
-            img_2.jpg <---> gt_img_2.txt
-            img_3.jpg <---> gt_img_3.txt
-
-        Args:
-            img_path (str): Path to the images.
-            suffixes (List[str]): File suffixes that used for searching.
-            rule (Sequence): The rule for pairing the files. The
-                    first element is the matching pattern for the file, and the
-                    second element is the replacement pattern, which should
-                    be a regular expression. For example, to map the image
-                    name img_1.jpg to the annotation name gt_img_1.txt,
-                    the rule is
-                        [r'img_(\d+)\.([jJ][pP][gG])', r'gt_img_\1.txt'] # noqa: W605 E501
-
-        Returns:
-            List[Tuple]: A list of tuples (img_path, ann_path).
-        """
-        files = list()
-        for file in list_files(img_path, suffixes):
-            file2 = re.sub(rule[0], rule[1], osp.basename(file))
-            file2 = file.replace(osp.basename(file), file2)
-            file2 = file2.replace(self.img_dir, 'annotations')
-            files.append((file, file2))
-
-        return files
 
     def clean(self) -> None:
         for d in self.delete:
@@ -222,7 +158,8 @@ class TextDetDataConverter(BaseDataConverter):
             dataset_name=dataset_name,
             nproc=nproc,
             delete=delete,
-            task='textdet')
+            task='textdet',
+            img_dir='textdet_imgs')
 
     def pack_instance(self,
                       sample: Tuple,
@@ -310,6 +247,7 @@ class TextSpottingDataConverter(BaseDataConverter):
                  dataset_name: str,
                  nproc: int,
                  delete: List = ['annotations']) -> None:
+        # Textspotting task shares the same images with textdet task
         super().__init__(
             splits=splits,
             data_root=data_root,
@@ -319,9 +257,8 @@ class TextSpottingDataConverter(BaseDataConverter):
             dataset_name=dataset_name,
             nproc=nproc,
             delete=delete,
-            task='textspotting')
-        # Textspotting task shares the same images with textdet task
-        self.img_dir = 'textdet_imgs'
+            task='textspotting',
+            img_dir='textdet_imgs')
 
     def pack_instance(self,
                       sample: Tuple,
@@ -421,6 +358,7 @@ class TextRecogDataConverter(BaseDataConverter):
             dataset_name=dataset_name,
             nproc=nproc,
             task='textrecog',
+            img_dir='textrecog_imgs',
             delete=delete)
 
     def pack_instance(self, sample: Tuple, split: str) -> Dict:
@@ -485,7 +423,8 @@ class TextRecogCropConverter(TextRecogDataConverter):
                  long_edge_pad_ratio: float = 0.0,
                  short_edge_pad_ratio: float = 0.0,
                  delete: List = ['annotations']):
-        super().__init__(
+        super(TextRecogDataConverter, self).__init__(
+            task='textrecog',
             splits=splits,
             data_root=data_root,
             gatherer=gatherer,
@@ -493,11 +432,11 @@ class TextRecogCropConverter(TextRecogDataConverter):
             dumper=dumper,
             dataset_name=dataset_name,
             nproc=nproc,
+            img_dir='textdet_imgs',
             delete=delete)
         self.lepr = long_edge_pad_ratio
         self.sepr = short_edge_pad_ratio
         # Crop converter crops the images of textdet to patches
-        self.img_dir = 'textdet_imgs'
         self.cropped_img_dir = 'textrecog_imgs'
         self.crop_save_path = osp.join(self.data_root, self.cropped_img_dir)
         mkdir_or_exist(self.crop_save_path)
@@ -595,6 +534,7 @@ class WildReceiptConverter(BaseDataConverter):
             dataset_name=dataset_name,
             nproc=nproc,
             task='kie',
+            img_dir='kie_imgs',
             delete=delete)
 
     def add_meta(self, samples: List) -> List:

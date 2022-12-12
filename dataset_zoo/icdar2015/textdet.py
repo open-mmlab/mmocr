@@ -43,8 +43,8 @@ data_converter = dict(
     splits=['train', 'test'],
     data_root=data_root,
     gatherer=dict(
-        type='pair_gather',
-        suffixes=['.jpg', '.JPG'],
+        type='PairGatherer',
+        img_suffixes=['.jpg', '.JPG'],
         rule=[r'img_(\d+)\.([jJ][pP][gG])', r'gt_img_\1.txt']),
     parser=dict(type='ICDARTxtTextDetAnnParser', encoding='utf-8-sig'),
     dumper=dict(type='JsonDumper'),

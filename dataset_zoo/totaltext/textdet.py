@@ -31,10 +31,10 @@ data_converter = dict(
     splits=['train', 'test'],
     data_root=data_root,
     gatherer=dict(
-        type='pair_gather',
-        suffixes=['.jpg', '.JPG'],
+        type='PairGatherer',
+        img_suffixes=['.jpg', '.JPG'],
         rule=[r'img(\d+)\.([jJ][pP][gG])', r'poly_gt_img\1.txt']),
-    parser=dict(type='TotaltextTextDetAnnParser', data_root=data_root),
+    parser=dict(type='TotaltextTextDetAnnParser'),
     dumper=dict(type='JsonDumper'),
     delete=['totaltext', 'txt_format', 'annotations'])
 

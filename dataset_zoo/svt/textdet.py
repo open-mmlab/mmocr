@@ -22,8 +22,13 @@ data_converter = dict(
     splits=['train', 'test'],
     data_root=data_root,
     gatherer=dict(
-        type='mono_gather', train_ann='train.xml', test_ann='test.xml'),
-    parser=dict(type='SVTTextDetAnnParser', data_root=data_root),
+        type='MonoGatherer',
+        train_ann_name='train.xml',
+        test_ann_name='test.xml',
+        train_img_postfix_dir='img',
+        test_img_postfix_dir='img',
+        val_img_postfix_dir='img'),
+    parser=dict(type='SVTTextDetAnnParser'),
     dumper=dict(type='JsonDumper'),
     delete=['annotations', 'svt'])
 
