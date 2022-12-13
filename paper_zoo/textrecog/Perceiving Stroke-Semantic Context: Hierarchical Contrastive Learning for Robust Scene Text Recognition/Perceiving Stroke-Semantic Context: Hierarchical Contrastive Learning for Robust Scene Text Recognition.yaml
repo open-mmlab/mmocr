@@ -37,8 +37,8 @@ MODELS:
   - Attention
   - Transformer
  Learning Method:
-  - self-Supervised
-  - supervised
+  - Self-Supervised
+  - Supervised
  Language Modality:
   - Implicit Language Model
  Network Structure: 'architecture.png'
