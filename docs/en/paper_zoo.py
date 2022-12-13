@@ -113,9 +113,9 @@ def parse_recog_paper_yaml(path: str, idx: int) -> dict:
     mkdown += f'- **Abstract:** {meta["Abstract"]}\n\n'
 
     # add results
-    mkdown += '- **Results:**\n'
-    mkdown += '    | IIIT | SVT | IC13 | IC15 | SVTP | CUTE | Avg. | FPS | FLOPS | PARAMS |  \n'  # noqa: E501
-    mkdown += '    | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: |  \n'  # noqa: E501
+    mkdown += '- **Results:**\n\n'
+    mkdown += '| IIIT | SVT | IC13 | IC15 | SVTP | CUTE | Avg. | FPS | FLOPS | PARAMS |  \n'  # noqa: E501
+    mkdown += '| :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: | :--: |  \n'  # noqa: E501
     table = f'|{meta["MODELS"]["Results"]["Common Benchmarks"]["IIIT"]}|' + \
         f'{meta["MODELS"]["Results"]["Common Benchmarks"]["SVT"]}  |' + \
         f'{meta["MODELS"]["Results"]["Common Benchmarks"]["IC13"]} |' + \
