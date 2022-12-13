@@ -5,6 +5,7 @@ from typing import List, Optional, Sequence, Tuple, Union
 import numpy as np
 import pyclipper
 import shapely
+from mmdet.structures.mask import BitmapMasks, bitmap_to_polygon
 from mmengine.utils import is_list_of
 from shapely.geometry import MultiPolygon, Polygon
 
@@ -451,3 +452,35 @@ def sort_vertex8(points):
     vertices = _sort_vertex(np.array(points, dtype=np.float32).reshape(-1, 2))
     sorted_box = list(vertices.flatten())
     return sorted_box
+
+
+def bitmap2poly(bitmap: BitmapMasks) -> Tuple[List[np.ndarray], np.ndarray]:
+    """Convert bitmap masks to polygons.
+
+    Args:
+        bitmap (BitmapMasks): Bitmap masks.
+
+    Returns:
+        Tuple(List[np.ndarray], np.ndarray): The first element is a list of
+        polygons, whose lengths may vary depending on whether the mask is
+        valid to be converted to a polygon. The second element is a list of
+        boolean values indicating whether the corresponding mask is valid.
+    """
+    results = []
+    validity = np.ones(len(bitmap), dtype=bool)
+    for i, mask in enumerate(bitmap.masks):
+        contours, _ = bitmap_to_polygon(mask)
+        polygons = [contour.reshape(-1) for contour in contours]
+        multipolygons = []
+        for polygon in polygons:
+            if len(polygon) < 6:
+                continue
+            multipolygons.append(poly2shapely(polygon))
+        merged_polygon = MultiPolygon(multipolygons).convex_hull
+        # If it's still not a valid polygon, e.g. a LineString, skip this
+        # polygon
+        if not isinstance(merged_polygon, Polygon):
+            validity[i] = False
+        else:
+            results.append(shapely2poly(merged_polygon))
+    return results, validity

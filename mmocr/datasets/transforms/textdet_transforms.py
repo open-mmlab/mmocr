@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
 import math
 import random
 from typing import Dict, List, Sequence, Tuple, Union
@@ -9,11 +10,13 @@ import numpy as np
 from mmcv.transforms import RandomFlip as MMCV_RandomFlip
 from mmcv.transforms.base import BaseTransform
 from mmcv.transforms.utils import avoid_cache_randomness, cache_randomness
+from mmdet.structures.mask import BitmapMasks, PolygonMasks
 from shapely.geometry import Polygon as plg
 
 from mmocr.registry import TRANSFORMS
-from mmocr.utils import (bbox2poly, crop_polygon, poly2bbox, poly2shapely,
-                         poly_intersection, poly_make_valid, shapely2poly)
+from mmocr.utils import (bbox2poly, bitmap2poly, crop_polygon, poly2bbox,
+                         poly2shapely, poly_intersection, poly_make_valid,
+                         shapely2poly)
 
 
 @TRANSFORMS.register_module()
@@ -916,4 +919,215 @@ class TextDetRandomCrop(BaseTransform):
         repr_str = self.__class__.__name__
         repr_str += f'(target_size = {self.target_size}, '
         repr_str += f'positive_sample_ratio = {self.positive_sample_ratio})'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+@avoid_cache_randomness
+class CachedCopyPaste(BaseTransform):
+    """Simple Copy-Paste is a Strong Data Augmentation Method for Instance
+    Segmentation The simple copy-paste transform steps are as follows:
+
+    1. The destination image is already resized with aspect ratio kept,
+       cropped and padded.
+    2. Randomly select a source image, which is also already resized
+       with aspect ratio kept, cropped and padded in a similar way
+       as the destination image.
+    3. Randomly select some objects from the source image.
+    4. Paste these source objects to the destination image directly,
+       due to the source and destination image have the same size.
+    5. Update object masks of the destination image, for some origin objects
+       may be occluded.
+    6. Generate bboxes from the updated destination masks and
+       filter some objects which are totally occluded, and adjust bboxes
+       which are partly occluded.
+    7. Append selected source bboxes, masks, and labels.
+
+    Required Keys:
+
+    - img
+    - gt_bboxes (BaseBoxes[torch.float32]) (optional)
+    - gt_bboxes_labels (np.int64) (optional)
+    - gt_ignore_flags (np.bool) (optional)
+    - gt_masks (BitmapMasks) (optional)
+
+    Modified Keys:
+
+    - img
+    - gt_bboxes (optional)
+    - gt_bboxes_labels (optional)
+    - gt_ignore_flags (optional)
+    - gt_masks (optional)
+
+    Args:
+        max_num_pasted (int): The maximum number of pasted objects.
+            Defaults to 100.
+        bbox_occluded_thr (int): The threshold of occluded bbox.
+            Defaults to 10.
+        mask_occluded_thr (int): The threshold of occluded mask.
+            Defaults to 300.
+        selected (bool): Whether select objects or not. If select is False,
+            all objects of the source image will be pasted to the
+            destination image.
+            Defaults to True.
+        max_cached_images (int): The maximum length of the cache. The larger
+            the cache, the stronger the randomness of this transform. As a
+            rule of thumb, providing 10 caches for each image suffices for
+            randomness. Defaults to 40.
+        random_pop (bool): Whether to randomly pop a result from the cache
+            when the cache is full. If set to False, use FIFO popping method.
+            Defaults to True.
+    """
+
+    def __init__(
+        self,
+        max_num_pasted: int = 100,
+        bbox_occluded_thr: int = 10,
+        mask_occluded_thr: int = 300,
+        selected: bool = True,
+        max_cached_images: int = 40,
+        random_pop: bool = True,
+    ) -> None:
+        self.max_num_pasted = max_num_pasted
+        self.bbox_occluded_thr = bbox_occluded_thr
+        self.mask_occluded_thr = mask_occluded_thr
+        self.selected = selected
+        self.results_cache = []
+        self.max_cached_images = max_cached_images
+        self.random_pop = random_pop
+
+    def transform(self, results: dict) -> dict:
+        """Transform function to make a copy-paste of image.
+
+        Args:
+            results (dict): Result dict.
+
+        Returns:
+            dict: Result dict with copy-paste transformed.
+        """
+
+        self.results_cache.append(copy.deepcopy(results))
+
+        if len(self.results_cache) > self.max_cached_images:
+            if self.random_pop:
+                index = random.randint(0, len(self.results_cache) - 1)
+            else:
+                index = 0
+            self.results_cache.pop(index)
+
+        if len(self.results_cache) < 2:
+            return results
+
+        selected_idx = random.randint(0, len(self.results_cache) - 1)
+        if self.selected:
+            selected_results = self._select_object(
+                self.results_cache[selected_idx])
+        else:
+            selected_results = self.results_cache[[selected_idx]]
+        return self._copy_paste(results, selected_results)
+
+    def _get_selected_inds(self, num_objs: int) -> np.ndarray:
+        max_num_pasted = min(num_objs + 1, self.max_num_pasted)
+        num_pasted = np.random.randint(0, max_num_pasted)
+        return np.random.choice(num_objs, size=num_pasted, replace=False)
+
+    def _select_object(self, results: dict) -> dict:
+        """Select some objects from the source results."""
+        selected_results = results.copy()
+        bboxes = selected_results['gt_bboxes']
+        polygons = selected_results['gt_polygons']
+        num_objs = len(polygons)
+        labels = selected_results['gt_bboxes_labels']
+        ignore_flags = selected_results['gt_ignored']
+
+        selected_inds = self._get_selected_inds(num_objs)
+
+        selected_results['gt_bboxes'] = bboxes[selected_inds]
+        selected_results['gt_polygons'] = [polygons[i] for i in selected_inds]
+        selected_results['gt_bboxes_labels'] = labels[selected_inds]
+        selected_results['gt_ignored'] = ignore_flags[selected_inds]
+        return selected_results
+
+    def _copy_paste(self, dst_results: dict, src_results: dict) -> dict:
+        """CopyPaste transform function.
+
+        Args:
+            dst_results (dict): Result dict of the destination image.
+            src_results (dict): Result dict of the source image.
+        Returns:
+            dict: Updated result dict.
+        """
+        dst_img = dst_results['img']
+        dst_bboxes = dst_results['gt_bboxes']
+        dst_labels = dst_results['gt_bboxes_labels']
+        dst_ignore_flags = dst_results['gt_ignored']
+        dst_polygons = dst_results['gt_polygons']
+
+        src_img = src_results['img']
+        src_bboxes = src_results['gt_bboxes']
+        src_labels = src_results['gt_bboxes_labels']
+        src_ignore_flags = src_results['gt_ignored']
+        src_polygons = src_results['gt_polygons']
+
+        if len(src_polygons) == 0:
+            return dst_results
+
+        # update masks and generate bboxes from updated masks
+        src_masks = PolygonMasks([[src_polygon]
+                                  for src_polygon in src_polygons],
+                                 *src_results['img_shape']).to_bitmap()
+        dst_masks = PolygonMasks([[dst_polygon]
+                                  for dst_polygon in dst_polygons],
+                                 *dst_results['img_shape']).to_bitmap()
+
+        composed_mask = np.where(np.any(src_masks, axis=0), 1, 0)
+        updated_dst_masks = self._get_updated_masks(dst_masks, composed_mask)
+        updated_dst_bboxes = updated_dst_masks.get_bboxes('hbox').numpy()
+        # updated_dst_bboxes = self._bitmapmask2bboxes(updated_dst_masks)
+        assert len(updated_dst_bboxes) == len(updated_dst_masks)
+
+        # filter totally occluded objects
+        l1_distance = np.abs(updated_dst_bboxes - dst_bboxes)
+        bboxes_inds = (l1_distance <= self.bbox_occluded_thr).all(axis=-1)
+        masks_inds = updated_dst_masks.masks.sum(
+            axis=(1, 2)) > self.mask_occluded_thr
+        valid_inds = bboxes_inds | masks_inds
+
+        # Paste source objects to destination image directly
+        img = dst_img * (1 - composed_mask[..., np.newaxis]
+                         ) + src_img * composed_mask[..., np.newaxis]
+        bboxes = np.concatenate([updated_dst_bboxes[valid_inds], src_bboxes])
+        labels = np.concatenate([dst_labels[valid_inds], src_labels])
+        masks = np.concatenate(
+            [updated_dst_masks.masks[valid_inds], src_masks.masks])
+        ignore_flags = np.concatenate(
+            [dst_ignore_flags[valid_inds], src_ignore_flags])
+
+        dst_results['img'] = img
+        dst_results['gt_polygons'], valid_inds = bitmap2poly(
+            BitmapMasks(masks, masks.shape[1], masks.shape[2]))
+        dst_results['gt_bboxes'] = bboxes[valid_inds]
+        dst_results['gt_bboxes_labels'] = labels[valid_inds]
+        dst_results['gt_ignored'] = ignore_flags[valid_inds]
+        if len(dst_results['gt_polygons']) != len(dst_results['gt_bboxes']):
+            print('gotcha')
+
+        return dst_results
+
+    def _get_updated_masks(self, masks: BitmapMasks,
+                           composed_mask: np.ndarray) -> BitmapMasks:
+        """Update masks with composed mask."""
+        assert masks.masks.shape[-2:] == composed_mask.shape[-2:], \
+            'Cannot compare two arrays of different size'
+        masks.masks = np.where(composed_mask, 0, masks.masks)
+        return masks
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(max_num_pasted={self.max_num_pasted}, '
+        repr_str += f'bbox_occluded_thr={self.bbox_occluded_thr}, '
+        repr_str += f'mask_occluded_thr={self.mask_occluded_thr}, '
+        repr_str += f'selected={self.selected},'
+        repr_str += f'max_cached_images={self.max_cached_images}, '
+        repr_str += f'random_pop={self.random_pop})'
         return repr_str
