@@ -8,22 +8,9 @@ import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.cnn.bricks import DropPath
 from mmengine.model import BaseModule
-from mmengine.model.weight_init import trunc_normal_
+from mmengine.model.weight_init import trunc_normal_init
 
 from mmocr.registry import MODELS
-
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-
-def truncated_normal_(tensor, mean=0, std=0.02):
-    with torch.no_grad():
-        size = tensor.size()
-        tmp = tensor.new_empty(size + (4, )).normal_().cuda()
-        valid = (tmp < 2) & (tmp > -2)
-        ind = valid.max(-1, keepdim=True)[1]
-        tensor.data.copy_(tmp.gather(-1, ind.cuda()).squeeze(-1))
-        tensor.data.mul_(std).add_(mean)
-        return tensor
 
 
 class Identity(nn.Module):
@@ -39,8 +26,6 @@ class OverlapPatchEmbed(BaseModule):
     """Image to the progressive overlapping Patch Embedding.
 
     Args:
-        img_size (int or tuple): The size of input, which will be used to
-            calculate the out size. Defaults to [32, 100].
         in_channels (int): Number of input channels. Defaults to 3.
         embed_dims (int): The dimensions of embedding. Defaults to 768.
         num_layers (int, optional): Number of Conv_BN_Layer. Defaults to 2 and
@@ -50,7 +35,6 @@ class OverlapPatchEmbed(BaseModule):
     """
 
     def __init__(self,
-                 img_size: Union[int, Tuple[int, int]] = [32, 100],
                  in_channels: int = 3,
                  embed_dims: int = 768,
                  num_layers: int = 2,
@@ -60,7 +44,6 @@ class OverlapPatchEmbed(BaseModule):
 
         assert num_layers in [2, 3], \
             'The number of layers must belong to [2, 3]'
-        self.img_size = img_size
         self.net = nn.Sequential()
         for num in range(num_layers, 0, -1):
             if (num == num_layers):
@@ -74,7 +57,6 @@ class OverlapPatchEmbed(BaseModule):
                     kernel_size=3,
                     stride=2,
                     padding=1,
-                    bias=False,
                     norm_cfg=dict(type='BN'),
                     act_cfg=dict(type='GELU')))
             _input = _output
@@ -88,11 +70,6 @@ class OverlapPatchEmbed(BaseModule):
         Returns:
             Tensor: A tensor of shape math:`(N, HW//16, C)`.
         """
-        _, _, H, W = x.shape
-        assert H == self.img_size[0] and W == self.img_size[1], \
-            f"Input image size ({H}*{W}) doesn't match model \
-                ({self.img_size[0]}*{self.img_size[1]})."
-
         x = self.net(x).flatten(2).permute(0, 2, 1)
         return x
 
@@ -101,7 +78,7 @@ class ConvMixer(BaseModule):
     """The conv Mixer.
 
     Args:
-        dim (int): Number of character components.
+        embed_dims (int): Number of character components.
         num_heads (int, optional): Number of heads. Defaults to 8.
         HW (Tuple[int, int], optional): Number of H x W. Defaults to [8, 25].
         local_k (Tuple[int, int], optional): Window size. Defaults to [3, 3].
@@ -154,8 +131,8 @@ class AttnMixer(BaseModule):
         qkv_bias (bool, optional): Whether a additive bias is required.
             Defaults to False.
         qk_scale (float, optional): A scaling factor. Defaults to None.
-        attn_drop (float, optional): A Dropout layer. Defaults to 0.0.
-        proj_drop (float, optional): A Dropout layer. Defaults to 0.0.
+        attn_drop (float, optional): Attn dropout probability. Defaults to 0.0.
+        proj_drop (float, optional): Proj dropout layer. Defaults to 0.0.
         init_cfg (dict or list[dict], optional): Initialization configs.
             Defaults to None.
     """
@@ -193,10 +170,10 @@ class AttnMixer(BaseModule):
                               dtype=torch.float32)
             for h in range(0, H):
                 for w in range(0, W):
-                    mask[h * w + w, h:h + hk, w:w + wk] = 0.
+                    mask[h * W + w, h:h + hk, w:w + wk] = 0.
             mask = mask[:, hk // 2:H + hk // 2, wk // 2:W + wk // 2].flatten(1)
-            mask[mask < -1] = -np.inf
-            self.mask = mask[None, None, :, :]
+            mask[mask >= 1] = -np.inf
+            self.mask = mask[None, None, :, :].to(self.qkv.weight.device)
         self.mixer = mixer
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -216,7 +193,7 @@ class AttnMixer(BaseModule):
             (-1, N, 3, self.num_heads, C // self.num_heads)).permute(
                 (2, 0, 3, 1, 4))
         q, k, v = qkv[0] * self.scale, qkv[1], qkv[2]
-        attn = (q.matmul(k.permute(0, 1, 3, 2)))
+        attn = q.matmul(k.permute(0, 1, 3, 2))
         if self.mixer == 'Local':
             attn += self.mask
         attn = F.softmax(attn, dim=-1)
@@ -425,8 +402,8 @@ class MerigingBlock(BaseModule):
 
 @MODELS.register_module()
 class SVTRNet(BaseModule):
-    """A PyTorch implement of : `SVTR: Scene Text Recognition with a Single
-        Visual Model <https://arxiv.org/abs/2205.00159>`_
+    """A PyTorch implementation of `SVTR: Scene Text Recognition with a Single
+    Visual Model <https://arxiv.org/abs/2205.00159>`_
 
     Code is partially modified from https://github.com/PaddlePaddle/PaddleOCR.
 
@@ -465,7 +442,7 @@ class SVTRNet(BaseModule):
             Defaults to 25.
         num_layers (int, optional): The num of conv in PatchEmbedding.
             Defaults to 2.
-        prenorm (bool, optional): Whether to place the MxingBlock before norm.
+        prenorm (bool, optional): Whether to place the MixingBlock before norm.
             Defaults to True.
         init_cfg (dict or list[dict], optional): Initialization configs.
             Defaults to None.
@@ -499,7 +476,6 @@ class SVTRNet(BaseModule):
         self.out_channels = out_channels
         self.prenorm = prenorm
         self.patch_embed = OverlapPatchEmbed(
-            img_size=img_size,
             in_channels=in_channels,
             embed_dims=embed_dims[0],
             num_layers=num_layers)
@@ -576,22 +552,22 @@ class SVTRNet(BaseModule):
         ])
         self.layer_norm = nn.LayerNorm(self.embed_dims[-1], eps=1e-6)
         self.avgpool = nn.AdaptiveAvgPool2d([1, max_seq_len])
-        self.last_conv = ConvModule(
+        self.last_conv = nn.Conv2d(
             in_channels=embed_dims[2],
             out_channels=self.out_channels,
             kernel_size=1,
+            bias=False,
             stride=1,
             padding=0)
         self.hardwish = nn.Hardswish()
         self.dropout = nn.Dropout(p=last_drop)
 
-        trunc_normal_(self.absolute_pos_embed)
+        trunc_normal_init(self.absolute_pos_embed, mean=0, std=0.02)
         self.apply(self._init_weights)
-        print('------------model weight inits-------------')
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
-            truncated_normal_(m.weight)
+            trunc_normal_init(m.weight, mean=0, std=0.02)
             if isinstance(m, nn.Linear) and m.bias is not None:
                 nn.init.zeros_(m.bias)
         if isinstance(m, nn.LayerNorm):

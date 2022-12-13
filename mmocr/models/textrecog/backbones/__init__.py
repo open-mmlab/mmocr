@@ -6,9 +6,9 @@ from .resnet import ResNet
 from .resnet31_ocr import ResNet31OCR
 from .resnet_abi import ResNetABI
 from .shallow_cnn import ShallowCNN
-from .svtr import SVTR
+from .svtr import SVTRNet
 
 __all__ = [
     'ResNet31OCR', 'MiniVGG', 'NRTRModalityTransform', 'ShallowCNN',
-    'ResNetABI', 'ResNet', 'MobileNetV2', 'SVTR'
+    'ResNetABI', 'ResNet', 'MobileNetV2', 'SVTRNet'
 ]
