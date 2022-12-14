@@ -1,0 +1,75 @@
+Title: 'Perceiving Stroke-Semantic Context: Hierarchical Contrastive Learning for Robust Scene Text Recognition'
+Abbreviation: PerSec
+Tasks:
+ - TextRecog
+Venue: AAAI
+Year: 2022
+Lab/Company:
+ - Tencent YouTu Lab
+ - University of Science and Technology of China
+URL: 'https://www.aaai.org/AAAI22Papers/AAAI-785.LiuH.pdf'
+Paper Reading URL: 'https://mp.weixin.qq.com/s?__biz=MzI1ODk1ODI5Mw==&mid=2247489751&idx=1&sn=38430279107d2a53827adec7884b9ce2&chksm=ea016e6ddd76e77b5ecdafc8bffd57da538751e273147fa3706e5d22e0385f01d446bdb031d0&scene=126&&sessionid=1670397988#rd'
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+ - Dataset
+Abstract: 'We introduce Perceiving Stroke-Semantic Context (PerSec), a new
+approach to self-supervised representation learning tailored for Scene Text
+Recognition (STR) task. Considering scene text images carry both visual and
+semantic properties, we equip our PerSec with dual context perceivers which
+can contrast and learn latent representations from low-level stroke and
+high-level semantic contextual spaces simultaneously via hierarchical
+contrastive learning on unlabeled text image data. Experiments in un- and
+semi-supervised learning settings on STR benchmarks demonstrate our
+proposed framework can yield a more robust representation for both
+CTC-based and attention-based decoders than other contrastive learning
+methods. To fully investigate the potential of our method, we also
+collect a dataset of 100 million unlabeled text images, named UTI-100M,
+covering 5 scenes and 4 languages. By leveraging hundred-million-level
+unlabeled data, our PerSec shows significant performance improvement
+when fine-tuning the learned representation on the labeled data.
+Furthermore, we observe that the representation learned by PerSec
+presents great generalization, especially under few labeled data scenes.'
+MODELS:
+  Architecture:
+    - CTC
+    - Attention
+    - Transformer
+  Learning Method:
+    - Self-Supervised
+    - Supervised
+  Language Modality:
+    - Implicit Language Model
+  Network Structure: 'architecture.png'
+  FPS:
+    DEVICE: N/A
+    ITEM: N/A
+  FLOPS:
+    DEVICE: N/A
+    ITEM: N/A
+  PARAMS: N/A
+  Experiment:
+    Training DataSets: # Only in Text Recognition
+      - MJ
+      - ST
+      - SA
+      - Real
+    Test DataSets:
+      IIIT5K:
+        WAICS: 88.1
+      SVT:
+        WAICS: 96.7
+      IC13:
+        WAICS: 73.6
+      IC15:
+        WAICS: 77.7
+      SVTP:
+        WAICS: 72.7
+      CUTE:
+        WAICS: 83.8
+Bibtex: '@inproceedings{liu2022perceiving,
+  title={Perceiving Stroke-Semantic Context: Hierarchical Contrastive Learning for Robust Scene Text Recognition},
+  author={Liu, Hao and Wang, Bin and Bao, Zhimin and Xue, Mobai and Kang, Sheng and Jiang, Deqiang and Liu, Yinsong and Ren, Bo},
+  year={2022},
+  organization={AAAI}}'

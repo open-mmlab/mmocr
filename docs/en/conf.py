@@ -156,9 +156,15 @@ master_doc = 'index'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-html_css_files = ['css/readthedocs.css']
-html_js_files = ['js/collapsed.js']
 
+html_css_files = [
+    'https://cdn.datatables.net/v/bs4/dt-1.12.1/datatables.min.css',
+    'css/readthedocs.css'
+]
+html_js_files = [
+    'https://cdn.datatables.net/v/bs4/dt-1.12.1/datatables.min.js',
+    'js/collapsed.js'
+]
 myst_heading_anchors = 4
 
 intersphinx_mapping = {
@@ -175,6 +181,7 @@ def builder_inited_handler(app):
     subprocess.run(['./merge_docs.sh'])
     subprocess.run(['./stats.py'])
     subprocess.run(['./dataset_zoo.py'])
+    subprocess.run(['./paper_zoo.py'])
 
 
 def setup(app):
