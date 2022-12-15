@@ -243,6 +243,7 @@ Recognizers
    SATRN
    ABINet
    MASTER
+   ASTER
 
 .. _recdatapreprocessors:
 
@@ -289,6 +290,7 @@ Encoders
    ChannelReductionEncoder
    SATRNEncoder
    ABIEncoder
+   ASTEREncoder
 
 .. _recdecoders:
 
@@ -312,6 +314,7 @@ Decoders
    PositionAttentionDecoder
    RobustScannerFuser
    MasterDecoder
+   ASTERDecoder
 
 .. _recmodulelosses:
 

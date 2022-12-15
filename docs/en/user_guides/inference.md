@@ -169,6 +169,7 @@ means that `print_result` is set to `True`)
 | ------------- | :---------------------------------------------------------------------------------: |
 | ABINet        |    [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#abinet)     |
 | ABINet_Vision |    [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#abinet)     |
+| ASTER         |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#aster)     |
 | CRNN          |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#crnn)      |
 | MASTER        |    [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#master)     |
 | NRTR_1/16-1/8 |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#nrtr)      |

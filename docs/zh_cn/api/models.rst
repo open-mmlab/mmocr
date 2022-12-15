@@ -243,6 +243,7 @@ Recognizers
    SATRN
    ABINet
    MASTER
+   ASTER
 
 .. _recdatapreprocessors:
 
