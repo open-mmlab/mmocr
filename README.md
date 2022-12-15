@@ -140,6 +140,7 @@ Supported algorithms:
 <summary>Text Recognition</summary>
 
 - [x] [ABINet](configs/textrecog/abinet/README.md) (CVPR'2021)
+- [x] [ASTER](configs/textrecog/aster/README.md) (TPAMI'2018)
 - [x] [CRNN](configs/textrecog/crnn/README.md) (TPAMI'2016)
 - [x] [MASTER](configs/textrecog/master/README.md) (PR'2021)
 - [x] [NRTR](configs/textrecog/nrtr/README.md) (ICDAR'2019)
