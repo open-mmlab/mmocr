@@ -5,7 +5,7 @@ Collections:
       Training Techniques:
         - AdamW
       Epochs: 6
-      Batch Size: 1024
+      Batch Size: 4096
       Training Resources: 4 x NVIDIA A100-SXM4-80GB
       Architecture:
         - ResNet45
@@ -16,9 +16,9 @@ Collections:
     README: configs/textrecog/aster/README.md
 
 Models:
-  - Name: aster_6e_st_mj
+  - Name: aster_resnet45_6e_st_mj
     In Collection: ASTER
-    Config: configs/textrecog/aster/aster_6e_st_mj.py
+    Config: configs/textrecog/aster/aster_resnet45_6e_st_mj.py
     Metadata:
       Training Data:
         - SynthText

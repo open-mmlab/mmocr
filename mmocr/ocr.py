@@ -462,7 +462,7 @@ class MMOCR:
             },
             'ASTER': {
                 'config':
-                'textrecog/aster/aster_6e_st_mj.py',
+                'textrecog/aster/aster_resnet45_6e_st_mj.py',
                 'ckpt':
                 'textrecog/'
                 'aster/aster_resnet45_6e_st_mj/aster_resnet45_6e_st_mj-cc56eca4.pth'  # noqa: E501
