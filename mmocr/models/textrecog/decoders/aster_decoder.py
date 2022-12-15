@@ -72,9 +72,9 @@ class ASTERDecoder(BaseDecoder):
         # Prediction layer
         self.fc = nn.Linear(hidden_size, self.dictionary.num_classes)
 
-    def _attention(
-            self, feat: torch.Tensor, prev_hidden: torch.Tensor,
-            prev_char: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    def _attention(self, feat: torch.Tensor, prev_hidden: torch.Tensor,
+                   prev_char: torch.Tensor
+                   ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Implement the attention mechanism.
 
         Args:
