@@ -6,10 +6,10 @@ import torch
 import torch.nn as nn
 from mmengine.model import ModuleList
 
-from mmocr.data import TextRecogDataSample
 from mmocr.models.common import TFEncoderLayer
 from mmocr.registry import MODELS
-from .base_encoder import BaseEncoder
+from mmocr.structures import TextRecogDataSample
+from .base import BaseEncoder
 
 
 @MODELS.register_module()

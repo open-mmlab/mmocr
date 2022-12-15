@@ -17,9 +17,9 @@ Collections:
   README: configs/textrecog/satrn/README.md
 
 Models:
-  - Name: satrn_academic
+  - Name: satrn_shallow_5e_st_mj
     In Collection: SATRN
-    Config: configs/textrecog/satrn/satrn_academic.py
+    Config: configs/textrecog/satrn/satrn_shallow_5e_st_mj.py
     Metadata:
       Training Data:
         - SynthText
@@ -28,32 +28,32 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 95.1
+          word_acc: 0.9600
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 92.0
+          word_acc: 0.9196
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 95.8
+          word_acc: 0.9606
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 81.4
+          word_acc: 0.8031
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 87.6
+          word_acc: 0.8837
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 90.6
-    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_academic_20211009-cb8b1580.pth
+          word_acc: 0.8993
+    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow_5e_st_mj/satrn_shallow_5e_st_mj_20220915_152443-5fd04a4c.pth
 
-  - Name: satrn_small
+  - Name: satrn_shallow-small_5e_st_mj
     In Collection: SATRN
-    Config: configs/textrecog/satrn/satrn_small.py
+    Config: configs/textrecog/satrn/satrn_shallow-small_5e_st_mj.py
     Metadata:
       Training Data:
         - SynthText
@@ -62,25 +62,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 94.7
+          word_acc: 0.9423
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 91.3
+          word_acc: 0.8995
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 95.4
+          word_acc: 0.9567
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 81.9
+          word_acc: 0.7877
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 85.9
+          word_acc: 0.8574
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 86.5
-    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_small_20211009-2cf13355.pth
+          word_acc: 0.8507
+    Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow-small_5e_st_mj/satrn_shallow-small_5e_st_mj_20220915_152442-5591bf27.pth

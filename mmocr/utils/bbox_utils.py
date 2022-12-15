@@ -7,7 +7,7 @@ from shapely.geometry import LineString, Point
 
 from mmocr.utils.check_argument import is_2dlist, is_type_list
 from mmocr.utils.point_utils import point_distance, points_center
-from mmocr.utils.typing import ArrayLike
+from mmocr.utils.typing_utils import ArrayLike
 
 
 def rescale_bbox(bbox: np.ndarray,
@@ -64,21 +64,30 @@ def rescale_bboxes(bboxes: np.ndarray,
     return bboxes
 
 
-def bbox2poly(bbox: ArrayLike) -> np.array:
+def bbox2poly(bbox: ArrayLike, mode: str = 'xyxy') -> np.array:
     """Converting a bounding box to a polygon.
 
     Args:
         bbox (ArrayLike): A bbox. In any form can be accessed by 1-D indices.
          E.g. list[float], np.ndarray, or torch.Tensor. bbox is written in
             [x1, y1, x2, y2].
+        mode (str): Specify the format of bbox. Can be 'xyxy' or 'xywh'.
+            Defaults to 'xyxy'.
 
     Returns:
         np.array: The converted polygon [x1, y1, x2, y1, x2, y2, x1, y2].
     """
     assert len(bbox) == 4
-    return np.array([
-        bbox[0], bbox[1], bbox[2], bbox[1], bbox[2], bbox[3], bbox[0], bbox[3]
-    ])
+    if mode == 'xyxy':
+        x1, y1, x2, y2 = bbox
+        poly = np.array([x1, y1, x2, y1, x2, y2, x1, y2])
+    elif mode == 'xywh':
+        x, y, w, h = bbox
+        poly = np.array([x, y, x + w, y, x + w, y + h, x, y + h])
+    else:
+        raise NotImplementedError('Not supported mode.')
+
+    return poly
 
 
 def is_on_same_line(box_a, box_b, min_y_overlap_ratio=0.8):

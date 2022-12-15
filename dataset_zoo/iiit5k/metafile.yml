@@ -1,0 +1,25 @@
+Name: 'IIIT5K'
+Paper:
+  Title: Scene Text Recognition using Higher Order Language Priors
+  URL: http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/Home/mishraBMVC12.pdf
+  Venue: BMVC
+  Year: '2012'
+  BibTeX: '@InProceedings{MishraBMVC12,
+  author    = "Mishra, A. and Alahari, K. and Jawahar, C.~V.",
+  title     = "Scene Text Recognition using Higher Order Language Priors",
+  booktitle = "BMVC",
+  year      = "2012"}'
+Data:
+  Website: http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html
+  Language:
+    - English
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Tasks:
+    - textrecog
+  License:
+    Type: N/A
+    Link: N/A
+  Format: .txt

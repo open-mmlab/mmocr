@@ -4,6 +4,7 @@ import math
 import os.path as osp
 
 import mmcv
+import mmengine
 import numpy as np
 
 from mmocr.utils import dump_ocr_data
@@ -25,7 +26,7 @@ def collect_imgur_info(root_path, annotation_filename, print_every=1000):
         raise Exception(
             f'{annotation_path} not exists, please check and try again.')
 
-    annotation = mmcv.load(annotation_path)
+    annotation = mmengine.load(annotation_path)
     images = annotation['index_to_ann_map'].keys()
     img_infos = []
     for i, img_name in enumerate(images):
@@ -138,7 +139,8 @@ def main():
 
     for split in ['train', 'val', 'test']:
         print(f'Processing {split} set...')
-        with mmcv.Timer(print_tmpl='It takes {}s to convert IMGUR annotation'):
+        with mmengine.Timer(
+                print_tmpl='It takes {}s to convert IMGUR annotation'):
             anno_infos = collect_imgur_info(
                 root_path, f'imgur5k_annotations_{split}.json')
             dump_ocr_data(anno_infos,

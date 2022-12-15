@@ -3,15 +3,15 @@ from typing import Dict, Sequence, Union
 
 import torch
 
-from mmocr.data import TextRecogDataSample
-from mmocr.models.textrecog.dictionary.dictionary import Dictionary
+from mmocr.models.common.dictionary import Dictionary
 from mmocr.registry import MODELS
-from .base_recog_module_loss import BaseRecogModuleLoss
+from mmocr.structures import TextRecogDataSample
+from .base import BaseTextRecogModuleLoss
 from .ce_module_loss import CEModuleLoss
 
 
 @MODELS.register_module()
-class ABIModuleLoss(BaseRecogModuleLoss):
+class ABIModuleLoss(BaseTextRecogModuleLoss):
     """Implementation of ABINet multiloss that allows mixing different types of
     losses with weights.
 

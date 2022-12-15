@@ -1,0 +1,26 @@
+Name: 'Street View Text Perspective (SVT-P)'
+Paper:
+  Title: Recognizing Text with Perspective Distortion in Natural Scenes
+  URL: https://openaccess.thecvf.com/content_iccv_2013/papers/Phan_Recognizing_Text_with_2013_ICCV_paper.pdf
+  Venue: ICCV
+  Year: '2013'
+  BibTeX: '@inproceedings{phan2013recognizing,
+  title={Recognizing text with perspective distortion in natural scenes},
+  author={Phan, Trung Quy and Shivakumara, Palaiahnakote and Tian, Shangxuan and Tan, Chew Lim},
+  booktitle={Proceedings of the IEEE International Conference on Computer Vision},
+  pages={569--576},
+  year={2013}}'
+Data:
+  Website: http://www.comp.nus.edu.sg/~phanquyt/
+  Language:
+    - English
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Tasks:
+    - textrecog
+  License:
+    Type: N/A
+    Link: N/A
+  Format: .txt

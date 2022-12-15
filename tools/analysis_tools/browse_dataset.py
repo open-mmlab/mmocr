@@ -2,8 +2,8 @@
 import argparse
 import os.path as osp
 
-import mmcv
-from mmcv import Config, DictAction
+import mmengine
+from mmengine.config import Config, DictAction
 
 from mmocr.registry import DATASETS, VISUALIZERS
 from mmocr.utils import register_all_modules
@@ -50,11 +50,12 @@ def main():
     dataset = DATASETS.build(cfg.train_dataloader.dataset)
     visualizer = VISUALIZERS.build(cfg.visualizer)
 
-    progress_bar = mmcv.ProgressBar(len(dataset))
+    visualizer.dataset_meta = dataset.metainfo
+    progress_bar = mmengine.ProgressBar(len(dataset))
     for item in dataset:
         img = item['inputs'].permute(1, 2, 0).numpy()
-        data_sample = item['data_sample'].numpy()
-        img_path = osp.basename(item['data_sample'].img_path)
+        data_sample = item['data_samples'].numpy()
+        img_path = osp.basename(item['data_samples'].img_path)
         out_file = osp.join(args.output_dir,
                             img_path) if args.output_dir is not None else None
 
@@ -64,7 +65,7 @@ def main():
         visualizer.add_datasample(
             name=osp.basename(img_path),
             image=img,
-            gt_sample=data_sample,
+            data_sample=data_sample,
             draw_pred=False,
             show=not args.not_show,
             wait_time=args.show_interval,

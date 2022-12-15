@@ -4,10 +4,10 @@ from typing import List, Optional
 import torch
 import torch.nn as nn
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import TextDetDataSample
 from mmocr.utils import check_argument
-from .base_textdet_head import BaseTextDetHead
+from .base import BaseTextDetHead
 
 
 @MODELS.register_module()

@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 
 import cv2
 
-from mmocr.utils.fileio import list_to_file
+from mmocr.utils import dump_ocr_data
 
 
 def parse_args():
@@ -38,7 +38,7 @@ def main():
     src_image_root = root_path
 
     # outputs
-    dst_label_file = osp.join(root_path, 'test_label.txt')
+    dst_label_file = osp.join(root_path, 'test_label.json')
     dst_image_root = osp.join(root_path, 'image')
     os.makedirs(dst_image_root, exist_ok=True)
 
@@ -46,16 +46,16 @@ def main():
     root = tree.getroot()
 
     index = 1
-    lines = []
+    img_info = []
     total_img_num = len(root)
     i = 1
     for image_node in root.findall('image'):
         image_name = image_node.find('imageName').text
         print(f'[{i}/{total_img_num}] Process image: {image_name}')
         i += 1
-        lexicon = image_node.find('lex').text.lower()
-        lexicon_list = lexicon.split(',')
-        lex_size = len(lexicon_list)
+        # lexicon = image_node.find('lex').text.lower()
+        # lexicon_list = lexicon.split(',')
+        # lex_size = len(lexicon_list)
         src_img = cv2.imread(osp.join(src_image_root, image_name))
         for rectangle in image_node.find('taggedRectangles'):
             x = int(rectangle.get('x'))
@@ -72,9 +72,14 @@ def main():
             index += 1
             dst_img_path = osp.join(dst_image_root, dst_img_name)
             cv2.imwrite(dst_img_path, dst_img)
-            lines.append(f'{osp.basename(dst_image_root)}/{dst_img_name} '
-                         f'{text_label} {lex_size} {lexicon}')
-    list_to_file(dst_label_file, lines)
+            img_info.append({
+                'file_name': dst_img_name,
+                'anno_info': [{
+                    'text': text_label
+                }]
+            })
+
+    dump_ocr_data(img_info, dst_label_file, 'textrecog')
     print(f'Finish to generate svt testset, '
           f'with label file {dst_label_file}')
 

@@ -4,9 +4,9 @@ from typing import Sequence, Tuple
 
 import torch
 
-from mmocr.data import TextRecogDataSample
 from mmocr.registry import MODELS
-from .base_textrecog_postprocessor import BaseTextRecogPostprocessor
+from mmocr.structures import TextRecogDataSample
+from .base import BaseTextRecogPostprocessor
 
 
 # TODO support beam search

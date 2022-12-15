@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .abi_encoder import ABIEncoder
 from .aster_encoder import ASTEREncoder
-from .base_encoder import BaseEncoder
+from .base import BaseEncoder
 from .channel_reduction_encoder import ChannelReductionEncoder
 from .nrtr_encoder import NRTREncoder
 from .sar_encoder import SAREncoder

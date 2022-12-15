@@ -3,9 +3,9 @@ import re
 from difflib import SequenceMatcher
 from typing import Dict, Optional, Sequence, Union
 
-import mmcv
+import mmengine
 from mmengine.evaluator import BaseMetric
-from rapidfuzz import string_metric
+from rapidfuzz.distance import Levenshtein
 
 from mmocr.registry import METRICS
 
@@ -45,27 +45,27 @@ class WordMetric(BaseMetric):
         self.valid_symbol = re.compile(valid_symbol)
         if isinstance(mode, str):
             mode = [mode]
-        assert mmcv.is_seq_of(mode, str)
+        assert mmengine.is_seq_of(mode, str)
         assert set(mode).issubset(
             {'exact', 'ignore_case', 'ignore_case_symbol'})
         self.mode = set(mode)
 
     def process(self, data_batch: Sequence[Dict],
-                predictions: Sequence[Dict]) -> None:
-        """Process one batch of predictions. The processed results should be
+                data_samples: Sequence[Dict]) -> None:
+        """Process one batch of data_samples. The processed results should be
         stored in ``self.results``, which will be used to compute the metrics
         when all batches have been processed.
 
         Args:
             data_batch (Sequence[Dict]): A batch of gts.
-            predictions (Sequence[Dict]): A batch of outputs from the model.
+            data_samples (Sequence[Dict]): A batch of outputs from the model.
         """
-        for gt, pred in zip(data_batch, predictions):
+        for data_sample in data_samples:
             match_num = 0
             match_ignore_case_num = 0
             match_ignore_case_symbol_num = 0
-            pred_text = pred.get('pred_text').get('item')
-            gt_text = gt.get('data_sample').get('instances')[0].get('text')
+            pred_text = data_sample.get('pred_text').get('item')
+            gt_text = data_sample.get('gt_text').get('item')
             if 'ignore_case' in self.mode or 'ignore_case_symbol' in self.mode:
                 pred_text_lower = pred_text.lower()
                 gt_text_lower = gt_text.lower()
@@ -149,18 +149,18 @@ class CharMetric(BaseMetric):
         self.valid_symbol = re.compile(valid_symbol)
 
     def process(self, data_batch: Sequence[Dict],
-                predictions: Sequence[Dict]) -> None:
-        """Process one batch of predictions. The processed results should be
+                data_samples: Sequence[Dict]) -> None:
+        """Process one batch of data_samples. The processed results should be
         stored in ``self.results``, which will be used to compute the metrics
         when all batches have been processed.
 
         Args:
             data_batch (Sequence[Dict]): A batch of gts.
-            predictions (Sequence[Dict]): A batch of outputs from the model.
+            data_samples (Sequence[Dict]): A batch of outputs from the model.
         """
-        for gt, pred in zip(data_batch, predictions):
-            pred_text = pred.get('pred_text').get('item')
-            gt_text = gt.get('data_sample').get('instances')[0].get('text')
+        for data_sample in data_samples:
+            pred_text = data_sample.get('pred_text').get('item')
+            gt_text = data_sample.get('gt_text').get('item')
             gt_text_lower = gt_text.lower()
             pred_text_lower = pred_text.lower()
             gt_text_lower_ignore = self.valid_symbol.sub('', gt_text_lower)
@@ -249,26 +249,24 @@ class OneMinusNEDMetric(BaseMetric):
         self.valid_symbol = re.compile(valid_symbol)
 
     def process(self, data_batch: Sequence[Dict],
-                predictions: Sequence[Dict]) -> None:
-        """Process one batch of predictions. The processed results should be
+                data_samples: Sequence[Dict]) -> None:
+        """Process one batch of data_samples. The processed results should be
         stored in ``self.results``, which will be used to compute the metrics
         when all batches have been processed.
 
         Args:
             data_batch (Sequence[Dict]): A batch of gts.
-            predictions (Sequence[Dict]): A batch of outputs from the model.
+            data_samples (Sequence[Dict]): A batch of outputs from the model.
         """
-        for gt, pred in zip(data_batch, predictions):
-            pred_text = pred.get('pred_text').get('item')
-            gt_text = gt.get('data_sample').get('instances')[0].get('text')
+        for data_sample in data_samples:
+            pred_text = data_sample.get('pred_text').get('item')
+            gt_text = data_sample.get('gt_text').get('item')
             gt_text_lower = gt_text.lower()
             pred_text_lower = pred_text.lower()
             gt_text_lower_ignore = self.valid_symbol.sub('', gt_text_lower)
             pred_text_lower_ignore = self.valid_symbol.sub('', pred_text_lower)
-            edit_dist = string_metric.levenshtein(pred_text_lower_ignore,
-                                                  gt_text_lower_ignore)
-            norm_ed = float(edit_dist) / max(1, len(gt_text_lower_ignore),
-                                             len(pred_text_lower_ignore))
+            norm_ed = Levenshtein.normalized_distance(pred_text_lower_ignore,
+                                                      gt_text_lower_ignore)
             result = dict(norm_ed=norm_ed)
             self.results.append(result)
 

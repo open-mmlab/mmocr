@@ -1,16 +1,17 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import cv2
 import torch
-from mmdet.structures import DetDataSample, OptSampleList
+from mmdet.structures import DetDataSample
+from mmdet.structures import SampleList as MMDET_SampleList
 from mmdet.structures.mask import bitmap_to_polygon
-from mmengine import InstanceData
 from mmengine.model import BaseModel
+from mmengine.structures import InstanceData
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import MODELS
 from mmocr.utils.bbox_utils import bbox2poly
+from mmocr.utils.typing_utils import DetSampleList
 
 ForwardResults = Union[Dict[str, torch.Tensor], List[DetDataSample],
                        Tuple[torch.Tensor], torch.Tensor]
@@ -35,13 +36,14 @@ class MMDetWrapper(BaseModel):
         self.text_repr_type = text_repr_type
 
     def forward(self,
-                batch_inputs: torch.Tensor,
-                batch_data_samples: OptSampleList = None,
+                inputs: torch.Tensor,
+                data_samples: Optional[Union[DetSampleList,
+                                             MMDET_SampleList]] = None,
                 mode: str = 'tensor',
                 **kwargs) -> ForwardResults:
         """The unified entry for a forward process in both training and test.
 
-        The method should accept three modes: "tensor", "predict" and "loss":
+        The method works in three modes: "tensor", "predict" and "loss":
 
         - "tensor": Forward the whole network and return tensor or tuple of
         tensor without any post-processing, same as a common nn.Module.
@@ -50,15 +52,18 @@ class MMDetWrapper(BaseModel):
         - "loss": Forward and return a dict of losses according to the given
         inputs and data samples.
 
-        Note that this method doesn't handle neither back propagation nor
-        optimizer updating, which are done in the :meth:`train_step`.
+        Note that this method doesn't handle either back propagation or
+        parameter update, which are supposed to be done in :meth:`train_step`.
 
         Args:
-            batch_inputs (torch.Tensor): The input tensor with shape
+            inputs (torch.Tensor): The input tensor with shape
                 (N, C, ...) in general.
-            batch_data_samples (list[:obj:`DetDataSample`], optional): The
-                annotation data of every samples. Defaults to None.
-            mode (str): Return what kind of value. Defaults to 'tensor'.
+            data_samples (list[:obj:`DetDataSample`] or
+                list[:obj:`TextDetDataSample`]): The annotation data of every
+                sample. When in "predict" mode, it should be a list of
+                :obj:`TextDetDataSample`. Otherwise they are
+                :obj:`DetDataSample`s. Defaults to None.
+            mode (str): Running mode. Defaults to 'tensor'.
 
         Returns:
             The return type depends on ``mode``.
@@ -67,15 +72,23 @@ class MMDetWrapper(BaseModel):
             - If ``mode="predict"``, return a list of :obj:`TextDetDataSample`.
             - If ``mode="loss"``, return a dict of tensor.
         """
-        results = self.wrapped_model.forward(batch_inputs, batch_data_samples,
-                                             mode, **kwargs)
         if mode == 'predict':
-            results = self.adapt_predictions(results)
+            ocr_data_samples = data_samples
+            data_samples = []
+            for i in range(len(ocr_data_samples)):
+                data_samples.append(
+                    DetDataSample(metainfo=ocr_data_samples[i].metainfo))
+
+        results = self.wrapped_model.forward(inputs, data_samples, mode,
+                                             **kwargs)
+
+        if mode == 'predict':
+            results = self.adapt_predictions(results, ocr_data_samples)
 
         return results
 
-    def adapt_predictions(self, data: List[DetDataSample]
-                          ) -> List[TextDetDataSample]:
+    def adapt_predictions(self, data: MMDET_SampleList,
+                          data_samples: DetSampleList) -> DetSampleList:
         """Convert Instance datas from MMDet into MMOCR's format.
 
         Args:
@@ -90,29 +103,29 @@ class MMDetWrapper(BaseModel):
                 - bboxes (Tensor): Has a shape (num_instances, 4),
                     the last dimension 4 arrange as (x1, y1, x2, y2).
                 - masks (Tensor, Optional): Has a shape (num_instances, H, W).
+            data_samples (list[:obj:`TextDetDataSample`]): The annotation data
+                of every samples.
 
         Returns:
-            list[TextDetDataSample]: A list of N datasamples of prediction
-                results.
+            list[TextDetDataSample]: A list of N datasamples containing ground
+                truth and prediction results.
                 The polygon results are saved in
                 ``TextDetDataSample.pred_instances.polygons``
                 The confidence scores are saved in
                 ``TextDetDataSample.pred_instances.scores``.
         """
-        results = []
-        for data_sample in data:
-            result = TextDetDataSample()
-            result.pred_instances = InstanceData()
+        for i, det_data_sample in enumerate(data):
+            data_samples[i].pred_instances = InstanceData()
             # convert mask to polygons if mask exists
-            if 'masks' in data_sample.pred_instances.keys():
-                masks = data_sample.pred_instances.masks.cpu().numpy()
+            if 'masks' in det_data_sample.pred_instances.keys():
+                masks = det_data_sample.pred_instances.masks.cpu().numpy()
                 polygons = []
                 scores = []
                 for mask_idx, mask in enumerate(masks):
                     contours, _ = bitmap_to_polygon(mask)
                     polygons += [contour.reshape(-1) for contour in contours]
                     scores += [
-                        data_sample.pred_instances.scores[mask_idx].cpu()
+                        det_data_sample.pred_instances.scores[mask_idx].cpu()
                     ] * len(contours)
                 # filter invalid polygons
                 filterd_polygons = []
@@ -124,21 +137,20 @@ class MMDetWrapper(BaseModel):
                     keep_idx.append(poly_idx)
                 # convert by text_repr_type
                 if self.text_repr_type == 'quad':
-                    for i, poly in enumerate(filterd_polygons):
+                    for j, poly in enumerate(filterd_polygons):
                         rect = cv2.minAreaRect(poly)
                         vertices = cv2.boxPoints(rect)
                         poly = vertices.flatten()
-                        filterd_polygons[i] = poly
+                        filterd_polygons[j] = poly
 
-                result.pred_instances.polygons = filterd_polygons
-                result.pred_instances.scores = torch.FloatTensor(
+                data_samples[i].pred_instances.polygons = filterd_polygons
+                data_samples[i].pred_instances.scores = torch.FloatTensor(
                     scores)[keep_idx]
             else:
-                bboxes = data_sample.pred_instances.bboxes.cpu().numpy()
+                bboxes = det_data_sample.pred_instances.bboxes.cpu().numpy()
                 polygons = [bbox2poly(bbox) for bbox in bboxes]
-                result.pred_instances.polygons = polygons
-                result.pred_instances.scores = torch.FloatTensor(
-                    data_sample.pred_instances.scores.cpu())
-            results.append(result)
+                data_samples[i].pred_instances.polygons = polygons
+                data_samples[i].pred_instances.scores = torch.FloatTensor(
+                    det_data_sample.pred_instances.scores.cpu())
 
-        return results
+        return data_samples

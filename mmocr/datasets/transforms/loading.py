@@ -1,9 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os
+import warnings
 from typing import Optional
 
 import mmcv
+import mmengine
 import numpy as np
 from mmcv.transforms import BaseTransform
 from mmcv.transforms import LoadAnnotations as MMCV_LoadAnnotations
@@ -37,13 +39,13 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
             See :func:``mmcv.imfrombytes`` for details.
             Defaults to 'cv2'.
         file_client_args (dict): Arguments to instantiate a FileClient.
-            See :class:`mmcv.fileio.FileClient` for details.
+            See :class:`mmengine.fileio.FileClient` for details.
             Defaults to ``dict(backend='disk')``.
         ignore_empty (bool): Whether to allow loading empty image or file path
             not existent. Defaults to False.
         min_size (int): The minimum size of the image to be loaded. If the
-            image is smaller than the minimum size, it will be ignored.
-            Defaults to 0.
+            image is smaller than the minimum size, it will be regarded as a
+            broken image. Defaults to 0.
     """
 
     def __init__(self,
@@ -58,7 +60,7 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
         self.color_type = color_type
         self.imdecode_backend = imdecode_backend
         self.file_client_args = file_client_args.copy()
-        self.file_client = mmcv.FileClient(**self.file_client_args)
+        self.file_client = mmengine.FileClient(**self.file_client_args)
         self.min_size = min_size
 
     def transform(self, results: dict) -> Optional[dict]:
@@ -67,11 +69,39 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
         Args:
             results (dict): Result dict from :obj:``mmcv.BaseDataset``.
         """
-        results = super().transform(results)
-        if min(results['ori_shape']) < self.min_size:
-            return None
-        else:
-            return results
+        """Functions to load image.
+
+        Args:
+            results (dict): Result dict from :obj:``mmcv.BaseDataset``.
+
+        Returns:
+            dict: The dict contains loaded image and meta information.
+        """
+
+        filename = results['img_path']
+        try:
+            img_bytes = self.file_client.get(filename)
+            img = mmcv.imfrombytes(
+                img_bytes, flag=self.color_type, backend=self.imdecode_backend)
+        except Exception as e:
+            if self.ignore_empty:
+                warnings.warn(f'Failed to load {filename} due to {e}')
+                return None
+            else:
+                raise e
+        if img is None or min(img.shape[:2]) < self.min_size:
+            if self.ignore_empty:
+                warnings.warn(f'Ignore broken image: {filename}')
+                return None
+            raise IOError(f'{filename} is broken')
+
+        if self.to_float32:
+            img = img.astype(np.float32)
+
+        results['img'] = img
+        results['img_shape'] = img.shape[:2]
+        results['ori_shape'] = img.shape[:2]
+        return results
 
     def __repr__(self):
         repr_str = (f'{self.__class__.__name__}('
@@ -82,6 +112,54 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
                     f"imdecode_backend='{self.imdecode_backend}', "
                     f'file_client_args={self.file_client_args})')
         return repr_str
+
+
+@TRANSFORMS.register_module()
+class LoadImageFromNDArray(LoadImageFromFile):
+    """Load an image from ``results['img']``.
+
+    Similar with :obj:`LoadImageFromFile`, but the image has been loaded as
+    :obj:`np.ndarray` in ``results['img']``. Can be used when loading image
+    from webcam.
+
+    Required Keys:
+
+    - img
+
+    Modified Keys:
+
+    - img
+    - img_path
+    - img_shape
+    - ori_shape
+
+    Args:
+        to_float32 (bool): Whether to convert the loaded image to a float32
+            numpy array. If set to False, the loaded image is an uint8 array.
+            Defaults to False.
+    """
+
+    def transform(self, results: dict) -> dict:
+        """Transform function to add image meta information.
+
+        Args:
+            results (dict): Result dict with Webcam read image in
+                ``results['img']``.
+
+        Returns:
+            dict: The dict contains loaded image and meta information.
+        """
+
+        img = results['img']
+        if self.to_float32:
+            img = img.astype(np.float32)
+        if self.color_type == 'grayscale':
+            img = mmcv.image.rgb2gray(img)
+        results['img_path'] = None
+        results['img'] = img
+        results['img_shape'] = img.shape[:2]
+        results['ori_shape'] = img.shape[:2]
+        return results
 
 
 @TRANSFORMS.register_module()
@@ -440,25 +518,42 @@ class LoadImageFromLMDB(BaseTransform):
             argument for :func:``mmcv.imfrombytes``.
             See :func:``mmcv.imfrombytes`` for details.
             Defaults to 'cv2'.
-        file_client_args (dict): Arguments to instantiate a FileClient.
-            See :class:`mmcv.fileio.FileClient` for details.
-            Defaults to ``dict(backend='lmdb', db_path='')``.
+        file_client_args (dict): Arguments to instantiate a FileClient except
+            for ``backend`` and ``db_path``. See
+            :class:`mmengine.fileio.FileClient` for details.
+            Defaults to ``dict()``.
         ignore_empty (bool): Whether to allow loading empty image or file path
             not existent. Defaults to False.
     """
 
-    def __init__(self,
-                 to_float32: bool = False,
-                 color_type: str = 'color',
-                 imdecode_backend: str = 'cv2',
-                 file_client_args: dict = dict(backend='lmdb', db_path=''),
-                 ignore_empty: bool = False) -> None:
+    def __init__(
+            self,
+            to_float32: bool = False,
+            color_type: str = 'color',
+            imdecode_backend: str = 'cv2',
+            file_client_args: dict = dict(),
+            ignore_empty: bool = False,
+    ) -> None:
         self.ignore_empty = ignore_empty
         self.to_float32 = to_float32
         self.color_type = color_type
         self.imdecode_backend = imdecode_backend
-        self.file_client_args = file_client_args.copy()
-        self.file_client = mmcv.FileClient(**self.file_client_args)
+        self.file_clients = {}
+        if 'backend' in file_client_args or 'db_path' in file_client_args:
+            raise ValueError(
+                '"file_client_args" should not contain "backend" and "db_path"'
+            )
+        self.file_client_args = file_client_args
+
+    def _get_client(self, db_path: str) -> mmengine.FileClient:
+        """Get a FileClient bound to the given db_path.
+
+        If the client for this db_path is not initialized, initialize it.
+        """
+        if self.file_clients.get(db_path) is None:
+            self.file_clients[db_path] = mmengine.FileClient(
+                backend='lmdb', db_path=db_path, **self.file_client_args)
+        return self.file_clients.get(db_path)
 
     def transform(self, results: dict) -> Optional[dict]:
         """Functions to load image from LMDB file.
@@ -472,14 +567,21 @@ class LoadImageFromLMDB(BaseTransform):
         filename = results['img_path']
         lmdb_path = os.path.dirname(filename)
         image_key = os.path.basename(filename)
-        self.file_client.client.db_path = lmdb_path
-        img_bytes = self.file_client.get(image_key)
+        file_client = self._get_client(lmdb_path)
+        img_bytes = file_client.get(image_key)
+
         if img_bytes is None:
-            return None
-        try:
-            img = mmcv.imfrombytes(img_bytes, flag=self.color_type)
-        except OSError:
-            return None
+            if self.ignore_empty:
+                return None
+            raise KeyError(f'Image not found in lmdb: {filename}')
+
+        img = mmcv.imfrombytes(img_bytes, flag=self.color_type)
+
+        if img is None:
+            if self.ignore_empty:
+                return None
+            raise IOError(f'{filename} is broken')
+
         if self.to_float32:
             img = img.astype(np.float32)
 

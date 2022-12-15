@@ -6,6 +6,7 @@ import os.path as osp
 
 from mmengine.config import Config, DictAction
 from mmengine.logging import print_log
+from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
 
 from mmocr.utils import register_all_modules
@@ -85,19 +86,28 @@ def main():
                 f'`OptimWrapper` but got {optim_wrapper}.')
             cfg.optim_wrapper.type = 'AmpOptimWrapper'
             cfg.optim_wrapper.loss_scale = 'dynamic'
+
     if args.resume:
         cfg.resume = True
+
+    # enable automatically scaling LR
     if args.auto_scale_lr:
-        if cfg.get('auto_scale_lr'):
-            cfg.auto_scale_lr = True
+        if 'auto_scale_lr' in cfg and \
+                'base_batch_size' in cfg.auto_scale_lr:
+            cfg.auto_scale_lr.enable = True
         else:
-            print_log(
-                'auto_scale_lr does not exist in your config, '
-                'please set `auto_scale_lr = dict(base_batch_size=xx)',
-                logger='current',
-                level=logging.WARNING)
+            raise RuntimeError('Can not find "auto_scale_lr" or '
+                               '"auto_scale_lr.base_batch_size" in your'
+                               ' configuration file.')
+
     # build the runner from config
-    runner = Runner.from_cfg(cfg)
+    if 'runner_type' not in cfg:
+        # build the default runner
+        runner = Runner.from_cfg(cfg)
+    else:
+        # build customized runner from the registry
+        # if 'runner_type' is set in the cfg
+        runner = RUNNERS.build(cfg)
 
     # start training
     runner.train()
