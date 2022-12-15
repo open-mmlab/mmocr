@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, Optional, Sequence, Union
+from typing import Dict, Optional, Sequence, Tuple, Union
 
 import torch
 import torch.nn as nn
@@ -19,7 +19,7 @@ class ASTERDecoder(BaseDecoder):
         emb_dims (int): Dims of char embedding. Defaults to 512.
         attn_dims (int): Dims of attention. Both hidden states and features
             will be projected to this dims. Defaults to 512.
-        hidden_size(int): Dims of hidden state for GRU. Defaults to 512.
+        hidden_size (int): Dims of hidden state for GRU. Defaults to 512.
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
             the instance of `Dictionary`. Defaults to None.
         max_seq_len (int): Maximum output sequence length :math:`T`. Defaults
@@ -72,8 +72,9 @@ class ASTERDecoder(BaseDecoder):
         # Prediction layer
         self.fc = nn.Linear(hidden_size, self.dictionary.num_classes)
 
-    def _attention(self, feat: torch.Tensor, prev_hidden: torch.Tensor,
-                   prev_char: torch.Tensor):
+    def _attention(
+            self, feat: torch.Tensor, prev_hidden: torch.Tensor,
+            prev_char: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """Implement the attention mechanism.
 
         Args:
@@ -85,10 +86,10 @@ class ASTERDecoder(BaseDecoder):
 
         Returns:
             tuple(Tensor, Tensor):
-                - output (Tensor): Predicted character of current time step of
-                    shape :math:`(N, 1)`.
-                - stage (Tensor): Hidden state form GPU of current time step of
-                    shape :math:`(N, self.hidden_size)`.
+            - output (Tensor): Predicted character of current time step of
+              shape :math:`(N, 1)`.
+            - state (Tensor): Hidden state from GRU of current time step of
+              shape :math:`(N, self.hidden_size)`.
         """
         # Calculate the attention weights
         B, T, _ = feat.size()
@@ -99,7 +100,7 @@ class ASTERDecoder(BaseDecoder):
                                          self.att_dims)  # [N, T, attn_dims]
 
         sum_tanh = torch.tanh(feat_proj + hidden_proj)  # [N, T, attn_dims]
-        sum_proj = self.proj_sum(sum_tanh).squeeze()  # [N, T]
+        sum_proj = self.proj_sum(sum_tanh).squeeze(-1)  # [N, T]
         attn_weights = torch.softmax(sum_proj, dim=1)  # [N, T]
 
         # GRU forward
@@ -112,10 +113,11 @@ class ASTERDecoder(BaseDecoder):
         return output, state
 
     def forward_train(
-            self,
-            feat: torch.Tensor = None,
-            out_enc: Optional[torch.Tensor] = None,
-            data_samples: Optional[Sequence[TextRecogDataSample]] = None):
+        self,
+        feat: torch.Tensor = None,
+        out_enc: Optional[torch.Tensor] = None,
+        data_samples: Optional[Sequence[TextRecogDataSample]] = None
+    ) -> torch.Tensor:
         """
         Args:
             feat (Tensor): Feature from backbone. Unused in this decoder.
@@ -143,10 +145,11 @@ class ASTERDecoder(BaseDecoder):
         return outputs
 
     def forward_test(
-            self,
-            feat: Optional[torch.Tensor] = None,
-            out_enc: Optional[torch.Tensor] = None,
-            data_samples: Optional[Sequence[TextRecogDataSample]] = None):
+        self,
+        feat: Optional[torch.Tensor] = None,
+        out_enc: Optional[torch.Tensor] = None,
+        data_samples: Optional[Sequence[TextRecogDataSample]] = None
+    ) -> torch.Tensor:
         """
         Args:
             feat (Tensor): Feature from backbone. Unused in this decoder.
@@ -172,7 +175,6 @@ class ASTERDecoder(BaseDecoder):
 
             output, state = self._attention(out_enc, state, prev_char)
             outputs.append(output)
-            output = torch.softmax(output, dim=1)
-            _, predicted = output.max(1)
+            _, predicted = output.max(-1)
         outputs = torch.cat([_.unsqueeze(1) for _ in outputs], 1)
         return outputs
