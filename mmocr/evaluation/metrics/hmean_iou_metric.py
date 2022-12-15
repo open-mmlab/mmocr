@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence
 
 import numpy as np
 import torch
@@ -75,27 +75,30 @@ class HmeanIOUMetric(BaseMetric):
         self.strategy = strategy
 
     def process(self, data_batch: Sequence[Dict],
-                predictions: Sequence[Dict]) -> None:
+                data_samples: Sequence[Dict]) -> None:
         """Process one batch of data samples and predictions. The processed
         results should be stored in ``self.results``, which will be used to
         compute the metrics when all batches have been processed.
 
         Args:
             data_batch (Sequence[Dict]): A batch of data from dataloader.
-            predictions (Sequence[Dict]): A batch of outputs from
+            data_samples (Sequence[Dict]): A batch of outputs from
                 the model.
         """
-        for pred, gt in zip(predictions, data_batch):
+        for data_sample in data_samples:
 
-            pred_instances = pred.get('pred_instances')
+            pred_instances = data_sample.get('pred_instances')
             pred_polygons = pred_instances.get('polygons')
             pred_scores = pred_instances.get('scores')
             if isinstance(pred_scores, torch.Tensor):
                 pred_scores = pred_scores.cpu().numpy()
             pred_scores = np.array(pred_scores, dtype=np.float32)
 
-            gt_polys, gt_ignore_flags = self._polys_from_ann(
-                gt['data_sample']['instances'])
+            gt_instances = data_sample.get('gt_instances')
+            gt_polys = gt_instances.get('polygons')
+            gt_ignore_flags = gt_instances.get('ignored')
+            if isinstance(gt_ignore_flags, torch.Tensor):
+                gt_ignore_flags = gt_ignore_flags.cpu().numpy()
             gt_polys = polys2shapely(gt_polys)
             pred_polys = polys2shapely(pred_polygons)
 
@@ -220,22 +223,3 @@ class HmeanIOUMetric(BaseMetric):
     def _true_indexes(self, array: np.ndarray) -> np.ndarray:
         """Get indexes of True elements from a 1D boolean array."""
         return np.where(array)[0]
-
-    def _polys_from_ann(self, ann: Dict) -> Tuple[List, List]:
-        """Get GT polygons from annotations.
-
-        Args:
-            ann (dict): The ground-truth annotation.
-
-        Returns:
-            tuple[list[np.array], np.array]: Returns a tuple
-            ``(polys, gt_ignore_flags)``, where ``polys`` is the ground-truth
-            polygon instances and ``gt_ignore_flags`` represents whether the
-            corresponding instance should be ignored.
-        """
-        polys = []
-        gt_ignore_flags = []
-        for instance in ann:
-            gt_ignore_flags.append(instance['ignore'])
-            polys.append(np.array(instance['polygon'], dtype=np.float32))
-        return polys, np.array(gt_ignore_flags, dtype=bool)

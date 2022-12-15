@@ -7,8 +7,8 @@ from mmdet.structures.bbox import bbox2roi
 from mmengine.model import BaseModel
 from torch import nn
 
-from mmocr.data import KIEDataSample
 from mmocr.registry import MODELS, TASK_UTILS
+from mmocr.structures import KIEDataSample
 
 
 @MODELS.register_module()
@@ -84,8 +84,8 @@ class SDMGR(BaseModel):
         return feats.view(feats.size(0), -1)
 
     def forward(self,
-                batch_inputs: torch.Tensor,
-                batch_data_samples: Sequence[KIEDataSample] = None,
+                inputs: torch.Tensor,
+                data_samples: Sequence[KIEDataSample] = None,
                 mode: str = 'tensor',
                 **kwargs) -> torch.Tensor:
         """The unified entry for a forward process in both training and test.
@@ -103,9 +103,9 @@ class SDMGR(BaseModel):
         optimizer updating, which are done in the :meth:`train_step`.
 
         Args:
-            batch_inputs (torch.Tensor): The input tensor with shape
+            inputs (torch.Tensor): The input tensor with shape
                 (N, C, ...) in general.
-            batch_data_samples (list[:obj:`DetDataSample`], optional): The
+            data_samples (list[:obj:`DetDataSample`], optional): The
                 annotation data of every samples. Defaults to None.
             mode (str): Return what kind of value. Defaults to 'tensor'.
 
@@ -117,43 +117,42 @@ class SDMGR(BaseModel):
             - If ``mode="loss"``, return a dict of tensor.
         """
         if mode == 'loss':
-            return self.loss(batch_inputs, batch_data_samples, **kwargs)
+            return self.loss(inputs, data_samples, **kwargs)
         elif mode == 'predict':
-            return self.predict(batch_inputs, batch_data_samples, **kwargs)
+            return self.predict(inputs, data_samples, **kwargs)
         elif mode == 'tensor':
-            return self._forward(batch_inputs, batch_data_samples, **kwargs)
+            return self._forward(inputs, data_samples, **kwargs)
         else:
             raise RuntimeError(f'Invalid mode "{mode}". '
                                'Only supports loss, predict and tensor mode')
 
-    def loss(self, batch_inputs: torch.Tensor,
-             batch_data_samples: Sequence[KIEDataSample], **kwargs) -> dict:
+    def loss(self, inputs: torch.Tensor, data_samples: Sequence[KIEDataSample],
+             **kwargs) -> dict:
         """Calculate losses from a batch of inputs and data samples.
 
         Args:
-            batch_inputs (torch.Tensor): Input images of shape (N, C, H, W).
+            inputs (torch.Tensor): Input images of shape (N, C, H, W).
                 Typically these should be mean centered and std scaled.
-            batch_data_samples (list[KIEDataSample]): A list of N datasamples,
+            data_samples (list[KIEDataSample]): A list of N datasamples,
                 containing meta information and gold annotations for each of
                 the images.
         Returns:
             dict[str, Tensor]: A dictionary of loss components.
         """
-        x = self.extract_feat(batch_inputs, [
-            data_sample.gt_instances.bboxes
-            for data_sample in batch_data_samples
-        ])
-        return self.kie_head.loss(x, batch_data_samples)
+        x = self.extract_feat(
+            inputs,
+            [data_sample.gt_instances.bboxes for data_sample in data_samples])
+        return self.kie_head.loss(x, data_samples)
 
-    def predict(self, batch_inputs: torch.Tensor,
-                batch_data_samples: Sequence[KIEDataSample],
+    def predict(self, inputs: torch.Tensor,
+                data_samples: Sequence[KIEDataSample],
                 **kwargs) -> List[KIEDataSample]:
         """Predict results from a batch of inputs and data samples with post-
         processing.
         Args:
-            batch_inputs (torch.Tensor): Input images of shape (N, C, H, W).
+            inputs (torch.Tensor): Input images of shape (N, C, H, W).
                 Typically these should be mean centered and std scaled.
-            batch_data_samples (list[KIEDataSample]): A list of N datasamples,
+            data_samples (list[KIEDataSample]): A list of N datasamples,
                 containing meta information and gold annotations for each of
                 the images.
 
@@ -162,22 +161,21 @@ class SDMGR(BaseModel):
             Results are stored in ``pred_instances.labels`` and
             ``pred_instances.edge_labels``.
         """
-        x = self.extract_feat(batch_inputs, [
-            data_sample.gt_instances.bboxes
-            for data_sample in batch_data_samples
-        ])
-        return self.kie_head.predict(x, batch_data_samples)
+        x = self.extract_feat(
+            inputs,
+            [data_sample.gt_instances.bboxes for data_sample in data_samples])
+        return self.kie_head.predict(x, data_samples)
 
-    def _forward(self, batch_inputs: torch.Tensor,
-                 batch_data_samples: Sequence[KIEDataSample],
+    def _forward(self, inputs: torch.Tensor,
+                 data_samples: Sequence[KIEDataSample],
                  **kwargs) -> Tuple[torch.Tensor, torch.Tensor]:
         """Get the raw tensor outputs from backbone and head without any post-
         processing.
 
         Args:
-            batch_inputs (torch.Tensor): Input images of shape (N, C, H, W).
+            inputs (torch.Tensor): Input images of shape (N, C, H, W).
                 Typically these should be mean centered and std scaled.
-            batch_data_samples (list[KIEDataSample]): A list of N datasamples,
+            data_samples (list[KIEDataSample]): A list of N datasamples,
                 containing meta information and gold annotations for each of
                 the images.
 
@@ -187,8 +185,7 @@ class SDMGR(BaseModel):
             - node_cls (torch.Tensor): Node classification output.
             - edge_cls (torch.Tensor): Edge classification output.
         """
-        x = self.extract_feat(batch_inputs, [
-            data_sample.gt_instances.bboxes
-            for data_sample in batch_data_samples
-        ])
-        return self.kie_head(x, batch_data_samples)
+        x = self.extract_feat(
+            inputs,
+            [data_sample.gt_instances.bboxes for data_sample in data_samples])
+        return self.kie_head(x, data_samples)

@@ -4,7 +4,7 @@ Collections:
     Training Data: SCUT-CTW1500
     Training Techniques:
       - SGD with Momentum
-    Training Resources: 8x GeForce GTX 1080 Ti
+    Training Resources: 1x NVIDIA A100-SXM4-80GB
     Architecture:
       - ResNet
       - FPN_UNet
@@ -14,14 +14,26 @@ Collections:
   README: configs/textdet/textsnake/README.md
 
 Models:
-  - Name: textsnake_r50_fpn_unet_1200e_ctw1500
+  - Name: textsnake_resnet50_fpn-unet_1200e_ctw1500
     In Collection: TextSnake
-    Config: configs/textdet/textsnake/textsnake_r50_fpn_unet_1200e_ctw1500.py
+    Config: configs/textdet/textsnake/textsnake_resnet50_fpn-unet_1200e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:
       - Task: Text Detection
         Dataset: CTW1500
         Metrics:
-          hmean-iou: 0.817
-    Weights: https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_r50_fpn_unet_1200e_ctw1500-27f65b64.pth
+          hmean-iou: 0.8286
+    Weights: https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_resnet50_fpn-unet_1200e_ctw1500/textsnake_resnet50_fpn-unet_1200e_ctw1500_20220825_221459-c0b6adc4.pth
+
+  - Name: textsnake_resnet50-oclip_fpn-unet_1200e_ctw1500
+    In Collection: TextSnake
+    Config: configs/textdet/textsnake/textsnake_resnet50-oclip_fpn-unet_1200e_ctw1500.py
+    Metadata:
+      Training Data: CTW1500
+    Results:
+      - Task: Text Detection
+        Dataset: CTW1500
+        Metrics:
+          hmean-iou: 0.8529
+    Weights: https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_resnet50-oclip_fpn-unet_1200e_ctw1500/textsnake_resnet50-oclip_fpn-unet_1200e_ctw1500_20221101_134814-a216e5b2.pth

@@ -5,8 +5,8 @@ import torch
 from mmdet.models.losses import accuracy
 from torch import Tensor, nn
 
-from mmocr.data import KIEDataSample
 from mmocr.registry import MODELS
+from mmocr.structures import KIEDataSample
 
 
 @MODELS.register_module()

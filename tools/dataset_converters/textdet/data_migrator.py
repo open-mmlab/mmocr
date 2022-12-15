@@ -4,7 +4,7 @@ from collections import defaultdict
 from copy import deepcopy
 from typing import Dict, List
 
-import mmcv
+import mmengine
 
 from mmocr.utils import dump_ocr_data
 
@@ -19,7 +19,7 @@ def parse_coco_json(in_path: str) -> List[Dict]:
         list[dict]: List of image information dicts. To be used by
         dump_ocr_data().
     """
-    json_obj = mmcv.load(in_path)
+    json_obj = mmengine.load(in_path)
     image_infos = json_obj['images']
     annotations = json_obj['annotations']
     imgid2annos = defaultdict(list)

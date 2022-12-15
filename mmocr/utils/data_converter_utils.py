@@ -2,13 +2,13 @@
 import warnings
 from typing import Dict, Sequence
 
-import mmcv
+import mmengine
 
 from mmocr.utils import is_type_list
 
 
 def dump_ocr_data(image_infos: Sequence[Dict], out_json_name: str,
-                  task_name: str) -> Dict:
+                  task_name: str, **kwargs) -> Dict:
     """Dump the annotation in openmmlab style.
 
     Args:
@@ -122,7 +122,7 @@ def dump_ocr_data(image_infos: Sequence[Dict], out_json_name: str,
 
         out_json['data_list'].append(single_info)
 
-    mmcv.dump(out_json, out_json_name)
+    mmengine.dump(out_json, out_json_name, **kwargs)
 
     return out_json
 

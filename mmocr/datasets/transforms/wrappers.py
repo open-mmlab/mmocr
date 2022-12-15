@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import warnings
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import imgaug
@@ -150,11 +151,16 @@ class ImgAugWrapper(BaseTransform):
         new_polys = []
         removed_poly_inds = []
         for i, poly in enumerate(imgaug_polys.polygons):
-            if poly.is_out_of_image(imgaug_polys.shape):
+            # Sometimes imgaug may produce some invalid polygons with no points
+            if not poly.is_valid or poly.is_out_of_image(imgaug_polys.shape):
                 removed_poly_inds.append(i)
                 continue
             new_poly = []
-            for point in poly.clip_out_of_image(imgaug_polys.shape)[0]:
+            try:
+                poly = poly.clip_out_of_image(imgaug_polys.shape)[0]
+            except Exception as e:
+                warnings.warn(f'Failed to clip polygon out of image: {e}')
+            for point in poly:
                 new_poly.append(np.array(point, dtype=np.float32))
             new_poly = np.array(new_poly, dtype=np.float32).flatten()
             # Under some conditions, imgaug can generate "polygon" with only
@@ -218,7 +224,7 @@ class ImgAugWrapper(BaseTransform):
 
 @TRANSFORMS.register_module()
 class TorchVisionWrapper(BaseTransform):
-    """A wrapper around torchvision trasnforms. It applies specific transform
+    """A wrapper around torchvision transforms. It applies specific transform
     to ``img`` and updates ``height`` and ``width`` accordingly.
 
     Required Keys:

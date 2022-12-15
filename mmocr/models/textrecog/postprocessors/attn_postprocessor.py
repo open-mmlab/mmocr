@@ -3,9 +3,9 @@ from typing import Optional, Sequence, Tuple
 
 import torch
 
-from mmocr.data import TextRecogDataSample
 from mmocr.registry import MODELS
-from .base_textrecog_postprocessor import BaseTextRecogPostprocessor
+from mmocr.structures import TextRecogDataSample
+from .base import BaseTextRecogPostprocessor
 
 
 @MODELS.register_module()

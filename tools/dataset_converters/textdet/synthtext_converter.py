@@ -6,6 +6,7 @@ import time
 
 import lmdb
 import mmcv
+import mmengine
 import numpy as np
 from scipy.io import loadmat
 from shapely.geometry import Polygon
@@ -169,7 +170,7 @@ def main():
     args = parse_args()
     synthtext_path = args.synthtext_path
     out_dir = args.out_dir if args.out_dir else synthtext_path
-    mmcv.mkdir_or_exist(out_dir)
+    mmengine.mkdir_or_exist(out_dir)
 
     gt_name = osp.join(synthtext_path, 'gt.mat')
     lmdb_name = 'synthtext.lmdb'

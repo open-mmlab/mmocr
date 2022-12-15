@@ -4,7 +4,7 @@ Collections:
     Training Data: SCUT-CTW1500
     Training Techniques:
       - SGD with Momentum
-    Training Resources: 1x Tesla A100
+    Training Resources: 1x NVIDIA A100-SXM4-80GB
     Architecture:
       - ResNet50 with DCNv2
       - FPN
@@ -15,20 +15,33 @@ Collections:
   README: configs/textdet/fcenet/README.md
 
 Models:
-  - Name: fcenet_r50dcnv2_fpn_1500e_ctw1500
+  - Name: fcenet_resnet50-dcnv2_fpn_1500e_ctw1500
     In Collection: FCENet
-    Config: configs/textdet/fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500.py
+    Config: configs/textdet/fcenet/fcenet_resnet50-dcnv2_fpn_1500e_ctw1500.py
     Metadata:
       Training Data: CTW1500
     Results:
       - Task: Text Detection
         Dataset: CTW1500
         Metrics:
-          hmean-iou: 0.8500
-    Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_r50dcnv2_fpn_1500e_ctw1500_20211022-e326d7ec.pth
-  - Name: fcenet_r50_fpn_1500e_icdar2015
+          hmean-iou: 0.8488
+    Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50-dcnv2_fpn_1500e_ctw1500/fcenet_resnet50-dcnv2_fpn_1500e_ctw1500_20220825_221510-4d705392.pth
+
+  - Name: fcenet_resnet50-oclip_fpn_1500e_ctw1500
     In Collection: FCENet
-    Config: configs/textdet/fcenet/fcenet_r50_fpn_1500e_icdar2015.py
+    Config: configs/textdet/fcenet/fcenet_resnet50-oclip_fpn_1500e_ctw1500.py
+    Metadata:
+      Training Data: CTW1500
+    Results:
+      - Task: Text Detection
+        Dataset: CTW1500
+        Metrics:
+          hmean-iou: 0.8192
+    Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50-oclip_fpn_1500e_ctw1500/fcenet_resnet50-oclip_fpn_1500e_ctw1500_20221102_121909-101df7e6.pth
+
+  - Name: fcenet_resnet50_fpn_1500e_icdar2015
+    In Collection: FCENet
+    Config: configs/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:
@@ -36,4 +49,16 @@ Models:
         Dataset: ICDAR2015
         Metrics:
           hmean-iou: 0.8528
-    Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_r50_fpn_1500e_icdar2015_20211022-daefb6ed.pth
+    Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50_fpn_1500e_icdar2015/fcenet_resnet50_fpn_1500e_icdar2015_20220826_140941-167d9042.pth
+
+  - Name: fcenet_resnet50-oclip_fpn_1500e_icdar2015
+    In Collection: FCENet
+    Config: configs/textdet/fcenet/fcenet_resnet50-oclip_fpn_1500e_icdar2015.py
+    Metadata:
+      Training Data: ICDAR2015
+    Results:
+      - Task: Text Detection
+        Dataset: ICDAR2015
+        Metrics:
+          hmean-iou: 0.8604
+    Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50-oclip_fpn_1500e_icdar2015/fcenet_resnet50-oclip_fpn_1500e_icdar2015_20221101_150145-5a6fc412.pth

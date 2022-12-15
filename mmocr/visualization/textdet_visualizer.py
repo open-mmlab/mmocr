@@ -1,16 +1,17 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import mmcv
 import numpy as np
-from mmengine import Visualizer
+import torch
 
-from mmocr.data import TextDetDataSample
 from mmocr.registry import VISUALIZERS
+from mmocr.structures import TextDetDataSample
+from .base_visualizer import BaseLocalVisualizer
 
 
 @VISUALIZERS.register_module()
-class TextDetLocalVisualizer(Visualizer):
+class TextDetLocalVisualizer(BaseLocalVisualizer):
     """The MMOCR Text Detection Local Visualizer.
 
     Args:
@@ -62,11 +63,46 @@ class TextDetLocalVisualizer(Visualizer):
         self.line_width = line_width
         self.alpha = alpha
 
+    def _draw_instances(
+        self,
+        image: np.ndarray,
+        bboxes: Union[np.ndarray, torch.Tensor],
+        polygons: Sequence[np.ndarray],
+        color: Union[str, Tuple, List[str], List[Tuple]] = 'g',
+    ) -> np.ndarray:
+        """Draw bboxes and polygons on image.
+
+        Args:
+            image (np.ndarray): The origin image to draw.
+            bboxes (Union[np.ndarray, torch.Tensor]): The bboxes to draw.
+            polygons (Sequence[np.ndarray]): The polygons to draw.
+            color (Union[str, tuple, list[str], list[tuple]]): The
+                colors of polygons and bboxes. ``colors`` can have the same
+                length with lines or just single value. If ``colors`` is
+                single value, all the lines will have the same colors. Refer
+                to `matplotlib.colors` for full list of formats that are
+                accepted. Defaults to 'g'.
+
+        Returns:
+            np.ndarray: The image with bboxes and polygons drawn.
+        """
+        if polygons is not None and self.with_poly:
+            polygons = [polygon.reshape(-1, 2) for polygon in polygons]
+            image = self.get_polygons_image(
+                image, polygons, filling=True, colors=color, alpha=self.alpha)
+        if bboxes is not None and self.with_bbox:
+            image = self.get_bboxes_image(
+                image,
+                bboxes,
+                colors=color,
+                line_width=self.line_width,
+                alpha=self.alpha)
+        return image
+
     def add_datasample(self,
                        name: str,
                        image: np.ndarray,
-                       gt_sample: Optional['TextDetDataSample'] = None,
-                       pred_sample: Optional['TextDetDataSample'] = None,
+                       data_sample: Optional['TextDetDataSample'] = None,
                        draw_gt: bool = True,
                        draw_pred: bool = True,
                        show: bool = False,
@@ -88,10 +124,9 @@ class TextDetLocalVisualizer(Visualizer):
         Args:
             name (str): The image identifier.
             image (np.ndarray): The image to draw.
-            gt_sample (:obj:`TextDetDataSample`, optional): GT
-                TextDetDataSample. Defaults to None.
-            pred_sample (:obj:`TextDetDataSample`, optional): Predicted
-                TextDetDataSample. Defaults to None.
+            data_sample (:obj:`TextDetDataSample`, optional):
+                TextDetDataSample which contains gt and prediction. Defaults
+                    to None.
             draw_gt (bool): Whether to draw GT TextDetDataSample.
                 Defaults to True.
             draw_pred (bool): Whether to draw Predicted TextDetDataSample.
@@ -103,76 +138,32 @@ class TextDetLocalVisualizer(Visualizer):
                 and masks. Defaults to 0.3.
             step (int): Global step value to record. Defaults to 0.
         """
-        gt_img_data = None
-        pred_img_data = None
-
-        if draw_gt and gt_sample is not None and 'gt_instances' in gt_sample:
-            gt_instances = gt_sample.gt_instances
-
-            self.set_image(image)
-
-            if self.with_poly and 'polygons' in gt_instances:
-                gt_polygons = gt_instances.polygons
-                gt_polygons = [
-                    gt_polygon.reshape(-1, 2) for gt_polygon in gt_polygons
-                ]
-                self.draw_polygons(
-                    gt_polygons,
-                    alpha=self.alpha,
-                    edge_colors=self.gt_color,
-                    line_widths=self.line_width)
-
-            if self.with_bbox and 'bboxes' in gt_instances:
-                gt_bboxes = gt_instances.bboxes
-                self.draw_bboxes(
-                    gt_bboxes,
-                    alpha=self.alpha,
-                    edge_colors=self.gt_color,
-                    line_widths=self.line_width)
-
-            gt_img_data = self.get_image()
-
-        if draw_pred and pred_sample is not None \
-                and 'pred_instances' in pred_sample:
-            pred_instances = pred_sample.pred_instances
-            pred_instances = pred_instances[
-                pred_instances.scores > pred_score_thr].cpu()
-
-            self.set_image(image)
-
-            if self.with_poly and 'polygons' in pred_instances:
-                pred_polygons = pred_instances.polygons
-                pred_polygons = [
-                    pred_polygon.reshape(-1, 2)
-                    for pred_polygon in pred_polygons
-                ]
-                self.draw_polygons(
-                    pred_polygons,
-                    alpha=self.alpha,
-                    edge_colors=self.pred_color,
-                    line_widths=self.line_width)
-
-            if self.with_bbox and 'bboxes' in pred_instances:
-                pred_bboxes = pred_instances.bboxes
-                self.draw_bboxes(
-                    pred_bboxes,
-                    alpha=self.alpha,
-                    edge_colors=self.pred_color,
-                    line_widths=self.line_width)
-
-            pred_img_data = self.get_image()
-
-        if gt_img_data is not None and pred_img_data is not None:
-            drawn_img = np.concatenate((gt_img_data, pred_img_data), axis=1)
-        elif gt_img_data is not None:
-            drawn_img = gt_img_data
-        else:
-            drawn_img = pred_img_data
-
+        cat_images = []
+        if data_sample is not None:
+            if draw_gt and 'gt_instances' in data_sample:
+                gt_instances = data_sample.gt_instances
+                gt_polygons = gt_instances.get('polygons', None)
+                gt_bboxes = gt_instances.get('bboxes', None)
+                gt_img_data = self._draw_instances(image.copy(), gt_bboxes,
+                                                   gt_polygons, self.gt_color)
+                cat_images.append(gt_img_data)
+            if draw_pred and 'pred_instances' in data_sample:
+                pred_instances = data_sample.pred_instances
+                pred_instances = pred_instances[
+                    pred_instances.scores > pred_score_thr].cpu()
+                pred_polygons = pred_instances.get('polygons', None)
+                pred_bboxes = pred_instances.get('bboxes', None)
+                pred_img_data = self._draw_instances(image.copy(), pred_bboxes,
+                                                     pred_polygons,
+                                                     self.pred_color)
+                cat_images.append(pred_img_data)
+        cat_images = self._cat_image(cat_images, axis=1)
+        if cat_images is None:
+            cat_images = image
         if show:
-            self.show(drawn_img, win_name=name, wait_time=wait_time)
+            self.show(cat_images, win_name=name, wait_time=wait_time)
         else:
-            self.add_image(name, drawn_img, step)
+            self.add_image(name, cat_images, step)
 
         if out_file is not None:
-            mmcv.imwrite(drawn_img[..., ::-1], out_file)
+            mmcv.imwrite(cat_images[..., ::-1], out_file)

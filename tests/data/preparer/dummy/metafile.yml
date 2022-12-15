@@ -1,0 +1,24 @@
+Name: Dummy Dataset
+Paper:
+  Title: Dummy Dataset
+  URL: https://github.com/open-mmlab/mmocr
+  Venue: MMOCR
+  Year: 2022
+  BibTeX: ''
+Data:
+  Website: https://github.com/open-mmlab/mmocr
+  Language:
+    - English
+    - Chinese
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Tasks:
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: CC BY 4.0
+    Link: https://creativecommons.org/licenses/by/4.0/
+  Format: .txt

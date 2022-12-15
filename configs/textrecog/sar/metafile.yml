@@ -4,7 +4,7 @@ Collections:
     Training Data: OCRDataset
     Training Techniques:
       - Adam
-    Training Resources: 48x GeForce GTX 1080 Ti
+    Training Resources: 8x NVIDIA A100-SXM4-80GB
     Epochs: 5
     Batch Size: 3072
     Architecture:
@@ -17,9 +17,9 @@ Collections:
   README: configs/textrecog/sar/README.md
 
 Models:
-  - Name: sar_r31_parallel_decoder_academic
+  - Name: sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real
     In Collection: SAR
-    Config: configs/textrecog/sar/sar_r31_parallel_decoder_academic.py
+    Config: configs/textrecog/sar/sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real.py
     Metadata:
       Training Data:
         - ICDAR2011
@@ -34,32 +34,32 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 95.0
+          word_acc: 0.9533
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 89.6
+          word_acc: 0.8841
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 93.7
+          word_acc: 0.9369
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 79.0
+          word_acc: 0.7602
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 82.2
+          word_acc: 0.8326
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 88.9
-    Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth
+          word_acc: 0.9028
+    Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real/sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real_20220915_171910-04eb4e75.pth
 
-  - Name: sar_r31_sequential_decoder_academic
+  - Name: sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real
     In Collection: SAR
-    Config: configs/textrecog/sar/sar_r31_sequential_decoder_academic.py
+    Config: configs/textrecog/sar/sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real.py
     Metadata:
       Training Data:
         - ICDAR2011
@@ -74,25 +74,25 @@ Models:
       - Task: Text Recognition
         Dataset: IIIT5K
         Metrics:
-          word_acc: 95.2
+          word_acc: 0.9553
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 88.7
+          word_acc: 0.8717
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 92.4
+          word_acc: 0.9409
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
-          word_acc: 78.2
+          word_acc: 0.7737
       - Task: Text Recognition
         Dataset: SVTP
         Metrics:
-          word_acc: 81.9
+          word_acc: 0.8093
       - Task: Text Recognition
         Dataset: CT80
         Metrics:
-          word_acc: 89.6
-    Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_sequential_decoder_academic-d06c9a8e.pth
+          word_acc: 0.8924
+    Weights: https://download.openmmlab.com/mmocr/textrecog/sar/sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real/sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real_20220915_185451-1fd6b1fc.pth

@@ -40,32 +40,11 @@ Recognizing irregular text in natural scene images is challenging due to the lar
 
 ## Results and Models
 
-|                           Methods                            |  Backbone   |       Decoder        |        | Regular Text |      |     |      | Irregular Text |      |                            download                            |
-| :----------------------------------------------------------: | :---------: | :------------------: | :----: | :----------: | :--: | :-: | :--: | :------------: | :--: | :------------------------------------------------------------: |
-|                                                              |             |                      | IIIT5K |     SVT      | IC13 |     | IC15 |      SVTP      | CT80 |                                                                |
-| [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_academic.py) | R31-1/8-1/4 |  ParallelSARDecoder  |  95.0  |     89.6     | 93.7 |     | 79.0 |      82.2      | 88.9 | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_academic-dba3a4a3.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210327_154129.log.json) |
-| [SAR](configs/textrecog/sar/sar_r31_sequential_decoder_academic.py) | R31-1/8-1/4 | SequentialSARDecoder |  95.2  |     88.7     | 92.4 |     | 78.2 |      81.9      | 89.6 | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_sequential_decoder_academic-d06c9a8e.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210330_105728.log.json) |
-
-## Chinese Dataset
-
-## Results and Models
-
-|                              Methods                              |  Backbone   |      Decoder       |     |                                                download                                                 |
-| :---------------------------------------------------------------: | :---------: | :----------------: | :-: | :-----------------------------------------------------------------------------------------------------: |
-| [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_chinese.py) | R31-1/8-1/4 | ParallelSARDecoder |     | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_parallel_decoder_chineseocr_20210507-b4be8214.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/20210506_225557.log.json) \| [dict](https://download.openmmlab.com/mmocr/textrecog/sar/dict_printed_chinese_english_digits.txt) |
-
-```{note}
-
--   `R31-1/8-1/4` means the height of feature from backbone is 1/8 of input image, where 1/4 for width.
--   We did not use beam search during decoding.
--   We implemented two kinds of decoder. Namely, `ParallelSARDecoder` and `SequentialSARDecoder`.
-    -   `ParallelSARDecoder`: Parallel decoding during training with `LSTM` layer. It would be faster.
-    -   `SequentialSARDecoder`: Sequential Decoding during training with `LSTMCell`. It would be easier to understand.
--   For train dataset.
-    -   We did not construct distinct data groups (20 groups in [[1]](#1)) to train the model group-by-group since it would render model training too complicated.
-    -   Instead, we randomly selected `2.4m` patches from `Syn90k`, `2.4m` from `SynthText` and `1.2m` from `SynthAdd`, and grouped all data together. See [config](https://download.openmmlab.com/mmocr/textrecog/sar/sar_r31_academic.py) for details.
--   We used 48 GPUs with `total_batch_size = 64 * 48` in the experiment above to speedup training, while keeping the `initial lr = 1e-3` unchanged.
-```
+|                        Methods                         |  Backbone   |       Decoder        |        | Regular Text |           |     |           | Irregular Text |        |                         download                         |
+| :----------------------------------------------------: | :---------: | :------------------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :------------------------------------------------------: |
+|                                                        |             |                      | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                          |
+| [SAR](/configs/textrecog/sar/sar_r31_parallel_decoder_academic.py) | R31-1/8-1/4 |  ParallelSARDecoder  | 0.9533 |    0.8964    |  0.9369   |     |  0.7602   |     0.8326     | 0.9062 | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real/sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real_20220915_171910-04eb4e75.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real/20220915_171910.log) |
+| [SAR](/configs/textrecog/sar/sar_r31_sequential_decoder_academic.py) | R31-1/8-1/4 | SequentialSARDecoder | 0.9553 |    0.9073    |  0.9409   |     |  0.7761   |     0.8093     | 0.8958 | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real/sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real_20220915_185451-1fd6b1fc.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real/20220915_185451.log) |
 
 ## Citation
 
