@@ -1,22 +1,23 @@
 data_root = 'data/synthtext'
 cache_path = 'data/cache'
 
-# data_obtainer = dict(
-#     type='NaiveDataObtainer',
-#     cache_path=cache_path,
-#     data_root=data_root,
-#     files=[
-#         dict(
-#             url='https://thor.robots.ox.ac.uk/~vgg/data/scenetext/'
-#             'SynthText-v1.zip',
-#             save_name='SynthText-v1.zip',
-#             md5='d588045cc6173afd91c25c1e089b36f3',
-#             split=['train'],
-#             content=['image', 'annotation'],
-#             mapping=[[f'SynthText/{i}', f'textdet_imgs/train/{i}']
-#                      for i in range(1, 201)] +
-#             [['SynthText/gt.mat', 'annotations/']]),
-#     ])
+data_obtainer = dict(
+    type='NaiveDataObtainer',
+    cache_path=cache_path,
+    data_root=data_root,
+    files=[
+        dict(
+            url='https://thor.robots.ox.ac.uk/~vgg/data/scenetext/'
+            'SynthText-v1.zip',
+            save_name='SynthText-v1.zip',
+            md5='d588045cc6173afd91c25c1e089b36f3',
+            split=['train'],
+            content=['image', 'annotation'],
+            mapping=[
+                [f'SynthText-v1/SynthText/{i}', f'textdet_imgs/train/{i}']
+                for i in range(1, 201)
+            ] + [['SynthText-v1/SynthText/gt.mat', 'annotations/gt.mat']]),
+    ])
 
 data_converter = dict(
     type='TextDetDataConverter',
