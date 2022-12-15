@@ -1,6 +1,8 @@
+file_client_args = dict(backend='disk')
+
 dictionary = dict(
     type='Dictionary',
-    dict_file='dicts/english_digits_symbols.txt',
+    dict_file='{{ fileDirname }}/../../../dicts/english_digits_symbols.txt',
     with_padding=True,
     with_unknown=True,
     same_start_end=True,
@@ -44,3 +46,26 @@ model = dict(
         type='TextRecogDataPreprocessor',
         mean=[127.5, 127.5, 127.5],
         std=[127.5, 127.5, 127.5]))
+
+train_pipeline = [
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        ignore_empty=True,
+        min_size=5),
+    dict(type='LoadOCRAnnotations', with_text=True),
+    dict(type='Resize', scale=(256, 64)),
+    dict(
+        type='PackTextRecogInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
+]
+
+test_pipeline = [
+    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='Resize', scale=(256, 64)),
+    dict(type='LoadOCRAnnotations', with_text=True),
+    dict(
+        type='PackTextRecogInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio',
+                   'instances'))
+]
