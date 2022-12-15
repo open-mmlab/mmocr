@@ -17,6 +17,7 @@ Collections:
 
 Models:
   - Name: aster_resnet45_6e_st_mj
+    Alias: ASTER
     In Collection: ASTER
     Config: configs/textrecog/aster/aster_resnet45_6e_st_mj.py
     Metadata:
