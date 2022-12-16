@@ -25,6 +25,7 @@ mmocr.models
 
   - :ref:`recrecognizers`
   - :ref:`recdatapreprocessors`
+  - :ref:`recpreprocessors`
   - :ref:`recencoders`
   - :ref:`recdecoders`
   - :ref:`recmodulelosses`
@@ -243,6 +244,7 @@ Recognizers
    SATRN
    ABINet
    MASTER
+   ASTER
 
 .. _recdatapreprocessors:
 
@@ -255,6 +257,16 @@ Data Preprocessors
 
    TextRecogDataPreprocessor
 
+.. _recpreprocessors:
+
+Preprocessors
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. autosummary::
+   :toctree: generated
+   :nosignatures:
+   :template: classtemplate.rst
+
+   STN
 
 .. _recbackbones:
 
@@ -289,6 +301,7 @@ Encoders
    ChannelReductionEncoder
    SATRNEncoder
    ABIEncoder
+   ASTEREncoder
 
 .. _recdecoders:
 
@@ -312,6 +325,7 @@ Decoders
    PositionAttentionDecoder
    RobustScannerFuser
    MasterDecoder
+   ASTERDecoder
 
 .. _recmodulelosses:
 
