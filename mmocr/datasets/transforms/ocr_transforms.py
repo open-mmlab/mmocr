@@ -613,3 +613,24 @@ class Resize(MMCV_Resize):
         repr_str += f'backend={self.backend}), '
         repr_str += f'interpolation={self.interpolation})'
         return repr_str
+
+
+@TRANSFORMS.register_module()
+class RemoveIgnored(BaseTransform):
+
+    def transform(self, results: Dict):
+        gt_ignored = results['gt_ignored']
+        need_index = np.where(~gt_ignored)[0]
+        if len(need_index) == 0:
+            return None
+        results['gt_ignored'] = gt_ignored[need_index]
+        if 'gt_bboxes' in results:
+            results['gt_bboxes'] = results['gt_bboxes'][need_index]
+        gt_polygons = results['gt_polygons']
+        new_gt_polygon = [gt_polygons[i] for i in need_index]
+        results['gt_polygons'] = new_gt_polygon
+        results['gt_bboxes_labels'] = results['gt_bboxes_labels'][need_index]
+        if 'gt_texts' in results:
+            gt_texts = results['gt_texts']
+            results['gt_texts'] = [gt_texts[i] for i in need_index]
+        return results
