@@ -36,7 +36,7 @@ Based on the above example, we can see that the configuration of `Visualizer` co
 MMOCR uses the local visualization backend [`LocalVisBackend`](mmengine.visualization.LocalVisBackend) by default, and the model loss, learning rate, model evaluation accuracy and visualization The information stored in `VisualizerHook` and `LoggerHook`, including loss, learning rate, evaluation accuracy will be saved to the `{work_dir}/{config_name}/{time}/{vis_data}` folder by default. In addition, MMOCR also supports other common visualization backends, such as `TensorboardVisBackend` and `WandbVisBackend`, and you only need to change the `vis_backends` type in the configuration file to the corresponding visualization backend. For example, you can store data to `TensorBoard` and `Wandb` by simply inserting the following code block into the configuration file.
 
 ```Python
-_base_.Visualizer.vis_backends = [
+_base_.visualizer.vis_backends = [
     dict(type='LocalVisBackend'),
     dict(type='TensorboardVisBackend'),
     dict(type='WandbVisBackend'),]
