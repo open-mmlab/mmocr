@@ -139,10 +139,15 @@ class FixInvalidPolygon(BaseTransform):
             polygon. Defaults to 3.
     """
 
-    def __init__(self, mode: str = 'fix', min_poly_points: int = 3) -> None:
+    def __init__(self,
+                 mode: str = 'fix',
+                 min_poly_points: int = 4,
+                 prompt='') -> None:
         super().__init__()
         self.mode = mode
+        assert min_poly_points >= 3, 'min_poly_points must be greater than 3.'
         self.min_poly_points = min_poly_points
+        self.prompt = prompt
         assert self.mode in [
             'fix', 'ignore'
         ], f"Supported modes are 'fix' and 'ignore', but got {self.mode}"
@@ -158,19 +163,50 @@ class FixInvalidPolygon(BaseTransform):
         """
         if results.get('gt_polygons', None) is not None:
             for idx, polygon in enumerate(results['gt_polygons']):
-                if not (len(polygon) >= self.min_poly_points * 2
-                        and len(polygon) % 2 == 0):
-                    results['gt_polygons'][idx] = bbox2poly(
-                        results['gt_bboxes'][idx])
+                if results['gt_ignored'][idx]:
                     continue
-                polygon = poly2shapely(polygon)
-                if not polygon.is_valid:
-                    if self.mode == 'fix':
-                        polygon = poly_make_valid(polygon)
-                        polygon = shapely2poly(polygon)
-                        results['gt_polygons'][idx] = polygon
-                    elif self.mode == 'ignore':
+                if self.mode == 'ignore':
+                    if not (len(polygon) >= self.min_poly_points * 2
+                            and len(polygon) % 2
+                            == 0) or poly2shapely(polygon).is_valid:
                         results['gt_ignored'][idx] = True
+                else:
+                    # If the number of points satisfies the minimum number of
+                    # points
+                    if (len(polygon) >= self.min_poly_points * 2
+                            and len(polygon) % 2 == 0):
+                        import copy
+                        p_polygon = copy.deepcopy(polygon)
+                        polygon = poly2shapely(polygon)
+                        if not polygon.is_valid:
+                            print(f'from {self.prompt}, line 180 , '
+                                  f'polygon {p_polygon}')
+                            polygon = poly_make_valid(polygon)
+                            polygon = shapely2poly(polygon)
+                            results['gt_polygons'][idx] = polygon
+                    else:
+                        # If "polygon" contains less than 3 points
+                        if len(polygon) < 6:
+                            print(f'from {self.prompt}, line 187, '
+                                  f'polygon {polygon}')
+                            results['gt_ignored'][idx] = True
+                            continue
+                        try:
+                            results['gt_polygons'][idx] = shapely2poly(
+                                poly_make_valid(poly2shapely(polygon)))
+                            print(f'from {self.prompt}, line 193, '
+                                  f'polygon {results["gt_polygons"][idx]}')
+                        except Exception:
+                            if 'gt_bboxes' in results:
+                                results['gt_polygons'][idx] = bbox2poly(
+                                    results['gt_bboxes'][idx])
+                                print(f'from {self.prompt}, line 202, '
+                                      f'polygon {results["gt_polygons"][idx]}')
+                            else:
+                                results['gt_ignored'][idx] = True
+                                print(f' from {self.prompt}, line 205, '
+                                      f'polygon {results["gt_polygons"][idx]}')
+
         return results
 
     def __repr__(self) -> str:
