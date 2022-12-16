@@ -118,11 +118,13 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
             image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
         cat_images = [image]
-        if draw_gt and data_sample is not None and 'gt_text' in data_sample:
+        if (draw_gt and data_sample is not None and 'gt_text' in data_sample
+                and 'item' in data_sample.gt_text):
             gt_text = data_sample.gt_text.item
             cat_images.append(self._draw_instances(image, gt_text))
         if (draw_pred and data_sample is not None
-                and 'pred_text' in data_sample):
+                and 'pred_text' in data_sample
+                and 'item' in data_sample.pred_text):
             pred_text = data_sample.pred_text.item
             cat_images.append(self._draw_instances(image, pred_text))
         cat_images = self._cat_image(cat_images, axis=0)
@@ -134,3 +136,6 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
 
         if out_file is not None:
             mmcv.imwrite(cat_images[..., ::-1], out_file)
+
+        self.set_image(cat_images)
+        return self.get_image()

@@ -80,6 +80,12 @@ data/icdar2015
 └── textdet_train.json
 ```
 
+数据准备完毕以后，你也可以通过使用我们提供的数据集浏览工具 [browse_dataset.py](./useful_tools.md#数据集可视化工具) 来可视化数据集的标签是否被正确生成，例如：
+
+```bash
+python tools/analysis_tools/browse_dataset.py configs/textdet/_base_/datasets/icdar2015.py
+```
+
 ## 数据集配置文件
 
 ### 单数据集训练
