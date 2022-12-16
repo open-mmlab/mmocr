@@ -100,7 +100,7 @@ icdar2015_textdet_train = dict(
 icdar2015_textdet_test = dict(
     type='OCRDataset',
     data_root=icdar2015_textdet_data_root,
-    ann_file='textdet_train.json',
+    ann_file='textdet_test.json',
     test_mode=True,
     pipeline=None)
 ```
