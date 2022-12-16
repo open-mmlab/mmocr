@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import argparse
+import copy
 import os.path as osp
 import sys
 from typing import Optional, Tuple
@@ -182,7 +183,7 @@ class InspectCompose(Compose):
                     'name':
                     t.__class__.__name__,
                     'dataset_sample':
-                    data_sample['data_samples']
+                    copy.deepcopy(data_sample['data_samples'])
                 })
         return data
 
@@ -268,6 +269,7 @@ def obtain_dataset_cfg(cfg: Config, phase: str, mode: str, task: str) -> Tuple:
                     with_bbox=True,
                     with_label=True,
                 ),
+                dict(type='FixInvalidPolygon', ),
                 dict(
                     type='PackTextDetInputs',
                     meta_keys=('img_path', 'ori_shape', 'img_shape'))
