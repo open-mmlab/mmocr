@@ -157,8 +157,13 @@ def crop_polygon(polygon: ArrayLike,
         # polygon, return None.
         return None
     else:
+        poly_cropped = poly_make_valid(poly_cropped)
         poly_cropped = np.array(poly_cropped.boundary.xy, dtype=np.float32)
-        poly_cropped = poly_cropped[:, :-1].T
+        # If the polygon contains more than 4 points, the last point
+        # is the same as the first point and can be removed.
+        if len(poly_cropped) > 8:
+            poly_cropped = poly_cropped[:, :-1]
+        poly_cropped = poly_cropped.T
         # reverse poly_cropped to have clockwise order
         poly_cropped = poly_cropped[::-1, :].reshape(-1)
         return poly_cropped
@@ -175,7 +180,10 @@ def poly_make_valid(poly: Polygon) -> Polygon:
         Polygon: A valid polygon.
     """
     assert isinstance(poly, Polygon)
-    return poly if poly.is_valid else poly.buffer(0)
+    fixed_poly = poly if poly.is_valid else poly.buffer(0)
+    if not isinstance(fixed_poly, Polygon):
+        fixed_poly = fixed_poly.convex_hull
+    return fixed_poly
 
 
 def poly_intersection(poly_a: Polygon,
