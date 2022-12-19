@@ -159,10 +159,6 @@ def crop_polygon(polygon: ArrayLike,
     else:
         poly_cropped = poly_make_valid(poly_cropped)
         poly_cropped = np.array(poly_cropped.boundary.xy, dtype=np.float32)
-        # If the polygon contains more than 4 points, the last point
-        # is the same as the first point and can be removed.
-        if len(poly_cropped) > 8:
-            poly_cropped = poly_cropped[:, :-1]
         poly_cropped = poly_cropped.T
         # reverse poly_cropped to have clockwise order
         poly_cropped = poly_cropped[::-1, :].reshape(-1)
