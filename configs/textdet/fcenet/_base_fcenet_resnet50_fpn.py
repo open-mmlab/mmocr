@@ -51,8 +51,6 @@ train_pipeline = [
         with_bbox=True,
         with_label=True,
     ),
-    dict(type='FixInvalidPolygon', min_poly_points=4),
-    dict(type='RemoveIgnored'),
     dict(
         type='RandomResize',
         scale=(800, 800),
@@ -64,14 +62,9 @@ train_pipeline = [
         iter_num=1,
         min_area_ratio=0.2),
     dict(
-        type='FixInvalidPolygon',
-        min_poly_points=4,
-        prompt='TextDetRandomCropFlipe'),
-    dict(
         type='RandomApply',
         transforms=[dict(type='RandomCrop', min_side_ratio=0.3)],
         prob=0.8),
-    dict(type='FixInvalidPolygon', min_poly_points=4, prompt='RandomCrop'),
     dict(
         type='RandomApply',
         transforms=[
@@ -82,7 +75,6 @@ train_pipeline = [
                 use_canvas=True)
         ],
         prob=0.5),
-    dict(type='FixInvalidPolygon', min_poly_points=4, prompt='RandomRotate'),
     dict(
         type='RandomChoice',
         transforms=[[
@@ -91,9 +83,7 @@ train_pipeline = [
         ],
                     dict(type='Resize', scale=800, keep_ratio=False)],
         prob=[0.6, 0.4]),
-    dict(type='FixInvalidPolygon', min_poly_points=4, prompt='RandomChoice'),
     dict(type='RandomFlip', prob=0.5, direction='horizontal'),
-    dict(type='FixInvalidPolygon', min_poly_points=4, prompt='RandomFlip'),
     dict(
         type='TorchVisionWrapper',
         op='ColorJitter',
