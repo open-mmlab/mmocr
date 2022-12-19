@@ -47,9 +47,14 @@ class ImgAugWrapper(BaseTransform):
             images with probability 0.5, followed by random rotation with
             angles in range [-10, 10], and resize with an independent scale in
             range [0.5, 3.0] for each side of images. Defaults to None.
+        fix_poly (bool): Whether to use
+            :class:`mmocr.datasets.transforms.FixInvalidPolygon` to
+            fix invalid polygons produced by ImgAug. Defaults to True.
     """
 
-    def __init__(self, args: Optional[List[Union[List, Dict]]] = None) -> None:
+    def __init__(self,
+                 args: Optional[List[Union[List, Dict]]] = None,
+                 fix_poly: bool = True) -> None:
         assert args is None or isinstance(args, list) and len(args) > 0
         if args is not None:
             for arg in args:
@@ -57,6 +62,9 @@ class ImgAugWrapper(BaseTransform):
                     'args should be a list of list or dict'
         self.args = args
         self.augmenter = self._build_augmentation(args)
+        self.fix_poly = fix_poly
+        if fix_poly:
+            self.fix = TRANSFORMS.build(dict(type='FixInvalidPolygon'))
 
     def transform(self, results: Dict) -> Dict:
         """Transform the image and annotation data.
@@ -79,6 +87,8 @@ class ImgAugWrapper(BaseTransform):
             results['img'] = aug.augment_image(image)
             results['img_shape'] = (results['img'].shape[0],
                                     results['img'].shape[1])
+        if self.fix_poly:
+            results = self.fix(results)
         return results
 
     def _augment_annotations(self, aug: imgaug.augmenters.meta.Augmenter,
@@ -218,7 +228,8 @@ class ImgAugWrapper(BaseTransform):
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += f'(args = {self.args})'
+        repr_str += f'(args = {self.args}, '
+        repr_str += f'fix_poly = {self.fix_poly})'
         return repr_str
 
 
