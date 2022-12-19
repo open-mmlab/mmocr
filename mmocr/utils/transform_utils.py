@@ -48,9 +48,9 @@ def remove_pipeline_elements(results: Dict,
         [i for i in range(num_elements) if i not in remove_inds])
     for key in keys:
         if key in results:
-            if results[key] is np.ndarray:
+            if isinstance(results[key], np.ndarray):
                 results[key] = results[key][kept_inds]
-            elif results[key] is list:
+            elif isinstance(results[key], list):
                 results[key] = [results[key][i] for i in kept_inds]
             else:
                 raise NotImplementedError
