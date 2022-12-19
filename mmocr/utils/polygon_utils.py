@@ -167,13 +167,14 @@ def crop_polygon(polygon: ArrayLike,
 
 def poly_make_valid(poly: Polygon) -> Polygon:
     """Convert a potentially invalid polygon to a valid one by eliminating
-    self-crossing or self-touching parts.
+    self-crossing or self-touching parts. Note that if the input is a line, the
+    returned polygon could be an empty one.
 
     Args:
         poly (Polygon): A polygon needed to be converted.
 
     Returns:
-        Polygon: A valid polygon.
+        Polygon: A valid polygon, which might be empty.
     """
     assert isinstance(poly, Polygon)
     fixed_poly = poly if poly.is_valid else poly.buffer(0)

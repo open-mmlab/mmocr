@@ -11,7 +11,9 @@ from mmcv.transforms.utils import avoid_cache_randomness, cache_randomness
 
 from mmocr.registry import TRANSFORMS
 from mmocr.utils import (bbox2poly, crop_polygon, is_poly_inside_rect,
-                         poly2bbox, remove_pipeline_elements, rescale_polygon)
+                         poly2bbox, poly2shapely, poly_make_valid,
+                         remove_pipeline_elements, rescale_polygon,
+                         shapely2poly)
 from .wrappers import ImgAugWrapper
 
 
@@ -641,3 +643,108 @@ class RemoveIgnored(BaseTransform):
         if len(remove_inds) == len(results['gt_ignored']):
             return None
         return remove_pipeline_elements(results, remove_inds)
+
+
+@TRANSFORMS.register_module()
+class FixInvalidPolygon(BaseTransform):
+    """Fix invalid polygons in the dataset.
+
+    Required Keys:
+
+    - gt_polygons
+    - gt_ignored (optional)
+    - gt_bboxes (optional)
+    - gt_bboxes_labels (optional)
+    - gt_texts (optional)
+
+    Modified Keys:
+
+    - gt_polygons
+    - gt_ignored (optional)
+    - gt_bboxes (optional)
+    - gt_bboxes_labels (optional)
+    - gt_texts (optional)
+
+    Args:
+        mode (str): The mode of fixing invalid polygons. Options are 'fix' and
+            'ignore'.
+            For the 'fix' mode, the transform will try to fix
+            the invalid polygons to a valid one by eliminating the
+            self-intersection or converting the bboxes to polygons. If
+            it can't be fixed by any means (e.g. the polygon contains less
+            than 3 points or it's actually a line/point), the annotation will
+            be removed.
+            For the 'ignore' mode, the invalid polygons
+            will be set to "ignored" during training.
+            Defaults to 'fix'.
+        min_poly_points (int): Minimum number of the coordinate points in a
+            polygon. Defaults to 4.
+    """
+
+    def __init__(self, mode: str = 'fix', min_poly_points: int = 4) -> None:
+        super().__init__()
+        self.mode = mode
+        assert min_poly_points >= 3, 'min_poly_points must be greater than 3.'
+        self.min_poly_points = min_poly_points
+        assert self.mode in [
+            'fix', 'ignore'
+        ], f"Supported modes are 'fix' and 'ignore', but got {self.mode}"
+
+    def transform(self, results: Dict) -> Dict:
+        """Fix invalid polygons.
+
+        Args:
+            results (dict): Result dict containing the data to transform.
+
+        Returns:
+            Optional[dict]: The transformed data. If all the polygons are
+            unfixable, return None.
+        """
+        if results.get('gt_polygons', None) is not None:
+            remove_inds = []
+            for idx, polygon in enumerate(results['gt_polygons']):
+                if self.mode == 'ignore':
+                    if results['gt_ignored'][idx]:
+                        continue
+                    if not (len(polygon) >= self.min_poly_points * 2
+                            and len(polygon) % 2
+                            == 0) or not poly2shapely(polygon).is_valid:
+                        results['gt_ignored'][idx] = True
+                else:
+                    # If "polygon" contains less than 3 points
+                    if len(polygon) < 6:
+                        remove_inds.append(idx)
+                        continue
+                    try:
+                        shapely_polygon = poly2shapely(polygon)
+                        if shapely_polygon.is_valid and len(
+                                polygon) >= self.min_poly_points * 2:
+                            continue
+                        results['gt_polygons'][idx] = shapely2poly(
+                            poly_make_valid(shapely_polygon))
+                        # If an empty polygon is generated, it's still a bad
+                        # fix
+                        if len(results['gt_polygons'][idx]) == 0:
+                            raise ValueError
+                    # It's hard to fix, e.g. the "polygon" is a line or
+                    # a point
+                    except Exception:
+                        if 'gt_bboxes' in results:
+                            bbox = results['gt_bboxes'][idx]
+                            bbox_polygon = bbox2poly(bbox)
+                            results['gt_polygons'][idx] = bbox_polygon
+                            shapely_polygon = poly2shapely(bbox_polygon)
+                            if (not shapely_polygon.is_valid
+                                    or shapely_polygon.is_empty):
+                                remove_inds.append(idx)
+                        else:
+                            remove_inds.append(idx)
+        if len(remove_inds) == len(results['gt_polygons']):
+            return None
+        return remove_pipeline_elements(results, remove_inds)
+
+    def __repr__(self) -> str:
+        repr_str = self.__class__.__name__
+        repr_str += f'(mode = "{self.mode}", '
+        repr_str += f'min_poly_points = {self.min_poly_points})'
+        return repr_str

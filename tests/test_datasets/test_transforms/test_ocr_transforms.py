@@ -5,7 +5,9 @@ import unittest.mock as mock
 
 import numpy as np
 
-from mmocr.datasets.transforms import RandomCrop, RandomRotate, Resize
+from mmocr.datasets.transforms import (FixInvalidPolygon, RandomCrop,
+                                       RandomRotate, RemoveIgnored, Resize)
+from mmocr.utils import poly2shapely
 
 
 class TestRandomCrop(unittest.TestCase):
@@ -200,3 +202,122 @@ class TestResize(unittest.TestCase):
         resize = Resize(scale=(40, 30))
         result = resize(dummy_result)
         self.assertEqual(result['gt_bboxes'].dtype, np.float32)
+
+
+class TestFixInvalidPolygon(unittest.TestCase):
+
+    def setUp(self):
+        # All polygons are invalid w/o gt_bboxes
+        self.data_info = dict(
+            img=np.random.random((30, 40, 3)),
+            gt_polygons=[
+                np.array([0., 0., 10., 10., 10., 0., 0., 10.]),
+                np.array([0., 0., 10., 0., 0., 10., 5., 10.]),
+                np.array([0, 10]),
+                np.array([0, 10, 0, 10, 10, 0, 0, 10]),
+            ],
+            gt_ignored=np.array([False, False, False, False], dtype=bool))
+        # All polygons are invalid with gt_bboxes
+        # the third one can be recovered from gt_bboxes
+        # the fourth one has no valid polygon and bbox
+        self.data_info2 = dict(
+            img=np.random.random((30, 40, 3)),
+            gt_polygons=[
+                np.array([0., 0., 10., 10., 10., 0.]),
+                np.array([0., 0., 10., 0., 0., 10.]),
+                np.array([0, 10, 0, 10, 10, 0, 0, 10]),
+                np.array([0, 10, 0, 10, 10, 0, 0, 10]),
+            ],
+            gt_bboxes=np.array([[0., 0., 10., 10.], [0., 0., 10., 10.],
+                                [0, 0, 10, 10], [0, 0, 0, 0]]),
+            gt_ignored=np.array([False, False, False, False], dtype=bool))
+        # Contains all unfixable polygons
+        self.data_info3 = dict(
+            img=np.random.random((30, 40, 3)),
+            gt_polygons=[
+                np.array([0, 10]),
+                np.array([0, 10, 0, 10, 10, 0, 0, 10]),
+            ],
+            gt_ignored=np.array([False, False], dtype=bool))
+        # The first one is valid, and the second one is invalid
+        self.data_info4 = dict(
+            img=np.random.random((30, 40, 3)),
+            gt_polygons=[
+                np.array([0., 0., 10., 0., 10., 10., 0., 10.]),
+                np.array([0, 10, 0, 10, 10, 0, 0, 10]),
+            ],
+            gt_ignored=np.array([False, False], dtype=bool))
+
+    def test_transform_fix(self):
+        transform = FixInvalidPolygon(mode='fix', min_poly_points=4)
+        results = transform(copy.deepcopy(self.data_info))
+        # The third one is removed because it doesn't have enough points
+        # The fourth one is removed because it is a line
+        assert len(
+            results['gt_polygons']) == len(self.data_info['gt_polygons']) - 2
+        for poly in results['gt_polygons']:
+            self.assertTrue(poly2shapely(poly).is_valid)
+        results = transform(copy.deepcopy(self.data_info2))
+        # The fourth one is removed because it is a line, and its bbox is also
+        # invalid
+        assert len(
+            results['gt_polygons']) == len(self.data_info['gt_polygons']) - 1
+        for poly in results['gt_polygons']:
+            self.assertTrue(len(poly) >= 8 and len(poly) % 2 == 0)
+        # Fixing all invalid polygons would result in an empty result dict,
+        # and therefore the transform would return None
+        results = transform(copy.deepcopy(self.data_info3))
+        self.assertIsNone(results)
+
+    def test_transform_ignore(self):
+        transform = FixInvalidPolygon(mode='ignore')
+        results = transform(copy.deepcopy(self.data_info))
+        self.assertTrue(
+            np.array_equal(results['gt_ignored'],
+                           np.array([True, True, True, True], dtype=bool)))
+        results = transform(copy.deepcopy(self.data_info4))
+        self.assertTrue(
+            np.array_equal(results['gt_ignored'],
+                           np.array([False, True], dtype=bool)))
+        for poly, ignored in zip(results['gt_polygons'],
+                                 results['gt_ignored']):
+            if not ignored:
+                self.assertTrue(poly2shapely(poly).is_valid)
+
+    def test_repr(self):
+        transform = FixInvalidPolygon()
+        print(repr(transform))
+        self.assertEqual(
+            repr(transform),
+            'FixInvalidPolygon(mode = "fix", min_poly_points = 4)')
+
+
+class TestRemoveIgnored(unittest.TestCase):
+
+    def setUp(self):
+        self.data_info = dict(
+            img=np.random.random((30, 40, 3)),
+            gt_polygons=[
+                np.array([0., 0., 10., 10., 10., 0.]),
+                np.array([0., 0., 10., 0., 0., 10.]),
+                np.array([0, 10, 0, 10, 1, 2, 3, 4]),
+                np.array([0, 10, 0, 10, 10, 0, 0, 10]),
+            ],
+            gt_bboxes=np.array([[1, 2, 3, 4], [5, 6, 7, 8], [0, 0, 10, 10],
+                                [0, 0, 0, 0]]),
+            gt_ignored=np.array([False, True, True, False], dtype=bool),
+            gt_texts=['t1', 't2', 't3', 't4'],
+            gt_bboxes_labels=np.array([0, 1, 2, 3]))
+        self.keys = [
+            'gt_polygons', 'gt_bboxes', 'gt_ignored', 'gt_texts',
+            'gt_bboxes_labels'
+        ]
+
+    def test_transform(self):
+        transform = RemoveIgnored()
+        results = transform(copy.deepcopy(self.data_info))
+        for original_idx, new_idx in enumerate([0, 3]):
+            for key in self.keys:
+                self.assertTrue(
+                    np.array_equal(results[key][original_idx],
+                                   self.data_info[key][new_idx]))

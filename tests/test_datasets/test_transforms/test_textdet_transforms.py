@@ -5,10 +5,8 @@ import unittest.mock as mock
 
 import numpy as np
 from mmcv.transforms import Pad, RandomResize
-from parameterized import parameterized
 
-from mmocr.datasets.transforms import (BoundedScaleAspectJitter,
-                                       FixInvalidPolygon, RandomCrop,
+from mmocr.datasets.transforms import (BoundedScaleAspectJitter, RandomCrop,
                                        RandomFlip, Resize,
                                        ShortScaleAspectJitter, SourceImagePad,
                                        TextDetRandomCrop,
@@ -96,46 +94,6 @@ class TestEastRandomCrop(unittest.TestCase):
         self.assertEqual(pad_results['img'].shape, (30, 30, 3))
         self.assertEqual(pad_results['pad_shape'], (30, 30, 3))
         self.assertEqual(pad_results['img'].sum(), 15 * 30 * 3)
-
-
-class TestFixInvalidPolygon(unittest.TestCase):
-
-    def setUp(self):
-        self.data_info = dict(
-            img=np.random.random((30, 40, 3)),
-            gt_polygons=[
-                np.array([0., 0., 10., 10., 10., 0., 0., 10.]),
-                np.array([0., 0., 10., 0., 0., 10., 5., 10.])
-            ],
-            gt_ignored=np.array([False, False], dtype=bool))
-        for invalid_polys in self.data_info['gt_polygons']:
-            self.assertFalse(poly2shapely(invalid_polys).is_valid)
-        self.data_info2 = dict(
-            img=np.random.random((30, 40, 3)),
-            gt_polygons=[
-                np.array([0., 0., 10., 10., 10., 0.]),
-                np.array([0., 0., 10., 0., 0., 10.])
-            ],
-            gt_bboxes=np.array([[0., 0., 10., 10.], [0., 0., 10., 10.]]),
-            gt_ignored=np.array([False, False], dtype=bool))
-
-    @parameterized.expand([('fix'), ('ignore')])
-    def test_transform(self, mode):
-        transform = FixInvalidPolygon(mode=mode, min_poly_points=4)
-        results = transform(copy.deepcopy(self.data_info))
-        for poly, ignored in zip(results['gt_polygons'],
-                                 results['gt_ignored']):
-            if not ignored:
-                self.assertTrue(poly2shapely(poly).is_valid)
-        results = transform(copy.deepcopy(self.data_info2))
-        for poly, ignored in zip(results['gt_polygons'],
-                                 results['gt_ignored']):
-            self.assertTrue(len(poly) >= 8 and len(poly) % 2 == 0)
-
-    def test_repr(self):
-        transform = FixInvalidPolygon()
-        print(repr(transform))
-        self.assertEqual(repr(transform), 'FixInvalidPolygon(mode = "fix")')
 
 
 class TestRandomFlip(unittest.TestCase):

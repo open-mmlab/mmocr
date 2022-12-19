@@ -53,5 +53,6 @@ def remove_pipeline_elements(results: Dict,
             elif isinstance(results[key], list):
                 results[key] = [results[key][i] for i in kept_inds]
             else:
-                raise NotImplementedError
+                raise TypeError(
+                    f'Unsupported type {type(results[key])} for key {key}')
     return results
