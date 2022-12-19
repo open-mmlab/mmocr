@@ -11,7 +11,7 @@ from mmcv.transforms.utils import avoid_cache_randomness, cache_randomness
 
 from mmocr.registry import TRANSFORMS
 from mmocr.utils import (bbox2poly, crop_polygon, is_poly_inside_rect,
-                         poly2bbox, rescale_polygon)
+                         poly2bbox, remove_pipeline_elements, rescale_polygon)
 from .wrappers import ImgAugWrapper
 
 
@@ -617,20 +617,27 @@ class Resize(MMCV_Resize):
 
 @TRANSFORMS.register_module()
 class RemoveIgnored(BaseTransform):
+    """Removed ignored elements from the pipeline.
 
-    def transform(self, results: Dict):
-        gt_ignored = results['gt_ignored']
-        need_index = np.where(~gt_ignored)[0]
-        if len(need_index) == 0:
+    Required Keys:
+
+    - gt_ignored
+    - gt_polygons (optional)
+    - gt_bboxes (optional)
+    - gt_bboxes_labels (optional)
+    - gt_texts (optional)
+
+    Modified Keys:
+
+    - gt_ignored
+    - gt_polygons (optional)
+    - gt_bboxes (optional)
+    - gt_bboxes_labels (optional)
+    - gt_texts (optional)
+    """
+
+    def transform(self, results: Dict) -> Dict:
+        remove_inds = np.where(results['gt_ignored'])[0]
+        if len(remove_inds) == len(results['gt_ignored']):
             return None
-        results['gt_ignored'] = gt_ignored[need_index]
-        if 'gt_bboxes' in results:
-            results['gt_bboxes'] = results['gt_bboxes'][need_index]
-        gt_polygons = results['gt_polygons']
-        new_gt_polygon = [gt_polygons[i] for i in need_index]
-        results['gt_polygons'] = new_gt_polygon
-        results['gt_bboxes_labels'] = results['gt_bboxes_labels'][need_index]
-        if 'gt_texts' in results:
-            gt_texts = results['gt_texts']
-            results['gt_texts'] = [gt_texts[i] for i in need_index]
-        return results
+        return remove_pipeline_elements(results, remove_inds)
