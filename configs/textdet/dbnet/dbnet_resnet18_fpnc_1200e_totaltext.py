@@ -19,7 +19,6 @@ train_pipeline = [
         with_label=True,
     ),
     dict(type='FixInvalidPolygon', min_poly_points=4),
-    dict(type='RemoveIgnored'),
     dict(
         type='TorchVisionWrapper',
         op='ColorJitter',
@@ -30,7 +29,6 @@ train_pipeline = [
         args=[['Fliplr', 0.5],
               dict(cls='Affine', rotate=[-10, 10]), ['Resize', [0.5, 3.0]]]),
     dict(type='RandomCrop', min_side_ratio=0.1),
-    dict(type='FixInvalidPolygon', min_poly_points=4, prompt='RandomCrop'),
     dict(type='Resize', scale=(640, 640), keep_ratio=True),
     dict(type='Pad', size=(640, 640)),
     dict(
@@ -38,22 +36,42 @@ train_pipeline = [
         meta_keys=('img_path', 'ori_shape', 'img_shape'))
 ]
 
+test_pipeline = [
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        color_type='color_ignore_orientation'),
+    dict(type='Resize', scale=(1333, 736), keep_ratio=True),
+    dict(
+        type='LoadOCRAnnotations',
+        with_polygon=True,
+        with_bbox=True,
+        with_label=True,
+    ),
+    dict(type='FixInvalidPolygon', min_poly_points=4),
+    dict(
+        type='PackTextDetInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
+]
+
 # dataset settings
 totaltext_textdet_train = _base_.totaltext_textdet_train
 totaltext_textdet_test = _base_.totaltext_textdet_test
-totaltext_textdet_train.pipeline = _base_.train_pipeline
-totaltext_textdet_test.pipeline = _base_.test_pipeline
+totaltext_textdet_train.pipeline = train_pipeline
+totaltext_textdet_test.pipeline = test_pipeline
 
 train_dataloader = dict(
     batch_size=16,
-    num_workers=8,
+    num_workers=16,
+    pin_memory=True,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=totaltext_textdet_train)
 
 val_dataloader = dict(
     batch_size=1,
-    num_workers=4,
+    num_workers=1,
+    pin_memory=True,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=totaltext_textdet_test)
