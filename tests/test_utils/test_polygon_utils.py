@@ -161,6 +161,12 @@ class TestPolygonUtils(unittest.TestCase):
         # invalid input
         with self.assertRaises(AssertionError):
             poly_make_valid([0, 0, 1, 1, 1, 0, 0, 1])
+        poly = Polygon([[337, 441], [326, 386], [334, 397], [342, 412],
+                        [296, 382], [317, 366], [324, 427], [315, 413],
+                        [308, 400], [349, 419], [337, 441]])
+        self.assertFalse(poly.is_valid)
+        poly = poly_make_valid(poly)
+        self.assertTrue(poly.is_valid)
 
     def test_poly_intersection(self):
 
