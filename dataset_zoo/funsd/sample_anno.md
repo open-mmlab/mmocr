@@ -1,4 +1,4 @@
-**Text Detection/Recognition/SPotting**
+**Text Detection/Recognition/Spotting**
 
 ```json
 {
