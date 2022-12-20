@@ -14,6 +14,12 @@ Recently, segmentation-based methods are quite popular in scene text detection, 
 
 ## Results and models
 
+### SynthText
+
+|                                  Method                                   | Backbone | Training set | #iters  |                                               Download                                               |
+| :-----------------------------------------------------------------------: | :------: | :----------: | :-----: | :--------------------------------------------------------------------------------------------------: |
+| [DBNet_r18](/configs/textdet/dbnet/dbnet_resnet18_fpnc_100k_synthtext.py) | ResNet18 |  SynthText   | 100,000 | [model](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_resnet18_fpnc_100k_synthtext/dbnet_resnet18_fpnc_100k_synthtext-2e9bf392.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_resnet18_fpnc_100k_synthtext/20221214_150351.log) |
+
 ### ICDAR2015
 
 |             Method             |             Backbone             |             Pretrained Model             |  Training set   |    Test set    | #epochs | Test size | Precision | Recall | Hmean  |             Download             |
