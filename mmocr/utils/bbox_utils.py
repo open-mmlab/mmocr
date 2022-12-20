@@ -7,7 +7,7 @@ from shapely.geometry import LineString, Point
 
 from mmocr.utils.check_argument import is_2dlist, is_type_list
 from mmocr.utils.point_utils import point_distance, points_center
-from mmocr.utils.typing import ArrayLike
+from mmocr.utils.typing_utils import ArrayLike
 
 
 def rescale_bbox(bbox: np.ndarray,

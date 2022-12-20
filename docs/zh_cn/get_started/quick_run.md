@@ -118,11 +118,11 @@ python tools/train.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.
 
 然而，这个数值只反映了 DBNet 在迷你 ICDAR 2015 数据集上的性能。要想更加客观地评判它的检测能力，我们还要看看它在分布外数据集上的表现。例如，`tests/data/det_toy_dataset` 就是一个很小的真实数据集，我们可以用它来验证一下 DBNet 的实际性能。
 
-在测试前，我们同样需要对数据集的位置做一下修改。打开 `configs/_base_/det_datasets/icdar2015.py`，修改 `ic15_det_test` 的 `data_root` 为 `tests/data/det_toy_dataset`:
+在测试前，我们同样需要对数据集的位置做一下修改。打开 `configs/_base_/det_datasets/icdar2015.py`，修改 `icdar2015_textdet_test` 的 `data_root` 为 `tests/data/det_toy_dataset`:
 
 ```Python
 # ...
-ic15_det_test = dict(
+icdar2015_textdet_test = dict(
     type='OCRDataset',
     data_root='tests/data/det_toy_dataset',
     # ...

@@ -80,6 +80,22 @@ def check_integrity(file_path: str,
     if not osp.exists(file_path):
         return False
 
+    return get_md5(file_path=file_path, chunk_size=chunk_size) == md5
+
+
+def get_md5(file_path: str, chunk_size: int = 1024 * 1024) -> str:
+    """Get the md5 of the file.
+
+    Args:
+        file_path (str): Path to the file.
+        chunk_size (int, optional): Chunk size. Defaults to 1024*1024.
+
+    Returns:
+        str: MD5 of the file.
+    """
+    if not osp.exists(file_path):
+        raise FileNotFoundError(f'{file_path} does not exist.')
+
     if sys.version_info >= (3, 9):
         hash = hashlib.md5(usedforsecurity=False)
     else:
@@ -88,7 +104,7 @@ def check_integrity(file_path: str,
         for chunk in iter(lambda: f.read(chunk_size), b''):
             hash.update(chunk)
 
-    return hash.hexdigest() == md5
+    return hash.hexdigest()
 
 
 def list_files(path: str, suffixes: List) -> List:

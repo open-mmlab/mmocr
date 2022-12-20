@@ -1,8 +1,8 @@
-ic11_rec_data_root = 'data/rec/icdar_2011/'
+icdar2011_textrecog_data_root = 'data/rec/icdar_2011/'
 
-ic11_rec_train = dict(
+icdar2011_textrecog_train = dict(
     type='OCRDataset',
-    data_root=ic11_rec_data_root,
+    data_root=icdar2011_textrecog_data_root,
     ann_file='train_labels.json',
     test_mode=False,
     pipeline=None)

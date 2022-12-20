@@ -16,7 +16,7 @@ data_obtainer = dict(
             mapping=[['ic13_textdet_train_img', 'textdet_imgs/train']]),
         dict(
             url='https://rrc.cvc.uab.es/downloads/'
-            'Challenge2_Training_Task1_GT.zip',
+            'Challenge2_Test_Task12_Images.zip',
             save_name='ic13_textdet_test_img.zip',
             md5='af2e9f070c4c6a1c7bdb7b36bacf23e3',
             split=['test'],
@@ -24,7 +24,7 @@ data_obtainer = dict(
             mapping=[['ic13_textdet_test_img', 'textdet_imgs/test']]),
         dict(
             url='https://rrc.cvc.uab.es/downloads/'
-            'Challenge2_Test_Task12_Images.zip',
+            'Challenge2_Training_Task1_GT.zip',
             save_name='ic13_textdet_train_gt.zip',
             md5='f3a425284a66cd67f455d389c972cce4',
             split=['train'],
@@ -55,3 +55,5 @@ data_converter = dict(
         separator=' ',
         mode='xyxy'),
     dumper=dict(type='JsonDumper'))
+
+config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)

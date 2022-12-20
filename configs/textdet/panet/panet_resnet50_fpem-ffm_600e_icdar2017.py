@@ -55,23 +55,23 @@ test_pipeline = [
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
-ic17_det_train = _base_.ic17_det_train
-ic17_det_test = _base_.ic17_det_test
+icdar2017_textdet_train = _base_.icdar2017_textdet_train
+icdar2017_textdet_test = _base_.icdar2017_textdet_test
 # pipeline settings
-ic17_det_train.pipeline = train_pipeline
-ic17_det_test.pipeline = test_pipeline
+icdar2017_textdet_train.pipeline = train_pipeline
+icdar2017_textdet_test.pipeline = test_pipeline
 train_dataloader = dict(
     batch_size=64,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=ic17_det_train)
+    dataset=icdar2017_textdet_train)
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=ic17_det_test)
+    dataset=icdar2017_textdet_test)
 test_dataloader = val_dataloader
 
 val_evaluator = dict(

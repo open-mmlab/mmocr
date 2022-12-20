@@ -1,5 +1,77 @@
 # Changelog of v1.x
 
+## v1.0.0rc4 (06/12/2022)
+
+### Highlights
+
+1. Dataset Preparer can automatically generate base dataset configs at the end of the preparation process, and supports 6 more datasets: IIIT5k, CUTE80, ICDAR2013, ICDAR2015, SVT, SVTP.
+2. Introducing our `projects/` folder - implementing new models and features into OpenMMLab's algorithm libraries has long been complained to be troublesome due to the rigorous requirements on code quality, which could hinder the fast iteration of SOTA models and might discourage community members from sharing their latest outcome here. We now introduce `projects/` folder, where some experimental features, frameworks and models can be placed, only needed to satisfy the minimum requirement on the code quality. Everyone is welcome to post their implementation of any great ideas in this folder! We also add the first [example project](https://github.com/open-mmlab/mmocr/tree/dev-1.x/projects/example_project) to illustrate what we expect a good project to have (check out the raw content of README.md for more info!).
+3. Inside the `projects/` folder, we are releasing the preview version of ABCNet, which is the first implementation of text spotting models in MMOCR. It's inference-only now, but the full implementation will be available very soon.
+
+### New Features & Enhancements
+
+- Add SVT to dataset preparer by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1521
+- Polish bbox2poly by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1532
+- Add SVTP to dataset preparer by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1523
+- Iiit5k converter by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1530
+- Add cute80 to dataset preparer by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1522
+- Add IC13 preparer by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1531
+- Add 'Projects/' folder, and the first example project by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1524
+- Rename to {dataset-name}\_task_train/test by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1541
+- Add print_config.py to the tools by @IncludeMathH in https://github.com/open-mmlab/mmocr/pull/1547
+- Add get_md5 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1553
+- Add config generator by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1552
+- Support IC15_1811  by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1556
+- Update CT80 config by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1555
+- Add config generators to all textdet and textrecog configs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1560
+- Refactor TPS by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1240
+- Add TextSpottingConfigGenerator by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1561
+- Add common typing by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1596
+- Update textrecog config and readme  by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1597
+- Support head loss or postprocessor is None for only infer by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1594
+- Textspotting datasample by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1593
+- Simplify mono_gather by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1588
+- ABCNet v1 infer by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1598
+
+### Docs
+
+- Add Chinese Guidance on How to Add New Datasets to Dataset Preparer by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1506
+- Update the qq group link by @vansin in https://github.com/open-mmlab/mmocr/pull/1569
+- Collapse some sections; update logo url by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1571
+- Update dataset preparer (CN) by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1591
+
+### Bug Fixes
+
+- Fix two bugs in dataset preparer by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1513
+- Register bug of CLIPResNet by @jyshee in https://github.com/open-mmlab/mmocr/pull/1517
+- Being more conservative on Dataset Preparer by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1520
+- python -m pip upgrade in windows by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1525
+- Fix wildreceipt metafile by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1528
+- Fix Dataset Preparer Extract by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1527
+- Fix ICDARTxtParser by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1529
+- Fix Dataset Zoo Script by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1533
+- Fix crop without padding and recog metainfo delete unuse info by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1526
+- Automatically create nonexistent directory for base  configs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1535
+- Change mmcv.dump to mmengine.dump by @ProtossDragoon in https://github.com/open-mmlab/mmocr/pull/1540
+- mmocr.utils.typing -> mmocr.utils.typing_utils by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1538
+- Wildreceipt tests by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1546
+- Fix judge exist dir by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1542
+- Fix IC13 textdet config by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1563
+- Fix IC13 textrecog annotations by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1568
+- Auto scale lr by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1584
+- Fix icdar data parse for text containing separator by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1587
+- Fix textspotting ut by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1599
+- Fix TextSpottingConfigGenerator and TextSpottingDataConverter by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1604
+- Keep E2E Inferencer output simple by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1559
+
+### New Contributors
+
+- @jyshee made their first contribution in https://github.com/open-mmlab/mmocr/pull/1517
+- @ProtossDragoon made their first contribution in https://github.com/open-mmlab/mmocr/pull/1540
+- @IncludeMathH made their first contribution in https://github.com/open-mmlab/mmocr/pull/1547
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc3...v1.0.0rc4
+
 ## v1.0.0rc3 (03/11/2022)
 
 ### Highlights

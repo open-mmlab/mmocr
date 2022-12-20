@@ -21,7 +21,7 @@ class TestDumpers(unittest.TestCase):
                 task_name='textdet',
                 category=[dict(id=0, name='text')]))
 
-        dumper = JsonDumper(task, dataset_name='test')
+        dumper = JsonDumper(task)
         dumper.dump(fake_data, self.root.name, split)
         with open(osp.join(self.root.name, f'{task}_{split}.json'), 'r') as f:
             data = json.load(f)

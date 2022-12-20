@@ -86,6 +86,7 @@ class NaiveDataObtainer:
         print(f'Start to download {osp.basename(dst_path)}...')
         print('If you stuck here for a long time, please check your network.')
         request.urlretrieve(url, dst_path, progress)
+        print('')
 
     def extract(self,
                 src_path: str,
@@ -99,9 +100,12 @@ class NaiveDataObtainer:
             delete (bool, optional): Whether to delete the zip file. Defaults
                 to False.
         """
-        if not is_archive(src_path) and not osp.exists(dst_path):
+        if not is_archive(src_path):
             # Copy the file to the destination folder if it is not a zip
-            shutil.copy(src_path, dst_path)
+            if osp.isfile(src_path):
+                shutil.copy(src_path, dst_path)
+            else:
+                shutil.copytree(src_path, dst_path)
             return
 
         zip_name = osp.basename(src_path).split('.')[0]
