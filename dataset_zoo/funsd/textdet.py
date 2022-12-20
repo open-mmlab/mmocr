@@ -34,3 +34,5 @@ data_converter = dict(
     parser=dict(type='FUNSDTextDetAnnParser'),
     dumper=dict(type='JsonDumper'),
     delete=['annotations', 'funsd'])
+
+config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)
