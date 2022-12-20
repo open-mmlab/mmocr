@@ -2,6 +2,7 @@
 from .abi_fuser import ABIFuser
 from .abi_language_decoder import ABILanguageDecoder
 from .abi_vision_decoder import ABIVisionDecoder
+from .aster_decoder import ASTERDecoder
 from .base import BaseDecoder
 from .crnn_decoder import CRNNDecoder
 from .master_decoder import MasterDecoder
@@ -17,5 +18,5 @@ __all__ = [
     'ParallelSARDecoderWithBS', 'NRTRDecoder', 'BaseDecoder',
     'SequenceAttentionDecoder', 'PositionAttentionDecoder',
     'ABILanguageDecoder', 'ABIVisionDecoder', 'MasterDecoder',
-    'RobustScannerFuser', 'ABIFuser'
+    'RobustScannerFuser', 'ABIFuser', 'ASTERDecoder'
 ]

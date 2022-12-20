@@ -28,6 +28,9 @@ class TestBaseTextDetHead(TestCase):
         with self.assertRaises(AssertionError):
             BaseTextDetHead(cfg, [])
 
+        decoder = BaseTextDetHead(None, None)
+        self.assertIsNone(decoder.module_loss)
+        self.assertIsNone(decoder.postprocessor)
         decoder = BaseTextDetHead(cfg, cfg)
         self.assertIsInstance(decoder.module_loss, FakeModule)
         self.assertIsInstance(decoder.postprocessor, FakeModule)

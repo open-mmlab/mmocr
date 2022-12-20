@@ -49,3 +49,5 @@ data_converter = dict(
     parser=dict(type='ICDARTxtTextDetAnnParser', encoding='utf-8-sig'),
     dumper=dict(type='JsonDumper'),
     delete=['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img'])
+
+config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)

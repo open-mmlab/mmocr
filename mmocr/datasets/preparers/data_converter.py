@@ -28,7 +28,6 @@ class BaseDataConverter:
         dataset_name (str): Dataset name.
         delete (Optional[List]): A list of files to be deleted after
             conversion.
-        config_path (str): Path to the configs. Defaults to 'configs/'.
     """
 
     def __init__(self,
@@ -53,7 +52,7 @@ class BaseDataConverter:
         self.config_path = config_path
         self.img_dir = f'{task}_imgs'
         parser.update(dict(nproc=nproc))
-        dumper.update(dict(task=task, dataset_name=dataset_name))
+        dumper.update(dict(task=task))
         self.parser = DATA_PARSERS.build(parser)
         self.dumper = DATA_DUMPERS.build(dumper)
         gather_type = gatherer.pop('type')
@@ -66,75 +65,31 @@ class BaseDataConverter:
             raise NotImplementedError
 
     def __call__(self):
-        """Process the data."""
+        """Process the data.
+
+        Returns:
+            Dict: A dict that maps each split to the path of the annotation
+                files.
+        """
         # Convert and dump annotations to MMOCR format
-        dataset_config = dict()
-        for split in self.splits:
-            print(f'Parsing {split} split...')
+        for self.current_split in self.splits:
+            print(f'Parsing {self.current_split} split...')
             # Gather the info such as file names required by parser
-            img_path = osp.join(self.data_root, self.img_dir, split)
+            img_path = osp.join(self.data_root, self.img_dir,
+                                self.current_split)
             ann_path = osp.join(self.data_root, 'annotations')
-            gatherer_args = dict(
-                img_path=img_path, ann_path=ann_path, split=split)
+            gatherer_args = dict(img_path=img_path, ann_path=ann_path)
             gatherer_args.update(self.gatherer_args)
             files = self.gatherer(**gatherer_args)
             # Convert dataset annotations to MMOCR format
-            samples = self.parser.parse_files(files, split)
-            print(f'Packing {split} annotations...')
-            func = partial(self.pack_instance, split=split)
+            samples = self.parser.parse_files(files, self.current_split)
+            print(f'Packing {self.current_split} annotations...')
+            func = partial(self.pack_instance, split=self.current_split)
             samples = track_parallel_progress(func, samples, nproc=self.nproc)
             samples = self.add_meta(samples)
             # Dump annotation files
-            dataset_config[split] = self.dumper.dump(samples, self.data_root,
-                                                     split)
-        self.generate_dataset_config(dataset_config)
+            self.dumper.dump(samples, self.data_root, self.current_split)
         self.clean()
-
-    def generate_dataset_config(self, dataset_config: Dict) -> None:
-        """Generate dataset config file. Dataset config is a python file that
-        contains the dataset information.
-
-        Examples:
-        Generated dataset config
-        >>> ic15_rec_data_root = 'data/icdar2015/'
-        >>> icdar2015_textrecog_train = dict(
-        >>>     type='OCRDataset',
-        >>>     data_root=ic15_rec_data_root,
-        >>>     ann_file='textrecog_train.json',
-        >>>     test_mode=False,
-        >>>     pipeline=None)
-        >>> icdar2015_textrecog_test = dict(
-        >>>     type='OCRDataset',
-        >>>     data_root=ic15_rec_data_root,
-        >>>     ann_file='textrecog_test.json',
-        >>>     test_mode=True,
-        >>>     pipeline=None)
-
-        Args:
-            dataset_config (Dict): A dict contains the dataset config string of
-            each split.
-        """
-        if self.task == 'kie':
-            # Not supported yet
-            return
-        cfg_path = osp.join(self.config_path, self.task, '_base_', 'datasets',
-                            f'{self.dataset_name}.py')
-        if osp.exists(cfg_path):
-            while True:
-                c = input(f'{cfg_path} already exists, overwrite? (Y/n) ') \
-                    or 'Y'
-                if c.lower() == 'y':
-                    break
-                if c.lower() == 'n':
-                    return
-        mkdir_or_exist(osp.dirname(cfg_path))
-        with open(cfg_path, 'w') as f:
-            f.write(
-                f'{self.dataset_name}_{self.task}_data_root = \'{self.data_root}\'\n'  # noqa: E501
-            )
-        for split in self.splits:
-            with open(cfg_path, 'a') as f:
-                f.write(dataset_config[split])
 
     @abstractmethod
     def pack_instance(self, sample: Tuple, split: str) -> Dict:
@@ -161,7 +116,11 @@ class BaseDataConverter:
             Dict: A dict contains the meta information and samples.
         """
 
-    def mono_gather(self, ann_path: str, mapping: str, split: str,
+    def mono_gather(self,
+                    ann_path: str,
+                    train_ann: Optional[str] = None,
+                    val_ann: Optional[str] = None,
+                    test_ann: Optional[str] = None,
                     **kwargs) -> str:
         """Gather the dataset file. Specifically for the case that only one
         annotation file is needed. For example,
@@ -172,16 +131,22 @@ class BaseDataConverter:
 
         Args:
             anno_path (str): Path to the annotations.
-            mapping (str): Mapping rule of the annotation names. For example,
-                "f'{split}.json'" will return 'train.json' when the split is
-                'train'.
-            split (str): The current split.
+            train_ann (str, optional): The annotation file name of the train
+                split in the original dataset. Defaults to None.
+            val_ann (str, optional): The annotation file name of the val split
+                in the original dataset. Defaults to None.
+            test_ann (str, optional): The annotation file name of the test
+                split in the original dataset. Defaults to None.
 
         Returns:
             str: Path to the annotation file.
         """
 
-        return osp.join(ann_path, eval(mapping))
+        ann_file = eval(f'{self.current_split}_ann')
+        if ann_file is None:
+            raise ValueError(
+                f'{self.current_split}_ann must be specified in gatherer!')
+        return osp.join(ann_path, ann_file)
 
     def pair_gather(self, img_path: str, suffixes: List, rule: Sequence,
                     **kwargs) -> List[Tuple]:
@@ -400,7 +365,10 @@ class TextSpottingDataConverter(BaseDataConverter):
             packed_instances.append(packed_sample)
 
         packed_instances = dict(
-            instances=packed_instances, img_path=img_path, height=h, width=w)
+            instances=packed_instances,
+            img_path=img_path.replace(self.data_root + '/', ''),
+            height=h,
+            width=w)
 
         return packed_instances
 

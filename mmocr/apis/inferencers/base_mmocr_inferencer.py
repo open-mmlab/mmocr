@@ -244,7 +244,7 @@ class BaseMMOCRInferencer(BaseInferencer):
         if not get_datasample:
             results = []
             for pred in preds:
-                result = self._pred2dict(pred)
+                result = self.pred2dict(pred)
                 results.append(result)
         if not is_batch:
             results = results[0]
@@ -257,7 +257,7 @@ class BaseMMOCRInferencer(BaseInferencer):
             return results
         return results, imgs
 
-    def _pred2dict(self, data_sample: InstanceData) -> Dict:
+    def pred2dict(self, data_sample: InstanceData) -> Dict:
         """Extract elements necessary to represent a prediction into a
         dictionary.
 

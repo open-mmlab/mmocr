@@ -133,3 +133,6 @@ class TextSpottingLocalVisualizer(BaseLocalVisualizer):
 
         if out_file is not None:
             mmcv.imwrite(cat_images[..., ::-1], out_file)
+
+        self.set_image(cat_images)
+        return self.get_image()

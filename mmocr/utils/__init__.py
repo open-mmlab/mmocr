@@ -6,8 +6,8 @@ from .check_argument import (equal_len, is_2dlist, is_3dlist, is_none_or_type,
                              is_type_list, valid_boundary)
 from .collect_env import collect_env
 from .data_converter_utils import dump_ocr_data, recog_anno_to_imginfo
-from .fileio import (check_integrity, is_archive, list_files, list_from_file,
-                     list_to_file)
+from .fileio import (check_integrity, get_md5, is_archive, list_files,
+                     list_from_file, list_to_file)
 from .img_utils import crop_img, warp_img
 from .mask_utils import fill_hole
 from .parsers import LineJsonParser, LineStrParser
@@ -21,10 +21,12 @@ from .polygon_utils import (boundary_iou, crop_polygon, is_poly_inside_rect,
 from .setup_env import register_all_modules
 from .string_utils import StringStripper
 from .typing_utils import (ColorType, ConfigType, DetSampleList,
-                           InitConfigType, KIESampleList, MultiConfig,
-                           OptConfigType, OptDetSampleList, OptInitConfigType,
-                           OptKIESampleList, OptMultiConfig, OptRecSampleList,
-                           OptTensor, RecForwardResults, RecSampleList)
+                           InitConfigType, InstanceList, KIESampleList,
+                           LabelList, MultiConfig, OptConfigType,
+                           OptDetSampleList, OptInitConfigType,
+                           OptInstanceList, OptKIESampleList, OptLabelList,
+                           OptMultiConfig, OptRecSampleList, OptTensor,
+                           RangeType, RecForwardResults, RecSampleList)
 
 __all__ = [
     'collect_env', 'is_3dlist', 'is_type_list', 'is_none_or_type', 'equal_len',
@@ -42,5 +44,6 @@ __all__ = [
     'OptConfigType', 'OptDetSampleList', 'OptInitConfigType', 'OptMultiConfig',
     'OptRecSampleList', 'RecSampleList', 'MultiConfig', 'OptTensor',
     'ColorType', 'OptKIESampleList', 'KIESampleList', 'is_archive',
-    'check_integrity', 'list_files'
+    'check_integrity', 'list_files', 'get_md5', 'InstanceList', 'LabelList',
+    'OptInstanceList', 'OptLabelList', 'RangeType'
 ]

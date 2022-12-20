@@ -258,6 +258,9 @@ class KIELocalVisualizer(BaseLocalVisualizer):
         if out_file is not None:
             mmcv.imwrite(cat_images[..., ::-1], out_file)
 
+        self.set_image(cat_images)
+        return self.get_image()
+
     def draw_arrows(self,
                     x_data: Union[np.ndarray, torch.Tensor],
                     y_data: Union[np.ndarray, torch.Tensor],
