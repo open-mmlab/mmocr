@@ -40,10 +40,13 @@ data_converter = dict(
     type='TextDetDataConverter',
     splits=['train', 'val'],
     data_root=data_root,
-    gatherer=dict(type='mono_gather', mapping="f'{split}.json'"),
+    gatherer=dict(
+        type='mono_gather', train_ann='train.json', val_ann='val.json'),
     parser=dict(
         type='COCOTextDetAnnParser',
         variant='textocr',
         data_root=data_root + '/textdet_imgs/'),
     dumper=dict(type='JsonDumper'),
     delete=['annotations', 'textocr_textdet_train_val_img'])
+
+config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)
