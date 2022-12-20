@@ -37,3 +37,5 @@ data_converter = dict(
         variant='cocotext',
         data_root=data_root + '/textdet_imgs/train'),
     dumper=dict(type='JsonDumper'))
+
+config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)
