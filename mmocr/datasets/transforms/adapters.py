@@ -2,9 +2,10 @@
 from typing import Dict
 
 from mmcv.transforms.base import BaseTransform
-from mmdet.structures.mask import PolygonMasks, bitmap_to_polygon
+from mmdet.structures.mask import PolygonMasks
 
 from mmocr.registry import TRANSFORMS
+from mmocr.utils import bitmap2poly
 
 
 @TRANSFORMS.register_module()
@@ -41,19 +42,9 @@ class MMDet2MMOCR(BaseTransform):
                     gt_polygons = [mask[0] for mask in gt_masks.masks]
                 # BitmapMasks
                 else:
-                    polygons = []
-                    for mask in gt_masks.masks:
-                        contours, _ = bitmap_to_polygon(mask)
-                        polygons += [
-                            contour.reshape(-1) for contour in contours
-                        ]
-                    # filter invalid polygons
-                    gt_polygons = []
-                    for polygon in polygons:
-                        if len(polygon) < 6:
-                            continue
-                        gt_polygons.append(polygon)
+                    gt_polygons, validity = bitmap2poly(gt_masks)
 
+            # TODO: filter out invalid elements according to validity
             results['gt_polygons'] = gt_polygons
         # gt_ignore_flags -> gt_ignored
         if 'gt_ignore_flags' in results.keys():

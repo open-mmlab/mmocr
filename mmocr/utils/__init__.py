@@ -12,12 +12,12 @@ from .img_utils import crop_img, warp_img
 from .mask_utils import fill_hole
 from .parsers import LineJsonParser, LineStrParser
 from .point_utils import point_distance, points_center
-from .polygon_utils import (boundary_iou, crop_polygon, is_poly_inside_rect,
-                            offset_polygon, poly2bbox, poly2shapely,
-                            poly_intersection, poly_iou, poly_make_valid,
-                            poly_union, polys2shapely, rescale_polygon,
-                            rescale_polygons, shapely2poly, sort_points,
-                            sort_vertex, sort_vertex8)
+from .polygon_utils import (bitmap2poly, boundary_iou, crop_polygon,
+                            is_poly_inside_rect, offset_polygon, poly2bbox,
+                            poly2shapely, poly_intersection, poly_iou,
+                            poly_make_valid, poly_union, polys2shapely,
+                            rescale_polygon, rescale_polygons, shapely2poly,
+                            sort_points, sort_vertex, sort_vertex8)
 from .setup_env import register_all_modules
 from .string_utils import StringStripper
 from .typing_utils import (ColorType, ConfigType, DetSampleList,
@@ -45,5 +45,5 @@ __all__ = [
     'OptRecSampleList', 'RecSampleList', 'MultiConfig', 'OptTensor',
     'ColorType', 'OptKIESampleList', 'KIESampleList', 'is_archive',
     'check_integrity', 'list_files', 'get_md5', 'InstanceList', 'LabelList',
-    'OptInstanceList', 'OptLabelList', 'RangeType'
+    'OptInstanceList', 'OptLabelList', 'RangeType', 'bitmap2poly'
 ]
