@@ -26,7 +26,10 @@ This project implements a dummy ResNet wrapper, which literally does nothing new
 All the commands below rely on the correct configuration of `PYTHONPATH`, which should point to the project's directory so that Python can locate the module files. In `example_project/` root directory, run the following line to add the current directory to `PYTHONPATH`:
 
 ```shell
+# Linux
 export PYTHONPATH=`pwd`:$PYTHONPATH
+# Windows PowerShell
+$env:PYTHONPATH=Get-Location
 ```
 
 ### Training commands
