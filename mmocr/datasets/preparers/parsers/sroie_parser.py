@@ -50,7 +50,7 @@ class SROIETextDetAnnParser(BaseParser):
         """Parse single annotation."""
         img_file, txt_file = file
         instances = list()
-        try :
+        try:
             for anno in self.loader(txt_file, self.sep, self.format,
                                     self.encoding):
                 anno = list(anno.values())
@@ -66,8 +66,7 @@ class SROIETextDetAnnParser(BaseParser):
                 text = anno[-1]
                 instances.append(
                     dict(poly=poly, text=text, ignore=text == self.ignore))
-        except Exception as e:
+        except Exception:
             pass
 
         return img_file, instances
-        
