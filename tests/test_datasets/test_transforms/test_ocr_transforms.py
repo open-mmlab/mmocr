@@ -264,6 +264,16 @@ class TestFixInvalidPolygon(unittest.TestCase):
             results['gt_polygons']) == len(self.data_info['gt_polygons']) - 1
         for poly in results['gt_polygons']:
             self.assertTrue(len(poly) >= 8 and len(poly) % 2 == 0)
+        # test not fixing the invalid polygons from bboxes
+        transform_wo_bbox = FixInvalidPolygon(
+            mode='fix', min_poly_points=4, fix_from_bbox=False)
+        results = transform_wo_bbox(copy.deepcopy(self.data_info2))
+        # The fourth one is removed because it is a line, and its bbox is also
+        # invalid
+        assert len(
+            results['gt_polygons']) == len(self.data_info['gt_polygons']) - 2
+        for poly in results['gt_polygons']:
+            self.assertTrue(len(poly) >= 8 and len(poly) % 2 == 0)
         # Fixing all invalid polygons would result in an empty result dict,
         # and therefore the transform would return None
         results = transform(copy.deepcopy(self.data_info3))

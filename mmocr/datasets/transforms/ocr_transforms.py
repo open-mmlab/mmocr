@@ -679,13 +679,19 @@ class FixInvalidPolygon(BaseTransform):
             Defaults to 'fix'.
         min_poly_points (int): Minimum number of the coordinate points in a
             polygon. Defaults to 4.
+        fix_from_bbox (bool): Whether to convert the bboxes to polygons when
+            the polygon is invalid and not directly fixable. Defaults to True.
     """
 
-    def __init__(self, mode: str = 'fix', min_poly_points: int = 4) -> None:
+    def __init__(self,
+                 mode: str = 'fix',
+                 min_poly_points: int = 4,
+                 fix_from_bbox: bool = True) -> None:
         super().__init__()
         self.mode = mode
         assert min_poly_points >= 3, 'min_poly_points must be greater than 3.'
         self.min_poly_points = min_poly_points
+        self.fix_from_bbox = fix_from_bbox
         assert self.mode in [
             'fix', 'ignore'
         ], f"Supported modes are 'fix' and 'ignore', but got {self.mode}"
@@ -729,7 +735,7 @@ class FixInvalidPolygon(BaseTransform):
                     # It's hard to fix, e.g. the "polygon" is a line or
                     # a point
                     except Exception:
-                        if 'gt_bboxes' in results:
+                        if self.fix_from_bbox and 'gt_bboxes' in results:
                             bbox = results['gt_bboxes'][idx]
                             bbox_polygon = bbox2poly(bbox)
                             results['gt_polygons'][idx] = bbox_polygon
@@ -746,5 +752,6 @@ class FixInvalidPolygon(BaseTransform):
     def __repr__(self) -> str:
         repr_str = self.__class__.__name__
         repr_str += f'(mode = "{self.mode}", '
-        repr_str += f'min_poly_points = {self.min_poly_points})'
+        repr_str += f'min_poly_points = {self.min_poly_points}, '
+        repr_str += f'fix_from_bbox = {self.fix_from_bbox})'
         return repr_str

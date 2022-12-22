@@ -178,6 +178,9 @@ def poly_make_valid(poly: Polygon) -> Polygon:
     """
     assert isinstance(poly, Polygon)
     fixed_poly = poly if poly.is_valid else poly.buffer(0)
+    # Sometimes the fixed_poly is still a MultiPolygon,
+    # so we need to find the convex hull of the MultiPolygon, which should
+    # always be a Polygon (but could be empty).
     if not isinstance(fixed_poly, Polygon):
         fixed_poly = fixed_poly.convex_hull
     return fixed_poly
