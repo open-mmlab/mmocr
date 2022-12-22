@@ -5,9 +5,10 @@ from .icdar_txt_parser import (ICDARTxtTextDetAnnParser,
 from .svt_parser import SVTTextDetAnnParser
 from .totaltext_parser import TotaltextTextDetAnnParser
 from .wildreceipt_parser import WildreceiptKIEAnnParser
+from .sroie_parser import SROIETextDetAnnParser
 
 __all__ = [
     'ICDARTxtTextDetAnnParser', 'ICDARTxtTextRecogAnnParser',
     'TotaltextTextDetAnnParser', 'WildreceiptKIEAnnParser',
-    'COCOTextDetAnnParser', 'SVTTextDetAnnParser'
+    'COCOTextDetAnnParser', 'SVTTextDetAnnParser', 'SROIETextDetAnnParser'
 ]

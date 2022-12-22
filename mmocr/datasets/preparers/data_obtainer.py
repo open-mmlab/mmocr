@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os
 import os.path as osp
+import glob
 import shutil
 import ssl
 import urllib.request as request
@@ -148,6 +149,14 @@ class NaiveDataObtainer:
         for src, dst in mapping:
             src = osp.join(self.data_root, src)
             dst = osp.join(self.data_root, dst)
+            
+            if '*' in src.split('/')[-1] and not osp.exists(dst):
+                os.makedirs(dst)
+                for f in glob.glob(src):
+                    if osp.exists(f):
+                        shutil.move(f, dst)
+                continue
+            
             if osp.exists(src) and not osp.exists(dst):
                 shutil.move(src, dst)
 

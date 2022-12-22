@@ -32,7 +32,7 @@ data_obtainer = dict(
 
 
 data_converter = dict(
-    type='TextDetDataConverter',
+    type='TextRecogCropConverter',
     splits=['train', 'test'],
     data_root=data_root,
     gatherer=dict(
@@ -44,4 +44,4 @@ data_converter = dict(
     delete=['text', 'task1&2_test(361p)-20221205T104647Z-001', '0325updated', 'annotations']
 )
 
-config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)
+config_generator = dict(type='TextRecogConfigGenerator', data_root=data_root)
