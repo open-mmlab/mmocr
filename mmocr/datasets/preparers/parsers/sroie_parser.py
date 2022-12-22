@@ -70,3 +70,4 @@ class SROIETextDetAnnParser(BaseParser):
             pass
 
         return img_file, instances
+        

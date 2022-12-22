@@ -38,7 +38,7 @@ data_converter = dict(
     gatherer=dict(
         type='pair_gather',
         suffixes=['.jpg'],
-        rule=[r"X(\d+)\.([jJ][pP][gG])", r"X\1.txt"]),
+        rule=[r'X(\d+)\.([jJ][pP][gG])', r'X\1.txt']),
     parser=dict(type='SROIETextDetAnnParser', encoding='utf-8-sig'),
     dumper=dict(type='JsonDumper'),
     delete=['text', 'task1&2_test(361p)-20221205T104647Z-001', '0325updated', 'annotations']
