@@ -25,7 +25,6 @@ Data:
     - textrecog
     - textdet
     - textspotting
-    - kie
   License:
     Type: CDLA
     Link: https://github.com/herobd/NAF_dataset/blob/master/LICENSE

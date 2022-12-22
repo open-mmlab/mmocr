@@ -10,12 +10,15 @@ data_obtainer = dict(
             url='https://github.com/herobd/NAF_dataset/releases/'
             'download/v1.0/labeled_images.tar.gz',
             save_name='naf_image.tar.gz',
+            md5='6521cdc25c313a1f2928a16a77ad8f29',
             split=['train', 'test', 'val'],
             content=['image'],
             mapping=[['naf_image/labeled_images', 'temp_images/']]),
         dict(
-            url='https://github.com/herobd/NAF_dataset.git',
+            url='https://github.com/herobd/NAF_dataset/archive/'
+            'refs/heads/master.zip',
             save_name='naf_anno.zip',
+            md5='abf5af6266cc527d772231751bc884b3',
             split=['train', 'test', 'val'],
             content=['annotation'],
             mapping=[
