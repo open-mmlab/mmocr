@@ -745,9 +745,10 @@ class FixInvalidPolygon(BaseTransform):
                                 remove_inds.append(idx)
                         else:
                             remove_inds.append(idx)
-        if len(remove_inds) == len(results['gt_polygons']):
-            return None
-        return remove_pipeline_elements(results, remove_inds)
+            if len(remove_inds) == len(results['gt_polygons']):
+                return None
+            results = remove_pipeline_elements(results, remove_inds)
+        return results
 
     def __repr__(self) -> str:
         repr_str = self.__class__.__name__

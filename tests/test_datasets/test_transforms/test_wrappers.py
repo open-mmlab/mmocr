@@ -61,7 +61,7 @@ class TestImgAug(unittest.TestCase):
     def test_transform(self):
 
         # Test empty transform
-        imgaug_transform = ImgAugWrapper()
+        imgaug_transform = ImgAugWrapper(fix_poly_trans=None)
         results = self._create_dummy_data()
         origin_results = copy.deepcopy(results)
         results = imgaug_transform(results)
@@ -72,7 +72,7 @@ class TestImgAug(unittest.TestCase):
                                  origin_results['gt_texts'])
 
         args = [dict(cls='Affine', translate_px=dict(x=-10, y=-10))]
-        imgaug_transform = ImgAugWrapper(args)
+        imgaug_transform = ImgAugWrapper(args, fix_poly_trans=None)
         results = self._create_dummy_data()
         results = imgaug_transform(results)
 
@@ -99,7 +99,7 @@ class TestImgAug(unittest.TestCase):
         label_target = np.array([0], dtype=np.int64)
         ignored = np.array([False], dtype=bool)
         texts = ['text1']
-        imgaug_transform = ImgAugWrapper(args)
+        imgaug_transform = ImgAugWrapper(args, fix_poly_trans=None)
         results = self._create_dummy_data()
         results = imgaug_transform(results)
         self.assert_result_equal(results, poly_target, box_target,
@@ -135,8 +135,8 @@ class TestImgAug(unittest.TestCase):
         print(repr(transform))
         self.assertEqual(
             repr(transform),
-            ("ImgAugWrapper(args = [['Resize', [0.5, 3.0]], ['Fliplr', 0.5]])"
-             ))
+            ("ImgAugWrapper(args = [['Resize', [0.5, 3.0]], ['Fliplr', 0.5]], "
+             "fix_poly_trans = {'type': 'FixInvalidPolygon'})"))
 
 
 class TestTorchVisionWrapper(unittest.TestCase):

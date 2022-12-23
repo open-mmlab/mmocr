@@ -64,6 +64,7 @@ class ImgAugWrapper(BaseTransform):
                     'args should be a list of list or dict'
         self.args = args
         self.augmenter = self._build_augmentation(args)
+        self.fix_poly_trans = fix_poly_trans
         if fix_poly_trans is not None:
             self.fix = TRANSFORMS.build(fix_poly_trans)
 
@@ -230,7 +231,7 @@ class ImgAugWrapper(BaseTransform):
     def __repr__(self):
         repr_str = self.__class__.__name__
         repr_str += f'(args = {self.args}, '
-        repr_str += f'fix_poly = {self.fix_poly})'
+        repr_str += f'fix_poly_trans = {self.fix_poly_trans})'
         return repr_str
 
 

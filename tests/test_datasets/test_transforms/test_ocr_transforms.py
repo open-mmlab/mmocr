@@ -247,6 +247,12 @@ class TestFixInvalidPolygon(unittest.TestCase):
                 np.array([0, 10, 0, 10, 10, 0, 0, 10]),
             ],
             gt_ignored=np.array([False, False], dtype=bool))
+        # no gt_polygons
+        self.data_info5 = dict(
+            img=np.random.random((30, 40, 3)),
+            gt_bboxes=np.array([[0., 0., 10., 10.], [0., 0., 10., 10.],
+                                [0, 0, 10, 10], [0, 0, 0, 0]]),
+            gt_ignored=np.array([False, False, False, False], dtype=bool))
 
     def test_transform_fix(self):
         transform = FixInvalidPolygon(mode='fix', min_poly_points=4)
@@ -278,6 +284,10 @@ class TestFixInvalidPolygon(unittest.TestCase):
         # and therefore the transform would return None
         results = transform(copy.deepcopy(self.data_info3))
         self.assertIsNone(results)
+        # If no gt_polygon inside
+        results = transform(copy.deepcopy(self.data_info5))
+        for k, v in results.items():
+            self.assertTrue(np.array_equal(v, self.data_info5[k]))
 
     def test_transform_ignore(self):
         transform = FixInvalidPolygon(mode='ignore')
@@ -293,13 +303,18 @@ class TestFixInvalidPolygon(unittest.TestCase):
                                  results['gt_ignored']):
             if not ignored:
                 self.assertTrue(poly2shapely(poly).is_valid)
+        # If no gt_polygon inside
+        results = transform(copy.deepcopy(self.data_info5))
+        for k, v in results.items():
+            self.assertTrue(np.array_equal(v, self.data_info5[k]))
 
     def test_repr(self):
         transform = FixInvalidPolygon()
         print(repr(transform))
         self.assertEqual(
             repr(transform),
-            'FixInvalidPolygon(mode = "fix", min_poly_points = 4)')
+            'FixInvalidPolygon(mode = "fix", min_poly_points = 4, '
+            'fix_from_bbox = True)')
 
 
 class TestRemoveIgnored(unittest.TestCase):
