@@ -166,11 +166,10 @@ class BaseDataConverter:
         for file in list_files(img_path, suffixes):
             if not re.match(rule[0], osp.basename(file)):
                 continue
-            else:
-                file2 = re.sub(rule[0], rule[1], osp.basename(file))
-                file2 = file.replace(osp.basename(file), file2)
-                file2 = file2.replace(self.img_dir, 'annotations')
-                files.append((file, file2))
+            file2 = re.sub(rule[0], rule[1], osp.basename(file))
+            file2 = file.replace(osp.basename(file), file2)
+            file2 = file2.replace(self.img_dir, 'annotations')
+            files.append((file, file2))
 
         return files
 
