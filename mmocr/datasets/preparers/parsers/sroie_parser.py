@@ -51,8 +51,8 @@ class SROIETextDetAnnParser(BaseParser):
         img_file, txt_file = file
         instances = list()
         try:
-        # An UnicodeDecodeError occurred while loading a line of original 
-        # SROIE test annotations. It can be safely ignored for now
+        # there might be some illegal symbols in the annotation
+        # which cannot be parsed by loader
             for anno in self.loader(txt_file, self.sep, self.format,
                                     self.encoding):
                 anno = list(anno.values())
