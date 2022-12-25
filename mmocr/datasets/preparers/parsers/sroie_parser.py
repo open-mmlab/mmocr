@@ -8,7 +8,7 @@ from .base import BaseParser
 
 @DATA_PARSERS.register_module()
 class SROIETextDetAnnParser(BaseParser):
-    """ICDAR Txt Format Text Detection Annotation Parser.
+    """SROIE Txt Format Text Detection Annotation Parser.
 
     The original annotation format of this dataset is stored in txt files,
     which is formed as the following format:
@@ -51,6 +51,8 @@ class SROIETextDetAnnParser(BaseParser):
         img_file, txt_file = file
         instances = list()
         try:
+        # An UnicodeDecodeError occurred while loading a line of original 
+        # SROIE test annotations. It can be safely ignored for now
             for anno in self.loader(txt_file, self.sep, self.format,
                                     self.encoding):
                 anno = list(anno.values())

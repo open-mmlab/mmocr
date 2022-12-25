@@ -150,14 +150,12 @@ class NaiveDataObtainer:
             src = osp.join(self.data_root, src)
             dst = osp.join(self.data_root, dst)
 
-            if '*' in src.split('/')[-1] and not osp.exists(dst):
-                os.makedirs(dst)
+            if '*' in src and not osp.exists(dst):
+                mkdir_or_exist(dst)
                 for f in glob.glob(src):
-                    if osp.exists(f):
-                        shutil.move(f, dst)
-                continue
+                    shutil.move(f, dst)
 
-            if osp.exists(src) and not osp.exists(dst):
+            elif osp.exists(src) and not osp.exists(dst):
                 shutil.move(src, dst)
 
     def clean(self) -> None:
