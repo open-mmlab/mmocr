@@ -1,0 +1,79 @@
+Title: 'Reading and Writing: Discriminative and Generative Modeling for Self-Supervised Text Recognition'
+Abbreviation: DiG
+Tasks:
+ - TextRecog
+Venue: ACMMM
+Year: 2022
+Lab/Company:
+ - Huazhong University of Science and Technology
+ - Huawei Inc.
+URL: 'https://dl.acm.org/doi/abs/10.1145/3503161.3547784'
+Paper Reading URL: 'https://mp.weixin.qq.com/s/BS66ezCvMrbHTAFL3sO7EQ'
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Existing text recognition methods usually need large-scale training
+data. Most of them rely on synthetic training data due to the lack of annotated
+real images. However, there is a domain gap between the synthetic data and real
+data, which limits the performance of the text recognition models. Recent
+self-supervised text recognition methods attempted to utilize unlabeled real
+images by introducing contrastive learning, which mainly learns the
+discrimination of the text images. Inspired by the observation that humans
+learn to recognize the texts through both reading and writing, we propose to
+learn discrimination and generation by integrating contrastive learning and
+masked image modeling in our self-supervised method. The contrastive learning
+branch is adopted to learn the discrimination of text images, which imitates
+the reading behavior of humans. Meanwhile, masked image modeling is firstly
+introduced for text recognition to learn the context generation of the text
+images, which is similar to the writing behavior. The experimental results
+show that our method outperforms previous self-supervised text recognition
+methods by 10.2%-20.2% on irregular scene text recognition datasets. Moreover,
+our proposed text recognizer exceeds previous state-of-the-art text recognition
+methods by averagely 5.3% on 11 benchmarks, with similar model size. We also
+demonstrate that our pre-trained model can be easily applied to other
+text-related tasks with obvious performance gain.'
+MODELS:
+ Architecture:
+  - CTC
+  - Attention
+  - Transformer
+ Learning Method:
+  - Self-Supervised
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209343741-bd6ddbcb-6229-4f71-89ef-09ecc4bf7b65.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: 52M
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+     - Real
+   Test DataSets:
+     Avg.: 95.0
+     IIIT5K:
+       WAICS: 97.6
+     SVT:
+       WAICS: 96.5
+     IC13:
+       WAICS: 97.6
+     IC15:
+       WAICS: 88.9
+     SVTP:
+       WAICS: 92.9
+     CUTE:
+       WAICS: 96.5
+Bibtex: '@inproceedings{yang2022reading,
+  title={Reading and Writing: Discriminative and Generative Modeling for Self-Supervised Text Recognition},
+  author={Yang, Mingkun and Liao, Minghui and Lu, Pu and Wang, Jing and Zhu, Shenggao and Luo, Hualin and Tian, Qi and Bai, Xiang},
+  booktitle={Proceedings of the 30th ACM International Conference on Multimedia},
+  pages={4214--4223},
+  year={2022}
+}'

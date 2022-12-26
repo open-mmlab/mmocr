@@ -60,29 +60,16 @@ MODELS:
      Avg.: 93.3
      IIIT5K:
        WAICS: 97.3
-       WAIC: N/A
-       benchmark: True
      SVT:
        WAICS: 96.6
-       WAIC: N/A
-       benchmark: True
      IC13:
        WAICS: 97.0
-       WAIC: N/A
-       benchmark: True
      IC15:
        WAICS: 84.7
-       WAIC: N/A
-       benchmark: True
      SVTP:
        WAICS: 93.0
-       WAIC: N/A
-       benchmark: True
      CUTE:
        WAICS: 93.8
-       WAIC: N/A
-       benchmark: True
-     Other Datasets:
 Bibtex: '@article{aberdam2022multimodal,
   title={Multimodal Semi-Supervised Learning for Text Recognition},
   author={Aberdam, Aviad and Ganz, Roy and Mazor, Shai and Litman, Ron},

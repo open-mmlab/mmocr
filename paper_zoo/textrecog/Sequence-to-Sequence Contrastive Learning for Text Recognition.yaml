@@ -52,29 +52,16 @@ MODELS:
      Avg.: N/A
      IIIT5K:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
      SVT:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
      IC13:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
      IC15:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
      SVTP:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
      CUTE:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
-     Other Datasets:
 Bibtex: '@inproceedings{aberdam2021sequence,
   title={Sequence-to-sequence contrastive learning for text recognition},
   author={Aberdam, Aviad and Litman, Ron and Tsiper, Shahar and Anschel, Oron and Slossberg, Ron and Mazor, Shai and Manmatha, R and Perona, Pietro},

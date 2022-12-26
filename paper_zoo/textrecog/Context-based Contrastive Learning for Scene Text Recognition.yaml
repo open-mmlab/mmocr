@@ -57,29 +57,16 @@ MODELS:
      Avg.: 92.4
      IIIT5K:
        WAICS: 96.5
-       WAIC: N/A
-       benchmark: True
      SVT:
        WAICS: 94.3
-       WAIC: N/A
-       benchmark: True
      IC13:
        WAICS: 97.7
-       WAIC: N/A
-       benchmark: True
      IC15:
        WAICS: 85.4
-       WAIC: N/A
-       benchmark: True
      SVTP:
        WAICS: 89.3
-       WAIC: N/A
-       benchmark: True
      CUTE:
        WAICS: 91.3
-       WAIC: N/A
-       benchmark: True
-     Other Datasets:
 Bibtex: '@inproceedings{zhang2022context,
   title={Context-based Contrastive Learning for Scene Text Recognition},
   author={Zhang, Xinyun and Zhu, Binwu and Yao, Xufeng and Sun, Qi and Li, Ruiyu and Yu, Bei},

@@ -53,29 +53,16 @@ MODELS:
      Avg.: 93.8
      IIIT5K:
        WAICS: 96.5
-       WAIC: N/A
-       benchmark: True
      SVT:
        WAICS: 94.1
-       WAIC: N/A
-       benchmark: True
      IC13:
        WAICS: 97.8
-       WAIC: N/A
-       benchmark: True
      IC15:
        WAICS: 88.7
-       WAIC: N/A
-       benchmark: True
      SVTP:
        WAICS: 90.2
-       WAIC: N/A
-       benchmark: True
      CUTE:
        WAICS: 92.7
-       WAIC: N/A
-       benchmark: True
-     Other Datasets:
 Bibtex: '@article{lyu2022maskocr,
   title={MaskOCR: Text Recognition with Masked Encoder-Decoder Pretraining},
   author={Lyu, Pengyuan and Zhang, Chengquan and Liu, Shanshan and Qiao, Meina and Xu, Yangliu and Wu, Liang and Yao, Kun and Han, Junyu and Ding, Errui and Wang, Jingdong},

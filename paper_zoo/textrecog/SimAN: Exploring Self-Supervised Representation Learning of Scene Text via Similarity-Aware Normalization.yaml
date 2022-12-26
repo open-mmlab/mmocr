@@ -54,29 +54,16 @@ MODELS:
      Avg.: N/A
      IIIT5K:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
      SVT:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
      IC13:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
      IC15:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
      SVTP:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
      CUTE:
        WAICS: N/A
-       WAIC: N/A
-       benchmark: True
-     Other Datasets:
 Bibtex: '@inproceedings{luo2022siman,
   title={SimAN: Exploring Self-Supervised Representation Learning of Scene Text via Similarity-Aware Normalization},
   author={Luo, Canjie and Jin, Lianwen and Chen, Jingdong},
