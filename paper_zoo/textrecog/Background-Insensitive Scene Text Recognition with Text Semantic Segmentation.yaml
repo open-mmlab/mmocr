@@ -6,7 +6,9 @@ Venue: ECCV
 Year: 2022
 Lab/Company:
  - University of South Carolina, Columbia, SC 29201, USA
-URL: 'https://link.springer.com/chapter/10.1007/978-3-031-19806-9_10'
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-031-19806-9_10'
+  Arxiv: 'https://www.cse.sc.edu/~songwang/document/eccv22c.pdf'
 Paper Reading URL: N/A
 Code: N/A
 Supported In MMOCR: N/S

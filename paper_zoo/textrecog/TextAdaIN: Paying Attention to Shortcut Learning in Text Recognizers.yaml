@@ -6,7 +6,9 @@ Venue: ECCV
 Year: 2022
 Lab/Company:
  - AWS AI Labs
-URL: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_25'
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_25'
+  Arxiv: 'https://arxiv.org/abs/2105.03906'
 Paper Reading URL: N/A
 Code: 'https://github.com/ amazon-research/textadain-robust-recognition'
 Supported In MMOCR: N/S

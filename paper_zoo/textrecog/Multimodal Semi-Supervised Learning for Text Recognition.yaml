@@ -6,7 +6,8 @@ Venue: arXiv
 Year: 2022
 Lab/Company:
  - AWS AI Labs
-URL: 'https://arxiv.org/abs/2211.04785'
+URL:
+  Arxiv: 'https://arxiv.org/abs/2211.04785'
 Paper Reading URL: N/A
 Code: N/A
 Supported In MMOCR: N/S

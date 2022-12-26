@@ -7,7 +7,9 @@ Year: 2022
 Lab/Company:
  - Nanyang Technological University, Singapore
  - Institute for Infocomm Research, A*STAR, Singapore
-URL: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_28'
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_28'
+  Arxiv: 'https://ui.adsabs.harvard.edu/abs/2022arXiv221104963T/abstract'
 Paper Reading URL: N/A
 Code: N/A
 Supported In MMOCR: N/S

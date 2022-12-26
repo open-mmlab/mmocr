@@ -7,7 +7,9 @@ Year: 2022
 Lab/Company:
  - Huazhong University of Science and Technology
  - Huawei Inc.
-URL: 'https://dl.acm.org/doi/abs/10.1145/3503161.3547784'
+URL:
+  Venue: 'https://dl.acm.org/doi/abs/10.1145/3503161.3547784'
+  Arxiv: 'https://arxiv.org/abs/2207.00193'
 Paper Reading URL: 'https://mp.weixin.qq.com/s/BS66ezCvMrbHTAFL3sO7EQ'
 Code: N/A
 Supported In MMOCR: N/S

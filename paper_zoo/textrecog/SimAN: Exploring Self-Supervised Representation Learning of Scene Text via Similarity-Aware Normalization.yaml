@@ -6,7 +6,9 @@ Venue: CVPR
 Year: 2022
 Lab/Company:
  - South China University of Technology
-URL: 'https://openaccess.thecvf.com/content/CVPR2022/html/Luo_SimAN_Exploring_Self-Supervised_Representation_Learning_of_Scene_Text_via_Similarity-Aware_CVPR_2022_paper.html'
+URL:
+  Venue: 'https://openaccess.thecvf.com/content/CVPR2022/html/Luo_SimAN_Exploring_Self-Supervised_Representation_Learning_of_Scene_Text_via_Similarity-Aware_CVPR_2022_paper.html'
+  Arxiv: 'https://arxiv.org/abs/2203.10492'
 Paper Reading URL: 'https://mp.weixin.qq.com/s/UdEakobM85SAJ6OUU-Johg'
 Code: 'https://github.com/Canjie-Luo/Real-300K'
 Supported In MMOCR: N/S

@@ -7,7 +7,9 @@ Year: 2022
 Lab/Company:
  - The Chinese University of Hong Kong
  - SmartMore
-URL: 'https://www.aaai.org/AAAI22Papers/AAAI-10147.ZhangX.pdf'
+URL:
+  Venue: 'https://www.aaai.org/AAAI22Papers/AAAI-10147.ZhangX.pdf'
+  Arxiv: 'http://www.cse.cuhk.edu.hk/~byu/papers/C139-AAAI2022-ConCLR.pdf'
 Paper Reading URL: 'https://mp.weixin.qq.com/s/7ayYKALDc3-nsBgEJG-D2A'
 Code: N/A
 Supported In MMOCR: N/S

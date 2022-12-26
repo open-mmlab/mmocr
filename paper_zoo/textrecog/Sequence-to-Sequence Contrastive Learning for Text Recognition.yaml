@@ -6,7 +6,9 @@ Venue: CVPR
 Year: 2021
 Lab/Company:
  - AWS
-URL: 'https://openaccess.thecvf.com/content/CVPR2021/html/Aberdam_Sequence-to-Sequence_Contrastive_Learning_for_Text_Recognition_CVPR_2021_paper.html'
+URL:
+  Venue: 'https://openaccess.thecvf.com/content/CVPR2021/html/Aberdam_Sequence-to-Sequence_Contrastive_Learning_for_Text_Recognition_CVPR_2021_paper.html'
+  Arxiv: 'https://arxiv.org/abs/2012.10873'
 Paper Reading URL: 'https://mp.weixin.qq.com/s/YZiXhyhjj091b8fGC6Xduw'
 Code: N/A
 Supported In MMOCR: N/S

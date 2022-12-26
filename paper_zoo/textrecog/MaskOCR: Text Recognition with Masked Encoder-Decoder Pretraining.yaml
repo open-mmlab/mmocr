@@ -6,9 +6,10 @@ Venue: arXiv
 Year: 2022
 Lab/Company:
  - Department of Computer Vision Technology (VIS), Baidu Inc.
-URL: 'https://openaccess.thecvf.com/content/CVPR2022/html/Luo_SimAN_Exploring_Self-Supervised_Representation_Learning_of_Scene_Text_via_Similarity-Aware_CVPR_2022_paper.html'
-Paper Reading URL: 'https://mp.weixin.qq.com/s/UdEakobM85SAJ6OUU-Johg'
-Code: 'https://github.com/Canjie-Luo/Real-300K'
+URL:
+  Arxiv: 'https://arxiv.org/abs/2206.00311'
+Paper Reading URL: N/A
+Code: N/A
 Supported In MMOCR: N/S
 PaperType:
  - Algorithm
@@ -36,7 +37,7 @@ MODELS:
   - Supervised
  Language Modality:
   - Implicit Language Model
- Network Structure: 'https://user-images.githubusercontent.com/65173622/209343741-bd6ddbcb-6229-4f71-89ef-09ecc4bf7b65.png'
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209494710-489fe94b-d550-4c5e-bdab-24590a3c3fe2.png'
  FPS:
    DEVICE: N/A
    ITEM: N/A
