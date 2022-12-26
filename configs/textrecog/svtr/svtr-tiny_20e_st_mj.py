@@ -53,7 +53,7 @@ train_pipeline = [
         type='RandomApply',
         prob=0.4,
         transforms=[
-            dict(type='TextImageAugmentations', ),
+            dict(type='TextRecogGeneralAug', ),
         ],
     ),
     dict(
@@ -94,7 +94,7 @@ train_pipeline = [
         type='RandomApply',
         prob=0.4,
         transforms=[
-            dict(type='TextRecogImageContentJitter', ),
+            dict(type='ImageContentJitter', ),
         ],
     ),
     dict(
@@ -110,7 +110,7 @@ train_pipeline = [
         type='RandomApply',
         prob=0.4,
         transforms=[
-            dict(type='TextRecogReverse', ),
+            dict(type='ReversePixels', ),
         ],
     ),
     dict(type='Resize', scale=(256, 64)),
