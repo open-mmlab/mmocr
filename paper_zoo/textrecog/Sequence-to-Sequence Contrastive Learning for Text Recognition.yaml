@@ -1,0 +1,84 @@
+Title: 'Sequence-to-Sequence Contrastive Learning for Text Recognition'
+Abbreviation: SeqCLR
+Tasks:
+ - TextRecog
+Venue: CVPR
+Year: 2021
+Lab/Company:
+ - AWS
+URL: 'https://openaccess.thecvf.com/content/CVPR2021/html/Aberdam_Sequence-to-Sequence_Contrastive_Learning_for_Text_Recognition_CVPR_2021_paper.html'
+Paper Reading URL: 'https://mp.weixin.qq.com/s/YZiXhyhjj091b8fGC6Xduw'
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'We propose a framework for sequence-to-sequence contrastive learning
+(SeqCLR) of visual representations, which we apply to text recognition. To
+account for the sequenceto-sequence structure, each feature map is divided
+into different instances over which the contrastive loss is computed. This
+operation enables us to contrast in a sub-word level, where from each image
+we extract several positive pairs and multiple negative examples. To yield
+effective visual representations for text recognition, we further suggest
+novel augmentation heuristics, different encoder architectures and custom
+projection heads. Experiments on handwritten text and on scene text show that
+when a text decoder is trained on the learned representations, our method
+outperforms non-sequential contrastive methods. In addition, when the amount
+of supervision is reduced, SeqCLR significantly improves performance compared
+with supervised training, and when fine-tuned with 100% of the labels, our
+method achieves state-of-the-art results on standard handwritten text
+recognition benchmarks.'
+MODELS:
+ Architecture:
+  - CTC
+  - Attention
+ Learning Method:
+  - Self-Supervised
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209266442-a8133465-1eb5-4097-8098-b2d4db6923ab.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - IAM
+     - RIMES
+   Test DataSets:
+     Avg.: N/A
+     IIIT5K:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     SVT:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     IC13:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     IC15:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     SVTP:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     CUTE:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     Other Datasets:
+Bibtex: '@inproceedings{aberdam2021sequence,
+  title={Sequence-to-sequence contrastive learning for text recognition},
+  author={Aberdam, Aviad and Litman, Ron and Tsiper, Shahar and Anschel, Oron and Slossberg, Ron and Mazor, Shai and Manmatha, R and Perona, Pietro},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={15302--15312},
+  year={2021}
+}'

@@ -1,0 +1,84 @@
+Title: 'MaskOCR: Text Recognition with Masked Encoder-Decoder Pretraining'
+Abbreviation: MaskOCR
+Tasks:
+ - TextRecog
+Venue: arXiv
+Year: 2022
+Lab/Company:
+ - Department of Computer Vision Technology (VIS), Baidu Inc.
+URL: 'https://openaccess.thecvf.com/content/CVPR2022/html/Luo_SimAN_Exploring_Self-Supervised_Representation_Learning_of_Scene_Text_via_Similarity-Aware_CVPR_2022_paper.html'
+Paper Reading URL: 'https://mp.weixin.qq.com/s/UdEakobM85SAJ6OUU-Johg'
+Code: 'https://github.com/Canjie-Luo/Real-300K'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+ - Dataset
+Abstract: 'In this paper, we present a model pretraining technique, named
+MaskOCR, for text recognition. Our text recognition architecture is an
+encoder-decoder transformer: the encoder extracts the patch-level
+representations, and the decoder recognizes the text from the representations.
+Our approach pretrains both the encoder and the decoder in a sequential manner.
+(i) We pretrain the encoder in a self-supervised manner over a large set of
+unlabeled real text images. We adopt the masked image modeling approach, which
+shows the effectiveness for general images, expecting that the representations
+take on semantics. (ii) We pretrain the decoder over a large set of synthesized
+text images in a supervised manner and enhance the language modeling capability
+of the decoder by randomly masking some text image patches occupied by
+characters input to the encoder and accordingly the representations input to
+the decoder. Experiments show that the proposed MaskOCR approach achieves
+superior results on the benchmark datasets, including Chinese and English text
+images.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Self-Supervised
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209343741-bd6ddbcb-6229-4f71-89ef-09ecc4bf7b65.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: 315M
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+     - Real
+   Test DataSets:
+     Avg.: 93.8
+     IIIT5K:
+       WAICS: 96.5
+       WAIC: N/A
+       benchmark: True
+     SVT:
+       WAICS: 94.1
+       WAIC: N/A
+       benchmark: True
+     IC13:
+       WAICS: 97.8
+       WAIC: N/A
+       benchmark: True
+     IC15:
+       WAICS: 88.7
+       WAIC: N/A
+       benchmark: True
+     SVTP:
+       WAICS: 90.2
+       WAIC: N/A
+       benchmark: True
+     CUTE:
+       WAICS: 92.7
+       WAIC: N/A
+       benchmark: True
+     Other Datasets:
+Bibtex: '@article{lyu2022maskocr,
+  title={MaskOCR: Text Recognition with Masked Encoder-Decoder Pretraining},
+  author={Lyu, Pengyuan and Zhang, Chengquan and Liu, Shanshan and Qiao, Meina and Xu, Yangliu and Wu, Liang and Yao, Kun and Han, Junyu and Ding, Errui and Wang, Jingdong},
+  journal={arXiv preprint arXiv:2206.00311},
+  year={2022}
+}'

@@ -1,0 +1,91 @@
+Title: 'Multimodal Semi-Supervised Learning for Text Recognition'
+Abbreviation: SemiMTR
+Tasks:
+ - TextRecog
+Venue: arXiv
+Year: 2022
+Lab/Company:
+ - AWS AI Labs
+URL: 'https://arxiv.org/abs/2211.04785'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Dataset
+Abstract: 'Until recently, the number of public real-world text images was
+insufficient for training scene text recognizers. Therefore, most modern
+training methods rely on synthetic data and operate in a fully supervised
+manner. Nevertheless, the amount of public real-world text images has increased
+significantly lately, including a great deal of unlabeled data. Leveraging
+these resources requires semi-supervised approaches; however, the few existing
+methods do not account for vision-language multimodality structure and
+therefore suboptimal for state-of-the-art multimodal architectures. To bridge
+this gap, we present semi-supervised learning for multimodal text recognizers
+(SemiMTR) that leverages unlabeled data at each modality training phase.
+Notably, our method refrains from extra training stages and maintains the
+current three-stage multimodal training procedure. Our algorithm starts by
+pretraining the vision model through a single-stage training that unifies
+self-supervised learning with supervised training. More specifically, we extend
+an existing visual representation learning algorithm and propose the first
+contrastivebased method for scene text recognition. After pretraining the
+language model on a text corpus, we fine-tune the entire network via a
+sequential, character-level, consistency regularization between weakly and
+strongly augmented views of text images. In a novel setup, consistency is
+enforced on each modality separately. Extensive experiments validate that
+our method outperforms the current training schemes and achieves
+stateof-the-art results on multiple scene text recognition benchmarks.
+Code will be published upon publication.'
+MODELS:
+ Architecture:
+  - Attention
+ Learning Method:
+  - Self-Supervised
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209488117-5c6c6ee1-3419-4aec-97f5-1e1b28ae25ff.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+     - Real
+   Test DataSets:
+     Avg.: 93.3
+     IIIT5K:
+       WAICS: 97.3
+       WAIC: N/A
+       benchmark: True
+     SVT:
+       WAICS: 96.6
+       WAIC: N/A
+       benchmark: True
+     IC13:
+       WAICS: 97.0
+       WAIC: N/A
+       benchmark: True
+     IC15:
+       WAICS: 84.7
+       WAIC: N/A
+       benchmark: True
+     SVTP:
+       WAICS: 93.0
+       WAIC: N/A
+       benchmark: True
+     CUTE:
+       WAICS: 93.8
+       WAIC: N/A
+       benchmark: True
+     Other Datasets:
+Bibtex: '@article{aberdam2022multimodal,
+  title={Multimodal Semi-Supervised Learning for Text Recognition},
+  author={Aberdam, Aviad and Ganz, Roy and Mazor, Shai and Litman, Ron},
+  journal={arXiv preprint arXiv:2205.03873},
+  year={2022}
+}'

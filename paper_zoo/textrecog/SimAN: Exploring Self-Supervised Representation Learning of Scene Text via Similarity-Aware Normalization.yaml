@@ -1,0 +1,86 @@
+Title: 'SimAN: Exploring Self-Supervised Representation Learning of Scene Text via Similarity-Aware Normalization'
+Abbreviation: SimAN
+Tasks:
+ - TextRecog
+Venue: CVPR
+Year: 2022
+Lab/Company:
+ - South China University of Technology
+URL: 'https://openaccess.thecvf.com/content/CVPR2022/html/Luo_SimAN_Exploring_Self-Supervised_Representation_Learning_of_Scene_Text_via_Similarity-Aware_CVPR_2022_paper.html'
+Paper Reading URL: 'https://mp.weixin.qq.com/s/UdEakobM85SAJ6OUU-Johg'
+Code: 'https://github.com/Canjie-Luo/Real-300K'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+ - Dataset
+Abstract: 'Recently self-supervised representation learning has drawn
+considerable attention from the scene text recognition community. Different
+from previous studies using contrastive learning, we tackle the issue from an
+alternative perspective, i.e., by formulating the representation learning
+scheme in a generative manner. Typically, the neighboring image patches among
+one text line tend to have similar styles, including the strokes, textures,
+colors, etc. Motivated by this common sense, we augment one image patch and
+use its neighboring patch as guidance to recover itself. Specifically, we
+propose a Similarity-Aware Normalization (SimAN) module to identify the
+different patterns and align the corresponding styles from the guiding patch.
+In this way, the network gains representation capability for distinguishing
+complex patterns such as messy strokes and cluttered backgrounds. Experiments
+show that the proposed SimAN significantly improves the representation quality
+and achieves promising performance. Moreover, we surprisingly find that our
+self-supervised generative network has impressive potential for data synthesis,
+text image editing, and font interpolation, which suggests that the proposed
+SimAN has a wide range of practical applications.'
+MODELS:
+ Architecture:
+  - CTC
+  - Attention
+ Learning Method:
+  - Self-Supervised
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209343741-bd6ddbcb-6229-4f71-89ef-09ecc4bf7b65.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+   Test DataSets:
+     Avg.: N/A
+     IIIT5K:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     SVT:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     IC13:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     IC15:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     SVTP:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     CUTE:
+       WAICS: N/A
+       WAIC: N/A
+       benchmark: True
+     Other Datasets:
+Bibtex: '@inproceedings{luo2022siman,
+  title={SimAN: Exploring Self-Supervised Representation Learning of Scene Text via Similarity-Aware Normalization},
+  author={Luo, Canjie and Jin, Lianwen and Chen, Jingdong},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={1039--1048},
+  year={2022}
+}'

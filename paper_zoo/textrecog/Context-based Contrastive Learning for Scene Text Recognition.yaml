@@ -1,0 +1,88 @@
+Title: 'Context-based Contrastive Learning for Scene Text Recognition'
+Abbreviation: ConCLR
+Tasks:
+ - TextRecog
+Venue: AAAI
+Year: 2022
+Lab/Company:
+ - The Chinese University of Hong Kong
+ - SmartMore
+URL: 'https://www.aaai.org/AAAI22Papers/AAAI-10147.ZhangX.pdf'
+Paper Reading URL: 'https://mp.weixin.qq.com/s/7ayYKALDc3-nsBgEJG-D2A'
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Pursuing accurate and robust recognizers has been a longlasting goal
+for scene text recognition (STR) researchers. Recently, attention-based methods
+have demonstrated their effectiveness and achieved impressive results on public
+benchmarks. The attention mechanism enables models to recognize scene text with
+severe visual distortions by leveraging contextual information. However, recent
+studies revealed that the implicit over-reliance of context leads to catastrophic
+out-ofvocabulary performance. On the contrary to the superior accuracy of the
+seen text, models are prone to misrecognize unseen text even with good image
+quality. We propose a novel framework, Context-based contrastive learning
+(ConCLR), to alleviate this issue. Our proposed method first generates
+characters with different contexts via simple image concatenation operations
+and then optimizes contrastive loss on their embeddings. By pulling together
+clusters of identical characters within various contexts and pushing apart
+clusters of different characters in embedding space, ConCLR suppresses the
+side-effect of overfitting to specific contexts and learns a more robust
+representation. Experiments show that ConCLR significantly improves
+out-of-vocabulary generalization and achieves state-of-the-art performance on
+public benchmarks together with attention-based recognizers.'
+MODELS:
+ Architecture:
+  - CTC
+  - Attention
+  - Transformer
+ Learning Method:
+  - Self-Supervised
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209343799-96428e0e-9a93-4763-be47-a23f575dc2f3.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 92.4
+     IIIT5K:
+       WAICS: 96.5
+       WAIC: N/A
+       benchmark: True
+     SVT:
+       WAICS: 94.3
+       WAIC: N/A
+       benchmark: True
+     IC13:
+       WAICS: 97.7
+       WAIC: N/A
+       benchmark: True
+     IC15:
+       WAICS: 85.4
+       WAIC: N/A
+       benchmark: True
+     SVTP:
+       WAICS: 89.3
+       WAIC: N/A
+       benchmark: True
+     CUTE:
+       WAICS: 91.3
+       WAIC: N/A
+       benchmark: True
+     Other Datasets:
+Bibtex: '@inproceedings{zhang2022context,
+  title={Context-based Contrastive Learning for Scene Text Recognition},
+  author={Zhang, Xinyun and Zhu, Binwu and Yao, Xufeng and Sun, Qi and Li, Ruiyu and Yu, Bei},
+  year={2022},
+  organization={AAAI}
+}'
