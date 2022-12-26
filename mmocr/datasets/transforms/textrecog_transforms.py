@@ -588,6 +588,13 @@ class TextRecogRandomCrop(BaseTransform):
         self.min_pixels = min_pixels
         self.max_pixels = max_pixels
 
+    @cache_randomness
+    def get_random_vars(self):
+        """Get all the random values used in this transform."""
+        crop_pixels = int(random.randint(self.min_pixels, self.max_pixels))
+        crop_top = random.randint(0, 1)
+        return crop_pixels, crop_top
+
     def transform(self, results: Dict) -> Dict:
         """Transform function to crop images.
 
@@ -598,21 +605,20 @@ class TextRecogRandomCrop(BaseTransform):
             dict: Cropped results.
         """
         h = results['img'].shape[0]
-        top_crop = int(random.randint(self.min_pixels, self.max_pixels))
-        top_crop = min(top_crop, h - 1)
-        ratio = random.randint(0, 1)
+        crop_pixels, crop_top = self.get_random_vars()
+        crop_pixels = min(crop_pixels, h - 1)
         img = results['img'].copy()
-        if ratio:
-            img = img[top_crop:h, :, :]
+        if crop_top:
+            img = img[crop_pixels:h, :, :]
         else:
-            img = img[0:h - top_crop, :, :]
+            img = img[0:h - crop_pixels, :, :]
         results['img_shape'] = img.shape[:2]
         results['img'] = img
         return results
 
     def __repr__(self) -> str:
         repr_str = self.__class__.__name__
-        repr_str += f'( min_pixels = {self.min_pixels}, '
+        repr_str += f'(min_pixels = {self.min_pixels}, '
         repr_str += f'max_pixels = {self.max_pixels})'
         return repr_str
 
@@ -683,7 +689,7 @@ class ReversePixels(BaseTransform):
         Returns:
             dict: Reversed results.
         """
-        results['img'] = 255 - results['img'].copy()
+        results['img'] = 255. - results['img'].copy()
         return results
 
     def __repr__(self) -> str:
