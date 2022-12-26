@@ -29,7 +29,7 @@ class NAFTextDetAnnParser(BaseParser):
 
     Args:
         data_root (str): Path to the dataset root.
-        ignore (str): The text of the ignored instances. Default: '#'.
+        ignore (list(str)): The text of the ignored instances. Default: ['#'].
         det (bool): Whether to parse the detection annotation. Default: True.
             If False, the parser will consider special case in NAF dataset
             where the transcription is not available.

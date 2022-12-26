@@ -2,7 +2,7 @@ data_root = 'data/naf'
 cache_path = 'data/cache'
 
 data_obtainer = dict(
-    type='NAFDataObtainer',
+    type='NaiveDataObtainer',
     cache_path=cache_path,
     data_root=data_root,
     files=[
@@ -22,7 +22,10 @@ data_obtainer = dict(
             split=['train', 'test', 'val'],
             content=['annotation'],
             mapping=[
-                ['naf_anno/NAF_dataset-master/groups', 'annotations/'],
+                [
+                    'naf_anno/NAF_dataset-master/groups/**/*.json',
+                    'annotations/'
+                ],
                 [
                     'naf_anno/NAF_dataset-master/train_valid_test_split.json',
                     'data_split.json'
