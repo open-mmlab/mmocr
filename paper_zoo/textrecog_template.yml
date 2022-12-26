@@ -1,0 +1,58 @@
+Title: N/A
+Abbreviation: N/A
+Tasks:
+    - TextRecog
+Venue:
+Year: N/A
+Lab/Company: N/A
+URL: N/A
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/A
+PaperType:
+  - Survey
+  - Algorithm
+  - Dataset
+Abstract:
+
+MODELS:
+  Architecture:
+    - CTC
+    - Attention
+    - Transformer
+  Learning Method:
+    - Self-Supervised
+    - Semi-Supervised
+    - Contrastive
+    - Supervised
+  Language Modality: # Only in Text Recognition
+    - Implicit Language Model
+    - Explicit Language Model
+    - Language Free Model
+  Network Structure: # URL
+  FPS:
+      DEVICE: N/A
+      ITEM: N/A
+  FLOPS:
+      DEVICE: N/A
+      ITEM: N/A
+  PARAMS: N/A
+  Experiment:
+    Training DataSets: # Only in Text Recognition
+      - MJ
+      - ST
+      - SA
+      - Real
+    Test DataSets:
+      IIIT5K:
+        WAICS: N/A
+        WAIC: N/A
+        benchmark: True
+      SVT:
+      IC13:
+      IC15:
+      SVTP:
+      CUTE:
+      Other Datasets:
+
+Bibtex: N/A

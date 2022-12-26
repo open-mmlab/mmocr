@@ -142,3 +142,4 @@ mmocr/.mim
 workdirs/
 .history/
 .dev/
+docs/en/api/generated/

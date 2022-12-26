@@ -32,32 +32,42 @@ when fine-tuning the learned representation on the labeled data.
 Furthermore, we observe that the representation learned by PerSec
 presents great generalization, especially under few labeled data scenes.'
 MODELS:
- Architecture:
-  - CTC
-  - Attention
-  - Transformer
- Learning Method:
-  - Self-Supervised
-  - Supervised
- Language Modality:
-  - Implicit Language Model
- Network Structure: 'architecture.png'
- FPS:
-   DEVICE: N/A
-   ITEM: N/A
- FLOPS:
-   DEVICE: N/A
-   ITEM: N/A
- PARAMS: N/A
- Results:
-   Common Benchmarks:
-     IIIT: 88.1
-     SVT: 96.7
-     IC13: 94.2
-     IC15: 73.6
-     SVTP: 77.7
-     CUTE: 72.7
-     Avg.: 83.8
+  Architecture:
+    - CTC
+    - Attention
+    - Transformer
+  Learning Method:
+    - Self-Supervised
+    - Supervised
+  Language Modality:
+    - Implicit Language Model
+  Network Structure: 'architecture.png'
+  FPS:
+    DEVICE: N/A
+    ITEM: N/A
+  FLOPS:
+    DEVICE: N/A
+    ITEM: N/A
+  PARAMS: N/A
+  Experiment:
+    Training DataSets: # Only in Text Recognition
+      - MJ
+      - ST
+      - SA
+      - Real
+    Test DataSets:
+      IIIT5K:
+        WAICS: 88.1
+      SVT:
+        WAICS: 96.7
+      IC13:
+        WAICS: 73.6
+      IC15:
+        WAICS: 77.7
+      SVTP:
+        WAICS: 72.7
+      CUTE:
+        WAICS: 83.8
 Bibtex: '@inproceedings{liu2022perceiving,
   title={Perceiving Stroke-Semantic Context: Hierarchical Contrastive Learning for Robust Scene Text Recognition},
   author={Liu, Hao and Wang, Bin and Bao, Zhimin and Xue, Mobai and Kang, Sheng and Jiang, Deqiang and Liu, Yinsong and Ren, Bo},

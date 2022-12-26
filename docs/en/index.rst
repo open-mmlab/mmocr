@@ -69,6 +69,12 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
+   :caption: Paper Zoo
+
+   paper_zoo/index.rst
+
+.. toctree::
+   :maxdepth: 2
    :caption: Notes
 
    notes/contribution_guide.md
