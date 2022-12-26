@@ -340,8 +340,7 @@ class TextRecogGeneralAug(BaseTransform):
                 img_h + np.random.randint(thresh) - half_thresh
             ])
 
-        trans = self.warp_mls(img, src_pts, dst_pts, img_w, img_h)
-        dst = trans.generate()
+        dst = self.warp_mls(img, src_pts, dst_pts, img_w, img_h)
 
         return dst
 
@@ -374,8 +373,7 @@ class TextRecogGeneralAug(BaseTransform):
             dst_pts.append([cut * cut_idx + move, 0])
             dst_pts.append([cut * cut_idx + move, img_h])
 
-        trans = self.warp_mls(img, src_pts, dst_pts, img_w, img_h)
-        dst = trans.generate()
+        dst = self.warp_mls(img, src_pts, dst_pts, img_w, img_h)
 
         return dst
 
@@ -398,8 +396,7 @@ class TextRecogGeneralAug(BaseTransform):
         dst_pts.append([img_w, img_h - np.random.randint(thresh)])
         dst_pts.append([0, img_h - np.random.randint(thresh)])
 
-        trans = self.warp_mls(img, src_pts, dst_pts, img_w, img_h)
-        dst = trans.generate()
+        dst = self.warp_mls(img, src_pts, dst_pts, img_w, img_h)
 
         return dst
 
