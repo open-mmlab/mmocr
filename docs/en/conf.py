@@ -89,13 +89,6 @@ html_theme_options = {
     'https://mmocr.readthedocs.io/en/dev-1.x/',
     'menu': [
         {
-            'name':
-            'Tutorial',
-            'url':
-            'https://colab.research.google.com/github/'
-            'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'
-        },
-        {
             'name': 'GitHub',
             'url': 'https://github.com/open-mmlab/mmocr'
         },

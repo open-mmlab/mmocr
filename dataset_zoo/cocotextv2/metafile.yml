@@ -1,0 +1,27 @@
+Name: 'COCO Text v2'
+Paper:
+  Title: 'COCO-Text: Dataset and Benchmark for Text Detection and Recognition in Natural Images'
+  URL: https://arxiv.org/pdf/1601.07140.pdf
+  Venue: arXiv
+  Year: '2016'
+  BibTeX: '@article{veit2016coco,
+  title={Coco-text: Dataset and benchmark for text detection and recognition in natural images},
+  author={Veit, Andreas and Matera, Tomas and Neumann, Lukas and Matas, Jiri and Belongie, Serge},
+  journal={arXiv preprint arXiv:1601.07140},
+  year={2016}}'
+Data:
+  Website: https://bgshih.github.io/cocotext
+  Language:
+    - English
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Tasks:
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: CC BY 4.0
+    Link: https://creativecommons.org/licenses/by/4.0/
+  Format: .json
