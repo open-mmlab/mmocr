@@ -167,6 +167,7 @@ mmocr 为了方便使用提供了预置的模型配置和对应的预训练权�
 | ------------- | :------------------------------------------------------------------------------------: |
 | ABINet        |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#abinet)     |
 | ABINet_Vision |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#abinet)     |
+| ASTER         |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#aster)     |
 | CRNN          |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#crnn)      |
 | MASTER        |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#master)     |
 | NRTR_1/16-1/8 |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#nrtr)      |

@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .abinet import ABINet
+from .aster import ASTER
 from .base import BaseRecognizer
 from .crnn import CRNN
 from .encoder_decoder_recognizer import EncoderDecoderRecognizer
@@ -12,5 +13,5 @@ from .svtr import SVTR
 
 __all__ = [
     'BaseRecognizer', 'EncoderDecoderRecognizer', 'CRNN', 'SARNet', 'NRTR',
-    'RobustScanner', 'SATRN', 'ABINet', 'MASTER', 'SVTR'
+    'RobustScanner', 'SATRN', 'ABINet', 'MASTER', 'SVTR', 'ASTER'
 ]
