@@ -1,0 +1,74 @@
+Title: 'Background-Insensitive Scene Text Recognition with Text Semantic Segmentation'
+Abbreviation: BINet
+Tasks:
+ - TextRecog
+Venue: ECCV
+Year: 2022
+Lab/Company:
+ - University of South Carolina, Columbia, SC 29201, USA
+URL: 'https://link.springer.com/chapter/10.1007/978-3-031-19806-9_10'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Scene Text Recognition (STR) has many important applications in
+computer vision. Complex backgrounds continue to be a big challenge for STR
+because they interfere with text feature extraction. Many existing methods
+use attentional regions, bounding boxes or polygons to reduce such
+interference. However, the text regions located by these methods still contain
+much undesirable background interference. In this paper, we propose a
+Background-Insensitive approach BINet by explicitly leveraging the text
+Semantic Segmentation (SSN) to extract texts more accurately. SSN is trained
+on a set of existing segmentation data, whose volume is only 0.03% of STR
+training data. This prevents the large-scale pixel-level annotations of the
+ STR training data. To effectively utilize the segmentation cues, we design new
+ segmentation refinement and embedding blocks for refining text-masks and
+ reinforcing visual features. Additionally, we propose an efficient pipeline
+ that utilizes Synthetic Initialization (SI) for STR models trained only on
+ real data (1.7% of STR training data), instead of on both synthetic and real
+ data from scratch. Experiments show that the proposed method can recognize
+ text from complex backgrounds more effectively, achieving state-of-the-art
+ performance on several public datasets.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209490055-2aca52d4-9072-4ce4-a256-7fc8b953f59e.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+     - Real
+   Test DataSets:
+     Avg.: 94.4
+     IIIT5K:
+       WAICS: 97.3
+     SVT:
+       WAICS: 96.4
+     IC13:
+       WAICS: 96.8
+     IC15:
+       WAICS: 89.2
+     SVTP:
+       WAICS: 89.9
+     CUTE:
+       WAICS: 95.8
+Bibtex: '@inproceedings{zhao2022background,
+  title={Background-Insensitive Scene Text Recognition with Text Semantic Segmentation},
+  author={Zhao, Liang and Wu, Zhenyao and Wu, Xinyi and Wilsbacher, Greg and Wang, Song},
+  booktitle={European Conference on Computer Vision},
+  pages={163--182},
+  year={2022},
+  organization={Springer}
+}'

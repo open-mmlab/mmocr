@@ -1,0 +1,79 @@
+Title: 'Pure Transformer with Integrated Experts for Scene Text Recognition'
+Abbreviation: PTIE
+Tasks:
+ - TextRecog
+Venue: ECCV
+Year: 2022
+Lab/Company:
+ - Nanyang Technological University, Singapore
+ - Institute for Infocomm Research, A*STAR, Singapore
+URL: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_28'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Scene text recognition (STR) involves the task of reading text in
+cropped images of natural scenes. Conventional models in STR employ
+convolutional neural network (CNN) followed by recurrent neural network in an
+encoder-decoder framework. In recent times, the transformer architecture is
+being widely adopted in STR as it shows strong capability in capturing
+long-term dependency which appears to be prominent in scene text images. Many
+researchers utilized transformer as part of a hybrid CNN-transformer encoder,
+often followed by a transformer decoder. However, such methods only make use
+of the long-term dependency mid-way through the encoding process. Although the
+vision transformer (ViT) is able to capture such dependency at an early stage,
+its utilization remains largely unexploited in STR. This work proposes the use
+of a transformer-only model as a simple baseline which outperforms hybrid
+CNN-transformer models. Furthermore, two key areas for improvement were
+identified. Firstly, the first decoded character has the lowest prediction
+accuracy. Secondly, images of different original aspect ratios react
+differently to the patch resolutions while ViT only employ one fixed patch
+resolution. To explore these areas, Pure Transformer with Integrated Experts
+(PTIE) is proposed. PTIE is a transformer model that can process multiple patch
+resolutions and decode in both the original and reverse character orders. It is
+examined on 7 commonly used benchmarks and compared with over 20
+state-of-the-art methods. The experimental results show that the proposed
+method outperforms them and obtains state-of-the-art results in most
+benchmarks.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209489370-a70ecae3-2397-44e6-94fa-c3f25b32754b.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+   Test DataSets:
+     Avg.: 93.0
+     IIIT5K:
+       WAICS: 96.3
+     SVT:
+       WAICS: 94.9
+     IC13:
+       WAICS: 97.2
+     IC15:
+       WAICS: 87.8
+     SVTP:
+       WAICS: 90.1
+     CUTE:
+       WAICS: 91.7
+Bibtex: '@inproceedings{tan2022pure,
+  title={Pure Transformer with Integrated Experts for Scene Text Recognition},
+  author={Tan, Yew Lee and Kong, Adams Wai-Kin and Kim, Jung-Jae},
+  booktitle={European Conference on Computer Vision},
+  pages={481--497},
+  year={2022},
+  organization={Springer}
+}'

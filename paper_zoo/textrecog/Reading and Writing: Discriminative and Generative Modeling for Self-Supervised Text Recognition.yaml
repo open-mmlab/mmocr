@@ -43,7 +43,7 @@ MODELS:
   - Supervised
  Language Modality:
   - Implicit Language Model
- Network Structure: 'https://user-images.githubusercontent.com/65173622/209343741-bd6ddbcb-6229-4f71-89ef-09ecc4bf7b65.png'
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209489340-906c7cc5-3412-4fa4-99e7-48f39d66b91c.png'
  FPS:
    DEVICE: N/A
    ITEM: N/A

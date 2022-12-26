@@ -1,0 +1,85 @@
+Title: 'Pure Transformer with Integrated Experts for Scene Text Recognition'
+Abbreviation: PETR
+Tasks:
+ - TextRecog
+Venue: TIP
+Year: 2022
+Lab/Company:
+ - University of Science and Technology of China
+URL: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_28'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'The exploration of linguistic information promotes the development of
+scene text recognition task. Benefiting from the significance in parallel
+reasoning and global relationship capture, transformer-based language model
+(TLM) has achieved dominant performance recently. As a decoupled structure
+from the recognition process, we argue that TLM’s capability is limited by the
+input low-quality visual prediction. To be specific: 1) The visual prediction
+with low character-wise accuracy increases the correction burden of TLM. 2)
+The inconsistent word length between visual prediction and original image
+provides a wrong language modeling guidance in TLM. In this paper, we propose
+a Progressive scEne Text Recognizer (PETR) to improve the capability of
+transformer-based language model by handling above two problems. Firstly, a
+Destruction Learning Module (DLM) is proposed to consider the linguistic
+information in the visual context. DLM introduces the recognition of destructed
+images with disordered patches in the training stage. Through guiding the
+vision model to restore patch orders and make word-level prediction on the
+destructed images, visual prediction with high character-wise accuracy is
+obtained by exploring inner relationship between the local visual patches.
+Secondly, a new Language Rectification Module (LRM) is proposed to optimize
+the word length for language guidance rectification. Through progressively
+implementing LRM in different language modeling steps, a novel progressive
+rectification network is constructed to handle some extremely challenging
+cases (e.g. distortion, occlusion, etc.). By utilizing DLM and LRM, PETR
+enhances the capability of transformer-based language model from a more
+general aspect, that is, focusing on the reduction of correction burden and
+rectification of language modeling guidance. Compared with parallel
+transformer-based methods, PETR obtains 1.0% and 0.8% improvement on regular
+and irregular datasets respectively while introducing only 1.7M additional
+parameters. The extensive experiments on both English and Chinese benchmarks
+demonstrate that PETR achieves the state-of-the-art results.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Explicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209489701-073cdf37-5990-4bcf-8aa8-434255fd568e.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+   Test DataSets:
+     Avg.: 90.8
+     IIIT5K:
+       WAICS: 95.8
+     SVT:
+       WAICS: 92.4
+     IC13:
+       WAICS: 97.0
+     IC15:
+       WAICS: 83.3
+     SVTP:
+       WAICS: 86.2
+     CUTE:
+       WAICS: 89.9
+Bibtex: '@article{wang2022petr,
+  title={PETR: Rethinking the Capability of Transformer-Based Language Model in Scene Text Recognition},
+  author={Wang, Yuxin and Xie, Hongtao and Fang, Shancheng and Xing, Mengting and Wang, Jing and Zhu, Shenggao and Zhang, Yongdong},
+  journal={IEEE Transactions on Image Processing},
+  volume={31},
+  pages={5585--5598},
+  year={2022},
+  publisher={IEEE}
+}'

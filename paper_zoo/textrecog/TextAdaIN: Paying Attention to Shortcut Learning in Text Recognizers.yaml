@@ -1,0 +1,75 @@
+Title: 'TextAdaIN: Paying Attention to Shortcut Learning in Text Recognizers'
+Abbreviation: TextAdaIN
+Tasks:
+ - TextRecog
+Venue: ECCV
+Year: 2022
+Lab/Company:
+ - AWS AI Labs
+URL: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_25'
+Paper Reading URL: N/A
+Code: 'https://github.com/ amazon-research/textadain-robust-recognition'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Leveraging the characteristics of convolutional layers, neural
+networks are extremely effective for pattern recognition tasks. However in some
+cases, their decisions are based on unintended information leading to high
+performance on standard benchmarks but also to a lack of generalization to
+challenging testing conditions and unintuitive failures. Recent work has termed
+this ”shortcut learning” and addressed its presence in multiple domains. In
+text recognition, we reveal another such shortcut, whereby recognizers overly
+depend on local image statistics. Motivated by this, we suggest an approach to
+regulate the reliance on local statistics that improves text recognition
+performance. Our method, termed TextAdaIN, creates local distortions in the
+feature map which prevent the network from overfitting to local statistics.
+It does so by viewing each feature map as a sequence of elements and
+deliberately mismatching fine-grained feature statistics between elements in a
+mini-batch. Despite TextAdaIN’s simplicity, extensive experiments show its
+effectiveness compared to other, more complicated methods. TextAdaIN achieves
+state-of-the-art results on standard handwritten text recognition benchmarks.
+It generalizes to multiple architectures and to the domain of scene text
+recognition. Furthermore, we demonstrate that integrating TextAdaIN improves
+robustness towards more challenging testing conditions.'
+MODELS:
+ Architecture:
+  - CTC
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209490313-d4548816-434f-4df5-8f70-616fa129322f.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+   Test DataSets:
+     Avg.: N/A
+     IIIT5K:
+       WAICS: N/A
+     SVT:
+       WAICS: N/A
+     IC13:
+       WAICS: N/A
+     IC15:
+       WAICS: N/A
+     SVTP:
+       WAICS: N/A
+     CUTE:
+       WAICS: N/A
+Bibtex: '@inproceedings{nuriel2022textadain,
+  title={TextAdaIN: Paying attention to shortcut learning in text recognizers},
+  author={Nuriel, Oren and Fogel, Sharon and Litman, Ron},
+  booktitle={European Conference on Computer Vision},
+  pages={427--445},
+  year={2022},
+  organization={Springer}
+}'
