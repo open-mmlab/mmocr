@@ -36,13 +36,14 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
                  vis_backends: Optional[Dict] = None,
                  save_dir: Optional[str] = None,
                  gt_color: Optional[Union[str, Tuple[int, int, int]]] = 'g',
-                 pred_color: Optional[Union[str, Tuple[int, int,
-                                                       int]]] = 'r') -> None:
+                 pred_color: Optional[Union[str, Tuple[int, int, int]]] = 'r',
+                 **kwargs) -> None:
         super().__init__(
             name=name,
             image=image,
             vis_backends=vis_backends,
-            save_dir=save_dir)
+            save_dir=save_dir,
+            **kwargs)
         self.gt_color = gt_color
         self.pred_color = pred_color
 
@@ -66,7 +67,8 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
             colors=self.gt_color,
             font_sizes=font_size,
             vertical_alignments='center',
-            horizontal_alignments='center')
+            horizontal_alignments='center',
+            font_families=self.font_families)
         text_image = self.get_image()
         return text_image
 
