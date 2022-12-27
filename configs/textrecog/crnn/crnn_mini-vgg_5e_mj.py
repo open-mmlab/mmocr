@@ -11,7 +11,6 @@ _base_ = [
     '../_base_/schedules/schedule_adadelta_5e.py',
     '_base_crnn_mini-vgg.py',
 ]
-
 # dataset settings
 train_list = [_base_.mjsynth_textrecog_test]
 test_list = [
@@ -21,7 +20,6 @@ test_list = [
 ]
 
 default_hooks = dict(logger=dict(type='LoggerHook', interval=50), )
-
 train_dataloader = dict(
     batch_size=64,
     num_workers=24,

@@ -51,7 +51,8 @@ data_converter = dict(
     type='TextRecogDataConverter',
     splits=['train', 'test'],
     data_root=data_root,
-    gatherer=dict(type='mono_gather', mapping="f'{split}.txt'"),
+    gatherer=dict(
+        type='mono_gather', train_ann='train.txt', test_ann='test.txt'),
     parser=dict(type='ICDARTxtTextRecogAnnParser', encoding='utf-8-sig'),
     dumper=dict(type='JsonDumper'))
 

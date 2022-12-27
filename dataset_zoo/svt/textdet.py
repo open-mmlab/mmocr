@@ -21,7 +21,8 @@ data_converter = dict(
     type='TextDetDataConverter',
     splits=['train', 'test'],
     data_root=data_root,
-    gatherer=dict(type='mono_gather', mapping="f'{split}.xml'"),
+    gatherer=dict(
+        type='mono_gather', train_ann='train.xml', test_ann='test.xml'),
     parser=dict(type='SVTTextDetAnnParser', data_root=data_root),
     dumper=dict(type='JsonDumper'),
     delete=['annotations', 'svt'])

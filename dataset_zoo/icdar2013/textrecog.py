@@ -79,9 +79,11 @@ data_obtainer = dict(
 #     type='TextRecogDataConverter',
 #     splits=['train', 'test'],
 #     data_root=data_root,
-#     gatherer=dict(type='mono_gather', mapping="f'{split}.txt'"),
+#     gatherer=dict(
+#         type='mono_gather', train_ann='train.txt', test_ann='test.txt'),
 #     parser=dict(
-#         type='ICDARTxtTextRecogAnnParser', separator=', ', format='img, text'), # noqa
+#         type='ICDARTxtTextRecogAnnParser', separator=', ',
+#         format='img, text'),  # noqa
 #     dumper=dict(type='JsonDumper'))
 
 config_generator = dict(

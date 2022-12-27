@@ -46,7 +46,9 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                 self.visualizer = VISUALIZERS.build(
                     dict(
                         type='TextSpottingLocalVisualizer',
-                        name=f'inferencer{ts}'))
+                        name=f'inferencer{ts}',
+                        font_families=self.textrec_inferencer.visualizer.
+                        font_families))
             else:
                 self.mode = 'rec'
         if kie_config is not None:
@@ -185,26 +187,27 @@ class MMOCRInferencer(BaseMMOCRInferencer):
             for i, rec_pred in enumerate(preds['rec']):
                 result = dict(rec_texts=[], rec_scores=[])
                 for rec_pred_instance in rec_pred:
-                    pred = rec_pred_instance.pred_text
-                    result['rec_texts'].append(pred.item)
-                    result['rec_scores'].append(pred.score)
+                    rec_dict_res = self.textrec_inferencer.pred2dict(
+                        rec_pred_instance)
+                    result['rec_texts'].append(rec_dict_res['text'])
+                    result['rec_scores'].append(rec_dict_res['scores'])
                 results[i].update(result)
         if 'det' in self.mode:
             for i, det_pred in enumerate(preds['det']):
-                det_pred_instances = det_pred.pred_instances
+                det_dict_res = self.textdet_inferencer.pred2dict(det_pred)
                 results[i].update(
                     dict(
-                        det_polygons=det_pred_instances['polygons'],
-                        det_scores=det_pred_instances['scores']))
+                        det_polygons=det_dict_res['polygons'],
+                        det_scores=det_dict_res['scores']))
         if 'kie' in self.mode:
             for i, kie_pred in enumerate(preds['kie']):
-                kie_pred_instances = kie_pred.pred_instances
+                kie_dict_res = self.kie_inferencer.pred2dict(kie_pred)
                 results[i].update(
                     dict(
-                        kie_labels=kie_pred_instances['labels'],
-                        kie_scores=kie_pred_instances['scores']),
-                    kie_edge_scores=kie_pred_instances['edge_scores'],
-                    kie_edge_labels=kie_pred_instances['edge_labels'])
+                        kie_labels=kie_dict_res['labels'],
+                        kie_scores=kie_dict_res['scores']),
+                    kie_edge_scores=kie_dict_res['edge_scores'],
+                    kie_edge_labels=kie_dict_res['edge_labels'])
 
         if not is_batch:
             results = results[0]

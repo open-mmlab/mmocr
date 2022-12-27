@@ -9,7 +9,7 @@ from .base_mmocr_inferencer import BaseMMOCRInferencer
 
 class TextRecInferencer(BaseMMOCRInferencer):
 
-    def _pred2dict(self, data_sample: TextRecogDataSample) -> Dict:
+    def pred2dict(self, data_sample: TextRecogDataSample) -> Dict:
         """Extract elements necessary to represent a prediction into a
         dictionary. It's better to contain only basic data elements such as
         strings and numbers in order to guarantee it's json-serializable.

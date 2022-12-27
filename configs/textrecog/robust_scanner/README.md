@@ -40,10 +40,10 @@ The attention-based encoder-decoder framework has recently achieved impressive r
 
 ## Results and Models
 
-|                                 Methods                                 | GPUs |        | Regular Text |        |     |        | Irregular Text |        |                                 download                                 |
-| :---------------------------------------------------------------------: | :--: | :----: | :----------: | :----: | :-: | :----: | :------------: | :----: | :----------------------------------------------------------------------: |
-|                                                                         |      | IIIT5K |     SVT      |  IC13  |     |  IC15  |      SVTP      |  CT80  |                                                                          |
-| [RobustScanner](/configs/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real.py) |  4   | 0.9510 |    0.8934    | 0.9320 |     | 0.7559 |     0.8078     | 0.8715 | [model](https://download.openmmlab.com/mmocr/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real_20220915_152447-7fc35929.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real/20220915_152447.log) |
+|                               Methods                                | GPUs |        | Regular Text |           |     |           | Irregular Text |        |                               download                                |
+| :------------------------------------------------------------------: | :--: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :-------------------------------------------------------------------: |
+|                                                                      |      | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                       |
+| [RobustScanner](/configs/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real.py) |  4   | 0.9510 |    0.9011    |  0.9320   |     |  0.7578   |     0.8078     | 0.8750 | [model](https://download.openmmlab.com/mmocr/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real_20220915_152447-7fc35929.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real/20220915_152447.log) |
 
 ## References
 
