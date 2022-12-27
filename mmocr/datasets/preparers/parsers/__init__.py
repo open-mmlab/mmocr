@@ -2,10 +2,10 @@
 from .coco_parser import COCOTextDetAnnParser
 from .icdar_txt_parser import (ICDARTxtTextDetAnnParser,
                                ICDARTxtTextRecogAnnParser)
+from .sroie_parser import SROIETextDetAnnParser
 from .svt_parser import SVTTextDetAnnParser
 from .totaltext_parser import TotaltextTextDetAnnParser
 from .wildreceipt_parser import WildreceiptKIEAnnParser
-from .sroie_parser import SROIETextDetAnnParser
 
 __all__ = [
     'ICDARTxtTextDetAnnParser', 'ICDARTxtTextRecogAnnParser',

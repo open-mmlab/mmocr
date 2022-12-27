@@ -6,8 +6,8 @@ Paper:
   Year: '2019'
   BibTeX: '@INPROCEEDINGS{8977955,
   author={Huang, Zheng and Chen, Kai and He, Jianhua and Bai, Xiang and Karatzas, Dimosthenis and Lu, Shijian and Jawahar, C. V.},
-  booktitle={2019 International Conference on Document Analysis and Recognition (ICDAR)}, 
-  title={ICDAR2019 Competition on Scanned Receipt OCR and Information Extraction}, 
+  booktitle={2019 International Conference on Document Analysis and Recognition (ICDAR)},
+  title={ICDAR2019 Competition on Scanned Receipt OCR and Information Extraction},
   year={2019},
   volume={},
   number={},

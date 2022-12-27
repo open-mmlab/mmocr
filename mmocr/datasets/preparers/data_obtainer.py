@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import glob
 import os
 import os.path as osp
-import glob
 import shutil
 import ssl
 import urllib.request as request

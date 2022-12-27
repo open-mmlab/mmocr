@@ -51,8 +51,8 @@ class SROIETextDetAnnParser(BaseParser):
         img_file, txt_file = file
         instances = list()
         try:
-        # there might be some illegal symbols in the annotation
-        # which cannot be parsed by loader
+            # there might be some illegal symbols in the annotation
+            # which cannot be parsed by loader
             for anno in self.loader(txt_file, self.sep, self.format,
                                     self.encoding):
                 anno = list(anno.values())

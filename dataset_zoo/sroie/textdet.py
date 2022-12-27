@@ -2,10 +2,10 @@ data_root = 'data/sroie'
 cache_path = 'data/cache'
 
 data_obtainer = dict(
- type='NaiveDataObtainer',
- cache_path=cache_path,
- data_root=data_root,
- files=[
+    type='NaiveDataObtainer',
+    cache_path=cache_path,
+    data_root=data_root,
+    files=[
         dict(
             url='https://doc-b4-c8-drive-data-export.googleusercontent.com'
             '/download/fjpfehrefh7sl37sr71jeh2bhss0bjnc/frvcn2hirmtpmhokmdp'
@@ -22,8 +22,14 @@ data_obtainer = dict(
             md5='3883fa9ef6ade95a8d3b9076813ad848',
             split=['train'],
             content=['image', 'annotation'],
-            mapping=[['0325updated/0325updated.task1train(626p)/*.jpg', 'textdet_imgs/train'],
-                     ['0325updated/0325updated.task1train(626p)/*.txt', 'annotations/train']]),
+            mapping=[[
+                '0325updated/0325updated.task1train(626p)/*.jpg',
+                'textdet_imgs/train'
+            ],
+                     [
+                         '0325updated/0325updated.task1train(626p)/*.txt',
+                         'annotations/train'
+                     ]]),
         dict(
             url='https://doc-0o-2o-drive-data-export.googleusercontent.com/'
             'download/fjpfehrefh7sl37sr71jeh2bhss0bjnc/16u970fcc7dd54arckv'
@@ -40,7 +46,10 @@ data_obtainer = dict(
             md5='1b05af23e4b38ca27d19cfe95272418f',
             split=['test'],
             content=['image'],
-            mapping=[['task1&2_test(361p)-20221205T104647Z-001/task1_2_test(361p)', 'textdet_imgs/test']]),
+            mapping=[[
+                'task1&2_test(361p)-20221205T104647Z-001/task1_2_test(361p)',
+                'textdet_imgs/test'
+            ]]),
         dict(
             url='https://doc-4c-2o-drive-data-export.googleusercontent.com/'
             'download/fjpfehrefh7sl37sr71jeh2bhss0bjnc/cc96iun157a4pj0p3v284'
@@ -70,7 +79,9 @@ data_converter = dict(
         rule=[r'X(\d+)\.([jJ][pP][gG])', r'X\1.txt']),
     parser=dict(type='SROIETextDetAnnParser', encoding='utf-8-sig'),
     dumper=dict(type='JsonDumper'),
-    delete=['text', 'task1&2_test(361p)-20221205T104647Z-001', '0325updated', 'annotations']
-)
+    delete=[
+        'text', 'task1&2_test(361p)-20221205T104647Z-001', '0325updated',
+        'annotations'
+    ])
 
 config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)
