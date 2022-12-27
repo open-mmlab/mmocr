@@ -80,7 +80,8 @@ class ConvMixer(BaseModule):
     Args:
         embed_dims (int): Number of character components.
         num_heads (int, optional): Number of heads. Defaults to 8.
-        HW (Tuple[int, int], optional): Number of H x W. Defaults to [8, 25].
+        input_shape (Tuple[int, int], optional): The shape of input [H, W].
+            Defaults to [8, 25].
         local_k (Tuple[int, int], optional): Window size. Defaults to [3, 3].
         init_cfg (dict or list[dict], optional): Initialization configs.
             Defaults to None.
@@ -89,11 +90,11 @@ class ConvMixer(BaseModule):
     def __init__(self,
                  embed_dims: int,
                  num_heads: int = 8,
-                 HW: Tuple[int, int] = [8, 25],
+                 input_shape: Tuple[int, int] = [8, 25],
                  local_k: Tuple[int, int] = [3, 3],
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None):
         super().__init__(init_cfg)
-        self.HW = HW
+        self.input_shape = input_shape
         self.embed_dims = embed_dims
         self.local_mixer = nn.Conv2d(
             in_channels=embed_dims,
@@ -112,7 +113,7 @@ class ConvMixer(BaseModule):
         Returns:
             torch.Tensor: Tensor: A tensor of shape math:`(N, HW, C)`.
         """
-        h, w = self.HW
+        h, w = self.input_shape
         x = x.permute(0, 2, 1).reshape([-1, self.embed_dims, h, w])
         x = self.local_mixer(x)
         x = x.flatten(2).permute(0, 2, 1)
@@ -126,7 +127,8 @@ class AttnMixer(BaseModule):
         embed_dims (int): Number of character components.
         num_heads (int, optional): Number of heads. Defaults to 8.
         mixer (str, optional): The mixer type. Defaults to 'Global'.
-        HW (Tuple[int, int], optional): Number of H x W. Defaults to [8, 25].
+        input_shape (Tuple[int, int], optional): The shape of input [H, W].
+            Defaults to [8, 25].
         local_k (Tuple[int, int], optional): Window size. Defaults to [7, 11].
         qkv_bias (bool, optional): Whether a additive bias is required.
             Defaults to False.
@@ -141,7 +143,7 @@ class AttnMixer(BaseModule):
                  embed_dims: int,
                  num_heads: int = 8,
                  mixer: str = 'Global',
-                 HW: Tuple[int, int] = [8, 25],
+                 input_shape: Tuple[int, int] = [8, 25],
                  local_k: Tuple[int, int] = [7, 11],
                  qkv_bias: bool = False,
                  qk_scale: float = None,
@@ -158,22 +160,24 @@ class AttnMixer(BaseModule):
         self.attn_drop = nn.Dropout(attn_drop)
         self.proj = nn.Linear(embed_dims, embed_dims)
         self.proj_drop = nn.Dropout(proj_drop)
-        self.HW = HW
-        if HW is not None:
-            H, W = HW
-            self.N = H * W
-            self.C = embed_dims
-        if mixer == 'Local' and HW is not None:
+        self.input_shape = input_shape
+        if input_shape is not None:
+            height, width = input_shape
+            self.input_size = height * width
+            self.embed_dims = embed_dims
+        if mixer == 'Local' and input_shape is not None:
             hk = local_k[0]
             wk = local_k[1]
-            mask = torch.ones([H * W, H + hk - 1, W + wk - 1],
-                              dtype=torch.float32)
-            for h in range(0, H):
-                for w in range(0, W):
-                    mask[h * W + w, h:h + hk, w:w + wk] = 0.
-            mask = mask[:, hk // 2:H + hk // 2, wk // 2:W + wk // 2].flatten(1)
+            mask = torch.ones(
+                [height * width, height + hk - 1, width + wk - 1],
+                dtype=torch.float32)
+            for h in range(0, height):
+                for w in range(0, width):
+                    mask[h * width + w, h:h + hk, w:w + wk] = 0.
+            mask = mask[:, hk // 2:height + hk // 2,
+                        wk // 2:width + wk // 2].flatten(1)
             mask[mask >= 1] = -np.inf
-            self.mask = mask[None, None, :, :].to(self.qkv.weight.device)
+            self.register_buffer('mask', mask[None, None, :, :])
         self.mixer = mixer
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -185,13 +189,13 @@ class AttnMixer(BaseModule):
         Returns:
             torch.Tensor: A Tensor of shape :math:`(N, H, W, C)`.
         """
-        if self.HW is not None:
-            N, C = self.N, self.C
+        if self.input_shape is not None:
+            input_size, embed_dims = self.input_size, self.embed_dims
         else:
-            _, N, C = x.shape
-        qkv = self.qkv(x).reshape(
-            (-1, N, 3, self.num_heads, C // self.num_heads)).permute(
-                (2, 0, 3, 1, 4))
+            _, input_size, embed_dims = x.shape
+        qkv = self.qkv(x).reshape((-1, input_size, 3, self.num_heads,
+                                   embed_dims // self.num_heads)).permute(
+                                       (2, 0, 3, 1, 4))
         q, k, v = qkv[0] * self.scale, qkv[1], qkv[2]
         attn = q.matmul(k.permute(0, 1, 3, 2))
         if self.mixer == 'Local':
@@ -199,7 +203,8 @@ class AttnMixer(BaseModule):
         attn = F.softmax(attn, dim=-1)
         attn = self.attn_drop(attn)
 
-        x = attn.matmul(v).permute(0, 2, 1, 3).reshape(-1, N, C)
+        x = attn.matmul(v).permute(0, 2, 1, 3).reshape(-1, input_size,
+                                                       embed_dims)
         x = self.proj(x)
         x = self.proj_drop(x)
         return x
@@ -259,7 +264,7 @@ class MixingBlock(BaseModule):
         mixer (str, optional): The mixer type. Defaults to 'Global'.
         window_size (Tuple[int ,int], optional): Local window size.
             Defaults to [7, 11].
-        HW (Tuple[int, int], optional): The size of [H, W].
+        input_shape (Tuple[int, int], optional): The shape of input [H, W].
             Defaults to [8, 25].
         mlp_ratio (float, optional): The ratio of hidden features to input.
             Defaults to 4.0.
@@ -281,7 +286,7 @@ class MixingBlock(BaseModule):
                  num_heads: int,
                  mixer: str = 'Global',
                  window_size: Tuple[int, int] = [7, 11],
-                 HW: Tuple[int, int] = [8, 25],
+                 input_shape: Tuple[int, int] = [8, 25],
                  mlp_ratio: float = 4.,
                  qkv_bias: bool = False,
                  qk_scale: float = None,
@@ -297,7 +302,7 @@ class MixingBlock(BaseModule):
                 embed_dims,
                 num_heads=num_heads,
                 mixer=mixer,
-                HW=HW,
+                input_shape=input_shape,
                 local_k=window_size,
                 qkv_bias=qkv_bias,
                 qk_scale=qk_scale,
@@ -305,7 +310,10 @@ class MixingBlock(BaseModule):
                 proj_drop=drop)
         elif mixer == 'Conv':
             self.mixer = ConvMixer(
-                embed_dims, num_heads=num_heads, HW=HW, local_k=window_size)
+                embed_dims,
+                num_heads=num_heads,
+                input_shape=input_shape,
+                local_k=window_size)
         else:
             raise TypeError('The mixer must be one of [Global, Local, Conv]')
         self.drop_path = DropPath(drop_path) if drop_path > 0. else Identity()
@@ -481,7 +489,7 @@ class SVTRNet(BaseModule):
             num_layers=num_layers)
         num_patches = (img_size[1] // (2**num_layers)) * (
             img_size[0] // (2**num_layers))
-        self.HW = [
+        self.input_shape = [
             img_size[0] // (2**num_layers), img_size[1] // (2**num_layers)
         ]
         self.absolute_pos_embed = nn.Parameter(
@@ -496,7 +504,7 @@ class SVTRNet(BaseModule):
                 num_heads=num_heads[0],
                 mixer=mixer_types[0:depth[0]][i],
                 window_size=window_size[0],
-                HW=self.HW,
+                input_shape=self.input_shape,
                 mlp_ratio=mlp_ratio,
                 qkv_bias=qkv_bias,
                 qk_scale=qk_scale,
@@ -510,7 +518,7 @@ class SVTRNet(BaseModule):
             out_channels=embed_dims[1],
             types=merging_types,
             stride=[2, 1])
-        HW = [self.HW[0] // 2, self.HW[1]]
+        input_shape = [self.input_shape[0] // 2, self.input_shape[1]]
         self.merging_types = merging_types
 
         self.blocks2 = nn.ModuleList([
@@ -519,7 +527,7 @@ class SVTRNet(BaseModule):
                 num_heads=num_heads[1],
                 mixer=mixer_types[depth[0]:depth[0] + depth[1]][i],
                 window_size=window_size[1],
-                HW=HW,
+                input_shape=input_shape,
                 mlp_ratio=mlp_ratio,
                 qkv_bias=qkv_bias,
                 qk_scale=qk_scale,
@@ -533,7 +541,7 @@ class SVTRNet(BaseModule):
             out_channels=embed_dims[2],
             types=merging_types,
             stride=[2, 1])
-        HW = [self.HW[0] // 4, self.HW[1]]
+        input_shape = [self.input_shape[0] // 4, self.input_shape[1]]
 
         self.blocks3 = nn.ModuleList([
             MixingBlock(
@@ -541,7 +549,7 @@ class SVTRNet(BaseModule):
                 num_heads=num_heads[2],
                 mixer=mixer_types[depth[0] + depth[1]:][i],
                 window_size=window_size[2],
-                HW=HW,
+                input_shape=input_shape,
                 mlp_ratio=mlp_ratio,
                 qkv_bias=qkv_bias,
                 qk_scale=qk_scale,
@@ -592,14 +600,18 @@ class SVTRNet(BaseModule):
         for blk in self.blocks1:
             x = blk(x)
         x = self.downsample1(
-            x.permute(0, 2, 1).reshape(
-                [-1, self.embed_dims[0], self.HW[0], self.HW[1]]))
+            x.permute(0, 2, 1).reshape([
+                -1, self.embed_dims[0], self.input_shape[0],
+                self.input_shape[1]
+            ]))
 
         for blk in self.blocks2:
             x = blk(x)
         x = self.downsample2(
-            x.permute(0, 2, 1).reshape(
-                [-1, self.embed_dims[1], self.HW[0] // 2, self.HW[1]]))
+            x.permute(0, 2, 1).reshape([
+                -1, self.embed_dims[1], self.input_shape[0] // 2,
+                self.input_shape[1]
+            ]))
 
         for blk in self.blocks3:
             x = blk(x)
@@ -618,8 +630,10 @@ class SVTRNet(BaseModule):
         """
         x = self.forward_features(x)
         x = self.avgpool(
-            x.permute(0, 2, 1).reshape(
-                [-1, self.embed_dims[2], self.HW[0] // 4, self.HW[1]]))
+            x.permute(0, 2, 1).reshape([
+                -1, self.embed_dims[2], self.input_shape[0] // 4,
+                self.input_shape[1]
+            ]))
         x = self.last_conv(x)
         x = self.hardwish(x)
         x = self.dropout(x)
