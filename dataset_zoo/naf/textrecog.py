@@ -9,9 +9,7 @@ data_root = 'data/naf'
 data_converter = dict(
     type='TextRecogCropConverter',
     parser=dict(
-        type='NAFTextDetAnnParser',
-        data_root=data_root,
-        ignore=['¿', '§'],
+        type='NAFAnnParser', data_root=data_root, ignore=['¿', '§'],
         det=False),
     delete=['temp_images', 'naf_anno', 'data_split.json', 'annotations'])
 

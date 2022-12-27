@@ -147,17 +147,17 @@ class NaiveDataObtainer:
             tuple contains the source file name and the destination file name.
         """
         for src, dst in mapping:
-            if '*' not in src:
-                src = osp.join(self.data_root, src)
-                dst = osp.join(self.data_root, dst)
-                if osp.exists(src) and not osp.exists(dst):
-                    shutil.move(src, dst)
-            else:
-                # use fuzzy search to find all the files
-                src_files = glob.glob(osp.join(self.data_root, src))
-                for src_file in src_files:
-                    dst_file = osp.join(self.data_root, dst)
-                    shutil.move(src_file, dst_file)
+            src = osp.join(self.data_root, src)
+            dst = osp.join(self.data_root, dst)
+
+            if '*' in src:
+                mkdir_or_exist(dst)
+                for f in glob.glob(src):
+                    if not osp.exists(osp.join(dst, osp.basename(f))):
+                        shutil.move(f, dst)
+
+            elif osp.exists(src) and not osp.exists(dst):
+                shutil.move(src, dst)
 
     def clean(self) -> None:
         """Remove empty dirs."""

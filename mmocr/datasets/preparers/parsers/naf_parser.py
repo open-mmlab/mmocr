@@ -9,8 +9,8 @@ from .base import BaseParser
 
 
 @DATA_PARSERS.register_module()
-class NAFTextDetAnnParser(BaseParser):
-    """NAF Text Detection Parser.
+class NAFAnnParser(BaseParser):
+    """NAF dataset parser.
 
     The original annotation format of this dataset is stored in json files,
     which has the following keys that will be used here:

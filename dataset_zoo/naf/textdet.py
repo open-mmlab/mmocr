@@ -38,7 +38,7 @@ data_converter = dict(
     splits=['train', 'test', 'val'],
     data_root=data_root,
     gatherer=dict(type='naf_gather'),
-    parser=dict(type='NAFTextDetAnnParser', data_root=data_root, det=True),
+    parser=dict(type='NAFAnnParser', data_root=data_root, det=True),
     delete=['temp_images', 'data_split.json', 'annotations', 'naf_anno'],
     dumper=dict(type='JsonDumper'),
     nproc=1)
