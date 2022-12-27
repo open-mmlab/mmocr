@@ -115,7 +115,7 @@ class TestIcdarDataset(TestCase):
             'categories':
             categories
         }
-        self.metainfo = dict(CLASSES=('text'))
+        self.metainfo = dict(classes=('text'))
         mmengine.dump(fake_json, json_name)
 
     def test_icdar_dataset(self):
@@ -130,7 +130,7 @@ class TestIcdarDataset(TestCase):
             data_prefix=dict(img_path='imgs'),
             metainfo=self.metainfo,
             pipeline=[])
-        self.assertEqual(dataset.metainfo['CLASSES'], self.metainfo['CLASSES'])
+        self.assertEqual(dataset.metainfo['classes'], self.metainfo['classes'])
         dataset.full_init()
         self.assertEqual(len(dataset), 2)
         self.assertEqual(len(dataset.load_data_list()), 2)

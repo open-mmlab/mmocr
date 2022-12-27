@@ -51,7 +51,7 @@ class TPStransform(nn.Module):
         forward_kernel[-2:, :N].copy_(target_control_points.transpose(0, 1))
 
         # compute inverse matrix
-        inverse_kernel = torch.inverse(forward_kernel)
+        inverse_kernel = torch.inverse(forward_kernel).contiguous()
 
         # create target coordinate matrix
         HW = self.target_height * self.target_width

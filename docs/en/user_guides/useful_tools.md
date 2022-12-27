@@ -4,26 +4,91 @@
 
 ### Dataset Visualization Tool
 
-MMOCR provides a dataset visualization tool `tools/analysis_tools/browse_datasets.py` to help users troubleshoot possible dataset-related problems. You just need to specify the path to the training config and the tool will automatically plots the images transformed by corresponding data pipelines with the GT labels. The following example demonstrates how to use the tool to visualize the training data used by the "DBNet_R50_icdar2015" model.
+MMOCR provides a dataset visualization tool `tools/analysis_tools/browse_datasets.py` to help users troubleshoot possible dataset-related problems. You just need to specify the path to the training config (usually stored in `configs/textdet/dbnet/xxx.py`) or the dataset config (usually stored in `configs/textdet/_base_/datasets/xxx.py`), and the tool will automatically plots the transformed (or original) images and labels.
 
-```Bash
-# Example: Visualizing the training data used by dbnet_r50dcn_v2_fpnc_1200e_icadr2015
-python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.py
+#### Usage
+
+```bash
+python tools/visualizations/browse_dataset.py \
+    ${CONFIG_FILE} \
+    [-o, --output-dir ${OUTPUT_DIR}] \
+    [-p, --phase ${DATASET_PHASE}] \
+    [-m, --mode ${DISPLAY_MODE}] \
+    [-t, --task ${DATASET_TASK}] \
+    [-n, --show-number ${NUMBER_IMAGES_DISPLAY}] \
+    [-i, --show-interval ${SHOW_INTERRVAL}] \
+    [--cfg-options ${CFG_OPTIONS}]
 ```
 
-The visualization results will be like:
+| ARGS                | Type                                  | Description                                                                                                                                      |
+| ------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| config              | str                                   | (required) Path to the config.                                                                                                                   |
+| -o, --output-dir    | str                                   | If GUI is not available, specifying an output path to save the visualization results.                                                            |
+| -p, --phase         | str                                   | Phase of dataset to visualize. Use "train", "test" or "val" if you just want to visualize the default split. It's also possible to be a dataset variable name, which might be useful when a dataset split has multiple variants in the config. |
+| -m, --mode          | `original`, `transformed`, `pipeline` | Display mode: display original pictures or transformed pictures or comparison pictures. `original` only visualizes the original dataset & annotations; `transformed` shows the resulting images processed through all the transforms; `pipeline` shows all the intermediate images. Defaults to "transformed". |
+| -t, --task          | `auto`, `textdet`, `textrecog`        | Specify the task type of the dataset. If `auto`, the task type will be inferred from the config. If the script is unable to infer the task type, you need to specify it manually. Defaults to `auto`. |
+| -n, --show-number   | int                                   | The number of samples to visualized. If not specified, display all images in the dataset.                                                        |
+| -i, --show-interval | float                                 | Interval of visualization (s), defaults to 2.                                                                                                    |
+| --cfg-options       | float                                 | Override configs. [Example](./config.md#command-line-modification)                                                                               |
+
+#### Examples
+
+The following example demonstrates how to use the tool to visualize the training data used by the "DBNet_R50_icdar2015" model.
+
+```Bash
+# Example: Visualizing the training data used by dbnet_r50dcn_v2_fpnc_1200e_icadr2015 model
+python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
+```
+
+By default, the visualization mode is "transformed", and you will see the images & annotations being transformed by the pipeline:
 
 <center class="half">
     <img src="https://user-images.githubusercontent.com/24622904/187611542-01e9aa94-fc12-4756-964b-a0e472522a3a.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611555-3f5ea616-863d-4538-884f-bccbebc2f7e7.jpg" width="250"/><img src="https://user-images.githubusercontent.com/24622904/187611581-88be3970-fbfe-4f62-8cdf-7a8a7786af29.jpg" width="250"/>
 </center>
 
-Based on this tool, users can easily verify if the annotation of a custom dataset is correct. Also, you can verify if the data augmentation strategies are running as you expected by modifying `train_pipeline` in the configuration file. The optional parameters of `browse_dataset.py` are as follows.
+If you just want to visualize the original dataset, simply set the mode to "original":
 
-| ARGS            | Type  | Description                                                                           |
-| --------------- | ----- | ------------------------------------------------------------------------------------- |
-| config          | str   | (required) Path to the config.                                                        |
-| --output-dir    | str   | If GUI is not available, specifying an output path to save the visualization results. |
-| --show-interval | float | Interval of visualization (s), defaults to 2.                                         |
+```Bash
+python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -m original
+```
+
+<div align=center><img src="https://user-images.githubusercontent.com/22607038/206646570-382d0f26-908a-4ab4-b1a7-5cc31fa70c5f.jpg" style=" width: auto; height: 40%; "></div>
+
+Or, to visualize the entire pipeline:
+
+```Bash
+python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -m pipeline
+```
+
+<div align=center><img src="https://user-images.githubusercontent.com/22607038/206637571-287640c0-1f55-453f-a2fc-9f9734b9593f.jpg" style=" width: auto; height: 40%; "></div>
+
+In addition, users can also visualize the original images and their corresponding labels of the dataset by specifying the path to the dataset config file, for example:
+
+```Bash
+python tools/analysis_tools/browse_dataset.py configs/textrecog/_base_/datasets/icdar2015.py
+```
+
+Some datasets might have multiple variants. For example, the test split of `icdar2015` textrecog dataset has two variants, which the [base dataset config](/configs/textrecog/_base_/datasets/icdar2015.py) defines as follows:
+
+```python
+icdar2015_textrecog_test = dict(
+    ann_file='textrecog_test.json',
+    # ...
+    )
+
+icdar2015_1811_textrecog_test = dict(
+    ann_file='textrecog_test_1811.json',
+    # ...
+)
+```
+
+In this case, you can specify the variant name to visualize the corresponding dataset:
+
+```Bash
+python tools/analysis_tools/browse_dataset.py configs/textrecog/_base_/datasets/icdar2015.py -p icdar2015_1811_textrecog_test
+```
+
+Based on this tool, users can easily verify if the annotation of a custom dataset is correct.
 
 ### Offline Evaluation Tool
 

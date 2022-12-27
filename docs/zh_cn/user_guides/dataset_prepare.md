@@ -80,29 +80,33 @@ data/icdar2015
 └── textdet_train.json
 ```
 
+数据准备完毕以后，你也可以通过使用我们提供的数据集浏览工具 [browse_dataset.py](./useful_tools.md#数据集可视化工具) 来可视化数据集的标签是否被正确生成，例如：
+
+```bash
+python tools/analysis_tools/browse_dataset.py configs/textdet/_base_/datasets/icdar2015.py
+```
+
 ## 数据集配置文件
 
 ### 单数据集训练
 
-在使用新的数据集时，我们需要对其图像、标注文件的路径等基础信息进行配置。`configs/xxx/_base_/datasets/` 路径下已预先配置了 MMOCR 中常用的数据集（当你使用 `prepare_dataset.py` 来准备数据集时，这个配置文件通常会在数据集准备就绪后自动生成），这里我们以 ICDAR 2015 数据集为例（见 `configs/_base_/det_datasets/icdar2015.py`）：
+在使用新的数据集时，我们需要对其图像、标注文件的路径等基础信息进行配置。`configs/xxx/_base_/datasets/` 路径下已预先配置了 MMOCR 中常用的数据集（当你使用 `prepare_dataset.py` 来准备数据集时，这个配置文件通常会在数据集准备就绪后自动生成），这里我们以 ICDAR 2015 数据集为例（见 `configs/textdet/_base_/datasets/icdar2015.py`）：
 
 ```Python
-ic15_det_data_root = 'data/icdar2015' # 数据集根目录
+icdar2015_textdet_data_root = 'data/icdar2015' # 数据集根目录
 
 # 训练集配置
 icdar2015_textdet_train = dict(
     type='OCRDataset',
-    data_root=ic15_det_data_root,                        # 数据根目录
-    ann_file='instances_training.json',                  # 标注文件名称
-    data_prefix=dict(img_path='imgs/'),                  # 图片路径前缀
+    data_root=icdar2015_textdet_data_root,               # 数据根目录
+    ann_file='textdet_train.json',                       # 标注文件名称
     filter_cfg=dict(filter_empty_gt=True, min_size=32),  # 数据过滤
     pipeline=None)
 # 测试集配置
 icdar2015_textdet_test = dict(
     type='OCRDataset',
-    data_root=ic15_det_data_root,
-    ann_file='instances_test.json',
-    data_prefix=dict(img_path='imgs/'),
+    data_root=icdar2015_textdet_data_root,
+    ann_file='textdet_test.json',
     test_mode=True,
     pipeline=None)
 ```

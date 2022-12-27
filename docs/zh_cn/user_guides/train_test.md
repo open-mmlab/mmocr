@@ -248,6 +248,7 @@ python tools/train.py configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.
 | TextSnake     |          否          |                               |
 |               |       文本识别       |                               |
 | ABINet        |          是          |                               |
+| ASTER         |          是          |                               |
 | CRNN          |          是          |                               |
 | MASTER        |          是          |                               |
 | NRTR          |          是          |                               |
