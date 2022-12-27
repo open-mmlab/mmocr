@@ -15,6 +15,7 @@ class RecRoIHead(BaseRoIHead):
     """Simplest base roi head including one bbox head and one mask head."""
 
     def __init__(self,
+                 neck=None,
                  sampler: OptMultiConfig = None,
                  roi_extractor: OptMultiConfig = None,
                  rec_head: OptMultiConfig = None,
@@ -22,6 +23,8 @@ class RecRoIHead(BaseRoIHead):
         super().__init__(init_cfg)
         if sampler is not None:
             self.sampler = TASK_UTILS.build(sampler)
+        if neck is not None:
+            self.neck = MODELS.build(neck)
         self.roi_extractor = MODELS.build(roi_extractor)
         self.rec_head = MODELS.build(rec_head)
 
@@ -54,7 +57,8 @@ class RecRoIHead(BaseRoIHead):
 
     def predict(self, inputs: Tuple[Tensor],
                 data_samples: DetSampleList) -> RecSampleList:
-
+        if hasattr(self, 'neck') and self.neck is not None:
+            inputs = self.neck(inputs)
         pred_instances = [ds.pred_instances for ds in data_samples]
         bbox_feats = self.roi_extractor(inputs, pred_instances)
         if bbox_feats.size(0) == 0:

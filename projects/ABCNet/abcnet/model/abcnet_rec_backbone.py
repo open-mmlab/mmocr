@@ -46,8 +46,7 @@ class ABCNetRecBackbone(BaseModule):
                 stride=(2, 1),
                 bias='auto',
                 norm_cfg=dict(type='GN', num_groups=32),
-                act_cfg=dict(type='ReLU')),
-            nn.AvgPool2d(kernel_size=(2, 1), stride=1))
+                act_cfg=dict(type='ReLU')), nn.AdaptiveAvgPool2d((1, None)))
 
     def forward(self, x):
         return self.convs(x)
