@@ -136,6 +136,10 @@ test_list = [
     _base_.icdar2013_textrecog_test, _base_.icdar2015_textrecog_test
 ]
 
+val_evaluator = dict(
+    dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
+test_evaluator = val_evaluator
+
 train_dataloader = dict(
     batch_size=512,
     num_workers=24,
