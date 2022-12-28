@@ -13,4 +13,7 @@ data_converter = dict(
         det=False),
     delete=['temp_images', 'naf_anno', 'data_split.json', 'annotations'])
 
-config_generator = dict(type='TextRecogConfigGenerator')
+config_generator = dict(
+    type='TextRecogConfigGenerator',
+    data_root=data_root,
+    val_anns=[dict(ann_file='textrecog_val.json', dataset_postfix='')])
