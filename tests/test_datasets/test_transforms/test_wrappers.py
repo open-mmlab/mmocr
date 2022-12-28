@@ -6,7 +6,8 @@ from typing import Dict, List, Optional
 import numpy as np
 from shapely.geometry import Polygon
 
-from mmocr.datasets.transforms import ImgAugWrapper, TorchVisionWrapper
+from mmocr.datasets.transforms import (ConditionApply, ImgAugWrapper,
+                                       TorchVisionWrapper)
 
 
 class TestImgAug(unittest.TestCase):
@@ -160,3 +161,36 @@ class TestTorchVisionWrapper(unittest.TestCase):
         self.assertEqual(
             repr(f),
             'TorchVisionWrapper(op = Grayscale, num_output_channels = 3)')
+
+
+class TestConditionApply(unittest.TestCase):
+
+    def test_transform(self):
+        dummy_result = dict(img_shape=(100, 200), img=np.zeros((100, 200, 3)))
+        resize = dict(type='Resize', scale=(40, 50), keep_ratio=False)
+
+        trans = ConditionApply(
+            "results['img_shape'][0] > 80", true_transforms=resize)
+        results = trans(dummy_result)
+        self.assertEqual(results['img_shape'], (50, 40))
+        dummy_result = dict(img_shape=(100, 200), img=np.zeros((100, 200, 3)))
+        trans = ConditionApply(
+            "results['img_shape'][0] < 80", false_transforms=resize)
+        results = trans(dummy_result)
+        self.assertEqual(results['img_shape'], (50, 40))
+        dummy_result = dict(img_shape=(100, 200), img=np.zeros((100, 200, 3)))
+        trans = ConditionApply("results['img_shape'][0] < 80")
+        results = trans(dummy_result)
+        self.assertEqual(results['img_shape'], (100, 200))
+
+    def test_repr(self):
+        resize = dict(type='Resize', scale=(40, 50), keep_ratio=False)
+        trans = ConditionApply(
+            "results['img_shape'][0] < 80", true_transforms=resize)
+        self.assertEqual(
+            repr(trans),
+            "ConditionApply(condition = results['img_shape'][0] < 80, "
+            'true_transforms = Compose(\n    Resize(scale=(40, 50), '
+            'scale_factor=None, keep_ratio=False, clip_object_border=True), '
+            'backend=cv2), interpolation=bilinear)\n), '
+            'false_transforms = Compose(\n))')

@@ -6,6 +6,7 @@ import imgaug
 import imgaug.augmenters as iaa
 import numpy as np
 import torchvision.transforms as torchvision_transforms
+from mmcv.transforms import Compose
 from mmcv.transforms.base import BaseTransform
 from PIL import Image
 
@@ -295,4 +296,48 @@ class TorchVisionWrapper(BaseTransform):
         for k, v in self.kwargs.items():
             repr_str += f', {k} = {v}'
         repr_str += ')'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class ConditionApply(BaseTransform):
+    """Apply transforms according to the condition. If the condition is met,
+    true_transforms will be applied, otherwise false_transforms will be
+    applied.
+
+    Args:
+        condition (str): The string that can be evaluated to a boolean value.
+        true_transforms (list[dict]): Transforms to be applied if the condition
+            is met. Defaults to [].
+        false_transforms (list[dict]): Transforms to be applied if the
+            condition is not met. Defaults to [].
+    """
+
+    def __init__(self,
+                 condition: str,
+                 true_transforms: Union[Dict, List[Dict]] = [],
+                 false_transforms: Union[Dict, List[Dict]] = []):
+        self.condition = condition
+        self.true_transforms = Compose(true_transforms)
+        self.false_transforms = Compose(false_transforms)
+
+    def transform(self, results: Dict) -> Optional[Dict]:
+        """Transform the image.
+
+        Args:
+            results (dict):Result dict containing the data to transform.
+
+        Returns:
+            dict: Transformed results.
+        """
+        if eval(self.condition):
+            return self.true_transforms(results)  # type: ignore
+        else:
+            return self.false_transforms(results)
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(condition = {self.condition}, '
+        repr_str += f'true_transforms = {self.true_transforms}, '
+        repr_str += f'false_transforms = {self.false_transforms})'
         return repr_str
