@@ -460,6 +460,13 @@ class MMOCR:
                 'textrecog/'
                 'master/master_resnet31_12e_st_mj_sa/master_resnet31_12e_st_mj_sa_20220915_152443-f4a5cabc.pth'  # noqa: E501
             },
+            'ASTER': {
+                'config':
+                'textrecog/aster/aster_resnet45_6e_st_mj.py',
+                'ckpt':
+                'textrecog/'
+                'aster/aster_resnet45_6e_st_mj/aster_resnet45_6e_st_mj-cc56eca4.pth'  # noqa: E501
+            },
             # KIE models
             'SDMGR': {
                 'config':

@@ -118,16 +118,15 @@ class TestMMDet2MMOCR(unittest.TestCase):
         t4 = Resize(scale=(30, 15))
         results = t4(t3(t2(t1(self.data_info_ocr.copy()))))
         self.assertEqual(results['img'].shape, (15, 30, 3))
-        self.assertTrue(
-            np.allclose(results['gt_polygons'][0],
-                        self.data_info_ocr['gt_polygons'][0]))
-        self.assertTrue(
-            np.allclose(results['gt_polygons'][1],
-                        self.data_info_ocr['gt_polygons'][1]))
+        for i in range(2):
+            self.assertTrue(
+                poly2shapely(results['gt_polygons'][i]).equals(
+                    poly2shapely(self.data_info_ocr['gt_polygons'][i])))
         self.assertTrue(
             np.allclose(results['gt_bboxes'], self.data_info_ocr['gt_bboxes']))
-        self.assertEqual(results['gt_ignored'].all(),
-                         self.data_info_ocr['gt_ignored'].all())
+        self.assertTrue(
+            np.array_equal(results['gt_ignored'],
+                           self.data_info_ocr['gt_ignored']))
 
     def test_repr_det2ocr(self):
         transform = MMDet2MMOCR()

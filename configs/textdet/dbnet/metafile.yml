@@ -66,3 +66,15 @@ Models:
         Metrics:
           hmean-iou: 0.8644
     Weights: https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_resnet50-oclip_1200e_icdar2015/dbnet_resnet50-oclip_1200e_icdar2015_20221102_115917-bde8c87a.pth
+
+  - Name: dbnet_resnet18_fpnc_1200e_totaltext
+    In Collection: DBNet
+    Config: configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_totaltext.py
+    Metadata:
+      Training Data: Totaltext
+    Results:
+      - Task: Text Detection
+        Dataset: Totaltext
+        Metrics:
+          hmean-iou: 0.8182
+    Weights: https://download.openmmlab.com/mmocr/textdet/dbnet/dbnet_resnet18_fpnc_1200e_totaltext/dbnet_resnet18_fpnc_1200e_totaltext-3ed3233c.pth

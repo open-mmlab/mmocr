@@ -157,8 +157,9 @@ def crop_polygon(polygon: ArrayLike,
         # polygon, return None.
         return None
     else:
+        poly_cropped = poly_make_valid(poly_cropped)
         poly_cropped = np.array(poly_cropped.boundary.xy, dtype=np.float32)
-        poly_cropped = poly_cropped[:, :-1].T
+        poly_cropped = poly_cropped.T
         # reverse poly_cropped to have clockwise order
         poly_cropped = poly_cropped[::-1, :].reshape(-1)
         return poly_cropped
@@ -166,16 +167,23 @@ def crop_polygon(polygon: ArrayLike,
 
 def poly_make_valid(poly: Polygon) -> Polygon:
     """Convert a potentially invalid polygon to a valid one by eliminating
-    self-crossing or self-touching parts.
+    self-crossing or self-touching parts. Note that if the input is a line, the
+    returned polygon could be an empty one.
 
     Args:
         poly (Polygon): A polygon needed to be converted.
 
     Returns:
-        Polygon: A valid polygon.
+        Polygon: A valid polygon, which might be empty.
     """
     assert isinstance(poly, Polygon)
-    return poly if poly.is_valid else poly.buffer(0)
+    fixed_poly = poly if poly.is_valid else poly.buffer(0)
+    # Sometimes the fixed_poly is still a MultiPolygon,
+    # so we need to find the convex hull of the MultiPolygon, which should
+    # always be a Polygon (but could be empty).
+    if not isinstance(fixed_poly, Polygon):
+        fixed_poly = fixed_poly.convex_hull
+    return fixed_poly
 
 
 def poly_intersection(poly_a: Polygon,
