@@ -19,7 +19,6 @@ Models:
     In Collection: DBNetpp
     Alias:
       - DBPP_r50
-      - DBNetpp
     Config: configs/textdet/dbnetpp/dbnetpp_resnet50_fpnc_1200e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
@@ -43,6 +42,8 @@ Models:
     Weights: https://download.openmmlab.com/mmocr/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015_20220829_230108-f289bd20.pth
 
   - Name: dbnetpp_resnet50-oclip_fpnc_1200e_icdar2015
+    Alias:
+      - DBNetpp
     In Collection: DBNetpp
     Config: configs/textdet/dbnetpp/dbnetpp_resnet50-oclip_fpnc_1200e_icdar2015.py
     Metadata:
