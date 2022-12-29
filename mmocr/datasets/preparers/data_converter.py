@@ -177,6 +177,8 @@ class BaseDataConverter:
         """
         files = list()
         for file in list_files(img_path, suffixes):
+            if not re.match(rule[0], osp.basename(file)):
+                continue
             file2 = re.sub(rule[0], rule[1], osp.basename(file))
             file2 = file.replace(osp.basename(file), file2)
             file2 = file2.replace(self.img_dir, 'annotations')
