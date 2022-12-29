@@ -62,3 +62,15 @@ Models:
         Metrics:
           hmean-iou: 0.8604
     Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50-oclip_fpn_1500e_icdar2015/fcenet_resnet50-oclip_fpn_1500e_icdar2015_20221101_150145-5a6fc412.pth
+
+  - Name: fcenet_resnet50_fpn_1500e_totaltext
+    In Collection: FCENet
+    Config: configs/textdet/fcenet/fcenet_resnet50_fpn_1500e_totaltext.py
+    Metadata:
+      Training Data: Totaltext
+    Results:
+      - Task: Text Detection
+        Dataset: Totaltext
+        Metrics:
+          hmean-iou: 0.8134
+    Weights: https://download.openmmlab.com/mmocr/textdet/fcenet/fcenet_resnet50_fpn_1500e_totaltext/fcenet_resnet50_fpn_1500e_totaltext-91bd37af.pth
