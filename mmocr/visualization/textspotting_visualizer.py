@@ -45,7 +45,10 @@ class TextSpottingLocalVisualizer(BaseLocalVisualizer):
         empty_shape = (img_shape[0], img_shape[1], 3)
         text_image = np.full(empty_shape, 255, dtype=np.uint8)
         text_image = self.get_labels_image(
-            text_image, labels=texts, bboxes=bboxes)
+            text_image,
+            labels=texts,
+            bboxes=bboxes,
+            font_families=self.font_families)
         if polygons:
             polygons = [polygon.reshape(-1, 2) for polygon in polygons]
             image = self.get_polygons_image(
@@ -133,3 +136,6 @@ class TextSpottingLocalVisualizer(BaseLocalVisualizer):
 
         if out_file is not None:
             mmcv.imwrite(cat_images[..., ::-1], out_file)
+
+        self.set_image(cat_images)
+        return self.get_image()

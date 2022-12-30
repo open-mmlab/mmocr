@@ -27,6 +27,7 @@ Models:
     Weights: https://download.openmmlab.com/mmocr/textdet/textsnake/textsnake_resnet50_fpn-unet_1200e_ctw1500/textsnake_resnet50_fpn-unet_1200e_ctw1500_20220825_221459-c0b6adc4.pth
 
   - Name: textsnake_resnet50-oclip_fpn-unet_1200e_ctw1500
+    Alias: TextSnake
     In Collection: TextSnake
     Config: configs/textdet/textsnake/textsnake_resnet50-oclip_fpn-unet_1200e_ctw1500.py
     Metadata:

@@ -1,0 +1,52 @@
+Collections:
+  - Name: ASTER
+    Metadata:
+      Training Data: OCRDataset
+      Training Techniques:
+        - AdamW
+      Epochs: 6
+      Batch Size: 4096
+      Training Resources: 4 x NVIDIA A100-SXM4-80GB
+      Architecture:
+        - ResNet45
+        - ASTERDecoder
+    Paper:
+      URL: https://ieeexplore.ieee.org/abstract/document/8395027/
+      Title: 'ASTER: An Attentional Scene Text Recognizer with Flexible Rectification'
+    README: configs/textrecog/aster/README.md
+
+Models:
+  - Name: aster_resnet45_6e_st_mj
+    Alias: ASTER
+    In Collection: ASTER
+    Config: configs/textrecog/aster/aster_resnet45_6e_st_mj.py
+    Metadata:
+      Training Data:
+        - SynthText
+        - Syn90k
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 0.9357
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 0.8949
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 0.9281
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 0.7665
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 0.8062
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 0.8507
+    Weights: https://download.openmmlab.com/mmocr/textrecog/aster/aster_resnet45_6e_st_mj/aster_resnet45_6e_st_mj-cc56eca4.pth

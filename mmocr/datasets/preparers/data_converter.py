@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
+import os
 import os.path as osp
 import re
 import shutil
@@ -61,6 +62,8 @@ class BaseDataConverter:
             self.gatherer = self.pair_gather
         elif gather_type == 'mono_gather':
             self.gatherer = self.mono_gather
+        elif gather_type == 'naf_gather':
+            self.gatherer = self.naf_gather
         else:
             raise NotImplementedError
 
@@ -174,6 +177,8 @@ class BaseDataConverter:
         """
         files = list()
         for file in list_files(img_path, suffixes):
+            if not re.match(rule[0], osp.basename(file)):
+                continue
             file2 = re.sub(rule[0], rule[1], osp.basename(file))
             file2 = file.replace(osp.basename(file), file2)
             file2 = file2.replace(self.img_dir, 'annotations')
@@ -181,11 +186,51 @@ class BaseDataConverter:
 
         return files
 
+    def naf_gather(self, img_path: str, ann_path: str,
+                   **kwargs) -> List[Tuple]:
+        """Gather the dataset file from NAF dataset. Specifically for the case
+        that there is a split file that contains the names of different splits.
+        For example,
+
+            img_001.jpg                           train: img_001.jpg
+            img_002.jpg ---> data_split.json ---> test: img_002.jpg
+            img_003.jpg                           val: img_003.jpg
+
+        Args:
+            img_path (str): Path to the images.
+            anno_path (str): Path to the annotations.
+        Returns:
+            List[Tuple]: A list of tuples (img_path, ann_path).
+        """
+        split_file = osp.join(self.data_root, 'data_split.json')
+        with open(split_file, 'r') as f:
+            split_data = json.load(f)
+        files = []
+        # Rename the key
+        split_data['val'] = split_data.pop('valid')
+        if not osp.exists(img_path):
+            os.makedirs(img_path)
+        for groups in split_data[self.current_split]:
+            for img_name in split_data[self.current_split][groups]:
+                src_img = osp.join(self.data_root, 'temp_images', img_name)
+                dst_img = osp.join(img_path, img_name)
+                if not osp.exists(src_img):
+                    Warning(f'{src_img} does not exist!')
+                    continue
+                # move the image to the new path
+                shutil.move(src_img, dst_img)
+                ann = osp.join(ann_path, img_name.replace('.jpg', '.json'))
+                files.append((dst_img, ann))
+        return files
+
     def clean(self) -> None:
         for d in self.delete:
             delete_file = osp.join(self.data_root, d)
             if osp.exists(delete_file):
-                shutil.rmtree(delete_file)
+                if osp.isdir(delete_file):
+                    shutil.rmtree(delete_file)
+                else:
+                    os.remove(delete_file)
 
 
 @DATA_CONVERTERS.register_module()
