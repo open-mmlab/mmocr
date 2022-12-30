@@ -3,9 +3,11 @@ from unittest import TestCase
 
 import torch
 
-from mmocr.models.textrecog.backbones.svtr import (AttnMixer, ConvMixer,
-                                                   MerigingBlock, MixingBlock,
-                                                   OverlapPatchEmbed, SVTRNet)
+from mmocr.models.textrecog.encoders.svtr_encoder import (AttnMixer, ConvMixer,
+                                                          MerigingBlock,
+                                                          MixingBlock,
+                                                          OverlapPatchEmbed,
+                                                          SVTREncoder)
 
 
 class TestOverlapPatchEmbed(TestCase):
@@ -69,13 +71,13 @@ class TestMergingBlock(TestCase):
              torch.Size([1, 4 * 25, 64 * 2])])
 
 
-class TestSVTRNet(TestCase):
+class TestSVTREncoder(TestCase):
 
     def setUp(self) -> None:
         self.img = torch.rand(1, 3, 32, 100)
 
-    def test_svtrnet(self):
-        model = SVTRNet(
+    def test_svtr_encoder(self):
+        model = SVTREncoder(
             img_size=self.img.shape[-2:],
             in_channels=self.img.shape[1],
         )

@@ -13,15 +13,6 @@ from mmengine.model.weight_init import trunc_normal_init
 from mmocr.registry import MODELS
 
 
-class Identity(nn.Module):
-
-    def __init__(self):
-        super(Identity, self).__init__()
-
-    def forward(self, input):
-        return input
-
-
 class OverlapPatchEmbed(BaseModule):
     """Image to the progressive overlapping Patch Embedding.
 
@@ -126,7 +117,8 @@ class AttnMixer(BaseModule):
     Args:
         embed_dims (int): Number of character components.
         num_heads (int, optional): Number of heads. Defaults to 8.
-        mixer (str, optional): The mixer type. Defaults to 'Global'.
+        mixer (str, optional): The mixer type, choices are 'Global' and
+            'Local'. Defaults to 'Global'.
         input_shape (Tuple[int, int], optional): The shape of input [H, W].
             Defaults to [8, 25].
         local_k (Tuple[int, int], optional): Window size. Defaults to [7, 11].
@@ -316,7 +308,8 @@ class MixingBlock(BaseModule):
                 local_k=window_size)
         else:
             raise TypeError('The mixer must be one of [Global, Local, Conv]')
-        self.drop_path = DropPath(drop_path) if drop_path > 0. else Identity()
+        self.drop_path = DropPath(
+            drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = nn.LayerNorm(embed_dims, eps=1e-6)
         mlp_hidden_dim = int(embed_dims * mlp_ratio)
         self.mlp_ratio = mlp_ratio
@@ -409,7 +402,7 @@ class MerigingBlock(BaseModule):
 
 
 @MODELS.register_module()
-class SVTRNet(BaseModule):
+class SVTREncoder(BaseModule):
     """A PyTorch implementation of `SVTR: Scene Text Recognition with a Single
     Visual Model <https://arxiv.org/abs/2205.00159>`_
 
