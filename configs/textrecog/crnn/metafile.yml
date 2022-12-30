@@ -16,7 +16,7 @@ Collections:
   README: configs/textrecog/crnn/README.md
 
 Models:
-  - Name: crnn_mini-vgg_5e_mj-123
+  - Name: crnn_mini-vgg_5e_mj
     Alias: CRNN
     In Collection: CRNN
     Config: configs/textrecog/crnn/crnn_mini-vgg_5e_mj.py

@@ -217,8 +217,9 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                                                  **kwargs)
         elif 'rec' in self.mode:
             if 'det' in self.mode:
-                super().visualize(inputs, self._pack_e2e_datasamples(preds),
-                                  **kwargs)
+                return super().visualize(inputs,
+                                         self._pack_e2e_datasamples(preds),
+                                         **kwargs)
             else:
                 return self.textrec_inferencer.visualize(
                     self.rec_inputs, preds['rec'][0], **kwargs)

@@ -191,8 +191,7 @@ class BaseMMOCRInferencer(BaseInferencer):
         for single_input, pred in zip(inputs, preds):
             if isinstance(single_input, str):
                 img_bytes = mmengine.fileio.get(single_input)
-                img = mmcv.imfrombytes(img_bytes)
-                img = img[:, :, ::-1]
+                img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
                 img_name = osp.basename(single_input)
             elif isinstance(single_input, np.ndarray):
                 img = single_input.copy()
@@ -205,7 +204,7 @@ class BaseMMOCRInferencer(BaseInferencer):
             out_file = osp.join(img_out_dir, img_name) if img_out_dir != '' \
                 else None
 
-            self.visualizer.add_datasample(
+            visualization = self.visualizer.add_datasample(
                 img_name,
                 img,
                 pred,
@@ -216,7 +215,7 @@ class BaseMMOCRInferencer(BaseInferencer):
                 pred_score_thr=pred_score_thr,
                 out_file=out_file,
             )
-            results.append(img)
+            results.append(visualization)
             self.num_visualized_imgs += 1
 
         return results

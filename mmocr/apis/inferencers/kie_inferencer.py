@@ -280,7 +280,7 @@ class KIEInferencer(BaseMMOCRInferencer):
             out_file = osp.join(img_out_dir, img_name) if img_out_dir != '' \
                 else None
 
-            self.visualizer.add_datasample(
+            visualization = self.visualizer.add_datasample(
                 img_name,
                 img,
                 pred,
@@ -291,7 +291,7 @@ class KIEInferencer(BaseMMOCRInferencer):
                 pred_score_thr=pred_score_thr,
                 out_file=out_file,
             )
-            results.append(img)
+            results.append(visualization)
             self.num_visualized_imgs += 1
 
         return results
