@@ -18,6 +18,7 @@ Collections:
 
 Models:
   - Name: satrn_shallow_5e_st_mj
+    Alias: SATRN
     In Collection: SATRN
     Config: configs/textrecog/satrn/satrn_shallow_5e_st_mj.py
     Metadata:
@@ -52,6 +53,7 @@ Models:
     Weights: https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow_5e_st_mj/satrn_shallow_5e_st_mj_20220915_152443-5fd04a4c.pth
 
   - Name: satrn_shallow-small_5e_st_mj
+    Alias: SATRN_sm
     In Collection: SATRN
     Config: configs/textrecog/satrn/satrn_shallow-small_5e_st_mj.py
     Metadata:

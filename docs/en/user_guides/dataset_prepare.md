@@ -80,29 +80,33 @@ data/icdar2015
 └── textdet_train.json
 ```
 
+Once your dataset has been prepared, you can use the [browse_dataset.py](./useful_tools.md#dataset-visualization-tool) to visualize the dataset and check if the annotations are correct.
+
+```bash
+python tools/analysis_tools/browse_dataset.py configs/textdet/_base_/datasets/icdar2015.py
+```
+
 ## Dataset Configuration
 
 ### Single Dataset Training
 
-When training or evaluating a model on new datasets, we need to write the dataset config where the image path, annotation path, and image prefix are set. The path `configs/xxx/_base_/datasets/` is pre-configured with the commonly used datasets in MMOCR (if you use `prepare_dataset.py` to prepare dataset, this config will be generated automatically), here we take the ICDAR 2015 dataset as an example (see `configs/_base_/det_datasets/icdar2015.py`).
+When training or evaluating a model on new datasets, we need to write the dataset config where the image path, annotation path, and image prefix are set. The path `configs/xxx/_base_/datasets/` is pre-configured with the commonly used datasets in MMOCR (if you use `prepare_dataset.py` to prepare dataset, this config will be generated automatically), here we take the ICDAR 2015 dataset as an example (see `configs/textdet/_base_/datasets/icdar2015.py`).
 
 ```Python
-ic15_det_data_root = 'data/icdar2015' # dataset root path
+icdar2015_textdet_data_root = 'data/icdar2015' # dataset root path
 
 # Train set config
 icdar2015_textdet_train = dict(
     type='OCRDataset',
-    data_root=ic15_det_data_root,                        # dataset root path
-    ann_file='instances_training.json',                  # name of annotation
-    data_prefix=dict(img_path='imgs/'),                  # prefix of image path
+    data_root=icdar2015_textdet_data_root,               # dataset root path
+    ann_file='textdet_train.json',                       # name of annotation
     filter_cfg=dict(filter_empty_gt=True, min_size=32),  # filtering empty images
     pipeline=None)
 # Test set config
 icdar2015_textdet_test = dict(
     type='OCRDataset',
-    data_root=ic15_det_data_root,
-    ann_file='instances_test.json',
-    data_prefix=dict(img_path='imgs/'),
+    data_root=icdar2015_textdet_data_root,
+    ann_file='textdet_test.json',
     test_mode=True,
     pipeline=None)
 ```

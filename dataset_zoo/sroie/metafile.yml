@@ -1,0 +1,31 @@
+Name: 'Scanned Receipts OCR and Information Extraction'
+Paper:
+  Title: ICDAR2019 Competition on Scanned Receipt OCR and Information Extraction
+  URL: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8977955
+  Venue: ICDAR
+  Year: '2019'
+  BibTeX: '@INPROCEEDINGS{8977955,
+  author={Huang, Zheng and Chen, Kai and He, Jianhua and Bai, Xiang and Karatzas, Dimosthenis and Lu, Shijian and Jawahar, C. V.},
+  booktitle={2019 International Conference on Document Analysis and Recognition (ICDAR)},
+  title={ICDAR2019 Competition on Scanned Receipt OCR and Information Extraction},
+  year={2019},
+  volume={},
+  number={},
+  pages={1516-1520},
+  doi={10.1109/ICDAR.2019.00244}}'
+Data:
+  Website: https://rrc.cvc.uab.es/?ch=13
+  Language:
+    - English
+  Scene:
+    - Document
+  Granularity:
+    - Word
+  Tasks:
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: CC BY 4.0
+    Link: https://creativecommons.org/licenses/by/4.0/
+  Format: .txt
