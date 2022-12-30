@@ -66,7 +66,7 @@ train_pipeline = [
     dict(
         type='ConditionApply',
         condition='min(results["img_shape"])>10',
-        transforms=dict(
+        true_transforms=dict(
             type='RandomApply',
             prob=0.4,
             transforms=[
