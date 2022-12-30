@@ -17,6 +17,7 @@ Collections:
 
 Models:
   - Name: master_resnet31_12e_st_mj_sa
+    Alias: MASTER
     In Collection: MASTER
     Config: configs/textrecog/master/master_resnet31_12e_st_mj_sa.py
     Metadata:

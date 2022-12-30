@@ -15,6 +15,7 @@ Collections:
 
 Models:
   - Name: sdmgr_unet16_60e_wildreceipt
+    Alias: SDMGR
     In Collection: SDMGR
     Config: configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py
     Metadata:

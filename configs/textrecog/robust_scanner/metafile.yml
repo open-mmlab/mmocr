@@ -18,6 +18,7 @@ Collections:
 
 Models:
   - Name: robustscanner_resnet31_5e_st-sub_mj-sub_sa_real
+    Alias: RobustScanner
     In Collection: RobustScanner
     Config: configs/textrecog/robust_scanner/robustscanner_resnet31_5e_st-sub_mj-sub_sa_real.py
     Metadata:
