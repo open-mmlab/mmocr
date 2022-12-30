@@ -4,7 +4,7 @@ _base_ = [
 
 model = dict(
     preprocessor=dict(output_image_size=(48, 160), ),
-    backbone=dict(
+    encoder=dict(
         img_size=[48, 160],
         max_seq_len=40,
         out_channels=256,

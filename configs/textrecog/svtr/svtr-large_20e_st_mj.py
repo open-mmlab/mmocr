@@ -4,7 +4,7 @@ _base_ = [
 
 model = dict(
     preprocessor=dict(output_image_size=(48, 160), ),
-    backbone=dict(
+    encoder=dict(
         img_size=[48, 160],
         max_seq_len=40,
         out_channels=384,
@@ -15,3 +15,5 @@ model = dict(
     decoder=dict(in_channels=256))
 
 train_dataloader = dict(batch_size=128, )
+
+optim_wrapper = dict(optimizer=dict(lr=2.5 / (10**4)))

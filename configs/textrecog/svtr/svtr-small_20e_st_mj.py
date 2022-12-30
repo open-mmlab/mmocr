@@ -3,7 +3,7 @@ _base_ = [
 ]
 
 model = dict(
-    backbone=dict(
+    encoder=dict(
         embed_dims=[96, 192, 256],
         depth=[3, 6, 6],
         num_heads=[3, 6, 8],
