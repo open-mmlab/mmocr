@@ -20,6 +20,7 @@ from .polygon_utils import (boundary_iou, crop_polygon, is_poly_inside_rect,
                             sort_vertex, sort_vertex8)
 from .setup_env import register_all_modules
 from .string_utils import StringStripper
+from .transform_utils import remove_pipeline_elements
 from .typing_utils import (ColorType, ConfigType, DetSampleList,
                            InitConfigType, InstanceList, KIESampleList,
                            LabelList, MultiConfig, OptConfigType,
@@ -45,5 +46,5 @@ __all__ = [
     'OptRecSampleList', 'RecSampleList', 'MultiConfig', 'OptTensor',
     'ColorType', 'OptKIESampleList', 'KIESampleList', 'is_archive',
     'check_integrity', 'list_files', 'get_md5', 'InstanceList', 'LabelList',
-    'OptInstanceList', 'OptLabelList', 'RangeType'
+    'OptInstanceList', 'OptLabelList', 'RangeType', 'remove_pipeline_elements'
 ]

@@ -286,6 +286,8 @@ class DBModuleLoss(SegBasedModuleLoss):
         neg_cos_c = (
             (c_square - a_square - b_square) /
             (np.finfo(np.float32).eps + 2 * np.sqrt(a_square * b_square)))
+        # clip -cosC value to [-1, 1]
+        neg_cos_c = np.clip(neg_cos_c, -1.0, 1.0)
         # sinC^2=1-cosC^2
         square_sin = 1 - np.square(neg_cos_c)
         square_sin = np.nan_to_num(square_sin)

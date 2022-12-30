@@ -79,7 +79,9 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                 self.visualizer = VISUALIZERS.build(
                     dict(
                         type='TextSpottingLocalVisualizer',
-                        name=f'inferencer{ts}'))
+                        name=f'inferencer{ts}',
+                        font_families=self.textrec_inferencer.visualizer.
+                        font_families))
             else:
                 self.mode = 'rec'
         if kie is not None:

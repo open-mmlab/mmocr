@@ -33,7 +33,9 @@ val_dataloader = dict(
         pipeline=_base_.test_pipeline))
 test_dataloader = val_dataloader
 
-model = dict(decoder=dict(dictionary=dict(with_unknown=True)))
+_base_.model.decoder.dictionary.update(
+    dict(with_unknown=True, unknown_token=None))
+_base_.train_cfg.update(dict(max_epochs=200, val_interval=10))
 
 val_evaluator = dict(dataset_prefixes=['Toy'])
 test_evaluator = val_evaluator
