@@ -44,9 +44,3 @@ class TestFPEM_FFM(unittest.TestCase):
         self.assertTrue(out[1].shape == out[0].shape)
         self.assertTrue(out[2].shape == out[0].shape)
         self.assertTrue(out[3].shape == out[0].shape)
-
-
-if __name__ == '__main__':
-    model = TestFPEM_FFM()
-    model.setUp()
-    model.test_forward()
