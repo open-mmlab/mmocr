@@ -90,7 +90,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
             self.kie_inferencer = KIEInferencer(kie, kie_weights, device)
             self.mode = 'det_rec_kie'
 
-    def preprocess_inputs(self, inputs: InputsType) -> list:
+    def _inputs_to_list(self, inputs: InputsType) -> list:
         """Preprocess the inputs to a list.
 
         Preprocess inputs to a list according to its type:
@@ -233,7 +233,8 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         """Call the inferencer.
 
         Args:
-            inputs (InputsType): Inputs for the inferencer.
+            inputs (InputsType): Inputs for the inferencer. It can be a path
+                to image / image directory, or an array, or a list of these.
             return_datasamples (bool): Whether to return results as
                 :obj:`BaseDataElement`. Defaults to False.
             batch_size (int): Batch size. Defaults to 1.

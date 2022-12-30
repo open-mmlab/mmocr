@@ -72,7 +72,8 @@ class BaseMMOCRInferencer(BaseInferencer):
         """Call the inferencer.
 
         Args:
-            inputs (InputsType): Inputs for the inferencer.
+            inputs (InputsType): Inputs for the inferencer. It can be a path
+                to image / image directory, or an array, or a list of these.
             return_datasamples (bool): Whether to return results as
                 :obj:`BaseDataElement`. Defaults to False.
             batch_size (int): Inference batch size. Defaults to 1.
