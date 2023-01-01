@@ -1,0 +1,75 @@
+Title: 'Visual-Semantic Transformer for Scene Text Recognition'
+Abbreviation: ViTSTR
+Tasks:
+ - TextRecog
+Venue: ICDAR
+Year: 2021
+Lab/Company:
+ - Electrical and Electronics Engineering Institute, University of the Philippines, Quezon City, Philippines
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-030-86549-8_21'
+  Arxiv: 'https://arxiv.org/abs/2105.08582'
+Paper Reading URL: N/A
+Code: 'https://github.com/roatienza/deep-text-recognition-benchmark'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Scene text recognition (STR) enables computers to read text in natural
+scenes such as object labels, road signs and instructions. STR helps machines
+perform informed decisions such as what object to pick, which direction to go,
+and what is the next step of action. In the body of work on STR, the focus has
+always been on recognition accuracy. There is little emphasis placed on speed
+and computational efficiency which are equally important especially for
+energy-constrained mobile machines. In this paper we propose ViTSTR, an STR
+with a simple single stage model architecture built on a compute and parameter
+efficient vision transformer (ViT). On a comparable strong baseline method such
+as TRBA with accuracy of 84.3%, our small ViTSTR achieves a competitive accuracy
+of 82.6% (84.2% with data augmentation) at 2.4× speed up, using only 43.4% of
+the number of parameters and 42.2% FLOPS. The tiny version of ViTSTR achieves
+80.3% accuracy (82.1% with data augmentation), at 2.5× the speed, requiring
+only 10.9% of the number of parameters and 11.9% FLOPS. With data augmentation,
+our base ViTSTR outperforms TRBA at 85.2% accuracy (83.7% without augmentation)
+at 2.3× the speed but requires 73.2% more parameters and 61.5% more FLOPS. In
+terms of trade-offs, nearly all ViTSTR configurations are at or near the frontiers
+to maximize accuracy, speed and computational efficiency all at the same time.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/210161050-476296e7-10e5-4ec9-9024-af6b5c5ee84b.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: 2080Ti
+   ITEM: 17.6e9
+ PARAMS: 85.8e6
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+   Test DataSets:
+     Avg.: 84.0
+     IIIT5K:
+       WAICS: 88.4
+     SVT:
+       WAICS: 87.7
+     IC13:
+       WAICS: 92.4
+     IC15:
+       WAICS: 72.6
+     SVTP:
+       WAICS: 81.8
+     CUTE:
+       WAICS: 81.3
+Bibtex: '@inproceedings{atienza2021vision,
+  title={Vision transformer for fast and efficient scene text recognition},
+  author={Atienza, Rowel},
+  booktitle={International Conference on Document Analysis and Recognition},
+  pages={319--334},
+  year={2021},
+  organization={Springer}
+}'

@@ -1,0 +1,79 @@
+Title: 'Parallel and Robust Text Rectifier for Scene Text Recognition'
+Abbreviation: PRTR
+Tasks:
+ - TextRecog
+Venue: BMVC
+Year: 2022
+Lab/Company:
+ - Visual Computing Group, Ping An Property & Casualty Insurance Company, Shenzhen, China
+ - Ping An Technology (Shenzhen) Co. Ltd.
+ - School of Information and Telecommunication Engineering, Guangzhou Maritime University, Guangzhou, China
+URL:
+  Venue: 'https://bmvc2022.mpi-inf.mpg.de/0770.pdf'
+  Arxiv: 'https://bmvc2022.mpi-inf.mpg.de/0770.pdf'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Scene text recognition (STR) is to recognize text appearing in images.
+Current stateof-the-art STR methods usually adopt a multi-stage framework which
+uses a rectifier to iteratively rectify errors from previous stage. However, the
+rectifiers of those models are not proficient in addressing the misalignment
+problem. To alleviate this problem, we proposed a novel network named Parallel
+and Robust Text Rectifier (PRTR), which consists of a bi-directional position
+attention initial decoder and a sequence of stacked Robust Visual Semantic
+Rectifiers (RVSRs). In essence, PRTR is creatively designed as a coarse-to-fine
+architecture that exploits a sequence of rectifiers for repeatedly refining the
+prediction in a stage-wise manner. RVSR is a core component in the proposed
+model which comprises two key modules, Dual-Path Semantic Alignment (DPSA)
+module and Visual-Linguistic Alignment (VLA). DPSA can rectify the linguistic
+misalignment issues via the global semantic features that are derived from the
+recognized characters as a whole, while VLA re-aligns the linguistic features
+with visual features by an attention model to avoid the overfitting of
+linguistic features. All parts of PRTR are nonautoregressive (parallel), and
+its RVSR re-aligns its output according to the linguistic features and the
+visual features, so it is robust to the mis-aligned error. Extensive experiments
+on mainstream benchmarks demonstrate that the proposed model can alleviate
+the misalignment problem to a large extent and outperformed state-of-the-art
+models.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Explicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/210052800-ab1f29d1-de7c-43bd-8297-b13cd83e28d3.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - SA
+     - MJ
+   Test DataSets:
+     Avg.: 93.3
+     IIIT5K:
+       WAICS: 97.0
+     SVT:
+       WAICS: 94.4
+     IC13:
+       WAICS: 95.8
+     IC15:
+       WAICS: 86.1
+     SVTP:
+       WAICS: 89.8
+     CUTE:
+       WAICS: 96.5
+Bibtex: '@article{tang2021visual,
+  title={Visual-semantic transformer for scene text recognition},
+  author={Tang, Xin and Lai, Yongquan and Liu, Ying and Fu, Yuanyuan and Fang, Rui},
+  journal={arXiv preprint arXiv:2112.00948},
+  year={2021}
+}'

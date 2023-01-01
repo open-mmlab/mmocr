@@ -1,0 +1,70 @@
+Title: 'Why You Should Try the Real Data for the Scene Text Recognition'
+Abbreviation: Loginov et al
+Tasks:
+ - TextRecog
+Venue: arXiv
+Year: 2021
+Lab/Company:
+ - Intel Corporation
+URL:
+  Venue: 'https://arxiv.org/abs/2107.13938'
+  Arxiv: 'https://arxiv.org/abs/2107.13938'
+Paper Reading URL: N/A
+Code: 'https://github.com/openvinotoolkit/training_extensions'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Recent works in the text recognition area have pushed forward the
+recognition results to the new horizons. But for a long time a lack of large
+human-labeled natural text recognition datasets has been forcing researchers
+to use synthetic data for training text recognition models. Even though
+synthetic datasets are very large (MJSynth and SynthText, two most famous
+synthetic datasets, have several million images each), their diversity could
+be insufficient, compared to natural datasets like ICDAR and others.
+Fortunately, the recently released text recognition annotation for OpenImages
+V5 dataset has comparable with synthetic dataset number of instances and more
+diverse examples. We have used this annotation with a Text Recognition head
+architecture from the Yet Another Mask Text Spotter and got comparable to the
+SOTA results. On some datasets we have even outperformed previous SOTA models.
+In this paper we also introduce a text recognition model. The model’s code is
+available.'
+MODELS:
+ Architecture:
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/210163669-0848839e-185f-4d8c-9de1-ac34e957d685.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+     - Real
+   Test DataSets:
+     Avg.: 91.0
+     IIIT5K:
+       WAICS: 93.5
+     SVT:
+       WAICS: 94.7
+     IC13:
+       WAICS: 96.8
+     IC15:
+       WAICS: 80.2
+     SVTP:
+       WAICS: 89.9
+     CUTE:
+       WAICS: N/A
+Bibtex: '@article{loginov2021you,
+  title={Why You Should Try the Real Data for the Scene Text Recognition},
+  author={Loginov, Vladimir},
+  journal={arXiv preprint arXiv:2107.13938},
+  year={2021}
+}'

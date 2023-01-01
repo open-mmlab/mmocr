@@ -1,0 +1,82 @@
+Title: 'SGBANet: Semantic GAN and Balanced Attention Network for Arbitrarily Oriented Scene Text Recognition'
+Abbreviation: SGBANet
+Tasks:
+ - TextRecog
+Venue: ECCV
+Year: 2022
+Lab/Company:
+ - Shanghai Key Laboratory of Multidimensional Information Processing, East China Normal University, Shanghai, China
+ - Faculty of Computer Science and Information Technology, University of Malaya, Kuala Lumpur, Malaysia
+ - iFLYTEK Research, iFLYTEK, Hefei, China
+ - CVPR Unit, Indian Statistical Institute, Kolkata, India
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_27'
+  Arxiv: 'https://arxiv.org/abs/2207.10256'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Scene text recognition is a challenging task due to the complex
+backgrounds and diverse variations of text instances. In this paper, we
+propose a novel Semantic GAN and Balanced Attention Network (SGBANet) to
+recognize the texts in scene images. The proposed method first generates
+the simple semantic feature using Semantic GAN and then recognizes the scene
+text with the Balanced Attention Module. The Semantic GAN aims to align the
+semantic feature distribution between the support domain and target domain.
+Different from the conventional image-to-image translation methods that
+perform at the image level, the Semantic GAN performs the generation and
+discrimination on the semantic level with the Semantic Generator Module
+(SGM) and Semantic Discriminator Module (SDM). For target images (scene text
+images), the Semantic Generator Module generates simple semantic features
+that share the same feature distribution with support images (clear text
+images). The Semantic Discriminator Module is used to distinguish the semantic
+features between the support domain and target domain. In addition, a
+Balanced Attention Module is designed to alleviate the problem of attention
+drift. The Balanced Attention Module first learns a balancing parameter based
+on the visual glimpse vector and semantic glimpse vector, and then performs
+the balancing operation for obtaining a balanced glimpse vector. Experiments
+on six benchmarks, including regular datasets, i.e., IIIT5K, SVT, ICDAR2013,
+and irregular datasets, i.e., ICDAR2015, SVTP, CUTE80, validate the
+effectiveness of our proposed method.'
+MODELS:
+ Architecture:
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/210163800-3ecb592b-daae-450f-907b-cd239b2af1c0.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+   Test DataSets:
+     Avg.: 88.21
+     IIIT5K:
+       WAICS: 95.4
+     SVT:
+       WAICS: 89.1
+     IC13:
+       WAICS: 95.1
+     IC15:
+       WAICS: 78.4
+     SVTP:
+       WAICS: 83.1
+     CUTE:
+       WAICS: 88.2
+Bibtex: '@inproceedings{zhong2022sgbanet,
+  title={SGBANet: Semantic GAN and Balanced Attention Network for Arbitrarily Oriented Scene Text Recognition},
+  author={Zhong, Dajian and Lyu, Shujing and Shivakumara, Palaiahnakote and Yin, Bing and Wu, Jiajia and Pal, Umapada and Lu, Yue},
+  booktitle={European Conference on Computer Vision},
+  pages={464--480},
+  year={2022},
+  organization={Springer}
+}'

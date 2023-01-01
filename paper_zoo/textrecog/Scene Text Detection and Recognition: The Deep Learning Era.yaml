@@ -1,0 +1,74 @@
+Title: 'Scene Text Detection and Recognition: The Deep Learning Era'
+Abbreviation: Long et al
+Tasks:
+ - TextRecog
+ - TextDet
+Venue: IJCV
+Year: 2021
+Lab/Company:
+ - Alibaba DAMO Academy, Beijing, China
+URL:
+  Venue: 'https://link.springer.com/article/10.1007/s11263-020-01369-0'
+  Arxiv: 'https://arxiv.org/abs/1811.04256'
+Paper Reading URL: N/A
+Code: 'https://github.com/Jyouhou/SceneTextPapers'
+Supported In MMOCR: N/S
+PaperType:
+ - Survey
+Abstract: 'With the rise and development of deep learning, computer vision has
+been tremendously transformed and reshaped. As an important research area in
+computer vision, scene text detection and recognition has been inevitably
+influenced by this wave of revolution, consequently entering the era of
+deep learning. In recent years, the community has witnessed substantial
+advancements in mindset, methodology and performance. This survey is aimed at
+summarizing and analyzing the major changes and significant progresses of
+scene text detection and recognition in the deep learning era. Through this
+article, we devote to: (1) introduce new insights and ideas; (2) highlight
+recent techniques and benchmarks; (3) look ahead into future trends.
+Specifically, we will emphasize the dramatic differences brought by deep
+learning and remaining grand challenges. We expect that this review paper
+would serve as a reference book for researchers in this field.'
+MODELS:
+ Architecture:
+  - CTC
+  - Attention
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Explicit Language Model
+  - Implicit Language Model
+ Network Structure: N/A
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:  N/A
+   Test DataSets:
+     Avg.: N/A
+     IIIT5K:
+       WAICS: N/A
+     SVT:
+       WAICS: N/A
+     IC13:
+       WAICS: N/A
+     IC15:
+       WAICS: N/A
+     SVTP:
+       WAICS: N/A
+     CUTE:
+       WAICS: N/A
+Bibtex: '@article{long2021scene,
+  title={Scene text detection and recognition: The deep learning era},
+  author={Long, Shangbang and He, Xin and Yao, Cong},
+  journal={International Journal of Computer Vision},
+  volume={129},
+  number={1},
+  pages={161--184},
+  year={2021},
+  publisher={Springer}
+}'

@@ -1,0 +1,77 @@
+Title: 'On Vocabulary Reliance in Scene Text Recognition'
+Abbreviation: Wan et al
+Tasks:
+ - TextRecog
+Venue: CVPR
+Year: 2020
+Lab/Company:
+ - Megvii
+ - China University of Mining and Technology
+ - University of Rochester
+URL:
+  Venue: 'http://openaccess.thecvf.com/content_CVPR_2020/html/Wan_On_Vocabulary_Reliance_in_Scene_Text_Recognition_CVPR_2020_paper.html'
+  Arxiv: 'https://arxiv.org/abs/2005.03959'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'The pursuit of high performance on public benchmarks has been the
+driving force for research in scene text recognition, and notable progress has
+been achieved. However, a close investigation reveals a startling fact that the
+state-ofthe-art methods perform well on images with words within vocabulary but
+generalize poorly to images with words outside vocabulary. We call this
+phenomenon “vocabulary reliance”. In this paper, we establish an analytical
+framework to conduct an in-depth study on the problem of vocabulary reliance
+in scene text recognition. Key findings include: (1) Vocabulary reliance is
+ubiquitous, i.e., all existing algorithms more or less exhibit such
+characteristic; (2) Attention-based decoders prove weak in generalizing to
+words outside vocabulary and segmentation-based decoders perform well in
+utilizing visual features; (3) Context modeling is highly coupled with the
+prediction layers. These findings provide new insights and can benefit future
+research in scene text recognition. Furthermore, we propose a simple yet
+effective mutual learning strategy to allow models of two families
+(attention-based and segmentationbased) to learn collaboratively. This remedy
+alleviates the problem of vocabulary reliance and improves the overall scene
+text recognition performance.'
+MODELS:
+ Architecture:
+  - CTC
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/210054683-5d5f3117-4bee-43d6-a36c-8e645d47c2b1.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+   Test DataSets:
+     Avg.: N/A
+     IIIT5K:
+       WAICS: N/A
+     SVT:
+       WAICS: N/A
+     IC13:
+       WAICS: N/A
+     IC15:
+       WAICS: N/A
+     SVTP:
+       WAICS: N/A
+     CUTE:
+       WAICS: N/A
+Bibtex: '@inproceedings{wan2020vocabulary,
+  title={On vocabulary reliance in scene text recognition},
+  author={Wan, Zhaoyi and Zhang, Jielei and Zhang, Liang and Luo, Jiebo and Yao, Cong},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={11425--11434},
+  year={2020}
+}'
