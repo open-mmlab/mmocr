@@ -97,7 +97,7 @@ model = dict(
                 nms=dict(type='nms', iou_threshold=0.5),
                 score_thr=0.3))),
     roi_head=dict(
-        type='OnlyRecRoIHead',
+        type='RecRoIHead',
         roi_extractor=dict(
             type='BezierRoIExtractor',
             roi_layer=dict(

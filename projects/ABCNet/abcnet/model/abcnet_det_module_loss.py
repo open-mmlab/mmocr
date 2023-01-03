@@ -9,6 +9,7 @@ from torch import Tensor
 
 from mmocr.models.textdet.module_losses.base import BaseTextDetModuleLoss
 from mmocr.registry import MODELS, TASK_UTILS
+from mmocr.structures import TextDetDataSample
 from mmocr.utils import ConfigType, DetSampleList, RangeType
 from ..utils import poly2bezier
 
@@ -17,44 +18,7 @@ INF = 1e8
 
 @MODELS.register_module()
 class ABCNetDetModuleLoss(BaseTextDetModuleLoss):
-    """Anchor-free head used in `FCOS <https://arxiv.org/abs/1904.01355>`_.
-
-    The FCOS head does not use anchor boxes. Instead bounding boxes are
-    predicted at each pixel and a centerness measure is used to suppress
-    low-quality predictions.
-    Here norm_on_bbox, centerness_on_reg, dcn_on_last_conv are training
-    tricks used in official repo, which will bring remarkable mAP gains
-    of up to 4.9. Please see https://github.com/tianzhi0549/FCOS for
-    more detail.
-
-    Args:
-        num_classes (int): Number of categories excluding the background
-            category.
-        in_channels (int): Number of channels in the input feature map.
-        strides (Sequence[int] or Sequence[Tuple[int, int]]): Strides of points
-            in multiple feature levels. Defaults to (4, 8, 16, 32, 64).
-        regress_ranges (Sequence[Tuple[int, int]]): Regress range of multiple
-            level points.
-        center_sampling (bool): If true, use center sampling.
-            Defaults to False.
-        center_sample_radius (float): Radius of center sampling.
-            Defaults to 1.5.
-        norm_on_bbox (bool): If true, normalize the regression targets with
-            FPN strides. Defaults to False.
-        centerness_on_reg (bool): If true, position centerness on the
-            regress branch. Please refer to https://github.com/tianzhi0549/FCOS/issues/89#issuecomment-516877042.
-            Defaults to False.
-        loss_cls (:obj:`ConfigDict` or dict): Config of classification loss.
-        loss_bbox (:obj:`ConfigDict` or dict): Config of localization loss.
-        loss_centerness (:obj:`ConfigDict`, or dict): Config of centerness
-            loss.
-
-    Example:
-        >>> self = FCOSHead(11, 7)
-        >>> feats = [torch.rand(1, 7, s, s) for s in [4, 8, 16, 32, 64]]
-        >>> cls_score, bbox_pred, centerness = self.forward(feats)
-        >>> assert len(cls_score) == len(self.scales)
-    """  # noqa: E501
+    # TODO add docs
 
     def __init__(
         self,
@@ -99,7 +63,7 @@ class ABCNetDetModuleLoss(BaseTextDetModuleLoss):
 
     def forward(self, inputs: Tuple[Tensor],
                 data_samples: DetSampleList) -> Dict:
-        """Compute DBNet loss.
+        """Compute ABCNet loss.
 
         Args:
             inputs (tuple(tensor)): Raw predictions from model, containing
@@ -109,8 +73,8 @@ class ABCNetDetModuleLoss(BaseTextDetModuleLoss):
             data_samples (list[TextDetDataSample]): The data samples.
 
         Returns:
-            results(dict): The dict for abcnet-det losses with loss_prob, \
-                loss_db and loss_thr.
+            dict: The dict for abcnet-det losses with loss_cls, loss_bbox,
+            loss_centerness and loss_bezier.
         """
         cls_scores, bbox_preds, centernesses, beizer_preds = inputs
         assert len(cls_scores) == len(bbox_preds) == len(centernesses) == len(
@@ -209,9 +173,8 @@ class ABCNetDetModuleLoss(BaseTextDetModuleLoss):
         Args:
             points (list[Tensor]): Points of each fpn level, each has shape
                 (num_points, 2).
-            batch_gt_instances (list[:obj:`InstanceData`]): Batch of
-                gt_instance.  It usually includes ``bboxes`` and ``labels``
-                attributes.
+            data_samples: Batch of data samples. Each data sample contains
+            a gt_instance, which usually includes bboxes and labels attributes.
 
         Returns:
             tuple: Targets of each level.
@@ -271,10 +234,10 @@ class ABCNetDetModuleLoss(BaseTextDetModuleLoss):
         return (concat_lvl_labels, concat_lvl_bbox_targets,
                 concat_lvl_bezier_targets)
 
-    def _get_targets_single(self, data_sample, points: Tensor,
-                            regress_ranges: Tensor,
+    def _get_targets_single(self, data_sample: TextDetDataSample,
+                            points: Tensor, regress_ranges: Tensor,
                             num_points_per_lvl: List[int]
-                            ) -> Tuple[Tensor, Tensor]:
+                            ) -> Tuple[Tensor, Tensor, Tensor]:
         """Compute regression and classification targets for a single image."""
         num_points = points.size(0)
         gt_instances = data_sample.gt_instances

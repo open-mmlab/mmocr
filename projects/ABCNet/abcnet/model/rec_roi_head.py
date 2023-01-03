@@ -11,7 +11,7 @@ from .base_roi_head import BaseRoIHead
 
 
 @MODELS.register_module()
-class OnlyRecRoIHead(BaseRoIHead):
+class RecRoIHead(BaseRoIHead):
     """Simplest base roi head including one bbox head and one mask head."""
 
     def __init__(self,
