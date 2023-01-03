@@ -145,13 +145,12 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         if self.mode == 'rec':
             # The extra list wrapper here is for the ease of postprocessing
             self.rec_inputs = inputs
-            result['rec'] = [
-                self.textrec_inferencer(
-                    self.rec_inputs,
-                    return_datasamples=True,
-                    batch_size=batch_size,
-                    **forward_kwargs)
-            ]
+            predictions = self.textrec_inferencer(
+                self.rec_inputs,
+                return_datasamples=True,
+                batch_size=batch_size,
+                **forward_kwargs)['predictions']
+            result['rec'] = [[p] for p in predictions]
         elif self.mode.startswith('det'):
             result['det'] = self.textdet_inferencer(
                 inputs,
@@ -257,7 +256,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
             postprocess_kwargs,
         ) = self._dispatch_kwargs(**kwargs)
 
-        ori_inputs = self.preprocess_inputs(inputs)
+        ori_inputs = self._inputs_to_list(inputs)
 
         preds = self.forward(ori_inputs, batch_size, **forward_kwargs)
 
@@ -267,12 +266,13 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         results = self.postprocess(preds, visualization, **postprocess_kwargs)
         return results
 
-    def postprocess(self,
-                    preds: PredType,
-                    visualization: Optional[List[np.ndarray]] = None,
-                    print_result: bool = False,
-                    pred_out_file: str = ''
-                    ) -> Union[ResType, Tuple[ResType, np.ndarray]]:
+    def postprocess(
+            self,
+            preds: PredType,
+            visualization: Optional[List[np.ndarray]] = None,
+            print_result: bool = False,
+            pred_out_file: str = ''
+    ) -> Union[ResType, Tuple[ResType, np.ndarray]]:
         """Postprocess predictions.
 
         Args:
