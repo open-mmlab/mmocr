@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
 import os.path as osp
 from typing import Dict, List, Optional, Sequence
 
@@ -105,22 +106,20 @@ class KIEInferencer(BaseMMOCRInferencer):
 
         for single_input in inputs:
             if self.novisual:
+                processed_input = copy.deepcopy(single_input)
                 if 'img' not in single_input and \
-                  'img_shape' not in single_input:
+                   'img_shape' not in single_input:
                     raise ValueError(
                         'KIEInferencer in no-visual mode '
                         'requires input has "img" or "img_shape", but both are'
                         ' not found.')
                 if 'img' in single_input:
-                    processed_input = {
-                        k: v
-                        for k, v in single_input.items() if k != 'img'
-                    }
                     img = single_input['img']
                     if isinstance(img, str):
                         img_bytes = mmengine.fileio.get(img)
                         img = mmcv.imfrombytes(img_bytes)
-                    processed_input['img_shape'] = img.shape[::2]
+                        processed_input['img'] = img
+                    processed_input['img_shape'] = img.shape[:2]
                 processed_inputs.append(processed_input)
             else:
                 if 'img' not in single_input:
@@ -136,7 +135,7 @@ class KIEInferencer(BaseMMOCRInferencer):
                     processed_input['img_path'] = single_input['img']
                     processed_inputs.append(processed_input)
                 elif isinstance(single_input['img'], np.ndarray):
-                    processed_inputs.append(single_input)
+                    processed_inputs.append(copy.deepcopy(single_input))
                 else:
                     atype = type(single_input['img'])
                     raise ValueError(f'Unsupported input type: {atype}')
@@ -261,6 +260,7 @@ class KIEInferencer(BaseMMOCRInferencer):
         results = []
 
         for single_input, pred in zip(inputs, preds):
+            img_num = str(self.num_visualized_imgs).zfill(8)
             assert 'img' in single_input or 'img_shape' in single_input
             if 'img' in single_input:
                 if isinstance(single_input['img'], str):
@@ -268,7 +268,6 @@ class KIEInferencer(BaseMMOCRInferencer):
                     img_name = osp.basename(single_input['img'])
                 elif isinstance(single_input['img'], np.ndarray):
                     img = single_input['img'].copy()
-                    img_num = str(self.num_visualized_imgs).zfill(8)
                     img_name = f'{img_num}.jpg'
             elif 'img_shape' in single_input:
                 img = np.zeros(single_input['img_shape'], dtype=np.uint8)
