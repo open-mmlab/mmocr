@@ -266,13 +266,12 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         results = self.postprocess(preds, visualization, **postprocess_kwargs)
         return results
 
-    def postprocess(
-            self,
-            preds: PredType,
-            visualization: Optional[List[np.ndarray]] = None,
-            print_result: bool = False,
-            pred_out_file: str = ''
-    ) -> Union[ResType, Tuple[ResType, np.ndarray]]:
+    def postprocess(self,
+                    preds: PredType,
+                    visualization: Optional[List[np.ndarray]] = None,
+                    print_result: bool = False,
+                    pred_out_file: str = ''
+                    ) -> Union[ResType, Tuple[ResType, np.ndarray]]:
         """Postprocess predictions.
 
         Args:
