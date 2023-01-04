@@ -45,7 +45,7 @@ MMCV_WITH_OPS=1 MAX_JOBS=8 python setup.py develop
 
 ### Training commands
 
-In MMOCR's root directory, run the following command to train the model:
+In the current directory, run the following command to train the model:
 
 ```bash
 mim train mmocr config/abcnet/abcnet_resnet50_fpn.py --work-dir work_dirs/
@@ -59,7 +59,7 @@ mim train mmocr config/abcnet/abcnet_resnet50_fpn.py --work-dir work_dirs/ --lau
 
 ### Testing commands
 
-In MMOCR's root directory, run the following command to test the model:
+In the current directory, run the following command to test the model:
 
 ```bash
 mim test mmocr config/abcnet/abcnet_resnet50_fpn.py ${CHECKPOINT_PATH}
@@ -71,9 +71,9 @@ Here we provide the baseline version of ABCNet with ResNet50 backbone.
 
 To find more variants, please visit the [official model zoo](https://github.com/aim-uofa/AdelaiDet/blob/master/configs/BAText/README.md).
 
-|         Name          | Pretrained Model | E2E-None-Hmean | det-Hmean |  Download   |
-| :-------------------: | :--------------: | :------------: | :-------: | :---------: |
-| v1-icdar2015-finetune | [SynthText](<>)  |     0.6127     |  0.8753   | [model](<>) |
+|         Name          |                                  Pretrained Model                                  | E2E-None-Hmean | det-Hmean |                                  Download                                  |
+| :-------------------: | :--------------------------------------------------------------------------------: | :------------: | :-------: | :------------------------------------------------------------------------: |
+| v1-icdar2015-finetune | [SynthText](https://download.openmmlab.com/mmocr/textdet/abcnet/abcnet_resnet50_fpn_500e_icdar2015/abcnet_resnet50_fpn_pretrain-d060636c.pth) |     0.6127     |  0.8753   | [model](https://download.openmmlab.com/mmocr/textdet/abcnet/abcnet_resnet50_fpn_500e_icdar2015/abcnet_resnet50_fpn_500e_icdar2015-326ac6f4.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/abcnet/abcnet_resnet50_fpn_500e_icdar2015/20221210_170401.log) |
 
 ## Citation
 
