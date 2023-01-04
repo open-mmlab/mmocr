@@ -18,6 +18,7 @@ Collections:
 
 Models:
   - Name: sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real
+    Alias: SAR
     In Collection: SAR
     Config: configs/textrecog/sar/sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real.py
     Metadata:
