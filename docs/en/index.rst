@@ -80,6 +80,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :maxdepth: 1
    :caption: API Reference
 
+   mmocr.apis <api/apis>
    mmocr.structures <api/structures>
    mmocr.datasets <api/datasets>
    mmocr.transforms <api/transforms>
