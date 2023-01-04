@@ -3,10 +3,12 @@ import copy
 import os.path as osp
 from unittest import TestCase
 
+import mmcv
 import numpy as np
 
-from mmocr.datasets.transforms import (LoadImageFromFile, LoadImageFromLMDB,
-                                       LoadKIEAnnotations, LoadOCRAnnotations)
+from mmocr.datasets.transforms import (InferencerLoader, LoadImageFromFile,
+                                       LoadImageFromLMDB, LoadKIEAnnotations,
+                                       LoadOCRAnnotations)
 
 
 class TestLoadImageFromFile(TestCase):
@@ -249,3 +251,27 @@ class TestLoadImageFromLMDB(TestCase):
                                    "to_float32=False, color_type='color', "
                                    "imdecode_backend='cv2', "
                                    'file_client_args={})')
+
+
+class TestInferencerLoader(TestCase):
+
+    def test_transform(self):
+        loader = InferencerLoader()
+
+        # load from path
+        img_path = 'tests/data/det_toy_dataset/imgs/test/img_1.jpg'
+        res = loader(img_path)
+        self.assertIsInstance(res['img'], np.ndarray)
+
+        # load from ndarray
+        img = mmcv.imread(img_path)
+        res = loader(img)
+        self.assertIsInstance(res['img'], np.ndarray)
+
+        # load from dict
+        res = loader(dict(img=img))
+        self.assertIsInstance(res['img'], np.ndarray)
+
+        # invalid input
+        with self.assertRaises(NotImplementedError):
+            loader(['hello'])

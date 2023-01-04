@@ -207,6 +207,7 @@ class InferencerLoader(BaseTransform):
 
         if 'img' in inputs:
             return self.from_ndarray(inputs)
+
         return self.from_file(inputs)
 
 
