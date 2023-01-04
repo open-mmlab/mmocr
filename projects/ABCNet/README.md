@@ -48,13 +48,13 @@ MMCV_WITH_OPS=1 MAX_JOBS=8 python setup.py develop
 In the current directory, run the following command to train the model:
 
 ```bash
-mim train mmocr config/abcnet/abcnet_resnet50_fpn.py --work-dir work_dirs/
+mim train mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py --work-dir work_dirs/
 ```
 
 To train on multiple GPUs, e.g. 8 GPUs, run the following command:
 
 ```bash
-mim train mmocr config/abcnet/abcnet_resnet50_fpn.py --work-dir work_dirs/ --launcher pytorch --gpus 8
+mim train mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py --work-dir work_dirs/ --launcher pytorch --gpus 8
 ```
 
 ### Testing commands
@@ -62,7 +62,7 @@ mim train mmocr config/abcnet/abcnet_resnet50_fpn.py --work-dir work_dirs/ --lau
 In the current directory, run the following command to test the model:
 
 ```bash
-mim test mmocr config/abcnet/abcnet_resnet50_fpn.py ${CHECKPOINT_PATH}
+mim test mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py ${CHECKPOINT_PATH}
 ```
 
 ## Results
