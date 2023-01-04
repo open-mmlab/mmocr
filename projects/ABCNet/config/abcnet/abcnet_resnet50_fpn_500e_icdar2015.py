@@ -33,6 +33,6 @@ test_cfg = dict(type='TestLoop')
 custom_imports = dict(
     imports=['projects.ABCNet.abcnet'], allow_failed_imports=False)
 
-load_from = 'checkpoints/abcnet_resnet50_fpn_pretrain.pth'
+load_from = 'https://download.openmmlab.com/mmocr/textspotting/abcnet/abcnet_resnet50_fpn_500e_icdar2015/abcnet_resnet50_fpn_pretrain-d060636c.pth'  # noqa
 
 find_unused_parameters = True

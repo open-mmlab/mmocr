@@ -174,7 +174,8 @@ class ABCNetDetModuleLoss(BaseTextDetModuleLoss):
             points (list[Tensor]): Points of each fpn level, each has shape
                 (num_points, 2).
             data_samples: Batch of data samples. Each data sample contains
-            a gt_instance, which usually includes bboxes and labels attributes.
+                a gt_instance, which usually includes bboxes and labels
+                attributes.
 
         Returns:
             tuple: Targets of each level.
