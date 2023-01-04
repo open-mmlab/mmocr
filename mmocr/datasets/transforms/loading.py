@@ -164,15 +164,7 @@ class LoadImageFromNDArray(LoadImageFromFile):
 
 @TRANSFORMS.register_module()
 class InferencerLoader(BaseTransform):
-    """Load an image from ``results['img']``.
-
-    Similar with :obj:`LoadImageFromFile`, but the image has been loaded as
-    :obj:`np.ndarray` in ``results['img']``. Can be used when loading image
-    from webcam.
-
-    Required Keys:
-
-    - img
+    """Load the image in Inferencer's pipeline.
 
     Modified Keys:
 
@@ -198,8 +190,8 @@ class InferencerLoader(BaseTransform):
         """Transform function to add image meta information.
 
         Args:
-            results (dict): Result dict with Webcam read image in
-                ``results['img']``.
+            single_input (str or dict or np.ndarray): The raw input from
+                inferencer.
 
         Returns:
             dict: The dict contains loaded image and meta information.

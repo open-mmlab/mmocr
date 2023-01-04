@@ -124,6 +124,7 @@ show_dir/
 *.pth
 
 # demo
+!tests/data
 tests/results
 
 #temp files

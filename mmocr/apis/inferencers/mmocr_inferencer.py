@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -108,6 +109,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         Returns:
             list: List of input for the :meth:`preprocess`.
         """
+        inputs = copy.deepcopy(inputs)
         if isinstance(inputs, str):
             backend = get_file_backend(inputs)
             if hasattr(backend, 'isdir') and isdir(inputs):
@@ -125,7 +127,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         for i in range(len(inputs)):
             if not isinstance(inputs[i], np.ndarray):
                 img_bytes = mmengine.fileio.get(inputs[i])
-                inputs[i] = mmcv.imfrombytes(img_bytes, channel_order='rgb')
+                inputs[i] = mmcv.imfrombytes(img_bytes)
 
         return list(inputs)
 
