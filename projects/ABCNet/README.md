@@ -35,6 +35,15 @@ export PYTHONPATH=`pwd`:$PYTHONPATH
 $env:PYTHONPATH=Get-Location
 ```
 
+if the data is not in `ABCNet/`, you can link the data into `ABCNet/`:
+
+```shell
+# Linux
+ln -s ${DataPath} $PYTHONPATH
+# Windows PowerShell
+New-Item -ItemType SymbolicLink -Path $env:PYTHONPATH -Name data  -Target ${DataPath}
+```
+
 As of now, `BezierAlign` is not yet supported by MMCV, and we will use third-party MMCV with the implementation of `BezierAlign`. You will need to install it from the source code as follows:
 
 ```bash
@@ -62,7 +71,7 @@ mim train mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py --work-dir w
 In the current directory, run the following command to test the model:
 
 ```bash
-mim test mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py ${CHECKPOINT_PATH}
+mim test mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py --work-dir work_dirs/ --checkpoint ${CHECKPOINT_PATH}
 ```
 
 ## Results
