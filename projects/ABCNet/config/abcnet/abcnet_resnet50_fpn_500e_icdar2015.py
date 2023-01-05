@@ -1,5 +1,5 @@
 _base_ = [
-    '_base_abcnet-det_resnet50_fpn.py',
+    '_base_abcnet_resnet50_fpn.py',
     '../_base_/datasets/icdar2015.py',
     '../_base_/default_runtime.py',
     '../_base_/schedules/schedule_sgd_500e.py',
@@ -30,8 +30,7 @@ test_dataloader = val_dataloader
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
-custom_imports = dict(
-    imports=['projects.ABCNet.abcnet'], allow_failed_imports=False)
+custom_imports = dict(imports=['abcnet'], allow_failed_imports=False)
 
 load_from = 'https://download.openmmlab.com/mmocr/textspotting/abcnet/abcnet_resnet50_fpn_500e_icdar2015/abcnet_resnet50_fpn_pretrain-d060636c.pth'  # noqa
 
