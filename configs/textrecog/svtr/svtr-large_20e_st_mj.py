@@ -12,7 +12,7 @@ model = dict(
         depth=[3, 9, 9],
         num_heads=[6, 8, 16],
         mixer_types=['Local'] * 10 + ['Global'] * 11),
-    decoder=dict(in_channels=256))
+    decoder=dict(in_channels=384))
 
 train_dataloader = dict(batch_size=128, )
 
