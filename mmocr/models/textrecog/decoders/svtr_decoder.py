@@ -56,9 +56,9 @@ class SVTRDecoder(BaseDecoder):
         """Forward for training.
 
         Args:
-            feat (torch.Tensor, optional): The feature map from backbone of
-                shape :math:`(N, E, H, W)`. Defaults to None.
-            out_enc (torch.Tensor, optional): Encoder output. Defaults to None.
+            feat (torch.Tensor, optional): The feature map. Defaults to None.
+            out_enc (torch.Tensor, optional): Encoder output from encoder of
+                shape :math:`(N, 1, H, W)`. Defaults to None.
             data_samples (Sequence[TextRecogDataSample]): Batch of
                 TextRecogDataSample, containing gt_text information. Defaults
                 to None.
@@ -82,9 +82,9 @@ class SVTRDecoder(BaseDecoder):
         """Forward for testing.
 
         Args:
-            feat (torch.Tensor, optional): The feature map from backbone of
-                shape :math:`(N, E, H, W)`. Defaults to None.
-            out_enc (torch.Tensor, optional): Encoder output. Defaults to None.
+            feat (torch.Tensor, optional): The feature map. Defaults to None.
+            out_enc (torch.Tensor, optional): Encoder output from encoder of
+                shape :math:`(N, 1, H, W)`. Defaults to None.
             data_samples (Sequence[TextRecogDataSample]): Batch of
                 TextRecogDataSample, containing gt_text information. Defaults
                 to None.
