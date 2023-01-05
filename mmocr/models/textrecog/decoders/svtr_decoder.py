@@ -67,8 +67,8 @@ class SVTRDecoder(BaseDecoder):
             Tensor: The raw logit tensor. Shape :math:`(N, T, C)` where
             :math:`C` is ``num_classes``.
         """
-        assert feat.size(2) == 1, 'feature height must be 1'
-        x = feat.squeeze(2)
+        assert out_enc.size(2) == 1, 'feature height must be 1'
+        x = out_enc.squeeze(2)
         x = x.permute(0, 2, 1)
         predicts = self.decoder(x)
         return predicts
