@@ -264,6 +264,8 @@ class TextRecogGeneralAug(BaseTransform):
     This implementation is adapted from
     https://github.com/RubanSeven/Text-Image-Augmentation-python/blob/master/augment.py  # noqa
 
+    TODO: Split this transform into three transforms.
+
     Required Keys:
 
     - img
@@ -301,7 +303,13 @@ class TextRecogGeneralAug(BaseTransform):
         return repr_str
 
     def tia_distort(self, img: np.ndarray, segment: int = 4) -> np.ndarray:
-        """Image distortion."""
+        """Image distortion.
+
+        Args:
+            img (np.ndarray): The image.
+            segment (int): The number of segments to divide the image along
+                the width. Defaults to 4.
+        """
         img_h, img_w = img.shape[:2]
 
         cut = img_w // segment
@@ -345,7 +353,13 @@ class TextRecogGeneralAug(BaseTransform):
         return dst
 
     def tia_stretch(self, img: np.ndarray, segment: int = 4) -> np.ndarray:
-        """Image stretching."""
+        """Image stretching.
+
+        Args:
+            img (np.ndarray): The image.
+            segment (int): The number of segments to divide the image along
+                the width. Defaults to 4.
+        """
         img_h, img_w = img.shape[:2]
 
         cut = img_w // segment
@@ -378,7 +392,13 @@ class TextRecogGeneralAug(BaseTransform):
         return dst
 
     def tia_perspective(self, img: np.ndarray) -> np.ndarray:
-        """Image perspective transformation."""
+        """Image perspective transformation.
+
+        Args:
+            img (np.ndarray): The image.
+            segment (int): The number of segments to divide the image along
+                the width. Defaults to 4.
+        """
         img_h, img_w = img.shape[:2]
 
         thresh = img_h // 2
@@ -425,14 +445,14 @@ class TextRecogGeneralAug(BaseTransform):
             return
 
         i = 0
-        while 1:
+        while True:
             if dst_w <= i < dst_w + grid_size - 1:
                 i = dst_w - 1
             elif i >= dst_w:
                 break
 
             j = 0
-            while 1:
+            while True:
                 if dst_h <= j < dst_h + grid_size - 1:
                     j = dst_h - 1
                 elif j >= dst_h:
@@ -553,6 +573,10 @@ class TextRecogGeneralAug(BaseTransform):
 
     @staticmethod
     def _bilinear_interp(x, y, v11, v12, v21, v22):
+        """Bilinear interpolation.
+
+        TODO: Docs for args and put it into utils.
+        """
         return (v11 * (1 - y) + v12 * y) * (1 - x) + (v21 *
                                                       (1 - y) + v22 * y) * x
 
@@ -639,11 +663,13 @@ class ImageContentJitter(BaseTransform):
     - img
     """
 
-    def transform(self, results: Dict) -> Dict:
+    def transform(self, results: Dict, jitter_ratio: float = 0.01) -> Dict:
         """Transform function to jitter images.
 
         Args:
             results (dict): Result dict from loading pipeline.
+            jitter_ratio (float): Controls the strength of jittering.
+                Defaults to 0.01.
 
         Returns:
             dict: Jittered results.
