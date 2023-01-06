@@ -50,7 +50,7 @@ jobs:
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
-        run: 7
+        run: |
           coverage run --branch --source mmocr -m pytest tests/
           coverage xml
           coverage report -m
