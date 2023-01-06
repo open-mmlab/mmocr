@@ -34,6 +34,7 @@
 - Add Aliases to models by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1611
 - SVTR transforms by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1645
 - Add SVTR framework and configs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1621
+- Issue Template by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1663
 
 ### Docs
 
