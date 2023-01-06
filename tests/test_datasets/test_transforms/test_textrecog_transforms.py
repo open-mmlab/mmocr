@@ -5,10 +5,10 @@ import unittest
 import numpy as np
 from parameterized import parameterized
 
-from mmocr.datasets.transforms import (ImageContentJitter, PadToWidth,
-                                       PyramidRescale, RescaleToHeight,
-                                       ReversePixels, TextRecogGeneralAug,
-                                       TextRecogRandomCrop)
+from mmocr.datasets.transforms import (CropHeight, ImageContentJitter,
+                                       PadToWidth, PyramidRescale,
+                                       RescaleToHeight, ReversePixels,
+                                       TextRecogGeneralAug)
 
 
 class TestPadToWidth(unittest.TestCase):
@@ -148,7 +148,7 @@ class TestTextRecogGeneralAug(unittest.TestCase):
         self.assertEqual(repr_str, 'TextRecogGeneralAug()')
 
 
-class TestTextRecogRandomCrop(unittest.TestCase):
+class TestCropHeight(unittest.TestCase):
 
     def setUp(self) -> None:
         self.data_info = dict(img=np.random.random((20, 20, 3)))
@@ -158,7 +158,7 @@ class TestTextRecogRandomCrop(unittest.TestCase):
         (5, 10),
     ])
     def test_transform(self, min_pixels, max_pixels):
-        self.transform = TextRecogRandomCrop(
+        self.transform = CropHeight(
             min_pixels=min_pixels, max_pixels=max_pixels)
         results = self.transform(copy.deepcopy(self.data_info))
         self.assertEqual(results['img'].shape[:2], results['img_shape'])
@@ -168,10 +168,10 @@ class TestTextRecogRandomCrop(unittest.TestCase):
 
     def test_invalid(self):
         with self.assertRaises(AssertionError):
-            self.transform = TextRecogRandomCrop(min_pixels=10, max_pixels=9)
+            self.transform = CropHeight(min_pixels=10, max_pixels=9)
 
     def test_repr(self):
-        transform = TextRecogRandomCrop(min_pixels=2, max_pixels=10)
+        transform = CropHeight(min_pixels=2, max_pixels=10)
         repr_str = transform.__repr__()
         self.assertEqual(
             repr_str, 'TextRecogRandomCrop(min_pixels = 2, '

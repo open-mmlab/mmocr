@@ -582,7 +582,7 @@ class TextRecogGeneralAug(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class TextRecogRandomCrop(BaseTransform):
+class CropHeight(BaseTransform):
     """Randomly crop the image's height, either from top or bottom.
 
     Adapted from
