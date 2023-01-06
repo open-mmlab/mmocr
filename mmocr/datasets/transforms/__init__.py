@@ -9,7 +9,9 @@ from .ocr_transforms import (FixInvalidPolygon, RandomCrop, RandomRotate,
 from .textdet_transforms import (BoundedScaleAspectJitter, RandomFlip,
                                  ShortScaleAspectJitter, SourceImagePad,
                                  TextDetRandomCrop, TextDetRandomCropFlip)
-from .textrecog_transforms import PadToWidth, PyramidRescale, RescaleToHeight
+from .textrecog_transforms import (CropHeight, ImageContentJitter, PadToWidth,
+                                   PyramidRescale, RescaleToHeight,
+                                   ReversePixels, TextRecogGeneralAug)
 from .wrappers import ConditionApply, ImgAugWrapper, TorchVisionWrapper
 
 __all__ = [
@@ -20,5 +22,6 @@ __all__ = [
     'ShortScaleAspectJitter', 'RandomFlip', 'BoundedScaleAspectJitter',
     'PackKIEInputs', 'LoadKIEAnnotations', 'FixInvalidPolygon', 'MMDet2MMOCR',
     'MMOCR2MMDet', 'LoadImageFromLMDB', 'LoadImageFromFile',
-    'LoadImageFromNDArray', 'RemoveIgnored', 'ConditionApply'
+    'LoadImageFromNDArray', 'CropHeight', 'TextRecogGeneralAug',
+    'ImageContentJitter', 'ReversePixels', 'RemoveIgnored', 'ConditionApply'
 ]
