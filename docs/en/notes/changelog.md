@@ -1,5 +1,67 @@
 # Changelog of v1.x
 
+## v1.0.0rc5 (06/01/2023)
+
+### Highlights
+
+1. Two models, Aster and SVTR, are added to our model zoo. The full implementation of ABCNet is also available now.
+2. Dataset Preparer supports 5 more datasets: CocoTextV2, FUNSD, TextOCR, NAF, SROIE.
+3. We have 4 more text recognition transforms, and two helper transforms. See https://github.com/open-mmlab/mmocr/pull/1646 https://github.com/open-mmlab/mmocr/pull/1632 https://github.com/open-mmlab/mmocr/pull/1645 for details.
+4. The transform, `FixInvalidPolygon`, is getting smarter at dealing with invalid polygons, and now capable of handling more weird annotations. As a result, a complete training cycle on TotalText dataset can be performed bug-free. The weights of DBNet and FCENet pretrained on TotalText are also released.
+
+### New Features & Enhancements
+
+- Update ic15 det config according to DataPrepare by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1617
+- Refactor icdardataset metainfo to lowercase. by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1620
+- Add ASTER Encoder by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1239
+- Add ASTER decoder by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1625
+- Add ASTER config by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1238
+- Update ASTER config by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1629
+- Support browse_dataset.py to visualize original dataset by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1503
+- Add CocoTextv2 to dataset preparer by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1514
+- Add Funsd to dataset preparer by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1550
+- Add TextOCR to Dataset Preparer by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1543
+- Refine example projects and readme by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1628
+- Enhance FixInvalidPolygon, add RemoveIgnored transform by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1632
+- ConditionApply by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1646
+- Add NAF to dataset preparer by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1609
+- Add SROIE to dataset preparer by @FerryHuang in https://github.com/open-mmlab/mmocr/pull/1639
+- Add svtr decoder by @willpat1213 in https://github.com/open-mmlab/mmocr/pull/1448
+- Add missing unit tests by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1651
+- Add svtr encoder by @willpat1213 in https://github.com/open-mmlab/mmocr/pull/1483
+- ABCNet train by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1610
+- Totaltext cfgs for DB and FCE by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1633
+- Add Aliases to models by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1611
+- SVTR transforms by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1645
+- Add SVTR framework and configs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1621
+
+### Docs
+
+- Add Chinese translation for browse_dataset.py by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1647
+- updata abcnet doc by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1658
+- update the dbnetpp\`s readme file by @zhuyue66 in https://github.com/open-mmlab/mmocr/pull/1626
+
+### Bug Fixes
+
+- nn.SmoothL1Loss beta can not be zero in PyTorch 1.13 version by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1616
+- ctc loss bug if target is empty by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1618
+- Add torch 1.13 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1619
+- Remove outdated tutorial link by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1627
+- Dev 1.x  some doc mistakes by @KevinNuNu in https://github.com/open-mmlab/mmocr/pull/1630
+- Support custom font to visualize some languages (e.g. Korean) by @ProtossDragoon in https://github.com/open-mmlab/mmocr/pull/1567
+- db_module_loss，negative number encountered in sqrt by @KevinNuNu in https://github.com/open-mmlab/mmocr/pull/1640
+- Use int instead of np.int by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1636
+- Remove support for py3.6 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1660
+
+### New Contributors
+
+- @zhuyue66 made their first contribution in https://github.com/open-mmlab/mmocr/pull/1626
+- @KevinNuNu made their first contribution in https://github.com/open-mmlab/mmocr/pull/1630
+- @FerryHuang made their first contribution in https://github.com/open-mmlab/mmocr/pull/1639
+- @willpat1213 made their first contribution in https://github.com/open-mmlab/mmocr/pull/1448
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc4...v1.0.0rc5
+
 ## v1.0.0rc4 (06/12/2022)
 
 ### Highlights
