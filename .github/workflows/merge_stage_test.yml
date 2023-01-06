@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        python-version: [3.6, 3.8, 3.9]
+        python-version: [3.8, 3.9]
         torch: [1.8.1]
         include:
           - torch: 1.8.1
@@ -50,7 +50,7 @@ jobs:
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
       - name: Run unittests and generate coverage report
-        run: |
+        run: 7
           coverage run --branch --source mmocr -m pytest tests/
           coverage xml
           coverage report -m
