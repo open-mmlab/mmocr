@@ -56,9 +56,9 @@ class SVTRDecoder(BaseDecoder):
         """Forward for training.
 
         Args:
-            feat (torch.Tensor, optional): The feature map from backbone of
-                shape :math:`(N, E, H, W)`. Defaults to None.
-            out_enc (torch.Tensor, optional): Encoder output. Defaults to None.
+            feat (torch.Tensor, optional): The feature map. Defaults to None.
+            out_enc (torch.Tensor, optional): Encoder output from encoder of
+                shape :math:`(N, 1, H, W)`. Defaults to None.
             data_samples (Sequence[TextRecogDataSample]): Batch of
                 TextRecogDataSample, containing gt_text information. Defaults
                 to None.
@@ -67,8 +67,8 @@ class SVTRDecoder(BaseDecoder):
             Tensor: The raw logit tensor. Shape :math:`(N, T, C)` where
             :math:`C` is ``num_classes``.
         """
-        assert feat.size(2) == 1, 'feature height must be 1'
-        x = feat.squeeze(2)
+        assert out_enc.size(2) == 1, 'feature height must be 1'
+        x = out_enc.squeeze(2)
         x = x.permute(0, 2, 1)
         predicts = self.decoder(x)
         return predicts
@@ -82,9 +82,9 @@ class SVTRDecoder(BaseDecoder):
         """Forward for testing.
 
         Args:
-            feat (torch.Tensor, optional): The feature map from backbone of
-                shape :math:`(N, E, H, W)`. Defaults to None.
-            out_enc (torch.Tensor, optional): Encoder output. Defaults to None.
+            feat (torch.Tensor, optional): The feature map. Defaults to None.
+            out_enc (torch.Tensor, optional): Encoder output from encoder of
+                shape :math:`(N, 1, H, W)`. Defaults to None.
             data_samples (Sequence[TextRecogDataSample]): Batch of
                 TextRecogDataSample, containing gt_text information. Defaults
                 to None.

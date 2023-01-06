@@ -11,6 +11,7 @@ from mmengine.model import BaseModule
 from mmengine.model.weight_init import trunc_normal_init
 
 from mmocr.registry import MODELS
+from mmocr.structures import TextRecogDataSample
 
 
 class OverlapPatchEmbed(BaseModule):
@@ -612,11 +613,16 @@ class SVTREncoder(BaseModule):
             x = self.layer_norm(x)
         return x
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self,
+                x: torch.Tensor,
+                data_samples: List[TextRecogDataSample] = None
+                ) -> torch.Tensor:
         """Forward function.
 
         Args:
             x (torch.Tensor): A Tensor of shape :math:`(N, H/16, W/4, 256)`.
+            data_samples (list[TextRecogDataSample]): Batch of
+                TextRecogDataSample. Defaults to None.
 
         Returns:
             torch.Tensor: A Tensor of shape :math:`(N, 1, W/4, 192)`.

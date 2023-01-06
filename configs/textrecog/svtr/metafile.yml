@@ -1,0 +1,89 @@
+Collections:
+- Name: SVTR
+  Metadata:
+    Training Data: OCRDataset
+    Training Techniques:
+      - AdamW
+    Training Resources: 4x Tesla A100
+    Epochs: 20
+    Batch Size: 2048
+    Architecture:
+      - STN
+      - SVTREncoder
+      - SVTRDecoder
+  Paper:
+    URL: https://arxiv.org/pdf/2205.00159.pdf
+    Title: 'SVTR: Scene Text Recognition with a Single Visual Model'
+  README: configs/textrecog/svtr/README.md
+
+Models:
+  - Name: svtr-small_20e_st_mj
+    Alias: svtr-small
+    In Collection: SVTR
+    Config: configs/textrecog/svtr/svtr-small_20e_st_mj.py
+    Metadata:
+      Training Data:
+        - SynthText
+        - Syn90k
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 0.8553
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 0.9026
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 0.9448
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 0.7496
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 0.8496
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 0.8854
+    Weights: https://download.openmmlab.com/mmocr/textrecog/svtr/svtr-small_20e_st_mj/svtr-small_20e_st_mj-35d800d6.pth
+
+  - Name: svtr-base_20e_st_mj
+    Alias: svtr-base
+    Batch Size: 1024
+    In Collection: SVTR
+    Config: configs/textrecog/svtr/svtr-base_20e_st_mj.py
+    Metadata:
+      Training Data:
+        - SynthText
+        - Syn90k
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 0.8570
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 0.9181
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 0.9438
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 0.7448
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 0.8388
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 0.9028
+    Weights: https://download.openmmlab.com/mmocr/textrecog/svtr/svtr-base_20e_st_mj/svtr-base_20e_st_mj-ea500101.pth

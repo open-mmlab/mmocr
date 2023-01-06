@@ -46,7 +46,7 @@ class TestSVTRDecoder(TestCase):
                 in_channels=192, dictionary=dict_cfg, module_loss=loss_cfg)
 
     def test_forward_train(self):
-        feat = torch.randn(1, 192, 1, 25)
+        out_enc = torch.randn(1, 192, 1, 25)
         tmp_dir = tempfile.TemporaryDirectory()
         max_seq_len = 25
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
@@ -67,11 +67,12 @@ class TestSVTRDecoder(TestCase):
             max_seq_len=max_seq_len,
         )
         data_samples = decoder.module_loss.get_targets(self.data_info)
-        output = decoder.forward_train(feat=feat, data_samples=data_samples)
+        output = decoder.forward_train(
+            out_enc=out_enc, data_samples=data_samples)
         self.assertTupleEqual(tuple(output.shape), (1, max_seq_len, 39))
 
     def test_forward_test(self):
-        feat = torch.randn(1, 192, 1, 25)
+        out_enc = torch.randn(1, 192, 1, 25)
         tmp_dir = tempfile.TemporaryDirectory()
         dict_file = osp.join(tmp_dir.name, 'fake_chars.txt')
         create_dummy_dict_file(dict_file)
@@ -90,5 +91,6 @@ class TestSVTRDecoder(TestCase):
             dictionary=dict_cfg,
             module_loss=loss_cfg,
             max_seq_len=25)
-        output = decoder.forward_test(feat=feat, data_samples=self.data_info)
+        output = decoder.forward_test(
+            out_enc=out_enc, data_samples=self.data_info)
         self.assertTupleEqual(tuple(output.shape), (1, 25, 39))
