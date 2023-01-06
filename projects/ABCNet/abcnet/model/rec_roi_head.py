@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Tuple
 
+from mmengine.structures import LabelData
 from torch import Tensor
 
 from mmocr.registry import MODELS, TASK_UTILS
@@ -10,7 +11,7 @@ from .base_roi_head import BaseRoIHead
 
 
 @MODELS.register_module()
-class OnlyRecRoIHead(BaseRoIHead):
+class RecRoIHead(BaseRoIHead):
     """Simplest base roi head including one bbox head and one mask head."""
 
     def __init__(self,
@@ -39,8 +40,17 @@ class OnlyRecRoIHead(BaseRoIHead):
         Returns:
             dict[str, Tensor]: A dictionary of loss components
         """
+        proposals = [
+            ds.gt_instances[~ds.gt_instances.ignored] for ds in data_samples
+        ]
 
-        pass
+        proposals = [p for p in proposals if len(p) > 0]
+        bbox_feats = self.roi_extractor(inputs, proposals)
+        rec_data_samples = [
+            TextRecogDataSample(gt_text=LabelData(item=text))
+            for proposal in proposals for text in proposal.texts
+        ]
+        return self.rec_head.loss(bbox_feats, rec_data_samples)
 
     def predict(self, inputs: Tuple[Tensor],
                 data_samples: DetSampleList) -> RecSampleList:

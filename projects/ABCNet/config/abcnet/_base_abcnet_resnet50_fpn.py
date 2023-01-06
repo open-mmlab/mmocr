@@ -67,21 +67,37 @@ model = dict(
                 std=0.01,
                 bias=-4.59511985013459),  # -log((1-p)/p) where p=0.01
         ),
-        module_loss=None,
+        module_loss=dict(
+            type='ABCNetDetModuleLoss',
+            num_classes=num_classes,
+            strides=strides,
+            center_sampling=True,
+            center_sample_radius=1.5,
+            bbox_coder=bbox_coder,
+            norm_on_bbox=norm_on_bbox,
+            loss_cls=dict(
+                type='mmdet.FocalLoss',
+                use_sigmoid=use_sigmoid_cls,
+                gamma=2.0,
+                alpha=0.25,
+                loss_weight=1.0),
+            loss_bbox=dict(type='mmdet.GIoULoss', loss_weight=1.0),
+            loss_centerness=dict(
+                type='mmdet.CrossEntropyLoss',
+                use_sigmoid=True,
+                loss_weight=1.0)),
         postprocessor=dict(
             type='ABCNetDetPostprocessor',
-            # rescale_fields=['polygons', 'bboxes'],
             use_sigmoid_cls=use_sigmoid_cls,
             strides=[8, 16, 32, 64, 128],
             bbox_coder=dict(type='mmdet.DistancePointBBoxCoder'),
             with_bezier=True,
             test_cfg=dict(
-                # rescale_fields=['polygon', 'bboxes', 'bezier'],
                 nms_pre=1000,
                 nms=dict(type='nms', iou_threshold=0.5),
                 score_thr=0.3))),
     roi_head=dict(
-        type='OnlyRecRoIHead',
+        type='RecRoIHead',
         roi_extractor=dict(
             type='BezierRoIExtractor',
             roi_layer=dict(
@@ -95,7 +111,14 @@ model = dict(
             decoder=dict(
                 type='ABCNetRecDecoder',
                 dictionary=dictionary,
-                postprocessor=dict(type='AttentionPostprocessor'),
+                postprocessor=dict(
+                    type='AttentionPostprocessor',
+                    ignore_chars=['padding', 'unknown']),
+                module_loss=dict(
+                    type='CEModuleLoss',
+                    ignore_first_char=False,
+                    ignore_char=-1,
+                    reduction='mean'),
                 max_seq_len=25))),
     postprocessor=dict(
         type='ABCNetPostprocessor',
@@ -114,6 +137,35 @@ test_pipeline = [
         with_bbox=True,
         with_label=True,
         with_text=True),
+    dict(
+        type='PackTextDetInputs',
+        meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
+]
+
+train_pipeline = [
+    dict(
+        type='LoadImageFromFile',
+        file_client_args=file_client_args,
+        color_type='color_ignore_orientation'),
+    dict(
+        type='LoadOCRAnnotations',
+        with_polygon=True,
+        with_bbox=True,
+        with_label=True,
+        with_text=True),
+    dict(type='RemoveIgnored'),
+    dict(type='RandomCrop', min_side_ratio=0.1),
+    dict(
+        type='RandomRotate',
+        max_angle=30,
+        pad_with_fixed_color=True,
+        use_canvas=True),
+    dict(
+        type='RandomChoiceResize',
+        scales=[(980, 2900), (1044, 2900), (1108, 2900), (1172, 2900),
+                (1236, 2900), (1300, 2900), (1364, 2900), (1428, 2900),
+                (1492, 2900)],
+        keep_ratio=True),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
