@@ -50,7 +50,7 @@ TextRecog Transforms
    :template: classtemplate.rst
 
    TextRecogGeneralAug
-   TextRecogRandomCrop
+   CropHeight
    ImageContentJitter
    ReversePixels
    PyramidRescale

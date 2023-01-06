@@ -173,9 +173,8 @@ class TestCropHeight(unittest.TestCase):
     def test_repr(self):
         transform = CropHeight(min_pixels=2, max_pixels=10)
         repr_str = transform.__repr__()
-        self.assertEqual(
-            repr_str, 'TextRecogRandomCrop(min_pixels = 2, '
-            'max_pixels = 10)')
+        self.assertEqual(repr_str, 'CropHeight(min_pixels = 2, '
+                         'max_pixels = 10)')
 
 
 class TestImageContentJitter(unittest.TestCase):
