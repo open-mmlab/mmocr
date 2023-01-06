@@ -90,6 +90,12 @@
    mmocr.utils <api/utils>
 
 .. toctree::
+   :maxdepth: 2
+   :caption: 联系我们
+
+   contact.md
+
+.. toctree::
    :caption: 切换语言
 
    switch_language.md
