@@ -1,0 +1,32 @@
+Name: 'CTW'
+Paper:
+  Title: Curved scene text detection via transverse and longitudinal sequence connection
+  URL: https://www.sciencedirect.com/science/article/pii/S0031320319300664
+  Venue: PR
+  Year: '2019'
+  BibTeX: '@article{liu2019curved,
+  title={Curved scene text detection via transverse and longitudinal sequence connection},
+  author={Liu, Yuliang and Jin, Lianwen and Zhang, Shuaitao and Luo, Canjie and Zhang, Sheng},
+  journal={Pattern Recognition},
+  volume={90},
+  pages={337--345},
+  year={2019},
+  publisher={Elsevier}
+}'
+Data:
+  Website: https://github.com/Yuliang-Liu/Curve-Text-Detector
+  Language:
+    - English
+  Scene:
+    - Scene
+  Granularity:
+    - Word
+    - Line
+  Tasks:
+    - textrecog
+    - textdet
+    - textspotting
+  License:
+    Type: N/A
+    Link: N/A
+  Format: .xml
