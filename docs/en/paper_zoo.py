@@ -35,15 +35,28 @@ class BasePaperList:
             title = paper['Title']
             venue = paper['Venue']
             year = paper['Year']
-            url = '[link]({})'.format(paper['URL'])
-            code = '[link](' + paper['Code'] + ')' if paper[
+            venue_url = '[Venue link]({})'.format(paper['URL']['Venue']) if \
+                paper['URL']['Venue'] != 'N/A' else 'N/A'
+            arxiv_url = '[arXiv link]({})'.format(paper['URL']['Arxiv']) if \
+                paper['URL']['Arxiv'] != 'N/A' else 'N/A'
+            paper_reading_url = '[Paper reading link]({})'.format(
+                paper['Paper Reading URL']
+            ) if paper['Paper Reading URL'] != 'N/A' else 'N/A'
+            code = '[Code link](' + paper['Code'] + ')' if paper[
                 'Code'] != 'N/A' else 'N/A'
-            rows.append([title, venue, year, url, code])
+
+            rows.append([
+                title, venue, year, venue_url, arxiv_url, paper_reading_url,
+                code
+            ])
 
         with open(save_path, 'w') as f:
             f.write('# Overview\n')
             f.write("""```{table}\n:class: model-summary\n""")
-            header = ['Title', 'Venue', 'Year', 'Paper', 'Code']
+            header = [
+                'Title', 'Venue', 'Year', 'Venue Paper', 'arXiv Paper',
+                'Paper Reading', 'Code'
+            ]
             table_cfg = dict(
                 tablefmt='pipe',
                 floatfmt='.2f',
@@ -124,7 +137,14 @@ class TextRecogPaperList(BasePaperList):
         rows = list()
         for paper in self.algorithm_list:
             title = paper['Abbreviation']
+            url = paper['URL']['Arxiv'] if paper['URL'][
+                'Arxiv'] != 'N/A' else paper['URL']['Venue']
+            title = '[{}]({})'.format(title, url)
+            year = paper['Year']
+            train_dataset = paper['MODELS']['Experiment']['Training DataSets']
+            train_dataset = ', '.join(train_dataset)
             venue = paper['Venue']
+
             test_dataset_res = paper['MODELS']['Experiment']['Test DataSets']
             results = list()
             avg_list = list()
@@ -136,14 +156,20 @@ class TextRecogPaperList(BasePaperList):
                     avg_list.append(test_dataset_res[dataset][metric_name])
                 else:
                     results.append('N/A')
-            avg = sum(avg_list) / len(avg_list)
-            results.append(avg)
-            rows.append([title, venue] + results)
-
+            # remove 'N/A' in avg_list
+            avg_list = [x for x in avg_list if x != 'N/A']
+            # if all results are 'N/A', we don't append it to the sota table
+            if len(avg_list) != 0:
+                avg = sum(avg_list) / len(avg_list)
+                results.append(avg)
+                rows.append([title, venue, year, train_dataset] + results)
+        # sort average accuracy from small to large
+        rows = sorted(rows, key=lambda x: x[-1])
         with open(save_path, 'w') as f:
             f.write('# SOTA\n')
             f.write("""```{table}\n:class: model-summary\n""")
-            header = ['Title', 'Venue'] + benchmark_dataset_list + ['Avg']
+            header = ['Title', 'Venue', 'Year', 'train_dataset'
+                      ] + benchmark_dataset_list + ['Avg']
             table_cfg = dict(
                 tablefmt='pipe',
                 floatfmt='.2f',
@@ -153,7 +179,7 @@ class TextRecogPaperList(BasePaperList):
             f.write('\n```\n')
 
 
-papers_dir = '../../paper_zoo'
+papers_dir = 'paper_zoo'
 paper_list = TextRecogPaperList(papers_dir, 'textrecog')
 os.makedirs('paper_zoo/textrecog', exist_ok=True)
 paper_list.gen_model_overview('paper_zoo/textrecog/overview.md')
