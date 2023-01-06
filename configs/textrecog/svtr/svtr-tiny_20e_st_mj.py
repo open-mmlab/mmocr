@@ -60,7 +60,7 @@ train_pipeline = [
         type='RandomApply',
         prob=0.4,
         transforms=[
-            dict(type='TextRecogRandomCrop', ),
+            dict(type='CropHeight', ),
         ],
     ),
     dict(
