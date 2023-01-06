@@ -5,7 +5,9 @@ Tasks:
 Venue:
 Year: N/A
 Lab/Company: N/A
-URL: N/A
+URL:
+  Venue: N/A
+  Arxiv: N/A
 Paper Reading URL: N/A
 Code: N/A
 Supported In MMOCR: N/A
