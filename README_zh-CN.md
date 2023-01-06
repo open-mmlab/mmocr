@@ -70,7 +70,18 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 
 该工具箱提供了一套全面的实用程序，可以帮助用户评估模型的性能。它包括可对图像，标注的真值以及预测结果进行可视化的可视化工具，以及用于在训练过程中评估模型的验证工具。它还包括数据转换器，演示了如何将用户自建的标注数据转换为 MMOCR 支持的标注文件。
 
-## 最新进展
+## 近期更新
+
+最新的版本 v1.0.0rc5 于 2023-01-06 发布。
+
+1. 新增了 Aster 和 SVTR 模型，并完整支持了 ABCNet 的训练与测试；
+2. Dataset Preparer 新支持了5个数据集：CocoTextV2, FUNSD, TextOCR, NAF, SROIE；
+3. 新增了4个文本识别以及2个辅助运行过程的数据变换。
+4. 数据变换 `FixInvalidPolygon` 现在可以处理更多种类的非法多边形，因此各模型如今也可以顺畅地在 TotalText 数据集上完成训练流程。我们同时也发布了 DBNet 和 FCENet 在 TotalText 上的预训练模型。
+
+阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
+
+## MMOCR 1.0 更新汇总
 
 1. 架构升级：MMOCR 1.x 是基于 [MMEngine](https://github.com/open-mmlab/mmengine)，提供了一个通用的、强大的执行器，允许更灵活的定制，提供了统一的训练和测试入口。
 
@@ -87,8 +98,6 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 7. 拥抱更多 `projects/`: 我们推出了 `projects/` 文件夹，用于存放一些实验性的新特性、框架和模型。我们对这个文件夹下的代码规范不作过多要求，力求让社区的所有想法第一时间得到实现和展示。请查看我们的[样例 project](https://github.com/open-mmlab/mmocr/blob/dev-1.x/projects/example_project/) 以了解更多。
 
 8. 更多新模型：MMOCR 1.0 支持了更多模型和模型种类。
-
-阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
 
 ## 安装
 
