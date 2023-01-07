@@ -1,0 +1,75 @@
+Title: 'Pushing the Performance Limit of Scene Text Recognizer without Human Annotation'
+Abbreviation: Zheng et al
+Tasks:
+ - TextRecog
+Venue: CVPR
+Year: 2022
+Lab/Company:
+ - School of Computer Science and Ningbo Institute, Northwestern Polytechnical University, China
+ - Samsung Advanced Institute of Technology (SAIT), South Korea
+URL:
+  Venue: 'https://openaccess.thecvf.com/content/CVPR2022/html/Zheng_Pushing_the_Performance_Limit_of_Scene_Text_Recognizer_Without_Human_CVPR_2022_paper.html'
+  Arxiv: 'https://arxiv.org/abs/2204.07714'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Scene text recognition (STR) attracts much attention over the years
+because of its wide application. Most methods train STR model in a fully
+supervised manner which requires large amounts of labeled data. Although
+synthetic data contributes a lot to STR, it suffers from the real-tosynthetic
+domain gap that restricts model performance. In this work, we aim to boost
+STR models by leveraging both synthetic data and the numerous real unlabeled
+images, exempting human annotation cost thoroughly. A robust consistency
+regularization based semi-supervised framework is proposed for STR, which can
+effectively solve the instability issue due to domain inconsistency between
+synthetic and real images. A character-level consistency regularization is
+designed to mitigate the misalignment between characters in sequence recognition.
+Extensive experiments on standard text recognition benchmarks demonstrate
+the effectiveness of the proposed method. It can steadily improve existing
+STR models, and boost an STR model to achieve new state-of-the-art results.
+To our best knowledge, this is the first consistency regularization based
+framework that applies successfully to STR.'
+MODELS:
+ Architecture:
+  - Attenion
+ Learning Method:
+  - Self Supervised
+  - Semi Supervised
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/211144099-f6db366a-e34b-401d-9b3c-13d08c1c1068.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 94.5
+     IIIT5K:
+       WAICS: 96.5
+     SVT:
+       WAICS: 96.3
+     IC13:
+       WAICS: 98.3
+     IC15:
+       WAICS: 89.3
+     SVTP:
+       WAICS: 93.3
+     CUTE:
+       WAICS: 93.4
+Bibtex: '@inproceedings{zheng2022pushing,
+  title={Pushing the Performance Limit of Scene Text Recognizer without Human Annotation},
+  author={Zheng, Caiyuan and Li, Hui and Rhee, Seon-Min and Han, Seungju and Han, Jae-Joon and Wang, Peng},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={14116--14125},
+  year={2022}
+}'

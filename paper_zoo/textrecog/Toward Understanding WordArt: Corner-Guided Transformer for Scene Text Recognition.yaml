@@ -1,0 +1,79 @@
+Title: 'Toward Understanding WordArt: Corner-Guided Transformer for Scene Text Recognition'
+Abbreviation: CornerTransformer
+Tasks:
+ - TextRecog
+Venue: ECCV
+Year: 2022
+Lab/Company:
+ - Huazhong University of Science and Technology, China
+ - Adobe Research, USA
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_18'
+  Arxiv: 'https://arxiv.org/abs/2208.00438'
+Paper Reading URL: 'https://mp.weixin.qq.com/s/QRpZXv2EyU5hsoBqcFdztQ'
+Code: 'https://github.com/xdxie/WordArt'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+ - Dataset
+Abstract: 'Artistic text recognition is an extremely challenging task with a
+wide range of applications. However, current scene text recognition methods
+mainly focus on irregular text while have not explored artistic text specifically.
+The challenges of artistic text recognition include the various appearance
+with special-designed fonts and effects, the complex connections and overlaps
+between characters, and the severe interference from background patterns. To
+alleviate these problems, we propose to recognize the artistic text at three
+levels. Firstly, corner points are applied to guide the extraction of local
+features inside characters, considering the robustness of corner structures to
+appearance and shape. In this way, the discreteness of the corner points cuts
+off the connection between characters, and the sparsity of them improves the
+robustness for background interference. Secondly, we design a character
+contrastive loss to model the character-level feature, improving the feature
+representation for character classification. Thirdly, we utilize Transformer
+to learn the global feature on image-level and model the global relationship of
+the corner points, with the assistance of a corner-query cross-attention
+mechanism. Besides, we provide an artistic text dataset to benchmark the
+performance. Experimental results verify the significant superiority of our
+proposed method on artistic text recognition and also achieve stateof-the-art
+performance on several blurred and perspective datasets.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/211143209-24979724-6343-426a-9d2e-8d076dc4d48a.png'
+ FPS:
+   DEVICE: 'NVIDIA TITAN XP'
+   ITEM: 3.39
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: 85.7M
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+   Test DataSets:
+     Avg.: 91.9
+     IIIT5K:
+       WAICS: 95.9
+     SVT:
+       WAICS: 94.6
+     IC13:
+       WAICS: 96.4
+     IC15:
+       WAICS: 86.3
+     SVTP:
+       WAICS: 91.5
+     CUTE:
+       WAICS: 92.0
+Bibtex: '@inproceedings{xie2022toward,
+  title={Toward Understanding WordArt: Corner-Guided Transformer for Scene Text Recognition},
+  author={Xie, Xudong and Fu, Ling and Zhang, Zhifei and Wang, Zhaowen and Bai, Xiang},
+  booktitle={European Conference on Computer Vision},
+  pages={303--321},
+  year={2022},
+  organization={Springer}
+}'

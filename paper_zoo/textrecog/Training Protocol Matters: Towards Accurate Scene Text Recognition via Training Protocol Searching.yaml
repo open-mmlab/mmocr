@@ -1,0 +1,74 @@
+Title: 'SVTR: Scene Text Recognition with a Single Visual Model'
+Abbreviation: Chu et al
+Tasks:
+ - TextRecog
+Venue: arXiv
+Year: 2022
+Lab/Company:
+ - Wangxuan Institute of Computer Technology, Peking University
+ - State Key Lab of CAD & CG, Zhejiang University
+ - Ant Group
+URL:
+  Venue: N/A
+  Arxiv: 'https://arxiv.org/abs/2203.06696'
+Paper Reading URL: N/A
+Code: 'https://github.com/VDIGPKU/STR-it'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'The development of scene text recognition (STR) in the era of deep
+learning has been mainly focused on novel architectures of STR models. However,
+training protocol (i.e., settings of the hyperparameters involved in the
+training of STR models), which plays an equally important role in successfully
+training a good STR model, is under-explored for scene text recognition. In this
+work, we attempt to improve the accuracy of existing STR models by searching
+for optimal training protocol. Specifically, we develop a training protocol
+search algorithm, based on a newly designed search space and an efficient search
+algorithm using evolutionary optimization and proxy tasks. Experimental results
+show that our searched training protocol can improve the recognition accuracy
+of mainstream STR models by 2.7%∼3.9%. In particular, with the searched training
+protocol, TRBA-Net achieves 2.1% higher accuracy than the state-of-the-art STR
+model (i.e., EFIFSTR), while the inference speed is 2.3× and 3.7× faster on CPU
+and GPU respectively. Extensive experiments are conducted to demonstrate the
+effectiveness of the proposed method and the generalization ability of the
+training protocol found by our search method. Code is available at
+https://github.com/VDIGPKU/STR-it'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/211144450-26de55a1-bf77-4367-916d-cc5c33bd33a1.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: N/A
+     IIIT5K:
+       WAICS: N/A
+     SVT:
+       WAICS: N/A
+     IC13:
+       WAICS: N/A
+     IC15:
+       WAICS: N/A
+     SVTP:
+       WAICS: N/A
+     CUTE:
+       WAICS: N/A
+Bibtex: '@article{chu2022training,
+  title={Training Protocol Matters: Towards Accurate Scene Text Recognition via Training Protocol Searching},
+  author={Chu, Xiaojie and Wang, Yongtao and Shen, Chunhua and Chen, Jingdong and Chu, Wei},
+  journal={arXiv preprint arXiv:2203.06696},
+  year={2022}
+}'

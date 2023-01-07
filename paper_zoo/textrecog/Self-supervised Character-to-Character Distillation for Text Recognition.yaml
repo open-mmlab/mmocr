@@ -1,0 +1,79 @@
+Title: 'Self-supervised Character-to-Character Distillation for Text Recognition'
+Abbreviation: CCD
+Tasks:
+ - TextRecog
+Venue: arXiv
+Year: 2022
+Lab/Company:
+ - MoE Key Lab of Artificial Intelligence, AI Institute, Shanghai Jiao Tong University
+URL:
+  Venue: N/A
+  Arxiv: 'https://arxiv.org/abs/2211.00288'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Handling complicated text images (e.g., irregular structures, low
+resolution, heavy occlusion, and even illumination), existing supervised text
+recognition methods are data-hungry. Although these methods employ large-scale
+synthetic text images to reduce the dependence on annotated real images, the
+domain gap limits the recognition performance. Therefore, exploring the robust
+text feature representation on unlabeled real images by self-supervised learning
+is a good solution. However, existing selfsupervised text recognition methods
+only execute sequenceto-sequence representation learning by roughly splitting
+the visual features along the horizontal axis, which will damage the character
+structures. Besides, these sequential-level self-learning methods limit the
+availability of geometricbased data augmentation, as large-scale geometry
+augmentation leads to sequence-to-sequence inconsistency. To address the
+above-mentioned issues, we proposed a novel self-supervised character-to-character
+distillation method, CCD. Specifically, we delineate the character structures
+of unlabeled real images by designing a self-supervised character segmentation
+module, and further apply the segmentation results to build character-level
+representation learning. CCD differs from prior works in that we propose a
+character-level pretext task to learn more fine-grained feature representations.
+Besides, compared with the inflexible augmentations of sequence-to-sequence
+models, our work satisfies character-to-character representation consistency,
+across various transformations (e.g., geometry and colour), to generate robust
+text features in the representative space. Experiments demonstrate that CCD
+achieves state-of-the-art performance on publicly available text recognition
+benchmarks.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Self-Supervised
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/211142941-06500063-59a7-485c-bfd3-817dc367a1a7.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - Real
+   Test DataSets:
+     Avg.: 94.3
+     IIIT5K:
+       WAICS: 97.1
+     SVT:
+       WAICS: 96.0
+     IC13:
+       WAICS: 97.5
+     IC15:
+       WAICS: 87.5
+     SVTP:
+       WAICS: 91.6
+     CUTE:
+       WAICS: 95.8
+Bibtex: '@article{guan2022self,
+  title={Self-supervised Character-to-Character Distillation},
+  author={Guan, Tongkun and Shen, Wei},
+  journal={arXiv preprint arXiv:2211.00288},
+  year={2022}
+}'

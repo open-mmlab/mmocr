@@ -1,0 +1,76 @@
+Title: 'NRTR: A No-Recurrence Sequence-to-Sequence Model For Scene Text Recognition'
+Abbreviation: NRTR
+Tasks:
+ - TextRecog
+Venue: ICDAR
+Year: 2019
+Lab/Company:
+ - Institute of Automation, Chinese Academy of Sciences University of Chinese Academy of Sciences
+URL:
+  Venue: 'https://ieeexplore.ieee.org/abstract/document/8978180/'
+  Arxiv: 'https://arxiv.org/abs/1806.00926'
+Paper Reading URL: N/A
+Code: 'https://github.com/open-mmlab/mmocr/tree/1.x/configs/textrecog/nrtr'
+Supported In MMOCR: 'https://github.com/open-mmlab/mmocr/tree/1.x/configs/textrecog/nrtr'
+PaperType:
+ - Algorithm
+Abstract: 'Scene text recognition has attracted a great many researches due to
+its importance to various applications. Existing methods mainly adopt recurrence
+or convolution based networks. Though have obtained good performance, these
+methods still suffer from two limitations: slow training speed due to the
+internal recurrence of RNNs, and high complexity due to stacked convolutional
+layers for long-term feature extraction. This paper, for the first time,
+proposes a no-recurrence sequence-to-sequence text recognizer, named NRTR, that
+dispenses with recurrences and convolutions entirely. NRTR follows the
+encoder-decoder paradigm, where the encoder uses stacked self-attention to
+extract image features, and the decoder applies stacked self-attention to
+recognize texts based on encoder output. NRTR relies solely on self-attention
+mechanism thus could be trained with more parallelization and less complexity.
+Considering scene image has large variation in text and background, we further
+design a modality-transform block to effectively transform 2D input images to
+1D sequences, combined with the encoder to extract more discriminative features.
+ NRTR achieves state-of-the-art or highly competitive performance on both
+ regular and irregular benchmarks, while requires only a small fraction of
+ training time compared to the best model from the literature (at least 8
+ times faster).'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/211147170-f8ceb124-cde4-4323-b770-493962cdfcb0.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 87.4
+     IIIT5K:
+       WAICS: 90.1
+     SVT:
+       WAICS: 91.5
+     IC13:
+       WAICS: 95.8
+     IC15:
+       WAICS: 79.4
+     SVTP:
+       WAICS: 86.6
+     CUTE:
+       WAICS: 80.9
+Bibtex: '@inproceedings{sheng2019nrtr,
+  title={NRTR: A no-recurrence sequence-to-sequence model for scene text recognition},
+  author={Sheng, Fenfen and Chen, Zhineng and Xu, Bo},
+  booktitle={2019 International conference on document analysis and recognition (ICDAR)},
+  pages={781--786},
+  year={2019},
+  organization={IEEE}
+}'
