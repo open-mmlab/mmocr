@@ -1,0 +1,76 @@
+Title: 'SPIN: Structure-Preserving Inner Offset Network for Scene Text Recognition'
+Abbreviation: SPIN
+Tasks:
+ - TextRecog
+Venue: AAAI
+Year: 2021
+Lab/Company:
+ - Shanghai Jiaotong University, China
+ - Hikvision Research Institute, China
+ - Zhejiang University, China
+URL:
+  Venue: 'https://ojs.aaai.org/index.php/AAAI/article/view/16442'
+  Arxiv: 'https://arxiv.org/abs/2005.13117'
+Paper Reading URL: N/A
+Code: 'https://github.com/hikopensource/DAVAR-Lab-OCR'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Arbitrary text appearance poses a great challenge in scene text
+recognition tasks. Existing works mostly handle with the problem in
+consideration of the shape distortion, including perspective distortions, line
+curvature or other style variations. Rectification (i.e., spatial transformers)
+as the preprocessing stage is one popular approach and extensively studied.
+However, chromatic difficulties in complex scenes have not been paid much
+attention on. In this work, we introduce a new learnable geometric-unrelated
+rectification, StructurePreserving Inner Offset Network (SPIN), which allows
+the color manipulation of source data within the network. This differentiable
+module can be inserted before any recognition architecture to ease the
+downstream tasks, giving neural networks the ability to actively transform
+input intensity rather than only the spatial rectification. It can also serve
+ as a complementary module to known spatial transformations and work in both
+ independent and collaborative ways with them. Extensive experiments show the
+ proposed transformation outperforms existing rectification networks and has
+ comparable performance among the state-of-the-arts.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/211321597-997c4f09-fceb-4fe6-89d6-774971d942ed.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: 11e7
+ PARAMS: 2.31e6
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 88.7
+     IIIT5K:
+       WAICS: 95.2
+     SVT:
+       WAICS: 90.9
+     IC13:
+       WAICS: 94.8
+     IC15:
+       WAICS: 79.5
+     SVTP:
+       WAICS: 83.2
+     CUTE:
+       WAICS: 87.5
+Bibtex: '@inproceedings{zhang2021spin,
+  title={SPIN: Structure-preserving inner offset network for scene text recognition},
+  author={Zhang, Chengwei and Xu, Yunlu and Cheng, Zhanzhan and Pu, Shiliang and Niu, Yi and Wu, Fei and Zou, Futai},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={35},
+  number={4},
+  pages={3305--3314},
+  year={2021}
+}'
