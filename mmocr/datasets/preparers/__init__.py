@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .config_generator import (TextDetConfigGenerator,
                                TextRecogConfigGenerator,
+                               TextRecogLMDBConfigGenerator,
                                TextSpottingConfigGenerator)
 from .data_converter import (TextDetDataConverter, TextRecogDataConverter,
                              TextSpottingDataConverter, WildReceiptConverter)
@@ -13,5 +14,6 @@ __all__ = [
     'DatasetPreparer', 'NaiveDataObtainer', 'TextDetDataConverter',
     'TextRecogDataConverter', 'TextSpottingDataConverter',
     'WildReceiptConverter', 'TextDetConfigGenerator',
-    'TextRecogConfigGenerator', 'TextSpottingConfigGenerator'
+    'TextRecogConfigGenerator', 'TextSpottingConfigGenerator',
+    'TextRecogLMDBConfigGenerator'
 ]
