@@ -27,11 +27,15 @@ class BaseMMOCRInferencer(BaseInferencer):
             defined in metafile. For example, it could be
             "dbnet_resnet18_fpnc_1200e_icdar2015" or
             "configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py".
+            If model is not specified, user must provide the
+            `weights` saved by MMEngine which contains the config string.
+            Defaults to None.
         weights (str, optional): Path to the checkpoint. If it is not specified
             and model is a model name of metafile, the weights will be loaded
             from metafile. Defaults to None.
         device (str, optional): Device to run inference. If None, the available
             device will be automatically used. Defaults to None.
+        scope (str, optional): The scope of the model. Defaults to "mmocr".
     """
 
     preprocess_kwargs: set = set()
@@ -45,7 +49,7 @@ class BaseMMOCRInferencer(BaseInferencer):
     }
 
     def __init__(self,
-                 model: Union[ModelType, str],
+                 model: Union[ModelType, str, None] = None,
                  weights: Optional[str] = None,
                  device: Optional[str] = None,
                  scope: Optional[str] = 'mmocr') -> None:
@@ -77,6 +81,8 @@ class BaseMMOCRInferencer(BaseInferencer):
             return_datasamples (bool): Whether to return results as
                 :obj:`BaseDataElement`. Defaults to False.
             batch_size (int): Inference batch size. Defaults to 1.
+            return_vis (bool): Whether to return the visualization result.
+                Defaults to False.
             show (bool): Whether to display the visualization results in a
                 popup window. Defaults to False.
             wait_time (float): The interval of show (s). Defaults to 0.

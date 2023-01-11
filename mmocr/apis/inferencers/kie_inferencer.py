@@ -26,11 +26,15 @@ class KIEInferencer(BaseMMOCRInferencer):
             defined in metafile. For example, it could be
             "sdmgr_unet16_60e_wildreceipt" or
             "configs/kie/sdmgr/sdmgr_unet16_60e_wildreceipt.py".
+            If model is not specified, user must provide the
+            `weights` saved by MMEngine which contains the config string.
+            Defaults to None.
         weights (str, optional): Path to the checkpoint. If it is not specified
             and model is a model name of metafile, the weights will be loaded
             from metafile. Defaults to None.
         device (str, optional): Device to run inference. If None, the available
             device will be automatically used. Defaults to None.
+        scope (str, optional): The scope of the model. Defaults to "mmocr".
     """
 
     def _init_pipeline(self, cfg: ConfigType) -> None:
@@ -186,6 +190,8 @@ class KIEInferencer(BaseMMOCRInferencer):
             return_datasamples (bool): Whether to return results as
                 :obj:`BaseDataElement`. Defaults to False.
             batch_size (int): Inference batch size. Defaults to 1.
+            return_vis (bool): Whether to return the visualization result.
+                Defaults to False.
             show (bool): Whether to display the visualization results in a
                 popup window. Defaults to False.
             wait_time (float): The interval of show (s). Defaults to 0.
