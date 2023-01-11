@@ -34,7 +34,7 @@ python tools/dataset_converters/prepare_dataset.py icdar2015 --task textdet --ov
 python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task textrecog --overwrite-cfg
 ```
 
-进一步了解 MMOCR 支持的数据集，您可以浏览[支持的数据集文档](./datasetzoo.md)
+进一步了解 Dataset Preparer 支持的数据集，您可以浏览[支持的数据集文档](./datasetzoo.md)。一些需要手动准备的数据集也列在了 [文字检测](./det.md) 和 [文字识别](./recog.md) 内。
 
 ## 进阶用法
 

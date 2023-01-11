@@ -1,7 +1,7 @@
 # 关键信息提取
 
 ```{note}
-该页面内容已经过时，所有有关数据格式转换相关的脚本都将最终迁移至数据准备器 **dataset preparer**，这个全新设计的模块能够极大地方便用户完成冗长的数据准备步骤，详见[相关文档](./dataset_preparer.md)。
+我们正努力往 [Dataset Preparer](./dataset_preparer.md) 中增加更多数据集。对于 [Dataset Preparer](./dataset_preparer.md) 暂未能完整支持的数据集，本页提供了一系列手动下载的步骤，供有需要的用户使用。
 ```
 
 ## 概览

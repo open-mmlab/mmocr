@@ -33,7 +33,7 @@ Also, the script supports preparing multiple datasets at the same time. For exam
 python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task textrecog
 ```
 
-To check the supported datasets in MMOCR, please refer to [Dataset Zoo](./datasetzoo.md).
+To check the supported datasets of Dataset Preparer, please refer to [Dataset Zoo](./datasetzoo.md). Some of other datasets that need to be prepared manually are listed in [Text Detection](./det.md) and [Text Recognition](./recog.md).
 
 ## Advanced Usage
 
