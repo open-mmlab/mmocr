@@ -34,7 +34,7 @@ input intensity rather than only the spatial rectification. It can also serve
  comparable performance among the state-of-the-arts.'
 MODELS:
  Architecture:
-  - Transformer
+  - Attention
  Learning Method:
   - Supervised
  Language Modality:
