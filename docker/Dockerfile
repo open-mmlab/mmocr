@@ -4,10 +4,6 @@ ARG CUDNN="8"
 
 FROM pytorch/pytorch:${PYTORCH}-cuda${CUDA}-cudnn${CUDNN}-devel
 
-#########################
-ENV http_proxy=http://10.1.8.5:32680/ https_proxy=http://10.1.8.5:32680/ HTTP_PROXY=http://10.1.8.5:32680/ HTTPS_PROXY=http://10.1.8.5:32680/
-#######################
-
 # To fix GPG key error when running apt-get update
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
