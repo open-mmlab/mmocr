@@ -23,6 +23,12 @@ def parse_args():
         help='Task type. Options are "textdet", "textrecog", "textspotting"'
         ' and "kie".')
     parser.add_argument(
+        '--lmdb',
+        action='store_true',
+        default=False,
+        help='Whether to dump the textrecog dataset to LMDB format.'
+        ' Only when --task=textrecog, this argument works')
+    parser.add_argument(
         '--overwrite-cfg',
         action='store_true',
         default=False,
@@ -39,6 +45,9 @@ def parse_args():
 
 def main():
     args = parse_args()
+    if args.lmdb and args.task != 'textrecog':
+        raise ValueError('Only textrecog task can use --lmdb.')
+
     register_all_modules()
     for dataset in args.datasets:
         if not osp.isdir(osp.join(args.dataset_zoo_path, dataset)):
@@ -50,6 +59,7 @@ def main():
             dataset_name=dataset,
             task=args.task,
             nproc=args.nproc,
+            dump_to_lmdb=args.lmdb,
             overwrite_cfg=args.overwrite_cfg)
         preparer()
 

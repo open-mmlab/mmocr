@@ -49,11 +49,13 @@ class DatasetPreparer:
                  dataset_name: str,
                  task: str = 'textdet',
                  nproc: int = 4,
+                 dump_to_lmdb: bool = False,
                  overwrite_cfg: bool = False) -> None:
         cfg_path = osp.join(cfg_path, dataset_name)
         self.nproc = nproc
         self.task = task
         self.dataset_name = dataset_name
+        self.dump_to_lmdb = dump_to_lmdb
         self.overwrite_cfg = overwrite_cfg
         self.parse_meta(cfg_path)
         self.parse_cfg(cfg_path)
@@ -115,12 +117,21 @@ class DatasetPreparer:
         if 'data_converter' in cfg:
             cfg.data_converter.update(
                 dict(nproc=self.nproc, dataset_name=self.dataset_name))
+            if self.dump_to_lmdb:
+                cfg.data_converter.update(
+                    dict(dumper=dict(type='LMDBDumper')))
             self.data_converter = DATA_CONVERTERS.build(cfg.data_converter)
         if 'config_generator' in cfg:
             cfg.config_generator.update(
                 dict(
                     dataset_name=self.dataset_name,
                     overwrite_cfg=self.overwrite_cfg))
+            if self.dump_to_lmdb:
+                cfg.config_generator.update(
+                    dict(
+                        type='TextRecogLMDBConfigGenerator',
+                        dataset_name=f'{self.dataset_name}_lmdb'))
+                
             self.config_generator = CFG_GENERATORS.build(cfg.config_generator)
 
     @property
