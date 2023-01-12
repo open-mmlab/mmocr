@@ -58,7 +58,6 @@ class LMDBDumper:
 
     def __init__(self,
                  task: str,
-                 label_only: bool = False,
                  batch_size: int = 1000,
                  encoding: str = 'utf-8',
                  lmdb_map_size: int = 1099511627776,
@@ -66,7 +65,6 @@ class LMDBDumper:
         assert task == 'textrecog', \
             f'Using LMDBDumper task must be textrecog, but got {task}'
         self.task = task
-        self.label_only = label_only
         self.batch_size = batch_size
         self.encoding = encoding
         self.lmdb_map_size = lmdb_map_size
@@ -137,31 +135,25 @@ class LMDBDumper:
         cnt = 1
         n_samples = len(data_list)
         for d in data_list:
+            # convert both images and labels to lmdb
             label_key = 'label-%09d'.encode(self.encoding) % cnt
             img_name, text = self.parser_pack_instance(d)
-            if self.label_only:
-                # convert only labels to lmdb
-                line = json.dumps(
-                    dict(filename=img_name, text=text), ensure_ascii=False)
-                cache.append((label_key, line.encode(self.encoding)))
-            else:
-                # convert both images and labels to lmdb
-                img_path = osp.join(data_root, img_name)
-                if not osp.exists(img_path):
-                    print('%s does not exist' % img_path)
-                    continue
-                with open(img_path, 'rb') as f:
-                    image_bin = f.read()
-                if self.verify:
-                    try:
-                        if not self.check_image_is_valid(image_bin):
-                            print('%s is not a valid image' % img_path)
-                            continue
-                    except Exception:
-                        print('error occurred at ', img_name)
-                image_key = 'image-%09d'.encode(self.encoding) % cnt
-                cache.append((image_key, image_bin))
-                cache.append((label_key, text.encode(self.encoding)))
+            img_path = osp.join(data_root, img_name)
+            if not osp.exists(img_path):
+                print('%s does not exist' % img_path)
+                continue
+            with open(img_path, 'rb') as f:
+                image_bin = f.read()
+            if self.verify:
+                try:
+                    if not self.check_image_is_valid(image_bin):
+                        print('%s is not a valid image' % img_path)
+                        continue
+                except Exception:
+                    print('error occurred at ', img_name)
+            image_key = 'image-%09d'.encode(self.encoding) % cnt
+            cache.append((image_key, image_bin))
+            cache.append((label_key, text.encode(self.encoding)))
             
             if cnt % self.batch_size == 0:
                 self.write_cache(env, cache)
