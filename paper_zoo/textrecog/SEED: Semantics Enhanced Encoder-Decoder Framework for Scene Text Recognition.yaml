@@ -1,0 +1,71 @@
+Title: 'SEED: Semantics Enhanced Encoder-Decoder Framework for Scene Text Recognition'
+Abbreviation: SEED
+Tasks:
+ - TextRecog
+Venue: CVPR
+Year: 2020
+Lab/Company:
+ - Institute of Information Engineering, Chinese Academy of Sciences, Beijing, China
+ - School of Cyber Security, University of Chinese Academy of Sciences, Beijing, China
+URL:
+  Venue: 'http://openaccess.thecvf.com/content_CVPR_2020/html/Qiao_SEED_Semantics_Enhanced_Encoder-Decoder_Framework_for_Scene_Text_Recognition_CVPR_2020_paper.html'
+  Arxiv: 'https://arxiv.org/abs/2005.10977'
+Paper Reading URL: N/A
+Code: 'https://github.com/Pay20Y/SEED'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Scene text recognition is a hot research topic in computer vision.
+Recently, many recognition methods based on the encoder-decoder framework have
+been proposed, and they can handle scene texts of perspective distortion and
+curve shape. Nevertheless, they still face lots of challenges like image blur,
+uneven illumination, and incomplete characters. We argue that most encoder-decoder
+methods are based on local visual features without explicit global semantic
+information. In this work, we propose a semantics enhanced encoder-decoder
+framework to robustly recognize low-quality scene texts. The semantic
+information is used both in the encoder module for supervision and in the
+decoder module for initializing. In particular, the state-of-theart ASTER
+method is integrated into the proposed framework as an exemplar. Extensive
+experiments demonstrate that the proposed framework is more robust for
+low-quality text images, and achieves state-of-the-art results on several
+benchmark datasets. The source code will be available.'
+MODELS:
+ Architecture:
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Explicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/212231212-43636b78-1fa7-40bf-83f2-f0ea281ca55f.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 86.9
+     IIIT5K:
+       WAICS: 93.8
+     SVT:
+       WAICS: 89.6
+     IC13:
+       WAICS: 92.8
+     IC15:
+       WAICS: 80.0
+     SVTP:
+       WAICS: 81.4
+     CUTE:
+       WAICS: 83.6
+Bibtex: '@inproceedings{qiao2020seed,
+  title={Seed: Semantics enhanced encoder-decoder framework for scene text recognition},
+  author={Qiao, Zhi and Zhou, Yu and Yang, Dongbao and Zhou, Yucan and Wang, Weiping},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={13528--13537},
+  year={2020}
+}'

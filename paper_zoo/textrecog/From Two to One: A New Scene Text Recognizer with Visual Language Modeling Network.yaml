@@ -1,0 +1,76 @@
+Title: 'From Two to One: A New Scene Text Recognizer with Visual Language Modeling Network'
+Abbreviation: VisionLAN
+Tasks:
+ - TextRecog
+Venue: ICCV
+Year: 2021
+Lab/Company:
+ - University of Science and Technology of China
+ - Huawei Cloud & AI
+URL:
+  Venue: 'http://openaccess.thecvf.com/content/ICCV2021/html/Wang_From_Two_to_One_A_New_Scene_Text_Recognizer_With_ICCV_2021_paper.html'
+  Arxiv: 'https://arxiv.org/abs/2108.09661'
+Paper Reading URL: N/A
+Code: 'https://github.com/wangyuxin87/VisionLAN'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+ - Dataset
+Abstract: 'In this paper, we abandon the dominant complex language model and
+rethink the linguistic learning process in the scene text recognition. Different
+from previous methods considering the visual and linguistic information in two
+separate structures, we propose a Visual Language Modeling Network (VisionLAN),
+which views the visual and linguistic information as a union by directly enduing
+the vision model with language capability. Specially, we introduce the text
+recognition of character-wise occluded feature maps in the training stage. Such
+operation guides the vision model to use not only the visual texture of
+characters, but also the linguistic information in visual context for
+recognition when the visual cues are confused (e.g. occlusion, noise, etc.).
+As the linguistic information is acquired along with visual features without
+the need of extra language model, VisionLAN significantly improves the speed
+by 39% and adaptively considers the linguistic information to enhance the visual
+features for accurate recognition. Furthermore, an Occlusion Scene Text (OST)
+dataset is proposed to evaluate the performance on the case of missing
+characterwise visual cues. The state of-the-art results on several benchmarks
+prove our effectiveness. Code and dataset are available at
+https://github.com/wangyuxin87/ VisionLAN .'
+MODELS:
+ Architecture:
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Explicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/212230022-65678cf4-fdd9-4828-92ce-2d4e9a19bfac.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 90.2
+     IIIT5K:
+       WAICS: 95.8
+     SVT:
+       WAICS: 91.7
+     IC13:
+       WAICS: 95.7
+     IC15:
+       WAICS: 83.7
+     SVTP:
+       WAICS: 86.0
+     CUTE:
+       WAICS: 88.5
+Bibtex: '@inproceedings{wang2021two,
+  title={From two to one: A new scene text recognizer with visual language modeling network},
+  author={Wang, Yuxin and Xie, Hongtao and Fang, Shancheng and Wang, Jing and Zhu, Shenggao and Zhang, Yongdong},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  pages={14194--14203},
+  year={2021}
+}'

@@ -1,0 +1,78 @@
+Title: 'What If We Only Use Real Datasets for Scene Text Recognition? Toward Scene Text Recognition With Fewer Labels'
+Abbreviation: Baek at al.
+Tasks:
+ - TextRecog
+Venue: CVOR
+Year: 2021
+Lab/Company:
+ - The University of Tokyo
+URL:
+  Venue: 'http://openaccess.thecvf.com/content/CVPR2021/html/Baek_What_if_We_Only_Use_Real_Datasets_for_Scene_Text_CVPR_2021_paper.html'
+  Arxiv: 'https://arxiv.org/abs/2103.04400'
+Paper Reading URL: N/A
+Code: 'https: //github.com/ku21fan/STR-Fewer-Labels'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+ - Dataset
+Abstract: 'Scene text recognition (STR) task has a common practice: All
+state-of-the-art STR models are trained on large synthetic data. In contrast
+to this practice, training STR models only on fewer real labels (STR with fewer
+labels) is important when we have to train STR models without synthetic data:
+for handwritten or artistic texts that are difficult to generate synthetically
+and for languages other than English for which we do not always have synthetic
+data. However, there has been implicit common knowledge that training STR
+models on real data is nearly impossible because real data is insufficient.
+We consider that this common knowledge has obstructed the study of STR with
+fewer labels. In this work, we would like to reactivate STR with fewer labels
+by disproving the common knowledge. We consolidate recently accumulated public
+real data and show that we can train STR models satisfactorily only with real
+labeled data. Subsequently, we find simple data augmentation to fully exploit
+real data. Furthermore, we improve the models by collecting unlabeled data and
+introducing semi- and self-supervised methods. As a result, we obtain a
+competitive model to state-of-the-art methods. To the best of our knowledge,
+this is the first study that 1) shows sufficient performance by only using
+real labels and 2) introduces semi- and self-supervised methods into STR with
+fewer labels. Our code and data are available:
+https: //github.com/ku21fan/STR-Fewer-Labels.'
+MODELS:
+ Architecture:
+  - CTC
+  - Attention
+ Learning Method:
+  - Supervised
+  - Self Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/212229475-09e37af2-b48d-4977-aafd-9efb63570dff.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - Real
+   Test DataSets:
+     Avg.: 89.3
+     IIIT5K:
+       WAICS: 94.8
+     SVT:
+       WAICS: 91.3
+     IC13:
+       WAICS: 94.0
+     IC15:
+       WAICS: 80.6
+     SVTP:
+       WAICS: 82.7
+     CUTE:
+       WAICS: 88.1
+Bibtex: '@inproceedings{baek2021if,
+  title={What if we only use real datasets for scene text recognition? toward scene text recognition with fewer labels},
+  author={Baek, Jeonghun and Matsui, Yusuke and Aizawa, Kiyoharu},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={3113--3122},
+  year={2021}
+}'
