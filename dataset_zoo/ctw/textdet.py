@@ -49,13 +49,17 @@ data_converter = dict(
     gatherer=dict(
         type='pair_gather',
         suffixes=['.jpg'],
-        rule=[r'img_(\d+)\.([jJ][pP][gG])', r'gt_img_\1.txt']),
-    parser=dict(type='NAFAnnParser', data_root=data_root, det=True),
-    delete=['temp_images', 'data_split.json', 'annotations', 'naf_anno'],
+        train_rule=[r'(\d{4}).jpg', r'\1.xml'],
+        test_rule=[r'(\d{4}).jpg', r'000\1.txt']),
+    parser=dict(type='CTWAnnParser', data_root=data_root),
+    delete=[
+        'train_images', 'test_images', 'annotations', 'train_labels',
+        'test_labels'
+    ],
     dumper=dict(type='JsonDumper'),
     nproc=1)
 
-# config_generator = dict(
-#     type='TextDetConfigGenerator',
-#     data_root=data_root,
-#     val_anns=[dict(ann_file='textdet_val.json', dataset_postfix='')])
+config_generator = dict(
+    type='TextDetConfigGenerator',
+    data_root=data_root,
+    val_anns=[dict(ann_file='textdet_val.json', dataset_postfix='')])
