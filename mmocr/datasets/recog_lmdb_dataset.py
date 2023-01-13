@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import os.path as osp
-from typing import Callable, List, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
 
+import mmcv
 from mmengine.dataset import BaseDataset
 
 from mmocr.registry import DATASETS
@@ -17,8 +17,19 @@ class RecogLMDBDataset(BaseDataset):
     the total number of images. The value of 'label-xxxxxxx' is the text label
     of the image, and the value of 'image-xxxxxxx' is the image data.
 
+    following keys:
+    Each item fetched from this dataset will be a dict containing the
+    following keys:
+
+        - img (ndarray): The loaded image.
+        - img_path (str): The image key.
+        - instances (list[dict]): The list of annotations for the image.
+
     Args:
         ann_file (str): Annotation file path. Defaults to ''.
+        img_color_type (str): The flag argument for :func:``mmcv.imfrombytes``,
+            which determines how the image bytes will be parsed. Defaults to
+            'color'.
         metainfo (dict, optional): Meta information for dataset, such as class
             information. Defaults to None.
         data_root (str): The root directory for ``data_prefix`` and
@@ -47,18 +58,21 @@ class RecogLMDBDataset(BaseDataset):
             image. Defaults to 1000.
     """
 
-    def __init__(self,
-                 ann_file: str = '',
-                 metainfo: Optional[dict] = None,
-                 data_root: Optional[str] = '',
-                 data_prefix: dict = dict(img_path=''),
-                 filter_cfg: Optional[dict] = None,
-                 indices: Optional[Union[int, Sequence[int]]] = None,
-                 serialize_data: bool = True,
-                 pipeline: List[Union[dict, Callable]] = [],
-                 test_mode: bool = False,
-                 lazy_init: bool = False,
-                 max_refetch: int = 1000) -> None:
+    def __init__(
+        self,
+        ann_file: str = '',
+        img_color_type: str = 'color',
+        metainfo: Optional[dict] = None,
+        data_root: Optional[str] = '',
+        data_prefix: dict = dict(img_path=''),
+        filter_cfg: Optional[dict] = None,
+        indices: Optional[Union[int, Sequence[int]]] = None,
+        serialize_data: bool = True,
+        pipeline: List[Union[dict, Callable]] = [],
+        test_mode: bool = False,
+        lazy_init: bool = False,
+        max_refetch: int = 1000,
+    ) -> None:
 
         super().__init__(
             ann_file=ann_file,
@@ -72,6 +86,8 @@ class RecogLMDBDataset(BaseDataset):
             test_mode=test_mode,
             lazy_init=lazy_init,
             max_refetch=max_refetch)
+
+        self.color_type = img_color_type
 
     def load_data_list(self) -> List[dict]:
         """Load annotations from an annotation file named as ``self.ann_file``
@@ -109,12 +125,28 @@ class RecogLMDBDataset(BaseDataset):
             (dict): Parsed annotation.
         """
         data_info = {}
-        filename, text = raw_anno_info
-        if filename is not None:
-            img_path = osp.join(self.ann_file, filename)
-            data_info['img_path'] = img_path
+        img_key, text = raw_anno_info
+        data_info['img_path'] = img_key
         data_info['instances'] = [dict(text=text)]
         return data_info
+
+    def prepare_data(self, idx) -> Any:
+        """Get data processed by ``self.pipeline``.
+
+        Args:
+            idx (int): The index of ``data_info``.
+
+        Returns:
+            Any: Depends on ``self.pipeline``.
+        """
+        data_info = self.get_data_info(idx)
+        with self.env.begin(write=False) as txn:
+            img_bytes = txn.get(data_info['img_path'].encode('utf-8'))
+            if img_bytes is None:
+                return None
+            data_info['img'] = mmcv.imfrombytes(
+                img_bytes, flag=self.color_type)
+        return self.pipeline(data_info)
 
     def _make_env(self):
         """Create lmdb environment from self.ann_file and save it to
