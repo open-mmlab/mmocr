@@ -233,7 +233,7 @@ Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.Icd
         pipeline=[]))
    ```
 
-3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) supports LMDB format annotations for text recognition. You just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogLMDBDataset`. For example, the following example shows how to configure and load the **both labels and images** `img_label.lmdb` from the toy dataset.
+3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) supports LMDB format dataset (img+labels) for text recognition. You just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogLMDBDataset`. For example, the following example shows how to configure and load the **both labels and images** `img_label.lmdb` from the toy dataset.
 
 - set the dataset type to `RecogLMDBDataset`
 
@@ -245,12 +245,11 @@ Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.Icd
      type='RecogLMDBDataset',
      data_root=data_root,
      ann_file='imgs.lmdb',
-     data_prefix=dict(img_path='imgs.lmdb'), # setting the img_path as the lmdb name
-     pipeline=[])
+     pipeline=None)
 ```
 
 - replace the [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) with [`LoadImageFromNDArray`](mmocr.datasets.transforms.LoadImageFromNDArray) in the data pipelines in `train_pipeline` and \`test_pipeline., for example：
 
 ```python
- train_pipeline = [dict(type='LoadImageFromLMDB', ignore_empty=True)]
+ train_pipeline = [dict(type='LoadImageFromNDArray')]
 ```
