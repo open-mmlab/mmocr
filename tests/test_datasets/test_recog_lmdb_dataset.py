@@ -11,7 +11,6 @@ class TestRecogLMDBDataset(TestCase):
         # test initialization
         dataset = RecogLMDBDataset(
             ann_file='tests/data/rec_toy_dataset/imgs.lmdb', pipeline=[])
-        # dataset = RecogLMDBDataset(ann_file=self.lmdb_path, pipeline=[])
         dataset.full_init()
         self.assertEqual(len(dataset), 10)
         self.assertEqual(len(dataset.load_data_list()), 10)
