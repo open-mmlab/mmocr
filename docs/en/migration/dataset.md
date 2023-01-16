@@ -233,7 +233,7 @@ Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.Icd
         pipeline=[]))
    ```
 
-3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) supports LMDB format dataset (img+labels) for text recognition. You just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogLMDBDataset`. For example, the following example shows how to configure and load the **both labels and images** `img_label.lmdb` from the toy dataset.
+3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) supports LMDB format dataset (img+labels) for text recognition. You just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogLMDBDataset`. For example, the following example shows how to configure and load the **both labels and images** `imgs.lmdb` from the toy dataset.
 
 - set the dataset type to `RecogLMDBDataset`
 
