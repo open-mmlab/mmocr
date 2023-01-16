@@ -248,7 +248,7 @@ Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.Icd
      pipeline=None)
 ```
 
-- replace the [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) with [`LoadImageFromNDArray`](mmocr.datasets.transforms.LoadImageFromNDArray) in the data pipelines in `train_pipeline` and \`test_pipeline., for example：
+- replace the [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) with [`LoadImageFromNDArray`](mmocr.datasets.transforms.LoadImageFromNDArray) in the data pipelines in `train_pipeline` and `test_pipeline`., for example：
 
 ```python
  train_pipeline = [dict(type='LoadImageFromNDArray')]
