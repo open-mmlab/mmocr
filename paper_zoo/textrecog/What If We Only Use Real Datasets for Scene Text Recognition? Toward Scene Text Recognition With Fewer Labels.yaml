@@ -41,7 +41,7 @@ MODELS:
   - Attention
  Learning Method:
   - Supervised
-  - Self Supervised
+  - Self-Supervised
  Language Modality:
   - Implicit Language Model
  Network Structure: 'https://user-images.githubusercontent.com/65173622/212229475-09e37af2-b48d-4977-aafd-9efb63570dff.png'
