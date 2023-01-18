@@ -1,0 +1,41 @@
+Title: 'Text Recognition in the Wild: A Survey'
+Abbreviation: Chen et al.
+Tasks:
+ - TextRecog
+Venue: Others
+Year: 2021
+Lab/Company:
+ - College of Electronic and Information Engineering, South China University of Technology, China
+URL:
+  Venue: 'https://dl.acm.org/doi/abs/10.1145/3440756'
+  Arxiv: 'https://arxiv.org/abs/2005.03492'
+Paper Reading URL: N/A
+Code: 'https://github.com/HCIILAB/Scene-Text-Recognition'
+Supported In MMOCR: N/S
+PaperType:
+ - Survey
+Abstract: 'The history of text can be traced back over thousands of years. Rich
+and precise semantic information carried by text is important in a wide range of
+vision-based application scenarios. Therefore, text recognition in natural
+scenes has been an active research field in computer vision and pattern
+recognition. In recent years, with the rise and development of deep learning,
+numerous methods have shown promising in terms of innovation, practicality,
+and efficiency. This paper aims to (1) summarize the fundamental problems and
+the state-of-the-art associated with scene text recognition; (2) introduce new
+insights and ideas; (3) provide a comprehensive review of publicly available
+resources; (4) point out directions for future work. In summary, this
+literature review attempts to present the entire picture of the field of
+scene text recognition. It provides a comprehensive reference for people
+entering this field, and could be helpful to inspire future research.
+Related resources are available at our Github
+repository: https://github.com/HCIILAB/Scene-Text-Recognition.'
+Bibtex: '@article{chen2021text,
+  title={Text recognition in the wild: A survey},
+  author={Chen, Xiaoxue and Jin, Lianwen and Zhu, Yuanzhi and Luo, Canjie and Wang, Tianwei},
+  journal={ACM Computing Surveys (CSUR)},
+  volume={54},
+  number={2},
+  pages={1--35},
+  year={2021},
+  publisher={ACM New York, NY, USA}
+}'

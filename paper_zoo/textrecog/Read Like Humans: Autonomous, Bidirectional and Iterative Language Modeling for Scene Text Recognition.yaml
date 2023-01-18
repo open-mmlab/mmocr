@@ -9,35 +9,39 @@ Lab/Company:
 URL:
   Venue: 'http://openaccess.thecvf.com/content/CVPR2021/html/Fang_Read_Like_Humans_Autonomous_Bidirectional_and_Iterative_Language_Modeling_for_CVPR_2021_paper.html'
   Arxiv: 'https://arxiv.org/abs/2103.06495'
-Paper Reading URL: N/A
-Code: N/A
-Supported In MMOCR: N/S
+Paper Reading URL: 'https://mp.weixin.qq.com/s/blBkim58-sUBR0EOxDvtvA'
+Code: 'https://github.com/FangShancheng/ABINet'
+Supported In MMOCR: 'https://github.com/open-mmlab/mmocr/tree/dev-1.x/configs/textrecog/abinet'
 PaperType:
  - Algorithm
-Abstract: 'Reading irregular scene text of arbitrary shape in natural images is
-still a challenging problem, despite the progress made recently. Many existing
-approaches incorporate sophisticated network structures to handle various shapes,
-use extra annotations for stronger supervision, or employ hard-to-train recurrent
-neural networks for sequence modeling. In this work, we propose a simple yet
-strong approach for scene text recognition. With no need to convert input images
-to sequence representations, we directly connect two-dimensional CNN features
-to an attention-based sequence decoder which guided by holistic representation.
-The holistic representation can guide the attention-based decoder focus on more
-accurate area. As no recurrent module is adopted, our model can be trained in
-parallel. It achieves 1:5 to 9:4 acceleration to backward pass and 1:3 to
-7:9 acceleration to forward pass, compared with the RNN counterparts. The
-proposed model is trained with only word-level annotations. With this simple
-design, our method achieves state-of-the-art or competitive recognition
-performance on the evaluated regular and irregular scene text benchmark
-datasets.'
+Abstract: 'Linguistic knowledge is of great benefit to scene text recognition.
+However, how to effectively model linguistic rules in end-to-end deep
+networks remains a research challenge. In this paper, we argue that the
+limited capacity of language models comes from: 1) implicitly language
+modeling; 2) unidirectional feature representation; and 3) language model
+with noise input. Correspondingly, we propose an autonomous, bidirectional
+and iterative ABINet for scene text recognition. Firstly, the autonomous
+suggests to block gradient flow between vision and language models to enforce
+explicitly language modeling. Secondly, a novel bidirectional cloze network
+(BCN) as the language model is proposed based on bidirectional feature
+representation. Thirdly, we propose an execution manner of iterative correction
+for language model which can effectively alleviate the impact of noise input.
+Additionally, based on the ensemble of iterative predictions, we propose a
+self-training method which can learn from unlabeled images effectively.
+Extensive experiments indicate that ABINet has superiority on lowquality images
+and achieves state-of-the-art results on several mainstream benchmarks.
+Besides, the ABINet trained with ensemble self-training shows promising
+improvement in realizing human-level recognition. Code is available at
+https://github.com/FangShancheng/ABINet.'
 MODELS:
  Architecture:
   - Transformer
  Learning Method:
   - Supervised
+  - Semi-Supervised
  Language Modality:
-  - Implicit Language Model
- Network Structure: 'https://user-images.githubusercontent.com/65173622/212223421-55532fde-a4fb-4fd1-ba8c-a1d057b03058.png'
+  - Explicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/213165915-d719091f-febe-4a57-b51f-a71b26afb543.png'
  FPS:
    DEVICE: N/A
    ITEM: N/A
@@ -50,25 +54,23 @@ MODELS:
      - MJ
      - ST
    Test DataSets:
-     Avg.: 87.1
+     Avg.: 93.6
      IIIT5K:
-       WAICS: 94.7
+       WAICS: 97.2
      SVT:
-       WAICS: 88.9
+       WAICS: 95.5
      IC13:
-       WAICS: 93.2
+       WAICS: 97.7
      IC15:
-       WAICS: 79.5
+       WAICS: 86.9
      SVTP:
-       WAICS: 80.9
+       WAICS: 89.9
      CUTE:
-       WAICS: 85.4
-Bibtex: 'yang2020holistic,
-  title={A holistic representation guided attention network for scene text recognition},
-  author={Yang, Lu and Wang, Peng and Li, Hui and Li, Zhen and Zhang, Yanning},
-  journal={Neurocomputing},
-  volume={414},
-  pages={67--75},
-  year={2020},
-  publisher={Elsevier}
+       WAICS: 94.1
+Bibtex: '@inproceedings{fang2021read,
+  title={Read like humans: Autonomous, bidirectional and iterative language modeling for scene text recognition},
+  author={Fang, Shancheng and Xie, Hongtao and Wang, Yuxin and Mao, Zhendong and Zhang, Yongdong},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={7098--7107},
+  year={2021}
 }'

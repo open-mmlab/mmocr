@@ -1,0 +1,72 @@
+Title: 'Show, Attend and Read: A Simple and Strong Baseline for Irregular Text Recognition'
+Abbreviation: SAR
+Tasks:
+ - TextRecog
+Venue: AAAI
+Year: 2019
+Lab/Company:
+ - Australian Centre for Robotic Vision, The University of Adelaide, Australia
+ - School of Computer Science, Northwestern Polytechnical University, China
+URL:
+  Venue: 'https://ojs.aaai.org/index.php/AAAI/article/view/4881'
+  Arxiv: 'https://arxiv.org/abs/1811.00751'
+Paper Reading URL: N/A
+Code: 'https://github.com/wangpengnorman/SAR-Strong-Baseline-for-Text-Recognition'
+Supported In MMOCR: 'https://github.com/open-mmlab/mmocr/tree/dev-1.x/configs/textrecog/sar'
+PaperType:
+ - Algorithm
+Abstract: 'Recognizing irregular text in natural scene images is challenging due
+to the large variance in text appearance, such as curvature, orientation and
+distortion. Most existing approaches rely heavily on sophisticated model designs
+and/or extra fine-grained annotations, which, to some extent, increase the
+difficulty in algorithm implementation and data collection. In this work, we
+propose an easy-to-implement strong baseline for irregular scene text
+recognition, using offthe-shelf neural network components and only word-level
+annotations. It is composed of a 31-layer ResNet, an LSTMbased encoder-decoder
+framework and a 2-dimensional attention module. Despite its simplicity, the
+proposed method is robust. It achieves state-of-the-art performance on irregular
+text recognition benchmarks and comparable results on regular text datasets.
+Code is available at: https://tinyurl.com/ShowAttendRead'
+MODELS:
+ Architecture:
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/213175678-efcb4452-b80b-4e0b-8d36-57fbfca2668b.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+     - Real
+   Test DataSets:
+     Avg.: 89.2
+     IIIT5K:
+       WAICS: 95.0
+     SVT:
+       WAICS: 91.2
+     IC13:
+       WAICS: 94.0
+     IC15:
+       WAICS: 78.8
+     SVTP:
+       WAICS: 86.4
+     CUTE:
+       WAICS: 89.6
+Bibtex: '@inproceedings{li2019show,
+  title={Show, attend and read: A simple and strong baseline for irregular text recognition},
+  author={Li, Hui and Wang, Peng and Shen, Chunhua and Zhang, Guyu},
+  booktitle={Proceedings of the AAAI conference on artificial intelligence},
+  volume={33},
+  number={01},
+  pages={8610--8617},
+  year={2019}
+}'

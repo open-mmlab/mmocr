@@ -1,0 +1,75 @@
+Title: 'Decoupled Attention Network for Text Recognition'
+Abbreviation: DAN
+Tasks:
+ - TextRecog
+Venue: AAAI
+Year: 2019
+Lab/Company:
+ - School of Electronic and Information Engineering, South China University of Technology
+ - Lenovo Research
+URL:
+  Venue: 'https://ojs.aaai.org/index.php/AAAI/article/view/6903'
+  Arxiv: 'https://arxiv.org/abs/1912.10205'
+Paper Reading URL: N/A
+Code: 'https://github.com/Wang-Tianwei/Decoupled-attentionnetwork'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Text recognition has attracted considerable research interests because
+of its various applications. The cutting-edge text recognition methods are
+based on attention mechanisms. However, most of attention methods usually
+suffer from serious alignment problem due to its recurrency alignment operation,
+where the alignment relies on historical decoding results. To remedy this
+issue, we propose a decoupled attention network (DAN), which decouples the
+alignment operation from using historical decoding results. DAN is an effective,
+flexible and robust end-to-end text recognizer, which consists of three
+components: 1) a feature encoder that extracts visual features from the input
+image; 2) a convolutional alignment module that performs the alignment
+operation based on visual features from the encoder; and 3) a decoupled text
+decoder that makes final prediction by jointly using the feature map and
+attention maps. Experimental results show that DAN achieves state-of-the-art
+performance on multiple text recognition tasks, including offline handwritten
+text recognition and regular/irregular scene text recognition. Codes will be
+released.'
+MODELS:
+ Architecture:
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/213171943-35e9c57c-fdce-4866-91c4-a47dad9a7b3b.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 86.0
+     IIIT5K:
+       WAICS: 94.3
+     SVT:
+       WAICS: 89.2
+     IC13:
+       WAICS: 93.9
+     IC15:
+       WAICS: 74.5
+     SVTP:
+       WAICS: 80.0
+     CUTE:
+       WAICS: 84.4
+Bibtex: '@inproceedings{wang2020decoupled,
+  title={Decoupled attention network for text recognition},
+  author={Wang, Tianwei and Zhu, Yuanzhi and Jin, Lianwen and Luo, Canjie and Chen, Xiaoxue and Wu, Yaqiang and Wang, Qianying and Cai, Mingxiang},
+  booktitle={Proceedings of the AAAI conference on artificial intelligence},
+  volume={34},
+  number={07},
+  pages={12216--12224},
+  year={2020}
+}'
