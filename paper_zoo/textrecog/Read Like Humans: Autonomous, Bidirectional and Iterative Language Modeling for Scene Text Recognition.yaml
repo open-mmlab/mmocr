@@ -1,0 +1,74 @@
+Title: 'Read Like Humans: Autonomous, Bidirectional and Iterative Language Modeling for Scene Text Recognition'
+Abbreviation: ABINet
+Tasks:
+ - TextRecog
+Venue: CVPR
+Year: 2021
+Lab/Company:
+ - University of Science and Technology of China
+URL:
+  Venue: 'http://openaccess.thecvf.com/content/CVPR2021/html/Fang_Read_Like_Humans_Autonomous_Bidirectional_and_Iterative_Language_Modeling_for_CVPR_2021_paper.html'
+  Arxiv: 'https://arxiv.org/abs/2103.06495'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Reading irregular scene text of arbitrary shape in natural images is
+still a challenging problem, despite the progress made recently. Many existing
+approaches incorporate sophisticated network structures to handle various shapes,
+use extra annotations for stronger supervision, or employ hard-to-train recurrent
+neural networks for sequence modeling. In this work, we propose a simple yet
+strong approach for scene text recognition. With no need to convert input images
+to sequence representations, we directly connect two-dimensional CNN features
+to an attention-based sequence decoder which guided by holistic representation.
+The holistic representation can guide the attention-based decoder focus on more
+accurate area. As no recurrent module is adopted, our model can be trained in
+parallel. It achieves 1:5 to 9:4 acceleration to backward pass and 1:3 to
+7:9 acceleration to forward pass, compared with the RNN counterparts. The
+proposed model is trained with only word-level annotations. With this simple
+design, our method achieves state-of-the-art or competitive recognition
+performance on the evaluated regular and irregular scene text benchmark
+datasets.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/212223421-55532fde-a4fb-4fd1-ba8c-a1d057b03058.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 87.1
+     IIIT5K:
+       WAICS: 94.7
+     SVT:
+       WAICS: 88.9
+     IC13:
+       WAICS: 93.2
+     IC15:
+       WAICS: 79.5
+     SVTP:
+       WAICS: 80.9
+     CUTE:
+       WAICS: 85.4
+Bibtex: 'yang2020holistic,
+  title={A holistic representation guided attention network for scene text recognition},
+  author={Yang, Lu and Wang, Peng and Li, Hui and Li, Zhen and Zhang, Yanning},
+  journal={Neurocomputing},
+  volume={414},
+  pages={67--75},
+  year={2020},
+  publisher={Elsevier}
+}'
