@@ -41,6 +41,7 @@ MODELS:
   - Attention
  Learning Method:
   - Self-Supervised
+  - Semi-Supervised
   - Supervised
  Language Modality:
   - Implicit Language Model
