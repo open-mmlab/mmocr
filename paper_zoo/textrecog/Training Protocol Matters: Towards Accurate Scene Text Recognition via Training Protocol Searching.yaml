@@ -35,7 +35,7 @@ training protocol found by our search method. Code is available at
 https://github.com/VDIGPKU/STR-it'
 MODELS:
  Architecture:
-  - Transformer
+  - Attention
  Learning Method:
   - Supervised
  Language Modality:

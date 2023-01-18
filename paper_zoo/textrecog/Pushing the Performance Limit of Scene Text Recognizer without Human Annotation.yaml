@@ -35,8 +35,8 @@ MODELS:
  Architecture:
   - Attenion
  Learning Method:
-  - Self Supervised
-  - Semi Supervised
+  - Self-Supervised
+  - Semi-Supervised
   - Supervised
  Language Modality:
   - Implicit Language Model
