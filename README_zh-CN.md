@@ -171,6 +171,7 @@ pip3 install -e .
 <summary>端对端 OCR</summary>
 
 - [x] [ABCNet](projects/ABCNet/README.md) (CVPR'2020)
+- [x] [ABCNetV2](projects/ABCNet/README_V2.md) (TPAMI'2021)
 
 </details>
 

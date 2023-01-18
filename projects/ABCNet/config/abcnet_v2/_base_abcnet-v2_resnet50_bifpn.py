@@ -82,7 +82,7 @@ model = dict(
                 nms=dict(type='nms', iou_threshold=0.4),
                 score_thr=0.3))),
     roi_head=dict(
-        type='OnlyRecRoIHead',
+        type='RecRoIHead',
         neck=dict(type='CoordinateHead'),
         roi_extractor=dict(
             type='BezierRoIExtractor',
