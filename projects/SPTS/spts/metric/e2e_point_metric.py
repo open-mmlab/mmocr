@@ -5,52 +5,22 @@ import numpy as np
 import torch
 from mmengine.evaluator import BaseMetric
 from mmengine.logging import MMLogger
-from scipy.sparse import csr_matrix
-from scipy.sparse.csgraph import maximum_bipartite_matching
-from shapely.geometry import Polygon
+from shapely.geometry import LineString, Point
 
-from mmocr.evaluation.functional import compute_hmean
 from mmocr.registry import METRICS
-from mmocr.utils import poly_intersection, poly_iou, polys2shapely
 
 
 @METRICS.register_module()
-class E2EHmeanIOUMetric(BaseMetric):
+class E2EPointMetric(BaseMetric):
     # TODO docstring
-    """HmeanIOU metric.
-
-    This method computes the hmean iou metric, which is done in the
-    following steps:
-
-    - Filter the prediction polygon:
-
-      - Scores is smaller than minimum prediction score threshold.
-      - The proportion of the area that intersects with gt ignored polygon is
-        greater than ignore_precision_thr.
-
-    - Computing an M x N IoU matrix, where each element indexing
-      E_mn represents the IoU between the m-th valid GT and n-th valid
-      prediction.
-    - Based on different prediction score threshold:
-      - Obtain the ignored predictions according to prediction score.
-        The filtered predictions will not be involved in the later metric
-        computations.
-      - Based on the IoU matrix, get the match metric according to
-      ``match_iou_thr``.
-      - Based on different `strategy`, accumulate the match number.
-    - calculate H-mean under different prediction score threshold.
+    """Point metric for textspotting. Proposed in SPTS.
 
     Args:
-        match_iou_thr (float): IoU threshold for a match. Defaults to 0.5.
         ignore_precision_thr (float): Precision threshold when prediction and\
             gt ignored polygons are matched. Defaults to 0.5.
         pred_score_thrs (dict): Best prediction score threshold searching
             space. Defaults to dict(start=0.3, stop=0.9, step=0.1).
-        strategy (str): Polygon matching strategy. Options are 'max_matching'
-            and 'vanilla'. 'max_matching' refers to the optimum strategy that
-            maximizes the number of matches. Vanilla strategy matches gt and
-            pred polygons if both of them are never matched before. It was used
-            in MMOCR 0.x and and academia. Defaults to 'vanilla'.
+        TODO: docstr
         collect_device (str): Device name used for collecting results from
             different ranks during distributed training. Must be 'cpu' or
             'gpu'. Defaults to 'cpu'.
@@ -64,12 +34,11 @@ class E2EHmeanIOUMetric(BaseMetric):
     def __init__(self,
                  match_iou_thr: float = 0.5,
                  ignore_precision_thr: float = 0.5,
-                 pred_score_thrs: Dict = dict(start=0.3, stop=0.9, step=0.1),
+                 pred_score_thrs: Dict = dict(start=0.8, stop=1, step=0.01),
                  lexicon_path: Optional[str] = None,
                  word_spotting: bool = False,
                  min_length_case_word: int = 3,
                  special_characters: str = "'!?.:,*\"()·[]/",
-                 strategy: str = 'vanilla',
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None) -> None:
         super().__init__(collect_device=collect_device, prefix=prefix)
@@ -79,8 +48,15 @@ class E2EHmeanIOUMetric(BaseMetric):
         self.word_spotting = word_spotting
         self.min_length_case_word = min_length_case_word
         self.special_characters = special_characters
-        assert strategy in ['max_matching', 'vanilla']
-        self.strategy = strategy
+
+    def poly_center(self, poly_pts):
+        poly_pts = np.array(poly_pts).reshape(-1, 2)
+        num_points = poly_pts.shape[0]
+        line1 = LineString(poly_pts[int(num_points / 2):])
+        line2 = LineString(poly_pts[:int(num_points / 2)])
+        mid_pt1 = np.array(line1.interpolate(0.5, normalized=True).coords[0])
+        mid_pt2 = np.array(line2.interpolate(0.5, normalized=True).coords[0])
+        return (mid_pt1 + mid_pt2) / 2
 
     def process(self, data_batch: Sequence[Dict],
                 data_samples: Sequence[Dict]) -> None:
@@ -96,7 +72,7 @@ class E2EHmeanIOUMetric(BaseMetric):
         for data_sample in data_samples:
 
             pred_instances = data_sample.get('pred_instances')
-            pred_polygons = pred_instances.get('polygons')
+            pred_points = pred_instances.get('points')
             pred_scores = pred_instances.get('scores')
             if isinstance(pred_scores, torch.Tensor):
                 pred_scores = pred_scores.cpu().numpy()
@@ -109,35 +85,31 @@ class E2EHmeanIOUMetric(BaseMetric):
             gt_texts = gt_instances.get('texts')
             if isinstance(gt_ignore_flags, torch.Tensor):
                 gt_ignore_flags = gt_ignore_flags.cpu().numpy()
-            gt_polys = polys2shapely(gt_polys)
-            pred_polys = polys2shapely(pred_polygons)
+
+            gt_points = [self.poly_center(poly) for poly in gt_polys]
             if self.word_spotting:
                 gt_ignore_flags, gt_texts = self._word_spotting_filter(
                     gt_ignore_flags, gt_texts)
-            pred_ignore_flags = self._filter_preds(pred_polys, gt_polys,
-                                                   pred_scores,
-                                                   gt_ignore_flags)
-            pred_indexes = self._true_indexes(~pred_ignore_flags)
-            gt_indexes = self._true_indexes(~gt_ignore_flags)
-            pred_texts = [pred_texts[i] for i in pred_indexes]
-            gt_texts = [gt_texts[i] for i in gt_indexes]
 
-            gt_num = np.sum(~gt_ignore_flags)
-            pred_num = np.sum(~pred_ignore_flags)
-            iou_metric = np.zeros([gt_num, pred_num])
-
-            # Compute IoU scores amongst kept pred and gt polygons
-            for pred_mat_id, pred_poly_id in enumerate(pred_indexes):
-                for gt_mat_id, gt_poly_id in enumerate(gt_indexes):
-                    iou_metric[gt_mat_id, pred_mat_id] = poly_iou(
-                        gt_polys[gt_poly_id], pred_polys[pred_poly_id])
+            pred_ignore_flags = pred_scores < self.pred_score_thrs.min()
+            pred_scores = pred_scores[~pred_ignore_flags]
+            pred_texts = self._get_true_elements(pred_texts,
+                                                 ~pred_ignore_flags)
+            pred_points = self._get_true_elements(pred_points,
+                                                  ~pred_ignore_flags)
+            gt_texts = self._get_true_elements(gt_texts, ~gt_ignore_flags)
+            gt_points = self._get_true_elements(gt_points, ~gt_ignore_flags)
 
             result = dict(
-                gt_texts=gt_texts,
+                pred_scores=pred_scores,
+                pred_points=pred_points,
+                gt_points=gt_points,
                 pred_texts=pred_texts,
-                iou_metric=iou_metric,
-                pred_scores=pred_scores[~pred_ignore_flags])
+                gt_texts=gt_texts)
             self.results.append(result)
+
+    def _get_true_elements(self, array: List, flags: np.ndarray) -> List:
+        return [array[i] for i in self._true_indexes(flags)]
 
     def compute_metrics(self, results: List[Dict]) -> Dict:
         """Compute the metrics from processed results.
@@ -152,59 +124,55 @@ class E2EHmeanIOUMetric(BaseMetric):
         logger: MMLogger = MMLogger.get_current_instance()
 
         best_eval_results = dict(hmean=-1)
-        logger.info('Evaluating hmean-iou...')
 
-        dataset_pred_num = np.zeros_like(self.pred_score_thrs)
-        dataset_hit_num = np.zeros_like(self.pred_score_thrs)
-        dataset_gt_num = 0
+        num_thres = len(self.pred_score_thrs)
+        num_preds = np.zeros(
+            num_thres, dtype=int)  # the number of points actually predicted
+        num_tp = np.zeros(num_thres, dtype=int)  # number of true positives
+        num_gts = np.zeros(num_thres, dtype=int)  # number of valid gts
+
         for result in results:
-            iou_metric = result['iou_metric']  # (gt_num, pred_num)
-            pred_scores = result['pred_scores']  # (pred_num)
+            pred_scores = result['pred_scores']
+            pred_points = result['pred_points']
+            gt_points = result['gt_points']
             gt_texts = result['gt_texts']
             pred_texts = result['pred_texts']
-            dataset_gt_num += iou_metric.shape[0]
 
             # Filter out predictions by IoU threshold
             for i, pred_score_thr in enumerate(self.pred_score_thrs):
                 pred_ignore_flags = pred_scores < pred_score_thr
-                # get the number of matched boxes
-                pred_texts = [
-                    pred_texts[j]
-                    for j in self._true_indexes(~pred_ignore_flags)
-                ]
-                matched_metric = iou_metric[:, ~pred_ignore_flags] \
-                    > self.match_iou_thr
-                if self.strategy == 'max_matching':
-                    csr_matched_metric = csr_matrix(matched_metric)
-                    matched_preds = maximum_bipartite_matching(
-                        csr_matched_metric, perm_type='row')
-                    # -1 denotes unmatched pred polygons
-                    dataset_hit_num[i] += np.sum(matched_preds != -1)
-                else:
-                    # first come first matched
-                    matched_gt_indexes = set()
-                    matched_pred_indexes = set()
-                    matched_e2e_gt_indexes = set()
-                    for gt_idx, pred_idx in zip(*np.nonzero(matched_metric)):
-                        if gt_idx in matched_gt_indexes or \
-                          pred_idx in matched_pred_indexes:
-                            continue
-                        matched_gt_indexes.add(gt_idx)
-                        matched_pred_indexes.add(pred_idx)
-                        if self.word_spotting:
-                            if gt_texts[gt_idx] == pred_texts[pred_idx]:
-                                matched_e2e_gt_indexes.add(gt_idx)
-                        else:
-                            if self.text_match(gt_texts[gt_idx].upper(),
-                                               pred_texts[pred_idx].upper()):
-                                matched_e2e_gt_indexes.add(gt_idx)
-                    dataset_hit_num[i] += len(matched_e2e_gt_indexes)
-                dataset_pred_num[i] += np.sum(~pred_ignore_flags)
+                filtered_pred_texts = self._get_true_elements(
+                    pred_texts, ~pred_ignore_flags)
+                filtered_pred_points = self._get_true_elements(
+                    pred_points, ~pred_ignore_flags)
+                num_gt = len(gt_texts)
+                num_gts[i] += num_gt
+                gt_matched = np.zeros(num_gt, dtype=bool)
+
+                for pred_text, pred_point in zip(filtered_pred_texts,
+                                                 filtered_pred_points):
+                    dists = [
+                        Point(pred_point).distance(Point(gt_point))
+                        for gt_point in gt_points
+                    ]
+                    min_idx = np.argmin(dists)
+                    if gt_texts[min_idx] == '###':
+                        continue
+                    # if not gt_matched[min_idx] and self.text_match(
+                    #         gt_texts[min_idx].upper(), pred_text.upper()):
+                    if (not gt_matched[min_idx] and gt_texts[min_idx].upper()
+                            == pred_text.upper()):
+                        gt_matched[min_idx] = True
+                        num_tp[i] += 1
+                    num_preds[i] += 1
 
         for i, pred_score_thr in enumerate(self.pred_score_thrs):
-            recall, precision, hmean = compute_hmean(
-                int(dataset_hit_num[i]), int(dataset_hit_num[i]),
-                int(dataset_gt_num), int(dataset_pred_num[i]))
+            if num_preds[i] == 0 or num_tp[i] == 0:
+                recall, precision, hmean = 0, 0, 0
+            else:
+                recall = num_tp[i] / num_gts[i]
+                precision = num_tp[i] / num_preds[i]
+                hmean = 2 * recall * precision / (recall + precision)
             eval_results = dict(
                 precision=precision, recall=recall, hmean=hmean)
             logger.info(f'prediction score threshold: {pred_score_thr:.2f}, '
@@ -214,41 +182,6 @@ class E2EHmeanIOUMetric(BaseMetric):
             if eval_results['hmean'] > best_eval_results['hmean']:
                 best_eval_results = eval_results
         return best_eval_results
-
-    def _filter_preds(self, pred_polys: List[Polygon], gt_polys: List[Polygon],
-                      pred_scores: List[float],
-                      gt_ignore_flags: np.ndarray) -> np.ndarray:
-        """Filter out the predictions by score threshold and whether it
-        overlaps ignored gt polygons.
-
-        Args:
-            pred_polys (list[Polygon]): Pred polygons.
-            gt_polys (list[Polygon]): GT polygons.
-            pred_scores (list[float]): Pred scores of polygons.
-            gt_ignore_flags (np.ndarray): 1D boolean array indicating
-                the positions of ignored gt polygons.
-
-        Returns:
-            np.ndarray: 1D boolean array indicating the positions of ignored
-            pred polygons.
-        """
-
-        # Filter out predictions based on the minimum score threshold
-        pred_ignore_flags = pred_scores < self.pred_score_thrs.min()
-        pred_indexes = self._true_indexes(~pred_ignore_flags)
-        gt_indexes = self._true_indexes(gt_ignore_flags)
-        # Filter out pred polygons which overlaps any ignored gt polygons
-        for pred_id in pred_indexes:
-            for gt_id in gt_indexes:
-                # Match pred with ignored gt
-                precision = poly_intersection(
-                    gt_polys[gt_id], pred_polys[pred_id]) / (
-                        pred_polys[pred_id].area + 1e-5)
-                if precision > self.ignore_precision_thr:
-                    pred_ignore_flags[pred_id] = True
-                    break
-
-        return pred_ignore_flags
 
     def _true_indexes(self, array: np.ndarray) -> np.ndarray:
         """Get indexes of True elements from a 1D boolean array."""
