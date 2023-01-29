@@ -21,9 +21,9 @@ repos:
     hooks:
       - id: trailing-whitespace
         exclude: |
-            (?x)(
-              ^dicts/|
-              ^projects/ABCNet/dicts/
+            (?x)^(
+              dicts/|
+              projects/.*?/dicts/
             )
       - id: check-yaml
       - id: end-of-file-fixer

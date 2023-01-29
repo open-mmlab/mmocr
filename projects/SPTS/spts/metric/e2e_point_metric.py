@@ -18,8 +18,8 @@ class E2EPointMetric(BaseMetric):
     Args:
         ignore_precision_thr (float): Precision threshold when prediction and\
             gt ignored polygons are matched. Defaults to 0.5.
-        pred_score_thrs (dict): Best prediction score threshold searching
-            space. Defaults to dict(start=0.3, stop=0.9, step=0.1).
+        text_score_thrs (dict): Best text score threshold searching
+            space. Defaults to dict(start=0.8, stop=1, step=0.01).
         TODO: docstr
         collect_device (str): Device name used for collecting results from
             different ranks during distributed training. Must be 'cpu' or
@@ -34,7 +34,7 @@ class E2EPointMetric(BaseMetric):
     def __init__(self,
                  match_iou_thr: float = 0.5,
                  ignore_precision_thr: float = 0.5,
-                 pred_score_thrs: Dict = dict(start=0.8, stop=1, step=0.01),
+                 text_score_thrs: Dict = dict(start=0.8, stop=1, step=0.01),
                  lexicon_path: Optional[str] = None,
                  word_spotting: bool = False,
                  min_length_case_word: int = 3,
@@ -44,7 +44,7 @@ class E2EPointMetric(BaseMetric):
         super().__init__(collect_device=collect_device, prefix=prefix)
         self.match_iou_thr = match_iou_thr
         self.ignore_precision_thr = ignore_precision_thr
-        self.pred_score_thrs = np.arange(**pred_score_thrs)
+        self.text_score_thrs = np.arange(**text_score_thrs)
         self.word_spotting = word_spotting
         self.min_length_case_word = min_length_case_word
         self.special_characters = special_characters
@@ -73,10 +73,10 @@ class E2EPointMetric(BaseMetric):
 
             pred_instances = data_sample.get('pred_instances')
             pred_points = pred_instances.get('points')
-            pred_scores = pred_instances.get('scores')
-            if isinstance(pred_scores, torch.Tensor):
-                pred_scores = pred_scores.cpu().numpy()
-            pred_scores = np.array(pred_scores, dtype=np.float32)
+            text_scores = pred_instances.get('text_scores')
+            if isinstance(text_scores, torch.Tensor):
+                text_scores = text_scores.cpu().numpy()
+            text_scores = np.array(text_scores, dtype=np.float32)
             pred_texts = pred_instances.get('texts')
 
             gt_instances = data_sample.get('gt_instances')
@@ -91,8 +91,8 @@ class E2EPointMetric(BaseMetric):
                 gt_ignore_flags, gt_texts = self._word_spotting_filter(
                     gt_ignore_flags, gt_texts)
 
-            pred_ignore_flags = pred_scores < self.pred_score_thrs.min()
-            pred_scores = pred_scores[~pred_ignore_flags]
+            pred_ignore_flags = text_scores < self.text_score_thrs.min()
+            text_scores = text_scores[~pred_ignore_flags]
             pred_texts = self._get_true_elements(pred_texts,
                                                  ~pred_ignore_flags)
             pred_points = self._get_true_elements(pred_points,
@@ -101,7 +101,7 @@ class E2EPointMetric(BaseMetric):
             gt_points = self._get_true_elements(gt_points, ~gt_ignore_flags)
 
             result = dict(
-                pred_scores=pred_scores,
+                text_scores=text_scores,
                 pred_points=pred_points,
                 gt_points=gt_points,
                 pred_texts=pred_texts,
@@ -125,22 +125,22 @@ class E2EPointMetric(BaseMetric):
 
         best_eval_results = dict(hmean=-1)
 
-        num_thres = len(self.pred_score_thrs)
+        num_thres = len(self.text_score_thrs)
         num_preds = np.zeros(
             num_thres, dtype=int)  # the number of points actually predicted
         num_tp = np.zeros(num_thres, dtype=int)  # number of true positives
         num_gts = np.zeros(num_thres, dtype=int)  # number of valid gts
 
         for result in results:
-            pred_scores = result['pred_scores']
+            text_scores = result['text_scores']
             pred_points = result['pred_points']
             gt_points = result['gt_points']
             gt_texts = result['gt_texts']
             pred_texts = result['pred_texts']
 
             # Filter out predictions by IoU threshold
-            for i, pred_score_thr in enumerate(self.pred_score_thrs):
-                pred_ignore_flags = pred_scores < pred_score_thr
+            for i, text_score_thr in enumerate(self.text_score_thrs):
+                pred_ignore_flags = text_scores < text_score_thr
                 filtered_pred_texts = self._get_true_elements(
                     pred_texts, ~pred_ignore_flags)
                 filtered_pred_points = self._get_true_elements(
@@ -166,7 +166,7 @@ class E2EPointMetric(BaseMetric):
                         num_tp[i] += 1
                     num_preds[i] += 1
 
-        for i, pred_score_thr in enumerate(self.pred_score_thrs):
+        for i, text_score_thr in enumerate(self.text_score_thrs):
             if num_preds[i] == 0 or num_tp[i] == 0:
                 recall, precision, hmean = 0, 0, 0
             else:
@@ -175,7 +175,7 @@ class E2EPointMetric(BaseMetric):
                 hmean = 2 * recall * precision / (recall + precision)
             eval_results = dict(
                 precision=precision, recall=recall, hmean=hmean)
-            logger.info(f'prediction score threshold: {pred_score_thr:.2f}, '
+            logger.info(f'text score threshold: {text_score_thr:.2f}, '
                         f'recall: {eval_results["recall"]:.4f}, '
                         f'precision: {eval_results["precision"]:.4f}, '
                         f'hmean: {eval_results["hmean"]:.4f}\n')

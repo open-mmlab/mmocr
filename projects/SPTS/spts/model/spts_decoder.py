@@ -41,6 +41,7 @@ class SPTSDecoder(BaseDecoder):
                  postprocessor: Optional[Dict] = None,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
 
+        # TODO: fix hardcode
         self.max_seq_len = (2 + 25) * max_num_text + 1
         super().__init__(
             dictionary=dictionary,
@@ -117,9 +118,10 @@ class SPTSDecoder(BaseDecoder):
             out_enc, data_samples)
 
         padded_targets = [
-            data_sample.gt_text.padded_indexes for data_sample in data_samples
+            data_sample.gt_instances.padded_indexes
+            for data_sample in data_samples
         ]
-        padded_targets = torch.stack(padded_targets, dim=0).to(feat.device)
+        padded_targets = torch.stack(padded_targets, dim=0).to(out_enc.device)
         tgt = self.embedding(padded_targets).permute(1, 0, 2)
         hs = self.decoder(
             tgt,
@@ -169,7 +171,7 @@ class SPTSDecoder(BaseDecoder):
             out = self.vocab_embed(hs.transpose(1, 2)[-1, :, -1, :])
             out = out.softmax(-1)
 
-            # bins chars eos sos padding
+            # bins chars unk eos seq_eos sos padding
             if i % 27 == 0:  # coordinate or eos
                 out[:, self.num_bins:self.shifted_seq_end_idx] = 0
                 out[:, self.shifted_seq_end_idx + 1:] = 0

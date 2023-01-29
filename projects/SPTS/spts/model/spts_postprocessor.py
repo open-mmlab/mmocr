@@ -70,7 +70,7 @@ class SPTSPostprocessor(BaseTextRecogPostprocessor):
         max_probs = max_probs.reshape(-1, 27)
         seq = seq.reshape(-1, 27)
 
-        indexes, scores, points, pt_scores = [], [], [], []
+        indexes, text_scores, points, pt_scores = [], [], [], []
         output_indexes = seq.cpu().detach().numpy().tolist()
         output_scores = max_probs.cpu().detach().numpy().tolist()
         for output_index, output_score in zip(output_indexes, output_scores):
@@ -80,12 +80,13 @@ class SPTSPostprocessor(BaseTextRecogPostprocessor):
             point_x = output_index[0] / self.num_bins * w
             point_y = output_index[1] / self.num_bins * h
             points.append((point_x, point_y))
-            pt_scores.append((
-                output_score[0],
-                output_score[1],
-            ))
+            pt_scores.append(
+                np.mean([
+                    output_score[0],
+                    output_score[1],
+                ]).item())
             indexes.append([])
-            scores.append([])
+            char_scores = []
             for char_index, char_score in zip(output_index[2:],
                                               output_score[2:]):
                 # the first num_bins indexes are for points
@@ -95,8 +96,9 @@ class SPTSPostprocessor(BaseTextRecogPostprocessor):
                 if dict_idx == self.dictionary.end_idx:
                     break
                 indexes[-1].append(dict_idx)
-                scores[-1].append(char_score)
-        return indexes, scores, points, pt_scores
+                char_scores.append(char_score)
+            text_scores.append(np.mean(char_scores).item())
+        return indexes, text_scores, points, pt_scores
 
     def __call__(
         self, output: Tuple[torch.Tensor, torch.Tensor],
@@ -118,7 +120,7 @@ class SPTSPostprocessor(BaseTextRecogPostprocessor):
         batch_size = max_probs.size(0)
 
         for idx in range(batch_size):
-            (char_idxs, char_scores, points,
+            (char_idxs, text_scores, points,
              pt_scores) = self.get_single_prediction(max_probs[idx, :],
                                                      seq[idx, :],
                                                      data_samples[idx])
@@ -132,7 +134,7 @@ class SPTSPostprocessor(BaseTextRecogPostprocessor):
             pred_instances = InstanceData()
             pred_instances.texts = texts
             pred_instances.scores = scores
-            pred_instances.text_scores = char_scores
+            pred_instances.text_scores = text_scores
             pred_instances.points = points
             data_samples[idx].pred_instances = pred_instances
             pred_instances = self.rescale(data_samples[idx],
