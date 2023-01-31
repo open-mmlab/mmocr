@@ -6,5 +6,4 @@ assign:
     '*/1 * * * *'
   assignees:
     - gaotongxiao
-    - xinke-wang
     - Harold-lkk
