@@ -3,9 +3,9 @@ import math
 from typing import Dict, List, Optional, Union
 
 import torch.nn as nn
-from mmengine.model import ModuleList
 from torch import Tensor
 
+from mmengine.model import ModuleList
 from mmocr.models.textrecog.layers import (Adaptive2DPositionalEncoding,
                                            SATRNEncoderLayer)
 from mmocr.registry import MODELS

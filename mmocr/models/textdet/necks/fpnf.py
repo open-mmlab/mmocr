@@ -4,9 +4,9 @@ from typing import Dict, List, Optional, Union
 import torch
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
-from mmengine.model import BaseModule, ModuleList
 from torch import Tensor
 
+from mmengine.model import BaseModule, ModuleList
 from mmocr.registry import MODELS
 
 

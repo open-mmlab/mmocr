@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Tuple
 
-from mmengine.structures import LabelData
 from torch import Tensor
 
+from mmengine.structures import LabelData
 from mmocr.registry import MODELS, TASK_UTILS
 from mmocr.structures import TextRecogDataSample  # noqa F401
 from mmocr.utils import DetSampleList, OptMultiConfig, RecSampleList

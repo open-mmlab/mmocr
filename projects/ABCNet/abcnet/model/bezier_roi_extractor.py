@@ -2,9 +2,9 @@
 from typing import List, Tuple
 
 import torch
-from mmengine.structures import InstanceData
 from torch import Tensor
 
+from mmengine.structures import InstanceData
 from mmocr.registry import MODELS
 from mmocr.utils import ConfigType, OptMultiConfig
 from .base_roi_extractor import BaseRoIExtractor

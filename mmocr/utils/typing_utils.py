@@ -5,9 +5,9 @@ from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import torch
+
 from mmengine.config import ConfigDict
 from mmengine.structures import InstanceData, LabelData
-
 from mmocr import digit_version
 from mmocr.structures import (KIEDataSample, TextDetDataSample,
                               TextRecogDataSample)

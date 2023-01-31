@@ -5,9 +5,9 @@ from typing import List, Optional, Sequence, Tuple, Union
 import numpy as np
 import pyclipper
 import shapely
-from mmengine.utils import is_list_of
 from shapely.geometry import MultiPolygon, Polygon
 
+from mmengine.utils import is_list_of
 from mmocr.utils import bbox2poly, valid_boundary
 from mmocr.utils.check_argument import is_2dlist
 from mmocr.utils.typing_utils import ArrayLike

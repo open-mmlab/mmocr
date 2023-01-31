@@ -4,10 +4,10 @@ from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import torch
+
 from mmengine.config import Config
 from mmengine.runner import load_checkpoint
 from mmengine.structures import InstanceData
-
 from mmocr.registry import MODELS, VISUALIZERS
 from mmocr.utils import ConfigType
 

@@ -2,7 +2,6 @@
 import unittest
 
 from mmengine.structures import LabelData
-
 from mmocr.evaluation import CharMetric, OneMinusNEDMetric, WordMetric
 from mmocr.structures import TextRecogDataSample
 

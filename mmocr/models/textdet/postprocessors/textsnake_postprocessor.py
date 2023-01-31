@@ -5,10 +5,10 @@ from typing import List, Sequence
 import cv2
 import numpy as np
 import torch
-from mmengine.structures import InstanceData
 from numpy.linalg import norm
 from skimage.morphology import skeletonize
 
+from mmengine.structures import InstanceData
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from mmocr.utils import fill_hole

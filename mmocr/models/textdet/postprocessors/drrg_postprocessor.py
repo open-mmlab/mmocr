@@ -6,9 +6,9 @@ from typing import Dict, List, Tuple, Union
 import cv2
 import numpy as np
 import torch
-from mmengine.structures import InstanceData
 from numpy import ndarray
 
+from mmengine.structures import InstanceData
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from .base import BaseTextDetPostProcessor

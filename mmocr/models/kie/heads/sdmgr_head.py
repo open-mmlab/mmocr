@@ -2,10 +2,10 @@
 from typing import Dict, List, Optional, Tuple, Union
 
 import torch
-from mmengine.model import BaseModule
 from torch import Tensor, nn
 from torch.nn import functional as F
 
+from mmengine.model import BaseModule
 from mmocr.models.common.dictionary import Dictionary
 from mmocr.registry import MODELS, TASK_UTILS
 from mmocr.structures import KIEDataSample

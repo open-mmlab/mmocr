@@ -4,8 +4,8 @@ import tempfile
 from unittest import TestCase
 
 import torch
-from mmengine.structures import LabelData
 
+from mmengine.structures import LabelData
 from mmocr.models.common.dictionary import Dictionary
 from mmocr.models.textrecog.module_losses import CTCModuleLoss
 from mmocr.structures import TextRecogDataSample

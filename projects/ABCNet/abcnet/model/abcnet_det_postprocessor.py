@@ -8,8 +8,8 @@ from mmcv.ops import batched_nms
 from mmdet.models.task_modules.prior_generators import MlvlPointGenerator
 from mmdet.models.utils import (filter_scores_and_topk, multi_apply,
                                 select_single_mlvl)
-from mmengine.structures import InstanceData
 
+from mmengine.structures import InstanceData
 from mmocr.models.textdet.postprocessors.base import BaseTextDetPostProcessor
 from mmocr.registry import MODELS, TASK_UTILS
 

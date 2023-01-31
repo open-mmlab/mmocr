@@ -5,7 +5,6 @@ from copy import deepcopy
 from typing import Dict, List
 
 import mmengine
-
 from mmocr.utils import dump_ocr_data
 
 

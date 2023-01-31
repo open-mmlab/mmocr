@@ -6,9 +6,9 @@ import torch
 from mmdet.structures import DetDataSample
 from mmdet.structures import SampleList as MMDET_SampleList
 from mmdet.structures.mask import bitmap_to_polygon
+
 from mmengine.model import BaseModel
 from mmengine.structures import InstanceData
-
 from mmocr.registry import MODELS
 from mmocr.utils.bbox_utils import bbox2poly
 from mmocr.utils.typing_utils import DetSampleList

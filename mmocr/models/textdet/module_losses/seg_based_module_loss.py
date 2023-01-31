@@ -5,9 +5,9 @@ from typing import Optional, Sequence, Tuple, Union
 import cv2
 import numpy as np
 import torch
-from mmengine.logging import MMLogger
 from shapely.geometry import Polygon
 
+from mmengine.logging import MMLogger
 from mmocr.utils.polygon_utils import offset_polygon
 from .base import BaseTextDetModuleLoss
 

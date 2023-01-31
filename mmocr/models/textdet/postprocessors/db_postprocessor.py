@@ -4,10 +4,10 @@ from typing import Sequence
 import cv2
 import numpy as np
 import torch
-from mmengine.structures import InstanceData
 from shapely.geometry import Polygon
 from torch import Tensor
 
+from mmengine.structures import InstanceData
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from mmocr.utils import offset_polygon

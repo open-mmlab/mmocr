@@ -8,11 +8,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 from lanms import merge_quadrangle_n9 as la_nms
 from mmcv.ops import RoIAlignRotated
-from mmengine.model import BaseModule
 from numpy import ndarray
 from torch import Tensor
 from torch.nn import init
 
+from mmengine.model import BaseModule
 from mmocr.models.textdet.heads import BaseTextDetHead
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample

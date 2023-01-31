@@ -3,9 +3,9 @@ import copy
 from typing import Callable, List, Optional, Sequence, Union
 
 import numpy as np
+
 from mmengine.dataset import BaseDataset
 from mmengine.fileio import list_from_file
-
 from mmocr.registry import DATASETS
 from mmocr.utils.parsers import LineJsonParser
 from mmocr.utils.polygon_utils import sort_vertex8

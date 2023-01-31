@@ -4,9 +4,10 @@ import os
 from functools import partial
 
 import mmcv
-import mmengine
 import numpy as np
 from scipy.io import loadmat
+
+import mmengine
 
 
 def parse_args():

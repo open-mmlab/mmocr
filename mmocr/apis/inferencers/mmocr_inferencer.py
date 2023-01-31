@@ -4,9 +4,9 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 import mmcv
-import mmengine
 import numpy as np
 
+import mmengine
 from mmocr.registry import VISUALIZERS
 from mmocr.structures.textdet_data_sample import TextDetDataSample
 from mmocr.utils import ConfigType, bbox2poly, crop_img, poly2bbox

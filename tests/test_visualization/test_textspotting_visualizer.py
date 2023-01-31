@@ -6,8 +6,8 @@ import unittest
 import cv2
 import numpy as np
 import torch
-from mmengine.structures import InstanceData
 
+from mmengine.structures import InstanceData
 from mmocr.structures import TextDetDataSample
 from mmocr.utils import bbox2poly
 from mmocr.visualization import TextSpottingLocalVisualizer

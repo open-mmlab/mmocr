@@ -6,8 +6,8 @@ import os.path as osp
 import xml.etree.ElementTree as ET
 
 import mmcv
-import mmengine
 
+import mmengine
 from mmocr.utils import crop_img, dump_ocr_data
 
 

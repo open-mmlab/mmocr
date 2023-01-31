@@ -2,8 +2,8 @@
 from typing import Any, Callable, List, Optional, Sequence, Tuple, Union
 
 import mmcv
-from mmengine.dataset import BaseDataset
 
+from mmengine.dataset import BaseDataset
 from mmocr.registry import DATASETS
 
 

@@ -3,11 +3,11 @@ import os.path as osp
 from typing import Sequence, Union
 
 import mmcv
+
 import mmengine
 from mmengine.hooks import Hook
 from mmengine.runner import Runner
 from mmengine.visualization import Visualizer
-
 from mmocr.registry import HOOKS
 from mmocr.structures import TextDetDataSample, TextRecogDataSample
 

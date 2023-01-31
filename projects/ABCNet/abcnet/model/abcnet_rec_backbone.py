@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 from mmcv.cnn import ConvModule
-from mmengine.model import BaseModule, Sequential
 
+from mmengine.model import BaseModule, Sequential
 from mmocr.registry import MODELS
 
 

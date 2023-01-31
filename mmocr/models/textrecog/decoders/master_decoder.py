@@ -6,8 +6,8 @@ from typing import Dict, Optional, Sequence, Union
 import torch
 import torch.nn as nn
 from mmcv.cnn.bricks.transformer import BaseTransformerLayer
-from mmengine.model import ModuleList
 
+from mmengine.model import ModuleList
 from mmocr.models.common.dictionary import Dictionary
 from mmocr.models.common.modules import PositionalEncoding
 from mmocr.registry import MODELS

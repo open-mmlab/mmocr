@@ -4,7 +4,6 @@ from typing import Callable, List, Optional, Sequence, Union
 
 from mmengine.dataset import BaseDataset
 from mmengine.fileio import list_from_file
-
 from mmocr.registry import DATASETS, TASK_UTILS
 
 # TODO: replace all list_from_file from mmengine

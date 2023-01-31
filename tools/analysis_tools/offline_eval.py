@@ -5,7 +5,6 @@ import json
 import mmengine
 from mmengine.config import Config, DictAction
 from mmengine.evaluator import Evaluator
-
 from mmocr.utils import register_all_modules
 
 

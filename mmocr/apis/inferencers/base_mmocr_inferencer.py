@@ -4,9 +4,9 @@ from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import mmcv
 import numpy as np
+
 from mmengine.dataset import Compose
 from mmengine.structures import InstanceData
-
 from mmocr.utils import ConfigType
 from .base_inferencer import BaseInferencer
 

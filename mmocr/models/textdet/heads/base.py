@@ -2,9 +2,9 @@
 from typing import Dict, List, Optional, Tuple, Union
 
 import torch
-from mmengine.model import BaseModule
 from torch import Tensor
 
+from mmengine.model import BaseModule
 from mmocr.registry import MODELS
 from mmocr.utils.typing_utils import DetSampleList
 

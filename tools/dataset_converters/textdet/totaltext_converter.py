@@ -7,12 +7,12 @@ import re
 
 import cv2
 import mmcv
-import mmengine
 import numpy as np
 import scipy.io as scio
 import yaml
 from shapely.geometry import Polygon
 
+import mmengine
 from mmocr.utils import dump_ocr_data
 
 

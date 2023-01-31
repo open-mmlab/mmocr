@@ -3,9 +3,9 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import torch
-from mmengine.structures import InstanceData
 from torch import Tensor, nn
 
+from mmengine.structures import InstanceData
 from mmocr.registry import MODELS
 from mmocr.structures import KIEDataSample
 

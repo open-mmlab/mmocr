@@ -6,7 +6,6 @@ import os.path as osp
 from mmengine.config import Config, DictAction
 from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
-
 from mmocr.utils import register_all_modules
 
 

@@ -3,8 +3,8 @@ import numpy as np
 import torch
 from mmcv.transforms import to_tensor
 from mmcv.transforms.base import BaseTransform
-from mmengine.structures import InstanceData, LabelData
 
+from mmengine.structures import InstanceData, LabelData
 from mmocr.registry import TRANSFORMS
 from mmocr.structures import (KIEDataSample, TextDetDataSample,
                               TextRecogDataSample)

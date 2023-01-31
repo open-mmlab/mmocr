@@ -1,9 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import cv2
 import numpy as np
-from mmengine.utils import is_seq_of
 from shapely.geometry import LineString, Point
 
+from mmengine.utils import is_seq_of
 from .bbox_utils import bbox_jitter
 from .polygon_utils import sort_vertex
 

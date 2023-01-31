@@ -3,9 +3,9 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 import torch.nn.functional as F
-from mmengine.model import BaseModule, ModuleList
 from torch import nn
 
+from mmengine.model import BaseModule, ModuleList
 from mmocr.registry import MODELS
 
 

@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 import torch
 from mmcv.ops import pixel_group
-from mmengine.structures import InstanceData
 
+from mmengine.structures import InstanceData
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
 from .base import BaseTextDetPostProcessor

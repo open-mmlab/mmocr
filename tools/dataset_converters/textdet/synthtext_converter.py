@@ -6,11 +6,11 @@ import time
 
 import lmdb
 import mmcv
-import mmengine
 import numpy as np
 from scipy.io import loadmat
 from shapely.geometry import Polygon
 
+import mmengine
 from mmocr.utils import check_argument
 
 

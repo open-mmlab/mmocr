@@ -6,10 +6,10 @@ import xml.etree.ElementTree as ET
 from functools import partial
 
 import mmcv
-import mmengine
 import numpy as np
 from shapely.geometry import Polygon
 
+import mmengine
 from mmocr.utils import dump_ocr_data, list_from_file
 
 

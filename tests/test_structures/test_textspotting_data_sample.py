@@ -3,8 +3,8 @@ from unittest import TestCase
 
 import numpy as np
 import torch
-from mmengine.structures import InstanceData
 
+from mmengine.structures import InstanceData
 from mmocr.structures import TextSpottingDataSample
 
 

@@ -5,10 +5,10 @@ from typing import Dict, List, Optional
 from unittest import TestCase
 
 import numpy as np
+
 from mmengine.evaluator import BaseMetric
 from mmengine.registry import METRICS, DefaultScope
 from mmengine.structures import BaseDataElement
-
 from mmocr.evaluation import MultiDatasetsEvaluator
 
 

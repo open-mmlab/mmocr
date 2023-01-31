@@ -4,7 +4,6 @@ import tempfile
 from unittest import TestCase
 
 import mmengine
-
 from mmocr.utils.data_converter_utils import (dump_ocr_data,
                                               recog_anno_to_imginfo)
 
