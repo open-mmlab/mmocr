@@ -2,10 +2,9 @@ import math
 from typing import Iterator, Optional, Sized
 
 import torch
+from mmcls.registry import DATA_SAMPLERS
 from mmengine.dist import get_dist_info, is_main_process, sync_random_seed
 from torch.utils.data import Sampler
-
-from mmocr.registry import DATA_SAMPLERS
 
 
 @DATA_SAMPLERS.register_module()
