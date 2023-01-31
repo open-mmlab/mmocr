@@ -35,7 +35,6 @@ TextDet Transforms
    :template: classtemplate.rst
 
    BoundedScaleAspectJitter
-   FixInvalidPolygon
    RandomFlip
    SourceImagePad
    ShortScaleAspectJitter
@@ -51,6 +50,10 @@ TextRecog Transforms
    :nosignatures:
    :template: classtemplate.rst
 
+   TextRecogGeneralAug
+   CropHeight
+   ImageContentJitter
+   ReversePixels
    PyramidRescale
    PadToWidth
    RescaleToHeight
@@ -67,6 +70,8 @@ OCR Transforms
    RandomCrop
    RandomRotate
    Resize
+   FixInvalidPolygon
+   RemoveIgnored
 
 
 

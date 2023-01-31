@@ -1,4 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+from typing import Dict, List, Optional, Tuple, Union
+
+import torch
 import torch.nn.functional as F
 from mmengine.model import BaseModule, ModuleList
 from torch import nn
@@ -14,7 +17,9 @@ class FPEM(BaseModule):
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
-    def __init__(self, in_channels=128, init_cfg=None):
+    def __init__(self,
+                 in_channels: int = 128,
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
         super().__init__(init_cfg=init_cfg)
         self.up_add1 = SeparableConv2d(in_channels, in_channels, 1)
         self.up_add2 = SeparableConv2d(in_channels, in_channels, 1)
@@ -23,7 +28,8 @@ class FPEM(BaseModule):
         self.down_add2 = SeparableConv2d(in_channels, in_channels, 2)
         self.down_add3 = SeparableConv2d(in_channels, in_channels, 2)
 
-    def forward(self, c2, c3, c4, c5):
+    def forward(self, c2: torch.Tensor, c3: torch.Tensor, c4: torch.Tensor,
+                c5: torch.Tensor) -> List[torch.Tensor]:
         """
         Args:
             c2, c3, c4, c5 (Tensor): Each has the shape of
@@ -48,8 +54,21 @@ class FPEM(BaseModule):
 
 
 class SeparableConv2d(BaseModule):
+    """Implementation of separable convolution, which is consisted of depthwise
+    convolution and pointwise convolution.
 
-    def __init__(self, in_channels, out_channels, stride=1, init_cfg=None):
+    Args:
+        in_channels (int): Number of input channels.
+        out_channels (int): Number of output channels.
+        stride (int): Stride of the depthwise convolution.
+        init_cfg (dict or list[dict], optional): Initialization configs.
+    """
+
+    def __init__(self,
+                 in_channels: int,
+                 out_channels: int,
+                 stride: int = 1,
+                 init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
         super().__init__(init_cfg=init_cfg)
 
         self.depthwise_conv = nn.Conv2d(
@@ -64,7 +83,15 @@ class SeparableConv2d(BaseModule):
         self.bn = nn.BatchNorm2d(out_channels)
         self.relu = nn.ReLU()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward function.
+
+        Args:
+            x (Tensor): Input tensor.
+
+        Returns:
+            Tensor: Output tensor.
+        """
         x = self.depthwise_conv(x)
         x = self.pointwise_conv(x)
         x = self.bn(x)
@@ -85,13 +112,15 @@ class FPEM_FFM(BaseModule):
         init_cfg (dict or list[dict], optional): Initialization configs.
     """
 
-    def __init__(self,
-                 in_channels,
-                 conv_out=128,
-                 fpem_repeat=2,
-                 align_corners=False,
-                 init_cfg=dict(
-                     type='Xavier', layer='Conv2d', distribution='uniform')):
+    def __init__(
+        self,
+        in_channels: List[int],
+        conv_out: int = 128,
+        fpem_repeat: int = 2,
+        align_corners: bool = False,
+        init_cfg: Optional[Union[Dict, List[Dict]]] = dict(
+            type='Xavier', layer='Conv2d', distribution='uniform')
+    ) -> None:
         super().__init__(init_cfg=init_cfg)
         # reduce layers
         self.reduce_conv_c2 = nn.Sequential(
@@ -119,7 +148,7 @@ class FPEM_FFM(BaseModule):
         for _ in range(fpem_repeat):
             self.fpems.append(FPEM(conv_out))
 
-    def forward(self, x):
+    def forward(self, x: List[torch.Tensor]) -> Tuple[torch.Tensor]:
         """
         Args:
             x (list[Tensor]): A list of four tensors of shape
@@ -128,7 +157,7 @@ class FPEM_FFM(BaseModule):
                 ``in_channels``.
 
         Returns:
-            list[Tensor]: Four tensors of shape
+            tuple[Tensor]: Four tensors of shape
             :math:`(N, C_{out}, H_0, W_0)` where :math:`C_{out}` is
             ``conv_out``.
         """

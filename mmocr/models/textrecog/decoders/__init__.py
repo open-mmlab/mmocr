@@ -12,11 +12,12 @@ from .robust_scanner_fuser import RobustScannerFuser
 from .sar_decoder import ParallelSARDecoder, SequentialSARDecoder
 from .sar_decoder_with_bs import ParallelSARDecoderWithBS
 from .sequence_attention_decoder import SequenceAttentionDecoder
+from .svtr_decoder import SVTRDecoder
 
 __all__ = [
     'CRNNDecoder', 'ParallelSARDecoder', 'SequentialSARDecoder',
     'ParallelSARDecoderWithBS', 'NRTRDecoder', 'BaseDecoder',
     'SequenceAttentionDecoder', 'PositionAttentionDecoder',
     'ABILanguageDecoder', 'ABIVisionDecoder', 'MasterDecoder',
-    'RobustScannerFuser', 'ABIFuser', 'ASTERDecoder'
+    'RobustScannerFuser', 'ABIFuser', 'SVTRDecoder', 'ASTERDecoder'
 ]
