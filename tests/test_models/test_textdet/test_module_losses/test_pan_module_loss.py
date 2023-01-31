@@ -4,8 +4,8 @@ from unittest import TestCase
 import numpy as np
 import torch
 import torch.nn as nn
-
 from mmengine.structures import InstanceData
+
 from mmocr.models.textdet.module_losses import PANModuleLoss
 from mmocr.models.textdet.module_losses.pan_module_loss import PANEmbLossV1
 from mmocr.structures import TextDetDataSample

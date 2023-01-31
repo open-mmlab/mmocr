@@ -3,8 +3,8 @@ from typing import Dict, Optional, Sequence, Union
 
 import torch
 import torch.nn as nn
-
 from mmengine.model import BaseModule
+
 from mmocr.registry import MODELS
 
 

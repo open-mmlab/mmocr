@@ -4,8 +4,8 @@ import tempfile
 from unittest import TestCase
 
 import torch
-
 from mmengine.structures import LabelData
+
 from mmocr.models.textrecog.decoders import MasterDecoder
 from mmocr.structures import TextRecogDataSample
 from mmocr.testing import create_dummy_dict_file

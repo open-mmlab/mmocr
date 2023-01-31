@@ -3,8 +3,8 @@ import argparse
 
 import torch
 from fvcore.nn import FlopCountAnalysis, flop_count_table
-
 from mmengine import Config
+
 from mmocr.registry import MODELS
 from mmocr.utils import register_all_modules
 

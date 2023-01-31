@@ -3,9 +3,9 @@ from abc import ABCMeta, abstractmethod
 from typing import Dict, Tuple, Union
 
 import torch
+from mmengine.model import BaseModel
 from torch import Tensor
 
-from mmengine.model import BaseModel
 from mmocr.utils.typing_utils import (DetSampleList, OptConfigType,
                                       OptDetSampleList, OptMultiConfig)
 

@@ -3,6 +3,7 @@ from typing import Callable, List, Sequence, Union
 
 from mmengine.dataset import BaseDataset, Compose
 from mmengine.dataset import ConcatDataset as MMENGINE_CONCATDATASET
+
 from mmocr.registry import DATASETS
 
 

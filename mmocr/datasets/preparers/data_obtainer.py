@@ -8,6 +8,7 @@ import urllib.request as request
 from typing import Dict, List, Optional, Tuple
 
 from mmengine import mkdir_or_exist
+
 from mmocr.utils import check_integrity, is_archive
 from .data_preparer import DATA_OBTAINERS
 

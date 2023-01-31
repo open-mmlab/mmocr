@@ -3,6 +3,7 @@ import warnings
 from typing import Dict, Sequence
 
 import mmengine
+
 from mmocr.utils import is_type_list
 
 

@@ -4,8 +4,8 @@ from typing import List, Sequence, Union
 
 import numpy as np
 import torch
-
 from mmengine.visualization import Visualizer
+
 from mmocr.registry import VISUALIZERS
 
 

@@ -6,8 +6,8 @@ import os.path as osp
 from functools import partial
 
 import mmcv
-
 import mmengine
+
 from mmocr.utils import dump_ocr_data
 
 

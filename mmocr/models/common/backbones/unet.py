@@ -3,9 +3,9 @@ import torch
 import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import ConvModule, build_norm_layer
-
 from mmengine.model import BaseModule
 from mmengine.utils.dl_utils.parrots_wrapper import _BatchNorm
+
 from mmocr.registry import MODELS
 
 

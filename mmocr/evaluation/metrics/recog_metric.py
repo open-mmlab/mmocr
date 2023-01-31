@@ -3,10 +3,10 @@ import re
 from difflib import SequenceMatcher
 from typing import Dict, Optional, Sequence, Union
 
-from rapidfuzz.distance import Levenshtein
-
 import mmengine
 from mmengine.evaluator import BaseMetric
+from rapidfuzz.distance import Levenshtein
+
 from mmocr.registry import METRICS
 
 

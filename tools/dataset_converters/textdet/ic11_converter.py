@@ -4,9 +4,9 @@ import os
 import os.path as osp
 
 import mmcv
+import mmengine
 from PIL import Image
 
-import mmengine
 from mmocr.utils import dump_ocr_data
 
 

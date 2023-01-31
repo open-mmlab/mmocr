@@ -4,11 +4,11 @@ import warnings
 from typing import Optional
 
 import mmcv
+import mmengine
 import numpy as np
 from mmcv.transforms import LoadAnnotations as MMCV_LoadAnnotations
 from mmcv.transforms import LoadImageFromFile as MMCV_LoadImageFromFile
 
-import mmengine
 from mmocr.registry import TRANSFORMS
 
 

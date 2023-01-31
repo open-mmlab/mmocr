@@ -4,6 +4,7 @@ import json
 from functools import partial
 
 import mmengine
+
 from mmocr.utils import list_from_file, list_to_file
 
 

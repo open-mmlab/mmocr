@@ -7,9 +7,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import ConvModule
 from mmcv.cnn.bricks import DropPath
-
 from mmengine.model import BaseModule
 from mmengine.model.weight_init import trunc_normal_init
+
 from mmocr.registry import MODELS
 from mmocr.structures import TextRecogDataSample
 

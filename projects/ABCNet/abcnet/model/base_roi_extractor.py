@@ -4,9 +4,9 @@ from typing import List, Tuple
 
 import torch.nn as nn
 from mmcv import ops
+from mmengine.model import BaseModule
 from torch import Tensor
 
-from mmengine.model import BaseModule
 from mmocr.utils import ConfigType, OptMultiConfig
 
 

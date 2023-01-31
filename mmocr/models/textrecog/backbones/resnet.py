@@ -3,9 +3,9 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import torch
 from mmcv.cnn import ConvModule, build_plugin_layer
+from mmengine.model import BaseModule, Sequential
 
 import mmocr.utils as utils
-from mmengine.model import BaseModule, Sequential
 from mmocr.models.textrecog.layers import BasicBlock
 from mmocr.registry import MODELS
 

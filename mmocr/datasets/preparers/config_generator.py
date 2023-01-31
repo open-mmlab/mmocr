@@ -4,6 +4,7 @@ from abc import abstractmethod
 from typing import Dict, List, Optional
 
 from mmengine import mkdir_or_exist
+
 from .data_preparer import CFG_GENERATORS
 
 

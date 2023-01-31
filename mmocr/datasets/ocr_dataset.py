@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmengine.dataset import BaseDataset
+
 from mmocr.registry import DATASETS
 
 

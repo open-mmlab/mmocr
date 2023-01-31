@@ -4,8 +4,8 @@ from typing import Dict, Optional, Sequence, Union
 
 import torch
 import torch.nn as nn
-
 from mmengine.model import ModuleList
+
 from mmocr.models.common import TFEncoderLayer
 from mmocr.registry import MODELS
 from mmocr.structures import TextRecogDataSample

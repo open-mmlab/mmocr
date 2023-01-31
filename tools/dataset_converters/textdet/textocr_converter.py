@@ -4,6 +4,7 @@ import math
 import os.path as osp
 
 import mmengine
+
 from mmocr.utils import dump_ocr_data
 
 

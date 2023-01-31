@@ -2,10 +2,10 @@
 from functools import partial
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 
+import mmengine
 import numpy as np
 from torch import Tensor
 
-import mmengine
 from mmocr.structures import TextDetDataSample
 from mmocr.utils import boundary_iou, rescale_polygons
 

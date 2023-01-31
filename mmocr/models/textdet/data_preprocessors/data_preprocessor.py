@@ -3,8 +3,8 @@ from numbers import Number
 from typing import Dict, List, Optional, Sequence, Union
 
 import torch.nn as nn
-
 from mmengine.model import ImgDataPreprocessor
+
 from mmocr.registry import MODELS
 
 

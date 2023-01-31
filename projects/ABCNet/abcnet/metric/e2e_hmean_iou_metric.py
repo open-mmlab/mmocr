@@ -3,12 +3,12 @@ from typing import Dict, List, Optional, Sequence
 
 import numpy as np
 import torch
+from mmengine.evaluator import BaseMetric
+from mmengine.logging import MMLogger
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import maximum_bipartite_matching
 from shapely.geometry import Polygon
 
-from mmengine.evaluator import BaseMetric
-from mmengine.logging import MMLogger
 from mmocr.evaluation.functional import compute_hmean
 from mmocr.registry import METRICS
 from mmocr.utils import poly_intersection, poly_iou, polys2shapely

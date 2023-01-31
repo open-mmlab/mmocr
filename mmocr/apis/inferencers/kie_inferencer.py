@@ -4,8 +4,8 @@ from typing import Dict, List, Sequence
 
 import mmcv
 import numpy as np
-
 from mmengine.dataset import Compose
+
 from mmocr.registry import DATASETS, VISUALIZERS
 from mmocr.structures import KIEDataSample
 from mmocr.utils import ConfigType

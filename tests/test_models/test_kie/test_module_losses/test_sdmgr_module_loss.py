@@ -2,8 +2,8 @@
 from unittest import TestCase
 
 import torch
-
 from mmengine.structures import InstanceData
+
 from mmocr.models.kie.module_losses import SDMGRModuleLoss
 from mmocr.structures import KIEDataSample
 

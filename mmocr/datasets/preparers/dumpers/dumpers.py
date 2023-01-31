@@ -3,6 +3,7 @@ import os.path as osp
 from typing import Dict, List
 
 import mmengine
+
 from mmocr.utils import list_to_file
 from ..data_preparer import DATA_DUMPERS
 

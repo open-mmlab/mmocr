@@ -2,8 +2,8 @@
 from typing import Dict, Optional, Sequence, Union
 
 import torch
-
 from mmengine.evaluator import BaseMetric
+
 from mmocr.registry import METRICS
 
 

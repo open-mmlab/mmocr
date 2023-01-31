@@ -3,8 +3,8 @@ import copy
 from unittest import TestCase
 
 import torch
-
 from mmengine.structures import InstanceData
+
 from mmocr.models.kie.postprocessors import SDMGRPostProcessor
 from mmocr.structures import KIEDataSample
 

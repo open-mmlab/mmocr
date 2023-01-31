@@ -5,9 +5,9 @@ import numpy as np
 import torch
 import torch.nn as nn
 from mmcv.cnn import ConvModule
+from mmengine.model import BaseModule
 from torch import Tensor
 
-from mmengine.model import BaseModule
 from mmocr.models.common import MultiHeadAttention
 
 

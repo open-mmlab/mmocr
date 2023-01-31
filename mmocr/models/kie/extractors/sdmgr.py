@@ -4,9 +4,9 @@ from typing import Dict, List, Optional, Sequence, Tuple
 
 import torch
 from mmdet.structures.bbox import bbox2roi
+from mmengine.model import BaseModel
 from torch import nn
 
-from mmengine.model import BaseModel
 from mmocr.registry import MODELS, TASK_UTILS
 from mmocr.structures import KIEDataSample
 

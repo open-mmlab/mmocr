@@ -7,11 +7,11 @@ from typing import Optional, Tuple
 import cv2
 import mmcv
 import numpy as np
-
 from mmengine.config import Config, DictAction
 from mmengine.dataset import Compose
 from mmengine.utils import ProgressBar
 from mmengine.visualization import Visualizer
+
 from mmocr.registry import DATASETS, VISUALIZERS
 from mmocr.utils import register_all_modules
 

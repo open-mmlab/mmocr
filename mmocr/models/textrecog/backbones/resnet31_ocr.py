@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
+from mmengine.model import BaseModule, Sequential
 
 import mmocr.utils as utils
-from mmengine.model import BaseModule, Sequential
 from mmocr.models.textrecog.layers import BasicBlock
 from mmocr.registry import MODELS
 

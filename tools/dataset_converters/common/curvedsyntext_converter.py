@@ -3,9 +3,9 @@ import argparse
 import os.path as osp
 from functools import partial
 
+import mmengine
 import numpy as np
 
-import mmengine
 from mmocr.utils import bezier_to_polygon, sort_points
 
 # The default dictionary used by CurvedSynthText

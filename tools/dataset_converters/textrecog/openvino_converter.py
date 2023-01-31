@@ -5,9 +5,9 @@ import os.path as osp
 from argparse import ArgumentParser
 from functools import partial
 
+import mmengine
 from PIL import Image
 
-import mmengine
 from mmocr.utils import dump_ocr_data
 
 

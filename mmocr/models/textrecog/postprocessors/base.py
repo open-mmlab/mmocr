@@ -2,10 +2,10 @@
 import warnings
 from typing import Dict, Optional, Sequence, Tuple, Union
 
-import torch
-
 import mmengine
+import torch
 from mmengine.structures import LabelData
+
 from mmocr.models.common.dictionary import Dictionary
 from mmocr.registry import TASK_UTILS
 from mmocr.structures import TextRecogDataSample

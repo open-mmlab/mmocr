@@ -6,12 +6,12 @@ import os.path as osp
 import re
 
 import mmcv
+import mmengine
 import numpy as np
 import scipy.io as scio
 import yaml
 from shapely.geometry import Polygon
 
-import mmengine
 from mmocr.utils import crop_img, dump_ocr_data
 
 

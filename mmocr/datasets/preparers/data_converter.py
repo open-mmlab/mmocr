@@ -9,8 +9,8 @@ from functools import partial
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import mmcv
-
 from mmengine import mkdir_or_exist, track_parallel_progress
+
 from mmocr.utils import bbox2poly, crop_img, list_files, poly2bbox
 from .data_preparer import DATA_CONVERTERS, DATA_DUMPERS, DATA_PARSERS
 

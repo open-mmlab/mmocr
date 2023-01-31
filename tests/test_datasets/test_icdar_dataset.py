@@ -4,6 +4,7 @@ import tempfile
 from unittest import TestCase
 
 import mmengine
+
 from mmocr.datasets.icdar_dataset import IcdarDataset
 
 

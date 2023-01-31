@@ -6,8 +6,8 @@ from unittest import TestCase
 from unittest.mock import Mock
 
 import torch
-
 from mmengine.structures import InstanceData
+
 from mmocr.engine.hooks import VisualizationHook
 from mmocr.structures import TextDetDataSample
 from mmocr.visualization import TextDetLocalVisualizer

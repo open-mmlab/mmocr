@@ -2,9 +2,9 @@
 from abc import ABCMeta, abstractmethod
 from typing import Tuple
 
+from mmengine.model import BaseModule
 from torch import Tensor
 
-from mmengine.model import BaseModule
 from mmocr.utils import DetSampleList
 
 

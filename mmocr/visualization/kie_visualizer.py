@@ -7,11 +7,11 @@ import numpy as np
 import torch
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import FancyArrow
-
 from mmengine.visualization import Visualizer
 from mmengine.visualization.utils import (check_type, check_type_and_length,
                                           color_val_matplotlib, tensor2ndarray,
                                           value2list)
+
 from mmocr.registry import VISUALIZERS
 from mmocr.structures import KIEDataSample
 from .base_visualizer import BaseLocalVisualizer
