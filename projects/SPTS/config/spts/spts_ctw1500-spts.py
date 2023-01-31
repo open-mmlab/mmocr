@@ -1,6 +1,6 @@
 _base_ = [
     '_base_spts.py',
-    '../_base_/datasets/icdar2013-spts.py',
+    '../_base_/datasets/ctw1500-spts.py',
     '../_base_/default_runtime.py',
 ]
 
@@ -32,26 +32,28 @@ param_scheduler = [
 ]
 
 # dataset settings
-icdar2013_textspotting_train = _base_.icdar2013_textspotting_train
-icdar2013_textspotting_train.pipeline = _base_.train_pipeline
-icdar2013_textspotting_test = _base_.icdar2013_textspotting_test
-icdar2013_textspotting_test.pipeline = _base_.test_pipeline
+ctw1500_textspotting_train = _base_.ctw1500_textspotting_train
+ctw1500_textspotting_train.pipeline = _base_.train_pipeline
+ctw1500_textspotting_test = _base_.ctw1500_textspotting_test
+ctw1500_textspotting_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
     batch_size=4,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='RepeatAugSampler', shuffle=True, num_repeats=2),
-    dataset=icdar2013_textspotting_train)
+    dataset=ctw1500_textspotting_train)
 
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=icdar2013_textspotting_test)
+    dataset=ctw1500_textspotting_test)
 
 test_dataloader = val_dataloader
 
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
+
+custom_imports = dict(imports='spts')

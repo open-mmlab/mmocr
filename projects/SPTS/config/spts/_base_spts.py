@@ -1,3 +1,5 @@
+custom_imports = dict(imports=['spts'], allow_failed_imports=False)
+
 file_client_args = dict(backend='disk')
 
 dictionary = dict(

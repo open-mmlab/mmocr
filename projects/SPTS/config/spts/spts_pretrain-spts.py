@@ -62,5 +62,3 @@ test_evaluator = None
 
 val_cfg = None
 test_cfg = None
-
-custom_imports = dict(imports='projects.SPTS.spts')

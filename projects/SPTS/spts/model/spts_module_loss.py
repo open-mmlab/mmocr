@@ -82,6 +82,7 @@ class SPTSModuleLoss(CEModuleLoss):
 
         weights = torch.ones(self.dictionary.num_classes + num_bins)
         weights[self.dictionary.seq_end_idx] = seq_eos_coef
+        weights.requires_grad_ = False
         self.loss_ce = nn.CrossEntropyLoss(
             ignore_index=self.ignore_index,
             reduction=reduction,
