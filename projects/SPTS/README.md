@@ -48,13 +48,13 @@ In the current directory, run the following command to train the model:
 #### Pretrain
 
 ```bash
-mim train mmocr config/spts/spts_pretrain-spts.py --work-dir work_dirs/
+mim train mmocr config/spts/spts_resnet50_150e_pretrain-spts.py --work-dir work_dirs/
 ```
 
 To train on multiple GPUs, e.g. 8 GPUs, run the following command:
 
 ```bash
-mim train mmocr config/spts/spts_pretrain-spts.py --work-dir work_dirs/ --launcher pytorch --gpus 8
+mim train mmocr config/spts/spts_resnet50_150e_pretrain-spts.py --work-dir work_dirs/ --launcher pytorch --gpus 8
 ```
 
 #### Finetune
@@ -62,13 +62,13 @@ mim train mmocr config/spts/spts_pretrain-spts.py --work-dir work_dirs/ --launch
 Similarly, run the following command to finetune the model on a dataset (e.g. icdar2013):
 
 ```bash
-mim train mmocr config/spts/spts_icdar2013-spts.py --work-dir work_dirs/ --cfg-options "load_from={CHECKPOINT_PATH}"
+mim train mmocr config/spts/spts_resnet50_350e_icdar2013-spts.py --work-dir work_dirs/ --cfg-options "load_from={CHECKPOINT_PATH}"
 ```
 
 To finetune on multiple GPUs, e.g. 8 GPUs, run the following command:
 
 ```bash
-mim train mmocr config/spts/spts_icdar2013-spts.py --work-dir work_dirs/ --launcher pytorch --gpus 8 --cfg-options "load_from={CHECKPOINT_PATH}"
+mim train mmocr config/spts/spts_resnet50_350e_icdar2013-spts.py --work-dir work_dirs/ --launcher pytorch --gpus 8 --cfg-options "load_from={CHECKPOINT_PATH}"
 ```
 
 ### Testing commands
@@ -76,7 +76,7 @@ mim train mmocr config/spts/spts_icdar2013-spts.py --work-dir work_dirs/ --launc
 In the current directory, run the following command to test the model on a dataset (e.g. icdar2013):
 
 ```bash
-mim test mmocr config/spts/spts_icdar2013-spts.py --work-dir work_dirs/ --checkpoint ${CHECKPOINT_PATH}
+mim test mmocr config/spts/spts_resnet50_350e_icdar2013-spts.py --work-dir work_dirs/ --checkpoint ${CHECKPOINT_PATH}
 ```
 
 ## Results

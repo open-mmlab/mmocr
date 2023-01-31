@@ -1,52 +1,16 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import copy
 import os.path as osp
-from typing import Callable, List, Optional, Sequence, Union
+from typing import List, Union
 
 import numpy as np
 from mmdet.datasets.coco import CocoDataset
-from mmengine.dataset.base_dataset import Compose as _Compose
-from shapely.errors import ShapelyError
 
-from mmocr.datasets.transforms import FixInvalidPolygon
 from mmocr.registry import DATASETS
-
-
-class Compose(_Compose):
-    """A compose variant that can automatically fix invalid polygons."""
-
-    def __init__(self, transforms: Optional[Sequence[Union[dict, Callable]]]):
-        super().__init__(transforms=transforms)
-        self.fix = FixInvalidPolygon()
-
-    def __call__(self, data: dict) -> Optional[dict]:
-        """Call function to apply transforms sequentially.
-
-        Args:
-            data (dict): A result dict contains the data to transform.
-
-        Returns:
-           dict: Transformed data.
-        """
-        for t in self.transforms:
-            backup_data = copy.deepcopy(data)
-            try:
-                data = t(data)
-            except ShapelyError:
-                data = self.fix(backup_data)
-                data = t(data)
-            # The transform will return None when it failed to load images or
-            # cannot find suitable augmentation parameters to augment the data.
-            # Here we simply return None if the transform returns None and the
-            # dataset will handle it by randomly selecting another data sample.
-            if data is None:
-                return None
-        return data
 
 
 @DATASETS.register_module()
 class AdelDataset(CocoDataset):
-    """Dataset for text detection while ann_file in coco format.
+    """Dataset for text detection while ann_file in Adelai's coco format.
 
     Args:
         ann_file (str): Annotation file path. Defaults to ''.
@@ -76,14 +40,6 @@ class AdelDataset(CocoDataset):
             None img. The maximum extra number of cycles to get a valid
             image. Defaults to 1000.
     """
-    METAINFO = {'classes': ('text', )}
-
-    def __init__(self,
-                 *args,
-                 pipeline: List[Union[dict, Callable]] = [],
-                 **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.pipeline = Compose(pipeline)
 
     def parse_data_info(self, raw_data_info: dict) -> Union[dict, List[dict]]:
         """Parse raw annotation to target format.
