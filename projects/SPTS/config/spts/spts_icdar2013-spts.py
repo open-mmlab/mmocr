@@ -1,6 +1,6 @@
 _base_ = [
     '_base_spts.py',
-    '../_base_/datasets/icdar2013.py',
+    '../_base_/datasets/icdar2013-spts.py',
     '../_base_/default_runtime.py',
 ]
 
@@ -37,7 +37,7 @@ icdar2013_textspotting_test = _base_.icdar2013_textspotting_test
 icdar2013_textspotting_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
-    batch_size=8,
+    batch_size=4,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='RepeatAugSampler', shuffle=True, num_repeats=2),

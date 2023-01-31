@@ -97,15 +97,14 @@ class E2EPointMetric(BaseMetric):
                                                  ~pred_ignore_flags)
             pred_points = self._get_true_elements(pred_points,
                                                   ~pred_ignore_flags)
-            gt_texts = self._get_true_elements(gt_texts, ~gt_ignore_flags)
-            gt_points = self._get_true_elements(gt_points, ~gt_ignore_flags)
 
             result = dict(
                 text_scores=text_scores,
                 pred_points=pred_points,
                 gt_points=gt_points,
                 pred_texts=pred_texts,
-                gt_texts=gt_texts)
+                gt_texts=gt_texts,
+                gt_ignore_flags=gt_ignore_flags)
             self.results.append(result)
 
     def _get_true_elements(self, array: List, flags: np.ndarray) -> List:
@@ -137,6 +136,7 @@ class E2EPointMetric(BaseMetric):
             gt_points = result['gt_points']
             gt_texts = result['gt_texts']
             pred_texts = result['pred_texts']
+            gt_ignore_flags = result['gt_ignore_flags']
 
             # Filter out predictions by IoU threshold
             for i, text_score_thr in enumerate(self.text_score_thrs):
@@ -145,9 +145,11 @@ class E2EPointMetric(BaseMetric):
                     pred_texts, ~pred_ignore_flags)
                 filtered_pred_points = self._get_true_elements(
                     pred_points, ~pred_ignore_flags)
-                num_gt = len(gt_texts)
+                gt_matched = np.zeros(len(gt_texts), dtype=bool)
+                num_gt = len(gt_texts) - np.sum(gt_ignore_flags)
+                if num_gt == 0:
+                    continue
                 num_gts[i] += num_gt
-                gt_matched = np.zeros(num_gt, dtype=bool)
 
                 for pred_text, pred_point in zip(filtered_pred_texts,
                                                  filtered_pred_points):
@@ -156,7 +158,7 @@ class E2EPointMetric(BaseMetric):
                         for gt_point in gt_points
                     ]
                     min_idx = np.argmin(dists)
-                    if gt_texts[min_idx] == '###':
+                    if gt_texts[min_idx] == '###' or gt_ignore_flags[min_idx]:
                         continue
                     # if not gt_matched[min_idx] and self.text_match(
                     #         gt_texts[min_idx].upper(), pred_text.upper()):

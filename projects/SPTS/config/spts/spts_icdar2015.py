@@ -12,10 +12,10 @@ icdar2015_textspotting_test = _base_.icdar2015_textspotting_test
 icdar2015_textspotting_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
-    batch_size=2,
+    batch_size=4,
     num_workers=8,
     persistent_workers=True,
-    sampler=dict(type='DefaultSampler', shuffle=True),
+    sampler=dict(type='RepeatAugSampler', num_repeats=2),
     dataset=icdar2015_textspotting_train)
 
 val_dataloader = dict(
@@ -31,5 +31,3 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 custom_imports = dict(imports='projects.SPTS.spts')
-
-find_unused_parameters = True

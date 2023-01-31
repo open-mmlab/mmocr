@@ -1,4 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .bezier_utils import bezier2poly, poly2bezier
+from .bezier_utils import sample_bezier_curve
 
-__all__ = ['poly2bezier', 'bezier2poly']
+__all__ = ['sample_bezier_curve']

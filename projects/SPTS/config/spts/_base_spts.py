@@ -22,17 +22,16 @@ model = dict(
         # std=[1, 1, 1],
         mean=[0, 0, 0],
         std=[255, 255, 255],
-        bgr_to_rgb=True,
-        pad_size_divisor=32),
+        bgr_to_rgb=True),
     backbone=dict(
         type='mmdet.ResNet',
         depth=50,
         num_stages=4,
         out_indices=(3, ),
         frozen_stages=-1,
-        norm_cfg=dict(type='BN', requires_grad=True),
+        norm_cfg=dict(type='BN', requires_grad=False),  # freeze w & b
+        norm_eval=True,  # freeze running mean and var
         init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50'),
-        norm_eval=False,
         style='pytorch'),
     encoder=dict(
         type='SPTSEncoder',
@@ -46,7 +45,8 @@ model = dict(
         d_model=256,
         dropout=0.1,
         max_num_text=60,
-        module_loss=None,
+        module_loss=dict(
+            type='SPTSModuleLoss', num_bins=num_bins, ignore_first_char=True),
         postprocessor=dict(type='SPTSPostprocessor', num_bins=num_bins)))
 
 test_pipeline = [
@@ -54,13 +54,19 @@ test_pipeline = [
         type='LoadImageFromFile',
         file_client_args=file_client_args,
         color_type='color_ignore_orientation'),
-    dict(type='Resize', scale=(1000, 1824), keep_ratio=True),
+    # dict(type='Resize', scale=(1000, 1824), keep_ratio=True),
     dict(
-        type='LoadOCRAnnotations',
-        with_polygon=True,
+        type='RescaleToShortSide',
+        short_side_lens=[1000],
+        long_side_bound=1824),
+    dict(
+        type='LoadOCRAnnotationsWithBezier',
         with_bbox=True,
         with_label=True,
+        with_bezier=True,
         with_text=True),
+    dict(type='Bezier2Polygon'),
+    dict(type='ConvertText', dictionary=dictionary),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
@@ -72,24 +78,46 @@ train_pipeline = [
         file_client_args=file_client_args,
         color_type='color_ignore_orientation'),
     dict(
-        type='LoadOCRAnnotations',
-        with_polygon=True,
+        type='LoadOCRAnnotationsWithBezier',
         with_bbox=True,
         with_label=True,
+        with_bezier=True,
         with_text=True),
+    dict(type='Bezier2Polygon'),
+    dict(type='FixInvalidPolygon'),
+    dict(type='ConvertText', dictionary=dictionary),
     dict(type='RemoveIgnored'),
-    dict(type='RandomCrop', min_side_ratio=0.1),
+    dict(type='RandomCrop', min_side_ratio=0.5),
     dict(
-        type='RandomRotate',
-        max_angle=30,
-        pad_with_fixed_color=True,
-        use_canvas=True),
+        type='RandomApply',
+        transforms=[
+            dict(
+                type='RandomRotate',
+                max_angle=30,
+                pad_with_fixed_color=True,
+                use_canvas=True)
+        ],
+        prob=0.3),
+    dict(type='FixInvalidPolygon'),
     dict(
         type='RandomChoiceResize',
-        scales=[(980, 2900), (1044, 2900), (1108, 2900), (1172, 2900),
-                (1236, 2900), (1300, 2900), (1364, 2900), (1428, 2900),
-                (1492, 2900)],
+        scales=[(640, 1600), (672, 1600), (704, 1600), (736, 1600),
+                (768, 1600), (800, 1600), (832, 1600), (864, 1600),
+                (896, 1600)],
         keep_ratio=True),
+    dict(
+        type='RandomApply',
+        transforms=[
+            dict(
+                type='TorchVisionWrapper',
+                op='ColorJitter',
+                brightness=0.5,
+                contrast=0.5,
+                saturation=0.5,
+                hue=0.5)
+        ],
+        prob=0.5),
+    # dict(type='Polygon2Bezier'),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))

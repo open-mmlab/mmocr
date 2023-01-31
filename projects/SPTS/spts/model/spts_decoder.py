@@ -55,9 +55,9 @@ class SPTSDecoder(BaseDecoder):
 
         actual_num_classes = self.dictionary.num_classes + num_bins
 
-        self.embedding = DecoderEmbeddings(actual_num_classes,
-                                           self.dictionary.padding_idx,
-                                           d_model, self.max_seq_len, dropout)
+        self.embedding = DecoderEmbeddings(
+            actual_num_classes, self.dictionary.padding_idx + num_bins,
+            d_model, self.max_seq_len, dropout)
         self.pos_embedding = PositionEmbeddingSine(d_model // 2)
 
         self.vocab_embed = self._gen_vocab_embed(d_model, d_model,
@@ -122,7 +122,8 @@ class SPTSDecoder(BaseDecoder):
             for data_sample in data_samples
         ]
         padded_targets = torch.stack(padded_targets, dim=0).to(out_enc.device)
-        tgt = self.embedding(padded_targets).permute(1, 0, 2)
+        # we don't need eos here
+        tgt = self.embedding(padded_targets[:, :-1]).permute(1, 0, 2)
         hs = self.decoder(
             tgt,
             memory,
