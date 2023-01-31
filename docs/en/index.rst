@@ -39,7 +39,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
-   :caption: Migration Guides
+   :caption: Migrating from MMOCR 0.x
 
    migration/overview.md
    migration/code.md

@@ -332,7 +332,7 @@ def offset_polygon(poly: ArrayLike, distance: float) -> ArrayLike:
     pco.AddPath(poly, pyclipper.JT_ROUND, pyclipper.ET_CLOSEDPOLYGON)
     # Returned result will be in type of int32, convert it back to float32
     # following MMOCR's convention
-    result = np.array(pco.Execute(distance))
+    result = np.array(pco.Execute(distance), dtype=object)
     if len(result) > 0 and isinstance(result[0], list):
         # The processed polygon has been split into several parts
         result = np.array([])

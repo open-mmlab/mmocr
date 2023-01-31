@@ -39,7 +39,7 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: 迁移指南
+   :caption: MMOCR 0.x 迁移指南
 
    migration/overview.md
    migration/code.md

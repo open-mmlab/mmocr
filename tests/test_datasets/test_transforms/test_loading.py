@@ -130,7 +130,7 @@ class TestLoadOCRAnnotations(TestCase):
             repr(transform),
             ('LoadOCRAnnotations(with_bbox=True, with_label=True, '
              'with_polygon=True, with_text=True, '
-             "imdecode_backend='cv2', file_client_args={'backend': 'disk'})"))
+             "imdecode_backend='cv2', file_client_args=None)"))
 
 
 class TestLoadKIEAnnotations(TestCase):

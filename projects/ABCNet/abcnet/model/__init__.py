@@ -9,11 +9,13 @@ from .abcnet_rec_backbone import ABCNetRecBackbone
 from .abcnet_rec_decoder import ABCNetRecDecoder
 from .abcnet_rec_encoder import ABCNetRecEncoder
 from .bezier_roi_extractor import BezierRoIExtractor
+from .bifpn import BiFPN
+from .coordinate_head import CoordinateHead
 from .rec_roi_head import RecRoIHead
 
 __all__ = [
     'ABCNetDetHead', 'ABCNetDetPostprocessor', 'ABCNetRecBackbone',
     'ABCNetRecDecoder', 'ABCNetRecEncoder', 'ABCNet', 'ABCNetRec',
     'BezierRoIExtractor', 'RecRoIHead', 'ABCNetPostprocessor',
-    'ABCNetDetModuleLoss'
+    'ABCNetDetModuleLoss', 'BiFPN', 'CoordinateHead'
 ]
