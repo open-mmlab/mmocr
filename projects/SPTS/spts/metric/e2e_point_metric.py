@@ -12,12 +12,9 @@ from mmocr.registry import METRICS
 
 @METRICS.register_module()
 class E2EPointMetric(BaseMetric):
-    # TODO docstring
     """Point metric for textspotting. Proposed in SPTS.
 
     Args:
-        ignore_precision_thr (float): Precision threshold when prediction and\
-            gt ignored polygons are matched. Defaults to 0.5.
         text_score_thrs (dict): Best text score threshold searching
             space. Defaults to dict(start=0.8, stop=1, step=0.01).
         TODO: docstr
@@ -32,22 +29,13 @@ class E2EPointMetric(BaseMetric):
     default_prefix: Optional[str] = 'e2e_icdar'
 
     def __init__(self,
-                 match_iou_thr: float = 0.5,
-                 ignore_precision_thr: float = 0.5,
                  text_score_thrs: Dict = dict(start=0.8, stop=1, step=0.01),
-                 lexicon_path: Optional[str] = None,
                  word_spotting: bool = False,
-                 min_length_case_word: int = 3,
-                 special_characters: str = "'!?.:,*\"()·[]/",
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None) -> None:
         super().__init__(collect_device=collect_device, prefix=prefix)
-        self.match_iou_thr = match_iou_thr
-        self.ignore_precision_thr = ignore_precision_thr
         self.text_score_thrs = np.arange(**text_score_thrs)
         self.word_spotting = word_spotting
-        self.min_length_case_word = min_length_case_word
-        self.special_characters = special_characters
 
     def poly_center(self, poly_pts):
         poly_pts = np.array(poly_pts).reshape(-1, 2)
@@ -188,118 +176,3 @@ class E2EPointMetric(BaseMetric):
     def _true_indexes(self, array: np.ndarray) -> np.ndarray:
         """Get indexes of True elements from a 1D boolean array."""
         return np.where(array)[0]
-
-    def _include_in_dictionary(self, text):
-        """Function used in Word Spotting that finds if the Ground Truth text
-        meets the rules to enter into the dictionary.
-
-        If not, the text will be cared as don't care
-        """
-        # special case 's at final
-        if text[len(text) - 2:] == "'s" or text[len(text) - 2:] == "'S":
-            text = text[0:len(text) - 2]
-
-        # hyphens at init or final of the word
-        text = text.strip('-')
-
-        for character in self.special_characters:
-            text = text.replace(character, ' ')
-
-        text = text.strip()
-
-        if len(text) != len(text.replace(' ', '')):
-            return False
-
-        if len(text) < self.min_length_case_word:
-            return False
-
-        notAllowed = '×÷·'
-
-        range1 = [ord(u'a'), ord(u'z')]
-        range2 = [ord(u'A'), ord(u'Z')]
-        range3 = [ord(u'À'), ord(u'ƿ')]
-        range4 = [ord(u'Ǆ'), ord(u'ɿ')]
-        range5 = [ord(u'Ά'), ord(u'Ͽ')]
-        range6 = [ord(u'-'), ord(u'-')]
-
-        for char in text:
-            charCode = ord(char)
-            if (notAllowed.find(char) != -1):
-                return False
-            # TODO: optimize it with for loop
-            valid = (charCode >= range1[0] and charCode <= range1[1]) or (
-                charCode >= range2[0] and charCode <= range2[1]
-            ) or (charCode >= range3[0] and charCode <= range3[1]) or (
-                charCode >= range4[0] and charCode <= range4[1]) or (
-                    charCode >= range5[0]
-                    and charCode <= range5[1]) or (charCode >= range6[0]
-                                                   and charCode <= range6[1])
-            if not valid:
-                return False
-
-        return True
-
-    def _include_in_dictionary_text(self, text):
-        """Function applied to the Ground Truth texts used in Word Spotting.
-
-        It removes special characters or terminations
-        """
-        # special case 's at final
-        if text[len(text) - 2:] == "'s" or text[len(text) - 2:] == "'S":
-            text = text[0:len(text) - 2]
-
-        # hyphens at init or final of the word
-        text = text.strip('-')
-
-        for character in self.special_characters:
-            text = text.replace(character, ' ')
-
-        text = text.strip()
-
-        return text
-
-    def text_match(self,
-                   gt_text,
-                   pred_text,
-                   only_remove_first_end_character=True):
-
-        if only_remove_first_end_character:
-            # special characters in GT are allowed only at initial or final
-            # position
-            if (gt_text == pred_text):
-                return True
-
-            if self.special_characters.find(gt_text[0]) > -1:
-                if gt_text[1:] == pred_text:
-                    return True
-
-            if self.special_characters.find(gt_text[-1]) > -1:
-                if gt_text[0:len(gt_text) - 1] == pred_text:
-                    return True
-
-            if self.special_characters.find(
-                    gt_text[0]) > -1 and self.special_characters.find(
-                        gt_text[-1]) > -1:
-                if gt_text[1:len(gt_text) - 1] == pred_text:
-                    return True
-            return False
-        else:
-            # Special characters are removed from the beginning and the end of
-            # both Detection and GroundTruth
-            while len(gt_text) > 0 and self.special_characters.find(
-                    gt_text[0]) > -1:
-                gt_text = gt_text[1:]
-
-            while len(pred_text) > 0 and self.special_characters.find(
-                    pred_text[0]) > -1:
-                pred_text = pred_text[1:]
-
-            while len(gt_text) > 0 and self.special_characters.find(
-                    gt_text[-1]) > -1:
-                gt_text = gt_text[0:len(gt_text) - 1]
-
-            while len(pred_text) > 0 and self.special_characters.find(
-                    pred_text[-1]) > -1:
-                pred_text = pred_text[0:len(pred_text) - 1]
-
-            return gt_text == pred_text

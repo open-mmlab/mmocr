@@ -19,9 +19,17 @@ class SPTSDecoder(BaseDecoder):
     Args:
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
             the instance of `Dictionary`.
-        TODO: docstr
-        max_num_text (int): Maximum number of text instances. Defaults to 60.
-        loss (dict, optional): Config to build loss. Defaults to None.
+        num_bins (int): Number of bins dividing the image. Defaults to 1000.
+        n_head (int): Number of parallel attention heads. Defaults to 8.
+        d_model (int): Dimension :math:`D_m` of the input from previous model.
+            Defaults to 256.
+        d_feedforward (int): Dimension of the feedforward layer.
+            Defaults to 1024.
+        normalize_before (bool): Whether to normalize the input before
+            encoding/decoding. Defaults to True.
+        max_num_text (int): Maximum number of text instances in a sample.
+            Defaults to 60.
+        module_loss (dict, optional): Config to build loss. Defaults to None.
         postprocessor (dict, optional): Config to build postprocessor.
             Defaults to None.
         init_cfg (dict or list[dict], optional): Initialization configs.

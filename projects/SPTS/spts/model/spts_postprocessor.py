@@ -17,8 +17,20 @@ class SPTSPostprocessor(BaseTextRecogPostprocessor):
     """PostProcessor for SPTS.
 
     Args:
+        dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
+            the instance of `Dictionary`.
+        num_bins (int): Number of bins dividing the image. Defaults to 1000.
         rescale_fields (list[str], optional): The bbox/polygon field names to
             be rescaled. If None, no rescaling will be performed.
+        max_seq_len (int): Maximum sequence length. In SPTS, a sequence
+            encodes all the text instances in a sample. Defaults to 40, which
+            will be overridden by SPTSDecoder.
+        ignore_chars (list[str]): A list of characters to be ignored from the
+            final results. Postprocessor will skip over these characters when
+            converting raw indexes to characters. Apart from single characters,
+            each item can be one of the following reversed keywords: 'padding',
+            'end' and 'unknown', which refer to their corresponding special
+            tokens in the dictionary.
     """
 
     def __init__(self,
@@ -107,9 +119,8 @@ class SPTSPostprocessor(BaseTextRecogPostprocessor):
         """Convert outputs to strings and scores.
 
         Args:
-            TODO: fix docstr
-            probs (torch.Tensor): Batched character probabilities, the model's
-                softmaxed output in size: :math:`(N, T, C)`.
+            output (tuple(Tensor, Tensor)): A tuple of (probs, seq), each has
+                the shape of :math:`(T,)`.
             data_samples (list[TextSpottingDataSample]): The list of
                 TextSpottingDataSample.
 

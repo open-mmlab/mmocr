@@ -6,7 +6,7 @@ from torch import Tensor
 
 from mmocr.models.textrecog.encoders import BaseEncoder
 from mmocr.registry import MODELS
-from mmocr.structures import TextRecogDataSample
+from mmocr.structures import TextSpottingDataSample
 
 
 @MODELS.register_module()
@@ -29,15 +29,13 @@ class SPTSEncoder(BaseEncoder):
 
     def forward(self,
                 feat: Tensor,
-                data_samples: List[TextRecogDataSample] = None) -> Tensor:
+                data_samples: List[TextSpottingDataSample] = None) -> Tensor:
         """Forward propagation of encoder.
-
-        TODO: dosctr
 
         Args:
             feat (Tensor): Feature tensor of shape :math:`(N, D_m, H, W)`.
-            data_samples (list[TextRecogDataSample]): Batch of
-                TextRecogDataSample, containing `valid_ratio` information.
+            data_samples (list[TextSpottingDataSample]): Batch of
+                TextSpottingDataSample.
                 Defaults to None.
 
         Returns:

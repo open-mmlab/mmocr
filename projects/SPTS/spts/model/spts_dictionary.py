@@ -19,8 +19,8 @@ class SPTSDictionary(Dictionary):
             token. Defaults to False.
         with_end (bool): The flag to control whether to include the end token.
             Defaults to False.
-        with_end (bool): The flag to control whether to include the sequence
-            end token. Defaults to False.
+        with_seq end (bool): The flag to control whether to include the
+            sequence end token. Defaults to False.
         same_start_end (bool): The flag to control whether the start token and
             end token are the same. It only works when both ``with_start`` and
             ``with_end`` are True. Defaults to False.

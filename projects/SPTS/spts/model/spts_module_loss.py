@@ -19,11 +19,14 @@ class SPTSModuleLoss(CEModuleLoss):
     Args:
         dictionary (dict or :obj:`Dictionary`): The config for `Dictionary` or
             the instance of `Dictionary`.
-        num_bins (int): Number of bins.
+        num_bins (int): Number of bins dividing the image. Defaults to 1000.
         seq_eos_coef (float): The loss weight coefficient of seq_eos token.
             Defaults to 0.01.
-        max_seq_len (int): Maximum sequence length. The sequence is usually
-            generated from decoder. Defaults to 40.
+        max_seq_len (int): Maximum sequence length. In SPTS, a sequence
+            encodes all the text instances in a sample. Defaults to 40, which
+            will be overridden by SPTSDecoder.
+        max_text_len (int): Maximum length for each text instance in a
+            sequence. Defaults to 25.
         letter_case (str): There are three options to alter the letter cases
             of gt texts:
             - unchanged: Do not change gt texts.
@@ -54,9 +57,7 @@ class SPTSModuleLoss(CEModuleLoss):
             should be one of the following: ('none', 'mean', 'sum'). Defaults
             to 'none'.
         ignore_first_char (bool): Whether to ignore the first token in target (
-            usually the start token). If ``True``, the last token of the output
-            sequence will also be removed to be aligned with the target length.
-            Defaults to ``False``.
+            usually the start token). Defaults to ``True``.
         flatten (bool): Whether to flatten the vectors for loss computation.
             Defaults to False.
     """
@@ -72,7 +73,7 @@ class SPTSModuleLoss(CEModuleLoss):
                  ignore_char: Union[int, str] = 'padding',
                  flatten: bool = False,
                  reduction: str = 'none',
-                 ignore_first_char: bool = False):
+                 ignore_first_char: bool = True):
         super().__init__(dictionary, max_seq_len, letter_case, pad_with,
                          ignore_char, flatten, reduction, ignore_first_char)
         # TODO: fix hardcode
