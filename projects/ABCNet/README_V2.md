@@ -1,18 +1,18 @@
 # ABCNet: Real-time Scene Text Spotting with Adaptive Bezier-Curve Network
 
 <div>
-<a href="https://arxiv.org/abs/2002.10200">[arXiv paper]</a>
-<a href="https://openaccess.thecvf.com/content_CVPR_2020/papers/Liu_ABCNet_Real-Time_Scene_Text_Spotting_With_Adaptive_Bezier-Curve_Network_CVPR_2020_paper.pdf">[CVPR paper]</a>
+<a href="https://arxiv.org/abs/2105.03620">[arXiv paper]</a>
+<a href="https://ieeexplore.ieee.org/document/9525302">[TPAMI paper]</a>
 </div>
 
 ## Description
 
-This is an implementation of [ABCNet](https://github.com/aim-uofa/AdelaiDet) based on [MMOCR](https://github.com/open-mmlab/mmocr/tree/dev-1.x), [MMCV](https://github.com/open-mmlab/mmcv), and [MMEngine](https://github.com/open-mmlab/mmengine).
+This is an implementation of [ABCNetV2](https://github.com/aim-uofa/AdelaiDet) based on [MMOCR](https://github.com/open-mmlab/mmocr/tree/dev-1.x), [MMCV](https://github.com/open-mmlab/mmcv), and [MMEngine](https://github.com/open-mmlab/mmengine).
 
-**ABCNet** is a conceptually novel, efficient, and fully convolutional framework for text spotting, which address the problem by proposing the Adaptive Bezier-Curve Network (ABCNet). Our contributions are three-fold: 1) For the first time, we adaptively fit arbitrarily-shaped text by a parameterized Bezier curve. 2) We design a novel BezierAlign layer for extracting accurate convolution features of a text instance with arbitrary shapes, significantly improving the precision compared with previous methods. 3) Compared with standard bounding box detection, our Bezier curve detection introduces negligible computation overhead, resulting in superiority of our method in both efficiency and accuracy. Experiments on arbitrarily-shaped benchmark datasets, namely Total-Text and CTW1500, demonstrate that ABCNet achieves state-of-the-art accuracy, meanwhile significantly improving the speed. In particular, on Total-Text, our realtime version is over 10 times faster than recent state-of-the-art methods with a competitive recognition accuracy.
+**ABCNetV2**  contributions are four-fold: 1) For the first time, we adaptively fit arbitrarily-shaped text by a parameterized Bezier curve, which, compared with segmentation-based methods, can not only provide structured output but also controllable representation. 2) We design a novel BezierAlign layer for extracting accurate convolution features of a text instance of arbitrary shapes, significantly improving the precision of recognition over previous methods. 3) Different from previous methods, which often suffer from complex post-processing and sensitive hyper-parameters, our ABCNet v2 maintains a simple pipeline with the only post-processing non-maximum suppression (NMS). 4) As the performance of text recognition closely depends on feature alignment, ABCNet v2 further adopts a simple yet effective coordinate convolution to encode the position of the convolutional filters, which leads to a considerable improvement with negligible computation overhead. Comprehensive experiments conducted on various bilingual (English and Chinese) benchmark datasets demonstrate that ABCNet v2 can achieve state-of-the-art performance while maintaining very high efficiency.
 
 <center>
-<img src="https://user-images.githubusercontent.com/24622904/205641295-d57c225f-4b2e-4954-b604-ba8c8afc23cb.png">
+<img src="https://user-images.githubusercontent.com/24622904/213096846-2557e0ac-ca18-4c4f-88c1-569107f48f9b.png">
 </center>
 
 ## Usage
@@ -44,26 +44,12 @@ ln -s ${DataPath} $PYTHONPATH
 New-Item -ItemType SymbolicLink -Path $env:PYTHONPATH -Name data  -Target ${DataPath}
 ```
 
-### Training commands
-
-In the current directory, run the following command to train the model:
-
-```bash
-mim train mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py --work-dir work_dirs/
-```
-
-To train on multiple GPUs, e.g. 8 GPUs, run the following command:
-
-```bash
-mim train mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py --work-dir work_dirs/ --launcher pytorch --gpus 8
-```
-
 ### Testing commands
 
 In the current directory, run the following command to test the model:
 
 ```bash
-mim test mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py --work-dir work_dirs/ --checkpoint ${CHECKPOINT_PATH}
+mim test mmocr config/abcnet_v2/abcnet-v2_resnet50_bifpn_500e_icdar2015.py --work-dir work_dirs/ --checkpoint ${CHECKPOINT_PATH}
 ```
 
 ## Results
@@ -72,21 +58,24 @@ Here we provide the baseline version of ABCNet with ResNet50 backbone.
 
 To find more variants, please visit the [official model zoo](https://github.com/aim-uofa/AdelaiDet/blob/master/configs/BAText/README.md).
 
-|         Name          |                                  Pretrained Model                                  | E2E-None-Hmean | det-Hmean |                                  Download                                  |
-| :-------------------: | :--------------------------------------------------------------------------------: | :------------: | :-------: | :------------------------------------------------------------------------: |
-| v1-icdar2015-finetune | [SynthText](https://download.openmmlab.com/mmocr/textspotting/abcnet/abcnet_resnet50_fpn_500e_icdar2015/abcnet_resnet50_fpn_pretrain-d060636c.pth) |     0.6127     |  0.8753   | [model](https://download.openmmlab.com/mmocr/textspotting/abcnet/abcnet_resnet50_fpn_500e_icdar2015/abcnet_resnet50_fpn_500e_icdar2015-326ac6f4.pth) \| [log](https://download.openmmlab.com/mmocr/textspotting/abcnet/abcnet_resnet50_fpn_500e_icdar2015/20221210_170401.log) |
+|         Name          | Pretrained Model | E2E-None-Hmean | det-Hmean |                                                                   Download                                                                   |
+| :-------------------: | :--------------: | :------------: | :-------: | :------------------------------------------------------------------------------------------------------------------------------------------: |
+| v2-icdar2015-finetune |    SynthText     |     0.6628     |  0.8886   | [model](https://download.openmmlab.com/mmocr/textspotting/abcnet-v2/abcnet-v2_resnet50_bifpn/abcnet-v2_resnet50_bifpn_500e_icdar2015-5e4cc7ed.pth) |
 
 ## Citation
 
-If you find ABCNet useful in your research or applications, please cite ABCNet with the following BibTeX entry.
+If you find ABCNetV2 useful in your research or applications, please cite ABCNetV2 with the following BibTeX entry.
 
 ```BibTeX
-@inproceedings{liu2020abcnet,
-  title     =  {{ABCNet}: Real-time Scene Text Spotting with Adaptive Bezier-Curve Network},
-  author    =  {Liu, Yuliang and Chen, Hao and Shen, Chunhua and He, Tong and Jin, Lianwen and Wang, Liangwei},
-  booktitle =  {Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR)},
-  year      =  {2020}
-}
+@ARTICLE{9525302,
+  author={Liu, Yuliang and Shen, Chunhua and Jin, Lianwen and He, Tong and Chen, Peng and Liu, Chongyu and Chen, Hao},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  title={ABCNet v2: Adaptive Bezier-Curve Network for Real-time End-to-end Text Spotting},
+  year={2021},
+  volume={},
+  number={},
+  pages={1-1},
+  doi={10.1109/TPAMI.2021.3107437}}
 ```
 
 ## Checklist
@@ -117,9 +106,9 @@ A project does not necessarily have to be finished in a single PR, but it's esse
 
     <!-- As this template does. -->
 
-- [x] Milestone 2: Indicates a successful model implementation.
+- [ ] Milestone 2: Indicates a successful model implementation.
 
-  - [x] Training-time correctness
+  - [ ] Training-time correctness
 
     <!-- If you are reproducing the result from a paper, checking this item means that you should have trained your model from scratch based on the original paper's specification and verified that the final result matches the report within a minor error range. -->
 

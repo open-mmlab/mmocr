@@ -71,6 +71,10 @@ The main branch works with **PyTorch 1.6+**.
 
 ## Latest Updates
 
+**The default branch has been switched to `1.x` from `main`, and we encourage
+users to migrate to the latest version, though it comes with some cost. Please refer to [Migration Guide](https://mmocr.readthedocs.io/en/dev-1.x/migration/overview.html) for more
+details.**
+
 v1.0.0rc5 was released in 2023-01-06.
 
 1. Two models, Aster and SVTR, are added to our model zoo. The full implementation of ABCNet is also available now.
@@ -171,6 +175,7 @@ Supported algorithms:
 <summary>Text Spotting</summary>
 
 - [x] [ABCNet](projects/ABCNet/README.md) (CVPR'2020)
+- [x] [ABCNetV2](projects/ABCNet/README_V2.md) (TPAMI'2021)
 
 </details>
 
