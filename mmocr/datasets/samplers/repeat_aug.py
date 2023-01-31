@@ -2,9 +2,10 @@ import math
 from typing import Iterator, Optional, Sized
 
 import torch
-from mmcls.registry import DATA_SAMPLERS
 from mmengine.dist import get_dist_info, is_main_process, sync_random_seed
 from torch.utils.data import Sampler
+
+from mmocr.registry import DATA_SAMPLERS
 
 
 @DATA_SAMPLERS.register_module()
@@ -72,8 +73,8 @@ class RepeatAugSampler(Sampler):
         # produce repeats e.g. [0, 0, 0, 1, 1, 1, 2, 2, 2....]
         indices = [x for x in indices for _ in range(self.num_repeats)]
         # add extra samples to make it evenly divisible
-        padding_size = self.total_size - len(indices)
-        indices += indices[:padding_size]
+        indices = (indices *
+                   int(self.total_size / len(indices) + 1))[:self.total_size]
         assert len(indices) == self.total_size
 
         # subsample per rank
