@@ -131,6 +131,8 @@ class SPTSDictionary(Dictionary):
         for i in index:
             assert i < len(self._dict), f'Index: {i} out of range! Index ' \
                                         f'must be less than {len(self._dict)}'
+            # TODO: find its difference from ignore_chars
+            # in TextRecogPostprocessor
             if self._dict[i] is not None:
                 string += self._dict[i]
         return string

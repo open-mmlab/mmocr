@@ -155,7 +155,7 @@ class Bezier2Polygon(BaseTransform):
     """
 
     def transform(self, results: Dict) -> Dict:
-        """Fix invalid polygons.
+        """
 
         Args:
             results (dict): Result dict containing the data to transform.
@@ -191,7 +191,7 @@ class Polygon2Bezier(BaseTransform):
     """
 
     def transform(self, results: Dict) -> Dict:
-        """Fix invalid polygons.
+        """
 
         Args:
             results (dict): Result dict containing the data to transform.
@@ -223,7 +223,7 @@ class ConvertText(BaseTransform):
                 f'but got {type(dictionary)}')
 
     def transform(self, results: Dict) -> Dict:
-        """Fix invalid polygons.
+        """
 
         Args:
             results (dict): Result dict containing the data to transform.
@@ -263,7 +263,7 @@ class RescaleToShortSide(BaseTransform):
         self.resize = TRANSFORMS.build(self.resize_cfg)
 
     def transform(self, results: Dict) -> Dict:
-        """Fix invalid polygons.
+        """Resize image.
 
         Args:
             results (dict): Result dict containing the data to transform.
@@ -302,5 +302,7 @@ class RescaleToShortSide(BaseTransform):
 
     def __repr__(self) -> str:
         repr_str = self.__class__.__name__
-        repr_str += '()'
+        repr_str += f'(short_side_lens={self.short_side_lens}, '
+        repr_str += f'long_side_bound={self.long_side_bound}, '
+        repr_str += f'resize_cfg={self.resize_cfg})'
         return repr_str
