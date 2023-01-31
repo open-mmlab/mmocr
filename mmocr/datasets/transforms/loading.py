@@ -1,13 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
-import os
 import warnings
 from typing import Optional
 
 import mmcv
 import mmengine
 import numpy as np
-from mmcv.transforms import BaseTransform
 from mmcv.transforms import LoadAnnotations as MMCV_LoadAnnotations
 from mmcv.transforms import LoadImageFromFile as MMCV_LoadImageFromFile
 
@@ -486,115 +484,4 @@ class LoadKIEAnnotations(MMCV_LoadAnnotations):
         repr_str += f'(with_bbox={self.with_bbox}, '
         repr_str += f'with_label={self.with_label}, '
         repr_str += f'with_text={self.with_text})'
-        return repr_str
-
-
-@TRANSFORMS.register_module()
-class LoadImageFromLMDB(BaseTransform):
-    """Load an image from lmdb file. Only support LMDB file at disk.
-
-    LMDB file is organized with the following structure:
-        lmdb
-            |__data.mdb
-            |__lock.mdb
-
-    Required Keys:
-
-    - img_path (In LMDB img_path is a key in the format of "image-{i:09d}".)
-
-    Modified Keys:
-
-    - img
-    - img_shape
-    - ori_shape
-
-    Args:
-        to_float32 (bool): Whether to convert the loaded image to a float32
-            numpy array. If set to False, the loaded image is an uint8 array.
-            Defaults to False.
-        color_type (str): The flag argument for :func:``mmcv.imfrombytes``.
-            Defaults to 'color'.
-        imdecode_backend (str): The image decoding backend type. The backend
-            argument for :func:``mmcv.imfrombytes``.
-            See :func:``mmcv.imfrombytes`` for details.
-            Defaults to 'cv2'.
-        file_client_args (dict): Arguments to instantiate a FileClient except
-            for ``backend`` and ``db_path``. See
-            :class:`mmengine.fileio.FileClient` for details.
-            Defaults to ``dict()``.
-        ignore_empty (bool): Whether to allow loading empty image or file path
-            not existent. Defaults to False.
-    """
-
-    def __init__(
-            self,
-            to_float32: bool = False,
-            color_type: str = 'color',
-            imdecode_backend: str = 'cv2',
-            file_client_args: dict = dict(),
-            ignore_empty: bool = False,
-    ) -> None:
-        self.ignore_empty = ignore_empty
-        self.to_float32 = to_float32
-        self.color_type = color_type
-        self.imdecode_backend = imdecode_backend
-        self.file_clients = {}
-        if 'backend' in file_client_args or 'db_path' in file_client_args:
-            raise ValueError(
-                '"file_client_args" should not contain "backend" and "db_path"'
-            )
-        self.file_client_args = file_client_args
-
-    def _get_client(self, db_path: str) -> mmengine.FileClient:
-        """Get a FileClient bound to the given db_path.
-
-        If the client for this db_path is not initialized, initialize it.
-        """
-        if self.file_clients.get(db_path) is None:
-            self.file_clients[db_path] = mmengine.FileClient(
-                backend='lmdb', db_path=db_path, **self.file_client_args)
-        return self.file_clients.get(db_path)
-
-    def transform(self, results: dict) -> Optional[dict]:
-        """Functions to load image from LMDB file.
-
-        Args:
-            results (dict): Result dict from :obj:``mmcv.BaseDataset``.
-
-        Returns:
-            dict: The dict contains loaded image and meta information.
-        """
-        filename = results['img_path']
-        lmdb_path = os.path.dirname(filename)
-        image_key = os.path.basename(filename)
-        file_client = self._get_client(lmdb_path)
-        img_bytes = file_client.get(image_key)
-
-        if img_bytes is None:
-            if self.ignore_empty:
-                return None
-            raise KeyError(f'Image not found in lmdb: {filename}')
-
-        img = mmcv.imfrombytes(img_bytes, flag=self.color_type)
-
-        if img is None:
-            if self.ignore_empty:
-                return None
-            raise IOError(f'{filename} is broken')
-
-        if self.to_float32:
-            img = img.astype(np.float32)
-
-        results['img'] = img
-        results['img_shape'] = img.shape[:2]
-        results['ori_shape'] = img.shape[:2]
-        return results
-
-    def __repr__(self):
-        repr_str = (f'{self.__class__.__name__}('
-                    f'ignore_empty={self.ignore_empty}, '
-                    f'to_float32={self.to_float32}, '
-                    f"color_type='{self.color_type}', "
-                    f"imdecode_backend='{self.imdecode_backend}', "
-                    f'file_client_args={self.file_client_args})')
         return repr_str
