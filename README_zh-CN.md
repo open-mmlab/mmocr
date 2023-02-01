@@ -173,6 +173,7 @@ pip3 install -e .
 
 - [x] [ABCNet](projects/ABCNet/README.md) (CVPR'2020)
 - [x] [ABCNetV2](projects/ABCNet/README_V2.md) (TPAMI'2021)
+- [x] [SPTS](projects/SPTS/README.md) (ACM MM'2022)
 
 </details>
 
