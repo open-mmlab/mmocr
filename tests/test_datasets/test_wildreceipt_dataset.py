@@ -36,5 +36,5 @@ class TestWildReceiptDataset(unittest.TestCase):
         self.assertEqual(data['img_shape'], (1200, 1600))
         self.assertEqual(
             data['img_path'],
-            'data/image_files/Image_16/11/d5de7f2a20751e50b84c747c17a24cd98bed3554.jpeg'  # noqa
+            'tests/data/kie_toy_dataset/wildreceipt/1.jpeg'  # noqa
         )

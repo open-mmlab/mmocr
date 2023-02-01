@@ -1,13 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
 import os.path as osp
+import random
 import tempfile
 from copy import deepcopy
-from unittest import TestCase
+from unittest import TestCase, mock
 
 import mmcv
 import mmengine
 import numpy as np
+import torch
 
 from mmocr.apis.inferencers import KIEInferencer
 from mmocr.utils.check_argument import is_type_list
@@ -17,7 +19,13 @@ from mmocr.utils.typing_utils import KIEDataSample
 
 class TestKIEInferencer(TestCase):
 
-    def setUp(self):
+    @mock.patch('mmengine.infer.infer._load_checkpoint')
+    def setUp(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: None
+        seed = 1
+        random.seed(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
         # init from alias
         self.inferencer = KIEInferencer('SDMGR')
         self.inferencer_novisual = KIEInferencer(
@@ -53,7 +61,9 @@ class TestKIEInferencer(TestCase):
             del datum_img_woshape['img_shape']
             self.data_img_woshape.append(datum_img_woshape)
 
-    def test_init(self):
+    @mock.patch('mmengine.infer.infer._load_checkpoint')
+    def test_init(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: None
         # init from metafile
         KIEInferencer('sdmgr_unet16_60e_wildreceipt')
         # init from cfg

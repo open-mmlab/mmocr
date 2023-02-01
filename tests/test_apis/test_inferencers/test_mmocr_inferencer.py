@@ -1,16 +1,24 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
+import random
 import tempfile
-from unittest import TestCase
+from unittest import TestCase, mock
 
 import mmcv
 import mmengine
 import numpy as np
+import torch
 
 from mmocr.apis.inferencers import MMOCRInferencer
 
 
 class TestMMOCRInferencer(TestCase):
+
+    def setUp(self):
+        seed = 1
+        random.seed(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
 
     def assert_predictions_equal(self, pred1, pred2):
         if 'det_polygons' in pred1:
@@ -37,7 +45,9 @@ class TestMMOCRInferencer(TestCase):
             self.assertEqual(pred1['kie_edge_labels'],
                              pred2['kie_edge_labels'])
 
-    def test_init(self):
+    @mock.patch('mmengine.infer.infer._load_checkpoint')
+    def test_init(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: None
         MMOCRInferencer(det='dbnet_resnet18_fpnc_1200e_icdar2015')
         MMOCRInferencer(
             det='configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py',
@@ -50,7 +60,9 @@ class TestMMOCRInferencer(TestCase):
         with self.assertRaises(ValueError):
             MMOCRInferencer(det='dummy')
 
-    def test_det(self):
+    @mock.patch('mmengine.infer.infer._load_checkpoint')
+    def test_det(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: None
         inferencer = MMOCRInferencer(det='dbnet_resnet18_fpnc_1200e_icdar2015')
         img_path = 'tests/data/det_toy_dataset/imgs/test/img_1.jpg'
         res_img_path = inferencer(img_path, return_vis=True)
@@ -83,7 +95,9 @@ class TestMMOCRInferencer(TestCase):
             np.allclose(res_img_ndarray['visualization'][0],
                         res_img_path['visualization'][0]))
 
-    def test_rec(self):
+    @mock.patch('mmengine.infer.infer._load_checkpoint')
+    def test_rec(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: None
         inferencer = MMOCRInferencer(rec='crnn_mini-vgg_5e_mj')
         img_path = 'tests/data/rec_toy_dataset/imgs/1036169.jpg'
         res_img_path = inferencer(img_path, return_vis=True)
@@ -115,7 +129,9 @@ class TestMMOCRInferencer(TestCase):
             np.allclose(res_img_ndarray['visualization'][0],
                         res_img_path['visualization'][0]))
 
-    def test_det_rec(self):
+    @mock.patch('mmengine.infer.infer._load_checkpoint')
+    def test_det_rec(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: None
         inferencer = MMOCRInferencer(
             det='dbnet_resnet18_fpnc_1200e_icdar2015',
             rec='crnn_mini-vgg_5e_mj')
@@ -150,7 +166,9 @@ class TestMMOCRInferencer(TestCase):
             np.allclose(res_img_ndarray['visualization'][0],
                         res_img_path['visualization'][0]))
 
-    def test_dec_rec_kie(self):
+    @mock.patch('mmengine.infer.infer._load_checkpoint')
+    def test_dec_rec_kie(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: None
         inferencer = MMOCRInferencer(
             det='dbnet_resnet18_fpnc_1200e_icdar2015',
             rec='crnn_mini-vgg_5e_mj',

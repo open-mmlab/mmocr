@@ -1,11 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
+import random
 import tempfile
-from unittest import TestCase
+from unittest import TestCase, mock
 
 import mmcv
 import mmengine
 import numpy as np
+import torch
 
 from mmocr.apis.inferencers import TextRecInferencer
 from mmocr.utils.check_argument import is_type_list
@@ -14,11 +16,19 @@ from mmocr.utils.typing_utils import TextRecogDataSample
 
 class TestTextRecinferencer(TestCase):
 
-    def setUp(self):
+    @mock.patch('mmengine.infer.infer._load_checkpoint')
+    def setUp(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: None
         # init from alias
         self.inferencer = TextRecInferencer('CRNN')
+        seed = 1
+        random.seed(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
 
-    def test_init(self):
+    @mock.patch('mmengine.infer.infer._load_checkpoint')
+    def test_init(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: None
         # init from metafile
         TextRecInferencer('crnn_mini-vgg_5e_mj')
         # init from cfg

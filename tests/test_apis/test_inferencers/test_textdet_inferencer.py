@@ -1,11 +1,14 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
+import random
 import tempfile
-from unittest import TestCase
+from unittest import TestCase, mock
 
 import mmcv
 import mmengine
 import numpy as np
+import torch
+from mmengine.structures import InstanceData
 
 from mmocr.apis.inferencers import TextDetInferencer
 from mmocr.utils.check_argument import is_type_list
@@ -14,11 +17,18 @@ from mmocr.utils.typing_utils import TextDetDataSample
 
 class TestTextDetinferencer(TestCase):
 
-    def setUp(self):
-        # init from alias
+    @mock.patch('mmengine.infer.infer._load_checkpoint')
+    def setUp(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: None
         self.inferencer = TextDetInferencer('DB_r18')
+        seed = 1
+        random.seed(seed)
+        np.random.seed(seed)
+        torch.manual_seed(seed)
 
-    def test_init(self):
+    @mock.patch('mmengine.infer.infer._load_checkpoint')
+    def test_init(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: None
         # init from metafile
         TextDetInferencer('dbnet_resnet18_fpnc_1200e_icdar2015')
         # init from cfg
@@ -96,3 +106,29 @@ class TestTextDetinferencer(TestCase):
             dumped_res = mmengine.load(pred_out_file)
             self.assert_predictions_equal(res['predictions'],
                                           dumped_res['predictions'])
+
+    def test_pred2dict(self):
+        data_sample = TextDetDataSample()
+        data_sample.pred_instances = InstanceData()
+
+        data_sample.pred_instances.scores = np.array([0.9])
+        data_sample.pred_instances.polygons = [
+            np.array([0, 0, 0, 1, 1, 1, 1, 0])
+        ]
+        res = self.inferencer.pred2dict(data_sample)
+        self.assertListAlmostEqual(res['polygons'], [[0, 0, 0, 1, 1, 1, 1, 0]])
+        self.assertListAlmostEqual(res['scores'], [0.9])
+
+        data_sample.pred_instances.bboxes = np.array([[0, 0, 1, 1]])
+        data_sample.pred_instances.scores = torch.FloatTensor([0.9])
+        res = self.inferencer.pred2dict(data_sample)
+        self.assertListAlmostEqual(res['polygons'], [[0, 0, 0, 1, 1, 1, 1, 0]])
+        self.assertListAlmostEqual(res['bboxes'], [[0, 0, 1, 1]])
+        self.assertListAlmostEqual(res['scores'], [0.9])
+
+    def assertListAlmostEqual(self, list1, list2, places=7):
+        for i in range(len(list1)):
+            if isinstance(list1[i], list):
+                self.assertListAlmostEqual(list1[i], list2[i], places=places)
+            else:
+                self.assertAlmostEqual(list1[i], list2[i], places=places)

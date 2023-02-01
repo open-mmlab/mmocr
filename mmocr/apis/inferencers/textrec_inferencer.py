@@ -39,5 +39,6 @@ class TextRecInferencer(BaseMMOCRInferencer):
         """
         result = {}
         result['text'] = data_sample.pred_text.item
-        result['scores'] = float(np.mean(data_sample.pred_text.score))
+        score = self._array2list(data_sample.pred_text.score)
+        result['scores'] = float(np.mean(score))
         return result

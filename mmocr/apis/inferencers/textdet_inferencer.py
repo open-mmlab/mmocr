@@ -37,8 +37,9 @@ class TextDetInferencer(BaseMMOCRInferencer):
         """
         result = {}
         pred_instances = data_sample.pred_instances
-        result['polygons'] = []
-        for polygon in pred_instances.polygons:
-            result['polygons'].append(polygon.tolist())
-        result['scores'] = pred_instances.scores.cpu().numpy().tolist()
+        if 'polygons' in pred_instances:
+            result['polygons'] = self._array2list(pred_instances.polygons)
+        if 'bboxes' in pred_instances:
+            result['bboxes'] = self._array2list(pred_instances.bboxes)
+        result['scores'] = self._array2list(pred_instances.scores)
         return result

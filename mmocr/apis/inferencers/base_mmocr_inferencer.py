@@ -8,6 +8,7 @@ import numpy as np
 from mmengine.dataset import Compose
 from mmengine.infer.infer import BaseInferencer, ModelType
 from mmengine.structures import InstanceData
+from torch import Tensor
 
 from mmocr.utils import ConfigType, register_all_modules
 
@@ -289,3 +290,21 @@ class BaseMMOCRInferencer(BaseInferencer):
         numbers in order to guarantee it's json-serializable.
         """
         raise NotImplementedError
+
+    def _array2list(self, array: Union[Tensor, np.ndarray,
+                                       List]) -> List[float]:
+        """Convert a tensor or numpy array to a list.
+
+        Args:
+            array (Union[Tensor, np.ndarray]): The array to be converted.
+
+        Returns:
+            List[float]: The converted list.
+        """
+        if isinstance(array, Tensor):
+            return array.detach().cpu().numpy().tolist()
+        if isinstance(array, np.ndarray):
+            return array.tolist()
+        if isinstance(array, list):
+            array = [self._array2list(arr) for arr in array]
+        return array
