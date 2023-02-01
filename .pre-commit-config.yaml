@@ -21,16 +21,16 @@ repos:
     hooks:
       - id: trailing-whitespace
         exclude: |
-            (?x)(
-              ^dicts/|
-              ^projects/ABCNet/dicts/
+            (?x)^(
+              dicts/|
+              projects/.*?/dicts/
             )
       - id: check-yaml
       - id: end-of-file-fixer
         exclude: |
-            (?x)(
-              ^dicts/|
-              ^projects/ABCNet/dicts/
+            (?x)^(
+              dicts/|
+              projects/.*?/dicts/
             )
       - id: requirements-txt-fixer
       - id: double-quote-string-fixer
