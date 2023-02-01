@@ -142,6 +142,9 @@ class TextDetLocalVisualizer(BaseLocalVisualizer):
         if data_sample is not None:
             if draw_gt and 'gt_instances' in data_sample:
                 gt_instances = data_sample.gt_instances
+                if gt_instances.get('ignored', None) is not None:
+                    ignore_flags = gt_instances.ignored
+                    gt_instances = gt_instances[~ignore_flags]
                 gt_polygons = gt_instances.get('polygons', None)
                 gt_bboxes = gt_instances.get('bboxes', None)
                 gt_img_data = self._draw_instances(image.copy(), gt_bboxes,
