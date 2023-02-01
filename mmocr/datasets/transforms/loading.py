@@ -66,11 +66,6 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
 
         Args:
             results (dict): Result dict from :obj:``mmcv.BaseDataset``.
-        """
-        """Functions to load image.
-
-        Args:
-            results (dict): Result dict from :obj:``mmcv.BaseDataset``.
 
         Returns:
             dict: The dict contains loaded image and meta information.
@@ -153,7 +148,6 @@ class LoadImageFromNDArray(LoadImageFromFile):
             img = img.astype(np.float32)
         if self.color_type == 'grayscale':
             img = mmcv.image.rgb2gray(img)
-        results['img_path'] = None
         results['img'] = img
         results['img_shape'] = img.shape[:2]
         results['ori_shape'] = img.shape[:2]
