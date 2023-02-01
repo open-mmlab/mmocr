@@ -1,5 +1,5 @@
 _base_ = [
-    '_base_spts.py',
+    '_base_spts_resnet50.py',
     '../_base_/datasets/icdar2013-spts.py',
     '../_base_/default_runtime.py',
 ]
