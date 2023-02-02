@@ -44,14 +44,6 @@ ln -s ${DataPath} $PYTHONPATH
 New-Item -ItemType SymbolicLink -Path $env:PYTHONPATH -Name data  -Target ${DataPath}
 ```
 
-As of now, `BezierAlign` is not yet supported by MMCV, and we will use third-party MMCV with the implementation of `BezierAlign`. You will need to install it from the source code as follows:
-
-```bash
-git clone -b lkk/bezier_align https://github.com/Harold-lkk/mmcv.git
-cd mmcv
-MMCV_WITH_OPS=1 MAX_JOBS=8 python setup.py develop
-```
-
 ### Training commands
 
 In the current directory, run the following command to train the model:
@@ -95,7 +87,6 @@ If you find ABCNet useful in your research or applications, please cite ABCNet w
   booktitle =  {Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR)},
   year      =  {2020}
 }
-
 ```
 
 ## Checklist
