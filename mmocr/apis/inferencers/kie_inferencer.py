@@ -58,6 +58,7 @@ class KIEInferencer(BaseMMOCRInferencer):
             if 'test_dataloader' in cfg:
                 dataset_cfg = copy.deepcopy(cfg.test_dataloader.dataset)
                 dataset_cfg['lazy_init'] = True
+                dataset_cfg['metainfo'] = None
                 dataset = DATASETS.build(dataset_cfg)
                 self.visualizer.dataset_meta = dataset.metainfo
             else:
