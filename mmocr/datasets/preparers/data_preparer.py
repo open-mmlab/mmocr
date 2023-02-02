@@ -39,6 +39,8 @@ class DatasetPreparer:
         task (str): Task type. Options are 'textdet', 'textrecog',
             'textspotter', and 'kie'. Defaults to 'textdet'.
         nproc (int): Number of parallel processes. Defaults to 4.
+        dump_to_lmdb (bool): Whether to dump the textrecog dataset
+            to LMDB format.
         overwrite_cfg (bool): Whether to overwrite the dataset config file if
             it already exists. If False, Dataset Preparer will not generate new
             config for datasets whose configs are already in base.
@@ -118,8 +120,7 @@ class DatasetPreparer:
             cfg.data_converter.update(
                 dict(nproc=self.nproc, dataset_name=self.dataset_name))
             if self.dump_to_lmdb:
-                cfg.data_converter.update(
-                    dict(dumper=dict(type='LMDBDumper')))
+                cfg.data_converter.update(dict(dumper=dict(type='LMDBDumper')))
             self.data_converter = DATA_CONVERTERS.build(cfg.data_converter)
         if 'config_generator' in cfg:
             cfg.config_generator.update(
@@ -127,11 +128,43 @@ class DatasetPreparer:
                     dataset_name=self.dataset_name,
                     overwrite_cfg=self.overwrite_cfg))
             if self.dump_to_lmdb:
+                if 'train_anns' in cfg.config_generator:
+                    train_anns = cfg.config_generator['train_anns']
+                    train_lmdb_anns = []
+                    for ann in train_anns:
+                        suffix = ann['ann_file'].split('.')[-1]
+                        lmdb_ann_file = ann['ann_file'].replace(suffix, 'lmdb')
+                        train_lmdb_anns.append(dict(ann_file=lmdb_ann_file))
+                else:
+                    train_anns = [dict(ann_file='textrecog_train.lmdb')]
+
+                if 'val_anns' in cfg.config_generator:
+                    val_anns = cfg.config_generator['val_anns']
+                    val_lmdb_anns = []
+                    for ann in val_anns:
+                        suffix = ann['ann_file'].split('.')[-1]
+                        lmdb_ann_file = ann['ann_file'].replace(suffix, 'lmdb')
+                        val_lmdb_anns.append(dict(ann_file=lmdb_ann_file))
+                else:
+                    val_anns = []
+
+                if 'test_anns' in cfg.config_generator:
+                    test_anns = cfg.config_generator['test_anns']
+                    test_lmdb_anns = []
+                    for ann in test_anns:
+                        suffix = ann['ann_file'].split('.')[-1]
+                        lmdb_ann_file = ann['ann_file'].replace(suffix, 'lmdb')
+                        test_lmdb_anns.append(dict(ann_file=lmdb_ann_file))
+                else:
+                    test_anns = [dict(ann_file='textrecog_test.lmdb')]
+
                 cfg.config_generator.update(
                     dict(
-                        type='TextRecogLMDBConfigGenerator',
-                        dataset_name=f'{self.dataset_name}_lmdb'))
-                
+                        dataset_name=f'{self.dataset_name}_lmdb',
+                        train_anns=train_anns,
+                        val_anns=val_anns,
+                        test_anns=test_anns))
+
             self.config_generator = CFG_GENERATORS.build(cfg.config_generator)
 
     @property
