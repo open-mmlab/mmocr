@@ -4,8 +4,8 @@ repos:
     rev: 5.0.4
     hooks:
       - id: flake8
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
+  - repo: https://github.com/zhouzaida/isort
+    rev: 5.12.1
     hooks:
       - id: isort
   - repo: https://github.com/pre-commit/mirrors-yapf
@@ -21,16 +21,16 @@ repos:
     hooks:
       - id: trailing-whitespace
         exclude: |
-            (?x)(
-              ^dicts/|
-              ^projects/ABCNet/dicts/
+            (?x)^(
+              dicts/|
+              projects/.*?/dicts/
             )
       - id: check-yaml
       - id: end-of-file-fixer
         exclude: |
-            (?x)(
-              ^dicts/|
-              ^projects/ABCNet/dicts/
+            (?x)^(
+              dicts/|
+              projects/.*?/dicts/
             )
       - id: requirements-txt-fixer
       - id: double-quote-string-fixer

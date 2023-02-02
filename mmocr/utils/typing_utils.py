@@ -10,7 +10,7 @@ from mmengine.structures import InstanceData, LabelData
 
 from mmocr import digit_version
 from mmocr.structures import (KIEDataSample, TextDetDataSample,
-                              TextRecogDataSample)
+                              TextRecogDataSample, TextSpottingDataSample)
 
 # Config
 ConfigType = Union[ConfigDict, Dict]
@@ -25,12 +25,14 @@ InstanceList = List[InstanceData]
 OptInstanceList = Optional[InstanceList]
 LabelList = List[LabelData]
 OptLabelList = Optional[LabelList]
+E2ESampleList = List[TextSpottingDataSample]
 RecSampleList = List[TextRecogDataSample]
 DetSampleList = List[TextDetDataSample]
 KIESampleList = List[KIEDataSample]
 OptRecSampleList = Optional[RecSampleList]
 OptDetSampleList = Optional[DetSampleList]
 OptKIESampleList = Optional[KIESampleList]
+OptE2ESampleList = Optional[E2ESampleList]
 
 OptTensor = Optional[torch.Tensor]
 
