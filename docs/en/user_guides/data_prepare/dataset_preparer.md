@@ -149,6 +149,10 @@ data_converter = dict(
     delete=['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img'])
 ```
 
+```{warning}
+This section is outdated and not yet synchronized with its Chinese version, please switch the language for the latest information.
+```
+
 `data_converter` is responsible for loading and converting the original to the format supported by MMOCR. We provide a number of built-in data converters for different tasks, such as `TextDetDataConverter`, `TextRecogDataConverter`, `TextSpottingDataConverter`, and `WildReceiptConverter` (Since we only support WildReceipt dataset for KIE task at present, we only provide this converter for now).
 
 Take the text detection task as an example, `TextDetDataConverter` mainly completes the following work:

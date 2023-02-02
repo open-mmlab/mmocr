@@ -11,7 +11,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 import mmcv
 from mmengine import mkdir_or_exist, track_parallel_progress
 
-from mmocr.utils import bbox2poly, crop_img, warp_img, list_files, poly2bbox
+from mmocr.utils import bbox2poly, crop_img, list_files, poly2bbox, warp_img
 from .data_preparer import DATA_CONVERTERS, DATA_DUMPERS, DATA_PARSERS
 
 
@@ -513,13 +513,18 @@ class TextRecogCropConverter(TextRecogDataConverter):
         nproc (int): Number of processes to process the data.
         crop_with_warp (bool): Whether to crop the text from the original image
             using opencv warpPerspective.
-        jitter (bool): Whether to jitter the box.
-        jitter_ratio_x (float): Horizontal jitter ratio relative to the height.
-        jitter_ratio_y (float): Vertical jitter ratio relative to the height.
-        long_edge_pad_ratio (float): The ratio of padding the long edge of the
-            cropped image. Defaults to 0.1.
-        short_edge_pad_ratio (float): The ratio of padding the short edge of
-            the cropped image. Defaults to 0.05.
+        jitter (bool): (Applicable when crop_with_warp=True)
+            Whether to jitter the box.
+        jitter_ratio_x (float): (Applicable when crop_with_warp=True)
+            Horizontal jitter ratio relative to the height.
+        jitter_ratio_y (float): (Applicable when crop_with_warp=True)
+            Vertical jitter ratio relative to the height.
+        long_edge_pad_ratio (float): (Applicable when crop_with_warp=False)
+            The ratio of padding the long edge of the cropped image.
+            Defaults to 0.1.
+        short_edge_pad_ratio (float): (Applicable when crop_with_warp=False)
+            The ratio of padding the short edge of the cropped image.
+            Defaults to 0.05.
         delete (Optional[List]): A list of files to be deleted after
             conversion. Defaults to ['annotations].
     """
@@ -578,12 +583,12 @@ class TextRecogCropConverter(TextRecogDataConverter):
                 return bbox2poly(instance['box']).tolist()
             if 'poly' in instance:
                 return bbox2poly(poly2bbox(instance['poly'])).tolist()
-        
+
         def get_poly(instance: Dict) -> List:
-            if 'box' in instance:
-                return bbox2poly(instance['box']).tolist()
             if 'poly' in instance:
                 return instance['poly']
+            if 'box' in instance:
+                return bbox2poly(instance['box']).tolist()
 
         data_list = []
         img_path, instances = sample
