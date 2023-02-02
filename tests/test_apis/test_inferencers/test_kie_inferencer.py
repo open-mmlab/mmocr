@@ -149,3 +149,19 @@ class TestKIEInferencer(TestCase):
             dumped_res = mmengine.load(pred_out_file)
             self.assert_predictions_equal(res['predictions'],
                                           dumped_res['predictions'])
+
+    @mock.patch('mmocr.apis.inferencers.kie_inferencer._load_checkpoint')
+    def test_load_metainfo_to_visualizer(self, mock_load):
+        mock_load.side_effect = lambda *x, **y: {'meta': 'test'}
+        with self.assertRaises(ValueError):
+            self.inferencer._load_metainfo_to_visualizer('test', {})
+
+        mock_load.side_effect = lambda *x, **y: {
+            'meta': {
+                'dataset_meta': 'test'
+            }
+        }
+        self.inferencer._load_metainfo_to_visualizer('test', {})
+
+        with self.assertRaises(ValueError):
+            self.inferencer._load_metainfo_to_visualizer(None, {})

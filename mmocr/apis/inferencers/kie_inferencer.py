@@ -1,18 +1,18 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os.path as osp
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, List, Optional, Sequence, Union
 
 import mmcv
 import mmengine
 import numpy as np
 from mmengine.dataset import Compose
-from mmengine.visualization import Visualizer
+from mmengine.runner.checkpoint import _load_checkpoint
 
 from mmocr.registry import DATASETS
 from mmocr.structures import KIEDataSample
 from mmocr.utils import ConfigType
-from .base_mmocr_inferencer import BaseMMOCRInferencer, PredType
+from .base_mmocr_inferencer import BaseMMOCRInferencer, ModelType, PredType
 
 InputType = Dict
 InputsType = Sequence[Dict]
@@ -37,6 +37,34 @@ class KIEInferencer(BaseMMOCRInferencer):
         scope (str, optional): The scope of the model. Defaults to "mmocr".
     """
 
+    def __init__(self,
+                 model: Union[ModelType, str, None] = None,
+                 weights: Optional[str] = None,
+                 device: Optional[str] = None,
+                 scope: Optional[str] = 'mmocr') -> None:
+        super().__init__(
+            model=model, weights=weights, device=device, scope=scope)
+        self._load_metainfo_to_visualizer(weights, self.cfg)
+
+    def _load_metainfo_to_visualizer(self, weights: Optional[str],
+                                     cfg: ConfigType) -> None:
+        """Load meta information to visualizer."""
+        if hasattr(self, 'visualizer'):
+            if weights is not None:
+                w = _load_checkpoint(weights, map_location='cpu')
+                if w and 'meta' in w and 'dataset_meta' in w['meta']:
+                    self.visualizer.dataset_meta = w['meta']['dataset_meta']
+                    return
+            if 'test_dataloader' in cfg:
+                dataset_cfg = copy.deepcopy(cfg.test_dataloader.dataset)
+                dataset_cfg['lazy_init'] = True
+                dataset = DATASETS.build(dataset_cfg)
+                self.visualizer.dataset_meta = dataset.metainfo
+            else:
+                raise ValueError(
+                    'KIEVisualizer requires meta information from weights or '
+                    'test dataset, but none of them is provided.')
+
     def _init_pipeline(self, cfg: ConfigType) -> None:
         """Initialize the test pipeline."""
         pipeline_cfg = cfg.test_dataloader.dataset.pipeline
@@ -45,27 +73,14 @@ class KIEInferencer(BaseMMOCRInferencer):
             raise ValueError(
                 'LoadKIEAnnotations is not found in the test pipeline')
         pipeline_cfg[idx]['with_label'] = False
-        self.novisual = self._get_transform_idx(pipeline_cfg,
-                                                'LoadImageFromFile') == -1
+        self.novisual = all(
+            self._get_transform_idx(pipeline_cfg, t) == -1
+            for t in self.loading_transforms)
         # If it's in non-visual mode, self.pipeline will be specified.
         # Otherwise, file_pipeline and ndarray_pipeline will be specified.
         if self.novisual:
             return Compose(pipeline_cfg)
         return super()._init_pipeline(cfg)
-
-    def _init_visualizer(self, cfg: ConfigType) -> Optional[Visualizer]:
-        """Initialize visualizers.
-
-        Args:
-            cfg (ConfigType): Config containing the visualizer information.
-
-        Returns:
-            Visualizer or None: Visualizer initialized with config.
-        """
-        visualizer = super()._init_visualizer(cfg)
-        dataset = DATASETS.build(cfg.test_dataloader.dataset)
-        visualizer.dataset_meta = dataset.metainfo
-        return visualizer
 
     def _inputs_to_list(self, inputs: InputsType) -> list:
         """Preprocess the inputs to a list.

@@ -48,6 +48,7 @@ class BaseMMOCRInferencer(BaseInferencer):
     postprocess_kwargs: set = {
         'print_result', 'pred_out_file', 'return_datasample'
     }
+    loading_transforms: list = ['LoadImageFromFile', 'LoadImageFromNDArray']
 
     def __init__(self,
                  model: Union[ModelType, str, None] = None,
@@ -137,12 +138,16 @@ class BaseMMOCRInferencer(BaseInferencer):
         if idx != -1:
             del pipeline_cfg[idx]
 
-        load_img_idx = self._get_transform_idx(pipeline_cfg,
-                                               'LoadImageFromFile')
+        for transform in self.loading_transforms:
+            load_img_idx = self._get_transform_idx(pipeline_cfg, transform)
+            if load_img_idx != -1:
+                pipeline_cfg[load_img_idx]['type'] = 'InferencerLoader'
+                break
         if load_img_idx == -1:
             raise ValueError(
-                'LoadImageFromFile is not found in the test pipeline')
-        pipeline_cfg[load_img_idx]['type'] = 'InferencerLoader'
+                f'None of {self.loading_transforms} is found in the test '
+                'pipeline')
+
         return Compose(pipeline_cfg)
 
     def _get_transform_idx(self, pipeline_cfg: ConfigType, name: str) -> int:
