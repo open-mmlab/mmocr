@@ -46,6 +46,8 @@ jobs:
         run: pip install -r requirements/tests.txt
       - name: Build and install
         run: rm -rf .eggs && pip install -e .
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Run unittests and generate coverage report
         run: |
           coverage run --branch --source mmocr -m pytest tests/
