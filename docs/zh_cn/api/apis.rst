@@ -22,4 +22,5 @@ Inferencers
    MMOCRInferencer
    TextDetInferencer
    TextRecInferencer
+   TextSpotInferencer
    KIEInferencer
