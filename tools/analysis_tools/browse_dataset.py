@@ -298,6 +298,8 @@ def obtain_dataset_cfg(cfg: Config, phase: str, mode: str, task: str) -> Tuple:
 
         if mode == 'original':
             default_cfg = default_cfgs[infer_dataset_task(task, dataset)]
+            # Image can be stored in other methods, like LMDB,
+            # which LoadImageFromFile can not handle
             if dataset.pipeline is not None:
                 all_transform_types = [tfm['type'] for tfm in dataset.pipeline]
                 if any([
@@ -310,6 +312,9 @@ def obtain_dataset_cfg(cfg: Config, phase: str, mode: str, task: str) -> Tuple:
                             default_cfg['pipeline'][0] = tfm
             dataset.pipeline = default_cfg['pipeline']
         else:
+            # In test_pipeline LoadOCRAnnotations is placed behind
+            # other transforms. Transform will not be applied on
+            # gt annotation.
             if phase == 'test':
                 all_transform_types = [tfm['type'] for tfm in dataset.pipeline]
                 load_ocr_ann_tfm_index = all_transform_types.index(
