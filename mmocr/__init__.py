@@ -41,7 +41,7 @@ assert (mmengine_version >= digit_version(mmengine_minimum_version)
     f'Please install mmengine>={mmengine_minimum_version}, ' \
     f'<{mmengine_maximum_version}.'
 
-mmdet_minimum_version = '3.0.0rc6'
+mmdet_minimum_version = '3.0.0rc0'
 mmdet_maximum_version = '3.1.0'
 mmdet_version = digit_version(mmdet.__version__)
 
