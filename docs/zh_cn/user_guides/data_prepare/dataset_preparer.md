@@ -176,8 +176,8 @@ MMOCR 中目前支持的转换器主要以任务为边界，这是因为不同�
 
 简单介绍下 `TextRecogCropConverter` 数据转换器的使用方法：
 
-- 由于标注文件的解析方式与TextDet环节一致，所以仅需继承 `dataset_zoo/xxx/textdet.py` 的data_converter，并修改type值为'TextRecogCropConverter'，`TextRecogCropConverter` 会在执行 `pack_instance()` 方法时根据解析获得的标注信息完成文字区域的裁剪。
-- 同时，根据是否存在旋转文字区域标注内置了两种裁剪方式，默认按照水平文本框裁剪。如果存在旋转的文字区域，可以设置 `crop_with_warp=True` 切换为使用opencv warpPerspective方法进行裁剪。
+- 由于标注文件的解析方式与 TextDet 环节一致，所以仅需继承 `dataset_zoo/xxx/textdet.py` 的  data_converter，并修改type值为 'TextRecogCropConverter'，`TextRecogCropConverter` 会在执行 `pack_instance()` 方法时根据解析获得的标注信息完成文字区域的裁剪。
+- 同时，根据是否存在旋转文字区域标注内置了两种裁剪方式，默认按照水平文本框裁剪。如果存在旋转的文字区域，可以设置 `crop_with_warp=True` 切换为使用 OpenCV warpPerspective 方法进行裁剪。
 
 ```python
 _base_ = ['textdet.py']
