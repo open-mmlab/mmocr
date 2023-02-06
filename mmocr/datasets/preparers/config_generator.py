@@ -83,6 +83,11 @@ class BaseDatasetConfigGenerator:
                                  ' None!')
             for ann_dict in ann_list:
                 assert 'ann_file' in ann_dict
+                if ann_dict['ann_file'].endswith('lmdb'):
+                    dataset_type = 'RecogLMDBDataset'
+                else:
+                    dataset_type = 'OCRDataset'
+                ann_dict['dataset_type'] = dataset_type
                 if ann_dict.get('dataset_postfix', ''):
                     key = f'{self.dataset_name}_{ann_dict["dataset_postfix"]}_{self.task}_{split}'  # noqa
                 else:
@@ -308,19 +313,6 @@ class TextRecogConfigGenerator(BaseDatasetConfigGenerator):
             val_anns=val_anns,
             test_anns=test_anns,
             config_path=config_path)
-        self.dataset_type = self._get_dataset_type()
-
-    def _get_dataset_type(self) -> str:
-        """Get dataset type based on the dataset_name.
-
-        Returns:
-            str: dataset type
-        """
-        if self.dataset_name.endswith('_lmdb'):
-            dataset_type = 'RecogLMDBDataset'
-        else:
-            dataset_type = 'OCRDataset'
-        return dataset_type
 
     def _gen_dataset_config(self) -> str:
         """Generate a full dataset config based on the annotation file
@@ -347,7 +339,7 @@ class TextRecogConfigGenerator(BaseDatasetConfigGenerator):
         cfg = ''
         for key_name, ann_dict in self.anns.items():
             cfg += f'\n{key_name} = dict(\n'
-            cfg += f'    type=\'{self.dataset_type}\',\n'
+            cfg += f'    type=\'{ann_dict["dataset_type"]}\',\n'
             cfg += '    data_root=' + f'{self.dataset_name}_{self.task}_data_root,\n'  # noqa: E501
             cfg += f'    ann_file=\'{ann_dict["ann_file"]}\',\n'
             if ann_dict['split'] in ['test', 'val']:

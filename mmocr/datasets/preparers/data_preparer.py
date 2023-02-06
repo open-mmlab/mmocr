@@ -128,43 +128,29 @@ class DatasetPreparer:
                     dataset_name=self.dataset_name,
                     overwrite_cfg=self.overwrite_cfg))
             if self.dump_to_lmdb:
-                if 'train_anns' in cfg.config_generator:
-                    train_anns = cfg.config_generator['train_anns']
-                    train_lmdb_anns = []
-                    for ann in train_anns:
-                        suffix = ann['ann_file'].split('.')[-1]
-                        lmdb_ann_file = ann['ann_file'].replace(suffix, 'lmdb')
-                        train_lmdb_anns.append(dict(ann_file=lmdb_ann_file))
-                else:
-                    train_anns = [dict(ann_file='textrecog_train.lmdb')]
-
-                if 'val_anns' in cfg.config_generator:
-                    val_anns = cfg.config_generator['val_anns']
-                    val_lmdb_anns = []
-                    for ann in val_anns:
-                        suffix = ann['ann_file'].split('.')[-1]
-                        lmdb_ann_file = ann['ann_file'].replace(suffix, 'lmdb')
-                        val_lmdb_anns.append(dict(ann_file=lmdb_ann_file))
-                else:
-                    val_anns = []
-
-                if 'test_anns' in cfg.config_generator:
-                    test_anns = cfg.config_generator['test_anns']
-                    test_lmdb_anns = []
-                    for ann in test_anns:
-                        suffix = ann['ann_file'].split('.')[-1]
-                        lmdb_ann_file = ann['ann_file'].replace(suffix, 'lmdb')
-                        test_lmdb_anns.append(dict(ann_file=lmdb_ann_file))
-                else:
-                    test_anns = [dict(ann_file='textrecog_test.lmdb')]
-
+                anns_dict = {}
+                for ann_list_key in ['train_anns', 'val_anns', 'test_anns']:
+                    if ann_list_key in cfg.config_generator:
+                        ann_list = cfg.config_generator[ann_list_key]
+                        for ann_dict in ann_list:
+                            suffix = ann_dict['ann_file'].split('.')[-1]
+                            lmdb_ann_file = ann_dict['ann_file'].replace(
+                                suffix, 'lmdb')
+                            ann_dict.update(dict(ann_file=lmdb_ann_file))
+                    else:
+                        if ann_list_key == 'train_anns':
+                            ann_list = [dict(ann_file='textrecog_train.lmdb')]
+                        elif ann_list_key == 'test_anns':
+                            ann_list = [dict(ann_file='textrecog_test.lmdb')]
+                        else:
+                            ann_list = []
+                    anns_dict[ann_list_key] = ann_list
                 cfg.config_generator.update(
                     dict(
                         dataset_name=f'{self.dataset_name}_lmdb',
-                        train_anns=train_anns,
-                        val_anns=val_anns,
-                        test_anns=test_anns))
-
+                        train_anns=anns_dict['train_anns'],
+                        val_anns=anns_dict['val_anns'],
+                        test_anns=anns_dict['test_anns']))
             self.config_generator = CFG_GENERATORS.build(cfg.config_generator)
 
     @property
