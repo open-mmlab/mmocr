@@ -1,12 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Dict
 
-from mmocr.structures import TextDetDataSample
+from mmocr.structures import TextSpottingDataSample
 from .base_mmocr_inferencer import BaseMMOCRInferencer
 
 
-class TextDetInferencer(BaseMMOCRInferencer):
-    """Text Detection inferencer.
+class TextSpotInferencer(BaseMMOCRInferencer):
+    """Text Spotting inferencer.
 
     Args:
         model (str, optional): Path to the config file or the model name
@@ -24,13 +24,14 @@ class TextDetInferencer(BaseMMOCRInferencer):
         scope (str, optional): The scope of the model. Defaults to "mmocr".
     """
 
-    def pred2dict(self, data_sample: TextDetDataSample) -> Dict:
+    def pred2dict(self, data_sample: TextSpottingDataSample) -> Dict:
         """Extract elements necessary to represent a prediction into a
         dictionary. It's better to contain only basic data elements such as
         strings and numbers in order to guarantee it's json-serializable.
 
         Args:
-            data_sample (TextDetDataSample): The data sample to be converted.
+            data_sample (TextSpottingDataSample): The data sample to be
+                converted.
 
         Returns:
             dict: The output dictionary.
@@ -42,4 +43,5 @@ class TextDetInferencer(BaseMMOCRInferencer):
         if 'bboxes' in pred_instances:
             result['bboxes'] = self._array2list(pred_instances.bboxes)
         result['scores'] = self._array2list(pred_instances.scores)
+        result['texts'] = pred_instances.texts
         return result

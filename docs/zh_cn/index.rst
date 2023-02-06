@@ -80,6 +80,7 @@
    :maxdepth: 2
    :caption: API 文档
 
+   mmocr.apis <api/apis>
    mmocr.structures <api/structures>
    mmocr.datasets <api/datasets>
    mmocr.transforms <api/transforms>

@@ -19,7 +19,7 @@ In the **text detection** task, the detector concentrate on instance-level text 
 
 ```python
 import torch
-from mmengine.data import InstanceData
+from mmengine.structures import InstanceData
 
 # defining gt_instance for encapsulating the ground truth data
 gt_instance = InstanceData()
