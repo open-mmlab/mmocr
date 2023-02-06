@@ -108,7 +108,7 @@ class BaseTextDetHead(BaseModule):
         outs = self(x, data_samples)
         losses = self.module_loss(outs, data_samples)
 
-        predictions = self.postprocessor(outs, data_samples)
+        predictions = self.postprocessor(outs, data_samples, self.training)
         return losses, predictions
 
     def predict(self, x: torch.Tensor,

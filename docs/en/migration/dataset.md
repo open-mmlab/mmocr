@@ -230,38 +230,26 @@ Specifically, we provide three dataset classes [IcdarDataset](mmocr.datasets.Icd
         parser_cfg=dict(
             type='LineJsonParser',
             keys=['filename', 'text'],
-        pipeline=[])
+        pipeline=[]))
    ```
 
-3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) supports LMDB format annotations for text recognition. You just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogLMDBDataset`. For example, the following example shows how to configure and load the **label-only lmdb** `label.lmdb` from the toy dataset.
+3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) supports LMDB format dataset (img+labels) for text recognition. You just need to add a new dataset config to `configs/textrecog/_base_/datasets` and specify its dataset type as `RecogLMDBDataset`. For example, the following example shows how to configure and load the **both labels and images** `imgs.lmdb` from the toy dataset.
 
-   ```python
-    data_root = 'tests/data/rec_toy_dataset/'
+- set the dataset type to `RecogLMDBDataset`
 
-    lmdb_dataset = dict(
-        type='RecogLMDBDataset',
-        data_root=data_root,
-        ann_file='label.lmdb',
-        data_prefix=dict(img_path='imgs'),
-        pipeline=[])
-   ```
+```python
+# Specify the dataset type as RecogLMDBDataset
+ data_root = 'tests/data/rec_toy_dataset/'
 
-   When the `lmdb` file contains **both labels and images**, in addition to setting the dataset type to `RecogLMDBDataset` as in the above example, you also need to replace the [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) with [`LoadImageFromLMDB`](mmocr.datasets.transforms.LoadImageFromLMDB) in the data pipelines.
+ lmdb_dataset = dict(
+     type='RecogLMDBDataset',
+     data_root=data_root,
+     ann_file='imgs.lmdb',
+     pipeline=None)
+```
 
-   ```python
-   # Specify the dataset type as RecogLMDBDataset
-    data_root = 'tests/data/rec_toy_dataset/'
+- replace the [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) with [`LoadImageFromNDArray`](mmocr.datasets.transforms.LoadImageFromNDArray) in the data pipelines in `train_pipeline` and `test_pipeline`., for example：
 
-    lmdb_dataset = dict(
-        type='RecogLMDBDataset',
-        data_root=data_root,
-        ann_file='imgs.lmdb',
-        data_prefix=dict(img_path='imgs.lmdb'), # setting the img_path as the lmdb name
-        pipeline=[])
-   ```
-
-   Also, replacing the image loading transforms in `train_pipeline` and `test_pipeline`, for example：
-
-   ```python
-    train_pipeline = [dict(type='LoadImageFromLMDB', color_type='grayscale', ignore_empty=True)]
-   ```
+```python
+ train_pipeline = [dict(type='LoadImageFromNDArray')]
+```

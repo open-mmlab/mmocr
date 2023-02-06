@@ -1,7 +1,7 @@
 # Text Recognition
 
 ```{note}
-This page is deprecated and all these scripts will be eventually migrated into dataset preparer, a brand new module designed to ease these lengthy dataset preparation steps. [Check it out](./dataset_preparer.md)!
+This page is a manual preparation guide for datasets not yet supported by [Dataset Preparer](./dataset_preparer.md), which all these scripts will be eventually migrated into.
 ```
 
 ## Overview
@@ -11,28 +11,16 @@ This page is deprecated and all these scripts will be eventually migrated into d
 |                       |                                                       |                            training                             |                              test                               |
 |       coco_text       | [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads) |                   [train_labels.json](#TODO)                    |                                -                                |
 |       ICDAR2011       |       [homepage](https://rrc.cvc.uab.es/?ch=1)        |                                -                                |                                -                                |
-|       ICDAR2013       |       [homepage](https://rrc.cvc.uab.es/?ch=2)        |                                -                                |                                -                                |
-|      icdar_2015       | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads) | [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/icdar_2015/train_labels.json) | [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/icdar_2015/test_labels.json) |
-|        IIIT5K         | [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html) | [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/IIIT5K/train_labels.json) | [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/IIIT5K/test_labels.json) |
-|         ct80          | [homepage](http://cs-chan.com/downloads_CUTE80_dataset.html) |                                -                                | [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/ct80/test_labels.json) |
-|          svt          | [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset) |                                -                                | [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/svt/test_labels.json) |
-|         svtp          | [unofficial homepage\[1\]](https://github.com/Jyouhou/Case-Sensitive-Scene-Text-Recognition-Datasets) |                                -                                | [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/svtp/test_labels.json) |
 |   MJSynth (Syn90k)    | [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/) | [subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/subset_train_labels.json) \| [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/train_labels.json) |                                -                                |
 | SynthText (Synth800k) | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/) | [alphanumeric_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/alphanumeric_train_labels.json) \|[subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/subset_train_labels.json) \|  [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/train_labels.json) |                                -                                |
 |       SynthAdd        | [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x) | [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/synthtext_add/train_labels.json) |                                -                                |
-|        TextOCR        |    [homepage](https://textvqa.org/textocr/dataset)    |                                -                                |                                -                                |
-|       Totaltext       | [homepage](https://github.com/cs-chan/Total-Text-Dataset) |                                -                                |                                -                                |
 |       OpenVINO        | [Open Images](https://github.com/cvdfoundation/open-images-dataset) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |
-|         FUNSD         |  [homepage](https://guillaumejaume.github.io/FUNSD/)  |                                -                                |                                -                                |
 |        DeText         |       [homepage](https://rrc.cvc.uab.es/?ch=9)        |                                -                                |                                -                                |
-|          NAF          |   [homepage](https://github.com/herobd/NAF_dataset)   |                                -                                |                                -                                |
-|         SROIE         |       [homepage](https://rrc.cvc.uab.es/?ch=13)       |                                -                                |                                -                                |
 |   Lecture Video DB    | [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb) |                                -                                |                                -                                |
 |         LSVT          |       [homepage](https://rrc.cvc.uab.es/?ch=16)       |                                -                                |                                -                                |
 |         IMGUR         | [homepage](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset) |                                -                                |                                -                                |
 |         KAIST         | [homepage](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) |                                -                                |                                -                                |
 |         MTWI          | [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us) |                                -                                |                                -                                |
-|     COCO Text v2      |    [homepage](https://bgshih.github.io/cocotext/)     |                                -                                |                                -                                |
 |         ReCTS         |       [homepage](https://rrc.cvc.uab.es/?ch=12)       |                                -                                |                                -                                |
 |       IIIT-ILST       | [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst) |                                -                                |                                -                                |
 |        VinText        | [homepage](https://github.com/VinAIResearch/dict-guided) |                                -                                |                                -                                |
@@ -96,141 +84,6 @@ This page is deprecated and all these scripts will be eventually migrated into d
   │   ├── crops
   │   ├── train_labels.json
   │   └── test_labels.json
-  ```
-
-## ICDAR 2013 (Focused Scene Text)
-
-- Step1: Download `Challenge2_Training_Task3_Images_GT.zip`, `Challenge2_Test_Task3_Images.zip`, and `Challenge2_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.3: Word Recognition (2013 edition)`.
-
-  ```bash
-  mkdir icdar2013 && cd icdar2013
-  mkdir annotations
-
-  # Download ICDAR 2013
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task3_Images_GT.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_Images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task3_GT.txt --no-check-certificate
-  wget https://download.openmmlab.com/mmocr/data/mixture/icdar_2013/test_label_1015.txt
-
-  # For images
-  mkdir crops
-  unzip -q Challenge2_Training_Task3_Images_GT.zip -d crops/train
-  unzip -q Challenge2_Test_Task3_Images.zip -d crops/test
-  # For annotations
-  mv Challenge2_Test_Task3_GT.txt annotations && mv crops/train/gt.txt annotations/Challenge2_Train_Task3_GT.txt && mv test_label_1015.txt annotations/Challenge2_Test1015_Task3_GT.txt
-
-  rm Challenge2_Training_Task3_Images_GT.zip && rm Challenge2_Test_Task3_Images.zip
-  ```
-
-- Step 2: Generate `train_labels.json`, `test_labels.json`, `test1015_label.json` with the following command:
-
-  ```bash
-  python tools/dataset_converters/textrecog/ic13_converter.py PATH/TO/icdar2013
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  ├── icdar2013
-  │   ├── crops
-  │   ├── train_labels.json
-  │   ├── test_labels.json
-  │   └── test1015_label.json
-  ```
-
-## ICDAR 2015
-
-- Step1: Download `ch4_training_word_images_gt.zip` and `ch4_test_word_images_gt.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
-
-- Step2: Download [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/icdar_2015/train_labels.json) and [test_label.json](https://download.openmmlab.com/mmocr/data/1.x/recog/icdar_2015/test_labels.json)
-
-- After running the above codes, the directory structure
-  should be as follows:
-
-  ```text
-  ├── icdar_2015
-  │   ├── train_labels.json
-  │   ├── test_labels.json
-  │   ├── ch4_training_word_images_gt
-  │   └── ch4_test_word_images_gt
-  ```
-
-## IIIT5K
-
-- Step1: Download `IIIT5K-Word_V3.0.tar.gz` from [homepage](http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/IIIT5K.html)
-
-- Step2: Download [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/IIIT5K/train_labels.json) and [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/IIIT5K/test_labels.json)
-
-- After running the above codes, the directory structure
-  should be as follows:
-
-  ```text
-  ├── III5K
-  │   ├── train_labels.json
-  │   ├── test_labels.json
-  │   ├── train
-  │   └── test
-  ```
-
-## svt
-
-- Step1: Download `svt.zip` form [homepage](http://www.iapr-tc11.org/mediawiki/index.php/The_Street_View_Text_Dataset)
-
-- Step2: Download [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/svt/test_labels.json)
-
-- Step3:
-
-  ```bash
-  python tools/dataset_converters/textrecog/svt_converter.py <download_svt_dir_path>
-  ```
-
-- After running the above codes, the directory structure
-  should be as follows:
-
-  ```text
-  ├── svt
-  │   ├── test_labels.json
-  │   └── image
-  ```
-
-## ct80
-
-- Step1: Download [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/ct80/test_labels.json)
-
-- Step2: Download [timage.tar.gz](https://download.openmmlab.com/mmocr/data/mixture/ct80/timage.tar.gz)
-
-- Step3:
-
-  ```bash
-  mkdir ct80 && cd ct80
-  mv /path/to/test_labels.json .
-  mv /path/to/timage.tar.gz .
-  tar -xvf timage.tar.gz
-  # create soft link
-  cd /path/to/mmocr/data/mixture
-  ln -s /path/to/ct80 ct80
-  ```
-
-- After running the above codes, the directory structure
-  should be as follows:
-
-  ```text
-  ├── ct80
-  │   ├── test_labels.json
-  │   └── timage
-  ```
-
-## svtp
-
-- Step1: Download [test_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/svtp/test_labels.json)
-
-- After running the above codes, the directory structure
-  should be as follows:
-
-  ```text
-  ├── svtp
-  │   ├── test_labels.json
-  │   └── image
   ```
 
 ## coco_text
@@ -365,79 +218,6 @@ Please make sure you're using the right annotation to train the model by checkin
   │   └── SynthText_Add
   ```
 
-## TextOCR
-
-- Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
-
-  ```bash
-  mkdir textocr && cd textocr
-
-  # Download TextOCR dataset
-  wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
-  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json
-  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
-
-  # For images
-  unzip -q train_val_images.zip
-  mv train_images train
-  ```
-
-- Step2: Generate `train_labels.json`, `val_labels.json` and crop images using 4 processes with the following command:
-
-  ```bash
-  python tools/dataset_converters/textrecog/textocr_converter.py /path/to/textocr 4
-  ```
-
-- After running the above codes, the directory structure
-  should be as follows:
-
-  ```text
-  ├── TextOCR
-  │   ├── image
-  │   ├── train_labels.json
-  │   └── val_labels.json
-  ```
-
-## Totaltext
-
-- Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` or `TT_new_train_GT.zip` (if you prefer to use the latest version of training annotations) from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
-
-  ```bash
-  mkdir totaltext && cd totaltext
-  mkdir imgs && mkdir annotations
-
-  # For images
-  # in ./totaltext
-  unzip totaltext.zip
-  mv Images/Train imgs/training
-  mv Images/Test imgs/test
-
-  # For legacy training and test annotations
-  unzip groundtruth_text.zip
-  mv Groundtruth/Polygon/Train annotations/training
-  mv Groundtruth/Polygon/Test annotations/test
-
-  # Using the latest training annotations
-  # WARNING: Delete legacy train annotations before running the following command.
-  unzip TT_new_train_GT.zip
-  mv Train annotations/training
-  ```
-
-- Step2: Generate cropped images, `train_labels.json` and `test_labels.json` with the following command (the cropped images will be saved to `data/totaltext/dst_imgs/`):
-
-  ```bash
-  python tools/dataset_converters/textrecog/totaltext_converter.py /path/to/totaltext
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  ├── totaltext
-  │   ├── dst_imgs
-  │   ├── train_labels.json
-  │   └── test_labels.json
-  ```
-
 ## OpenVINO
 
 - Step1 (optional): Install [AWS CLI](https://mmocr.readthedocs.io/en/latest/datasets/recog.html#install-aws-cli-optional).
@@ -569,45 +349,6 @@ Please make sure you're using the right annotation to train the model by checkin
   │   └── test_labels.json
   ```
 
-## SROIE
-
-- Step1: Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
-
-- Step2:
-
-  ```bash
-  mkdir sroie && cd sroie
-  mkdir imgs && mkdir annotations && mkdir imgs/training
-
-  # Warnninig: The zip files downloaded from Google Drive and BaiduYun Cloud may
-  # be different, the user should revise the following commands to the correct
-  # file name if encounter with errors while extracting and move the files.
-  unzip -q 0325updated.task1train\(626p\).zip && unzip -q task1\&2_test\(361p\).zip && unzip -q text.task1\&2-test（361p\).zip
-
-  # For images
-  mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv fulltext_test\(361p\) imgs/test
-
-  # For annotations
-  mv 0325updated.task1train\(626p\) annotations/training && mv text.task1\&2-testги361p\)/ annotations/test
-
-  rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
-  ```
-
-- Step3: Generate `train_labels.json` and `test_labels.json` and crop images using 4 processes with the following command:
-
-  ```bash
-  python tools/dataset_converters/textrecog/sroie_converter.py PATH/TO/sroie --nproc 4
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  ├── sroie
-  │   ├── crops
-  │   ├── train_labels.json
-  │   └── test_labels.json
-  ```
-
 ## Lecture Video DB
 
 ```{warning}
@@ -693,49 +434,6 @@ This section is not fully tested yet.
   │   ├── ignores
   │   ├── train_labels.json
   │   └── val_label.json (optional)
-  ```
-
-## FUNSD
-
-```{warning}
-This section is not fully tested yet.
-```
-
-- Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
-
-  ```bash
-  mkdir funsd && cd funsd
-
-  # Download FUNSD dataset
-  wget https://guillaumejaume.github.io/FUNSD/dataset.zip
-  unzip -q dataset.zip
-
-  # For images
-  mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
-
-  # For annotations
-  mkdir annotations
-  mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
-
-  rm dataset.zip && rm -rf dataset
-  ```
-
-- Step2: Generate `train_labels.json` and `test_labels.json` and crop images using 4 processes with following command (add `--preserve-vertical` if you wish to preserve the images containing vertical texts):
-
-  ```bash
-  python tools/dataset_converters/textrecog/funsd_converter.py PATH/TO/funsd --nproc 4
-  ```
-
-- After running the above codes, the directory structure
-  should be as follows:
-
-  ```text
-  ├── funsd
-  │   ├── imgs
-  │   ├── crops
-  │   ├── annotations
-  │   ├── train_labels.json
-  │   └── test_labels.json
   ```
 
 ## IMGUR
@@ -853,46 +551,6 @@ This section is not fully tested yet.
   │   ├── crops
   │   ├── train_labels.json
   │   └── val_label.json (optional)
-  ```
-
-## COCO Text v2
-
-```{warning}
-This section is not fully tested yet.
-```
-
-- Step1: Download image [train2014.zip](http://images.cocodataset.org/zips/train2014.zip) and annotation [cocotext.v2.zip](https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip) to `coco_textv2/`.
-
-  ```bash
-  mkdir coco_textv2 && cd coco_textv2
-  mkdir annotations
-
-  # Download COCO Text v2 dataset
-  wget http://images.cocodataset.org/zips/train2014.zip
-  wget https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip
-  unzip -q train2014.zip && unzip -q cocotext.v2.zip
-
-  mv train2014 imgs && mv cocotext.v2.json annotations/
-
-  rm train2014.zip && rm -rf cocotext.v2.zip
-  ```
-
-- Step2: Generate `train_labels.json` and `val_label.json` with the following command:
-
-  ```bash
-  # Add --preserve-vertical to preserve vertical texts for training, otherwise
-  # vertical images will be filtered and stored in PATH/TO/mtwi/ignores
-  python tools/dataset_converters/textrecog/cocotext_converter.py PATH/TO/coco_textv2 --nproc 4
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  ├── coco_textv2
-  │   ├── crops
-  │   ├── ignores
-  │   ├── train_labels.json
-  │   └── val_label.json
   ```
 
 ## ReCTS

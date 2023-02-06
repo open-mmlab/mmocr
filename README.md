@@ -69,7 +69,22 @@ The main branch works with **PyTorch 1.6+**.
 
   The toolbox provides a comprehensive set of utilities which can help users assess the performance of models. It includes visualizers which allow visualization of images, ground truths as well as predicted bounding boxes, and a validation tool for evaluating checkpoints during training.  It also includes data converters to demonstrate how to convert your own data to the annotation files which the toolbox supports.
 
-## What's New
+## Latest Updates
+
+**The default branch has been switched to `1.x` from `main`, and we encourage
+users to migrate to the latest version, though it comes with some cost. Please refer to [Migration Guide](https://mmocr.readthedocs.io/en/dev-1.x/migration/overview.html) for more
+details.**
+
+v1.0.0rc5 was released in 2023-01-06.
+
+1. Two models, Aster and SVTR, are added to our model zoo. The full implementation of ABCNet is also available now.
+2. Dataset Preparer supports 5 more datasets: CocoTextV2, FUNSD, TextOCR, NAF, SROIE.
+3. We have 4 more text recognition transforms, and two more helper transforms.
+4. The transform, `FixInvalidPolygon`, is getting smarter at dealing with invalid polygons, and now capable of handling more weird annotations. As a result, a complete training cycle on TotalText dataset can be performed bug-free. The weights of DBNet and FCENet pretrained on TotalText are also released.
+
+Read [Changelog](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) for more details!
+
+## What's New in MMOCR 1.0
 
 1. **New engines**. MMOCR 1.x is based on [MMEngine](https://github.com/open-mmlab/mmengine), which provides a general and powerful runner that allows more flexible customizations and significantly simplifies the entrypoints of high-level interfaces.
 
@@ -86,8 +101,6 @@ The main branch works with **PyTorch 1.6+**.
 7. **Embracing more `projects/`**: We now introduce `projects/` folder, where some experimental features, frameworks and models can be placed, only needed to satisfy the minimum requirement on the code quality. Everyone is welcome to post their implementation of any great ideas in this folder! Learn more from our [example project](https://github.com/open-mmlab/mmocr/blob/dev-1.x/projects/example_project/).
 
 8. **More models**. MMOCR 1.0 supports more tasks and more state-of-the-art models!
-
-Read [Changelog](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) for more details!
 
 ## Installation
 
@@ -147,6 +160,7 @@ Supported algorithms:
 - [x] [RobustScanner](configs/textrecog/robust_scanner/README.md) (ECCV'2020)
 - [x] [SAR](configs/textrecog/sar/README.md) (AAAI'2019)
 - [x] [SATRN](configs/textrecog/satrn/README.md) (CVPR'2020 Workshop on Text and Documents in the Deep Learning Era)
+- [x] [SVTR](configs/textrecog/svtr/README.md) (IJCAI'2022)
 
 </details>
 
@@ -161,6 +175,8 @@ Supported algorithms:
 <summary>Text Spotting</summary>
 
 - [x] [ABCNet](projects/ABCNet/README.md) (CVPR'2020)
+- [x] [ABCNetV2](projects/ABCNet/README_V2.md) (TPAMI'2021)
+- [x] [SPTS](projects/SPTS/README.md) (ACM MM'2022)
 
 </details>
 
@@ -214,3 +230,22 @@ This project is released under the [Apache 2.0 license](LICENSE).
 - [MMEditing](https://github.com/open-mmlab/mmediting): OpenMMLab image and video editing toolbox.
 - [MMGeneration](https://github.com/open-mmlab/mmgeneration): OpenMMLab image and video generative models toolbox.
 - [MMDeploy](https://github.com/open-mmlab/mmdeploy): OpenMMLab model deployment framework.
+
+## Welcome to the OpenMMLab community
+
+Scan the QR code below to follow the OpenMMLab team's [**Zhihu Official Account**](https://www.zhihu.com/people/openmmlab) and join the OpenMMLab team's [**QQ Group**](https://jq.qq.com/?_wv=1027&k=aCvMxdr3), or join the official communication WeChat group by adding the WeChat, or join our [**Slack**](https://join.slack.com/t/mmocrworkspace/shared_invite/zt-1ifqhfla8-yKnLO_aKhVA2h71OrK8GZw)
+
+<div align="center">
+<img src="https://raw.githubusercontent.com/open-mmlab/mmcv/master/docs/en/_static/zhihu_qrcode.jpg" height="400" />  <img src="https://raw.githubusercontent.com/open-mmlab/mmcv/master/docs/en/_static/qq_group_qrcode.jpg" height="400" />  <img src="https://raw.githubusercontent.com/open-mmlab/mmcv/master/docs/en/_static/wechat_qrcode.jpg" height="400" />
+</div>
+
+We will provide you with the OpenMMLab community
+
+- 📢 share the latest core technologies of AI frameworks
+- 💻 Explaining PyTorch common module source Code
+- 📰 News related to the release of OpenMMLab
+- 🚀 Introduction of cutting-edge algorithms developed by OpenMMLab
+  🏃 Get the more efficient answer and feedback
+- 🔥 Provide a platform for communication with developers from all walks of life
+
+The OpenMMLab community looks forward to your participation! 👬

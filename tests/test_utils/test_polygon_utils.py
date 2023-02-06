@@ -83,6 +83,20 @@ class TestPolygonUtils(unittest.TestCase):
                     np.array([0.5, 0.5, 1, 0.5, 1, 1, 0.5, 1])
                 ]))
 
+        polygons = np.array([[0, 0, 1, 0, 1, 1, 0, 1],
+                             [1, 1, 2, 1, 2, 2, 1, 2]])
+        scale_factor = (0.5, 0.5)
+        self.assertTrue(
+            np.allclose(
+                rescale_polygons(polygons, scale_factor, mode='div'),
+                np.array([[0, 0, 2, 0, 2, 2, 0, 2], [2, 2, 4, 2, 4, 4, 2,
+                                                     4]])))
+        self.assertTrue(
+            np.allclose(
+                rescale_polygons(polygons, scale_factor, mode='mul'),
+                np.array([[0, 0, 0.5, 0, 0.5, 0.5, 0, 0.5],
+                          [0.5, 0.5, 1, 0.5, 1, 1, 0.5, 1]])))
+
         polygons = [torch.Tensor([0, 0, 1, 0, 1, 1, 0, 1])]
         scale_factor = (0.3, 0.4)
         self.assertTrue(
@@ -161,6 +175,12 @@ class TestPolygonUtils(unittest.TestCase):
         # invalid input
         with self.assertRaises(AssertionError):
             poly_make_valid([0, 0, 1, 1, 1, 0, 0, 1])
+        poly = Polygon([[337, 441], [326, 386], [334, 397], [342, 412],
+                        [296, 382], [317, 366], [324, 427], [315, 413],
+                        [308, 400], [349, 419], [337, 441]])
+        self.assertFalse(poly.is_valid)
+        poly = poly_make_valid(poly)
+        self.assertTrue(poly.is_valid)
 
     def test_poly_intersection(self):
 

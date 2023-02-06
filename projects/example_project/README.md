@@ -16,12 +16,34 @@ This project implements a dummy ResNet wrapper, which literally does nothing new
 
 <!-- For a typical model, this section should contain the commands for training and testing. You are also suggested to dump your environment specification to env.yml by `conda env export > env.yml`. -->
 
+### Prerequisites
+
+- Python 3.7
+- PyTorch 1.6 or higher
+- [MIM](https://github.com/open-mmlab/mim)
+- [MMOCR](https://github.com/open-mmlab/mmocr)
+
+All the commands below rely on the correct configuration of `PYTHONPATH`, which should point to the project's directory so that Python can locate the module files. In `example_project/` root directory, run the following line to add the current directory to `PYTHONPATH`:
+
+```shell
+# Linux
+export PYTHONPATH=`pwd`:$PYTHONPATH
+# Windows PowerShell
+$env:PYTHONPATH=Get-Location
+```
+
 ### Training commands
 
 In MMOCR's root directory, run the following command to train the model:
 
 ```bash
-python tools/train.py projects/example_project/configs/dbnet_dummy-resnet_fpnc_1200e_icdar2015.py
+mim train mmocr configs/dbnet_dummy-resnet_fpnc_1200e_icdar2015.py --work-dir work_dirs/dummy_mae/
+```
+
+To train on multiple GPUs, e.g. 8 GPUs, run the following command:
+
+```bash
+mim train mmocr configs/dbnet_dummy-resnet_fpnc_1200e_icdar2015.py --work-dir work_dirs/dummy_mae/ --launcher pytorch --gpus 8
 ```
 
 ### Testing commands
@@ -29,7 +51,7 @@ python tools/train.py projects/example_project/configs/dbnet_dummy-resnet_fpnc_1
 In MMOCR's root directory, run the following command to test the model:
 
 ```bash
-python tools/test.py projects/example_project/confsigs/dbnet_dummy-resnet_fpnc_1200e_icdar2015.py ${CHECKPOINT_PATH}
+mim test mmocr configs/dbnet_dummy-resnet_fpnc_1200e_icdar2015.py --work-dir work_dirs/dummy_mae/ --checkpoint ${CHECKPOINT_PATH}
 ```
 
 ## Results
@@ -60,7 +82,9 @@ year = {2020}
 
 ## Checklist
 
-<!-- Here is a checklist illustrating a usual development workflow of a successful project, and also serves as an overview of this project's progress. The PIC (person in charge) or contributors of this project should check all the items that they believe have been finished, which will further be verified by codebase maintainers via a PR.
+Here is a checklist illustrating a usual development workflow of a successful project, and also serves as an overview of this project's progress.
+
+<!--  The PIC (person in charge) or contributors of this project should check all the items that they believe have been finished, which will further be verified by codebase maintainers via a PR.
 
 OpenMMLab's maintainer will review the code to ensure the project's quality. Reaching the first milestone means that this project suffices the minimum requirement of being merged into 'projects/'. But this project is only eligible to become a part of the core package upon attaining the last milestone.
 

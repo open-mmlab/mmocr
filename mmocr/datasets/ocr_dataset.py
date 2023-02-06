@@ -49,8 +49,8 @@ class OCRDataset(BaseDataset):
             information. Defaults to None.
         data_root (str, optional): The root directory for ``data_prefix`` and
             ``ann_file``. Defaults to None.
-        data_prefix (dict, optional): Prefix for training data. Defaults to
-            dict(img=None, ann=None).
+        data_prefix (dict): Prefix for training data. Defaults to
+            dict(img_path='').
         filter_cfg (dict, optional): Config for filter data. Defaults to None.
         indices (int or Sequence[int], optional): Support using first few
             data in annotation file to facilitate training/testing on a smaller

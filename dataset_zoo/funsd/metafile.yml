@@ -1,0 +1,27 @@
+Name: 'FUNSD'
+Paper:
+  Title: 'FUNSD: A Dataset for Form Understanding in Noisy Scanned Documents'
+  URL: https://arxiv.org/pdf/1905.13538.pdf
+  Venue: ICDAR
+  Year: '2019'
+  BibTeX: '@inproceedings{jaume2019,
+    title = {FUNSD: A Dataset for Form Understanding in Noisy Scanned Documents},
+    author = {Guillaume Jaume, Hazim Kemal Ekenel, Jean-Philippe Thiran},
+    booktitle = {Accepted to ICDAR-OST},
+    year = {2019}}'
+Data:
+  Website: https://guillaumejaume.github.io/FUNSD/
+  Language:
+    - English
+  Scene:
+    - Document
+  Granularity:
+    - Word
+  Tasks:
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: FUNSD License
+    Link: https://guillaumejaume.github.io/FUNSD/work/
+  Format: .json

@@ -6,7 +6,8 @@ from typing import Dict, List, Optional
 import numpy as np
 from shapely.geometry import Polygon
 
-from mmocr.datasets.transforms import ImgAugWrapper, TorchVisionWrapper
+from mmocr.datasets.transforms import (ConditionApply, ImgAugWrapper,
+                                       TorchVisionWrapper)
 
 
 class TestImgAug(unittest.TestCase):
@@ -61,7 +62,7 @@ class TestImgAug(unittest.TestCase):
     def test_transform(self):
 
         # Test empty transform
-        imgaug_transform = ImgAugWrapper()
+        imgaug_transform = ImgAugWrapper(fix_poly_trans=None)
         results = self._create_dummy_data()
         origin_results = copy.deepcopy(results)
         results = imgaug_transform(results)
@@ -72,7 +73,7 @@ class TestImgAug(unittest.TestCase):
                                  origin_results['gt_texts'])
 
         args = [dict(cls='Affine', translate_px=dict(x=-10, y=-10))]
-        imgaug_transform = ImgAugWrapper(args)
+        imgaug_transform = ImgAugWrapper(args, fix_poly_trans=None)
         results = self._create_dummy_data()
         results = imgaug_transform(results)
 
@@ -99,7 +100,7 @@ class TestImgAug(unittest.TestCase):
         label_target = np.array([0], dtype=np.int64)
         ignored = np.array([False], dtype=bool)
         texts = ['text1']
-        imgaug_transform = ImgAugWrapper(args)
+        imgaug_transform = ImgAugWrapper(args, fix_poly_trans=None)
         results = self._create_dummy_data()
         results = imgaug_transform(results)
         self.assert_result_equal(results, poly_target, box_target,
@@ -135,8 +136,8 @@ class TestImgAug(unittest.TestCase):
         print(repr(transform))
         self.assertEqual(
             repr(transform),
-            ("ImgAugWrapper(args = [['Resize', [0.5, 3.0]], ['Fliplr', 0.5]])"
-             ))
+            ("ImgAugWrapper(args = [['Resize', [0.5, 3.0]], ['Fliplr', 0.5]], "
+             "fix_poly_trans = {'type': 'FixInvalidPolygon'})"))
 
 
 class TestTorchVisionWrapper(unittest.TestCase):
@@ -160,3 +161,36 @@ class TestTorchVisionWrapper(unittest.TestCase):
         self.assertEqual(
             repr(f),
             'TorchVisionWrapper(op = Grayscale, num_output_channels = 3)')
+
+
+class TestConditionApply(unittest.TestCase):
+
+    def test_transform(self):
+        dummy_result = dict(img_shape=(100, 200), img=np.zeros((100, 200, 3)))
+        resize = dict(type='Resize', scale=(40, 50), keep_ratio=False)
+
+        trans = ConditionApply(
+            "results['img_shape'][0] > 80", true_transforms=resize)
+        results = trans(dummy_result)
+        self.assertEqual(results['img_shape'], (50, 40))
+        dummy_result = dict(img_shape=(100, 200), img=np.zeros((100, 200, 3)))
+        trans = ConditionApply(
+            "results['img_shape'][0] < 80", false_transforms=resize)
+        results = trans(dummy_result)
+        self.assertEqual(results['img_shape'], (50, 40))
+        dummy_result = dict(img_shape=(100, 200), img=np.zeros((100, 200, 3)))
+        trans = ConditionApply("results['img_shape'][0] < 80")
+        results = trans(dummy_result)
+        self.assertEqual(results['img_shape'], (100, 200))
+
+    def test_repr(self):
+        resize = dict(type='Resize', scale=(40, 50), keep_ratio=False)
+        trans = ConditionApply(
+            "results['img_shape'][0] < 80", true_transforms=resize)
+        self.assertEqual(
+            repr(trans),
+            "ConditionApply(condition = results['img_shape'][0] < 80, "
+            'true_transforms = Compose(\n    Resize(scale=(40, 50), '
+            'scale_factor=None, keep_ratio=False, clip_object_border=True), '
+            'backend=cv2), interpolation=bilinear)\n), '
+            'false_transforms = Compose(\n))')
