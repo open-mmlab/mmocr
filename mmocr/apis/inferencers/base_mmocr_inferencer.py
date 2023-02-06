@@ -80,6 +80,7 @@ class BaseMMOCRInferencer(BaseInferencer):
         Args:
             inputs (InputsType): Inputs for the inferencer. It can be a path
                 to image / image directory, or an array, or a list of these.
+                Note: If it's an numpy array, it should be in BGR order.
             return_datasamples (bool): Whether to return results as
                 :obj:`BaseDataElement`. Defaults to False.
             batch_size (int): Inference batch size. Defaults to 1.
@@ -206,7 +207,7 @@ class BaseMMOCRInferencer(BaseInferencer):
                 img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
                 img_name = osp.basename(single_input)
             elif isinstance(single_input, np.ndarray):
-                img = single_input.copy()
+                img = single_input.copy()[:, :, ::-1]  # to RGB
                 img_num = str(self.num_visualized_imgs).zfill(8)
                 img_name = f'{img_num}.jpg'
             else:

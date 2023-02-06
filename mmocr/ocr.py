@@ -46,7 +46,7 @@ def parse_args():
         help='Pretrained key information extraction algorithm. It\'s the path'
         'to the config file or the model name defined in metafile.')
     parser.add_argument(
-        '--kie-ckpt',
+        '--kie-weights',
         type=str,
         default=None,
         help='Path to the custom checkpoint file of the selected kie model. '
@@ -77,7 +77,8 @@ def parse_args():
     call_args = vars(parser.parse_args())
 
     init_kws = [
-        'det', 'det_weights', 'rec', 'rec_weights', 'kie', 'kie_ckpt', 'device'
+        'det', 'det_weights', 'rec', 'rec_weights', 'kie', 'kie_weights',
+        'device'
     ]
     init_args = {}
     for init_kw in init_kws:
