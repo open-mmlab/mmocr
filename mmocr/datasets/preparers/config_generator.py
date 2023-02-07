@@ -279,13 +279,13 @@ class TextRecogConfigGenerator(BaseDatasetConfigGenerator):
         >>> icdar2015_lmdb_textrecog_test = dict(
         >>>     type='RecogLMDBDataset',
         >>>     data_root=icdar2015_lmdb_textrecog_data_root,
-        >>>     ann_file='textrecog_test.json',
+        >>>     ann_file='textrecog_test.lmdb',
         >>>     test_mode=True,
         >>>     pipeline=None)
         >>> icdar2015_lmdb_1811_textrecog_test = dict(
         >>>     type='RecogLMDBDataset',
         >>>     data_root=icdar2015_lmdb_textrecog_data_root,
-        >>>     ann_file='textrecog_test_1811.json',
+        >>>     ann_file='textrecog_test_1811.lmdb',
         >>>     test_mode=True,
         >>>     pipeline=None)
     """
