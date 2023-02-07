@@ -230,6 +230,7 @@ def poly_intersection(poly_a: Polygon,
             poly_obj = poly_a.intersection(poly_b)
             area = poly_obj.area
         else:
+            poly_obj = Polygon()
             area = 0.0
     return (area, poly_obj) if return_poly else area
 
