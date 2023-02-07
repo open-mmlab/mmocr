@@ -54,7 +54,10 @@ data_converter = dict(
     gatherer=dict(
         type='mono_gather', train_ann='train.txt', test_ann='test.txt'),
     parser=dict(type='ICDARTxtTextRecogAnnParser', encoding='utf-8-sig'),
-    dumper=dict(type='JsonDumper'))
+    dumper=dict(type='JsonDumper'),
+    delete=[
+        'annotations', 'ic15_textrecog_train_img_gt', 'ic15_textrecog_test_img'
+    ])
 
 config_generator = dict(
     type='TextRecogConfigGenerator',
