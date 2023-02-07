@@ -150,12 +150,9 @@ class LMDBDumper:
             with open(img_path, 'rb') as f:
                 image_bin = f.read()
             if self.verify:
-                try:
-                    if not self.check_image_is_valid(image_bin):
-                        warnings.warn('%s is not a valid image' % img_path)
-                        continue
-                except Exception:
-                    warnings.warn('error occurred at ', img_name)
+                if not self.check_image_is_valid(image_bin):
+                    warnings.warn('%s is not a valid image' % img_path)
+                    continue
             image_key = 'image-%09d'.encode(self.encoding) % cnt
             cache.append((image_key, image_bin))
             cache.append((label_key, text.encode(self.encoding)))

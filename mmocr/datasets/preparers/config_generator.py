@@ -72,6 +72,10 @@ class BaseDatasetConfigGenerator:
           dataset variable will be named in the form of
           ``{dataset_name}_{dataset_postfix}_{task}_{split}``. Defaults to
           None.
+        - dataset_type (str): The dataset type relative to the annotation
+          file extension name. 'xxx.json', dataset_type='OCRDataset';
+          'xxx.lmdb', dataset_type='RecogLMDBDataset' (only works with
+          textrecog)
         """
         self.anns = {}
         for split, ann_list in zip(('train', 'val', 'test'),
@@ -82,12 +86,20 @@ class BaseDatasetConfigGenerator:
                 raise ValueError(f'{split}_anns must be either a list or'
                                  ' None!')
             for ann_dict in ann_list:
+                # infer the dataset type from the file extension name
                 assert 'ann_file' in ann_dict
-                if ann_dict['ann_file'].endswith('lmdb'):
+                suffix = ann_dict['ann_file'].split('.')[-1]
+                if suffix == 'json':
+                    dataset_type = 'OCRDataset'
+                elif suffix == 'lmdb':
+                    assert self.task == 'textrecog', \
+                        'lmdb format ann_file only supports textrecog task now'
                     dataset_type = 'RecogLMDBDataset'
                 else:
-                    dataset_type = 'OCRDataset'
+                    raise NotImplementedError(
+                        'ann file only supports JSON file or LMDB file')
                 ann_dict['dataset_type'] = dataset_type
+
                 if ann_dict.get('dataset_postfix', ''):
                     key = f'{self.dataset_name}_{ann_dict["dataset_postfix"]}_{self.task}_{split}'  # noqa
                 else:
