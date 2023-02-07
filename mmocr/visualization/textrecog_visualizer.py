@@ -68,7 +68,8 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
             font_sizes=font_size,
             vertical_alignments='center',
             horizontal_alignments='center',
-            font_families=self.font_families)
+            font_families=self.font_families,
+            font_properties=self.font_properties)
         text_image = self.get_image()
         return text_image
 
