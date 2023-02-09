@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Tuple
 from mmengine import mkdir_or_exist
 
 from mmocr.utils import check_integrity, is_archive
-from .data_preparer import DATA_OBTAINERS
+from ..data_preparer import DATA_OBTAINERS
 
 ssl._create_default_https_context = ssl._create_unverified_context
 

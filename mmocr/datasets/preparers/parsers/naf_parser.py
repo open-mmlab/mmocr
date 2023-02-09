@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 import numpy as np
 
@@ -45,15 +45,14 @@ class NAFAnnParser(BaseParser):
         self.det = det
         super().__init__(data_root=data_root, nproc=nproc)
 
-    def parse_file(self, file: Tuple, split: str) -> Dict:
+    def parse_file(self, img_path: str, ann_path: str) -> Tuple:
         """Convert single annotation."""
-        img_file, json_file = file
         instances = list()
-        for poly, text in self.loader(json_file):
+        for poly, text in self.loader(ann_path):
             instances.append(
                 dict(poly=poly, text=text, ignore=text in self.ignore))
 
-        return img_file, instances
+        return img_path, instances
 
     def loader(self, file_path: str) -> str:
         """Load the annotation of the NAF dataset.

@@ -31,6 +31,7 @@ class SROIETextDetAnnParser(BaseParser):
     """
 
     def __init__(self,
+                 split: str,
                  separator: str = ',',
                  ignore: str = '###',
                  format: str = 'x1,y1,x2,y2,x3,y3,x4,y4,trans',
@@ -44,16 +45,15 @@ class SROIETextDetAnnParser(BaseParser):
         self.ignore = ignore
         self.mode = mode
         self.remove_strs = remove_strs
-        super().__init__(nproc=nproc)
+        super().__init__(nproc=nproc, split=split)
 
-    def parse_file(self, file: Tuple, split: str) -> Tuple:
+    def parse_file(self, img_path: str, ann_path: str) -> Tuple:
         """Parse single annotation."""
-        img_file, txt_file = file
         instances = list()
         try:
             # there might be some illegal symbols in the annotation
             # which cannot be parsed by loader
-            for anno in self.loader(txt_file, self.sep, self.format,
+            for anno in self.loader(ann_path, self.sep, self.format,
                                     self.encoding):
                 anno = list(anno.values())
                 if self.remove_strs is not None:
@@ -71,4 +71,4 @@ class SROIETextDetAnnParser(BaseParser):
         except Exception:
             pass
 
-        return img_file, instances
+        return img_path, instances

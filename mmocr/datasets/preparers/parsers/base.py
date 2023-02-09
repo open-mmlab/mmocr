@@ -1,9 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import abstractmethod
-from functools import partial
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
-from mmengine import track_parallel_progress
+from mmocr.utils import track_parallel_progress_multi_args
 
 
 class BaseParser:
@@ -14,13 +13,11 @@ class BaseParser:
         nproc (int, optional): Number of processes. Defaults to 1.
     """
 
-    def __init__(self,
-                 data_root: Optional[str] = None,
-                 nproc: int = 1) -> None:
-        self.data_root = data_root
+    def __init__(self, split: str, nproc: int = 1) -> None:
         self.nproc = nproc
+        self.split = split
 
-    def __call__(self, files: List[Tuple], split: str) -> List:
+    def __call__(self, files: List[Tuple]) -> List:
         """Parse annotations.
 
         Args:
@@ -31,29 +28,32 @@ class BaseParser:
         Returns:
             List: A list of a tuple of (image_path, instances)
         """
-        samples = self.parse_files(files, split)
+        samples = self.parse_files(files)
         return samples
 
-    def parse_files(self, files: List[Tuple], split: str) -> List[Tuple]:
+    def parse_files(self, img_paths: Union[List[str], str],
+                    ann_paths: Union[List[str], str]) -> List[Tuple]:
         """Convert annotations to MMOCR format.
 
         Args:
-            files (Tuple): A list of tuple of path to image and annotation.
+            img_paths (str or list[str]): Paths of image.
+            ann_paths (str or list[str]): Paths of annotation.
 
         Returns:
             List[Tuple]: A list of a tuple of (image_path, instances)
         """
-        func = partial(self.parse_file, split=split)
-        samples = track_parallel_progress(func, files, nproc=self.nproc)
+        files = list(zip(img_paths, ann_paths))
+        samples = track_parallel_progress_multi_args(
+            self.parse_file, files, nproc=self.nproc)
         return samples
 
     @abstractmethod
-    def parse_file(self, file: Tuple, split: str) -> Tuple:
+    def parse_file(self, img_path: str, ann_path: str) -> Tuple:
         """Convert annotation for a single image.
 
         Args:
-            file (Tuple): A tuple of path to image and annotation
-            split (str): Current split.
+            img_path (Tuple): The path of image.
+            ann_path (Tuple): The path of annotation.
 
         Returns:
             Tuple: A tuple of (img_path, instance). Instance is a list of dict

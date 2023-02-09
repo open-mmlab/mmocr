@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import os.path as osp
 from typing import List, Optional, Tuple
 
 from mmocr.utils import bbox2poly
@@ -31,6 +32,7 @@ class ICDARTxtTextDetAnnParser(BaseParser):
     """
 
     def __init__(self,
+                 split: str,
                  separator: str = ',',
                  ignore: str = '###',
                  format: str = 'x1,y1,x2,y2,x3,y3,x4,y4,trans',
@@ -44,13 +46,12 @@ class ICDARTxtTextDetAnnParser(BaseParser):
         self.ignore = ignore
         self.mode = mode
         self.remove_strs = remove_strs
-        super().__init__(nproc=nproc)
+        super().__init__(nproc=nproc, split=split)
 
-    def parse_file(self, file: Tuple, split: str) -> Tuple:
+    def parse_file(self, img_path: str, ann_path: str) -> Tuple:
         """Parse single annotation."""
-        img_file, txt_file = file
         instances = list()
-        for anno in self.loader(txt_file, self.sep, self.format,
+        for anno in self.loader(ann_path, self.sep, self.format,
                                 self.encoding):
             anno = list(anno.values())
             if self.remove_strs is not None:
@@ -66,7 +67,7 @@ class ICDARTxtTextDetAnnParser(BaseParser):
             instances.append(
                 dict(poly=poly, text=text, ignore=text == self.ignore))
 
-        return img_file, instances
+        return img_path, instances
 
 
 @DATA_PARSERS.register_module()
@@ -97,21 +98,21 @@ class ICDARTxtTextRecogAnnParser(BaseParser):
                  ignore: str = '#',
                  format: str = 'img,text',
                  encoding: str = 'utf-8',
-                 nproc: int = 1,
-                 remove_strs: Optional[List[str]] = ['"']) -> None:
+                 remove_strs: Optional[List[str]] = ['"'],
+                 **kwargs) -> None:
         self.sep = separator
         self.format = format
         self.encoding = encoding
         self.ignore = ignore
         self.remove_strs = remove_strs
-        super().__init__(nproc=nproc)
+        super().__init__(**kwargs)
 
-    def parse_files(self, files: str, split: str) -> List:
+    def parse_files(self, img_dir: str, ann_path: str) -> List:
         """Parse annotations."""
-        assert isinstance(files, str)
+        assert isinstance(ann_path, str)
         samples = list()
         for anno in self.loader(
-                file_path=files,
+                file_path=ann_path,
                 format=self.format,
                 encoding=self.encoding,
                 separator=self.sep):
@@ -122,6 +123,6 @@ class ICDARTxtTextRecogAnnParser(BaseParser):
             if text == self.ignore:
                 continue
             img_name = anno['img']
-            samples.append((img_name, text))
+            samples.append((osp.join(img_dir, osp.basename(img_name)), text))
 
         return samples

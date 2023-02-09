@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-from typing import Dict, Tuple
+from typing import List
 
 from mmdet.datasets.api_wrappers import COCO
 
@@ -21,25 +21,25 @@ class COCOTextDetAnnParser(BaseParser):
     """
 
     def __init__(self,
-                 data_root: str = None,
+                 split: str,
                  nproc: int = 1,
                  variant: str = 'standard') -> None:
 
-        super().__init__(nproc=nproc, data_root=data_root)
+        super().__init__(nproc=nproc, split=split)
         assert variant in ['standard', 'cocotext', 'textocr'], \
             f'variant {variant} is not supported'
         self.variant = variant
 
-    def parse_files(self, files: Tuple, split: str = None) -> Dict:
+    def parse_files(self, img_dir: str, ann_path: str) -> List:
         """Parse single annotation."""
         samples = list()
-        coco = COCO(files)
+        coco = COCO(ann_path)
         if self.variant == 'cocotext' or self.variant == 'textocr':
             # cocotext stores both 'train' and 'val' split in one annotation
             # file, and uses the 'set' field to distinguish them.
             if self.variant == 'cocotext':
                 for img in coco.dataset['imgs']:
-                    if split == coco.dataset['imgs'][img]['set']:
+                    if self.split == coco.dataset['imgs'][img]['set']:
                         coco.imgs[img] = coco.dataset['imgs'][img]
             # textocr stores 'train' and 'val'split separately
             elif self.variant == 'textocr':
@@ -60,8 +60,6 @@ class COCOTextDetAnnParser(BaseParser):
             img_info = coco.load_imgs([img_id])[0]
             img_info['img_id'] = img_id
             img_path = img_info['file_name']
-            if self.data_root is not None:
-                img_path = osp.join(self.data_root, img_path)
             ann_ids = coco.get_ann_ids(img_ids=[img_id])
             if len(ann_ids) == 0:
                 continue
@@ -96,5 +94,6 @@ class COCOTextDetAnnParser(BaseParser):
                     instances.append(
                         dict(
                             poly=ann['points'], text=text, ignore=text == '.'))
-            samples.append((img_path, instances))
+            samples.append((osp.join(img_dir,
+                                     osp.basename(img_path)), instances))
         return samples
