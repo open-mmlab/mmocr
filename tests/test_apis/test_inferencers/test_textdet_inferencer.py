@@ -54,8 +54,9 @@ class TestTextDetinferencer(TestCase):
         res_ndarray = self.inferencer(img, return_vis=True)
         self.assert_predictions_equal(res_path['predictions'],
                                       res_ndarray['predictions'])
-        self.assertIn('visualization', res_path)
-        self.assertIn('visualization', res_ndarray)
+        self.assertTrue(
+            np.allclose(res_path['visualization'],
+                        res_ndarray['visualization']))
 
         # multiple images
         img_paths = [
@@ -68,8 +69,10 @@ class TestTextDetinferencer(TestCase):
         res_ndarray = self.inferencer(imgs, return_vis=True)
         self.assert_predictions_equal(res_path['predictions'],
                                       res_ndarray['predictions'])
-        self.assertIn('visualization', res_path)
-        self.assertIn('visualization', res_ndarray)
+        for i in range(len(img_paths)):
+            self.assertTrue(
+                np.allclose(res_path['visualization'][i],
+                            res_ndarray['visualization'][i]))
 
         # img dir, test different batch sizes
         img_dir = 'tests/data/det_toy_dataset/imgs/test/'

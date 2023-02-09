@@ -77,6 +77,13 @@ class KIEInferencer(BaseMMOCRInferencer):
         self.novisual = all(
             self._get_transform_idx(pipeline_cfg, t) == -1
             for t in self.loading_transforms)
+        # Remove Resize from test_pipeline, since SDMGR requires bbox
+        # annotations to be resized together with pictures, but visualization
+        # loads the original image from the disk.
+        # TODO: find a more elegant way to fix this
+        idx = self._get_transform_idx(pipeline_cfg, 'Resize')
+        if idx != -1:
+            pipeline_cfg.pop(idx)
         # If it's in non-visual mode, self.pipeline will be specified.
         # Otherwise, file_pipeline and ndarray_pipeline will be specified.
         if self.novisual:
@@ -93,6 +100,7 @@ class KIEInferencer(BaseMMOCRInferencer):
 
         - img (str or ndarray): Path to the image or the image itself. If KIE
           Inferencer is used in no-visual mode, this key is not required.
+          Note: If it's an numpy array, it should be in BGR order.
         - img_shape (tuple(int, int)): Image shape in (H, W). In
         - instances (list[dict]): A list of instances.
             - bbox (ndarray(dtype=np.float32)): Shape (4, ). Bounding box.
@@ -182,6 +190,7 @@ class KIEInferencer(BaseMMOCRInferencer):
 
         - img (str or ndarray): Path to the image or the image itself. If KIE
           Inferencer is used in no-visual mode, this key is not required.
+          Note: If it's an numpy array, it should be in BGR order.
         - img_shape (tuple(int, int)): Image shape in (H, W). In
         - instances (list[dict]): A list of instances.
             - bbox (ndarray(dtype=np.float32)): Shape (4, ). Bounding box.
@@ -286,10 +295,10 @@ class KIEInferencer(BaseMMOCRInferencer):
             assert 'img' in single_input or 'img_shape' in single_input
             if 'img' in single_input:
                 if isinstance(single_input['img'], str):
-                    img = mmcv.imread(single_input['img'])
+                    img = mmcv.imread(single_input['img'], channel_order='rgb')
                     img_name = osp.basename(single_input['img'])
                 elif isinstance(single_input['img'], np.ndarray):
-                    img = single_input['img'].copy()
+                    img = single_input['img'].copy()[:, :, ::-1]  # To RGB
                     img_name = f'{img_num}.jpg'
             elif 'img_shape' in single_input:
                 img = np.zeros(single_input['img_shape'], dtype=np.uint8)
