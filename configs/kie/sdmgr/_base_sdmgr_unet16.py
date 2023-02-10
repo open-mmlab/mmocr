@@ -24,5 +24,5 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadKIEAnnotations'),
     dict(type='Resize', scale=(1024, 512), keep_ratio=True),
-    dict(type='PackKIEInputs'),
+    dict(type='PackKIEInputs', meta_keys=('img_path', )),
 ]

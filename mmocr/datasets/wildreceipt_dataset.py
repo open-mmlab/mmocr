@@ -98,6 +98,87 @@ class WildReceiptDataset(BaseDataset):
             None img. The maximum extra number of cycles to get a valid
             image. Defaults to 1000.
     """
+    METAINFO = {
+        'category': [{
+            'id': '0',
+            'name': 'Ignore'
+        }, {
+            'id': '1',
+            'name': 'Store_name_value'
+        }, {
+            'id': '2',
+            'name': 'Store_name_key'
+        }, {
+            'id': '3',
+            'name': 'Store_addr_value'
+        }, {
+            'id': '4',
+            'name': 'Store_addr_key'
+        }, {
+            'id': '5',
+            'name': 'Tel_value'
+        }, {
+            'id': '6',
+            'name': 'Tel_key'
+        }, {
+            'id': '7',
+            'name': 'Date_value'
+        }, {
+            'id': '8',
+            'name': 'Date_key'
+        }, {
+            'id': '9',
+            'name': 'Time_value'
+        }, {
+            'id': '10',
+            'name': 'Time_key'
+        }, {
+            'id': '11',
+            'name': 'Prod_item_value'
+        }, {
+            'id': '12',
+            'name': 'Prod_item_key'
+        }, {
+            'id': '13',
+            'name': 'Prod_quantity_value'
+        }, {
+            'id': '14',
+            'name': 'Prod_quantity_key'
+        }, {
+            'id': '15',
+            'name': 'Prod_price_value'
+        }, {
+            'id': '16',
+            'name': 'Prod_price_key'
+        }, {
+            'id': '17',
+            'name': 'Subtotal_value'
+        }, {
+            'id': '18',
+            'name': 'Subtotal_key'
+        }, {
+            'id': '19',
+            'name': 'Tax_value'
+        }, {
+            'id': '20',
+            'name': 'Tax_key'
+        }, {
+            'id': '21',
+            'name': 'Tips_value'
+        }, {
+            'id': '22',
+            'name': 'Tips_key'
+        }, {
+            'id': '23',
+            'name': 'Total_value'
+        }, {
+            'id': '24',
+            'name': 'Total_key'
+        }, {
+            'id': '25',
+            'name': 'Others'
+        }]
+    }
 
     def __init__(self,
                  directed: bool = False,

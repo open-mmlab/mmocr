@@ -90,12 +90,11 @@ class COCOTextDetAnnParser(BaseParser):
                             ignore=ann['legibility'] == 'illegible'))
                 elif self.variant == 'textocr':
                     # textocr use 'utf8_string' field to store the text and
-                    # the 'points' field to store the polygon, ignore flag
-                    # is not available.
+                    # the 'points' field to store the polygon, '.' is used to
+                    # represent the ignored text.
+                    text = ann.get('utf8_string', None)
                     instances.append(
                         dict(
-                            poly=ann['points'],
-                            text=ann.get('utf8_string', None),
-                            ignore=False))
+                            poly=ann['points'], text=text, ignore=text == '.'))
             samples.append((img_path, instances))
         return samples

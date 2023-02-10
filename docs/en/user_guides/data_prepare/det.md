@@ -1,40 +1,32 @@
 # Text Detection
 
 ```{note}
-This page is deprecated and all these scripts will be eventually migrated into dataset preparer, a brand new module designed to ease these lengthy dataset preparation steps. [Check it out](./dataset_preparer.md)!
+This page is a manual preparation guide for datasets not yet supported by [Dataset Preparer](./dataset_preparer.md), which all these scripts will be eventually migrated into.
 ```
 
 ## Overview
 
-|      Dataset      |                    Images                     |                                         |                     Annotation Files                     |                                          |     |
-| :---------------: | :-------------------------------------------: | :-------------------------------------: | :------------------------------------------------------: | :--------------------------------------: | :-: |
-|                   |                                               |                training                 |                        validation                        |                 testing                  |     |
-|      CTW1500      | [homepage](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                    -                    |                            -                             |                    -                     |     |
-|     ICDAR2011     |   [homepage](https://rrc.cvc.uab.es/?ch=1)    |                    -                    |                            -                             |                                          |     |
-|     ICDAR2013     |   [homepage](https://rrc.cvc.uab.es/?ch=2)    |                    -                    |                            -                             |                    -                     |     |
-|     ICDAR2015     | [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads) | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) |                            -                             | [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) |     |
-|     ICDAR2017     | [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads) | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) |                    -                     |     |
-|     Synthtext     | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/) | instances_training.lmdb ([data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb), [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb)) |                            -                             |                    -                     |     |
-|      TextOCR      | [homepage](https://textvqa.org/textocr/dataset) |                    -                    |                            -                             |                    -                     |     |
-|     Totaltext     | [homepage](https://github.com/cs-chan/Total-Text-Dataset) |                    -                    |                            -                             |                    -                     |     |
-| CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) | [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json) |                            -                             |                    -                     |     |
-|       FUNSD       | [homepage](https://guillaumejaume.github.io/FUNSD/) |                    -                    |                            -                             |                    -                     |     |
-|      DeText       |   [homepage](https://rrc.cvc.uab.es/?ch=9)    |                    -                    |                            -                             |                    -                     |     |
-|        NAF        | [homepage](https://github.com/herobd/NAF_dataset/releases/tag/v1.0) |                    -                    |                            -                             |                    -                     |     |
-|       SROIE       |   [homepage](https://rrc.cvc.uab.es/?ch=13)   |                    -                    |                            -                             |                    -                     |     |
-| Lecture Video DB  | [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb) |                    -                    |                            -                             |                    -                     |     |
-|       LSVT        |   [homepage](https://rrc.cvc.uab.es/?ch=16)   |                    -                    |                            -                             |                    -                     |     |
-|       IMGUR       | [homepage](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset) |                    -                    |                            -                             |                    -                     |     |
-|       KAIST       | [homepage](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) |                    -                    |                            -                             |                    -                     |     |
-|       MTWI        | [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us) |                    -                    |                            -                             |                    -                     |     |
-|   COCO Text v2    | [homepage](https://bgshih.github.io/cocotext/) |                    -                    |                            -                             |                    -                     |     |
-|       ReCTS       |   [homepage](https://rrc.cvc.uab.es/?ch=12)   |                    -                    |                            -                             |                    -                     |     |
-|     IIIT-ILST     | [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst) |                    -                    |                            -                             |                    -                     |     |
-|      VinText      | [homepage](https://github.com/VinAIResearch/dict-guided) |                    -                    |                            -                             |                    -                     |     |
-|        BID        | [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset) |                    -                    |                            -                             |                    -                     |     |
-|       RCTW        | [homepage](https://rctw.vlrlab.net/index.html) |                    -                    |                            -                             |                    -                     |     |
-|     HierText      | [homepage](https://github.com/google-research-datasets/hiertext) |                    -                    |                            -                             |                    -                     |     |
-|        ArT        |   [homepage](https://rrc.cvc.uab.es/?ch=14)   |                    -                    |                            -                             |                    -                     |     |
+|      Dataset      |                          Images                          |                                                    |                          Annotation Files                           |         |     |
+| :---------------: | :------------------------------------------------------: | :------------------------------------------------: | :-----------------------------------------------------------------: | :-----: | :-: |
+|                   |                                                          |                      training                      |                             validation                              | testing |     |
+|      CTW1500      | [homepage](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                         -                          |                                  -                                  |    -    |     |
+|     ICDAR2011     |         [homepage](https://rrc.cvc.uab.es/?ch=1)         |                         -                          |                                  -                                  |         |     |
+|     ICDAR2017     |  [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)  | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) |    -    |     |
+|     Synthtext     | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/) | instances_training.lmdb ([data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb), [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb)) |                                  -                                  |    -    |     |
+| CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) | [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json) |                                  -                                  |    -    |     |
+|      DeText       |         [homepage](https://rrc.cvc.uab.es/?ch=9)         |                         -                          |                                  -                                  |    -    |     |
+| Lecture Video DB  | [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb) |                         -                          |                                  -                                  |    -    |     |
+|       LSVT        |        [homepage](https://rrc.cvc.uab.es/?ch=16)         |                         -                          |                                  -                                  |    -    |     |
+|       IMGUR       | [homepage](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset) |                         -                          |                                  -                                  |    -    |     |
+|       KAIST       | [homepage](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) |                         -                          |                                  -                                  |    -    |     |
+|       MTWI        | [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us) |                         -                          |                                  -                                  |    -    |     |
+|       ReCTS       |        [homepage](https://rrc.cvc.uab.es/?ch=12)         |                         -                          |                                  -                                  |    -    |     |
+|     IIIT-ILST     | [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst) |                         -                          |                                  -                                  |    -    |     |
+|      VinText      | [homepage](https://github.com/VinAIResearch/dict-guided) |                         -                          |                                  -                                  |    -    |     |
+|        BID        | [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset) |                         -                          |                                  -                                  |    -    |     |
+|       RCTW        |      [homepage](https://rctw.vlrlab.net/index.html)      |                         -                          |                                  -                                  |    -    |     |
+|     HierText      | [homepage](https://github.com/google-research-datasets/hiertext) |                         -                          |                                  -                                  |    -    |     |
+|        ArT        |        [homepage](https://rrc.cvc.uab.es/?ch=14)         |                         -                          |                                  -                                  |    -    |     |
 
 ### Install AWS CLI (optional)
 
@@ -142,82 +134,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.json
   ```
 
-## ICDAR 2013 (Focused Scene Text)
-
-- Step1: Download `Challenge2_Training_Task12_Images.zip`, `Challenge2_Test_Task12_Images.zip`, `Challenge2_Training_Task1_GT.zip`, and `Challenge2_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=2&com=downloads) `Task 2.1: Text Localization (2013 edition)`.
-
-  ```bash
-  mkdir icdar2013 && cd icdar2013
-  mkdir imgs && mkdir annotations
-
-  # Download ICDAR 2013
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task12_Images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task12_Images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Training_Task1_GT.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge2_Test_Task1_GT.zip --no-check-certificate
-
-  # For images
-  unzip -q Challenge2_Training_Task12_Images.zip -d imgs/training
-  unzip -q Challenge2_Test_Task12_Images.zip -d imgs/test
-  # For annotations
-  unzip -q Challenge2_Training_Task1_GT.zip -d annotations/training
-  unzip -q Challenge2_Test_Task1_GT.zip -d annotations/test
-
-  rm Challenge2_Training_Task12_Images.zip && rm Challenge2_Test_Task12_Images.zip && rm Challenge2_Training_Task1_GT.zip && rm Challenge2_Test_Task1_GT.zip
-  ```
-
-- Step 2: Generate `instances_training.json` and `instances_test.json` with the following command:
-
-  ```bash
-  python tools/dataset_converters/textdet/ic13_converter.py PATH/TO/icdar2013 --nproc 4
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  │── icdar2013
-  │   ├── imgs
-  │   ├── instances_test.json
-  │   └── instances_training.json
-  ```
-
-## ICDAR 2015
-
-- Step0: Read [Important Note](#important-note)
-
-- Step1: Download `ch4_training_images.zip`, `ch4_test_images.zip`, `ch4_training_localization_transcription_gt.zip`, `Challenge4_Test_Task1_GT.zip` from [homepage](https://rrc.cvc.uab.es/?ch=4&com=downloads)
-
-- Step2:
-
-  ```bash
-  mkdir icdar2015 && cd icdar2015
-  mkdir imgs && mkdir annotations
-  # For images,
-  mv ch4_training_images imgs/training
-  mv ch4_test_images imgs/test
-  # For annotations,
-  mv ch4_training_localization_transcription_gt annotations/training
-  mv Challenge4_Test_Task1_GT annotations/test
-  ```
-
-- Step3: Download [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_training.json) and [instances_test.json](https://download.openmmlab.com/mmocr/data/icdar2015/instances_test.json) and move them to `icdar2015`
-
-- Or, generate `instances_training.json` and `instances_test.json` with the following command:
-
-  ```bash
-  python tools/dataset_converters/textdet/icdar_converter.py /path/to/icdar2015 -o /path/to/icdar2015 -d icdar2015 --split-list training test
-  ```
-
-- The resulting directory structure looks like the following:
-
-  ```text
-  ├── icdar2015
-  │   ├── imgs
-  │   ├── annotations
-  │   ├── instances_test.json
-  │   └── instances_training.json
-  ```
-
 ## ICDAR 2017
 
 - Follow similar steps as [ICDAR 2015](#icdar-2015).
@@ -246,81 +162,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.lmdb
   │       ├── data.mdb
   │       └── lock.mdb
-  ```
-
-## TextOCR
-
-- Step1: Download [train_val_images.zip](https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip), [TextOCR_0.1_train.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json) and [TextOCR_0.1_val.json](https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json) to `textocr/`.
-
-  ```bash
-  mkdir textocr && cd textocr
-
-  # Download TextOCR dataset
-  wget https://dl.fbaipublicfiles.com/textvqa/images/train_val_images.zip
-  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_train.json
-  wget https://dl.fbaipublicfiles.com/textvqa/data/textocr/TextOCR_0.1_val.json
-
-  # For images
-  unzip -q train_val_images.zip
-  mv train_images train
-  ```
-
-- Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
-
-  ```bash
-  python tools/dataset_converters/textdet/textocr_converter.py /path/to/textocr
-  ```
-
-- The resulting directory structure looks like the following:
-
-  ```text
-  ├── textocr
-  │   ├── train
-  │   ├── instances_training.json
-  │   └── instances_val.json
-  ```
-
-## Totaltext
-
-- Step0: Read [Important Note](#important-note)
-
-- Step1: Download `totaltext.zip` from [github dataset](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) and `groundtruth_text.zip` or `TT_new_train_GT.zip` (if you prefer to use the latest version of training annotations) from [github Groundtruth](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Groundtruth/Text) (Our totaltext_converter.py supports groundtruth with both .mat and .txt format).
-
-  ```bash
-  mkdir totaltext && cd totaltext
-  mkdir imgs && mkdir annotations
-
-  # For images
-  # in ./totaltext
-  unzip totaltext.zip
-  mv Images/Train imgs/training
-  mv Images/Test imgs/test
-
-  # For legacy training and test annotations
-  unzip groundtruth_text.zip
-  mv Groundtruth/Polygon/Train annotations/training
-  mv Groundtruth/Polygon/Test annotations/test
-
-  # Using the latest training annotations
-  # WARNING: Delete legacy train annotations before running the following command.
-  unzip TT_new_train_GT.zip
-  mv Train annotations/training
-  ```
-
-- Step2: Generate `instances_training.json` and `instances_test.json` with the following command:
-
-  ```bash
-  python tools/dataset_converters/textdet/totaltext_converter.py /path/to/totaltext
-  ```
-
-- The resulting directory structure looks like the following:
-
-  ```text
-  ├── totaltext
-  │   ├── imgs
-  │   ├── annotations
-  │   ├── instances_test.json
-  │   └── instances_training.json
   ```
 
 ## CurvedSynText150k
@@ -358,43 +199,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   └── instances_training.json
   ```
 
-## FUNSD
-
-- Step1: Download [dataset.zip](https://guillaumejaume.github.io/FUNSD/dataset.zip) to `funsd/`.
-
-  ```bash
-  mkdir funsd && cd funsd
-
-  # Download FUNSD dataset
-  wget https://guillaumejaume.github.io/FUNSD/dataset.zip
-  unzip -q dataset.zip
-
-  # For images
-  mv dataset/training_data/images imgs && mv dataset/testing_data/images/* imgs/
-
-  # For annotations
-  mkdir annotations
-  mv dataset/training_data/annotations annotations/training && mv dataset/testing_data/annotations annotations/test
-
-  rm dataset.zip && rm -rf dataset
-  ```
-
-- Step2: Generate `instances_training.json` and `instances_test.json` with following command:
-
-  ```bash
-  python tools/dataset_converters/textdet/funsd_converter.py PATH/TO/funsd --nproc 4
-  ```
-
-- The resulting directory structure looks like the following:
-
-  ```text
-  │── funsd
-  │   ├── annotations
-  │   ├── imgs
-  │   ├── instances_test.json
-  │   └── instances_training.json
-  ```
-
 ## DeText
 
 - Step1: Download `ch9_training_images.zip`, `ch9_training_localization_transcription_gt.zip`, `ch9_validation_images.zip`, and `ch9_validation_localization_transcription_gt.zip` from **Task 3: End to End** on the [homepage](https://rrc.cvc.uab.es/?ch=9).
@@ -426,84 +230,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
 
   ```text
   │── detext
-  │   ├── annotations
-  │   ├── imgs
-  │   ├── instances_test.json
-  │   └── instances_training.json
-  ```
-
-## NAF
-
-- Step1: Download [labeled_images.tar.gz](https://github.com/herobd/NAF_dataset/releases/tag/v1.0) to `naf/`.
-
-  ```bash
-  mkdir naf && cd naf
-
-  # Download NAF dataset
-  wget https://github.com/herobd/NAF_dataset/releases/download/v1.0/labeled_images.tar.gz
-  tar -zxf labeled_images.tar.gz
-
-  # For images
-  mkdir annotations && mv labeled_images imgs
-
-  # For annotations
-  git clone https://github.com/herobd/NAF_dataset.git
-  mv NAF_dataset/train_valid_test_split.json annotations/ && mv NAF_dataset/groups annotations/
-
-  rm -rf NAF_dataset && rm labeled_images.tar.gz
-  ```
-
-- Step2: Generate `instances_training.json`, `instances_val.json`, and `instances_test.json` with following command:
-
-  ```bash
-  python tools/dataset_converters/textdet/naf_converter.py PATH/TO/naf --nproc 4
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  │── naf
-  │   ├── annotations
-  │   ├── imgs
-  │   ├── instances_test.json
-  │   ├── instances_val.json
-  │   └── instances_training.json
-  ```
-
-## SROIE
-
-- Step1: Download `0325updated.task1train(626p).zip`, `task1&2_test(361p).zip`, and `text.task1&2-test（361p).zip` from [homepage](https://rrc.cvc.uab.es/?ch=13&com=downloads) to `sroie/`
-
-- Step2:
-
-  ```bash
-  mkdir sroie && cd sroie
-  mkdir imgs && mkdir annotations && mkdir imgs/training
-
-  # Warnninig: The zip files downloaded from Google Drive and BaiduYun Cloud may
-  # be different, the user should revise the following commands to the correct
-  # file name if encounter with errors while extracting and move the files.
-  unzip -q 0325updated.task1train\(626p\).zip && unzip -q task1\&2_test\(361p\).zip && unzip -q text.task1\&2-test（361p\).zip
-
-  # For images
-  mv 0325updated.task1train\(626p\)/*.jpg imgs/training && mv fulltext_test\(361p\) imgs/test
-
-  # For annotations
-  mv 0325updated.task1train\(626p\) annotations/training && mv text.task1\&2-testги361p\)/ annotations/test
-
-  rm 0325updated.task1train\(626p\).zip && rm task1\&2_test\(361p\).zip && rm text.task1\&2-test（361p\).zip
-  ```
-
-- Step3: Generate `instances_training.json` and `instances_test.json` with the following command:
-
-  ```bash
-  python tools/dataset_converters/textdet/sroie_converter.py PATH/TO/sroie --nproc 4
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  ├── sroie
   │   ├── annotations
   │   ├── imgs
   │   ├── instances_test.json
@@ -682,40 +408,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   ├── imgs
   │   ├── instances_training.json
   │   └── instances_val.json (optional)
-  ```
-
-## COCO Text v2
-
-- Step1: Download image [train2014.zip](http://images.cocodataset.org/zips/train2014.zip) and annotation [cocotext.v2.zip](https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip) to `coco_textv2/`.
-
-  ```bash
-  mkdir coco_textv2 && cd coco_textv2
-  mkdir annotations
-
-  # Download COCO Text v2 dataset
-  wget http://images.cocodataset.org/zips/train2014.zip
-  wget https://github.com/bgshih/cocotext/releases/download/dl/cocotext.v2.zip
-  unzip -q train2014.zip && unzip -q cocotext.v2.zip
-
-  mv train2014 imgs && mv cocotext.v2.json annotations/
-
-  rm train2014.zip && rm -rf cocotext.v2.zip
-  ```
-
-- Step2: Generate `instances_training.json` and `instances_val.json` with the following command:
-
-  ```bash
-  python tools/dataset_converters/textdet/cocotext_converter.py PATH/TO/coco_textv2
-  ```
-
-- After running the above codes, the directory structure should be as follows:
-
-  ```text
-  │── coco_textv2
-  │   ├── annotations
-  │   ├── imgs
-  │   ├── instances_training.json
-  │   └── instances_val.json
   ```
 
 ## ReCTS
