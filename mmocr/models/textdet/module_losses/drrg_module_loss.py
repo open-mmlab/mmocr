@@ -282,7 +282,7 @@ class DRRGModuleLoss(TextSnakeModuleLoss):
 
         polygons = gt_instances[~ignore_flags].polygons
         ignored_polygons = gt_instances[ignore_flags].polygons
-        h, w = data_sample.img_shape
+        h, w = data_sample.batch_input_shape
 
         gt_text_mask = self._generate_text_region_mask((h, w), polygons)
         gt_mask = self._generate_effective_mask((h, w), ignored_polygons)
