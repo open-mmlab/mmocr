@@ -16,7 +16,7 @@ class TestTextSnakeModuleLoss(TestCase):
 
         self.data_samples = [
             TextDetDataSample(
-                metainfo=dict(img_shape=(3, 10)),
+                metainfo=dict(img_shape=(3, 10), batch_input_shape=(3, 10)),
                 gt_instances=InstanceData(
                     polygons=np.array([
                         [0, 0, 1, 0, 1, 1, 0, 1],

@@ -16,7 +16,7 @@ class TestPSEModuleLoss(TestCase):
     def setUp(self) -> None:
         self.data_samples = [
             TextDetDataSample(
-                metainfo=dict(img_shape=(40, 40)),
+                metainfo=dict(img_shape=(40, 40), batch_input_shape=(40, 40)),
                 gt_instances=InstanceData(
                     polygons=np.array([
                         [0, 0, 10, 0, 10, 10, 0, 10],
