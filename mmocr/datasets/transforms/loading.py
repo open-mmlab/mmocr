@@ -150,6 +150,8 @@ class LoadImageFromNDArray(LoadImageFromFile):
         if self.color_type == 'grayscale':
             img = mmcv.image.rgb2gray(img)
         results['img'] = img
+        if results.get('img_path', None) is None:
+            results['img_path'] = None
         results['img_shape'] = img.shape[:2]
         results['ori_shape'] = img.shape[:2]
         return results
