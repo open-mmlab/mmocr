@@ -8,7 +8,6 @@ prepare_train_data = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,
-        data_root=data_root,
         files=[
             dict(
                 url='https://rrc.cvc.uab.es/downloads/'
@@ -31,7 +30,6 @@ prepare_test_data = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,
-        data_root=data_root,
         files=[
             dict(
                 url='https://rrc.cvc.uab.es/downloads/'
@@ -70,7 +68,6 @@ prepare_test_data = dict(
 
 config_generator = dict(
     type='TextRecogConfigGenerator',
-    data_root=data_root,
     test_anns=[
         dict(ann_file='textrecog_test.json'),
         dict(dataset_postfix='1811', ann_file='textrecog_test_1811.json')

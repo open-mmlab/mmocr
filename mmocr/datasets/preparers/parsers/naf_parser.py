@@ -28,22 +28,19 @@ class NAFAnnParser(BaseParser):
     "" (empty string) is if the field was blank
 
     Args:
-        data_root (str): Path to the dataset root.
         ignore (list(str)): The text of the ignored instances. Default: ['#'].
         det (bool): Whether to parse the detection annotation. Default: True.
             If False, the parser will consider special case in NAF dataset
             where the transcription is not available.
-        nproc (int): Number of processes to load the data. Default: 1.
     """
 
     def __init__(self,
-                 data_root: str,
                  ignore: List[str] = ['#'],
                  det: bool = True,
-                 nproc: int = 1) -> None:
+                 **kwargs) -> None:
         self.ignore = ignore
         self.det = det
-        super().__init__(data_root=data_root, nproc=nproc)
+        super().__init__(**kwargs)
 
     def parse_file(self, img_path: str, ann_path: str) -> Tuple:
         """Convert single annotation."""

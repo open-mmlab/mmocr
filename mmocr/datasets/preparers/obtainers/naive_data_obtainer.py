@@ -114,6 +114,21 @@ class NaiveDataObtainer:
             dst_path = osp.join(osp.dirname(src_path), zip_name)
         else:
             dst_path = osp.join(dst_path, zip_name)
+
+        have_extract = False
+        if osp.exists(dst_path):
+            name = set(os.listdir(dst_path))
+            if 'finish.mmocr' in name and len(name) > 1:
+                have_extract = True
+            elif 'finish.mmocr' not in name and len(name) > 0:
+                i = input(f'{dst_path} have exist when extract {zip_name}, '
+                          'whether to unzip again? (y/n)')
+                have_extract = i == 'n'
+        if have_extract:
+            f = open(osp.join(dst_path, 'finish.mmocr'), 'w')
+            f.close()
+            print(f'{zip_name} have been extracted. Skip')
+            return
         mkdir_or_exist(dst_path)
         print(f'Extracting: {osp.basename(src_path)}')
         if src_path.endswith('.zip'):
@@ -136,6 +151,10 @@ class NaiveDataObtainer:
                     'Please install tarfile by running "pip install tarfile".')
             with tarfile.open(src_path, mode) as tar_ref:
                 tar_ref.extractall(dst_path)
+
+        f = open(osp.join(dst_path, 'finish.mmocr'), 'w')
+        f.close()
+
         if delete:
             os.remove(src_path)
 

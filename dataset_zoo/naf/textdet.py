@@ -1,10 +1,9 @@
 data_root = 'data/naf'
 cache_path = 'data/cache'
 
-data_obtainer = dict(
+obtainer = dict(
     type='NaiveDataObtainer',
     cache_path=cache_path,
-    data_root=data_root,
     files=[
         dict(
             url='https://github.com/herobd/NAF_dataset/releases/'
@@ -33,17 +32,18 @@ data_obtainer = dict(
             ]),
     ])
 
-data_converter = dict(
-    type='TextDetDataConverter',
-    splits=['train', 'test', 'val'],
-    data_root=data_root,
-    gatherer=dict(type='naf_gather'),
-    parser=dict(type='NAFAnnParser', data_root=data_root, det=True),
-    delete=['temp_images', 'data_split.json', 'annotations', 'naf_anno'],
+prepare_train_data = dict(
+    obtainer=obtainer,
+    gatherer=dict(type='NAFGatherer'),
+    parser=dict(type='NAFAnnParser', det=True),
+    packer=dict(type='TextDetPacker'),
     dumper=dict(type='JsonDumper'),
-    nproc=1)
+)
+
+prepare_test_data = prepare_train_data
+
+prepare_val_data = prepare_train_data
 
 config_generator = dict(
     type='TextDetConfigGenerator',
-    data_root=data_root,
     val_anns=[dict(ann_file='textdet_val.json', dataset_postfix='')])

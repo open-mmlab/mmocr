@@ -129,8 +129,9 @@ class DatasetPreparer:
         obtainer = cfg.get('obtainer', None)
         if obtainer:
             print(f'Obtaining {split} Dataset...')
-            cfg.obtainer.setdefault('task', default=self.task)
-            obtainer = DATA_OBTAINERS.build(cfg.obtainer)
+            obtainer.setdefault('task', default=self.task)
+            obtainer.setdefault('data_root', default=self.data_root)
+            obtainer = DATA_OBTAINERS.build(obtainer)
             obtainer()
 
         # build gatherer
@@ -186,6 +187,7 @@ class DatasetPreparer:
             return
         self.config_generator.setdefault(
             'dataset_name', default=self.dataset_name)
+        self.config_generator.setdefault('data_root', default=self.data_root)
         config_generator = CFG_GENERATORS.build(self.config_generator)
         print('Generating base configs...')
         config_generator()

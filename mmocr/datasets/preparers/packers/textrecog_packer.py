@@ -28,7 +28,7 @@ class TextRecogPacker(BasePacker):
         # TODO: remove hard code
         packed_instance = dict(
             instances=[dict(text=text)],
-            img_path=osp.join('textrecogt_imgs', self.split,
+            img_path=osp.join('textrecog_imgs', self.split,
                               osp.basename(img_name)))
 
         return packed_instance

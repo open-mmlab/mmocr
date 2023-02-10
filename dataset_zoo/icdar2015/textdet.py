@@ -4,7 +4,6 @@ prepare_train_data = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,
-        data_root=data_root,
         files=[
             dict(
                 url='https://rrc.cvc.uab.es/downloads/ch4_training_images.zip',
@@ -33,7 +32,6 @@ prepare_test_data = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,
-        data_root=data_root,
         files=[
             dict(
                 url='https://rrc.cvc.uab.es/downloads/ch4_test_images.zip',
@@ -60,4 +58,4 @@ prepare_test_data = dict(
     dumper=dict(type='JsonDumper'),
 )
 
-config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)
+config_generator = dict(type='TextDetConfigGenerator')
