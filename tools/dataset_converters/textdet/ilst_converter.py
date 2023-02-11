@@ -155,7 +155,7 @@ def split_train_val_list(full_list, val_ratio):
     """Split list by val_ratio.
 
     Args:
-        full_list (list): List to be splited
+        full_list (list): List to be split
         val_ratio (float): Split ratio for val set
 
     return:
