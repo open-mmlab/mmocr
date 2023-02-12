@@ -177,4 +177,4 @@ class ASTERDecoder(BaseDecoder):
             outputs.append(output)
             _, predicted = output.max(-1)
         outputs = torch.cat([_.unsqueeze(1) for _ in outputs], 1)
-        return outputs
+        return torch.softmax(outputs)
