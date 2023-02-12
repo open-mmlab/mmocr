@@ -71,6 +71,7 @@ class ASTERDecoder(BaseDecoder):
 
         # Prediction layer
         self.fc = nn.Linear(hidden_size, self.dictionary.num_classes)
+        self.softmax = nn.Softmax(dim=-1)
 
     def _attention(self, feat: torch.Tensor, prev_hidden: torch.Tensor,
                    prev_char: torch.Tensor
@@ -177,4 +178,4 @@ class ASTERDecoder(BaseDecoder):
             outputs.append(output)
             _, predicted = output.max(-1)
         outputs = torch.cat([_.unsqueeze(1) for _ in outputs], 1)
-        return torch.softmax(outputs)
+        return self.softmax(outputs)
