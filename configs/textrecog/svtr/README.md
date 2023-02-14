@@ -34,13 +34,15 @@ Dominant scene text recognition models commonly contain two building blocks, a v
 
 ## Results and Models
 
-|                            Methods                            |        | Regular Text |           |     |           | Irregular Text |        |                                     download                                     |
-| :-----------------------------------------------------------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :------------------------------------------------------------------------------: |
-|                                                               | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                                  |
-|  [SVTR-tiny](/configs/textrecog/svtr/svtr-tiny_20e_st_mj.py)  |   -    |      -       |     -     |     |     -     |       -        |   -    |                             [model](<>) \| [log](<>)                             |
-| [SVTR-small](/configs/textrecog/svtr/svtr-small_20e_st_mj.py) | 0.8553 |    0.9026    |  0.9448   |     |  0.7496   |     0.8496     | 0.8854 | [model](https://download.openmmlab.com/mmocr/textrecog/svtr/svtr-small_20e_st_mj/svtr-small_20e_st_mj-35d800d6.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/svtr/svtr-small_20e_st_mj/20230105_184454.log) |
-|  [SVTR-base](/configs/textrecog/svtr/svtr-base_20e_st_mj.py)  | 0.8570 |    0.9181    |  0.9438   |     |  0.7448   |     0.8388     | 0.9028 | [model](https://download.openmmlab.com/mmocr/textrecog/svtr/svtr-base_20e_st_mj/svtr-base_20e_st_mj-ea500101.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/svtr/svtr-base_20e_st_mj/20221227_175415.log) |
-| [SVTR-large](/configs/textrecog/svtr/svtr-large_20e_st_mj.py) |   -    |      -       |     -     |     |     -     |       -        |   -    |                             [model](<>) \| [log](<>)                             |
+|                              Methods                              |        | Regular Text |           |     |           | Irregular Text |        |                                   download                                   |
+| :---------------------------------------------------------------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :--------------------------------------------------------------------------: |
+|                                                                   | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                              |
+|    [SVTR-tiny](/configs/textrecog/svtr/svtr-tiny_20e_st_mj.py)    |   -    |      -       |     -     |     |     -     |       -        |   -    |                           [model](<>) \| [log](<>)                           |
+|   [SVTR-small](/configs/textrecog/svtr/svtr-small_20e_st_mj.py)   | 0.8553 |    0.9026    |  0.9448   |     |  0.7496   |     0.8496     | 0.8854 | [model](https://download.openmmlab.com/mmocr/textrecog/svtr/svtr-small_20e_st_mj/svtr-small_20e_st_mj-35d800d6.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/svtr/svtr-small_20e_st_mj/20230105_184454.log) |
+| [SVTR-small-TTA](/configs/textrecog/svtr/svtr-small_20e_st_mj.py) | 0.8397 |    0.8964    |  0.9241   |     |  0.7597   |     0.8124     | 0.8646 |                                                                              |
+|    [SVTR-base](/configs/textrecog/svtr/svtr-base_20e_st_mj.py)    | 0.8570 |    0.9181    |  0.9438   |     |  0.7448   |     0.8388     | 0.9028 | [model](https://download.openmmlab.com/mmocr/textrecog/svtr/svtr-base_20e_st_mj/svtr-base_20e_st_mj-ea500101.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/svtr/svtr-base_20e_st_mj/20221227_175415.log) |
+|  [SVTR-base-TTA](/configs/textrecog/svtr/svtr-base_20e_st_mj.py)  | 0.8517 |    0.9011    |  0.9379   |     |  0.7569   |     0.8279     | 0.8819 |                                                                              |
+|   [SVTR-large](/configs/textrecog/svtr/svtr-large_20e_st_mj.py)   |   -    |      -       |     -     |     |     -     |       -        |   -    |                           [model](<>) \| [log](<>)                           |
 
 ```{note}
 The implementation and configuration follow the original code and paper, but there is still a gap between the reproduced results and the official ones. We appreciate any suggestions to improve its performance.
