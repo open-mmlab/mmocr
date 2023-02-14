@@ -75,12 +75,15 @@ class TestKIEInferencer(TestCase):
 
     def assert_predictions_equal(self, preds1, preds2):
         for pred1, pred2 in zip(preds1, preds2):
-            self.assertTrue(np.allclose(pred1['labels'], pred2['labels'], 0.1))
-            self.assertTrue(
-                np.allclose(pred1['edge_scores'], pred2['edge_scores'], 0.1))
-            self.assertTrue(
-                np.allclose(pred1['edge_labels'], pred2['edge_labels'], 0.1))
-            self.assertTrue(np.allclose(pred1['scores'], pred2['scores'], 0.1))
+            self.assert_prediction_equal(pred1, pred2)
+
+    def assert_prediction_equal(self, pred1, pred2):
+        self.assertTrue(np.allclose(pred1['labels'], pred2['labels'], 0.1))
+        self.assertTrue(
+            np.allclose(pred1['edge_scores'], pred2['edge_scores'], 0.1))
+        self.assertTrue(
+            np.allclose(pred1['edge_labels'], pred2['edge_labels'], 0.1))
+        self.assertTrue(np.allclose(pred1['scores'], pred2['scores'], 0.1))
 
     def test_call(self):
         # no visual, single input
@@ -130,9 +133,9 @@ class TestKIEInferencer(TestCase):
 
         # img_out_dir
         with tempfile.TemporaryDirectory() as tmp_dir:
-            self.inferencer(self.data_img_str, img_out_dir=tmp_dir)
-            for img_dir in ['00000000.jpg', '00000001.jpg']:
-                self.assertTrue(osp.exists(osp.join(tmp_dir, img_dir)))
+            self.inferencer(self.data_img_str, out_dir=tmp_dir, save_vis=True)
+            for img_dir in ['1.jpg', '2.jpg']:
+                self.assertTrue(osp.exists(osp.join(tmp_dir, 'vis', img_dir)))
 
     def test_postprocess(self):
         # return_datasample
@@ -141,14 +144,19 @@ class TestKIEInferencer(TestCase):
 
         # pred_out_file
         with tempfile.TemporaryDirectory() as tmp_dir:
-            pred_out_file = osp.join(tmp_dir, 'tmp.pkl')
             res = self.inferencer(
                 self.data_img_ndarray,
                 print_result=True,
-                pred_out_file=pred_out_file)
-            dumped_res = mmengine.load(pred_out_file)
-            self.assert_predictions_equal(res['predictions'],
-                                          dumped_res['predictions'])
+                out_dir=tmp_dir,
+                save_pred=True)
+            file_names = [
+                f'{self.inferencer.num_unnamed_imgs - i}.json'
+                for i in range(len(self.data_img_ndarray), 0, -1)
+            ]
+            for pred, file_name in zip(res['predictions'], file_names):
+                dumped_res = mmengine.load(
+                    osp.join(tmp_dir, 'preds', file_name))
+                self.assert_prediction_equal(dumped_res, pred)
 
     @mock.patch('mmocr.apis.inferencers.kie_inferencer._load_checkpoint')
     def test_load_metainfo_to_visualizer(self, mock_load):

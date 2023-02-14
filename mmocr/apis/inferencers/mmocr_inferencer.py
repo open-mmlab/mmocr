@@ -1,16 +1,15 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import copy
+import os.path as osp
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 
 import mmcv
 import mmengine
 import numpy as np
-from mmengine.fileio import (get_file_backend, isdir, join_path,
-                             list_dir_or_file)
+from rich.progress import track
 
 from mmocr.registry import VISUALIZERS
-from mmocr.structures.textdet_data_sample import TextDetDataSample
+from mmocr.structures import TextSpottingDataSample
 from mmocr.utils import ConfigType, bbox2poly, crop_img, poly2bbox
 from .base_mmocr_inferencer import (BaseMMOCRInferencer, InputsType, PredType,
                                     ResType)
@@ -65,7 +64,6 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                              'provided.')
 
         self.visualizer = None
-        self.num_visualized_imgs = 0
 
         if det is not None:
             self.textdet_inferencer = TextDetInferencer(
@@ -93,43 +91,19 @@ class MMOCRInferencer(BaseMMOCRInferencer):
             self.kie_inferencer = KIEInferencer(kie, kie_weights, device)
             self.mode = 'det_rec_kie'
 
-    def _inputs_to_list(self, inputs: InputsType) -> list:
-        """Preprocess the inputs to a list.
-
-        Preprocess inputs to a list according to its type:
-
-            - list or tuple: return inputs
-            - str:
-                - Directory path: return all files in the directory
-                - normal string: return a list containing the string
-
-        Args:
-            inputs (InputsType): Inputs for the inferencer.
-
-        Returns:
-            list: List of input for the :meth:`preprocess`.
-        """
-        inputs = copy.deepcopy(inputs)
-        if isinstance(inputs, str):
-            backend = get_file_backend(inputs)
-            if hasattr(backend, 'isdir') and isdir(inputs):
-                # Backends like HttpsBackend do not implement `isdir`, so only
-                # those backends that implement `isdir` could accept the inputs
-                # as a directory
-                filename_list = list_dir_or_file(inputs, list_dir=False)
-                inputs = [
-                    join_path(inputs, filename) for filename in filename_list
-                ]
-
-        if not isinstance(inputs, (list, tuple)):
-            inputs = [inputs]
-
-        for i in range(len(inputs)):
-            if not isinstance(inputs[i], np.ndarray):
-                img_bytes = mmengine.fileio.get(inputs[i])
-                inputs[i] = mmcv.imfrombytes(img_bytes)
-
-        return list(inputs)
+    def _inputs2ndarrray(self, inputs: List[InputsType]) -> List[np.ndarray]:
+        """Preprocess the inputs to a list of numpy arrays."""
+        new_inputs = []
+        for item in inputs:
+            if isinstance(item, np.ndarray):
+                new_inputs.append(item)
+            elif isinstance(item, str):
+                img_bytes = mmengine.fileio.get(item)
+                new_inputs.append(mmcv.imfrombytes(img_bytes))
+            else:
+                raise NotImplementedError(f'The input type {type(item)} is not'
+                                          'supported yet.')
+        return new_inputs
 
     def forward(self, inputs: InputsType, batch_size: int,
                 **forward_kwargs) -> PredType:
@@ -144,6 +118,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
             "kie"..
         """
         result = {}
+        forward_kwargs['progress_bar'] = False
         if self.mode == 'rec':
             # The extra list wrapper here is for the ease of postprocessing
             self.rec_inputs = inputs
@@ -153,15 +128,16 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                 batch_size=batch_size,
                 **forward_kwargs)['predictions']
             result['rec'] = [[p] for p in predictions]
-        elif self.mode.startswith('det'):
+        elif self.mode.startswith('det'):  # 'det'/'det_rec'/'det_rec_kie'
             result['det'] = self.textdet_inferencer(
                 inputs,
                 return_datasamples=True,
                 batch_size=batch_size,
                 **forward_kwargs)['predictions']
-            if self.mode.startswith('det_rec'):
+            if self.mode.startswith('det_rec'):  # 'det_rec'/'det_rec_kie'
                 result['rec'] = []
-                for img, det_data_sample in zip(inputs, result['det']):
+                for img, det_data_sample in zip(
+                        self._inputs2ndarrray(inputs), result['det']):
                     det_pred = det_data_sample.pred_instances
                     self.rec_inputs = []
                     for polygon in det_pred['polygons']:
@@ -197,7 +173,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         return result
 
     def visualize(self, inputs: InputsType, preds: PredType,
-                  **kwargs) -> List[np.ndarray]:
+                  **kwargs) -> Union[List[np.ndarray], None]:
         """Visualize predictions.
 
         Args:
@@ -210,7 +186,14 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                 Defaults to True.
             pred_score_thr (float): Minimum score of bboxes to draw.
                 Defaults to 0.3.
-            img_out_dir (str): Output directory of images. Defaults to ''.
+            save_vis (bool): Whether to save the visualization result. Defaults
+                to False.
+            img_out_dir (str): Output directory of visualization results.
+                If left as empty, no file will be saved. Defaults to ''.
+
+        Returns:
+            List[np.ndarray] or None: Returns visualization results only if
+            applicable.
         """
 
         if 'kie' in self.mode:
@@ -232,6 +215,9 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         self,
         inputs: InputsType,
         batch_size: int = 1,
+        out_dir: str = 'results/',
+        save_vis: bool = False,
+        save_pred: bool = False,
         **kwargs,
     ) -> dict:
         """Call the inferencer.
@@ -239,9 +225,12 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         Args:
             inputs (InputsType): Inputs for the inferencer. It can be a path
                 to image / image directory, or an array, or a list of these.
-            return_datasamples (bool): Whether to return results as
-                :obj:`BaseDataElement`. Defaults to False.
             batch_size (int): Batch size. Defaults to 1.
+            out_dir (str): Output directory of results. Defaults to 'results/'.
+            save_vis (bool): Whether to save the visualization results to
+                "out_dir". Defaults to False.
+            save_pred (bool): Whether to save the inference results to
+                "out_dir". Defaults to False.
             **kwargs: Key words arguments passed to :meth:`preprocess`,
                 :meth:`forward`, :meth:`visualize` and :meth:`postprocess`.
                 Each key in kwargs should be in the corresponding set of
@@ -249,47 +238,75 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                 and ``postprocess_kwargs``.
 
         Returns:
-            dict: Inference and visualization results.
+            dict: Inference and visualization results, mapped from
+                "predictions" and "visualization".
         """
+        if (save_vis or save_pred) and not out_dir:
+            raise ValueError('out_dir must be specified when save_vis or '
+                             'save_pred is True!')
+        if out_dir:
+            img_out_dir = osp.join(out_dir, 'vis')
+            pred_out_dir = osp.join(out_dir, 'preds')
+        else:
+            img_out_dir, pred_out_dir = '', ''
+
         (
             preprocess_kwargs,
             forward_kwargs,
             visualize_kwargs,
             postprocess_kwargs,
-        ) = self._dispatch_kwargs(**kwargs)
+        ) = self._dispatch_kwargs(
+            save_vis=save_vis, save_pred=save_pred, **kwargs)
 
         ori_inputs = self._inputs_to_list(inputs)
 
-        preds = self.forward(ori_inputs, batch_size, **forward_kwargs)
-
-        visualization = self.visualize(
-            ori_inputs, preds,
-            **visualize_kwargs)  # type: ignore  # noqa: E501
-        results = self.postprocess(preds, visualization, **postprocess_kwargs)
+        chunked_inputs = super(BaseMMOCRInferencer,
+                               self)._get_chunk_data(ori_inputs, batch_size)
+        results = {'predictions': [], 'visualization': []}
+        for ori_input in track(chunked_inputs, description='Inference'):
+            preds = self.forward(ori_input, batch_size, **forward_kwargs)
+            visualization = self.visualize(
+                ori_input, preds, img_out_dir=img_out_dir, **visualize_kwargs)
+            batch_res = self.postprocess(
+                preds,
+                visualization,
+                pred_out_dir=pred_out_dir,
+                **postprocess_kwargs)
+            results['predictions'].extend(batch_res['predictions'])
+            if batch_res['visualization'] is not None:
+                results['visualization'].extend(batch_res['visualization'])
         return results
 
     def postprocess(self,
                     preds: PredType,
                     visualization: Optional[List[np.ndarray]] = None,
                     print_result: bool = False,
-                    pred_out_file: str = ''
+                    save_pred: bool = False,
+                    pred_out_dir: str = ''
                     ) -> Union[ResType, Tuple[ResType, np.ndarray]]:
-        """Postprocess predictions.
+        """Process the predictions and visualization results from ``forward``
+        and ``visualize``.
+
+        This method should be responsible for the following tasks:
+
+        1. Convert datasamples into a json-serializable dict if needed.
+        2. Pack the predictions and visualization results and return them.
+        3. Dump or log the predictions.
 
         Args:
-            preds (Dict): Predictions of the model.
+            preds (PredType): Predictions of the model.
             visualization (Optional[np.ndarray]): Visualized predictions.
             print_result (bool): Whether to print the result.
                 Defaults to False.
-            pred_out_file (str): Output file name to store predictions
-                without images. Supported file formats are “json”, “yaml/yml”
-                and “pickle/pkl”. Defaults to ''.
+            save_pred (bool): Whether to save the inference result. Defaults to
+                False.
+            pred_out_dir: File to save the inference results w/o
+                visualization. If left as empty, no file will be saved.
+                Defaults to ''.
 
         Returns:
-            Dict or List[Dict]: Each dict contains the inference result of
-            each image. Possible keys are "det_polygons", "det_scores",
-            "rec_texts", "rec_scores", "kie_labels", "kie_scores",
-            "kie_edge_labels" and "kie_edge_scores".
+            Dict: Inference and visualization results, mapped from
+                "predictions" and "visualization".
         """
 
         result_dict = {}
@@ -320,22 +337,28 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                     kie_edge_scores=kie_dict_res['edge_scores'],
                     kie_edge_labels=kie_dict_res['edge_labels'])
 
+        if save_pred and pred_out_dir:
+            pred_key = 'det' if 'det' in self.mode else 'rec'
+            for pred, pred_result in zip(preds[pred_key], pred_results):
+                img_path = (
+                    pred.img_path if pred_key == 'det' else pred[0].img_path)
+                pred_name = osp.splitext(osp.basename(img_path))[0]
+                pred_name = f'{pred_name}.json'
+                pred_out_file = osp.join(pred_out_dir, pred_name)
+                mmengine.dump(pred_result, pred_out_file)
+
         result_dict['predictions'] = pred_results
         if print_result:
             print(result_dict)
-        if pred_out_file != '':
-            mmengine.dump(result_dict, pred_out_file)
         result_dict['visualization'] = visualization
         return result_dict
 
-    def _pack_e2e_datasamples(self, preds: Dict) -> List[TextDetDataSample]:
+    def _pack_e2e_datasamples(self,
+                              preds: Dict) -> List[TextSpottingDataSample]:
         """Pack text detection and recognition results into a list of
-        TextDetDataSample.
-
-        Note that it is a temporary solution since the TextSpottingDataSample
-        is not ready.
-        """
+        TextSpottingDataSample."""
         results = []
+
         for det_data_sample, rec_data_samples in zip(preds['det'],
                                                      preds['rec']):
             texts = []

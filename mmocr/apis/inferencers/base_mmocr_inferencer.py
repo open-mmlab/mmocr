@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-from typing import Dict, List, Optional, Sequence, Tuple, Union
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 import mmcv
 import mmengine
@@ -8,6 +8,7 @@ import numpy as np
 from mmengine.dataset import Compose
 from mmengine.infer.infer import BaseInferencer, ModelType
 from mmengine.structures import InstanceData
+from rich.progress import track
 from torch import Tensor
 
 from mmocr.utils import ConfigType, register_all_modules
@@ -43,10 +44,10 @@ class BaseMMOCRInferencer(BaseInferencer):
     forward_kwargs: set = set()
     visualize_kwargs: set = {
         'return_vis', 'show', 'wait_time', 'draw_pred', 'pred_score_thr',
-        'img_out_dir'
+        'save_vis'
     }
     postprocess_kwargs: set = {
-        'print_result', 'pred_out_file', 'return_datasample'
+        'print_result', 'return_datasample', 'save_pred'
     }
     loading_transforms: list = ['LoadImageFromFile', 'LoadImageFromNDArray']
 
@@ -55,25 +56,68 @@ class BaseMMOCRInferencer(BaseInferencer):
                  weights: Optional[str] = None,
                  device: Optional[str] = None,
                  scope: Optional[str] = 'mmocr') -> None:
-        # A global counter tracking the number of images processed, for
-        # naming of the output images
-        self.num_visualized_imgs = 0
+        # A global counter tracking the number of images given in the form
+        # of ndarray, for naming the output images
+        self.num_unnamed_imgs = 0
         register_all_modules()
         super().__init__(
             model=model, weights=weights, device=device, scope=scope)
+
+    def preprocess(self, inputs: InputsType, batch_size: int = 1, **kwargs):
+        """Process the inputs into a model-feedable format.
+
+        Args:
+            inputs (InputsType): Inputs given by user.
+            batch_size (int): batch size. Defaults to 1.
+
+        Yields:
+            Any: Data processed by the ``pipeline`` and ``collate_fn``.
+        """
+        chunked_data = self._get_chunk_data(inputs, batch_size)
+        yield from map(self.collate_fn, chunked_data)
+
+    def _get_chunk_data(self, inputs: Iterable, chunk_size: int):
+        """Get batch data from inputs.
+
+        Args:
+            inputs (Iterable): An iterable dataset.
+            chunk_size (int): Equivalent to batch size.
+
+        Yields:
+            list: batch data.
+        """
+        inputs_iter = iter(inputs)
+        while True:
+            try:
+                chunk_data = []
+                for _ in range(chunk_size):
+                    inputs_ = next(inputs_iter)
+                    pipe_out = self.pipeline(inputs_)
+                    if pipe_out['data_samples'].get('img_path') is None:
+                        pipe_out['data_samples'].set_metainfo(
+                            dict(img_path=f'{self.num_unnamed_imgs}.jpg'))
+                        self.num_unnamed_imgs += 1
+                    chunk_data.append((inputs_, pipe_out))
+                yield chunk_data
+            except StopIteration:
+                if chunk_data:
+                    yield chunk_data
+                break
 
     def __call__(self,
                  inputs: InputsType,
                  return_datasamples: bool = False,
                  batch_size: int = 1,
+                 progress_bar: bool = True,
                  return_vis: bool = False,
                  show: bool = False,
                  wait_time: int = 0,
                  draw_pred: bool = True,
                  pred_score_thr: float = 0.3,
-                 img_out_dir: str = '',
+                 out_dir: str = 'results/',
+                 save_vis: bool = False,
+                 save_pred: bool = False,
                  print_result: bool = False,
-                 pred_out_file: str = '',
                  **kwargs) -> dict:
         """Call the inferencer.
 
@@ -84,6 +128,8 @@ class BaseMMOCRInferencer(BaseInferencer):
             return_datasamples (bool): Whether to return results as
                 :obj:`BaseDataElement`. Defaults to False.
             batch_size (int): Inference batch size. Defaults to 1.
+            progress_bar (bool): Whether to show a progress bar. Defaults to
+                True.
             return_vis (bool): Whether to return the visualization result.
                 Defaults to False.
             show (bool): Whether to display the visualization results in a
@@ -93,8 +139,11 @@ class BaseMMOCRInferencer(BaseInferencer):
                 Defaults to True.
             pred_score_thr (float): Minimum score of bboxes to draw.
                 Defaults to 0.3.
-            img_out_dir (str): Output directory of visualization results.
-                If left as empty, no file will be saved. Defaults to ''.
+            out_dir (str): Output directory of results. Defaults to 'results/'.
+            save_vis (bool): Whether to save the visualization results to
+                "out_dir". Defaults to False.
+            save_pred (bool): Whether to save the inference results to
+                "out_dir". Defaults to False.
             print_result (bool): Whether to print the inference result w/o
                 visualization to the console. Defaults to False.
             pred_out_file: File to save the inference results w/o
@@ -108,21 +157,52 @@ class BaseMMOCRInferencer(BaseInferencer):
                 and ``postprocess_kwargs``.
 
         Returns:
-            dict: Inference and visualization results.
+            dict: Inference and visualization results, mapped from
+                "predictions" and "visualization".
         """
-        return super().__call__(
-            inputs,
-            return_datasamples,
-            batch_size,
+        if (save_vis or save_pred) and not out_dir:
+            raise ValueError('out_dir must be specified when save_vis or '
+                             'save_pred is True!')
+        if out_dir:
+            img_out_dir = osp.join(out_dir, 'vis')
+            pred_out_dir = osp.join(out_dir, 'preds')
+        else:
+            img_out_dir, pred_out_dir = '', ''
+        (
+            preprocess_kwargs,
+            forward_kwargs,
+            visualize_kwargs,
+            postprocess_kwargs,
+        ) = self._dispatch_kwargs(
             return_vis=return_vis,
             show=show,
             wait_time=wait_time,
             draw_pred=draw_pred,
             pred_score_thr=pred_score_thr,
-            img_out_dir=img_out_dir,
+            save_vis=save_vis,
+            save_pred=save_pred,
             print_result=print_result,
-            pred_out_file=pred_out_file,
             **kwargs)
+
+        ori_inputs = self._inputs_to_list(inputs)
+        inputs = self.preprocess(
+            ori_inputs, batch_size=batch_size, **preprocess_kwargs)
+        results = {'predictions': [], 'visualization': []}
+        for ori_inputs, data in track(
+                inputs, description='Inference', disable=not progress_bar):
+            preds = self.forward(data, **forward_kwargs)
+            visualization = self.visualize(
+                ori_inputs, preds, img_out_dir=img_out_dir, **visualize_kwargs)
+            batch_res = self.postprocess(
+                preds,
+                visualization,
+                return_datasamples,
+                pred_out_dir=pred_out_dir,
+                **postprocess_kwargs)
+            results['predictions'].extend(batch_res['predictions'])
+            if batch_res['visualization'] is not None:
+                results['visualization'].extend(batch_res['visualization'])
+        return results
 
     def _init_pipeline(self, cfg: ConfigType) -> Compose:
         """Initialize the test pipeline."""
@@ -169,6 +249,7 @@ class BaseMMOCRInferencer(BaseInferencer):
                   wait_time: int = 0,
                   draw_pred: bool = True,
                   pred_score_thr: float = 0.3,
+                  save_vis: bool = False,
                   img_out_dir: str = '') -> Union[List[np.ndarray], None]:
         """Visualize predictions.
 
@@ -184,6 +265,8 @@ class BaseMMOCRInferencer(BaseInferencer):
                 Defaults to True.
             pred_score_thr (float): Minimum score of bboxes to draw.
                 Defaults to 0.3.
+            save_vis (bool): Whether to save the visualization result. Defaults
+                to False.
             img_out_dir (str): Output directory of visualization results.
                 If left as empty, no file will be saved. Defaults to ''.
 
@@ -191,8 +274,7 @@ class BaseMMOCRInferencer(BaseInferencer):
             List[np.ndarray] or None: Returns visualization results only if
             applicable.
         """
-        if self.visualizer is None or (not show and img_out_dir == ''
-                                       and not return_vis):
+        if self.visualizer is None or not (show or save_vis or return_vis):
             return None
 
         if getattr(self, 'visualizer') is None:
@@ -205,17 +287,19 @@ class BaseMMOCRInferencer(BaseInferencer):
             if isinstance(single_input, str):
                 img_bytes = mmengine.fileio.get(single_input)
                 img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
-                img_name = osp.basename(single_input)
             elif isinstance(single_input, np.ndarray):
                 img = single_input.copy()[:, :, ::-1]  # to RGB
-                img_num = str(self.num_visualized_imgs).zfill(8)
-                img_name = f'{img_num}.jpg'
             else:
                 raise ValueError('Unsupported input type: '
                                  f'{type(single_input)}')
+            img_name = osp.splitext(osp.basename(pred.img_path))[0]
 
-            out_file = osp.join(img_out_dir, img_name) if img_out_dir != '' \
-                else None
+            if save_vis and img_out_dir:
+                out_file = osp.splitext(img_name)[0]
+                out_file = f'{out_file}.jpg'
+                out_file = osp.join(img_out_dir, out_file)
+            else:
+                out_file = None
 
             visualization = self.visualizer.add_datasample(
                 img_name,
@@ -229,7 +313,6 @@ class BaseMMOCRInferencer(BaseInferencer):
                 out_file=out_file,
             )
             results.append(visualization)
-            self.num_visualized_imgs += 1
 
         return results
 
@@ -239,7 +322,8 @@ class BaseMMOCRInferencer(BaseInferencer):
         visualization: Optional[List[np.ndarray]] = None,
         return_datasample: bool = False,
         print_result: bool = False,
-        pred_out_file: str = '',
+        save_pred: bool = False,
+        pred_out_dir: str = '',
     ) -> Union[ResType, Tuple[ResType, np.ndarray]]:
         """Process the predictions and visualization results from ``forward``
         and ``visualize``.
@@ -257,7 +341,9 @@ class BaseMMOCRInferencer(BaseInferencer):
                 inference results. If False, dict will be used.
             print_result (bool): Whether to print the inference result w/o
                 visualization to the console. Defaults to False.
-            pred_out_file: File to save the inference results w/o
+            save_pred (bool): Whether to save the inference result. Defaults to
+                False.
+            pred_out_dir: File to save the inference results w/o
                 visualization. If left as empty, no file will be saved.
                 Defaults to ''.
 
@@ -278,13 +364,16 @@ class BaseMMOCRInferencer(BaseInferencer):
             results = []
             for pred in preds:
                 result = self.pred2dict(pred)
+                if save_pred and pred_out_dir:
+                    pred_name = osp.splitext(osp.basename(pred.img_path))[0]
+                    pred_name = f'{pred_name}.json'
+                    pred_out_file = osp.join(pred_out_dir, pred_name)
+                    mmengine.dump(result, pred_out_file)
                 results.append(result)
         # Add img to the results after printing and dumping
         result_dict['predictions'] = results
         if print_result:
             print(result_dict)
-        if pred_out_file != '':
-            mmengine.dump(result_dict, pred_out_file)
         result_dict['visualization'] = visualization
         return result_dict
 
