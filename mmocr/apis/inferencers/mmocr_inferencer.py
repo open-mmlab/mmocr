@@ -153,6 +153,10 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                             **forward_kwargs)['predictions'])
                 if self.mode == 'det_rec_kie':
                     self.kie_inputs = []
+                    # TODO: when the det output is empty, kie will fail
+                    # as no gt-instances can be provided. It's a known
+                    # issue but cannot be solved elegantly since we support
+                    # batch inference.
                     for img, det_data_sample, rec_data_samples in zip(
                             inputs, result['det'], result['rec']):
                         det_pred = det_data_sample.pred_instances

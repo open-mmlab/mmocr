@@ -202,6 +202,9 @@ class TestMMOCRInferencer(TestCase):
                 self.assert_predictions_equal(res['predictions'][i],
                                               dumped_res)
 
+        # corner case: when the det model cannot detect any texts
+        inferencer(np.zeros((100, 100, 3)), return_vis=True)
+
     @mock.patch('mmengine.infer.infer._load_checkpoint')
     def test_dec_rec_kie(self, mock_load):
         mock_load.side_effect = lambda *x, **y: None
