@@ -68,7 +68,7 @@ test_pipeline = [
         with_bezier=True,
         with_text=True),
     dict(type='Bezier2Polygon'),
-    dict(type='ConvertText', dictionary=dictionary),
+    dict(type='ConvertText', dictionary=dict(**dictionary, num_bins=0)),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
@@ -87,7 +87,7 @@ train_pipeline = [
         with_text=True),
     dict(type='Bezier2Polygon'),
     dict(type='FixInvalidPolygon'),
-    dict(type='ConvertText', dictionary=dictionary),
+    dict(type='ConvertText', dictionary=dict(**dictionary, num_bins=0)),
     dict(type='RemoveIgnored'),
     dict(type='RandomCrop', min_side_ratio=0.5),
     dict(

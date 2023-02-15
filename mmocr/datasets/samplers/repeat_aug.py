@@ -57,8 +57,6 @@ class RepeatAugSampler(Sampler):
             len(self.dataset) * num_repeats / world_size)
         # The total number of repeated samples in all ranks.
         self.total_size = self.num_samples * world_size
-        # The number of selected samples in the rank
-        self.num_selected_samples = math.ceil(len(self.dataset) / world_size)
 
     def __iter__(self) -> Iterator[int]:
         """Iterate the indices."""
@@ -82,11 +80,12 @@ class RepeatAugSampler(Sampler):
         assert len(indices) == self.num_samples
 
         # return up to num selected samples
-        return iter(indices[:self.num_selected_samples])
+        # return iter(indices[:self.num_selected_samples])
+        return iter(indices)
 
     def __len__(self) -> int:
         """The number of samples in this rank."""
-        return self.num_selected_samples
+        return self.num_samples
 
     def set_epoch(self, epoch: int) -> None:
         """Sets the epoch for this sampler.

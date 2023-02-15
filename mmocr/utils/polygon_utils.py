@@ -148,8 +148,8 @@ def crop_polygon(polygon: ArrayLike,
         np.array or None: Cropped polygon. If the polygon is not within the
             crop box, return None.
     """
-    poly = poly2shapely(polygon)
-    crop_poly = poly2shapely(bbox2poly(crop_box))
+    poly = poly_make_valid(poly2shapely(polygon))
+    crop_poly = poly_make_valid(poly2shapely(bbox2poly(crop_box)))
     poly_cropped = poly.intersection(crop_poly)
     if poly_cropped.area == 0. or not isinstance(
             poly_cropped, shapely.geometry.polygon.Polygon):

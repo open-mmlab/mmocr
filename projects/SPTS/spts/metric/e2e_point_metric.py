@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from mmengine.evaluator import BaseMetric
 from mmengine.logging import MMLogger
-from shapely.geometry import LineString, Point
+from shapely.geometry import Point
 
 from mmocr.registry import METRICS
 
@@ -39,12 +39,7 @@ class E2EPointMetric(BaseMetric):
 
     def poly_center(self, poly_pts):
         poly_pts = np.array(poly_pts).reshape(-1, 2)
-        num_points = poly_pts.shape[0]
-        line1 = LineString(poly_pts[int(num_points / 2):])
-        line2 = LineString(poly_pts[:int(num_points / 2)])
-        mid_pt1 = np.array(line1.interpolate(0.5, normalized=True).coords[0])
-        mid_pt2 = np.array(line2.interpolate(0.5, normalized=True).coords[0])
-        return (mid_pt1 + mid_pt2) / 2
+        return poly_pts.mean(0)
 
     def process(self, data_batch: Sequence[Dict],
                 data_samples: Sequence[Dict]) -> None:
@@ -69,6 +64,7 @@ class E2EPointMetric(BaseMetric):
 
             gt_instances = data_sample.get('gt_instances')
             gt_polys = gt_instances.get('polygons')
+            # gt_polys = gt_instances.get('beziers')
             gt_ignore_flags = gt_instances.get('ignored')
             gt_texts = gt_instances.get('texts')
             if isinstance(gt_ignore_flags, torch.Tensor):
