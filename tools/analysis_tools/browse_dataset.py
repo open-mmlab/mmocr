@@ -9,11 +9,11 @@ import mmcv
 import numpy as np
 from mmengine.config import Config, DictAction
 from mmengine.dataset import Compose
+from mmengine.registry import init_default_scope
 from mmengine.utils import ProgressBar
 from mmengine.visualization import Visualizer
 
 from mmocr.registry import DATASETS, VISUALIZERS
-from mmocr.utils import register_all_modules
 
 
 # TODO: Support for printing the change in key of results
@@ -331,8 +331,7 @@ def main():
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
 
-    # register all modules in mmyolo into the registries
-    register_all_modules()
+    init_default_scope(cfg.get('default_scope', 'mmocr'))
 
     dataset_cfg, visualizer_cfg = obtain_dataset_cfg(cfg, args.phase,
                                                      args.mode, args.task)

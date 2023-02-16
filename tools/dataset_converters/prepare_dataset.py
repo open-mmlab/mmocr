@@ -4,7 +4,6 @@ import os.path as osp
 import warnings
 
 from mmocr.datasets.preparers import DatasetPreparer
-from mmocr.utils import register_all_modules
 
 
 def parse_args():
@@ -39,7 +38,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-    register_all_modules()
     for dataset in args.datasets:
         if not osp.isdir(osp.join(args.dataset_zoo_path, dataset)):
             warnings.warn(f'{dataset} is not supported yet. Please check '
