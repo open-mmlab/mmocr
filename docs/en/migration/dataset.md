@@ -122,6 +122,7 @@ The `TextDetDataset` holds the information required by the text detection task, 
     ]
 }
 ```
+The bounding box format is as follows: `[min_x, min_y, width, height]`
 
 #### Migration Script
 
