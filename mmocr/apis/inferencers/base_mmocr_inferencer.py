@@ -55,7 +55,7 @@ class BaseMMOCRInferencer(BaseInferencer):
                  model: Union[ModelType, str, None] = None,
                  weights: Optional[str] = None,
                  device: Optional[str] = None,
-                 scope: Optional[str] = 'mmocr') -> None:
+                 scope: str = 'mmocr') -> None:
         # A global counter tracking the number of images given in the form
         # of ndarray, for naming the output images
         self.num_unnamed_imgs = 0
