@@ -95,6 +95,18 @@ class TestMMOCRInferencer(TestCase):
             np.allclose(res_img_ndarray['visualization'][0],
                         res_img_path['visualization'][0]))
 
+        # test save_vis and save_pred
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            res = inferencer(
+                img_paths, out_dir=tmp_dir, save_vis=True, save_pred=True)
+            for img_dir in ['img_1.jpg', 'img_2.jpg']:
+                self.assertTrue(osp.exists(osp.join(tmp_dir, 'vis', img_dir)))
+            for i, pred_dir in enumerate(['img_1.json', 'img_2.json']):
+                dumped_res = mmengine.load(
+                    osp.join(tmp_dir, 'preds', pred_dir))
+                self.assert_predictions_equal(res['predictions'][i],
+                                              dumped_res)
+
     @mock.patch('mmengine.infer.infer._load_checkpoint')
     def test_rec(self, mock_load):
         mock_load.side_effect = lambda *x, **y: None
@@ -128,6 +140,18 @@ class TestMMOCRInferencer(TestCase):
         self.assertTrue(
             np.allclose(res_img_ndarray['visualization'][0],
                         res_img_path['visualization'][0]))
+
+        # test save_vis and save_pred
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            res = inferencer(
+                img_paths, out_dir=tmp_dir, save_vis=True, save_pred=True)
+            for img_dir in ['1036169.jpg', '1058891.jpg']:
+                self.assertTrue(osp.exists(osp.join(tmp_dir, 'vis', img_dir)))
+            for i, pred_dir in enumerate(['1036169.json', '1058891.json']):
+                dumped_res = mmengine.load(
+                    osp.join(tmp_dir, 'preds', pred_dir))
+                self.assert_predictions_equal(res['predictions'][i],
+                                              dumped_res)
 
     @mock.patch('mmengine.infer.infer._load_checkpoint')
     def test_det_rec(self, mock_load):
@@ -165,6 +189,21 @@ class TestMMOCRInferencer(TestCase):
         self.assertTrue(
             np.allclose(res_img_ndarray['visualization'][0],
                         res_img_path['visualization'][0]))
+
+        # test save_vis and save_pred
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            res = inferencer(
+                img_paths, out_dir=tmp_dir, save_vis=True, save_pred=True)
+            for img_dir in ['img_1.jpg', 'img_2.jpg']:
+                self.assertTrue(osp.exists(osp.join(tmp_dir, 'vis', img_dir)))
+            for i, pred_dir in enumerate(['img_1.json', 'img_2.json']):
+                dumped_res = mmengine.load(
+                    osp.join(tmp_dir, 'preds', pred_dir))
+                self.assert_predictions_equal(res['predictions'][i],
+                                              dumped_res)
+
+        # corner case: when the det model cannot detect any texts
+        inferencer(np.zeros((100, 100, 3)), return_vis=True)
 
     @mock.patch('mmengine.infer.infer._load_checkpoint')
     def test_dec_rec_kie(self, mock_load):
@@ -205,18 +244,14 @@ class TestMMOCRInferencer(TestCase):
             np.allclose(res_img_ndarray['visualization'][0],
                         res_img_path['visualization'][0]))
 
-        # test visualization
-        # img_out_dir
+        # test save_vis and save_pred
         with tempfile.TemporaryDirectory() as tmp_dir:
-            inferencer(img_paths, img_out_dir=tmp_dir)
-            for img_dir in ['00000006.jpg', '00000007.jpg']:
-                self.assertTrue(osp.exists(osp.join(tmp_dir, img_dir)))
-
-        # pred_out_file
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            pred_out_file = osp.join(tmp_dir, 'tmp.pkl')
             res = inferencer(
-                img_path, print_result=True, pred_out_file=pred_out_file)
-            dumped_res = mmengine.load(pred_out_file)
-            self.assert_predictions_equal(res['predictions'],
-                                          dumped_res['predictions'])
+                img_paths, out_dir=tmp_dir, save_vis=True, save_pred=True)
+            for img_dir in ['1.jpg', '2.jpg']:
+                self.assertTrue(osp.exists(osp.join(tmp_dir, 'vis', img_dir)))
+            for i, pred_dir in enumerate(['1.json', '2.json']):
+                dumped_res = mmengine.load(
+                    osp.join(tmp_dir, 'preds', pred_dir))
+                self.assert_predictions_equal(res['predictions'][i],
+                                              dumped_res)

@@ -9,10 +9,10 @@ def parse_args():
     parser.add_argument(
         'inputs', type=str, help='Input image file or folder path.')
     parser.add_argument(
-        '--img-out-dir',
+        '--out-dir',
         type=str,
-        default='',
-        help='Output directory of images.')
+        default='results/',
+        help='Output directory of results.')
     parser.add_argument(
         '--det',
         type=str,
@@ -69,10 +69,13 @@ def parse_args():
         action='store_true',
         help='Whether to print the results.')
     parser.add_argument(
-        '--pred-out-file',
-        type=str,
-        default='',
-        help='File to save the inference results.')
+        '--save_pred',
+        action='store_true',
+        help='Save the inference results to out_dir.')
+    parser.add_argument(
+        '--save_vis',
+        action='store_true',
+        help='Save the visualization results to out_dir.')
 
     call_args = vars(parser.parse_args())
 
