@@ -33,15 +33,22 @@ from mmengine.registry import Registry
 
 # manage all kinds of runners like `EpochBasedRunner` and `IterBasedRunner`
 RUNNERS = Registry(
-    'runner', parent=MMENGINE_RUNNERS, locations=['mmocr.engine.runner'])
+    'runner',
+    parent=MMENGINE_RUNNERS,
+    # TODO: update the location when mmocr has its own runner
+    locations=['mmocr.engine'])
 # manage runner constructors that define how to initialize runners
 RUNNER_CONSTRUCTORS = Registry(
     'runner constructor',
     parent=MMENGINE_RUNNER_CONSTRUCTORS,
-    locations=['mmocr.engine.runner'])
+    # TODO: update the location when mmocr has its own runner constructor
+    locations=['mmocr.engine'])
 # manage all kinds of loops like `EpochBasedTrainLoop`
 LOOPS = Registry(
-    'loop', parent=MMENGINE_LOOPS, locations=['mmocr.engine.runner'])
+    'loop',
+    parent=MMENGINE_LOOPS,
+    # TODO: update the location when mmocr has its own loop
+    locations=['mmocr.engine'])
 # manage all kinds of hooks like `CheckpointHook`
 HOOKS = Registry(
     'hook', parent=MMENGINE_HOOKS, locations=['mmocr.engine.hooks'])
@@ -75,28 +82,34 @@ WEIGHT_INITIALIZERS = Registry(
 OPTIMIZERS = Registry(
     'optimizer',
     parent=MMENGINE_OPTIMIZERS,
-    locations=['mmocr.engine.optimizers'])
+    # TODO: update the location when mmocr has its own optimizer
+    locations=['mmocr.engine'])
 # manage optimizer wrapper
 OPTIM_WRAPPERS = Registry(
     'optimizer wrapper',
     parent=MMENGINE_OPTIM_WRAPPERS,
-    locations=['mmocr.engine.optimizers'])
+    # TODO: update the location when mmocr has its own optimizer wrapper
+    locations=['mmocr.engine'])
 # manage constructors that customize the optimization hyperparameters.
 OPTIM_WRAPPER_CONSTRUCTORS = Registry(
     'optimizer constructor',
     parent=MMENGINE_OPTIM_WRAPPER_CONSTRUCTORS,
-    locations=['mmocr.engine.optimizers'])
+    # TODO: update the location when mmocr has its own optimizer constructor
+    locations=['mmocr.engine'])
 # manage all kinds of parameter schedulers like `MultiStepLR`
 PARAM_SCHEDULERS = Registry(
     'parameter scheduler',
     parent=MMENGINE_PARAM_SCHEDULERS,
-    locations=['mmocr.engine.schedulers'])
+    # TODO: update the location when mmocr has its own parameter scheduler
+    locations=['mmocr.engine'])
 # manage all kinds of metrics
 METRICS = Registry(
-    'metric', parent=MMENGINE_METRICS, locations=['mmocr.evaluation'])
+    'metric', parent=MMENGINE_METRICS, locations=['mmocr.evaluation.metrics'])
 # manage evaluator
 EVALUATOR = Registry(
-    'evaluator', parent=MMENGINE_EVALUATOR, locations=['mmocr.evaluation'])
+    'evaluator',
+    parent=MMENGINE_EVALUATOR,
+    locations=['mmocr.evaluation.evaluator'])
 
 # manage task-specific modules like anchor generators and box coders
 TASK_UTILS = Registry(
