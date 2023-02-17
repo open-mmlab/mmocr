@@ -36,6 +36,7 @@ The following table lists all the arguments supported by `train.py`. Args withou
 | --cfg-options   | str  | Override some settings in the configs. [Example](<>)                        |
 | --launcher      | str  | Option for launcher，\['none', 'pytorch', 'slurm', 'mpi'\].                 |
 | --local_rank    | int  | Rank of local machine，used for distributed training，defaults to 0。       |
+| --tta           | bool | Whether to use test time augmentation.                                      |
 
 ### Test
 
@@ -308,3 +309,15 @@ The visualization-related parameters in `tools/test.py` are described as follows
 | --show      | bool  | Whether to show the visualization results.    |
 | --show-dir  | str   | Path to save the visualization results.       |
 | --wait-time | float | Interval of visualization (s), defaults to 2. |
+
+### Test Time Augmentation
+
+Test time augmentation (TTA) is a technique that is used to improve the performance of a model by performing data augmentation on the input image at test time. It is a simple yet effective method to improve the performance of a model. In MMOCR, we support TTA in the following ways:
+
+```{note}
+TTA is only supported for text recognition models.
+```
+
+```bash
+python tools/test.py configs/textrecog/crnn/crnn_mini-vgg_5e_mj.py checkpoints/crnn_mini-vgg_5e_mj.pth --tta
+```

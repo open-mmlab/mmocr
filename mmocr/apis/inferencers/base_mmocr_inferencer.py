@@ -7,11 +7,12 @@ import mmengine
 import numpy as np
 from mmengine.dataset import Compose
 from mmengine.infer.infer import BaseInferencer, ModelType
+from mmengine.registry import init_default_scope
 from mmengine.structures import InstanceData
 from rich.progress import track
 from torch import Tensor
 
-from mmocr.utils import ConfigType, register_all_modules
+from mmocr.utils import ConfigType
 
 InstanceList = List[InstanceData]
 InputType = Union[str, np.ndarray]
@@ -59,7 +60,7 @@ class BaseMMOCRInferencer(BaseInferencer):
         # A global counter tracking the number of images given in the form
         # of ndarray, for naming the output images
         self.num_unnamed_imgs = 0
-        register_all_modules()
+        init_default_scope(scope)
         super().__init__(
             model=model, weights=weights, device=device, scope=scope)
 

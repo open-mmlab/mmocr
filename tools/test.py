@@ -7,8 +7,6 @@ from mmengine.config import Config, DictAction
 from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
 
-from mmocr.utils import register_all_modules
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Test (and eval) a model')
@@ -45,6 +43,8 @@ def parse_args():
         choices=['none', 'pytorch', 'slurm', 'mpi'],
         default='none',
         help='Job launcher')
+    parser.add_argument(
+        '--tta', action='store_true', help='Test time augmentation')
     parser.add_argument('--local_rank', type=int, default=0)
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
@@ -78,10 +78,6 @@ def trigger_visualization_hook(cfg, args):
 def main():
     args = parse_args()
 
-    # register all modules in mmocr into the registries
-    # do not init the default scope here because it will be init in the runner
-    register_all_modules(init_default_scope=False)
-
     # load config
     cfg = Config.fromfile(args.config)
     cfg.launcher = args.launcher
@@ -106,6 +102,11 @@ def main():
 
     if args.show or args.show_dir:
         cfg = trigger_visualization_hook(cfg, args)
+
+    if args.tta:
+        cfg.test_dataloader.dataset.pipeline = cfg.tta_pipeline
+        cfg.tta_model.module = cfg.model
+        cfg.model = cfg.tta_model
 
     # save predictions
     if args.save_preds:
