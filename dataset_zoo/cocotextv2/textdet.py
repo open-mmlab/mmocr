@@ -29,9 +29,9 @@ data_obtainer = dict(
 
 data_converter = dict(
     type='TextDetDataConverter',
-    splits=['train', 'val'],
+    splits=['train'],
     data_root=data_root,
-    gatherer=dict(type='mono_gather', mapping='"train.json"'),
+    gatherer=dict(type='mono_gather', train_ann='train.json'),
     parser=dict(
         type='COCOTextDetAnnParser',
         variant='cocotext',
