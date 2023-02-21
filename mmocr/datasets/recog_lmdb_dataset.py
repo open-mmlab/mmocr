@@ -126,7 +126,7 @@ class RecogLMDBDataset(BaseDataset):
         """
         data_info = {}
         img_key, text = raw_anno_info
-        data_info['img_path'] = img_key
+        data_info['img_key'] = img_key
         data_info['instances'] = [dict(text=text)]
         return data_info
 
@@ -141,7 +141,7 @@ class RecogLMDBDataset(BaseDataset):
         """
         data_info = self.get_data_info(idx)
         with self.env.begin(write=False) as txn:
-            img_bytes = txn.get(data_info['img_path'].encode('utf-8'))
+            img_bytes = txn.get(data_info['img_key'].encode('utf-8'))
             if img_bytes is None:
                 return None
             data_info['img'] = mmcv.imfrombytes(

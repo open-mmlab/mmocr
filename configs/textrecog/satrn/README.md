@@ -38,7 +38,9 @@ Scene text recognition (STR) is the task of recognizing character sequences in n
 | :--------------------------------------------------------------------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :---------------------------------------------------------------------: |
 |                                                                        | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                         |
 |      [Satrn](/configs/textrecog/satrn/satrn_shallow_5e_st_mj.py)       | 0.9600 |    0.9181    |  0.9606   |     |  0.8045   |     0.8837     | 0.8993 | [model](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow_5e_st_mj/satrn_shallow_5e_st_mj_20220915_152443-5fd04a4c.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow_5e_st_mj/20220915_152443.log) |
+|    [Satrn-TTA](/configs/textrecog/satrn/satrn_shallow_5e_st_mj.py)     | 0.9530 |    0.9181    |  0.9527   |     |  0.8276   |     0.8884     | 0.9028 |                                                                         |
 | [Satrn_small](/configs/textrecog/satrn/satrn_shallow-small_5e_st_mj.py) | 0.9423 |    0.9011    |  0.9567   |     |  0.7886   |     0.8574     | 0.8472 | [model](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow-small_5e_st_mj/satrn_shallow-small_5e_st_mj_20220915_152442-5591bf27.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow-small_5e_st_mj/20220915_152442.log) |
+| [Satrn_small-TTA](/configs/textrecog/satrn/satrn_shallow-small_5e_st_mj.py) | 0.9380 |    0.8995    |  0.9488   |     |  0.8122   |     0.8620     | 0.8507 |                                                                         |
 
 ## Citation
 

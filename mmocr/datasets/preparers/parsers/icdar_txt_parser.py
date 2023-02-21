@@ -119,6 +119,8 @@ class ICDARTxtTextRecogAnnParser(BaseParser):
             if self.remove_strs is not None:
                 for strs in self.remove_strs:
                     text = text.replace(strs, '')
+            if text == self.ignore:
+                continue
             img_name = anno['img']
             samples.append((img_name, text))
 

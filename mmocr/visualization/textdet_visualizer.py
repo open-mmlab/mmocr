@@ -30,6 +30,12 @@ class TextDetLocalVisualizer(BaseLocalVisualizer):
             value, all the lines will have the same colors. Refer to
             `matplotlib.colors` for full list of formats that are accepted.
             Defaults to 'g'.
+        gt_ignored_color (Union[str, tuple, list[str], list[tuple]]): The
+            colors of ignored GT polygons and bboxes. ``colors`` can have
+            the same length with lines or just single value. If ``colors``
+            is single value, all the lines will have the same colors. Refer
+            to `matplotlib.colors` for full list of formats that are accepted.
+            Defaults to 'b'.
         pred_color (Union[str, tuple, list[str], list[tuple]]): The
             colors of pred polygons and bboxes. ``colors`` can have the same
             length with lines or just single value. If ``colors`` is single
@@ -48,6 +54,8 @@ class TextDetLocalVisualizer(BaseLocalVisualizer):
                  vis_backends: Optional[Dict] = None,
                  save_dir: Optional[str] = None,
                  gt_color: Union[str, Tuple, List[str], List[Tuple]] = 'g',
+                 gt_ignored_color: Union[str, Tuple, List[str],
+                                         List[Tuple]] = 'b',
                  pred_color: Union[str, Tuple, List[str], List[Tuple]] = 'r',
                  line_width: Union[int, float] = 2,
                  alpha: float = 0.8) -> None:
@@ -59,6 +67,7 @@ class TextDetLocalVisualizer(BaseLocalVisualizer):
         self.with_poly = with_poly
         self.with_bbox = with_bbox
         self.gt_color = gt_color
+        self.gt_ignored_color = gt_ignored_color
         self.pred_color = pred_color
         self.line_width = line_width
         self.alpha = alpha
@@ -142,9 +151,22 @@ class TextDetLocalVisualizer(BaseLocalVisualizer):
         if data_sample is not None:
             if draw_gt and 'gt_instances' in data_sample:
                 gt_instances = data_sample.gt_instances
+                gt_img_data = image.copy()
+                if gt_instances.get('ignored', None) is not None:
+                    ignore_flags = gt_instances.ignored
+                    gt_ignored_instances = gt_instances[ignore_flags]
+                    gt_ignored_polygons = gt_ignored_instances.get(
+                        'polygons', None)
+                    gt_ignored_bboxes = gt_ignored_instances.get(
+                        'bboxes', None)
+                    gt_img_data = self._draw_instances(gt_img_data,
+                                                       gt_ignored_bboxes,
+                                                       gt_ignored_polygons,
+                                                       self.gt_ignored_color)
+                    gt_instances = gt_instances[~ignore_flags]
                 gt_polygons = gt_instances.get('polygons', None)
                 gt_bboxes = gt_instances.get('bboxes', None)
-                gt_img_data = self._draw_instances(image.copy(), gt_bboxes,
+                gt_img_data = self._draw_instances(gt_img_data, gt_bboxes,
                                                    gt_polygons, self.gt_color)
                 cat_images.append(gt_img_data)
             if draw_pred and 'pred_instances' in data_sample:

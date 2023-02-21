@@ -212,9 +212,8 @@ def poly_intersection(poly_a: Polygon,
         float or tuple(float, Polygon): Returns the intersection area or
         a tuple ``(area, Optional[poly_obj])``, where the `area` is the
         intersection area between two polygons and `poly_obj` is The Polygon
-        object of the intersection area. Set as `None` if the input is invalid.
-        Set as `None` if the input is invalid. `poly_obj` will be returned
-        only if `return_poly` is `True`.
+        object of the intersection area, which will be `None` if the input is
+        invalid. `poly_obj` will be returned only if `return_poly` is `True`.
     """
     assert isinstance(poly_a, Polygon)
     assert isinstance(poly_b, Polygon)
@@ -227,8 +226,12 @@ def poly_intersection(poly_a: Polygon,
     poly_obj = None
     area = invalid_ret
     if poly_a.is_valid and poly_b.is_valid:
-        poly_obj = poly_a.intersection(poly_b)
-        area = poly_obj.area
+        if poly_a.intersects(poly_b):
+            poly_obj = poly_a.intersection(poly_b)
+            area = poly_obj.area
+        else:
+            poly_obj = Polygon()
+            area = 0.0
     return (area, poly_obj) if return_poly else area
 
 
