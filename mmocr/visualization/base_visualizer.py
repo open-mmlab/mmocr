@@ -28,6 +28,8 @@ class BaseLocalVisualizer(Visualizer):
             Defaults to empty dict.
         is_openset (bool, optional): Whether the visualizer is used in
             OpenSet. Defaults to False.
+        font_families (Union[str, List[str]]): The font families of labels.
+            Defaults to 'sans-serif'.
         font_properties (Union[str, FontProperties], optional):
             The font properties of texts. The format should be a path str
             to font file or a `font_manager.FontProperties()` object.
@@ -112,6 +114,17 @@ class BaseLocalVisualizer(Visualizer):
                 Defaults to False.
             font_families (Union[str, List[str]]): The font families of labels.
                 Defaults to 'sans-serif'.
+            font_properties (Union[str, FontProperties], optional):
+                The font properties of texts. The format should be a path str
+                to font file or a `font_manager.FontProperties()` object.
+                If you want to draw Chinese texts, you need to prepare
+                a font file that can show Chinese characters properly.
+                For example: `simhei.ttf`,`simsun.ttc`,`simkai.ttf` and so on.
+                Then set font_properties=matplotlib.font_manager.FontProperties
+                (fname='path/to/font_file') or
+                font_properties='path/to/font_file'.
+                This function need mmengine version >=0.6.0.
+                Defaults to None.
         """
         if not labels and not bboxes:
             return image
