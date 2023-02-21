@@ -63,7 +63,7 @@ class LMDBDumper:
         encoding (str): Label encoding method.
         lmdb_map_size (int): Maximum size database may grow to.
         verify (bool): If true, check the validity of
-            every image.Defaults to True.
+            every image. Defaults to True.
     """
 
     def __init__(self,

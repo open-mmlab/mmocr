@@ -133,9 +133,9 @@ class DatasetPreparer:
                     if ann_list_key in cfg.config_generator:
                         ann_list = cfg.config_generator[ann_list_key]
                         for ann_dict in ann_list:
-                            suffix = ann_dict['ann_file'].split('.')[-1]
-                            lmdb_ann_file = ann_dict['ann_file'].replace(
-                                suffix, 'lmdb')
+                            name_chunks = ann_dict['ann_file'].split('.')
+                            name_chunks[-1] = 'lmdb'
+                            lmdb_ann_file = '.'.join(name_chunks)
                             ann_dict.update(dict(ann_file=lmdb_ann_file))
                     else:
                         if ann_list_key == 'train_anns':

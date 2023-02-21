@@ -236,8 +236,8 @@ class TextRecogConfigGenerator(BaseDatasetConfigGenerator):
 
     Args:
         data_root (str): The root path of the dataset.
-        dataset_name (str): The name of the dataset. If dataset dumped with
-            LMDBDumper, dataset_name will end with ``_lmdb``.
+        dataset_name (str): The name of the dataset. If the dataset is dumped
+            by LMDBDumper, dataset_name will end with ``_lmdb``.
         overwrite_cfg (bool): Whether to overwrite the dataset config file if
             it already exists. If False, config generator will not generate new
             config for datasets whose configs are already in base.
