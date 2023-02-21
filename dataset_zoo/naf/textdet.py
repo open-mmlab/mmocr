@@ -32,7 +32,7 @@ obtainer = dict(
             ]),
     ])
 
-prepare_train_data = dict(
+train_preparer = dict(
     obtainer=obtainer,
     gatherer=dict(type='NAFGatherer'),
     parser=dict(type='NAFAnnParser', det=True),
@@ -40,9 +40,9 @@ prepare_train_data = dict(
     dumper=dict(type='JsonDumper'),
 )
 
-prepare_test_data = prepare_train_data
+test_preparer = train_preparer
 
-prepare_val_data = prepare_train_data
+val_preparer = train_preparer
 
 config_generator = dict(
     type='TextDetConfigGenerator',

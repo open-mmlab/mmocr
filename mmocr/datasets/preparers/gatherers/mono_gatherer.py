@@ -16,16 +16,7 @@ class MonoGatherer(BaseGatherer):
             img_003.jpg /
 
     Args:
-        ann_name (str, optional): The name of the annotation file. Defaults to
-            None.
-        img_postfix_dir (str, optional): The postfix of the image directory.
-            The actual directory is the concatenation of img_root and
-            img_postfix_dir.
-        split (str, optional): Split of the datasets.
-        img_root (str, optional): The directory of the images. Defaults to
-            None.
-        ann_root (str, optional): The directory of the annotation files.
-            Defaults to None.
+        ann_name (str): The name of the annotation file.
     """
 
     def __init__(self, ann_name: str, **kwargs) -> None:

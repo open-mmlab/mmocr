@@ -4,15 +4,15 @@
 # not to use them for recognition and text spotting.
 
 _base_ = ['textdet.py']
-_base_.prepare_train_data.parser.update(dict(ignore=['¿', '§'], det=False))
-_base_.prepare_test_data.parser.update(dict(ignore=['¿', '§'], det=False))
-_base_.prepare_val_data.parser.update(dict(ignore=['¿', '§'], det=False))
-_base_.prepare_train_data.packer.type = 'TextRecogCropPacker'
-_base_.prepare_test_data.packer.type = 'TextRecogCropPacker'
-_base_.prepare_val_data.packer.type = 'TextRecogCropPacker'
-_base_.prepare_train_data.gatherer.img_dir = 'textdet_imgs/train'
-_base_.prepare_test_data.gatherer.img_dir = 'textdet_imgs/test'
-_base_.prepare_val_data.gatherer.img_dir = 'textdet_imgs/val'
+_base_.train_preparer.parser.update(dict(ignore=['¿', '§'], det=False))
+_base_.test_preparer.parser.update(dict(ignore=['¿', '§'], det=False))
+_base_.val_preparer.parser.update(dict(ignore=['¿', '§'], det=False))
+_base_.train_preparer.packer.type = 'TextRecogCropPacker'
+_base_.test_preparer.packer.type = 'TextRecogCropPacker'
+_base_.val_preparer.packer.type = 'TextRecogCropPacker'
+_base_.train_preparer.gatherer.img_dir = 'textdet_imgs/train'
+_base_.test_preparer.gatherer.img_dir = 'textdet_imgs/test'
+_base_.val_preparer.gatherer.img_dir = 'textdet_imgs/val'
 config_generator = dict(
     type='TextRecogConfigGenerator',
     val_anns=[dict(ann_file='textrecog_val.json', dataset_postfix='')])

@@ -7,7 +7,7 @@
 data_root = 'data/cute80'
 cache_path = 'data/cache'
 
-prepare_test_data = dict(
+test_preparer = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,
@@ -30,7 +30,7 @@ prepare_test_data = dict(
                 content=['annotation'])
         ]))
 
-# prepare_test_data = dict(
+# test_preparer = dict(
 #     obtainer=dict(
 #         type='NaiveDataObtainer',
 #         cache_path=cache_path,

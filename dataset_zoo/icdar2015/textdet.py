@@ -1,6 +1,6 @@
 data_root = 'data/icdar2015'
 cache_path = 'data/cache'
-prepare_train_data = dict(
+train_preparer = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,
@@ -28,7 +28,7 @@ prepare_train_data = dict(
     dumper=dict(type='JsonDumper'),
 )
 
-prepare_test_data = dict(
+test_preparer = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,

@@ -17,18 +17,18 @@ class BaseParser:
         self.nproc = nproc
         self.split = split
 
-    def __call__(self, files: List[Tuple]) -> List:
+    def __call__(self, img_paths: Union[List[str], str],
+                 ann_paths: Union[List[str], str]) -> List[Tuple]:
         """Parse annotations.
 
         Args:
-            files (List[Tuple]): A list of a tuple of
-                (image_path, annotation_path).
-            split (str): The split of the dataset.
+            img_paths (str or list[str]): Paths of image.
+            ann_paths (str or list[str]): Paths of annotation.
 
         Returns:
             List: A list of a tuple of (image_path, instances)
         """
-        samples = self.parse_files(files)
+        samples = self.parse_files(img_paths, ann_paths)
         return samples
 
     def parse_files(self, img_paths: Union[List[str], str],

@@ -30,9 +30,9 @@ class WildreceiptTextDetAnnParser(BaseParser):
             to 1.
     """
 
-    def __init__(self, ignore: int = 0, nproc: int = 1) -> None:
+    def __init__(self, ignore: int = 0, **kwargs) -> None:
         self.ignore = ignore
-        super().__init__(nproc=nproc)
+        super().__init__(**kwargs)
 
     def parse_files(self, img_dir: str, ann_path) -> Dict:
         """Convert single annotation."""
@@ -74,9 +74,9 @@ class WildreceiptKIEAnnParser(BaseParser):
             to 1.
     """
 
-    def __init__(self, ignore: int = 0, nproc: int = 1) -> None:
+    def __init__(self, ignore: int = 0, **kwargs) -> None:
         self.ignore = ignore
-        super().__init__(nproc=nproc)
+        super().__init__(**kwargs)
 
     def parse_files(self, img_dir: str, ann_path: str) -> Dict:
         """Convert single annotation."""

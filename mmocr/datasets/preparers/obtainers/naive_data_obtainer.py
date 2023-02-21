@@ -115,19 +115,19 @@ class NaiveDataObtainer:
         else:
             dst_path = osp.join(dst_path, zip_name)
 
-        have_extract = False
+        extracted = False
         if osp.exists(dst_path):
             name = set(os.listdir(dst_path))
-            if 'finish.mmocr' in name and len(name) > 1:
-                have_extract = True
+            if 'finish.mmocr' in name:
+                extracted = True
             elif 'finish.mmocr' not in name and len(name) > 0:
                 i = input(f'{dst_path} have exist when extract {zip_name}, '
                           'whether to unzip again? (y/n)')
-                have_extract = i == 'n'
-        if have_extract:
+                extracted = i == 'n'
+        if extracted:
             f = open(osp.join(dst_path, 'finish.mmocr'), 'w')
             f.close()
-            print(f'{zip_name} have been extracted. Skip')
+            print(f'{zip_name} has been extracted. Skip')
             return
         mkdir_or_exist(dst_path)
         print(f'Extracting: {osp.basename(src_path)}')

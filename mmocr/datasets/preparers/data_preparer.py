@@ -7,7 +7,7 @@ from mmengine import Registry
 
 from mmocr.utils.typing_utils import ConfigType, OptConfigType
 
-DATA_PREPARERS = Registry('data_loop')
+DATA_PREPARERS = Registry('data preparer')
 DATA_OBTAINERS = Registry('data_obtainer')
 DATA_GATHERERS = Registry('data_gatherer')
 DATA_PARSERS = Registry('data_parser')
@@ -20,7 +20,8 @@ CFG_GENERATORS = Registry('cfg_generator')
 class DatasetPreparer:
     """Base class of dataset preparer.
 
-    Dataset preparer is used to prepare dataset for MMOCR. It mainly consists:
+    Dataset preparer is used to prepare dataset for MMOCR. It mainly consists
+    of three step:
       1. For each split:
         - Obtain the dataset
             - Download
@@ -43,19 +44,19 @@ class DatasetPreparer:
         task (str): Task type. Options are 'textdet', 'textrecog',
             'textspotter', and 'kie'. Defaults to 'textdet'.
         nproc (int): Number of parallel processes. Defaults to 4.
-        prepare_train_data(OptConfigType): cfg for train data prepare.
+        train_preparer(OptConfigType): cfg for train data prepare.
             - obtainer:
             - gatherer
             - parser:
             - packer:
             - dumper:
-        prepare_test_data(OptConfigType): cfg for train data prepare.
+        test_preparer(OptConfigType): cfg for test data prepare.
             - obtainer:
             - gatherer
             - parser:
             - packer:
             - dumper:
-        prepare_val_data(OptConfigType): cfg for train data prepare.
+        val_preparer(OptConfigType): cfg for train data prepare.
             - obtainer:
             - gatherer
             - parser:
@@ -68,17 +69,17 @@ class DatasetPreparer:
                  dataset_name: str = '',
                  task: str = 'textdet',
                  nproc: int = 4,
-                 prepare_train_data: OptConfigType = None,
-                 prepare_test_data: OptConfigType = None,
-                 prepare_val_data: OptConfigType = None,
+                 train_preparer: OptConfigType = None,
+                 test_preparer: OptConfigType = None,
+                 val_preparer: OptConfigType = None,
                  config_generator: OptConfigType = None) -> None:
         self.data_root = data_root
         self.nproc = nproc
         self.task = task
         self.dataset_name = dataset_name
-        self.prepare_train_data = prepare_train_data
-        self.prepare_test_data = prepare_test_data
-        self.prepare_val_data = prepare_val_data
+        self.train_preparer = train_preparer
+        self.test_preparer = test_preparer
+        self.val_preparer = val_preparer
         self.config_generator = config_generator
 
     def run(self, splits: Union[str, List] = ['train', 'test', 'val']) -> None:
@@ -88,7 +89,7 @@ class DatasetPreparer:
         assert set(splits).issubset(set(['train', 'test',
                                          'val'])), 'Invalid split name'
         for split in splits:
-            self.loop(split, getattr(self, f'prepare_{split}_data'))
+            self.loop(split, getattr(self, f'{split}_preparer'))
         self.generate_config()
 
     @classmethod
@@ -109,9 +110,9 @@ class DatasetPreparer:
             dataset_name=cfg.get('dataset_name', ''),
             task=cfg.get('task', 'textdet'),
             nproc=cfg.get('nproc', 4),
-            prepare_train_data=cfg.get('prepare_train_data', None),
-            prepare_test_data=cfg.get('prepare_test_data', None),
-            prepare_val_data=cfg.get('prepare_val_data', None),
+            train_preparer=cfg.get('train_preparer', None),
+            test_preparer=cfg.get('test_preparer', None),
+            val_preparer=cfg.get('val_preparer', None),
             config_generator=cfg.get('config_generator', None))
         return data_preparer
 
@@ -120,7 +121,8 @@ class DatasetPreparer:
 
         Args:
             split (str): The split of the dataset.
-            loop (DataLoop): The data loop.
+            cfg (ConfigType): A config used for building obtainer, gatherer,
+                parser, packer and dumper.
         """
         if cfg is None:
             return
@@ -172,15 +174,17 @@ class DatasetPreparer:
         packer.setdefault('split', default=split)
         packer.setdefault('nproc', default=self.nproc)
         packer.setdefault('data_root', default=self.data_root)
-        self.packer = DATA_PACKERS.build(packer)
-        samples = self.packer(samples)
+        packer = DATA_PACKERS.build(packer)
+        samples = packer(samples)
 
         # build dumper
         print(f'Dumping {split} Annotations...')
         # Dump annotation files
         dumper.setdefault('task', default=self.task)
+        dumper.setdefault('split', default=split)
+        dumper.setdefault('data_root', default=self.data_root)
         dumper = DATA_DUMPERS.build(dumper)
-        dumper.dump(samples, self.data_root, split)
+        dumper.dump(samples)
 
     def generate_config(self):
         if self.config_generator is None:

@@ -32,21 +32,20 @@ class ICDARTxtTextDetAnnParser(BaseParser):
     """
 
     def __init__(self,
-                 split: str,
                  separator: str = ',',
                  ignore: str = '###',
                  format: str = 'x1,y1,x2,y2,x3,y3,x4,y4,trans',
                  encoding: str = 'utf-8',
-                 nproc: int = 1,
                  remove_strs: Optional[List[str]] = None,
-                 mode: str = None) -> None:
+                 mode: str = None,
+                 **kwargs) -> None:
         self.sep = separator
         self.format = format
         self.encoding = encoding
         self.ignore = ignore
         self.mode = mode
         self.remove_strs = remove_strs
-        super().__init__(nproc=nproc, split=split)
+        super().__init__(**kwargs)
 
     def parse_file(self, img_path: str, ann_path: str) -> Tuple:
         """Parse single annotation."""

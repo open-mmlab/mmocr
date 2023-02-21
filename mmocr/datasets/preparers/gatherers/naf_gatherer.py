@@ -34,13 +34,11 @@ class NAFGatherer(BaseGatherer):
         self.temp_dir = temp_dir
         self.split_file = split_file
 
-    def __call__(self) -> List[Tuple]:
+    def __call__(self) -> Tuple[List[str], List[str]]:
         """
-        Args:
-            img_path (str): Path to the images.
-            anno_path (str): Path to the annotations.
         Returns:
-            List[Tuple]: A list of tuples (img_path, ann_path).
+            tuple(list[str], list[str]): The list of image paths and the list
+            of annotation paths.
         """
 
         split_file = osp.join(self.data_root, self.split_file)

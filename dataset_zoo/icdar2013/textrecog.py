@@ -8,7 +8,7 @@
 data_root = 'data/icdar2013'
 cache_path = 'data/cache'
 
-prepare_train_data = dict(
+train_preparer = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,
@@ -41,9 +41,9 @@ prepare_train_data = dict(
 # 1. The original official annotation, which contains 1095 test
 # samples.
 
-# Uncomment the prepare_test_data if you want to use the original 1095 version.
+# Uncomment the test_preparer if you want to use the original 1095 version.
 
-# prepare_test_data = dict(
+# test_preparer = dict(
 #     obtainer=dict(
 #         type='NaiveDataObtainer',
 #         cache_path=cache_path,
@@ -89,7 +89,7 @@ prepare_train_data = dict(
 # 2. The widely-used version for academic purpose, which filters
 # out words with non-alphanumeric characters. This version contains
 # 1015 test samples.
-prepare_test_data = dict(
+test_preparer = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,

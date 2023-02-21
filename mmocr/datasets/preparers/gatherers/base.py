@@ -4,10 +4,10 @@ from typing import List, Optional, Tuple, Union
 
 
 class BaseGatherer:
-    """Base class for gather.
+    """Base class for gatherer.
 
-    Note: Gather assumes that all the annotation file is in the same directory
-    and all the image files are in the same directory.
+    Note: Gatherer assumes that all the annotation file is in the same
+    directory and all the image files are in the same directory.
 
     Args:
         split (str, optional): List of splits to gather. It' s the partition of
@@ -23,8 +23,8 @@ class BaseGatherer:
     def __init__(self,
                  split: Optional[str] = None,
                  data_root: Optional[str] = None,
-                 ann_dir: Optional[str] = None,
-                 img_dir: Optional[str] = None) -> None:
+                 img_dir: Optional[str] = None,
+                 ann_dir: Optional[str] = None) -> None:
         self.split = split
         self.data_root = data_root
         self.ann_dir = osp.join(data_root, ann_dir)

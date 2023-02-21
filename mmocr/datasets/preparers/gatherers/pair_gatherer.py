@@ -19,13 +19,12 @@ class PairGatherer(BaseGatherer):
 
     Args:
         img_suffixes (List[str]): File suffixes that used for searching.
-        rule (Sequence): The rule for pairing the files. The
-                first element is the matching pattern for the file, and the
-                second element is the replacement pattern, which should
-                be a regular expression. For example, to map the image
-                name img_1.jpg to the annotation name gt_img_1.txt,
-                the rule is
-                    [r'img_(\d+)\.([jJ][pP][gG])', r'gt_img_\1.txt'] # noqa: W605 E501
+        rule (Sequence): The rule for pairing the files. The first element is
+            the matching pattern for the file, and the second element is the
+            replacement pattern, which should be a regular expression. For
+            example, to map the image name img_1.jpg to the annotation name
+            gt_img_1.txt, the rule is
+            [r'img_(\d+)\.([jJ][pP][gG])', r'gt_img_\1.txt'] # noqa: W605 E501
 
     Note: PairGatherer assumes that each split annotation file is in the
     correspond split directory. For example, all the train annotation files are
@@ -43,11 +42,8 @@ class PairGatherer(BaseGatherer):
         self.ann_dir = osp.join(self.ann_dir, self.split)
 
     def __call__(self) -> Tuple[List[str], List[str]]:
-        """tuple(list, list):
-
-        - first element: list of image paths.
-        - second element: list of annotation paths.
-        """
+        """tuple(list, list): The list of image paths and the list of
+        annotation paths."""
 
         img_list = list()
         ann_list = list()
