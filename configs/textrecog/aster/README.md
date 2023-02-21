@@ -34,10 +34,11 @@ A challenging aspect of scene text recognition is to handle text with distortion
 
 ## Results and models
 
-|                           Methods                            | Backbone |        | Regular Text |           |     |           | Irregular Text |        |                                 download                                  |
-| :----------------------------------------------------------: | :------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :-----------------------------------------------------------------------: |
-|                                                              |          | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                           |
-| [ASTER](/configs/textrecog/aster/aster_resnet45_6e_st_mj.py) | ResNet45 | 0.9357 |    0.8949    |  0.9281   |     |  0.7665   |     0.8062     | 0.8507 | [model](https://download.openmmlab.com/mmocr/textrecog/aster/aster_resnet45_6e_st_mj/aster_resnet45_6e_st_mj-cc56eca4.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/aster/aster_resnet45_6e_st_mj/20221214_232605.log) |
+|                             Methods                              | Backbone |        | Regular Text |           |     |           | Irregular Text |        |                               download                                |
+| :--------------------------------------------------------------: | :------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :-------------------------------------------------------------------: |
+|                                                                  |          | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                       |
+|   [ASTER](/configs/textrecog/aster/aster_resnet45_6e_st_mj.py)   | ResNet45 | 0.9357 |    0.8949    |  0.9281   |     |  0.7665   |     0.8062     | 0.8507 | [model](https://download.openmmlab.com/mmocr/textrecog/aster/aster_resnet45_6e_st_mj/aster_resnet45_6e_st_mj-cc56eca4.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/aster/aster_resnet45_6e_st_mj/20221214_232605.log) |
+| [ASTER-TTA](/configs/textrecog/aster/aster_resnet45_6e_st_mj.py) | ResNet45 | 0.9337 |    0.8949    |  0.9251   |     |  0.7925   |     0.8109     | 0.8507 |                                                                       |
 
 ## Citation
 

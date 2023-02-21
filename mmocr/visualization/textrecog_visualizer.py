@@ -60,7 +60,7 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
         height, width = image.shape[:2]
         empty_img = np.full_like(image, 255)
         self.set_image(empty_img)
-        font_size = 0.5 * width / (len(text) + 1)
+        font_size = min(0.5 * width / (len(text) + 1), 0.5 * height)
         self.draw_texts(
             text,
             np.array([width / 2, height / 2]),

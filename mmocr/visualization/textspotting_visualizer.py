@@ -44,19 +44,20 @@ class TextSpottingLocalVisualizer(BaseLocalVisualizer):
         img_shape = image.shape[:2]
         empty_shape = (img_shape[0], img_shape[1], 3)
         text_image = np.full(empty_shape, 255, dtype=np.uint8)
-        text_image = self.get_labels_image(
-            text_image,
-            labels=texts,
-            bboxes=bboxes,
-            font_families=self.font_families,
-            font_properties=self.font_properties)
+        if texts:
+            text_image = self.get_labels_image(
+                text_image,
+                labels=texts,
+                bboxes=bboxes,
+                font_families=self.font_families,
+                font_properties=self.font_properties)
         if polygons:
             polygons = [polygon.reshape(-1, 2) for polygon in polygons]
             image = self.get_polygons_image(
                 image, polygons, filling=True, colors=self.PALETTE)
             text_image = self.get_polygons_image(
                 text_image, polygons, colors=self.PALETTE)
-        else:
+        elif len(bboxes) > 0:
             image = self.get_bboxes_image(
                 image, bboxes, filling=True, colors=self.PALETTE)
             text_image = self.get_bboxes_image(
@@ -104,27 +105,28 @@ class TextSpottingLocalVisualizer(BaseLocalVisualizer):
         """
         cat_images = []
 
-        if draw_gt:
-            gt_bboxes = data_sample.gt_instances.get('bboxes', None)
-            gt_texts = data_sample.gt_instances.texts
-            gt_polygons = data_sample.gt_instances.get('polygons', None)
-            gt_img_data = self._draw_instances(image, gt_bboxes, gt_polygons,
-                                               gt_texts)
-            cat_images.append(gt_img_data)
+        if data_sample is not None:
+            if draw_gt and 'gt_instances' in data_sample:
+                gt_bboxes = data_sample.gt_instances.get('bboxes', None)
+                gt_texts = data_sample.gt_instances.texts
+                gt_polygons = data_sample.gt_instances.get('polygons', None)
+                gt_img_data = self._draw_instances(image, gt_bboxes,
+                                                   gt_polygons, gt_texts)
+                cat_images.append(gt_img_data)
 
-        if draw_pred:
-            pred_instances = data_sample.pred_instances
-            pred_instances = pred_instances[
-                pred_instances.scores > pred_score_thr].cpu().numpy()
-            pred_bboxes = pred_instances.get('bboxes', None)
-            pred_texts = pred_instances.texts
-            pred_polygons = pred_instances.get('polygons', None)
-            if pred_bboxes is None:
-                pred_bboxes = [poly2bbox(poly) for poly in pred_polygons]
-                pred_bboxes = np.array(pred_bboxes)
-            pred_img_data = self._draw_instances(image, pred_bboxes,
-                                                 pred_polygons, pred_texts)
-            cat_images.append(pred_img_data)
+            if draw_pred and 'pred_instances' in data_sample:
+                pred_instances = data_sample.pred_instances
+                pred_instances = pred_instances[
+                    pred_instances.scores > pred_score_thr].cpu().numpy()
+                pred_bboxes = pred_instances.get('bboxes', None)
+                pred_texts = pred_instances.texts
+                pred_polygons = pred_instances.get('polygons', None)
+                if pred_bboxes is None:
+                    pred_bboxes = [poly2bbox(poly) for poly in pred_polygons]
+                    pred_bboxes = np.array(pred_bboxes)
+                pred_img_data = self._draw_instances(image, pred_bboxes,
+                                                     pred_polygons, pred_texts)
+                cat_images.append(pred_img_data)
 
         cat_images = self._cat_image(cat_images, axis=0)
         if cat_images is None:

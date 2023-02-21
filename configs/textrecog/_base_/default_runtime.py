@@ -46,3 +46,5 @@ visualizer = dict(
     type='TextRecogLocalVisualizer',
     name='visualizer',
     vis_backends=vis_backends)
+
+tta_model = dict(type='EncoderDecoderRecognizerTTAModel')

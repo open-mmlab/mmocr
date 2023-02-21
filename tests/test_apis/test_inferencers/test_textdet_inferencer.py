@@ -41,9 +41,11 @@ class TestTextDetinferencer(TestCase):
 
     def assert_predictions_equal(self, preds1, preds2):
         for pred1, pred2 in zip(preds1, preds2):
-            self.assertTrue(
-                np.allclose(pred1['polygons'], pred2['polygons'], 0.1))
-            self.assertTrue(np.allclose(pred1['scores'], pred2['scores'], 0.1))
+            self.assert_prediction_equal(pred1, pred2)
+
+    def assert_prediction_equal(self, pred1, pred2):
+        self.assertTrue(np.allclose(pred1['polygons'], pred2['polygons'], 0.1))
+        self.assertTrue(np.allclose(pred1['scores'], pred2['scores'], 0.1))
 
     def test_call(self):
         # single img
@@ -54,8 +56,9 @@ class TestTextDetinferencer(TestCase):
         res_ndarray = self.inferencer(img, return_vis=True)
         self.assert_predictions_equal(res_path['predictions'],
                                       res_ndarray['predictions'])
-        self.assertIn('visualization', res_path)
-        self.assertIn('visualization', res_ndarray)
+        self.assertTrue(
+            np.allclose(res_path['visualization'],
+                        res_ndarray['visualization']))
 
         # multiple images
         img_paths = [
@@ -68,8 +71,10 @@ class TestTextDetinferencer(TestCase):
         res_ndarray = self.inferencer(imgs, return_vis=True)
         self.assert_predictions_equal(res_path['predictions'],
                                       res_ndarray['predictions'])
-        self.assertIn('visualization', res_path)
-        self.assertIn('visualization', res_ndarray)
+        for i in range(len(img_paths)):
+            self.assertTrue(
+                np.allclose(res_path['visualization'][i],
+                            res_ndarray['visualization'][i]))
 
         # img dir, test different batch sizes
         img_dir = 'tests/data/det_toy_dataset/imgs/test/'
@@ -88,9 +93,9 @@ class TestTextDetinferencer(TestCase):
 
         # img_out_dir
         with tempfile.TemporaryDirectory() as tmp_dir:
-            self.inferencer(img_paths, img_out_dir=tmp_dir)
+            self.inferencer(img_paths, out_dir=tmp_dir, save_vis=True)
             for img_dir in ['img_1.jpg', 'img_2.jpg']:
-                self.assertTrue(osp.exists(osp.join(tmp_dir, img_dir)))
+                self.assertTrue(osp.exists(osp.join(tmp_dir, 'vis', img_dir)))
 
     def test_postprocess(self):
         # return_datasample
@@ -98,14 +103,13 @@ class TestTextDetinferencer(TestCase):
         res = self.inferencer(img_path, return_datasamples=True)
         self.assertTrue(is_type_list(res['predictions'], TextDetDataSample))
 
-        # pred_out_file
+        # dump predictions
         with tempfile.TemporaryDirectory() as tmp_dir:
-            pred_out_file = osp.join(tmp_dir, 'tmp.pkl')
             res = self.inferencer(
-                img_path, print_result=True, pred_out_file=pred_out_file)
-            dumped_res = mmengine.load(pred_out_file)
-            self.assert_predictions_equal(res['predictions'],
-                                          dumped_res['predictions'])
+                img_path, print_result=True, out_dir=tmp_dir, save_pred=True)
+            dumped_res = mmengine.load(
+                osp.join(tmp_dir, 'preds', 'img_1.json'))
+            self.assert_prediction_equal(res['predictions'][0], dumped_res)
 
     def test_pred2dict(self):
         data_sample = TextDetDataSample()

@@ -113,6 +113,8 @@ class BaseLocalVisualizer(Visualizer):
             font_families (Union[str, List[str]]): The font families of labels.
                 Defaults to 'sans-serif'.
         """
+        if not labels and not bboxes:
+            return image
         if colors is not None and isinstance(colors, (list, tuple)):
             size = math.ceil(len(labels) / len(colors))
             colors = (colors * size)[:len(labels)]

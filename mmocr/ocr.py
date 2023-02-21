@@ -9,10 +9,10 @@ def parse_args():
     parser.add_argument(
         'inputs', type=str, help='Input image file or folder path.')
     parser.add_argument(
-        '--img-out-dir',
+        '--out-dir',
         type=str,
-        default='',
-        help='Output directory of images.')
+        default='results/',
+        help='Output directory of results.')
     parser.add_argument(
         '--det',
         type=str,
@@ -46,7 +46,7 @@ def parse_args():
         help='Pretrained key information extraction algorithm. It\'s the path'
         'to the config file or the model name defined in metafile.')
     parser.add_argument(
-        '--kie-ckpt',
+        '--kie-weights',
         type=str,
         default=None,
         help='Path to the custom checkpoint file of the selected kie model. '
@@ -69,15 +69,19 @@ def parse_args():
         action='store_true',
         help='Whether to print the results.')
     parser.add_argument(
-        '--pred-out-file',
-        type=str,
-        default='',
-        help='File to save the inference results.')
+        '--save_pred',
+        action='store_true',
+        help='Save the inference results to out_dir.')
+    parser.add_argument(
+        '--save_vis',
+        action='store_true',
+        help='Save the visualization results to out_dir.')
 
     call_args = vars(parser.parse_args())
 
     init_kws = [
-        'det', 'det_weights', 'rec', 'rec_weights', 'kie', 'kie_ckpt', 'device'
+        'det', 'det_weights', 'rec', 'rec_weights', 'kie', 'kie_weights',
+        'device'
     ]
     init_args = {}
     for init_kw in init_kws:

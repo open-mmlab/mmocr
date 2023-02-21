@@ -1,12 +1,12 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
 import os.path as osp
-from typing import Dict, List, Optional, Sequence, Union
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 import mmcv
 import mmengine
 import numpy as np
-from mmengine.dataset import Compose
+from mmengine.dataset import Compose, pseudo_collate
 from mmengine.runner.checkpoint import _load_checkpoint
 
 from mmocr.registry import DATASETS
@@ -45,6 +45,7 @@ class KIEInferencer(BaseMMOCRInferencer):
         super().__init__(
             model=model, weights=weights, device=device, scope=scope)
         self._load_metainfo_to_visualizer(weights, self.cfg)
+        self.collate_fn = self.kie_collate
 
     def _load_metainfo_to_visualizer(self, weights: Optional[str],
                                      cfg: ConfigType) -> None:
@@ -77,11 +78,33 @@ class KIEInferencer(BaseMMOCRInferencer):
         self.novisual = all(
             self._get_transform_idx(pipeline_cfg, t) == -1
             for t in self.loading_transforms)
+        # Remove Resize from test_pipeline, since SDMGR requires bbox
+        # annotations to be resized together with pictures, but visualization
+        # loads the original image from the disk.
+        # TODO: find a more elegant way to fix this
+        idx = self._get_transform_idx(pipeline_cfg, 'Resize')
+        if idx != -1:
+            pipeline_cfg.pop(idx)
         # If it's in non-visual mode, self.pipeline will be specified.
         # Otherwise, file_pipeline and ndarray_pipeline will be specified.
         if self.novisual:
             return Compose(pipeline_cfg)
         return super()._init_pipeline(cfg)
+
+    @staticmethod
+    def kie_collate(data_batch: Sequence) -> Any:
+        """A collate function designed for KIE, where the first element (input)
+        is a dict and we only want to keep it as-is instead of batching
+        elements inside.
+
+        Returns:
+            Any: Transversed Data in the same format as the data_itement of
+            ``data_batch``.
+        """  # noqa: E501
+        transposed = list(zip(*data_batch))
+        for i in range(1, len(transposed)):
+            transposed[i] = pseudo_collate(transposed[i])
+        return transposed
 
     def _inputs_to_list(self, inputs: InputsType) -> list:
         """Preprocess the inputs to a list.
@@ -93,6 +116,7 @@ class KIEInferencer(BaseMMOCRInferencer):
 
         - img (str or ndarray): Path to the image or the image itself. If KIE
           Inferencer is used in no-visual mode, this key is not required.
+          Note: If it's an numpy array, it should be in BGR order.
         - img_shape (tuple(int, int)): Image shape in (H, W). In
         - instances (list[dict]): A list of instances.
             - bbox (ndarray(dtype=np.float32)): Shape (4, ). Bounding box.
@@ -159,92 +183,8 @@ class KIEInferencer(BaseMMOCRInferencer):
                 else:
                     atype = type(single_input['img'])
                     raise ValueError(f'Unsupported input type: {atype}')
+
         return processed_inputs
-
-    def __call__(self,
-                 inputs: InputsType,
-                 return_datasamples: bool = False,
-                 batch_size: int = 1,
-                 return_vis: bool = False,
-                 show: bool = False,
-                 wait_time: int = 0,
-                 draw_pred: bool = True,
-                 pred_score_thr: float = 0.3,
-                 img_out_dir: str = '',
-                 print_result: bool = False,
-                 pred_out_file: str = '',
-                 **kwargs) -> dict:
-        """Call the inferencer.
-
-        The inputs for KIE Inferencer is special compared to other tasks.
-        They can be a dict or list[dict], where each dictionary contains
-        following keys:
-
-        - img (str or ndarray): Path to the image or the image itself. If KIE
-          Inferencer is used in no-visual mode, this key is not required.
-        - img_shape (tuple(int, int)): Image shape in (H, W). In
-        - instances (list[dict]): A list of instances.
-            - bbox (ndarray(dtype=np.float32)): Shape (4, ). Bounding box.
-            - text (str): Annotation text.
-
-        Each ``instance`` looks like the following:
-
-        .. code-block:: python
-
-        {
-            # A nested list of 4 numbers representing the bounding box of
-            # the instance, in (x1, y1, x2, y2) order.
-            'bbox': np.array([[x1, y1, x2, y2], [x1, y1, x2, y2], ...],
-                            dtype=np.int32),
-
-            # List of texts.
-            "texts": ['text1', 'text2', ...],
-        }
-
-        Args:
-            inputs (InputsType): Inputs for the inferencer.
-            return_datasamples (bool): Whether to return results as
-                :obj:`BaseDataElement`. Defaults to False.
-            batch_size (int): Inference batch size. Defaults to 1.
-            return_vis (bool): Whether to return the visualization result.
-                Defaults to False.
-            show (bool): Whether to display the visualization results in a
-                popup window. Defaults to False.
-            wait_time (float): The interval of show (s). Defaults to 0.
-            draw_pred (bool): Whether to draw predicted bounding boxes.
-                Defaults to True.
-            pred_score_thr (float): Minimum score of bboxes to draw.
-                Defaults to 0.3.
-            img_out_dir (str): Output directory of visualization results.
-                If left as empty, no file will be saved. Defaults to ''.
-            print_result (bool): Whether to print the inference result w/o
-                visualization to the console. Defaults to False.
-            pred_out_file: File to save the inference results w/o
-                visualization. If left as empty, no file will be saved.
-                Defaults to ''.
-
-            **kwargs: Other keyword arguments passed to :meth:`preprocess`,
-                :meth:`forward`, :meth:`visualize` and :meth:`postprocess`.
-                Each key in kwargs should be in the corresponding set of
-                ``preprocess_kwargs``, ``forward_kwargs``, ``visualize_kwargs``
-                and ``postprocess_kwargs``.
-
-        Returns:
-            dict: Inference and visualization results.
-        """
-        return super().__call__(
-            inputs,
-            return_datasamples,
-            batch_size,
-            return_vis=return_vis,
-            show=show,
-            wait_time=wait_time,
-            draw_pred=draw_pred,
-            pred_score_thr=pred_score_thr,
-            img_out_dir=img_out_dir,
-            print_result=print_result,
-            pred_out_file=pred_out_file,
-            **kwargs)
 
     def visualize(self,
                   inputs: InputsType,
@@ -254,7 +194,8 @@ class KIEInferencer(BaseMMOCRInferencer):
                   wait_time: int = 0,
                   draw_pred: bool = True,
                   pred_score_thr: float = 0.3,
-                  img_out_dir: str = '') -> List[np.ndarray]:
+                  save_vis: bool = False,
+                  img_out_dir: str = '') -> Union[List[np.ndarray], None]:
         """Visualize predictions.
 
         Args:
@@ -269,10 +210,16 @@ class KIEInferencer(BaseMMOCRInferencer):
                 Defaults to True.
             pred_score_thr (float): Minimum score of bboxes to draw.
                 Defaults to 0.3.
-            img_out_dir (str): Output directory of images. Defaults to ''.
+            save_vis (bool): Whether to save the visualization result. Defaults
+                to False.
+            img_out_dir (str): Output directory of visualization results.
+                If left as empty, no file will be saved. Defaults to ''.
+
+        Returns:
+            List[np.ndarray] or None: Returns visualization results only if
+            applicable.
         """
-        if self.visualizer is None or (not show and img_out_dir == ''
-                                       and not return_vis):
+        if self.visualizer is None or not (show or save_vis or return_vis):
             return None
 
         if getattr(self, 'visualizer') is None:
@@ -282,24 +229,26 @@ class KIEInferencer(BaseMMOCRInferencer):
         results = []
 
         for single_input, pred in zip(inputs, preds):
-            img_num = str(self.num_visualized_imgs).zfill(8)
             assert 'img' in single_input or 'img_shape' in single_input
             if 'img' in single_input:
                 if isinstance(single_input['img'], str):
-                    img = mmcv.imread(single_input['img'])
-                    img_name = osp.basename(single_input['img'])
+                    img_bytes = mmengine.fileio.get(single_input['img'])
+                    img = mmcv.imfrombytes(img_bytes, channel_order='rgb')
                 elif isinstance(single_input['img'], np.ndarray):
-                    img = single_input['img'].copy()
-                    img_name = f'{img_num}.jpg'
+                    img = single_input['img'].copy()[:, :, ::-1]  # To RGB
             elif 'img_shape' in single_input:
                 img = np.zeros(single_input['img_shape'], dtype=np.uint8)
-                img_name = f'{img_num}.jpg'
             else:
                 raise ValueError('Input does not contain either "img" or '
                                  '"img_shape"')
+            img_name = osp.splitext(osp.basename(pred.img_path))[0]
 
-            out_file = osp.join(img_out_dir, img_name) if img_out_dir != '' \
-                else None
+            if save_vis and img_out_dir:
+                out_file = osp.splitext(img_name)[0]
+                out_file = f'{out_file}.jpg'
+                out_file = osp.join(img_out_dir, out_file)
+            else:
+                out_file = None
 
             visualization = self.visualizer.add_datasample(
                 img_name,
@@ -313,7 +262,6 @@ class KIEInferencer(BaseMMOCRInferencer):
                 out_file=out_file,
             )
             results.append(visualization)
-            self.num_visualized_imgs += 1
 
         return results
 

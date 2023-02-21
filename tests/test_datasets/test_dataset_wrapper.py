@@ -4,9 +4,10 @@ from copy import deepcopy
 from unittest import TestCase
 from unittest.mock import MagicMock
 
+from mmengine.registry import init_default_scope
+
 from mmocr.datasets import ConcatDataset, OCRDataset
 from mmocr.registry import TRANSFORMS
-from mmocr.utils import register_all_modules
 
 
 class TestConcatDataset(TestCase):
@@ -22,7 +23,7 @@ class TestConcatDataset(TestCase):
 
     def setUp(self):
 
-        register_all_modules()
+        init_default_scope('mmocr')
         dataset = OCRDataset
 
         # create dataset_a
