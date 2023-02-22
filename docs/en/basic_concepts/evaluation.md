@@ -125,7 +125,7 @@ val_evaluator = [dict(type='CharMetric')]
 Specifically, `CharMetric` will output two evaluation metrics, namely `char_precision` and `char_recall`. Let the number of correctly predicted characters (True Positive) be {math}`\sigma_{tp}`, then the precision *P* and recall *R* can be calculated by the following equation:
 
 ```{math}
-P=\frac{\sigma_{tp}}{\sigma_{gt}}, R = \frac{\sigma_{tp}}{\sigma_{pred}}
+P=\frac{\sigma_{tp}}{\sigma_{pred}}, R = \frac{\sigma_{tp}}{\sigma_{gt}}
 ```
 
 where {math}`\sigma_{gt}` and {math}`\sigma_{pred}` represent the total number of characters in the label text and the predicted text, respectively.
@@ -133,7 +133,7 @@ where {math}`\sigma_{gt}` and {math}`\sigma_{pred}` represent the total number o
 For example, assume that the label text is "MM**O**CR" and the predicted text is "mm**0**cR**1**". The score of the `CharMetric` is:
 
 ```{math}
-P=\frac{4}{5}, R=\frac{4}{6}
+P=\frac{4}{6}, R=\frac{4}{5}
 ```
 
 ### OneMinusNEDMetric
