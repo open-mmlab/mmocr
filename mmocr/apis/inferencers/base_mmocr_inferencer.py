@@ -201,7 +201,7 @@ class BaseMMOCRInferencer(BaseInferencer):
                 pred_out_dir=pred_out_dir,
                 **postprocess_kwargs)
             results['predictions'].extend(batch_res['predictions'])
-            if batch_res['visualization'] is not None:
+            if return_vis and batch_res['visualization'] is not None:
                 results['visualization'].extend(batch_res['visualization'])
         return results
 

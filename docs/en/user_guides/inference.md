@@ -1,102 +1,162 @@
 # Inference
 
-We provide an easy-to-use API for the demo and application purpose in [ocr.py](/mmocr/ocr.py) script.
+We provide an easy-to-use API - `MMOCRInferencer`, for the demo purpose in [ocr.py](/mmocr/ocr.py) script. It can perform inference on following tasks:
 
-The API can be called through command line (CL) or by calling it from another python script.
-It exposes all the models in MMOCR to API as individual modules that can be called and chained together.
+- Text detection
+- Text recognition
+- OCR (text detection + text recognition)
+- Key information extraction (text detection + text recognition + key information extraction)
+- *OCR (text spotting)* (coming soon)
 
-```{warning}
-This interface is being refactored is much likely to be changed in the upcoming release.
-```
+These tasks are performed by using one or several task-specific [Inferencers](../basic_concepts/inferencers.md). `MMOCRInferencer` encapsulates and chains all the Inferencers in MMOCR, so users can use this Inferencer to perform a series of tasks on an image and directly get the final result in an end-to-end manner.
 
-## Example 1: Text Detection
+The following sections will guide you through some basic usages of `MMOCRInferencer`.
 
-<div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187825864-8ead5acb-c3c5-443b-bd90-3f4b188fa315.jpg"  height="250"/>
-</div>
+## Basic Usage
 
-**Instruction:** Perform detection inference on an image with the TextSnake recognition model, export the result in a json file (default) and save the visualization file.
-
-- CL interface:
-
-```shell
-python mmocr/ocr.py demo/demo_text_det.jpg --det TextSnake --img-out-dir demo/
-```
-
-- Python interface:
+Assuming that we want to perform OCR on `demo/demo_text_ocr.jpg`, using `DBNet` as text detection model and `CRNN` as text recognition model. We can use the following command to perform the inference:
 
 ```python
-from mmocr.ocr import MMOCR
-
-# Load models into memory
-ocr = MMOCR(det='TextSnake')
-
-# Inference
-results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/')
+>>> from mmocr.apis import MMOCRInferencer
+>>> # Load models into memory
+>>> ocr = MMOCRInferencer(det='DBNet', rec='SAR')
+>>> # Inference
+>>> ocr('demo/demo_text_ocr.jpg', show=True)
 ```
 
-## Example 2: Text Detection + Recognition
+The OCR result will be visualized in a new window:
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
+    <img src="https://user-images.githubusercontent.com/22607038/220563262-e9c1ab52-9b96-4d9c-bcb6-f55ff0b9e1be.png" height="250"/>
 </div>
-
-**Instruction:** Perform ocr (det + recog) inference on the demo/demo_text_det.jpg image with the DB_r18 detection model and CRNN recognition model, print the result in the terminal and show the visualization.
-
-- CL interface:
-
-```shell
-python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --print-result --show
-```
 
 ```{note}
-
-When calling the script from the command line, the script assumes configs are saved in the `configs/` folder. User can customize the directory by specifying the value of `config_dir`.
-
+If you are running MMOCR on a server without GUI or via SSH tunnel with X11 forwarding off, the `show` option will not work. You can still save the visualization to files by setting `out_dir` and `save_vis=True` arguments. Read [Get Results](#get-results) for details.
 ```
 
-- Python interface:
+Depending on the initialization arguments, `MMOCRInferencer` can run in different modes. For example, it can run in KIE mode if it is initialized with `det`, `rec` and `kie` specified.
 
 ```python
-from mmocr.ocr import MMOCR
-
-# Load models into memory
-ocr = MMOCR(det='DB_r18', recog='CRNN')
-
-# Inference
-results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, show=True)
+>>> kie = MMOCRInferencer(det='DBNet', rec='SAR', kie='SDMGR')
+>>> kie('demo/demo_kie.jpeg', show=True)
 ```
 
-## Example 3: Text Detection + Recognition + Key Information Extraction
+Which should give you an image like this:
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187825451-6b043df9-10f7-4656-a528-45fe043df92b.jpg" height="250"/>
+    <img src="https://user-images.githubusercontent.com/22607038/220569700-fd4894bc-f65a-405e-95e7-ebd2d614aedd.png" height="250"/>
 </div>
+<br />
 
-**Instruction:** Perform end-to-end ocr (det + recog) inference first with DB_r18 detection model and CRNN recognition model, then run KIE inference with SDMGR model on the ocr result and show the visualization.
-
-- CL interface:
-
-```shell
-python mmocr/ocr.py demo/demo_kie.jpeg  --det DB_r18 --recog CRNN --kie SDMGR --print-result --show
-```
-
-```{note}
-
-Note: When calling the script from the command line, the script assumes configs are saved in the `configs/` folder. User can customize the directory by specifying the value of `config_dir`.
-
-```
-
-- Python interface:
+`MMOCRInferencer` accepts many types of inputs. It can be an numpy array or the path/url to an image. If you have several inputs, a list of them is acceptable:
 
 ```python
-from mmocr.ocr import MMOCR
+>>> import mmcv
+>>> # Load the image as a numpy array
+>>> np_img = mmcv.imread('tests/data/det_toy_dataset/imgs/test/img_1.jpg')
+>>> # Passing a list of inputs. Mixing numpy array and path string is fine
+>>> ocr([np_img,  'tests/data/det_toy_dataset/imgs/test/img_10.jpg'], show=True)
+```
 
-# Load models into memory
-ocr = MMOCR(det='DB_r18', recog='CRNN', kie='SDMGR')
+Sometimes you may want to iterate over a directory where all the images are stored. Just pass the directory path to `MMOCRInferencer`:
 
-# Inference
-results = ocr.readtext('demo/demo_kie.jpeg', print_result=True, show=True)
+```python
+>>> ocr('tests/data/det_toy_dataset/imgs/test/', show=True)
+```
+
+## Building Inferencer
+
+### Model Initialization
+
+For each task, `MMOCRInferencer` takes two arguments in the form of `xxx` and `xxx_weights` (e.g. `det` and `det_weights`) for initialization, and there are many ways to initialize a model for inference. We will take `det` and `det_weights` as an example to illustrate the way to initialize a model.
+
+- To infer with MMOCR's pre-trained model, passing its name to the argument `det` can work. The weights will be automatically downloaded and loaded from OpenMMLab's model zoo. Check the [Model List](#model-list) for available model names.
+
+  ```python
+  >>> MMOCRInferencer(det='DBNet')
+  ```
+
+  If you want to load your own weights, you can also pass the path/url to `det_weights`.
+
+  ```python
+  >>> MMOCRInferencer(det='DBNet', det_weights='path/to/dbnet.pth')
+  ```
+
+- If you have your own configs and weights, you can pass the path to the config file to `det` and the path to the weights to `det_weights`.
+
+  ```python
+  >>> MMOCRInferencer(det='path/to/dbnet_config.py', det_weights='path/to/dbnet.pth')
+  ```
+
+- If you have weights trained on [MMEngine](https://github.com/open-mmlab/mmengine/), specifying `xxx_weights` only is also fine - the config will be automatically loaded from the weights.
+
+  ```python
+  >>> # It will raise an error if the confgi file cannot be found in the weight file
+  >>> MMOCRInferencer(det_weights='path/to/dbnet.pth')
+  ```
+
+- Passing config file to `xxx` without specifying the weight path `xxx_weights` will result in a random initialized model.
+
+### Device
+
+Each Inferencer instance is bound to a device.
+By default, the best device is automatically decided by [MMEngine](https://github.com/open-mmlab/mmengine/). You can also alter the device by specifying the `device` argument. Refer to [torch.device](torch.device) for all the supported forms.
+
+## Using Inferencer
+
+### Batch Inference
+
+You can set the batch size by setting the `batch_size` argument. The default batch size is 1.
+
+### Get Results
+
+In Python interface, `MMOCRInferencer` returns predictions in a dictionary format. The keys starts with the task name, i.e. `det`, `rec` and `kie`; the values are the corresponding predictions. Depending on the actual task that MMOCRInferencer is running, the return values may be a subset of the following:
+
+```python
+{
+    'predictions' : [{
+        'det_polygons': [...],
+        'det_scores': [...]
+        'rec_texts': [...],
+        'rec_scores': [...],
+        'kie_labels': [...],
+        'kie_scores': [...],
+        'kie_edge_scores': [...],
+        'kie_edge_labels': [...]
+    },]
+    'visualization' : [array(..., dtype=uint8),]
+}
+```
+
+`predictions` is a list of dictionaries. Each dictionary formats the inference result of the corresponding image. Similarly, `visualization` is a list of numpy arrays, each array corresponds to the visualization of an image.
+
+```{note}
+The visualization result will only be returned when `return_vis=True`.
+```
+
+Apart from obtaining predictions from the return value, you can also export the predictions/visualization to files by setting `out_dir` and `save_pred`/`save_vis` arguments. Assuming `out_dir` is `outputs`, the files will be organized as follows:
+
+```text
+outputs
+├── preds
+│   └── img_1.json
+└── vis
+    └── img_1.jpg
+```
+
+The filename of each file is the same as the corresponding input image filename. If the input image is an array, the filename will be a number starting from 0.
+
+## CLI Interface
+
+`MMOCRInferencer` supports both CLI and Python interface. All arguments are the same for the CLI, all you need to do is add 2 hyphens at the beginning of the argument and replace underscores by hyphens.
+(*Example:* `out_dir` becomes `--out-dir`)
+
+For bool type arguments, putting the argument in the command stores it as true.
+
+For example, the [first example](#simple-usage) can be run in CLI as:
+
+```bash
+python mmocr/ocr.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show
 ```
 
 ## API Arguments
@@ -105,90 +165,28 @@ The API has an extensive list of arguments that you can use. The following table
 
 **MMOCR():**
 
-| Arguments      | Type                  | Default  | Description                                                                                          |
-| -------------- | --------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
-| `det`          | see [models](#models) | None     | Text detection algorithm                                                                             |
-| `recog`        | see [models](#models) | None     | Text recognition algorithm                                                                           |
-| `kie` \[1\]    | see [models](#models) | None     | Key information extraction algorithm                                                                 |
-| `config_dir`   | str                   | configs/ | Path to the config directory where all the config files are located                                  |
-| `det_config`   | str                   | None     | Path to the custom config file of the selected det model                                             |
-| `det_ckpt`     | str                   | None     | Path to the custom checkpoint file of the selected det model                                         |
-| `recog_config` | str                   | None     | Path to the custom config file of the selected recog model                                           |
-| `recog_ckpt`   | str                   | None     | Path to the custom checkpoint file of the selected recog model                                       |
-| `kie_config`   | str                   | None     | Path to the custom config file of the selected kie model                                             |
-| `kie_ckpt`     | str                   | None     | Path to the custom checkpoint file of the selected kie model                                         |
-| `device`       | str                   | None     | Device used for inference, accepting all allowed strings by `torch.device`. E.g., 'cuda:0' or 'cpu'. |
+| Arguments     | Type                           | Default | Description                                                                                                                                            |
+| ------------- | ------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `det`         | see [model list](#models-list) | None    | Pretrained text detection algorithm. It's the path to the config file or the model name defined in metafile.                                           |
+| `det_weights` | str                            | None    | Path to the custom checkpoint file of the selected det model. If it is not specified and "det" is a model name of metafile, the weights will be loaded from metafile. |
+| `rec`         | see [model list](#models-list) | None    | Pretrained text recognition algorithm. It’s the path to the config file or the model name defined in metafile.                                         |
+| `rec_weights` | str                            | None    | Path to the custom checkpoint file of the selected rec model. If it is not specified and “rec” is a model name of metafile, the weights will be loaded from metafile. |
+| `kie` \[1\]   | see [model list](#models-list) | None    | Pretrained key information extraction algorithm. It’s the path to the config file or the model name defined in metafile.                               |
+| `kie_weights` | str                            | None    | Path to the custom checkpoint file of the selected kie model. If it is not specified and “kie” is a model name of metafile, the weights will be loaded from metafile. |
+| `device`      | str                            | None    | Device used for inference, accepting all allowed strings by `torch.device`. E.g., 'cuda:0' or 'cpu'. If None, the available device will be automatically used. Defaults to None. |
 
 \[1\]: `kie` is only effective when both text detection and recognition models are specified.
 
-```{note}
+### \_\_call\_\_*()*
 
-User can use default pretrained models by specifying `det` and/or `recog`, which is equivalent to specifying their corresponding `*_config` and `*_ckpt`. However, manually specifying `*_config` and `*_ckpt` will always override values set by `det` and/or `recog`. Similar rules also apply to `kie`, `kie_config` and `kie_ckpt`.
-
-```
-
-### readtext()
-
-| Arguments      | Type                    | Default      | Description                                                            |
-| -------------- | ----------------------- | ------------ | ---------------------------------------------------------------------- |
-| `img`          | str/list/tuple/np.array | **required** | img, folder path, np array or list/tuple (with img paths or np arrays) |
-| `img_out_dir`  | str                     | None         | Output directory of images.                                            |
-| `show`         | bool                    | False        | Whether to show the result visualization on screen                     |
-| `print_result` | bool                    | False        | Whether to show the result for each image                              |
-
-All arguments are the same for the cli, all you need to do is add 2 hyphens at the beginning of the argument and replace underscores by hyphens.
-(*Example:* `img_out_dir` becomes `--img-out-dir`)
-
-For bool type arguments, putting the argument in the command stores it as true.
-(*Example:* `python mmocr/demo/ocr.py --det DB_r18 demo/demo_text_det.jpg --print_result`
-means that `print_result` is set to `True`)
-
-## Models
-
-**Text detection:**
-
-| Name          |                                   Reference                                    |
-| ------------- | :----------------------------------------------------------------------------: |
-| DB_r18        |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnet)    |
-| DB_r50        |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnet)    |
-| DBPP_r50      |  [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#dbnetpp)   |
-| DRRG          |    [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#drrg)    |
-| FCE_IC15      |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fcenet)   |
-| FCE_CTW_DCNv2 |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#fcenet)   |
-| MaskRCNN_CTW  | [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn) |
-| MaskRCNN_IC15 | [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#mask-r-cnn) |
-| PANet_CTW     |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#panet)    |
-| PANet_IC15    |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#panet)    |
-| PS_CTW        |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)   |
-| PS_IC15       |   [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#psenet)   |
-| TextSnake     | [link](https://mmocr.readthedocs.io/en/dev-1.x/textdet_models.html#textsnake)  |
-
-**Text recognition:**
-
-| Name          |                                      Reference                                      |
-| ------------- | :---------------------------------------------------------------------------------: |
-| ABINet        |    [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#abinet)     |
-| ABINet_Vision |    [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#abinet)     |
-| ASTER         |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#aster)     |
-| CRNN          |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#crnn)      |
-| MASTER        |    [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#master)     |
-| NRTR_1/16-1/8 |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#nrtr)      |
-| NRTR_1/8-1/4  |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#nrtr)      |
-| RobustScanner | [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#robustscanner) |
-| SAR           |      [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#sar)      |
-| SATRN         |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#satrn)     |
-| SATRN_sm      |     [link](https://mmocr.readthedocs.io/en/dev-1.x/textrecog_models.html#satrn)     |
-
-**Key information extraction:**
-
-| Name  |                                                              Reference                                                               |
-| ----- | :----------------------------------------------------------------------------------------------------------------------------------: |
-| SDMGR | [link](https://mmocr.readthedocs.io/en/dev-1.x/kie_models.html#spatial-dual-modality-graph-reasoning-for-key-information-extraction) |
-
-## Additional info
-
-- To perform det + recog inference (end2end ocr), both the `det` and `recog` arguments must be defined.
-- To perform only detection set the `recog` argument to `None`.
-- To perform only recognition set the `det` argument to `None`.
-
-If you have any suggestions for new features, feel free to open a thread or even PR :)
+| Arguments            | Type                    | Default      | Description                                                                                      |
+| -------------------- | ----------------------- | ------------ | ------------------------------------------------------------------------------------------------ |
+| `inputs`             | str/list/tuple/np.array | **required** | It can be a path to an image/a folder, an np array or a list/tuple (with img paths or np arrays) |
+| `return_datasamples` | bool                    | False        | Whether to return results as DataSamples. If False, the results will be packed into a dict.      |
+| `batch_size`         | int                     | 1            | Inference batch size.                                                                            |
+| `return_vis`         | bool                    | False        | Whether to return the visualization result.                                                      |
+| `print_result`       | bool                    | False        | Whether to print the inference result to the console.                                            |
+| `wait_time`          | float                   | 0            | The interval of show(s).                                                                         |
+| `out_dir`            | str                     | `results/`   | Output directory of results.                                                                     |
+| `save_vis`           | bool                    | False        | Whether to save the visualization results to `out_dir`.                                          |
+| `save_pred`          | bool                    | False        | Whether to save the inference results to `out_dir`.                                              |

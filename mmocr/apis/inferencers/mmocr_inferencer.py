@@ -220,6 +220,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         inputs: InputsType,
         batch_size: int = 1,
         out_dir: str = 'results/',
+        return_vis: bool = False,
         save_vis: bool = False,
         save_pred: bool = False,
         **kwargs,
@@ -231,6 +232,8 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                 to image / image directory, or an array, or a list of these.
             batch_size (int): Batch size. Defaults to 1.
             out_dir (str): Output directory of results. Defaults to 'results/'.
+            return_vis (bool): Whether to return the visualization result.
+                Defaults to False.
             save_vis (bool): Whether to save the visualization results to
                 "out_dir". Defaults to False.
             save_pred (bool): Whether to save the inference results to
@@ -260,7 +263,10 @@ class MMOCRInferencer(BaseMMOCRInferencer):
             visualize_kwargs,
             postprocess_kwargs,
         ) = self._dispatch_kwargs(
-            save_vis=save_vis, save_pred=save_pred, **kwargs)
+            save_vis=save_vis,
+            save_pred=save_pred,
+            return_vis=return_vis,
+            **kwargs)
 
         ori_inputs = self._inputs_to_list(inputs)
 
@@ -277,7 +283,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                 pred_out_dir=pred_out_dir,
                 **postprocess_kwargs)
             results['predictions'].extend(batch_res['predictions'])
-            if batch_res['visualization'] is not None:
+            if return_vis and batch_res['visualization'] is not None:
                 results['visualization'].extend(batch_res['visualization'])
         return results
 

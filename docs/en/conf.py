@@ -168,6 +168,7 @@ def builder_inited_handler(app):
     subprocess.run(['./merge_docs.sh'])
     subprocess.run(['./stats.py'])
     subprocess.run(['./dataset_zoo.py'])
+    subprocess.run(['./model_list.py'])
 
 
 def setup(app):
