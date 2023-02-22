@@ -2,7 +2,6 @@
 import os.path as osp
 
 from mmengine.fileio import load
-from mmengine.utils import get_installed_path
 
 content = '\n## Model List'
 
@@ -14,10 +13,9 @@ abbr2task = {
 
 
 def get_task(task_name: str):
-    package_path = get_installed_path('mmocr')
-    meta_indexes = load(osp.join(package_path, '.mim', 'model-index.yml'))
+    meta_indexes = load('../../model-index.yml')
     for meta_path in meta_indexes['Import']:
-        meta_path = osp.join(package_path, '.mim', meta_path)
+        meta_path = osp.join('../../', meta_path)
         metainfo = load(meta_path)
         collection2md = {}
         for item in metainfo['Collections']:
