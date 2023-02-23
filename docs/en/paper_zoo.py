@@ -179,7 +179,7 @@ class TextRecogPaperList(BasePaperList):
             f.write('\n```\n')
 
 
-papers_dir = 'paper_zoo'
+papers_dir = '../../paper_zoo'
 paper_list = TextRecogPaperList(papers_dir, 'textrecog')
 os.makedirs('paper_zoo/textrecog', exist_ok=True)
 paper_list.gen_model_overview('paper_zoo/textrecog/overview.md')
