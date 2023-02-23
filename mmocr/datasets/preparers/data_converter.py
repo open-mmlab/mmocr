@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
+import os
 import os.path as osp
 import re
 import shutil
@@ -10,7 +11,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 import mmcv
 from mmengine import mkdir_or_exist, track_parallel_progress
 
-from mmocr.utils import bbox2poly, crop_img, list_files, poly2bbox
+from mmocr.utils import bbox2poly, crop_img, list_files, poly2bbox, warp_img
 from .data_preparer import DATA_CONVERTERS, DATA_DUMPERS, DATA_PARSERS
 
 
@@ -61,6 +62,8 @@ class BaseDataConverter:
             self.gatherer = self.pair_gather
         elif gather_type == 'mono_gather':
             self.gatherer = self.mono_gather
+        elif gather_type == 'naf_gather':
+            self.gatherer = self.naf_gather
         else:
             raise NotImplementedError
 
@@ -174,6 +177,8 @@ class BaseDataConverter:
         """
         files = list()
         for file in list_files(img_path, suffixes):
+            if not re.match(rule[0], osp.basename(file)):
+                continue
             file2 = re.sub(rule[0], rule[1], osp.basename(file))
             file2 = file.replace(osp.basename(file), file2)
             file2 = file2.replace(self.img_dir, 'annotations')
@@ -181,11 +186,51 @@ class BaseDataConverter:
 
         return files
 
+    def naf_gather(self, img_path: str, ann_path: str,
+                   **kwargs) -> List[Tuple]:
+        """Gather the dataset file from NAF dataset. Specifically for the case
+        that there is a split file that contains the names of different splits.
+        For example,
+
+            img_001.jpg                           train: img_001.jpg
+            img_002.jpg ---> data_split.json ---> test: img_002.jpg
+            img_003.jpg                           val: img_003.jpg
+
+        Args:
+            img_path (str): Path to the images.
+            anno_path (str): Path to the annotations.
+        Returns:
+            List[Tuple]: A list of tuples (img_path, ann_path).
+        """
+        split_file = osp.join(self.data_root, 'data_split.json')
+        with open(split_file, 'r') as f:
+            split_data = json.load(f)
+        files = []
+        # Rename the key
+        split_data['val'] = split_data.pop('valid')
+        if not osp.exists(img_path):
+            os.makedirs(img_path)
+        for groups in split_data[self.current_split]:
+            for img_name in split_data[self.current_split][groups]:
+                src_img = osp.join(self.data_root, 'temp_images', img_name)
+                dst_img = osp.join(img_path, img_name)
+                if not osp.exists(src_img):
+                    Warning(f'{src_img} does not exist!')
+                    continue
+                # move the image to the new path
+                shutil.move(src_img, dst_img)
+                ann = osp.join(ann_path, img_name.replace('.jpg', '.json'))
+                files.append((dst_img, ann))
+        return files
+
     def clean(self) -> None:
         for d in self.delete:
             delete_file = osp.join(self.data_root, d)
             if osp.exists(delete_file):
-                shutil.rmtree(delete_file)
+                if osp.isdir(delete_file):
+                    shutil.rmtree(delete_file)
+                else:
+                    os.remove(delete_file)
 
 
 @DATA_CONVERTERS.register_module()
@@ -466,10 +511,20 @@ class TextRecogCropConverter(TextRecogDataConverter):
         dumper (Dict): Config dict for dumping the dataset files.
         dataset_name (str): Name of the dataset.
         nproc (int): Number of processes to process the data.
-        long_edge_pad_ratio (float): The ratio of padding the long edge of the
-            cropped image. Defaults to 0.1.
-        short_edge_pad_ratio (float): The ratio of padding the short edge of
-            the cropped image. Defaults to 0.05.
+        crop_with_warp (bool): Whether to crop the text from the original image
+            using opencv warpPerspective.
+        jitter (bool): (Applicable when crop_with_warp=True)
+            Whether to jitter the box.
+        jitter_ratio_x (float): (Applicable when crop_with_warp=True)
+            Horizontal jitter ratio relative to the height.
+        jitter_ratio_y (float): (Applicable when crop_with_warp=True)
+            Vertical jitter ratio relative to the height.
+        long_edge_pad_ratio (float): (Applicable when crop_with_warp=False)
+            The ratio of padding the long edge of the cropped image.
+            Defaults to 0.1.
+        short_edge_pad_ratio (float): (Applicable when crop_with_warp=False)
+            The ratio of padding the short edge of the cropped image.
+            Defaults to 0.05.
         delete (Optional[List]): A list of files to be deleted after
             conversion. Defaults to ['annotations].
     """
@@ -482,6 +537,10 @@ class TextRecogCropConverter(TextRecogDataConverter):
                  dumper: Dict,
                  dataset_name: str,
                  nproc: int,
+                 crop_with_warp: bool = False,
+                 jitter: bool = False,
+                 jitter_ratio_x: float = 0.0,
+                 jitter_ratio_y: float = 0.0,
                  long_edge_pad_ratio: float = 0.0,
                  short_edge_pad_ratio: float = 0.0,
                  delete: List = ['annotations']):
@@ -494,6 +553,10 @@ class TextRecogCropConverter(TextRecogDataConverter):
             dataset_name=dataset_name,
             nproc=nproc,
             delete=delete)
+        self.crop_with_warp = crop_with_warp
+        self.jitter = jitter
+        self.jrx = jitter_ratio_x
+        self.jry = jitter_ratio_y
         self.lepr = long_edge_pad_ratio
         self.sepr = short_edge_pad_ratio
         # Crop converter crops the images of textdet to patches
@@ -521,16 +584,27 @@ class TextRecogCropConverter(TextRecogDataConverter):
             if 'poly' in instance:
                 return bbox2poly(poly2bbox(instance['poly'])).tolist()
 
+        def get_poly(instance: Dict) -> List:
+            if 'poly' in instance:
+                return instance['poly']
+            if 'box' in instance:
+                return bbox2poly(instance['box']).tolist()
+
         data_list = []
         img_path, instances = sample
         img = mmcv.imread(img_path)
         for i, instance in enumerate(instances):
-            box, text = get_box(instance), instance['text']
             if instance['ignore']:
                 continue
-            patch = crop_img(img, box, self.lepr, self.sepr)
+            if self.crop_with_warp:
+                poly = get_poly(instance)
+                patch = warp_img(img, poly, self.jitter, self.jrx, self.jry)
+            else:
+                box = get_box(instance)
+                patch = crop_img(img, box, self.lepr, self.sepr)
             if patch.shape[0] == 0 or patch.shape[1] == 0:
                 continue
+            text = instance['text']
             patch_name = osp.splitext(
                 osp.basename(img_path))[0] + f'_{i}' + osp.splitext(
                     osp.basename(img_path))[1]

@@ -15,6 +15,7 @@ Collections:
 
 Models:
   - Name: drrg_resnet50_fpn-unet_1200e_ctw1500
+    Alias: DRRG
     In Collection: DRRG
     Config: configs/textdet/drrg/drrg_resnet50_fpn-unet_1200e_ctw1500.py
     Metadata:

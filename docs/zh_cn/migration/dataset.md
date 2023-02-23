@@ -123,6 +123,8 @@ img2.jpg MMOCR
 }
 ```
 
+其中，`bbox` 字段的格式为 `[min_x, min_y, max_x, max_y]`。
+
 #### 迁移脚本
 
 为帮助用户将旧版本标注文件迁移至新格式，我们提供了迁移脚本。使用方法如下：
@@ -232,20 +234,7 @@ python tools/dataset_converters/textrecog/data_migrator.py ${IN_PATH} ${OUT_PATH
         pipeline=[])
    ```
 
-3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) 支持 0.x 版本文本识别任务的 `LMDB` 标注格式。只需要在 `configs/textrecog/_base_/datasets` 中添加新的数据集配置文件，并指定其数据集类型为 `RecogLMDBDataset` 即可。例如，以下示例展示了如何配置并读取 toy dataset 中的 `label.lmdb`，该 `lmdb` 文件**仅包含标签信息**。
-
-   ```python
-    data_root = 'tests/data/rec_toy_dataset/'
-
-    lmdb_dataset = dict(
-        type='RecogLMDBDataset',
-        data_root=data_root,
-        ann_file='label.lmdb',
-        data_prefix=dict(img_path='imgs'),
-        pipeline=[])
-   ```
-
-   当 `lmdb` 文件中既包含标签信息又包含图像时，我们除了需要将数据集类型设定为 `RecogLMDBDataset` 以外，还需要将数据流水线中的图像读取方法由 [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) 替换为 [`LoadImageFromLMDB`](mmocr.datasets.transforms.LoadImageFromLMDB)。
+3. [RecogLMDBDataset](mmocr.datasets.RecogLMDBDataset) 支持 0.x 版本文本识别任务**图像+文字**的 `LMDB` 标注格式。只需要在 `configs/textrecog/_base_/datasets` 中添加新的数据集配置文件，并指定其数据集类型为 `RecogLMDBDataset` 即可。例如，以下示例展示了如何配置并读取 toy dataset 中的 `imgs.lmdb`，该 `lmdb` 文件**包含标签和图像**。
 
    ```python
    # 将数据集类型设定为 RecogLMDBDataset
@@ -255,12 +244,11 @@ python tools/dataset_converters/textrecog/data_migrator.py ${IN_PATH} ${OUT_PATH
         type='RecogLMDBDataset',
         data_root=data_root,
         ann_file='imgs.lmdb',
-        data_prefix=dict(img_path='imgs.lmdb'), # 将 img_path 设定为 lmdb 文件名
-        pipeline=[])
+        pipeline=None)
    ```
 
-   还需把 `train_pipeline` 及 `test_pipeline` 中的数据读取方法进行替换：
+   还需把 `train_pipeline` 及 `test_pipeline` 中的数据读取方法如 [`LoadImageFromFile`](mmocr.datasets.transforms.LoadImageFromFile) 替换为 [`LoadImageFromNDArray`](mmocr.datasets.transforms.LoadImageFromNDArray)：
 
    ```python
-    train_pipeline = [dict(type='LoadImageFromLMDB', color_type='grayscale', ignore_empty=True)]
+    train_pipeline = [dict(type='LoadImageFromNDArray')]
    ```

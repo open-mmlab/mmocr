@@ -19,7 +19,7 @@ MMOCR 基于 {external+mmengine:doc}`MMEngine: 抽象数据接口 <advanced_tuto
 
 ```python
 import torch
-from mmengine.data import InstanceData
+from mmengine.structures import InstanceData
 
 # 定义 gt_instance 用于封装边界盒的标注信息
 gt_instance = InstanceData()

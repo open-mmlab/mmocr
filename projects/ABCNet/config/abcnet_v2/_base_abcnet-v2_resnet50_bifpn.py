@@ -36,11 +36,12 @@ model = dict(
             type='Pretrained',
             checkpoint='open-mmlab://detectron2/resnet50_caffe')),
     neck=dict(
-        type='mmdet.FPN',
+        type='BiFPN',
         in_channels=[256, 512, 1024, 2048],
         out_channels=256,
         start_level=0,
-        add_extra_convs='on_output',  # use P5
+        add_extra_convs=True,  # use P5
+        norm_cfg=dict(type='BN'),
         num_outs=6,
         relu_before_extra_convs=True),
     det_head=dict(
@@ -78,14 +79,15 @@ model = dict(
             test_cfg=dict(
                 # rescale_fields=['polygon', 'bboxes', 'bezier'],
                 nms_pre=1000,
-                nms=dict(type='nms', iou_threshold=0.5),
+                nms=dict(type='nms', iou_threshold=0.4),
                 score_thr=0.3))),
     roi_head=dict(
-        type='OnlyRecRoIHead',
+        type='RecRoIHead',
+        neck=dict(type='CoordinateHead'),
         roi_extractor=dict(
             type='BezierRoIExtractor',
             roi_layer=dict(
-                type='BezierAlign', output_size=(8, 32), sampling_ratio=1.0),
+                type='BezierAlign', output_size=(16, 64), sampling_ratio=1.0),
             out_channels=256,
             featmap_strides=[4, 8, 16]),
         rec_head=dict(

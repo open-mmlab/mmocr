@@ -3,9 +3,12 @@ import copy
 import unittest
 
 import numpy as np
+from parameterized import parameterized
 
-from mmocr.datasets.transforms import (PadToWidth, PyramidRescale,
-                                       RescaleToHeight)
+from mmocr.datasets.transforms import (CropHeight, ImageContentJitter,
+                                       PadToWidth, PyramidRescale,
+                                       RescaleToHeight, ReversePixels,
+                                       TextRecogGeneralAug)
 
 
 class TestPadToWidth(unittest.TestCase):
@@ -125,3 +128,85 @@ class TestRescaleToHeight(unittest.TestCase):
                               'min_width=None, max_width=None, '
                               'width_divisor=1, '
                               "resize_cfg={'type': 'Resize', 'scale': 0})"))
+
+
+class TestTextRecogGeneralAug(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.transform = TextRecogGeneralAug()
+
+    @parameterized.expand([(np.random.random((3, 3, 3)), ),
+                           (np.random.random((10, 10, 3)), ),
+                           (np.random.random((30, 30, 3)), )])
+    def test_transform(self, img):
+        data_info = dict(img=img)
+        results = self.transform(copy.deepcopy(data_info))
+        self.assertEqual(results['img'].shape[:2], results['img_shape'])
+
+    def test_repr(self):
+        repr_str = self.transform.__repr__()
+        self.assertEqual(repr_str, 'TextRecogGeneralAug()')
+
+
+class TestCropHeight(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.data_info = dict(img=np.random.random((20, 20, 3)))
+
+    @parameterized.expand([
+        (3, 3),
+        (5, 10),
+    ])
+    def test_transform(self, min_pixels, max_pixels):
+        self.transform = CropHeight(
+            min_pixels=min_pixels, max_pixels=max_pixels)
+        results = self.transform(copy.deepcopy(self.data_info))
+        self.assertEqual(results['img'].shape[:2], results['img_shape'])
+        h_diff = self.data_info['img'].shape[0] - results['img_shape'][0]
+        self.assertGreaterEqual(h_diff, min_pixels)
+        self.assertLessEqual(h_diff, max_pixels)
+
+    def test_invalid(self):
+        with self.assertRaises(AssertionError):
+            self.transform = CropHeight(min_pixels=10, max_pixels=9)
+
+    def test_repr(self):
+        transform = CropHeight(min_pixels=2, max_pixels=10)
+        repr_str = transform.__repr__()
+        self.assertEqual(repr_str, 'CropHeight(min_pixels = 2, '
+                         'max_pixels = 10)')
+
+
+class TestImageContentJitter(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.transform = ImageContentJitter()
+
+    @parameterized.expand([(np.random.random((3, 3, 3)), ),
+                           (np.random.random((10, 10, 3)), ),
+                           (np.random.random((30, 30, 3)), )])
+    def test_transform(self, img):
+        data_info = dict(img=img)
+        self.transform(copy.deepcopy(data_info))
+
+    def test_repr(self):
+        repr_str = self.transform.__repr__()
+        self.assertEqual(repr_str, 'ImageContentJitter()')
+
+
+class TestReversePixels(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.transform = ReversePixels()
+
+    @parameterized.expand([(np.random.random((3, 3, 3)), ),
+                           (np.random.random((10, 10, 3)), ),
+                           (np.random.random((30, 30, 3)), )])
+    def test_transform(self, img):
+        data_info = dict(img=img)
+        results = self.transform(copy.deepcopy(data_info))
+        self.assertTrue(np.array_equal(results['img'], 255. - img))
+
+    def test_repr(self):
+        repr_str = self.transform.__repr__()
+        self.assertEqual(repr_str, 'ReversePixels()')

@@ -90,8 +90,17 @@ class PackTextDetInputs(BaseTransform):
             img = results['img']
             if len(img.shape) < 3:
                 img = np.expand_dims(img, -1)
-            img = np.ascontiguousarray(img.transpose(2, 0, 1))
-            packed_results['inputs'] = to_tensor(img)
+            # A simple trick to speedup formatting by 3-5 times when
+            # OMP_NUM_THREADS != 1
+            # Refer to https://github.com/open-mmlab/mmdetection/pull/9533
+            # for more details
+            if img.flags.c_contiguous:
+                img = to_tensor(img)
+                img = img.permute(2, 0, 1).contiguous()
+            else:
+                img = np.ascontiguousarray(img.transpose(2, 0, 1))
+                img = to_tensor(img)
+            packed_results['inputs'] = img
 
         data_sample = TextDetDataSample()
         instance_data = InstanceData()
@@ -174,8 +183,17 @@ class PackTextRecogInputs(BaseTransform):
             img = results['img']
             if len(img.shape) < 3:
                 img = np.expand_dims(img, -1)
-            img = np.ascontiguousarray(img.transpose(2, 0, 1))
-            packed_results['inputs'] = to_tensor(img)
+            # A simple trick to speedup formatting by 3-5 times when
+            # OMP_NUM_THREADS != 1
+            # Refer to https://github.com/open-mmlab/mmdetection/pull/9533
+            # for more details
+            if img.flags.c_contiguous:
+                img = to_tensor(img)
+                img = img.permute(2, 0, 1).contiguous()
+            else:
+                img = np.ascontiguousarray(img.transpose(2, 0, 1))
+                img = to_tensor(img)
+            packed_results['inputs'] = img
 
         data_sample = TextRecogDataSample()
         gt_text = LabelData()
@@ -272,8 +290,17 @@ class PackKIEInputs(BaseTransform):
             img = results['img']
             if len(img.shape) < 3:
                 img = np.expand_dims(img, -1)
-            img = np.ascontiguousarray(img.transpose(2, 0, 1))
-            packed_results['inputs'] = to_tensor(img)
+            # A simple trick to speedup formatting by 3-5 times when
+            # OMP_NUM_THREADS != 1
+            # Refer to https://github.com/open-mmlab/mmdetection/pull/9533
+            # for more details
+            if img.flags.c_contiguous:
+                img = to_tensor(img)
+                img = img.permute(2, 0, 1).contiguous()
+            else:
+                img = np.ascontiguousarray(img.transpose(2, 0, 1))
+                img = to_tensor(img)
+            packed_results['inputs'] = img
         else:
             packed_results['inputs'] = torch.FloatTensor().reshape(0, 0, 0)
 

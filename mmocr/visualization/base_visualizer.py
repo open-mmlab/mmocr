@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import math
-from typing import Sequence, Union
+from typing import List, Sequence, Union
 
 import numpy as np
 import torch
@@ -50,13 +50,22 @@ class BaseLocalVisualizer(Visualizer):
                (95, 54, 80), (128, 76, 255), (201, 57, 1), (246, 0, 122),
                (191, 162, 208)]
 
+    def __init__(self,
+                 name: str = 'visualizer',
+                 font_families: Union[str, List[str]] = 'sans-serif',
+                 **kwargs) -> None:
+        super().__init__(name=name, **kwargs)
+        self.font_families = font_families
+
     def get_labels_image(self,
                          image: np.ndarray,
                          labels: Union[np.ndarray, torch.Tensor],
                          bboxes: Union[np.ndarray, torch.Tensor],
                          colors: Union[str, Sequence[str]] = 'k',
                          font_size: Union[int, float] = 10,
-                         auto_font_size: bool = False) -> np.ndarray:
+                         auto_font_size: bool = False,
+                         font_families: Union[str, List[str]] = 'sans-serif'
+                         ) -> np.ndarray:
         """Draw labels on image.
 
         Args:
@@ -73,7 +82,11 @@ class BaseLocalVisualizer(Visualizer):
                 to 10.
             auto_font_size (bool): Whether to automatically adjust font size.
                 Defaults to False.
+            font_families (Union[str, List[str]]): The font families of labels.
+                Defaults to 'sans-serif'.
         """
+        if not labels and not bboxes:
+            return image
         if colors is not None and isinstance(colors, (list, tuple)):
             size = math.ceil(len(labels) / len(colors))
             colors = (colors * size)[:len(labels)]
@@ -88,7 +101,8 @@ class BaseLocalVisualizer(Visualizer):
             vertical_alignments='center',
             horizontal_alignments='center',
             colors='k',
-            font_sizes=font_size)
+            font_sizes=font_size,
+            font_families=font_families)
         return self.get_image()
 
     def get_polygons_image(self,
