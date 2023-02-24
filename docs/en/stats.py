@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # Copyright (c) OpenMMLab. All rights reserved.
 import functools as func
-import glob
 import re
 from os.path import basename, splitext
 
 import numpy as np
 import titlecase
+from weight_list import gen_weight_list
 
 
 def title2anchor(name):
@@ -16,7 +16,9 @@ def title2anchor(name):
 
 # Count algorithms
 
-files = sorted(glob.glob('*_models.md'))
+files = [
+    'backbones.md', 'textdet_models.md', 'textrecog_models.md', 'kie_models.md'
+]
 
 stats = []
 
@@ -51,7 +53,7 @@ for f in files:
             re.search(
                 rf'\btitle\s*=\s*{{\s*{q}\s*}}.*?\n## (.*?)\s*[,;]?\s*\n',
                 revcontent, re.DOTALL | re.IGNORECASE).group(1))
-        paperlinks[p] = f'[{p}]({splitext(basename(f))[0]}.html#{paper_link})'
+        paperlinks[p] = f'[{p}]({splitext(basename(f))[0]}.md#{paper_link})'
     paperlist = '\n'.join(
         sorted(f'    - [{t}] {paperlinks[x]}' for t, x in papers))
     # count configs
@@ -68,7 +70,7 @@ for f in files:
     }
 
     statsmsg = f"""
-## [{title}]({f})
+### [{title}]({f})
 
 * Number of checkpoints: {len(ckpts)}
 * Number of configs: {len(configs)}
@@ -89,8 +91,21 @@ papertypes, papercounts = np.unique([t for t, _ in allpapers],
 countstr = '\n'.join(
     [f'   - {t}: {c}' for t, c in zip(papertypes, papercounts)])
 
+# get model list
+weight_list = gen_weight_list()
+
 modelzoo = f"""
-# Statistics
+# Overview
+
+## Weights
+
+Here are the list of weights available for
+[Inference](user_guides/inference.md).
+Each weight may have multiple names, which will be separated by `/` in the table.
+
+{weight_list}
+
+## Statistics
 
 * Number of checkpoints: {len(allckpts)}
 * Number of configs: {len(allconfigs)}
@@ -98,7 +113,7 @@ modelzoo = f"""
 {countstr}
 
 {msglist}
-"""
+"""  # noqa
 
 with open('modelzoo.md', 'w') as f:
     f.write(modelzoo)
