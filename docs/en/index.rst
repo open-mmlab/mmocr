@@ -29,6 +29,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    basic_concepts/structures.md
    basic_concepts/transforms.md
    basic_concepts/evaluation.md
+   basic_concepts/inferencers.md
    basic_concepts/overview.md
    basic_concepts/data_flow.md
    basic_concepts/datasets.md

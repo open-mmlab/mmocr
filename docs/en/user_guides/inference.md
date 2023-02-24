@@ -152,7 +152,7 @@ For bool type arguments, putting the argument in the command stores it as true.
 For example, the [first example](#simple-usage) can be run in CLI as:
 
 ```bash
-python mmocr/ocr.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show
+python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show
 ```
 
 ## API Arguments
