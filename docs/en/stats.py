@@ -101,7 +101,11 @@ modelzoo = f"""
 
 Here are the list of weights available for
 [Inference](user_guides/inference.md).
+
 Each weight may have multiple names, which will be separated by `/` in the table.
+While they are essentially equivalent, shorter names are provided for the
+ease of reference. For example, `DB_r18` and
+`dbnet_resnet18_fpnc_1200e_icdar2015` points to exactly the same weight.
 
 {weight_list}
 
