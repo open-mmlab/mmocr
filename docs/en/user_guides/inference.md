@@ -159,7 +159,7 @@ python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show
 
 The API has an extensive list of arguments that you can use. The following tables are for the python interface.
 
-**MMOCR():**
+**MMOCRInferencer():**
 
 | Arguments     | Type                                    | Default | Description                                                                                                                                   |
 | ------------- | --------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
