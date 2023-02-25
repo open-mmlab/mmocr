@@ -88,9 +88,10 @@ By default, each `Inferecner` returns the prediction results in a dictionary for
 
 - `predictions` contains the predictions results in a json-serializable format. As presented below, the keys are slightly different depending on the task type.
 
-  **TextDetInferencer**
+  ````{tabs}
 
-  ```python
+  ```{code-tab} python TextDetInferencer
+
   {
       'predictions' : [
         # Each instance corresponds to an input image
@@ -106,9 +107,7 @@ By default, each `Inferecner` returns the prediction results in a dictionary for
   }
   ```
 
-  ### TextRecInferencer
-
-  ```python
+  ```{code-tab} python TextRecInferencer
   {
       'predictions' : [
         # Each instance corresponds to an input image
@@ -124,9 +123,7 @@ By default, each `Inferecner` returns the prediction results in a dictionary for
   }
   ```
 
-  **TextSpottingInferencer**
-
-  ```python
+  ```{code-tab} python TextSpottingInferencer
   {
       'predictions' : [
         # Each instance corresponds to an input image
@@ -143,9 +140,7 @@ By default, each `Inferecner` returns the prediction results in a dictionary for
   }
   ```
 
-  **KIEInferencer**
-
-  ```python
+  ```{code-tab} python KIEInferencer
   {
       'predictions' : [
         # Each instance corresponds to an input image
@@ -161,6 +156,8 @@ By default, each `Inferecner` returns the prediction results in a dictionary for
       ]
   }
   ```
+
+  ````
 
 If you wish to get the raw outputs from the model, you can set `return_datasamples` to `True` to get the original [DataSample](structures.md), which will be stored in `predictions`.
 
