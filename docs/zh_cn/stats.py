@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # Copyright (c) OpenMMLab. All rights reserved.
 import functools as func
-import glob
 import re
 from os.path import basename, splitext
 
 import numpy as np
 import titlecase
+
+from .weight_list import gen_weight_list
 
 
 def title2anchor(name):
@@ -16,7 +17,9 @@ def title2anchor(name):
 
 # Count algorithms
 
-files = sorted(glob.glob('*_models.md'))
+files = [
+    'backbones.md', 'textdet_models.md', 'textrecog_models.md', 'kie_models.md'
+]
 
 stats = []
 
@@ -89,8 +92,21 @@ papertypes, papercounts = np.unique([t for t, _ in allpapers],
 countstr = '\n'.join(
     [f'   - {t}: {c}' for t, c in zip(papertypes, papercounts)])
 
+# get model list
+weight_list = gen_weight_list()
+
 modelzoo = f"""
-# 统计数据
+# 总览
+
+## 权重
+以下是可用于[推理](user_guides/inference.md)的权重列表。
+
+每个权重可能有多个名称，表格中将用“/”分隔。
+尽管它们本质上是等价的，但此处提供较短的名称以方便参考。例如，`DB_r18` 和 `dbnet_resnet18_fpnc_1200e_icdar2015` 指向的是同一个权重。
+
+{weight_list}
+
+## 统计数据
 
 * 模型权重文件数量： {len(allckpts)}
 * 配置文件数量： {len(allconfigs)}
@@ -98,7 +114,7 @@ modelzoo = f"""
 {countstr}
 
 {msglist}
-"""
+"""  # noqa
 
 with open('modelzoo.md', 'w') as f:
     f.write(modelzoo)

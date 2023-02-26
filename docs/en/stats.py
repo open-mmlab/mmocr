@@ -6,7 +6,8 @@ from os.path import basename, splitext
 
 import numpy as np
 import titlecase
-from weight_list import gen_weight_list
+
+from .weight_list import gen_weight_list
 
 
 def title2anchor(name):
