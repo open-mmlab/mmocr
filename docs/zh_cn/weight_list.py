@@ -26,7 +26,7 @@ class BaseWeightList:
 
     def __init__(self):
         data = (d + f' ({self.metric_name})' for d in self.dataset_list)
-        self.table_header = ['Model', 'README', *data]
+        self.table_header = ['模型', 'README', *data]
 
     def _get_model_info(self, task_name: str):
         meta_indexes = load('../../model-index.yml')
@@ -36,7 +36,7 @@ class BaseWeightList:
             collection2md = {}
             for item in metainfo['Collections']:
                 url = self.base_url + item['README']
-                collection2md[item['Name']] = f'[link]({url})'
+                collection2md[item['Name']] = f'[链接]({url})'
             for item in metainfo['Models']:
                 if task_name not in item['Config']:
                     continue
