@@ -1,6 +1,6 @@
 # Inference
 
-We provide an easy-to-use API - `MMOCRInferencer`, for the demo purpose in [ocr.py](/mmocr/ocr.py) script. It can perform inference on following tasks:
+We provide an easy-to-use API - `MMOCRInferencer`, which can perform inference on following tasks:
 
 - Text detection
 - Text recognition
@@ -14,24 +14,24 @@ The following sections will guide you through some basic usages of `MMOCRInferen
 
 ## Basic Usage
 
-Assuming that we want to perform OCR on `demo/demo_text_ocr.jpg`, using `DBNet` as text detection model and `CRNN` as text recognition model. We can use the following command to perform the inference:
+To perform OCR on demo/demo_text_ocr.jpg using `DBNet` as the text detection model and `CRNN` as the text recognition model, simply execute the following command:
 
 ```python
 >>> from mmocr.apis import MMOCRInferencer
 >>> # Load models into memory
 >>> ocr = MMOCRInferencer(det='DBNet', rec='SAR')
->>> # Inference
+>>> # Perform inference
 >>> ocr('demo/demo_text_ocr.jpg', show=True)
 ```
 
-The OCR result will be visualized in a new window:
+The resulting OCR output will be displayed in a new window:
 
 <div align="center">
     <img src="https://user-images.githubusercontent.com/22607038/220563262-e9c1ab52-9b96-4d9c-bcb6-f55ff0b9e1be.png" height="250"/>
 </div>
 
 ```{note}
-If you are running MMOCR on a server without GUI or via SSH tunnel with X11 forwarding off, the `show` option will not work. You can still save visualizations to files by setting `out_dir` and `save_vis=True` arguments. Read [Get Results](#get-results) for details.
+If you are running MMOCR on a server without GUI or via SSH tunnel with X11 forwarding disabled, the `show` option will not work. However, you can still save visualizations to files by setting `out_dir` and `save_vis=True` arguments. Read [Get Results](#get-results) for details.
 ```
 
 Depending on the initialization arguments, `MMOCRInferencer` can run in different modes. For example, it can run in KIE mode if it is initialized with `det`, `rec` and `kie` specified.
@@ -41,14 +41,14 @@ Depending on the initialization arguments, `MMOCRInferencer` can run in differen
 >>> kie('demo/demo_kie.jpeg', show=True)
 ```
 
-Which should give you an image like this:
+The output image should look like this:
 
 <div align="center">
     <img src="https://user-images.githubusercontent.com/22607038/220569700-fd4894bc-f65a-405e-95e7-ebd2d614aedd.png" height="250"/>
 </div>
 <br />
 
-`MMOCRInferencer` accepts many types of inputs. It can be an numpy array or the path/url to an image. If you have several inputs, a list of them is acceptable:
+`MMOCRInferencer` accepts various types of inputs. It can be an numpy array or the path/url to an image. If you have several inputs, a list of them is acceptable:
 
 ```python
 >>> import mmcv
@@ -111,7 +111,7 @@ In Python interface, `MMOCRInferencer` returns predictions in a dictionary forma
 }
 ```
 
-`predictions` is a list of dictionaries. Each dictionary formats the inference result of the corresponding image. Similarly, `visualization` is a list of numpy arrays, each array corresponds to the visualization of an image.
+`predictions` is a list of dictionaries. Each dictionary formats the inference result of the corresponding image. Similarly, `visualization` is a list of numpy arrays, where each array corresponds to the visualization of an image.
 
 ```{note}
 The visualization result will only be returned when `return_vis=True`.
@@ -169,6 +169,7 @@ The API has an extensive list of arguments that you can use. The following table
 | `batch_size`         | int                     | 1            | Inference batch size.                                                                            |
 | `return_vis`         | bool                    | False        | Whether to return the visualization result.                                                      |
 | `print_result`       | bool                    | False        | Whether to print the inference result to the console.                                            |
+| `show`               | bool                    | False        | Whether to display the visualization results in a popup window.                                  |
 | `wait_time`          | float                   | 0            | The interval of show(s).                                                                         |
 | `out_dir`            | str                     | `results/`   | Output directory of results.                                                                     |
 | `save_vis`           | bool                    | False        | Whether to save the visualization results to `out_dir`.                                          |

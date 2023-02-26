@@ -25,9 +25,15 @@ In general, all the task-specific Inferencers across OpenMMLab share a very simi
 >>> inferencer('demo/demo_text_ocr.jpg', show=True)
 ```
 
+The visualization result should look like:
+
+<div align="center">
+    <img src="https://user-images.githubusercontent.com/22607038/221418215-2431d0e9-e16e-4deb-9c52-f8b86801706a.png" height="250"/>
+</div>
+
 ## Initialization
 
-Each Inferencer must be initialized with a model and device.
+Each Inferencer must be initialized with a model and optionally a device.
 
 ### Model Initialization
 
