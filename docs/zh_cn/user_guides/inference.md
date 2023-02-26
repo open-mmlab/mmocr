@@ -82,7 +82,7 @@
 
 [这里](../basic_concepts/inferencers.md#model-initialization)还列出了更多种初始化 `Inferencer` 的方式。
 
-## 设备
+## 推理设备
 
 每个Inferencer实例都会跟一个设备绑定。默认情况下，最佳设备是由 [MMEngine](https://github.com/open-mmlab/mmengine/) 自动决定的。你也可以通过指定 `device` 参数来改变设备。请参考 [torch.device](torch.device) 了解 `device` 参数支持的所有形式。
 

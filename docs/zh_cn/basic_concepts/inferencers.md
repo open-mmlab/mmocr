@@ -1,55 +1,57 @@
-# Inferencers
+# 推理器 （Inferencers）
 
-In OpenMMLab, all the inference operations are unified into a new interface - `Inferencer`. `Inferencer` is designed to expose a neat and simple API to users, and shares very similar interface across different OpenMMLab libraries.
+In OpenMMLab, all the inference operations are unified into a new inference - `Inferencer`. `Inferencer` is designed to expose a neat and simple API to users, and shares very similar interface across different OpenMMLab libraries.
 
-In MMOCR, Inferencers are constructed in different levels of task abstraction.
+在 OpenMMLab 中，所有的推理操作都被统一到了新的推理器 - `Inferencer` 中。`Inferencer` 被设计成为一个简洁易用的 API，它在不同的 OpenMMLab 库中都有着非常相似的接口。
 
-- Task-specific Inferencer: Following OpenMMLab's convention, each fundamental task in MMOCR has its Inferencer, namely `TextDetInferencer`, `TextRecInferencer`, `TextSpottingInferencer`, and `KIEInferencer`. They are designed to perform inference on a single task, and can be chained together to perform inference on a series of tasks. They also share very similar interface, have standard input/output protocol, and overall follow the OpenMMLab design.
-- [`MMOCRInferencer`](../user_guides/inference.md): We also provide `MMOCRInferencer`, a convenient inference interface only designed for MMOCR. It encapsulates and chains all the Inferencers in MMOCR, so users can use this Inferencer to perform a series of tasks on an image and directly get the final result in an end-to-end manner. *However, it has a relatively different interface from other task-specific Inferencers, and some of standard Inferencer functionalities might be sacrificed for the sake of simplicity.*
+在 MMOCR 中，推理器被构建在不同层次的任务抽象中。
 
-For new users, we recommend using [`MMOCRInferencer`](../user_guides/inference.md) to test out different combinations of models.
+- 运行特定任务的推理器：遵循 OpenMMLab 的惯例，MMOCR 中的每个基本任务都有自己的推理器，即 `TextDetInferencer`，`TextRecInferencer`，`TextSpottingInferencer` 和 `KIEInferencer`。它们被设计成用于对单个任务进行推理，并且可以被链接在一起，以便对一系列任务进行推理。它们还具有非常相似的接口，具有标准的输入/输出协议，并且总体遵循 OpenMMLab 的设计。
+- [`MMOCRInferencer`](../user_guides/inference.md)：我们还提供了 `MMOCRInferencer`，一个专门为 MMOCR 设计的便捷推理接口。它封装和链接了 MMOCR 中的所有推理器，因此用户可以使用此推理器对图像执行一系列任务，并直接以端到端的方式获得最终结果。*但是，它的接口与其他特定任务的推理器有很大不同，并且为了简单起见，可能会牺牲一些标准的推理器功能。*
 
-If you are a developer and wish to integrate the models into your own project, we recommend using task-specific Inferencers, as they are more flexible and standardized, equipped with full functionalities.
+对于新用户，我们建议使用 [`MMOCRInferencer`](../user_guides/inference.md) 来测试不同模型的组合。
 
-This page will introduce the usage of **task-specific Inferencers**.
+如果您是开发人员并希望将模型集成到自己的项目中，我们建议使用特定于任务的推理器，因为它们更灵活且标准化，并具有完整的功能。
 
-## Basic Usage
+本页将介绍**特定于任务的推理器**的用法。
 
-In general, all the task-specific Inferencers across OpenMMLab share a very similar interface. The following example shows how to use `TextDetInferencer` to perform inference on a single image.
+## 基础用法
+
+通常，OpenMMLab 中的所有特定于任务的推理器都具有非常相似的接口。下面的例子展示了如何使用 `TextDetInferencer` 对单个图像进行推理。
 
 ```python
 >>> from mmocr.apis import TextDetInferencer
->>> # Load models into memory
+>>> # 读取模型
 >>> inferencer = TextDetInferencer(model='DBNet')
->>> # Inference
+>>> # 推理
 >>> inferencer('demo/demo_text_ocr.jpg', show=True)
 ```
 
-The visualization result should look like:
+可视化结果如图：
 
 <div align="center">
     <img src="https://user-images.githubusercontent.com/22607038/221418215-2431d0e9-e16e-4deb-9c52-f8b86801706a.png" height="250"/>
 </div>
 
-## Initialization
+## 初始化
 
-Each Inferencer must be initialized with a model and optionally a device.
+每个推理器必须使用一个模型进行初始化，也可以手动选择推理设备。
 
-### Model Initialization
+### 模型初始化
 
-Every task-specific `Inferencer` accepts two parameters, `model` and `weights`. (In `MMOCRInferencer`, they are referred to as `xxx` and `xxx_weights`)
+每个特定于任务的 `Inferencer` 都接受两个参数，`model` 和 `weights`。 （在 `MMOCRInferencer` 中，它们被称为 `xxx` 和 `xxx_weights`）
 
-- `model` takes either the name of a model, or the path to a config file as input. The name of a model is obtained from the model's metafile ([Example](https://github.com/open-mmlab/mmocr/blob/1.x/configs/textdet/dbnet/metafile.yml)) indexed from [model-index.yml](https://github.com/open-mmlab/mmocr/blob/1.x/model-index.yml). You can find the list of available weights [here](../modelzoo.md#weights).
+- `model` 接受模型的名称或配置文件的路径作为输入。模型的名称从 [model-index.yml](https://github.com/open-mmlab/mmocr/blob/1.x/model-index.yml) 中的模型的元文件（[示例](https://github.com/open-mmlab/mmocr/blob/1.x/configs/textdet/dbnet/metafile.yml) ）中获取。您可以在[此处](../modelzoo.md#weights)找到可用权重的列表。
 
   ```{note}
-  For convenience, we abbreviate the names of some commonly-used models in the "Alias" field of its metafile, which Inferencer can use to index a model as well.
+  为了方便起见，我们在其元文件的“别名”字段中缩写了一些常用模型的名称，Inferencer 也可以使用这些名称来索引模型。
   ```
 
-- `weights` accepts the path to a weight file.
+- `weights` 接受权重文件的路径。
 
-There are many ways to initialize a model.
+此处列举了一些常见的初始化模型的方法。
 
-- To infer with MMOCR's pre-trained model,  you can pass its name to `model`. The weights will be automatically downloaded and loaded from OpenMMLab's model zoo.
+- 你可以通过传递模型的名称给 `model` 来推理 MMOCR 的预训练模型。权重将会自动从 OpenMMLab 的模型库中下载并加载。
 
   ```python
   >>> from mmocr.apis import TextDetInferencer
@@ -57,66 +59,65 @@ There are many ways to initialize a model.
   ```
 
   ```{note}
-  The model type must match the Inferencer type.
+  模型种类必须与推理器种类匹配。
   ```
 
-  You can let Inferencer load your own weight by passing its path/url to `weights`.
+  你可以通过将权重的路径/URL传递给 `weights` 来让推理器加载你自己的权重。
 
   ```python
   >>> inferencer = TextDetInferencer(model='DBNet', weights='path/to/dbnet.pth')
   ```
 
-- To load custom config and weight, you can pass the path to the config file to `model` and the path to the weight to `weights`.
+- 如果你有自己的配置和权重，你可以将配置文件的路径传递给 `model`，将权重的路径传递给 `weights`。
 
   ```python
   >>> inferencer = TextDetInferencer(model='path/to/dbnet_config.py', weights='path/to/dbnet.pth')
   ```
 
-- By default, [MMEngine](https://github.com/open-mmlab/mmengine/) dumps config to the weight. If you have a weight trained on MMEngine, you can also pass the path to the weight file to `weights` without specifying `model`:
+- 默认情况下，[MMEngine](https://github.com/open-mmlab/mmengine/) 会自动将配置文件转储到权重文件中。如果您有一个在 MMEngine 上训练的权重，您也可以将权重文件的路径传递给 `weights`，而不需要指定 `model`：
 
   ```python
-  >>> # It will raise an error if the config file cannot be found in the weight
+  >>> # 如果无法在权重中找到配置文件，则会引发错误
   >>> inferencer = TextDetInferencer(weights='path/to/dbnet.pth')
   ```
 
-- Passing config file to `model` without specifying `weight` will result in a randomly initialized model.
+- 传递配置文件到 `model` 而不指定 `weight` 将导致随机初始化的模型。
 
-### Device
+### 推理设备
 
-Each Inferencer instance is bound to a device.
-By default, the best device is automatically decided by [MMEngine](https://github.com/open-mmlab/mmengine/). You can also alter the device by specifying the `device` argument. For example, you can use the following code to create an Inferencer on GPU 1.
+每个Inferencer实例都会跟一个设备绑定。默认情况下，最佳设备是由 [MMEngine](https://github.com/open-mmlab/mmengine/) 自动决定的。你也可以通过指定 `device` 参数来改变设备。例如，你可以使用以下代码在 GPU 1上创建一个 Inferencer。
 
 ```python
 >>> inferencer = TextDetInferencer(model='DBNet', device='cuda:1')
 ```
 
-To create an Inferencer on CPU:
+如要在 CPU 上创建一个 Inferencer：
 
 ```python
 >>> inferencer = TextDetInferencer(model='DBNet', device='cpu')
 ```
 
-Refer to [torch.device](torch.device) for all the supported forms.
+请参考 [torch.device](torch.device) 了解 `device` 参数支持的所有形式。
 
-## Inference
+## 推理
 
-Once the Inferencer is initialized, you can directly pass in the raw data to be inferred and get the inference results from return values.
+当推理器初始化后，你可以直接传入要推理的原始数据，从返回值中获取推理结果。
 
-### Input
+### 输入
 
 `````{tabs}
 
 ````{tab} TextDetInferencer / TextRecInferencer / TextSpottingInferencer
 
-Input can be either of these types:
+输入可以是以下任意一种格式：
 
-- str: Path/URL to the image.
+- str: 图像的路径/URL。
 
   ```python
   >>> inferencer('demo/demo_text_ocr.jpg')
   ```
 
-- array: Image in numpy array. It should be in BGR order.
+- array: 图像的 numpy 数组。它应该是 BGR 格式。
 
   ```python
   >>> import mmcv
@@ -124,15 +125,15 @@ Input can be either of these types:
   >>> inferencer(array)
   ```
 
-- list: A list of basic types above. Each element in the list will be processed separately.
+- list: 基本类型的列表。列表中的每个元素都将单独处理。
 
   ```python
   >>> inferencer(['img_1.jpg', 'img_2.jpg])
-  >>> # You can even mix the types
+  >>> # 你甚至可以混合类型
   >>> inferencer(['img_1.jpg', array])
   ```
 
-- str: Path to the directory. All images in the directory will be processed.
+- str: 目录的路径。目录中的所有图像都将被处理。
 
   ```python
   >>> inferencer('tests/data/det_toy_dataset/imgs/test/')
@@ -142,13 +143,11 @@ Input can be either of these types:
 
 ````{tab} KIEInferencer
 
-Input can be a dict or list[dict], where each dictionary contains
-following keys:
+输入可以是一个字典或者一个字典列表，其中每个字典包含以下键：
 
-- `img` (str or ndarray): Path to the image or the image itself. If KIE Inferencer is used in no-visual mode, this key is not required.
-If it's an numpy array, it should be in BGR order.
-- `img_shape` (tuple(int, int)): Image shape in (H, W). Only required when KIE Inferencer is used in no-visual mode and no `img` is provided.
-- `instances` (list[dict]): A list of instances.
+- `img` (str 或者 ndarray): 图像的路径或图像本身。如果 KIE 推理器在无可视模式下使用，则不需要此键。如果它是一个 numpy 数组，则应该是 BGR 顺序编码的图片。
+- `img_shape` (tuple(int, int)): 图像的形状 (H, W)。仅在 KIE 推理器在无可视模式下使用且没有提供 `img` 时才需要。
+- `instances` (list[dict]): 实例列表。
 
 Each `instance` looks like the following:
 
@@ -164,24 +163,105 @@ Each `instance` looks like the following:
 }
 ```
 
+每个 `instance` 都应该包含以下键：
+
+```python
+{
+    # 一个嵌套列表，其中包含 4 个数字，表示实例的边界框，顺序为 (x1, y1, x2, y2)
+    "bbox": np.array([[x1, y1, x2, y2], [x1, y1, x2, y2], ...],
+                    dtype=np.int32),
+
+    # 文本列表
+    "texts": ['text1', 'text2', ...],
+}
+```
+
 ````
 `````
 
-### Output
+### 输出
 
-By default, each `Inferencer` returns the prediction results in a dictionary format.
+默认情况下，每个 `Inferencer` 都以字典格式返回预测结果。
 
-- `visualization` contains the visualized predictions. But it's an empty list by default unless `return_vis=True`.
+- `visualization` 包含可视化的预测结果。但默认情况下，它是一个空列表，除非 `return_vis=True`。
 
-- `predictions` contains the predictions results in a json-serializable format. As presented below, the contents are slightly different depending on the task type.
+- `predictions` 包含以 json-可序列化格式返回的预测结果。如下所示，内容因任务类型而异。
 
+  `````{tabs}
+
+  ```{code-tab} python TextDetInferencer
+
+  {
+      'predictions' : [
+        #  instance corresponds to an input image
+        {
+          'polygons': [...],  # 2d list of len (N,) in the format of [x1, y1, x2, y2, ...]
+          'bboxes': [...],  # 2d list of shape (N, 4), in the format of [min_x, min_y, max_x, max_y]
+          'scores': [...]  # list of float, len (N, )
+        },
+      ]
+      'visualization' : [
+        array(..., dtype=uint8),
+      ]
+  }
+  ```
+
+  ```{code-tab} python TextRecInferencer
+  {
+      'predictions' : [
+        # Each instance corresponds to an input image
+        {
+          'text': '...',  # a string
+          'scores': 0.1,  # a float
+        },
+        ...
+      ]
+      'visualization' : [
+        array(..., dtype=uint8),
+      ]
+  }
+  ```
+
+  ```{code-tab} python TextSpottingInferencer
+  {
+      'predictions' : [
+        # Each instance corresponds to an input image
+        {
+          'polygons': [...],  # 2d list of len (N,) in the format of [x1, y1, x2, y2, ...]
+          'bboxes': [...],  # 2d list of shape (N, 4), in the format of [min_x, min_y, max_x, max_y]
+          'scores': [...]  # list of float, len (N, )
+          'texts': ['...',]  # list of texts, len (N, )
+        },
+      ]
+      'visualization' : [
+        array(..., dtype=uint8),
+      ]
+  }
+  ```
+
+  ```{code-tab} python KIEInferencer
+  {
+      'predictions' : [
+        # Each instance corresponds to an input image
+        {
+          'labels': [...],  # node label, len (N,)
+          'scores': [...],  # node scores, len (N, )
+          'edge_scores': [...],  # edge scores, shape (N, N)
+          'edge_labels': [...],  # edge labels, shape (N, N)
+        },
+      ]
+      'visualization' : [
+        array(..., dtype=uint8),
+      ]
+  }
+  ```
   ````{tabs}
 
   ```{code-tab} python TextDetInferencer
 
   {
       'predictions' : [
-        # Each instance corresponds to an input image
+        #  instance corresponds to an input image
         {
           'polygons': [...],  # 2d list of len (N,) in the format of [x1, y1, x2, y2, ...]
           'bboxes': [...],  # 2d list of shape (N, 4), in the format of [min_x, min_y, max_x, max_y]
@@ -244,7 +324,7 @@ By default, each `Inferencer` returns the prediction results in a dictionary for
   }
   ```
 
-  ````
+  `````
 
 If you wish to get the raw outputs from the model, you can set `return_datasamples` to `True` to get the original [DataSample](structures.md), which will be stored in `predictions`.
 
