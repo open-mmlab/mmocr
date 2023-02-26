@@ -66,7 +66,7 @@ Sometimes you may want to iterate over a directory where all the images are stor
 
 ## Model Initialization
 
-For each task, `MMOCRInferencer` takes two arguments in the form of `xxx` and `xxx_weights` (e.g. `det` and `det_weights`) for initialization, and there are many ways to initialize a model for inference. We will take `det` and `det_weights` as an example to illustrate the way to initialize a model.
+For each task, `MMOCRInferencer` takes two arguments in the form of `xxx` and `xxx_weights` (e.g. `det` and `det_weights`) for initialization, and there are many ways to initialize a model for inference. We will take `det` and `det_weights` as an example to illustrate some typical ways to initialize a model.
 
 - To infer with MMOCR's pre-trained model, passing its name to the argument `det` can work. The weights will be automatically downloaded and loaded from OpenMMLab's model zoo. Check [Weights](../modelzoo.md#weights) for available model names.
 
@@ -129,7 +129,7 @@ outputs
 
 The filename of each file is the same as the corresponding input image filename. If the input image is an array, the filename will be a number starting from 0.
 
-## CLI Interface
+## CLI
 
 `MMOCRInferencer` supports both CLI and Python interface. All arguments are the same for the CLI, all you need to do is add 2 hyphens at the beginning of the argument and replace underscores by hyphens.
 (*Example:* `out_dir` becomes `--out-dir`)

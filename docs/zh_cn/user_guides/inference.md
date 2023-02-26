@@ -1,192 +1,177 @@
 # 推理
 
-MMOCR 为示例和应用，以 [ocr.py](/mmocr/ocr.py) 脚本形式，提供了方便使用的 API。
+我们提供了一个易于使用的API--"MMOCRInferencer"，它可以对以下任务进行推理。
 
-该 API 可以通过命令行执行，也可以在 python 脚本内调用。在该 API 里，MMOCR 里的所有模型能以独立模块的形式被调用或串联。
+- 文本检测
+- 文本识别
+- OCR（文本检测 + 文本识别）
+- 关键信息提取（文本检测 + 文本识别 + 关键信息提取）
+- *OCR（text spotting）*（即将推出）
 
-```{warning}
-该脚本仍在重构过程中，在接下来的版本接口中有可能会发生变化。
-```
+这些任务是通过使用一个或几个特定任务的 \[Inferencer\]（.../basic_concepts/inferencers.md）来完成的。`MMOCRInferencer` 封装并链接了MMOCR中的所有 Inferencer，因此用户可以使用它在图像上执行一系列任务，并直接以端到端的方式获得最终结果。
 
-## 案例一：文本检测
+下面的章节将引导你了解 `MMOCRInferencer` 的一些基本使用方法。
 
-<div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187825864-8ead5acb-c3c5-443b-bd90-3f4b188fa315.jpg"  height="250"/>
-</div>
+## 基本用法
 
-**注：** 使用 TextSnake 检测模型对图像上的文本进行检测，并保存可视化的文件。
-
-- 命令行执行：
-
-```shell
-python mmocr/ocr.py demo/demo_text_det.jpg --det TextSnake --img-out-dir demo/
-```
-
-- Python 调用：
+要对 demo/demo_text_ocr.jpg 进行 OCR，使用 `DBNet` 作为文本检测模型，`CRNN` 作为文本识别模型，只需执行以下命令:
 
 ```python
-from mmocr.ocr import MMOCR
-
-# 导入模型到内存
-ocr = MMOCR(det='TextSnake')
-
-# 推理
-results = ocr.readtext('demo/demo_text_det.jpg', img_out_dir='demo/')
+>>> from mmocr.apis import MMOCRInferencer
+>>> # 读取模型
+>>> ocr = MMOCRInferencer(det='DBNet', rec='SAR')
+>>> # 进行推理并可视化结果
+>>> ocr('demo/demo_text_ocr.jpg', show=True)
 ```
 
-## 案例二：文本检测+识别
+可视化结果将被显示在一个新窗口中：
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
+    <img src="https://user-images.githubusercontent.com/22607038/220563262-e9c1ab52-9b96-4d9c-bcb6-f55ff0b9e1be.png" height="250"/>
 </div>
-
-**注：** 使用 DB_r18 检测模型和 CRNN 识别模型，对 demo/demo_text_det.jpg 图片执行 ocr（检测+识别）推理，在终端打印结果并展示可视化结果。
-
-- 命令行执行：
-
-```shell
-python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --print-result --show
-```
 
 ```{note}
-
-当用户从命令行执行脚本时，默认配置文件都会保存在 `configs/` 目录下。用户可以通过指定 `config_dir` 的值来自定义读取配置文件的文件夹。
-
+如果你在没有GUI的服务器上运行 MMOCR，或者是通过禁用 X11 转发的 SSH 隧道运行该指令，`show`  选项将不起作用。然而，你仍然可以通过设置 `out_dir' 和 `save_vis=True' 参数将可视化数据保存到文件。阅读 [获取结果](#TODO) 了解详情。
 ```
 
-- Python 调用：
+根据初始化参数，`MMOCRInferencer`可以在不同模式下运行。例如，如果初始化时指定了 `det`、`rec` 和 `kie`，它可以在 KIE 模式下运行。
 
 ```python
-from mmocr.ocr import MMOCR
-
-# 导入模型到内存
-ocr = MMOCR(det='DB_r18', recog='CRNN')
-
-# 推理
-results = ocr.readtext('demo/demo_text_ocr.jpg', print_result=True, show=True)
+>>> kie = MMOCRInferencer(det='DBNet', rec='SAR', kie='SDMGR')
+>>> kie('demo/demo_kie.jpeg', show=True)
 ```
 
-## 案例三： 文本检测+识别+关键信息提取
+可视化结果如下：
 
 <div align="center">
-    <img src="https://user-images.githubusercontent.com/24622904/187825451-6b043df9-10f7-4656-a528-45fe043df92b.jpg" height="250"/>
+    <img src="https://user-images.githubusercontent.com/22607038/220569700-fd4894bc-f65a-405e-95e7-ebd2d614aedd.png" height="250"/>
 </div>
+<br />
 
-**注：** 首先，使用 DB_r18 检测模型和 CRNN 识别模型，进行端到端的 ocr （检测+识别）推理，然后对得到的结果，使用 SDMGR 模型提取关键信息（KIE），并展示可视化结果。
-
-- 命令行执行：
-
-```shell
-python mmocr/ocr.py demo/demo_kie.jpeg  --det DB_r18 --recog CRNN --kie SDMGR --print-result --show
-```
-
-```{note}
-
-当用户从命令行执行脚本时，默认配置文件都会保存在 `configs/` 目录下。用户可以通过指定 `config_dir` 的值来自定义读取配置文件的文件夹。
-
-```
-
-- Python 调用：
+`MMOCRInferencer` 接受各种类型的输入。它可以是一个 numpy 数组或图片的路径/url。如果你有多个输入，也可以将他们包在一个列表内传入。
 
 ```python
-from mmocr.ocr import MMOCR
-
-# 导入模型到内存
-ocr = MMOCR(det='DB_r18', recog='CRNN', kie='SDMGR')
-
-# 推理
-results = ocr.readtext('demo/demo_kie.jpeg', print_result=True, show=True)
+>>> import mmcv
+>>> # 将图片以 numpy 数组的方式读入
+>>> np_img = mmcv.imread('tests/data/det_toy_dataset/imgs/test/img_1.jpg')
+>>> # 传入一个列表，混合字符串和 numpy 数组的方式也是可以接受的
+>>> ocr([np_img,  'tests/data/det_toy_dataset/imgs/test/img_10.jpg'], show=True)
 ```
 
-## API 参数
+如果你需要遍历一个目录下的所有图片文件，只需要将路径以字符串的方式传入 `MMOCRInferencer` 即可：
+
+```python
+>>> ocr('tests/data/det_toy_dataset/imgs/test/', show=True)
+```
+
+## 模型初始化
+
+对于每个任务，`MMOCRInferencer`需要两个参数`xxx` 和 `xxx_weights` （例如`det`和`det_weights`）以对模型进行初始化。我们有很多方法来初始化推理的模型。此处将以`det`和`det_weights`为例来说明一些典型的初始化模型的方法。
+
+- 要用 MMOCR 的预训练模型进行推理，只需要把它的名字传给参数 `det`，权重将自动从 OpenMMLab 的模型库中下载和加载。[此处](../modelzoo.md#id2)记录了 MMOCR 中可以通过该方法初始化的所有模型。
+
+  ```python
+  >>> MMOCRInferencer(det='DBNet')
+  ```
+
+- 要加载自定义的配置和权重，你可以把配置文件的路径传给 `det`，把权重的路径传给 `det_weights`。
+
+  ```python
+  >>> MMOCRInferencer(det='path/to/dbnet_config.py', det_weights='path/to/dbnet.pth')
+  ```
+
+[这里](../basic_concepts/inferencers.md#model-initialization)还列出了更多种初始化 `Inferencer` 的方式。
+
+## 设备
+
+每个Inferencer实例都会跟一个设备绑定。默认情况下，最佳设备是由 [MMEngine](https://github.com/open-mmlab/mmengine/) 自动决定的。你也可以通过指定 `device` 参数来改变设备。请参考 [torch.device](torch.device) 了解 `device` 参数支持的所有形式。
+
+## 批量推理
+
+你可以通过设置 `batch_size` 来自定义批大小。默认的批大小为1。
+
+## 获取结果
+
+在 Python 接口中，`MMOCRInferencer` 以字典的形式返回预测结果。字典的键以任务名开头，例如 `det`、`rec` 和 `kie`；字典的值是对应的预测结果。具体返回的结果可能是以下内容的一个子集，取决于 `MMOCRInferencer` 正在运行的任务。
+
+```python
+{
+    'predictions' : [{
+        'det_polygons': [...],
+        'det_scores': [...]
+        'rec_texts': [...],
+        'rec_scores': [...],
+        'kie_labels': [...],
+        'kie_scores': [...],
+        'kie_edge_scores': [...],
+        'kie_edge_labels': [...]
+    },]
+    'visualization' : [array(..., dtype=uint8),]
+}
+```
+
+`predictions` 中的每个字典都包含了对应图片的推理结果。`visualization` 中的每个 numpy 数组都对应了一个图片的可视化结果。
+
+```{note}
+可视化结果只有在 `return_vis=True` 时才会被返回。
+```
+
+除了从返回值中获取预测结果，你还可以通过设置 `out_dir` 和 `save_pred`/`save_vis` 参数将预测结果及可视化结果导出到文件中。假设 `out_dir` 是 `outputs`，文件将会按如下方式组织：
+
+```text
+outputs
+├── preds
+│   └── img_1.json
+└── vis
+    └── img_1.jpg
+```
+
+每个文件的文件名与对应的输入图片文件名相同。如果输入图片是 numpy 数组，文件名将从 0 开始。
+
+## CLI
+
+`MMOCRInferencer` supports both CLI and Python interface. All arguments are the same for the CLI, all you need to do is add 2 hyphens at the beginning of the argument and replace underscores by hyphens.
+(*Example:* `out_dir` becomes `--out-dir`)
+
+`MMOCRInferencer` 可以通过 CLI 和 Python 接口使用。CLI 和 Python 接口的所有参数都是一样的，你只需要在参数前面加上两个"-"，然后把下划线"\_"替换成连字符"-"即可。(*例如:* `out_dir` 变成 `--out-dir`)
+
+对于布尔类型的参数，将参数放在命令中就相当于将其存储为 true。
+
+例如，[第一个例子](#基本用法)可以在 CLI 中这样运行：
+
+```bash
+python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show
+```
+
+## API
 
 该 API 有多个可供使用的参数列表。下表是 python 接口的参数。
 
-**MMOCR():**
+**MMOCRInferencer.\_\_init\_\_():**
 
-| 参数           | 类型               | 默认值   | 描述                                                                                     |
-| -------------- | ------------------ | -------- | ---------------------------------------------------------------------------------------- |
-| `det`          | 参考 **模型** 章节 | None     | 文本检测算法                                                                             |
-| `recog`        | 参考 **模型** 章节 | None     | 文本识别算法                                                                             |
-| `kie` \[1\]    | 参考 **模型** 章节 | None     | 关键信息提取算法                                                                         |
-| `config_dir`   | str                | configs/ | 用于存放所有配置文件的文件夹路径                                                         |
-| `det_config`   | str                | None     | 指定检测模型的自定义配置文件路径                                                         |
-| `det_ckpt`     | str                | None     | 指定检测模型的自定义参数文件路径                                                         |
-| `recog_config` | str                | None     | 指定识别模型的自定义配置文件路径                                                         |
-| `recog_ckpt`   | str                | None     | 指定识别模型的自定义参数文件路径                                                         |
-| `kie_config`   | str                | None     | 指定关键信息提取模型的自定义配置路径                                                     |
-| `kie_ckpt`     | str                | None     | 指定关键信息提取的自定义参数文件路径                                                     |
-| `device`       | str                | None     | 推理时使用的设备标识, 支持 `torch.device` 所包含的所有设备字符. 例如, 'cuda:0' 或 'cpu'. |
+| 参数          | 类型                                             | 默认值 | 描述                                                                                                                           |
+| ------------- | ------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| `det`         | str 或 [权重](../modelzoo.html#weights), 可选    | None   | 预训练的文本检测算法。它是配置文件的路径或者是 metafile 中定义的模型名称。                                                     |
+| `det_weights` | str, 可选                                        | None   | det 模型的权重文件的路径。如果它没有被指定，并且 "det" 是 metafile 中的模型名称，那么权重将从 metafile 中加载。                |
+| `rec`         | str 或 [Weights](../modelzoo.html#weights), 可选 | None   | 预训练的文本识别算法。它是配置文件的路径或者是 metafile 中定义的模型名称。                                                     |
+| `rec_weights` | str, 可选                                        | None   | rec 模型的权重文件的路径。如果它没有被指定，并且 "rec" 是 metafile 中的模型名称，那么权重将从 metafile 中加载。                |
+| `kie` \[1\]   | str 或 [Weights](../modelzoo.html#weights), 可选 | None   | 预训练的关键信息提取算法。它是配置文件的路径或者是 metafile 中定义的模型名称。                                                 |
+| `kie_weights` | str, 可选                                        | None   | kie 模型的权重文件的路径。如果它没有被指定，并且 "kie" 是 metafile 中的模型名称，那么权重将从 metafile 中加载。                |
+| `device`      | str, 可选                                        | None   | 推理使用的设备，接受 `torch.device` 允许的所有字符串。例如，'cuda:0' 或 'cpu'。如果为 None，将自动使用可用设备。 默认为 None。 |
 
-\[1\]: `kie` 当且仅当同时指定了文本检测和识别模型时才有效。
+\[1\]: 当同时指定了文本检测和识别模型时，`kie` 才会生效。
 
-```{note}
+**MMOCRInferencer.\_\_call\_\_()**
 
-mmocr 为了方便使用提供了预置的模型配置和对应的预训练权重，用户可以通过指定 `det` 和/或 `recog` 值来指定使用，这种方法等同于分别单独指定其对应的 `*_config` 和 `*_ckpt`。需要注意的是，手动指定 `*_config` 和 `*_ckpt` 会覆盖 `det` 和/或 `recog` 指定模型预置的配置和权重值。 同理 `kie`， `kie_config` 和 `kie_ckpt` 的参数设定逻辑相同。
-
-```
-
-### readtext()
-
-| 参数           | 类型                    | 默认值   | 描述                                                                  |
-| -------------- | ----------------------- | -------- | --------------------------------------------------------------------- |
-| `img`          | str/list/tuple/np.array | **必填** | 图像，文件夹路径，np array 或 list/tuple （包含图片路径或 np arrays） |
-| `img_out_dir`  | str                     | None     | 存放导出图片结果的文件夹                                              |
-| `show`         | bool                    | False    | 是否在屏幕展示可视化结果                                              |
-| `print_result` | bool                    | False    | 是否展示每个图片的结果                                                |
-
-以上所有参数在命令行同样适用，只需要在参数前简单添加两个连接符，并且将下参数中的下划线替换为连接符即可。
-（*例如：* `img_out_dir` 变成了 `--img-out-dir`）
-
-对于布尔类型参数，添加在命令中默认为 true。
-（*例如：* `python mmocr/demo/ocr.py --det DB_r18 demo/demo_text_det.jpg --print_result` 意为 `print_result` 的参数值设置为 `True`）
-
-## 模型
-
-**文本检测：**
-
-| 名称          |                                       引用                                        |
-| ------------- | :-------------------------------------------------------------------------------: |
-| DB_r18        |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnet)    |
-| DB_r50        |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnet)    |
-| DBPP_r50      |  [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#dbnetpp)   |
-| DRRG          |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#drrg)    |
-| FCE_IC15      |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#fcenet)   |
-| FCE_CTW_DCNv2 |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#fcenet)   |
-| MaskRCNN_CTW  | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#mask-r-cnn) |
-| MaskRCNN_IC15 | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#mask-r-cnn) |
-| PANet_CTW     |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#panet)    |
-| PANet_IC15    |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#panet)    |
-| PS_CTW        |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#psenet)   |
-| PS_IC15       |   [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#psenet)   |
-| TextSnake     | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textdet_models.html#textsnake)  |
-
-**文本识别：**
-
-| 名称          |                                          引用                                          |
-| ------------- | :------------------------------------------------------------------------------------: |
-| ABINet        |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#abinet)     |
-| ABINet_Vision |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#abinet)     |
-| ASTER         |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#aster)     |
-| CRNN          |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#crnn)      |
-| MASTER        |    [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#master)     |
-| NRTR_1/16-1/8 |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#nrtr)      |
-| NRTR_1/8-1/4  |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#nrtr)      |
-| RobustScanner | [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#robustscanner) |
-| SAR           |      [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#sar)      |
-| SATRN         |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#satrn)     |
-| SATRN_sm      |     [链接](https://mmocr.readthedocs.io/zh_CN/dev-1.x/textrecog_models.html#satrn)     |
-
-**关键信息提取：**
-
-| 名称                                                                |
-| ------------------------------------------------------------------- |
-| [SDMGR](https://mmocr.readthedocs.io/zh_CN/dev-1.x/kie_models.html) |
-
-## 其他需要注意
-
-- 执行检测+识别的推理（端到端 ocr），需要同时定义 `det` 和 `recog` 参数
-- 如果只需要执行检测，则 `recog` 参数设置为 `None`。
-- 如果只需要执行识别，则 `det` 参数设置为 `None`。
-
-如果你对新特性有任何建议，请随时开一个 issue，甚至可以提一个 PR:)
+| 参数                 | 类型                    | 默认值     | 描述                                                                                           |
+| -------------------- | ----------------------- | ---------- | ---------------------------------------------------------------------------------------------- |
+| `inputs`             | str/list/tuple/np.array | **必需**   | 它可以是一个图片/文件夹的路径，一个 numpy 数组，或者是一个包含图片路径或 numpy 数组的列表/元组 |
+| `return_datasamples` | bool                    | False      | 是否将结果作为 DataSample 返回。如果为 False，结果将被打包成一个字典。                         |
+| `batch_size`         | int                     | 1          | 推理的批大小。                                                                                 |
+| `return_vis`         | bool                    | False      | 是否返回可视化结果。                                                                           |
+| `print_result`       | bool                    | False      | 是否将推理结果打印到控制台。                                                                   |
+| `show`               | bool                    | False      | 是否在弹出窗口中显示可视化结果。                                                               |
+| `wait_time`          | float                   | 0          | 弹窗展示可视化结果的时间间隔。                                                                 |
+| `out_dir`            | str                     | `results/` | 结果的输出目录。                                                                               |
+| `save_vis`           | bool                    | False      | 是否将可视化结果保存到 `out_dir`。                                                             |
+| `save_pred`          | bool                    | False      | 是否将推理结果保存到 `out_dir`。                                                               |
