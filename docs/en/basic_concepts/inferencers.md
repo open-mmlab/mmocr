@@ -11,7 +11,7 @@ For new users, we recommend using [`MMOCRInferencer`](../user_guides/inference.m
 
 If you are a developer and wish to integrate the models into your own project, we recommend using task-specific Inferencers, as they are more flexible and standardized, equipped with full functionalities.
 
-This page will introduce the usage of task-specific Inferencers.
+This page will introduce the usage of **task-specific Inferencers**.
 
 ## Basic Usage
 
@@ -20,16 +20,20 @@ In general, all the task-specific Inferencers across OpenMMLab share a very simi
 ```python
 >>> from mmocr.apis import TextDetInferencer
 >>> # Load models into memory
->>> ocr = TextDetInferencer(model='DBNet')
+>>> inferencer = TextDetInferencer(model='DBNet')
 >>> # Inference
->>> ocr('demo/demo_text_ocr.jpg', show=True)
+>>> inferencer('demo/demo_text_ocr.jpg', show=True)
 ```
 
-## Model Initialization
+## Initialization
 
-Every `Inferencer` reserves two arguments, `model` and `weights`, for initialization. and there are many ways to initialize a model for inference.
+Each Inferencer must be initialized with a model and device.
 
-- `model` takes either the name of a model, or the path to a config file as input. The name of a model is obtained from the model's metafile ([Example](https://github.com/open-mmlab/mmocr/blob/1.x/configs/textdet/dbnet/metafile.yml)) indexed from [model-index.yml](https://github.com/open-mmlab/mmocr/blob/1.x/model-index.yml). You can find the list of available name choices [here](../modelzoo.md#weights).
+### Model Initialization
+
+Every task-specific `Inferencer` accepts two parameters, `model` and `weights`. (In `MMOCRInferencer`, they are referred to as `xxx` and `xxx_weights`)
+
+- `model` takes either the name of a model, or the path to a config file as input. The name of a model is obtained from the model's metafile ([Example](https://github.com/open-mmlab/mmocr/blob/1.x/configs/textdet/dbnet/metafile.yml)) indexed from [model-index.yml](https://github.com/open-mmlab/mmocr/blob/1.x/model-index.yml). You can find the list of available weights [here](../modelzoo.md#weights).
 
   ```{note}
   For convenience, we abbreviate the names of some commonly-used models in the "Alias" field of its metafile, which Inferencer can use to index a model as well.
@@ -39,7 +43,7 @@ Every `Inferencer` reserves two arguments, `model` and `weights`, for initializa
 
 There are many ways to initialize a model.
 
-- To infer with MMOCR's pre-trained model,  you can pass its name to `model`. The weights will be automatically downloaded and loaded from OpenMMLab's model zoo. Check [Weights](../modelzoo.md#weights) for available model names.
+- To infer with MMOCR's pre-trained model,  you can pass its name to `model`. The weights will be automatically downloaded and loaded from OpenMMLab's model zoo.
 
   ```python
   >>> from mmocr.apis import TextDetInferencer
@@ -50,7 +54,7 @@ There are many ways to initialize a model.
   The model type must match the Inferencer type.
   ```
 
-  To load the custom weight, you can also pass its path/url to `weights`.
+  You can let Inferencer load your own weight by passing its path/url to `weights`.
 
   ```python
   >>> inferencer = TextDetInferencer(model='DBNet', weights='path/to/dbnet.pth')
@@ -69,24 +73,101 @@ There are many ways to initialize a model.
   >>> inferencer = TextDetInferencer(weights='path/to/dbnet.pth')
   ```
 
-- Passing config file to `xxx` without specifying the weight path `xxx_weights` will randomly initialize a model.
+- Passing config file to `model` without specifying `weight` will result in a randomly initialized model.
 
-## Device
+### Device
 
 Each Inferencer instance is bound to a device.
-By default, the best device is automatically decided by [MMEngine](https://github.com/open-mmlab/mmengine/). You can also alter the device by specifying the `device` argument. Refer to [torch.device](torch.device) for all the supported forms.
+By default, the best device is automatically decided by [MMEngine](https://github.com/open-mmlab/mmengine/). You can also alter the device by specifying the `device` argument. For example, you can use the following code to create an Inferencer on GPU 1.
 
-## Batch Inference
+```python
+>>> inferencer = TextDetInferencer(model='DBNet', device='cuda:1')
+```
 
-You can set the batch size by setting the `batch_size` argument. The default batch size is 1.
+To create an Inferencer on CPU:
 
-## Return Value
+```python
+>>> inferencer = TextDetInferencer(model='DBNet', device='cpu')
+```
 
-By default, each `Inferecner` returns the prediction results in a dictionary format.
+Refer to [torch.device](torch.device) for all the supported forms.
+
+## Inference
+
+Once the Inferencer is initialized, you can directly pass in the raw data to be inferred and get the inference results from return values.
+
+### Input
+
+`````{tabs}
+
+````{tab} TextDetInferencer / TextRecInferencer / TextSpottingInferencer
+
+Input can be either of these types:
+
+- str: Path/URL to the image.
+
+  ```python
+  >>> inferencer('demo/demo_text_ocr.jpg')
+  ```
+
+- array: Image in numpy array. It should be in BGR order.
+
+  ```python
+  >>> import mmcv
+  >>> array = mmcv.imread('demo/demo_text_ocr.jpg')
+  >>> inferencer(array)
+  ```
+
+- list: A list of basic types above. Each element in the list will be processed separately.
+
+  ```python
+  >>> inferencer(['img_1.jpg', 'img_2.jpg])
+  >>> # You can even mix the types
+  >>> inferencer(['img_1.jpg', array])
+  ```
+
+- str: Path to the directory. All images in the directory will be processed.
+
+  ```python
+  >>> inferencer('tests/data/det_toy_dataset/imgs/test/')
+  ```
+
+````
+
+````{tab} KIEInferencer
+
+Input can be a dict or list[dict], where each dictionary contains
+following keys:
+
+- `img` (str or ndarray): Path to the image or the image itself. If KIE Inferencer is used in no-visual mode, this key is not required.
+If it's an numpy array, it should be in BGR order.
+- `img_shape` (tuple(int, int)): Image shape in (H, W). Only required when KIE Inferencer is used in no-visual mode and no `img` is provided.
+- `instances` (list[dict]): A list of instances.
+
+Each `instance` looks like the following:
+
+```python
+{
+    # A nested list of 4 numbers representing the bounding box of
+    # the instance, in (x1, y1, x2, y2) order.
+    "bbox": np.array([[x1, y1, x2, y2], [x1, y1, x2, y2], ...],
+                    dtype=np.int32),
+
+    # List of texts.
+    "texts": ['text1', 'text2', ...],
+}
+```
+
+````
+`````
+
+### Output
+
+By default, each `Inferencer` returns the prediction results in a dictionary format.
 
 - `visualization` contains the visualized predictions. But it's an empty list by default unless `return_vis=True`.
 
-- `predictions` contains the predictions results in a json-serializable format. As presented below, the keys are slightly different depending on the task type.
+- `predictions` contains the predictions results in a json-serializable format. As presented below, the contents are slightly different depending on the task type.
 
   ````{tabs}
 
@@ -161,9 +242,15 @@ By default, each `Inferecner` returns the prediction results in a dictionary for
 
 If you wish to get the raw outputs from the model, you can set `return_datasamples` to `True` to get the original [DataSample](structures.md), which will be stored in `predictions`.
 
-## Dumping Results
+### Dumping Results
 
-Apart from obtaining predictions from the return value, you can also export the predictions/visualization to files by setting `out_dir` and `save_pred`/`save_vis` arguments. Assuming `out_dir` is `outputs`, the files will be organized as follows:
+Apart from obtaining predictions from the return value, you can also export the predictions/visualizations to files by setting `out_dir` and `save_pred`/`save_vis` arguments.
+
+```python
+>>> inferencer('img_1.jpg', out_dir='outputs/', save_pred=True, save_vis=True)
+```
+
+Results in the directory structure like:
 
 ```text
 outputs
@@ -175,34 +262,35 @@ outputs
 
 The filename of each file is the same as the corresponding input image filename. If the input image is an array, the filename will be a number starting from 0.
 
-## API Arguments
+### Batch Inference
 
-The API has an extensive list of arguments that you can use. The following tables are for the python interface.
+You can customize the batch size by setting `batch_size`. The default batch size is 1.
 
-**MMOCRInferencer():**
+## API
 
-| Arguments     | Type                                    | Default | Description                                                                                                                                   |
-| ------------- | --------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `det`         | see [Weights](../modelzoo.html#weights) | None    | Pretrained text detection algorithm. It's the path to the config file or the model name defined in metafile.                                  |
-| `det_weights` | str                                     | None    | Path to the custom checkpoint file of the selected det model. If it is not specified and "det" is a model name of metafile, the weights will be loaded from metafile. |
-| `rec`         | see [Weights](../modelzoo.html#weights) | None    | Pretrained text recognition algorithm. It’s the path to the config file or the model name defined in metafile.                                |
-| `rec_weights` | str                                     | None    | Path to the custom checkpoint file of the selected rec model. If it is not specified and “rec” is a model name of metafile, the weights will be loaded from metafile. |
-| `kie` \[1\]   | see [Weights](../modelzoo.html#weights) | None    | Pretrained key information extraction algorithm. It’s the path to the config file or the model name defined in metafile.                      |
-| `kie_weights` | str                                     | None    | Path to the custom checkpoint file of the selected kie model. If it is not specified and “kie” is a model name of metafile, the weights will be loaded from metafile. |
-| `device`      | str                                     | None    | Device used for inference, accepting all allowed strings by `torch.device`. E.g., 'cuda:0' or 'cpu'. If None, the available device will be automatically used. Defaults to None. |
+Here are extensive lists of parameters that you can use. They are generally available for all the Inferencers, unless otherwise specified.
 
-\[1\]: `kie` is only effective when both text detection and recognition models are specified.
+**Inferencer.\_\_init\_\_():**
 
-### \_\_call\_\_*()*
+| Arguments | Type                                                 | Default | Description                                                                                                                          |
+| --------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `model`   | str or [Weights](../modelzoo.html#weights), optional | None    | Path to the config file or the model name defined in metafile.                                                                       |
+| `weights` | str, optional                                        | None    | Path to the custom checkpoint file of the selected det model. If it is not specified and "det" is a model name of metafile, the weights will be loaded from metafile. |
+| `device`  | str, optional                                        | None    | Device used for inference, accepting all allowed strings by `torch.device`. E.g., 'cuda:0' or 'cpu'. If None, the available device will be automatically used. Defaults to None. |
 
-| Arguments            | Type                    | Default      | Description                                                                                      |
-| -------------------- | ----------------------- | ------------ | ------------------------------------------------------------------------------------------------ |
-| `inputs`             | str/list/tuple/np.array | **required** | It can be a path to an image/a folder, an np array or a list/tuple (with img paths or np arrays) |
-| `return_datasamples` | bool                    | False        | Whether to return results as DataSamples. If False, the results will be packed into a dict.      |
-| `batch_size`         | int                     | 1            | Inference batch size.                                                                            |
-| `return_vis`         | bool                    | False        | Whether to return the visualization result.                                                      |
-| `print_result`       | bool                    | False        | Whether to print the inference result to the console.                                            |
-| `wait_time`          | float                   | 0            | The interval of show(s).                                                                         |
-| `out_dir`            | str                     | `results/`   | Output directory of results.                                                                     |
-| `save_vis`           | bool                    | False        | Whether to save the visualization results to `out_dir`.                                          |
-| `save_pred`          | bool                    | False        | Whether to save the inference results to `out_dir`.                                              |
+**Inferencer.\_\_call\_\_()**
+
+| Arguments            | Type                    | Default      | Description                                                                                                      |
+| -------------------- | ----------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `inputs`             | str/list/tuple/np.array | **required** | It can be a path to an image/a folder, an np array or a list/tuple (with img paths or np arrays)                 |
+| `return_datasamples` | bool                    | False        | Whether to return results as DataSamples. If False, the results will be packed into a dict.                      |
+| `batch_size`         | int                     | 1            | Inference batch size.                                                                                            |
+| `progress_bar`       | bool                    | True         | Whether to show a progress bar.                                                                                  |
+| `return_vis`         | bool                    | False        | Whether to return the visualization result.                                                                      |
+| `print_result`       | bool                    | False        | Whether to print the inference result to the console.                                                            |
+| `show`               | bool                    | False        | Whether to display the visualization results in a popup window.                                                  |
+| `wait_time`          | float                   | 0            | The interval of show(s).                                                                                         |
+| `draw_pred`          | bool                    | True         | Whether to draw predicted bounding boxes. *Only applicable on `TextDetInferencer` and `TextSpottingInferencer`.* |
+| `out_dir`            | str                     | `results/`   | Output directory of results.                                                                                     |
+| `save_vis`           | bool                    | False        | Whether to save the visualization results to `out_dir`.                                                          |
+| `save_pred`          | bool                    | False        | Whether to save the inference results to `out_dir`.                                                              |

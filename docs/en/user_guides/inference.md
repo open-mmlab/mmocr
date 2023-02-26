@@ -74,26 +74,13 @@ For each task, `MMOCRInferencer` takes two arguments in the form of `xxx` and `x
   >>> MMOCRInferencer(det='DBNet')
   ```
 
-  To load the custom weight, you can also pass the path/url to `det_weights`.
-
-  ```python
-  >>> MMOCRInferencer(det='DBNet', det_weights='path/to/dbnet.pth')
-  ```
-
 - To load custom config and weight, you can pass the path to the config file to `det` and the path to the weight to `det_weights`.
 
   ```python
   >>> MMOCRInferencer(det='path/to/dbnet_config.py', det_weights='path/to/dbnet.pth')
   ```
 
-- If you have a weight trained on [MMEngine](https://github.com/open-mmlab/mmengine/), specifying `xxx_weights` only is also fine - the config will be automatically loaded from the weight.
-
-  ```python
-  >>> # It will raise an error if the config file cannot be found in the weight
-  >>> MMOCRInferencer(det_weights='path/to/dbnet.pth')
-  ```
-
-- Passing config file to `xxx` without specifying the weight path `xxx_weights` will randomly initialize a model.
+There are some other ways to initialize a model: [Details](../basic_concepts/inferencers.md#model-initialization).
 
 ## Device
 
@@ -102,7 +89,7 @@ By default, the best device is automatically decided by [MMEngine](https://githu
 
 ## Batch Inference
 
-You can set the batch size by setting the `batch_size` argument. The default batch size is 1.
+You can customize the batch size by setting `batch_size`. The default batch size is 1.
 
 ## Get Results
 
@@ -159,21 +146,21 @@ python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show
 
 The API has an extensive list of arguments that you can use. The following tables are for the python interface.
 
-**MMOCRInferencer():**
+**MMOCRInferencer.\_\_init\_\_():**
 
-| Arguments     | Type                                    | Default | Description                                                                                                                                   |
-| ------------- | --------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `det`         | see [Weights](../modelzoo.html#weights) | None    | Pretrained text detection algorithm. It's the path to the config file or the model name defined in metafile.                                  |
-| `det_weights` | str                                     | None    | Path to the custom checkpoint file of the selected det model. If it is not specified and "det" is a model name of metafile, the weights will be loaded from metafile. |
-| `rec`         | see [Weights](../modelzoo.html#weights) | None    | Pretrained text recognition algorithm. It’s the path to the config file or the model name defined in metafile.                                |
-| `rec_weights` | str                                     | None    | Path to the custom checkpoint file of the selected rec model. If it is not specified and “rec” is a model name of metafile, the weights will be loaded from metafile. |
-| `kie` \[1\]   | see [Weights](../modelzoo.html#weights) | None    | Pretrained key information extraction algorithm. It’s the path to the config file or the model name defined in metafile.                      |
-| `kie_weights` | str                                     | None    | Path to the custom checkpoint file of the selected kie model. If it is not specified and “kie” is a model name of metafile, the weights will be loaded from metafile. |
-| `device`      | str                                     | None    | Device used for inference, accepting all allowed strings by `torch.device`. E.g., 'cuda:0' or 'cpu'. If None, the available device will be automatically used. Defaults to None. |
+| Arguments     | Type                                                 | Default | Description                                                                                                                      |
+| ------------- | ---------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `det`         | str or [Weights](../modelzoo.html#weights), optional | None    | Pretrained text detection algorithm. It's the path to the config file or the model name defined in metafile.                     |
+| `det_weights` | str, optional                                        | None    | Path to the custom checkpoint file of the selected det model. If it is not specified and "det" is a model name of metafile, the weights will be loaded from metafile. |
+| `rec`         | str or [Weights](../modelzoo.html#weights), optional | None    | Pretrained text recognition algorithm. It’s the path to the config file or the model name defined in metafile.                   |
+| `rec_weights` | str, optional                                        | None    | Path to the custom checkpoint file of the selected rec model. If it is not specified and “rec” is a model name of metafile, the weights will be loaded from metafile. |
+| `kie` \[1\]   | str or [Weights](../modelzoo.html#weights), optional | None    | Pretrained key information extraction algorithm. It’s the path to the config file or the model name defined in metafile.         |
+| `kie_weights` | str, optional                                        | None    | Path to the custom checkpoint file of the selected kie model. If it is not specified and “kie” is a model name of metafile, the weights will be loaded from metafile. |
+| `device`      | str, optional                                        | None    | Device used for inference, accepting all allowed strings by `torch.device`. E.g., 'cuda:0' or 'cpu'. If None, the available device will be automatically used. Defaults to None. |
 
 \[1\]: `kie` is only effective when both text detection and recognition models are specified.
 
-### \_\_call\_\_*()*
+**MMOCRInferencer.\_\_call\_\_()**
 
 | Arguments            | Type                    | Default      | Description                                                                                      |
 | -------------------- | ----------------------- | ------------ | ------------------------------------------------------------------------------------------------ |
