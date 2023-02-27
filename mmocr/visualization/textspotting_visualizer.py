@@ -49,7 +49,8 @@ class TextSpottingLocalVisualizer(BaseLocalVisualizer):
                 text_image,
                 labels=texts,
                 bboxes=bboxes,
-                font_families=self.font_families)
+                font_families=self.font_families,
+                font_properties=self.font_properties)
         if polygons:
             polygons = [polygon.reshape(-1, 2) for polygon in polygons]
             image = self.get_polygons_image(
