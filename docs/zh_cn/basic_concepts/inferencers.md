@@ -79,7 +79,7 @@
   >>> inferencer = TextDetInferencer(weights='path/to/dbnet.pth')
   ```
 
-- 传递配置文件到 `model` 而不指定 `weight` 将导致随机初始化的模型。
+- 传递配置文件到 `model` 而不指定 `weight` 则会产生一个随机初始化的模型。
 
 ### 推理设备
 
@@ -146,20 +146,6 @@
 - `img` (str 或者 ndarray): 图像的路径或图像本身。如果 KIE 推理器在无可视模式下使用，则不需要此键。如果它是一个 numpy 数组，则应该是 BGR 顺序编码的图片。
 - `img_shape` (tuple(int, int)): 图像的形状 (H, W)。仅在 KIE 推理器在无可视模式下使用且没有提供 `img` 时才需要。
 - `instances` (list[dict]): 实例列表。
-
-Each `instance` looks like the following:
-
-```python
-{
-    # A nested list of 4 numbers representing the bounding box of
-    # the instance, in (x1, y1, x2, y2) order.
-    "bbox": np.array([[x1, y1, x2, y2], [x1, y1, x2, y2], ...],
-                    dtype=np.int32),
-
-    # List of texts.
-    "texts": ['text1', 'text2', ...],
-}
-```
 
 每个 `instance` 都应该包含以下键：
 
