@@ -8,7 +8,7 @@
 - 关键信息提取（文本检测 + 文本识别 + 关键信息提取）
 - *OCR（text spotting）*（即将推出）
 
-这些任务是通过使用一个或几个特定任务的 [Inferencer](.../basic_concepts/inferencers.md) 来完成的。`MMOCRInferencer` 封装并链接了MMOCR中的所有 Inferencer，因此用户可以使用它在图像上执行一系列任务，并直接以端到端的方式获得最终结果。
+这些任务是通过使用一个或几个的标准 [推理器](.../basic_concepts/inferencers.md) 来完成的。`MMOCRInferencer` 封装并链接了MMOCR中的所有推理器，因此用户可以使用它在图像上执行一系列任务，并直接以端到端的方式获得最终结果。
 
 下面的章节将引导你了解 `MMOCRInferencer` 的一些基本使用方法。
 
@@ -80,11 +80,11 @@
   >>> MMOCRInferencer(det='path/to/dbnet_config.py', det_weights='path/to/dbnet.pth')
   ```
 
-[这里](../basic_concepts/inferencers.md#模型初始化)还列出了更多种初始化 `Inferencer` 的方式。
+[这里](../basic_concepts/inferencers.md#模型初始化)还列出了更多种初始化推理器的方式。
 
 ## 推理设备
 
-每个Inferencer实例都会跟一个设备绑定。默认情况下，最佳设备是由 [MMEngine](https://github.com/open-mmlab/mmengine/) 自动决定的。你也可以通过指定 `device` 参数来改变设备。请参考 [torch.device](torch.device) 了解 `device` 参数支持的所有形式。
+每个推理器实例都会跟一个设备绑定。默认情况下，最佳设备是由 [MMEngine](https://github.com/open-mmlab/mmengine/) 自动决定的。你也可以通过指定 `device` 参数来改变设备。请参考 [torch.device](torch.device) 了解 `device` 参数支持的所有形式。
 
 ## 批量推理
 
