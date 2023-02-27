@@ -8,7 +8,7 @@ We provide an easy-to-use API - `MMOCRInferencer`, which can perform inference o
 - Key information extraction (text detection + text recognition + key information extraction)
 - *OCR (text spotting)* (coming soon)
 
-These tasks are performed by using one or several task-specific [Inferencers](../basic_concepts/inferencers.md). `MMOCRInferencer` encapsulates and chains all the Inferencers in MMOCR, so users can use this Inferencer to perform a series of tasks on an image and directly get the final result in an end-to-end manner.
+These tasks are performed by using one or several standard [Inferencers](../basic_concepts/inferencers.md). `MMOCRInferencer` encapsulates and chains all the Inferencers in MMOCR, so users can use this Inferencer to perform a series of tasks on an image and directly get the final result in an end-to-end manner.
 
 The following sections will guide you through some basic usages of `MMOCRInferencer`.
 

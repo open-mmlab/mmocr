@@ -4,18 +4,18 @@ In OpenMMLab, all the inference operations are unified into a new interface - `I
 
 In MMOCR, Inferencers are constructed in different levels of task abstraction.
 
-- Task-specific Inferencer: Following OpenMMLab's convention, each fundamental task in MMOCR has its Inferencer, namely `TextDetInferencer`, `TextRecInferencer`, `TextSpottingInferencer`, and `KIEInferencer`. They are designed to perform inference on a single task, and can be chained together to perform inference on a series of tasks. They also share very similar interface, have standard input/output protocol, and overall follow the OpenMMLab design.
-- [`MMOCRInferencer`](../user_guides/inference.md): We also provide `MMOCRInferencer`, a convenient inference interface only designed for MMOCR. It encapsulates and chains all the Inferencers in MMOCR, so users can use this Inferencer to perform a series of tasks on an image and directly get the final result in an end-to-end manner. *However, it has a relatively different interface from other task-specific Inferencers, and some of standard Inferencer functionalities might be sacrificed for the sake of simplicity.*
+- Standard Inferencer: Following OpenMMLab's convention, each fundamental task in MMOCR has a standard Inferencer, namely `TextDetInferencer`, `TextRecInferencer`, `TextSpottingInferencer`, and `KIEInferencer`. They are designed to perform inference on a single task, and can be chained together to perform inference on a series of tasks. They also share very similar interface, have standard input/output protocol, and overall follow the OpenMMLab design.
+- [`MMOCRInferencer`](../user_guides/inference.md): We also provide `MMOCRInferencer`, a convenient inference interface only designed for MMOCR. It encapsulates and chains all the Inferencers in MMOCR, so users can use this Inferencer to perform a series of tasks on an image and directly get the final result in an end-to-end manner. *However, it has a relatively different interface from other standard Inferencers, and some of standard Inferencer functionalities might be sacrificed for the sake of simplicity.*
 
 For new users, we recommend using [`MMOCRInferencer`](../user_guides/inference.md) to test out different combinations of models.
 
-If you are a developer and wish to integrate the models into your own project, we recommend using task-specific Inferencers, as they are more flexible and standardized, equipped with full functionalities.
+If you are a developer and wish to integrate the models into your own project, we recommend using standard Inferencers, as they are more flexible and standardized, equipped with full functionalities.
 
-This page will introduce the usage of **task-specific Inferencers**.
+This page will introduce the usage of **standard Inferencers**.
 
 ## Basic Usage
 
-In general, all the task-specific Inferencers across OpenMMLab share a very similar interface. The following example shows how to use `TextDetInferencer` to perform inference on a single image.
+In general, all the standard Inferencers across OpenMMLab share a very similar interface. The following example shows how to use `TextDetInferencer` to perform inference on a single image.
 
 ```python
 >>> from mmocr.apis import TextDetInferencer
@@ -37,7 +37,7 @@ Each Inferencer must be initialized with a model and optionally a device.
 
 ### Model Initialization
 
-Every task-specific `Inferencer` accepts two parameters, `model` and `weights`. (In `MMOCRInferencer`, they are referred to as `xxx` and `xxx_weights`)
+Every standard `Inferencer` accepts two parameters, `model` and `weights`. (In `MMOCRInferencer`, they are referred to as `xxx` and `xxx_weights`)
 
 - `model` takes either the name of a model, or the path to a config file as input. The name of a model is obtained from the model's metafile ([Example](https://github.com/open-mmlab/mmocr/blob/1.x/configs/textdet/dbnet/metafile.yml)) indexed from [model-index.yml](https://github.com/open-mmlab/mmocr/blob/1.x/model-index.yml). You can find the list of available weights [here](../modelzoo.md#weights).
 
