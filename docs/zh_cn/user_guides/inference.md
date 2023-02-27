@@ -149,15 +149,15 @@ python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show
 
 **MMOCRInferencer.\_\_init\_\_():**
 
-| 参数          | 类型                                             | 默认值 | 描述                                                                                                                           |
-| ------------- | ------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `det`         | str 或 [权重](../modelzoo.html#weights), 可选    | None   | 预训练的文本检测算法。它是配置文件的路径或者是 metafile 中定义的模型名称。                                                     |
-| `det_weights` | str, 可选                                        | None   | det 模型的权重文件的路径。如果它没有被指定，并且 "det" 是 metafile 中的模型名称，那么权重将从 metafile 中加载。                |
-| `rec`         | str 或 [Weights](../modelzoo.html#weights), 可选 | None   | 预训练的文本识别算法。它是配置文件的路径或者是 metafile 中定义的模型名称。                                                     |
-| `rec_weights` | str, 可选                                        | None   | rec 模型的权重文件的路径。如果它没有被指定，并且 "rec" 是 metafile 中的模型名称，那么权重将从 metafile 中加载。                |
-| `kie` \[1\]   | str 或 [Weights](../modelzoo.html#weights), 可选 | None   | 预训练的关键信息提取算法。它是配置文件的路径或者是 metafile 中定义的模型名称。                                                 |
-| `kie_weights` | str, 可选                                        | None   | kie 模型的权重文件的路径。如果它没有被指定，并且 "kie" 是 metafile 中的模型名称，那么权重将从 metafile 中加载。                |
-| `device`      | str, 可选                                        | None   | 推理使用的设备，接受 `torch.device` 允许的所有字符串。例如，'cuda:0' 或 'cpu'。如果为 None，将自动使用可用设备。 默认为 None。 |
+| 参数          | 类型                                         | 默认值 | 描述                                                                                                                           |
+| ------------- | -------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| `det`         | str 或 [权重](../modelzoo.html#id2), 可选    | None   | 预训练的文本检测算法。它是配置文件的路径或者是 metafile 中定义的模型名称。                                                     |
+| `det_weights` | str, 可选                                    | None   | det 模型的权重文件的路径。                                                                                                     |
+| `rec`         | str 或 [Weights](../modelzoo.html#id2), 可选 | None   | 预训练的文本识别算法。它是配置文件的路径或者是 metafile 中定义的模型名称。                                                     |
+| `rec_weights` | str, 可选                                    | None   | rec 模型的权重文件的路径。                                                                                                     |
+| `kie` \[1\]   | str 或 [Weights](../modelzoo.html#id2), 可选 | None   | 预训练的关键信息提取算法。它是配置文件的路径或者是 metafile 中定义的模型名称。                                                 |
+| `kie_weights` | str, 可选                                    | None   | kie 模型的权重文件的路径。                                                                                                     |
+| `device`      | str, 可选                                    | None   | 推理使用的设备，接受 `torch.device` 允许的所有字符串。例如，'cuda:0' 或 'cpu'。如果为 None，将自动使用可用设备。 默认为 None。 |
 
 \[1\]: 当同时指定了文本检测和识别模型时，`kie` 才会生效。
 

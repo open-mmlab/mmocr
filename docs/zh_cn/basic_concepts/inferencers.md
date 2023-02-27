@@ -1,7 +1,5 @@
 # 推理器 （Inferencers）
 
-In OpenMMLab, all the inference operations are unified into a new inference - `Inferencer`. `Inferencer` is designed to expose a neat and simple API to users, and shares very similar interface across different OpenMMLab libraries.
-
 在 OpenMMLab 中，所有的推理操作都被统一到了新的推理器 - `Inferencer` 中。`Inferencer` 被设计成为一个简洁易用的 API，它在不同的 OpenMMLab 库中都有着非常相似的接口。
 
 在 MMOCR 中，推理器被构建在不同层次的任务抽象中。
@@ -193,26 +191,21 @@ Each `instance` looks like the following:
 
   {
       'predictions' : [
-        #  instance corresponds to an input image
+        # 每个实例都对应于一个输入图像
         {
-          'polygons': [...],  # 2d list of len (N,) in the format of [x1, y1, x2, y2, ...]
-          'bboxes': [...],  # 2d list of shape (N, 4), in the format of [min_x, min_y, max_x, max_y]
-          'scores': [...]  # list of float, len (N, )
+          'polygons': [...],  # 2d 列表，长度为 (N,)，格式为 [x1, y1, x2, y2, ...]
+          'bboxes': [...],  # 2d 列表，形状为 (N, 4)，格式为 [min_x, min_y, max_x, max_y]
+          'scores': [...]  # 浮点列表，长度为（N, ）
         },
-      ]
-      'visualization' : [
-        array(..., dtype=uint8),
-      ]
-  }
   ```
 
   ```{code-tab} python TextRecInferencer
   {
       'predictions' : [
-        # Each instance corresponds to an input image
+        # 每个实例都对应于一个输入图像
         {
-          'text': '...',  # a string
-          'scores': 0.1,  # a float
+          'text': '...',  # 字符串
+          'scores': 0.1,  # 浮点
         },
         ...
       ]
@@ -225,12 +218,12 @@ Each `instance` looks like the following:
   ```{code-tab} python TextSpottingInferencer
   {
       'predictions' : [
-        # Each instance corresponds to an input image
+        # 每个实例都对应于一个输入图像
         {
-          'polygons': [...],  # 2d list of len (N,) in the format of [x1, y1, x2, y2, ...]
-          'bboxes': [...],  # 2d list of shape (N, 4), in the format of [min_x, min_y, max_x, max_y]
-          'scores': [...]  # list of float, len (N, )
-          'texts': ['...',]  # list of texts, len (N, )
+          'polygons': [...],  # 2d 列表，长度为 (N,)，格式为 [x1, y1, x2, y2, ...]
+          'bboxes': [...],  # 2d 列表，形状为 (N, 4)，格式为 [min_x, min_y, max_x, max_y]
+          'scores': [...]  # 浮点列表，长度为（N, ）
+          'texts': ['...',]  # 浮点列表，长度为（N, ）
         },
       ]
       'visualization' : [
@@ -242,12 +235,12 @@ Each `instance` looks like the following:
   ```{code-tab} python KIEInferencer
   {
       'predictions' : [
-        # Each instance corresponds to an input image
+        # 每个实例都对应于一个输入图像
         {
-          'labels': [...],  # node label, len (N,)
-          'scores': [...],  # node scores, len (N, )
-          'edge_scores': [...],  # edge scores, shape (N, N)
-          'edge_labels': [...],  # edge labels, shape (N, N)
+          'labels': [...],  # 节点标签，长度为 (N, )
+          'scores': [...],  # 节点置信度，长度为 (N, )
+          'edge_scores': [...],  # 边预测置信度, 形状为 (N, N)
+          'edge_labels': [...],  # 边标签, 形状为 (N, N)
         },
       ]
       'visualization' : [
@@ -257,86 +250,19 @@ Each `instance` looks like the following:
   ```
   ````{tabs}
 
-  ```{code-tab} python TextDetInferencer
-
-  {
-      'predictions' : [
-        #  instance corresponds to an input image
-        {
-          'polygons': [...],  # 2d list of len (N,) in the format of [x1, y1, x2, y2, ...]
-          'bboxes': [...],  # 2d list of shape (N, 4), in the format of [min_x, min_y, max_x, max_y]
-          'scores': [...]  # list of float, len (N, )
-        },
-      ]
-      'visualization' : [
-        array(..., dtype=uint8),
-      ]
-  }
-  ```
-
-  ```{code-tab} python TextRecInferencer
-  {
-      'predictions' : [
-        # Each instance corresponds to an input image
-        {
-          'text': '...',  # a string
-          'scores': 0.1,  # a float
-        },
-        ...
-      ]
-      'visualization' : [
-        array(..., dtype=uint8),
-      ]
-  }
-  ```
-
-  ```{code-tab} python TextSpottingInferencer
-  {
-      'predictions' : [
-        # Each instance corresponds to an input image
-        {
-          'polygons': [...],  # 2d list of len (N,) in the format of [x1, y1, x2, y2, ...]
-          'bboxes': [...],  # 2d list of shape (N, 4), in the format of [min_x, min_y, max_x, max_y]
-          'scores': [...]  # list of float, len (N, )
-          'texts': ['...',]  # list of texts, len (N, )
-        },
-      ]
-      'visualization' : [
-        array(..., dtype=uint8),
-      ]
-  }
-  ```
-
-  ```{code-tab} python KIEInferencer
-  {
-      'predictions' : [
-        # Each instance corresponds to an input image
-        {
-          'labels': [...],  # node label, len (N,)
-          'scores': [...],  # node scores, len (N, )
-          'edge_scores': [...],  # edge scores, shape (N, N)
-          'edge_labels': [...],  # edge labels, shape (N, N)
-        },
-      ]
-      'visualization' : [
-        array(..., dtype=uint8),
-      ]
-  }
-  ```
-
   `````
 
-If you wish to get the raw outputs from the model, you can set `return_datasamples` to `True` to get the original [DataSample](structures.md), which will be stored in `predictions`.
+如果你想要从模型中获取原始输出，可以将 `return_datasamples` 设置为 `True` 来获取原始的 [DataSample](structures.md)，它将存储在 `predictions` 中。
 
-### Dumping Results
+### 储存结果
 
-Apart from obtaining predictions from the return value, you can also export the predictions/visualizations to files by setting `out_dir` and `save_pred`/`save_vis` arguments.
+除了从返回值中获取预测结果，您还可以通过设置 `out_dir` 和 `save_pred`/`save_vis` 参数将预测结果/可视化导出到文件中。
 
 ```python
 >>> inferencer('img_1.jpg', out_dir='outputs/', save_pred=True, save_vis=True)
 ```
 
-Results in the directory structure like:
+结果目录结构如下：
 
 ```text
 outputs
@@ -346,37 +272,37 @@ outputs
     └── img_1.jpg
 ```
 
-The filename of each file is the same as the corresponding input image filename. If the input image is an array, the filename will be a number starting from 0.
+文件名与对应的输入图像文件名相同。 如果输入图像是数组，则文件名将是从0开始的数字。
 
-### Batch Inference
+### 批量推理
 
-You can customize the batch size by setting `batch_size`. The default batch size is 1.
+你可以通过设置 `batch_size` 来自定义批量推理的批大小。 默认批大小为 1。
 
 ## API
 
-Here are extensive lists of parameters that you can use. They are generally available for all the Inferencers, unless otherwise specified.
+这里列出了 Inferencer 详尽的参数列表。 除非另有说明，否则它们通常适用于所有 Inferencer。
 
 **Inferencer.\_\_init\_\_():**
 
-| Arguments | Type                                                 | Default | Description                                                                                                                          |
-| --------- | ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `model`   | str or [Weights](../modelzoo.html#weights), optional | None    | Path to the config file or the model name defined in metafile.                                                                       |
-| `weights` | str, optional                                        | None    | Path to the custom checkpoint file of the selected det model. If it is not specified and "det" is a model name of metafile, the weights will be loaded from metafile. |
-| `device`  | str, optional                                        | None    | Device used for inference, accepting all allowed strings by `torch.device`. E.g., 'cuda:0' or 'cpu'. If None, the available device will be automatically used. Defaults to None. |
+| 参数      | 类型                                          | 默认值 | 描述                                                                                                                               |
+| --------- | --------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `model`   | str 或 [权重](../modelzoo.html#id2), optional | None   | 路径到配置文件或者在 metafile 中定义的模型名称。                                                                                   |
+| `weights` | str, 可选                                     | None   | 权重文件的路径。                                                                                                                   |
+| `device`  | str, 可选                                     | None   | 推理使用的设备，接受 `torch.device` 允许的所有字符串。 例如，'cuda:0' 或 'cpu'。 如果为 None，则将自动使用可用设备。 默认为 None。 |
 
 **Inferencer.\_\_call\_\_()**
 
-| Arguments            | Type                    | Default      | Description                                                                                                      |
-| -------------------- | ----------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `inputs`             | str/list/tuple/np.array | **required** | It can be a path to an image/a folder, an np array or a list/tuple (with img paths or np arrays)                 |
-| `return_datasamples` | bool                    | False        | Whether to return results as DataSamples. If False, the results will be packed into a dict.                      |
-| `batch_size`         | int                     | 1            | Inference batch size.                                                                                            |
-| `progress_bar`       | bool                    | True         | Whether to show a progress bar.                                                                                  |
-| `return_vis`         | bool                    | False        | Whether to return the visualization result.                                                                      |
-| `print_result`       | bool                    | False        | Whether to print the inference result to the console.                                                            |
-| `show`               | bool                    | False        | Whether to display the visualization results in a popup window.                                                  |
-| `wait_time`          | float                   | 0            | The interval of show(s).                                                                                         |
-| `draw_pred`          | bool                    | True         | Whether to draw predicted bounding boxes. *Only applicable on `TextDetInferencer` and `TextSpottingInferencer`.* |
-| `out_dir`            | str                     | `results/`   | Output directory of results.                                                                                     |
-| `save_vis`           | bool                    | False        | Whether to save the visualization results to `out_dir`.                                                          |
-| `save_pred`          | bool                    | False        | Whether to save the inference results to `out_dir`.                                                              |
+| 参数                 | 类型                    | 默认值     | 描述                                                                                |
+| -------------------- | ----------------------- | ---------- | ----------------------------------------------------------------------------------- |
+| `inputs`             | str/list/tuple/np.array | **必需**   | 可以是图像的路径/文件夹，np 数组或列表/元组（带有图像路径或 np 数组）               |
+| `return_datasamples` | bool                    | False      | 是否将结果作为 DataSamples 返回。 如果为 False，则结果将被打包到一个 dict 中。      |
+| `batch_size`         | int                     | 1          | 推理批大小。                                                                        |
+| `progress_bar`       | bool                    | True       | 是否显示进度条。                                                                    |
+| `return_vis`         | bool                    | False      | 是否返回可视化结果。                                                                |
+| `print_result`       | bool                    | False      | 是否将推理结果打印到控制台。                                                        |
+| `show`               | bool                    | False      | 是否在弹出窗口中显示可视化结果。                                                    |
+| `wait_time`          | float                   | 0          | 弹窗展示可视化结果的时间间隔。                                                      |
+| `draw_pred`          | bool                    | True       | 是否绘制预测的边界框。 *仅适用于 `TextDetInferencer` 和 `TextSpottingInferencer`。* |
+| `out_dir`            | str                     | `results/` | 结果的输出目录。                                                                    |
+| `save_vis`           | bool                    | False      | 是否将可视化结果保存到 `out_dir`。                                                  |
+| `save_pred`          | bool                    | False      | 是否将推理结果保存到 `out_dir`。                                                    |

@@ -48,6 +48,7 @@ extensions = [
     'sphinx.ext.autodoc.typehints',
     'sphinx.ext.autosummary',
     'sphinx.ext.autosectionlabel',
+    'sphinx_tabs.tabs',
 ]
 autodoc_typehints = 'description'
 
