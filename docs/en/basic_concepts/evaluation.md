@@ -60,8 +60,8 @@ In MMOCR, the calculation of `HmeanIOUMetric` can be summarized as the following
    It is worth noting that `pred_score_thrs` will **automatically search** for the **best threshold** within a certain range by default, and users can also customize the search range by manually modifying the configuration file:
 
    ```python
-   # By default, HmeanIOUMetric searches the best threshold within the range [0.3, 0.9] with a step size of 0.1
-   val_evaluator = dict(type='HmeanIOUMetric', pred_score_thrs=dict(start=0.3, stop=0.9, step=0.1))
+   # By default, HmeanIOUMetric searches the best threshold within the range [0.3, 1) with a step size of 0.1
+   val_evaluator = dict(type='HmeanIOUMetric', pred_score_thrs=dict(start=0.3, stop=1, step=0.1))
    ```
 
 2. Calculate the IoU matrix

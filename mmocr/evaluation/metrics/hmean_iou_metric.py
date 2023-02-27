@@ -44,7 +44,7 @@ class HmeanIOUMetric(BaseMetric):
         ignore_precision_thr (float): Precision threshold when prediction and\
             gt ignored polygons are matched. Defaults to 0.5.
         pred_score_thrs (dict): Best prediction score threshold searching
-            space. Defaults to dict(start=0.3, stop=0.9, step=0.1).
+            space. Defaults to dict(start=0.3, stop=1 step=0.1).
         strategy (str): Polygon matching strategy. Options are 'max_matching'
             and 'vanilla'. 'max_matching' refers to the optimum strategy that
             maximizes the number of matches. Vanilla strategy matches gt and
@@ -63,14 +63,20 @@ class HmeanIOUMetric(BaseMetric):
     def __init__(self,
                  match_iou_thr: float = 0.5,
                  ignore_precision_thr: float = 0.5,
-                 pred_score_thrs: Dict = dict(start=0.3, stop=0.9, step=0.1),
+                 pred_score_thrs: Dict = dict(start=0.3, stop=1, step=0.1),
                  strategy: str = 'vanilla',
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None) -> None:
         super().__init__(collect_device=collect_device, prefix=prefix)
         self.match_iou_thr = match_iou_thr
         self.ignore_precision_thr = ignore_precision_thr
-        self.pred_score_thrs = np.arange(**pred_score_thrs)
+        self.pred_score_thrs = np.linspace(
+            pred_score_thrs['start'],
+            pred_score_thrs['stop'],
+            int(
+                np.round((pred_score_thrs['stop'] - pred_score_thrs['start']) /
+                         pred_score_thrs['step'])),
+            endpoint=False)
         assert strategy in ['max_matching', 'vanilla']
         self.strategy = strategy
 

@@ -60,8 +60,8 @@ F_1=(1+\beta^2)\cdot\frac{PR}{\beta^2\cdot P+R} = \frac{2PR}{P+R}
    值得注意的是，`pred_score_thrs` 默认将**自动搜索**一定范围内的**最佳阈值**，用户也可以通过手动修改配置文件来自定义搜索范围：
 
    ```python
-   # HmeanIOUMetric 默认以 0.1 为步长搜索 [0.3, 0.9] 范围内的最佳得分阈值
-   val_evaluator = dict(type='HmeanIOUMetric', pred_score_thrs=dict(start=0.3, stop=0.9, step=0.1))
+   # HmeanIOUMetric 默认以 0.1 为步长搜索 [0.3, 1) 范围内的最佳得分阈值
+   val_evaluator = dict(type='HmeanIOUMetric', pred_score_thrs=dict(start=0.3, stop=1, step=0.1))
    ```
 
 2. 计算 IoU 矩阵
