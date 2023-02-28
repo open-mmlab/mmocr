@@ -37,7 +37,6 @@ test_preparer = dict(
                 url='https://rrc.cvc.uab.es/downloads/ch4_test_images.zip',
                 save_name='ic15_textdet_test_img.zip',
                 md5='97e4c1ddcf074ffcc75feff2b63c35dd',
-                split=['test'],
                 content=['image'],
                 mapping=[['ic15_textdet_test_img', 'textdet_imgs/test']]),
             dict(
@@ -45,7 +44,6 @@ test_preparer = dict(
                 'Challenge4_Test_Task4_GT.zip',
                 save_name='ic15_textdet_test_gt.zip',
                 md5='8bce173b06d164b98c357b0eb96ef430',
-                split=['test'],
                 content=['annotation'],
                 mapping=[['ic15_textdet_test_gt', 'annotations/test']]),
         ]),
@@ -59,3 +57,4 @@ test_preparer = dict(
 )
 
 config_generator = dict(type='TextDetConfigGenerator')
+delete = ['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img']

@@ -11,7 +11,6 @@ train_preparer = dict(
                 'wildreceipt.tar',
                 save_name='wildreceipt.tar',
                 md5='2a2c4a1b4777fb4fe185011e17ad46ae',
-                split=['train', 'test'],
                 content=['image', 'annotation'],
                 mapping=[
                     [
@@ -40,7 +39,6 @@ test_preparer = dict(
                 'wildreceipt.tar',
                 save_name='wildreceipt.tar',
                 md5='2a2c4a1b4777fb4fe185011e17ad46ae',
-                split=['train', 'test'],
                 content=['image', 'annotation'],
                 mapping=[
                     [
@@ -57,3 +55,4 @@ test_preparer = dict(
     packer=dict(type='WildReceiptPacker'),
     dumper=dict(type='WildreceiptOpensetDumper'),
 )
+delete = ['wildreceipt']

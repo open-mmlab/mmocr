@@ -1,7 +1,9 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
+import os
 import os.path as osp
-from typing import List, Union
+import shutil
+from typing import List, Optional, Union
 
 from mmengine import Registry
 
@@ -44,24 +46,22 @@ class DatasetPreparer:
         task (str): Task type. Options are 'textdet', 'textrecog',
             'textspotter', and 'kie'. Defaults to 'textdet'.
         nproc (int): Number of parallel processes. Defaults to 4.
-        train_preparer(OptConfigType): cfg for train data prepare.
-            - obtainer:
-            - gatherer
-            - parser:
-            - packer:
-            - dumper:
-        test_preparer(OptConfigType): cfg for test data prepare.
-            - obtainer:
-            - gatherer
-            - parser:
-            - packer:
-            - dumper:
-        val_preparer(OptConfigType): cfg for train data prepare.
-            - obtainer:
-            - gatherer
-            - parser:
-            - packer:
-            - dumper:
+        train_preparer(OptConfigType): cfg for train data prepare. It contains
+            the following keys:
+            - obtainer: cfg for data obtainer.
+            - gatherer: cfg for data gatherer.
+            - parser: cfg for data parser.
+            - packer: cfg for data packer.
+            - dumper: cfg for data dumper.
+            Defaults to None.
+        test_preparer(OptConfigType): cfg for test data prepare. Defaults to
+            None.
+        val_preparer(OptConfigType): cfg for train data prepare. Defaults to
+            None.
+        config_generator(OptConfigType): cfg for config generator. Defaults to
+            None.
+        delete (list[str], optional): List of files to be deleted.
+            Defaults to None.
     """
 
     def __init__(self,
@@ -72,7 +72,8 @@ class DatasetPreparer:
                  train_preparer: OptConfigType = None,
                  test_preparer: OptConfigType = None,
                  val_preparer: OptConfigType = None,
-                 config_generator: OptConfigType = None) -> None:
+                 config_generator: OptConfigType = None,
+                 delete: Optional[List[str]] = None) -> None:
         self.data_root = data_root
         self.nproc = nproc
         self.task = task
@@ -81,6 +82,7 @@ class DatasetPreparer:
         self.test_preparer = test_preparer
         self.val_preparer = val_preparer
         self.config_generator = config_generator
+        self.delete = delete
 
     def run(self, splits: Union[str, List] = ['train', 'test', 'val']) -> None:
         """Prepare the dataset."""
@@ -90,6 +92,7 @@ class DatasetPreparer:
                                          'val'])), 'Invalid split name'
         for split in splits:
             self.loop(split, getattr(self, f'{split}_preparer'))
+        self.clean()
         self.generate_config()
 
     @classmethod
@@ -113,6 +116,7 @@ class DatasetPreparer:
             train_preparer=cfg.get('train_preparer', None),
             test_preparer=cfg.get('test_preparer', None),
             val_preparer=cfg.get('val_preparer', None),
+            delete=cfg.get('delete', None),
             config_generator=cfg.get('config_generator', None))
         return data_preparer
 
@@ -167,7 +171,7 @@ class DatasetPreparer:
         parser.setdefault('nproc', default=self.nproc)
         parser = DATA_PARSERS.build(parser)
         # Convert dataset annotations to MMOCR format
-        samples = parser.parse_files(img_paths, ann_paths)
+        samples = parser(img_paths, ann_paths)
 
         # build packer
         print(f'Packing {split} Annotations...')
@@ -184,7 +188,7 @@ class DatasetPreparer:
         dumper.setdefault('split', default=split)
         dumper.setdefault('data_root', default=self.data_root)
         dumper = DATA_DUMPERS.build(dumper)
-        dumper.dump(samples)
+        dumper(samples)
 
     def generate_config(self):
         if self.config_generator is None:
@@ -195,3 +199,14 @@ class DatasetPreparer:
         config_generator = CFG_GENERATORS.build(self.config_generator)
         print('Generating base configs...')
         config_generator()
+
+    def clean(self) -> None:
+        if self.delete is None:
+            return
+        for d in self.delete:
+            delete_file = osp.join(self.data_root, d)
+            if osp.exists(delete_file):
+                if osp.isdir(delete_file):
+                    shutil.rmtree(delete_file)
+                else:
+                    os.remove(delete_file)

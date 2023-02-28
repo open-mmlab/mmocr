@@ -11,7 +11,6 @@ train_preparer = dict(
                 url='http://images.cocodataset.org/zips/train2014.zip',
                 save_name='cocotextv2_train_img.zip',
                 md5='0da8c0bd3d6becc4dcb32757491aca88',
-                split=['train', 'val'],
                 content=['image'],
                 mapping=[[
                     'cocotextv2_train_img/train2014', 'textdet_imgs/train'
@@ -21,7 +20,6 @@ train_preparer = dict(
                 'cocotext.v2.zip',
                 save_name='cocotextv2_annotation.zip',
                 md5='5e39f7d6f2f11324c6451e63523c440c',
-                split=['train', 'val'],
                 content=['annotation'],
                 mapping=[[
                     'cocotextv2_annotation/cocotext.v2.json',

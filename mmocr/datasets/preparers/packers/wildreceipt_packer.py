@@ -32,7 +32,7 @@ class WildReceiptPacker(BasePacker):
         """No meta info is required for the wildreceipt dataset."""
         return samples
 
-    def pack_instance(self, sample: str, split: str):
+    def pack_instance(self, sample: str):
         """Pack line-json str of close set to line-json str of open set.
 
         Args:

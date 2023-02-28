@@ -12,6 +12,31 @@ from .base import BasePacker
 
 @DATA_PACKERS.register_module()
 class TextRecogPacker(BasePacker):
+    """Text recogntion packer. It is used to pack the parsed annotation info
+    to.
+
+    .. code-block:: python
+
+        {
+            "metainfo":
+                {
+                    "dataset_type": "TextRecogDataset",
+                    "task_name": "textrecog",
+                },
+            "data_list":
+                [
+                    {
+                        "img_path": "textrecog_imgs/train/test_img.jpg",
+                        "instances":
+                            [
+                                {
+                                    "text": "GRAND"
+                                }
+                            ]
+                    }
+                ]
+        }
+    """
 
     def pack_instance(self, sample: Tuple) -> Dict:
         """Pack the text info to a recognition instance.

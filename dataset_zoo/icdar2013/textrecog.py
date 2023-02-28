@@ -18,7 +18,6 @@ train_preparer = dict(
                 'Challenge2_Training_Task3_Images_GT.zip',
                 save_name='ic13_textrecog_train_img_gt.zip',
                 md5='6f0dbc823645968030878df7543f40a4',
-                split=['train'],
                 content=['image'],
                 mapping=[
                     # ['ic13_textrecog_train_img_gt/gt.txt',
@@ -30,7 +29,6 @@ train_preparer = dict(
                 'icdar_2013/train_labels.json',
                 save_name='ic13_train_labels.json',
                 md5='008fcd0056e72c4cf3064fb4d1fce81b',
-                split=['train'],
                 content=['annotation'],
                 mapping=[['ic13_train_labels.json', 'textrecog_train.json']]),
         ]))

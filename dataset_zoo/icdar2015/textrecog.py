@@ -14,7 +14,6 @@ train_preparer = dict(
                 'ch4_training_word_images_gt.zip',
                 save_name='ic15_textrecog_train_img_gt.zip',
                 md5='600caf8c6a64a3dcf638839820edcca9',
-                split=['train'],
                 content=['image', 'annotation'],
                 mapping=[[
                     'ic15_textrecog_train_img_gt/gt.txt',
@@ -36,7 +35,6 @@ test_preparer = dict(
                 'ch4_test_word_images_gt.zip',
                 save_name='ic15_textrecog_test_img.zip',
                 md5='d7a71585f4cc69f89edbe534e7706d5d',
-                split=['test'],
                 content=['image'],
                 mapping=[['ic15_textrecog_test_img', 'textrecog_imgs/test']]),
             dict(
@@ -44,7 +42,6 @@ test_preparer = dict(
                 'Challenge4_Test_Task3_GT.txt',
                 save_name='ic15_textrecog_test_gt.txt',
                 md5='d7a71585f4cc69f89edbe534e7706d5d',
-                split=['test'],
                 content=['annotation'],
                 mapping=[[
                     'ic15_textrecog_test_gt.txt', 'annotations/test.txt'
@@ -57,7 +54,6 @@ test_preparer = dict(
                 'icdar_2015/textrecog_test_1811.json',
                 save_name='textrecog_test_1811.json',
                 md5='8d218ef1c37540ea959e22eeabc79ae4',
-                split=['test'],
                 content=['annotation'],
             ),
         ]),

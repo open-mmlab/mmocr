@@ -10,7 +10,6 @@ obtainer = dict(
             'download/v1.0/labeled_images.tar.gz',
             save_name='naf_image.tar.gz',
             md5='6521cdc25c313a1f2928a16a77ad8f29',
-            split=['train', 'test', 'val'],
             content=['image'],
             mapping=[['naf_image/labeled_images', 'temp_images/']]),
         dict(
@@ -18,7 +17,6 @@ obtainer = dict(
             'refs/heads/master.zip',
             save_name='naf_anno.zip',
             md5='abf5af6266cc527d772231751bc884b3',
-            split=['train', 'test', 'val'],
             content=['annotation'],
             mapping=[
                 [
@@ -44,6 +42,9 @@ test_preparer = train_preparer
 
 val_preparer = train_preparer
 
+delete = [
+    'temp_images', 'data_split.json', 'annotations', 'naf_anno', 'naf_image'
+]
 config_generator = dict(
     type='TextDetConfigGenerator',
     val_anns=[dict(ann_file='textdet_val.json', dataset_postfix='')])

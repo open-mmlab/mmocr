@@ -10,7 +10,6 @@ train_preparer = dict(
                 url='http://www.iapr-tc11.org/dataset/SVT/svt.zip',
                 save_name='svt.zip',
                 md5='42d19160010d990ae6223b14f45eff88',
-                split=['train', 'test'],
                 content=['image', 'annotations'],
                 mapping=[['svt/svt1/train.xml', 'annotations/train.xml'],
                          ['svt/svt1/img', 'textdet_imgs/img']]),
@@ -31,7 +30,6 @@ test_preparer = dict(
                 url='http://www.iapr-tc11.org/dataset/SVT/svt.zip',
                 save_name='svt.zip',
                 md5='42d19160010d990ae6223b14f45eff88',
-                split=['train', 'test'],
                 content=['image', 'annotations'],
                 mapping=[['svt/svt1/test.xml', 'annotations/test.xml'],
                          ['svt/svt1/img', 'textdet_imgs/img']]),
@@ -42,5 +40,5 @@ test_preparer = dict(
     packer=dict(type='TextDetPacker'),
     dumper=dict(type='JsonDumper'),
 )
-
+delete = ['annotations', 'svt']
 config_generator = dict(type='TextDetConfigGenerator')

@@ -58,5 +58,5 @@ test_preparer = dict(
     packer=dict(type='TextDetPacker'),
     dumper=dict(type='JsonDumper'),
 )
-
+delete = ['annotations', 'funsd']
 config_generator = dict(type='TextDetConfigGenerator')

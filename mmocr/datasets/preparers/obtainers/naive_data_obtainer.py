@@ -118,15 +118,14 @@ class NaiveDataObtainer:
         extracted = False
         if osp.exists(dst_path):
             name = set(os.listdir(dst_path))
-            if 'finish.mmocr' in name:
+            if '.finish' in name:
                 extracted = True
-            elif 'finish.mmocr' not in name and len(name) > 0:
+            elif '.finish' not in name and len(name) > 0:
                 i = input(f'{dst_path} have exist when extract {zip_name}, '
                           'whether to unzip again? (y/n)')
                 extracted = i == 'n'
         if extracted:
-            f = open(osp.join(dst_path, 'finish.mmocr'), 'w')
-            f.close()
+            open(osp.join(dst_path, '.finish'), 'w').close()
             print(f'{zip_name} has been extracted. Skip')
             return
         mkdir_or_exist(dst_path)
@@ -152,9 +151,7 @@ class NaiveDataObtainer:
             with tarfile.open(src_path, mode) as tar_ref:
                 tar_ref.extractall(dst_path)
 
-        f = open(osp.join(dst_path, 'finish.mmocr'), 'w')
-        f.close()
-
+        open(osp.join(dst_path, '.finish'), 'w').close()
         if delete:
             os.remove(src_path)
 

@@ -10,6 +10,38 @@ from .base import BasePacker
 
 @DATA_PACKERS.register_module()
 class TextSpottingPacker(BasePacker):
+    """Text spotting packer. It is used to pack the parsed annotation info to.
+
+    .. code-block:: python
+
+        {
+            "metainfo":
+                {
+                    "dataset_type": "TextDetDataset",
+                    "task_name": "textdet",
+                    "category": [{"id": 0, "name": "text"}]
+                },
+            "data_list":
+                [
+                    {
+                        "img_path": "test_img.jpg",
+                        "height": 640,
+                        "width": 640,
+                        "instances":
+                        [
+                            {
+                                "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
+                                "bbox": [0, 0, 10, 20],
+                                "bbox_label": 0,
+                                "ignore": False,
+                                "text": "mmocr"
+                            },
+                            // ...
+                        ]
+                    }
+                ]
+        }
+    """
 
     def pack_instance(self, sample: Tuple, bbox_label: int = 0) -> Dict:
         """Pack the parsed annotation info to an MMOCR format instance.

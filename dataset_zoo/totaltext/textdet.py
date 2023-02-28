@@ -11,7 +11,6 @@ train_preparer = dict(
                 '8xro7hnvb0sqw5e5rxm73tryc59j6s43.zip',
                 save_name='totaltext.zip',
                 md5='5b56d71a4005a333cf200ff35ce87f75',
-                split=['train', 'test'],
                 content=['image'],
                 mapping=[['totaltext/Images/Train', 'textdet_imgs/train']]),
             dict(
@@ -19,7 +18,6 @@ train_preparer = dict(
                 '2vmpvjb48pcrszeegx2eznzc4izan4zf.zip',
                 save_name='txt_format.zip',
                 md5='53377a83420b4a0244304467512134e8',
-                split=['train', 'test'],
                 content=['annotation'],
                 mapping=[['txt_format/Train', 'annotations/train']]),
         ]),
@@ -42,7 +40,6 @@ test_preparer = dict(
                 '8xro7hnvb0sqw5e5rxm73tryc59j6s43.zip',
                 save_name='totaltext.zip',
                 md5='5b56d71a4005a333cf200ff35ce87f75',
-                split=['train', 'test'],
                 content=['image'],
                 mapping=[['totaltext/Images/Test', 'textdet_imgs/test']]),
             dict(
@@ -50,7 +47,6 @@ test_preparer = dict(
                 '2vmpvjb48pcrszeegx2eznzc4izan4zf.zip',
                 save_name='txt_format.zip',
                 md5='53377a83420b4a0244304467512134e8',
-                split=['train', 'test'],
                 content=['annotation'],
                 mapping=[['txt_format/Test', 'annotations/test']]),
         ]),
@@ -62,5 +58,5 @@ test_preparer = dict(
     packer=dict(type='TextDetPacker'),
     dumper=dict(type='JsonDumper'),
 )
-
+delete = ['totaltext', 'txt_format', 'annotations']
 config_generator = dict(type='TextDetConfigGenerator')
