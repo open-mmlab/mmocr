@@ -103,6 +103,15 @@
 
 (\*) 注：由于官方的下载地址已经无法访问，我们提供了一个非官方的地址以供参考，但我们无法保证数据的准确性。
 
+对于中国境内的用户，我们也推荐使用开源数据平台[OpenDataLab](https://opendatalab.com/)来获取这些数据集，以获得更好的下载体验:
+- [icdar_2013](https://opendatalab.com/ICDAR_2013?source=OpenMMLab%20GitHub)
+- [icdar_2015](https://opendatalab.com/ICDAR2015?source=OpenMMLab%20GitHub)
+- [IIIT5K](https://opendatalab.com/IIIT_5K?source=OpenMMLab%20GitHub)
+- [ct80](https://opendatalab.com/CUTE_80?source=OpenMMLab%20GitHub)
+- [svt](https://opendatalab.com/SVT?source=OpenMMLab%20GitHub)
+- [Totaltext](https://opendatalab.com/TotalText?source=OpenMMLab%20GitHub)
+- [IAM](https://opendatalab.com/IAM_Handwriting?source=OpenMMLab%20GitHub)
+
 ## 准备步骤
 
 ### ICDAR 2013

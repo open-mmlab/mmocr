@@ -20,6 +20,13 @@
 |  TextOCR   |  [下载地址](https://textvqa.org/textocr/dataset)  |                       -                       |                         -                          |                       -                        |
 | Totaltext  | [下载地址](https://github.com/cs-chan/Total-Text-Dataset) |                       -                       |                         -                          |                       -                        |
 
+对于中国境内的用户，我们也推荐使用开源数据平台[OpenDataLab](https://opendatalab.com/)来获取这些数据集，以获得更好的下载体验:
+- [CTW1500](https://opendatalab.com/SCUT-CTW1500?source=OpenMMLab%20GitHub)
+- [ICDAR2013](https://opendatalab.com/ICDAR_2013?source=OpenMMLab%20GitHub)
+- [ICDAR2015](https://opendatalab.com/ICDAR2015?source=OpenMMLab%20GitHub)
+- [Totaltext](https://opendatalab.com/TotalText?source=OpenMMLab%20GitHub)
+- [MSRA-TD500](https://opendatalab.com/MSRA-TD500?source=OpenMMLab%20GitHub)
+
 ## 重要提醒
 
 ```{note}

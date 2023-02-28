@@ -36,6 +36,9 @@ python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task te
 
 进一步了解 Dataset Preparer 支持的数据集，您可以浏览[支持的数据集文档](./datasetzoo.md)。一些需要手动准备的数据集也列在了 [文字检测](./det.md) 和 [文字识别](./recog.md) 内。
 
+对于中国境内的用户，我们也推荐通过开源数据平台[OpenDataLab](https://opendatalab.com/)来下载数据，以获得更好的下载体验。数据准备时，参考脚本中`data_obtainer`的`save_name`或`mapping`字段，重命名对应文件
+即可。
+
 ## 进阶用法
 
 ### 数据集配置

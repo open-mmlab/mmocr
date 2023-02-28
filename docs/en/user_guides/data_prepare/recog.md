@@ -49,6 +49,15 @@ This page is a manual preparation guide for datasets not yet supported by [Datas
     # Default output format [None]
   ```
 
+For users in China, these datasets can also be downloaded from [OpenDataLab](https://opendatalab.com/) with high speed:
+- [icdar_2013](https://opendatalab.com/ICDAR_2013?source=OpenMMLab%20GitHub)
+- [icdar_2015](https://opendatalab.com/ICDAR2015?source=OpenMMLab%20GitHub)
+- [IIIT5K](https://opendatalab.com/IIIT_5K?source=OpenMMLab%20GitHub)
+- [ct80](https://opendatalab.com/CUTE_80?source=OpenMMLab%20GitHub)
+- [svt](https://opendatalab.com/SVT?source=OpenMMLab%20GitHub)
+- [Totaltext](https://opendatalab.com/TotalText?source=OpenMMLab%20GitHub)
+- [IAM](https://opendatalab.com/IAM_Handwriting?source=OpenMMLab%20GitHub)
+
 ## ICDAR 2011 (Born-Digital Images)
 
 - Step1: Download `Challenge1_Training_Task3_Images_GT.zip`, `Challenge1_Test_Task3_Images.zip`, and `Challenge1_Test_Task3_GT.txt` from [homepage](https://rrc.cvc.uab.es/?ch=1&com=downloads) `Task 1.3: Word Recognition (2013 edition)`.
