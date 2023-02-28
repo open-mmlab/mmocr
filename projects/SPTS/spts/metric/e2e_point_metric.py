@@ -1,5 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import os
+import glob
+import os.path as osp
+import re
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -7,12 +9,11 @@ import torch
 from mmengine.evaluator import BaseMetric
 from mmengine.logging import MMLogger
 from rapidfuzz.distance import Levenshtein
-from shapely.geometry import LineString, Point
+from shapely.geometry import Point
 
 from mmocr.registry import METRICS
 
-# todo: CTW1500 read pair!
-# todo: icdar13 and 15 ignore match_dist_thr!
+# TODO: CTW1500 read pair
 
 
 @METRICS.register_module()
@@ -24,9 +25,9 @@ class E2EPointMetric(BaseMetric):
             space. Defaults to dict(start=0.8, stop=1, step=0.01).
         word_spotting (bool): Whether to work in word spotting mode. Defaults
             to False.
-        lexicon_paths (list[str], optional): Lexicon paths for word spotting.
+        lexicon_path (list[str], optional): Lexicon path for word spotting.
             Defaults to None.
-        pair_paths (list[str], optional): Pair paths for word spotting.
+        pair_path (list[str], optional): Pair path for word spotting.
             Defaults to None.
         match_dist_thr (float, optional): Matching distance threshold for
             word spotting. Defaults to None.
@@ -43,8 +44,10 @@ class E2EPointMetric(BaseMetric):
     def __init__(self,
                  text_score_thrs: Dict = dict(start=0.8, stop=1, step=0.01),
                  word_spotting: bool = False,
-                 lexicon_paths: Optional[List[str]] = None,
-                 pair_paths: Optional[List[str]] = None,
+                 lexicon_path: Optional[List[str]] = None,
+                 lexicon_mapping: Tuple[str, str] = ('(.*).jpg', r'\1.txt'),
+                 pair_path: Optional[List[str]] = None,
+                 pair_mapping: Tuple[str, str] = ('(.*).jpg', r'\1.txt'),
                  match_dist_thr: Optional[float] = None,
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None) -> None:
@@ -52,28 +55,24 @@ class E2EPointMetric(BaseMetric):
         self.text_score_thrs = np.arange(**text_score_thrs)
         self.word_spotting = word_spotting
         self.match_dist_thr = match_dist_thr
-        if lexicon_paths:
-            assert isinstance(lexicon_paths, list)
-            assert len(lexicon_paths) == len(pair_paths)
-            self.lexicons = self._read_lexicon(lexicon_paths)
-            self.pairs = self._read_pair(pair_paths)
+        if lexicon_path:
+            self.lexicon_mapping = lexicon_mapping
+            self.pair_mapping = pair_mapping
+            self.lexicons = self._read_lexicon(lexicon_path)
+            self.pairs = self._read_pair(pair_path)
 
-    def _read_lexicon(self, lexicon_path) -> List[str]:
+    def _read_lexicon(self, lexicon_path: str) -> List[str]:
         if lexicon_path.endswith('.txt'):
             lexicon = open(lexicon_path, 'r').read().splitlines()
             lexicon = [ele.strip() for ele in lexicon]
         else:
-            # TODO: fix hardcode
-            lexicon = []
-            lexicon_dir = os.path.dirname(lexicon_path)
-            num_files = len(os.listdir(lexicon_dir))
-            assert (num_files % 2 == 0)
-            for i in range(num_files // 2):
-                lexicon_path_ = lexicon_path + f'{i+1:d}.txt'
-                lexicon[i] = self._read_lexicon(lexicon_path_)
+            lexicon = {}
+            for file in glob.glob(osp.join(lexicon_path, '*.txt')):
+                basename = osp.basename(file)
+                lexicon[basename] = self._read_lexicon(file)
         return lexicon
 
-    def _read_pair(self, pair_path: List[str]) -> Dict[str, str]:
+    def _read_pair(self, pair_path: str) -> Dict[str, str]:
         pairs = {}
         if pair_path.endswith('.txt'):
             pair_lines = open(pair_path, 'r').read().splitlines()
@@ -83,22 +82,14 @@ class E2EPointMetric(BaseMetric):
                 word_gt = line[len(word) + 1:]
                 pairs[word] = word_gt
         else:
-            pair_dir = os.path.dirname(pair_path)
-            num_files = len(os.listdir(pair_dir))
-            assert (num_files % 2 == 0)
-            for i in range(num_files // 2):
-                pair_path_ = pair_path + f'{i+1:d}.txt'
-                pairs[i] = self._read_pair(pair_path_)
+            for file in glob.glob(osp.join(pair_path, '*.txt')):
+                basename = osp.basename(file)
+                pairs[basename] = self._read_pair(file)
         return pairs
 
     def poly_center(self, poly_pts):
         poly_pts = np.array(poly_pts).reshape(-1, 2)
-        num_points = poly_pts.shape[0]
-        line1 = LineString(poly_pts[int(num_points / 2):])
-        line2 = LineString(poly_pts[:int(num_points / 2)])
-        mid_pt1 = np.array(line1.interpolate(0.5, normalized=True).coords[0])
-        mid_pt2 = np.array(line2.interpolate(0.5, normalized=True).coords[0])
-        return (mid_pt1 + mid_pt2) / 2
+        return poly_pts.mean(0)
 
     def process(self, data_batch: Sequence[Dict],
                 data_samples: Sequence[Dict]) -> None:
@@ -141,6 +132,8 @@ class E2EPointMetric(BaseMetric):
                                                   ~pred_ignore_flags)
 
             result = dict(
+                # reserved for image-level lexcions
+                gt_img_name=osp.basename(data_sample.get('img_path', '')),
                 text_scores=text_scores,
                 pred_points=pred_points,
                 gt_points=gt_points,
@@ -179,10 +172,33 @@ class E2EPointMetric(BaseMetric):
             gt_texts = result['gt_texts']
             pred_texts = result['pred_texts']
             gt_ignore_flags = result['gt_ignore_flags']
+            gt_img_name = result['gt_img_name']
+
+            # Correct the words with lexicon
+            pred_dist_flags = np.zeros(len(pred_texts), dtype=bool)
+            if hasattr(self, 'lexicons'):
+                for i, pred_text in enumerate(pred_texts):
+                    # If it's an image-level lexicon
+                    if isinstance(self.lexicons, dict):
+                        lexicon_name = self._map_img_name(
+                            gt_img_name, self.lexicon_mapping)
+                        pair_name = self._map_img_name(gt_img_name,
+                                                       self.pair_mapping)
+                        pred_texts[i], match_dist = self._match_word(
+                            pred_text, self.lexicons[lexicon_name],
+                            self.pairs[pair_name])
+                    else:
+                        pred_texts[i], match_dist = self._match_word(
+                            pred_text, self.lexicons, self.pairs)
+                    if (self.match_dist_thr
+                            and match_dist >= self.match_dist_thr):
+                        # won't even count this as a prediction
+                        pred_dist_flags[i] = True
 
             # Filter out predictions by IoU threshold
             for i, text_score_thr in enumerate(self.text_score_thrs):
-                pred_ignore_flags = text_scores < text_score_thr
+                pred_ignore_flags = pred_dist_flags | (
+                    text_scores < text_score_thr)
                 filtered_pred_texts = self._get_true_elements(
                     pred_texts, ~pred_ignore_flags)
                 filtered_pred_points = self._get_true_elements(
@@ -202,23 +218,10 @@ class E2EPointMetric(BaseMetric):
                     min_idx = np.argmin(dists)
                     if gt_texts[min_idx] == '###' or gt_ignore_flags[min_idx]:
                         continue
-                    if not gt_matched[min_idx]:
-                        match_word, match_dist = self._match_word(
-                            pred_text, gt_texts[min_idx], self.lexicons,
-                            self.pairs)
-                        if (self.match_dist_thr
-                                and match_dist >= self.match_dist_thr):
-                            # won't even count this as a prediction
-                            continue
-                        if match_word.upper() == gt_texts[min_idx].upper():
-                            gt_matched[min_idx] = True
-                            num_tp[i] += 1
-                        # and self.text_match(
-                        #     gt_texts[min_idx].upper(), pred_text.upper(),
-                        #     lexicon, pair):
-                        # if (not gt_matched[min_idx] and gt_texts[min_idx].
-                        # upper()
-                        #         == pred_text.upper()):
+                    if not gt_matched[min_idx] and (
+                            pred_text.upper() == gt_texts[min_idx].upper()):
+                        gt_matched[min_idx] = True
+                        num_tp[i] += 1
                     num_preds[i] += 1
 
         for i, text_score_thr in enumerate(self.text_score_thrs):
@@ -237,6 +240,10 @@ class E2EPointMetric(BaseMetric):
             if eval_results['hmean'] > best_eval_results['hmean']:
                 best_eval_results = eval_results
         return best_eval_results
+
+    def _map_img_name(self, img_name: str, mapping: Tuple[str, str]) -> str:
+        """Map the image name to the another one based on mapping."""
+        return re.sub(mapping[0], mapping[1], img_name)
 
     def _true_indexes(self, array: np.ndarray) -> np.ndarray:
         """Get indexes of True elements from a 1D boolean array."""
@@ -264,7 +271,7 @@ class E2EPointMetric(BaseMetric):
 
         return gt_ignore_flags, gt_texts
 
-    def _include_in_dict(text: str) -> bool:
+    def _include_in_dict(self, text: str) -> bool:
         """Check if the text could be in a valid dictionary."""
         if len(text) != len(text.replace(' ', '')) or len(text) < 3:
             return False
@@ -281,7 +288,8 @@ class E2EPointMetric(BaseMetric):
                 return False
         return True
 
-    def _match_word(text: str,
+    def _match_word(self,
+                    text: str,
                     lexicons: List[str],
                     pairs: Optional[Dict[str, str]] = None) -> Tuple[str, int]:
         """Match the text with the lexicons and pairs."""
