@@ -34,7 +34,7 @@ python tools/dataset_converters/prepare_dataset.py icdar2015 --task textdet --ov
 python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task textrecog --overwrite-cfg
 ```
 
-进一步了解 MMOCR 支持的数据集，您可以浏览[支持的数据集文档](./datasetzoo.md)
+进一步了解 Dataset Preparer 支持的数据集，您可以浏览[支持的数据集文档](./datasetzoo.md)。一些需要手动准备的数据集也列在了 [文字检测](./det.md) 和 [文字识别](./recog.md) 内。
 
 ## 进阶用法
 
@@ -173,6 +173,19 @@ data_converter = dict(
 
 MMOCR 中目前支持的转换器主要以任务为边界，这是因为不同任务所需的数据格式有细微的差异。
 比较特别的是，文本识别任务有两个数据转换器，这是因为不同的文本识别数据集提供文字图片的方式有所差别。有的数据集提供了仅包含文字的小图，它们天然适用于文本识别任务，可以直接使用 `TextRecogDataConverter` 处理。而有的数据集提供的是包含了周围场景的大图，因此在准备数据集时，我们需要预先根据标注信息把文字区域裁剪出来，这种情况下则要用到 `TextRecogCropConverter`。
+
+简单介绍下 `TextRecogCropConverter` 数据转换器的使用方法：
+
+- 由于标注文件的解析方式与 TextDet 环节一致，所以仅需继承 `dataset_zoo/xxx/textdet.py` 的  data_converter，并修改type值为 'TextRecogCropConverter'，`TextRecogCropConverter` 会在执行 `pack_instance()` 方法时根据解析获得的标注信息完成文字区域的裁剪。
+- 同时，根据是否存在旋转文字区域标注内置了两种裁剪方式，默认按照水平文本框裁剪。如果存在旋转的文字区域，可以设置 `crop_with_warp=True` 切换为使用 OpenCV warpPerspective 方法进行裁剪。
+
+```python
+_base_ = ['textdet.py']
+
+data_converter = dict(
+  type='TextRecogCropConverter',
+  crop_with_warp=True)
+```
 
 接下来，我们将具体解析 `data_converter` 的功能。以文本检测任务为例，`TextDetDataConverter` 与各子模块配合，主要完成以下工作：
 

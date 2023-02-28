@@ -36,13 +36,14 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
                  vis_backends: Optional[Dict] = None,
                  save_dir: Optional[str] = None,
                  gt_color: Optional[Union[str, Tuple[int, int, int]]] = 'g',
-                 pred_color: Optional[Union[str, Tuple[int, int,
-                                                       int]]] = 'r') -> None:
+                 pred_color: Optional[Union[str, Tuple[int, int, int]]] = 'r',
+                 **kwargs) -> None:
         super().__init__(
             name=name,
             image=image,
             vis_backends=vis_backends,
-            save_dir=save_dir)
+            save_dir=save_dir,
+            **kwargs)
         self.gt_color = gt_color
         self.pred_color = pred_color
 
@@ -59,14 +60,16 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
         height, width = image.shape[:2]
         empty_img = np.full_like(image, 255)
         self.set_image(empty_img)
-        font_size = 0.5 * width / (len(text) + 1)
+        font_size = min(0.5 * width / (len(text) + 1), 0.5 * height)
         self.draw_texts(
             text,
             np.array([width / 2, height / 2]),
             colors=self.gt_color,
             font_sizes=font_size,
             vertical_alignments='center',
-            horizontal_alignments='center')
+            horizontal_alignments='center',
+            font_families=self.font_families,
+            font_properties=self.font_properties)
         text_image = self.get_image()
         return text_image
 
@@ -118,11 +121,13 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
             image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
         cat_images = [image]
-        if draw_gt and data_sample is not None and 'gt_text' in data_sample:
+        if (draw_gt and data_sample is not None and 'gt_text' in data_sample
+                and 'item' in data_sample.gt_text):
             gt_text = data_sample.gt_text.item
             cat_images.append(self._draw_instances(image, gt_text))
         if (draw_pred and data_sample is not None
-                and 'pred_text' in data_sample):
+                and 'pred_text' in data_sample
+                and 'item' in data_sample.pred_text):
             pred_text = data_sample.pred_text.item
             cat_images.append(self._draw_instances(image, pred_text))
         cat_images = self._cat_image(cat_images, axis=0)
@@ -134,3 +139,6 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
 
         if out_file is not None:
             mmcv.imwrite(cat_images[..., ::-1], out_file)
+
+        self.set_image(cat_images)
+        return self.get_image()

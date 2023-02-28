@@ -8,6 +8,23 @@ from .base_mmocr_inferencer import BaseMMOCRInferencer
 
 
 class TextRecInferencer(BaseMMOCRInferencer):
+    """Text Recognition inferencer.
+
+    Args:
+        model (str, optional): Path to the config file or the model name
+            defined in metafile. For example, it could be
+            "crnn_mini-vgg_5e_mj" or
+            "configs/textrecog/crnn/crnn_mini-vgg_5e_mj.py".
+            If model is not specified, user must provide the
+            `weights` saved by MMEngine which contains the config string.
+            Defaults to None.
+        weights (str, optional): Path to the checkpoint. If it is not specified
+            and model is a model name of metafile, the weights will be loaded
+            from metafile. Defaults to None.
+        device (str, optional): Device to run inference. If None, the available
+            device will be automatically used. Defaults to None.
+        scope (str, optional): The scope of the model. Defaults to "mmocr".
+    """
 
     def pred2dict(self, data_sample: TextRecogDataSample) -> Dict:
         """Extract elements necessary to represent a prediction into a
@@ -22,5 +39,6 @@ class TextRecInferencer(BaseMMOCRInferencer):
         """
         result = {}
         result['text'] = data_sample.pred_text.item
-        result['scores'] = float(np.mean(data_sample.pred_text.score))
+        score = self._array2list(data_sample.pred_text.score)
+        result['scores'] = float(np.mean(score))
         return result

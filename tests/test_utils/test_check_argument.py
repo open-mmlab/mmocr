@@ -46,3 +46,9 @@ def test_valid_boundary():
     assert utils.valid_boundary(x, False)
     x = [0, 0, 1, 0, 1, 1, 0, 1, 1]
     assert utils.valid_boundary(x, True)
+
+
+def test_equal_len():
+
+    assert utils.equal_len([1, 2, 3], [1, 2, 3])
+    assert not utils.equal_len([1, 2, 3], [1, 2, 3, 4])

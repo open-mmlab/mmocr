@@ -33,7 +33,7 @@ Also, the script supports preparing multiple datasets at the same time. For exam
 python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task textrecog
 ```
 
-To check the supported datasets in MMOCR, please refer to [Dataset Zoo](./datasetzoo.md).
+To check the supported datasets of Dataset Preparer, please refer to [Dataset Zoo](./datasetzoo.md). Some of other datasets that need to be prepared manually are listed in [Text Detection](./det.md) and [Text Recognition](./recog.md).
 
 ## Advanced Usage
 
@@ -147,6 +147,10 @@ data_converter = dict(
     parser=dict(type='ICDARTxtTextDetAnnParser'),
     dumper=dict(type='JsonDumper'),
     delete=['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img'])
+```
+
+```{warning}
+This section is outdated and not yet synchronized with its Chinese version, please switch the language for the latest information.
 ```
 
 `data_converter` is responsible for loading and converting the original to the format supported by MMOCR. We provide a number of built-in data converters for different tasks, such as `TextDetDataConverter`, `TextRecogDataConverter`, `TextSpottingDataConverter`, and `WildReceiptConverter` (Since we only support WildReceipt dataset for KIE task at present, we only provide this converter for now).

@@ -19,22 +19,51 @@ This is an implementation of [ABCNet](https://github.com/aim-uofa/AdelaiDet) bas
 
 <!-- For a typical model, this section should contain the commands for training and testing. You are also suggested to dump your environment specification to env.yml by `conda env export > env.yml`. -->
 
-This ABCNet implementation works for inference only. Its full implementation will be available soon.
+### Prerequisites
+
+- Python 3.7
+- PyTorch 1.6 or higher
+- [MIM](https://github.com/open-mmlab/mim)
+- [MMOCR](https://github.com/open-mmlab/mmocr)
+
+All the commands below rely on the correct configuration of `PYTHONPATH`, which should point to the project's directory so that Python can locate the module files. In `ABCNet/` root directory, run the following line to add the current directory to `PYTHONPATH`:
+
+```shell
+# Linux
+export PYTHONPATH=`pwd`:$PYTHONPATH
+# Windows PowerShell
+$env:PYTHONPATH=Get-Location
+```
+
+if the data is not in `ABCNet/`, you can link the data into `ABCNet/`:
+
+```shell
+# Linux
+ln -s ${DataPath} $PYTHONPATH
+# Windows PowerShell
+New-Item -ItemType SymbolicLink -Path $env:PYTHONPATH -Name data  -Target ${DataPath}
+```
+
+### Training commands
+
+In the current directory, run the following command to train the model:
+
+```bash
+mim train mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py --work-dir work_dirs/
+```
+
+To train on multiple GPUs, e.g. 8 GPUs, run the following command:
+
+```bash
+mim train mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py --work-dir work_dirs/ --launcher pytorch --gpus 8
+```
 
 ### Testing commands
 
-As of now, `BezierAlign` is not yet supported by MMCV, and we will use third-party MMCV with the implementation of `BezierAlign`. You will need to install it from the source code as follows:
+In the current directory, run the following command to test the model:
 
 ```bash
-git clone -b lkk/bezier_align https://github.com/Harold-lkk/mmcv.git
-cd mmcv
-MMCV_WITH_OPS=1 MAX_JOBS=8 python setup.py develop
-```
-
-In MMOCR's root directory, run the following command to test the model:
-
-```bash
-python tools/test.py projects/ABCNet/config/abcnet/abcnet_resnet50_fpn.py ${CHECKPOINT_PATH}
+mim test mmocr config/abcnet/abcnet_resnet50_fpn_500e_icdar2015.py --work-dir work_dirs/ --checkpoint ${CHECKPOINT_PATH}
 ```
 
 ## Results
@@ -43,9 +72,9 @@ Here we provide the baseline version of ABCNet with ResNet50 backbone.
 
 To find more variants, please visit the [official model zoo](https://github.com/aim-uofa/AdelaiDet/blob/master/configs/BAText/README.md).
 
-|         Name          | E2E-None-Hmean | det-Hmean |                                                               Download                                                                |
-| :-------------------: | :------------: | :-------: | :-----------------------------------------------------------------------------------------------------------------------------------: |
-| v1-icdar2015-finetune |     0.5803     |  0.8818   | [model](https://download.openmmlab.com/mmocr/textspotting/abcnet/abcnet_resnet50_fpn/abcnet_resnet50_fpn_500e_icdar2015-e8c31510.pth) |
+|         Name          |                                  Pretrained Model                                  | E2E-None-Hmean | det-Hmean |                                  Download                                  |
+| :-------------------: | :--------------------------------------------------------------------------------: | :------------: | :-------: | :------------------------------------------------------------------------: |
+| v1-icdar2015-finetune | [SynthText](https://download.openmmlab.com/mmocr/textspotting/abcnet/abcnet_resnet50_fpn_500e_icdar2015/abcnet_resnet50_fpn_pretrain-d060636c.pth) |     0.6127     |  0.8753   | [model](https://download.openmmlab.com/mmocr/textspotting/abcnet/abcnet_resnet50_fpn_500e_icdar2015/abcnet_resnet50_fpn_500e_icdar2015-326ac6f4.pth) \| [log](https://download.openmmlab.com/mmocr/textspotting/abcnet/abcnet_resnet50_fpn_500e_icdar2015/20221210_170401.log) |
 
 ## Citation
 
@@ -58,7 +87,6 @@ If you find ABCNet useful in your research or applications, please cite ABCNet w
   booktitle =  {Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR)},
   year      =  {2020}
 }
-
 ```
 
 ## Checklist
@@ -89,9 +117,9 @@ A project does not necessarily have to be finished in a single PR, but it's esse
 
     <!-- As this template does. -->
 
-- [ ] Milestone 2: Indicates a successful model implementation.
+- [x] Milestone 2: Indicates a successful model implementation.
 
-  - [ ] Training-time correctness
+  - [x] Training-time correctness
 
     <!-- If you are reproducing the result from a paper, checking this item means that you should have trained your model from scratch based on the original paper's specification and verified that the final result matches the report within a minor error range. -->
 

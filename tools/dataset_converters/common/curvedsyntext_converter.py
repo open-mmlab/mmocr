@@ -6,7 +6,7 @@ from functools import partial
 import mmengine
 import numpy as np
 
-from mmocr.utils import bezier_to_polygon, sort_points
+from mmocr.utils import bezier2polygon, sort_points
 
 # The default dictionary used by CurvedSynthText
 dict95 = [
@@ -38,7 +38,7 @@ def digit2text(rec):
 def modify_annotation(ann, num_sample, start_img_id=0, start_ann_id=0):
     ann['text'] = digit2text(ann.pop('rec'))
     # Get hide egmentation points
-    polygon_pts = bezier_to_polygon(ann['bezier_pts'], num_sample=num_sample)
+    polygon_pts = bezier2polygon(ann['bezier_pts'], num_sample=num_sample)
     ann['segmentation'] = np.asarray(sort_points(polygon_pts)).reshape(
         1, -1).tolist()
     ann['image_id'] += start_img_id

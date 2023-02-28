@@ -15,6 +15,7 @@ Collections:
 
 Models:
   - Name: panet_resnet18_fpem-ffm_600e_ctw1500
+    Alias: PANet_CTW
     In Collection: PANet
     Config: configs/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500.py
     Metadata:
@@ -27,6 +28,7 @@ Models:
     Weights: https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500/panet_resnet18_fpem-ffm_600e_ctw1500_20220826_144818-980f32d0.pth
 
   - Name: panet_resnet18_fpem-ffm_600e_icdar2015
+    Alias: PANet_IC15
     In Collection: PANet
     Config: configs/textdet/panet/panet_resnet18_fpem-ffm_600e_icdar2015.py
     Metadata:

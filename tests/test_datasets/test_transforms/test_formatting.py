@@ -36,8 +36,16 @@ class TestPackTextDetInputs(TestCase):
         transform = PackTextDetInputs()
         results = transform(copy.deepcopy(datainfo))
         self.assertIn('inputs', results)
+        self.assertEqual(results['inputs'].shape, torch.Size([1, 10, 10]))
         self.assertTupleEqual(tuple(results['inputs'].shape), (1, 10, 10))
         self.assertIn('data_samples', results)
+
+        # test non-contiugous img
+        nc_datainfo = copy.deepcopy(datainfo)
+        nc_datainfo['img'] = nc_datainfo['img'].transpose(1, 0)
+        results = transform(nc_datainfo)
+        self.assertIn('inputs', results)
+        self.assertEqual(results['inputs'].shape, torch.Size([1, 10, 10]))
 
         data_sample = results['data_samples']
         self.assertIn('bboxes', data_sample.gt_instances)
@@ -115,6 +123,13 @@ class TestPackTextRecogInputs(TestCase):
         self.assertIn('valid_ratio', data_sample)
         self.assertIn('pad_shape', data_sample)
 
+        # test non-contiugous img
+        nc_datainfo = copy.deepcopy(datainfo)
+        nc_datainfo['img'] = nc_datainfo['img'].transpose(1, 0)
+        results = transform(nc_datainfo)
+        self.assertIn('inputs', results)
+        self.assertEqual(results['inputs'].shape, torch.Size([1, 10, 10]))
+
         transform = PackTextRecogInputs(meta_keys=('img_path', ))
         results = transform(copy.deepcopy(datainfo))
         self.assertIn('inputs', results)
@@ -173,6 +188,13 @@ class TestPackKIEInputs(TestCase):
         self.assertEqual(data_sample.gt_instances.edge_labels.dtype,
                          torch.int64)
         self.assertIsInstance(data_sample.gt_instances.texts, list)
+
+        # test non-contiugous img
+        nc_datainfo = copy.deepcopy(datainfo)
+        nc_datainfo['img'] = nc_datainfo['img'].transpose(1, 0)
+        results = self.transform(nc_datainfo)
+        self.assertIn('inputs', results)
+        self.assertEqual(results['inputs'].shape, torch.Size([1, 10, 10]))
 
         transform = PackKIEInputs(meta_keys=('img_path', ))
         results = transform(copy.deepcopy(datainfo))

@@ -70,7 +70,14 @@ class TwoStageTextSpotter(BaseTextDetector):
 
     def loss(self, inputs: torch.Tensor,
              data_samples: OptDetSampleList) -> Dict:
-        pass
+        losses = dict()
+        inputs = self.extract_feat(inputs)
+        det_loss, data_samples = self.det_head.loss_and_predict(
+            inputs, data_samples)
+        roi_losses = self.roi_head.loss(inputs, data_samples)
+        losses.update(det_loss)
+        losses.update(roi_losses)
+        return losses
 
     def predict(self, inputs: torch.Tensor,
                 data_samples: OptDetSampleList) -> OptDetSampleList:

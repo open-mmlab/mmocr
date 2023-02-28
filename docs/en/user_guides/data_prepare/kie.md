@@ -1,7 +1,7 @@
 # Key Information Extraction
 
 ```{note}
-This page is deprecated and all these scripts will be eventually migrated into dataset preparer, a brand new module designed to ease these lengthy dataset preparation steps. [Check it out](./dataset_preparer.md)!
+This page is a manual preparation guide for datasets not yet supported by [Dataset Preparer](./dataset_preparer.md), which all these scripts will be eventually migrated into.
 ```
 
 ## Overview

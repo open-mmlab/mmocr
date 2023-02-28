@@ -39,7 +39,7 @@ class IcdarDataset(CocoDataset):
             None img. The maximum extra number of cycles to get a valid
             image. Defaults to 1000.
     """
-    METAINFO = {'CLASSES': ('text', )}
+    METAINFO = {'classes': ('text', )}
 
     def parse_data_info(self, raw_data_info: dict) -> Union[dict, List[dict]]:
         """Parse raw annotation to target format.
