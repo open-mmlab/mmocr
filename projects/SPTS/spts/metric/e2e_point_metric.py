@@ -25,10 +25,16 @@ class E2EPointMetric(BaseMetric):
             space. Defaults to dict(start=0.8, stop=1, step=0.01).
         word_spotting (bool): Whether to work in word spotting mode. Defaults
             to False.
-        lexicon_path (list[str], optional): Lexicon path for word spotting.
-            Defaults to None.
-        pair_path (list[str], optional): Pair path for word spotting.
-            Defaults to None.
+        lexicon_path (str, optional): Lexicon path for word spotting, which
+            points to a lexicon file or a directory. Defaults to None.
+        lexicon_mapping (tuple, optional): The rule to map test image name to
+            its corresponding lexicon file. Only effective when lexicon path
+            is a directory. Defaults to ('(.*).jpg', r'\1.txt').
+        pair_path (str, optional): Pair path for word spotting, which points
+            to a pair file or a directory. Defaults to None.
+        pair_mapping (tuple, optional): The rule to map test image name to
+            its corresponding pair file. Only effective when pair path is a
+            directory. Defaults to ('(.*).jpg', r'\1.txt').
         match_dist_thr (float, optional): Matching distance threshold for
             word spotting. Defaults to None.
         collect_device (str): Device name used for collecting results from
@@ -44,9 +50,9 @@ class E2EPointMetric(BaseMetric):
     def __init__(self,
                  text_score_thrs: Dict = dict(start=0.8, stop=1, step=0.01),
                  word_spotting: bool = False,
-                 lexicon_path: Optional[List[str]] = None,
+                 lexicon_path: Optional[str] = None,
                  lexicon_mapping: Tuple[str, str] = ('(.*).jpg', r'\1.txt'),
-                 pair_path: Optional[List[str]] = None,
+                 pair_path: Optional[str] = None,
                  pair_mapping: Tuple[str, str] = ('(.*).jpg', r'\1.txt'),
                  match_dist_thr: Optional[float] = None,
                  collect_device: str = 'cpu',
