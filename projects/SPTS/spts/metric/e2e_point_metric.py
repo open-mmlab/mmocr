@@ -1,13 +1,18 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List, Optional, Sequence
+import os
+from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 import torch
 from mmengine.evaluator import BaseMetric
 from mmengine.logging import MMLogger
+from rapidfuzz.distance import Levenshtein
 from shapely.geometry import LineString, Point
 
 from mmocr.registry import METRICS
+
+# todo: CTW1500 read pair!
+# todo: icdar13 and 15 ignore match_dist_thr!
 
 
 @METRICS.register_module()
@@ -17,7 +22,14 @@ class E2EPointMetric(BaseMetric):
     Args:
         text_score_thrs (dict): Best text score threshold searching
             space. Defaults to dict(start=0.8, stop=1, step=0.01).
-        TODO: docstr
+        word_spotting (bool): Whether to work in word spotting mode. Defaults
+            to False.
+        lexicon_paths (list[str], optional): Lexicon paths for word spotting.
+            Defaults to None.
+        pair_paths (list[str], optional): Pair paths for word spotting.
+            Defaults to None.
+        match_dist_thr (float, optional): Matching distance threshold for
+            word spotting. Defaults to None.
         collect_device (str): Device name used for collecting results from
             different ranks during distributed training. Must be 'cpu' or
             'gpu'. Defaults to 'cpu'.
@@ -31,11 +43,53 @@ class E2EPointMetric(BaseMetric):
     def __init__(self,
                  text_score_thrs: Dict = dict(start=0.8, stop=1, step=0.01),
                  word_spotting: bool = False,
+                 lexicon_paths: Optional[List[str]] = None,
+                 pair_paths: Optional[List[str]] = None,
+                 match_dist_thr: Optional[float] = None,
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None) -> None:
         super().__init__(collect_device=collect_device, prefix=prefix)
         self.text_score_thrs = np.arange(**text_score_thrs)
         self.word_spotting = word_spotting
+        self.match_dist_thr = match_dist_thr
+        if lexicon_paths:
+            assert isinstance(lexicon_paths, list)
+            assert len(lexicon_paths) == len(pair_paths)
+            self.lexicons = self._read_lexicon(lexicon_paths)
+            self.pairs = self._read_pair(pair_paths)
+
+    def _read_lexicon(self, lexicon_path) -> List[str]:
+        if lexicon_path.endswith('.txt'):
+            lexicon = open(lexicon_path, 'r').read().splitlines()
+            lexicon = [ele.strip() for ele in lexicon]
+        else:
+            # TODO: fix hardcode
+            lexicon = []
+            lexicon_dir = os.path.dirname(lexicon_path)
+            num_files = len(os.listdir(lexicon_dir))
+            assert (num_files % 2 == 0)
+            for i in range(num_files // 2):
+                lexicon_path_ = lexicon_path + f'{i+1:d}.txt'
+                lexicon[i] = self._read_lexicon(lexicon_path_)
+        return lexicon
+
+    def _read_pair(self, pair_path: List[str]) -> Dict[str, str]:
+        pairs = {}
+        if pair_path.endswith('.txt'):
+            pair_lines = open(pair_path, 'r').read().splitlines()
+            for line in pair_lines:
+                line = line.strip()
+                word = line.split(' ')[0].upper()
+                word_gt = line[len(word) + 1:]
+                pairs[word] = word_gt
+        else:
+            pair_dir = os.path.dirname(pair_path)
+            num_files = len(os.listdir(pair_dir))
+            assert (num_files % 2 == 0)
+            for i in range(num_files // 2):
+                pair_path_ = pair_path + f'{i+1:d}.txt'
+                pairs[i] = self._read_pair(pair_path_)
+        return pairs
 
     def poly_center(self, poly_pts):
         poly_pts = np.array(poly_pts).reshape(-1, 2)
@@ -148,12 +202,23 @@ class E2EPointMetric(BaseMetric):
                     min_idx = np.argmin(dists)
                     if gt_texts[min_idx] == '###' or gt_ignore_flags[min_idx]:
                         continue
-                    # if not gt_matched[min_idx] and self.text_match(
-                    #         gt_texts[min_idx].upper(), pred_text.upper()):
-                    if (not gt_matched[min_idx] and gt_texts[min_idx].upper()
-                            == pred_text.upper()):
-                        gt_matched[min_idx] = True
-                        num_tp[i] += 1
+                    if not gt_matched[min_idx]:
+                        match_word, match_dist = self._match_word(
+                            pred_text, gt_texts[min_idx], self.lexicons,
+                            self.pairs)
+                        if (self.match_dist_thr
+                                and match_dist >= self.match_dist_thr):
+                            # won't even count this as a prediction
+                            continue
+                        if match_word.upper() == gt_texts[min_idx].upper():
+                            gt_matched[min_idx] = True
+                            num_tp[i] += 1
+                        # and self.text_match(
+                        #     gt_texts[min_idx].upper(), pred_text.upper(),
+                        #     lexicon, pair):
+                        # if (not gt_matched[min_idx] and gt_texts[min_idx].
+                        # upper()
+                        #         == pred_text.upper()):
                     num_preds[i] += 1
 
         for i, text_score_thr in enumerate(self.text_score_thrs):
@@ -176,3 +241,60 @@ class E2EPointMetric(BaseMetric):
     def _true_indexes(self, array: np.ndarray) -> np.ndarray:
         """Get indexes of True elements from a 1D boolean array."""
         return np.where(array)[0]
+
+    def _word_spotting_filter(self, gt_ignore_flags: np.ndarray,
+                              gt_texts: List[str]
+                              ) -> Tuple[np.ndarray, List[str]]:
+        """Filter out gt instances that cannot be in a valid dictionary, and do
+        some simple preprocessing to texts."""
+
+        for i in range(len(gt_texts)):
+            if gt_ignore_flags[i]:
+                continue
+            text = gt_texts[i]
+            if text[-2:] in ["'s", "'S"]:
+                text = text[:-2]
+            text = text.strip('-')
+            for char in "'!?.:,*\"()·[]/":
+                text = text.replace(char, ' ')
+            text = text.strip()
+            gt_ignore_flags[i] = not self._include_in_dict(text)
+            if not gt_ignore_flags[i]:
+                gt_texts[i] = text
+
+        return gt_ignore_flags, gt_texts
+
+    def _include_in_dict(text: str) -> bool:
+        """Check if the text could be in a valid dictionary."""
+        if len(text) != len(text.replace(' ', '')) or len(text) < 3:
+            return False
+        not_allowed = '×÷·'
+        valid_ranges = [(ord(u'a'), ord(u'z')), (ord(u'A'), ord(u'Z')),
+                        (ord(u'À'), ord(u'ƿ')), (ord(u'Ǆ'), ord(u'ɿ')),
+                        (ord(u'Ά'), ord(u'Ͽ')), (ord(u'-'), ord(u'-'))]
+        for char in text:
+            code = ord(char)
+            if (not_allowed.find(char) != -1):
+                return False
+            valid = any(code >= r[0] and code <= r[1] for r in valid_ranges)
+            if not valid:
+                return False
+        return True
+
+    def _match_word(text: str,
+                    lexicons: List[str],
+                    pairs: Optional[Dict[str, str]] = None) -> Tuple[str, int]:
+        """Match the text with the lexicons and pairs."""
+        text = text.upper()
+        matched_word = ''
+        matched_dist = 100
+        for word in lexicons:
+            word = word.upper()
+            norm_dist = Levenshtein.normalized_distance(text, word)
+            if norm_dist < matched_dist:
+                matched_dist = norm_dist
+                if pairs:
+                    matched_word = pairs[word]
+                else:
+                    matched_word = word
+        return matched_word, matched_dist
