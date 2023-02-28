@@ -19,7 +19,6 @@ default_hooks = dict(
 
 optim_wrapper = dict(
     type='OptimWrapper',
-    accumulative_counts=2,
     optimizer=dict(type='AdamW', lr=lr, weight_decay=0.0001),
     paramwise_cfg=dict(custom_keys={
         'backbone': dict(lr_mult=0.1),
@@ -37,7 +36,7 @@ ctw1500_textspotting_test = _base_.ctw1500_textspotting_test
 ctw1500_textspotting_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
-    batch_size=4,
+    batch_size=8,
     num_workers=8,
     pin_memory=True,
     persistent_workers=True,
@@ -58,3 +57,21 @@ val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 
 custom_imports = dict(imports='spts')
+
+val_evaluator = [
+    dict(
+        type='E2EPointMetric',
+        prefix='none',
+        lexicon_path='data/totaltext/lexicons/weak_voc_new.txt',
+        pair_path='data/totaltext/lexicons/'
+        'weak_voc_pair_list.txt',
+        word_spotting=True,
+        match_dist_thr=0.4),
+    dict(
+        type='E2EPointMetric',
+        prefix='full',
+        word_spotting=True,
+        match_dist_thr=0.4),
+]
+
+test_evaluator = val_evaluator

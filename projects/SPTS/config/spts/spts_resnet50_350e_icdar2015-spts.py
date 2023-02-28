@@ -19,7 +19,6 @@ default_hooks = dict(
 
 optim_wrapper = dict(
     type='OptimWrapper',
-    accumulative_counts=2,
     optimizer=dict(type='AdamW', lr=lr, weight_decay=0.0001),
     paramwise_cfg=dict(custom_keys={
         'backbone': dict(lr_mult=0.1),
@@ -37,7 +36,7 @@ icdar2015_textspotting_test = _base_.icdar2015_textspotting_test
 icdar2015_textspotting_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
-    batch_size=4,
+    batch_size=8,
     num_workers=8,
     pin_memory=True,
     persistent_workers=True,

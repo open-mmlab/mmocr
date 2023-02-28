@@ -5,7 +5,7 @@ env_cfg = dict(
     dist_cfg=dict(backend='nccl'),
 )
 
-randomness = dict(seed=None)
+randomness = dict(seed=42)
 
 default_hooks = dict(
     timer=dict(type='IterTimerHook'),
