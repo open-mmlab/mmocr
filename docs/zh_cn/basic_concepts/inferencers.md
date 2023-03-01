@@ -246,7 +246,7 @@ python tools/infer.py demo/demo_kie.jpeg --det DBNet --rec SAR --kie SDMGR --sho
 
   ```python
   >>> inferencer(['img_1.jpg', 'img_2.jpg])
-  >>> # 你甚至可以混合类型
+  >>> # 列表内混合类型也是允许的
   >>> inferencer(['img_1.jpg', array])
   ```
 
@@ -501,9 +501,9 @@ outputs
 python tools/infer.py INPUT_PATH [--det DET] [--det-weights ...] ...
 ```
 
-其中，`INPUT_PATH` 为必须字段，内容应当为指向图片或文件目录的路径。其他参数与 Python 接口基本一致，遵循如下映射关系：
+其中，`INPUT_PATH` 为必须字段，内容应当为指向图片或文件目录的路径。其他参数与 Python 接口遵循的映射关系如下：
 
-- 你需要在每个参数前面加上两个`-`，然后把下划线`_`替换成连字符`-`。例如， `out_dir` 会变成 `--out-dir`。
+- 在命令行中调用参数时，需要在 Python 接口的参数前面加上两个`-`，然后把下划线`_`替换成连字符`-`。例如， `out_dir` 会变成 `--out-dir`。
 - 对于布尔类型的参数，将参数放在命令中就相当于将其指定为 True。例如， `--show` 会将 `show` 参数指定为 True。
 
 此外，命令行中默认不会回显推理结果，你可以通过 `--print-result` 参数来查看推理结果。
@@ -514,7 +514,7 @@ python tools/infer.py INPUT_PATH [--det DET] [--det-weights ...] ...
 python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec SAR --show --print-result
 ```
 
-可以得到如下结果：
+运行该命令，可以得到如下结果：
 
 ```bash
 {'predictions': [{'rec_texts': ['CBank', 'Docbcba', 'GROUP', 'MAUN', 'CROBINSONS', 'AOCOC', '916M3', 'BOO9', 'Oven', 'BRANDS', 'ARETAIL', '14', '70<UKN>S', 'ROUND', 'SALE', 'YEAR', 'ALLY', 'SALE', 'SALE'],
