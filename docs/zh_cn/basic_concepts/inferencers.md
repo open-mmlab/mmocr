@@ -95,7 +95,7 @@ python tools/infer.py demo/demo_kie.jpeg --det DBNet --rec SAR --kie SDMGR --sho
 
 ## 初始化
 
-每个推理器必须使用一个模型进行初始化，也可以手动选择推理设备。
+每个推理器必须使用一个模型进行初始化。初始化时，可以手动选择推理设备。
 
 ### 模型初始化
 
@@ -292,7 +292,7 @@ python tools/infer.py demo/demo_kie.jpeg --det DBNet --rec SAR --kie SDMGR --sho
 
   `````{tabs}
 
-  :::group-tab} MMOCRInferencer
+  :::{group-tab} MMOCRInferencer
 
   ```python
   {
