@@ -292,7 +292,8 @@ python tools/infer.py demo/demo_kie.jpeg --det DBNet --rec SAR --kie SDMGR --sho
 
   `````{tabs}
 
-  ````{group-tab} MMOCRInferencer
+  :::group-tab} MMOCRInferencer
+
   ```python
   {
       'predictions' : [
@@ -309,13 +310,14 @@ python tools/infer.py demo/demo_kie.jpeg --det DBNet --rec SAR --kie SDMGR --sho
           'kie_edge_labels': [...]  # 边标签, 形状为 (N, N)
         },
         ...
-      ]
+      ],
       'visualization' : [
         array(..., dtype=uint8),
       ]
   }
   ```
-  ````
+
+  :::
 
   ````{group-tab} 标准推理器
 
