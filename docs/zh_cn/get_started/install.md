@@ -61,7 +61,9 @@ mim install 'mmdet>=3.0.0rc0'
 如果你将 MMOCR 作为一个外置依赖库使用，则可以通过 MIM 安装。
 
 `````{tabs}
+
 ````{group-tab} 源码安装
+
 ```shell
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
@@ -71,13 +73,19 @@ pip install -v -e .
 # "-v" 会让安装过程产生更详细的输出
 # "-e" 会以可编辑的方式安装该代码库，你对该代码库所作的任何更改都会立即生效
 ```
+
 ````
 
 ````{group-tab} MIM 安装
+
 ```shell
+
 mim install 'mmocr>=1.0.0rc0'
+
 ```
+
 ````
+
 `````
 
 **第三步（可选）** 如果你需要使用与 `albumentations` 有关的变换，比如 ABINet 数据流水线中的 `Albu`，请使用以下命令安装依赖：

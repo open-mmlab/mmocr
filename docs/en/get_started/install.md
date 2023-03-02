@@ -61,8 +61,11 @@ If you wish to run and develop MMOCR directly, install it from **source** (recom
 If you use MMOCR as a dependency or third-party package, install it with **MIM**.
 
 `````{tabs}
+
 ````{group-tab} Install from Source
+
 ```shell
+
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
 git checkout 1.x
@@ -71,13 +74,19 @@ pip install -v -e .
 # "-v" increases pip's verbosity.
 # "-e" means installing the project in editable mode,
 # That is, any local modifications on the code will take effect immediately.
+
 ```
+
 ````
 
 ````{group-tab} Install via MIM
+
 ```shell
+
 mim install 'mmocr>=1.0.0rc0'
+
 ```
+
 ````
 
 `````
