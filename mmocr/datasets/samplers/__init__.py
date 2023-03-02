@@ -1,4 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .repeat_aug import RepeatAugSampler
+from .batch_aug import BatchAugSampler
 
-__all__ = ['RepeatAugSampler']
+__all__ = ['BatchAugSampler']
