@@ -36,10 +36,17 @@ $env:PYTHONPATH=Get-Location
 
 ### Dataset
 
-**As of now, the implementation uses datasets provided by SPTS, but these datasets
-will be available in MMOCR's dataset preparer very soon.**
+As of now, the implementation uses datasets provided by SPTS for training, and uses MMOCR's datasets for testing. It's because the test split of SPTS's datasets does not contain enough information for e2e evaluation; and MMOCR's dataset preparer has not yet supported all the datasets used in SPTS. *We are working on this issue, and they will be available in MMOCR's dataset preparer very soon.*\*
 
-Download and extract all the datasets into `data/` following [SPTS official guide](https://github.com/shannanyinxiang/SPTS#dataset).
+Please follow these steps to prepare the datasets:
+
+- Download and extract all the SPTS datasets into `spts-data/` following [SPTS official guide](https://github.com/shannanyinxiang/SPTS#dataset).
+
+- Use [Dataset Preparer](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html) to prepare `icdar2013`, `icdar2015` and `totaltext` for `textspotting` task. Then create a soft link to `data/` directory in the project root directory:
+
+  ```shell
+  ln -s ../../data/ .
+  ```
 
 ### Training commands
 
