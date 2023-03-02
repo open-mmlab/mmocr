@@ -94,16 +94,23 @@ mim install 'mmocr>=1.0.0rc0'
 **Step 2. (Optional)** If you wish to use any transform involving `albumentations` (For example, `Albu` in ABINet's pipeline), install the dependency using the following command:
 
 `````{tabs}
+
 ````{group-tab} Install from Source
+
 ```shell
 pip install -r requirements/albu.txt
 ```
+
 ````
+
 ````{group-tab} Install via MIM
+
 ```shell
 pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 ```
+
 ````
+
 `````
 
 ```{note}

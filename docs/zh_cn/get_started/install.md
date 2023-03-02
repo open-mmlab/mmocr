@@ -91,16 +91,23 @@ mim install 'mmocr>=1.0.0rc0'
 **第三步（可选）** 如果你需要使用与 `albumentations` 有关的变换，比如 ABINet 数据流水线中的 `Albu`，请使用以下命令安装依赖：
 
 `````{tabs}
+
 ````{group-tab} 源码安装
+
 ```shell
 pip install -r requirements/albu.txt
 ```
+
 ````
+
 ````{group-tab} MIM 安装
+
 ```shell
 pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 ```
+
 ````
+
 `````
 
 ```{note}
