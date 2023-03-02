@@ -112,7 +112,7 @@ We recommend checking the environment after installing `albumentations` to
 ensure that `opencv-python` and `opencv-python-headless` are not installed together, otherwise it might cause unexpected issues. If that's unfortunately the case, please uninstall `opencv-python-headless` to make sure MMOCR's visualization utilities can work.
 
 Refer
-to ['albumentations`'s official documentation](https://albumentations.ai/docs/getting_started/installation/#note-on-opencv-dependencies) for more details.
+to [albumentations's official documentation](https://albumentations.ai/docs/getting_started/installation/#note-on-opencv-dependencies) for more details.
 
 ```
 
@@ -146,19 +146,20 @@ python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show --pri
 
 You should be able to see a pop-up image and the inference result printed out in the console upon successful verification.
 
-```{note}
-If you are running MMOCR on a server without GUI or via SSH tunnel with X11 forwarding disabled, you may not see the pop-up window.
-```
-
 <div align="center">
     <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
 </div>
+<br />
 
 ```bash
 # Inference result
 {'predictions': [{'rec_texts': ['cbanks', 'docecea', 'grouf', 'pwate', 'chobnsonsg', 'soxee', 'oeioh', 'c', 'sones', 'lbrandec', 'sretalg', '11', 'to8', 'round', 'sale', 'year',
 'ally', 'sie', 'sall'], 'rec_scores': [...], 'det_polygons': [...], 'det_scores':
 [...]}]}
+```
+
+```{note}
+If you are running MMOCR on a server without GUI or via SSH tunnel with X11 forwarding disabled, you may not see the pop-up window.
 ```
 
 ## Customize Installation

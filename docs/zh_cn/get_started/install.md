@@ -141,19 +141,20 @@ python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show --pri
 
 若 MMOCR 的安装无误，你在这一节完成后应当能看到以图片和文字形式表示的识别结果：
 
-```{note}
-如果你在没有 GUI 的服务器上运行 MMOCR，或者通过 SSH 隧道但是 X11 转发被禁用的方式运行 MMOCR，你可能无法看到弹出的窗口。
-```
-
 <div align="center">
     <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
 </div>
+<br/ >
 
 ```bash
 # 识别结果
 {'predictions': [{'rec_texts': ['cbanks', 'docecea', 'grouf', 'pwate', 'chobnsonsg', 'soxee', 'oeioh', 'c', 'sones', 'lbrandec', 'sretalg', '11', 'to8', 'round', 'sale', 'year',
 'ally', 'sie', 'sall'], 'rec_scores': [...], 'det_polygons': [...], 'det_scores':
 [...]}]}
+```
+
+```{note}
+如果你在没有 GUI 的服务器上运行 MMOCR，或者通过 SSH 隧道但是 X11 转发被禁用的方式运行 MMOCR，你可能无法看到弹出的窗口。
 ```
 
 ## 自定义安装
