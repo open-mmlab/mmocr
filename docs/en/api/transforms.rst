@@ -23,6 +23,7 @@ Loading
    LoadImageFromLMDB
    LoadOCRAnnotations
    LoadKIEAnnotations
+   InferencerLoader
 
 
 TextDet Transforms

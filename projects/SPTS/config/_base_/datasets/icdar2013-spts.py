@@ -7,8 +7,9 @@ icdar2013_textspotting_train = dict(
     pipeline=None)
 
 icdar2013_textspotting_test = dict(
-    type='OCRDataset',
+    type='AdelDataset',
     data_root='data/icdar2013',
-    ann_file='textspotting_test.json',
+    data_prefix=dict(img_path='test_images/'),
+    ann_file='ic13_test.json',
     test_mode=True,
     pipeline=None)

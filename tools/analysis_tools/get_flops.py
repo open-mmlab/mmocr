@@ -4,11 +4,9 @@ import argparse
 import torch
 from fvcore.nn import FlopCountAnalysis, flop_count_table
 from mmengine import Config
+from mmengine.registry import init_default_scope
 
 from mmocr.registry import MODELS
-from mmocr.utils import register_all_modules
-
-register_all_modules()
 
 
 def parse_args():
@@ -38,6 +36,7 @@ def main():
     input_shape = (1, 3, h, w)
 
     cfg = Config.fromfile(args.config)
+    init_default_scope(cfg.get('default_scope', 'mmocr'))
     model = MODELS.build(cfg.model)
 
     flops = FlopCountAnalysis(model, torch.ones(input_shape))

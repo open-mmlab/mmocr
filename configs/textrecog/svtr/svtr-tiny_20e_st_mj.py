@@ -40,94 +40,6 @@ param_scheduler = [
         convert_to_iter_based=True),
 ]
 
-file_client_args = dict(backend='disk')
-
-train_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        ignore_empty=True,
-        min_size=5),
-    dict(type='LoadOCRAnnotations', with_text=True),
-    dict(
-        type='RandomApply',
-        prob=0.4,
-        transforms=[
-            dict(type='TextRecogGeneralAug', ),
-        ],
-    ),
-    dict(
-        type='RandomApply',
-        prob=0.4,
-        transforms=[
-            dict(type='CropHeight', ),
-        ],
-    ),
-    dict(
-        type='ConditionApply',
-        condition='min(results["img_shape"])>10',
-        true_transforms=dict(
-            type='RandomApply',
-            prob=0.4,
-            transforms=[
-                dict(
-                    type='TorchVisionWrapper',
-                    op='GaussianBlur',
-                    kernel_size=5,
-                    sigma=1,
-                ),
-            ],
-        )),
-    dict(
-        type='RandomApply',
-        prob=0.4,
-        transforms=[
-            dict(
-                type='TorchVisionWrapper',
-                op='ColorJitter',
-                brightness=0.5,
-                saturation=0.5,
-                contrast=0.5,
-                hue=0.1),
-        ]),
-    dict(
-        type='RandomApply',
-        prob=0.4,
-        transforms=[
-            dict(type='ImageContentJitter', ),
-        ],
-    ),
-    dict(
-        type='RandomApply',
-        prob=0.4,
-        transforms=[
-            dict(
-                type='ImgAugWrapper',
-                args=[dict(cls='AdditiveGaussianNoise', scale=0.1**0.5)]),
-        ],
-    ),
-    dict(
-        type='RandomApply',
-        prob=0.4,
-        transforms=[
-            dict(type='ReversePixels', ),
-        ],
-    ),
-    dict(type='Resize', scale=(256, 64)),
-    dict(
-        type='PackTextRecogInputs',
-        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
-]
-
-test_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
-    dict(type='Resize', scale=(256, 64)),
-    dict(type='LoadOCRAnnotations', with_text=True),
-    dict(
-        type='PackTextRecogInputs',
-        meta_keys=('img_path', 'ori_shape', 'img_shape', 'valid_ratio'))
-]
-
 # dataset settings
 train_list = [_base_.mjsynth_textrecog_test, _base_.synthtext_textrecog_train]
 test_list = [
@@ -147,7 +59,9 @@ train_dataloader = dict(
     pin_memory=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
-        type='ConcatDataset', datasets=train_list, pipeline=train_pipeline))
+        type='ConcatDataset',
+        datasets=train_list,
+        pipeline=_base_.train_pipeline))
 
 val_dataloader = dict(
     batch_size=128,
@@ -157,6 +71,8 @@ val_dataloader = dict(
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        type='ConcatDataset', datasets=test_list, pipeline=test_pipeline))
+        type='ConcatDataset',
+        datasets=test_list,
+        pipeline=_base_.test_pipeline))
 
 test_dataloader = val_dataloader

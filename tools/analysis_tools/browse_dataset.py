@@ -9,11 +9,11 @@ import mmcv
 import numpy as np
 from mmengine.config import Config, DictAction
 from mmengine.dataset import Compose
+from mmengine.registry import init_default_scope
 from mmengine.utils import ProgressBar
 from mmengine.visualization import Visualizer
 
 from mmocr.registry import DATASETS, VISUALIZERS
-from mmocr.utils import register_all_modules
 
 
 # TODO: Support for printing the change in key of results
@@ -109,10 +109,13 @@ def _get_adaptive_scale(img_shape: Tuple[int, int],
     return min(max(scale, min_scale), max_scale)
 
 
-def make_grid(imgs, names):
+def make_grid(imgs, infos):
     """Concat list of pictures into a single big picture, align height here."""
     visualizer = Visualizer.get_current_instance()
-    ori_shapes = [img.shape[:2] for img in imgs]
+    names = [info['name'] for info in infos]
+    ori_shapes = [
+        info['dataset_sample'].metainfo['img_shape'] for info in infos
+    ]
     max_height = int(max(img.shape[0] for img in imgs) * 1.1)
     min_width = min(img.shape[1] for img in imgs)
     horizontal_gap = min_width // 10
@@ -162,17 +165,13 @@ class InspectCompose(Compose):
         self.intermediate_imgs = intermediate_imgs
 
     def __call__(self, data):
-        if 'img' in data:
-            self.intermediate_imgs.append({
-                'name': 'original',
-                'img': data['img'].copy()
-            })
         self.ptransforms = [
             self.transforms[i] for i in range(len(self.transforms) - 1)
         ]
         for t in self.ptransforms:
             data = t(data)
-            # Keep the same meta_keys in the PackDetInputs
+            # Keep the same meta_keys in the PackTextDetInputs
+            # or PackTextRecogInputs
             self.transforms[-1].meta_keys = [key for key in data]
             data_sample = self.transforms[-1](data)
             if data is None:
@@ -299,7 +298,29 @@ def obtain_dataset_cfg(cfg: Config, phase: str, mode: str, task: str) -> Tuple:
 
         if mode == 'original':
             default_cfg = default_cfgs[infer_dataset_task(task, dataset)]
+            # Image can be stored in other methods, like LMDB,
+            # which LoadImageFromFile can not handle
+            if dataset.pipeline is not None:
+                all_transform_types = [tfm['type'] for tfm in dataset.pipeline]
+                if any([
+                        tfm_type.startswith('LoadImageFrom')
+                        for tfm_type in all_transform_types
+                ]):
+                    for tfm in dataset.pipeline:
+                        if tfm['type'].startswith('LoadImageFrom'):
+                            # update LoadImageFrom** transform
+                            default_cfg['pipeline'][0] = tfm
             dataset.pipeline = default_cfg['pipeline']
+        else:
+            # In test_pipeline LoadOCRAnnotations is placed behind
+            # other transforms. Transform will not be applied on
+            # gt annotation.
+            if phase == 'test':
+                all_transform_types = [tfm['type'] for tfm in dataset.pipeline]
+                load_ocr_ann_tfm_index = all_transform_types.index(
+                    'LoadOCRAnnotations')
+                load_ocr_ann_tfm = dataset.pipeline.pop(load_ocr_ann_tfm_index)
+                dataset.pipeline.insert(1, load_ocr_ann_tfm)
 
         return dataset, visualizer
 
@@ -331,8 +352,7 @@ def main():
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
 
-    # register all modules in mmyolo into the registries
-    register_all_modules()
+    init_default_scope(cfg.get('default_scope', 'mmocr'))
 
     dataset_cfg, visualizer_cfg = obtain_dataset_cfg(cfg, args.phase,
                                                      args.mode, args.task)
@@ -361,7 +381,8 @@ def main():
         result_i = [result['dataset_sample'] for result in intermediate_imgs]
         for k, datasample in enumerate(result_i):
             image = datasample.img
-            image = image[..., [2, 1, 0]]  # bgr to rgb
+            if len(image.shape) == 3:
+                image = image[..., [2, 1, 0]]  # bgr to rgb
             image_show = visualizer.add_datasample(
                 'result',
                 image,
@@ -372,8 +393,7 @@ def main():
             image_i.append(image_show)
 
         if args.mode == 'pipeline':
-            image = make_grid([result for result in image_i],
-                              [result['name'] for result in intermediate_imgs])
+            image = make_grid(image_i, intermediate_imgs)
         else:
             image = image_i[-1]
 

@@ -57,7 +57,7 @@ Models:
     Alias:
       - DB_r50
       - DBNet
-    Config: configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
+    Config: configs/textdet/dbnet/dbnet_resnet50-oclip_1200e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
     Results:

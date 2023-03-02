@@ -83,6 +83,20 @@ class TestPolygonUtils(unittest.TestCase):
                     np.array([0.5, 0.5, 1, 0.5, 1, 1, 0.5, 1])
                 ]))
 
+        polygons = np.array([[0, 0, 1, 0, 1, 1, 0, 1],
+                             [1, 1, 2, 1, 2, 2, 1, 2]])
+        scale_factor = (0.5, 0.5)
+        self.assertTrue(
+            np.allclose(
+                rescale_polygons(polygons, scale_factor, mode='div'),
+                np.array([[0, 0, 2, 0, 2, 2, 0, 2], [2, 2, 4, 2, 4, 4, 2,
+                                                     4]])))
+        self.assertTrue(
+            np.allclose(
+                rescale_polygons(polygons, scale_factor, mode='mul'),
+                np.array([[0, 0, 0.5, 0, 0.5, 0.5, 0, 0.5],
+                          [0.5, 0.5, 1, 0.5, 1, 1, 0.5, 1]])))
+
         polygons = [torch.Tensor([0, 0, 1, 0, 1, 1, 0, 1])]
         scale_factor = (0.3, 0.4)
         self.assertTrue(

@@ -48,9 +48,10 @@ def rescale_polygon(polygon: ArrayLike,
     return polygon
 
 
-def rescale_polygons(polygons: Sequence[ArrayLike],
+def rescale_polygons(polygons: Union[ArrayLike, Sequence[ArrayLike]],
                      scale_factor: Tuple[int, int],
-                     mode: str = 'mul') -> Sequence[np.ndarray]:
+                     mode: str = 'mul'
+                     ) -> Union[ArrayLike, Sequence[np.ndarray]]:
     """Rescale polygons according to scale_factor.
 
     The behavior is different depending on the mode. When mode is 'mul', the
@@ -61,19 +62,22 @@ def rescale_polygons(polygons: Sequence[ArrayLike],
     image size.
 
     Args:
-        polygons (list[ArrayLike]): A list of polygons, each written in
-            [x1, y1, x2, y2, ...] and in any form can be converted
+        polygons (list[ArrayLike] or ArrayLike): A list of polygons, each
+            written in [x1, y1, x2, y2, ...] and in any form can be converted
             to an 1-D numpy array. E.g. list[list[float]],
             list[np.ndarray], or list[torch.Tensor].
         scale_factor (tuple(int, int)): (w_scale, h_scale).
         model (str): Rescale mode. Can be 'mul' or 'div'. Defaults to 'mul'.
 
     Returns:
-        list[np.ndarray]: Rescaled polygons.
+        list[np.ndarray] or np.ndarray: Rescaled polygons. The type of the
+        return value depends on the type of the input polygons.
     """
     results = []
     for polygon in polygons:
         results.append(rescale_polygon(polygon, scale_factor, mode))
+    if isinstance(polygons, np.ndarray):
+        results = np.array(results)
     return results
 
 
@@ -208,9 +212,8 @@ def poly_intersection(poly_a: Polygon,
         float or tuple(float, Polygon): Returns the intersection area or
         a tuple ``(area, Optional[poly_obj])``, where the `area` is the
         intersection area between two polygons and `poly_obj` is The Polygon
-        object of the intersection area. Set as `None` if the input is invalid.
-        Set as `None` if the input is invalid. `poly_obj` will be returned
-        only if `return_poly` is `True`.
+        object of the intersection area, which will be `None` if the input is
+        invalid. `poly_obj` will be returned only if `return_poly` is `True`.
     """
     assert isinstance(poly_a, Polygon)
     assert isinstance(poly_b, Polygon)
@@ -223,8 +226,12 @@ def poly_intersection(poly_a: Polygon,
     poly_obj = None
     area = invalid_ret
     if poly_a.is_valid and poly_b.is_valid:
-        poly_obj = poly_a.intersection(poly_b)
-        area = poly_obj.area
+        if poly_a.intersects(poly_b):
+            poly_obj = poly_a.intersection(poly_b)
+            area = poly_obj.area
+        else:
+            poly_obj = Polygon()
+            area = 0.0
     return (area, poly_obj) if return_poly else area
 
 
