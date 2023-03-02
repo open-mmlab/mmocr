@@ -57,10 +57,10 @@ class TestTextRecogCropPacker(unittest.TestCase):
         instance = packer.pack_instance(self.sample)
         self.assertListEqual(instance, [
             dict(
-                img_path='textrecog_imgs/test/test_img_0.jpg',
+                img_path=osp.join('textrecog_imgs', 'test', 'test_img_0.jpg'),
                 instances=[dict(text='text1')]),
             dict(
-                img_path='textrecog_imgs/test/test_img_1.jpg',
+                img_path=osp.join('textrecog_imgs', 'test', 'test_img_1.jpg'),
                 instances=[dict(text='text2')])
         ])
 

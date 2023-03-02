@@ -7,9 +7,15 @@ class BaseDumper:
 
     Args:
         task (str): Task type. Options are 'textdet', 'textrecog',
-            'textspotter', and 'kie'.
-        split (str): Split type. Options are 'train', 'val', 'test'.
-        data_root (str): Root directory of data.
+            'textspotter', and 'kie'. It usually be set automatically and users
+             do not need to set it manually in config file in most cases.
+        split (str): It' s the partition of the datasets. Options are 'train',
+            'val' or 'test'. It usually be set automatically and users do not
+            need to set it manually in config file in most cases. Defaults to
+            None.
+        data_root (str): The root directory of the image and
+            annotation. It usually be set automatically and users do not need
+            to set it manually in config file in most cases. Defaults to None.
     """
 
     def __init__(self, task: str, split: str, data_root: str) -> None:

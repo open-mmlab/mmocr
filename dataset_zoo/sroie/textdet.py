@@ -61,4 +61,4 @@ test_preparer = dict(
     dumper=dict(type='JsonDumper'),
 )
 delete = ['text', 'task1&2_test(361p)', '0325updated', 'annotations']
-config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)
+config_generator = dict(type='TextDetConfigGenerator')

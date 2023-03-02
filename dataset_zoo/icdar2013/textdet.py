@@ -68,4 +68,8 @@ test_preparer = dict(
     packer=dict(type='TextDetPacker'),
     dumper=dict(type='JsonDumper'),
 )
+delete = [
+    'annotations', 'ic13_textdet_train_img', 'ic13_textdet_train_gt',
+    'ic13_textdet_test_img', 'ic13_textdet_test_gt'
+]
 config_generator = dict(type='TextDetConfigGenerator')

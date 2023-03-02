@@ -24,8 +24,12 @@ class NaiveDataObtainer:
     Args:
         files (list[dict]): A list of file information.
         cache_path (str): The path to cache the downloaded files.
-        data_root (str): The root path of the dataset.
-        task (str): The task of the dataset.
+        data_root (str): The root path of the dataset. It usually be set auto-
+            matically and users do not need to set it manually in config file
+            in most cases.
+        task (str): The task of the dataset. It usually be set automatically
+            and users do not need to set it manually in config file
+            in most cases.
     """
 
     def __init__(self, files: List[Dict], cache_path: str, data_root: str,
@@ -121,9 +125,12 @@ class NaiveDataObtainer:
             if '.finish' in name:
                 extracted = True
             elif '.finish' not in name and len(name) > 0:
-                i = input(f'{dst_path} have exist when extract {zip_name}, '
-                          'whether to unzip again? (y/n)')
-                extracted = i == 'n'
+                while True:
+                    c = input(f'{dst_path} already exists when extracting '
+                              '{zip_name}, whether to unzip again? (y/n)')
+                    if c.lower() in ['y', 'n']:
+                        extracted = c == 'n'
+                        break
         if extracted:
             open(osp.join(dst_path, '.finish'), 'w').close()
             print(f'{zip_name} has been extracted. Skip')

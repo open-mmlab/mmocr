@@ -61,5 +61,6 @@ test_preparer = dict(
 #     packer=dict(type='TextRecogPacker'),
 #     dumper=dict(type='JsonDumper'),
 # )
+delete = ['ct80']
 config_generator = dict(
     type='TextRecogConfigGenerator', data_root=data_root, train_anns=None)

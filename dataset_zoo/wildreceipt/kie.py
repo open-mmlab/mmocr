@@ -18,12 +18,18 @@ train_preparer = dict(
                         'class_list.txt'
                     ],
                     ['wildreceipt/wildreceipt/dict.txt', 'dict.txt'],
-                    ['wildreceipt/wildreceipt/train.txt', 'train.txt'],
-                    ['wildreceipt/wildreceipt/image_files', 'image_files'],
+                    [
+                        'wildreceipt/wildreceipt/train.txt',
+                        'annotations/train.txt'
+                    ],
+                    [
+                        'wildreceipt/wildreceipt/image_files/*/*/*.*',
+                        'image_files'
+                    ],
                 ]),
         ]),
     gatherer=dict(
-        type='MonoGatherer', an_name='train.txt', img_dir='image_files'),
+        type='MonoGatherer', ann_name='train.txt', img_dir='image_files'),
     parser=dict(type='WildreceiptKIEAnnParser'),
     packer=dict(type='WildReceiptPacker'),
     dumper=dict(type='WildreceiptOpensetDumper'),
@@ -46,13 +52,20 @@ test_preparer = dict(
                         'class_list.txt'
                     ],
                     ['wildreceipt/wildreceipt/dict.txt', 'dict.txt'],
-                    ['wildreceipt/wildreceipt/test.txt', 'test.txt'],
-                    ['wildreceipt/wildreceipt/image_files', 'image_files'],
+                    [
+                        'wildreceipt/wildreceipt/test.txt',
+                        'annotations/test.txt'
+                    ],
+                    [
+                        'wildreceipt/wildreceipt/image_files/*/*/*.*',
+                        'image_files'
+                    ],
                 ]),
         ]),
-    gatherer=dict(type='MonoGatherer', an_name='test.txt'),
+    gatherer=dict(
+        type='MonoGatherer', img_dir='image_files', ann_name='test.txt'),
     parser=dict(type='WildreceiptKIEAnnParser'),
     packer=dict(type='WildReceiptPacker'),
     dumper=dict(type='WildreceiptOpensetDumper'),
 )
-delete = ['wildreceipt']
+delete = ['wildreceipt', 'annotations']

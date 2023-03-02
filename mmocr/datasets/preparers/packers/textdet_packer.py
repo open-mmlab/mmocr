@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import os.path as osp
 from typing import Dict, List, Tuple
 
 import mmcv
@@ -49,10 +50,11 @@ class TextDetPacker(BasePacker):
             sample (Tuple): A tuple of (img_file, instances).
                - img_path (str): Path to the image file.
                - instances (Sequence[Dict]): A list of converted annos. Each
-                    element should be a dict with the following keys:
-                    - 'poly' or 'box'
-                    - 'ignore'
-                    - 'bbox_label' (optional)
+                 element should be a dict with the following keys:
+
+                 - 'poly' or 'box'
+                 - 'ignore'
+                 - 'bbox_label' (optional)
             split (str): The split of the instance.
 
         Returns:
@@ -79,7 +81,7 @@ class TextDetPacker(BasePacker):
 
         packed_instances = dict(
             instances=packed_instances,
-            img_path=img_path.replace(self.data_root + '/', ''),
+            img_path=osp.relpath(img_path, self.data_root),
             height=h,
             width=w)
 

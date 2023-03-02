@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import os.path as osp
 from typing import Dict, List, Tuple
 
 import mmcv
@@ -10,7 +11,7 @@ from .base import BasePacker
 
 @DATA_PACKERS.register_module()
 class TextSpottingPacker(BasePacker):
-    """Text spotting packer. It is used to pack the parsed annotation info to.
+    """Text spotting packer. It is used to pack the parsed annotation info to:
 
     .. code-block:: python
 
@@ -83,7 +84,7 @@ class TextSpottingPacker(BasePacker):
 
         packed_instances = dict(
             instances=packed_instances,
-            img_path=img_path.replace(self.data_root + '/', ''),
+            img_path=osp.relpath(img_path, self.data_root),
             height=h,
             width=w)
 

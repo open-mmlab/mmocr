@@ -59,9 +59,12 @@ class WildReceiptPacker(BasePacker):
 
         closeset_obj = json.loads(sample)
         openset_obj = {
-            'file_name': closeset_obj['file_name'],
-            'height': closeset_obj['height'],
-            'width': closeset_obj['width'],
+            'file_name':
+            closeset_obj['file_name'].replace(self.data_root + '/', ''),
+            'height':
+            closeset_obj['height'],
+            'width':
+            closeset_obj['width'],
             'annotations': []
         }
 

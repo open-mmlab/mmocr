@@ -6,7 +6,7 @@ from mmengine.utils.progressbar import ProgressBar, init_pool
 
 
 def track_parallel_progress_multi_args(func,
-                                       tasks,
+                                       args,
                                        nproc,
                                        initializer=None,
                                        initargs=None,
@@ -21,8 +21,7 @@ def track_parallel_progress_multi_args(func,
 
     Args:
         func (callable): The function to be applied to each task.
-        tasks (list or tuple[Iterable, int]): A list of tasks or
-            (tasks, total num).
+        tasks (tuple[Iterable]): A tuple of tasks.
         nproc (int): Process (worker) number.
         initializer (None or callable): Refer to :class:`multiprocessing.Pool`
             for details.
@@ -39,17 +38,14 @@ def track_parallel_progress_multi_args(func,
     Returns:
         list: The task results.
     """
-    if isinstance(tasks, tuple):
-        assert len(tasks) == 2
-        assert isinstance(tasks[0], Iterable)
-        assert isinstance(tasks[1], int)
-        task_num = tasks[1]
-        tasks = tasks[0]
-    elif isinstance(tasks, Iterable):
-        task_num = len(tasks)
-    else:
-        raise TypeError(
-            '"tasks" must be an iterable object or a (iterator, int) tuple')
+    assert isinstance(args, tuple)
+    for arg in args:
+        assert isinstance(arg, Iterable)
+    assert len(set([len(arg)
+                    for arg in args])) == 1, 'args must have same length'
+    task_num = len(args[0])
+    tasks = zip(*args)
+
     pool = init_pool(nproc, initializer, initargs)
     start = not skip_first
     task_num -= nproc * chunksize * int(skip_first)

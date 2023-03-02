@@ -11,4 +11,4 @@ _base_.test_preparer.update(
         packer=dict(type='TextDetPacker'),
         dumper=dict(type='JsonDumper')))
 
-config_generator = dict(type='TextRecogConfigGenerator')
+config_generator = dict(type='TextDetConfigGenerator')

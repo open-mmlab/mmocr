@@ -61,7 +61,7 @@ test_preparer = dict(
     parser=dict(type='ICDARTxtTextRecogAnnParser', encoding='utf-8-sig'),
     packer=dict(type='TextRecogPacker'),
     dumper=dict(type='JsonDumper'))
-
+delete = ['annotations']
 config_generator = dict(
     type='TextRecogConfigGenerator',
     test_anns=[

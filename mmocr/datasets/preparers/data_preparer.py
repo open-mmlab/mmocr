@@ -23,7 +23,7 @@ class DatasetPreparer:
     """Base class of dataset preparer.
 
     Dataset preparer is used to prepare dataset for MMOCR. It mainly consists
-    of three step:
+    of three steps:
       1. For each split:
         - Obtain the dataset
             - Download
@@ -33,7 +33,7 @@ class DatasetPreparer:
         - Parse the dataset
         - Pack the dataset to MMOCR format
         - Dump the dataset
-      2. Clean useless files
+      2. Delete useless files
       3. Generate the base config for this dataset
 
     After all these steps, the original datasets have been prepared for
@@ -46,7 +46,7 @@ class DatasetPreparer:
         task (str): Task type. Options are 'textdet', 'textrecog',
             'textspotter', and 'kie'. Defaults to 'textdet'.
         nproc (int): Number of parallel processes. Defaults to 4.
-        train_preparer(OptConfigType): cfg for train data prepare. It contains
+        train_preparer (OptConfigType): cfg for train data prepare. It contains
             the following keys:
             - obtainer: cfg for data obtainer.
             - gatherer: cfg for data gatherer.
@@ -54,11 +54,11 @@ class DatasetPreparer:
             - packer: cfg for data packer.
             - dumper: cfg for data dumper.
             Defaults to None.
-        test_preparer(OptConfigType): cfg for test data prepare. Defaults to
+        test_preparer (OptConfigType): cfg for test data prepare. Defaults to
             None.
-        val_preparer(OptConfigType): cfg for train data prepare. Defaults to
+        val_preparer (OptConfigType): cfg for val data prepare. Defaults to
             None.
-        config_generator(OptConfigType): cfg for config generator. Defaults to
+        config_generato (OptConfigType): cfg for config generator. Defaults to
             None.
         delete (list[str], optional): List of files to be deleted.
             Defaults to None.
@@ -146,14 +146,11 @@ class DatasetPreparer:
         packer = cfg.get('packer', None)
         dumper = cfg.get('dumper', None)
         related = [gatherer, parser, packer, dumper]
-        if not (all(item is None
-                    for item in related) or all(item is not None
-                                                for item in related)):
-            raise ValueError('gatherer, parser, packer and dumper should be '
-                             'either all None or not None')
-
         if all(item is None for item in related):  # no data process
             return
+        if not all(item is not None for item in related):
+            raise ValueError('gatherer, parser, packer and dumper should be '
+                             'either all None or not None')
 
         print(f'Gathering {split} Dataset...')
         gatherer.setdefault('split', default=split)

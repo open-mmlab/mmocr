@@ -45,7 +45,6 @@ train_preparer = dict(
 #     obtainer=dict(
 #         type='NaiveDataObtainer',
 #         cache_path=cache_path,
-#
 #         files=[
 #             dict(
 #                 url='https://rrc.cvc.uab.es/downloads/'
@@ -91,7 +90,6 @@ test_preparer = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,
-        data_root=data_root,
         files=[
             dict(
                 url='https://rrc.cvc.uab.es/downloads/'

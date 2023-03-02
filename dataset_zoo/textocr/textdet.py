@@ -9,12 +9,11 @@ train_preparer = dict(
             dict(
                 url='https://dl.fbaipublicfiles.com/textvqa/images/'
                 'train_val_images.zip',
-                save_name='textocr_textdet_train_val_img.zip',
+                save_name='textocr_textdet_img.zip',
                 md5='d12dd8098899044e4ae1af34db7ecfef',
                 content=['image'],
                 mapping=[[
-                    'textocr_textdet_train_val_img/train_images',
-                    'textdet_imgs/images'
+                    'textocr_textdet_img/train_images', 'textdet_imgs/images'
                 ]]),
             dict(
                 url='https://dl.fbaipublicfiles.com/textvqa/data/textocr/'
@@ -42,12 +41,11 @@ val_preparer = dict(
             dict(
                 url='https://dl.fbaipublicfiles.com/textvqa/images/'
                 'train_val_images.zip',
-                save_name='textocr_textdet_train_val_img.zip',
+                save_name='textocr_textdet_img.zip',
                 md5='d12dd8098899044e4ae1af34db7ecfef',
                 content=['image'],
                 mapping=[[
-                    'textocr_textdet_train_val_img/train_images',
-                    'textdet_imgs/images'
+                    'textocr_textdet_img/train_images', 'textdet_imgs/images'
                 ]]),
             dict(
                 url='https://dl.fbaipublicfiles.com/textvqa/data/textocr/'
@@ -65,5 +63,5 @@ val_preparer = dict(
     parser=dict(type='COCOTextDetAnnParser', variant='textocr'),
     packer=dict(type='TextDetPacker'),
     dumper=dict(type='JsonDumper'))
-delete = ['annotations', 'textocr_textdet_train_val_img']
+delete = ['annotations', 'textocr_textdet_img']
 config_generator = dict(type='TextDetConfigGenerator')

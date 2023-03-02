@@ -5,7 +5,6 @@ train_preparer = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,
-        data_root=data_root,
         files=[
             dict(
                 url='http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/'
@@ -36,7 +35,6 @@ test_preparer = dict(
     obtainer=dict(
         type='NaiveDataObtainer',
         cache_path=cache_path,
-        data_root=data_root,
         files=[
             dict(
                 url='http://cvit.iiit.ac.in/projects/SceneTextUnderstanding/'

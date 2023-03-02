@@ -13,7 +13,7 @@ from .base import BasePacker
 @DATA_PACKERS.register_module()
 class TextRecogPacker(BasePacker):
     """Text recogntion packer. It is used to pack the parsed annotation info
-    to.
+    to:
 
     .. code-block:: python
 
@@ -79,7 +79,10 @@ class TextRecogPacker(BasePacker):
 
 @DATA_PACKERS.register_module()
 class TextRecogCropPacker(TextRecogPacker):
-    """
+    """Text recognition packer with image cropper. It is used to pack the
+    parsed annotation info and crop out the word images from the full-size
+    ones.
+
     Args:
         crop_with_warp (bool): Whether to crop the text from the original
             image using opencv warpPerspective.
