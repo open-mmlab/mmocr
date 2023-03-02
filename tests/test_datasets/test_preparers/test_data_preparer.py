@@ -1,6 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
-import tempfile
 import unittest
 
 from mmengine import Config
@@ -32,13 +31,10 @@ CFG_GENERATORS.register_module(module=Fake)
 
 class TestDataPreparer(unittest.TestCase):
 
-    def setUp(self) -> None:
-        self.root = tempfile.TemporaryDirectory()
-
     def _create_config(self):
-        cfg_path = osp.join(self.root.name, 'config.py')
+        cfg_path = 'config.py'
         cfg = ''
-        cfg += f"data_root = '{self.root.name}'\n"
+        cfg += "data_root = ''\n"
         cfg += 'train_preparer=dict(\n'
         cfg += '    obtainer=dict(type="Fake"),\n'
         cfg += '    gatherer=dict(type="Fake"),\n'
@@ -62,6 +58,3 @@ class TestDataPreparer(unittest.TestCase):
         preparer = DatasetPreparer.from_file(cfg)
         preparer.run()
         self.assertFalse(osp.exists(cfg_path))
-
-    def tearDown(self) -> None:
-        self.root.cleanup()
