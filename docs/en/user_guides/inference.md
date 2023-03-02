@@ -49,7 +49,7 @@ The resulting OCR output will be displayed in a new window:
 </div>
 
 ```{note}
-If you are running MMOCR on a server without GUI or via SSH tunnel with X11 forwarding disabled, the `show` option will not work. However, you can still save visualizations to files by setting `out_dir` and `save_vis=True` arguments. Read [Get Results](#get-results) for details.
+If you are running MMOCR on a server without GUI or via SSH tunnel with X11 forwarding disabled, the `show` option will not work. However, you can still save visualizations to files by setting `out_dir` and `save_vis=True` arguments. Read [Dumping Results](#dumping-results) for details.
 ```
 
 Depending on the initialization arguments, `MMOCRInferencer` can run in different modes. For example, it can run in KIE mode if it is initialized with `det`, `rec` and `kie` specified.
@@ -102,7 +102,7 @@ The visualization result should look like:
 
 ## Initialization
 
-Each Inferencer must be initialized with a model. You can also choose another device during initialization.
+Each Inferencer must be initialized with a model. You can also choose the inference device during initialization.
 
 ### Model Initialization
 
@@ -151,7 +151,7 @@ There are various ways to initialize a model.
   The model type must match the Inferencer type.
   ```
 
-  You can let Inferencer load your own weight by passing its path/url to `weights`.
+  You can load another weight by passing its path/url to `weights`.
 
   ```python
   >>> inferencer = TextDetInferencer(model='DBNet', weights='path/to/dbnet.pth')

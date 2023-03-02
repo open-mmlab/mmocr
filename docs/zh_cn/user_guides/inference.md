@@ -49,7 +49,7 @@ python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec SAR --show
 </div>
 
 ```{note}
-如果你在没有 GUI 的服务器上运行 MMOCR，或者是通过禁用 X11 转发的 SSH 隧道运行该指令，`show`  选项将不起作用。然而，你仍然可以通过设置 `out_dir` 和 `save_vis=True` 参数将可视化数据保存到文件。阅读 [获取结果](#获取结果) 了解详情。
+如果你在没有 GUI 的服务器上运行 MMOCR，或者是通过禁用 X11 转发的 SSH 隧道运行该指令，`show`  选项将不起作用。然而，你仍然可以通过设置 `out_dir` 和 `save_vis=True` 参数将可视化数据保存到文件。阅读 [储存结果](#储存结果) 了解详情。
 ```
 
 根据初始化参数，`MMOCRInferencer`可以在不同模式下运行。例如，如果初始化时指定了 `det`、`rec` 和 `kie`，它可以在 KIE 模式下运行。
