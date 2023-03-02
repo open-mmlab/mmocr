@@ -63,8 +63,7 @@ val_evaluator = [
         type='E2EPointMetric',
         prefix='none',
         lexicon_path='data/totaltext/lexicons/weak_voc_new.txt',
-        pair_path='data/totaltext/lexicons/'
-        'weak_voc_pair_list.txt',
+        pair_path=None,
         word_spotting=True,
         match_dist_thr=0.4),
     dict(

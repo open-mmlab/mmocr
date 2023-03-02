@@ -1,4 +1,4 @@
-mlt_textspotting_data_root = 'data/mlt2017'
+mlt_textspotting_data_root = 'spts-data/mlt2017'
 
 mlt_textspotting_train = dict(
     type='AdelDataset',

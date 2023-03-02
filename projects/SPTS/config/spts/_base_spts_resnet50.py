@@ -65,10 +65,7 @@ test_pipeline = [
         type='LoadOCRAnnotationsWithBezier',
         with_bbox=True,
         with_label=True,
-        with_bezier=True,
         with_text=True),
-    dict(type='Bezier2Polygon'),
-    dict(type='ConvertText', dictionary=dict(**dictionary, num_bins=0)),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
@@ -119,7 +116,6 @@ train_pipeline = [
                 hue=0.5)
         ],
         prob=0.5),
-    # dict(type='Polygon2Bezier'),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))

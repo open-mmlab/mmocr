@@ -55,3 +55,33 @@ test_dataloader = val_dataloader
 
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
+
+val_evaluator = [
+    dict(
+        type='E2EPointMetric',
+        prefix='generic',
+        lexicon_path='data/icdar2015/lexicons/GenericVocabulary_new.txt',
+        pair_path='data/icdar2015/lexicons/'
+        'GenericVocabulary_pair_list.txt',
+        match_dist_thr=None),
+    dict(
+        type='E2EPointMetric',
+        prefix='weak',
+        lexicon_path='data/icdar2015/lexicons/'
+        'ch4_test_vocabulary_new.txt',
+        pair_path='data/icdar2015/lexicons/'
+        'ch4_test_vocabulary_pair_list.txt',
+        match_dist_thr=None),
+    dict(
+        type='E2EPointMetric',
+        prefix='strong',
+        lexicon_path='data/icdar2015/lexicons/'
+        'lexicons/',
+        lexicon_mapping=('(.*).jpg', r'new_voc_\1.txt'),
+        pair_path='data/icdar2015/lexicons/'
+        'pairs/',
+        pair_mapping=('(.*).jpg', r'pair_voc_\1.txt'),
+        match_dist_thr=None),
+]
+
+test_evaluator = val_evaluator

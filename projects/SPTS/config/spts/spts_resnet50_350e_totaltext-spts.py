@@ -55,3 +55,20 @@ test_dataloader = val_dataloader
 
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
+
+val_evaluator = [
+    dict(
+        type='E2EPointMetric',
+        prefix='none',
+        word_spotting=True,
+        match_dist_thr=0.4),
+    dict(
+        type='E2EPointMetric',
+        prefix='full',
+        lexicon_path='data/totaltext/lexicons/weak_voc_new.txt',
+        pair_path='data/totaltext/lexicons/'
+        'weak_voc_pair_list.txt',
+        word_spotting=True,
+        match_dist_thr=0.4),
+]
+test_evaluator = val_evaluator
