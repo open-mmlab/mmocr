@@ -4,7 +4,7 @@
 
 MMOCR 中存在两种不同的推理器：
 
-- **标准推理器**：MMOCR 中的每个基本任务都有一个标准推理器，即 `TextDetInferencer`，`TextRecInferencer`，`TextSpottingInferencer` 和 `KIEInferencer`。它们具有非常相似的接口，具有标准的输入/输出协议，并且总体遵循 OpenMMLab 的设计。这些推理器也可以被串联在一起，以便对一系列任务进行推理。
+- **标准推理器**：MMOCR 中的每个基本任务都有一个标准推理器，即 `TextDetInferencer`（文本检测），`TextRecInferencer`（文本识别），`TextSpottingInferencer`（端到端 OCR） 和 `KIEInferencer`（关键信息提取）。它们具有非常相似的接口，具有标准的输入/输出协议，并且总体遵循 OpenMMLab 的设计。这些推理器也可以被串联在一起，以便对一系列任务进行推理。
 - **MMOCRInferencer**：我们还提供了 `MMOCRInferencer`，一个专门为 MMOCR 设计的便捷推理接口。它封装和链接了 MMOCR 中的所有推理器，因此用户可以使用此推理器对图像执行一系列任务，并直接获得最终结果。*但是，它的接口与标准推理器有一些不同，并且为了简单起见，可能会牺牲一些标准的推理器功能。*
 
 对于新用户，我们建议使用 **MMOCRInferencer** 来测试不同模型的组合。

@@ -102,10 +102,18 @@ modelzoo = f"""
 Here are the list of weights available for
 [Inference](user_guides/inference.md).
 
-Each weight may have multiple names, which will be separated by `/` in the table.
-While they are essentially equivalent, shorter names are provided for the
-ease of reference. For example, `DB_r18` and
-`dbnet_resnet18_fpnc_1200e_icdar2015` points to exactly the same weight.
+For the ease of reference, some weights may have shorter aliases, which will be
+separated by `/` in the table.
+For example, "`DB_r18 / dbnet_resnet18_fpnc_1200e_icdar2015`" means that you can
+use either `DB_r18` or `dbnet_resnet18_fpnc_1200e_icdar2015`
+to initialize the Inferencer:
+
+```python
+>>> from mmocr.apis import TextDetInferencer
+>>> inferencer = TextDetInferencer(model='DB_r18')
+>>> # equivalent to
+>>> inferencer = TextDetInferencer(model='dbnet_resnet18_fpnc_1200e_icdar2015')
+```
 
 {weight_list}
 

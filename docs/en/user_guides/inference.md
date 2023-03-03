@@ -4,7 +4,7 @@ In OpenMMLab, all the inference operations are unified into a new interface - `I
 
 In MMOCR, Inferencers are constructed in different levels of task abstraction.
 
-- Standard Inferencer: Following OpenMMLab's convention, each fundamental task in MMOCR has a standard Inferencer, namely `TextDetInferencer`, `TextRecInferencer`, `TextSpottingInferencer`, and `KIEInferencer`. They are designed to perform inference on a single task, and can be chained together to perform inference on a series of tasks. They also share very similar interface, have standard input/output protocol, and overall follow the OpenMMLab design.
+- Standard Inferencer: Following OpenMMLab's convention, each fundamental task in MMOCR has a standard Inferencer, namely `TextDetInferencer` (text detection), `TextRecInferencer` (text recognition), `TextSpottingInferencer` (end-to-end OCR), and `KIEInferencer` (key information extraction). They are designed to perform inference on a single task, and can be chained together to perform inference on a series of tasks. They also share very similar interface, have standard input/output protocol, and overall follow the OpenMMLab design.
 - **MMOCRInferencer**: We also provide `MMOCRInferencer`, a convenient inference interface only designed for MMOCR. It encapsulates and chains all the Inferencers in MMOCR, so users can use this Inferencer to perform a series of tasks on an image and directly get the final result in an end-to-end manner. *However, it has a relatively different interface from other standard Inferencers, and some of standard Inferencer functionalities might be sacrificed for the sake of simplicity.*
 
 For new users, we recommend using **MMOCRInferencer** to test out different combinations of models.

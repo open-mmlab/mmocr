@@ -100,8 +100,17 @@ modelzoo = f"""
 ## 权重
 以下是可用于[推理](user_guides/inference.md)的权重列表。
 
-每个权重可能有多个名称，表格中将用“/”分隔。
-尽管它们本质上是等价的，但此处提供较短的名称以方便参考。例如，`DB_r18` 和 `dbnet_resnet18_fpnc_1200e_icdar2015` 指向的是同一个权重。
+为了便于使用，有的权重可能会存在多个较短的别名，这在表格中将用“/”分隔。
+
+例如，表格中展示的 `DB_r18 / dbnet_resnet18_fpnc_1200e_icdar2015` 表示您可以使用
+`DB_r18` 或 `dbnet_resnet18_fpnc_1200e_icdar2015` 来初始化推理器：
+
+```python
+>>> from mmocr.apis import TextDetInferencer
+>>> inferencer = TextDetInferencer(model='DB_r18')
+>>> # 等价于
+>>> inferencer = TextDetInferencer(model='dbnet_resnet18_fpnc_1200e_icdar2015')
+```
 
 {weight_list}
 
