@@ -302,13 +302,14 @@ class E2EPointMetric(BaseMetric):
         text = text.upper()
         matched_word = ''
         matched_dist = 100
-        for word in lexicons:
-            word = word.upper()
-            norm_dist = Levenshtein.normalized_distance(text, word)
+        for lexicon in lexicons:
+            lexicon = lexicon.upper()
+            norm_dist = Levenshtein.distance(text, lexicon)
+            norm_dist = Levenshtein.normalized_distance(text, lexicon)
             if norm_dist < matched_dist:
                 matched_dist = norm_dist
                 if pairs:
-                    matched_word = pairs[word]
+                    matched_word = pairs[lexicon]
                 else:
-                    matched_word = word
+                    matched_word = lexicon
         return matched_word, matched_dist

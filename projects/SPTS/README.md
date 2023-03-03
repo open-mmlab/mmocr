@@ -36,7 +36,7 @@ $env:PYTHONPATH=Get-Location
 
 ### Dataset
 
-As of now, the implementation uses datasets provided by SPTS for training, and uses MMOCR's datasets for testing. It's because the test split of SPTS's datasets does not contain enough information for e2e evaluation; and MMOCR's dataset preparer has not yet supported all the datasets used in SPTS. *We are working on this issue, and they will be available in MMOCR's dataset preparer very soon.*\*
+As of now, the implementation uses datasets provided by SPTS for pre-training, and uses MMOCR's datasets for fine-tuning and testing. It's because the test split of SPTS's datasets does not contain enough information for e2e evaluation; and MMOCR's dataset preparer has not yet supported all the datasets used in SPTS. *We are working on this issue, and they will be available in MMOCR's dataset preparer very soon.*
 
 Please follow these steps to prepare the datasets:
 
@@ -55,13 +55,13 @@ In the current directory, run the following command to train the model:
 #### Pretrain
 
 ```bash
-mim train mmocr config/spts/spts_resnet50_150e_pretrain-spts.py --work-dir work_dirs/
+mim train mmocr config/spts/spts_resnet50_150e_pretrain-spts.py --work-dir work_dirs/ --amp
 ```
 
 To train on multiple GPUs, e.g. 8 GPUs, run the following command:
 
 ```bash
-mim train mmocr config/spts/spts_resnet50_150e_pretrain-spts.py --work-dir work_dirs/ --launcher pytorch --gpus 8
+mim train mmocr config/spts/spts_resnet50_150e_pretrain-spts.py --work-dir work_dirs/ --launcher pytorch --gpus 8 --amp
 ```
 
 #### Finetune
@@ -69,13 +69,13 @@ mim train mmocr config/spts/spts_resnet50_150e_pretrain-spts.py --work-dir work_
 Similarly, run the following command to finetune the model on a dataset (e.g. icdar2013):
 
 ```bash
-mim train mmocr config/spts/spts_resnet50_350e_icdar2013-spts.py --work-dir work_dirs/ --cfg-options "load_from={CHECKPOINT_PATH}"
+mim train mmocr config/spts/spts_resnet50_200e_icdar2013.py --work-dir work_dirs/ --cfg-options "load_from={CHECKPOINT_PATH}" --amp
 ```
 
 To finetune on multiple GPUs, e.g. 8 GPUs, run the following command:
 
 ```bash
-mim train mmocr config/spts/spts_resnet50_350e_icdar2013-spts.py --work-dir work_dirs/ --launcher pytorch --gpus 8 --cfg-options "load_from={CHECKPOINT_PATH}"
+mim train mmocr config/spts/spts_resnet50_200e_icdar2013.py --work-dir work_dirs/ --launcher pytorch --gpus 8 --cfg-options "load_from={CHECKPOINT_PATH}" --amp
 ```
 
 ### Testing commands
@@ -83,24 +83,29 @@ mim train mmocr config/spts/spts_resnet50_350e_icdar2013-spts.py --work-dir work
 In the current directory, run the following command to test the model on a dataset (e.g. icdar2013):
 
 ```bash
-mim test mmocr config/spts/spts_resnet50_350e_icdar2013-spts.py --work-dir work_dirs/ --checkpoint ${CHECKPOINT_PATH}
+mim test mmocr config/spts/spts_resnet50_200e_icdar2013.py --work-dir work_dirs/ --checkpoint ${CHECKPOINT_PATH}
 ```
 
-## Results
+## Convert Weights from Official Repo
 
-The weights from MMOCR are on the way. Users may download the weights from [SPTS](https://github.com/shannanyinxiang/SPTS#inference) and use the conversion script to convert them into MMOCR format.
+Users may download the weights from [SPTS](https://github.com/shannanyinxiang/SPTS#inference) and use the conversion script to convert them into MMOCR format.
 
 ```bash
 python tools/ckpt_adapter.py [SPTS_WEIGHTS_PATH] [MMOCR_WEIGHTS_PATH]
 ```
 
-Here are the results obtained on the converted weights. The results are lower than the original ones due to the difference in the test split of datasets, which will be addressed in next update.
+## Results
 
-|    Name    |         Model         | E2E-None-Hmean |
-| :--------: | :-------------------: | :------------: |
-| ICDAR 2013 | ic13.pth (converted)  |     0.8573     |
-|  ctw1500   |  ctw1500 (converted)  |     0.6304     |
-| totaltext  | totaltext (converted) |     0.6596     |
+All the models are trained on 8x A100 GPUs with AMP on (`--amp`). The actual batch size is 64.
+
+| Name       | Pretrained                                                                              | Generic | Weak  | Strong | Download                                                                              |
+| ---------- | --------------------------------------------------------------------------------------- | ------- | ----- | ------ | ------------------------------------------------------------------------------------- |
+| ICDAR 2013 | [model](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_150e_pretrain-spts/spts_resnet50_150e_pretrain-spts-c9fe4c78.pth) / \[log\]([model](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_150e_pretrain-spts/20230223_194550.log) | 87.10   | 91.46 | 93.41  | [model](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_200e_icdar2013/spts_resnet50_200e_icdar2013-64cb4d31.pth) / [log](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_200e_icdar2013/20230303_140316.log) |
+| ICDAR 2015 | [model](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_150e_pretrain-spts/spts_resnet50_150e_pretrain-spts-c9fe4c78.pth) / \[log\]([model](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_150e_pretrain-spts/20230223_194550.log) | 69.09   | 73.45 | 79.19  | [model](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_200e_icdar2015/spts_resnet50_200e_icdar2015-d6e8621c.pth) / [log](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_200e_icdar2015/20230302_230026.log) |
+
+|   Name    | Pretrained                                                                             | None-Hmean | Full-Hmean | Download                                                                              |
+| :-------: | -------------------------------------------------------------------------------------- | :--------: | :--------: | ------------------------------------------------------------------------------------- |
+| Totaltext | [model](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_150e_pretrain-spts/spts_resnet50_150e_pretrain-spts-c9fe4c78.pth) / \[log\]([model](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_150e_pretrain-spts/20230223_194550.log) |   73.99    |   82.34    | [model](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_200e_totaltext/spts_resnet50_200e_totaltext-e3521af6.pth) / [log](https://download.openmmlab.com/mmocr/textspotting/spts/spts_resnet50_200e_totaltext/20230303_103040.log) |
 
 ## Citation
 
@@ -143,9 +148,9 @@ A project does not necessarily have to be finished in a single PR, but it's esse
 
     <!-- As this template does. -->
 
-- [ ] Milestone 2: Indicates a successful model implementation.
+- [x] Milestone 2: Indicates a successful model implementation.
 
-  - [ ] Training-time correctness
+  - [x] Training-time correctness
 
     <!-- If you are reproducing the result from a paper, checking this item means that you should have trained your model from scratch based on the original paper's specification and verified that the final result matches the report within a minor error range. -->
 
