@@ -23,22 +23,18 @@ class TotaltextTextDetAnnParser(BaseParser):
         nproc (int): Number of processes to load the data. Default: 1.
     """
 
-    def __init__(self,
-                 data_root: str,
-                 ignore: str = '#',
-                 nproc: int = 1) -> None:
+    def __init__(self, ignore: str = '#', **kwargs) -> None:
         self.ignore = ignore
-        super().__init__(data_root=data_root, nproc=nproc)
+        super().__init__(**kwargs)
 
-    def parse_file(self, file: Tuple, split: str) -> Dict:
+    def parse_file(self, img_path: str, ann_path: str) -> Dict:
         """Convert single annotation."""
-        img_file, txt_file = file
         instances = list()
-        for poly, text in self.loader(txt_file):
+        for poly, text in self.loader(ann_path):
             instances.append(
                 dict(poly=poly, text=text, ignore=text == self.ignore))
 
-        return img_file, instances
+        return img_path, instances
 
     def loader(self, file_path: str) -> str:
         """The annotation of the totaltext dataset may be stored in multiple

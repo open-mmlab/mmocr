@@ -4,16 +4,15 @@
 # not to use them for recognition and text spotting.
 
 _base_ = ['textdet.py']
-data_root = 'data/naf'
-
-data_converter = dict(
-    type='TextRecogCropConverter',
-    parser=dict(
-        type='NAFAnnParser', data_root=data_root, ignore=['¿', '§'],
-        det=False),
-    delete=['temp_images', 'naf_anno', 'data_split.json', 'annotations'])
-
+_base_.train_preparer.parser.update(dict(ignore=['¿', '§'], det=False))
+_base_.test_preparer.parser.update(dict(ignore=['¿', '§'], det=False))
+_base_.val_preparer.parser.update(dict(ignore=['¿', '§'], det=False))
+_base_.train_preparer.packer.type = 'TextRecogCropPacker'
+_base_.test_preparer.packer.type = 'TextRecogCropPacker'
+_base_.val_preparer.packer.type = 'TextRecogCropPacker'
+_base_.train_preparer.gatherer.img_dir = 'textdet_imgs/train'
+_base_.test_preparer.gatherer.img_dir = 'textdet_imgs/test'
+_base_.val_preparer.gatherer.img_dir = 'textdet_imgs/val'
 config_generator = dict(
     type='TextRecogConfigGenerator',
-    data_root=data_root,
     val_anns=[dict(ann_file='textrecog_val.json', dataset_postfix='')])

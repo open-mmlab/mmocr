@@ -17,17 +17,13 @@ class FUNSDTextDetAnnParser(BaseParser):
             to 1.
     """
 
-    def __init__(self, nproc: int = 1) -> None:
-        super().__init__(nproc=nproc)
-
-    def parse_file(self, file: Tuple, split: str) -> Tuple:
+    def parse_file(self, img_path: str, ann_path: str) -> Tuple:
         """Parse single annotation."""
-        img_file, json_file = file
         instances = list()
-        for poly, text, ignore in self.loader(json_file):
+        for poly, text, ignore in self.loader(ann_path):
             instances.append(dict(poly=poly, text=text, ignore=ignore))
 
-        return img_file, instances
+        return img_path, instances
 
     def loader(self, file_path: str):
         with open(file_path, 'r') as f:

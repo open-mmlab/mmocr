@@ -24,9 +24,9 @@ class TestTTParsers(unittest.TestCase):
         return (osp.join(self.root.name, 'tt_det.jpg'), ann_file)
 
     def test_textdet_parsers(self):
-        parser = TotaltextTextDetAnnParser(self.root.name)
+        parser = TotaltextTextDetAnnParser(split='train')
         file = self._create_dummy_tt_det()
-        img, instances = parser.parse_file(file, 'train')
+        img, instances = parser.parse_file(*file)
         self.assertEqual(img, file[0])
         self.assertEqual(len(instances), 3)
         self.assertIn('poly', instances[0])
@@ -34,3 +34,6 @@ class TestTTParsers(unittest.TestCase):
         self.assertIn('ignore', instances[0])
         self.assertEqual(instances[0]['text'], 'PERUNDING')
         self.assertEqual(instances[2]['ignore'], True)
+
+    def tearDown(self) -> None:
+        self.root.cleanup()

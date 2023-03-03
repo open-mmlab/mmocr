@@ -21,8 +21,8 @@ class TestDumpers(unittest.TestCase):
                 task_name='textdet',
                 category=[dict(id=0, name='text')]))
 
-        dumper = JsonDumper(task)
-        dumper.dump(fake_data, self.root.name, split)
+        dumper = JsonDumper(task, split, self.root.name)
+        dumper.dump(fake_data)
         with open(osp.join(self.root.name, f'{task}_{split}.json'), 'r') as f:
             data = json.load(f)
         self.assertEqual(data, fake_data)
@@ -31,8 +31,8 @@ class TestDumpers(unittest.TestCase):
         task, split = 'kie', 'train'
         fake_data = ['test1', 'test2']
 
-        dumper = WildreceiptOpensetDumper(task)
-        dumper.dump(fake_data, self.root.name, split)
+        dumper = WildreceiptOpensetDumper(task, split, self.root.name)
+        dumper.dump(fake_data)
         with open(osp.join(self.root.name, f'openset_{split}.txt'), 'r') as f:
             data = f.read().splitlines()
         self.assertEqual(data, fake_data)

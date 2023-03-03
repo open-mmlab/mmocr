@@ -1,67 +1,87 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import abstractmethod
-from functools import partial
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
-from mmengine import track_parallel_progress
+from mmocr.utils import track_parallel_progress_multi_args
 
 
 class BaseParser:
     """Base class for parsing annotations.
 
     Args:
-        data_root (str, optional): Path to the data root. Defaults to None.
-        nproc (int, optional): Number of processes. Defaults to 1.
+        split (str): The split of the dataset. It is usually set automatically
+            and users do not need to set it manually in config file in most
+            cases.
+        nproc (int): Number of processes to process the data. Defaults to 1.
+            It is usually set automatically and users do not need to set it
+            manually in config file in most cases.
     """
 
-    def __init__(self,
-                 data_root: Optional[str] = None,
-                 nproc: int = 1) -> None:
-        self.data_root = data_root
+    def __init__(self, split: str, nproc: int = 1) -> None:
         self.nproc = nproc
+        self.split = split
 
-    def __call__(self, files: List[Tuple], split: str) -> List:
+    def __call__(self, img_paths: Union[List[str], str],
+                 ann_paths: Union[List[str], str]) -> List[Tuple]:
         """Parse annotations.
 
         Args:
-            files (List[Tuple]): A list of a tuple of
-                (image_path, annotation_path).
-            split (str): The split of the dataset.
+            img_paths (str or list[str]): the list of image paths or the
+                directory of the images.
+            ann_paths (str or list[str]): the list of annotation paths or the
+                path of the annotation file which contains all the annotations.
 
         Returns:
             List: A list of a tuple of (image_path, instances)
         """
-        samples = self.parse_files(files, split)
+        samples = self.parse_files(img_paths, ann_paths)
         return samples
 
-    def parse_files(self, files: List[Tuple], split: str) -> List[Tuple]:
+    def parse_files(self, img_paths: Union[List[str], str],
+                    ann_paths: Union[List[str], str]) -> List[Tuple]:
         """Convert annotations to MMOCR format.
 
         Args:
-            files (Tuple): A list of tuple of path to image and annotation.
+            img_paths (str or list[str]): the list of image paths or the
+                directory of the images.
+            ann_paths (str or list[str]): the list of annotation paths or the
+                path of the annotation file which contains all the annotations.
 
         Returns:
-            List[Tuple]: A list of a tuple of (image_path, instances)
+            List[Tuple]: A list of a tuple of (image_path, instances).
+
+            - img_path (str): The path of image file, which can be read
+              directly by opencv.
+            - instance: instance is a list of dict containing parsed
+              annotations, which should contain the following keys:
+
+              - 'poly' or 'box' (textdet or textspotting)
+              - 'text' (textspotting or textrecog)
+              - 'ignore' (all task)
         """
-        func = partial(self.parse_file, split=split)
-        samples = track_parallel_progress(func, files, nproc=self.nproc)
+        samples = track_parallel_progress_multi_args(
+            self.parse_file, (img_paths, ann_paths), nproc=self.nproc)
         return samples
 
     @abstractmethod
-    def parse_file(self, file: Tuple, split: str) -> Tuple:
+    def parse_file(self, img_path: str, ann_path: str) -> Tuple:
         """Convert annotation for a single image.
 
         Args:
-            file (Tuple): A tuple of path to image and annotation
-            split (str): Current split.
+            img_path (str): The path of image.
+            ann_path (str): The path of annotation.
 
         Returns:
-            Tuple: A tuple of (img_path, instance). Instance is a list of dict
-            containing parsed annotations, which should contain the
-            following keys:
-            - 'poly' or 'box' (textdet or textspotting)
-            - 'text' (textspotting or textrecog)
-            - 'ignore' (all task)
+            Tuple: A tuple of (img_path, instance).
+
+            - img_path (str): The path of image file, which can be read
+              directly by opencv.
+            - instance: instance is a list of dict containing parsed
+              annotations, which should contain the following keys:
+
+              - 'poly' or 'box' (textdet or textspotting)
+              - 'text' (textspotting or textrecog)
+              - 'ignore' (all task)
 
         Examples:
         An example of returned values:

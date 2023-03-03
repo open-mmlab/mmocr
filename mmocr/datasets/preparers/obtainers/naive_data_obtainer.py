@@ -10,7 +10,7 @@ from typing import Dict, List, Optional, Tuple
 from mmengine import mkdir_or_exist
 
 from mmocr.utils import check_integrity, is_archive
-from .data_preparer import DATA_OBTAINERS
+from ..data_preparer import DATA_OBTAINERS
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -24,8 +24,12 @@ class NaiveDataObtainer:
     Args:
         files (list[dict]): A list of file information.
         cache_path (str): The path to cache the downloaded files.
-        data_root (str): The root path of the dataset.
-        task (str): The task of the dataset.
+        data_root (str): The root path of the dataset. It is usually set auto-
+            matically and users do not need to set it manually in config file
+            in most cases.
+        task (str): The task of the dataset. It is usually set automatically
+            and users do not need to set it manually in config file
+            in most cases.
     """
 
     def __init__(self, files: List[Dict], cache_path: str, data_root: str,
@@ -114,6 +118,23 @@ class NaiveDataObtainer:
             dst_path = osp.join(osp.dirname(src_path), zip_name)
         else:
             dst_path = osp.join(dst_path, zip_name)
+
+        extracted = False
+        if osp.exists(dst_path):
+            name = set(os.listdir(dst_path))
+            if '.finish' in name:
+                extracted = True
+            elif '.finish' not in name and len(name) > 0:
+                while True:
+                    c = input(f'{dst_path} already exists when extracting '
+                              '{zip_name}, whether to unzip again? (y/n)')
+                    if c.lower() in ['y', 'n']:
+                        extracted = c == 'n'
+                        break
+        if extracted:
+            open(osp.join(dst_path, '.finish'), 'w').close()
+            print(f'{zip_name} has been extracted. Skip')
+            return
         mkdir_or_exist(dst_path)
         print(f'Extracting: {osp.basename(src_path)}')
         if src_path.endswith('.zip'):
@@ -136,6 +157,8 @@ class NaiveDataObtainer:
                     'Please install tarfile by running "pip install tarfile".')
             with tarfile.open(src_path, mode) as tar_ref:
                 tar_ref.extractall(dst_path)
+
+        open(osp.join(dst_path, '.finish'), 'w').close()
         if delete:
             os.remove(src_path)
 

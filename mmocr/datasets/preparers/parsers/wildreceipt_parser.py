@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import json
 import os.path as osp
-from typing import Dict, Tuple
+from typing import Dict
 
 from mmocr.utils import list_from_file
 from ..data_preparer import DATA_PARSERS
@@ -30,21 +30,18 @@ class WildreceiptTextDetAnnParser(BaseParser):
             to 1.
     """
 
-    def __init__(self,
-                 data_root: str,
-                 ignore: int = 0,
-                 nproc: int = 1) -> None:
+    def __init__(self, ignore: int = 0, **kwargs) -> None:
         self.ignore = ignore
-        super().__init__(data_root=data_root, nproc=nproc)
+        super().__init__(**kwargs)
 
-    def parse_files(self, files: Tuple, split: str) -> Dict:
+    def parse_files(self, img_dir: str, ann_path) -> Dict:
         """Convert single annotation."""
-        closeset_lines = list_from_file(files)
+        closeset_lines = list_from_file(ann_path)
         samples = list()
         for line in closeset_lines:
             instances = list()
             line = json.loads(line)
-            img_file = osp.join(self.data_root, line['file_name'])
+            img_file = osp.join(img_dir, osp.basename(line['file_name']))
             for anno in line['annotations']:
                 poly = anno['box']
                 text = anno['text']
@@ -72,21 +69,23 @@ class WildreceiptKIEAnnParser(BaseParser):
         ]}
 
     Args:
-        data_root (str): The root path of the dataset.
         ignore (int): The label to be ignored. Defaults to 0.
         nproc (int): The number of processes to parse the annotation. Defaults
             to 1.
     """
 
-    def __init__(self,
-                 data_root: str,
-                 ignore: int = 0,
-                 nproc: int = 1) -> None:
+    def __init__(self, ignore: int = 0, **kwargs) -> None:
         self.ignore = ignore
-        super().__init__(data_root=data_root, nproc=nproc)
+        super().__init__(**kwargs)
 
-    def parse_files(self, files: Tuple, split: str) -> Dict:
+    def parse_files(self, img_dir: str, ann_path: str) -> Dict:
         """Convert single annotation."""
-        closeset_lines = list_from_file(files)
+        closeset_lines = list_from_file(ann_path)
+        samples = list()
+        for line in closeset_lines:
+            json_line = json.loads(line)
+            img_file = osp.join(img_dir, osp.basename(json_line['file_name']))
+            json_line['file_name'] = img_file
+            samples.append(json.dumps(json_line))
 
-        return closeset_lines
+        return samples

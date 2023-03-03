@@ -35,9 +35,9 @@ class TestIC15Parsers(unittest.TestCase):
 
     def test_textdet_parsers(self):
         file = self._create_dummy_ic15_det()
-        parser = ICDARTxtTextDetAnnParser()
+        parser = ICDARTxtTextDetAnnParser(split='train')
 
-        img, instances = parser.parse_file(file, 'train')
+        img, instances = parser.parse_file(*file)
         self.assertEqual(img, file[0])
         self.assertEqual(len(instances), 4)
         self.assertIn('poly', instances[0])
@@ -48,12 +48,15 @@ class TestIC15Parsers(unittest.TestCase):
         self.assertEqual(instances[3]['text'], '100,000')
 
     def test_textrecog_parsers(self):
-        parser = ICDARTxtTextRecogAnnParser()
+        parser = ICDARTxtTextRecogAnnParser(split='train')
         file = self._create_dummy_ic15_recog()
-        samples = parser.parse_files(file, 'train')
+        samples = parser.parse_files(self.root.name, file)
         self.assertEqual(len(samples), 4)
         img, text = samples[0]
-        self.assertEqual(img, 'word_1.png')
+        self.assertEqual(img, osp.join(self.root.name, 'word_1.png'))
         self.assertEqual(text, 'Genaxis Theatre')
         img, text = samples[3]
         self.assertEqual(text, '62-,03')
+
+    def tearDown(self) -> None:
+        self.root.cleanup()

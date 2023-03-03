@@ -38,11 +38,11 @@ class TestSVTParsers(unittest.TestCase):
         return ann_file
 
     def test_textdet_parsers(self):
-        parser = SVTTextDetAnnParser(self.root.name)
+        parser = SVTTextDetAnnParser(split='train')
         file = self._create_dummy_svt_det()
-        samples = parser.parse_files(file, 'train')
+        samples = parser.parse_files(self.root.name, file)
         self.assertEqual(len(samples), 1)
-        self.assertEqual(osp.basename(samples[0][0]), 'test.jpg')
+        self.assertEqual(samples[0][0], osp.join(self.root.name, 'test.jpg'))
         self.assertEqual(len(samples[0][1]), 3)
         self.assertEqual(samples[0][1][0]['text'], 'living')
         self.assertEqual(samples[0][1][1]['text'], 'room')
@@ -50,3 +50,6 @@ class TestSVTParsers(unittest.TestCase):
         self.assertEqual(samples[0][1][0]['poly'],
                          [375, 253, 611, 253, 611, 328, 375, 328])
         self.assertEqual(samples[0][1][0]['ignore'], False)
+
+    def tearDown(self) -> None:
+        self.root.cleanup()

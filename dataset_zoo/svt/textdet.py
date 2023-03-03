@@ -1,30 +1,44 @@
 data_root = 'data/svt'
 cache_path = 'data/cache'
 
-data_obtainer = dict(
-    type='NaiveDataObtainer',
-    cache_path=cache_path,
-    data_root=data_root,
-    files=[
-        dict(
-            url='http://www.iapr-tc11.org/dataset/SVT/svt.zip',
-            save_name='svt.zip',
-            md5='42d19160010d990ae6223b14f45eff88',
-            split=['train', 'test'],
-            content=['image', 'annotations'],
-            mapping=[['svt/svt1/train.xml', 'annotations/train.xml'],
-                     ['svt/svt1/test.xml', 'annotations/test.xml'],
-                     ['svt/svt1/img', 'textdet_imgs/img']]),
-    ])
-
-data_converter = dict(
-    type='TextDetDataConverter',
-    splits=['train', 'test'],
-    data_root=data_root,
+train_preparer = dict(
+    obtainer=dict(
+        type='NaiveDataObtainer',
+        cache_path=cache_path,
+        files=[
+            dict(
+                url='http://www.iapr-tc11.org/dataset/SVT/svt.zip',
+                save_name='svt.zip',
+                md5='42d19160010d990ae6223b14f45eff88',
+                content=['image', 'annotations'],
+                mapping=[['svt/svt1/train.xml', 'annotations/train.xml'],
+                         ['svt/svt1/img', 'textdet_imgs/img']]),
+        ]),
     gatherer=dict(
-        type='mono_gather', train_ann='train.xml', test_ann='test.xml'),
-    parser=dict(type='SVTTextDetAnnParser', data_root=data_root),
+        type='MonoGatherer', ann_name='train.xml', img_dir='textdet_imgs/img'),
+    parser=dict(type='SVTTextDetAnnParser'),
+    packer=dict(type='TextDetPacker'),
     dumper=dict(type='JsonDumper'),
-    delete=['annotations', 'svt'])
+)
 
-config_generator = dict(type='TextDetConfigGenerator', data_root=data_root)
+test_preparer = dict(
+    obtainer=dict(
+        type='NaiveDataObtainer',
+        cache_path=cache_path,
+        files=[
+            dict(
+                url='http://www.iapr-tc11.org/dataset/SVT/svt.zip',
+                save_name='svt.zip',
+                md5='42d19160010d990ae6223b14f45eff88',
+                content=['image', 'annotations'],
+                mapping=[['svt/svt1/test.xml', 'annotations/test.xml'],
+                         ['svt/svt1/img', 'textdet_imgs/img']]),
+        ]),
+    gatherer=dict(
+        type='MonoGatherer', ann_name='test.xml', img_dir='textdet_imgs/img'),
+    parser=dict(type='SVTTextDetAnnParser'),
+    packer=dict(type='TextDetPacker'),
+    dumper=dict(type='JsonDumper'),
+)
+delete = ['annotations', 'svt']
+config_generator = dict(type='TextDetConfigGenerator')
