@@ -9,14 +9,14 @@ class BasePacker:
     """Base class for packing the parsed annotation info to MMOCR format.
 
     Args:
-        data_root (str): The root path of the dataset.  It usually be set auto-
+        data_root (str): The root path of the dataset.  It is usually set auto-
             matically and users do not need to set it manually in config file
             in most cases.
-        split (str): The split of the dataset. It usually be set automatically
+        split (str): The split of the dataset. It is usually set automatically
             and users do not need to set it manually in config file in most
             cases.
         nproc (int): Number of processes to process the data. Defaults to 1.
-            It usually be set automatically and users do not need to set it
+            It is usually set automatically and users do not need to set it
             manually in config file in most cases.
     """
 

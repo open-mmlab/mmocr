@@ -58,7 +58,7 @@ class DatasetPreparer:
             None.
         val_preparer (OptConfigType): cfg for val data prepare. Defaults to
             None.
-        config_generato (OptConfigType): cfg for config generator. Defaults to
+        config_generator (OptConfigType): cfg for config generator. Defaults to
             None.
         delete (list[str], optional): List of files to be deleted.
             Defaults to None.

@@ -10,22 +10,22 @@ class BaseGatherer:
     directory and all the image files are in the same directory.
 
     Args:
-        img_dir(str): The directory of the images. It usually be set
+        img_dir(str): The directory of the images. It is usually set
             automatically to f'text{task}_imgs/split' and users do not need to
             set it manually in config file in most cases. When the image files
             is not in 'text{task}_imgs/split' directory, users should set it.
             Defaults to ''.
-        ann_dir (str): The directory of the annotation files. It usually be set
+        ann_dir (str): The directory of the annotation files. It is usually set
             automatically to 'annotations' and users do not need to set it
             manually in config file in most cases. When the annotation files
             is not in 'annotations' directory, users should set it. Defaults to
             'annotations'.
         split (str, optional): List of splits to gather. It' s the partition of
-            the datasets. Options are 'train', 'val' or 'test'. It usually be
+            the datasets. Options are 'train', 'val' or 'test'. It is usually
             set automatically and users do not need to set it manually in
             config file in most cases. Defaults to None.
         data_root (str, optional): The root directory of the image and
-            annotation. It usually be set automatically and users do not need
+            annotation. It is usually set automatically and users do not need
             to set it manually in config file in most cases. Defaults to None.
     """
 

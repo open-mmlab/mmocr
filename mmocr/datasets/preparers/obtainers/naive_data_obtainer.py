@@ -24,10 +24,10 @@ class NaiveDataObtainer:
     Args:
         files (list[dict]): A list of file information.
         cache_path (str): The path to cache the downloaded files.
-        data_root (str): The root path of the dataset. It usually be set auto-
+        data_root (str): The root path of the dataset. It is usually set auto-
             matically and users do not need to set it manually in config file
             in most cases.
-        task (str): The task of the dataset. It usually be set automatically
+        task (str): The task of the dataset. It is usually set automatically
             and users do not need to set it manually in config file
             in most cases.
     """
