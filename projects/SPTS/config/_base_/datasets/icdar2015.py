@@ -11,5 +11,4 @@ icdar2015_textspotting_test = dict(
     data_root=icdar2015_textspotting_data_root,
     ann_file='textspotting_test.json',
     test_mode=True,
-    # indices=50,
     pipeline=None)

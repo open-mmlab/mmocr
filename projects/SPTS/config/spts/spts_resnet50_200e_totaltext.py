@@ -1,24 +1,25 @@
 _base_ = [
-    '_base_spts_resnet50.py',
-    '../_base_/datasets/totaltext-spts.py',
+    '_base_spts_resnet50_mmocr.py',
+    '../_base_/datasets/totaltext.py',
     '../_base_/default_runtime.py',
 ]
 
 load_from = 'work_dirs/spts_resnet50_150e_pretrain-spts/epoch_150.pth'
 
-num_epochs = 350
+num_epochs = 200
 lr = 0.00001
 
 default_hooks = dict(
     checkpoint=dict(
         type='CheckpointHook',
-        save_best='e2e_icdar/hmean',
+        save_best='none/hmean',
         rule='greater',
         _delete_=True),
     logger=dict(type='LoggerHook', interval=10))
 
 optim_wrapper = dict(
     type='OptimWrapper',
+    accumulative_counts=2,
     optimizer=dict(type='AdamW', lr=lr, weight_decay=0.0001),
     paramwise_cfg=dict(custom_keys={
         'backbone': dict(lr_mult=0.1),
@@ -71,4 +72,5 @@ val_evaluator = [
         word_spotting=True,
         match_dist_thr=0.4),
 ]
+
 test_evaluator = val_evaluator
