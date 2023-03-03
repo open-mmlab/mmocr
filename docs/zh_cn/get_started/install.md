@@ -161,7 +161,7 @@ python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show --pri
 ```
 
 ```{note}
-如果你在没有 GUI 的服务器上运行 MMOCR，或者通过 SSH 隧道但是 X11 转发被禁用的方式运行 MMOCR，你可能无法看到弹出的窗口。
+如果你在没有 GUI 的服务器上运行 MMOCR，或者通过没有开启 X11 转发的 SSH 隧道运行 MMOCR，你可能无法看到弹出的窗口。
 ```
 
 ## 自定义安装
