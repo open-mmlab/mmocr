@@ -19,7 +19,6 @@ default_hooks = dict(
 
 optim_wrapper = dict(
     type='OptimWrapper',
-    accumulative_counts=2,
     optimizer=dict(type='AdamW', lr=lr, weight_decay=0.0001),
     paramwise_cfg=dict(custom_keys={
         'backbone': dict(lr_mult=0.1),

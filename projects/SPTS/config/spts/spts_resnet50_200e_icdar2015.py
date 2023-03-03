@@ -1,10 +1,10 @@
 _base_ = [
-    '_base_spts_resnet50.py',
+    '_base_spts_resnet50_mmocr.py',
     '../_base_/datasets/icdar2015.py',
     '../_base_/default_runtime.py',
 ]
 
-load_from = 'work_dirs/spts_resnet50_150e_pretrain-spts-2/epoch_150.pth'
+load_from = 'work_dirs/spts_resnet50_150e_pretrain-spts/epoch_150.pth'
 
 num_epochs = 200
 lr = 0.00001
