@@ -40,7 +40,7 @@ train_dataloader = dict(
     num_workers=8,
     pin_memory=True,
     persistent_workers=True,
-    sampler=dict(type='RepeatAugSampler', shuffle=True, num_repeats=2),
+    sampler=dict(type='BatchAugSampler', shuffle=True, num_repeats=2),
     dataset=icdar2015_textspotting_train)
 
 val_dataloader = dict(
