@@ -10,39 +10,52 @@ from mmocr.utils import list_from_file
 
 
 @DATA_PARSERS.register_module()
-class CTWAnnParser(BaseParser):
-    """SCUT-CTW dataset parser.
+class CTW1500AnnParser(BaseParser):
+    """SCUT-CTW1500 dataset parser.
 
     Args:
-        data_root (str): Path to the dataset root.
-        ignore (list(str)): The text of the ignored instances. Default: ['#'].
-        nproc (int): Number of processes to load the data. Default: 1.
+        ignore (str): The text of the ignored instances. Defaults to
+            '###'.
     """
 
-    def __init__(self,
-                 data_root: str,
-                 ignore: List[str] = ['#'],
-                 nproc: int = 1) -> None:
+    def __init__(self, ignore: str = '###', **kwargs) -> None:
         self.ignore = ignore
-        super().__init__(data_root=data_root, nproc=nproc)
+        super().__init__(**kwargs)
 
-    def parse_file(self, file: Tuple, split: str) -> Tuple:
-        """Parse single annotation.
+    def parse_file(self, img_path: str, ann_path: str) -> Tuple:
+        """Convert annotation for a single image.
 
         Args:
-            file (tuple): Tuple of (img_file, json_file).
-            split (str): Split of the file. For train split, xml file will be
-                used. For test split, txt file will be used.
+            img_path (str): The path of image.
+            ann_path (str): The path of annotation.
 
         Returns:
-            tuple: Tuple of (img_file, instances).
+            Tuple: A tuple of (img_path, instance).
+
+            - img_path (str): The path of image file, which can be read
+              directly by opencv.
+            - instance: instance is a list of dict containing parsed
+              annotations, which should contain the following keys:
+
+              - 'poly' or 'box' (textdet or textspotting)
+              - 'text' (textspotting or textrecog)
+              - 'ignore' (all task)
+
+        Examples:
+            An example of returned values:
+            >>> ('imgs/train/xxx.jpg',
+            >>> dict(
+            >>>    poly=[[[0, 1], [1, 1], [1, 0], [0, 0]]],
+            >>>    text='hello',
+            >>>    ignore=False)
+            >>> )
         """
-        img_dir, anno_dir = file
-        if split == 'train':
-            instances = self.load_xml_info(anno_dir)
-        elif split == 'test':
-            instances = self.load_txt_info(anno_dir)
-        return img_dir, instances
+
+        if self.split == 'train':
+            instances = self.load_xml_info(ann_path)
+        elif self.split == 'test':
+            instances = self.load_txt_info(ann_path)
+        return img_path, instances
 
     def load_txt_info(self, anno_dir: str) -> List:
         """Load the annotation of the SCUT-CTW dataset (test split).
@@ -64,7 +77,7 @@ class CTWAnnParser(BaseParser):
             poly = np.array(xy).reshape(-1).tolist()
             text = strs[28][4:]
             instances.append(
-                dict(poly=poly, text=text, ignore=text in self.ignore))
+                dict(poly=poly, text=text, ignore=text == self.ignore))
         return instances
 
     def load_xml_info(self, anno_dir: str) -> List:
