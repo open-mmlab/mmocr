@@ -141,7 +141,6 @@ def main():
         cfg.nproc = args.nproc
         cfg.task = args.task
         cfg.dataset_name = dataset
-        cfg.lmdb = args.lmdb
         if args.lmdb:
             cfg = force_lmdb(cfg)
         preparer = DatasetPreparer.from_file(cfg)
