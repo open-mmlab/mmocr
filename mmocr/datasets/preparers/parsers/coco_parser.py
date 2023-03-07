@@ -4,8 +4,8 @@ from typing import List
 
 from mmdet.datasets.api_wrappers import COCO
 
-from mmocr.datasets.preparers.data_preparer import DATA_PARSERS
 from mmocr.datasets.preparers.parsers.base import BaseParser
+from mmocr.registry import DATA_PARSERS
 
 
 @DATA_PARSERS.register_module()

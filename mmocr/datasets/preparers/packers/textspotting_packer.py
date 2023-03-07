@@ -4,8 +4,8 @@ from typing import Dict, List, Tuple
 
 import mmcv
 
+from mmocr.registry import DATA_PACKERS
 from mmocr.utils import bbox2poly, poly2bbox
-from ..data_preparer import DATA_PACKERS
 from .base import BasePacker
 
 

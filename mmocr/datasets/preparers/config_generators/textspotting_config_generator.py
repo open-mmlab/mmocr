@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Dict, List, Optional
 
-from ..data_preparer import CFG_GENERATORS
+from mmocr.registry import CFG_GENERATORS
 from .base import BaseDatasetConfigGenerator
 from .textdet_config_generator import TextDetConfigGenerator
 

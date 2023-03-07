@@ -2,7 +2,7 @@
 import json
 from typing import List
 
-from ..data_preparer import DATA_PACKERS
+from mmocr.registry import DATA_PACKERS
 from .base import BasePacker
 
 

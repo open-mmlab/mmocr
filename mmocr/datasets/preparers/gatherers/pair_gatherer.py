@@ -3,8 +3,8 @@ import os.path as osp
 import re
 from typing import List, Optional, Tuple
 
+from mmocr.registry import DATA_GATHERERS
 from mmocr.utils import list_files
-from ..data_preparer import DATA_GATHERERS
 from .base import BaseGatherer
 
 

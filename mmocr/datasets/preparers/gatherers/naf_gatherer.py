@@ -5,7 +5,7 @@ import os.path as osp
 import shutil
 from typing import List, Tuple
 
-from ..data_preparer import DATA_GATHERERS
+from mmocr.registry import DATA_GATHERERS
 from .base import BaseGatherer
 
 
