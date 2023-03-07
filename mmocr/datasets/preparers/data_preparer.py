@@ -3,6 +3,7 @@ import copy
 import os
 import os.path as osp
 import shutil
+import warnings
 from typing import List, Optional, Union
 
 from mmocr.registry import (CFG_GENERATORS, DATA_DUMPERS, DATA_GATHERERS,
@@ -37,6 +38,9 @@ class DatasetPreparer:
         task (str): Task type. Options are 'textdet', 'textrecog',
             'textspotter', and 'kie'. Defaults to 'textdet'.
         nproc (int): Number of parallel processes. Defaults to 4.
+        lmdb (bool): Whether to dump the textrecog dataset
+            to LMDB format. It's a shortcut to force the dataset to be
+            dumped in lmdb format. Defaults to False.
         train_preparer (OptConfigType): cfg for train data prepare. It contains
             the following keys:
             - obtainer: cfg for data obtainer.
@@ -60,11 +64,13 @@ class DatasetPreparer:
                  dataset_name: str = '',
                  task: str = 'textdet',
                  nproc: int = 4,
+                 lmdb: bool = False,
                  train_preparer: OptConfigType = None,
                  test_preparer: OptConfigType = None,
                  val_preparer: OptConfigType = None,
                  config_generator: OptConfigType = None,
-                 delete: Optional[List[str]] = None) -> None:
+                 delete: Optional[List[str]] = None,
+                 **kwargs) -> None:
         self.data_root = data_root
         self.nproc = nproc
         self.task = task
@@ -74,6 +80,7 @@ class DatasetPreparer:
         self.val_preparer = val_preparer
         self.config_generator = config_generator
         self.delete = delete
+        self.lmdb = lmdb
 
     def run(self, splits: Union[str, List] = ['train', 'test', 'val']) -> None:
         """Prepare the dataset."""
@@ -108,6 +115,7 @@ class DatasetPreparer:
             test_preparer=cfg.get('test_preparer', None),
             val_preparer=cfg.get('val_preparer', None),
             delete=cfg.get('delete', None),
+            lmdb=cfg.get('lmdb', False),
             config_generator=cfg.get('config_generator', None))
         return data_preparer
 
@@ -136,6 +144,17 @@ class DatasetPreparer:
         parser = cfg.get('parser', None)
         packer = cfg.get('packer', None)
         dumper = cfg.get('dumper', None)
+        if self.lmdb:
+            if dumper is None:
+                warnings.warn(
+                    f'{split} split does not come with a dumper, '
+                    'so most likely the annotations are MMOCR-ready and do '
+                    'not need any adaptation, which means that it '
+                    'cannot be dumped in LMDB format. Falling back '
+                    'to the default config.')
+                self.lmdb = False
+            else:
+                dumper.update(dict(type='LMDBDumper'))
         related = [gatherer, parser, packer, dumper]
         if all(item is None for item in related):  # no data process
             return
@@ -184,6 +203,27 @@ class DatasetPreparer:
         self.config_generator.setdefault(
             'dataset_name', default=self.dataset_name)
         self.config_generator.setdefault('data_root', default=self.data_root)
+        if self.lmdb:
+            self.config_generator['dataset_name'] = f'{self.dataset_name}_lmdb'
+            for ann_list_key in ['train_anns', 'val_anns', 'test_anns']:
+                if ann_list_key in self.config_generator:
+                    # It can be None when users want to clear out the default
+                    # value
+                    if not self.config_generator[ann_list_key]:
+                        continue
+                    ann_list = self.config_generator[ann_list_key]
+                    for ann_dict in ann_list:
+                        ann_dict['ann_file'] = (
+                            osp.splitext(ann_dict['ann_file'])[0] + '.lmdb')
+                else:
+                    if ann_list_key == 'train_anns':
+                        ann_list = [dict(ann_file='textrecog_train.lmdb')]
+                    elif ann_list_key == 'test_anns':
+                        ann_list = [dict(ann_file='textrecog_test.lmdb')]
+                    else:
+                        ann_list = []
+                self.config_generator[ann_list_key] = ann_list
+
         config_generator = CFG_GENERATORS.build(self.config_generator)
         print('Generating base configs...')
         config_generator()

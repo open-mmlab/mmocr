@@ -30,6 +30,12 @@ def parse_args():
         help='A list of the split that would like to prepare.',
         nargs='+')
     parser.add_argument(
+        '--lmdb',
+        action='store_true',
+        default=False,
+        help='Whether to dump the textrecog dataset to LMDB format, '
+        'applicable when --task=textrecog')
+    parser.add_argument(
         '--overwrite-cfg',
         action='store_true',
         default=False,
@@ -75,6 +81,8 @@ def parse_meta(task: str, meta_path: str) -> None:
 
 def main():
     args = parse_args()
+    if args.lmdb and args.task != 'textrecog':
+        raise ValueError('--lmdb only works with --task=textrecog')
     for dataset in args.datasets:
         if not osp.isdir(osp.join(args.dataset_zoo_path, dataset)):
             warnings.warn(f'{dataset} is not supported yet. Please check '
@@ -86,10 +94,11 @@ def main():
         cfg = Config.fromfile(cfg_path)
         if args.overwrite_cfg and cfg.get('config_generator',
                                           None) is not None:
-            cfg.config_generator.overwrite = args.overwrite_cfg
+            cfg.config_generator.overwrite_cfg = args.overwrite_cfg
         cfg.nproc = args.nproc
         cfg.task = args.task
         cfg.dataset_name = dataset
+        cfg.lmdb = args.lmdb
         preparer = DatasetPreparer.from_file(cfg)
         preparer.run(args.splits)
 

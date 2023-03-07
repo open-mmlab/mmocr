@@ -127,7 +127,7 @@ class NaiveDataObtainer:
             elif '.finish' not in name and len(name) > 0:
                 while True:
                     c = input(f'{dst_path} already exists when extracting '
-                              '{zip_name}, whether to unzip again? (y/n)')
+                              '{zip_name}, unzip again? (y/N) ') or 'N'
                     if c.lower() in ['y', 'n']:
                         extracted = c == 'n'
                         break

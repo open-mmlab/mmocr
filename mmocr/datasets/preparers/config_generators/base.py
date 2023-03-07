@@ -81,6 +81,17 @@ class BaseDatasetConfigGenerator:
                                  ' None!')
             for ann_dict in ann_list:
                 assert 'ann_file' in ann_dict
+                suffix = ann_dict['ann_file'].split('.')[-1]
+                if suffix == 'json':
+                    dataset_type = 'OCRDataset'
+                elif suffix == 'lmdb':
+                    assert self.task == 'textrecog', \
+                        'LMDB format only works for textrecog now.'
+                    dataset_type = 'RecogLMDBDataset'
+                else:
+                    raise NotImplementedError(
+                        'ann file only supports JSON file or LMDB file')
+                ann_dict['dataset_type'] = dataset_type
                 if ann_dict.get('dataset_postfix', ''):
                     key = f'{self.dataset_name}_{ann_dict["dataset_postfix"]}_{self.task}_{split}'  # noqa
                 else:
