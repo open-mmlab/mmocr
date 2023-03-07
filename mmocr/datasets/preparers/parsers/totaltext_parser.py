@@ -4,7 +4,7 @@ from typing import Dict, Tuple
 
 import yaml
 
-from ..data_preparer import DATA_PARSERS
+from mmocr.registry import DATA_PARSERS
 from .base import BaseParser
 
 

@@ -5,8 +5,8 @@ from typing import Dict, List, Tuple
 import mmcv
 from mmengine import mkdir_or_exist
 
+from mmocr.registry import DATA_PACKERS
 from mmocr.utils import bbox2poly, crop_img, poly2bbox, warp_img
-from ..data_preparer import DATA_PACKERS
 from .base import BasePacker
 
 

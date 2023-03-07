@@ -2,8 +2,8 @@
 import os.path as osp
 from typing import List
 
+from mmocr.registry import DATA_DUMPERS
 from mmocr.utils import list_to_file
-from ..data_preparer import DATA_DUMPERS
 from .base import BaseDumper
 
 

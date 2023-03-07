@@ -5,20 +5,11 @@ import os.path as osp
 import shutil
 from typing import List, Optional, Union
 
-from mmengine import Registry
-
+from mmocr.registry import (CFG_GENERATORS, DATA_DUMPERS, DATA_GATHERERS,
+                            DATA_OBTAINERS, DATA_PACKERS, DATA_PARSERS)
 from mmocr.utils.typing_utils import ConfigType, OptConfigType
 
-DATA_PREPARERS = Registry('data preparer')
-DATA_OBTAINERS = Registry('data_obtainer')
-DATA_GATHERERS = Registry('data_gatherer')
-DATA_PARSERS = Registry('data_parser')
-DATA_DUMPERS = Registry('data_dumper')
-DATA_PACKERS = Registry('data_packer')
-CFG_GENERATORS = Registry('cfg_generator')
 
-
-@DATA_PREPARERS.register_module()
 class DatasetPreparer:
     """Base class of dataset preparer.
 
