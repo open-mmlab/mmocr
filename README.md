@@ -54,6 +54,24 @@ English | [简体中文](README_zh-CN.md)
     <img src="https://user-images.githubusercontent.com/25839884/218346691-ceb2116a-465a-40af-8424-9f30d2348ca9.png" width="3%" alt="" /></a>
 </div>
 
+## Latest Updates
+
+**The default branch has been switched to `1.x` from `main`, and we encourage
+users to migrate to the latest version, though it comes with some cost. Please refer to [Migration Guide](https://mmocr.readthedocs.io/en/dev-1.x/migration/overview.html) for more
+details.**
+
+v1.0.0rc6 was released in 2023-03-07.
+
+1. Two new models, ABCNet v2 (inference only) and SPTS are added to `projects/` folder.
+2. Announcing `Inferencer`, a unified inference interface in OpenMMLab for everyone's easy access and quick inference with all the pre-trained weights. [Docs](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/inference.html)
+3. Users can use test-time augmentation for text recognition tasks. [Docs](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/train_test.html#test-time-augmentation)
+4. Support [batch augmentation](https://openaccess.thecvf.com/content_CVPR_2020/papers/Hoffer_Augment_Your_Batch_Improving_Generalization_Through_Instance_Repetition_CVPR_2020_paper.pdf) through [`BatchAugSampler`](https://github.com/open-mmlab/mmocr/pull/1757), which is a technique used in SPTS.
+5. Dataset Preparer has been refactored to allow more flexible configurations. Besides, users are now able to prepare text recognition datasets in LMDB formats. [Docs](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html#lmdb-format)
+6. Some textspotting datasets have been revised to enhance the correctness and consistency with the common practice.
+7. Potential spurious warnings from `shapely` have been eliminated.
+
+Read [Changelog](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) for more details!
+
 ## Introduction
 
 MMOCR is an open-source toolbox based on PyTorch and mmdetection for text detection, text recognition, and the corresponding downstream tasks including key information extraction. It is part of the [OpenMMLab](https://openmmlab.com/) project.
@@ -81,21 +99,6 @@ The main branch works with **PyTorch 1.6+**.
 - **Numerous Utilities**
 
   The toolbox provides a comprehensive set of utilities which can help users assess the performance of models. It includes visualizers which allow visualization of images, ground truths as well as predicted bounding boxes, and a validation tool for evaluating checkpoints during training.  It also includes data converters to demonstrate how to convert your own data to the annotation files which the toolbox supports.
-
-## Latest Updates
-
-**The default branch has been switched to `1.x` from `main`, and we encourage
-users to migrate to the latest version, though it comes with some cost. Please refer to [Migration Guide](https://mmocr.readthedocs.io/en/dev-1.x/migration/overview.html) for more
-details.**
-
-v1.0.0rc5 was released in 2023-01-06.
-
-1. Two models, Aster and SVTR, are added to our model zoo. The full implementation of ABCNet is also available now.
-2. Dataset Preparer supports 5 more datasets: CocoTextV2, FUNSD, TextOCR, NAF, SROIE.
-3. We have 4 more text recognition transforms, and two more helper transforms.
-4. The transform, `FixInvalidPolygon`, is getting smarter at dealing with invalid polygons, and now capable of handling more weird annotations. As a result, a complete training cycle on TotalText dataset can be performed bug-free. The weights of DBNet and FCENet pretrained on TotalText are also released.
-
-Read [Changelog](https://mmocr.readthedocs.io/en/dev-1.x/notes/changelog.html) for more details!
 
 ## What's New in MMOCR 1.0
 
