@@ -101,24 +101,26 @@ def force_lmdb(cfg):
             preparer_cfg.dumper['type'] = 'LMDBDumper'
 
     cfg.config_generator['dataset_name'] = f'{cfg.dataset_name}_lmdb'
-    for ann_list_key in ['train_anns', 'val_anns', 'test_anns']:
-        if ann_list_key in cfg.config_generator:
+
+    for split in ['train_anns', 'val_anns', 'test_anns']:
+        if split in cfg.config_generator:
             # It can be None when users want to clear out the default
             # value
-            if not cfg.config_generator[ann_list_key]:
+            if not cfg.config_generator[split]:
                 continue
-            ann_list = cfg.config_generator[ann_list_key]
+            ann_list = cfg.config_generator[split]
             for ann_dict in ann_list:
                 ann_dict['ann_file'] = (
                     osp.splitext(ann_dict['ann_file'])[0] + '.lmdb')
         else:
-            if ann_list_key == 'train_anns':
+            if split == 'train_anns':
                 ann_list = [dict(ann_file='textrecog_train.lmdb')]
-            elif ann_list_key == 'test_anns':
+            elif split == 'test_anns':
                 ann_list = [dict(ann_file='textrecog_test.lmdb')]
             else:
                 ann_list = []
-        cfg.config_generator[ann_list_key] = ann_list
+        cfg.config_generator[split] = ann_list
+
     return cfg
 
 
