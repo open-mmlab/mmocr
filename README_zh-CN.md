@@ -47,19 +47,19 @@
 
 最新的版本 v1.0.0rc6 于 2023-03-07 发布。
 
-08. 在 `projects/` 目录中新增了 ABCNet v2 (仅支持推理) 和 SPTS 模型；
+1. 在 `projects/` 目录中新增了 ABCNet v2 (仅支持推理) 和 SPTS 模型；
 
-09. 新增统一推理接口 `Inferencer`，用户可以方便直接地进行各任务的推理。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/inference.html)
+2. 新增统一推理接口 `Inferencer`，用户可以方便直接地进行各任务的推理。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/inference.html)
 
-10. 支持了文本识别任务的测试时数据增强。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/train_test.html#id15)
+3. 支持了文本识别任务的测试时数据增强。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/train_test.html#id15)
 
-11. 通过 [`BatchAugSampler`](https://github.com/open-mmlab/mmocr/pull/1757) 支持了 [batch augmentation](https://openaccess.thecvf.com/content_CVPR_2020/papers/Hoffer_Augment_Your_Batch_Improving_Generalization_Through_Instance_Repetition_CVPR_2020_paper.pdf) ，这是 SPTS 中使用的一种技巧。
+4. 通过 [`BatchAugSampler`](https://github.com/open-mmlab/mmocr/pull/1757) 支持了 [batch augmentation](https://openaccess.thecvf.com/content_CVPR_2020/papers/Hoffer_Augment_Your_Batch_Improving_Generalization_Through_Instance_Repetition_CVPR_2020_paper.pdf) ，这是 SPTS 中使用的一种技巧。
 
-12. 重构了 Dataset Preparer ，用户现在可以更灵活地配置数据集的预处理流程。除此之外，用户现在也可以将文本识别数据集转换为 LMDB 格式。[文档](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html#advanced-usage)
+5. 重构了 Dataset Preparer ，用户现在可以更灵活地配置数据集的预处理流程。除此之外，用户现在也可以将文本识别数据集转换为 LMDB 格式。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/data_prepare/dataset_preparer.html#lmdb)
 
-13. 修正了一些端到端数据集的标注，保证了数据集的正确性及与常见实践的一致性。
+6. 修正了一些端到端数据集的标注，保证了数据集的正确性及与常见实践的一致性。
 
-14. 减少了 `shapely` 中可能出现的一些错误警告。
+7. 减少了 `shapely` 中可能出现的一些错误警告。
 
 阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
 

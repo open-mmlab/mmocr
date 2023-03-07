@@ -39,6 +39,7 @@ This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
 - Put all registry into registry.py by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1760
 - train by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1756
 - configs for regression benchmark by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1755
+- Support lmdb format in Dataset Preparer by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1762
 
 ### Docs
 
