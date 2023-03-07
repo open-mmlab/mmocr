@@ -1,4 +1,4 @@
-# 数据准备 (Beta)
+c# 数据准备 (Beta)
 
 ```{note}
 Dataset Preparer 目前仍处在公测阶段，欢迎尝鲜试用！如遇到任何问题，请及时向我们反馈。
@@ -11,16 +11,18 @@ MMOCR 提供了统一的一站式数据集准备脚本 `prepare_dataset.py`。
 仅需一行命令即可完成数据的下载、解压、格式转换，及基础配置的生成。
 
 ```bash
-python tools/dataset_converters/prepare_dataset.py [$DATASET_NAME] [--task $TASK] [--nproc $NPROC] [--overwrite-cfg] [--dataset-zoo-path $DATASET_ZOO_PATH]
+python tools/dataset_converters/prepare_dataset.py [-h] [--nproc NPROC] [--task {textdet,textrecog,textspotting,kie}] [--splits SPLITS [SPLITS ...]] [--lmdb] [--overwrite-cfg] [--dataset-zoo-path DATASET_ZOO_PATH] datasets [datasets ...]
 ```
 
-| 参数               | 类型 | 说明                                                                                                  |
-| ------------------ | ---- | ----------------------------------------------------------------------------------------------------- |
-| dataset_name       | str  | （必须）需要准备的数据集名称。                                                                        |
-| --task             | str  | 将数据集格式转换为指定任务的 MMOCR 格式。可选项为： 'textdet', 'textrecog', 'textspotting' 和 'kie'。 |
-| --nproc            | str  | 使用的进程数，默认为 4。                                                                              |
-| --overwrite-cfg    | str  | 若数据集的基础配置已经在 `configs/{task}/_base_/datasets` 中存在，依然重写该配置                      |
-| --dataset-zoo-path | str  | 存放数据库配置文件的路径。若不指定，则默认为 `./dataset_zoo`                                          |
+| 参数               | 类型                       | 说明                                                                                                  |
+| ------------------ | -------------------------- | ----------------------------------------------------------------------------------------------------- |
+| dataset_name       | str                        | （必须）需要准备的数据集名称。                                                                        |
+| --nproc            | str                        | 使用的进程数，默认为 4。                                                                              |
+| --task             | str                        | 将数据集格式转换为指定任务的 MMOCR 格式。可选项为： 'textdet', 'textrecog', 'textspotting' 和 'kie'。 |
+| --splits           | \['train', 'val', 'test'\] | 希望准备的数据集分割，可以接受多个参数。默认为 `train val test`。                                     |
+| --lmdb             | str                        | 把数据储存为 LMDB 格式，仅当任务为 `textrecog` 时生效。                                               |
+| --overwrite-cfg    | str                        | 若数据集的基础配置已经在 `configs/{task}/_base_/datasets` 中存在，依然重写该配置                      |
+| --dataset-zoo-path | str                        | 存放数据库配置文件的路径。若不指定，则默认为 `./dataset_zoo`                                          |
 
 例如，以下命令展示了如何使用该脚本为 ICDAR2015 数据集准备文本检测任务所需的数据。
 
@@ -37,6 +39,44 @@ python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task te
 进一步了解 Dataset Preparer 支持的数据集，您可以浏览[支持的数据集文档](./datasetzoo.md)。一些需要手动准备的数据集也列在了 [文字检测](./det.md) 和 [文字识别](./recog.md) 内。
 
 ## 进阶用法
+
+### LMDB 格式
+
+在文本识别任务中，我们通常使用 LMDB 格式来存储数据，以加快数据的读取速度。在使用 `prepare_dataset.py` 脚本准备数据时，可以通过 `--lmdb` 参数来指定将数据转换为 LMDB 格式。例如：
+
+```bash
+python tools/dataset_converters/prepare_dataset.py icdar2015 --task textrecog --lmdb
+```
+
+数据集准备完成后，Dataset Preparer 会在 `configs/textrecog/_base_/datasets/` 中生成 `icdar2015_lmdb.py` 配置。你可以继承该配置，并将 `dataloader` 指向 LMDB 数据集。然而，LMDB 数据集的读取需要配合 [`LoadImageFromNDArray`](mmocr.datasets.transforms.LoadImageFromNDArray)，因此你也同样需要修改 `pipeline`。
+
+例如，我们想要将 `configs/textrecog/crnn/crnn_mini-vgg_5e_mj.py` 的训练集改为刚刚生成的 icdar2015，则需要作如下修改：
+
+1. 修改 `configs/textrecog/crnn/crnn_mini-vgg_5e_mj.py`:
+
+   ```python
+   _base_ = [
+        '../_base_/datasets/icdar2015_lmdb.py',  # 指向 icdar2015 lmdb 数据集
+         ... # 省略
+    ]
+
+    train_list = [_base_.icdar2015_lmdb_textrecog_train]
+    ...
+   ```
+
+2. 修改 `configs/textrecog/crnn/_base_crnn_mini-vgg.py` 中的 `train_pipeline`, 将 `LoadImageFromFile` 改为 `LoadImageFromNDArray`：
+
+   ```python
+   train_pipeline = [
+    dict(
+        type='LoadImageFromNDArray',
+        color_type='grayscale',
+        file_client_args=file_client_args,
+        ignore_empty=True,
+        min_size=2),
+    ...
+   ]
+   ```
 
 ### 数据集配置
 
@@ -95,6 +135,10 @@ Data:
 ```
 
 该文件在数据集准备过程中并不是强制要求的（因此用户在使用添加自己的私有数据集时可以忽略该文件），但为了用户更好地了解各个公开数据集的信息，我们建议用户在使用数据集准备脚本前阅读对应的元文件信息，以了解该数据集的特征是否符合用户需求。
+
+```{warning}
+自 MMOCR 1.0.0rc6 起，接下来的章节可能会与实际实现有所出入。
+```
 
 #### 数据集准备脚本配置文件
 
@@ -235,7 +279,7 @@ OCR 数据集通常有两种标注保存形式，一种为多个标注文件对�
 
 ###### `dumper`
 
-之后，我们可以通过指定不同的 dumper 来决定要将数据保存为何种格式。目前，我们仅支持 `JsonDumper` 与 `WildreceiptOpensetDumper`，其中，前者用于将数据保存为标准的 MMOCR Json 格式，而后者用于将数据保存为 Wildreceipt 格式。未来，我们计划支持 `LMDBDumper` 用于保存 LMDB 格式的标注文件。
+之后，我们可以通过指定不同的 dumper 来决定要将数据保存为何种格式。目前，我们支持 `JsonDumper`， `WildreceiptOpensetDumper`，及  `TextRecogLMDBDumper`。他们分别用于将数据保存为标准的 MMOCR Json 格式、Wildreceipt 格式，及文本识别领域学术界常用的 LMDB 格式。
 
 ###### `delete`
 
