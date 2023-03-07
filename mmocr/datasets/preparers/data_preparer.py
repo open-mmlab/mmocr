@@ -64,8 +64,7 @@ class DatasetPreparer:
                  test_preparer: OptConfigType = None,
                  val_preparer: OptConfigType = None,
                  config_generator: OptConfigType = None,
-                 delete: Optional[List[str]] = None,
-                 **kwargs) -> None:
+                 delete: Optional[List[str]] = None) -> None:
         self.data_root = data_root
         self.nproc = nproc
         self.task = task
