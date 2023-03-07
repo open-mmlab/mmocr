@@ -36,7 +36,7 @@ $env:PYTHONPATH=Get-Location
 
 ### Dataset
 
-As of now, the implementation uses datasets provided by SPTS for pre-training, and uses MMOCR's datasets for fine-tuning and testing. It's because the test split of SPTS's datasets does not contain enough information for e2e evaluation; and MMOCR's dataset preparer has not yet supported all the datasets used in SPTS. *We are working on this issue, and they will be available in MMOCR's dataset preparer very soon.*
+As of now, the implementation uses datasets provided by SPTS for **pre-training**, and uses MMOCR's datasets for **fine-tuning and testing**. It's because the test split of SPTS's datasets does not contain enough information for e2e evaluation; and MMOCR's dataset preparer has not yet supported all the datasets used in SPTS. *We are working on this issue, and they will be available in MMOCR's dataset preparer very soon.*
 
 Please follow these steps to prepare the datasets:
 
@@ -62,13 +62,13 @@ In the current directory, run the following command to train the model:
 #### Pretrain
 
 ```bash
-mim train mmocr config/spts/spts_resnet50_150e_pretrain-spts.py --work-dir work_dirs/ --amp
+mim train mmocr config/spts/spts_resnet50_8xb8-150e_pretrain-spts.py --work-dir work_dirs/ --amp
 ```
 
 To train on multiple GPUs, e.g. 8 GPUs, run the following command:
 
 ```bash
-mim train mmocr config/spts/spts_resnet50_150e_pretrain-spts.py --work-dir work_dirs/ --launcher pytorch --gpus 8 --amp
+mim train mmocr config/spts/spts_resnet50_8xb8-150e_pretrain-spts.py --work-dir work_dirs/ --launcher pytorch --gpus 8 --amp
 ```
 
 #### Finetune
