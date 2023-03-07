@@ -58,18 +58,15 @@ class SPTSDecoder(BaseDecoder):
             max_seq_len=self.max_seq_len,
             init_cfg=init_cfg)
         self.num_bins = num_bins
-        self.shifted_seq_end_idx = self.num_bins + self.dictionary.seq_end_idx
-        self.shifted_start_idx = self.num_bins + self.dictionary.start_idx
 
-        actual_num_classes = self.dictionary.num_classes + num_bins
-
-        self.embedding = DecoderEmbeddings(
-            actual_num_classes, self.dictionary.padding_idx + num_bins,
-            d_model, self.max_seq_len, dropout)
+        self.embedding = DecoderEmbeddings(self.dictionary.num_classes,
+                                           self.dictionary.padding_idx,
+                                           d_model, self.max_seq_len, dropout)
         self.pos_embedding = PositionEmbeddingSine(d_model // 2)
 
         self.vocab_embed = self._gen_vocab_embed(d_model, d_model,
-                                                 actual_num_classes, 3)
+                                                 self.dictionary.num_classes,
+                                                 3)
         encoder_layer = TransformerEncoderLayer(d_model, n_head, d_feedforward,
                                                 dropout, 'relu',
                                                 normalize_before)
@@ -166,7 +163,7 @@ class SPTSDecoder(BaseDecoder):
         max_probs = []
         seq = torch.zeros(
             batch_size, 1, dtype=torch.long).to(
-                out_enc.device) + self.shifted_start_idx
+                out_enc.device) + self.dictionary.start_idx
         for i in range(self.max_seq_len):
             tgt = self.embedding(seq).permute(1, 0, 2)
             hs = self.decoder(
@@ -182,13 +179,13 @@ class SPTSDecoder(BaseDecoder):
 
             # bins chars unk eos seq_eos sos padding
             if i % 27 == 0:  # coordinate or eos
-                out[:, self.num_bins:self.shifted_seq_end_idx] = 0
-                out[:, self.shifted_seq_end_idx + 1:] = 0
+                out[:, self.num_bins:self.dictionary.seq_end_idx] = 0
+                out[:, self.dictionary.seq_end_idx + 1:] = 0
             elif i % 27 == 1:  # coordinate
                 out[:, self.num_bins:] = 0
             else:  # chars
                 out[:, :self.num_bins] = 0
-                out[:, self.shifted_seq_end_idx:] = 0
+                out[:, self.dictionary.seq_end_idx:] = 0
 
             max_prob, extra_seq = torch.max(out, dim=-1, keepdim=True)
             # prob, extra_seq = out.topk(dim=-1, k=1)
@@ -196,7 +193,7 @@ class SPTSDecoder(BaseDecoder):
             # TODO: optimize for multi-batch
             seq = torch.cat([seq, extra_seq], dim=-1)
             max_probs.append(max_prob)
-            if extra_seq[0] == self.shifted_seq_end_idx:
+            if extra_seq[0] == self.dictionary.seq_end_idx:
                 break
 
         max_probs = torch.cat(max_probs, dim=-1)

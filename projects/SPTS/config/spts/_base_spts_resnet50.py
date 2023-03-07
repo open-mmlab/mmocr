@@ -1,4 +1,5 @@
-custom_imports = dict(imports=['spts'], allow_failed_imports=False)
+custom_imports = dict(
+    imports=['projects.SPTS.spts'], allow_failed_imports=False)
 
 file_client_args = dict(backend='disk')
 
@@ -65,10 +66,7 @@ test_pipeline = [
         type='LoadOCRAnnotationsWithBezier',
         with_bbox=True,
         with_label=True,
-        with_bezier=True,
         with_text=True),
-    dict(type='Bezier2Polygon'),
-    dict(type='ConvertText', dictionary=dictionary),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
@@ -87,7 +85,7 @@ train_pipeline = [
         with_text=True),
     dict(type='Bezier2Polygon'),
     dict(type='FixInvalidPolygon'),
-    dict(type='ConvertText', dictionary=dictionary),
+    dict(type='ConvertText', dictionary=dict(**dictionary, num_bins=0)),
     dict(type='RemoveIgnored'),
     dict(type='RandomCrop', min_side_ratio=0.5),
     dict(
@@ -119,7 +117,6 @@ train_pipeline = [
                 hue=0.5)
         ],
         prob=0.5),
-    # dict(type='Polygon2Bezier'),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
