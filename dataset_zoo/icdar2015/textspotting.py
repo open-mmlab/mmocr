@@ -21,9 +21,9 @@ _base_.test_preparer.obtainer.files = [
         mapping=[['ic15_textdet_test_gt', 'annotations/test']]),
     dict(
         url='https://download.openmmlab.com/mmocr/data/1.x/'
-        'textspotting/icdar2015/lexicons.tar.gz',
-        save_name='icdar2015_lexicons.tar.gz',
-        md5='d1e7b5e023b1d40fbdb120bd5b0878e2',
+        'textspotting/icdar2015/lexicons.zip',
+        save_name='icdar2015_lexicons.zip',
+        md5='daec48ee72de25a4293a6b12cdc181f5',
         content=['annotation'],
         mapping=[['icdar2015_lexicons/lexicons', 'lexicons']]),
 ]
