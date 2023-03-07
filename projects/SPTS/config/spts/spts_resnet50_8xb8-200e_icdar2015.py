@@ -76,10 +76,10 @@ val_evaluator = [
         type='E2EPointMetric',
         prefix='strong',
         lexicon_path='data/icdar2015/lexicons/'
-        'lexicons/',
+        'new_strong_lexicon/lexicons/',
         lexicon_mapping=('(.*).jpg', r'new_voc_\1.txt'),
         pair_path='data/icdar2015/lexicons/'
-        'pairs/',
+        'new_strong_lexicon/pairs/',
         pair_mapping=('(.*).jpg', r'pair_voc_\1.txt'),
         match_dist_thr=0.4),
 ]
