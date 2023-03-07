@@ -27,17 +27,17 @@ conda activate openmmlab
 
 **Step 2.** Install PyTorch following [official instructions](https://pytorch.org/get-started/locally/), e.g.
 
-On GPU platforms:
+````{tabs}
 
-```shell
+```{code-tab} shell GPU Platform
 conda install pytorch torchvision -c pytorch
 ```
 
-On CPU platforms:
-
-```shell
+```{code-tab} shell CPU Platform
 conda install pytorch torchvision cpuonly -c pytorch
 ```
+
+````
 
 ## Installation Steps
 
@@ -45,25 +45,27 @@ We recommend that users follow our best practices to install MMOCR. However, the
 
 ### Best Practices
 
-**Step 0.** Install  [MMEngine](https://github.com/open-mmlab/mmengine) and [MMCV](https://github.com/open-mmlab/mmcv) using [MIM](https://github.com/open-mmlab/mim).
+**Step 0.** Install  [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv) and [MMDetection](https://github.com/open-mmlab/mmdetection) using [MIM](https://github.com/open-mmlab/mim).
 
 ```shell
 pip install -U openmim
 mim install mmengine
 mim install 'mmcv>=2.0.0rc1'
+mim install 'mmdet>=3.0.0rc0'
 ```
 
-**Step 1.** Install [MMDetection](https://github.com/open-mmlab/mmdetection) as a dependency.
+**Step 1.** Install MMOCR.
+
+If you wish to run and develop MMOCR directly, install it from **source** (recommended).
+
+If you use MMOCR as a dependency or third-party package, install it with **MIM**.
+
+`````{tabs}
+
+````{group-tab} Install from Source
 
 ```shell
-pip install 'mmdet>=3.0.0rc0'
-```
 
-**Step 2.** Install MMOCR.
-
-Case A: If you wish to run and develop MMOCR directly, install it from source:
-
-```shell
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
 git checkout 1.x
@@ -72,22 +74,44 @@ pip install -v -e .
 # "-v" increases pip's verbosity.
 # "-e" means installing the project in editable mode,
 # That is, any local modifications on the code will take effect immediately.
+
 ```
 
-Case B: If you use MMOCR as a dependency or third-party package, install it with pip:
+````
+
+````{group-tab} Install via MIM
 
 ```shell
-pip install 'mmocr>=1.0.0rc0'
+
+mim install 'mmocr>=1.0.0rc0'
+
 ```
 
-**Step 3. (Optional)** If you wish to use any transform involving `albumentations` (For example, `Albu` in ABINet's pipeline), install the dependency using the following command:
+````
+
+`````
+
+**Step 2. (Optional)** If you wish to use any transform involving `albumentations` (For example, `Albu` in ABINet's pipeline), install the dependency using the following command:
+
+`````{tabs}
+
+````{group-tab} Install from Source
 
 ```shell
-# If MMOCR is installed from source
 pip install -r requirements/albu.txt
-# If MMOCR is installed via pip
+```
+
+````
+
+````{group-tab} Install via MIM
+
+```shell
 pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 ```
+
+````
+
+`````
 
 ```{note}
 
@@ -95,35 +119,54 @@ We recommend checking the environment after installing `albumentations` to
 ensure that `opencv-python` and `opencv-python-headless` are not installed together, otherwise it might cause unexpected issues. If that's unfortunately the case, please uninstall `opencv-python-headless` to make sure MMOCR's visualization utilities can work.
 
 Refer
-to ['albumentations`'s official documentation](https://albumentations.ai/docs/getting_started/installation/#note-on-opencv-dependencies) for more details.
+to [albumentations's official documentation](https://albumentations.ai/docs/getting_started/installation/#note-on-opencv-dependencies) for more details.
 
 ```
 
 ### Verify the installation
 
-We provide a method to verify the installation via inference demo, depending on your installation method. You should be able to see a pop-up image and the inference result upon successful verification.
+You may verify the installation via this inference demo.
+
+`````{tabs}
+
+````{tab} Python
+
+Run the following code in a Python interpreter:
+
+```python
+>>> from mmocr.apis import MMOCRInferencer
+>>> ocr = MMOCRInferencer(det='DBNet', rec='CRNN')
+>>> ocr('demo/demo_text_ocr.jpg', show=True, print_result=True)
+```
+````
+
+````{tab} Shell
+
+If you installed MMOCR from source, you can run the following in MMOCR's root directory:
+
+```shell
+python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show --print-result
+```
+````
+
+`````
+
+You should be able to see a pop-up image and the inference result printed out in the console upon successful verification.
 
 <div align="center">
     <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
 </div>
+<br />
 
 ```bash
 # Inference result
-{'rec_texts': ['cbanke', 'docece', 'sroumats', 'chounsonse', 'doceca', 'c', '', 'sond', 'abrandso', 'sretane', '1', 'tosl', 'roundi', 'slen', 'yet', 'ally', 's', 'sue', 'salle', 'v'], 'rec_scores': [...], 'det_polygons': [...], 'det_scores': tensor([...])}
+{'predictions': [{'rec_texts': ['cbanks', 'docecea', 'grouf', 'pwate', 'chobnsonsg', 'soxee', 'oeioh', 'c', 'sones', 'lbrandec', 'sretalg', '11', 'to8', 'round', 'sale', 'year',
+'ally', 'sie', 'sall'], 'rec_scores': [...], 'det_polygons': [...], 'det_scores':
+[...]}]}
 ```
 
-Run the following in MMOCR's directory:
-
-```bash
-python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --show
-```
-
-Also can run the following codes in your Python interpreter:
-
-```python
-from mmocr.ocr import MMOCR
-ocr = MMOCR(recog='CRNN', det='DB_r18')
-ocr.readtext('demo_text_ocr.jpg', show=True)
+```{note}
+If you are running MMOCR on a server without GUI or via SSH tunnel with X11 forwarding disabled, you may not see the pop-up window.
 ```
 
 ## Customize Installation

@@ -27,17 +27,17 @@ conda activate openmmlab
 
 **第三步** 依照[官方指南](https://pytorch.org/get-started/locally/)，安装 PyTorch。
 
-在 GPU 平台上：
+````{tabs}
 
-```shell
+```{code-tab} shell GPU 平台
 conda install pytorch torchvision -c pytorch
 ```
 
-在 CPU 平台上：
-
-```shell
+```{code-tab} shell CPU 平台
 conda install pytorch torchvision cpuonly -c pytorch
 ```
+
+````
 
 ## 安装步骤
 
@@ -45,23 +45,24 @@ conda install pytorch torchvision cpuonly -c pytorch
 
 ### 推荐步骤
 
-**第一步** 使用 [MIM](https://github.com/open-mmlab/mim) 安装 [MMEngine](https://github.com/open-mmlab/mmengine) and [MMCV](https://github.com/open-mmlab/mmcv).
+**第一步** 使用 [MIM](https://github.com/open-mmlab/mim) 安装 [MMEngine](https://github.com/open-mmlab/mmengine)， [MMCV](https://github.com/open-mmlab/mmcv) 和 [MMDetection](https://github.com/open-mmlab/mmdetection)。
 
 ```shell
 pip install -U openmim
 mim install mmengine
 mim install 'mmcv>=2.0.0rc1'
+mim install 'mmdet>=3.0.0rc0'
 ```
 
-**第二步** 将 [MMDetection](https://github.com/open-mmlab/mmdetection) 以依赖库的形式安装。
+**第二步** 安装 MMOCR.
 
-```shell
-pip install 'mmdet>=3.0.0rc0'
-```
+若你需要直接运行 MMOCR 或在其基础上进行开发，则通过源码安装（推荐）。
 
-**第三步** 安装 MMOCR.
+如果你将 MMOCR 作为一个外置依赖库使用，则可以通过 MIM 安装。
 
-情况1: 若你需要直接运行 MMOCR 或在其基础上进行开发，则通过源码安装：
+`````{tabs}
+
+````{group-tab} 源码安装
 
 ```shell
 git clone https://github.com/open-mmlab/mmocr.git
@@ -73,20 +74,41 @@ pip install -v -e .
 # "-e" 会以可编辑的方式安装该代码库，你对该代码库所作的任何更改都会立即生效
 ```
 
-情况2：如果你将 MMOCR 作为一个外置依赖库使用，通过 pip 安装即可：
+````
+
+````{group-tab} MIM 安装
 
 ```shell
-pip install 'mmocr>=1.0.0rc0'
+
+mim install 'mmocr>=1.0.0rc0'
+
 ```
 
-**第四步（可选）** 如果你需要使用与 `albumentations` 有关的变换，比如 ABINet 数据流水线中的 `Albu`，请使用以下命令安装依赖：
+````
+
+`````
+
+**第三步（可选）** 如果你需要使用与 `albumentations` 有关的变换，比如 ABINet 数据流水线中的 `Albu`，请使用以下命令安装依赖：
+
+`````{tabs}
+
+````{group-tab} 源码安装
 
 ```shell
-# 若 MMOCR 通过源码安装
 pip install -r requirements/albu.txt
-# 若 MMOCR 通过 pip 安装
+```
+
+````
+
+````{group-tab} MIM 安装
+
+```shell
 pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 ```
+
+````
+
+`````
 
 ```{note}
 
@@ -98,29 +120,48 @@ pip install albumentations>=1.1.0 --no-binary qudida,albumentations
 
 ### 检验
 
-根据安装方式的不同，我们提供了验证安装正确性的方法。若 MMOCR 的安装无误，你在这一节完成后应当能看到以图片和文字形式表示的识别结果，示意如下：
+你可以通过运行一个简单的推理任务来检验 MMOCR 的安装是否成功。
+
+`````{tabs}
+
+````{tab} Python
+
+在 Python 中运行以下代码：
+
+```python
+>>> from mmocr.apis import MMOCRInferencer
+>>> ocr = MMOCRInferencer(det='DBNet', rec='CRNN')
+>>> ocr('demo/demo_text_ocr.jpg', show=True, print_result=True)
+```
+````
+
+````{tab} Shell
+
+如果你是通过源码安装的 MMOCR，你可以在 MMOCR 的根目录下运行以下命令：
+
+```shell
+python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show --print-result
+```
+````
+
+`````
+
+若 MMOCR 的安装无误，你在这一节完成后应当能看到以图片和文字形式表示的识别结果：
 
 <div align="center">
     <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
 </div>
+<br/ >
 
 ```bash
 # 识别结果
-{'rec_texts': ['cbanke', 'docece', 'sroumats', 'chounsonse', 'doceca', 'c', '', 'sond', 'abrandso', 'sretane', '1', 'tosl', 'roundi', 'slen', 'yet', 'ally', 's', 'sue', 'salle', 'v'], 'rec_scores': [...], 'det_polygons': [...], 'det_scores': tensor([...])}
+{'predictions': [{'rec_texts': ['cbanks', 'docecea', 'grouf', 'pwate', 'chobnsonsg', 'soxee', 'oeioh', 'c', 'sones', 'lbrandec', 'sretalg', '11', 'to8', 'round', 'sale', 'year',
+'ally', 'sie', 'sall'], 'rec_scores': [...], 'det_polygons': [...], 'det_scores':
+[...]}]}
 ```
 
-在 MMOCR 的目录运行以下命令：
-
-```bash
-python mmocr/ocr.py --det DB_r18 --recog CRNN demo/demo_text_ocr.jpg --show
-```
-
-也可以在 Python 解释器中运行以下代码：
-
-```python
-from mmocr.ocr import MMOCR
-ocr = MMOCR(recog='CRNN', det='DB_r18')
-ocr.readtext('demo_text_ocr.jpg', show=True)
+```{note}
+如果你在没有 GUI 的服务器上运行 MMOCR，或者通过没有开启 X11 转发的 SSH 隧道运行 MMOCR，你可能无法看到弹出的窗口。
 ```
 
 ## 自定义安装

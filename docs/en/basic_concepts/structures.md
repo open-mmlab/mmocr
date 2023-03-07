@@ -40,7 +40,7 @@ The conventions for the fields in `InstanceData` in MMOCR are shown in the table
 |             |                                    |                                                                                                                                                             |
 | ----------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Field       | Type                               | Description                                                                                                                                                 |
-| bboxes      | `torch.FloatTensor`                | Bounding boxes `[x1, x2, y1, y2]` with the shape `(N, 4)`.                                                                                                  |
+| bboxes      | `torch.FloatTensor`                | Bounding boxes `[x1, y1, x2, y2]` with the shape `(N, 4)`.                                                                                                  |
 | labels      | `torch.LongTensor`                 | Instance label with the shape `(N, )`. By default, MMOCR uses `0` to represent the "text" class.                                                            |
 | polygons    | `list[np.array(dtype=np.float32)]` | Polygonal bounding boxes with the shape `(N, )`.                                                                                                            |
 | scores      | `torch.Tensor`                     | Confidence scores of the predictions of bounding boxes. `(N, )`.                                                                                            |
@@ -99,7 +99,7 @@ The fields of [`InstanceData`](#instancedata) that will be used are:
 |          |                                    |                                                                                                  |
 | -------- | ---------------------------------- | ------------------------------------------------------------------------------------------------ |
 | Field    | Type                               | Description                                                                                      |
-| bboxes   | `torch.FloatTensor`                | Bounding boxes `[x1, x2, y1, y2]` with the shape `(N, 4)`.                                       |
+| bboxes   | `torch.FloatTensor`                | Bounding boxes `[x1, y1, x2, y2]` with the shape `(N, 4)`.                                       |
 | labels   | `torch.LongTensor`                 | Instance label with the shape `(N, )`. By default, MMOCR uses `0` to represent the "text" class. |
 | polygons | `list[np.array(dtype=np.float32)]` | Polygonal bounding boxes with the shape `(N, )`.                                                 |
 | scores   | `torch.Tensor`                     | Confidence scores of the predictions of bounding boxes. `(N, )`.                                 |
@@ -182,7 +182,7 @@ The [`InstanceData`](#text-detection-instancedata) fields that will be used by t
 |             |                     |                                                                                                                                                                            |
 | ----------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Field       | Type                | Description                                                                                                                                                                |
-| bboxes      | `torch.FloatTensor` | Bounding boxes `[x1, x2, y1, y2]` with the shape `(N, 4)`.                                                                                                                 |
+| bboxes      | `torch.FloatTensor` | Bounding boxes `[x1, y1, x2, y2]` with the shape `(N, 4)`.                                                                                                                 |
 | labels      | `torch.LongTensor`  | Instance label with the shape `(N, )`.                                                                                                                                     |
 | texts       | `list[str]`         | The text content of each instance with the shape `(N, )`，used for e2e text spotting or KIE task.                                                                          |
 | edge_labels | `torch.IntTensor`   | The node adjacency matrix with the shape `(N, N)`. In the KIE task, the optional values for the state between nodes are `-1` (ignored, not involved in loss calculation)，`0` (disconnected) and `1`(connected). |
