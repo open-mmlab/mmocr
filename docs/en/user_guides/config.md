@@ -332,12 +332,10 @@ Due to the specificity of the OCR task, different models have different data aug
 
 ```Python
 # Data Augmentation
-file_client_args = dict(backend='disk')
 train_pipeline = [
     dict(
         type='LoadImageFromFile',
         color_type='grayscale',
-        file_client_args=dict(backend='disk'),
         ignore_empty=True,
         min_size=5),
     dict(type='LoadOCRAnnotations', with_text=True),
@@ -349,8 +347,7 @@ train_pipeline = [
 test_pipeline = [
     dict(
         type='LoadImageFromFile',
-        color_type='grayscale',
-        file_client_args=dict(backend='disk')),
+        color_type='grayscale'),
     dict(
         type='RescaleToHeight',
         height=32,

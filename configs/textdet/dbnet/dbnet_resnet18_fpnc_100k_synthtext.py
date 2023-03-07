@@ -5,13 +5,8 @@ _base_ = [
     '../_base_/schedules/schedule_sgd_100k.py',
 ]
 
-file_client_args = dict(backend='disk')
-
 train_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadOCRAnnotations',
         with_polygon=True,

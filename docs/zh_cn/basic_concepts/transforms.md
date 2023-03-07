@@ -24,7 +24,6 @@ train_pipeline_r18 = [
     # 数据读取（图像）
     dict(
         type='LoadImageFromFile',
-        file_client_args=file_client_args,
         color_type='color_ignore_orientation'),
     # 数据读取（标注）
     dict(

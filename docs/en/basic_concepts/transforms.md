@@ -24,7 +24,6 @@ train_pipeline_r18 = [
     # Loading images
     dict(
         type='LoadImageFromFile',
-        file_client_args=file_client_args,
         color_type='color_ignore_orientation'),
     # Loading annotations
     dict(

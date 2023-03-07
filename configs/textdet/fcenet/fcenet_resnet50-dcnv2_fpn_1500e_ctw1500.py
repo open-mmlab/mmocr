@@ -12,17 +12,13 @@ param_scheduler = [
     dict(type='PolyLR', power=0.9, eta_min=1e-7, end=1500),
 ]
 
-file_client_args = dict(backend='disk')
 # dataset settings
 ctw1500_textdet_train = _base_.ctw1500_textdet_train
 ctw1500_textdet_test = _base_.ctw1500_textdet_test
 
 # test pipeline for CTW1500
 ctw_test_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(type='Resize', scale=(1080, 736), keep_ratio=True),
     # add loading annotation after ``Resize`` because ground truth
     # does not need to do resize data transform

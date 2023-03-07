@@ -20,10 +20,7 @@ ctw1500_textdet_test = _base_.ctw1500_textdet_test
 
 # test pipeline for CTW1500
 ctw_test_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=dict(backend='disk'),
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(type='Resize', scale=(1600, 1600), keep_ratio=True),
     # add loading annotation after ``Resize`` because ground truth
     # does not need to do resize data transform

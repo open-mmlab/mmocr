@@ -1,5 +1,3 @@
-file_client_args = dict(backend='disk')
-
 dictionary = dict(
     type='Dictionary',
     dict_file='{{ fileDirname }}/../../../dicts/english_digits_symbols.txt',
@@ -42,11 +40,7 @@ model = dict(
         std=[58.395, 57.12, 57.375]))
 
 train_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        ignore_empty=True,
-        min_size=2),
+    dict(type='LoadImageFromFile', ignore_empty=True, min_size=2),
     dict(type='LoadOCRAnnotations', with_text=True),
     dict(type='Resize', scale=(100, 32), keep_ratio=False),
     dict(
@@ -55,7 +49,7 @@ train_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='LoadImageFromFile'),
     dict(type='Resize', scale=(100, 32), keep_ratio=False),
     # add loading annotation after ``Resize`` because ground truth
     # does not need to do resize data transform
@@ -66,7 +60,7 @@ test_pipeline = [
 ]
 
 tta_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='LoadImageFromFile'),
     dict(
         type='TestTimeAug',
         transforms=[

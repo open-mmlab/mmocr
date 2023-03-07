@@ -329,12 +329,10 @@ MMOCR 中，数据集的构建与数据准备是相互解耦的。也就是说�
 
 ```Python
 # 数据增强
-file_client_args = dict(backend='disk')
 train_pipeline = [
     dict(
         type='LoadImageFromFile',
         color_type='grayscale',
-        file_client_args=dict(backend='disk'),
         ignore_empty=True,
         min_size=5),
     dict(type='LoadOCRAnnotations', with_text=True),
@@ -346,8 +344,7 @@ train_pipeline = [
 test_pipeline = [
     dict(
         type='LoadImageFromFile',
-        color_type='grayscale',
-        file_client_args=dict(backend='disk')),
+        color_type='grayscale'),
     dict(
         type='RescaleToHeight',
         height=32,
