@@ -69,7 +69,7 @@ This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
 - Fix wrong ic13 textspotting split data; add lexicons to ic13, ic15 and totaltext by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1758
 - SPTS readme by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1761
 
-## New Contributors
+### New Contributors
 
 - @triple-Mu made their first contribution in https://github.com/open-mmlab/mmocr/pull/1694
 - @double22a made their first contribution in https://github.com/open-mmlab/mmocr/pull/1739
@@ -117,6 +117,7 @@ This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
 - Add Chinese translation for browse_dataset.py by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1647
 - updata abcnet doc by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1658
 - update the dbnetpp\`s readme file by @zhuyue66 in https://github.com/open-mmlab/mmocr/pull/1626
+- Inferencer docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1744
 
 ### Bug Fixes
 
