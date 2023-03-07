@@ -5,7 +5,7 @@
 ### Highlights
 
 1. Two new models, ABCNet v2 (inference only) and SPTS are added to `projects/` folder.
-2. Announcing `Inferencer`, a unified inference interface in OpenMMLab for everyone's easy access and quick inference with all the pre-trained weights . [Docs](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/inference.html)
+2. Announcing `Inferencer`, a unified inference interface in OpenMMLab for everyone's easy access and quick inference with all the pre-trained weights. [Docs](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/inference.html)
 3. Users can use test-time augmentation for text recognition tasks. [Docs](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/train_test.html#test-time-augmentation)
 4. Support [batch augmentation](https://openaccess.thecvf.com/content_CVPR_2020/papers/Hoffer_Augment_Your_Batch_Improving_Generalization_Through_Instance_Repetition_CVPR_2020_paper.pdf) through [`BatchAugSampler`](https://github.com/open-mmlab/mmocr/pull/1757), which is a technique used in SPTS.
 5. Dataset Preparer has been refactored to allow more flexible configurations. Besides, users are now able to prepare text recognition datasets in LMDB formats. [Docs](qq.com)
