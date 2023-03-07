@@ -232,7 +232,7 @@ Therefore, we provide two built-in gatherers, `pair_gather` and `mono_gather`, t
 
 When the image and annotation file are matched, the original annotations will be parsed. Since the annotation format is usually varied from dataset to dataset, the parsers are usually dataset related. Then, the parser will pack the required data into the MMOCR format.
 
-Finally, we can specify the dumpers to decide the data format. Currently, we only support `JsonDumper` and `WildreceiptOpensetDumper`, where the former is used to save the data in the standard MMOCR Json format, and the latter is used to save the data in the Wildreceipt format. In the future, we plan to support `LMDBDumper` to save the annotation files in LMDB format.
+Finally, we can specify the dumpers to decide the data format. Currently, we support `JsonDumper`, `WildreceiptOpensetDumper`, and `TextRecogLMDBDumper`. They are used to save the data in the standard MMOCR Json format, Wildreceipt format, and the LMDB format commonly used in academia in the field of text recognition, respectively.
 
 ### Use DataPreparer to prepare customized dataset
 
