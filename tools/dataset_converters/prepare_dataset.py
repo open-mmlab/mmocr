@@ -98,7 +98,7 @@ def force_lmdb(cfg):
                     'so most likely the annotations are MMOCR-ready and do '
                     'not need any adaptation, and it '
                     'cannot be dumped in LMDB format.')
-            preparer_cfg.dumper['type'] = 'LMDBDumper'
+            preparer_cfg.dumper['type'] = 'TextRecogLMDBDumper'
 
     cfg.config_generator['dataset_name'] = f'{cfg.dataset_name}_lmdb'
 

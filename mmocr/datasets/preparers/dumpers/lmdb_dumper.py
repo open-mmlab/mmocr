@@ -13,7 +13,7 @@ from .base import BaseDumper
 
 
 @DATA_DUMPERS.register_module()
-class LMDBDumper(BaseDumper):
+class TextRecogLMDBDumper(BaseDumper):
     """Text recognition LMDB format dataset dumper.
 
     Args:
@@ -45,7 +45,7 @@ class LMDBDumper(BaseDumper):
                  lmdb_map_size: int = 1099511627776,
                  verify: bool = True) -> None:
         assert task == 'textrecog', \
-            f'LMDBDumper only works with textrecog, but got {task}'
+            f'TextRecogLMDBDumper only works with textrecog, but got {task}'
         super().__init__(task=task, split=split, data_root=data_root)
         self.batch_size = batch_size
         self.encoding = encoding
