@@ -33,8 +33,9 @@ def parse_args():
         '--lmdb',
         action='store_true',
         default=False,
-        help='Whether to dump the textrecog dataset to LMDB format, '
-        'applicable when --task=textrecog')
+        help='Whether to dump the textrecog dataset to LMDB format, It\'s a '
+        'shortcut to force the dataset to be dumped in lmdb format. '
+        'Applicable when --task=textrecog')
     parser.add_argument(
         '--overwrite-cfg',
         action='store_true',
@@ -79,6 +80,48 @@ def parse_meta(task: str, meta_path: str) -> None:
             time.sleep(1)
 
 
+def force_lmdb(cfg):
+    """Force the dataset to be dumped in lmdb format.
+
+    Args:
+        cfg (Config): Config object.
+
+    Returns:
+        Config: Config object.
+    """
+    for split in ['train', 'val', 'test']:
+        preparer_cfg = cfg.get(f'{split}_preparer')
+        if preparer_cfg:
+            if preparer_cfg.get('dumper') is None:
+                raise ValueError(
+                    f'{split} split does not come with a dumper, '
+                    'so most likely the annotations are MMOCR-ready and do '
+                    'not need any adaptation, and it '
+                    'cannot be dumped in LMDB format.')
+            preparer_cfg.dumper['type'] = 'LMDBDumper'
+
+    cfg.config_generator['dataset_name'] = f'{cfg.dataset_name}_lmdb'
+    for ann_list_key in ['train_anns', 'val_anns', 'test_anns']:
+        if ann_list_key in cfg.config_generator:
+            # It can be None when users want to clear out the default
+            # value
+            if not cfg.config_generator[ann_list_key]:
+                continue
+            ann_list = cfg.config_generator[ann_list_key]
+            for ann_dict in ann_list:
+                ann_dict['ann_file'] = (
+                    osp.splitext(ann_dict['ann_file'])[0] + '.lmdb')
+        else:
+            if ann_list_key == 'train_anns':
+                ann_list = [dict(ann_file='textrecog_train.lmdb')]
+            elif ann_list_key == 'test_anns':
+                ann_list = [dict(ann_file='textrecog_test.lmdb')]
+            else:
+                ann_list = []
+        cfg.config_generator[ann_list_key] = ann_list
+    return cfg
+
+
 def main():
     args = parse_args()
     if args.lmdb and args.task != 'textrecog':
@@ -99,6 +142,8 @@ def main():
         cfg.task = args.task
         cfg.dataset_name = dataset
         cfg.lmdb = args.lmdb
+        if args.lmdb:
+            cfg = force_lmdb(cfg)
         preparer = DatasetPreparer.from_file(cfg)
         preparer.run(args.splits)
 
