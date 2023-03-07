@@ -1,6 +1,6 @@
 # Changelog of v1.x
 
-## v1.0.0rc5 (07/03/2023)
+## v1.0.0rc6 (07/03/2023)
 
 ### Highlights
 
