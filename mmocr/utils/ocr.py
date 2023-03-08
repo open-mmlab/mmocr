@@ -361,7 +361,7 @@ class MMOCR:
         # Check if the det/recog model choice is valid
         if self.td and self.td not in textdet_models:
             raise ValueError(self.td,
-                             'is not a supported text detection algorthm')
+                             'is not a supported text detection algorithm')
         elif self.tr and self.tr not in textrecog_models:
             raise ValueError(self.tr,
                              'is not a supported text recognition algorithm')
