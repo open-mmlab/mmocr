@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .base import BaseParser
 from .coco_parser import COCOTextDetAnnParser
+from .ctw1500_parser import CTW1500AnnParser
 from .funsd_parser import FUNSDTextDetAnnParser
 from .icdar_txt_parser import (ICDARTxtTextDetAnnParser,
                                ICDARTxtTextRecogAnnParser)
@@ -14,5 +15,5 @@ __all__ = [
     'BaseParser', 'ICDARTxtTextDetAnnParser', 'ICDARTxtTextRecogAnnParser',
     'TotaltextTextDetAnnParser', 'WildreceiptKIEAnnParser',
     'COCOTextDetAnnParser', 'SVTTextDetAnnParser', 'FUNSDTextDetAnnParser',
-    'SROIETextDetAnnParser', 'NAFAnnParser'
+    'SROIETextDetAnnParser', 'NAFAnnParser', 'CTW1500AnnParser'
 ]
