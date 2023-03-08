@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import Dict, List, Optional
 
-from ..data_preparer import CFG_GENERATORS
+from mmocr.registry import CFG_GENERATORS
 from .base import BaseDatasetConfigGenerator
 
 
@@ -36,17 +36,36 @@ class TextRecogConfigGenerator(BaseDatasetConfigGenerator):
 
     Example:
         It generates a dataset config like:
-        >>> ic15_rec_data_root = 'data/icdar2015/'
+        >>> icdar2015_textrecog_data_root = 'data/icdar2015/'
         >>> icdar2015_textrecog_train = dict(
         >>>     type='OCRDataset',
-        >>>     data_root=ic15_rec_data_root,
+        >>>     data_root=icdar2015_textrecog_data_root,
         >>>     ann_file='textrecog_train.json',
-        >>>     test_mode=False,
         >>>     pipeline=None)
         >>> icdar2015_textrecog_test = dict(
         >>>     type='OCRDataset',
-        >>>     data_root=ic15_rec_data_root,
+        >>>     data_root=icdar2015_textrecog_data_root,
         >>>     ann_file='textrecog_test.json',
+        >>>     test_mode=True,
+        >>>     pipeline=None)
+
+        It generates a lmdb format dataset config like:
+        >>> icdar2015_lmdb_textrecog_data_root = 'data/icdar2015'
+        >>> icdar2015_lmdb_textrecog_train = dict(
+        >>>     type='RecogLMDBDataset',
+        >>>     data_root=icdar2015_lmdb_textrecog_data_root,
+        >>>     ann_file='textrecog_train.lmdb',
+        >>>     pipeline=None)
+        >>> icdar2015_lmdb_textrecog_test = dict(
+        >>>     type='RecogLMDBDataset',
+        >>>     data_root=icdar2015_lmdb_textrecog_data_root,
+        >>>     ann_file='textrecog_test.lmdb',
+        >>>     test_mode=True,
+        >>>     pipeline=None)
+        >>> icdar2015_lmdb_1811_textrecog_test = dict(
+        >>>     type='RecogLMDBDataset',
+        >>>     data_root=icdar2015_lmdb_textrecog_data_root,
+        >>>     ann_file='textrecog_test_1811.lmdb',
         >>>     test_mode=True,
         >>>     pipeline=None)
     """
@@ -100,8 +119,8 @@ class TextRecogConfigGenerator(BaseDatasetConfigGenerator):
         cfg = ''
         for key_name, ann_dict in self.anns.items():
             cfg += f'\n{key_name} = dict(\n'
-            cfg += '    type=\'OCRDataset\',\n'
-            cfg += '    data_root=' + f'{self.dataset_name}_{self.task}_data_root,\n'  # noqa: E501
+            cfg += f'    type=\'{ann_dict["dataset_type"]}\',\n'
+            cfg += f'    data_root={self.dataset_name}_{self.task}_data_root,\n'  # noqa: E501
             cfg += f'    ann_file=\'{ann_dict["ann_file"]}\',\n'
             if ann_dict['split'] in ['test', 'val']:
                 cfg += '    test_mode=True,\n'

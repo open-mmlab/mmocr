@@ -41,6 +41,28 @@
 
 </div>
 
+## 近期更新
+
+**默认分支已经从 `main` 切换到 `1.x`。我们鼓励用户迁移到最新版本，请参考 [迁移指南](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/overview.html) 以了解更多细节。**
+
+最新的版本 v1.0.0rc6 于 2023-03-07 发布。
+
+1. 在 `projects/` 目录中新增了 ABCNet v2 (仅支持推理) 和 SPTS 模型；
+
+2. 新增统一推理接口 `Inferencer`，用户可以方便直接地进行各任务的推理。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/inference.html)
+
+3. 支持了文本识别任务的测试时数据增强。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/train_test.html#id15)
+
+4. 通过 [`BatchAugSampler`](https://github.com/open-mmlab/mmocr/pull/1757) 支持了 [batch augmentation](https://openaccess.thecvf.com/content_CVPR_2020/papers/Hoffer_Augment_Your_Batch_Improving_Generalization_Through_Instance_Repetition_CVPR_2020_paper.pdf) ，这是 SPTS 中使用的一种技巧。
+
+5. 重构了 Dataset Preparer ，用户现在可以更灵活地配置数据集的预处理流程。除此之外，用户现在也可以将文本识别数据集转换为 LMDB 格式。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/data_prepare/dataset_preparer.html#lmdb)
+
+6. 修正了一些端到端数据集的标注，保证了数据集的正确性及与常见实践的一致性。
+
+7. 减少了 `shapely` 中可能出现的一些错误警告。
+
+阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
+
 ## 简介
 
 MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检测，文本识别以及相应的下游任务，如关键信息提取。 它是 OpenMMLab 项目的一部分。
@@ -68,19 +90,6 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 -**众多实用工具**
 
 该工具箱提供了一套全面的实用程序，可以帮助用户评估模型的性能。它包括可对图像，标注的真值以及预测结果进行可视化的可视化工具，以及用于在训练过程中评估模型的验证工具。它还包括数据转换器，演示了如何将用户自建的标注数据转换为 MMOCR 支持的标注文件。
-
-## 近期更新
-
-**默认分支已经从 `main` 切换到 `1.x`。我们鼓励用户迁移到最新版本，请参考 [迁移指南](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/overview.html) 以了解更多细节。**
-
-最新的版本 v1.0.0rc5 于 2023-01-06 发布。
-
-1. 新增了 Aster 和 SVTR 模型，并完整支持了 ABCNet 的训练与测试；
-2. Dataset Preparer 新支持了5个数据集：CocoTextV2, FUNSD, TextOCR, NAF, SROIE；
-3. 新增了4个文本识别以及2个辅助运行过程的数据变换。
-4. 数据变换 `FixInvalidPolygon` 现在可以处理更多种类的非法多边形，因此各模型如今也可以顺畅地在 TotalText 数据集上完成训练流程。我们同时也发布了 DBNet 和 FCENet 在 TotalText 上的预训练模型。
-
-阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
 
 ## MMOCR 1.0 更新汇总
 

@@ -26,15 +26,3 @@ Models:
         Metrics:
           hmean-iou: 0.8467
     Weights: https://download.openmmlab.com/mmocr/textdet/drrg/drrg_resnet50_fpn-unet_1200e_ctw1500/drrg_resnet50_fpn-unet_1200e_ctw1500_20220827_105233-d5c702dd.pth
-
-  - Name: drrg_resnet50-oclip_fpn-unet_1200e_ctw1500
-    In Collection: DRRG
-    Config: configs/textdet/drrg/drrg_resnet50-oclip_fpn-unet_1200e_ctw1500.py
-    Metadata:
-      Training Data: CTW1500
-    Results:
-      - Task: Text Detection
-        Dataset: CTW1500
-        Metrics:
-          hmean-iou:
-    Weights:

@@ -2,7 +2,7 @@
 import os.path as osp
 from typing import Tuple
 
-from ..data_preparer import DATA_GATHERERS
+from mmocr.registry import DATA_GATHERERS
 from .base import BaseGatherer
 
 

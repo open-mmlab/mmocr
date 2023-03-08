@@ -48,5 +48,5 @@ Models:
         Metrics:
           macro_f1: 0.931
           micro_f1: 0.940
-          edgee_micro_f1: 0.792
+          edge_micro_f1: 0.792
     Weights: https://download.openmmlab.com/mmocr/kie/sdmgr/sdmgr_novisual_60e_wildreceipt-openset/sdmgr_novisual_60e_wildreceipt-openset_20220831_200807-dedf15ec.pth

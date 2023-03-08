@@ -4,7 +4,7 @@ from typing import Dict
 
 import mmengine
 
-from ..data_preparer import DATA_DUMPERS
+from mmocr.registry import DATA_DUMPERS
 from .base import BaseDumper
 
 

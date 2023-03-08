@@ -2,8 +2,8 @@
 import json
 from typing import Tuple
 
+from mmocr.registry import DATA_PARSERS
 from mmocr.utils import bbox2poly
-from ..data_preparer import DATA_PARSERS
 from .base import BaseParser
 
 

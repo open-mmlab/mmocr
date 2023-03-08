@@ -2,20 +2,22 @@ import math
 from typing import Iterator, Optional, Sized
 
 import torch
-from mmengine.dist import get_dist_info, is_main_process, sync_random_seed
+from mmengine.dist import get_dist_info, sync_random_seed
 from torch.utils.data import Sampler
 
 from mmocr.registry import DATA_SAMPLERS
 
 
 @DATA_SAMPLERS.register_module()
-class RepeatAugSampler(Sampler):
-    """Sampler that restricts data loading to a subset of the dataset for
-    distributed, with repeated augmentation. It ensures that different each
+class BatchAugSampler(Sampler):
+    """Sampler that repeats the same data elements for num_repeats times. The
+    batch size should be divisible by num_repeats.
+
+    It ensures that different each
     augmented version of a sample will be visible to a different process (GPU).
     Heavily based on torch.utils.data.DistributedSampler.
 
-    This sampler was taken from
+    This sampler was modified from
     https://github.com/facebookresearch/deit/blob/0c4b8f60/samplers.py
     Used in
     Copyright (c) 2015-present, Facebook, Inc.
@@ -40,11 +42,6 @@ class RepeatAugSampler(Sampler):
 
         self.dataset = dataset
         self.shuffle = shuffle
-        if not self.shuffle and is_main_process():
-            from mmengine.logging import MMLogger
-            logger = MMLogger.get_current_instance()
-            logger.warning('The RepeatAugSampler always picks a '
-                           'fixed part of data if `shuffle=False`.')
 
         if seed is None:
             seed = sync_random_seed()
@@ -82,7 +79,7 @@ class RepeatAugSampler(Sampler):
         assert len(indices) == self.num_samples
 
         # return up to num selected samples
-        return iter(indices[:self.num_selected_samples])
+        return iter(indices)
 
     def __len__(self) -> int:
         """The number of samples in this rank."""

@@ -3,8 +3,8 @@ import json
 import os.path as osp
 from typing import Dict
 
+from mmocr.registry import DATA_PARSERS
 from mmocr.utils import list_from_file
-from ..data_preparer import DATA_PARSERS
 from .base import BaseParser
 
 

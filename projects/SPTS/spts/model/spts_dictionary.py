@@ -15,6 +15,8 @@ class SPTSDictionary(Dictionary):
     Args:
         dict_file (str): The path of Character dict file which a single
             character must occupies a line.
+        num_bins (int): Number of bins dividing the image, which is used to
+            shift the character indexes. Defaults to 1000.
         with_start (bool): The flag to control whether to include the start
             token. Defaults to False.
         with_end (bool): The flag to control whether to include the end token.
@@ -45,6 +47,7 @@ class SPTSDictionary(Dictionary):
     def __init__(
         self,
         dict_file: str,
+        num_bins: int = 1000,
         with_start: bool = False,
         with_end: bool = False,
         with_seq_end: bool = False,
@@ -73,6 +76,26 @@ class SPTSDictionary(Dictionary):
             start_end_token=start_end_token,
             padding_token=padding_token,
             unknown_token=unknown_token)
+
+        self.num_bins = num_bins
+        self._shift_idx()
+
+    @property
+    def num_classes(self) -> int:
+        """int: Number of output classes. Special tokens are counted.
+        """
+        return len(self._dict) + self.num_bins
+
+    def _shift_idx(self):
+        idx_terms = [
+            'start_idx', 'end_idx', 'unknown_idx', 'seq_end_idx', 'padding_idx'
+        ]
+        for term in idx_terms:
+            value = getattr(self, term)
+            if value:
+                setattr(self, term, value + self.num_bins)
+        for char in self._dict:
+            self._char2idx[char] += self.num_bins
 
     def _update_dict(self):
         """Update the dict with tokens according to parameters."""
@@ -129,10 +152,11 @@ class SPTSDictionary(Dictionary):
         assert isinstance(index, (list, tuple))
         string = ''
         for i in index:
-            assert i < len(self._dict), f'Index: {i} out of range! Index ' \
-                                        f'must be less than {len(self._dict)}'
+            assert i < self.num_classes, f'Index: {i} out of range! Index ' \
+                                        f'must be less than {self.num_classes}'
             # TODO: find its difference from ignore_chars
             # in TextRecogPostprocessor
-            if self._dict[i] is not None:
-                string += self._dict[i]
+            shifted_i = i - self.num_bins
+            if self._dict[shifted_i] is not None:
+                string += self._dict[shifted_i]
         return string

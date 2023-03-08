@@ -9,8 +9,8 @@ from typing import Dict, List, Optional, Tuple
 
 from mmengine import mkdir_or_exist
 
+from mmocr.registry import DATA_OBTAINERS
 from mmocr.utils import check_integrity, is_archive
-from ..data_preparer import DATA_OBTAINERS
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -127,7 +127,7 @@ class NaiveDataObtainer:
             elif '.finish' not in name and len(name) > 0:
                 while True:
                     c = input(f'{dst_path} already exists when extracting '
-                              '{zip_name}, whether to unzip again? (y/n)')
+                              '{zip_name}, unzip again? (y/N) ') or 'N'
                     if c.lower() in ['y', 'n']:
                         extracted = c == 'n'
                         break
