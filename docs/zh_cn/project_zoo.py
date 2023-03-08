@@ -26,7 +26,7 @@ for file in files:
     project_zoo += f'## {title}\n\n'
 
     # Locate the description
-    expr = '## 描述\n(.*?)##'
+    expr = '## Description\n(.*?)##'
     description = re.search(expr, content, re.DOTALL).group(1)
     project_zoo += f'{description}\n'
 
