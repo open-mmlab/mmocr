@@ -259,7 +259,6 @@ def obtain_dataset_cfg(cfg: Config, phase: str, mode: str, task: str) -> Tuple:
             pipeline=[
                 dict(
                     type='LoadImageFromFile',
-                    file_client_args=dict(backend='disk'),
                     color_type='color_ignore_orientation'),
                 dict(
                     type='LoadOCRAnnotations',
@@ -277,11 +276,7 @@ def obtain_dataset_cfg(cfg: Config, phase: str, mode: str, task: str) -> Tuple:
                 name='visualizer',
                 vis_backends=[dict(type='LocalVisBackend')]),
             pipeline=[
-                dict(
-                    type='LoadImageFromFile',
-                    file_client_args=dict(backend='disk'),
-                    ignore_empty=True,
-                    min_size=2),
+                dict(type='LoadImageFromFile', ignore_empty=True, min_size=2),
                 dict(type='LoadOCRAnnotations', with_text=True),
                 dict(
                     type='PackTextRecogInputs',

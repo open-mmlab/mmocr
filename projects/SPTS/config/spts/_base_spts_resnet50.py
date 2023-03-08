@@ -1,8 +1,6 @@
 custom_imports = dict(
     imports=['projects.SPTS.spts'], allow_failed_imports=False)
 
-file_client_args = dict(backend='disk')
-
 dictionary = dict(
     type='SPTSDictionary',
     dict_file='{{ fileDirname }}/../../dicts/spts.txt',
@@ -53,10 +51,7 @@ model = dict(
         postprocessor=dict(type='SPTSPostprocessor', num_bins=num_bins)))
 
 test_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     # dict(type='Resize', scale=(1000, 1824), keep_ratio=True),
     dict(
         type='RescaleToShortSide',
@@ -73,10 +68,7 @@ test_pipeline = [
 ]
 
 train_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadOCRAnnotationsWithBezier',
         with_bbox=True,

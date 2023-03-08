@@ -71,8 +71,9 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
         self.to_float32 = to_float32
         self.color_type = color_type
         self.imdecode_backend = imdecode_backend
-        # self.file_client = mmengine.FileClient(**self.file_client_args)
         self.min_size = min_size
+        self.file_client_args = file_client_args
+        self.backend_args = backend_args
         if file_client_args is not None:
             warnings.warn(
                 '"file_client_args" will be deprecated in future. '
@@ -98,7 +99,7 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
 
         filename = results['img_path']
         try:
-            if self.file_client_args is not None:
+            if getattr(self, 'file_client_args', None) is not None:
                 file_client = fileio.FileClient.infer_client(
                     self.file_client_args, filename)
                 img_bytes = file_client.get(filename)
@@ -405,7 +406,11 @@ class LoadOCRAnnotations(MMCV_LoadAnnotations):
         repr_str += f'with_polygon={self.with_polygon}, '
         repr_str += f'with_text={self.with_text}, '
         repr_str += f"imdecode_backend='{self.imdecode_backend}', "
-        repr_str += f'file_client_args={self.file_client_args})'
+
+        if self.file_client_args is not None:
+            repr_str += f'file_client_args={self.file_client_args})'
+        else:
+            repr_str += f'backend_args={self.backend_args})'
         return repr_str
 
 

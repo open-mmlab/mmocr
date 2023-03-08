@@ -1,4 +1,3 @@
-file_client_args = dict(backend='disk')
 num_classes = 1
 strides = [8, 16, 32, 64, 128]
 bbox_coder = dict(type='mmdet.DistancePointBBoxCoder')
@@ -126,10 +125,7 @@ model = dict(
     ))
 
 test_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(type='Resize', scale=(2000, 4000), keep_ratio=True, backend='pillow'),
     dict(
         type='LoadOCRAnnotations',
@@ -143,10 +139,7 @@ test_pipeline = [
 ]
 
 train_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadOCRAnnotations',
         with_polygon=True,
