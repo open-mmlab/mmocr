@@ -7,7 +7,7 @@ import re
 files = []
 
 project_zoo = """
-# projects 中的模型
+# 其它模型
 
 这里是一些已经可以使用，但是尚未包含在 MMOCR 包中的模型。
 
