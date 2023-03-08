@@ -37,15 +37,6 @@ You can switch between English and Chinese in the lower-left corner of the layou
    basic_concepts/convention.md
    basic_concepts/engine.md
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Migrating from MMOCR 0.x
-
-   migration/overview.md
-   migration/code.md
-   migration/dataset.md
-   migration/model.md
-   migration/transforms.md
 
 .. toctree::
    :maxdepth: 2
@@ -66,15 +57,25 @@ You can switch between English and Chinese in the lower-left corner of the layou
    textdet_models.md
    textrecog_models.md
    kie_models.md
+   projectzoo.md
 
 .. toctree::
    :maxdepth: 2
    :caption: Notes
 
    notes/contribution_guide.md
-   notes/projects.md
    notes/changelog.md
    notes/faq.md
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Migrating from MMOCR 0.x
+
+   migration/overview.md
+   migration/code.md
+   migration/dataset.md
+   migration/model.md
+   migration/transforms.md
 
 .. toctree::
    :maxdepth: 1
