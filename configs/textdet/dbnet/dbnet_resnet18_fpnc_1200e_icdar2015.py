@@ -5,8 +5,6 @@ _base_ = [
     '../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
-randomness = dict(seed=42)
-
 # dataset settings
 icdar2015_textdet_train = _base_.icdar2015_textdet_train
 icdar2015_textdet_train.pipeline = _base_.train_pipeline
@@ -14,7 +12,7 @@ icdar2015_textdet_test = _base_.icdar2015_textdet_test
 icdar2015_textdet_test.pipeline = _base_.test_pipeline
 
 train_dataloader = dict(
-    batch_size=1,
+    batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
