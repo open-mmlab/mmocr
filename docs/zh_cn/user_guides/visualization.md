@@ -1,6 +1,6 @@
 # 可视化
 
-阅读本文前建议先阅读 MMEngine 的[可视化 (Visualization)](https://mmengine.readthedocs.io/zh_CN/latest/advanced_tutorials/visualization.html)文档以初步了解 Visualizer 的定义及相关用法。
+阅读本文前建议先阅读 {external+mmengine:doc}`MMEngine: 可视化 <advanced_tutorials/visualization>` 以初步了解 Visualizer 的定义及相关用法。
 
 简单来说，MMEngine 中实现了用于满足日常可视化需求的可视化器件 [`Visualizer`](mmengine.visualization.Visualizer)，其主要包含三个功能：
 

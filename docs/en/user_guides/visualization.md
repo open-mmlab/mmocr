@@ -1,6 +1,6 @@
 # Visualization
 
-Before reading this tutorial, it is recommended to read MMEngine's [Visualization](https://mmengine.readthedocs.io/en/latest/advanced_tutorials/visualization.html) documentation to get a first glimpse of the `Visualizer` definition and usage.
+Before reading this tutorial, it is recommended to read MMEngine's {external+mmengine:doc}`MMEngine: Visualization <advanced_tutorials/visualization>` documentation to get a first glimpse of the `Visualizer` definition and usage.
 
 In brief, the [`Visualizer`](mmengine.visualization.Visualizer) is implemented in MMEngine to meet the daily visualization needs, and contains three main functions:
 
