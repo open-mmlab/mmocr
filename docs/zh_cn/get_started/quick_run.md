@@ -54,24 +54,29 @@ tar xzvf mini_icdar2015.tar.gz -C data/
 
 在这个例子中，我们将会训练一个以 resnet18 作为骨干网络（backbone）的 DBNet。由于 MMOCR 已经有针对完整 ICDAR 2015 数据集的配置 （`configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py`），我们只需要在它的基础上作出一点修改。
 
-我们首先需要修改数据集的路径。在这个配置中，大部分关键的配置文件都在 `_base_` 中被导入，如数据库的配置就来自 `configs/_base_/det_datasets/icdar2015.py`。打开该文件，把第一行`ic15_det_data_root` 指向的路径替换：
+我们首先需要修改数据集的路径。在这个配置中，大部分关键的配置文件都在 `_base_` 中被导入，如数据库的配置就来自 `configs/textdet/_base_/datasets/icdar2015.py`。打开该文件，把第一行 `icdar2015_textdet_data_root` 指向的路径替换：
 
 ```Python
-ic15_det_data_root = 'data/det/mini_icdar2015'
+icdar2015_textdet_data_root = 'data/mini_icdar2015'
 ```
 
 另外，因为数据集尺寸缩小了，我们也要相应地减少训练的轮次到 400，缩短验证和储存权重的间隔到10轮，并放弃学习率衰减策略。直接把以下几行配置放入 `configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py`即可生效：
 
 ```Python
-# 每 10 个 epoch 储存一次权重
-default_hooks = dict(checkpoint=dict(type='CheckpointHook', interval=10), )
+# 每 10 个 epoch 储存一次权重，且只保留最后一个权重
+default_hooks = dict(
+    checkpoint=dict(
+        type='CheckpointHook',
+        interval=10,
+        max_keep_ckpts=1,
+    ))
 # 设置最大 epoch 数为 400，每 10 个 epoch 运行一次验证
 train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=400, val_interval=10)
 # 令学习率为常量，即不进行学习率衰减
 param_scheduler = [dict(type='ConstantLR', factor=1.0),]
 ```
 
-这里，我们通过配置的[继承](https://mmengine.readthedocs.io/zh_CN/latest/tutorials/config.html)机制将基础配置中的相应参数直接进行了改写。原本的字段分布在 `configs/_base_/schedules/schedule_sgd_1200e.py` 和 `configs/_base_/textdet_default_runtime.py` 中，感兴趣的读者可以自行查看。
+这里，我们通过配置的继承 ({external+mmengine:doc}`MMEngine: Config <advanced_tutorials/config>`) 机制将基础配置中的相应参数直接进行了改写。原本的字段分布在 `configs/textdet/_base_/schedules/schedule_sgd_1200e.py` 和 `configs/textdet/_base_/default_runtime.py` 中，感兴趣的读者可以自行查看。
 
 ```{note}
 关于配置文件更加详尽的说明，请参考[此处](../user_guides/config.md)。
@@ -126,7 +131,7 @@ python tools/train.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.
 
 ## 测试
 
-经过数十分钟的等待，模型顺利完成了400 epochs的训练。我们通过控制台的输出，观察到 DBNet 在最后一个 epoch 的表现最好，`hmean` 达到了 60.86：
+经过数十分钟的等待，模型顺利完成了400 epochs的训练。我们通过控制台的输出，观察到 DBNet 在最后一个 epoch 的表现最好，`hmean` 达到了 60.86（你可能会得到一个不太一样的结果）：
 
 ```Bash
 08/22 19:24:52 - mmengine - INFO - Epoch(val) [400][100/100]  icdar/precision: 0.7285  icdar/recall: 0.5226  icdar/hmean: 0.6086
@@ -138,7 +143,7 @@ python tools/train.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.
 
 然而，这个数值只反映了 DBNet 在迷你 ICDAR 2015 数据集上的性能。要想更加客观地评判它的检测能力，我们还要看看它在分布外数据集上的表现。例如，`tests/data/det_toy_dataset` 就是一个很小的真实数据集，我们可以用它来验证一下 DBNet 的实际性能。
 
-在测试前，我们同样需要对数据集的位置做一下修改。打开 `configs/_base_/det_datasets/icdar2015.py`，修改 `icdar2015_textdet_test` 的 `data_root` 为 `tests/data/det_toy_dataset`:
+在测试前，我们同样需要对数据集的位置做一下修改。打开 `configs/textdet/_base_/datasets/icdar2015.py`，修改 `icdar2015_textdet_test` 的 `data_root` 为 `tests/data/det_toy_dataset`:
 
 ```Python
 # ...
@@ -182,7 +187,7 @@ python tools/test.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.p
 为了对模型的输出有一个更直观的感受，我们还可以直接可视化它的预测输出。在 `test.py` 中，用户可以通过 `show` 参数打开弹窗可视化；也可以通过 `show-dir` 参数指定预测结果图导出的目录。
 
 ```Bash
-python tools/test.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py work_dirs/dbnet_r18_fpnc_1200e_icdar2015/epoch_400.pth --show-dir imgs/
+python tools/test.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py work_dirs/dbnet_resnet18_fpnc_1200e_icdar2015/epoch_400.pth --show-dir imgs/
 ```
 
 真实标签和预测值会在可视化结果中以平铺的方式展示。左图的绿框表示真实标签，右图的红框表示预测值。
