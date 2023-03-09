@@ -1,6 +1,6 @@
 # 快速运行
 
-这个章节会介绍 MMOCR 的一些基本功能。我们假设你已经[从源码安装了 MMOCR](install.md#best-practices)。
+这个章节会介绍 MMOCR 的一些基本功能。我们假设你已经[从源码安装了 MMOCR](install.md#best-practices)。此外，你也可以通过[教程 Notebook](https://colab.research.google.com/github/open-mmlab/mmocr/blob/dev-1.x/demo/tutorial.ipynb)来了解如何在交互式环境下实现推理、训练和测试。
 
 ## 推理
 
