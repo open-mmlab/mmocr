@@ -5,26 +5,48 @@ import numpy as np
 import torch
 
 from mmocr.utils import (bbox2poly, bbox_center_distance, bbox_diag_distance,
-                         bezier2polygon, is_on_same_line,
-                         stitch_boxes_into_lines)
+                         bezier2polygon, is_on_same_line, rescale_bbox,
+                         rescale_bboxes, stitch_boxes_into_lines)
 from mmocr.utils.bbox_utils import bbox_jitter
 
 
 class TestBbox2poly(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.box_array = np.array([0, 0, 1, 1])
-        self.box_list = [0, 0, 1, 1]
-        self.box_tensor = torch.tensor([0, 0, 1, 1])
-        self.gt = np.array([0, 0, 1, 0, 1, 1, 0, 1])
+        self.box_array = np.array([1, 1, 2, 2])
+        self.box_list = [1, 1, 2, 2]
+        self.box_tensor = torch.tensor([1, 1, 2, 2])
+        self.gt_xyxy = np.array([1, 1, 2, 1, 2, 2, 1, 2])
+        self.gt_xywh = np.array([1, 1, 3, 1, 3, 3, 1, 3])
 
     def test_bbox2poly(self):
+        # mode: xyxy
         # test np.array
-        self.assertTrue(np.array_equal(bbox2poly(self.box_array), self.gt))
+        self.assertTrue(
+            np.array_equal(bbox2poly(self.box_array), self.gt_xyxy))
         # test list
-        self.assertTrue(np.array_equal(bbox2poly(self.box_list), self.gt))
+        self.assertTrue(np.array_equal(bbox2poly(self.box_list), self.gt_xyxy))
         # test tensor
-        self.assertTrue(np.array_equal(bbox2poly(self.box_tensor), self.gt))
+        self.assertTrue(
+            np.array_equal(bbox2poly(self.box_tensor), self.gt_xyxy))
+
+        # mode: xywh
+        # test np.array
+        self.assertTrue(
+            np.array_equal(
+                bbox2poly(self.box_array, mode='xywh'), self.gt_xywh))
+        # test list
+        self.assertTrue(
+            np.array_equal(
+                bbox2poly(self.box_list, mode='xywh'), self.gt_xywh))
+        # test tensor
+        self.assertTrue(
+            np.array_equal(
+                bbox2poly(self.box_tensor, mode='xywh'), self.gt_xywh))
+
+        # invalid mode
+        with self.assertRaises(NotImplementedError):
+            bbox2poly(self.box_tensor, mode='a')
 
 
 class TestBoxCenterDistance(unittest.TestCase):
@@ -214,3 +236,31 @@ class TestStitchBoxesIntoLines(unittest.TestCase):
         result.sort(key=lambda x: x['box'][0])
         expected_result.sort(key=lambda x: x['box'][0])
         self.assertEqual(result, expected_result)
+
+
+class TestRescaleBbox(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.bbox = np.array([0, 0, 1, 1])
+        self.bboxes = np.array([[0, 0, 1, 1], [1, 1, 2, 2]])
+        self.scale = 2
+
+    def test_rescale_bbox(self):
+        # mul
+        rescaled_bbox = rescale_bbox(self.bbox, self.scale, mode='mul')
+        self.assertTrue(np.allclose(rescaled_bbox, np.array([0, 0, 2, 2])))
+        # div
+        rescaled_bbox = rescale_bbox(self.bbox, self.scale, mode='div')
+        self.assertTrue(np.allclose(rescaled_bbox, np.array([0, 0, 0.5, 0.5])))
+
+    def test_rescale_bboxes(self):
+        # mul
+        rescaled_bboxes = rescale_bboxes(self.bboxes, self.scale, mode='mul')
+        self.assertTrue(
+            np.allclose(rescaled_bboxes, np.array([[0, 0, 2, 2], [2, 2, 4,
+                                                                  4]])))
+        # div
+        rescaled_bboxes = rescale_bboxes(self.bboxes, self.scale, mode='div')
+        self.assertTrue(
+            np.allclose(rescaled_bboxes,
+                        np.array([[0, 0, 0.5, 0.5], [0.5, 0.5, 1, 1]])))

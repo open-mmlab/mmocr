@@ -15,6 +15,20 @@ Collections:
   README: configs/textdet/dbnetpp/README.md
 
 Models:
+  - Name: dbnetpp_resnet50_fpnc_1200e_icdar2015
+    In Collection: DBNetpp
+    Alias:
+      - DBPP_r50
+    Config: configs/textdet/dbnetpp/dbnetpp_resnet50_fpnc_1200e_icdar2015.py
+    Metadata:
+      Training Data: ICDAR2015
+    Results:
+      - Task: Text Detection
+        Dataset: ICDAR2015
+        Metrics:
+          hmean-iou: 0.8622
+    Weights: https://download.openmmlab.com/mmocr/textdet/dbnetpp/dbnetpp_resnet50_fpnc_1200e_icdar2015/dbnetpp_resnet50_fpnc_1200e_icdar2015_20221025_185550-013730aa.pth
+
   - Name: dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015
     In Collection: DBNetpp
     Config: configs/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015.py
@@ -26,3 +40,17 @@ Models:
         Metrics:
           hmean-iou: 0.8684
     Weights: https://download.openmmlab.com/mmocr/textdet/dbnetpp/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015/dbnetpp_resnet50-dcnv2_fpnc_1200e_icdar2015_20220829_230108-f289bd20.pth
+
+  - Name: dbnetpp_resnet50-oclip_fpnc_1200e_icdar2015
+    Alias:
+      - DBNetpp
+    In Collection: DBNetpp
+    Config: configs/textdet/dbnetpp/dbnetpp_resnet50-oclip_fpnc_1200e_icdar2015.py
+    Metadata:
+      Training Data: ICDAR2015
+    Results:
+      - Task: Text Detection
+        Dataset: ICDAR2015
+        Metrics:
+          hmean-iou: 0.8882
+    Weights: https://download.openmmlab.com/mmocr/textdet/dbnetpp/dbnetpp_resnet50-oclip_fpnc_1200e_icdar2015/dbnetpp_resnet50-oclip_fpnc_1200e_icdar2015_20221101_124139-4ecb39ac.pth

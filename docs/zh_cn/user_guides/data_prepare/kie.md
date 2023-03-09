@@ -1,5 +1,9 @@
 # 关键信息提取
 
+```{note}
+我们正努力往 [Dataset Preparer](./dataset_preparer.md) 中增加更多数据集。对于 [Dataset Preparer](./dataset_preparer.md) 暂未能完整支持的数据集，本页提供了一系列手动下载的步骤，供有需要的用户使用。
+```
+
 ## 概览
 
 关键信息提取任务的数据集，文件目录应按如下配置：

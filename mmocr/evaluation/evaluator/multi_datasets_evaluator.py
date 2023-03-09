@@ -9,7 +9,7 @@ from mmengine.evaluator import BaseMetric, Evaluator
 from mmengine.evaluator.metric import _to_cpu
 
 from mmocr.registry import EVALUATOR
-from mmocr.utils.typing import ConfigType
+from mmocr.utils.typing_utils import ConfigType
 
 
 @EVALUATOR.register_module()

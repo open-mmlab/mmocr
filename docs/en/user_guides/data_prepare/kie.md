@@ -1,5 +1,9 @@
 # Key Information Extraction
 
+```{note}
+This page is a manual preparation guide for datasets not yet supported by [Dataset Preparer](./dataset_preparer.md), which all these scripts will be eventually migrated into.
+```
+
 ## Overview
 
 The structure of the key information extraction dataset directory is organized as follows.

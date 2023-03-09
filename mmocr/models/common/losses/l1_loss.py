@@ -27,6 +27,9 @@ class MaskedSmoothL1Loss(nn.Module):
     def __init__(self, beta: Union[float, int] = 1, eps: float = 1e-6) -> None:
         super().__init__()
         if digit_version(torch.__version__) > digit_version('1.6.0'):
+            if digit_version(torch.__version__) >= digit_version(
+                    '1.13.0') and beta == 0:
+                beta = beta + eps
             self.smooth_l1_loss = nn.SmoothL1Loss(beta=beta, reduction='none')
         self.eps = eps
         self.beta = beta

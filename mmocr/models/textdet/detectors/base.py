@@ -6,8 +6,8 @@ import torch
 from mmengine.model import BaseModel
 from torch import Tensor
 
-from mmocr.utils.typing import (DetSampleList, OptConfigType, OptDetSampleList,
-                                OptMultiConfig)
+from mmocr.utils.typing_utils import (DetSampleList, OptConfigType,
+                                      OptDetSampleList, OptMultiConfig)
 
 ForwardResults = Union[Dict[str, torch.Tensor], DetSampleList,
                        Tuple[torch.Tensor], torch.Tensor]

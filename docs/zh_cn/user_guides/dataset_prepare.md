@@ -2,13 +2,7 @@
 
 ## 前言
 
-经过数十年的发展，OCR 领域涌现出了一系列的相关数据集，这些数据集往往采用风格各异的格式来提供文本的标注文件，使得用户在使用这些数据集时不得不进行格式转换。MMOCR 支持了数十种常用的文本相关数据集，并提供了详细的数据下载及准备教程。
-
-另外，我们为各任务常用的数据集提供了数据格式转换脚本，以帮助用户快速将数据转换为 MMOCR 支持的格式。
-
-- [文本检测数据集准备](./data_prepare/det.md)
-- [文本识别数据集准备](./data_prepare/recog.md)
-- [关键信息抽取数据集准备](./data_prepare/kie.md)
+经过数十年的发展，OCR 领域涌现出了一系列的相关数据集，这些数据集往往采用风格各异的格式来提供文本的标注文件，使得用户在使用这些数据集时不得不进行格式转换。因此，为了方便用户进行数据集准备，我们提供了[一键式的数据准备脚本](./data_prepare/dataset_preparer.md)，使得用户仅需使用一行命令即可完成数据集准备的全部步骤。
 
 下面，我们对 MMOCR 内支持的各任务的数据格式进行简要的介绍。
 
@@ -69,69 +63,50 @@
 
 ## 数据集下载及格式转换
 
-以 ICDAR 2015 **文本检测数据集**的准备步骤为例，你可以依次执行以下步骤来完成数据集准备：
+以 ICDAR 2015 数据集的文本检测任务准备步骤为例，你可以执行以下命令来完成数据集准备：
 
-- 从 [ICDAR 官方网站](https://rrc.cvc.uab.es/?ch=4&com=downloads)下载 ICDAR 2015 数据集。将训练集`ch4_training_word_images_gt.zip` 与测试集压缩包`ch4_test_word_images_gt.zip` 分别解压至路径 `data/icdar2015`。
+```shell
+python tools/dataset_converters/prepare_dataset.py icdar2015 --task textdet
+```
 
-  ```bash
-  # 下载数据集
-  mkdir data/det/icdar2015 && cd data/det/icdar2015
-  wget https://rrc.cvc.uab.es/downloads/ch4_training_images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/ch4_training_localization_transcription_gt.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/ch4_test_images.zip --no-check-certificate
-  wget https://rrc.cvc.uab.es/downloads/Challenge4_Test_Task1_GT.zip --no-check-certificate
+命令执行完成后，数据集将被下载并转换至 MMOCR 格式，文件目录结构如下：
 
-  # 解压数据集
-  mkdir imgs && mkdir annotations
-  unzip ch4_training_images.zip -d imgs/training
-  unzip ch4_training_localization_transcription_gt.zip -d annotations/training
-  unzip ch4_test_images.zip -d imgs/test
-  unzip Challenge4_Test_Task1_GT.zip -d annotations/test
-  ```
+```text
+data/icdar2015
+├── textdet_imgs
+│   ├── test
+│   └── train
+├── textdet_test.json
+└── textdet_train.json
+```
 
-- 使用 MMOCR 提供的格式转换脚本将原始的标注文件转换为 MMOCR 统一的数据格式
+数据准备完毕以后，你也可以通过使用我们提供的数据集浏览工具 [browse_dataset.py](./useful_tools.md#数据集可视化工具) 来可视化数据集的标签是否被正确生成，例如：
 
-  ```bash
-  python tools/dataset_converters/textdet/icdar_converter.py data/det/icdar15/ -o data/det/icdar15/ --split-list training test -d icdar2015
-  ```
-
-- 完成上述步骤后，数据集标签将被转换为 MMOCR 使用的统一格式，文件目录结构如下：
-
-  ```text
-  data/det/icdar2015/
-  ├── annotations
-  │   ├── test
-  │   └── training
-  ├── imgs
-  │   ├── test
-  │   └── training
-  ├── instances_test.json
-  └── instances_training.json
-  ```
+```bash
+python tools/analysis_tools/browse_dataset.py configs/textdet/_base_/datasets/icdar2015.py
+```
 
 ## 数据集配置文件
 
 ### 单数据集训练
 
-在使用新的数据集时，我们需要对其图像、标注文件的路径等基础信息进行配置。`configs/xxx/_base_/datasets/` 路径下已预先配置了 MMOCR 中常用的数据集，这里我们以 ICDAR 2015 数据集为例（见 `configs/_base_/det_datasets/icdar2015.py`）：
+在使用新的数据集时，我们需要对其图像、标注文件的路径等基础信息进行配置。`configs/xxx/_base_/datasets/` 路径下已预先配置了 MMOCR 中常用的数据集（当你使用 `prepare_dataset.py` 来准备数据集时，这个配置文件通常会在数据集准备就绪后自动生成），这里我们以 ICDAR 2015 数据集为例（见 `configs/textdet/_base_/datasets/icdar2015.py`）：
 
 ```Python
-ic15_det_data_root = 'data/det/icdar2015' # 数据集根目录
+icdar2015_textdet_data_root = 'data/icdar2015' # 数据集根目录
 
 # 训练集配置
-ic15_det_train = dict(
+icdar2015_textdet_train = dict(
     type='OCRDataset',
-    data_root=ic15_det_data_root,                        # 数据根目录
-    ann_file='instances_training.json',                  # 标注文件名称
-    data_prefix=dict(img_path='imgs/'),                  # 图片路径前缀
+    data_root=icdar2015_textdet_data_root,               # 数据根目录
+    ann_file='textdet_train.json',                       # 标注文件名称
     filter_cfg=dict(filter_empty_gt=True, min_size=32),  # 数据过滤
     pipeline=None)
 # 测试集配置
-ic15_det_test = dict(
+icdar2015_textdet_test = dict(
     type='OCRDataset',
-    data_root=ic15_det_data_root,
-    ann_file='instances_test.json',
-    data_prefix=dict(img_path='imgs/'),
+    data_root=icdar2015_textdet_data_root,
+    ann_file='textdet_test.json',
     test_mode=True,
     pipeline=None)
 ```
@@ -146,24 +121,24 @@ _base_ = [
     '../_base_/schedules/schedule_sgd_1200e.py',
 ]
 
-ic15_det_train = _base_.ic15_det_train            # 指定训练集
-ic15_det_train.pipeline = _base_.train_pipeline   # 指定训练集使用的数据流水线
-ic15_det_test = _base_.ic15_det_test              # 指定测试集
-ic15_det_test.pipeline = _base_.test_pipeline     # 指定测试集使用的数据流水线
+icdar2015_textdet_train = _base_.icdar2015_textdet_train            # 指定训练集
+icdar2015_textdet_train.pipeline = _base_.train_pipeline   # 指定训练集使用的数据流水线
+icdar2015_textdet_test = _base_.icdar2015_textdet_test              # 指定测试集
+icdar2015_textdet_test.pipeline = _base_.test_pipeline     # 指定测试集使用的数据流水线
 
 train_dataloader = dict(
     batch_size=16,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
-    dataset=ic15_det_train)    # 在 train_dataloader 中指定使用的训练数据集
+    dataset=icdar2015_textdet_train)    # 在 train_dataloader 中指定使用的训练数据集
 
 val_dataloader = dict(
     batch_size=1,
     num_workers=4,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=ic15_det_test)    # 在 val_dataloader 中指定使用的验证数据集
+    dataset=icdar2015_textdet_test)    # 在 val_dataloader 中指定使用的验证数据集
 
 test_dataloader = val_dataloader
 ```
@@ -196,11 +171,11 @@ _base_ = [ # 导入所有需要使用的数据集配置
 ]
 
 # 训练集列表
-train_list = [_base_.mj_rec_train]
+train_list = [_base_.mjsynth_textrecog_test]
 # 测试集列表
 test_list = [
-    _base_.cute80_rec_test, _base_.iiit5k_rec_test, _base_.svt_rec_test,
-    _base_.svtp_rec_test, _base_.ic13_rec_test, _base_.ic15_rec_test
+    _base_.cute80_textrecog_test, _base_.iiit5k_textrecog_test, _base_.svt_textrecog_test,
+    _base_.svtp_textrecog_test, _base_.icdar2013_textrecog_test, _base_.icdar2015_textrecog_test
 ]
 
 # 使用 ConcatDataset 来级联列表中的多个数据集

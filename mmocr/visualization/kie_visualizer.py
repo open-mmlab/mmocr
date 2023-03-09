@@ -38,7 +38,7 @@ class KIELocalVisualizer(BaseLocalVisualizer):
     """
 
     def __init__(self,
-                 name='kie_visualizer',
+                 name: str = 'kie_visualizer',
                  is_openset: bool = False,
                  **kwargs) -> None:
         super().__init__(name=name, **kwargs)
@@ -89,13 +89,17 @@ class KIELocalVisualizer(BaseLocalVisualizer):
                 key_texts, (bboxes[key_index, :2] + bboxes[key_index, 2:]) / 2,
                 colors='k',
                 horizontal_alignments='center',
-                vertical_alignments='center')
+                vertical_alignments='center',
+                font_families=self.font_families,
+                font_properties=self.font_properties)
         if val_texts:
             self.draw_texts(
                 val_texts, (bboxes[val_index, :2] + bboxes[val_index, 2:]) / 2,
                 colors='k',
                 horizontal_alignments='center',
-                vertical_alignments='center')
+                vertical_alignments='center',
+                font_families=self.font_families,
+                font_properties=self.font_properties)
         self.draw_arrows(
             x_data,
             y_data,
@@ -150,12 +154,21 @@ class KIELocalVisualizer(BaseLocalVisualizer):
         empty_shape = (img_shape[0], img_shape[1], 3)
 
         text_image = np.full(empty_shape, 255, dtype=np.uint8)
-        text_image = self.get_labels_image(text_image, texts, bboxes)
+        text_image = self.get_labels_image(
+            text_image,
+            texts,
+            bboxes,
+            font_families=self.font_families,
+            font_properties=self.font_properties)
 
         classes_image = np.full(empty_shape, 255, dtype=np.uint8)
         bbox_classes = [class_names[int(i)]['name'] for i in bbox_labels]
-        classes_image = self.get_labels_image(classes_image, bbox_classes,
-                                              bboxes)
+        classes_image = self.get_labels_image(
+            classes_image,
+            bbox_classes,
+            bboxes,
+            font_families=self.font_families,
+            font_properties=self.font_properties)
         if polygons:
             polygons = [polygon.reshape(-1, 2) for polygon in polygons]
             image = self.get_polygons_image(
@@ -257,6 +270,9 @@ class KIELocalVisualizer(BaseLocalVisualizer):
 
         if out_file is not None:
             mmcv.imwrite(cat_images[..., ::-1], out_file)
+
+        self.set_image(cat_images)
+        return self.get_image()
 
     def draw_arrows(self,
                     x_data: Union[np.ndarray, torch.Tensor],

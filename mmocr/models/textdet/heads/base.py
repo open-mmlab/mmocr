@@ -6,7 +6,7 @@ from mmengine.model import BaseModule
 from torch import Tensor
 
 from mmocr.registry import MODELS
-from mmocr.utils.typing import DetSampleList
+from mmocr.utils.typing_utils import DetSampleList
 
 
 @MODELS.register_module()
@@ -46,22 +46,28 @@ class BaseTextDetHead(BaseModule):
 
 
     Args:
-        loss (dict): Config to build loss.
-        postprocessor (dict): Config to build postprocessor.
+        loss (dict, optional): Config to build loss. Defaults to None.
+        postprocessor (dict, optional): Config to build postprocessor. Defaults
+            to None.
         init_cfg (dict or list[dict], optional): Initialization configs.
             Defaults to None.
     """
 
     def __init__(self,
-                 module_loss: Dict,
-                 postprocessor: Dict,
+                 module_loss: Optional[Dict] = None,
+                 postprocessor: Optional[Dict] = None,
                  init_cfg: Optional[Union[Dict, List[Dict]]] = None) -> None:
         super().__init__(init_cfg=init_cfg)
-        assert isinstance(module_loss, dict)
-        assert isinstance(postprocessor, dict)
-
-        self.module_loss = MODELS.build(module_loss)
-        self.postprocessor = MODELS.build(postprocessor)
+        if module_loss is not None:
+            assert isinstance(module_loss, dict)
+            self.module_loss = MODELS.build(module_loss)
+        else:
+            self.module_loss = module_loss
+        if postprocessor is not None:
+            assert isinstance(postprocessor, dict)
+            self.postprocessor = MODELS.build(postprocessor)
+        else:
+            self.postprocessor = postprocessor
 
     def loss(self, x: Tuple[Tensor], data_samples: DetSampleList) -> dict:
         """Perform forward propagation and loss calculation of the detection
@@ -102,7 +108,7 @@ class BaseTextDetHead(BaseModule):
         outs = self(x, data_samples)
         losses = self.module_loss(outs, data_samples)
 
-        predictions = self.postprocessor(outs, data_samples)
+        predictions = self.postprocessor(outs, data_samples, self.training)
         return losses, predictions
 
     def predict(self, x: torch.Tensor,

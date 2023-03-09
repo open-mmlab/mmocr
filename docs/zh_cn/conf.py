@@ -48,6 +48,7 @@ extensions = [
     'sphinx.ext.autodoc.typehints',
     'sphinx.ext.autosummary',
     'sphinx.ext.autosectionlabel',
+    'sphinx_tabs.tabs',
 ]
 autodoc_typehints = 'description'
 
@@ -56,6 +57,8 @@ autosummary_generate = True  # Turn on sphinx.ext.autosummary
 # Ignore >>> when copying code
 copybutton_prompt_text = r'>>> |\.\.\. '
 copybutton_prompt_is_regexp = True
+
+myst_enable_extensions = ['colon_fence']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -86,15 +89,8 @@ html_theme = 'pytorch_sphinx_theme'
 html_theme_path = [pytorch_sphinx_theme.get_html_theme_path()]
 html_theme_options = {
     'logo_url':
-    'https://mmocr.readthedocs.io/zh_CN/latest',
+    'https://mmocr.readthedocs.io/zh_CN/dev-1.x/',
     'menu': [
-        {
-            'name':
-            '教程',
-            'url':
-            'https://colab.research.google.com/github/'
-            'open-mmlab/mmocr/blob/main/demo/MMOCR_Tutorial.ipynb'
-        },
         {
             'name': 'GitHub',
             'url': 'https://github.com/open-mmlab/mmocr'
@@ -152,7 +148,16 @@ master_doc = 'index'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-html_css_files = ['css/readthedocs.css']
+html_css_files = [
+    'https://cdn.datatables.net/1.13.2/css/dataTables.bootstrap5.min.css',
+    'css/readthedocs.css'
+]
+html_js_files = [
+    'https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js',
+    'https://cdn.datatables.net/1.13.2/js/dataTables.bootstrap5.min.js',
+    'js/collapsed.js',
+    'js/table.js',
+]
 
 myst_heading_anchors = 4
 
@@ -171,6 +176,7 @@ def builder_inited_handler(app):
     subprocess.run(['./cp_origin_docs.sh'])
     subprocess.run(['./merge_docs.sh'])
     subprocess.run(['./stats.py'])
+    subprocess.run(['./dataset_zoo.py'])
 
 
 def setup(app):

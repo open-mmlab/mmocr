@@ -66,6 +66,7 @@ CUDA_VISIBLE_DEVICES=0 python tools/test.py configs/textdet/dbnet/dbnet_resnet50
 | --cfg-options | str   | 用于覆写配置文件中的指定参数。[示例](#添加示例)                |
 | --launcher    | str   | 启动器选项，可选项目为 \['none', 'pytorch', 'slurm', 'mpi'\]。 |
 | --local_rank  | int   | 本地机器编号，用于多机多卡分布式训练，默认为 0。               |
+| --tta         | bool  | 是否使用测试时数据增强                                         |
 
 ## 多卡机器训练及测试
 
@@ -248,6 +249,7 @@ python tools/train.py configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.
 | TextSnake     |          否          |                               |
 |               |       文本识别       |                               |
 | ABINet        |          是          |                               |
+| ASTER         |          是          |                               |
 | CRNN          |          是          |                               |
 | MASTER        |          是          |                               |
 | NRTR          |          是          |                               |
@@ -307,3 +309,16 @@ python tools/test.py configs/textdet/dbnet/dbnet_r50dcnv2_fpnc_1200e_icdar2015.p
 | --show      | bool  | 是否绘制可视化结果。             |
 | --show-dir  | str   | 可视化图片存储路径。             |
 | --wait-time | float | 可视化间隔时间（秒），默认为 2。 |
+
+### 测试时数据增强
+
+测试时增强，指的是在推理（预测）阶段，将原始图片进行水平翻转、垂直翻转、对角线翻转、旋转角度等数据增强操作，得到多张图，分别进行推理，再对多个结果进行综合分析，得到最终输出结果。
+为此，MMOCR 提供了一键式测试时数据增强，仅需在测试时添加 `--tta` 参数即可。
+
+```{note}
+TTA 仅支持文本识别模型。
+```
+
+```bash
+python tools/test.py configs/textrecog/crnn/crnn_mini-vgg_5e_mj.py checkpoints/crnn_mini-vgg_5e_mj.pth --tta
+```

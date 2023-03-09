@@ -1,31 +1,51 @@
 # 快速运行
 
+这个章节会介绍 MMOCR 的一些基本功能。我们假设你已经[从源码安装了 MMOCR](install.md#best-practices)。
+
 ## 推理
 
-如果想快速运行一个推理，请直接阅读安装文档的[检验](install.md#检验)。对 MMOCR 中推理接口更为详细说明，可以在[这里](../user_guides/inference.md)找到。
+在 MMOCR 的根目录下运行以下命令：
+
+```shell
+python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show --print-result
+```
+
+你可以看到弹出的预测结果，以及在控制台中打印出的推理结果。
+
+<div align="center">
+    <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
+</div>
+<br/ >
+
+```bash
+# 识别结果
+{'predictions': [{'rec_texts': ['cbanks', 'docecea', 'grouf', 'pwate', 'chobnsonsg', 'soxee', 'oeioh', 'c', 'sones', 'lbrandec', 'sretalg', '11', 'to8', 'round', 'sale', 'year',
+'ally', 'sie', 'sall'], 'rec_scores': [...], 'det_polygons': [...], 'det_scores':
+[...]}]}
+```
 
 ```{note}
+如果你在没有 GUI 的服务器上运行 MMOCR，或者通过没有开启 X11 转发的 SSH 隧道运行 MMOCR，你可能无法看到弹出的窗口。
+```
+
+对 MMOCR 中推理接口更为详细的说明，可以在[这里](../user_guides/inference.md)找到。
 
 除了使用我们提供好的预训练模型，用户也可以在自己的数据集上训练流行模型。接下来我们以在迷你的 [ICDAR 2015](https://rrc.cvc.uab.es/?ch=4&com=downloads) 数据集上训练 DBNet 为例，带大家熟悉 MMOCR 的基本功能。
 
-接下来的部分都假设你使用的是[编辑方式安装 MMOCR 代码库](install.md)。
-
-```
-
 ## 准备数据集
 
-由于 OCR 任务的数据集种类多样，格式不一，不利于多数据集的切换和联合训练，因此 MMOCR 约定了一种[统一的数据格式](../user_guides/dataset_prepare.md)，并针对常用的 OCR 数据集都提供了对应的转换脚本和[教程](../user_guides/dataset_prepare.md)。通常，要在 MMOCR 中使用数据集，你只需要按照对应步骤运行指令即可。
+由于 OCR 任务的数据集种类多样，格式不一，不利于多数据集的切换和联合训练，因此 MMOCR 约定了一种[统一的数据格式](../user_guides/dataset_prepare.md)，并针对常用的 OCR 数据集提供了[一键式数据准备脚本](../user_guides/data_prepare/dataset_preparer.md)。通常，要在 MMOCR 中使用数据集，你只需要按照对应步骤运行指令即可。
 
 ```{note}
 但我们亦深知，效率就是生命——尤其对想要快速上手 MMOCR 的你来说。
 ```
 
-在这里，我们准备了一个用于演示的精简版 ICDAR 2015 数据集。下载我们预先准备好的[压缩包](https://download.openmmlab.com/mmocr/data/icdar2015/mini_icdar2015.tar.gz)，解压到 mmocr 的 `data/det/` 目录下，就能得到我们准备好的图片和标注文件。
+在这里，我们准备了一个用于演示的精简版 ICDAR 2015 数据集。下载我们预先准备好的[压缩包](https://download.openmmlab.com/mmocr/data/icdar2015/mini_icdar2015.tar.gz)，解压到 mmocr 的 `data/` 目录下，就能得到我们准备好的图片和标注文件。
 
 ```Bash
 wget https://download.openmmlab.com/mmocr/data/icdar2015/mini_icdar2015.tar.gz
-mkdir -p data/det/
-tar xzvf mini_icdar2015.tar.gz -C data/det/
+mkdir -p data/
+tar xzvf mini_icdar2015.tar.gz -C data/
 ```
 
 ## 修改配置
@@ -118,11 +138,11 @@ python tools/train.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.
 
 然而，这个数值只反映了 DBNet 在迷你 ICDAR 2015 数据集上的性能。要想更加客观地评判它的检测能力，我们还要看看它在分布外数据集上的表现。例如，`tests/data/det_toy_dataset` 就是一个很小的真实数据集，我们可以用它来验证一下 DBNet 的实际性能。
 
-在测试前，我们同样需要对数据集的位置做一下修改。打开 `configs/_base_/det_datasets/icdar2015.py`，修改 `ic15_det_test` 的 `data_root` 为 `tests/data/det_toy_dataset`:
+在测试前，我们同样需要对数据集的位置做一下修改。打开 `configs/_base_/det_datasets/icdar2015.py`，修改 `icdar2015_textdet_test` 的 `data_root` 为 `tests/data/det_toy_dataset`:
 
 ```Python
 # ...
-ic15_det_test = dict(
+icdar2015_textdet_test = dict(
     type='OCRDataset',
     data_root='tests/data/det_toy_dataset',
     # ...

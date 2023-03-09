@@ -5,9 +5,9 @@ from typing import Dict
 import torch
 
 from mmocr.registry import MODELS
-from mmocr.utils.typing import (ConfigType, InitConfigType, OptConfigType,
-                                OptRecSampleList, RecForwardResults,
-                                RecSampleList)
+from mmocr.utils.typing_utils import (ConfigType, InitConfigType,
+                                      OptConfigType, OptRecSampleList,
+                                      RecForwardResults, RecSampleList)
 from .base import BaseRecognizer
 
 

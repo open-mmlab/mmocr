@@ -1,0 +1,13 @@
+Collections:
+- Name: oCLIP
+  Metadata:
+    Training Data: SynthText
+    Architecture:
+      - CLIPResNet
+  Paper:
+    URL: https://arxiv.org/abs/2203.03911
+    Title: 'Language Matters: A Weakly Supervised Vision-Language Pre-training Approach for Scene Text Detection and Spotting'
+  README: configs/backbone/oclip/README.md
+
+Models:
+  Weights: https://download.openmmlab.com/mmocr/backbone/resnet50-oclip-7ba0c533.pth

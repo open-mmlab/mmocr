@@ -6,6 +6,7 @@ import imgaug
 import imgaug.augmenters as iaa
 import numpy as np
 import torchvision.transforms as torchvision_transforms
+from mmcv.transforms import Compose
 from mmcv.transforms.base import BaseTransform
 from PIL import Image
 
@@ -47,9 +48,16 @@ class ImgAugWrapper(BaseTransform):
             images with probability 0.5, followed by random rotation with
             angles in range [-10, 10], and resize with an independent scale in
             range [0.5, 3.0] for each side of images. Defaults to None.
+        fix_poly_trans (dict): The transform configuration to fix invalid
+            polygons. Set it to None if no fixing is needed.
+            Defaults to dict(type='FixInvalidPolygon').
     """
 
-    def __init__(self, args: Optional[List[Union[List, Dict]]] = None) -> None:
+    def __init__(
+        self,
+        args: Optional[List[Union[List, Dict]]] = None,
+        fix_poly_trans: Optional[dict] = dict(type='FixInvalidPolygon')
+    ) -> None:
         assert args is None or isinstance(args, list) and len(args) > 0
         if args is not None:
             for arg in args:
@@ -57,6 +65,9 @@ class ImgAugWrapper(BaseTransform):
                     'args should be a list of list or dict'
         self.args = args
         self.augmenter = self._build_augmentation(args)
+        self.fix_poly_trans = fix_poly_trans
+        if fix_poly_trans is not None:
+            self.fix = TRANSFORMS.build(fix_poly_trans)
 
     def transform(self, results: Dict) -> Dict:
         """Transform the image and annotation data.
@@ -79,6 +90,8 @@ class ImgAugWrapper(BaseTransform):
             results['img'] = aug.augment_image(image)
             results['img_shape'] = (results['img'].shape[0],
                                     results['img'].shape[1])
+        if getattr(self, 'fix', None) is not None:
+            results = self.fix(results)
         return results
 
     def _augment_annotations(self, aug: imgaug.augmenters.meta.Augmenter,
@@ -218,7 +231,8 @@ class ImgAugWrapper(BaseTransform):
 
     def __repr__(self):
         repr_str = self.__class__.__name__
-        repr_str += f'(args = {self.args})'
+        repr_str += f'(args = {self.args}, '
+        repr_str += f'fix_poly_trans = {self.fix_poly_trans})'
         return repr_str
 
 
@@ -282,4 +296,48 @@ class TorchVisionWrapper(BaseTransform):
         for k, v in self.kwargs.items():
             repr_str += f', {k} = {v}'
         repr_str += ')'
+        return repr_str
+
+
+@TRANSFORMS.register_module()
+class ConditionApply(BaseTransform):
+    """Apply transforms according to the condition. If the condition is met,
+    true_transforms will be applied, otherwise false_transforms will be
+    applied.
+
+    Args:
+        condition (str): The string that can be evaluated to a boolean value.
+        true_transforms (list[dict]): Transforms to be applied if the condition
+            is met. Defaults to [].
+        false_transforms (list[dict]): Transforms to be applied if the
+            condition is not met. Defaults to [].
+    """
+
+    def __init__(self,
+                 condition: str,
+                 true_transforms: Union[Dict, List[Dict]] = [],
+                 false_transforms: Union[Dict, List[Dict]] = []):
+        self.condition = condition
+        self.true_transforms = Compose(true_transforms)
+        self.false_transforms = Compose(false_transforms)
+
+    def transform(self, results: Dict) -> Optional[Dict]:
+        """Transform the image.
+
+        Args:
+            results (dict):Result dict containing the data to transform.
+
+        Returns:
+            dict: Transformed results.
+        """
+        if eval(self.condition):
+            return self.true_transforms(results)  # type: ignore
+        else:
+            return self.false_transforms(results)
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(condition = {self.condition}, '
+        repr_str += f'true_transforms = {self.true_transforms}, '
+        repr_str += f'false_transforms = {self.false_transforms})'
         return repr_str

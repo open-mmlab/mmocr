@@ -1,6 +1,6 @@
 default_scope = 'mmocr'
 env_cfg = dict(
-    cudnn_benchmark=True,
+    cudnn_benchmark=False,
     mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0),
     dist_cfg=dict(backend='nccl'),
 )
@@ -46,3 +46,5 @@ visualizer = dict(
     type='TextRecogLocalVisualizer',
     name='visualizer',
     vis_backends=vis_backends)
+
+tta_model = dict(type='EncoderDecoderRecognizerTTAModel')

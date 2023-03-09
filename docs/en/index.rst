@@ -39,7 +39,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
 
 .. toctree::
    :maxdepth: 2
-   :caption: Migration Guides
+   :caption: Migrating from MMOCR 0.x
 
    migration/overview.md
    migration/code.md
@@ -51,6 +51,8 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :maxdepth: 2
    :caption: Dataset Zoo
 
+   user_guides/data_prepare/datasetzoo.md
+   user_guides/data_prepare/dataset_preparer.md
    user_guides/data_prepare/det.md
    user_guides/data_prepare/recog.md
    user_guides/data_prepare/kie.md
@@ -60,6 +62,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :caption: Model Zoo
 
    modelzoo.md
+   backbones.md
    textdet_models.md
    textrecog_models.md
    kie_models.md
@@ -77,6 +80,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :maxdepth: 1
    :caption: API Reference
 
+   mmocr.apis <api/apis>
    mmocr.structures <api/structures>
    mmocr.datasets <api/datasets>
    mmocr.transforms <api/transforms>
@@ -85,6 +89,12 @@ You can switch between English and Chinese in the lower-left corner of the layou
    mmocr.visualization <api/visualization>
    mmocr.engine <api/engine>
    mmocr.utils <api/utils>
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contact US
+
+   contact.md
 
 .. toctree::
    :caption: Switch Language

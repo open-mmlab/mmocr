@@ -36,7 +36,7 @@ visualizer = dict(
 MMOCR 默认使用本地可视化后端 [`LocalVisBackend`](mmengine.visualization.LocalVisBackend)，`VisualizerHook` 和`LoggerHook` 中存储的模型损失、学习率、模型评估精度以及可视化结果等信息将被默认保存至`{work_dir}/{config_name}/{time}/{vis_data}` 文件夹。此外，MMOCR 也支持其它常用的可视化后端，如 `TensorboardVisBackend` 以及 `WandbVisBackend`用户只需要将配置文件中的 `vis_backends` 类型修改为对应的可视化后端即可。例如，用户只需要在配置文件中插入以下代码块，即可将数据存储至 `TensorBoard` 以及 `WandB`中。
 
 ```Python
-_base_.Visualizer.vis_backends = [
+_base_.visualizer.vis_backends = [
     dict(type='LocalVisBackend'),
     dict(type='TensorboardVisBackend'),
     dict(type='WandbVisBackend'),]

@@ -1,7 +1,11 @@
 # 文字识别
 
 ```{warning}
-该章节翻译落后于[英文版文档](../../en/user_guides/../../user_guides/data_prepare/recog.md)。
+该页面版本落后于英文版文档，请切换至英文阅读最新文档。
+```
+
+```{note}
+我们正努力往 [Dataset Preparer](./dataset_preparer.md) 中增加更多数据集。对于 [Dataset Preparer](./dataset_preparer.md) 暂未能完整支持的数据集，本页提供了一系列手动下载的步骤，供有需要的用户使用。
 ```
 
 ## 概览

@@ -5,17 +5,17 @@ import torch
 from mmdet.structures import DetDataSample
 from mmdet.testing import demo_mm_inputs
 from mmengine.config import Config
+from mmengine.registry import init_default_scope
 from mmengine.structures import InstanceData
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
-from mmocr.utils import register_all_modules
 
 
 class TestMMDetWrapper(unittest.TestCase):
 
     def setUp(self):
-        register_all_modules()
+        init_default_scope('mmocr')
         model_cfg_fcos = dict(
             type='MMDetWrapper',
             cfg=dict(

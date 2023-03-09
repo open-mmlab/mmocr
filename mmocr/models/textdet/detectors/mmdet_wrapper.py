@@ -11,7 +11,7 @@ from mmengine.structures import InstanceData
 
 from mmocr.registry import MODELS
 from mmocr.utils.bbox_utils import bbox2poly
-from mmocr.utils.typing import DetSampleList
+from mmocr.utils.typing_utils import DetSampleList
 
 ForwardResults = Union[Dict[str, torch.Tensor], List[DetDataSample],
                        Tuple[torch.Tensor], torch.Tensor]

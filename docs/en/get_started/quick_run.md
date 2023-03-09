@@ -1,29 +1,51 @@
 # Quick Run
 
+This chapter will take you through the basic functions of MMOCR. And we assume you [installed MMOCR from source](install.md#best-practices).
+
 ## Inference
 
-Please refer to [here](install.md#verify-the-installation) for a quick inference run. A detailed description of MMOCR's inference interface can be found [here](../user_guides/inference.md)
+Run the following in MMOCR's root directory:
+
+```shell
+python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show --print-result
+```
+
+You should be able to see a pop-up image and the inference result printed out in the console.
+
+<div align="center">
+    <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
+</div>
+<br />
+
+```bash
+# Inference result
+{'predictions': [{'rec_texts': ['cbanks', 'docecea', 'grouf', 'pwate', 'chobnsonsg', 'soxee', 'oeioh', 'c', 'sones', 'lbrandec', 'sretalg', '11', 'to8', 'round', 'sale', 'year',
+'ally', 'sie', 'sall'], 'rec_scores': [...], 'det_polygons': [...], 'det_scores':
+[...]}]}
+```
 
 ```{note}
-In addition to using our well-provided pre-trained models, you can also train models on your own datasets. In the next section, we will take you through the basic functions of MMOCR by training DBNet on the mini [ICDAR 2015](https://rrc.cvc.uab.es/?ch=4&com=downloads) dataset as an example.
-
-The following sections assume that you [installed MMOCR from source](install.md#best-practices).
+If you are running MMOCR on a server without GUI or via SSH tunnel with X11 forwarding disabled, you may not see the pop-up window.
 ```
+
+A detailed description of MMOCR's inference interface can be found [here](../user_guides/inference.md)
+
+In addition to using our well-provided pre-trained models, you can also train models on your own datasets. In the next section, we will take you through the basic functions of MMOCR by training DBNet on the mini [ICDAR 2015](https://rrc.cvc.uab.es/?ch=4&com=downloads) dataset as an example.
 
 ## Prepare a Dataset
 
-Since the variety of OCR dataset formats are not conducive to either switching or joint training of multiple datasets, MMOCR proposes a uniform [data format](../user_guides/dataset_prepare.md), and provides conversion scripts and [tutorials](../user_guides/dataset_prepare.md) for all commonly used OCR datasets. Usually, to use those datasets in MMOCR, you just need to follow the steps to get them ready for use.
+Since the variety of OCR dataset formats are not conducive to either switching or joint training of multiple datasets, MMOCR proposes a uniform [data format](../user_guides/dataset_prepare.md), and provides [dataset preparer](../user_guides/data_prepare/dataset_preparer.md) for commonly used OCR datasets. Usually, to use those datasets in MMOCR, you just need to follow the steps to get them ready for use.
 
 ```{note}
 But here, efficiency means everything.
 ```
 
-Here, we have prepared a lite version of ICDAR 2015 dataset for demonstration purposes. Download our pre-prepared [zip](https://download.openmmlab.com/mmocr/data/icdar2015/mini_icdar2015.tar.gz) and extract it to the `data/det/` directory under mmocr to get our prepared image and annotation file.
+Here, we have prepared a lite version of ICDAR 2015 dataset for demonstration purposes. Download our pre-prepared [zip](https://download.openmmlab.com/mmocr/data/icdar2015/mini_icdar2015.tar.gz) and extract it to the `data/` directory under mmocr to get our prepared image and annotation file.
 
 ```Bash
 wget https://download.openmmlab.com/mmocr/data/icdar2015/mini_icdar2015.tar.gz
-mkdir -p data/det/
-tar xzvf mini_icdar2015.tar.gz -C data/det/
+mkdir -p data/
+tar xzvf mini_icdar2015.tar.gz -C data/
 ```
 
 ## Modify the Config
@@ -116,11 +138,11 @@ It may not have been trained to be optimal, but it is sufficient for a demo.
 
 However, this value only reflects the performance of DBNet on the mini ICDAR 2015 dataset. For a comprehensive evaluation, we also need to see how it performs on out-of-distribution datasets. For example, `tests/data/det_toy_dataset` is a very small real dataset that we can use to verify the actual performance of DBNet.
 
-Before testing, we also need to make some changes to the location of the dataset. Open `configs/_base_/det_datasets/icdar2015.py` and change `data_root` of `ic15_det_test` to `tests/data/det_toy_dataset`:
+Before testing, we also need to make some changes to the location of the dataset. Open `configs/_base_/det_datasets/icdar2015.py` and change `data_root` of `icdar2015_textdet_test` to `tests/data/det_toy_dataset`:
 
 ```Python
 # ...
-ic15_det_test = dict(
+icdar2015_textdet_test = dict(
     type='OCRDataset',
     data_root='tests/data/det_toy_dataset',
     #  ...

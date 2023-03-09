@@ -10,7 +10,7 @@ from numpy.linalg import norm
 
 from mmocr.registry import MODELS
 from mmocr.structures import TextDetDataSample
-from mmocr.utils.typing import ArrayLike
+from mmocr.utils.typing_utils import ArrayLike
 from .textsnake_module_loss import TextSnakeModuleLoss
 
 

@@ -10,7 +10,7 @@ model = dict(
         postprocessor=dict(type='SDMGRPostProcessor')),
     dictionary=dict(
         type='Dictionary',
-        dict_file='data/kie/wildreceipt/dict.txt',
+        dict_file='{{ fileDirname }}/../../../dicts/sdmgr_dict.txt',
         with_padding=True,
         with_unknown=True,
         unknown_token=None),

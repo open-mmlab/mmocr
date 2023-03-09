@@ -23,11 +23,13 @@ param_scheduler = [
 
 # dataset settings
 train_list = [
-    _base_.mj_rec_train, _base_.st_rec_train, _base_.st_add_rec_train
+    _base_.mjsynth_textrecog_test, _base_.synthtext_textrecog_train,
+    _base_.synthtext_add_textrecog_train
 ]
 test_list = [
-    _base_.cute80_rec_test, _base_.iiit5k_rec_test, _base_.svt_rec_test,
-    _base_.svtp_rec_test, _base_.ic13_rec_test, _base_.ic15_rec_test
+    _base_.cute80_textrecog_test, _base_.iiit5k_textrecog_test,
+    _base_.svt_textrecog_test, _base_.svtp_textrecog_test,
+    _base_.icdar2013_textrecog_test, _base_.icdar2015_textrecog_test
 ]
 
 train_dataset = dict(

@@ -39,7 +39,7 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: 迁移指南
+   :caption: MMOCR 0.x 迁移指南
 
    migration/overview.md
    migration/code.md
@@ -51,6 +51,8 @@
    :maxdepth: 2
    :caption: 数据集支持
 
+   user_guides/data_prepare/datasetzoo.md
+   user_guides/data_prepare/dataset_preparer.md
    user_guides/data_prepare/det.md
    user_guides/data_prepare/recog.md
    user_guides/data_prepare/kie.md
@@ -60,6 +62,7 @@
    :caption: 模型支持
 
    modelzoo.md
+   backbones.md
    textdet_models.md
    textrecog_models.md
    kie_models.md
@@ -77,6 +80,7 @@
    :maxdepth: 2
    :caption: API 文档
 
+   mmocr.apis <api/apis>
    mmocr.structures <api/structures>
    mmocr.datasets <api/datasets>
    mmocr.transforms <api/transforms>
@@ -85,6 +89,12 @@
    mmocr.visualization <api/visualization>
    mmocr.engine <api/engine>
    mmocr.utils <api/utils>
+
+.. toctree::
+   :maxdepth: 2
+   :caption: 联系我们
+
+   contact.md
 
 .. toctree::
    :caption: 切换语言

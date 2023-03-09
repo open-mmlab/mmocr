@@ -18,6 +18,7 @@ Collections:
 Models:
   - Name: mask-rcnn_resnet50_fpn_160e_ctw1500
     In Collection: Mask R-CNN
+    Alias: MaskRCNN_CTW
     Config: configs/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_ctw1500.py
     Metadata:
       Training Data: CTW1500
@@ -25,11 +26,24 @@ Models:
       - Task: Text Detection
         Dataset: CTW1500
         Metrics:
-          hmean: 0.7458
+          hmean-iou: 0.7458
     Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_ctw1500/mask-rcnn_resnet50_fpn_160e_ctw1500_20220826_154755-ce68ee8e.pth
+
+  - Name: mask-rcnn_resnet50-oclip_fpn_160e_ctw1500
+    In Collection: Mask R-CNN
+    Config: configs/textdet/maskrcnn/mask-rcnn_resnet50-oclip_fpn_160e_ctw1500.py
+    Metadata:
+      Training Data: CTW1500
+    Results:
+      - Task: Text Detection
+        Dataset: CTW1500
+        Metrics:
+          hmean-iou: 0.7562
+    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50-oclip_fpn_160e_ctw1500/mask-rcnn_resnet50-oclip_fpn_160e_ctw1500_20221101_154448-6e9e991c.pth
 
   - Name: mask-rcnn_resnet50_fpn_160e_icdar2015
     In Collection: Mask R-CNN
+    Alias: MaskRCNN_IC15
     Config: configs/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_icdar2015.py
     Metadata:
       Training Data: ICDAR2015
@@ -37,5 +51,18 @@ Models:
       - Task: Text Detection
         Dataset: ICDAR2015
         Metrics:
-          hmean: 0.8182
+          hmean-iou: 0.8182
     Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50_fpn_160e_icdar2015/mask-rcnn_resnet50_fpn_160e_icdar2015_20220826_154808-ff5c30bf.pth
+
+  - Name: mask-rcnn_resnet50-oclip_fpn_160e_icdar2015
+    In Collection: Mask R-CNN
+    Alias: MaskRCNN
+    Config: configs/textdet/maskrcnn/mask-rcnn_resnet50-oclip_fpn_160e_icdar2015.py
+    Metadata:
+      Training Data: ICDAR2015
+    Results:
+      - Task: Text Detection
+        Dataset: ICDAR2015
+        Metrics:
+          hmean-iou: 0.8513
+    Weights: https://download.openmmlab.com/mmocr/textdet/maskrcnn/mask-rcnn_resnet50-oclip_fpn_160e_icdar2015/mask-rcnn_resnet50-oclip_fpn_160e_icdar2015_20221101_131357-a19f7802.pth

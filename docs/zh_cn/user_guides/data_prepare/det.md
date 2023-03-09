@@ -1,37 +1,14 @@
 # 文字检测
 
-## 概览
-
-文字检测任务的数据集应按如下目录配置：
-
-```text
-├── ctw1500
-│   ├── annotations
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-├── icdar2015
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
-├── icdar2017
-│   ├── imgs
-│   ├── instances_training.json
-│   └── instances_val.json
-├── synthtext
-│   ├── imgs
-│   └── instances_training.lmdb
-│       ├── data.mdb
-│       └── lock.mdb
-├── textocr
-│   ├── train
-│   ├── instances_training.json
-│   └── instances_val.json
-├── totaltext
-│   ├── imgs
-│   ├── instances_test.json
-│   └── instances_training.json
+```{warning}
+该页面版本落后于英文版文档，请切换至英文阅读最新文档。
 ```
+
+```{note}
+我们正努力往 [Dataset Preparer](./dataset_preparer.md) 中增加更多数据集。对于 [Dataset Preparer](./dataset_preparer.md) 暂未能完整支持的数据集，本页提供了一系列手动下载的步骤，供有需要的用户使用。
+```
+
+## 概览
 
 | 数据集名称 |                     数据图片                      |                                               |                      标注文件                      |                                                |
 | :--------: | :-----------------------------------------------: | :-------------------------------------------: | :------------------------------------------------: | :--------------------------------------------: |

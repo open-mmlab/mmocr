@@ -3,9 +3,10 @@ import copy
 import os.path as osp
 from unittest import TestCase
 
+import mmcv
 import numpy as np
 
-from mmocr.datasets.transforms import (LoadImageFromFile, LoadImageFromLMDB,
+from mmocr.datasets.transforms import (InferencerLoader, LoadImageFromFile,
                                        LoadKIEAnnotations, LoadOCRAnnotations)
 
 
@@ -129,7 +130,7 @@ class TestLoadOCRAnnotations(TestCase):
             repr(transform),
             ('LoadOCRAnnotations(with_bbox=True, with_label=True, '
              'with_polygon=True, with_text=True, '
-             "imdecode_backend='cv2', file_client_args={'backend': 'disk'})"))
+             "imdecode_backend='cv2', file_client_args=None)"))
 
 
 class TestLoadKIEAnnotations(TestCase):
@@ -192,60 +193,25 @@ class TestLoadKIEAnnotations(TestCase):
             'with_text=True)')
 
 
-class TestLoadImageFromLMDB(TestCase):
-
-    def setUp(self):
-        img_key = 'image-%09d' % 1
-        self.results1 = {
-            'img_path': f'tests/data/rec_toy_dataset/imgs.lmdb/{img_key}'
-        }
-        self.broken_results = {
-            'img_path': f'tests/data/rec_toy_dataset/broken.lmdb/{img_key}'
-        }
-
-        img_key = 'image-%09d' % 100
-        self.results2 = {
-            'img_path': f'tests/data/rec_toy_dataset/imgs.lmdb/{img_key}'
-        }
-
-    def test_init(self):
-        with self.assertRaises(ValueError):
-            LoadImageFromLMDB(file_client_args=dict(backend='disk'))
+class TestInferencerLoader(TestCase):
 
     def test_transform(self):
-        transform = LoadImageFromLMDB()
-        results = transform(copy.deepcopy(self.results1))
-        self.assertIn('img', results)
-        self.assertIsInstance(results['img'], np.ndarray)
-        self.assertEqual(results['img'].shape[:2], results['img_shape'])
-        self.assertEqual(results['ori_shape'], results['img_shape'])
+        loader = InferencerLoader()
 
-    def test_invalid_key(self):
-        # This test also tests its capability of implicitly switching between
-        # different backends (due to different lmdb path)
-        transform = LoadImageFromLMDB()
-        with self.assertRaises(KeyError):
-            results = transform(copy.deepcopy(self.results2))
-        with self.assertRaises(IOError):
-            transform(copy.deepcopy(self.broken_results))
-        transform = LoadImageFromLMDB(ignore_empty=True)
-        results = transform(copy.deepcopy(self.results2))
-        self.assertIsNone(results)
-        results = transform(copy.deepcopy(self.broken_results))
-        self.assertIsNone(results)
+        # load from path
+        img_path = 'tests/data/det_toy_dataset/imgs/test/img_1.jpg'
+        res = loader(img_path)
+        self.assertIsInstance(res['img'], np.ndarray)
 
-    def test_to_float32(self):
-        transform = LoadImageFromLMDB(to_float32=True)
-        results = transform(copy.deepcopy(self.results1))
-        self.assertIn('img', results)
-        self.assertIsInstance(results['img'], np.ndarray)
-        self.assertTrue(results['img'].dtype, np.float32)
-        self.assertEqual(results['img'].shape[:2], results['img_shape'])
-        self.assertEqual(results['ori_shape'], results['img_shape'])
+        # load from ndarray
+        img = mmcv.imread(img_path)
+        res = loader(img)
+        self.assertIsInstance(res['img'], np.ndarray)
 
-    def test_repr(self):
-        transform = LoadImageFromLMDB()
-        assert repr(transform) == ('LoadImageFromLMDB(ignore_empty=False, '
-                                   "to_float32=False, color_type='color', "
-                                   "imdecode_backend='cv2', "
-                                   'file_client_args={})')
+        # load from dict
+        res = loader(dict(img=img))
+        self.assertIsInstance(res['img'], np.ndarray)
+
+        # invalid input
+        with self.assertRaises(NotImplementedError):
+            loader(['hello'])

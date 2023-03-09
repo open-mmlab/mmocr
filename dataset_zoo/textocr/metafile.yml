@@ -1,0 +1,27 @@
+Name: 'Text OCR'
+Paper:
+  Title: 'TextOCR: Towards large-scale end-to-end reasoning for arbitrary-shaped scene text'
+  URL: https://openaccess.thecvf.com/content/CVPR2021/papers/Singh_TextOCR_Towards_Large-Scale_End-to-End_Reasoning_for_Arbitrary-Shaped_Scene_Text_CVPR_2021_paper.pdf
+  Venue: CVPR
+  Year: '2021'
+  BibTeX: '@inproceedings{singh2021textocr,
+    title={{TextOCR}: Towards large-scale end-to-end reasoning for arbitrary-shaped scene text},
+    author={Singh, Amanpreet and Pang, Guan and Toh, Mandy and Huang, Jing and Galuba, Wojciech and Hassner, Tal},
+    journal={The Conference on Computer Vision and Pattern Recognition},
+    year={2021}}'
+Data:
+  Website: https://paperswithcode.com/dataset/textocr
+  Language:
+    - English
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Tasks:
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: CC BY 4.0
+    Link: https://creativecommons.org/licenses/by/4.0/
+  Format: .json

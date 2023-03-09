@@ -9,8 +9,6 @@ from mmengine.logging import print_log
 from mmengine.registry import RUNNERS
 from mmengine.runner import Runner
 
-from mmocr.utils import register_all_modules
-
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a model')
@@ -54,10 +52,6 @@ def parse_args():
 def main():
     args = parse_args()
 
-    # register all modules in mmdet into the registries
-    # do not init the default scope here because it will be init in the runner
-    register_all_modules(init_default_scope=False)
-
     # load config
     cfg = Config.fromfile(args.config)
     cfg.launcher = args.launcher
@@ -90,15 +84,15 @@ def main():
     if args.resume:
         cfg.resume = True
 
+    # enable automatically scaling LR
     if args.auto_scale_lr:
-        if cfg.get('auto_scale_lr'):
-            cfg.auto_scale_lr = True
+        if 'auto_scale_lr' in cfg and \
+                'base_batch_size' in cfg.auto_scale_lr:
+            cfg.auto_scale_lr.enable = True
         else:
-            print_log(
-                'auto_scale_lr does not exist in your config, '
-                'please set `auto_scale_lr = dict(base_batch_size=xx)',
-                logger='current',
-                level=logging.WARNING)
+            raise RuntimeError('Can not find "auto_scale_lr" or '
+                               '"auto_scale_lr.base_batch_size" in your'
+                               ' configuration file.')
 
     # build the runner from config
     if 'runner_type' not in cfg:

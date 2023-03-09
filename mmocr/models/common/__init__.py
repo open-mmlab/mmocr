@@ -4,3 +4,4 @@ from .dictionary import *  # NOQA
 from .layers import *  # NOQA
 from .losses import *  # NOQA
 from .modules import *  # NOQA
+from .plugins import *  # NOQA

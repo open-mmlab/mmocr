@@ -7,10 +7,10 @@ from unittest import mock
 import numpy as np
 import torch
 from mmengine.config import Config, ConfigDict
+from mmengine.registry import init_default_scope
 
 from mmocr.registry import MODELS
 from mmocr.testing.data import create_dummy_textdet_inputs
-from mmocr.utils import register_all_modules
 
 
 class TestDRRG(unittest.TestCase):
@@ -18,7 +18,8 @@ class TestDRRG(unittest.TestCase):
     def setUp(self):
         cfg_path = 'textdet/drrg/drrg_resnet50_fpn-unet_1200e_ctw1500.py'
         self.model_cfg = self._get_detector_cfg(cfg_path)
-        register_all_modules()
+        cfg = self._get_config_module(cfg_path)
+        init_default_scope(cfg.get('default_scope', 'mmocr'))
         self.model = MODELS.build(self.model_cfg)
         self.inputs = create_dummy_textdet_inputs(input_shape=(1, 3, 224, 224))
 
