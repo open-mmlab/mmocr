@@ -1,6 +1,6 @@
 imgaug
 kwarray
-lanms-neo==1.0.2
+# lanms-neo==1.0.2
 lmdb
 matplotlib
 mmcv>=2.0.0rc1

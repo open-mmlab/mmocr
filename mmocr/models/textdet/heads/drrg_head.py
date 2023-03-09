@@ -6,7 +6,11 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from lanms import merge_quadrangle_n9 as la_nms
+
+try:
+    from lanms import merge_quadrangle_n9 as la_nms
+except ImportError:
+    la_nms = None
 from mmcv.ops import RoIAlignRotated
 from mmengine.model import BaseModule
 from numpy import ndarray
@@ -838,6 +842,9 @@ class ProposalLocalGraphs:
                                             self.comp_shrink_ratio,
                                             self.comp_w_h_ratio)
 
+            if la_nms is None:
+                raise ImportError('lanms-neo is not installed, '
+                                  'please run "pip install lanms-neo==1.0.2".')
             text_comps = la_nms(text_comps, self.nms_thr)
             text_comp_mask = np.zeros(mask_sz)
             text_comp_boxes = text_comps[:, :8].reshape(
