@@ -10,6 +10,7 @@
    get_started/overview.md
    get_started/install.md
    get_started/quick_run.md
+   get_started/faq.md
 
 .. toctree::
    :maxdepth: 2
@@ -74,7 +75,6 @@
    notes/contribution_guide.md
    notes/projects.md
    notes/changelog.md
-   notes/faq.md
 
 .. toctree::
    :maxdepth: 2

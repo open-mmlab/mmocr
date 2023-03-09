@@ -10,6 +10,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    get_started/overview.md
    get_started/install.md
    get_started/quick_run.md
+   get_started/faq.md
 
 .. toctree::
    :maxdepth: 2
@@ -74,7 +75,6 @@ You can switch between English and Chinese in the lower-left corner of the layou
    notes/contribution_guide.md
    notes/projects.md
    notes/changelog.md
-   notes/faq.md
 
 .. toctree::
    :maxdepth: 1
