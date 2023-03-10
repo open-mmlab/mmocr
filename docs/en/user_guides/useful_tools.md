@@ -29,7 +29,7 @@ python tools/visualizations/browse_dataset.py \
 | -t, --task          | `auto`, `textdet`, `textrecog`        | Specify the task type of the dataset. If `auto`, the task type will be inferred from the config. If the script is unable to infer the task type, you need to specify it manually. Defaults to `auto`. |
 | -n, --show-number   | int                                   | The number of samples to visualized. If not specified, display all images in the dataset.                                                        |
 | -i, --show-interval | float                                 | Interval of visualization (s), defaults to 2.                                                                                                    |
-| --cfg-options       | float                                 | Override configs. [Example](./config.md#command-line-modification)                                                                               |
+| --cfg-options       | str                                   | Override configs. [Example](./config.md#command-line-modification)                                                                               |
 
 #### Examples
 
@@ -110,19 +110,15 @@ python tools/analysis_tools/offline_eval.py configs/textdet/psenet/psenet_r50_fp
 
 In addition, based on this tool, users can also convert predictions obtained from other libraries into MMOCR-supported formats, then use MMOCR's built-in metrics to evaluate them.
 
-| ARGS          | Type  | Description                                                        |
-| ------------- | ----- | ------------------------------------------------------------------ |
-| config        | str   | (required) Path to the config.                                     |
-| pkl_results   | str   | (required) The saved predictions.                                  |
-| --cfg-options | float | Override configs. [Example](./config.md#command-line-modification) |
+| ARGS          | Type | Description                                                        |
+| ------------- | ---- | ------------------------------------------------------------------ |
+| config        | str  | (required) Path to the config.                                     |
+| pkl_results   | str  | (required) The saved predictions.                                  |
+| --cfg-options | str  | Override configs. [Example](./config.md#command-line-modification) |
 
 ### Calculate FLOPs and the Number of Parameters
 
-We provide a method to calculate the FLOPs and the number of parameters, first we install the dependencies using the following command.
-
-```shell
-pip install fvcore
-```
+We provide a method to calculate the FLOPs and the number of parameters.
 
 The usage of the script to calculate FLOPs and the number of parameters is as follows.
 
@@ -130,10 +126,11 @@ The usage of the script to calculate FLOPs and the number of parameters is as fo
 python tools/analysis_tools/get_flops.py ${config} --shape ${IMAGE_SHAPE}
 ```
 
-| ARGS    | Type | Description                                                                               |
-| ------- | ---- | ----------------------------------------------------------------------------------------- |
-| config  | str  | (required) Path to the config.                                                            |
-| --shape | int  | Image size to use when calculating FLOPs, such as `--shape 320 320`. Default is `640 640` |
+| ARGS          | Type          | Description                                                                                                                                                                    |
+| ------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| config        | str           | (required) Path to the config.                                                                                                                                                 |
+| --shape       | int * \[1-3\] | Image size to use when calculating FLOPs, such as `--shape 320 320`. It can accept 1 to 3 arguments, representing `H&W`, `H, W` and `C, H, W` respectively (C = 3 by default). Default is `640 640` |
+| --cfg-options | str           | Override configs. [Example](./config.md#command-line-modification)                                                                                                             |
 
 For example, you can run the following command to get FLOPs and the number of parameters of `dbnet_resnet18_fpnc_100k_synthtext.py`:
 
@@ -144,51 +141,13 @@ python tools/analysis_tools/get_flops.py configs/textdet/dbnet/dbnet_resnet18_fp
 The output is as follows:
 
 ```shell
-input shape is  (1, 3, 1024, 1024)
-| module                    | #parameters or shape | #flops  |
-| :------------------------ | :------------------- | :------ |
-| model                     | 12.341M              | 63.955G |
-| backbone                  | 11.177M              | 38.159G |
-| backbone.conv1            | 9.408K               | 2.466G  |
-| backbone.conv1.weight     | (64, 3, 7, 7)        |         |
-| backbone.bn1              | 0.128K               | 83.886M |
-| backbone.bn1.weight       | (64,)                |         |
-| backbone.bn1.bias         | (64,)                |         |
-| backbone.layer1           | 0.148M               | 9.748G  |
-| backbone.layer1.0         | 73.984K              | 4.874G  |
-| backbone.layer1.1         | 73.984K              | 4.874G  |
-| backbone.layer2           | 0.526M               | 8.642G  |
-| backbone.layer2.0         | 0.23M                | 3.79G   |
-| backbone.layer2.1         | 0.295M               | 4.853G  |
-| backbone.layer3           | 2.1M                 | 8.616G  |
-| backbone.layer3.0         | 0.919M               | 3.774G  |
-| backbone.layer3.1         | 1.181M               | 4.842G  |
-| backbone.layer4           | 8.394M               | 8.603G  |
-| backbone.layer4.0         | 3.673M               | 3.766G  |
-| backbone.layer4.1         | 4.721M               | 4.837G  |
-| neck                      | 0.836M               | 14.887G |
-| neck.lateral_convs        | 0.246M               | 2.013G  |
-| neck.lateral_convs.0.conv | 16.384K              | 1.074G  |
-| neck.lateral_convs.1.conv | 32.768K              | 0.537G  |
-| neck.lateral_convs.2.conv | 65.536K              | 0.268G  |
-| neck.lateral_convs.3.conv | 0.131M               | 0.134G  |
-| neck.smooth_convs         | 0.59M                | 12.835G |
-| neck.smooth_convs.0.conv  | 0.147M               | 9.664G  |
-| neck.smooth_convs.1.conv  | 0.147M               | 2.416G  |
-| neck.smooth_convs.2.conv  | 0.147M               | 0.604G  |
-| neck.smooth_convs.3.conv  | 0.147M               | 0.151G  |
-| det_head                  | 0.329M               | 10.909G |
-| det_head.binarize         | 0.164M               | 10.909G |
-| det_head.binarize.0       | 0.147M               | 9.664G  |
-| det_head.binarize.1       | 0.128K               | 20.972M |
-| det_head.binarize.3       | 16.448K              | 1.074G  |
-| det_head.binarize.4       | 0.128K               | 83.886M |
-| det_head.binarize.6       | 0.257K               | 67.109M |
-| det_head.threshold        | 0.164M               |         |
-| det_head.threshold.0      | 0.147M               |         |
-| det_head.threshold.1      | 0.128K               |         |
-| det_head.threshold.3      | 16.448K              |         |
-| det_head.threshold.4      | 0.128K               |         |
-| det_head.threshold.6      | 0.257K               |         |
+
+==============================
+Compute type: Random input
+Input shape: torch.Size([1024, 1024])
+Flops: 63.737G
+Params: 12.341M
+==============================
 !!!Please be cautious if you use the results in papers. You may need to check if all ops are supported and verify that the flops computation is correct.
+
 ```
