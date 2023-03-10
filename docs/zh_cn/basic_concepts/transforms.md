@@ -106,7 +106,6 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
 | LoadImageFromFile  | `img_path`                                                | `img`<br>`img_shape`<br>`ori_shape`                            | 从图片路径读取图片，支持多种文件存储后端（如 `disk`, `http`, `petrel` 等）及图片解码后端（如 `cv2`, `turbojpeg`, `pillow`, `tifffile`等）。 |
 | LoadOCRAnnotations | `bbox`<br>`bbox_label`<br>`polygon`<br>`ignore`<br>`text` | `gt_bboxes`<br>`gt_bboxes_labels`<br>`gt_polygons`<br>`gt_ignored`<br>`gt_texts` | 解析 OCR 任务所需的标注信息。                                   |
 | LoadKIEAnnotations | `bboxes` `bbox_labels` `edge_labels`<br>`texts`           | `gt_bboxes`<br>`gt_bboxes_labels`<br>`gt_edge_labels`<br>`gt_texts`<br>`ori_shape` | 解析 KIE 任务所需的标注信息。                                   |
-| LoadImageFromLMDB  | `img_path`                                                | `img`<br>`img_shape`<br>`ori_shape`                            | 从 LMDB 格式标注文件中读取图片。                                |
 
 ## 数据增强 - xxx_transforms.py
 

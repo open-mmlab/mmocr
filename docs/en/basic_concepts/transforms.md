@@ -105,7 +105,6 @@ Data loading transforms mainly implement the functions of loading data from diff
 | LoadImageFromFile  | `img_path`                                                | `img`<br>`img_shape`<br>`ori_shape`                            | Load image from the specified path，supporting different file storage backends (e.g. `disk`, `http`, `petrel`) and decoding backends (e.g. `cv2`, `turbojpeg`, `pillow`, `tifffile`). |
 | LoadOCRAnnotations | `bbox`<br>`bbox_label`<br>`polygon`<br>`ignore`<br>`text` | `gt_bboxes`<br>`gt_bboxes_labels`<br>`gt_polygons`<br>`gt_ignored`<br>`gt_texts` | Parse the annotation required by OCR task.                      |
 | LoadKIEAnnotations | `bboxes` `bbox_labels` `edge_labels`<br>`texts`           | `gt_bboxes`<br>`gt_bboxes_labels`<br>`gt_edge_labels`<br>`gt_texts`<br>`ori_shape` | Parse the annotation required by KIE task.                      |
-| LoadImageFromLMDB  | `img_path`                                                | `img`<br>`img_shape`<br>`ori_shape`                            | Load images from LMDB.                                          |
 
 ## Data Augmentation
 
