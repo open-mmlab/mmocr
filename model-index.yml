@@ -8,9 +8,11 @@ Import:
   - configs/textdet/psenet/metafile.yml
   - configs/textdet/textsnake/metafile.yml
   - configs/textrecog/abinet/metafile.yml
+  - configs/textrecog/aster/metafile.yml
   - configs/textrecog/crnn/metafile.yml
   - configs/textrecog/master/metafile.yml
   - configs/textrecog/nrtr/metafile.yml
+  - configs/textrecog/svtr/metafile.yml
   - configs/textrecog/robust_scanner/metafile.yml
   - configs/textrecog/sar/metafile.yml
   - configs/textrecog/satrn/metafile.yml

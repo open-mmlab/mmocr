@@ -5,8 +5,8 @@ import numpy as np
 import torch
 
 from mmocr.utils import (bbox2poly, bbox_center_distance, bbox_diag_distance,
-                         bezier2polygon, is_on_same_line,
-                         stitch_boxes_into_lines)
+                         bezier2polygon, is_on_same_line, rescale_bbox,
+                         rescale_bboxes, stitch_boxes_into_lines)
 from mmocr.utils.bbox_utils import bbox_jitter
 
 
@@ -236,3 +236,31 @@ class TestStitchBoxesIntoLines(unittest.TestCase):
         result.sort(key=lambda x: x['box'][0])
         expected_result.sort(key=lambda x: x['box'][0])
         self.assertEqual(result, expected_result)
+
+
+class TestRescaleBbox(unittest.TestCase):
+
+    def setUp(self) -> None:
+        self.bbox = np.array([0, 0, 1, 1])
+        self.bboxes = np.array([[0, 0, 1, 1], [1, 1, 2, 2]])
+        self.scale = 2
+
+    def test_rescale_bbox(self):
+        # mul
+        rescaled_bbox = rescale_bbox(self.bbox, self.scale, mode='mul')
+        self.assertTrue(np.allclose(rescaled_bbox, np.array([0, 0, 2, 2])))
+        # div
+        rescaled_bbox = rescale_bbox(self.bbox, self.scale, mode='div')
+        self.assertTrue(np.allclose(rescaled_bbox, np.array([0, 0, 0.5, 0.5])))
+
+    def test_rescale_bboxes(self):
+        # mul
+        rescaled_bboxes = rescale_bboxes(self.bboxes, self.scale, mode='mul')
+        self.assertTrue(
+            np.allclose(rescaled_bboxes, np.array([[0, 0, 2, 2], [2, 2, 4,
+                                                                  4]])))
+        # div
+        rescaled_bboxes = rescale_bboxes(self.bboxes, self.scale, mode='div')
+        self.assertTrue(
+            np.allclose(rescaled_bboxes,
+                        np.array([[0, 0, 0.5, 0.5], [0.5, 0.5, 1, 1]])))

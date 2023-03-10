@@ -67,6 +67,7 @@ instance/
 # Sphinx documentation
 docs/en/_build/
 docs/zh_cn/_build/
+docs/*/api/generated/
 
 # PyBuilder
 target/
@@ -142,3 +143,4 @@ mmocr/.mim
 workdirs/
 .history/
 .dev/
+data/

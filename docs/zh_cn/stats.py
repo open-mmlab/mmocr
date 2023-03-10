@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # Copyright (c) OpenMMLab. All rights reserved.
 import functools as func
-import glob
 import re
 from os.path import basename, splitext
 
 import numpy as np
 import titlecase
+from weight_list import gen_weight_list
 
 
 def title2anchor(name):
@@ -16,7 +16,9 @@ def title2anchor(name):
 
 # Count algorithms
 
-files = sorted(glob.glob('*_models.md'))
+files = [
+    'backbones.md', 'textdet_models.md', 'textrecog_models.md', 'kie_models.md'
+]
 
 stats = []
 
@@ -51,7 +53,7 @@ for f in files:
             re.search(
                 rf'\btitle\s*=\s*{{\s*{q}\s*}}.*?\n## (.*?)\s*[,;]?\s*\n',
                 revcontent, re.DOTALL | re.IGNORECASE).group(1))
-        paperlinks[p] = f'[{p}]({splitext(basename(f))[0]}.html#{paper_link})'
+        paperlinks[p] = f'[{p}]({splitext(basename(f))[0]}.md#{paper_link})'
     paperlist = '\n'.join(
         sorted(f'    - [{t}] {paperlinks[x]}' for t, x in papers))
     # count configs
@@ -89,8 +91,30 @@ papertypes, papercounts = np.unique([t for t, _ in allpapers],
 countstr = '\n'.join(
     [f'   - {t}: {c}' for t, c in zip(papertypes, papercounts)])
 
+# get model list
+weight_list = gen_weight_list()
+
 modelzoo = f"""
-# 统计数据
+# 总览
+
+## 权重
+以下是可用于[推理](user_guides/inference.md)的权重列表。
+
+为了便于使用，有的权重可能会存在多个较短的别名，这在表格中将用“/”分隔。
+
+例如，表格中展示的 `DB_r18 / dbnet_resnet18_fpnc_1200e_icdar2015` 表示您可以使用
+`DB_r18` 或 `dbnet_resnet18_fpnc_1200e_icdar2015` 来初始化推理器：
+
+```python
+>>> from mmocr.apis import TextDetInferencer
+>>> inferencer = TextDetInferencer(model='DB_r18')
+>>> # 等价于
+>>> inferencer = TextDetInferencer(model='dbnet_resnet18_fpnc_1200e_icdar2015')
+```
+
+{weight_list}
+
+## 统计数据
 
 * 模型权重文件数量： {len(allckpts)}
 * 配置文件数量： {len(allconfigs)}
@@ -98,7 +122,7 @@ modelzoo = f"""
 {countstr}
 
 {msglist}
-"""
+"""  # noqa
 
 with open('modelzoo.md', 'w') as f:
     f.write(modelzoo)

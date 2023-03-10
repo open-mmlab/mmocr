@@ -1,15 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import copy
+import os
 import os.path as osp
-import time
+import shutil
+from typing import List, Optional, Union
 
-from mmengine import Registry
-from mmengine.config import Config
-
-DATA_OBTAINERS = Registry('data_obtainer')
-DATA_CONVERTERS = Registry('data_converter')
-DATA_PARSERS = Registry('data_parser')
-DATA_DUMPERS = Registry('data_dumper')
-CFG_GENERATORS = Registry('cfg_generator')
+from mmocr.registry import (CFG_GENERATORS, DATA_DUMPERS, DATA_GATHERERS,
+                            DATA_OBTAINERS, DATA_PACKERS, DATA_PARSERS)
+from mmocr.utils.typing_utils import ConfigType, OptConfigType
 
 
 class DatasetPreparer:
@@ -17,16 +15,16 @@ class DatasetPreparer:
 
     Dataset preparer is used to prepare dataset for MMOCR. It mainly consists
     of three steps:
-
-      1. Obtain the dataset
+      1. For each split:
+        - Obtain the dataset
             - Download
             - Extract
             - Move/Rename
-      2. Process the dataset
-            - Parse original annotations
-            - Convert to mmocr format
-            - Dump the annotation file
-            - Clean useless files
+        - Gather the dataset
+        - Parse the dataset
+        - Pack the dataset to MMOCR format
+        - Dump the dataset
+      2. Delete useless files
       3. Generate the base config for this dataset
 
     After all these steps, the original datasets have been prepared for
@@ -34,106 +32,169 @@ class DatasetPreparer:
     https://mmocr.readthedocs.io/en/dev-1.x/user_guides/dataset_prepare.html
 
     Args:
-        cfg_path (str): Path to dataset config file.
+        data_root (str): Root directory of data.
         dataset_name (str): Dataset name.
         task (str): Task type. Options are 'textdet', 'textrecog',
             'textspotter', and 'kie'. Defaults to 'textdet'.
         nproc (int): Number of parallel processes. Defaults to 4.
-        overwrite_cfg (bool): Whether to overwrite the dataset config file if
-            it already exists. If False, Dataset Preparer will not generate new
-            config for datasets whose configs are already in base.
+        train_preparer (OptConfigType): cfg for train data prepare. It contains
+            the following keys:
+            - obtainer: cfg for data obtainer.
+            - gatherer: cfg for data gatherer.
+            - parser: cfg for data parser.
+            - packer: cfg for data packer.
+            - dumper: cfg for data dumper.
+            Defaults to None.
+        test_preparer (OptConfigType): cfg for test data prepare. Defaults to
+            None.
+        val_preparer (OptConfigType): cfg for val data prepare. Defaults to
+            None.
+        config_generator (OptConfigType): cfg for config generator. Defaults to
+            None.
+        delete (list[str], optional): List of files to be deleted.
+            Defaults to None.
     """
 
     def __init__(self,
-                 cfg_path: str,
-                 dataset_name: str,
+                 data_root: str,
+                 dataset_name: str = '',
                  task: str = 'textdet',
                  nproc: int = 4,
-                 overwrite_cfg: bool = False) -> None:
-        cfg_path = osp.join(cfg_path, dataset_name)
+                 train_preparer: OptConfigType = None,
+                 test_preparer: OptConfigType = None,
+                 val_preparer: OptConfigType = None,
+                 config_generator: OptConfigType = None,
+                 delete: Optional[List[str]] = None) -> None:
+        self.data_root = data_root
         self.nproc = nproc
         self.task = task
         self.dataset_name = dataset_name
-        self.overwrite_cfg = overwrite_cfg
-        self.parse_meta(cfg_path)
-        self.parse_cfg(cfg_path)
+        self.train_preparer = train_preparer
+        self.test_preparer = test_preparer
+        self.val_preparer = val_preparer
+        self.config_generator = config_generator
+        self.delete = delete
 
-    def __call__(self):
+    def run(self, splits: Union[str, List] = ['train', 'test', 'val']) -> None:
         """Prepare the dataset."""
-        if self.with_obtainer:
-            print('Obtaining Dataset...')
-            self.data_obtainer()
-        if self.with_converter:
-            print('Converting Dataset...')
-            self.data_converter()
-        if self.with_config_generator:
-            print('Generating base configs...')
-            self.config_generator()
+        if isinstance(splits, str):
+            splits = [splits]
+        assert set(splits).issubset(set(['train', 'test',
+                                         'val'])), 'Invalid split name'
+        for split in splits:
+            self.loop(split, getattr(self, f'{split}_preparer'))
+        self.clean()
+        self.generate_config()
 
-    def parse_meta(self, cfg_path: str) -> None:
-        """Parse meta file.
+    @classmethod
+    def from_file(cls, cfg: ConfigType) -> 'DatasetPreparer':
+        """Create a DataPreparer from config file.
 
         Args:
-            cfg_path (str): Path to meta file.
+            cfg (ConfigType): A config used for building runner. Keys of
+                ``cfg`` can see :meth:`__init__`.
+
+        Returns:
+            Runner: A DatasetPreparer build from ``cfg``.
         """
-        try:
-            meta = Config.fromfile(osp.join(cfg_path, 'metafile.yml'))
-        except FileNotFoundError:
+
+        cfg = copy.deepcopy(cfg)
+        data_preparer = cls(
+            data_root=cfg['data_root'],
+            dataset_name=cfg.get('dataset_name', ''),
+            task=cfg.get('task', 'textdet'),
+            nproc=cfg.get('nproc', 4),
+            train_preparer=cfg.get('train_preparer', None),
+            test_preparer=cfg.get('test_preparer', None),
+            val_preparer=cfg.get('val_preparer', None),
+            delete=cfg.get('delete', None),
+            config_generator=cfg.get('config_generator', None))
+        return data_preparer
+
+    def loop(self, split: str, cfg: ConfigType) -> None:
+        """Loop over the dataset.
+
+        Args:
+            split (str): The split of the dataset.
+            cfg (ConfigType): A config used for building obtainer, gatherer,
+                parser, packer and dumper.
+        """
+        if cfg is None:
             return
-        assert self.task in meta['Data']['Tasks'], \
-            f'Task {self.task} not supported!'
-        # License related
-        if meta['Data']['License']['Type']:
-            print(f"\033[1;33;40mDataset Name: {meta['Name']}")
-            print(f"License Type: {meta['Data']['License']['Type']}")
-            print(f"License Link: {meta['Data']['License']['Link']}")
-            print(f"BibTeX: {meta['Paper']['BibTeX']}\033[0m")
-            print(
-                '\033[1;31;43mMMOCR does not own the dataset. Using this '
-                'dataset you must accept the license provided by the owners, '
-                'and cite the corresponding papers appropriately.')
-            print('If you do not agree with the above license, please cancel '
-                  'the progress immediately by pressing ctrl+c. Otherwise, '
-                  'you are deemed to accept the terms and conditions.\033[0m')
-            for i in range(5):
-                print(f'{5-i}...')
-                time.sleep(1)
 
-    def parse_cfg(self, cfg_path: str) -> None:
-        """Parse dataset config file.
+        # build obtainer and run
+        obtainer = cfg.get('obtainer', None)
+        if obtainer:
+            print(f'Obtaining {split} Dataset...')
+            obtainer.setdefault('task', default=self.task)
+            obtainer.setdefault('data_root', default=self.data_root)
+            obtainer = DATA_OBTAINERS.build(obtainer)
+            obtainer()
 
-        Args:
-            cfg_path (str): Path to dataset config file.
-        """
-        cfg_path = osp.join(cfg_path, self.task + '.py')
-        assert osp.exists(cfg_path), f'Config file {cfg_path} not found!'
-        cfg = Config.fromfile(cfg_path)
+        # build gatherer
+        gatherer = cfg.get('gatherer', None)
+        parser = cfg.get('parser', None)
+        packer = cfg.get('packer', None)
+        dumper = cfg.get('dumper', None)
+        related = [gatherer, parser, packer, dumper]
+        if all(item is None for item in related):  # no data process
+            return
+        if not all(item is not None for item in related):
+            raise ValueError('gatherer, parser, packer and dumper should be '
+                             'either all None or not None')
 
-        if 'data_obtainer' in cfg:
-            cfg.data_obtainer.update(task=self.task)
-            self.data_obtainer = DATA_OBTAINERS.build(cfg.data_obtainer)
-        if 'data_converter' in cfg:
-            cfg.data_converter.update(
-                dict(nproc=self.nproc, dataset_name=self.dataset_name))
-            self.data_converter = DATA_CONVERTERS.build(cfg.data_converter)
-        if 'config_generator' in cfg:
-            cfg.config_generator.update(
-                dict(
-                    dataset_name=self.dataset_name,
-                    overwrite_cfg=self.overwrite_cfg))
-            self.config_generator = CFG_GENERATORS.build(cfg.config_generator)
+        print(f'Gathering {split} Dataset...')
+        gatherer.setdefault('split', default=split)
+        gatherer.setdefault('data_root', default=self.data_root)
+        gatherer.setdefault('ann_dir', default='annotations')
+        gatherer.setdefault(
+            'img_dir', default=osp.join(f'{self.task}_imgs', split))
 
-    @property
-    def with_obtainer(self) -> bool:
-        """bool: whether the data preparer has an obtainer"""
-        return getattr(self, 'data_obtainer', None) is not None
+        gatherer = DATA_GATHERERS.build(gatherer)
+        img_paths, ann_paths = gatherer()
 
-    @property
-    def with_converter(self) -> bool:
-        """bool: whether the data preparer has an converter"""
-        return getattr(self, 'data_converter', None) is not None
+        # build parser
+        print(f'Parsing {split} Images and Annotations...')
+        parser.setdefault('split', default=split)
+        parser.setdefault('nproc', default=self.nproc)
+        parser = DATA_PARSERS.build(parser)
+        # Convert dataset annotations to MMOCR format
+        samples = parser(img_paths, ann_paths)
 
-    @property
-    def with_config_generator(self) -> bool:
-        """bool: whether the data preparer has a config generator"""
-        return getattr(self, 'config_generator', None) is not None
+        # build packer
+        print(f'Packing {split} Annotations...')
+        packer.setdefault('split', default=split)
+        packer.setdefault('nproc', default=self.nproc)
+        packer.setdefault('data_root', default=self.data_root)
+        packer = DATA_PACKERS.build(packer)
+        samples = packer(samples)
+
+        # build dumper
+        print(f'Dumping {split} Annotations...')
+        # Dump annotation files
+        dumper.setdefault('task', default=self.task)
+        dumper.setdefault('split', default=split)
+        dumper.setdefault('data_root', default=self.data_root)
+        dumper = DATA_DUMPERS.build(dumper)
+        dumper(samples)
+
+    def generate_config(self):
+        if self.config_generator is None:
+            return
+        self.config_generator.setdefault(
+            'dataset_name', default=self.dataset_name)
+        self.config_generator.setdefault('data_root', default=self.data_root)
+        config_generator = CFG_GENERATORS.build(self.config_generator)
+        print('Generating base configs...')
+        config_generator()
+
+    def clean(self) -> None:
+        if self.delete is None:
+            return
+        for d in self.delete:
+            delete_file = osp.join(self.data_root, d)
+            if osp.exists(delete_file):
+                if osp.isdir(delete_file):
+                    shutil.rmtree(delete_file)
+                else:
+                    os.remove(delete_file)

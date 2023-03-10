@@ -125,7 +125,7 @@ val_evaluator = [dict(type='CharMetric')]
 具体而言，`CharMetric` 会输出两个评测评测指标，即字符精度 `char_precision` 和字符召回率 `char_recall`。设正确预测的字符（True Positive）数量为 {math}`\sigma_{tp}`，则精度 *P* 和召回率 *R* 可由下式计算取得：
 
 ```{math}
-P=\frac{\sigma_{tp}}{\sigma_{gt}}, R = \frac{\sigma_{tp}}{\sigma_{pred}}
+P=\frac{\sigma_{tp}}{\sigma_{pred}}, R = \frac{\sigma_{tp}}{\sigma_{gt}}
 ```
 
 其中，{math}`\sigma_{gt}` 与 {math}`\sigma_{pred}` 分别为标签文本与预测文本所包含的字符总数。
@@ -133,7 +133,7 @@ P=\frac{\sigma_{tp}}{\sigma_{gt}}, R = \frac{\sigma_{tp}}{\sigma_{pred}}
 例如，假设标签文本为 "MM**O**CR"，预测文本为 "mm**0**cR**1**"，则使用 `CharMetric` 评测指标的得分为：
 
 ```{math}
-P=\frac{4}{5}, R=\frac{4}{6}
+P=\frac{4}{6}, R=\frac{4}{5}
 ```
 
 ### OneMinusNEDMetric

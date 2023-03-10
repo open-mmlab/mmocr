@@ -1,9 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import math
-from typing import Sequence, Union
+from typing import List, Optional, Sequence, Union
 
 import numpy as np
 import torch
+from matplotlib.font_manager import FontProperties
 from mmengine.visualization import Visualizer
 
 from mmocr.registry import VISUALIZERS
@@ -27,6 +28,18 @@ class BaseLocalVisualizer(Visualizer):
             Defaults to empty dict.
         is_openset (bool, optional): Whether the visualizer is used in
             OpenSet. Defaults to False.
+        font_families (Union[str, List[str]]): The font families of labels.
+            Defaults to 'sans-serif'.
+        font_properties (Union[str, FontProperties], optional):
+            The font properties of texts. The format should be a path str
+            to font file or a `font_manager.FontProperties()` object.
+            If you want to draw Chinese texts, you need to prepare
+            a font file that can show Chinese characters properly.
+            For example: `simhei.ttf`,`simsun.ttc`,`simkai.ttf` and so on.
+            Then set font_properties=matplotlib.font_manager.FontProperties
+            (fname='path/to/font_file') or font_properties='path/to/font_file'
+            This function need mmengine version >=0.6.0.
+            Defaults to None.
     """
     PALETTE = [(220, 20, 60), (119, 11, 32), (0, 0, 142), (0, 0, 230),
                (106, 0, 228), (0, 60, 100), (0, 80, 100), (0, 0, 70),
@@ -50,13 +63,39 @@ class BaseLocalVisualizer(Visualizer):
                (95, 54, 80), (128, 76, 255), (201, 57, 1), (246, 0, 122),
                (191, 162, 208)]
 
-    def get_labels_image(self,
-                         image: np.ndarray,
-                         labels: Union[np.ndarray, torch.Tensor],
-                         bboxes: Union[np.ndarray, torch.Tensor],
-                         colors: Union[str, Sequence[str]] = 'k',
-                         font_size: Union[int, float] = 10,
-                         auto_font_size: bool = False) -> np.ndarray:
+    def __init__(self,
+                 name: str = 'visualizer',
+                 font_families: Union[str, List[str]] = 'sans-serif',
+                 font_properties: Optional[Union[str, FontProperties]] = None,
+                 **kwargs) -> None:
+        super().__init__(name=name, **kwargs)
+        self.font_families = font_families
+        self.font_properties = self._set_font_properties(font_properties)
+
+    def _set_font_properties(self,
+                             fp: Optional[Union[str, FontProperties]] = None):
+        if fp is None:
+            return None
+        elif isinstance(fp, str):
+            return FontProperties(fname=fp)
+        elif isinstance(fp, FontProperties):
+            return fp
+        else:
+            raise ValueError(
+                'font_properties argument type should be'
+                ' `str` or `matplotlib.font_manager.FontProperties`')
+
+    def get_labels_image(
+        self,
+        image: np.ndarray,
+        labels: Union[np.ndarray, torch.Tensor],
+        bboxes: Union[np.ndarray, torch.Tensor],
+        colors: Union[str, Sequence[str]] = 'k',
+        font_size: Union[int, float] = 10,
+        auto_font_size: bool = False,
+        font_families: Union[str, List[str]] = 'sans-serif',
+        font_properties: Optional[Union[str, FontProperties]] = None
+    ) -> np.ndarray:
         """Draw labels on image.
 
         Args:
@@ -73,7 +112,22 @@ class BaseLocalVisualizer(Visualizer):
                 to 10.
             auto_font_size (bool): Whether to automatically adjust font size.
                 Defaults to False.
+            font_families (Union[str, List[str]]): The font families of labels.
+                Defaults to 'sans-serif'.
+            font_properties (Union[str, FontProperties], optional):
+                The font properties of texts. The format should be a path str
+                to font file or a `font_manager.FontProperties()` object.
+                If you want to draw Chinese texts, you need to prepare
+                a font file that can show Chinese characters properly.
+                For example: `simhei.ttf`,`simsun.ttc`,`simkai.ttf` and so on.
+                Then set font_properties=matplotlib.font_manager.FontProperties
+                (fname='path/to/font_file') or
+                font_properties='path/to/font_file'.
+                This function need mmengine version >=0.6.0.
+                Defaults to None.
         """
+        if not labels and not bboxes:
+            return image
         if colors is not None and isinstance(colors, (list, tuple)):
             size = math.ceil(len(labels) / len(colors))
             colors = (colors * size)[:len(labels)]
@@ -88,7 +142,9 @@ class BaseLocalVisualizer(Visualizer):
             vertical_alignments='center',
             horizontal_alignments='center',
             colors='k',
-            font_sizes=font_size)
+            font_sizes=font_size,
+            font_families=font_families,
+            font_properties=font_properties)
         return self.get_image()
 
     def get_polygons_image(self,

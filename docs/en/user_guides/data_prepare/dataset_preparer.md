@@ -15,11 +15,15 @@ Only one line of command is needed to complete the data download, decompression,
 python tools/dataset_converters/prepare_dataset.py [$DATASET_NAME] --task [$TASK] --nproc [$NPROC]
 ```
 
-| ARGS         | Type | Description                                                                                                                               |
-| ------------ | ---- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| dataset_name | str  | (required) dataset name.                                                                                                                  |
-| --task       | str  | Convert the dataset to the format of a specified task supported by MMOCR. options are: 'textdet', 'textrecog', 'textspotting', and 'kie'. |
-| --nproc      | int  | Number of processes to be used. Defaults to 4.                                                                                            |
+| ARGS               | Type | Description                                                                                                                               |
+| ------------------ | ---- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| dataset_name       | str  | (required) dataset name.                                                                                                                  |
+| --nproc            | int  | Number of processes to be used. Defaults to 4.                                                                                            |
+| --task             | str  | Convert the dataset to the format of a specified task supported by MMOCR. options are: 'textdet', 'textrecog', 'textspotting', and 'kie'. |
+| --splits           | str  | Splits of the dataset to be prepared. Multiple splits can be accepted. Defaults to `train val test`.                                      |
+| --lmdb             | str  | Store the data in LMDB format. Only valid when the task is `textrecog`.                                                                   |
+| --overwrite-cfg    | str  | Whether to overwrite the dataset config file if it already exists in `configs/{task}/_base_/datasets`.                                    |
+| --dataset-zoo-path | str  | Path to the dataset config file. If not specified, the default path is `./dataset_zoo`.                                                   |
 
 For example, the following command shows how to use the script to prepare the ICDAR2015 dataset for text detection task.
 
@@ -33,9 +37,47 @@ Also, the script supports preparing multiple datasets at the same time. For exam
 python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task textrecog
 ```
 
-To check the supported datasets in MMOCR, please refer to [Dataset Zoo](./datasetzoo.md).
+To check the supported datasets of Dataset Preparer, please refer to [Dataset Zoo](./datasetzoo.md). Some of other datasets that need to be prepared manually are listed in [Text Detection](./det.md) and [Text Recognition](./recog.md).
 
 ## Advanced Usage
+
+### LMDB Format
+
+In text recognition tasks, we usually use LMDB format to store data to speed up data loading. When using the `prepare_dataset.py` script to prepare data, you can store data to the LMDB format by the `--lmdb` parameter. For example:
+
+```bash
+python tools/dataset_converters/prepare_dataset.py icdar2015 --task textrecog --lmdb
+```
+
+As soon as the dataset is prepared, Dataset Preparer will generate `icdar2015_lmdb.py` in the `configs/textrecog/_base_/datasets/` directory. You can inherit this file and point the `dataloader` to the LMDB dataset. Moreover, the LMDB dataset needs to be loaded by [`LoadImageFromNDArray`](mmocr.datasets.transforms.LoadImageFromNDArray), thus you also need to modify `pipeline`.
+
+For example, if we want to change the training set of `configs/textrecog/crnn/crnn_mini-vgg_5e_mj.py` to icdar2015 generated before, we need to perform the following modifications:
+
+1. Modify `configs/textrecog/crnn/crnn_mini-vgg_5e_mj.py`:
+
+   ```python
+   _base_ = [
+        '../_base_/datasets/icdar2015_lmdb.py',  # point to icdar2015 lmdb dataset
+         ...
+    ]
+
+    train_list = [_base_.icdar2015_lmdb_textrecog_train]
+    ...
+   ```
+
+2. Modify `train_pipeline` in `configs/textrecog/crnn/_base_crnn_mini-vgg.py`, change `LoadImageFromFile` to `LoadImageFromNDArray`:
+
+   ```python
+   train_pipeline = [
+    dict(
+        type='LoadImageFromNDArray',
+        color_type='grayscale',
+        file_client_args=file_client_args,
+        ignore_empty=True,
+        min_size=2),
+    ...
+   ]
+   ```
 
 ### Configuration of Dataset Preparer
 
@@ -95,6 +137,10 @@ Data:
 
 It is not mandatory to use the metafile in the dataset preparation process (so users can ignore this file when preparing private datasets), but in order to better understand the information of each public dataset, we recommend that users read the metafile before preparing the dataset, which will help to understand whether the datasets meet their needs.
 
+```{warning}
+The following section is outdated as of MMOCR 1.0.0rc6.
+```
+
 #### Config of Dataset Preparer
 
 Next, we will introduce the conventional fields and usage of the dataset preparer configuration files.
@@ -149,6 +195,10 @@ data_converter = dict(
     delete=['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img'])
 ```
 
+```{warning}
+This section is outdated and not yet synchronized with its Chinese version, please switch the language for the latest information.
+```
+
 `data_converter` is responsible for loading and converting the original to the format supported by MMOCR. We provide a number of built-in data converters for different tasks, such as `TextDetDataConverter`, `TextRecogDataConverter`, `TextSpottingDataConverter`, and `WildReceiptConverter` (Since we only support WildReceipt dataset for KIE task at present, we only provide this converter for now).
 
 Take the text detection task as an example, `TextDetDataConverter` mainly completes the following work:
@@ -182,7 +232,7 @@ Therefore, we provide two built-in gatherers, `pair_gather` and `mono_gather`, t
 
 When the image and annotation file are matched, the original annotations will be parsed. Since the annotation format is usually varied from dataset to dataset, the parsers are usually dataset related. Then, the parser will pack the required data into the MMOCR format.
 
-Finally, we can specify the dumpers to decide the data format. Currently, we only support `JsonDumper` and `WildreceiptOpensetDumper`, where the former is used to save the data in the standard MMOCR Json format, and the latter is used to save the data in the Wildreceipt format. In the future, we plan to support `LMDBDumper` to save the annotation files in LMDB format.
+Finally, we can specify the dumpers to decide the data format. Currently, we support `JsonDumper`, `WildreceiptOpensetDumper`, and `TextRecogLMDBDumper`. They are used to save the data in the standard MMOCR Json format, Wildreceipt format, and the LMDB format commonly used in academia in the field of text recognition, respectively.
 
 ### Use DataPreparer to prepare customized dataset
 

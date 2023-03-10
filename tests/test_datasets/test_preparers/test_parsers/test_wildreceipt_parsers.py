@@ -39,8 +39,8 @@ class TestWildReceiptParsers(unittest.TestCase):
         list_to_file(self.anno, fake_sample)
 
     def test_textdet_parsers(self):
-        parser = WildreceiptTextDetAnnParser(self.root.name)
-        samples = parser.parse_files(self.anno, 'train')
+        parser = WildreceiptTextDetAnnParser(split='train')
+        samples = parser.parse_files(self.root.name, self.anno)
         self.assertEqual(len(samples), 1)
         self.assertEqual(osp.basename(samples[0][0]), 'test.jpg')
         instances = samples[0][1]
@@ -52,6 +52,9 @@ class TestWildReceiptParsers(unittest.TestCase):
         self.assertEqual(instances[1]['ignore'], True)
 
     def test_kie_parsers(self):
-        parser = WildreceiptKIEAnnParser(self.root.name)
-        samples = parser.parse_files(self.anno, 'train')
+        parser = WildreceiptKIEAnnParser(split='train')
+        samples = parser.parse_files(self.root.name, self.anno)
         self.assertEqual(len(samples), 1)
+
+    def tearDown(self) -> None:
+        self.root.cleanup()

@@ -77,7 +77,7 @@ class CTCModuleLoss(BaseTextRecogModuleLoss):
             for data_sample in data_samples
         ]
         target_lengths = torch.IntTensor([len(t) for t in targets])
-        target_lengths = torch.clamp(target_lengths, min=1, max=seq_len).long()
+        target_lengths = torch.clamp(target_lengths, max=seq_len).long()
         input_lengths = torch.full(
             size=(bsz, ), fill_value=seq_len, dtype=torch.long)
         if self.flatten:

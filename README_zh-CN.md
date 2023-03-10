@@ -41,6 +41,28 @@
 
 </div>
 
+## 近期更新
+
+**默认分支已经从 `main` 切换到 `1.x`。我们鼓励用户迁移到最新版本，请参考 [迁移指南](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/overview.html) 以了解更多细节。**
+
+最新的版本 v1.0.0rc6 于 2023-03-07 发布。
+
+1. 在 `projects/` 目录中新增了 ABCNet v2 (仅支持推理) 和 SPTS 模型；
+
+2. 新增统一推理接口 `Inferencer`，用户可以方便直接地进行各任务的推理。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/inference.html)
+
+3. 支持了文本识别任务的测试时数据增强。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/train_test.html#id15)
+
+4. 通过 [`BatchAugSampler`](https://github.com/open-mmlab/mmocr/pull/1757) 支持了 [batch augmentation](https://openaccess.thecvf.com/content_CVPR_2020/papers/Hoffer_Augment_Your_Batch_Improving_Generalization_Through_Instance_Repetition_CVPR_2020_paper.pdf) ，这是 SPTS 中使用的一种技巧。
+
+5. 重构了 Dataset Preparer ，用户现在可以更灵活地配置数据集的预处理流程。除此之外，用户现在也可以将文本识别数据集转换为 LMDB 格式。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/data_prepare/dataset_preparer.html#lmdb)
+
+6. 修正了一些端到端数据集的标注，保证了数据集的正确性及与常见实践的一致性。
+
+7. 减少了 `shapely` 中可能出现的一些错误警告。
+
+阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
+
 ## 简介
 
 MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检测，文本识别以及相应的下游任务，如关键信息提取。 它是 OpenMMLab 项目的一部分。
@@ -63,14 +85,13 @@ MMOCR 是基于 PyTorch 和 mmdetection 的开源工具箱，专注于文本检�
 
 -**模块化设计**
 
-MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处理器，模型组件如主干模块，颈部模块和头部模块，以及损失函数。有关如何构建自定义模型的信
-息，请参考[概览](https://mmocr.readthedocs.io/zh_CN/dev-1.x/get_started/overview.html)。
+MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处理器，模型组件如主干模块，颈部模块和头部模块，以及损失函数。有关如何构建自定义模型的信息，请参考[概览](https://mmocr.readthedocs.io/zh_CN/dev-1.x/get_started/overview.html)。
 
 -**众多实用工具**
 
 该工具箱提供了一套全面的实用程序，可以帮助用户评估模型的性能。它包括可对图像，标注的真值以及预测结果进行可视化的可视化工具，以及用于在训练过程中评估模型的验证工具。它还包括数据转换器，演示了如何将用户自建的标注数据转换为 MMOCR 支持的标注文件。
 
-## 最新进展
+## MMOCR 1.0 更新汇总
 
 1. 架构升级：MMOCR 1.x 是基于 [MMEngine](https://github.com/open-mmlab/mmengine)，提供了一个通用的、强大的执行器，允许更灵活的定制，提供了统一的训练和测试入口。
 
@@ -87,8 +108,6 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 7. 拥抱更多 `projects/`: 我们推出了 `projects/` 文件夹，用于存放一些实验性的新特性、框架和模型。我们对这个文件夹下的代码规范不作过多要求，力求让社区的所有想法第一时间得到实现和展示。请查看我们的[样例 project](https://github.com/open-mmlab/mmocr/blob/dev-1.x/projects/example_project/) 以了解更多。
 
 8. 更多新模型：MMOCR 1.0 支持了更多模型和模型种类。
-
-阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
 
 ## 安装
 
@@ -140,12 +159,14 @@ pip3 install -e .
 <summary>文字识别</summary>
 
 - [x] [ABINet](configs/textrecog/abinet/README.md) (CVPR'2021)
+- [x] [ASTER](configs/textrecog/aster/README.md) (TPAMI'2018)
 - [x] [CRNN](configs/textrecog/crnn/README.md) (TPAMI'2016)
 - [x] [MASTER](configs/textrecog/master/README.md) (PR'2021)
 - [x] [NRTR](configs/textrecog/nrtr/README.md) (ICDAR'2019)
 - [x] [RobustScanner](configs/textrecog/robust_scanner/README.md) (ECCV'2020)
 - [x] [SAR](configs/textrecog/sar/README.md) (AAAI'2019)
 - [x] [SATRN](configs/textrecog/satrn/README.md) (CVPR'2020 Workshop on Text and Documents in the Deep Learning Era)
+- [x] [SVTR](configs/textrecog/svtr/README.md) (IJCAI'2022)
 
 </details>
 
@@ -160,6 +181,8 @@ pip3 install -e .
 <summary>端对端 OCR</summary>
 
 - [x] [ABCNet](projects/ABCNet/README.md) (CVPR'2020)
+- [x] [ABCNetV2](projects/ABCNet/README_V2.md) (TPAMI'2021)
+- [x] [SPTS](projects/SPTS/README.md) (ACM MM'2022)
 
 </details>
 

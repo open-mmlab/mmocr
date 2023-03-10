@@ -48,9 +48,10 @@ def rescale_polygon(polygon: ArrayLike,
     return polygon
 
 
-def rescale_polygons(polygons: Sequence[ArrayLike],
+def rescale_polygons(polygons: Union[ArrayLike, Sequence[ArrayLike]],
                      scale_factor: Tuple[int, int],
-                     mode: str = 'mul') -> Sequence[np.ndarray]:
+                     mode: str = 'mul'
+                     ) -> Union[ArrayLike, Sequence[np.ndarray]]:
     """Rescale polygons according to scale_factor.
 
     The behavior is different depending on the mode. When mode is 'mul', the
@@ -61,19 +62,22 @@ def rescale_polygons(polygons: Sequence[ArrayLike],
     image size.
 
     Args:
-        polygons (list[ArrayLike]): A list of polygons, each written in
-            [x1, y1, x2, y2, ...] and in any form can be converted
+        polygons (list[ArrayLike] or ArrayLike): A list of polygons, each
+            written in [x1, y1, x2, y2, ...] and in any form can be converted
             to an 1-D numpy array. E.g. list[list[float]],
             list[np.ndarray], or list[torch.Tensor].
         scale_factor (tuple(int, int)): (w_scale, h_scale).
         model (str): Rescale mode. Can be 'mul' or 'div'. Defaults to 'mul'.
 
     Returns:
-        list[np.ndarray]: Rescaled polygons.
+        list[np.ndarray] or np.ndarray: Rescaled polygons. The type of the
+        return value depends on the type of the input polygons.
     """
     results = []
     for polygon in polygons:
         results.append(rescale_polygon(polygon, scale_factor, mode))
+    if isinstance(polygons, np.ndarray):
+        results = np.array(results)
     return results
 
 
@@ -148,8 +152,8 @@ def crop_polygon(polygon: ArrayLike,
         np.array or None: Cropped polygon. If the polygon is not within the
             crop box, return None.
     """
-    poly = poly2shapely(polygon)
-    crop_poly = poly2shapely(bbox2poly(crop_box))
+    poly = poly_make_valid(poly2shapely(polygon))
+    crop_poly = poly_make_valid(poly2shapely(bbox2poly(crop_box)))
     poly_cropped = poly.intersection(crop_poly)
     if poly_cropped.area == 0. or not isinstance(
             poly_cropped, shapely.geometry.polygon.Polygon):
@@ -157,8 +161,9 @@ def crop_polygon(polygon: ArrayLike,
         # polygon, return None.
         return None
     else:
+        poly_cropped = poly_make_valid(poly_cropped)
         poly_cropped = np.array(poly_cropped.boundary.xy, dtype=np.float32)
-        poly_cropped = poly_cropped[:, :-1].T
+        poly_cropped = poly_cropped.T
         # reverse poly_cropped to have clockwise order
         poly_cropped = poly_cropped[::-1, :].reshape(-1)
         return poly_cropped
@@ -166,16 +171,23 @@ def crop_polygon(polygon: ArrayLike,
 
 def poly_make_valid(poly: Polygon) -> Polygon:
     """Convert a potentially invalid polygon to a valid one by eliminating
-    self-crossing or self-touching parts.
+    self-crossing or self-touching parts. Note that if the input is a line, the
+    returned polygon could be an empty one.
 
     Args:
         poly (Polygon): A polygon needed to be converted.
 
     Returns:
-        Polygon: A valid polygon.
+        Polygon: A valid polygon, which might be empty.
     """
     assert isinstance(poly, Polygon)
-    return poly if poly.is_valid else poly.buffer(0)
+    fixed_poly = poly if poly.is_valid else poly.buffer(0)
+    # Sometimes the fixed_poly is still a MultiPolygon,
+    # so we need to find the convex hull of the MultiPolygon, which should
+    # always be a Polygon (but could be empty).
+    if not isinstance(fixed_poly, Polygon):
+        fixed_poly = fixed_poly.convex_hull
+    return fixed_poly
 
 
 def poly_intersection(poly_a: Polygon,
@@ -200,9 +212,8 @@ def poly_intersection(poly_a: Polygon,
         float or tuple(float, Polygon): Returns the intersection area or
         a tuple ``(area, Optional[poly_obj])``, where the `area` is the
         intersection area between two polygons and `poly_obj` is The Polygon
-        object of the intersection area. Set as `None` if the input is invalid.
-        Set as `None` if the input is invalid. `poly_obj` will be returned
-        only if `return_poly` is `True`.
+        object of the intersection area, which will be `None` if the input is
+        invalid. `poly_obj` will be returned only if `return_poly` is `True`.
     """
     assert isinstance(poly_a, Polygon)
     assert isinstance(poly_b, Polygon)
@@ -215,8 +226,12 @@ def poly_intersection(poly_a: Polygon,
     poly_obj = None
     area = invalid_ret
     if poly_a.is_valid and poly_b.is_valid:
-        poly_obj = poly_a.intersection(poly_b)
-        area = poly_obj.area
+        if poly_a.intersects(poly_b):
+            poly_obj = poly_a.intersection(poly_b)
+            area = poly_obj.area
+        else:
+            poly_obj = Polygon()
+            area = 0.0
     return (area, poly_obj) if return_poly else area
 
 
@@ -324,7 +339,7 @@ def offset_polygon(poly: ArrayLike, distance: float) -> ArrayLike:
     pco.AddPath(poly, pyclipper.JT_ROUND, pyclipper.ET_CLOSEDPOLYGON)
     # Returned result will be in type of int32, convert it back to float32
     # following MMOCR's convention
-    result = np.array(pco.Execute(distance))
+    result = np.array(pco.Execute(distance), dtype=object)
     if len(result) > 0 and isinstance(result[0], list):
         # The processed polygon has been split into several parts
         result = np.array([])
