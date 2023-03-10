@@ -1,11 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import functools
 from typing import List, Tuple
 
 import numpy as np
 from shapely.geometry import LineString, Point
 
-from mmocr.utils.check_argument import is_2dlist, is_type_list
+from mmocr.utils.check_argument import is_type_list
 from mmocr.utils.point_utils import point_distance, points_center
 from mmocr.utils.typing_utils import ArrayLike
 
@@ -246,47 +245,6 @@ def bezier2polygon(bezier_points: np.ndarray,
     # Convert points to polygon
     points = np.concatenate((points[:, :2], points[:, 2:]), axis=0)
     return points.tolist()
-
-
-def sort_points(points):
-    # TODO Add typehints & test & docstring
-    """Sort arbitory points in clockwise order. Reference:
-    https://stackoverflow.com/a/6989383.
-
-    Args:
-        points (list[ndarray] or ndarray or list[list]): A list of unsorted
-            boundary points.
-
-    Returns:
-        list[ndarray]: A list of points sorted in clockwise order.
-    """
-
-    assert is_type_list(points, np.ndarray) or isinstance(points, np.ndarray) \
-        or is_2dlist(points)
-
-    points = np.array(points)
-    center = np.mean(points, axis=0)
-
-    def cmp(a, b):
-        oa = a - center
-        ob = b - center
-
-        # Some corner cases
-        if oa[0] >= 0 and ob[0] < 0:
-            return 1
-        if oa[0] < 0 and ob[0] >= 0:
-            return -1
-
-        prod = np.cross(oa, ob)
-        if prod > 0:
-            return 1
-        if prod < 0:
-            return -1
-
-        # a, b are on the same line from the center
-        return 1 if (oa**2).sum() < (ob**2).sum() else -1
-
-    return sorted(points, key=functools.cmp_to_key(cmp))
 
 
 def sort_vertex(points_x, points_y):
