@@ -53,11 +53,11 @@
    :caption: 模型支持
 
    modelzoo.md
+   projectzoo.md
    backbones.md
    textdet_models.md
    textrecog_models.md
    kie_models.md
-   projectzoo.md
 
 .. toctree::
    :maxdepth: 2

@@ -53,11 +53,11 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :caption: Model Zoo
 
    modelzoo.md
+   projectzoo.md
    backbones.md
    textdet_models.md
    textrecog_models.md
    kie_models.md
-   projectzoo.md
 
 .. toctree::
    :maxdepth: 2

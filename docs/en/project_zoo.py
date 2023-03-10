@@ -7,7 +7,7 @@ import re
 files = []
 
 project_zoo = """
-# Models in Projects
+# SOTA Models
 
 Here are some selected project implementations that are not yet included in
 MMOCR package, but are ready to use.
