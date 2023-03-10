@@ -132,8 +132,10 @@ class TestIsArchive(unittest.TestCase):
 class TestCheckIntegrity(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.file1 = ('tests/data/det_toy_dataset/textdet_test.json',
-                      '4185942a3499601e808b26dcca98a4f3')
+        # Do not use text files for tests, because the md5 value of text files
+        # is different on different platforms (CR - CRLF)
+        self.file1 = ('tests/data/det_toy_dataset/imgs/test/img_2.jpg',
+                      '52b28b5dfc92d9027e70ec3ff95d8702')
         self.file2 = ('tests/data/det_toy_dataset/imgs/test/img_1.jpg',
                       'abc123')
         self.file3 = ('abc/abc.jpg', 'abc123')
@@ -151,8 +153,10 @@ class TestCheckIntegrity(unittest.TestCase):
 class TextGetMD5(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.file1 = ('tests/data/det_toy_dataset/textdet_test.json',
-                      '4185942a3499601e808b26dcca98a4f3')
+        # Do not use text files for tests, because the md5 value of text files
+        # is different on different platforms (CR - CRLF)
+        self.file1 = ('tests/data/det_toy_dataset/imgs/test/img_2.jpg',
+                      '52b28b5dfc92d9027e70ec3ff95d8702')
         self.file2 = ('tests/data/det_toy_dataset/imgs/test/img_1.jpg',
                       'abc123')
 
