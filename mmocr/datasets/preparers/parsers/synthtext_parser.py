@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import List, Optional, Tuple
+import os.path as osp
+from typing import List, Optional, Tuple, Union
 
 import numpy as np
 from mmengine import track_parallel_progress
@@ -15,6 +16,12 @@ class SynthTextTextDetAnnParser(BaseParser):
     """SynthText Text Detection Annotation Parser.
 
     Args:
+        split (str): The split of the dataset. It is usually set automatically
+            and users do not need to set it manually in config file in most
+            cases.
+        nproc (int): Number of processes to process the data. Defaults to 1.
+            It is usually set automatically and users do not need to set it
+            manually in config file in most cases.
         separator (str): The separator between each element in a line. Defaults
             to ','.
         ignore (str): The text to be ignored. Defaults to '###'.
@@ -22,8 +29,6 @@ class SynthTextTextDetAnnParser(BaseParser):
             'x1,y1,x2,y2,x3,y3,x4,trans'.
         encoding (str): The encoding of the annotation file. Defaults to
             'utf-8-sig'.
-        nproc (int): The number of processes to parse the annotation. Defaults
-            to 1.
         remove_strs (List[str], Optional): Used to remove redundant strings in
             the transcription. Defaults to None.
         mode (str, optional): The mode of the box converter. Supported modes
@@ -31,11 +36,12 @@ class SynthTextTextDetAnnParser(BaseParser):
     """
 
     def __init__(self,
+                 split: str,
+                 nproc: int,
                  separator: str = ',',
                  ignore: str = '###',
                  format: str = 'x1,y1,x2,y2,x3,y3,x4,y4,trans',
                  encoding: str = 'utf-8',
-                 nproc: int = 1,
                  remove_strs: Optional[List[str]] = None,
                  mode: str = None) -> None:
         self.sep = separator
@@ -44,7 +50,7 @@ class SynthTextTextDetAnnParser(BaseParser):
         self.ignore = ignore
         self.mode = mode
         self.remove_strs = remove_strs
-        super().__init__(nproc=nproc)
+        super().__init__(split=split, nproc=nproc)
 
     def _trace_boundary(self, char_boxes: List[np.ndarray]) -> np.ndarray:
         """Trace the boundary point of text.
@@ -121,17 +127,31 @@ class SynthTextTextDetAnnParser(BaseParser):
 
         return poly_boundary_list, words
 
-    def parse_files(self, files: List[Tuple], split: str) -> List[Tuple]:
+    def parse_files(self, img_paths: Union[List[str], str],
+                    ann_paths: Union[List[str], str]) -> List[Tuple]:
         """Convert annotations to MMOCR format.
 
         Args:
-            files (Tuple): A list of tuple of path to image and annotation.
+            img_paths (str or list[str]): the list of image paths or the
+                directory of the images.
+            ann_paths (str or list[str]): the list of annotation paths or the
+                path of the annotation file which contains all the annotations.
 
         Returns:
-            List[Tuple]: A list of a tuple of (image_path, instances)
+            List[Tuple]: A list of a tuple of (image_path, instances).
+
+            - img_path (str): The path of image file, which can be read
+              directly by opencv.
+            - instance: instance is a list of dict containing parsed
+              annotations, which should contain the following keys:
+
+              - 'poly' or 'box' (textdet or textspotting)
+              - 'text' (textspotting or textrecog)
+              - 'ignore' (all task)
         """
-        assert isinstance(files, str)
-        gt = loadmat(files)
+        assert isinstance(ann_paths, str)
+        gt = loadmat(ann_paths)
+        self.img_dir = img_paths
         samples = track_parallel_progress(
             self.parse_file,
             list(
@@ -149,4 +169,4 @@ class SynthTextTextDetAnnParser(BaseParser):
         for poly, word in zip(polys_list, word_list):
             instances.append(
                 dict(poly=poly.flatten().tolist(), text=word, ignore=False))
-        return img_file[0], instances
+        return osp.join(self.img_dir, img_file[0]), instances
