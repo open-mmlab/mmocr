@@ -1,1 +1,1 @@
-var collapsedSections = ['Migration Guides', 'Dataset Zoo', 'Model Zoo', 'Notes', 'API Reference']
+var collapsedSections = ['Migration Guides', 'API Reference']
