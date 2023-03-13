@@ -9,11 +9,11 @@ train_preparer = dict(
             dict(
                 url='https://thor.robots.ox.ac.uk/~vgg/data/scenetext/'
                 'SynthText-v1.zip',
-                save_name='SynthText-v1.zip',
-                md5='d588045cc6173afd91c25c1e089b36f3',
+                save_name='SynthText.zip',
+                md5='8ae0309c80ff882f9d6ba5ea62cdb556',
                 split=['train'],
                 content=['image', 'annotation'],
-                mapping=[['SynthText-v1/SynthText/*', 'textdet_imgs/train/'],
+                mapping=[['SynthText/SynthText/*', 'textdet_imgs/train/'],
                          ['textdet_imgs/train/gt.mat', 'annotations/gt.mat']]),
         ]),
     gatherer=dict(type='MonoGatherer', ann_name='gt.mat'),
@@ -21,6 +21,8 @@ train_preparer = dict(
     packer=dict(type='TextDetPacker'),
     dumper=dict(type='JsonDumper'),
 )
+
+delete = ['SynthText']
 
 config_generator = dict(
     type='TextDetConfigGenerator', data_root=data_root, test_anns=None)
