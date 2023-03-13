@@ -3,12 +3,14 @@ cache_path = 'data/cache'
 
 train_preparer = dict(
     obtainer=dict(
-        type='NaiveDataObtainer',
+        type='MagnetObtainer',
         cache_path=cache_path,
         files=[
             dict(
-                url='https://thor.robots.ox.ac.uk/~vgg/data/scenetext/'
-                'SynthText-v1.zip',
+                url='magnet:?xt=urn:btih:2dba9518166cbd141534cbf381aa3e99a08'
+                '7e83c&tr=https%3A%2F%2Facademictorrents.com%2Fannounce.php&t'
+                'r=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2F'
+                'tracker.opentrackr.org%3A1337%2Fannounce',
                 save_name='SynthText.zip',
                 md5='8ae0309c80ff882f9d6ba5ea62cdb556',
                 split=['train'],
