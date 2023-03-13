@@ -3,7 +3,7 @@ cache_path = 'data/cache'
 
 train_preparer = dict(
     obtainer=dict(
-        type='MagnetObtainer',
+        type='NaiveDataObtainer',
         cache_path=cache_path,
         files=[
             dict(
