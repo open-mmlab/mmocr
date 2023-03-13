@@ -6,28 +6,27 @@ This page is a manual preparation guide for datasets not yet supported by [Datas
 
 ## Overview
 
-|        Dataset        |                        images                         |                         annotation file                         |                         annotation file                         |
-| :-------------------: | :---------------------------------------------------: | :-------------------------------------------------------------: | :-------------------------------------------------------------: |
-|                       |                                                       |                            training                             |                              test                               |
-|       coco_text       | [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads) |                   [train_labels.json](#TODO)                    |                                -                                |
-|       ICDAR2011       |       [homepage](https://rrc.cvc.uab.es/?ch=1)        |                                -                                |                                -                                |
-|   MJSynth (Syn90k)    | [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/) | [subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/subset_train_labels.json) \| [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/train_labels.json) |                                -                                |
-| SynthText (Synth800k) | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/) | [alphanumeric_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/alphanumeric_train_labels.json) \|[subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/subset_train_labels.json) \|  [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/train_labels.json) |                                -                                |
-|       SynthAdd        | [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x) | [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/synthtext_add/train_labels.json) |                                -                                |
-|       OpenVINO        | [Open Images](https://github.com/cvdfoundation/open-images-dataset) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |
-|        DeText         |       [homepage](https://rrc.cvc.uab.es/?ch=9)        |                                -                                |                                -                                |
-|   Lecture Video DB    | [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb) |                                -                                |                                -                                |
-|         LSVT          |       [homepage](https://rrc.cvc.uab.es/?ch=16)       |                                -                                |                                -                                |
-|         IMGUR         | [homepage](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset) |                                -                                |                                -                                |
-|         KAIST         | [homepage](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) |                                -                                |                                -                                |
-|         MTWI          | [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us) |                                -                                |                                -                                |
-|         ReCTS         |       [homepage](https://rrc.cvc.uab.es/?ch=12)       |                                -                                |                                -                                |
-|       IIIT-ILST       | [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst) |                                -                                |                                -                                |
-|        VinText        | [homepage](https://github.com/VinAIResearch/dict-guided) |                                -                                |                                -                                |
-|          BID          | [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset) |                                -                                |                                -                                |
-|         RCTW          |    [homepage](https://rctw.vlrlab.net/index.html)     |                                -                                |                                -                                |
-|       HierText        | [homepage](https://github.com/google-research-datasets/hiertext) |                                -                                |                                -                                |
-|          ArT          |       [homepage](https://rrc.cvc.uab.es/?ch=14)       |                                -                                |                                -                                |
+|     Dataset      |                         images                          |                         annotation file                          |                          annotation file                          |
+| :--------------: | :-----------------------------------------------------: | :--------------------------------------------------------------: | :---------------------------------------------------------------: |
+|                  |                                                         |                             training                             |                               test                                |
+|    coco_text     | [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads)  |                    [train_labels.json](#TODO)                    |                                 -                                 |
+|    ICDAR2011     |        [homepage](https://rrc.cvc.uab.es/?ch=1)         |                                -                                 |                                 -                                 |
+| MJSynth (Syn90k) | [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/) | [subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/subset_train_labels.json) \| [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/train_labels.json) |                                 -                                 |
+|     SynthAdd     | [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x) | [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/synthtext_add/train_labels.json) |                                 -                                 |
+|     OpenVINO     | [Open Images](https://github.com/cvdfoundation/open-images-dataset) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |
+|      DeText      |        [homepage](https://rrc.cvc.uab.es/?ch=9)         |                                -                                 |                                 -                                 |
+| Lecture Video DB | [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb) |                                -                                 |                                 -                                 |
+|       LSVT       |        [homepage](https://rrc.cvc.uab.es/?ch=16)        |                                -                                 |                                 -                                 |
+|      IMGUR       | [homepage](https://github.com/facebookresearch/IMGUR5K-Handwriting-Dataset) |                                -                                 |                                 -                                 |
+|      KAIST       | [homepage](http://www.iapr-tc11.org/mediawiki/index.php/KAIST_Scene_Text_Database) |                                -                                 |                                 -                                 |
+|       MTWI       | [homepage](https://tianchi.aliyun.com/competition/entrance/231685/information?lang=en-us) |                                -                                 |                                 -                                 |
+|      ReCTS       |        [homepage](https://rrc.cvc.uab.es/?ch=12)        |                                -                                 |                                 -                                 |
+|    IIIT-ILST     | [homepage](http://cvit.iiit.ac.in/research/projects/cvit-projects/iiit-ilst) |                                -                                 |                                 -                                 |
+|     VinText      | [homepage](https://github.com/VinAIResearch/dict-guided) |                                -                                 |                                 -                                 |
+|       BID        | [homepage](https://github.com/ricardobnjunior/Brazilian-Identity-Document-Dataset) |                                -                                 |                                 -                                 |
+|       RCTW       |     [homepage](https://rctw.vlrlab.net/index.html)      |                                -                                 |                                 -                                 |
+|     HierText     | [homepage](https://github.com/google-research-datasets/hiertext) |                                -                                 |                                 -                                 |
+|       ArT        |        [homepage](https://rrc.cvc.uab.es/?ch=14)        |                                -                                 |                                 -                                 |
 
 (\*) Since the official homepage is unavailable now, we provide an alternative for quick reference. However, we do not guarantee the correctness of the dataset.
 
@@ -137,52 +136,6 @@ Please make sure you're using the right annotation to train the model by checkin
   │   ├── subset_train_labels.json
   │   ├── train_labels.json
   │   └── mnt
-  ```
-
-## SynthText (Synth800k)
-
-- Step1: Download `SynthText.zip` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/)
-
-- Step2: According to your actual needs, download the most appropriate one from the following options: [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/train_labels.json) (7,266,686 annotations), [subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/subset_train_labels.json) (2,400,000 randomly sampled annotations) and [alphanumeric_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/SynthText/alphanumeric_train_labels.json) (7,239,272 annotations with alphanumeric characters only).
-
-```{warning}
-Please make sure you're using the right annotation to train the model by checking its dataset specs in Model Zoo.
-```
-
-- Step3:
-
-  ```bash
-  mkdir SynthText && cd SynthText
-  mv /path/to/SynthText.zip .
-  unzip SynthText.zip
-  mv SynthText synthtext
-
-  mv /path/to/subset_train_labels.json .
-  mv /path/to/train_labels.json .
-  mv /path/to/alphanumeric_train_labels.json .
-
-  # create soft link
-  cd /path/to/mmocr/data/recog
-  ln -s /path/to/SynthText SynthText
-  ```
-
-- Step4: Generate cropped images and labels:
-
-  ```bash
-  cd /path/to/mmocr
-
-  python tools/dataset_converters/textrecog/synthtext_converter.py data/recog/SynthText/gt.mat data/recog/SynthText/ data/recog/SynthText/synthtext/SynthText_patch_horizontal --n_proc 8
-  ```
-
-- After running the above codes, the directory structure
-  should be as follows:
-
-  ```text
-  ├── SynthText
-  │   ├── alphanumeric_train_labels.json
-  │   ├── subset_train_labels.json
-  │   ├── train_labels.json
-  │   └── synthtext
   ```
 
 ## SynthAdd
