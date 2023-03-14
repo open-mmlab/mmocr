@@ -39,7 +39,7 @@ python tools/dataset_converters/prepare_dataset.py icdar2015 totaltext --task te
 
 To check the supported datasets of Dataset Preparer, please refer to [Dataset Zoo](./datasetzoo.md). Some of other datasets that need to be prepared manually are listed in [Text Detection](./det.md) and [Text Recognition](./recog.md).
 
-For users in China, more datasets can be downloaded from the opensource dataset platform: [OpenDataLab](https://opendatalab.com/). When preparing data, please refer to `save_name` or `mapping` field of `data_obtainer` in the script, and rename the corresponding file.
+For users in China, more datasets can be downloaded from the opensource dataset platform: [OpenDataLab](https://opendatalab.com/). After downloading the data, you can place the files listed in `data_obtainer.save_name` in `data/cache` and rerun the script.
 
 ## Advanced Usage
 
