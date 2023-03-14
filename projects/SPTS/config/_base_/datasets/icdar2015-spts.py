@@ -1,4 +1,4 @@
-icdar2015_textspotting_data_root = 'data/icdar2015'
+icdar2015_textspotting_data_root = 'spts-data/icdar2015'
 
 icdar2015_textspotting_train = dict(
     type='AdelDataset',

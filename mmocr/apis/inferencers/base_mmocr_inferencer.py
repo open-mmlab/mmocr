@@ -147,9 +147,6 @@ class BaseMMOCRInferencer(BaseInferencer):
                 "out_dir". Defaults to False.
             print_result (bool): Whether to print the inference result w/o
                 visualization to the console. Defaults to False.
-            pred_out_file: File to save the inference results w/o
-                visualization. If left as empty, no file will be saved.
-                Defaults to ''.
 
             **kwargs: Other keyword arguments passed to :meth:`preprocess`,
                 :meth:`forward`, :meth:`visualize` and :meth:`postprocess`.
@@ -201,7 +198,7 @@ class BaseMMOCRInferencer(BaseInferencer):
                 pred_out_dir=pred_out_dir,
                 **postprocess_kwargs)
             results['predictions'].extend(batch_res['predictions'])
-            if batch_res['visualization'] is not None:
+            if return_vis and batch_res['visualization'] is not None:
                 results['visualization'].extend(batch_res['visualization'])
         return results
 

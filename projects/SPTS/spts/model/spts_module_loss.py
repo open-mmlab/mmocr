@@ -81,7 +81,7 @@ class SPTSModuleLoss(CEModuleLoss):
         self.max_num_text = (self.max_seq_len - 1) // (2 + max_text_len)
         self.num_bins = num_bins
 
-        weights = torch.ones(self.dictionary.num_classes + num_bins)
+        weights = torch.ones(self.dictionary.num_classes, dtype=torch.float32)
         weights[self.dictionary.seq_end_idx] = seq_eos_coef
         weights.requires_grad_ = False
         self.loss_ce = nn.CrossEntropyLoss(
@@ -117,18 +117,24 @@ class SPTSModuleLoss(CEModuleLoss):
             if data_sample.get('have_target', False):
                 continue
 
-            if len(data_sample.gt_instances.polygons) > self.max_num_text:
+            if len(data_sample.gt_instances) > self.max_num_text:
                 keep = random.sample(
-                    range(len(data_sample.gt_instances['polygons'])),
-                    self.max_num_text)
+                    range(len(data_sample.gt_instances)), self.max_num_text)
                 data_sample.gt_instances = data_sample.gt_instances[keep]
 
             gt_instances = data_sample.gt_instances
 
-            if len(gt_instances.polygons) > 0:
+            if len(gt_instances) > 0:
                 center_pts = []
                 # Slightly different from the original implementation
                 # which gets the center points from bezier curves
+                # for bezier_pt in gt_instances.beziers:
+                #     bezier_pt = bezier_pt.reshape(8, 2)
+                #     mid_pt1 = sample_bezier_curve(
+                #         bezier_pt[:4], mid_point=True)
+                #     mid_pt2 = sample_bezier_curve(
+                #         bezier_pt[4:], mid_point=True)
+                #     center_pt = (mid_pt1 + mid_pt2) / 2
                 for polygon in gt_instances.polygons:
                     center_pt = polygon.reshape(-1, 2).mean(0)
                     center_pts.append(center_pt)
@@ -152,7 +158,7 @@ class SPTSModuleLoss(CEModuleLoss):
                     dtype=torch.long) + self.dictionary.end_idx
                 max_len = min(self.max_text_len - 1, len(indexes))
                 indexes_tensor[:max_len] = torch.LongTensor(indexes)[:max_len]
-                indexes_tensor = indexes_tensor + self.num_bins
+                indexes_tensor = indexes_tensor
                 gt_indexes.append(indexes_tensor)
 
             if len(gt_indexes) == 0:
@@ -164,15 +170,12 @@ class SPTSModuleLoss(CEModuleLoss):
 
             if self.dictionary.start_idx is not None:
                 gt_indexes = torch.cat([
-                    torch.LongTensor(
-                        [self.dictionary.start_idx + self.num_bins]),
-                    gt_indexes
+                    torch.LongTensor([self.dictionary.start_idx]), gt_indexes
                 ])
             if self.dictionary.seq_end_idx is not None:
                 gt_indexes = torch.cat([
                     gt_indexes,
-                    torch.LongTensor(
-                        [self.dictionary.seq_end_idx + self.num_bins])
+                    torch.LongTensor([self.dictionary.seq_end_idx])
                 ])
 
             batch_max_len = max(batch_max_len, len(gt_indexes))
@@ -190,7 +193,7 @@ class SPTSModuleLoss(CEModuleLoss):
 
             padded_indexes = (
                 torch.zeros(batch_max_len, dtype=torch.long) +
-                self.dictionary.padding_idx + self.num_bins)
+                self.dictionary.padding_idx)
             padded_indexes[:len(indexes)] = indexes
             data_sample.gt_instances.set_metainfo(
                 dict(padded_indexes=padded_indexes))

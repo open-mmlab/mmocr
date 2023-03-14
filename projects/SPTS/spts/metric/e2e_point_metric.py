@@ -1,13 +1,19 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, List, Optional, Sequence
+import glob
+import os.path as osp
+import re
+from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 import torch
 from mmengine.evaluator import BaseMetric
 from mmengine.logging import MMLogger
-from shapely.geometry import LineString, Point
+from rapidfuzz.distance import Levenshtein
+from shapely.geometry import Point
 
 from mmocr.registry import METRICS
+
+# TODO: CTW1500 read pair
 
 
 @METRICS.register_module()
@@ -17,7 +23,20 @@ class E2EPointMetric(BaseMetric):
     Args:
         text_score_thrs (dict): Best text score threshold searching
             space. Defaults to dict(start=0.8, stop=1, step=0.01).
-        TODO: docstr
+        word_spotting (bool): Whether to work in word spotting mode. Defaults
+            to False.
+        lexicon_path (str, optional): Lexicon path for word spotting, which
+            points to a lexicon file or a directory. Defaults to None.
+        lexicon_mapping (tuple, optional): The rule to map test image name to
+            its corresponding lexicon file. Only effective when lexicon path
+            is a directory. Defaults to ('(.*).jpg', r'\1.txt').
+        pair_path (str, optional): Pair path for word spotting, which points
+            to a pair file or a directory. Defaults to None.
+        pair_mapping (tuple, optional): The rule to map test image name to
+            its corresponding pair file. Only effective when pair path is a
+            directory. Defaults to ('(.*).jpg', r'\1.txt').
+        match_dist_thr (float, optional): Matching distance threshold for
+            word spotting. Defaults to None.
         collect_device (str): Device name used for collecting results from
             different ranks during distributed training. Must be 'cpu' or
             'gpu'. Defaults to 'cpu'.
@@ -31,20 +50,52 @@ class E2EPointMetric(BaseMetric):
     def __init__(self,
                  text_score_thrs: Dict = dict(start=0.8, stop=1, step=0.01),
                  word_spotting: bool = False,
+                 lexicon_path: Optional[str] = None,
+                 lexicon_mapping: Tuple[str, str] = ('(.*).jpg', r'\1.txt'),
+                 pair_path: Optional[str] = None,
+                 pair_mapping: Tuple[str, str] = ('(.*).jpg', r'\1.txt'),
+                 match_dist_thr: Optional[float] = None,
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None) -> None:
         super().__init__(collect_device=collect_device, prefix=prefix)
         self.text_score_thrs = np.arange(**text_score_thrs)
         self.word_spotting = word_spotting
+        self.match_dist_thr = match_dist_thr
+        if lexicon_path:
+            self.lexicon_mapping = lexicon_mapping
+            self.pair_mapping = pair_mapping
+            self.lexicons = self._read_lexicon(lexicon_path)
+            self.pairs = self._read_pair(pair_path)
+
+    def _read_lexicon(self, lexicon_path: str) -> List[str]:
+        if lexicon_path.endswith('.txt'):
+            lexicon = open(lexicon_path, 'r').read().splitlines()
+            lexicon = [ele.strip() for ele in lexicon]
+        else:
+            lexicon = {}
+            for file in glob.glob(osp.join(lexicon_path, '*.txt')):
+                basename = osp.basename(file)
+                lexicon[basename] = self._read_lexicon(file)
+        return lexicon
+
+    def _read_pair(self, pair_path: str) -> Dict[str, str]:
+        pairs = {}
+        if pair_path.endswith('.txt'):
+            pair_lines = open(pair_path, 'r').read().splitlines()
+            for line in pair_lines:
+                line = line.strip()
+                word = line.split(' ')[0].upper()
+                word_gt = line[len(word) + 1:]
+                pairs[word] = word_gt
+        else:
+            for file in glob.glob(osp.join(pair_path, '*.txt')):
+                basename = osp.basename(file)
+                pairs[basename] = self._read_pair(file)
+        return pairs
 
     def poly_center(self, poly_pts):
         poly_pts = np.array(poly_pts).reshape(-1, 2)
-        num_points = poly_pts.shape[0]
-        line1 = LineString(poly_pts[int(num_points / 2):])
-        line2 = LineString(poly_pts[:int(num_points / 2)])
-        mid_pt1 = np.array(line1.interpolate(0.5, normalized=True).coords[0])
-        mid_pt2 = np.array(line2.interpolate(0.5, normalized=True).coords[0])
-        return (mid_pt1 + mid_pt2) / 2
+        return poly_pts.mean(0)
 
     def process(self, data_batch: Sequence[Dict],
                 data_samples: Sequence[Dict]) -> None:
@@ -87,6 +138,8 @@ class E2EPointMetric(BaseMetric):
                                                   ~pred_ignore_flags)
 
             result = dict(
+                # reserved for image-level lexcions
+                gt_img_name=osp.basename(data_sample.get('img_path', '')),
                 text_scores=text_scores,
                 pred_points=pred_points,
                 gt_points=gt_points,
@@ -125,10 +178,33 @@ class E2EPointMetric(BaseMetric):
             gt_texts = result['gt_texts']
             pred_texts = result['pred_texts']
             gt_ignore_flags = result['gt_ignore_flags']
+            gt_img_name = result['gt_img_name']
+
+            # Correct the words with lexicon
+            pred_dist_flags = np.zeros(len(pred_texts), dtype=bool)
+            if hasattr(self, 'lexicons'):
+                for i, pred_text in enumerate(pred_texts):
+                    # If it's an image-level lexicon
+                    if isinstance(self.lexicons, dict):
+                        lexicon_name = self._map_img_name(
+                            gt_img_name, self.lexicon_mapping)
+                        pair_name = self._map_img_name(gt_img_name,
+                                                       self.pair_mapping)
+                        pred_texts[i], match_dist = self._match_word(
+                            pred_text, self.lexicons[lexicon_name],
+                            self.pairs[pair_name])
+                    else:
+                        pred_texts[i], match_dist = self._match_word(
+                            pred_text, self.lexicons, self.pairs)
+                    if (self.match_dist_thr
+                            and match_dist >= self.match_dist_thr):
+                        # won't even count this as a prediction
+                        pred_dist_flags[i] = True
 
             # Filter out predictions by IoU threshold
             for i, text_score_thr in enumerate(self.text_score_thrs):
-                pred_ignore_flags = text_scores < text_score_thr
+                pred_ignore_flags = pred_dist_flags | (
+                    text_scores < text_score_thr)
                 filtered_pred_texts = self._get_true_elements(
                     pred_texts, ~pred_ignore_flags)
                 filtered_pred_points = self._get_true_elements(
@@ -148,10 +224,8 @@ class E2EPointMetric(BaseMetric):
                     min_idx = np.argmin(dists)
                     if gt_texts[min_idx] == '###' or gt_ignore_flags[min_idx]:
                         continue
-                    # if not gt_matched[min_idx] and self.text_match(
-                    #         gt_texts[min_idx].upper(), pred_text.upper()):
-                    if (not gt_matched[min_idx] and gt_texts[min_idx].upper()
-                            == pred_text.upper()):
+                    if not gt_matched[min_idx] and (
+                            pred_text.upper() == gt_texts[min_idx].upper()):
                         gt_matched[min_idx] = True
                         num_tp[i] += 1
                     num_preds[i] += 1
@@ -173,6 +247,69 @@ class E2EPointMetric(BaseMetric):
                 best_eval_results = eval_results
         return best_eval_results
 
+    def _map_img_name(self, img_name: str, mapping: Tuple[str, str]) -> str:
+        """Map the image name to the another one based on mapping."""
+        return re.sub(mapping[0], mapping[1], img_name)
+
     def _true_indexes(self, array: np.ndarray) -> np.ndarray:
         """Get indexes of True elements from a 1D boolean array."""
         return np.where(array)[0]
+
+    def _word_spotting_filter(self, gt_ignore_flags: np.ndarray,
+                              gt_texts: List[str]
+                              ) -> Tuple[np.ndarray, List[str]]:
+        """Filter out gt instances that cannot be in a valid dictionary, and do
+        some simple preprocessing to texts."""
+
+        for i in range(len(gt_texts)):
+            if gt_ignore_flags[i]:
+                continue
+            text = gt_texts[i]
+            if text[-2:] in ["'s", "'S"]:
+                text = text[:-2]
+            text = text.strip('-')
+            for char in "'!?.:,*\"()·[]/":
+                text = text.replace(char, ' ')
+            text = text.strip()
+            gt_ignore_flags[i] = not self._include_in_dict(text)
+            if not gt_ignore_flags[i]:
+                gt_texts[i] = text
+
+        return gt_ignore_flags, gt_texts
+
+    def _include_in_dict(self, text: str) -> bool:
+        """Check if the text could be in a valid dictionary."""
+        if len(text) != len(text.replace(' ', '')) or len(text) < 3:
+            return False
+        not_allowed = '×÷·'
+        valid_ranges = [(ord(u'a'), ord(u'z')), (ord(u'A'), ord(u'Z')),
+                        (ord(u'À'), ord(u'ƿ')), (ord(u'Ǆ'), ord(u'ɿ')),
+                        (ord(u'Ά'), ord(u'Ͽ')), (ord(u'-'), ord(u'-'))]
+        for char in text:
+            code = ord(char)
+            if (not_allowed.find(char) != -1):
+                return False
+            valid = any(code >= r[0] and code <= r[1] for r in valid_ranges)
+            if not valid:
+                return False
+        return True
+
+    def _match_word(self,
+                    text: str,
+                    lexicons: List[str],
+                    pairs: Optional[Dict[str, str]] = None) -> Tuple[str, int]:
+        """Match the text with the lexicons and pairs."""
+        text = text.upper()
+        matched_word = ''
+        matched_dist = 100
+        for lexicon in lexicons:
+            lexicon = lexicon.upper()
+            norm_dist = Levenshtein.distance(text, lexicon)
+            norm_dist = Levenshtein.normalized_distance(text, lexicon)
+            if norm_dist < matched_dist:
+                matched_dist = norm_dist
+                if pairs:
+                    matched_word = pairs[lexicon]
+                else:
+                    matched_word = lexicon
+        return matched_word, matched_dist

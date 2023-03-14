@@ -343,6 +343,27 @@ class TestPolygonUtils(unittest.TestCase):
         points = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
         self.assertTrue(np.allclose(target, sort_points(points)))
 
+        points = [[0.5, 0.3], [1, 0.5], [-0.5, 0.8], [-0.1, 1]]
+        target = [[-0.5, 0.8], [-0.1, 1], [1, 0.5], [0.5, 0.3]]
+        self.assertTrue(np.allclose(target, sort_points(points)))
+
+        points = [[0.5, 3], [0.1, -0.2], [-0.5, -0.3], [-0.7, 3.1]]
+        target = [[-0.5, -0.3], [-0.7, 3.1], [0.5, 3], [0.1, -0.2]]
+        self.assertTrue(np.allclose(target, sort_points(points)))
+
+        points = [[1, 0.8], [0.8, -1], [1.8, 0.5], [1.9, -0.6], [-0.5, 2],
+                  [-1, 1.8], [-2, 0.7], [-1.6, -0.2], [-1, -0.5]]
+        target = [[-1, -0.5], [-1.6, -0.2], [-2, 0.7], [-1, 1.8], [-0.5, 2],
+                  [1, 0.8], [1.8, 0.5], [1.9, -0.6], [0.8, -1]]
+        self.assertTrue(np.allclose(target, sort_points(points)))
+
+        # concave polygon may failed
+        points = [[1, 0], [-1, 0], [0, 0], [0, -1], [0.25, 1], [0.75, 1],
+                  [-0.25, 1], [-0.75, 1]]
+        target = [[-1, 0], [-0.75, 1], [-0.25, 1], [0, 0], [0.25, 1],
+                  [0.75, 1], [1, 0], [0, -1]]
+        self.assertFalse(np.allclose(target, sort_points(points)))
+
         with self.assertRaises(AssertionError):
             sort_points([1, 2])
 

@@ -1,4 +1,4 @@
-# ABCNet: Real-time Scene Text Spotting with Adaptive Bezier-Curve Network
+# ABCNet v2: Adaptive Bezier-Curve Network for Real-time End-to-end Text Spotting
 
 <div>
 <a href="https://arxiv.org/abs/2105.03620">[arXiv paper]</a>

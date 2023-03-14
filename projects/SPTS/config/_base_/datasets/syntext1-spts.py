@@ -1,4 +1,4 @@
-syntext1_textspotting_data_root = 'data/syntext1'
+syntext1_textspotting_data_root = 'spts-data/syntext1'
 
 syntext1_textspotting_train = dict(
     type='AdelDataset',

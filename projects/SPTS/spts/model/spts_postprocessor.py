@@ -102,12 +102,11 @@ class SPTSPostprocessor(BaseTextRecogPostprocessor):
             for char_index, char_score in zip(output_index[2:],
                                               output_score[2:]):
                 # the first num_bins indexes are for points
-                dict_idx = char_index - self.num_bins
-                if dict_idx in self.ignore_indexes:
+                if char_index in self.ignore_indexes:
                     continue
-                if dict_idx == self.dictionary.end_idx:
+                if char_index == self.dictionary.end_idx:
                     break
-                indexes[-1].append(dict_idx)
+                indexes[-1].append(char_index)
                 char_scores.append(char_score)
             text_scores.append(np.mean(char_scores).item())
         return indexes, text_scores, points, pt_scores

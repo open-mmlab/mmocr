@@ -1,5 +1,6 @@
 _base_ = ['textdet.py']
 
-data_converter = dict(type='TextSpottingDataConverter')
+_base_.train_preparer.packer.type = 'TextSpottingPacker'
+_base_.val_preparer.packer.type = 'TextSpottingPacker'
 
 config_generator = dict(type='TextSpottingConfigGenerator')

@@ -56,8 +56,6 @@ class TestMMOCRInferencer(TestCase):
             'dbnet_resnet18_fpnc_1200e_icdar2015_20220825_221614-7c0e94f2.pth')
         MMOCRInferencer(rec='crnn_mini-vgg_5e_mj')
         with self.assertRaises(ValueError):
-            MMOCRInferencer(kie='sdmgr')
-        with self.assertRaises(ValueError):
             MMOCRInferencer(det='dummy')
 
     @mock.patch('mmengine.infer.infer._load_checkpoint')
