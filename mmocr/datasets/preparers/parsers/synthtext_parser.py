@@ -12,7 +12,7 @@ from .base import BaseParser
 
 
 @DATA_PARSERS.register_module()
-class SynthTextTextDetAnnParser(BaseParser):
+class SynthTextAnnParser(BaseParser):
     """SynthText Text Detection Annotation Parser.
 
     Args:

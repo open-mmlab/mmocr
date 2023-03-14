@@ -19,12 +19,12 @@ train_preparer = dict(
                          ['textdet_imgs/train/gt.mat', 'annotations/gt.mat']]),
         ]),
     gatherer=dict(type='MonoGatherer', ann_name='gt.mat'),
-    parser=dict(type='SynthTextTextDetAnnParser'),
+    parser=dict(type='SynthTextAnnParser'),
     packer=dict(type='TextDetPacker'),
     dumper=dict(type='JsonDumper'),
 )
 
-delete = ['SynthText']
+delete = ['SynthText', 'annotations']
 
 config_generator = dict(
     type='TextDetConfigGenerator', data_root=data_root, test_anns=None)
