@@ -47,6 +47,7 @@ This page is a manual preparation guide for datasets not yet supported by [Datas
   ```
 
 For users in China, these datasets can also be downloaded from [OpenDataLab](https://opendatalab.com/) with high speed:
+
 - [CTW1500](https://opendatalab.com/SCUT-CTW1500?source=OpenMMLab%20GitHub)
 - [ICDAR2013](https://opendatalab.com/ICDAR_2013?source=OpenMMLab%20GitHub)
 - [ICDAR2015](https://opendatalab.com/ICDAR2015?source=OpenMMLab%20GitHub)

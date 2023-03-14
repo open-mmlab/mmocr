@@ -41,7 +41,6 @@ To check the supported datasets of Dataset Preparer, please refer to [Dataset Zo
 
 For users in China, more datasets can be downloaded from the opensource dataset platform: [OpenDataLab](https://opendatalab.com/). When preparing data, please refer to `save_name` or `mapping` field of `data_obtainer` in the script, and rename the corresponding file.
 
-
 ## Advanced Usage
 
 ### LMDB Format
