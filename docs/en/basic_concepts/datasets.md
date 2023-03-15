@@ -134,7 +134,7 @@ On the other hand, we can get the sample fully processed by data pipeline via `d
 
 Each Dataset implementation can only load datasets in a specific annotation format. Here lists all supported Dataset classes and their compatible annotation formats, as well as an example config that showcases how to use them in practice.
 
-```note
+```{note}
 If you are not familiar with the config system, you may find [Dataset Configuration](../user_guides/dataset_prepare.md#dataset-configuration) helpful.
 ```
 
@@ -142,19 +142,19 @@ If you are not familiar with the config system, you may find [Dataset Configurat
 
 Usually, there are many different types of annotations in OCR datasets, and the formats often vary between different subtasks, such as text detection and text recognition. These differences can result in the need for different data loading code when using different datasets, increasing the learning and maintenance costs for users.
 
-In MMOCR, we propose a unified dataset format that can adapt to all three subtasks of OCR: text detection, text recognition, and text spotting. This design maximizes the uniformity of the dataset, allows for the reuse of data annotations across different tasks, and makes dataset management more convenient. Considering that popular dataset formats are still inconsistent, we provide the [Dataset Preparer](../user_guides/data_prepare/dataset_preparer.md) to help users convert their datasets to MMOCR format. We also strongly encourage researchers to develop their own datasets based on this data format.
+In MMOCR, we propose a unified dataset format that can adapt to all three subtasks of OCR: text detection, text recognition, and text spotting. This design maximizes the uniformity of the dataset, allows for the reuse of data annotations across different tasks, and makes dataset management more convenient. Considering that popular dataset formats are still inconsistent, MMOCR provides [Dataset Preparer](../user_guides/data_prepare/dataset_preparer.md) to help users convert their datasets to MMOCR format. We also strongly encourage researchers to develop their own datasets based on this data format.
 
 #### Annotation Format
 
 This annotation file is a `.json` file that stores a `dict`, containing both `metainfo` and `data_list`, where the former includes basic information about the dataset and the latter consists of the label item of each target instance. Here presents an extensive list of all the fields in the annotation file, but some fields are used in a subset of tasks and can be ignored in other tasks.
 
-```json
+```python
 {
     "metainfo":
     {
-      "dataset_type": "TextDetDataset",  // Options: TextDetDataset/TextRecogDataset/TextSpotterDataset
-      "task_name": "textdet",  //  Options: textdet/textspotter/textrecog
-      "category": [{"id": 0, "name": "text"}]  // Used in textdet/textspotter
+      "dataset_type": "TextDetDataset",  # Options: TextDetDataset/TextRecogDataset/TextSpotterDataset
+      "task_name": "textdet",  #  Options: textdet/textspotter/textrecog
+      "category": [{"id": 0, "name": "text"}]  # Used in textdet/textspotter
     },
     "data_list":
     [
@@ -162,20 +162,19 @@ This annotation file is a `.json` file that stores a `dict`, containing both `me
         "img_path": "test_img.jpg",
         "height": 604,
         "width": 640,
-        "instances":  // multiple instances in one image
+        "instances":  # multiple instances in one image
         [
           {
-            "bbox": [0, 0, 10, 20],  // in textdet/textspotter, 注意 coco 格式是 x, y, h, w，这里是 x1, y1, x2, y2
-            "bbox": [0, 0, 10, 20],  // in textdet/textspotter, [x1, y1, x2, y2].
-            "bbox_label": 0,  // The object category, always 0 (text) in MMOCR
-            "polygon": [0, 0, 0, 10, 10, 20, 20, 0], // in textdet/textspotter. [x1, y1, x2, y2, ....]
-            "text": "mmocr",  // in textspotter/textrecog
-            "ignore": False // in textspotter/textdet. Whether to ignore this sample during training
+            "bbox": [0, 0, 10, 20],  # in textdet/textspotter, [x1, y1, x2, y2].
+            "bbox_label": 0,  # The object category, always 0 (text) in MMOCR
+            "polygon": [0, 0, 0, 10, 10, 20, 20, 0], # in textdet/textspotter. [x1, y1, x2, y2, ....]
+            "text": "mmocr",  # in textspotter/textrecog
+            "ignore": False # in textspotter/textdet. Whether to ignore this sample during training
           },
-          //...
+          #...
         ],
       }
-      //... multiple images
+      #... multiple images
     ]
 }
 ```
