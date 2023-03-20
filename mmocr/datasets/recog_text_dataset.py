@@ -7,8 +7,6 @@ from mmengine.fileio import list_from_file
 
 from mmocr.registry import DATASETS, TASK_UTILS
 
-# TODO: replace all list_from_file from mmengine
-
 
 @DATASETS.register_module()
 class RecogTextDataset(BaseDataset):
@@ -33,9 +31,8 @@ class RecogTextDataset(BaseDataset):
 
     Args:
         ann_file (str): Annotation file path. Defaults to ''.
-        file_client_args (dict, optional): Arguments to instantiate a
-            FileClient. See :class:`mmengine.fileio.FileClient` for details.
-            Default: None.
+        backend_args (dict, optional): Arguments to instantiate the
+            prefix of uri corresponding backend. Defaults to None.
         parse_cfg (dict, optional): Config of parser for parsing annotations.
             Use ``LineJsonParser`` when the annotation file is in jsonl format
             with keys of ``filename`` and ``text``. The keys in parse_cfg
@@ -75,7 +72,7 @@ class RecogTextDataset(BaseDataset):
 
     def __init__(self,
                  ann_file: str = '',
-                 file_client_args=None,
+                 backend_args=None,
                  parser_cfg: Optional[dict] = dict(
                      type='LineJsonParser', keys=['filename', 'text']),
                  metainfo: Optional[dict] = None,
@@ -90,7 +87,7 @@ class RecogTextDataset(BaseDataset):
                  max_refetch: int = 1000) -> None:
 
         self.parser = TASK_UTILS.build(parser_cfg)
-        self.file_client_args = file_client_args
+        self.backend_args = backend_args
         super().__init__(
             ann_file=ann_file,
             metainfo=metainfo,
@@ -112,7 +109,7 @@ class RecogTextDataset(BaseDataset):
         """
         data_list = []
         raw_anno_infos = list_from_file(
-            self.ann_file, file_client_args=self.file_client_args)
+            self.ann_file, backend_args=self.backend_args)
         for raw_anno_info in raw_anno_infos:
             data_list.append(self.parse_data_info(raw_anno_info))
         return data_list

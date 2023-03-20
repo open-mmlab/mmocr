@@ -29,14 +29,8 @@ model = dict(
         dictionary=dictionary,
         max_seq_len=30))
 
-file_client_args = dict(backend='disk')
-
 train_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        ignore_empty=True,
-        min_size=2),
+    dict(type='LoadImageFromFile', ignore_empty=True, min_size=2),
     dict(type='LoadOCRAnnotations', with_text=True),
     dict(
         type='RescaleToHeight',
@@ -51,7 +45,7 @@ train_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='LoadImageFromFile'),
     dict(
         type='RescaleToHeight',
         height=48,
@@ -68,7 +62,7 @@ test_pipeline = [
 ]
 
 tta_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='LoadImageFromFile'),
     dict(
         type='TestTimeAug',
         transforms=[
