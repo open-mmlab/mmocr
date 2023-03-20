@@ -1,4 +1,5 @@
 include requirements/*.txt
 include mmocr/.mim/model-index.yml
+include mmocr/.mim/dicts/*.txt
 recursive-include mmocr/.mim/configs *.py *.yml
 recursive-include mmocr/.mim/tools *.sh *.py
