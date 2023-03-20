@@ -181,6 +181,7 @@ def builder_inited_handler(app):
     subprocess.run(['./stats.py'])
     subprocess.run(['./dataset_zoo.py'])
     subprocess.run(['./project_zoo.py'])
+    subprocess.run(['./paper_zoo.py'])
 
 
 def setup(app):
