@@ -103,10 +103,7 @@ dataset_zoo/
 
 ### 数据集相关信息
 
-数据集的相关信息包括数据集的标注格式、数据集的标注示例、数据集的基本统计信息等。虽然在每个数据集的官网中都有这些信息，但是这些信息分散在各个数据集的官网中，用户需要花费大量的时间来挖掘数据集的基本信息。因此，MMOCR 设计了一些范式，它可以帮助用户快速了解数据集的基本信息。
-MMOCR 将数据集的相关信息分为两个部分，一部分是数据集的基本信息包括包括发布年份，论文作者，以及版权等其他信息，另一部分是数据集的标注信息，包括数据集的标注格式、数据集的标注示例。
-每一部分MMOCR 都会提供一个范式，用户可以根据范式来填写数据集的基本信息，这样用户就可以快速了解数据集的基本信息。
-根据数据集的基本信息MMOCR 提供了一个 `metafile.yml` 文件，其中存放了对应数据集的基本信息，包括发布年份，论文作者，以及版权等其他信息，这样用户就可以快速了解数据集的基本信息。该文件在数据集准备过程中并不是强制要求的（因此用户在使用添加自己的私有数据集时可以忽略该文件），但为了用户更好地了解各个公开数据集的信息，MMOCR 建议用户在使用数据集准备脚本前阅读对应的元文件信息，以了解该数据集的特征是否符合用户需求。MMOCR 以 ICDAR2015 作为示例， 其示例内容如下所示：
+数据集的相关信息包括数据集的标注格式、数据集的标注示例、数据集的基本统计信息等。虽然在每个数据集的官网中都有这些信息，但是这些信息分散在各个数据集的官网中，用户需要花费大量的时间来挖掘数据集的基本信息。因此，MMOCR 设计了一些范式，它可以帮助用户快速了解数据集的基本信息。 MMOCR 将数据集的相关信息分为两个部分，一部分是数据集的基本信息包括包括发布年份，论文作者，以及版权等其他信息，另一部分是数据集的标注信息，包括数据集的标注格式、数据集的标注示例。每一部分 MMOCR 都会提供一个范式，贡献者可以根据范式来填写数据集的基本信息，使用用户就可以快速了解数据集的基本信息。 根据数据集的基本信息 MMOCR 提供了一个 `metafile.yml` 文件，其中存放了对应数据集的基本信息，包括发布年份，论文作者，以及版权等其他信息，这样用户就可以快速了解数据集的基本信息。该文件在数据集准备过程中并不是强制要求的（因此用户在使用添加自己的私有数据集时可以忽略该文件），但为了用户更好地了解各个公开数据集的信息，MMOCR 建议用户在使用数据集准备脚本前阅读对应的元文件信息，以了解该数据集的特征是否符合用户需求。MMOCR 以 ICDAR2015 作为示例， 其示例内容如下所示：
 
 ```yaml
 Name: 'Incidental Scene Text IC15'
@@ -178,112 +175,22 @@ Data:
 
 ### 数据集使用
 
-OCR 的数据集标注格式繁多，不同的数据集有着不同的标注格式，不同的标注内容，不同的标注粒度等。如果想要使用数据集训练模型，有两种方式，一种是每一个数据集实现一个数据集类(`class CustomDataset(torch.utils.data.Dataset)`)用于加载数据集，另一种是将所有的数据集转化成统一的标注格式，然后仅实现一个数据集类用于加载数据集。每一个数据集实现一个数据集类虽然可以直接使用数据集的标注格式，但是需要为每一个数据集实现一个数据集类，而且不同的数据集的标注格式不同，需要针对不同的数据集实现不同的数据集类，对于阅读者来说，这样的代码不够直观，不够易读，不够易维护。因此 MMOCR 希望将所有的数据集转化为统一的标注格式，只需要一个数据集类就可以加载所有的数据集，可以使得用户在使用不同数据集训练时，只需要了解一种数据集的标注格式，就可以使用所有的数据集。
+经过数十年的发展，OCR 领域涌现出了一系列的相关数据集，这些数据集往往采用风格各异的格式来提供文本的标注文件，使得用户在使用这些数据集时不得不进行格式转换。因此，为了方便用户进行数据集准备，我们设计了 Dataset Preaprer，帮助用户快速将数据集准备为 MMOCR 支持的格式, 详见[数据格式文档](<>)。下图展示了 Dataset Preparer 的典型运行流程。
 
-MMOCR 针对不同任务提供的统一的标注格式如下所示：
+![DataPrepare](https://user-images.githubusercontent.com/24622904/226505258-acb8d5cb-0fa9-4906-956c-8e4c5d895dd7.jpeg)
 
-`````{tabs}
+由图可见，Dataset Preparer 在运行时，会依次执行以下操作：
 
-````{group-tab} 文字检测
-
-```json
-    {
-    "metainfo":
-      {
-        "dataset_type": "TextDetDataset",
-        "task_name": "textdet",
-        "category": [{"id": 0, "name": "text"}]
-      },
-    "data_list":
-      [
-        {
-          "img_path": "test_img.jpg",
-          "height": 640,
-          "width": 640,
-          "instances":
-            [
-              {
-                "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
-                "bbox": [0, 0, 10, 20],
-                "bbox_label": 0,
-                "ignore": false
-              }
-            ],
-            //...
-        }
-      ]
-    }
-```
-
-````
-
-````{group-tab} 文字识别
-
-```json
-  {
-    "metainfo":
-      {
-        "dataset_type": "TextRecogDataset",
-        "task_name": "textrecog",
-      },
-    "data_list":
-      [
-        {
-          "img_path": "test_img.jpg",
-          "instances":
-            [
-              {
-                "text": "GRAND"
-              }
-            ]
-          }
-      ]
-  }
-```
-
-````
-
-````{group-tab} 端对端 OCR
-
-```json
-    {
-    "metainfo":
-      {
-        "dataset_type": "TextDetDataset",
-        "task_name": "textdet",
-        "category": [{"id": 0, "name": "text"}]
-      },
-    "data_list":
-      [
-        {
-          "img_path": "test_img.jpg",
-          "height": 640,
-          "width": 640,
-          "instances":
-            [
-              {
-                "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
-                "bbox": [0, 0, 10, 20],
-                "bbox_label": 0,
-                "ignore": false，
-                "text": "GRAND"
-              }
-            ],
-            //...
-        }
-      ]
-    }
-```
-
-````
-
-`````
-
-同时MMOCR 为了进一步降低用户使用数据集的门槛，MMOCR 设计了集下载，格式转化，准备数据集配置文件于一体的架构。其基本流程如下所示：
-
-![DataPrepare](https://user-images.githubusercontent.com/24622904/224911220-6f24fb01-701a-4951-b8e8-82c546957598.png)
-
-数据集一般划分为训练集，验证集，测试集，针对每个类别均会执行数据集的下载、解压、移动，标注与图像的匹配、原标注格式的解析，标注格式统一化以及保存统一标注格式的文件。然后会移除在准备数据集过程中产生的中间文件，最后将生成数据集的配置文件。为了便于应对各种数据集的情况，将每个部分均设计为可插拔的模块，用户可以根据自己的需要，选择不同的模块来完成数据集的准备。这里 MMOCR 以任务名命名配置文件用于同一个数据集不同任务下的配置。这些配置文件采用了 Python 格式，其使用方法与 MMOCR 算法库的其他配置文件完全一致，详见[配置文件文档](../config.md)。以 ICDAR2015 文字检测为例，示例配置 `textdet.py` 如下所示：
+1. 对训练集、验证集和测试集，由各 preparer 进行：
+   a. 数据集的下载、解压、移动（Obtainer）
+   b. 匹配标注与图像（Gatherer）
+   c. 解析原标注（Parser）
+   d. 打包标注为统一格式（Packer）
+   e. 保存标注（Dumper）
+2. 删除文件（Delete）
+3. 生成数据集的配置文件（Config Generator）
+   为了便于应对各种数据集的情况，MMOCR 将每个部分均设计为可插拔的模块，并允许用户通过 dataset_zoo/ 下的配置文件对数据集准备流程进行配置。这些配置文件采用了 Python 格式，其使用方法与 MMOCR 算法库的其他配置文件完全一致，详见[配置文件文档](../config.md)。
+   在 dataset_zoo/ 下，每个数据集均占有一个文件夹，文件夹下会以任务名命名配置文件，以区分不同任务下的配置。以 ICDAR2015 文字检测部分为例，示例配置 dataset_zoo/icdar2015/textdet.py 如下所示：
 
 ```python
 data_root = 'data/icdar2015'
@@ -348,12 +255,9 @@ delete = ['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img']
 config_generator = dict(type='TextDetConfigGenerator')
 ```
 
-#### 数据集下载、解压、移动
+#### 数据集下载、解压、移动 (Obtainer)
 
-将数据集的下载、解压、移动抽象为 Obtainer 模块，如今只提供了 `NaiveDataObtainer`
-通常来说，内置的 `NaiveDataObtainer` 即可完成绝大部分可以通过直链访问的数据集的下载。`NaiveDataObtainer` 将完成下载、解压、移动文件和重命名等操作。目前，MMOCR 暂时不支持自动下载存储在百度或谷歌网盘等需要登陆才能访问资源的数据集。
-
-这里简要介绍一下 `NaiveDataObtainer`.
+Dataset Preparer 中，`obtainer` 模块负责了数据集的下载、解压和移动。如今，MMOCR 暂时只提供了 `NaiveDataObtainer`。通常来说，内置的 `NaiveDataObtainer` 即可完成绝大部分可以通过直链访问的数据集的下载，并支持解压、移动文件和重命名等操作。然而，MMOCR 暂时不支持自动下载存储在百度或谷歌网盘等需要登陆才能访问资源的数据集。 这里简要介绍一下 `NaiveDataObtainer`.
 
 | 字段名     | 含义                                                       |
 | ---------- | ---------------------------------------------------------- |
@@ -372,12 +276,12 @@ config_generator = dict(type='TextDetConfigGenerator')
 | content （可选）  | 数据集文件的内容，如 `image`，`annotation` 等，该字段可以空缺        |
 | mapping  （可选） | 数据集文件的解压映射，用于指定解压后的文件存储的位置，该字段可以空缺 |
 
-同时做了一下约定：
+同时，Dataset Preparer 存在以下约定：
 
 - 不同类型的数据集的图片统一移动到对应类别 `{taskname}_imgs/{split}/`文件夹下，如 `textdet_imgs/train/`。
 - 对于一个标注文件包含所有图像的标注信息的情况，标注移到到`annotations/{split}.*`文件中。 如 `annotations/train.json`。
 - 对于一个标注文件包含一个图像的标注信息的情况，所有的标注文件移动到`annotations/{split}/`文件中。 如 `annotations/train/`。
-- 对于一些其他的特殊情况，比如所有训练、测试、验证的图像都在一个文件夹下，可以将图像移动到自己设定的文件夹下，比如 `{taskname}_imgs/imgs/`，同时要在后续的 `Gatherer` 模块中指定图像的存储位置。
+- 对于一些其他的特殊情况，比如所有训练、测试、验证的图像都在一个文件夹下，可以将图像移动到自己设定的文件夹下，比如 `{taskname}_imgs/imgs/`，同时要在后续的 `gatherer` 模块中指定图像的存储位置。
 
 示例配置如下：
 
@@ -402,9 +306,9 @@ config_generator = dict(type='TextDetConfigGenerator')
         ]),
 ```
 
-#### 数据集收集
+#### 数据集收集 (Gatherer)
 
-数据集收集(`gatherer`) 遍历数据集目录下的文件，将图像与标注文件一一对应，并整理出一份文件列表供 `parser` 读取。因此，首先需要知道当前数据集下，图片文件与标注文件匹配的规则。OCR 数据集有两种常用标注保存形式，一种为多个标注文件对应多张图片，一种则为单个标注文件对应多张图片，如：
+`gatherer` 遍历数据集目录下的文件，将图像与标注文件一一对应，并整理出一份文件列表供 `parser` 读取。因此，首先需要知道当前数据集下，图片文件与标注文件匹配的规则。OCR 数据集有两种常用标注保存形式，一种为多个标注文件对应多张图片，一种则为单个标注文件对应多张图片，如：
 
 ```text
 多对多
@@ -425,17 +329,13 @@ config_generator = dict(type='TextDetConfigGenerator')
 具体设计如下所示
 ![Gatherer](https://user-images.githubusercontent.com/24622904/224935300-9f27e471-e87d-42db-a11d-adc8f603a7c9.png)
 
-```{note}
-为了简化处理，gatherer 约定数据集的图片和标注需要分别储存在 `{taskname}_imgs/{split}/` 和 `annotations/` 下
-```
-
 MMOCR 内置了 `PairGatherer` 与 `MonoGatherer` 来处理以上这两种常用情况。其中 `PairGatherer` 用于多对多的情况，`MonoGatherer` 用于单对多的情况。
 
 ```{note}
-对于多对多的情况，标注文件需要放置于 `annotations/{split}`
+为了简化处理，gatherer 约定数据集的图片和标注需要分别储存在 `{taskname}_imgs/{split}/` 和 `annotations/` 下。特别地，对于多对多的情况，标注文件需要放置于 `annotations/{split}`。
 ```
 
-- 在多对多的情况下，`PairGatherer` 需要按照一定的命名规则找到图片文件和对应的标注文件。首先，需要通过 `img_suffixes` 参数指定图片的后缀名，如上述例子中的 `img_suffixes=[.jpg,.JPG]`。此外，还需要通过[正则表达式](https://docs.python.org/3/library/re.html) `rule`, 来指定图片与标注文件的对应关系，其中，规则 `rule` 是一个\[正则表达式对\]，例如 `rule=[r'img_(\d+)\.([jJ][pP][gG])'，r'gt_img_\1.txt']`。 第一个正则表达式用于匹配图片文件名，`\d+` 用于匹配图片的序号，`([jJ][pP][gG])` 用于匹配图片的后缀名。 第二个正则表达式用于匹配标注文件名，其中 `\1` 则将匹配到的图片序号与标注文件序号对应起来。示例配置为
+- 在多对多的情况下，`PairGatherer` 需要按照一定的命名规则找到图片文件和对应的标注文件。首先，需要通过 `img_suffixes` 参数指定图片的后缀名，如上述例子中的 `img_suffixes=[.jpg,.JPG]`。此外，还需要通过[正则表达式](https://docs.python.org/3/library/re.html) `rule`, 来指定图片与标注文件的对应关系，其中，规则 `rule` 是一个**正则表达式对**，例如 `rule=[r'img_(\d+)\.([jJ][pP][gG])'，r'gt_img_\1.txt']`。 第一个正则表达式用于匹配图片文件名，`\d+` 用于匹配图片的序号，`([jJ][pP][gG])` 用于匹配图片的后缀名。 第二个正则表达式用于匹配标注文件名，其中 `\1` 则将匹配到的图片序号与标注文件序号对应起来。示例配置为
 
 ```python
     gatherer=dict(
@@ -464,9 +364,13 @@ MMOCR 同样对 `Gatherer` 的返回值做了约定，`Gatherer` 会返回两个
     ('{taskname}/{split}', 'annotations/gt.txt')
 ```
 
-#### 数据集解析
+#### 数据集解析 (Parser)
 
-数据集解析(`parser`) 主要用于解析原始的标注文件，因为原始标注情况多种多样，因此 MMOCR 提供了 `BaseParser` 作为基类，用户可以继承 `BaseParser` 来实现自己的数据集解析器。因为 `Parser` 的输入是 `Gatherer` 的输出，`Gatherer` 的输出存在两种情况，即多对多(图像路径列表， 标注文件路径列表) 和 单对多(图像路径列表， 标注文件路径列表)。MMOCR 针对这两种情况设计了两个接口，`parse_files` 和 `parse_file`. 默认情况下 `BaseParser`处理多对多的情况，`parer_files` 将多对多的数据进行多进程处理用于加速，单个图像标注的解析由 `parse_file` 完成。因此对于多对多的情况，用户只需要实现 `parse_file` 即可。对于单对多的情况，用户需要重写 `parse_files`，实现标注的加载返回规范的结果。`BaseParser` 的接口定义如下所示：
+`Parser` 主要用于解析原始的标注文件，因为原始标注情况多种多样，因此 MMOCR 提供了 `BaseParser` 作为基类，用户可以继承该类来实现自己的 `Parser`。在 `BaseParser` 中，MMOCR 设计了两个接口：`parse_files` 和 `parse_file`，约定在其中进行标注的解析。而对于 `Gatherer` 的两种不同输入情况（多对多、单对多），这两个接口的实现则应有所不同。
+
+- `BaseParser` 默认处理**多对多**的情况。其中，由 `parer_files` 将数据并行分发至多个 `parse_file` 进程，并由每个 `parse_file` 分别进行单个图像标注的解析。
+- 对于**单对多**的情况，用户则需要重写 `parse_files`，以实现加载标注，并返回规范的结果。
+  `BaseParser` 的接口定义如下所示：
 
 ```python
 class BaseParser:
@@ -486,7 +390,7 @@ class BaseParser:
         raise NotImplementedError
 ```
 
-为了保证后续模块的统一性，MMOCR 对 `parse_files` 与 `parse_file` 的返回值做了约定. `parse_file` 的返回值为一个元组，元组中的第一个元素为图像路径，第二个元素为标注信息。标注信息为一个列表，列表中的每个元素为一个字典，字典中的字段为`poly`, `text`, `ignore`，如下所示：
+为了保证后续模块的统一性，MMOCR 对 `parse_files` 与 `parse_file` 的返回值做了约定。 `parse_file` 的返回值为一个元组，元组中的第一个元素为图像路径，第二个元素为标注信息。标注信息为一个列表，列表中的每个元素为一个字典，字典中的字段为`poly`, `text`, `ignore`，如下所示：
 
 ```python
 # An example of returned values:
@@ -520,25 +424,25 @@ class BaseParser:
 ]
 ```
 
-#### 数据集转换
+#### 数据集转换 (Packer)
 
-数据集转换(`packer`) 主要是将数据转化到统一的标注格式, 因为输入的数据为 Parsers 的输出，格式已经固定， 因此 Packer 只需要将输入的格式转化为每种任务统一的标注格式即可。如今 MMOCR 支持的任务有文本检测、文本识别、端对端OCR 以及关键信息提取，MMOCR 针对每个任务均有对应的 Packer，如下所示：
+`packer` 主要是将数据转化到统一的标注格式, 因为输入的数据为 Parsers 的输出，格式已经固定， 因此 Packer 只需要将输入的格式转化为每种任务统一的标注格式即可。如今 MMOCR 支持的任务有文本检测、文本识别、端对端OCR 以及关键信息提取，MMOCR 针对每个任务均有对应的 Packer，如下所示：
 ![Packer](https://user-images.githubusercontent.com/24622904/225248832-11be894f-7b44-4ffa-83e1-8478c37b5e63.png)
 
-对于文字检测，端对端OCR，关键信息提取，均有唯一对应的 `Packer`, 在文字识别领域 MMOCR 提供了两种 `Packer`，分别为 `TextRecogPacker` 和 `TextRecogCropPacker`，其原因在与文字识别的数据集存在两种情况：
+对于文字检测、端对端OCR及关键信息提取，MMOCR 均有唯一对应的 `Packer`。而在文字识别领域， MMOCR 则提供了两种 `Packer`，分别为 `TextRecogPacker` 和 `TextRecogCropPacker`，其原因在与文字识别的数据集存在两种情况：
 
 - 每个图像均为一个识别样本，`parser` 返回的标注信息仅为一个`dict(text='xxx')`，此时使用 `TextRecogPacker` 即可。
-- 数据集没有将文字从图像中裁剪出来，本质是一个端对端OCR的标注，包含了文字的位置信息以及对应的文本信息，`TextRecogCropPacker` 会将文字从图像中裁剪出来，然后在转化成文字识别的统一格式。
+- 数据集没有将文字从图像中裁剪出来，本质是一个端对端OCR的标注，包含了文字的位置信息以及对应的文本信息，`TextRecogCropPacker` 会将文字从图像中裁剪出来，然后再转化成文字识别的统一格式。
 
-#### 标注保存
+#### 标注保存 (Dumper)
 
-之后可以通过指定不同的 dumper 来决定要将数据保存为何种格式。目前，MMOCR 支持 `JsonDumper`， `WildreceiptOpensetDumper`，及  `TextRecogLMDBDumper`。他们分别用于将数据保存为标准的 MMOCR Json 格式、Wildreceipt 格式，及文本识别领域学术界常用的 LMDB 格式。
+`dumper` 来决定要将数据保存为何种格式。目前，MMOCR 支持 `JsonDumper`， `WildreceiptOpensetDumper`，及  `TextRecogLMDBDumper`。他们分别用于将数据保存为标准的 MMOCR Json 格式、Wildreceipt 格式，及文本识别领域学术界常用的 LMDB 格式。
 
-#### 临时文件清理
+#### 临时文件清理 (Delete)
 
 在处理数据集时，往往会产生一些不需要的临时文件。这里可以以列表的形式传入这些文件或文件夹，在结束转换时即会删除。
 
-#### 生成基础配置
+#### 生成基础配置 (ConfigGenerator)
 
 为了在数据集准备完毕后可以自动生成基础配置，目前，MMOCR 按任务实现了 `TextDetConfigGenerator`、`TextRecogConfigGenerator` 和 `TextSpottingConfigGenerator`。它们支持的主要参数如下：
 
@@ -550,7 +454,7 @@ class BaseParser:
 | test_anns   | 配置文件内测试集标注的路径。若不指定，则默认指向 `[dict(ann_file='{taskname}_test.json', dataset_postfix='']`。                                     |
 | config_path | 算法库存放配置文件的路径，配置生成器会将默认配置写入 `{config_path}/{taskname}/_base_/datasets/{dataset_name}.py` 下。若不指定，则默认为 `configs/` |
 
-在准备好数据集的所有文件后，配置生成器 `TextDetConfigGenerator` 就会自动生成调用该数据集所需要的基础配置文件。
+在准备好数据集的所有文件后，配置生成器就会自动生成调用该数据集所需要的基础配置文件。下面给出了一个最小化的 `TextDetConfigGenerator` 配置示例：
 
 ```python
 config_generator = dict(type='TextDetConfigGenerator')
@@ -752,7 +656,7 @@ test_prepare = dict(
 
 以文件检测任务为例，来介绍配置文件的具体内容。
 一般情况下用户无需重新实现新的 `obtainer`, `gatherer`, `packer` 或 `dumper`，但是通常需要根据数据集的标注格式实现新的 `parser`。
-对于 `obtainer` 的配置这里不在做过得介绍，可以参考 [数据集下载、解压、移动](#数据集下载解压移动)。
+对于 `obtainer` 的配置这里不在做过的介绍，可以参考 [数据集下载、解压、移动](#数据集下载解压移动-obtainer)。
 针对 `gatherer`，通过观察获取的 ICDAR2013 数据集文件发现，其每一张图片都有一个对应的 `.txt` 格式的标注文件：
 
 ```text
