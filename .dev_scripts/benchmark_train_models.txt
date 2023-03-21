@@ -6,4 +6,4 @@ textrecog/crnn/crnn_mini-vgg_5e_mj.py
 textrecog/aster/aster_resnet45_6e_st_mj.py
 textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj.py
 textrecog/sar/sar_resnet31_parallel-decoder_5e_st-sub_mj-sub_sa_real.py
-textrecog/svtr/svtr-tiny_20e_st_mj.py
+textrecog/svtr/svtr-small_20e_st_mj.py
