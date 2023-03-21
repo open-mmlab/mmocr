@@ -195,7 +195,8 @@ class BaseAlgorithmPaperList:
 
         with open(save_path, 'w') as f:
             f.write('# Overview\n')
-            f.write("""```{table}\n:class: model-summary\n""")
+            f.write('```{table}\n:class: model-summary nowrap field-list '
+                    'table table-hover\n')
             f.write(tabulate(rows, self.overview_header, **self.table_cfg))
             f.write('\n```\n')
 
@@ -235,7 +236,9 @@ class TextRecogPaperList(BaseAlgorithmPaperList):
         rows = sorted(rows, key=lambda x: x[-1])
         with open(save_path, 'w') as f:
             f.write('# SOTA\n')
-            f.write("""```{table}\n:class: model-summary\n""")
+            f.write(
+                '```{table}\n:class: model-summary nowrap field-list table '
+                'table-hover\n')
             header = self.sota_header + benchmark_dataset_list + ['Avg']
             f.write(tabulate(rows, header, **self.table_cfg))
             f.write('\n```\n')
@@ -315,7 +318,9 @@ class TextDetPaperList(BaseAlgorithmPaperList):
         rows = sorted(rows, key=lambda x: x[-1])
         with open(save_path, 'w') as f:
             f.write('# SOTA\n')
-            f.write("""```{table}\n:class: model-summary\n""")
+            f.write(
+                '```{table}\n:class: model-summary nowrap field-list table '
+                'table-hover\n')
             header = self.sota_header + [
                 f'{dataset}_{metric_name}'
                 for dataset in benchmark_dataset_list
@@ -375,12 +380,12 @@ class TextDetPaperList(BaseAlgorithmPaperList):
 papers_dir = '../../paper_zoo'
 # papers_dir = 'paper_zoo'
 
-save_dir = osp.join('docs/en/paper_zoo', 'textrecog')
+save_dir = osp.join('paper_zoo', 'textrecog')
 paper_list = TextRecogPaperList(papers_dir, 'textrecog', save_dir)
 os.makedirs(save_dir, exist_ok=True)
 paper_list.gen_algorithm()
 
-save_dir = osp.join('docs/en/paper_zoo', 'textdet')
+save_dir = osp.join('paper_zoo', 'textdet')
 paper_list = TextDetPaperList(papers_dir, 'textdet', save_dir)
 os.makedirs(save_dir, exist_ok=True)
 paper_list.gen_algorithm()
