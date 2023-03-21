@@ -30,9 +30,9 @@
    basic_concepts/structures.md
    basic_concepts/transforms.md
    basic_concepts/evaluation.md
+   basic_concepts/datasets.md
    basic_concepts/overview.md
    basic_concepts/data_flow.md
-   basic_concepts/datasets.md
    basic_concepts/models.md
    basic_concepts/visualizers.md
    basic_concepts/convention.md
