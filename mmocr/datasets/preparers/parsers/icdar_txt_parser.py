@@ -122,6 +122,6 @@ class ICDARTxtTextRecogAnnParser(BaseParser):
             if text == self.ignore:
                 continue
             img_name = anno['img']
-            samples.append((osp.join(img_dir, osp.basename(img_name)), text))
+            samples.append((osp.join(img_dir, img_name), text))
 
         return samples

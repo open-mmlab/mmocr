@@ -171,7 +171,7 @@ _base_ = [ # 导入所有需要使用的数据集配置
 ]
 
 # 训练集列表
-train_list = [_base_.mjsynth_textrecog_test]
+train_list = [_base_.mjsynth_textrecog_train]
 # 测试集列表
 test_list = [
     _base_.cute80_textrecog_test, _base_.iiit5k_textrecog_test, _base_.svt_textrecog_test,

@@ -1,0 +1,37 @@
+Name: 'Synthetic Word Dataset (MJSynth/Syn90k)'
+Paper:
+  Title: Reading Text in the Wild with Convolutional Neural Networks
+  URL: https://arxiv.org/pdf/1412.1842.pdf
+  Venue: International Journal of Computer Vision
+  Year: '2016'
+  BibTeX: '@InProceedings{Jaderberg14c,
+  author       = "Max Jaderberg and Karen Simonyan and Andrea Vedaldi and Andrew Zisserman",
+  title        = "Synthetic Data and Artificial Neural Networks for Natural Scene Text Recognition",
+  booktitle    = "Workshop on Deep Learning, NIPS",
+  year         = "2014",
+  }
+
+  @Article{Jaderberg16,
+  author       = "Max Jaderberg and Karen Simonyan and Andrea Vedaldi and Andrew Zisserman",
+  title        = "Reading Text in the Wild with Convolutional Neural Networks",
+  journal      = "International Journal of Computer Vision",
+  number       = "1",
+  volume       = "116",
+  pages        = "1--20",
+  month        = "jan",
+  year         = "2016",
+  }'
+Data:
+  Website: https://www.robots.ox.ac.uk/~vgg/data/text/
+  Language:
+    - English
+  Scene:
+    - Synthesis
+  Granularity:
+    - Word
+  Tasks:
+    - textrecog
+  License:
+    Type: N/A
+    Link: N/A
+  Format: .txt

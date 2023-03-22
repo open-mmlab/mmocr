@@ -288,7 +288,7 @@ test_cfg = dict(type='TestLoop')
 
 ```Python
 # 识别数据集配置
-mjsynth_textrecog_test = dict(
+mjsynth_textrecog_train = dict(
     type='OCRDataset',
     data_root='data/rec/Syn90k/',
     data_prefix=dict(img_path='mnt/ramdisk/max/90kDICT32px'),
@@ -373,7 +373,7 @@ train_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type='ConcatDataset',
-        datasets=[mjsynth_textrecog_test],
+        datasets=[mjsynth_textrecog_train],
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=1,
