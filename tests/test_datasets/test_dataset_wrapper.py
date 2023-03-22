@@ -34,13 +34,13 @@ class TestConcatDataset(TestCase):
             data_root=osp.join(
                 osp.dirname(__file__), '../data/det_toy_dataset'),
             data_prefix=dict(img_path='imgs'),
-            ann_file='instances_test.json')
+            ann_file='textdet_test.json')
 
         self.dataset_a_with_pipeline = dataset(
             data_root=osp.join(
                 osp.dirname(__file__), '../data/det_toy_dataset'),
             data_prefix=dict(img_path='imgs'),
-            ann_file='instances_test.json',
+            ann_file='textdet_test.json',
             pipeline=[dict(type='MockTransform', return_value=1)])
 
         # create dataset_b
@@ -50,12 +50,12 @@ class TestConcatDataset(TestCase):
             data_root=osp.join(
                 osp.dirname(__file__), '../data/det_toy_dataset'),
             data_prefix=dict(img_path='imgs'),
-            ann_file='instances_test.json')
+            ann_file='textdet_test.json')
         self.dataset_b_with_pipeline = dataset(
             data_root=osp.join(
                 osp.dirname(__file__), '../data/det_toy_dataset'),
             data_prefix=dict(img_path='imgs'),
-            ann_file='instances_test.json',
+            ann_file='textdet_test.json',
             pipeline=[dict(type='MockTransform', return_value=2)])
 
     def test_init(self):
@@ -83,7 +83,7 @@ class TestConcatDataset(TestCase):
                 data_root=osp.join(
                     osp.dirname(__file__), '../data/det_toy_dataset'),
                 data_prefix=dict(img_path='imgs'),
-                ann_file='instances_test.json')
+                ann_file='textdet_test.json')
             ConcatDataset(datasets=[dataset_a, dataset_b])
         # test lazy init
         ConcatDataset(

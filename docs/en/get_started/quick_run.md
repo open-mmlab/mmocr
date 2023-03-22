@@ -54,24 +54,31 @@ Once the dataset is prepared, we will then specify the location of the training 
 
 In this example, we will train a DBNet using resnet18 as its backbone. Since MMOCR already has a config file for the full ICDAR 2015 dataset (`configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py`), we just need to make some modifications on top of it.
 
-We first need to modify the path to the dataset. In this config, most of the key config files are imported in `_base_`, such as the database configuration from `configs/_base_/det_datasets/icdar2015.py`. Open that file and replace the path pointed to by `ic15_det_data_root` in the first line with:
+We first need to modify the path to the dataset. In this config, most of the key config files are imported in `_base_`, such as the database configuration from `configs/textdet/_base_/datasets/icdar2015.py`. Open that file and replace the path pointed to by `icdar2015_textdet_data_root` in the first line with:
 
 ```Python
-ic15_det_data_root = 'data/det/mini_icdar2015'
+icdar2015_textdet_data_root = 'data/mini_icdar2015'
 ```
 
 Also, because of the reduced dataset size, we have to reduce the number of training epochs to 400 accordingly, shorten the validation interval as well as the weight storage interval to 10 rounds, and drop the learning rate decay strategy. The following lines of configuration can be directly put into `configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py` to take effect.
 
 ```Python
-# Save checkpoints every 10 epochs
-default_hooks = dict(checkpoint=dict(type='CheckpointHook', interval=10), )
+# Save checkpoints every 10 epochs, and only keep the latest checkpoint
+default_hooks = dict(
+    checkpoint=dict(
+        type='CheckpointHook',
+        interval=10,
+        max_keep_ckpts=1,
+    ))
 # Set the maximum number of epochs to 400, and validate the model every 10 epochs
 train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=400, val_interval=10)
 # Fix learning rate as a constant
-param_scheduler = [dict(type='ConstantLR', factor=1.0),]
+param_scheduler = [
+    dict(type='ConstantLR', factor=1.0),
+]
 ```
 
-Here, we have rewritten the corresponding parameters in the base configuration directly through the [inheritance](https://mmengine.readthedocs.io/en/latest/tutorials/config.html) mechanism of the configuration. The original fields are distributed in `configs/_base_/schedules/schedule_sgd_1200e.py` and `configs/_base_/textdet_default_runtime.py`. You may check them out if interested.
+Here, we have rewritten the corresponding parameters in the base configuration directly through the inheritance ({external+mmengine:doc}`MMEngine: Config <advanced_tutorials/config>`) mechanism of the config. The original fields are distributed in `configs/textdet/_base_/schedules/schedule_sgd_1200e.py` and `configs/textdet/_base_/default_runtime.py`.
 
 ```{note}
 For a more detailed description of config, please refer to [here](../user_guides/config.md).
@@ -126,7 +133,7 @@ For advanced usage of training, such as CPU training, multi-GPU training, and cl
 
 ## Testing
 
-After 400 epochs, we observe that DBNet performs best in the last epoch, with `hmean` reaching 60.86:
+After 400 epochs, we observe that DBNet performs best in the last epoch, with `hmean` reaching 60.86 (You may see a different result):
 
 ```Bash
 08/22 19:24:52 - mmengine - INFO - Epoch(val) [400][100/100]  icdar/precision: 0.7285  icdar/recall: 0.5226  icdar/hmean: 0.6086
@@ -138,7 +145,7 @@ It may not have been trained to be optimal, but it is sufficient for a demo.
 
 However, this value only reflects the performance of DBNet on the mini ICDAR 2015 dataset. For a comprehensive evaluation, we also need to see how it performs on out-of-distribution datasets. For example, `tests/data/det_toy_dataset` is a very small real dataset that we can use to verify the actual performance of DBNet.
 
-Before testing, we also need to make some changes to the location of the dataset. Open `configs/_base_/det_datasets/icdar2015.py` and change `data_root` of `icdar2015_textdet_test` to `tests/data/det_toy_dataset`:
+Before testing, we also need to make some changes to the location of the dataset. Open `configs/textdet/_base_/datasets/icdar2015.py` and change `data_root` of `icdar2015_textdet_test` to `tests/data/det_toy_dataset`:
 
 ```Python
 # ...
@@ -155,7 +162,7 @@ Start testing:
 python tools/test.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py work_dirs/dbnet_resnet18_fpnc_1200e_icdar2015/epoch_400.pth
 ```
 
-And get the outputs:
+And get the outputs like:
 
 ```Bash
 08/21 21:45:59 - mmengine - INFO - Epoch(test) [5/10]    memory: 8562
@@ -182,7 +189,7 @@ For advanced usage of testing, such as CPU testing, multi-GPU testing, and clust
 We can also visualize its prediction output in `test.py`. You can open a pop-up visualization window with the `show` parameter; and can also specify the directory where the prediction result images are exported with the `show-dir` parameter.
 
 ```Bash
-python tools/test.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py work_dirs/dbnet_r18_fpnc_1200e_icdar2015/epoch_400.pth --show-dir imgs/
+python tools/test.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py work_dirs/dbnet_resnet18_fpnc_1200e_icdar2015/epoch_400.pth --show-dir imgs/
 ```
 
 The true labels and predicted values are displayed in a tiled fashion in the visualization results. The green boxes in the left panel indicate the true labels and the red boxes in the right panel indicate the predicted values.
