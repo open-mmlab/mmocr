@@ -1,6 +1,6 @@
 # Quick Run
 
-This chapter will take you through the basic functions of MMOCR. And we assume you [installed MMOCR from source](install.md#best-practices).
+This chapter will take you through the basic functions of MMOCR. And we assume you [installed MMOCR from source](install.md#best-practices). You may check out the [tutorial notebook](https://colab.research.google.com/github/open-mmlab/mmocr/blob/dev-1.x/demo/tutorial.ipynb) for how to perform inference, training and testing interactively.
 
 ## Inference
 

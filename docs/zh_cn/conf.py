@@ -92,6 +92,13 @@ html_theme_options = {
     'https://mmocr.readthedocs.io/zh_CN/dev-1.x/',
     'menu': [
         {
+            'name':
+            '教程 Notebook',
+            'url':
+            'https://colab.research.google.com/github/open-mmlab/mmocr/blob/'
+            'dev-1.x/demo/tutorial.ipynb'
+        },
+        {
             'name': 'GitHub',
             'url': 'https://github.com/open-mmlab/mmocr'
         },
