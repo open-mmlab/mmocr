@@ -11,7 +11,6 @@ This page is a manual preparation guide for datasets not yet supported by [Datas
 |                  |                                                         |                             training                             |                               test                                |
 |    coco_text     | [homepage](https://rrc.cvc.uab.es/?ch=5&com=downloads)  |                    [train_labels.json](#TODO)                    |                                 -                                 |
 |    ICDAR2011     |        [homepage](https://rrc.cvc.uab.es/?ch=1)         |                                -                                 |                                 -                                 |
-| MJSynth (Syn90k) | [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/) | [subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/subset_train_labels.json) \| [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/train_labels.json) |                                 -                                 |
 |     SynthAdd     | [SynthText_Add.zip](https://pan.baidu.com/s/1uV0LtoNmcxbO-0YA7Ch4dg)  (code:627x) | [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/synthtext_add/train_labels.json) |                                 -                                 |
 |     OpenVINO     | [Open Images](https://github.com/cvdfoundation/open-images-dataset) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) | [annotations](https://storage.openvinotoolkit.org/repositories/openvino_training_extensions/datasets/open_images_v5_text) |
 |      DeText      |        [homepage](https://rrc.cvc.uab.es/?ch=9)         |                                -                                 |                                 -                                 |
@@ -108,44 +107,6 @@ For users in China, these datasets can also be downloaded from [OpenDataLab](htt
   ├── coco_text
   │   ├── train_labels.json
   │   └── train_words
-  ```
-
-## MJSynth (Syn90k)
-
-- Step1: Download `mjsynth.tar.gz` from [homepage](https://www.robots.ox.ac.uk/~vgg/data/text/)
-- Step2: Download [train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/train_labels.json) (8,919,273 annotations) and [subset_train_labels.json](https://download.openmmlab.com/mmocr/data/1.x/recog/Syn90k/subset_train_labels.json) (2,400,000 randomly sampled annotations).
-
-```{note}
-Please make sure you're using the right annotation to train the model by checking its dataset specs in Model Zoo.
-```
-
-- Step3:
-
-  ```bash
-  mkdir Syn90k && cd Syn90k
-
-  mv /path/to/mjsynth.tar.gz .
-
-  tar -xzf mjsynth.tar.gz
-
-  mv /path/to/subset_train_labels.json .
-  mv /path/to/train_labels.json .
-
-  # create soft link
-  cd /path/to/mmocr/data/recog/
-
-  ln -s /path/to/Syn90k Syn90k
-
-  ```
-
-- After running the above codes, the directory structure
-  should be as follows:
-
-  ```text
-  ├── Syn90k
-  │   ├── subset_train_labels.json
-  │   ├── train_labels.json
-  │   └── mnt
   ```
 
 ## SynthAdd
