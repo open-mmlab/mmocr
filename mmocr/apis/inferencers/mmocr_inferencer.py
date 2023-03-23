@@ -108,21 +108,24 @@ class MMOCRInferencer(BaseMMOCRInferencer):
     def forward(self,
                 inputs: InputsType,
                 batch_size: int = 1,
-                det_batch_size: int = None,
-                rec_batch_size: int = None,
-                kie_batch_size: int = None,
+                det_batch_size: Optional[int] = None,
+                rec_batch_size: Optional[int] = None,
+                kie_batch_size: Optional[int] = None,
                 **forward_kwargs) -> PredType:
         """Forward the inputs to the model.
 
         Args:
             inputs (InputsType): The inputs to be forwarded.
             batch_size (int): Batch size. Defaults to 1.
-            det_batch_size (int): Batch size for text detection model.
-                Defaults to None. Overwrite batch_size if it is not None.
-            rec_batch_size (int): Batch size for text recognition model.
-                Defaults to None. Overwrite batch_size if it is not None.
-            kie_batch_size (int): Batch size for KIE model.
-                Defaults to None. Overwrite batch_size if it is not None.
+            det_batch_size (Optional[int]): Batch size for text detection
+                model. Overwrite batch_size if it is not None.
+                Defaults to None.
+            rec_batch_size (Optional[int]): Batch size for text recognition
+                model. Overwrite batch_size if it is not None.
+                Defaults to None.
+            kie_batch_size (Optional[int]): Batch size for KIE model.
+                Overwrite batch_size if it is not None.
+                Defaults to None.
 
         Returns:
             Dict: The prediction results. Possibly with keys "det", "rec", and
@@ -236,9 +239,9 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         self,
         inputs: InputsType,
         batch_size: int = 1,
-        det_batch_size: int = None,
-        rec_batch_size: int = None,
-        kie_batch_size: int = None,
+        det_batch_size: Optional[int] = None,
+        rec_batch_size: Optional[int] = None,
+        kie_batch_size: Optional[int] = None,
         out_dir: str = 'results/',
         return_vis: bool = False,
         save_vis: bool = False,
@@ -251,12 +254,15 @@ class MMOCRInferencer(BaseMMOCRInferencer):
             inputs (InputsType): Inputs for the inferencer. It can be a path
                 to image / image directory, or an array, or a list of these.
             batch_size (int): Batch size. Defaults to 1.
-            det_batch_size (int): Batch size for text detection model.
-                Defaults to None. Overwrite batch_size if it is not None.
-            rec_batch_size (int): Batch size for text recognition model.
-                Defaults to None. Overwrite batch_size if it is not None.
-            kie_batch_size (int): Batch size for KIE model.
-                Defaults to None. Overwrite batch_size if it is not None.
+            det_batch_size (Optional[int]): Batch size for text detection
+                model. Overwrite batch_size if it is not None.
+                Defaults to None.
+            rec_batch_size (Optional[int]): Batch size for text recognition
+                model. Overwrite batch_size if it is not None.
+                Defaults to None.
+            kie_batch_size (Optional[int]): Batch size for KIE model.
+                Overwrite batch_size if it is not None.
+                Defaults to None.
             out_dir (str): Output directory of results. Defaults to 'results/'.
             return_vis (bool): Whether to return the visualization result.
                 Defaults to False.
