@@ -239,7 +239,6 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         det_batch_size: int = None,
         rec_batch_size: int = None,
         kie_batch_size: int = None,
-        chunk_size: int = None,
         out_dir: str = 'results/',
         return_vis: bool = False,
         save_vis: bool = False,
@@ -258,8 +257,6 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                 Defaults to None. Overwrite batch_size if it is not None.
             kie_batch_size (int): Batch size for KIE model.
                 Defaults to None. Overwrite batch_size if it is not None.
-            chunk_size (int): For chunking inputs. Defaults to None.
-                If it is None, batch_size will be used as chunk_size.
             out_dir (str): Output directory of results. Defaults to 'results/'.
             return_vis (bool): Whether to return the visualization result.
                 Defaults to False.
@@ -304,10 +301,9 @@ class MMOCRInferencer(BaseMMOCRInferencer):
             rec_batch_size = batch_size
         if kie_batch_size is None:
             kie_batch_size = batch_size
-        chunk_size = batch_size if chunk_size is None else chunk_size
 
         chunked_inputs = super(BaseMMOCRInferencer,
-                               self)._get_chunk_data(ori_inputs, chunk_size)
+                               self)._get_chunk_data(ori_inputs, batch_size)
         results = {'predictions': [], 'visualization': []}
         for ori_input in track(chunked_inputs, description='Inference'):
             preds = self.forward(
