@@ -1,7 +1,5 @@
 _base_ = ['mmdet::_base_/models/mask-rcnn_r50_fpn.py']
 
-file_client_args = dict(backend='disk')
-
 mask_rcnn = _base_.pop('model')
 # Adapt Mask R-CNN model to OCR task
 mask_rcnn.update(
@@ -18,10 +16,7 @@ mask_rcnn.update(
 model = dict(type='MMDetWrapper', text_repr_type='poly', cfg=mask_rcnn)
 
 train_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadOCRAnnotations',
         with_polygon=True,
@@ -49,10 +44,7 @@ train_pipeline = [
 ]
 
 test_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(type='Resize', scale=(1920, 1920), keep_ratio=True),
     dict(
         type='LoadOCRAnnotations',

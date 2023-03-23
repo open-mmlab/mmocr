@@ -171,7 +171,7 @@ _base_ = [ # Import all dataset configurations you want to use
 ]
 
 # List of training datasets
-train_list = [_base_.mjsynth_textrecog_test]
+train_list = [_base_.mjsynth_textrecog_train]
 # List of testing datasets
 test_list = [
     _base_.cute80_textrecog_test, _base_.iiit5k_textrecog_test, _base_.svt_textrecog_test,

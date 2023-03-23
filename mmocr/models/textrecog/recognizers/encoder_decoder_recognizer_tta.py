@@ -20,8 +20,7 @@ class EncoderDecoderRecognizerTTAModel(BaseTTAModel):
         >>> tta_pipeline = [
         >>>     dict(
         >>>         type='LoadImageFromFile',
-        >>>         color_type='grayscale',
-        >>>         file_client_args=file_client_args),
+        >>>         color_type='grayscale'),
         >>>     dict(
         >>>         type='TestTimeAug',
         >>>         transforms=[

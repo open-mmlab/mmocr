@@ -37,14 +37,8 @@ model = dict(
     data_preprocessor=dict(
         type='TextRecogDataPreprocessor', mean=[127.5], std=[127.5]))
 
-file_client_args = dict(backend='disk')
-
 train_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        ignore_empty=True,
-        min_size=5),
+    dict(type='LoadImageFromFile', ignore_empty=True, min_size=5),
     dict(type='LoadOCRAnnotations', with_text=True),
     dict(
         type='RandomApply',
@@ -117,7 +111,7 @@ train_pipeline = [
 ]
 
 test_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='LoadImageFromFile'),
     dict(type='Resize', scale=(256, 64)),
     dict(type='LoadOCRAnnotations', with_text=True),
     dict(
@@ -126,7 +120,7 @@ test_pipeline = [
 ]
 
 tta_pipeline = [
-    dict(type='LoadImageFromFile', file_client_args=file_client_args),
+    dict(type='LoadImageFromFile'),
     dict(
         type='TestTimeAug',
         transforms=[[

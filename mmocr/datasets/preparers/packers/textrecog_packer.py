@@ -50,11 +50,8 @@ class TextRecogPacker(BasePacker):
         """
 
         img_name, text = sample
-        # TODO: remove hard code
-        packed_instance = dict(
-            instances=[dict(text=text)],
-            img_path=osp.join('textrecog_imgs', self.split,
-                              osp.basename(img_name)))
+        img_name = osp.relpath(img_name, self.data_root)
+        packed_instance = dict(instances=[dict(text=text)], img_path=img_name)
 
         return packed_instance
 

@@ -291,7 +291,7 @@ For example, for text recognition tasks, Syn90k is used as the training set, whi
 
 ```Python
 # text recognition dataset configuration
-mjsynth_textrecog_test = dict(
+mjsynth_textrecog_train = dict(
     type='OCRDataset',
     data_root='data/rec/Syn90k/',
     data_prefix=dict(img_path='mnt/ramdisk/max/90kDICT32px'),
@@ -332,12 +332,10 @@ Due to the specificity of the OCR task, different models have different data aug
 
 ```Python
 # Data Augmentation
-file_client_args = dict(backend='disk')
 train_pipeline = [
     dict(
         type='LoadImageFromFile',
         color_type='grayscale',
-        file_client_args=dict(backend='disk'),
         ignore_empty=True,
         min_size=5),
     dict(type='LoadOCRAnnotations', with_text=True),
@@ -349,8 +347,7 @@ train_pipeline = [
 test_pipeline = [
     dict(
         type='LoadImageFromFile',
-        color_type='grayscale',
-        file_client_args=dict(backend='disk')),
+        color_type='grayscale'),
     dict(
         type='RescaleToHeight',
         height=32,
@@ -377,7 +374,7 @@ train_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type='ConcatDataset',
-        datasets=[mjsynth_textrecog_test],
+        datasets=[mjsynth_textrecog_train],
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=1,

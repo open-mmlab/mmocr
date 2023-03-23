@@ -188,6 +188,11 @@ pip3 install -e .
 
 请点击[模型库](https://mmocr.readthedocs.io/zh_CN/dev-1.x/modelzoo.html)查看更多关于上述算法的详细信息。
 
+## 社区项目
+
+[这里](projects/README.md)有一些由社区用户支持和维护的基于 MMOCR 的 SOTA 模型和解决方案的实现。这些项目展示了基于 MMOCR 的研究和产品开发的最佳实践。
+我们欢迎并感谢对 OpenMMLab 生态系统的所有贡献。
+
 ## 贡献指南
 
 我们感谢所有的贡献者为改进和提升 MMOCR 所作出的努力。请参考[贡献指南](.github/CONTRIBUTING.md)来了解参与项目贡献的相关指引。

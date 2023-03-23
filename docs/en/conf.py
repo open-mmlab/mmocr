@@ -92,6 +92,13 @@ html_theme_options = {
     'https://mmocr.readthedocs.io/en/dev-1.x/',
     'menu': [
         {
+            'name':
+            'Tutorial',
+            'url':
+            'https://colab.research.google.com/github/open-mmlab/mmocr/blob/'
+            'dev-1.x/demo/tutorial.ipynb'
+        },
+        {
             'name': 'GitHub',
             'url': 'https://github.com/open-mmlab/mmocr'
         },
@@ -180,6 +187,7 @@ def builder_inited_handler(app):
     subprocess.run(['./merge_docs.sh'])
     subprocess.run(['./stats.py'])
     subprocess.run(['./dataset_zoo.py'])
+    subprocess.run(['./project_zoo.py'])
 
 
 def setup(app):

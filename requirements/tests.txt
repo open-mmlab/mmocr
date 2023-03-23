@@ -5,6 +5,7 @@ interrogate
 isort
 # Note: used for kwarray.group_items, this may be ported to mmcv in the future.
 kwarray
+lanms-neo==1.0.2
 parameterized
 pytest
 pytest-cov
