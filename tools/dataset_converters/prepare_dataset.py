@@ -21,9 +21,9 @@ def parse_args():
     parser.add_argument(
         '--task',
         default='textdet',
-        choices=['textdet', 'textrecog', 'textspotting', 'kie'],
+        choices=['textdet', 'textrecog', 'textspotting', 'kie', 'ner'],
         help='Task type. Options are "textdet", "textrecog", "textspotting"'
-        ' and "kie".')
+        ' "kie" and "ner".')
     parser.add_argument(
         '--splits',
         default=['train', 'test', 'val'],
