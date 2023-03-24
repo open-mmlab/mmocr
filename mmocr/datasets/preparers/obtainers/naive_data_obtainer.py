@@ -191,6 +191,7 @@ class NaiveDataObtainer:
                         shutil.move(f, dst)
 
             elif osp.exists(src) and not osp.exists(dst):
+                mkdir_or_exist(osp.dirname(dst))
                 shutil.move(src, dst)
 
     def clean(self) -> None:
