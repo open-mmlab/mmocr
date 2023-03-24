@@ -10,7 +10,7 @@ train_preparer = dict(
                 url='https://thor.robots.ox.ac.uk/~vgg/data/text/'
                 'mjsynth.tar.gz',
                 save_name='mjsynth.tar.gz',
-                # md5='7bf2b60ad935eaf64e5b606f782d68e5',
+                md5='7bf2b60ad935eaf64e5b606f782d68e5',
                 split=['train'],
                 content=['image', 'annotation'],
                 mapping=[
