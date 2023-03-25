@@ -20,41 +20,29 @@ class XFUNDSERAnnParser(BaseParser):
     def parse_files(self, img_dir: str, ann_path: str) -> List:
         """Parse annotations."""
         assert isinstance(ann_path, str)
-        instances = list()
-        for img_fname, width, height, instance in self.loader(ann_path):
-            instances.append(
-                dict(
-                    img_path=osp.join(img_dir, img_fname),
-                    width=width,
-                    height=height,
-                    instances=instance))
-        return instances
-
+        samples = list()
+        for img_fname, instance in self.loader(ann_path):
+            samples.append((osp.join(img_dir, img_fname), instance))
+        return samples
+    
     def loader(self, file_path: str):
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
             for i in range(len(data['documents'])):
                 img_fname = data['documents'][i]['img']['fname']
-                width = data['documents'][i]['img']['width']
-                height = data['documents'][i]['img']['height']
-                cur_doc_texts, cur_doc_bboxes = [], []
-                cur_doc_labels, cur_doc_words = [], []
+                instances = list()
                 for j in range(len(data['documents'][i]['document'])):
                     cur_item = data['documents'][i]['document'][j]
-                    cur_doc_texts.append(cur_item['text'])
-                    cur_doc_bboxes.append(cur_item['box'])
-                    cur_doc_labels.append(cur_item['label'])
-                    cur_doc_words.append(cur_item['words'])
-                instance = dict(
-                    texts=cur_doc_texts,
-                    bboxes=cur_doc_bboxes,
-                    labels=cur_doc_labels,
-                    words=cur_doc_words)
-                yield img_fname, width, height, instance
+                    instance = dict(text=cur_item['text'],
+                                    box=cur_item['box'],
+                                    label=cur_item['label'],
+                                    words=cur_item['words'])
+                    instances.append(instance)
+                yield img_fname, instances
 
 
 @DATA_PARSERS.register_module()
-class XFUNDREAnnParser(BaseParser):
+class XFUNDREAnnParser(XFUNDSERAnnParser):
     """XFUND Relation Extraction Annotation Parser. See
     dataset_zoo/xfund/xx/sample_anno.md for annotation example.
 
@@ -63,6 +51,19 @@ class XFUNDREAnnParser(BaseParser):
             to 1.
     """
 
-    # TODO: 完成RE parser
-    def __init__(self, split: str, nproc: int = 1) -> None:
-        super().__init__(split, nproc)
+    def loader(self, file_path: str):
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            for i in range(len(data['documents'])):
+                img_fname = data['documents'][i]['img']['fname']
+                instances = list()
+                for j in range(len(data['documents'][i]['document'])):
+                    cur_item = data['documents'][i]['document'][j]
+                    instance = dict(text=cur_item['text'],
+                                    box=cur_item['box'],
+                                    label=cur_item['label'],
+                                    words=cur_item['words'],
+                                    linking=cur_item['linking'],
+                                    id=cur_item['id'])
+                    instances.append(instance)
+                yield img_fname, instances
