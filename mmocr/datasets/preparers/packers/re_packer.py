@@ -9,8 +9,8 @@ from .base import BasePacker
 
 
 @DATA_PACKERS.register_module()
-class SERPacker(BasePacker):
-    """Semantic Entity Recognition packer. 
+class REPacker(BasePacker):
+    """Relation Extraction packer. 
     It is used to pack the parsed annotation info to.
 
     .. code-block:: python
@@ -18,9 +18,9 @@ class SERPacker(BasePacker):
         {
             "metainfo":
                 {
-                    "dataset_type": "SERDataset",
-                    "task_name": "ser",
-                    "ser_labels": ['answer', 'header', 'other', 'question'],
+                    "dataset_type": "REDataset",
+                    "task_name": "re",
+                    "re_labels": ['answer', 'header', 'other', 'question'],
                     "id2label": {
                         "0": "answer",
                         "1": "header",
@@ -45,6 +45,8 @@ class SERPacker(BasePacker):
                             "texts": ["绩效目标申报表(一级项目)", "项目名称", ...],
                             "bboxes": [[906,195,1478,259], [357,325,467,357], ...],
                             "labels": ["header", "question", ...],
+                            "linkings": [[0, 1], [2, 3], ...],
+                            "ids": [0, 1, ...],
                             "words": [[{
                                         "box": [
                                             904,
@@ -81,6 +83,8 @@ class SERPacker(BasePacker):
                  - 'text'
                  - 'box'
                  - 'label'
+                 - 'linking'
+                 - 'id'
                  - 'words' (optional)
 
         Returns:
@@ -96,21 +100,29 @@ class SERPacker(BasePacker):
         bboxes_per_doc = []
         labels_per_doc = []
         words_per_doc = []
+        linking_per_doc = []
+        id_per_doc = []
         for instance in instances:
             text = instance.get('text', None)
             box = instance.get('box', None)
             label = instance.get('label', None)
+            linking = instance.get('linking', None)
+            id = instance.get('id', None)
             words = instance.get('words', None)
             assert text or box or label
             texts_per_doc.append(text)
             bboxes_per_doc.append(box)
             labels_per_doc.append(label)
             words_per_doc.append(words)
+            linking_per_doc.append(linking)
+            id_per_doc.append(id)
         packed_instances = dict(
             instances=dict(
                 texts=texts_per_doc,
                 bboxes=bboxes_per_doc,
                 labels=labels_per_doc,
+                linkings=linking_per_doc,
+                ids=id_per_doc,
                 words=words_per_doc),
             img_path=osp.relpath(img_path, self.data_root),
             height=h,
@@ -136,9 +148,9 @@ class SERPacker(BasePacker):
 
         meta = {
             'metainfo': {
-                'dataset_type': 'SERDataset',
-                'task_name': 'ser',
-                'ser_labels': label_list,
+                'dataset_type': 'REDataset',
+                'task_name': 're',
+                're_labels': label_list,
                 'id2label': {k: v for k, v in enumerate(label_list)},
                 'label2id': {v: k for k, v in enumerate(label_list)}
             },
