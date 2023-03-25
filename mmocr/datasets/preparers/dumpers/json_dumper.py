@@ -21,4 +21,4 @@ class JsonDumper(BaseDumper):
 
         filename = f'{self.task}_{self.split}.json'
         dst_file = osp.join(self.data_root, filename)
-        mmengine.dump(data, dst_file)
+        mmengine.dump(data, dst_file, ensure_ascii=False)
