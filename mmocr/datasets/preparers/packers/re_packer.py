@@ -10,8 +10,8 @@ from .base import BasePacker
 
 @DATA_PACKERS.register_module()
 class REPacker(BasePacker):
-    """Relation Extraction packer. 
-    It is used to pack the parsed annotation info to.
+    """Relation Extraction packer. It is used to pack the parsed annotation
+    info to.
 
     .. code-block:: python
 
@@ -43,7 +43,8 @@ class REPacker(BasePacker):
                         "instances":
                         {
                             "texts": ["绩效目标申报表(一级项目)", "项目名称", ...],
-                            "bboxes": [[906,195,1478,259], [357,325,467,357], ...],
+                            "bboxes": [[906,195,1478,259],
+                                       [357,325,467,357], ...],
                             "labels": ["header", "question", ...],
                             "linkings": [[0, 1], [2, 3], ...],
                             "ids": [0, 1, ...],
@@ -151,8 +152,10 @@ class REPacker(BasePacker):
                 'dataset_type': 'REDataset',
                 'task_name': 're',
                 're_labels': label_list,
-                'id2label': {k: v for k, v in enumerate(label_list)},
-                'label2id': {v: k for k, v in enumerate(label_list)}
+                'id2label': {k: v
+                             for k, v in enumerate(label_list)},
+                'label2id': {v: k
+                             for k, v in enumerate(label_list)}
             },
             'data_list': sample
         }

@@ -24,7 +24,7 @@ class XFUNDSERAnnParser(BaseParser):
         for img_fname, instance in self.loader(ann_path):
             samples.append((osp.join(img_dir, img_fname), instance))
         return samples
-    
+
     def loader(self, file_path: str):
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -33,10 +33,11 @@ class XFUNDSERAnnParser(BaseParser):
                 instances = list()
                 for j in range(len(data['documents'][i]['document'])):
                     cur_item = data['documents'][i]['document'][j]
-                    instance = dict(text=cur_item['text'],
-                                    box=cur_item['box'],
-                                    label=cur_item['label'],
-                                    words=cur_item['words'])
+                    instance = dict(
+                        text=cur_item['text'],
+                        box=cur_item['box'],
+                        label=cur_item['label'],
+                        words=cur_item['words'])
                     instances.append(instance)
                 yield img_fname, instances
 
@@ -59,11 +60,12 @@ class XFUNDREAnnParser(XFUNDSERAnnParser):
                 instances = list()
                 for j in range(len(data['documents'][i]['document'])):
                     cur_item = data['documents'][i]['document'][j]
-                    instance = dict(text=cur_item['text'],
-                                    box=cur_item['box'],
-                                    label=cur_item['label'],
-                                    words=cur_item['words'],
-                                    linking=cur_item['linking'],
-                                    id=cur_item['id'])
+                    instance = dict(
+                        text=cur_item['text'],
+                        box=cur_item['box'],
+                        label=cur_item['label'],
+                        words=cur_item['words'],
+                        linking=cur_item['linking'],
+                        id=cur_item['id'])
                     instances.append(instance)
                 yield img_fname, instances
