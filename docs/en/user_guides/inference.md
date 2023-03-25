@@ -460,6 +460,9 @@ Here are extensive lists of parameters that you can use.
 | `inputs`             | str/list/tuple/np.array | **required** | It can be a path to an image/a folder, an np array or a list/tuple (with img paths or np arrays) |
 | `return_datasamples` | bool                    | False        | Whether to return results as DataSamples. If False, the results will be packed into a dict.      |
 | `batch_size`         | int                     | 1            | Inference batch size.                                                                            |
+| `det_batch_size`     | int, optional           | None         | Inference batch size for text detection model. Overwrite batch_size if it is not None.           |
+| `rec_batch_size`     | int, optional           | None         | Inference batch size for text recognition model. Overwrite batch_size if it is not None.         |
+| `kie_batch_size`     | int, optional           | None         | Inference batch size for KIE model. Overwrite batch_size if it is not None.                      |
 | `return_vis`         | bool                    | False        | Whether to return the visualization result.                                                      |
 | `print_result`       | bool                    | False        | Whether to print the inference result to the console.                                            |
 | `show`               | bool                    | False        | Whether to display the visualization results in a popup window.                                  |

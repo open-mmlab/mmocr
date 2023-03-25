@@ -457,6 +457,9 @@ outputs
 | `inputs`             | str/list/tuple/np.array | **必需**   | 它可以是一个图片/文件夹的路径，一个 numpy 数组，或者是一个包含图片路径或 numpy 数组的列表/元组 |
 | `return_datasamples` | bool                    | False      | 是否将结果作为 DataSample 返回。如果为 False，结果将被打包成一个字典。                         |
 | `batch_size`         | int                     | 1          | 推理的批大小。                                                                                 |
+| `det_batch_size`     | int, 可选               | None       | 推理的批大小 (文本检测模型)。如果不为 None，则覆盖 batch_size。                                    |
+| `rec_batch_size`     | int, 可选               | None       | 推理的批大小 (文本识别模型)。如果不为 None，则覆盖 batch_size。                                    |
+| `kie_batch_size`     | int, 可选               | None       | 推理的批大小 (关键信息提取模型)。如果不为 None，则覆盖 batch_size。                                |
 | `return_vis`         | bool                    | False      | 是否返回可视化结果。                                                                           |
 | `print_result`       | bool                    | False      | 是否将推理结果打印到控制台。                                                                   |
 | `show`               | bool                    | False      | 是否在弹出窗口中显示可视化结果。                                                               |
