@@ -4,62 +4,12 @@
 
 经过数十年的发展，OCR 领域涌现出了一系列的相关数据集，这些数据集往往采用风格各异的格式来提供文本的标注文件，使得用户在使用这些数据集时不得不进行格式转换。因此，为了方便用户进行数据集准备，我们提供了[一键式的数据准备脚本](./data_prepare/dataset_preparer.md)，使得用户仅需使用一行命令即可完成数据集准备的全部步骤。
 
-下面，我们对 MMOCR 内支持的各任务的数据格式进行简要的介绍。
+在这一节，我们将介绍一个典型的数据集准备流程：
 
-- 如以下代码块所示，文本检测任务采用数据格式 `TextDetDataset`，其中存放了文本检测任务所需的边界盒标注、文件名等信息。我们在 `tests/data/det_toy_dataset/instances_test.json` 路径中提供了一个示例标注文件。
+1. [下载数据集并将其格式转换为 MMOCR 支持的格式](#数据集下载及格式转换)
+2. [修改配置文件](#修改配置文件)
 
-  ```json
-    {
-    "metainfo":
-      {
-        "dataset_type": "TextDetDataset",
-        "task_name": "textdet",
-        "category": [{"id": 0, "name": "text"}]
-      },
-    "data_list":
-      [
-        {
-          "img_path": "test_img.jpg",
-          "height": 640,
-          "width": 640,
-          "instances":
-            [
-              {
-                "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
-                "bbox": [0, 0, 10, 20],
-                "bbox_label": 0,
-                "ignore": false
-              }
-            ],
-            //...
-        }
-      ]
-    }
-  ```
-
-- 如以下代码块所示，文本识别任务采用数据格式 `TextRecogDataset`，其中存放了文本识别任务所需的文本内容及图片路径等信息。我们在 `tests/data/rec_toy_dataset/labels.json` 路径中提供了一个示例标注文件。
-
-  ```json
-  {
-    "metainfo":
-      {
-        "dataset_type": "TextRecogDataset",
-        "task_name": "textrecog",
-      },
-    "data_list":
-      [
-        {
-          "img_path": "test_img.jpg",
-          "instances":
-            [
-              {
-                "text": "GRAND"
-              }
-            ]
-          }
-      ]
-  }
-  ```
+然而，如果你已经有了 MMOCR 支持的格式的数据集，那么第一步就不是必须的。你可以阅读[数据集类及标注格式](../basic_concepts/datasets.md#数据集类及标注格式)来了解更多细节。
 
 ## 数据集下载及格式转换
 
@@ -86,7 +36,7 @@ data/icdar2015
 python tools/analysis_tools/browse_dataset.py configs/textdet/_base_/datasets/icdar2015.py
 ```
 
-## 数据集配置文件
+## 修改配置文件
 
 ### 单数据集训练
 
