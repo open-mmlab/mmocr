@@ -18,7 +18,7 @@ Dataset 类支持一些高级功能，例如懒加载、数据序列化、利用
 
 ## 常见接口
 
-现在，让我们看一个具体的示例并学习 Dataset 类的一些典型接口。`OCRDataset` 是 MMOCR 中广泛使用的 Dataset 实现，并且建议作为默认的 Dataset 类型，因为它的相关注释格式足够灵活，支持 *所有* OCR 任务（[更多信息](#ocrdataset)）。现在我们将实例化一个 `OCRDataset` 对象，其中将加载 `tests/data/det_toy_dataset` 中的玩具数据集。
+现在，让我们看一个具体的示例并学习 Dataset 类的一些典型接口。`OCRDataset` 是 MMOCR 中默认使用的 Dataset 实现，因为它的标注格式足够灵活，支持 *所有* OCR 任务（详见 [OCRDataset](#ocrdataset)）。现在我们将实例化一个 `OCRDataset` 对象，其中将加载 `tests/data/det_toy_dataset` 中的玩具数据集。
 
 ```python
 from mmocr.datasets import OCRDataset
@@ -57,7 +57,7 @@ dataset = OCRDataset(
 10
 ```
 
-通常，Dataset 类加载并存储两种类型的信息：（1）**元信息**：数据集属性的一些元描述符，例如此数据集中可用的对象类别。 （2）**标注**：图像的路径及其标签。我们可以通过 `dataset.metainfo` 访问元信息：
+通常，Dataset 类加载并存储两种类型的信息：（1）**元信息**：储存数据集的属性，例如此数据集中可用的对象类别。 （2）**标注**：图像的路径及其标签。我们可以通过 `dataset.metainfo` 访问元信息：
 
 ```python
 >>> from pprint import pprint
@@ -68,7 +68,7 @@ dataset = OCRDataset(
  'task_name': 'textdet'}
 ```
 
-对于标注，我们可以通过 `dataset.get_data_info(idx)` 访问它们，它返回一个字典，其中包含数据集中第 `idx` 个样本的信息。该样本已经经过初步解析，但尚未由 [数据流水线](./transforms.md) 处理。
+对于标注，我们可以通过 `dataset.get_data_info(idx)` 访问它。该方法返回一个字典，其中包含数据集中第 `idx` 个样本的信息。该样本已经经过初步解析，但尚未由 [数据流水线](./transforms.md) 处理。
 
 ```python
 >>> from pprint import pprint
@@ -90,7 +90,7 @@ dataset = OCRDataset(
  'width': 1280}
 ```
 
-另一方面，我们可以通过 `dataset[idx]` 或 `dataset.__getitem__(idx)` 获取完全由数据管道处理的样本，该样本可以直接馈入模型并执行完整的训练/测试循环。它有两个字段：
+另一方面，我们可以通过 `dataset[idx]` 或 `dataset.__getitem__(idx)` 获取由数据流水线完整处理过后的样本，该样本可以直接馈入模型并执行完整的训练/测试循环。它有两个字段：
 
 - `inputs`：经过数据增强后的图像；
 - `data_samples`：包含经过数据增强后的标注和元信息的 [DataSample](./structures.md)，这些元信息可能由一些数据变换产生，并用以记录该样本的某些关键属性。
@@ -128,9 +128,9 @@ dataset = OCRDataset(
                   [ 19,  18,  15,  ...,   0,   0,   0]]], dtype=torch.uint8)}
 ```
 
-## 数据集类
+## 数据集类及标注格式
 
-每个数据集实现只能加载特定格式的数据集。这里列出了所有支持的数据集类及其兼容的格式，以及一个示例配置，演示如何在实践中使用它们。
+每个数据集实现只能加载特定格式的数据集。这里列出了所有支持的数据集类及其兼容的格式，以及一个示例配置，以演示如何在实践中使用它们。
 
 ```{note}
 如果您不熟悉配置系统，可以阅读 [数据集配置文件](../user_guides/dataset_prepare.md#数据集配置文件)。
@@ -140,7 +140,7 @@ dataset = OCRDataset(
 
 通常，OCR 数据集中有许多不同类型的标注，在不同的子任务（如文本检测和文本识别）中，格式也经常会有所不同。这些差异可能会导致在使用不同数据集时需要不同的数据加载代码，增加了用户的学习和维护成本。
 
-在 MMOCR 中，我们提出了一种统一的数据集格式，可以适应 OCR 的所有三个子任务：文本检测、文本识别和端到端 OCR。这种设计最大程度地提高了数据集的一致性，允许在不同任务之间重复使用数据注释，并使数据集管理更加方便。考虑到流行的数据集格式并不一致，MMOCR 提供了 [数据集准备工具](../user_guides/data_prepare/dataset_preparer.md) 来帮助用户将其数据集转换为 MMOCR 格式。我们也十分鼓励研究人员基于此数据格式开发自己的数据集。
+在 MMOCR 中，我们提出了一种统一的数据集格式，可以适应 OCR 的所有三个子任务：文本检测、文本识别和端到端 OCR。这种设计最大程度地提高了数据集的一致性，允许在不同任务之间重复使用数据标注，也使得数据集管理更加方便。考虑到流行的数据集格式并不一致，MMOCR 提供了 [Dataset Preparer](../user_guides/data_prepare/dataset_preparer.md) 来帮助用户将其数据集转换为 MMOCR 格式。我们也十分鼓励研究人员基于此数据格式开发自己的数据集。
 
 #### 标注格式
 
@@ -179,7 +179,7 @@ dataset = OCRDataset(
 
 #### 示例配置
 
-以下是配置示例的一部分，我们在 `train_dataloader` 中使用 `OCRDataset` 加载用于文本检测模型的 ICDAR2015 数据集。请记住，`OCRDataset` 可以加载由数据集准备器准备的任何 OCR 数据集。也就是说，您可以将其用于文本识别和文本检测，但您仍然需要根据不同任务的需求修改 `pipeline` 中的转换类型。
+以下是配置的一部分，我们在 `train_dataloader` 中使用 `OCRDataset` 加载用于文本检测模型的 ICDAR2015 数据集。请注意，`OCRDataset` 可以加载由 Dataset Preparer 准备的任何 OCR 数据集。也就是说，您可以将其用于文本识别和文本检测，但您仍然需要根据不同任务的需求修改 `pipeline` 中的数据变换。
 
 ```python
 pipeline = [
@@ -213,7 +213,7 @@ train_dataloader = dict(
 
 ### RecogLMDBDataset
 
-当数据量非常大时，例如百万级别，从文件中读取图像或标签可能会很慢。此外，在学术界，大多数场景文本识别数据集都以 lmdb 格式存储，包括图像和标签。（[示例](https://github.com/clovaai/deep-text-recognition-benchmark)）
+当数据量非常大时，从文件中读取图像或标签可能会很慢。此外，在学术界，大多数场景文本识别数据集的图像和标签都以 lmdb 格式存储。（[示例](https://github.com/clovaai/deep-text-recognition-benchmark)）
 
 为了更接近主流实践并提高数据存储效率，MMOCR支持通过 `RecogLMDBDataset` 从 lmdb 数据集加载图像和标签。
 
@@ -224,7 +224,7 @@ MMOCR 会读取 lmdb 数据集中的以下键：
 - `num_samples`：描述数据集的数据量的参数。
 - 图像和标签的键分别以 `image-000000001` 和 `label-000000001` 的格式命名，索引从1开始。
 
-MMOCR 在 `tests/data/rec_toy_dataset/imgs.lmdb` 中提供了一个 toy lmdb 数据集。您可以使用以下代码片段了解格式。
+MMOCR 在 `tests/data/rec_toy_dataset/imgs.lmdb` 中提供了一个 toy lmdb 数据集。您可以使用以下代码片段了解其格式。
 
 ```python
 >>> import lmdb

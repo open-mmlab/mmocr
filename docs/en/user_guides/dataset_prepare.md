@@ -4,64 +4,14 @@
 
 After decades of development, the OCR community has produced a series of related datasets that often provide annotations of text in a variety of styles, making it necessary for users to convert these datasets to the required format when using them. MMOCR supports dozens of commonly used text-related datasets and provides a [data preparation script](./data_prepare/dataset_preparer.md) to help users prepare the datasets with only one command.
 
-In the following, we provide a brief overview of the data formats defined in MMOCR for each task.
+In this section, we will introduce a typical process of preparing a dataset for MMOCR:
 
-- As shown in the following code block, the text detection task uses the data format `TextDetDataset`, which holds the bounding box annotations, file names, and other information required for the text detection task. We provide a sample annotation file in the `tests/data/det_toy_dataset/instances_test.json` path.
+1. [Download datasets and convert its format to the suggested one](#downloading-datasets-and-converting-format)
+2. [Modify the config file](#dataset-configuration)
 
-  ```json
-  {
-    "metainfo":
-      {
-        "dataset_type": "TextDetDataset",
-        "task_name": "textdet",
-        "category": [{"id": 0, "name": "text"}]
-      },
-    "data_list":
-      [
-        {
-          "img_path": "test_img.jpg",
-          "height": 640,
-          "width": 640,
-          "instances":
-            [
-              {
-                "polygon": [0, 0, 0, 10, 10, 20, 20, 0],
-                "bbox": [0, 0, 10, 20],
-                "bbox_label": 0,
-                "ignore": false,
-              },
-            ],
-            //...
-        }
-      ]
-  }
-  ```
+However, the first step is not necessary if you already have a dataset in the format that MMOCR supports. You can read [Dataset Classes](../basic_concepts/datasets.md#dataset-classes-and-annotation-formats) for more details.
 
-- As shown in the following code block, the text recognition task uses the data format `TextRecogDataset`, which holds information such as text instances and image paths required by the text recognition task. An example annotation file is provided in the `tests/data/rec_toy_dataset/labels.json` path.
-
-  ```json
-  {
-    "metainfo":
-      {
-        "dataset_type": "TextRecogDataset",
-        "task_name": "textrecog",
-      },
-    "data_list":
-      [
-        {
-          "img_path": "test_img.jpg",
-          "instances":
-            [
-              {
-                "text": "GRAND"
-              }
-            ]
-          }
-      ]
-  }
-  ```
-
-## Downloading Datasets and Format Conversion
+## Downloading Datasets and Converting Format
 
 As an example of the data preparation steps, you can use the following command to prepare the ICDAR 2015 dataset for text detection task.
 

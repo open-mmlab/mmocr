@@ -130,7 +130,7 @@ On the other hand, we can get the sample fully processed by data pipeline via `d
                   [ 19,  18,  15,  ...,   0,   0,   0]]], dtype=torch.uint8)}
 ```
 
-## Dataset Classes
+## Dataset Classes and Annotation Formats
 
 Each Dataset implementation can only load datasets in a specific annotation format. Here lists all supported Dataset classes and their compatible annotation formats, as well as an example config that showcases how to use them in practice.
 
