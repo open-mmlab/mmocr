@@ -20,7 +20,7 @@ class REPacker(BasePacker):
                 {
                     "dataset_type": "REDataset",
                     "task_name": "re",
-                    "re_labels": ['answer', 'header', 'other', 'question'],
+                    "labels": ['answer', 'header', 'other', 'question'],
                     "id2label": {
                         "0": "answer",
                         "1": "header",
@@ -108,7 +108,7 @@ class REPacker(BasePacker):
             box = instance.get('box', None)
             label = instance.get('label', None)
             linking = instance.get('linking', None)
-            id = instance.get('id', None)
+            ins_id = instance.get('id', None)
             words = instance.get('words', None)
             assert text or box or label
             texts_per_doc.append(text)
@@ -116,7 +116,7 @@ class REPacker(BasePacker):
             labels_per_doc.append(label)
             words_per_doc.append(words)
             linking_per_doc.append(linking)
-            id_per_doc.append(id)
+            id_per_doc.append(ins_id)
         packed_instances = dict(
             instances=dict(
                 texts=texts_per_doc,
@@ -151,7 +151,7 @@ class REPacker(BasePacker):
             'metainfo': {
                 'dataset_type': 'REDataset',
                 'task_name': 're',
-                're_labels': label_list,
+                'labels': label_list,
                 'id2label': {k: v
                              for k, v in enumerate(label_list)},
                 'label2id': {v: k

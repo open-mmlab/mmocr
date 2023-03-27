@@ -20,7 +20,7 @@ class SERPacker(BasePacker):
                 {
                     "dataset_type": "SERDataset",
                     "task_name": "ser",
-                    "ser_labels": ['answer', 'header', 'other', 'question'],
+                    "labels": ['answer', 'header', 'other', 'question'],
                     "id2label": {
                         "0": "answer",
                         "1": "header",
@@ -139,7 +139,7 @@ class SERPacker(BasePacker):
             'metainfo': {
                 'dataset_type': 'SERDataset',
                 'task_name': 'ser',
-                'ser_labels': label_list,
+                'labels': label_list,
                 'id2label': {k: v
                              for k, v in enumerate(label_list)},
                 'label2id': {v: k
