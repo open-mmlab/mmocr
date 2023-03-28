@@ -26,6 +26,19 @@ train_pipeline = [
 
 In practice, we find that Totaltext contains some invalid polygons and using `FixInvalidPolygon` is a must. [Here](https://github.com/open-mmlab/mmocr/blob/27b6a68586b9a040678fe083bcf60662ae1b9261/configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_totaltext.py) is an example config.
 
+**Q3** Getting `libpng warning: iCCP: known incorrect sRGB profile` when loading images with `cv2` backend.
+
+**A** This is a warning from `libpng` and it is safe to ignore. It is caused by the `icc` profile in the image. You can use `pillow` backend to avoid this warning:
+
+```python
+train_pipeline = [
+    dict(
+        type='LoadImageFromFile',
+        imdecode_backend='pillow'),
+    ...
+]
+```
+
 ## Text Recognition
 
 **Q1** What are the steps to train text recognition models with my own dictionary?
@@ -44,3 +57,27 @@ dictionary = dict(
 ```
 
 Now you are good to go. You can also find more information in [Dictionary API](https://mmocr.readthedocs.io/en/dev-1.x/api/generated/mmocr.models.common.Dictionary.html#mmocr.models.common.Dictionary).
+
+**Q2** How to properly visualize non-English characters?
+
+**A** You can customize `font_families` or `font_properties` in visualizer. For example, to visualize Korean:
+
+`configs/textrecog/_base_/default_runtime.py`:
+
+```python
+visualizer = dict(
+    type='TextRecogLocalVisualizer',
+    name='visualizer',
+    font_families='NanumGothic', # new feature
+    vis_backends=vis_backends)
+```
+
+It's also fine to pass the font path to visualizer:
+
+```python
+visualizer = dict(
+    type='TextRecogLocalVisualizer',
+    name='visualizer',
+    font_properties='path/to/font_file',
+    vis_backends=vis_backends)
+```
