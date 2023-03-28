@@ -90,9 +90,7 @@ class REConfigGenerator(BaseDatasetConfigGenerator):
             cfg += '    type=\'REDataset\',\n'
             cfg += '    data_root=' + f'{self.dataset_name}_{self.task}_data_root,\n'  # noqa: E501
             cfg += f'    ann_file=\'{ann_dict["ann_file"]}\',\n'
-            if ann_dict['split'] == 'train':
-                cfg += '    filter_cfg=dict(filter_empty_gt=True, min_size=32),\n'  # noqa: E501
-            elif ann_dict['split'] in ['test', 'val']:
+            if ann_dict['split'] in ['test', 'val']:
                 cfg += '    test_mode=True,\n'
             cfg += '    pipeline=None)\n'
         return cfg

@@ -22,16 +22,22 @@ class SERPacker(BasePacker):
                     "task_name": "ser",
                     "labels": ['answer', 'header', 'other', 'question'],
                     "id2label": {
-                        "0": "answer",
-                        "1": "header",
-                        "2": "other",
-                        "3": "question"
+                        "0": "O",
+                        "1": "B-ANSWER",
+                        "2": "I-ANSWER",
+                        "3": "B-HEADER",
+                        "4": "I-HEADER",
+                        "5": "B-QUESTION",
+                        "6": "I-QUESTION"
                     },
                     "label2id": {
-                        "answer": 0,
-                        "header": 1,
-                        "other": 2,
-                        "question": 3
+                        "O": 0,
+                        "B-ANSWER": 1,
+                        "I-ANSWER": 2,
+                        "B-HEADER": 3,
+                        "I-HEADER": 4,
+                        "B-QUESTION": 5,
+                        "I-QUESTION": 6
                     }
                 },
             "data_list":
@@ -129,21 +135,31 @@ class SERPacker(BasePacker):
             Dict: A dict contains the meta information and samples.
         """
 
+        def get_BIO_label_list(labels):
+            bio_label_list = []
+            for label in labels:
+                if label == 'other':
+                    bio_label_list.insert(0, 'O')
+                else:
+                    bio_label_list.append(f'B-{label.upper()}')
+                    bio_label_list.append(f'I-{label.upper()}')
+            return bio_label_list
+
         labels = []
         for s in sample:
             labels += s['instances']['labels']
-        label_list = list(set(labels))
-        label_list.sort()
+        org_label_list = list(set(labels))
+        bio_label_list = get_BIO_label_list(org_label_list)
 
         meta = {
             'metainfo': {
                 'dataset_type': 'SERDataset',
                 'task_name': 'ser',
-                'labels': label_list,
+                'labels': org_label_list,
                 'id2label': {k: v
-                             for k, v in enumerate(label_list)},
+                             for k, v in enumerate(bio_label_list)},
                 'label2id': {v: k
-                             for k, v in enumerate(label_list)}
+                             for k, v in enumerate(bio_label_list)}
             },
             'data_list': sample
         }
