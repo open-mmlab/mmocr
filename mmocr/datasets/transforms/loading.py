@@ -37,6 +37,8 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
             argument for :func:``mmcv.imfrombytes``.
             See :func:``mmcv.imfrombytes`` for details.
             Defaults to 'cv2'.
+        channel_order (str): The channel order of the output, candidates
+            are 'bgr' and 'rgb'. Default to 'bgr'.
         file_client_args (dict): Arguments to instantiate a FileClient.
             See :class:`mmengine.fileio.FileClient` for details.
             Defaults to None. It will be deprecated in future. Please use
@@ -62,6 +64,7 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
         color_type: str = 'color',
         imdecode_backend: str = 'cv2',
         file_client_args: Optional[dict] = None,
+        channel_order: str = 'bgr',
         min_size: int = 0,
         ignore_empty: bool = False,
         *,
@@ -71,6 +74,7 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
         self.to_float32 = to_float32
         self.color_type = color_type
         self.imdecode_backend = imdecode_backend
+        self.channel_order = channel_order
         self.min_size = min_size
         self.file_client_args = file_client_args
         self.backend_args = backend_args
@@ -107,7 +111,10 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
                 img_bytes = fileio.get(
                     filename, backend_args=self.backend_args)
             img = mmcv.imfrombytes(
-                img_bytes, flag=self.color_type, backend=self.imdecode_backend)
+                content=img_bytes,
+                flag=self.color_type,
+                channel_order=self.channel_order,
+                backend=self.imdecode_backend)
         except Exception as e:
             if self.ignore_empty:
                 warnings.warn(f'Failed to load {filename} due to {e}')
@@ -134,6 +141,7 @@ class LoadImageFromFile(MMCV_LoadImageFromFile):
                     f'min_size={self.min_size}, '
                     f'to_float32={self.to_float32}, '
                     f"color_type='{self.color_type}', "
+                    f"channel_order='{self.channel_order}', "
                     f"imdecode_backend='{self.imdecode_backend}', ")
 
         if self.file_client_args is not None:
