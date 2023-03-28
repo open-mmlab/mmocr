@@ -27,4 +27,5 @@ config_generator = dict(
         dict(
             ann_file='alphanumeric_textrecog_train.json',
             dataset_postfix='an'),
-    ])
+    ],
+    test_anns=None)

@@ -5,6 +5,7 @@ from .ctw1500_parser import CTW1500AnnParser
 from .funsd_parser import FUNSDTextDetAnnParser
 from .icdar_txt_parser import (ICDARTxtTextDetAnnParser,
                                ICDARTxtTextRecogAnnParser)
+from .mjsynth_parser import MJSynthAnnParser
 from .naf_parser import NAFAnnParser
 from .sroie_parser import SROIETextDetAnnParser
 from .svt_parser import SVTTextDetAnnParser
@@ -17,5 +18,5 @@ __all__ = [
     'TotaltextTextDetAnnParser', 'WildreceiptKIEAnnParser',
     'COCOTextDetAnnParser', 'SVTTextDetAnnParser', 'FUNSDTextDetAnnParser',
     'SROIETextDetAnnParser', 'NAFAnnParser', 'CTW1500AnnParser',
-    'SynthTextAnnParser'
+    'SynthTextAnnParser', 'MJSynthAnnParser'
 ]

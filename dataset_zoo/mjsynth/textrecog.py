@@ -23,12 +23,19 @@ train_preparer = dict(
                         'annotations/annotation.txt'
                     ]
                 ]),
+            dict(
+                url='https://download.openmmlab.com/mmocr/data/1.x/recog/'
+                'Syn90k/subset_textrecog_train.json',
+                save_name='subset_textrecog_train.json',
+                md5='ba958d87bb170980f39e194180c15b9e',
+                split=['train'],
+                content=['annotation'])
         ]),
     gatherer=dict(type='MonoGatherer', ann_name='annotation.txt'),
     parser=dict(
-        type='ICDARTxtTextRecogAnnParser',
+        type='MJSynthAnnParser',
         separator=' ',
-        format='img text',
+        format='img num',
         remove_strs=None),
     packer=dict(type='TextRecogPacker'),
     dumper=dict(type='JsonDumper'),
@@ -37,4 +44,10 @@ train_preparer = dict(
 delete = ['mjsynth', 'annotations']
 
 config_generator = dict(
-    type='TextRecogConfigGenerator', data_root=data_root, test_anns=None)
+    type='TextRecogConfigGenerator',
+    data_root=data_root,
+    train_anns=[
+        dict(ann_file='textrecog_train.json', dataset_postfix=''),
+        dict(ann_file='subset_textrecog_train.json', dataset_postfix='sub'),
+    ],
+    test_anns=None)
