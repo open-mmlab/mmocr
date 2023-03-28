@@ -52,7 +52,7 @@ val_preparer = dict(
                 url='https://rrc.cvc.uab.es/downloads/'
                 'ch8_validation_word_images_gt.zip',
                 save_name='mlt_rec_val.zip',
-                md5='',
+                md5='954acd0325c442288fa4aff1009b6d79',
                 content=['image'],
                 mapping=[['mlt_rec_val/*', 'textrecog_imgs/val']]),
             dict(
