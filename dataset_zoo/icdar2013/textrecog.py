@@ -19,11 +19,10 @@ train_preparer = dict(
                 save_name='ic13_textrecog_train_img_gt.zip',
                 md5='6f0dbc823645968030878df7543f40a4',
                 content=['image'],
-                mapping=[
-                    # ['ic13_textrecog_train_img_gt/gt.txt',
-                    # 'annotations/train.txt'],
-                    ['ic13_textrecog_train_img_gt', 'textrecog_imgs/train']
-                ]),
+                mapping=[[
+                    'ic13_textrecog_train_img_gt/gt.txt',
+                    'annotations/train.txt'
+                ], ['ic13_textrecog_train_img_gt', 'textrecog_imgs/train']]),
             dict(
                 url='https://download.openmmlab.com/mmocr/data/1.x/recog/'
                 'icdar_2013/train_labels.json',
@@ -31,7 +30,14 @@ train_preparer = dict(
                 md5='008fcd0056e72c4cf3064fb4d1fce81b',
                 content=['annotation'],
                 mapping=[['ic13_train_labels.json', 'textrecog_train.json']]),
-        ]))
+        ]),
+    gatherer=dict(type='MonoGatherer', ann_name='train.txt'),
+    parser=dict(
+        type='ICDARTxtTextRecogAnnParser', separator=', ',
+        format='img, text'),  # noqa
+    packer=dict(type='TextRecogPacker'),
+    dumper=dict(type='JsonDumper'),
+)
 
 # Note that we offer two versions of test set annotations as follows.Please
 # choose one of them to download and comment the other. By default, we use the
