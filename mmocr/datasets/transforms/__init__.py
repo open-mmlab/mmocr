@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .adapters import MMDet2MMOCR, MMOCR2MMDet
-from .formatting import PackKIEInputs, PackTextDetInputs, PackTextRecogInputs
+from .formatting import (PackKIEInputs, PackSERInputs, PackTextDetInputs,
+                         PackTextRecogInputs)
 from .loading import (InferencerLoader, LoadImageFromFile,
                       LoadImageFromNDArray, LoadKIEAnnotations,
                       LoadOCRAnnotations)
@@ -23,5 +24,6 @@ __all__ = [
     'PackKIEInputs', 'LoadKIEAnnotations', 'FixInvalidPolygon', 'MMDet2MMOCR',
     'MMOCR2MMDet', 'LoadImageFromFile', 'LoadImageFromNDArray', 'CropHeight',
     'InferencerLoader', 'RemoveIgnored', 'ConditionApply', 'CropHeight',
-    'TextRecogGeneralAug', 'ImageContentJitter', 'ReversePixels'
+    'TextRecogGeneralAug', 'ImageContentJitter', 'ReversePixels',
+    'PackSERInputs'
 ]
