@@ -57,4 +57,4 @@ test_preparer = dict(
 )
 
 delete = ['annotations'] + [f'{lang}_{split}' for split in ['train', 'val']]
-config_generator = dict(type='SERConfigGenerator')
+config_generator = dict(type='XFUNDSERConfigGenerator')
