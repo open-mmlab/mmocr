@@ -9,7 +9,42 @@ from mmocr.registry import DATASETS
 
 
 @DATASETS.register_module()
-class SERDataset(BaseDataset):
+class XFUNDSERDataset(BaseDataset):
+    """XFUND Dataset for Semantic Entity Recognition task. part of code is
+    modified from https://github.com/microsoft/unilm/blob/master/layoutlmv3/lay
+    outlmft/data/xfund.py.
+
+    Args:
+        ann_file (str): Annotation file path. Defaults to ''.
+        tokenizer (str): The pre-trained tokenizer you want to use.
+            Defaults to ''.
+        metainfo (dict, optional): Meta information for dataset, such as class
+            information. Defaults to None.
+        data_root (str): The root directory for ``data_prefix`` and
+            ``ann_file``. Defaults to ''.
+        data_prefix (dict): Prefix for training data. Defaults to
+            ``dict(img_path='')``.
+        filter_cfg (dict, optional): Config for filter data. Defaults to None.
+        indices (int or Sequence[int], optional): Support using first few
+            data in annotation file to facilitate training/testing on a smaller
+            dataset. Defaults to None which means using all ``data_infos``.
+        serialize_data (bool, optional): Whether to hold memory using
+            serialized objects, when enabled, data loader workers can use
+            shared RAM from master process instead of making a copy. Defaults
+            to True.
+        pipeline (list, optional): Processing pipeline. Defaults to [].
+        test_mode (bool, optional): ``test_mode=True`` means in test phase.
+            Defaults to False.
+        lazy_init (bool, optional): Whether to load annotation during
+            instantiation. In some cases, such as visualization, only the meta
+            information of the dataset is needed, which is not necessary to
+            load annotation file. ``RecogLMDBDataset`` can skip load
+            annotations to save time by set ``lazy_init=False``.
+            Defaults to False.
+        max_refetch (int, optional): If ``RecogLMDBdataset.prepare_data`` get a
+            None img. The maximum extra number of cycles to get a valid
+            image. Defaults to 1000.
+    """
 
     def __init__(self,
                  ann_file: str = '',
@@ -25,9 +60,9 @@ class SERDataset(BaseDataset):
                  lazy_init: bool = False,
                  max_refetch: int = 1000) -> None:
 
-        if isinstance(tokenizer, str):
-            tokenizer = AutoTokenizer.from_pretrained(tokenizer, use_fast=True)
-        self.tokenizer = tokenizer
+        assert tokenizer != '', 'tokenizer must be specified.'
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            tokenizer, use_fast=True)
 
         super().__init__(
             ann_file=ann_file,
@@ -56,14 +91,14 @@ class SERDataset(BaseDataset):
                 input_ids = [self.tokenizer.cls_token_id] + \
                     data_list[i]['input_ids'][start:end] + \
                     [self.tokenizer.sep_token_id]
-                # get bboxes
-                bboxes = [[0, 0, 0, 0]] + \
-                    data_list[i]['bboxes'][start:end] + \
+                # get boxes
+                boxes = [[0, 0, 0, 0]] + \
+                    data_list[i]['boxes'][start:end] + \
                     [[1000, 1000, 1000, 1000]]
                 # get labels
                 labels = [-100] + data_list[i]['labels'][start:end] + [-100]
                 # get segment_ids
-                segment_ids = self.get_segment_ids(bboxes)
+                segment_ids = self.get_segment_ids(boxes)
                 # get position_ids
                 position_ids = self.get_position_ids(segment_ids)
                 # get img_path
@@ -74,12 +109,12 @@ class SERDataset(BaseDataset):
 
                 data_info = {}
                 data_info['input_ids'] = input_ids
-                data_info['bboxes'] = bboxes
+                data_info['boxes'] = boxes
                 data_info['labels'] = labels
                 data_info['segment_ids'] = segment_ids
                 data_info['position_ids'] = position_ids
                 data_info['img_path'] = img_path
-                data_info['attention_mask '] = attention_mask
+                data_info['attention_mask'] = attention_mask
                 split_text_data_list.append(data_info)
 
                 start = end
@@ -87,22 +122,52 @@ class SERDataset(BaseDataset):
 
         return split_text_data_list
 
-    def parse_data_info(self, raw_data_info: dict) -> Union[dict, List[dict]]:
+    def parse_data_info(self, raw_data_info: dict) -> dict:
+        """Parse raw data information, tokenize texts and normalize boxes.
+
+        raw_data_info
+                    {
+                        "img_path": "imgs\\test\\zh_val_0.jpg",
+                        "height": 3508,
+                        "width": 2480,
+                        "instances":
+                        {
+                            "texts": ["汇丰晋信", "受理时间:", ...],
+                            "boxes": [[104, 114, 530, 175],
+                                      [126, 267, 266, 305], ...],
+                            "labels": ["other", "question", ...],
+                            "words": [[...], [...], ...]
+                        }
+                    }
+        will be modified to data_info
+                    {
+                        "img_path": "imgs\\test\\zh_val_0.jpg",
+                        "input_ids": [6, 47360, 49222, 124321, 5070, 6, ...],
+                        "boxes": [[41, 32, 213, 49],
+                                  [41, 32, 213, 49],
+                                  [41, 32, 213, 49],
+                                  [41, 32, 213, 49],
+                                  [41, 32, 213, 49],
+                                  [50, 76, 107, 86], ...],
+                        "labels": [0, 0, 0, 0, 0, 1, ...]
+                    }
+        The length of `texts`、`boxes` and `labels` will increase.
+        The `words` annotations are not used here.
+        """
         instances = raw_data_info['instances']
-        img_path = raw_data_info['img_path']
+        texts = instances['texts']
+        boxes = instances['boxes']
+        labels = instances['labels']
+
+        # norm boxes
         width = raw_data_info['width']
         height = raw_data_info['height']
+        norm_boxes = [self.box_norm(box, width, height) for box in boxes]
 
-        texts = instances.get('texts', None)
-        bboxes = instances.get('bboxes', None)
-        labels = instances.get('labels', None)
-        assert texts or bboxes or labels
-        # norm box
-        bboxes_norm = [self.box_norm(box, width, height) for box in bboxes]
         # get label2id
         label2id = self.metainfo['label2id']
-
-        cur_doc_input_ids, cur_doc_bboxes, cur_doc_labels = [], [], []
+        # tokenize texts
+        cur_doc_input_ids, cur_doc_boxes, cur_doc_labels = [], [], []
         for j in range(len(texts)):
             cur_input_ids = self.tokenizer(
                 texts[j],
@@ -111,7 +176,7 @@ class SERDataset(BaseDataset):
                 return_attention_mask=False)['input_ids']
             if len(cur_input_ids) == 0:
                 continue
-
+            # generate bio label
             cur_label = labels[j].upper()
             if cur_label == 'OTHER':
                 cur_labels = ['O'] * len(cur_input_ids)
@@ -122,20 +187,21 @@ class SERDataset(BaseDataset):
                 cur_labels[0] = label2id['B-' + cur_labels[0]]
                 for k in range(1, len(cur_labels)):
                     cur_labels[k] = label2id['I-' + cur_labels[k]]
-            assert len(cur_input_ids) == len(
-                [bboxes_norm[j]] * len(cur_input_ids)) == len(cur_labels)
+            assert len(cur_input_ids) == len(cur_labels)
+
             cur_doc_input_ids += cur_input_ids
-            cur_doc_bboxes += [bboxes_norm[j]] * len(cur_input_ids)
+            cur_doc_boxes += [norm_boxes[j]] * len(cur_input_ids)
             cur_doc_labels += cur_labels
-        assert len(cur_doc_input_ids) == len(cur_doc_bboxes) == len(
+        assert len(cur_doc_input_ids) == len(cur_doc_boxes) == len(
             cur_doc_labels)
         assert len(cur_doc_input_ids) > 0
 
         data_info = {}
-        data_info['img_path'] = img_path
+        data_info['img_path'] = raw_data_info['img_path']
         data_info['input_ids'] = cur_doc_input_ids
-        data_info['bboxes'] = cur_doc_bboxes
+        data_info['boxes'] = cur_doc_boxes
         data_info['labels'] = cur_doc_labels
+
         return data_info
 
     def box_norm(self, box, width, height):
@@ -152,13 +218,13 @@ class SERDataset(BaseDataset):
         assert y1 >= y0
         return [x0, y0, x1, y1]
 
-    def get_segment_ids(self, bboxs):
+    def get_segment_ids(self, boxes):
         segment_ids = []
-        for i in range(len(bboxs)):
+        for i in range(len(boxes)):
             if i == 0:
                 segment_ids.append(0)
             else:
-                if bboxs[i - 1] == bboxs[i]:
+                if boxes[i - 1] == boxes[i]:
                     segment_ids.append(segment_ids[-1])
                 else:
                     segment_ids.append(segment_ids[-1] + 1)
