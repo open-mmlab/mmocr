@@ -42,7 +42,7 @@ class SERPacker(BasePacker):
             "data_list":
                 [
                     {
-                        "img_path": "ser_imgs\\test\\zh_val_0.jpg",
+                        "img_path": "imgs\\test\\zh_val_0.jpg",
                         "height": 3508,
                         "width": 2480,
                         "instances":
