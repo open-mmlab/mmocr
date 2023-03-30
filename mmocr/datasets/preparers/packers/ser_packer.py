@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os.path as osp
+import warnings
 from typing import Dict, List, Tuple
 
 import mmcv
@@ -18,8 +19,6 @@ class SERPacker(BasePacker):
         {
             "metainfo":
                 {
-                    "dataset_type": "SERDataset",
-                    "task_name": "ser",
                     "labels": ['answer', 'header', 'other', 'question'],
                     "id2label": {
                         "0": "O",
@@ -49,8 +48,8 @@ class SERPacker(BasePacker):
                         "instances":
                         {
                             "texts": ["绩效目标申报表(一级项目)", "项目名称", ...],
-                            "bboxes": [[906,195,1478,259],
-                                       [357,325,467,357], ...],
+                            "boxes": [[906,195,1478,259],
+                                      [357,325,467,357], ...],
                             "labels": ["header", "question", ...],
                             "words": [[{
                                         "box": [
@@ -100,28 +99,37 @@ class SERPacker(BasePacker):
         h, w = img.shape[:2]
 
         texts_per_doc = []
-        bboxes_per_doc = []
+        boxes_per_doc = []
         labels_per_doc = []
-        words_per_doc = []
+        has_words = all(['words' in ins for ins in instances])
+        if has_words:
+            words_per_doc = []
+        else:
+            warnings.warn(
+                'Not all instance has `words` key,'
+                'so final MMOCR format SER instance will not have `words` key')
+
         for instance in instances:
             text = instance.get('text', None)
             box = instance.get('box', None)
             label = instance.get('label', None)
-            words = instance.get('words', None)
             assert text or box or label
             texts_per_doc.append(text)
-            bboxes_per_doc.append(box)
+            boxes_per_doc.append(box)
             labels_per_doc.append(label)
-            words_per_doc.append(words)
+            if has_words:
+                words = instance.get('words', None)
+                words_per_doc.append(words)
         packed_instances = dict(
             instances=dict(
                 texts=texts_per_doc,
-                bboxes=bboxes_per_doc,
-                labels=labels_per_doc,
-                words=words_per_doc),
+                boxes=boxes_per_doc,
+                labels=labels_per_doc),
             img_path=osp.relpath(img_path, self.data_root),
             height=h,
             width=w)
+        if has_words:
+            packed_instances['instances'].update({'words': words_per_doc})
 
         return packed_instances
 
@@ -135,7 +143,7 @@ class SERPacker(BasePacker):
             Dict: A dict contains the meta information and samples.
         """
 
-        def get_BIO_label_list(labels):
+        def get_bio_label_list(labels):
             bio_label_list = []
             for label in labels:
                 if label == 'other':
@@ -149,12 +157,10 @@ class SERPacker(BasePacker):
         for s in sample:
             labels += s['instances']['labels']
         org_label_list = list(set(labels))
-        bio_label_list = get_BIO_label_list(org_label_list)
+        bio_label_list = get_bio_label_list(org_label_list)
 
         meta = {
             'metainfo': {
-                'dataset_type': 'SERDataset',
-                'task_name': 'ser',
                 'labels': org_label_list,
                 'id2label': {k: v
                              for k, v in enumerate(bio_label_list)},
