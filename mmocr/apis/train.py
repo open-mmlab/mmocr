@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import warnings
 
+import os
 import mmcv
 import numpy as np
 import torch
@@ -15,7 +16,7 @@ from mmdet.datasets import build_dataloader, build_dataset
 from mmocr import digit_version
 from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
-from mmocr.utils import get_root_logger
+from mmdet.utils import (build_ddp, build_dp, get_root_logger)
 
 
 def train_detector(model,
@@ -62,16 +63,14 @@ def train_detector(model,
         find_unused_parameters = cfg.get('find_unused_parameters', False)
         # Sets the `find_unused_parameters` parameter in
         # torch.nn.parallel.DistributedDataParallel
-        model = MMDistributedDataParallel(
-            model.cuda(),
-            device_ids=[torch.cuda.current_device()],
+        model = build_ddp(
+            model,
+            cfg.device,
+            device_ids=[int(os.environ['LOCAL_RANK'])],
             broadcast_buffers=False,
             find_unused_parameters=find_unused_parameters)
     else:
-        if not torch.cuda.is_available():
-            assert digit_version(mmcv.__version__) >= digit_version('1.4.4'), \
-                'Please use MMCV >= 1.4.4 for CPU training!'
-        model = MMDataParallel(model, device_ids=cfg.gpu_ids)
+        model = build_dp(model, cfg.device, device_ids=cfg.gpu_ids)
 
     # build runner
     optimizer = build_optimizer(model, cfg.optimizer)
@@ -102,6 +101,8 @@ def train_detector(model,
 
     # fp16 setting
     fp16_cfg = cfg.get('fp16', None)
+    if fp16_cfg is None and cfg.get('device', None) == 'npu':
+        fp16_cfg = dict(loss_scale='dynamic')
     if fp16_cfg is not None:
         optimizer_config = Fp16OptimizerHook(
             **cfg.optimizer_config, **fp16_cfg, distributed=distributed)

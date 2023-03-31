@@ -18,7 +18,7 @@ from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import revert_sync_batchnorm, setup_multi_processes
+from mmocr.utils import revert_sync_batchnorm, setup_multi_processes, build_ddp, build_dp, get_device
 
 
 class TestArg:
@@ -165,6 +165,7 @@ def run_test_cmd(args):
         cfg = disable_text_recog_aug_test(cfg)
         cfg = replace_image_to_tensor(cfg)
 
+    cfg.device = get_device()
     # init distributed env first, since logger depends on the dist info.
     if args.launcher == 'none':
         cfg.gpu_ids = [args.gpu_id]
@@ -204,6 +205,8 @@ def run_test_cmd(args):
     model = build_detector(cfg.model, test_cfg=cfg.get('test_cfg'))
     model = revert_sync_batchnorm(model)
     fp16_cfg = cfg.get('fp16', None)
+    if fp16_cfg is None and cfg.get('device', None) == 'npu':
+        fp16_cfg = dict(loss_scale='dynamic')
     if fp16_cfg is not None:
         wrap_fp16_model(model)
     load_checkpoint(model, args.checkpoint, map_location='cpu')
@@ -211,15 +214,22 @@ def run_test_cmd(args):
         model = fuse_conv_bn(model)
 
     if not distributed:
-        model = MMDataParallel(model, device_ids=cfg.gpu_ids)
+        model = build_dp(model, cfg.device, device_ids=cfg.gpu_ids)
         is_kie = cfg.model.type in ['SDMGR']
         outputs = single_gpu_test(model, data_loader, args.show, args.show_dir,
                                   is_kie, args.show_score_thr)
     else:
-        model = MMDistributedDataParallel(
-            model.cuda(),
-            device_ids=[torch.cuda.current_device()],
+        model = build_ddp(
+            model,
+            cfg.device,
+            device_ids=[int(os.environ['LOCAL_RANK'])],
             broadcast_buffers=False)
+        
+        # In multi_gpu_test, if tmpdir is None, some tesnors
+        # will init on cuda by default, and no device choice supported.
+        # Init a tmpdir to avoid error on npu here.
+        if cfg.device == 'npu' and args.tmpdir is None:
+            args.tmpdir = './npu_tmpdir'
         outputs = multi_gpu_test(model, data_loader, args.tmpdir,
                                  args.gpu_collect)
 
