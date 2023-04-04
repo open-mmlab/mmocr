@@ -64,6 +64,7 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :maxdepth: 2
    :caption: Notes
 
+   notes/branches.md
    notes/contribution_guide.md
    notes/changelog.md
 
@@ -72,6 +73,8 @@ You can switch between English and Chinese in the lower-left corner of the layou
    :caption: Migrating from MMOCR 0.x
 
    migration/overview.md
+   migration/news.md
+   migration/branches.md
    migration/code.md
    migration/dataset.md
    migration/model.md
