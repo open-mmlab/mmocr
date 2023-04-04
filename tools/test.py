@@ -17,7 +17,7 @@ from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import (revert_sync_batchnorm, setup_multi_processes, 
+from mmocr.utils import (revert_sync_batchnorm, setup_multi_processes,
                          build_ddp, build_dp, get_device)
 
 

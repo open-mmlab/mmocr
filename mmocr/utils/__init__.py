@@ -23,6 +23,6 @@ __all__ = [
     'convert_annotations', 'is_not_png', 'list_to_file', 'list_from_file',
     'is_on_same_line', 'stitch_boxes_into_lines', 'StringStrip',
     'revert_sync_batchnorm', 'bezier_to_polygon', 'sort_points',
-    'setup_multi_processes', 'recog2lmdb', 'build_ddp', 'build_dp', 
+    'setup_multi_processes', 'recog2lmdb', 'build_ddp', 'build_dp',
     'get_device'
 ]
