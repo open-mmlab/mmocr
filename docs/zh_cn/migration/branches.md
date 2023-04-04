@@ -12,13 +12,13 @@
 
 对于希望从旧 `main` 分支（包含 MMOCR 0.x 代码）升级的用户，代码可能会导致冲突。要避免这些冲突，请按照以下步骤操作：
 
-1. 如果您有任何更改，请 commit 在 `main` 上的所有更改，并备份您当前的 `main` 分支。
+1. 请 commit 在 `main` 上的所有更改（若有），并备份您当前的 `main` 分支。
 2. 通过运行 `git fetch origin` 从远程存储库获取最新更改。
 3. 通过运行 `git reset --hard origin/main` 将 `main` 分支重置为远程存储库上的最新 `main` 分支。
 
 按照这些步骤，您可以成功升级您的 `main` 分支。
 
-```python
+```bash
 git checkout main
 git checkout -b main_backup
 git fetch origin

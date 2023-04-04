@@ -14,7 +14,7 @@ The `dev-1.x` branch is dedicated to the development of the next major version o
 
 ### 3. `0.x`
 
-The `0.x` branch serves as an archive for MMOCR 0.x (e.g. v0.6.3). This branch will no longer receive active updates or improvements, but it remains accessible for historical reference or for users who have not yet upgraded to MMOCR 1.x.
+The `0.x` branch serves as an archive for MMOCR 0.x (e.g. v0.6.3). This branch will no longer actively receive updates or improvements, but it remains accessible for historical reference or for users who have not yet upgraded to MMOCR 1.x.
 
 ### 3. `1.x`
 
