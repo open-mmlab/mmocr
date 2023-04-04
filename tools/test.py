@@ -8,7 +8,6 @@ import mmcv
 import torch
 from mmcv import Config, DictAction
 from mmcv.cnn import fuse_conv_bn
-from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
                          wrap_fp16_model)
 from mmdet.apis import multi_gpu_test
@@ -18,7 +17,8 @@ from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
 from mmocr.datasets import build_dataloader, build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import revert_sync_batchnorm, setup_multi_processes, build_ddp, build_dp, get_device
+from mmocr.utils import (revert_sync_batchnorm, setup_multi_processes, 
+                         build_ddp, build_dp, get_device)
 
 
 class TestArg:
@@ -224,7 +224,7 @@ def run_test_cmd(args):
             cfg.device,
             device_ids=[int(os.environ['LOCAL_RANK'])],
             broadcast_buffers=False)
-        
+
         # In multi_gpu_test, if tmpdir is None, some tesnors
         # will init on cuda by default, and no device choice supported.
         # Init a tmpdir to avoid error on npu here.

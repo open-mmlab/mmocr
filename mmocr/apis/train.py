@@ -2,21 +2,18 @@
 import warnings
 
 import os
-import mmcv
 import numpy as np
 import torch
 import torch.distributed as dist
-from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (DistSamplerSeedHook, EpochBasedRunner,
                          Fp16OptimizerHook, OptimizerHook, build_optimizer,
                          build_runner, get_dist_info)
 from mmdet.core import DistEvalHook, EvalHook
 from mmdet.datasets import build_dataloader, build_dataset
 
-from mmocr import digit_version
 from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
-from mmdet.utils import (build_ddp, build_dp, get_root_logger)
+from mmocr.utils import (build_ddp, build_dp, get_root_logger)
 
 
 def train_detector(model,
