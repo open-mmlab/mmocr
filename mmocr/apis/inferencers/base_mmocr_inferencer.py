@@ -7,6 +7,7 @@ import mmengine
 import numpy as np
 from mmengine.dataset import Compose
 from mmengine.infer.infer import BaseInferencer, ModelType
+from mmengine.model.utils import revert_sync_batchnorm
 from mmengine.registry import init_default_scope
 from mmengine.structures import InstanceData
 from rich.progress import track
@@ -63,6 +64,7 @@ class BaseMMOCRInferencer(BaseInferencer):
         init_default_scope(scope)
         super().__init__(
             model=model, weights=weights, device=device, scope=scope)
+        self.model = revert_sync_batchnorm(self.model)
 
     def preprocess(self, inputs: InputsType, batch_size: int = 1, **kwargs):
         """Process the inputs into a model-feedable format.
