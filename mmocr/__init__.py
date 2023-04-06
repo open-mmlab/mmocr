@@ -20,7 +20,8 @@ if mmengine is not None:
     mmengine_maximum_version = '1.0.0'
     mmengine_version = digit_version(mmengine.__version__)
 
-if mmcv_version < digit_version('2.0.0rc0') or mmdet.__version__ < '3.0.0rc0':
+if not mmengine or mmcv_version < digit_version('2.0.0rc0') or digit_version(
+        mmdet.__version__) < digit_version('3.0.0rc0'):
     raise RuntimeError(
         'MMOCR 1.0 only runs with MMEngine, MMCV 2.0.0rc0+ and '
         'MMDetection 3.0.0rc0+, but got MMCV '
