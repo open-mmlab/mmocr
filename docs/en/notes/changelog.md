@@ -1,6 +1,8 @@
 # Changelog of v1.x
 
-## v1.0.0rc6 (07/03/2023)
+## v1.0.0 (04/06/2023)
+
+## v1.0.0rc6 (03/07/2023)
 
 ### Highlights
 
@@ -77,7 +79,7 @@ This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc5...v1.0.0rc6
 
-## v1.0.0rc5 (06/01/2023)
+## v1.0.0rc5 (01/06/2023)
 
 ### Highlights
 
@@ -141,7 +143,7 @@ This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc4...v1.0.0rc5
 
-## v1.0.0rc4 (06/12/2022)
+## v1.0.0rc4 (12/06/2022)
 
 ### Highlights
 
@@ -213,7 +215,7 @@ This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc3...v1.0.0rc4
 
-## v1.0.0rc3 (03/11/2022)
+## v1.0.0rc3 (11/03/2022)
 
 ### Highlights
 
@@ -246,11 +248,11 @@ This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc2...v1.0.0rc3
 
-## v1.0.0rc2 (14/10/2022)
+## v1.0.0rc2 (10/14/2022)
 
 This release relaxes the version requirement of `MMEngine` to `>=0.1.0, < 1.0.0`.
 
-## v1.0.0rc1 (9/10/2022)
+## v1.0.0rc1 (10/09/2022)
 
 ### Highlights
 
@@ -303,7 +305,7 @@ We release the weights for all the text recognition models in MMOCR 1.0 architec
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc0...v1.0.0rc1
 
-## v1.0.0rc0 (1/9/2022)
+## v1.0.0rc0 (09/01/2022)
 
 We are excited to announce the release of MMOCR 1.0.0rc0.
 MMOCR 1.0.0rc0 is the first version of MMOCR 1.x, a part of the OpenMMLab 2.0 projects.
