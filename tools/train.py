@@ -18,8 +18,8 @@ from mmocr import __version__
 from mmocr.apis import init_random_seed, train_detector
 from mmocr.datasets import build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import (collect_env, get_root_logger, is_2dlist,
-                         setup_multi_processes, get_device)
+from mmocr.utils import (collect_env, get_device, get_root_logger, is_2dlist,
+                         setup_multi_processes)
 
 
 class TrainArg:

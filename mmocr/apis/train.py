@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import os
 import warnings
 
-import os
 import numpy as np
 import torch
 import torch.distributed as dist
@@ -13,7 +13,7 @@ from mmdet.datasets import build_dataloader, build_dataset
 
 from mmocr.apis.utils import (disable_text_recog_aug_test,
                               replace_image_to_tensor)
-from mmocr.utils import (build_ddp, build_dp, get_root_logger)
+from mmocr.utils import build_ddp, build_dp, get_root_logger
 
 
 def train_detector(model,
