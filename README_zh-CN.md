@@ -120,12 +120,9 @@ MMOCR 依赖 [PyTorch](https://pytorch.org/), [MMEngine](https://github.com/open
 conda create -n open-mmlab python=3.8 pytorch=1.10 cudatoolkit=11.3 torchvision -c pytorch -y
 conda activate open-mmlab
 pip3 install openmim
-mim install mmengine
-mim install mmcv
-mim install mmdet
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
-pip3 install -e .
+mim install -e .
 ```
 
 ## 快速入门
