@@ -65,23 +65,14 @@
 
 **默认分支目前为 `main`，且分支上的代码已经切换到 v1.0.0 版本。旧版 `main` 分支（v0.6.3）的代码现存在 `0.x` 分支上。** 如果您一直在使用 `main` 分支，并遇到升级问题，请阅读 [迁移指南](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/overview.html) 和 [分支说明](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/branches.html) 。
 
-最新的版本 v1.0.0rc6 于 2023-03-07 发布。
+最新的版本 v1.0.0 于 2023-04-06 发布。其相对于 1.0.0rc6 的主要更新如下：
 
-1. 在 `projects/` 目录中新增了 ABCNet v2 (仅支持推理) 和 SPTS 模型；
+1. Dataset Preparer 中支持了 SCUT-CTW1500, SynthText 和 MJSynth 数据集；
+2. 更新了文档和 FAQ；
+3. 升级文件后端；使用了 `backend_args` 替换 `file_client_args`;
+4. 增加了 MMOCR 教程 notebook。
 
-2. 新增统一推理接口 `Inferencer`，用户可以方便直接地进行各任务的推理。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/inference.html)
-
-3. 支持了文本识别任务的测试时数据增强。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/train_test.html#id15)
-
-4. 通过 [`BatchAugSampler`](https://github.com/open-mmlab/mmocr/pull/1757) 支持了 [batch augmentation](https://openaccess.thecvf.com/content_CVPR_2020/papers/Hoffer_Augment_Your_Batch_Improving_Generalization_Through_Instance_Repetition_CVPR_2020_paper.pdf) ，这是 SPTS 中使用的一种技巧。
-
-5. 重构了 Dataset Preparer ，用户现在可以更灵活地配置数据集的预处理流程。除此之外，用户现在也可以将文本识别数据集转换为 LMDB 格式。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/data_prepare/dataset_preparer.html#lmdb)
-
-6. 修正了一些端到端数据集的标注，保证了数据集的正确性及与常见实践的一致性。
-
-7. 减少了 `shapely` 中可能出现的一些错误警告。
-
-阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
+如果需要了解 MMOCR 1.0 相对于 0.x 的升级内容，请阅读 [MMOCR 1.x 更新汇总](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/news.html)；或者阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
 
 ## 简介
 
