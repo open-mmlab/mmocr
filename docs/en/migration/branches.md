@@ -13,15 +13,26 @@ For more information about the branches, check out [branches](../notes/branches.
 For users who wish to upgrade from the old `main` branch that has the code for MMOCR 0.x, the non-fast-forwarded-able nature of the upgrade may cause conflicts. To resolve these conflicts, follow the steps below:
 
 1. Commit all the changes you have on `main` if you have any. Backup your current `main` branch by creating a copy.
-2. Fetch the latest changes from the remote repository by running `git fetch origin`.
-3. Reset the `main` branch to the latest `main` branch on the remote repository by running `git reset --hard origin/main`.
+
+   ```bash
+   git checkout main
+   git add --all
+   git commit -m 'backup'
+   git checkout -b main_backup
+   ```
+
+2. Fetch the latest changes from the remote repository.
+
+   ```bash
+   git remote add openmmlab git@github.com:open-mmlab/mmocr.git
+   git fetch openmmlab
+   ```
+
+3. Reset the `main` branch to the latest `main` branch on the remote repository by running `git reset --hard openmmlab/main`.
+
+   ```bash
+   git checkout main
+   git reset --hard openmmlab/main
+   ```
 
 By following these steps, you can successfully upgrade your `main` branch.
-
-```bash
-git checkout main
-git checkout -b main_backup
-git fetch origin
-git checkout main
-git reset --hard origin/main
-```
