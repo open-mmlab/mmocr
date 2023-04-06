@@ -87,7 +87,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libxrender-dev
-          apt upgrade libc6
+          apt upgrade -y libc6
       - name: Install mmocr dependencies
         run: |
           pip install git+https://github.com/open-mmlab/mmengine.git@main
@@ -126,7 +126,7 @@ jobs:
         run: |
           apt-get update
           apt-get install -y ffmpeg libsm6 libxext6 git ninja-build libglib2.0-0 libxrender-dev
-          apt upgrade libc6
+          apt upgrade -y libc6
       - name: Install mmocr dependencies
         run: |
           pip install git+https://github.com/open-mmlab/mmengine.git@main
