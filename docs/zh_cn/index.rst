@@ -64,6 +64,7 @@
    :maxdepth: 2
    :caption: 其它
 
+   notes/branches.md
    notes/contribution_guide.md
    notes/changelog.md
 
@@ -72,6 +73,8 @@
    :caption: MMOCR 0.x 迁移指南
 
    migration/overview.md
+   migration/news.md
+   migration/branches.md
    migration/code.md
    migration/dataset.md
    migration/model.md

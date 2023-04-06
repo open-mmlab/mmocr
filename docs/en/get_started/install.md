@@ -50,15 +50,15 @@ We recommend that users follow our best practices to install MMOCR. However, the
 ```shell
 pip install -U openmim
 mim install mmengine
-mim install 'mmcv>=2.0.0rc1'
-mim install 'mmdet>=3.0.0rc0'
+mim install mmcv
+mim install mmdet
 ```
 
 **Step 1.** Install MMOCR.
 
 If you wish to run and develop MMOCR directly, install it from **source** (recommended).
 
-If you use MMOCR as a dependency or third-party package, install it with **MIM**.
+If you use MMOCR as a dependency or third-party package, install it via **MIM**.
 
 `````{tabs}
 
@@ -68,8 +68,6 @@ If you use MMOCR as a dependency or third-party package, install it with **MIM**
 
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
-git checkout 1.x
-pip install -r requirements.txt
 pip install -v -e .
 # "-v" increases pip's verbosity.
 # "-e" means installing the project in editable mode,
@@ -83,7 +81,7 @@ pip install -v -e .
 
 ```shell
 
-mim install 'mmocr>=1.0.0rc0'
+mim install mmocr
 
 ```
 
@@ -91,14 +89,17 @@ mim install 'mmocr>=1.0.0rc0'
 
 `````
 
-**Step 2. (Optional)** If you wish to use any transform involving `albumentations` (For example, `Albu` in ABINet's pipeline), install the dependency using the following command:
+**Step 2. (Optional)** If you wish to use any transform involving `albumentations` (For example, `Albu` in ABINet's pipeline), or any dependency for building documentation or running unit tests, please install the dependency using the following command:
 
 `````{tabs}
 
 ````{group-tab} Install from Source
 
 ```shell
+# install albu
 pip install -r requirements/albu.txt
+# install the dependencies for building documentation and running unit tests
+pip install -r requirements.txt
 ```
 
 ````
