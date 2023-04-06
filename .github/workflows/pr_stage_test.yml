@@ -95,6 +95,8 @@ jobs:
           mim install 'mmcv >= 2.0.0rc1'
           pip install git+https://github.com/open-mmlab/mmdetection.git@dev-3.x
           pip install -r requirements/tests.txt
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Build and install
         run: |
           python setup.py check -m -s
