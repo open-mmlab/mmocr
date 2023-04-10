@@ -283,7 +283,7 @@ class FCENetTargets(TextSnakeTargets):
             assert len(poly) == 1
             text_instance = [[poly[0][i], poly[0][i + 1]]
                              for i in range(0, len(poly[0]), 2)]
-            polygon = np.array(text_instance, dtype=np.int).reshape((1, -1, 2))
+            polygon = np.array(text_instance, dtype=int).reshape((1, -1, 2))
             _, _, box_w, box_h = cv2.boundingRect(polygon)
             proportion = max(box_h, box_w) / (h + 1e-8)
 
@@ -295,7 +295,7 @@ class FCENetTargets(TextSnakeTargets):
             assert len(ignore_poly) == 1
             text_instance = [[ignore_poly[0][i], ignore_poly[0][i + 1]]
                              for i in range(0, len(ignore_poly[0]), 2)]
-            polygon = np.array(text_instance, dtype=np.int).reshape((1, -1, 2))
+            polygon = np.array(text_instance, dtype=int).reshape((1, -1, 2))
             _, _, box_w, box_h = cv2.boundingRect(polygon)
             proportion = max(box_h, box_w) / (h + 1e-8)
 
