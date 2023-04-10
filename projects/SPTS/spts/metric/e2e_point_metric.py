@@ -63,8 +63,8 @@ class E2EPointMetric(BaseMetric):
             text_score_thrs['stop'],
             int(
                 np.round((text_score_thrs['stop'] - text_score_thrs['start']) /
-                         text_score_thrs['step'])),
-            endpoint=False)
+                         text_score_thrs['step'])) + 1,
+            endpoint=True)
         self.word_spotting = word_spotting
         self.match_dist_thr = match_dist_thr
         if lexicon_path:
