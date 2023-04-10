@@ -30,9 +30,9 @@
    basic_concepts/structures.md
    basic_concepts/transforms.md
    basic_concepts/evaluation.md
+   basic_concepts/datasets.md
    basic_concepts/overview.md
    basic_concepts/data_flow.md
-   basic_concepts/datasets.md
    basic_concepts/models.md
    basic_concepts/visualizers.md
    basic_concepts/convention.md
@@ -64,6 +64,7 @@
    :maxdepth: 2
    :caption: 其它
 
+   notes/branches.md
    notes/contribution_guide.md
    notes/changelog.md
 
@@ -72,6 +73,8 @@
    :caption: MMOCR 0.x 迁移指南
 
    migration/overview.md
+   migration/news.md
+   migration/branches.md
    migration/code.md
    migration/dataset.md
    migration/model.md

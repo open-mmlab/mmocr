@@ -156,11 +156,9 @@ def crop_polygon(polygon: ArrayLike,
     """
     poly = poly_make_valid(poly2shapely(polygon))
     crop_poly = poly_make_valid(poly2shapely(bbox2poly(crop_box)))
-    poly_cropped = poly.intersection(crop_poly)
-    if poly_cropped.area == 0. or not isinstance(
+    area, poly_cropped = poly_intersection(poly, crop_poly, return_poly=True)
+    if area == 0 or area is None or not isinstance(
             poly_cropped, shapely.geometry.polygon.Polygon):
-        # If polygon is outside crop_box region or the intersection is not a
-        # polygon, return None.
         return None
     else:
         poly_cropped = poly_make_valid(poly_cropped)

@@ -80,7 +80,7 @@ train_pipeline = [
                 type='mmdet.Albu',
                 transforms=[
                     dict(type='GaussNoise', var_limit=(20, 20), p=0.5),
-                    dict(type='MotionBlur', blur_limit=6, p=0.5),
+                    dict(type='MotionBlur', blur_limit=7, p=0.5),
                 ]),
         ]),
     dict(

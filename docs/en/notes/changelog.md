@@ -1,6 +1,74 @@
 # Changelog of v1.x
 
-## v1.0.0rc6 (07/03/2023)
+## v1.0.0 (04/06/2023)
+
+We are excited to announce the first official release of MMOCR 1.0, with numerous enhancements, bug fixes, and the introduction of new dataset support!
+
+### 🌟 Highlights
+
+- Support for SCUT-CTW1500, SynthText, and MJSynth datasets
+- Updated FAQ and documentation
+- Deprecation of file_client_args in favor of backend_args
+- Added a new MMOCR tutorial notebook
+
+### 🆕 New Features & Enhancement
+
+- Add SCUT-CTW1500 by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1677
+- Cherry Pick #1205 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1774
+- Make lanms-neo optional by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1772
+- SynthText by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1779
+- Deprecate file_client_args and use backend_args instead by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1765
+- MJSynth by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1791
+- Add MMOCR tutorial notebook by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1771
+- decouple batch_size to det_batch_size, rec_batch_size and kie_batch_size in MMOCRInferencer by @hugotong6425 in https://github.com/open-mmlab/mmocr/pull/1801
+- Accepts local-rank in train.py and test.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1806
+- update stitch_boxes_into_lines by @cherryjm in https://github.com/open-mmlab/mmocr/pull/1824
+- Add tests for pytorch 2.0 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1836
+
+### 📝 Docs
+
+- FAQ by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1773
+- Remove LoadImageFromLMDB from docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1767
+- Mark projects in docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1766
+- add opendatalab download link by @jorie-peng in https://github.com/open-mmlab/mmocr/pull/1753
+- Fix some deadlinks in the docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1469
+- Fix quick run by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1775
+- Dataset by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1782
+- Update faq by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1817
+- more social network links by @fengshiwest in https://github.com/open-mmlab/mmocr/pull/1818
+- Update docs after branch switching by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1834
+
+### 🛠️ Bug Fixes:
+
+- Place dicts to .mim by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1781
+- Test svtr_small instead of svtr_tiny by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1786
+- Add pse weight to metafile by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1787
+- Synthtext metafile by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1788
+- Clear up some unused scripts by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1798
+- if dst not exists, when move a single file may raise a file not exists error. by @KevinNuNu in https://github.com/open-mmlab/mmocr/pull/1803
+- CTW1500 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1814
+- MJSynth & SynthText Dataset Preparer config by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1805
+- Use poly_intersection instead of poly.intersection to avoid sup… by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1811
+- Abinet: fix ValueError: Blur limit must be odd when centered=True. Got: (3, 6) by @hugotong6425 in https://github.com/open-mmlab/mmocr/pull/1821
+- Bug generated during kie inference visualization by @Yangget in https://github.com/open-mmlab/mmocr/pull/1830
+- Revert sync bn in inferencer by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1832
+- Fix mmdet digit version by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1840
+
+### 🎉 New Contributors
+
+- @jorie-peng made their first contribution in https://github.com/open-mmlab/mmocr/pull/1753
+- @hugotong6425 made their first contribution in https://github.com/open-mmlab/mmocr/pull/1801
+- @fengshiwest made their first contribution in https://github.com/open-mmlab/mmocr/pull/1818
+- @cherryjm made their first contribution in https://github.com/open-mmlab/mmocr/pull/1824
+- @Yangget made their first contribution in https://github.com/open-mmlab/mmocr/pull/1830
+
+Thank you to all the contributors for making this release possible! We're excited about the new features and enhancements in this version, and we're looking forward to your feedback and continued support. Happy coding! 🚀
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc6...v1.0.0
+
+### Highlights
+
+## v1.0.0rc6 (03/07/2023)
 
 ### Highlights
 
@@ -77,7 +145,7 @@ This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc5...v1.0.0rc6
 
-## v1.0.0rc5 (06/01/2023)
+## v1.0.0rc5 (01/06/2023)
 
 ### Highlights
 
@@ -141,7 +209,7 @@ This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc4...v1.0.0rc5
 
-## v1.0.0rc4 (06/12/2022)
+## v1.0.0rc4 (12/06/2022)
 
 ### Highlights
 
@@ -213,7 +281,7 @@ This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc3...v1.0.0rc4
 
-## v1.0.0rc3 (03/11/2022)
+## v1.0.0rc3 (11/03/2022)
 
 ### Highlights
 
@@ -246,11 +314,11 @@ This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc2...v1.0.0rc3
 
-## v1.0.0rc2 (14/10/2022)
+## v1.0.0rc2 (10/14/2022)
 
 This release relaxes the version requirement of `MMEngine` to `>=0.1.0, < 1.0.0`.
 
-## v1.0.0rc1 (9/10/2022)
+## v1.0.0rc1 (10/09/2022)
 
 ### Highlights
 
@@ -303,7 +371,7 @@ We release the weights for all the text recognition models in MMOCR 1.0 architec
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc0...v1.0.0rc1
 
-## v1.0.0rc0 (1/9/2022)
+## v1.0.0rc0 (09/01/2022)
 
 We are excited to announce the release of MMOCR 1.0.0rc0.
 MMOCR 1.0.0rc0 is the first version of MMOCR 1.x, a part of the OpenMMLab 2.0 projects.

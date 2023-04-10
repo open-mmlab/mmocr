@@ -50,8 +50,8 @@ conda install pytorch torchvision cpuonly -c pytorch
 ```shell
 pip install -U openmim
 mim install mmengine
-mim install 'mmcv>=2.0.0rc1'
-mim install 'mmdet>=3.0.0rc0'
+mim install mmcv
+mim install mmdet
 ```
 
 **第二步** 安装 MMOCR.
@@ -67,8 +67,6 @@ mim install 'mmdet>=3.0.0rc0'
 ```shell
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
-git checkout 1.x
-pip install -r requirements.txt
 pip install -v -e .
 # "-v" 会让安装过程产生更详细的输出
 # "-e" 会以可编辑的方式安装该代码库，你对该代码库所作的任何更改都会立即生效
@@ -80,7 +78,7 @@ pip install -v -e .
 
 ```shell
 
-mim install 'mmocr>=1.0.0rc0'
+mim install mmocr
 
 ```
 
@@ -88,14 +86,17 @@ mim install 'mmocr>=1.0.0rc0'
 
 `````
 
-**第三步（可选）** 如果你需要使用与 `albumentations` 有关的变换，比如 ABINet 数据流水线中的 `Albu`，请使用以下命令安装依赖：
+**第三步（可选）** 如果你需要使用与 `albumentations` 有关的变换（如 ABINet 数据流水线中的 `Albu`），或需要构建文档、运行单元测试的依赖，请使用以下命令安装依赖：
 
 `````{tabs}
 
 ````{group-tab} 源码安装
 
 ```shell
+# 安装 albu
 pip install -r requirements/albu.txt
+# 安装文档、测试等依赖
+pip install -r requirements.txt
 ```
 
 ````
@@ -235,7 +236,8 @@ docker run --gpus all --shm-size=8g -it -v {实际数据目录}:/mmocr/data mmoc
 
 | MMOCR          | MMEngine                    | MMCV                       | MMDetection                 |
 | -------------- | --------------------------- | -------------------------- | --------------------------- |
-| dev-1.x        | 0.7.0 \<= mmengine \< 1.0.0 | 2.0.0rc4 \<= mmcv \< 2.1.0 | 3.0.0rc5 \<= mmdet \< 3.1.0 |
+| dev-1.x        | 0.7.1 \<= mmengine \< 1.0.0 | 2.0.0rc4 \<= mmcv \< 2.1.0 | 3.0.0rc5 \<= mmdet \< 3.1.0 |
+| 1.0.0          | 0.7.1 \<= mmengine \< 1.0.0 | 2.0.0rc4 \<= mmcv \< 2.1.0 | 3.0.0rc5 \<= mmdet \< 3.1.0 |
 | 1.0.0rc6       | 0.6.0 \<= mmengine \< 1.0.0 | 2.0.0rc4 \<= mmcv \< 2.1.0 | 3.0.0rc5 \<= mmdet \< 3.1.0 |
 | 1.0.0rc\[4-5\] | 0.1.0 \<= mmengine \< 1.0.0 | 2.0.0rc1 \<= mmcv \< 2.1.0 | 3.0.0rc0 \<= mmdet \< 3.1.0 |
 | 1.0.0rc\[0-3\] | 0.0.0 \<= mmengine \< 0.2.0 | 2.0.0rc1 \<= mmcv \< 2.1.0 | 3.0.0rc0 \<= mmdet \< 3.1.0 |

@@ -9,4 +9,10 @@ MMOCR 是一个基于 [PyTorch](https://pytorch.org/) 和 [MMDetection](https://
 
 随着 OpenMMLab 家族架构的整体升级， MMOCR 也相应地进行了大幅度的升级和修改。在这个大版本的更新中，MMOCR 中大量的冗余代码和重复实现被移除，多个关键方法的运行效率得到了提升，且整体框架设计上变得更为统一。考虑到该版本相较于 0.x 存在一些后向不兼容的修改，我们准备了一份详细的[迁移指南](../migration/overview.md)，并在里面列出了新版本所作出的所有改动和迁移所需的步骤，力求帮助熟悉旧版框架的用户尽快完成升级。尽管这可能需要一定时间，但我们相信由 MMOCR 和 OpenMMLab 生态系统整体带来的新特性会让这一切变得尤为值得。😊
 
-接下来，请根据实际需求选择你需要阅读的章节。我们推荐初学者通过【[新手入门-快速运行](quick_run.md)】来熟悉 MMOCR 模型的调用，并从【用户指南】提供的案例中逐步掌握 MMOCR 的用法。中高级开发者则可以从【基础概念】中了解各个组件的背景、约定和推荐实现。同时，如果你在文档中未能找到需要的答案，欢迎通过 [issue](https://github.com/open-mmlab/mmocr/issues) 进行反馈，也可以通过提 [pull request](https://github.com/open-mmlab/mmocr/pulls) 参与至 MMOCR 的社区建设中来。
+接下来，请根据实际需求选择你需要阅读的章节。
+
+- 我们推荐初学者通过【[快速运行](quick_run.md)】来熟悉 MMOCR 的基本用法，并从【用户指南】提供的案例中逐步掌握 MMOCR 的用法。
+- 中高级开发者则可以从【基础概念】中了解各个组件的背景、约定和推荐实现。
+- 请阅读 [FAQ](faq.md) 来查找常见问题的答案。
+- 同时，如果你在文档中未能找到需要的答案，欢迎通过 [issue](https://github.com/open-mmlab/mmocr/issues) 进行反馈。
+- 我们也欢迎每一位用户成为贡献者！请阅读 [贡献指南](../notes/contribution_guide.md) 来了解如何为 MMOCR 做出贡献。
