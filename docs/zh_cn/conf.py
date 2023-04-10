@@ -123,24 +123,6 @@ html_theme_options = {
                 },
             ]
         },
-        {
-            'name':
-            '版本',
-            'children': [
-                {
-                    'name': 'MMOCR 0.x',
-                    'url': 'https://mmocr.readthedocs.io/zh_CN/latest/',
-                    'description': 'main 分支文档'
-                },
-                {
-                    'name': 'MMOCR 1.x',
-                    'url': 'https://mmocr.readthedocs.io/zh_CN/dev-1.x/',
-                    'description': '1.x 分支文档'
-                },
-            ],
-            'active':
-            True,
-        },
     ],
     # Specify the language of shared menu
     'menu_lang':
