@@ -45,7 +45,7 @@ Attention-based scene text recognizers have gained huge success, which leverages
 
 ```bibtex
 @article{Lu2021MASTER,
-  title={{MASTER}: Multi-Aspect Non-local Network for Scene Text Recognition},
+  title={MASTER: Multi-Aspect Non-local Network for Scene Text Recognition},
   author={Ning Lu and Wenwen Yu and Xianbiao Qi and Yihao Chen and Ping Gong and Rong Xiao and Xiang Bai},
   journal={Pattern Recognition},
   year={2021}

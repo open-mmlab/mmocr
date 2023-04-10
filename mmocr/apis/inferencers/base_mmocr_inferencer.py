@@ -7,6 +7,7 @@ import mmengine
 import numpy as np
 from mmengine.dataset import Compose
 from mmengine.infer.infer import BaseInferencer, ModelType
+from mmengine.model.utils import revert_sync_batchnorm
 from mmengine.registry import init_default_scope
 from mmengine.structures import InstanceData
 from rich.progress import track
@@ -63,6 +64,7 @@ class BaseMMOCRInferencer(BaseInferencer):
         init_default_scope(scope)
         super().__init__(
             model=model, weights=weights, device=device, scope=scope)
+        self.model = revert_sync_batchnorm(self.model)
 
     def preprocess(self, inputs: InputsType, batch_size: int = 1, **kwargs):
         """Process the inputs into a model-feedable format.
@@ -147,9 +149,6 @@ class BaseMMOCRInferencer(BaseInferencer):
                 "out_dir". Defaults to False.
             print_result (bool): Whether to print the inference result w/o
                 visualization to the console. Defaults to False.
-            pred_out_file: File to save the inference results w/o
-                visualization. If left as empty, no file will be saved.
-                Defaults to ''.
 
             **kwargs: Other keyword arguments passed to :meth:`preprocess`,
                 :meth:`forward`, :meth:`visualize` and :meth:`postprocess`.
@@ -201,7 +200,7 @@ class BaseMMOCRInferencer(BaseInferencer):
                 pred_out_dir=pred_out_dir,
                 **postprocess_kwargs)
             results['predictions'].extend(batch_res['predictions'])
-            if batch_res['visualization'] is not None:
+            if return_vis and batch_res['visualization'] is not None:
                 results['visualization'].extend(batch_res['visualization'])
         return results
 

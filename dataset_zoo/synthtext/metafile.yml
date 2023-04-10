@@ -1,0 +1,29 @@
+Name: 'SynthText in the Wild Dataset'
+Paper:
+  Title: Synthetic Data for Text Localisation in Natural Images
+  URL: https://openaccess.thecvf.com/content_cvpr_2016/papers/Gupta_Synthetic_Data_for_CVPR_2016_paper.pdf
+  Venue: CVPR
+  Year: '2016'
+  BibTeX: '@InProceedings{Gupta16,
+  author       = "Ankush Gupta and Andrea Vedaldi and Andrew Zisserman",
+  title        = "Synthetic Data for Text Localisation in Natural Images",
+  booktitle    = "IEEE Conference on Computer Vision and Pattern Recognition",
+  year         = "2016",
+  }'
+Data:
+  Website: https://www.robots.ox.ac.uk/~vgg/data/scenetext/
+  Language:
+    - English
+  Scene:
+    - Synthesis
+  Granularity:
+    - Word
+    - Character
+  Tasks:
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: Synthext Custom
+    Link: https://www.robots.ox.ac.uk/~vgg/terms/dataset-group-2-access.html
+  Format: .mat

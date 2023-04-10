@@ -132,3 +132,26 @@ LOG_PROCESSORS = Registry(
     parent=MMENGINE_LOG_PROCESSORS,
     # TODO: update the location when mmocr has its own log processor
     locations=['mmocr.engine'])
+# manage data obtainer
+DATA_OBTAINERS = Registry(
+    'data obtainer', locations=['mmocr.datasets.preparers.obtainers'])
+
+# manage data gatherer
+DATA_GATHERERS = Registry(
+    'data gatherer', locations=['mmocr.datasets.preparers.gatherers'])
+
+# manage data parser
+DATA_PARSERS = Registry(
+    'data parser', locations=['mmocr.datasets.preparers.parsers'])
+
+# manage data packer
+DATA_PACKERS = Registry(
+    'data packer', locations=['mmocr.datasets.preparers.packers'])
+
+# manage data dumper
+DATA_DUMPERS = Registry(
+    'data dumper', locations=['mmocr.datasets.preparers.dumpers'])
+
+# manage dataset config generator
+CFG_GENERATORS = Registry(
+    'cfg generator', locations=['mmocr.datasets.preparers.config_generators'])

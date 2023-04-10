@@ -1,6 +1,151 @@
 # Changelog of v1.x
 
-## v1.0.0rc5 (06/01/2023)
+## v1.0.0 (04/06/2023)
+
+We are excited to announce the first official release of MMOCR 1.0, with numerous enhancements, bug fixes, and the introduction of new dataset support!
+
+### 🌟 Highlights
+
+- Support for SCUT-CTW1500, SynthText, and MJSynth datasets
+- Updated FAQ and documentation
+- Deprecation of file_client_args in favor of backend_args
+- Added a new MMOCR tutorial notebook
+
+### 🆕 New Features & Enhancement
+
+- Add SCUT-CTW1500 by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1677
+- Cherry Pick #1205 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1774
+- Make lanms-neo optional by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1772
+- SynthText by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1779
+- Deprecate file_client_args and use backend_args instead by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1765
+- MJSynth by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1791
+- Add MMOCR tutorial notebook by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1771
+- decouple batch_size to det_batch_size, rec_batch_size and kie_batch_size in MMOCRInferencer by @hugotong6425 in https://github.com/open-mmlab/mmocr/pull/1801
+- Accepts local-rank in train.py and test.py by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1806
+- update stitch_boxes_into_lines by @cherryjm in https://github.com/open-mmlab/mmocr/pull/1824
+- Add tests for pytorch 2.0 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1836
+
+### 📝 Docs
+
+- FAQ by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1773
+- Remove LoadImageFromLMDB from docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1767
+- Mark projects in docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1766
+- add opendatalab download link by @jorie-peng in https://github.com/open-mmlab/mmocr/pull/1753
+- Fix some deadlinks in the docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1469
+- Fix quick run by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1775
+- Dataset by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1782
+- Update faq by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1817
+- more social network links by @fengshiwest in https://github.com/open-mmlab/mmocr/pull/1818
+- Update docs after branch switching by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1834
+
+### 🛠️ Bug Fixes:
+
+- Place dicts to .mim by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1781
+- Test svtr_small instead of svtr_tiny by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1786
+- Add pse weight to metafile by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1787
+- Synthtext metafile by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1788
+- Clear up some unused scripts by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1798
+- if dst not exists, when move a single file may raise a file not exists error. by @KevinNuNu in https://github.com/open-mmlab/mmocr/pull/1803
+- CTW1500 by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1814
+- MJSynth & SynthText Dataset Preparer config by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1805
+- Use poly_intersection instead of poly.intersection to avoid sup… by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1811
+- Abinet: fix ValueError: Blur limit must be odd when centered=True. Got: (3, 6) by @hugotong6425 in https://github.com/open-mmlab/mmocr/pull/1821
+- Bug generated during kie inference visualization by @Yangget in https://github.com/open-mmlab/mmocr/pull/1830
+- Revert sync bn in inferencer by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1832
+- Fix mmdet digit version by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1840
+
+### 🎉 New Contributors
+
+- @jorie-peng made their first contribution in https://github.com/open-mmlab/mmocr/pull/1753
+- @hugotong6425 made their first contribution in https://github.com/open-mmlab/mmocr/pull/1801
+- @fengshiwest made their first contribution in https://github.com/open-mmlab/mmocr/pull/1818
+- @cherryjm made their first contribution in https://github.com/open-mmlab/mmocr/pull/1824
+- @Yangget made their first contribution in https://github.com/open-mmlab/mmocr/pull/1830
+
+Thank you to all the contributors for making this release possible! We're excited about the new features and enhancements in this version, and we're looking forward to your feedback and continued support. Happy coding! 🚀
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc6...v1.0.0
+
+### Highlights
+
+## v1.0.0rc6 (03/07/2023)
+
+### Highlights
+
+1. Two new models, ABCNet v2 (inference only) and SPTS are added to `projects/` folder.
+2. Announcing `Inferencer`, a unified inference interface in OpenMMLab for everyone's easy access and quick inference with all the pre-trained weights. [Docs](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/inference.html)
+3. Users can use test-time augmentation for text recognition tasks. [Docs](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/train_test.html#test-time-augmentation)
+4. Support [batch augmentation](https://openaccess.thecvf.com/content_CVPR_2020/papers/Hoffer_Augment_Your_Batch_Improving_Generalization_Through_Instance_Repetition_CVPR_2020_paper.pdf) through [`BatchAugSampler`](https://github.com/open-mmlab/mmocr/pull/1757), which is a technique used in SPTS.
+5. Dataset Preparer has been refactored to allow more flexible configurations. Besides, users are now able to prepare text recognition datasets in LMDB formats. [Docs](https://mmocr.readthedocs.io/en/dev-1.x/user_guides/data_prepare/dataset_preparer.html#lmdb-format)
+6. Some textspotting datasets have been revised to enhance the correctness and consistency with the common practice.
+7. Potential spurious warnings from `shapely` have been eliminated.
+
+### Dependency
+
+This version requires MMEngine >= 0.6.0, MMCV >= 2.0.0rc4 and MMDet >= 3.0.0rc5.
+
+### New Features & Enhancements
+
+- Discard deprecated lmdb dataset format and only support img+label now by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1681
+- abcnetv2 inference by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1657
+- Add RepeatAugSampler by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1678
+- SPTS by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1696
+- Refactor Inferencers by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1608
+- Dynamic return type for rescale_polygons by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1702
+- Revise upstream version limit by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1703
+- TextRecogCropConverter add crop with opencv warpPersepective function by @KevinNuNu in https://github.com/open-mmlab/mmocr/pull/1667
+- change cudnn benchmark to false by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1705
+- Add ST-pretrained DB-series models and logs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1635
+- Only keep meta and state_dict when publish model by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1729
+- Rec TTA by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1401
+- Speedup formatting by replacing np.transpose with torch… by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1719
+- Support auto import modules from registry. by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1731
+- Support batch visualization & dumping in Inferencer by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1722
+- add a new argument font_properties to set a specific font file in order to draw Chinese characters properly by @KevinNuNu in https://github.com/open-mmlab/mmocr/pull/1709
+- Refactor data converter and gather by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1707
+- Support batch augmentation through BatchAugSampler by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1757
+- Put all registry into registry.py by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1760
+- train by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1756
+- configs for regression benchmark by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1755
+- Support lmdb format in Dataset Preparer by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1762
+
+### Docs
+
+- update the link of DBNet by @AllentDan in https://github.com/open-mmlab/mmocr/pull/1672
+- Add notice for default branch switching by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1693
+- docs: Add twitter discord medium youtube link by @vansin in https://github.com/open-mmlab/mmocr/pull/1724
+- Remove unsupported datasets in docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1670
+
+### Bug Fixes
+
+- Update dockerfile by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1671
+- Explicitly create np object array for compatibility by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1691
+- Fix a minor error in docstring by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1685
+- Fix lint by @triple-Mu in https://github.com/open-mmlab/mmocr/pull/1694
+- Fix LoadOCRAnnotation ut by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1695
+- Fix isort pre-commit error by @KevinNuNu in https://github.com/open-mmlab/mmocr/pull/1697
+- Update owners by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1699
+- Detect intersection before using shapley.intersection to eliminate spurious warnings by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1710
+- Fix some inferencer bugs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1706
+- Fix textocr ignore flag by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1712
+- Add missing softmax in ASTER forward_test by @Mountchicken in https://github.com/open-mmlab/mmocr/pull/1718
+- Fix head in readme by @vansin in https://github.com/open-mmlab/mmocr/pull/1727
+- Fix some browse dataset script bugs and draw textdet gt instance with ignore flags by @KevinNuNu in https://github.com/open-mmlab/mmocr/pull/1701
+- icdar textrecog ann parser skip data with ignore flag by @KevinNuNu in https://github.com/open-mmlab/mmocr/pull/1708
+- bezier_to_polygon ->  bezier2polygon by @double22a in https://github.com/open-mmlab/mmocr/pull/1739
+- Fix docs recog CharMetric P/R error definition by @KevinNuNu in https://github.com/open-mmlab/mmocr/pull/1740
+- Remove outdated resources in demo/ by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1747
+- Fix wrong ic13 textspotting split data; add lexicons to ic13, ic15 and totaltext by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1758
+- SPTS readme by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1761
+
+### New Contributors
+
+- @triple-Mu made their first contribution in https://github.com/open-mmlab/mmocr/pull/1694
+- @double22a made their first contribution in https://github.com/open-mmlab/mmocr/pull/1739
+
+**Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc5...v1.0.0rc6
+
+## v1.0.0rc5 (01/06/2023)
 
 ### Highlights
 
@@ -41,6 +186,7 @@
 - Add Chinese translation for browse_dataset.py by @xinke-wang in https://github.com/open-mmlab/mmocr/pull/1647
 - updata abcnet doc by @Harold-lkk in https://github.com/open-mmlab/mmocr/pull/1658
 - update the dbnetpp\`s readme file by @zhuyue66 in https://github.com/open-mmlab/mmocr/pull/1626
+- Inferencer docs by @gaotongxiao in https://github.com/open-mmlab/mmocr/pull/1744
 
 ### Bug Fixes
 
@@ -63,7 +209,7 @@
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc4...v1.0.0rc5
 
-## v1.0.0rc4 (06/12/2022)
+## v1.0.0rc4 (12/06/2022)
 
 ### Highlights
 
@@ -135,7 +281,7 @@
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc3...v1.0.0rc4
 
-## v1.0.0rc3 (03/11/2022)
+## v1.0.0rc3 (11/03/2022)
 
 ### Highlights
 
@@ -168,11 +314,11 @@
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc2...v1.0.0rc3
 
-## v1.0.0rc2 (14/10/2022)
+## v1.0.0rc2 (10/14/2022)
 
 This release relaxes the version requirement of `MMEngine` to `>=0.1.0, < 1.0.0`.
 
-## v1.0.0rc1 (9/10/2022)
+## v1.0.0rc1 (10/09/2022)
 
 ### Highlights
 
@@ -225,7 +371,7 @@ We release the weights for all the text recognition models in MMOCR 1.0 architec
 
 **Full Changelog**: https://github.com/open-mmlab/mmocr/compare/v1.0.0rc0...v1.0.0rc1
 
-## v1.0.0rc0 (1/9/2022)
+## v1.0.0rc0 (09/01/2022)
 
 We are excited to announce the release of MMOCR 1.0.0rc0.
 MMOCR 1.0.0rc0 is the first version of MMOCR 1.x, a part of the OpenMMLab 2.0 projects.

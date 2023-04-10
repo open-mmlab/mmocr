@@ -137,7 +137,12 @@ class LoadOCRAnnotationsWithBezier(LoadOCRAnnotations):
         repr_str += f'with_bezier={self.with_bezier}, '
         repr_str += f'with_text={self.with_text}, '
         repr_str += f"imdecode_backend='{self.imdecode_backend}', "
-        repr_str += f'file_client_args={self.file_client_args})'
+
+        if self.file_client_args is not None:
+            repr_str += f'file_client_args={self.file_client_args})'
+        else:
+            repr_str += f'backend_args={self.backend_args})'
+
         return repr_str
 
 

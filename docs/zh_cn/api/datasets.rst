@@ -9,6 +9,18 @@ mmocr.datasets
    :local:
    :backlinks: top
 
+.. currentmodule:: mmocr.datasets.samplers
+
+Samplers
+---------------------------------------------
+
+.. autosummary::
+   :toctree: generated
+   :nosignatures:
+   :template: classtemplate.rst
+
+   BatchAugSampler
+
 .. currentmodule:: mmocr.datasets
 
 Datasets

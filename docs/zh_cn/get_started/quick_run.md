@@ -1,16 +1,36 @@
 # 快速运行
 
+这个章节会介绍 MMOCR 的一些基本功能。我们假设你已经[从源码安装了 MMOCR](install.md#best-practices)。此外，你也可以通过[教程 Notebook](https://colab.research.google.com/github/open-mmlab/mmocr/blob/dev-1.x/demo/tutorial.ipynb)来了解如何在交互式环境下实现推理、训练和测试。
+
 ## 推理
 
-如果想快速运行一个推理，请直接阅读安装文档的[检验](install.md#检验)。对 MMOCR 中推理接口更为详细说明，可以在[这里](../user_guides/inference.md)找到。
+在 MMOCR 的根目录下运行以下命令：
+
+```shell
+python tools/infer.py demo/demo_text_ocr.jpg --det DBNet --rec CRNN --show --print-result
+```
+
+你可以看到弹出的预测结果，以及在控制台中打印出的推理结果。
+
+<div align="center">
+    <img src="https://user-images.githubusercontent.com/24622904/187825445-d30cbfa6-5549-4358-97fe-245f08f4ed94.jpg" height="250"/>
+</div>
+<br/ >
+
+```bash
+# 识别结果
+{'predictions': [{'rec_texts': ['cbanks', 'docecea', 'grouf', 'pwate', 'chobnsonsg', 'soxee', 'oeioh', 'c', 'sones', 'lbrandec', 'sretalg', '11', 'to8', 'round', 'sale', 'year',
+'ally', 'sie', 'sall'], 'rec_scores': [...], 'det_polygons': [...], 'det_scores':
+[...]}]}
+```
 
 ```{note}
+如果你在没有 GUI 的服务器上运行 MMOCR，或者通过没有开启 X11 转发的 SSH 隧道运行 MMOCR，你可能无法看到弹出的窗口。
+```
+
+对 MMOCR 中推理接口更为详细的说明，可以在[这里](../user_guides/inference.md)找到。
 
 除了使用我们提供好的预训练模型，用户也可以在自己的数据集上训练流行模型。接下来我们以在迷你的 [ICDAR 2015](https://rrc.cvc.uab.es/?ch=4&com=downloads) 数据集上训练 DBNet 为例，带大家熟悉 MMOCR 的基本功能。
-
-接下来的部分都假设你使用的是[编辑方式安装 MMOCR 代码库](install.md)。
-
-```
 
 ## 准备数据集
 
@@ -20,12 +40,12 @@
 但我们亦深知，效率就是生命——尤其对想要快速上手 MMOCR 的你来说。
 ```
 
-在这里，我们准备了一个用于演示的精简版 ICDAR 2015 数据集。下载我们预先准备好的[压缩包](https://download.openmmlab.com/mmocr/data/icdar2015/mini_icdar2015.tar.gz)，解压到 mmocr 的 `data/det/` 目录下，就能得到我们准备好的图片和标注文件。
+在这里，我们准备了一个用于演示的精简版 ICDAR 2015 数据集。下载我们预先准备好的[压缩包](https://download.openmmlab.com/mmocr/data/icdar2015/mini_icdar2015.tar.gz)，解压到 mmocr 的 `data/` 目录下，就能得到我们准备好的图片和标注文件。
 
 ```Bash
 wget https://download.openmmlab.com/mmocr/data/icdar2015/mini_icdar2015.tar.gz
-mkdir -p data/det/
-tar xzvf mini_icdar2015.tar.gz -C data/det/
+mkdir -p data/
+tar xzvf mini_icdar2015.tar.gz -C data/
 ```
 
 ## 修改配置
@@ -34,24 +54,29 @@ tar xzvf mini_icdar2015.tar.gz -C data/det/
 
 在这个例子中，我们将会训练一个以 resnet18 作为骨干网络（backbone）的 DBNet。由于 MMOCR 已经有针对完整 ICDAR 2015 数据集的配置 （`configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py`），我们只需要在它的基础上作出一点修改。
 
-我们首先需要修改数据集的路径。在这个配置中，大部分关键的配置文件都在 `_base_` 中被导入，如数据库的配置就来自 `configs/_base_/det_datasets/icdar2015.py`。打开该文件，把第一行`ic15_det_data_root` 指向的路径替换：
+我们首先需要修改数据集的路径。在这个配置中，大部分关键的配置文件都在 `_base_` 中被导入，如数据库的配置就来自 `configs/textdet/_base_/datasets/icdar2015.py`。打开该文件，把第一行 `icdar2015_textdet_data_root` 指向的路径替换：
 
 ```Python
-ic15_det_data_root = 'data/det/mini_icdar2015'
+icdar2015_textdet_data_root = 'data/mini_icdar2015'
 ```
 
 另外，因为数据集尺寸缩小了，我们也要相应地减少训练的轮次到 400，缩短验证和储存权重的间隔到10轮，并放弃学习率衰减策略。直接把以下几行配置放入 `configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py`即可生效：
 
 ```Python
-# 每 10 个 epoch 储存一次权重
-default_hooks = dict(checkpoint=dict(type='CheckpointHook', interval=10), )
+# 每 10 个 epoch 储存一次权重，且只保留最后一个权重
+default_hooks = dict(
+    checkpoint=dict(
+        type='CheckpointHook',
+        interval=10,
+        max_keep_ckpts=1,
+    ))
 # 设置最大 epoch 数为 400，每 10 个 epoch 运行一次验证
 train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=400, val_interval=10)
 # 令学习率为常量，即不进行学习率衰减
 param_scheduler = [dict(type='ConstantLR', factor=1.0),]
 ```
 
-这里，我们通过配置的[继承](https://mmengine.readthedocs.io/zh_CN/latest/tutorials/config.html)机制将基础配置中的相应参数直接进行了改写。原本的字段分布在 `configs/_base_/schedules/schedule_sgd_1200e.py` 和 `configs/_base_/textdet_default_runtime.py` 中，感兴趣的读者可以自行查看。
+这里，我们通过配置的继承 ({external+mmengine:doc}`MMEngine: Config <advanced_tutorials/config>`) 机制将基础配置中的相应参数直接进行了改写。原本的字段分布在 `configs/textdet/_base_/schedules/schedule_sgd_1200e.py` 和 `configs/textdet/_base_/default_runtime.py` 中，感兴趣的读者可以自行查看。
 
 ```{note}
 关于配置文件更加详尽的说明，请参考[此处](../user_guides/config.md)。
@@ -106,7 +131,7 @@ python tools/train.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.
 
 ## 测试
 
-经过数十分钟的等待，模型顺利完成了400 epochs的训练。我们通过控制台的输出，观察到 DBNet 在最后一个 epoch 的表现最好，`hmean` 达到了 60.86：
+经过数十分钟的等待，模型顺利完成了400 epochs的训练。我们通过控制台的输出，观察到 DBNet 在最后一个 epoch 的表现最好，`hmean` 达到了 60.86（你可能会得到一个不太一样的结果）：
 
 ```Bash
 08/22 19:24:52 - mmengine - INFO - Epoch(val) [400][100/100]  icdar/precision: 0.7285  icdar/recall: 0.5226  icdar/hmean: 0.6086
@@ -118,7 +143,7 @@ python tools/train.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.
 
 然而，这个数值只反映了 DBNet 在迷你 ICDAR 2015 数据集上的性能。要想更加客观地评判它的检测能力，我们还要看看它在分布外数据集上的表现。例如，`tests/data/det_toy_dataset` 就是一个很小的真实数据集，我们可以用它来验证一下 DBNet 的实际性能。
 
-在测试前，我们同样需要对数据集的位置做一下修改。打开 `configs/_base_/det_datasets/icdar2015.py`，修改 `icdar2015_textdet_test` 的 `data_root` 为 `tests/data/det_toy_dataset`:
+在测试前，我们同样需要对数据集的位置做一下修改。打开 `configs/textdet/_base_/datasets/icdar2015.py`，修改 `icdar2015_textdet_test` 的 `data_root` 为 `tests/data/det_toy_dataset`:
 
 ```Python
 # ...
@@ -162,7 +187,7 @@ python tools/test.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.p
 为了对模型的输出有一个更直观的感受，我们还可以直接可视化它的预测输出。在 `test.py` 中，用户可以通过 `show` 参数打开弹窗可视化；也可以通过 `show-dir` 参数指定预测结果图导出的目录。
 
 ```Bash
-python tools/test.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py work_dirs/dbnet_r18_fpnc_1200e_icdar2015/epoch_400.pth --show-dir imgs/
+python tools/test.py configs/textdet/dbnet/dbnet_resnet18_fpnc_1200e_icdar2015.py work_dirs/dbnet_resnet18_fpnc_1200e_icdar2015/epoch_400.pth --show-dir imgs/
 ```
 
 真实标签和预测值会在可视化结果中以平铺的方式展示。左图的绿框表示真实标签，右图的红框表示预测值。

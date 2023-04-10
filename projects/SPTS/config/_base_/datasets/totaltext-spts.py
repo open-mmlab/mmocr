@@ -1,4 +1,4 @@
-totaltext_textspotting_data_root = 'data/totaltext'
+totaltext_textspotting_data_root = 'spts-data/totaltext'
 
 totaltext_textspotting_train = dict(
     type='AdelDataset',

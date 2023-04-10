@@ -32,12 +32,8 @@ model = dict(
         ),
         postprocessor=dict(type='PANPostprocessor', text_repr_type='quad')))
 
-file_client_args = dict(backend='disk')
 train_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadOCRAnnotations',
         with_polygon=True,
@@ -60,10 +56,7 @@ train_pipeline = [
 ]
 
 test_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     # TODO Replace with mmcv.RescaleToShort when it's ready
     dict(
         type='ShortScaleAspectJitter',

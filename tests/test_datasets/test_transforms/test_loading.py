@@ -29,7 +29,7 @@ class TestLoadImageFromFile(TestCase):
             repr(transform),
             ('LoadImageFromFile(ignore_empty=False, min_size=0, '
              "to_float32=False, color_type='color', imdecode_backend='cv2', "
-             "file_client_args={'backend': 'disk'})"))
+             'backend_args=None)'))
 
         # to_float32
         transform = LoadImageFromFile(to_float32=True)
@@ -130,7 +130,7 @@ class TestLoadOCRAnnotations(TestCase):
             repr(transform),
             ('LoadOCRAnnotations(with_bbox=True, with_label=True, '
              'with_polygon=True, with_text=True, '
-             "imdecode_backend='cv2', file_client_args=None)"))
+             "imdecode_backend='cv2', backend_args=None)"))
 
 
 class TestLoadKIEAnnotations(TestCase):

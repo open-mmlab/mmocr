@@ -4,7 +4,11 @@ from typing import Dict, List, Sequence, Tuple
 import cv2
 import numpy as np
 import torch
-from lanms import merge_quadrangle_n9 as la_nms
+
+try:
+    from lanms import merge_quadrangle_n9 as la_nms
+except ImportError:
+    la_nms = None
 from mmcv.image import imrescale
 from mmdet.models.utils import multi_apply
 from numpy import ndarray
@@ -447,6 +451,9 @@ class DRRGModuleLoss(TextSnakeModuleLoss):
 
         score = np.ones((text_comps.shape[0], 1), dtype=np.float32)
         text_comps = np.hstack([text_comps, score])
+        if la_nms is None:
+            raise ImportError('lanms-neo is not installed, '
+                              'please run "pip install lanms-neo==1.0.2".')
         text_comps = la_nms(text_comps, self.text_comp_nms_thr)
 
         if text_comps.shape[0] >= 1:

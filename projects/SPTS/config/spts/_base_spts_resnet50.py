@@ -1,6 +1,5 @@
-custom_imports = dict(imports=['spts'], allow_failed_imports=False)
-
-file_client_args = dict(backend='disk')
+custom_imports = dict(
+    imports=['projects.SPTS.spts'], allow_failed_imports=False)
 
 dictionary = dict(
     type='SPTSDictionary',
@@ -52,10 +51,7 @@ model = dict(
         postprocessor=dict(type='SPTSPostprocessor', num_bins=num_bins)))
 
 test_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     # dict(type='Resize', scale=(1000, 1824), keep_ratio=True),
     dict(
         type='RescaleToShortSide',
@@ -65,20 +61,14 @@ test_pipeline = [
         type='LoadOCRAnnotationsWithBezier',
         with_bbox=True,
         with_label=True,
-        with_bezier=True,
         with_text=True),
-    dict(type='Bezier2Polygon'),
-    dict(type='ConvertText', dictionary=dictionary),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
 ]
 
 train_pipeline = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(
         type='LoadOCRAnnotationsWithBezier',
         with_bbox=True,
@@ -87,7 +77,7 @@ train_pipeline = [
         with_text=True),
     dict(type='Bezier2Polygon'),
     dict(type='FixInvalidPolygon'),
-    dict(type='ConvertText', dictionary=dictionary),
+    dict(type='ConvertText', dictionary=dict(**dictionary, num_bins=0)),
     dict(type='RemoveIgnored'),
     dict(type='RandomCrop', min_side_ratio=0.5),
     dict(
@@ -119,7 +109,6 @@ train_pipeline = [
                 hue=0.5)
         ],
         prob=0.5),
-    # dict(type='Polygon2Bezier'),
     dict(
         type='PackTextDetInputs',
         meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))

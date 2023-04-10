@@ -19,6 +19,7 @@ from .polygon_utils import (boundary_iou, crop_polygon, is_poly_inside_rect,
                             poly_union, polys2shapely, rescale_polygon,
                             rescale_polygons, shapely2poly, sort_points,
                             sort_vertex, sort_vertex8)
+from .processing import track_parallel_progress_multi_args
 from .setup_env import register_all_modules
 from .string_utils import StringStripper
 from .transform_utils import remove_pipeline_elements
@@ -48,5 +49,6 @@ __all__ = [
     'OptTensor', 'ColorType', 'OptKIESampleList', 'KIESampleList',
     'is_archive', 'check_integrity', 'list_files', 'get_md5', 'InstanceList',
     'LabelList', 'OptInstanceList', 'OptLabelList', 'RangeType',
-    'remove_pipeline_elements', 'bezier2poly', 'poly2bezier'
+    'remove_pipeline_elements', 'bezier2poly', 'poly2bezier',
+    'track_parallel_progress_multi_args'
 ]
