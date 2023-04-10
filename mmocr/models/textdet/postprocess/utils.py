@@ -221,7 +221,7 @@ def graph_propagation(edges, scores, text_comps, edge_len_thr=50.):
             score_dict[edge[0], edge[1]] = scores[i]
 
     nodes = np.sort(np.unique(edges.flatten()))
-    mapping = -1 * np.ones((np.max(nodes) + 1), dtype=np.int)
+    mapping = -1 * np.ones((np.max(nodes) + 1), dtype=int)
     mapping[nodes] = np.arange(nodes.shape[0])
     order_inds = mapping[edges]
     vertices = [Node(node) for node in nodes]
