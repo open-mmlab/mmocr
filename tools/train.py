@@ -18,7 +18,7 @@ from mmocr import __version__
 from mmocr.apis import init_random_seed, train_detector
 from mmocr.datasets import build_dataset
 from mmocr.models import build_detector
-from mmocr.utils import (collect_env, get_root_logger, is_2dlist,
+from mmocr.utils import (collect_env, get_device, get_root_logger, is_2dlist,
                          setup_multi_processes)
 
 
@@ -185,6 +185,7 @@ def run_train_cmd(args):
     logger.info(f'Distributed training: {distributed}')
     logger.info(f'Config:\n{cfg.pretty_text}')
 
+    cfg.device = get_device()
     # set random seeds
     seed = init_random_seed(args.seed)
     seed = seed + dist.get_rank() if args.diff_seed else seed

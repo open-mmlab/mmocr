@@ -14,6 +14,7 @@ from .logger import get_root_logger
 from .model import revert_sync_batchnorm
 from .setup_env import setup_multi_processes
 from .string_util import StringStrip
+from .util_distribution import build_ddp, build_dp, get_device
 
 __all__ = [
     'Registry', 'build_from_cfg', 'get_root_logger', 'collect_env',
@@ -22,5 +23,6 @@ __all__ = [
     'convert_annotations', 'is_not_png', 'list_to_file', 'list_from_file',
     'is_on_same_line', 'stitch_boxes_into_lines', 'StringStrip',
     'revert_sync_batchnorm', 'bezier_to_polygon', 'sort_points',
-    'setup_multi_processes', 'recog2lmdb'
+    'setup_multi_processes', 'recog2lmdb', 'build_ddp', 'build_dp',
+    'get_device'
 ]

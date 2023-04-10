@@ -88,7 +88,8 @@ class DBLoss(nn.Module):
 
         assert gt.max() <= 1 and gt.min() >= 0
         assert pred.max() <= 1 and pred.min() >= 0
-        loss = F.binary_cross_entropy(pred, gt, reduction='none')
+        with torch.cuda.amp.autocast(enabled=False):
+            loss = F.binary_cross_entropy(pred, gt, reduction='none')
         positive_loss = loss * positive.float()
         negative_loss = loss * negative.float()
 
