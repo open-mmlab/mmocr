@@ -48,7 +48,7 @@ def fill_hole(input_mask):
     mask = np.zeros((h + 4, w + 4), np.uint8)
 
     cv2.floodFill(canvas, mask, (0, 0), 1)
-    canvas = canvas[1:h + 1, 1:w + 1].astype(np.bool)
+    canvas = canvas[1:h + 1, 1:w + 1].astype(bool)
 
     return ~canvas | input_mask
 
@@ -62,7 +62,7 @@ def centralize(points_yx,
 
     h, w = contour_mask.shape
     top_yx = bot_yx = points_yx
-    step_flags = np.ones((len(points_yx), 1), dtype=np.bool)
+    step_flags = np.ones((len(points_yx), 1), dtype=bool)
     step = step_ratio * radius * np.hstack([normal_sin, normal_cos])
     while np.any(step_flags):
         next_yx = np.array(top_yx + step, dtype=np.int32)
@@ -71,7 +71,7 @@ def centralize(points_yx,
             next_x < w) & contour_mask[np.clip(next_y, 0, h - 1),
                                        np.clip(next_x, 0, w - 1)]
         top_yx = top_yx + step_flags.reshape((-1, 1)) * step
-    step_flags = np.ones((len(points_yx), 1), dtype=np.bool)
+    step_flags = np.ones((len(points_yx), 1), dtype=bool)
     while np.any(step_flags):
         next_yx = np.array(bot_yx - step, dtype=np.int32)
         next_y, next_x = next_yx[:, 0], next_yx[:, 1]
