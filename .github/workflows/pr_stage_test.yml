@@ -36,14 +36,16 @@ jobs:
         shell: bash
       - name: Install PyTorch
         run: pip install torch==${{matrix.torch}}+cpu torchvision==${{matrix.torchvision}}+cpu -f https://download.pytorch.org/whl/torch_stable.html
-      - name: Install MMCV
-        run: pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
-      - name: Install MMDet
-        run: pip install mmdet
+      # - name: Install MMCV
+      #   run: pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
+      # - name: Install MMDet
+      #   run: pip install mmdet
       - name: Install other dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install openmim
+          mim install -r requirements.txt
       - name: Build and install
-        run: rm -rf .eggs && pip install -e .
+        run: mim install -e .
       - name: Run unittests and generate coverage report
         run: |
           coverage run --branch --source mmocr -m pytest tests/
@@ -92,13 +94,12 @@ jobs:
         run: |
           # Some dependencies may be required for the build of pycocotools
           export CFLAGS=`python -c 'import sysconfig;print("-I"+sysconfig.get_paths()["include"])'`
-          python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}/index.html
-          python -m pip install mmdet
-          python -m pip install -r requirements.txt
+          python -m pip install openmim
+          python -m mim install -r requirements.txt
       - name: Build and install
         run: |
           python setup.py check -m -s
-          TORCH_CUDA_ARCH_LIST=7.0 python -m pip install -e .
+          TORCH_CUDA_ARCH_LIST=7.0 python -m mim install -e .
 
   build_windows:
     runs-on: ${{ matrix.os }}
@@ -106,7 +107,7 @@ jobs:
       matrix:
         os: [windows-2022]
         python: [3.7]
-        platform: [cpu, cu102]
+        platform: [cpu]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -121,12 +122,11 @@ jobs:
         run: python -m pip install torch==1.8.1+${{matrix.platform}} torchvision==0.9.1+${{matrix.platform}} -f https://download.pytorch.org/whl/lts/1.8/torch_lts.html
       - name: Install mmocr dependencies
         run: |
-          python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch1.8/index.html --only-binary mmcv-full
-          python -m pip install mmdet
-          python -m pip install -r requirements.txt
+          python -m pip install openmim
+          python -m mim install -r requirements.txt
       - name: Build and install
         run: |
-          python -m pip install -e .
+          python -m mim install -e .
       - name: Run unittests and generate coverage report
         run: |
           pytest tests/

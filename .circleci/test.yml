@@ -41,11 +41,11 @@ jobs:
     resource_class: large
     steps:
       - checkout
-      - run:
-          name: Get MMCV_TORCH as environment variables
-          command: |
-            . .circleci/scripts/get_mmcv_var.sh << parameters.torch >>
-            source $BASH_ENV
+      # - run:
+      #     name: Get MMCV_TORCH as environment variables
+      #     command: |
+      #       . .circleci/scripts/get_mmcv_var.sh << parameters.torch >>
+      #       source $BASH_ENV
       - run:
           name: Install Libraries
           command: |
@@ -64,13 +64,12 @@ jobs:
       - run:
           name: Install mmocr dependencies
           command: |
-            python -m pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cpu/torch${MMCV_TORCH}/index.html
-            python -m pip install mmdet
-            python -m pip install -r requirements.txt
+            python -m pip install openmim
+            python -m mim install -r requirements.txt
       - run:
           name: Build and install
           command: |
-            python -m pip install -e .
+            python -m mim install -e .
       - run:
           name: Run unittests
           command: |
@@ -94,11 +93,11 @@ jobs:
     resource_class: gpu.nvidia.small
     steps:
       - checkout
-      - run:
-          name: Get MMCV_TORCH and MMCV_CUDA as environment variables
-          command: |
-            . .circleci/scripts/get_mmcv_var.sh << parameters.torch >> << parameters.cuda >>
-            source $BASH_ENV
+      # - run:
+      #     name: Get MMCV_TORCH and MMCV_CUDA as environment variables
+      #     command: |
+      #       . .circleci/scripts/get_mmcv_var.sh << parameters.torch >> << parameters.cuda >>
+      #       source $BASH_ENV
       - run:
           name: Build Docker image
           command: |
@@ -107,13 +106,12 @@ jobs:
       - run:
           name: Install mmocr dependencies
           command: |
-            docker exec mmocr pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/${MMCV_CUDA}/torch${MMCV_TORCH}/index.html
-            docker exec mmocr pip install mmdet
-            docker exec mmocr pip install -r requirements.txt
+            docker exec mmocr pip install openmim
+            docker exec mmocr mim install -r requirements.txt
       - run:
           name: Build and install
           command: |
-            docker exec mmocr pip install -e .
+            docker exec mmocr mim install -e .
       - run:
           name: Run unittests
           command: |
@@ -144,7 +142,7 @@ workflows:
           name: minimum_version_cpu
           torch: 1.6.0
           torchvision: 0.7.0
-          python: 3.6.9  # The lowest python 3.6.x version available on CircleCI images
+          python: "3.7"
           requires:
             - lint
       - build_cpu:
