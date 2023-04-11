@@ -3,9 +3,9 @@ import os
 from typing import Callable, List, Optional, Sequence, Union
 
 from mmengine.dataset import BaseDataset
-from transformers import AutoTokenizer
 
 from mmocr.registry import DATASETS
+from transformers import AutoTokenizer
 
 
 @DATASETS.register_module()
@@ -47,8 +47,8 @@ class XFUNDSERDataset(BaseDataset):
     """
 
     def __init__(self,
-                 ann_file: str = '',
-                 tokenizer: str = '',
+                 ann_file: str,
+                 tokenizer: dict,
                  metainfo: Optional[dict] = None,
                  data_root: Optional[str] = '',
                  data_prefix: dict = dict(img_path=''),
@@ -60,9 +60,13 @@ class XFUNDSERDataset(BaseDataset):
                  lazy_init: bool = False,
                  max_refetch: int = 1000) -> None:
 
-        assert tokenizer != '', 'tokenizer must be specified.'
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            tokenizer, use_fast=True)
+        if isinstance(tokenizer, dict) and \
+                tokenizer.get('pretrained_model_name_or_path', None):
+            self.tokenizer = AutoTokenizer.from_pretrained(**tokenizer)
+        else:
+            raise TypeError(
+                'tokenizer cfg should be a `dict` and a key '
+                '`pretrained_model_name_or_path` must be specified')
 
         super().__init__(
             ann_file=ann_file,
@@ -115,6 +119,11 @@ class XFUNDSERDataset(BaseDataset):
                 data_info['position_ids'] = position_ids
                 data_info['img_path'] = img_path
                 data_info['attention_mask'] = attention_mask
+                # record biolabel2id and id2biolabel
+                biolabel2id = self.metainfo['biolabel2id']
+                data_info['biolabel2id'] = biolabel2id
+                id2biolabel = {v: k for k, v in biolabel2id.items()}
+                data_info['id2biolabel'] = id2biolabel
                 split_text_data_list.append(data_info)
 
                 start = end
@@ -164,8 +173,8 @@ class XFUNDSERDataset(BaseDataset):
         height = raw_data_info['height']
         norm_boxes = [self.box_norm(box, width, height) for box in boxes]
 
-        # get label2id
-        label2id = self.metainfo['label2id']
+        # get biolabel2id
+        biolabel2id = self.metainfo['biolabel2id']
         # tokenize texts
         cur_doc_input_ids, cur_doc_boxes, cur_doc_labels = [], [], []
         for j in range(len(texts)):
@@ -181,12 +190,12 @@ class XFUNDSERDataset(BaseDataset):
             if cur_label == 'OTHER':
                 cur_labels = ['O'] * len(cur_input_ids)
                 for k in range(len(cur_labels)):
-                    cur_labels[k] = label2id[cur_labels[k]]
+                    cur_labels[k] = biolabel2id[cur_labels[k]]
             else:
                 cur_labels = [cur_label] * len(cur_input_ids)
-                cur_labels[0] = label2id['B-' + cur_labels[0]]
+                cur_labels[0] = biolabel2id['B-' + cur_labels[0]]
                 for k in range(1, len(cur_labels)):
-                    cur_labels[k] = label2id['I-' + cur_labels[k]]
+                    cur_labels[k] = biolabel2id['I-' + cur_labels[k]]
             assert len(cur_input_ids) == len(cur_labels)
 
             cur_doc_input_ids += cur_input_ids
