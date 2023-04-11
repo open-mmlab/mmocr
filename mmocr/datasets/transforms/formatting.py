@@ -416,10 +416,10 @@ class PackSERInputs(BaseTransform):
             instance_data[key] = to_tensor(results[key])
         data_sample.gt_instances = instance_data
 
-        img_meta = {}
+        img_and_text_meta = {}
         for key in self.meta_keys:
-            img_meta[key] = results[key]
-        data_sample.set_metainfo(img_meta)
+            img_and_text_meta[key] = results[key]
+        data_sample.set_metainfo(img_and_text_meta)
         packed_results['data_samples'] = data_sample
 
         return packed_results
