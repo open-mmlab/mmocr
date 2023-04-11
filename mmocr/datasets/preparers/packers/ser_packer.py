@@ -19,17 +19,8 @@ class SERPacker(BasePacker):
         {
             "metainfo":
                 {
-                    "labels": ['answer', 'header', 'other', 'question'],
-                    "id2label": {
-                        "0": "O",
-                        "1": "B-ANSWER",
-                        "2": "I-ANSWER",
-                        "3": "B-HEADER",
-                        "4": "I-HEADER",
-                        "5": "B-QUESTION",
-                        "6": "I-QUESTION"
-                    },
-                    "label2id": {
+                    "orig_labels": ['answer', 'header', 'other', 'question'],
+                    "biolabel2id": {
                         "O": 0,
                         "B-ANSWER": 1,
                         "I-ANSWER": 2,
@@ -156,16 +147,14 @@ class SERPacker(BasePacker):
         labels = []
         for s in sample:
             labels += s['instances']['labels']
-        org_label_list = list(set(labels))
-        bio_label_list = get_bio_label_list(org_label_list)
+        orig_label_list = list(set(labels))
+        bio_label_list = get_bio_label_list(orig_label_list)
 
         meta = {
             'metainfo': {
-                'labels': org_label_list,
-                'id2label': {k: v
-                             for k, v in enumerate(bio_label_list)},
-                'label2id': {v: k
-                             for k, v in enumerate(bio_label_list)}
+                'orig_labels': orig_label_list,
+                'biolabel2id': {v: k
+                                for k, v in enumerate(bio_label_list)}
             },
             'data_list': sample
         }

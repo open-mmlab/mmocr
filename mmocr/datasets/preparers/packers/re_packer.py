@@ -19,17 +19,8 @@ class REPacker(SERPacker):
         {
             "metainfo":
                 {
-                    "labels": ['answer', 'header', 'other', 'question'],
-                    "id2label": {
-                        "0": "O",
-                        "1": "B-ANSWER",
-                        "2": "I-ANSWER",
-                        "3": "B-HEADER",
-                        "4": "I-HEADER",
-                        "5": "B-QUESTION",
-                        "6": "I-QUESTION"
-                    },
-                    "label2id": {
+                    "orig_labels": ['answer', 'header', 'other', 'question'],
+                    "biolabel2id": {
                         "O": 0,
                         "B-ANSWER": 1,
                         "I-ANSWER": 2,
