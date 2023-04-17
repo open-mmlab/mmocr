@@ -17,7 +17,7 @@ train_preparer = dict(
                 url='https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/'
                 'train_label.txt',
                 save_name='iiit5k_train.txt',
-                md5='f4731ce1eadc259532c2834266e5126d',
+                md5='beee914aaf3ec5794622b843d743c5a6',
                 content=['annotation'],
                 mapping=[['iiit5k_train.txt', 'annotations/train.txt']])
         ]),
@@ -47,7 +47,7 @@ test_preparer = dict(
                 url='https://download.openmmlab.com/mmocr/data/mixture/IIIT5K/'
                 'test_label.txt',
                 save_name='iiit5k_test.txt',
-                md5='82ecfa34a28d59284d1914dc906f5380',
+                md5='117bcd9b4245f61fa57bfb37361674b3',
                 content=['annotation'],
                 mapping=[['iiit5k_test.txt', 'annotations/test.txt']])
         ]),

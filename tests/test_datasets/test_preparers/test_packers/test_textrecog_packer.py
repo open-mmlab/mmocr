@@ -13,14 +13,11 @@ class TestTextRecogPacker(unittest.TestCase):
 
     def test_pack_instance(self):
 
-        packer = TextRecogPacker(data_root='', split='test')
-        sample = ('test.jpg', 'text')
+        packer = TextRecogPacker(data_root='data/test/', split='test')
+        sample = ('data/test/test.jpg', 'text')
         results = packer.pack_instance(sample)
         self.assertDictEqual(
-            results,
-            dict(
-                img_path=osp.join('textrecog_imgs', 'test', 'test.jpg'),
-                instances=[dict(text='text')]))
+            results, dict(img_path='test.jpg', instances=[dict(text='text')]))
 
     def test_add_meta(self):
         packer = TextRecogPacker(data_root='', split='test')

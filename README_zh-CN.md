@@ -41,27 +41,38 @@
 
 </div>
 
+<div align="center">
+  <a href="https://openmmlab.medium.com/" style="text-decoration:none;">
+    <img src="https://user-images.githubusercontent.com/25839884/219255827-67c1a27f-f8c5-46a9-811d-5e57448c61d1.png" width="3%" alt="" /></a>
+  <img src="https://user-images.githubusercontent.com/25839884/218346358-56cc8e2f-a2b8-487f-9088-32480cceabcf.png" width="3%" alt="" />
+  <a href="https://discord.gg/raweFPmdzG" style="text-decoration:none;">
+    <img src="https://user-images.githubusercontent.com/25839884/218347213-c080267f-cbb6-443e-8532-8e1ed9a58ea9.png" width="3%" alt="" /></a>
+  <img src="https://user-images.githubusercontent.com/25839884/218346358-56cc8e2f-a2b8-487f-9088-32480cceabcf.png" width="3%" alt="" />
+  <a href="https://twitter.com/OpenMMLab" style="text-decoration:none;">
+    <img src="https://user-images.githubusercontent.com/25839884/218346637-d30c8a0f-3eba-4699-8131-512fb06d46db.png" width="3%" alt="" /></a>
+  <img src="https://user-images.githubusercontent.com/25839884/218346358-56cc8e2f-a2b8-487f-9088-32480cceabcf.png" width="3%" alt="" />
+  <a href="https://www.youtube.com/openmmlab" style="text-decoration:none;">
+    <img src="https://user-images.githubusercontent.com/25839884/218346691-ceb2116a-465a-40af-8424-9f30d2348ca9.png" width="3%" alt="" /></a>
+  <img src="https://user-images.githubusercontent.com/25839884/218346358-56cc8e2f-a2b8-487f-9088-32480cceabcf.png" width="3%" alt="" />
+  <a href="https://space.bilibili.com/1293512903" style="text-decoration:none;">
+    <img src="https://user-images.githubusercontent.com/25839884/219026751-d7d14cce-a7c9-4e82-9942-8375fca65b99.png" width="3%" alt="" /></a>
+  <img src="https://user-images.githubusercontent.com/25839884/218346358-56cc8e2f-a2b8-487f-9088-32480cceabcf.png" width="3%" alt="" />
+  <a href="https://www.zhihu.com/people/openmmlab" style="text-decoration:none;">
+    <img src="https://user-images.githubusercontent.com/25839884/219026120-ba71e48b-6e94-4bd4-b4e9-b7d175b5e362.png" width="3%" alt="" /></a>
+</div>
+
 ## 近期更新
 
-**默认分支已经从 `main` 切换到 `1.x`。我们鼓励用户迁移到最新版本，请参考 [迁移指南](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/overview.html) 以了解更多细节。**
+**默认分支目前为 `main`，且分支上的代码已经切换到 v1.0.0 版本。旧版 `main` 分支（v0.6.3）的代码现存在 `0.x` 分支上。** 如果您一直在使用 `main` 分支，并遇到升级问题，请阅读 [迁移指南](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/overview.html) 和 [分支说明](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/branches.html) 。
 
-最新的版本 v1.0.0rc6 于 2023-03-07 发布。
+最新的版本 v1.0.0 于 2023-04-06 发布。其相对于 1.0.0rc6 的主要更新如下：
 
-1. 在 `projects/` 目录中新增了 ABCNet v2 (仅支持推理) 和 SPTS 模型；
+1. Dataset Preparer 中支持了 SCUT-CTW1500, SynthText 和 MJSynth 数据集；
+2. 更新了文档和 FAQ；
+3. 升级文件后端；使用了 `backend_args` 替换 `file_client_args`;
+4. 增加了 MMOCR 教程 notebook。
 
-2. 新增统一推理接口 `Inferencer`，用户可以方便直接地进行各任务的推理。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/inference.html)
-
-3. 支持了文本识别任务的测试时数据增强。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/train_test.html#id15)
-
-4. 通过 [`BatchAugSampler`](https://github.com/open-mmlab/mmocr/pull/1757) 支持了 [batch augmentation](https://openaccess.thecvf.com/content_CVPR_2020/papers/Hoffer_Augment_Your_Batch_Improving_Generalization_Through_Instance_Repetition_CVPR_2020_paper.pdf) ，这是 SPTS 中使用的一种技巧。
-
-5. 重构了 Dataset Preparer ，用户现在可以更灵活地配置数据集的预处理流程。除此之外，用户现在也可以将文本识别数据集转换为 LMDB 格式。[文档](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/data_prepare/dataset_preparer.html#lmdb)
-
-6. 修正了一些端到端数据集的标注，保证了数据集的正确性及与常见实践的一致性。
-
-7. 减少了 `shapely` 中可能出现的一些错误警告。
-
-阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
+如果需要了解 MMOCR 1.0 相对于 0.x 的升级内容，请阅读 [MMOCR 1.x 更新汇总](https://mmocr.readthedocs.io/zh_CN/dev-1.x/migration/news.html)；或者阅读[更新日志](https://mmocr.readthedocs.io/zh_CN/dev-1.x/notes/changelog.html)以获取更多信息。
 
 ## 简介
 
@@ -91,24 +102,6 @@ MMOCR 的模块化设计使用户可以定义自己的优化器，数据预处�
 
 该工具箱提供了一套全面的实用程序，可以帮助用户评估模型的性能。它包括可对图像，标注的真值以及预测结果进行可视化的可视化工具，以及用于在训练过程中评估模型的验证工具。它还包括数据转换器，演示了如何将用户自建的标注数据转换为 MMOCR 支持的标注文件。
 
-## MMOCR 1.0 更新汇总
-
-1. 架构升级：MMOCR 1.x 是基于 [MMEngine](https://github.com/open-mmlab/mmengine)，提供了一个通用的、强大的执行器，允许更灵活的定制，提供了统一的训练和测试入口。
-
-2. 统一接口：MMOCR 1.x 统一了数据集、模型、评估和可视化的接口和内部逻辑。支持更强的扩展性。
-
-3. 跨项目调用：受益于统一的设计，你可以使用其他OpenMMLab项目中实现的模型，如MMDet。 我们提供了一个例子，说明如何通过MMDetWrapper使用MMDetection的Mask R-CNN。查看我们的文档以了解更多细节。更多的包装器将在未来发布。
-
-4. 更强的可视化：我们提供了一系列可视化工具， 用户现在可以更方便可视化数据。
-
-5. 更多的文档和教程：我们增加了更多的教程，降低用户的学习门槛。详见[教程](https://mmocr.readthedocs.io/zh_CN/dev-1.x/)。
-
-6. 一站式数据准备：准备数据集已经不再是难事。使用我们的 [Dataset Preparer](https://mmocr.readthedocs.io/zh_CN/dev-1.x/user_guides/data_prepare/dataset_preparer.html)，一行命令即可让多个数据集准备就绪。
-
-7. 拥抱更多 `projects/`: 我们推出了 `projects/` 文件夹，用于存放一些实验性的新特性、框架和模型。我们对这个文件夹下的代码规范不作过多要求，力求让社区的所有想法第一时间得到实现和展示。请查看我们的[样例 project](https://github.com/open-mmlab/mmocr/blob/dev-1.x/projects/example_project/) 以了解更多。
-
-8. 更多新模型：MMOCR 1.0 支持了更多模型和模型种类。
-
 ## 安装
 
 MMOCR 依赖 [PyTorch](https://pytorch.org/), [MMEngine](https://github.com/open-mmlab/mmengine), [MMCV](https://github.com/open-mmlab/mmcv) 和 [MMDetection](https://github.com/open-mmlab/mmdetection)，以下是安装的简要步骤。
@@ -118,13 +111,9 @@ MMOCR 依赖 [PyTorch](https://pytorch.org/), [MMEngine](https://github.com/open
 conda create -n open-mmlab python=3.8 pytorch=1.10 cudatoolkit=11.3 torchvision -c pytorch -y
 conda activate open-mmlab
 pip3 install openmim
-mim install mmengine
-mim install 'mmcv>=2.0.0rc1'
-mim install 'mmdet>=3.0.0rc0'
 git clone https://github.com/open-mmlab/mmocr.git
 cd mmocr
-git checkout 1.x
-pip3 install -e .
+mim install -e .
 ```
 
 ## 快速入门

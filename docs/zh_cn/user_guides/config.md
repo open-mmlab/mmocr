@@ -288,7 +288,7 @@ test_cfg = dict(type='TestLoop')
 
 ```Python
 # 识别数据集配置
-mjsynth_textrecog_test = dict(
+mjsynth_textrecog_train = dict(
     type='OCRDataset',
     data_root='data/rec/Syn90k/',
     data_prefix=dict(img_path='mnt/ramdisk/max/90kDICT32px'),
@@ -329,12 +329,10 @@ MMOCR 中，数据集的构建与数据准备是相互解耦的。也就是说�
 
 ```Python
 # 数据增强
-file_client_args = dict(backend='disk')
 train_pipeline = [
     dict(
         type='LoadImageFromFile',
         color_type='grayscale',
-        file_client_args=dict(backend='disk'),
         ignore_empty=True,
         min_size=5),
     dict(type='LoadOCRAnnotations', with_text=True),
@@ -346,8 +344,7 @@ train_pipeline = [
 test_pipeline = [
     dict(
         type='LoadImageFromFile',
-        color_type='grayscale',
-        file_client_args=dict(backend='disk')),
+        color_type='grayscale'),
     dict(
         type='RescaleToHeight',
         height=32,
@@ -376,7 +373,7 @@ train_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
         type='ConcatDataset',
-        datasets=[mjsynth_textrecog_test],
+        datasets=[mjsynth_textrecog_train],
         pipeline=train_pipeline))
 val_dataloader = dict(
     batch_size=1,

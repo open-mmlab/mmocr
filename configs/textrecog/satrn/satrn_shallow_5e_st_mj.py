@@ -13,7 +13,7 @@ _base_ = [
 ]
 
 # dataset settings
-train_list = [_base_.mjsynth_textrecog_test, _base_.synthtext_textrecog_train]
+train_list = [_base_.mjsynth_textrecog_train, _base_.synthtext_textrecog_train]
 test_list = [
     _base_.cute80_textrecog_test, _base_.iiit5k_textrecog_test,
     _base_.svt_textrecog_test, _base_.svtp_textrecog_test,

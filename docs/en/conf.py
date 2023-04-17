@@ -92,6 +92,13 @@ html_theme_options = {
     'https://mmocr.readthedocs.io/en/dev-1.x/',
     'menu': [
         {
+            'name':
+            'Tutorial',
+            'url':
+            'https://colab.research.google.com/github/open-mmlab/mmocr/blob/'
+            'dev-1.x/demo/tutorial.ipynb'
+        },
+        {
             'name': 'GitHub',
             'url': 'https://github.com/open-mmlab/mmocr'
         },
@@ -119,24 +126,6 @@ html_theme_options = {
                     'description': 'Object detection toolbox and benchmark'
                 },
             ]
-        },
-        {
-            'name':
-            'Version',
-            'children': [
-                {
-                    'name': 'MMOCR 0.x',
-                    'url': 'https://mmocr.readthedocs.io/en/latest/',
-                    'description': 'Main branch'
-                },
-                {
-                    'name': 'MMOCR 1.x',
-                    'url': 'https://mmocr.readthedocs.io/en/dev-1.x/',
-                    'description': '1.x branch'
-                },
-            ],
-            'active':
-            True,
         },
     ],
     # Specify the language of shared menu

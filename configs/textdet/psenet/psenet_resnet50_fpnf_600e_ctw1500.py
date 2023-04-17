@@ -17,10 +17,7 @@ ctw1500_textdet_train = _base_.ctw1500_textdet_train
 ctw1500_textdet_test = _base_.ctw1500_textdet_test
 
 test_pipeline_ctw = [
-    dict(
-        type='LoadImageFromFile',
-        file_client_args=_base_.file_client_args,
-        color_type='color_ignore_orientation'),
+    dict(type='LoadImageFromFile', color_type='color_ignore_orientation'),
     dict(type='Resize', scale=(1280, 1280), keep_ratio=True),
     dict(
         type='LoadOCRAnnotations',

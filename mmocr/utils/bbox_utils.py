@@ -178,14 +178,15 @@ def stitch_boxes_into_lines(boxes, max_x_dist=10, min_y_overlap_ratio=0.8):
         lines = []
         line_idx = 0
         lines.append([line[0]])
+        rightmost = np.max(x_sorted_boxes[line[0]]['box'][::2])
         for k in range(1, len(line)):
             curr_box = x_sorted_boxes[line[k]]
-            prev_box = x_sorted_boxes[line[k - 1]]
-            dist = np.min(curr_box['box'][::2]) - np.max(prev_box['box'][::2])
+            dist = np.min(curr_box['box'][::2]) - rightmost
             if dist > max_x_dist:
                 line_idx += 1
                 lines.append([])
             lines[line_idx].append(line[k])
+            rightmost = max(rightmost, np.max(curr_box['box'][::2]))
 
         # Get merged boxes
         for box_group in lines:

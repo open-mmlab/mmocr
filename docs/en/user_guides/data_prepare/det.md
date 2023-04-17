@@ -9,10 +9,8 @@ This page is a manual preparation guide for datasets not yet supported by [Datas
 |      Dataset      |                          Images                          |                                                    |                          Annotation Files                           |         |     |
 | :---------------: | :------------------------------------------------------: | :------------------------------------------------: | :-----------------------------------------------------------------: | :-----: | :-: |
 |                   |                                                          |                      training                      |                             validation                              | testing |     |
-|      CTW1500      | [homepage](https://github.com/Yuliang-Liu/Curve-Text-Detector) |                         -                          |                                  -                                  |    -    |     |
 |     ICDAR2011     |         [homepage](https://rrc.cvc.uab.es/?ch=1)         |                         -                          |                                  -                                  |         |     |
 |     ICDAR2017     |  [homepage](https://rrc.cvc.uab.es/?ch=8&com=downloads)  | [instances_training.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_training.json) | [instances_val.json](https://download.openmmlab.com/mmocr/data/icdar2017/instances_val.json) |    -    |     |
-|     Synthtext     | [homepage](https://www.robots.ox.ac.uk/~vgg/data/scenetext/) | instances_training.lmdb ([data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb), [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb)) |                                  -                                  |    -    |     |
 | CurvedSynText150k | [homepage](https://github.com/aim-uofa/AdelaiDet/blob/master/datasets/README.md) \| [Part1](https://drive.google.com/file/d/1OSJ-zId2h3t_-I7g_wUkrK-VqQy153Kj/view?usp=sharing) \| [Part2](https://drive.google.com/file/d/1EzkcOlIgEp5wmEubvHb7-J5EImHExYgY/view?usp=sharing) | [instances_training.json](https://download.openmmlab.com/mmocr/data/curvedsyntext/instances_training.json) |                                  -                                  |    -    |     |
 |      DeText       |         [homepage](https://rrc.cvc.uab.es/?ch=9)         |                         -                          |                                  -                                  |    -    |     |
 | Lecture Video DB  | [homepage](https://cvit.iiit.ac.in/research/projects/cvit-projects/lecturevideodb) |                         -                          |                                  -                                  |    -    |     |
@@ -61,47 +59,6 @@ For users in China, these datasets can also be downloaded from [OpenDataLab](htt
 backend used in MMCV would read them and apply the rotation on the images.  However, their gold annotations are made on the raw pixels, and such
 inconsistency results in false examples in the training set. Therefore, users should use `dict(type='LoadImageFromFile', color_type='color_ignore_orientation')` in pipelines to change MMCV's default loading behaviour. (see [DBNet's pipeline config](https://github.com/open-mmlab/mmocr/blob/main/configs/_base_/det_pipelines/dbnet_pipeline.py) for example)
 ```
-
-## CTW1500
-
-- Step0: Read [Important Note](#important-note)
-
-- Step1: Download `train_images.zip`, `test_images.zip`, `train_labels.zip`, `test_labels.zip` from [github](https://github.com/Yuliang-Liu/Curve-Text-Detector)
-
-  ```bash
-  mkdir ctw1500 && cd ctw1500
-  mkdir imgs && mkdir annotations
-
-  # For annotations
-  cd annotations
-  wget -O train_labels.zip https://universityofadelaide.box.com/shared/static/jikuazluzyj4lq6umzei7m2ppmt3afyw.zip
-  wget -O test_labels.zip https://cloudstor.aarnet.edu.au/plus/s/uoeFl0pCN9BOCN5/download
-  unzip train_labels.zip && mv ctw1500_train_labels training
-  unzip test_labels.zip -d test
-  cd ..
-  # For images
-  cd imgs
-  wget -O train_images.zip https://universityofadelaide.box.com/shared/static/py5uwlfyyytbb2pxzq9czvu6fuqbjdh8.zip
-  wget -O test_images.zip https://universityofadelaide.box.com/shared/static/t4w48ofnqkdw7jyc4t11nsukoeqk9c3d.zip
-  unzip train_images.zip && mv train_images training
-  unzip test_images.zip && mv test_images test
-  ```
-
-- Step2: Generate `instances_training.json` and `instances_test.json` with following command:
-
-  ```bash
-  python tools/dataset_converters/textdet/ctw1500_converter.py /path/to/ctw1500 -o /path/to/ctw1500 --split-list training test
-  ```
-
-- The resulting directory structure looks like the following:
-
-  ```text
-  ├── ctw1500
-  │   ├── imgs
-  │   ├── annotations
-  │   ├── instances_training.json
-  │   └── instances_val.json
-  ```
 
 ## ICDAR 2011 (Born-Digital Images)
 
@@ -154,22 +111,6 @@ inconsistency results in false examples in the training set. Therefore, users sh
   │   ├── annotations
   │   ├── instances_training.json
   │   └── instances_val.json
-  ```
-
-## SynthText
-
-- Step1: Download SynthText.zip from \[homepage\](<https://www.robots.ox.ac.uk/~vgg/data/scenetext/> and extract its content to `synthtext/img`.
-
-- Step2: Download [data.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/data.mdb) and [lock.mdb](https://download.openmmlab.com/mmocr/data/synthtext/instances_training.lmdb/lock.mdb) to `synthtext/instances_training.lmdb/`.
-
-- The resulting directory structure looks like the following:
-
-  ```text
-  ├── synthtext
-  │   ├── imgs
-  │   └── instances_training.lmdb
-  │       ├── data.mdb
-  │       └── lock.mdb
   ```
 
 ## CurvedSynText150k

@@ -105,13 +105,27 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                                           'supported yet.')
         return new_inputs
 
-    def forward(self, inputs: InputsType, batch_size: int,
+    def forward(self,
+                inputs: InputsType,
+                batch_size: int = 1,
+                det_batch_size: Optional[int] = None,
+                rec_batch_size: Optional[int] = None,
+                kie_batch_size: Optional[int] = None,
                 **forward_kwargs) -> PredType:
         """Forward the inputs to the model.
 
         Args:
             inputs (InputsType): The inputs to be forwarded.
             batch_size (int): Batch size. Defaults to 1.
+            det_batch_size (Optional[int]): Batch size for text detection
+                model. Overwrite batch_size if it is not None.
+                Defaults to None.
+            rec_batch_size (Optional[int]): Batch size for text recognition
+                model. Overwrite batch_size if it is not None.
+                Defaults to None.
+            kie_batch_size (Optional[int]): Batch size for KIE model.
+                Overwrite batch_size if it is not None.
+                Defaults to None.
 
         Returns:
             Dict: The prediction results. Possibly with keys "det", "rec", and
@@ -119,20 +133,26 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         """
         result = {}
         forward_kwargs['progress_bar'] = False
+        if det_batch_size is None:
+            det_batch_size = batch_size
+        if rec_batch_size is None:
+            rec_batch_size = batch_size
+        if kie_batch_size is None:
+            kie_batch_size = batch_size
         if self.mode == 'rec':
             # The extra list wrapper here is for the ease of postprocessing
             self.rec_inputs = inputs
             predictions = self.textrec_inferencer(
                 self.rec_inputs,
                 return_datasamples=True,
-                batch_size=batch_size,
+                batch_size=rec_batch_size,
                 **forward_kwargs)['predictions']
             result['rec'] = [[p] for p in predictions]
         elif self.mode.startswith('det'):  # 'det'/'det_rec'/'det_rec_kie'
             result['det'] = self.textdet_inferencer(
                 inputs,
                 return_datasamples=True,
-                batch_size=batch_size,
+                batch_size=det_batch_size,
                 **forward_kwargs)['predictions']
             if self.mode.startswith('det_rec'):  # 'det_rec'/'det_rec_kie'
                 result['rec'] = []
@@ -149,7 +169,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                         self.textrec_inferencer(
                             self.rec_inputs,
                             return_datasamples=True,
-                            batch_size=batch_size,
+                            batch_size=rec_batch_size,
                             **forward_kwargs)['predictions'])
                 if self.mode == 'det_rec_kie':
                     self.kie_inputs = []
@@ -172,7 +192,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                     result['kie'] = self.kie_inferencer(
                         self.kie_inputs,
                         return_datasamples=True,
-                        batch_size=batch_size,
+                        batch_size=kie_batch_size,
                         **forward_kwargs)['predictions']
         return result
 
@@ -219,6 +239,9 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         self,
         inputs: InputsType,
         batch_size: int = 1,
+        det_batch_size: Optional[int] = None,
+        rec_batch_size: Optional[int] = None,
+        kie_batch_size: Optional[int] = None,
         out_dir: str = 'results/',
         return_vis: bool = False,
         save_vis: bool = False,
@@ -231,6 +254,15 @@ class MMOCRInferencer(BaseMMOCRInferencer):
             inputs (InputsType): Inputs for the inferencer. It can be a path
                 to image / image directory, or an array, or a list of these.
             batch_size (int): Batch size. Defaults to 1.
+            det_batch_size (Optional[int]): Batch size for text detection
+                model. Overwrite batch_size if it is not None.
+                Defaults to None.
+            rec_batch_size (Optional[int]): Batch size for text recognition
+                model. Overwrite batch_size if it is not None.
+                Defaults to None.
+            kie_batch_size (Optional[int]): Batch size for KIE model.
+                Overwrite batch_size if it is not None.
+                Defaults to None.
             out_dir (str): Output directory of results. Defaults to 'results/'.
             return_vis (bool): Whether to return the visualization result.
                 Defaults to False.
@@ -269,12 +301,23 @@ class MMOCRInferencer(BaseMMOCRInferencer):
             **kwargs)
 
         ori_inputs = self._inputs_to_list(inputs)
+        if det_batch_size is None:
+            det_batch_size = batch_size
+        if rec_batch_size is None:
+            rec_batch_size = batch_size
+        if kie_batch_size is None:
+            kie_batch_size = batch_size
 
         chunked_inputs = super(BaseMMOCRInferencer,
                                self)._get_chunk_data(ori_inputs, batch_size)
         results = {'predictions': [], 'visualization': []}
         for ori_input in track(chunked_inputs, description='Inference'):
-            preds = self.forward(ori_input, batch_size, **forward_kwargs)
+            preds = self.forward(
+                ori_input,
+                det_batch_size=det_batch_size,
+                rec_batch_size=rec_batch_size,
+                kie_batch_size=kie_batch_size,
+                **forward_kwargs)
             visualization = self.visualize(
                 ori_input, preds, img_out_dir=img_out_dir, **visualize_kwargs)
             batch_res = self.postprocess(

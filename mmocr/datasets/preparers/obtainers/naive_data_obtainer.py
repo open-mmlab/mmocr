@@ -88,8 +88,18 @@ class NaiveDataObtainer:
                 ' Please manually download the required files'
                 ' following the guides.')
 
-        print(f'Start to download {osp.basename(dst_path)}...')
-        print('If you stuck here for a long time, please check your network.')
+        if url.startswith('magnet'):
+            raise NotImplementedError('Please use any BitTorrent client to '
+                                      'download the following magnet link to '
+                                      f'{osp.abspath(dst_path)} and '
+                                      f'try again.\nLink: {url}')
+
+        print('Downloading...')
+        print(f'URL: {url}')
+        print(f'Destination: {osp.abspath(dst_path)}')
+        print('If you stuck here for a long time, please check your network, '
+              'or manually download the file to the destination path and '
+              'run the script again.')
         request.urlretrieve(url, dst_path, progress)
         print('')
 
@@ -176,10 +186,12 @@ class NaiveDataObtainer:
             if '*' in src:
                 mkdir_or_exist(dst)
                 for f in glob.glob(src):
-                    if not osp.exists(osp.join(dst, osp.basename(f))):
+                    if not osp.exists(
+                            osp.join(dst, osp.relpath(f, self.data_root))):
                         shutil.move(f, dst)
 
             elif osp.exists(src) and not osp.exists(dst):
+                mkdir_or_exist(osp.dirname(dst))
                 shutil.move(src, dst)
 
     def clean(self) -> None:

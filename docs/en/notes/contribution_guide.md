@@ -13,11 +13,11 @@ Pull requests let you tell others about changes you have pushed to a branch in a
 ## Basic Workflow
 
 1. Get the most recent codebase
-2. Checkout a new branch from `main` or `dev-1.x` branch, depending on the version of the codebase you want to contribute to (see [Maintenance Plan](../migration/overview.md) for more details)
+2. Checkout a new branch from `dev-1.x` branch, depending on the version of the codebase you want to contribute to.
 3. Commit your changes ([Don't forget to use pre-commit hooks!](#3-commit-your-changes))
 4. Push your changes and create a PR
 5. Discuss and review your code
-6. Merge your branch to `main` or `dev-1.x` branch
+6. Merge your branch to `dev-1.x` branch
 
 ## Procedures in detail
 
@@ -49,14 +49,14 @@ Pull requests let you tell others about changes you have pushed to a branch in a
   git pull upstream dev-1.x
   ```
 
-### 2. Checkout a new branch from the `main` branch or `dev-1.x` branch
+### 2. Checkout a new branch from `dev-1.x` branch
 
 ```bash
 git checkout -b branchname
 ```
 
 ```{tip}
-To make commit history clear, we strongly recommend you checkout the `main` or `dev-1.x` branch before creating a new branch.
+To make commit history clear, we strongly recommend you checkout the `dev-1.x` branch before creating a new branch.
 ```
 
 ### 3. Commit your changes
@@ -103,7 +103,7 @@ To make commit history clear, we strongly recommend you checkout the `main` or `
 
 - Modify your codes according to reviewers' suggestions and then push your changes.
 
-### 6.  Merge your branch to the `main` / `dev-1.x` branch and delete the branch
+### 6.  Merge your branch to `dev-1.x` branch and delete the branch
 
 - After the PR is merged by the maintainer, you can delete the branch you created in your forked repository.
 

@@ -92,6 +92,13 @@ html_theme_options = {
     'https://mmocr.readthedocs.io/zh_CN/dev-1.x/',
     'menu': [
         {
+            'name':
+            '教程 Notebook',
+            'url':
+            'https://colab.research.google.com/github/open-mmlab/mmocr/blob/'
+            'dev-1.x/demo/tutorial.ipynb'
+        },
+        {
             'name': 'GitHub',
             'url': 'https://github.com/open-mmlab/mmocr'
         },
@@ -115,24 +122,6 @@ html_theme_options = {
                     'description': '目标检测工具箱'
                 },
             ]
-        },
-        {
-            'name':
-            '版本',
-            'children': [
-                {
-                    'name': 'MMOCR 0.x',
-                    'url': 'https://mmocr.readthedocs.io/zh_CN/latest/',
-                    'description': 'main 分支文档'
-                },
-                {
-                    'name': 'MMOCR 1.x',
-                    'url': 'https://mmocr.readthedocs.io/zh_CN/dev-1.x/',
-                    'description': '1.x 分支文档'
-                },
-            ],
-            'active':
-            True,
         },
     ],
     # Specify the language of shared menu
