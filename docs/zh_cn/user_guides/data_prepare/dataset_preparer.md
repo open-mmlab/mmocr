@@ -175,22 +175,27 @@ Data:
 
 ### 数据集使用
 
-经过数十年的发展，OCR 领域涌现出了一系列的相关数据集，这些数据集往往采用风格各异的格式来提供文本的标注文件，使得用户在使用这些数据集时不得不进行格式转换。因此，为了方便用户进行数据集准备，我们设计了 Dataset Preaprer，帮助用户快速将数据集准备为 MMOCR 支持的格式, 详见[数据格式文档](<>)。下图展示了 Dataset Preparer 的典型运行流程。
+经过数十年的发展，OCR 领域涌现出了一系列的相关数据集，这些数据集往往采用风格各异的格式来提供文本的标注文件，使得用户在使用这些数据集时不得不进行格式转换。因此，为了方便用户进行数据集准备，我们设计了 Dataset Preaprer，帮助用户快速将数据集准备为 MMOCR 支持的格式, 详见[数据格式文档](../../basic_concepts/datasets.md)。下图展示了 Dataset Preparer 的典型运行流程。
 
 ![DataPrepare](https://user-images.githubusercontent.com/24622904/226505258-acb8d5cb-0fa9-4906-956c-8e4c5d895dd7.jpeg)
 
 由图可见，Dataset Preparer 在运行时，会依次执行以下操作：
 
 1. 对训练集、验证集和测试集，由各 preparer 进行：
-   a. 数据集的下载、解压、移动（Obtainer）
-   b. 匹配标注与图像（Gatherer）
-   c. 解析原标注（Parser）
-   d. 打包标注为统一格式（Packer）
-   e. 保存标注（Dumper）
+
+   1. [数据集的下载、解压、移动（Obtainer）](#数据集下载解压移动-obtainer)
+   2. [匹配标注与图像（Gatherer）](#数据集收集-gatherer)
+   3. [解析原标注（Parser）](#数据集解析-parser)
+   4. [打包标注为统一格式（Packer）](#数据集转换-packer)
+   5. [保存标注（Dumper）](#标注保存-dumper)
+
 2. 删除文件（Delete）
+
 3. 生成数据集的配置文件（Config Generator）
-   为了便于应对各种数据集的情况，MMOCR 将每个部分均设计为可插拔的模块，并允许用户通过 dataset_zoo/ 下的配置文件对数据集准备流程进行配置。这些配置文件采用了 Python 格式，其使用方法与 MMOCR 算法库的其他配置文件完全一致，详见[配置文件文档](../config.md)。
-   在 dataset_zoo/ 下，每个数据集均占有一个文件夹，文件夹下会以任务名命名配置文件，以区分不同任务下的配置。以 ICDAR2015 文字检测部分为例，示例配置 dataset_zoo/icdar2015/textdet.py 如下所示：
+
+为了便于应对各种数据集的情况，MMOCR 将每个部分均设计为可插拔的模块，并允许用户通过 dataset_zoo/ 下的配置文件对数据集准备流程进行配置。这些配置文件采用了 Python 格式，其使用方法与 MMOCR 算法库的其他配置文件完全一致，详见[配置文件文档](../config.md)。
+
+在 `dataset_zoo/` 下，每个数据集均占有一个文件夹，文件夹下会以任务名命名配置文件，以区分不同任务下的配置。以 ICDAR2015 文字检测部分为例，示例配置 `dataset_zoo/icdar2015/textdet.py` 如下所示：
 
 ```python
 data_root = 'data/icdar2015'
@@ -370,7 +375,8 @@ MMOCR 同样对 `Gatherer` 的返回值做了约定，`Gatherer` 会返回两个
 
 - `BaseParser` 默认处理**多对多**的情况。其中，由 `parer_files` 将数据并行分发至多个 `parse_file` 进程，并由每个 `parse_file` 分别进行单个图像标注的解析。
 - 对于**单对多**的情况，用户则需要重写 `parse_files`，以实现加载标注，并返回规范的结果。
-  `BaseParser` 的接口定义如下所示：
+
+`BaseParser` 的接口定义如下所示：
 
 ```python
 class BaseParser:
