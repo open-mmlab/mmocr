@@ -2,57 +2,81 @@ from functools import partial
 
 from mmengine.config import Config
 from mmengine.dataset.utils import COLLATE_FUNCTIONS
-from mmengine.registry import init_default_scope
+from mmengine.registry import DATA_SAMPLERS, init_default_scope
 from torch.utils.data import DataLoader
 
 from mmocr.registry import DATASETS, MODELS
 
 if __name__ == '__main__':
     cfg_path = '/Users/wangnu/Documents/GitHub/mmocr/projects/' \
-        'LayoutLMv3/configs/layoutlmv3_xfund_zh.py'
+        'LayoutLMv3/configs/ser/layoutlmv3_xfund_zh.py'
     cfg = Config.fromfile(cfg_path)
     init_default_scope(cfg.get('default_scope', 'mmocr'))
 
+    pretrained_model = '/Users/wangnu/Documents/GitHub'
+    '/mmocr/data/layoutlmv3-base-chinese'
+
     dataset_cfg = cfg.train_dataset
-    dataset_cfg['tokenizer'] = \
-        '/Users/wangnu/Documents/GitHub/mmocr/data/layoutlmv3-base-chinese'
+    dataset_cfg['tokenizer'] = dict(
+        pretrained_model_name_or_path=pretrained_model, use_fast=True)
     train_pipeline = [
         dict(type='LoadImageFromFile', color_type='color'),
-        dict(type='Resize', scale=(224, 224),
-             backend='pillow'),  # backend=pillow 数值与huggingface对齐
+        dict(
+            type='ProcessImageForLayoutLMv3',
+            image_processor=dict(
+                pretrained_model_name_or_path=pretrained_model,
+                size=(224, 224),
+                apply_ocr=False)),
+        dict(
+            type='ProcessTokenForLayoutLMv3',
+            padding='max_length',
+            max_length=512),
         dict(
             type='PackSERInputs',
-            meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor'))
+            meta_keys=('img_path', 'ori_shape', 'img_shape', 'scale_factor',
+                       'id2biolabel'))
     ]
     dataset_cfg['pipeline'] = train_pipeline
-    train_dataloader_cfg = dict(
-        batch_size=1,
-        num_workers=8,
-        persistent_workers=True,
-        sampler=dict(type='DefaultSampler', shuffle=True),
-        dataset=dataset_cfg)
+    train_dataset = DATASETS.build(dataset_cfg)
 
     model_cfg = dict(
-        type='LayoutLMv3TokenClassifier',
-        backbone=dict(),
-        cls_head=dict(),
-        data_preprocessor=dict(
-            type='LayoutLMv3DataPreprocessor',
-            mean=[127.5, 127.5, 127.5],
-            std=[127.5, 127.5, 127.5],
-            bgr_to_rgb=True))
+        type='HFLayoutLMv3ForTokenClassificationWrapper',
+        classifier=dict(
+            pretrained_model_name_or_path=pretrained_model, num_labels=7),
+        data_preprocessor=None)
 
-    train_dataset = DATASETS.build(dataset_cfg)
-    collate_fn_cfg = dict(type='pseudo_collate')
+    collate_fn_cfg = dict(type='default_collate')
     collate_fn_type = collate_fn_cfg.pop('type')
     collate_fn = COLLATE_FUNCTIONS.get(collate_fn_type)
     collate_fn = partial(collate_fn, **collate_fn_cfg)
-    train_dataloader = DataLoader(dataset=train_dataset, collate_fn=collate_fn)
+
+    sampler_cfg = dict(
+        type='DefaultSampler', dataset=train_dataset, shuffle=True)
+    sampler = DATA_SAMPLERS.build(sampler_cfg)
+
+    from mmengine.dataset.utils import worker_init_fn as default_worker_init_fn
+    init_fn = partial(
+        default_worker_init_fn,
+        num_workers=2,
+        rank=0,
+        seed=301967075,
+        disable_subprocess_warning=False)
+
+    train_dataloader = DataLoader(
+        batch_size=1,
+        dataset=train_dataset,
+        pin_memory=True,
+        persistent_workers=True,
+        sampler=sampler,
+        collate_fn=collate_fn,
+        num_workers=2,
+        worker_init_fn=init_fn)
 
     model = MODELS.build(model_cfg)
 
     for idx, data_batch in enumerate(train_dataloader):
-        result = model.forward(data_batch)
+        print(idx)
+        result = model.forward(**data_batch, mode='loss')
         break
 
     print('Done')
