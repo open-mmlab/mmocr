@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from .backbones import *  # NOQA
-from .classifier import *  # NOQA
-from .data_preprocessors import *  # NOQA
-from .heads import *  # NOQA
+from .hf_layoutlmv3_wrapper import HFLayoutLMv3ForTokenClassificationWrapper
+
+__all__ = ['HFLayoutLMv3ForTokenClassificationWrapper']
