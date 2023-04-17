@@ -47,8 +47,8 @@ class XFUNDSERDataset(BaseDataset):
     """
 
     def __init__(self,
-                 ann_file: str,
-                 tokenizer: dict,
+                 ann_file: str = '',
+                 tokenizer: dict = dict(pretrained_model_name_or_path=None),
                  metainfo: Optional[dict] = None,
                  data_root: Optional[str] = '',
                  data_prefix: dict = dict(img_path=''),
@@ -113,17 +113,22 @@ class XFUNDSERDataset(BaseDataset):
 
                 data_info = {}
                 data_info['input_ids'] = input_ids
-                data_info['boxes'] = boxes
+                # set key=bbox in order to be consistent with
+                # HuggingFace LayoutLMv3Model input params
+                data_info['bbox'] = boxes
                 data_info['labels'] = labels
                 data_info['segment_ids'] = segment_ids
                 data_info['position_ids'] = position_ids
                 data_info['img_path'] = img_path
                 data_info['attention_mask'] = attention_mask
-                # record biolabel2id and id2biolabel
-                biolabel2id = self.metainfo['biolabel2id']
-                data_info['biolabel2id'] = biolabel2id
-                id2biolabel = {v: k for k, v in biolabel2id.items()}
+                # record id2biolabel
+                id2biolabel = {
+                    v: k
+                    for k, v in self.metainfo['biolabel2id'].items()
+                }
                 data_info['id2biolabel'] = id2biolabel
+                # record tokenizer
+                data_info['tokenizer'] = self.tokenizer
                 split_text_data_list.append(data_info)
 
                 start = end

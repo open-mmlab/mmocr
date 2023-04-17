@@ -332,7 +332,7 @@ class PackKIEInputs(BaseTransform):
 
 @TRANSFORMS.register_module()
 class PackSERInputs(BaseTransform):
-    """Pack the inputs data for Semantic Entity Recognition.
+    """Pack the inputs data for LayoutLMv3ForTokenClassification model.
 
     The type of outputs is `dict`:
 
@@ -358,24 +358,25 @@ class PackSERInputs(BaseTransform):
           bottom/right if the batch tensor is larger than this shape.
         - "scale_factor": A tuple indicating the ratio of width and height
           of the preprocessed image to the original one.
-        - "ori_shape": Shape of the preprocessed image as a tuple
-          (h, w).
+        - "ori_shape": Shape of the preprocessed image as a tuple (h, w).
+        - "id2biolabel": Label id convert to biolabel map dict.
 
     Args:
         meta_keys (Sequence[str], optional): Meta keys to be converted to
             the metainfo of ``SERDataSample``. Defaults to ``('img_path',
-            'ori_shape', 'img_shape', 'scale_factor')``.
+            'ori_shape', 'img_shape', 'scale_factor', 'id2biolabel')``.
     """
-    ser_sample_keys = [
-        'input_ids', 'boxes', 'labels', 'position_ids', 'segment_ids',
-        'attention_mask'
+    # HF LayoutLMv3ForTokenClassification model input params.
+    ser_keys = [
+        'input_ids', 'bbox', 'attention_mask', 'position_ids', 'pixel_values',
+        'labels'
     ]
 
     def __init__(self, meta_keys=()):
         self.meta_keys = meta_keys
 
     def transform(self, results: dict) -> dict:
-        """Method to pack the input data.
+        """Method to pack SER input data.
 
         Args:
             results (dict): Result dict from the data pipeline.
@@ -389,8 +390,8 @@ class PackSERInputs(BaseTransform):
         """
 
         packed_results = dict()
-        if 'img' in results:
-            img = results['img']
+        if 'pixel_values' in results:
+            img = results['pixel_values']
             if len(img.shape) < 3:
                 img = np.expand_dims(img, -1)
             # A simple trick to speedup formatting by 3-5 times when
@@ -403,23 +404,23 @@ class PackSERInputs(BaseTransform):
             else:
                 img = np.ascontiguousarray(img.transpose(2, 0, 1))
                 img = to_tensor(img)
-            packed_results['inputs'] = img
-        else:
-            packed_results['inputs'] = torch.FloatTensor().reshape(0, 0, 0)
+            results['pixel_values'] = img
 
         data_sample = SERDataSample()
-        instance_data = InstanceData()
+        # instance_data = InstanceData()
 
-        for key in self.ser_sample_keys:
+        inputs = {}
+        for key in self.ser_keys:
             if key not in results:
                 continue
-            instance_data[key] = to_tensor(results[key])
-        data_sample.gt_instances = instance_data
+            inputs[key] = to_tensor(results[key])
+        packed_results['inputs'] = inputs
+        # data_sample.gt_instances = instance_data
 
-        img_and_text_meta = {}
+        meta = {}
         for key in self.meta_keys:
-            img_and_text_meta[key] = results[key]
-        data_sample.set_metainfo(img_and_text_meta)
+            meta[key] = results[key]
+        data_sample.set_metainfo(meta)
         packed_results['data_samples'] = data_sample
 
         return packed_results

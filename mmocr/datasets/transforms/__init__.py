@@ -2,6 +2,8 @@
 from .adapters import MMDet2MMOCR, MMOCR2MMDet
 from .formatting import (PackKIEInputs, PackSERInputs, PackTextDetInputs,
                          PackTextRecogInputs)
+from .layoutlmv3_transforms import (ProcessImageForLayoutLMv3,
+                                    ProcessTokenForLayoutLMv3)
 from .loading import (InferencerLoader, LoadImageFromFile,
                       LoadImageFromNDArray, LoadKIEAnnotations,
                       LoadOCRAnnotations)
@@ -25,5 +27,5 @@ __all__ = [
     'MMOCR2MMDet', 'LoadImageFromFile', 'LoadImageFromNDArray', 'CropHeight',
     'InferencerLoader', 'RemoveIgnored', 'ConditionApply', 'CropHeight',
     'TextRecogGeneralAug', 'ImageContentJitter', 'ReversePixels',
-    'PackSERInputs'
+    'PackSERInputs', 'ProcessImageForLayoutLMv3', 'ProcessTokenForLayoutLMv3'
 ]
