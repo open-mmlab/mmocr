@@ -29,7 +29,7 @@ python tools/visualizations/browse_dataset.py \
 | -t, --task          | `auto`, `textdet`, `textrecog`        | 用于指定可视化数据集的任务类型。`auto`：自动模式，将依据给定的配置文件自动选择合适的任务类型，如果无法自动获取任务类型，则需要用户手动指定为 `textdet` 文本检测任务 或 `textrecog` 文本识别任务。默认采用 `auto` 自动模式。 |
 | -n, --show-number   | int                                   | 指定需要可视化的样本数量。若该参数缺省则默认将可视化全部图片。                                                                                   |
 | -i, --show-interval | float                                 | 可视化图像间隔时间，默认为 2 秒。                                                                                                                |
-| --cfg-options       | float                                 | 用于覆盖配置文件中的参数，详见[示例](./config.md#command-line-modification)。                                                                    |
+| --cfg-options       | str                                   | 用于覆盖配置文件中的参数，详见[示例](./config.md#command-line-modification)。                                                                    |
 
 #### 用法示例
 
@@ -110,11 +110,11 @@ python tools/analysis_tools/offline_eval.py configs/textdet/psenet/psenet_r50_fp
 
 此外，基于此工具，用户也可以将其他算法库获取的预测结果转换成 MMOCR 支持的格式，从而使用 MMOCR 内置的评估指标来对其他算法库的模型进行评测。
 
-| 参数          | 类型  | 说明                                                             |
-| ------------- | ----- | ---------------------------------------------------------------- |
-| config        | str   | （必须）配置文件路径。                                           |
-| pkl_results   | str   | （必须）预先保存的预测结果文件。                                 |
-| --cfg-options | float | 用于覆写配置文件中的指定参数。[示例](./config.md#命令行修改配置) |
+| 参数          | 类型 | 说明                                                             |
+| ------------- | ---- | ---------------------------------------------------------------- |
+| config        | str  | （必须）配置文件路径。                                           |
+| pkl_results   | str  | （必须）预先保存的预测结果文件。                                 |
+| --cfg-options | str  | 用于覆写配置文件中的指定参数。[示例](./config.md#命令行修改配置) |
 
 ### 计算 FLOPs 和参数量
 
@@ -130,10 +130,11 @@ pip install fvcore
 python tools/analysis_tools/get_flops.py ${config} --shape ${IMAGE_SHAPE}
 ```
 
-| 参数    | 类型   | 说明                                                               |
-| ------- | ------ | ------------------------------------------------------------------ |
-| config  | str    | （必须) 配置文件路径。                                             |
-| --shape | int\*2 | 计算 FLOPs 使用的图片尺寸，如 `--shape 320 320`。 默认为 `640 640` |
+| 参数          | 类型          | 说明                                                                                                                                                 |
+| ------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| config        | str           | （必须) 配置文件路径。                                                                                                                               |
+| --shape       | int * \[1-3\] | 计算 FLOPs 使用的图片尺寸，例如 `--shape 320 320`。它可以接受 1 到 3 个参数，分别表示 `H&W`，`H, W` 和 `C, H, W`（C = 3 为默认值）。默认为 `640 640` |
+| --cfg-options | str           | 用于覆写配置文件中的指定参数。[示例](./config.md#命令行修改配置)                                                                                     |
 
 获取 `dbnet_resnet18_fpnc_100k_synthtext.py` FLOPs 和参数量的示例命令如下。
 
@@ -144,51 +145,13 @@ python tools/analysis_tools/get_flops.py configs/textdet/dbnet/dbnet_resnet18_fp
 输出如下：
 
 ```shell
-input shape is  (1, 3, 1024, 1024)
-| module                    | #parameters or shape | #flops  |
-| :------------------------ | :------------------- | :------ |
-| model                     | 12.341M              | 63.955G |
-| backbone                  | 11.177M              | 38.159G |
-| backbone.conv1            | 9.408K               | 2.466G  |
-| backbone.conv1.weight     | (64, 3, 7, 7)        |         |
-| backbone.bn1              | 0.128K               | 83.886M |
-| backbone.bn1.weight       | (64,)                |         |
-| backbone.bn1.bias         | (64,)                |         |
-| backbone.layer1           | 0.148M               | 9.748G  |
-| backbone.layer1.0         | 73.984K              | 4.874G  |
-| backbone.layer1.1         | 73.984K              | 4.874G  |
-| backbone.layer2           | 0.526M               | 8.642G  |
-| backbone.layer2.0         | 0.23M                | 3.79G   |
-| backbone.layer2.1         | 0.295M               | 4.853G  |
-| backbone.layer3           | 2.1M                 | 8.616G  |
-| backbone.layer3.0         | 0.919M               | 3.774G  |
-| backbone.layer3.1         | 1.181M               | 4.842G  |
-| backbone.layer4           | 8.394M               | 8.603G  |
-| backbone.layer4.0         | 3.673M               | 3.766G  |
-| backbone.layer4.1         | 4.721M               | 4.837G  |
-| neck                      | 0.836M               | 14.887G |
-| neck.lateral_convs        | 0.246M               | 2.013G  |
-| neck.lateral_convs.0.conv | 16.384K              | 1.074G  |
-| neck.lateral_convs.1.conv | 32.768K              | 0.537G  |
-| neck.lateral_convs.2.conv | 65.536K              | 0.268G  |
-| neck.lateral_convs.3.conv | 0.131M               | 0.134G  |
-| neck.smooth_convs         | 0.59M                | 12.835G |
-| neck.smooth_convs.0.conv  | 0.147M               | 9.664G  |
-| neck.smooth_convs.1.conv  | 0.147M               | 2.416G  |
-| neck.smooth_convs.2.conv  | 0.147M               | 0.604G  |
-| neck.smooth_convs.3.conv  | 0.147M               | 0.151G  |
-| det_head                  | 0.329M               | 10.909G |
-| det_head.binarize         | 0.164M               | 10.909G |
-| det_head.binarize.0       | 0.147M               | 9.664G  |
-| det_head.binarize.1       | 0.128K               | 20.972M |
-| det_head.binarize.3       | 16.448K              | 1.074G  |
-| det_head.binarize.4       | 0.128K               | 83.886M |
-| det_head.binarize.6       | 0.257K               | 67.109M |
-| det_head.threshold        | 0.164M               |         |
-| det_head.threshold.0      | 0.147M               |         |
-| det_head.threshold.1      | 0.128K               |         |
-| det_head.threshold.3      | 16.448K              |         |
-| det_head.threshold.4      | 0.128K               |         |
-| det_head.threshold.6      | 0.257K               |         |
+
+==============================
+Compute type: Random input
+Input shape: torch.Size([1024, 1024])
+Flops: 63.737G
+Params: 12.341M
+==============================
 !!!Please be cautious if you use the results in papers. You may need to check if all ops are supported and verify that the flops computation is correct.
+
 ```
