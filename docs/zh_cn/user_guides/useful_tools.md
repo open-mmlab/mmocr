@@ -132,6 +132,7 @@ python tools/visualizations/vis_scheduler.py \
 ```bash
 python tools/visualizations/vis_scheduler.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
 ```
+<div align=center><img src="https://user-images.githubusercontent.com/43344034/232755081-cad8fe62-349d-400a-bc38-7f5d17824011.png" style=" width: auto; height: 40%; "></div>
 
 ## 分析工具
 
