@@ -12,24 +12,12 @@ from .base import BasePacker
 @DATA_PACKERS.register_module()
 class SERPacker(BasePacker):
     """Semantic Entity Recognition packer. It is used to pack the parsed
-    annotation info to.
+    annotation info to MMOCR format.
 
     .. code-block:: python
 
         {
-            "metainfo":
-                {
-                    "orig_labels": ['answer', 'header', 'other', 'question'],
-                    "biolabel2id": {
-                        "O": 0,
-                        "B-ANSWER": 1,
-                        "I-ANSWER": 2,
-                        "B-HEADER": 3,
-                        "I-HEADER": 4,
-                        "B-QUESTION": 5,
-                        "I-QUESTION": 6
-                    }
-                },
+            "metainfo": {},
             "data_list":
                 [
                     {
@@ -133,29 +121,5 @@ class SERPacker(BasePacker):
         Returns:
             Dict: A dict contains the meta information and samples.
         """
-
-        def get_bio_label_list(labels):
-            bio_label_list = []
-            for label in labels:
-                if label == 'other':
-                    bio_label_list.insert(0, 'O')
-                else:
-                    bio_label_list.append(f'B-{label.upper()}')
-                    bio_label_list.append(f'I-{label.upper()}')
-            return bio_label_list
-
-        labels = []
-        for s in sample:
-            labels += s['instances']['labels']
-        orig_label_list = list(set(labels))
-        bio_label_list = get_bio_label_list(orig_label_list)
-
-        meta = {
-            'metainfo': {
-                'orig_labels': orig_label_list,
-                'biolabel2id': {v: k
-                                for k, v in enumerate(bio_label_list)}
-            },
-            'data_list': sample
-        }
+        meta = {'metainfo': {}, 'data_list': sample}
         return meta
