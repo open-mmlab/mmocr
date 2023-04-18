@@ -139,26 +139,26 @@ Data:
 
 Specifically, MMOCR lists the meaning of each field in the following table:
 
-| Field Name       | Meaning                                                      |
-| :--------------- | :----------------------------------------------------------- |
-| Name             | The name of the dataset                                      |
-| Paper.Title      | The title of the paper for the dataset                       |
-| Paper.URL        | The URL of the paper for the dataset                         |
-| Paper.Venue      | The venue of the paper for the dataset                       |
-| Paper.Year       | The year of publication for the paper                        |
-| Paper.BibTeX     | The BibTeX citation of the paper for the dataset             |
-| Data.Website     | The official website of the dataset                          |
-| Data.Language    | The supported languages of the dataset                       |
-| Data.Scene       | The supported scenes of the dataset, such as `Natural Scene`, `Document`, `Handwritten`, etc. |
-| Data.Granularity | The supported granularities of the dataset, such as `Character`, `Word`, `Line`, etc. |
-| Data.Tasks       | The supported tasks of the dataset, such as `textdet`, `textrecog`, `textspotting`, `kie`, etc. |
-| Data.License     | License information for the dataset. Use `N/A` if no license exists. |
-| Data.Format      | File format of the annotation files, such as `.txt`, `.xml`, `.json`, etc. |
+| Field Name       | Meaning                                                                                                  |
+| :--------------- | :------------------------------------------------------------------------------------------------------- |
+| Name             | The name of the dataset                                                                                  |
+| Paper.Title      | The title of the paper for the dataset                                                                   |
+| Paper.URL        | The URL of the paper for the dataset                                                                     |
+| Paper.Venue      | The venue of the paper for the dataset                                                                   |
+| Paper.Year       | The year of publication for the paper                                                                    |
+| Paper.BibTeX     | The BibTeX citation of the paper for the dataset                                                         |
+| Data.Website     | The official website of the dataset                                                                      |
+| Data.Language    | The supported languages of the dataset                                                                   |
+| Data.Scene       | The supported scenes of the dataset, such as `Natural Scene`, `Document`, `Handwritten`, etc.            |
+| Data.Granularity | The supported granularities of the dataset, such as `Character`, `Word`, `Line`, etc.                    |
+| Data.Tasks       | The supported tasks of the dataset, such as `textdet`, `textrecog`, `textspotting`, `kie`, etc.          |
+| Data.License     | License information for the dataset. Use `N/A` if no license exists.                                     |
+| Data.Format      | File format of the annotation files, such as `.txt`, `.xml`, `.json`, etc.                               |
 | Data.Keywords    | Keywords describing the characteristics of the dataset, such as `Horizontal`, `Vertical`, `Curved`, etc. |
 
 For the annotation information of the dataset, MMOCR provides a `sample_anno.md` file, which users can use as a template to fill in the annotation information of the dataset, so that users can quickly understand the annotation information of the dataset. MMOCR uses ICDAR2015 as an example, and the sample content is as follows:
 
-```markdown
+````markdown
     **Text Detection**
 
     ```text
@@ -167,8 +167,9 @@ For the annotation information of the dataset, MMOCR provides a `sample_anno.md`
     377,117,463,117,465,130,378,130,Genaxis Theatre
     493,115,519,115,519,131,493,131,[06]
     374,155,409,155,409,170,374,170,###
-    ```
-```
+````
+
+````
 
 `sample_anno.md` provides annotation information for different tasks of the dataset, including the format of the annotation files (text corresponds to `txt` files, and the format of the annotation files can also be found in `meta.yml`), and examples of the annotations.
 
@@ -256,27 +257,27 @@ test_preparer = dict(
 
 delete = ['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img']
 config_generator = dict(type='TextDetConfigGenerator')
-```
+````
 
 #### Dataset download extraction and movement (Obtainer)
 
 The `obtainer` module in Dataset Preparer is responsible for downloading, extracting, and moving the dataset. Currently, MMOCR only provides the `NaiveDataObtainer`. Generally speaking, the built-in `NaiveDataObtainer` is sufficient for downloading most datasets that can be accessed through direct links, and supports operations such as extraction, moving files, and renaming. However, MMOCR currently does not support automatically downloading datasets stored in resources that require login, such as Baidu or Google Drive. Here is a brief introduction to the `NaiveDataObtainer`.
 
-| Field Name | Meaning                                                      |
-| ---------- | ------------------------------------------------------------ |
+| Field Name | Meaning                                                                                      |
+| ---------- | -------------------------------------------------------------------------------------------- |
 | cache_path | Dataset cache path, used to store the compressed files downloaded during dataset preparation |
-| data_root  | Root directory where the dataset is stored                   |
-| files      | Dataset file list, used to describe the download information of the dataset |
+| data_root  | Root directory where the dataset is stored                                                   |
+| files      | Dataset file list, used to describe the download information of the dataset                  |
 
 The `files` field is a list, and each element in the list is a dictionary used to describe the download information of a dataset file. The table below shows the meaning of each field:
 
-| Field Name         | Meaning                                                      |
-| ------------------ | ------------------------------------------------------------ |
-| url                | Download link for the dataset file                           |
-| save_name          | Name used to save the dataset file                           |
-| md5 (optional)     | MD5 hash of the dataset file, used to check if the downloaded file is complete |
-| split (optional)   | Dataset split the file belongs to, such as `train`, `test`, etc., this field can be omitted |
-| content (optional) | Content of the dataset file, such as `image`, `annotation`, etc., this field can be omitted |
+| Field Name         | Meaning                                                                                                                                    |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| url                | Download link for the dataset file                                                                                                         |
+| save_name          | Name used to save the dataset file                                                                                                         |
+| md5 (optional)     | MD5 hash of the dataset file, used to check if the downloaded file is complete                                                             |
+| split (optional)   | Dataset split the file belongs to, such as `train`, `test`, etc., this field can be omitted                                                |
+| content (optional) | Content of the dataset file, such as `image`, `annotation`, etc., this field can be omitted                                                |
 | mapping (optional) | Decompression mapping of the dataset file, used to specify the storage location of the file after decompression, this field can be omitted |
 
 The Dataset Preparer follows the following conventions:
@@ -451,12 +452,12 @@ When processing a dataset, temporary files that are not needed may be generated.
 
 In order to automatically generate basic configuration files after preparing the dataset, MMOCR has implemented `TextDetConfigGenerator`, `TextRecogConfigGenerator`, and `TextSpottingConfigGenerator` for each task. The main parameters supported by these generators are as follows:
 
-| Field Name  | Meaning                                                      |
-| ----------- | ------------------------------------------------------------ |
-| data_root   | Root directory where the dataset is stored.                  |
-| train_anns  | Path to the training set annotations in the configuration file. If not specified, it defaults to `[dict(ann_file='{taskname}_train.json', dataset_postfix='']`. |
-| val_anns    | Path to the validation set annotations in the configuration file. If not specified, it defaults to an empty string. |
-| test_anns   | Path to the test set annotations in the configuration file. If not specified, it defaults to `[dict(ann_file='{taskname}_test.json', dataset_postfix='']`. |
+| Field Name  | Meaning                                                                                                                                                                                       |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data_root   | Root directory where the dataset is stored.                                                                                                                                                   |
+| train_anns  | Path to the training set annotations in the configuration file. If not specified, it defaults to `[dict(ann_file='{taskname}_train.json', dataset_postfix='']`.                               |
+| val_anns    | Path to the validation set annotations in the configuration file. If not specified, it defaults to an empty string.                                                                           |
+| test_anns   | Path to the test set annotations in the configuration file. If not specified, it defaults to `[dict(ann_file='{taskname}_test.json', dataset_postfix='']`.                                    |
 | config_path | Path to the directory where the configuration files for the algorithm are stored. The configuration generator will write the default configuration to `{config_path}/{taskname}/_base_/datasets/{dataset_name}.py`. If not specified, it defaults to `configs/`. |
 
 After preparing all the files for the dataset, the configuration generator will automatically generate the basic configuration files required to call the dataset. Below is a minimal example of a `TextDetConfigGenerator` configuration:
@@ -598,7 +599,7 @@ Data:
 
 Finally, you can add an annotation example file `sample_anno.md` under the `dataset_zoo/icdar2013/` directory to help the documentation script add annotation examples when generating documentation. The annotation example file is a Markdown file that typically contains the raw data format of a single sample. For example, the following code block shows a sample data file for the ICDAR2013 dataset:
 
-```markdown
+````markdown
   **Text Detection**
 
   ```text
@@ -615,8 +616,9 @@ Finally, you can add an annotation example file `sample_anno.md` under the `data
   38, 43, 920, 215, "Tiredness"
   275, 264, 665, 450, "kills"
   0, 699, 77, 830, "A"
-  ```
-```
+````
+
+````
 
 #### Add configuration files for corresponding tasks
 
@@ -657,7 +659,7 @@ test_prepare = dict(
     packer=dict(type='TextxxxPacker'), # Packer for the task
     dumper=dict(type='JsonDumper'),
 )
-```
+````
 
 Taking the file detection task as an example, let's introduce the specific content of the configuration file. In general, users do not need to implement new `obtainer`, `gatherer`, `packer`, or `dumper`, but usually need to implement a new `parser` according to the annotation format of the dataset.
 
