@@ -132,10 +132,8 @@ You can use the following command to plot the step learning rate schedule used i
 ```bash
 python tools/visualizations/vis_scheduler.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
 ```
+<div align=center><img src="https://user-images.githubusercontent.com/43344034/232757392-b29b8e3a-77af-451c-8786-d3b4259ab388.png" style=" width: auto; height: 40%; "></div>
 
-<div align=center><img src="https://user-images.githubusercontent.com/18586273/191006713-023f065d-d366-4165-a52e-36176367506e.png" style=" width: auto; height: 40%; "></div>
-
-#### How to plot the learning rate curve without training
 
 ## Analysis Tools
 
