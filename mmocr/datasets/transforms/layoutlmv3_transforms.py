@@ -4,22 +4,70 @@ from typing import Dict, Optional, Union
 from mmcv.transforms.base import BaseTransform
 
 from mmocr.registry import TRANSFORMS
-from transformers import AutoImageProcessor, LayoutLMv3ImageProcessor
+from transformers import LayoutLMv3ImageProcessor, LayoutXLMTokenizerFast
 from transformers.file_utils import PaddingStrategy
 from transformers.image_processing_utils import BatchFeature
 from transformers.image_utils import ChannelDimension
-from transformers.tokenization_utils_base import BatchEncoding
+from transformers.tokenization_utils_base import (BatchEncoding,
+                                                  TruncationStrategy)
+
+
+@TRANSFORMS.register_module()
+class LoadProcessorFromPretrainedModel(BaseTransform):
+    """A transform to load image_processor/text_tokenizer from pretrained
+    model, which will use HuggingFace `LayoutLMv3ImageProcessor` and
+    `LayoutXLMTokenizerFast`
+
+    Added Keys:
+
+    - image_processor
+    - tokeinzer
+
+    Args:
+        pretrained_model_name_or_path (str): The name or path of huggingface
+            pretrained model, which must be specified.
+        image_processor (dict): The specific parameters for image_processor.
+        tokenizer (dict): The specific parameters for tokenizer.
+    """
+
+    def __init__(
+        self,
+        pretrained_model_name_or_path: str,
+        image_processor: dict = dict(),
+        tokenizer: dict = dict()
+    ) -> None:
+        super().__init__()
+        assert pretrained_model_name_or_path != ''
+        self.image_processor = LayoutLMv3ImageProcessor.from_pretrained(
+            pretrained_model_name_or_path=pretrained_model_name_or_path,
+            **image_processor)
+        # TODO: support apply_ocr
+        if self.image_processor.apply_ocr:
+            raise ValueError(
+                'Now only support initialized the image processor '
+                'with apply_ocr set to False.')
+
+        # https://huggingface.co/microsoft/layoutlmv3-base-chinese/discussions/3
+        # use LayoutXLMTokenizerFast instead of LayoutLMv3TokenizerFast
+        self.tokenizer = LayoutXLMTokenizerFast.from_pretrained(
+            pretrained_model_name_or_path=pretrained_model_name_or_path,
+            **tokenizer)
+
+    def transform(self, results: dict) -> Dict:
+        results['image_processor'] = self.image_processor
+        results['tokenizer'] = self.tokenizer
+        return results
 
 
 @TRANSFORMS.register_module()
 class ProcessImageForLayoutLMv3(BaseTransform):
-    """A transform to process image for LayoutLMv3, which will use HuggingFace
-    `AutoImageProcessor`
+    """A transform to process image for LayoutLMv3.
 
     Required Keys:
 
     - img
     - img_shape
+    - image_processor
 
     Modified Keys:
 
@@ -29,48 +77,18 @@ class ProcessImageForLayoutLMv3(BaseTransform):
 
     - scale_factor
     - pixel_values
-
-    Args:
-        image_processor (dict): The image_processor cfg, which the key
-            `pretrained_model_name_or_path` must be specified.
     """
 
-    image_processor_class = (LayoutLMv3ImageProcessor)
-
-    def __init__(self,
-                 image_processor: dict = dict(
-                     pretrained_model_name_or_path=None),
-                 label_pad_token_id: int = -100) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        if isinstance(image_processor, dict) and \
-                image_processor.get('pretrained_model_name_or_path', None):
-            self.image_processor = AutoImageProcessor.from_pretrained(
-                **image_processor)
-        else:
-            raise TypeError(
-                'image_processor cfg should be a `dict` and a key '
-                '`pretrained_model_name_or_path` must be specified')
-
-        if not isinstance(self.image_processor, self.image_processor_class):
-            raise ValueError(
-                f'Received a {type(self.image_processor)} for argument '
-                f'image_processor, but a {self.image_processor_class} '
-                'was expected.')
-
-        # TODO: support apply_ocr
-        if self.image_processor.apply_ocr:
-            raise ValueError(
-                'Now only support initialized the image processor '
-                'with apply_ocr set to False.')
-
-        self.label_pad_token_id = label_pad_token_id
 
     def _resize_rescale_norm(self, results: dict) -> None:
-        """apply the image_processor to process img."""
+        """apply the image_processor to img."""
         img = results['img']
         h, w = results['img_shape']
 
-        features: BatchFeature = self.image_processor(
+        image_processor = results['image_processor']
+        features: BatchFeature = image_processor(
             images=img, return_tensors='np', data_format=ChannelDimension.LAST)
 
         # output default dims NHWC and here N=1
@@ -89,136 +107,170 @@ class ProcessImageForLayoutLMv3(BaseTransform):
 
 @TRANSFORMS.register_module()
 class ProcessTokenForLayoutLMv3(BaseTransform):
-    """A transform to process token, which will dynamically pad the inputs
-    received, as well as the labels.
-
-    Part of code is modified from `https://github.com/microsoft/unilm/blob
-    /master/layoutlmv3/layoutlmft/data/data_collator.py` and `https://
-    github.com/huggingface/transformers/blob/main/src/transformers/models/
-    layoutlmv3/processing_layoutlmv3.py`.
+    """A transform to process texts for LayoutLMv3,
 
     Required Keys:
 
     - tokenizer
+    - width
+    - height
+    - instances
+        - texts
+        - boxes
+
+    Added Keys:
+
     - input_ids
     - attention_mask
-    - labels
     - bbox
-    - position_ids
-    - segment_ids(optional)
-
-    Modified Keys:
-
-    - input_ids
-    - attention_mask
-    - labels
-    - bbox
-    - position_ids
-    - segment_ids(optional)
+    - word_ids
 
     Args:
-        padding (:obj:`bool`, :obj:`str` or :class:
-        `~transformers.file_utils.PaddingStrategy`,
-        `optional`, defaults to :obj:`True`):
-            Select a strategy to pad the returned sequences
-            (according to the model's padding side and padding index)
-            among:
-            * :obj:`True` or :obj:`'longest'`: Pad to the longest
-              sequence in the batch (or no padding if only a
-              single sequence if provided).
-            * :obj:`'max_length'`: Pad to a maximum length specified
-              with the argument :obj:`max_length` or to the maximum
-              acceptable input length for the model if that argument
-              is not provided.
-            * :obj:`False` or :obj:`'do_not_pad'` (default): No
-              padding (i.e., can output a batch with sequences
-              of different lengths).
-        max_length (:obj:`int`, `optional`):
-            Maximum length of the returned list and optionally
-            padding length (see above).
-        pad_to_multiple_of (:obj:`int`, `optional`):
-            If set will pad the sequence to a multiple of the
-            provided value. This is especially useful to enable the
-            use of Tensor Cores on NVIDIA hardware with compute
-            capability >= 7.5 (Volta).
-        label_pad_token_id (:obj:`int`, `optional`, defaults to -100):
-            The id to use when padding the labels (-100 will be
-            automatically ignore by PyTorch loss functions).
+        Refer to the parameters of the corresponding tokenizer
     """
 
-    padded_input_names = ['input_ids', 'attention_mask']
-
     def __init__(self,
-                 padding: Union[bool, str, PaddingStrategy] = True,
+                 padding: Union[bool, str, PaddingStrategy] = False,
                  max_length: Optional[int] = None,
-                 pad_to_multiple_of: Optional[int] = None,
-                 label_pad_token_id: int = -100) -> None:
+                 truncation: Union[bool, str, TruncationStrategy] = None,
+                 pad_to_multiple_of: Optional[int] = None) -> None:
         super().__init__()
         self.padding = padding
         self.max_length = max_length
+        self.truncation = truncation
         self.pad_to_multiple_of = pad_to_multiple_of
-        self.label_pad_token_id = label_pad_token_id
 
-    def _pad(self, results: dict) -> None:
-        # get tokenizer
+    def _tokenize(self, results: dict) -> None:
         tokenizer = results['tokenizer']
 
-        # There will be a warning advice:
-        # You're using a XLMRobertaTokenizerFast tokenizer.
-        # Please note that with a fast tokenizer, using the
-        # `__call__` method is faster than using a method to
-        # encode the text followed by a call to the `pad`
-        # method to get a padded encoding.
-        # But `__call__` method only supports input string text,
-        # which has already been encoded before this step.
-        features = {
-            k: v
-            for k, v in results.items() if k in self.padded_input_names
-        }
-        batch: BatchEncoding = tokenizer.pad(
-            encoded_inputs=features,
+        instances = results['instances']
+        texts = instances['texts']
+        boxes = instances['boxes']
+
+        tokenized_inputs: BatchEncoding = tokenizer(
+            text=texts,
+            boxes=boxes,
             padding=self.padding,
             max_length=self.max_length,
-            pad_to_multiple_of=self.pad_to_multiple_of)
-        # update `input_ids` and `attention_mask`
-        results.update(batch)
+            truncation=self.truncation,
+            pad_to_multiple_of=self.pad_to_multiple_of,
+            add_special_tokens=True,
+            return_tensors='np',
+            return_attention_mask=True,
+            return_offsets_mapping=True)
 
-        has_bbox_input = 'bbox' in results
-        has_position_input = 'position_ids' in results
-        has_segment_input = 'segment_ids' in results
-        sequence_length = len(results['input_ids'])
-        if tokenizer.padding_side == 'right':
-            results[
-                'labels'] = results['labels'] + [self.label_pad_token_id] * (
-                    sequence_length - len(results['labels']))
-            if has_bbox_input:
-                results['bbox'] = results['bbox'] + [[0, 0, 0, 0]] * (
-                    sequence_length - len(results['bbox']))
-            if has_position_input:
-                results['position_ids'] = results['position_ids'] + [
-                    tokenizer.pad_token_id
-                ] * (
-                    sequence_length - len(results['position_ids']))
-            if has_segment_input:
-                results['segment_ids'] = results['segment_ids'] + [
-                    results['segment_ids'][-1] + 1
-                ] * (
-                    sequence_length - len(results['segment_ids']))
-        else:
-            results['labels'] = [self.label_pad_token_id] * (
-                sequence_length - len(results['labels'])) + results['labels']
-            if has_bbox_input:
-                results['bbox'] = [[0, 0, 0, 0]] * (
-                    sequence_length - len(results['bbox'])) + results['bbox']
-            if has_position_input:
-                results['position_ids'] = [tokenizer.pad_token_id] * (
-                    sequence_length -
-                    len(results['position_ids'])) + results['position_ids']
-            if has_segment_input:
-                results['segment_ids'] = [results['segment_ids'][-1] + 1] * (
-                    sequence_length -
-                    len(results['segment_ids'])) + results['segment_ids']
+        # By default, the pipeline processes one sample
+        # at a time, so set batch_index = 0.
+        batch_index = 0
+        # record input_ids/attention_mask/bbox
+        for k in ['input_ids', 'attention_mask', 'bbox']:
+            results[k] = tokenized_inputs[k][batch_index]
+        # record word_ids
+        results['word_ids'] = tokenized_inputs.encodings[batch_index].word_ids
+
+    def _norm_boxes(self, results: dict) -> None:
+
+        def box_norm(box, width, height):
+
+            def clip(min_num, num, max_num):
+                return min(max(num, min_num), max_num)
+
+            x0, y0, x1, y1 = box
+            x0 = clip(0, int((x0 / width) * 1000), 1000)
+            y0 = clip(0, int((y0 / height) * 1000), 1000)
+            x1 = clip(0, int((x1 / width) * 1000), 1000)
+            y1 = clip(0, int((y1 / height) * 1000), 1000)
+            assert x1 >= x0
+            assert y1 >= y0
+            return [x0, y0, x1, y1]
+
+        instances = results['instances']
+        boxes = instances['boxes']
+
+        # norm boxes
+        width = results['width']
+        height = results['height']
+        norm_boxes = [box_norm(box, width, height) for box in boxes]
+
+        results['instances']['boxes'] = norm_boxes
 
     def transform(self, results: dict) -> Dict:
-        self._pad(results)
+        self._norm_boxes(results)
+        self._tokenize(results)
+        return results
+
+
+@TRANSFORMS.register_module()
+class ConvertBIOLabelForSER(BaseTransform):
+    """A transform to convert BIO format labels for SER task,
+
+    Required Keys:
+
+    - tokenizer
+    - word_ids
+    - instances
+        - labels
+
+    Added Keys:
+
+    - labels
+
+    Args:
+        classes (Union[tuple, list]): dataset classes
+        only_label_first_subword (bool): Whether or not to only label
+            the first subword, in case word labels are provided.
+    """
+
+    def __init__(self,
+                 classes: Union[tuple, list],
+                 only_label_first_subword: bool = False) -> None:
+        super().__init__()
+        self.biolabel2id = self._generate_biolabel2id_map(classes)
+        self.only_label_first_subword = only_label_first_subword
+
+    def _generate_biolabel2id_map(self, classes: Union[tuple, list]) -> Dict:
+        bio_label_list = []
+        classes = sorted([c.upper() for c in classes])
+        for c in classes:
+            if c == 'OTHER':
+                bio_label_list.insert(0, c)
+            else:
+                bio_label_list.append(f'B-{c}')
+                bio_label_list.append(f'I-{c}')
+        biolabel2id_map = {
+            bio_label: idx
+            for idx, bio_label in enumerate(bio_label_list)
+        }
+        return biolabel2id_map
+
+    def _convert(self, results: dict) -> None:
+        tokenizer = results['tokenizer']
+
+        instances = results['instances']
+        labels = [label.upper() for label in instances['labels']]
+        word_ids = results['word_ids']
+
+        biolabel_ids = []
+        pre_word_id = None
+        for cur_word_id in word_ids:
+            if cur_word_id is not None:
+                if cur_word_id != pre_word_id:
+                    biolabel_name = f'B-{labels[cur_word_id]}' \
+                        if labels[cur_word_id] != 'OTHER' else 'OTHER'
+                elif self.only_label_first_subword:
+                    biolabel_name = 'OTHER'
+                else:
+                    biolabel_name = f'I-{labels[cur_word_id]}' \
+                        if labels[cur_word_id] != 'OTHER' else 'OTHER'
+                # convert biolabel to id
+                biolabel_ids.append(self.biolabel2id[biolabel_name])
+            else:
+                biolabel_ids.append(tokenizer.pad_token_label)
+            pre_word_id = cur_word_id
+
+        # record biolabel_ids
+        results['labels'] = biolabel_ids
+
+    def transform(self, results: dict) -> Dict:
+        self._convert(results)
         return results

@@ -368,8 +368,7 @@ class PackSERInputs(BaseTransform):
     """
     # HF LayoutLMv3ForTokenClassification model input params.
     ser_keys = [
-        'input_ids', 'bbox', 'attention_mask', 'position_ids', 'pixel_values',
-        'labels'
+        'input_ids', 'bbox', 'attention_mask', 'pixel_values', 'labels'
     ]
 
     def __init__(self, meta_keys=()):
@@ -407,15 +406,18 @@ class PackSERInputs(BaseTransform):
             results['pixel_values'] = img
 
         data_sample = SERDataSample()
-        # instance_data = InstanceData()
+        gt_label = LabelData()
 
         inputs = {}
         for key in self.ser_keys:
             if key not in results:
                 continue
-            inputs[key] = to_tensor(results[key])
+            value = to_tensor(results[key])
+            if key == 'labels':
+                gt_label.item = value
+            inputs[key] = value
         packed_results['inputs'] = inputs
-        # data_sample.gt_instances = instance_data
+        data_sample.gt_label = gt_label
 
         meta = {}
         for key in self.meta_keys:
