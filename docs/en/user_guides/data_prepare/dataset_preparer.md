@@ -1,8 +1,7 @@
 # Dataset Preparer (Beta)
 
 ```{note}
-Dataset Preparer is still in beta version and might not be stable enough. You
-are welcome to try it out and report any issues to us.
+Dataset Preparer is still in beta version and might not be stable enough. You are welcome to try it out and report any issues to us.
 ```
 
 ## One-click data preparation script
@@ -158,7 +157,7 @@ Specifically, MMOCR lists the meaning of each field in the following table:
 
 For the annotation information of the dataset, MMOCR provides a `sample_anno.md` file, which users can use as a template to fill in the annotation information of the dataset, so that users can quickly understand the annotation information of the dataset. MMOCR uses ICDAR2015 as an example, and the sample content is as follows:
 
-````markdown
+```markdown
     **Text Detection**
 
     ```text
@@ -167,9 +166,7 @@ For the annotation information of the dataset, MMOCR provides a `sample_anno.md`
     377,117,463,117,465,130,378,130,Genaxis Theatre
     493,115,519,115,519,131,493,131,[06]
     374,155,409,155,409,170,374,170,###
-````
-
-````
+```
 
 `sample_anno.md` provides annotation information for different tasks of the dataset, including the format of the annotation files (text corresponds to `txt` files, and the format of the annotation files can also be found in `meta.yml`), and examples of the annotations.
 
@@ -257,7 +254,7 @@ test_preparer = dict(
 
 delete = ['annotations', 'ic15_textdet_test_img', 'ic15_textdet_train_img']
 config_generator = dict(type='TextDetConfigGenerator')
-````
+```
 
 #### Dataset download extraction and movement (Obtainer)
 
@@ -599,7 +596,7 @@ Data:
 
 Finally, you can add an annotation example file `sample_anno.md` under the `dataset_zoo/icdar2013/` directory to help the documentation script add annotation examples when generating documentation. The annotation example file is a Markdown file that typically contains the raw data format of a single sample. For example, the following code block shows a sample data file for the ICDAR2013 dataset:
 
-````markdown
+```markdown
   **Text Detection**
 
   ```text
@@ -616,9 +613,7 @@ Finally, you can add an annotation example file `sample_anno.md` under the `data
   38, 43, 920, 215, "Tiredness"
   275, 264, 665, 450, "kills"
   0, 699, 77, 830, "A"
-````
-
-````
+```
 
 #### Add configuration files for corresponding tasks
 
@@ -659,7 +654,7 @@ test_prepare = dict(
     packer=dict(type='TextxxxPacker'), # Packer for the task
     dumper=dict(type='JsonDumper'),
 )
-````
+```
 
 Taking the file detection task as an example, let's introduce the specific content of the configuration file. In general, users do not need to implement new `obtainer`, `gatherer`, `packer`, or `dumper`, but usually need to implement a new `parser` according to the annotation format of the dataset.
 
