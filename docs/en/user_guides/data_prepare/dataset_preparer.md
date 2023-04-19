@@ -179,7 +179,7 @@ With the information in these two files, users can quickly understand the basic 
 
 After decades of development, the OCR field has seen a series of related datasets emerge, often providing text annotation files in various styles, making it necessary for users to perform format conversion when using these datasets. Therefore, to facilitate dataset preparation for users, we have designed the Dataset Preparer to help users quickly prepare datasets in the format supported by MMOCR. For details, please refer to the [Dataset Format](../../basic_concepts/datasets.md) document. The following figure shows a typical workflow for running the Dataset Preparer.
 
-![workflow](./workflow.jpg)
+![workflow](https://user-images.githubusercontent.com/87774050/233025618-aa3c3ad6-c595-49a3-b080-a6284748c0c1.jpg)
 
 The figure shows that when running the Dataset Preparer, the following operations will be performed in sequence:
 
