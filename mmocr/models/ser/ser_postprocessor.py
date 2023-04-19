@@ -19,8 +19,8 @@ class SERPostprocessor(nn.Module):
         outputs = outputs.cpu().detach()
         max_value, max_idx = torch.max(outputs, -1)
         for batch_idx in range(outputs.size(0)):
-            pred_text = LabelData()
-            pred_text.score = max_value[batch_idx]
-            pred_text.item = max_idx[batch_idx]
-            data_samples[batch_idx].pred_text = pred_text
+            pred_label = LabelData()
+            pred_label.score = max_value[batch_idx]
+            pred_label.item = max_idx[batch_idx]
+            data_samples[batch_idx].pred_label = pred_label
         return data_samples
