@@ -17,19 +17,26 @@ ForwardResults = Union[Dict[str, torch.Tensor], SERSampleList,
 class HFLayoutLMv3ForTokenClassificationWrapper(BaseModel):
 
     def __init__(self,
-                 classifier: dict = dict(pretrained_model_name_or_path=None),
+                 layoutlmv3_token_classifier: dict = dict(
+                     pretrained_model_name_or_path=None),
                  data_preprocessor: Optional[Dict] = None,
+                 postprocessor: Optional[Dict] = None,
                  init_cfg: Optional[Dict] = None):
         super().__init__(
             data_preprocessor=data_preprocessor, init_cfg=init_cfg)
-        if isinstance(classifier, dict) and \
-                classifier.get('pretrained_model_name_or_path', None):
+        if isinstance(layoutlmv3_token_classifier, dict) and \
+                layoutlmv3_token_classifier.get(
+                    'pretrained_model_name_or_path', None):
             self.model = AutoModelForTokenClassification.from_pretrained(
-                **classifier)
+                **layoutlmv3_token_classifier)
         else:
             raise TypeError(
-                'classifier cfg should be a `dict` and a key '
+                'layoutlmv3_token_classifier cfg should be a `dict` and a key '
                 '`pretrained_model_name_or_path` must be specified')
+
+        if postprocessor is not None:
+            assert isinstance(postprocessor, dict)
+            self.postprocessor = MODELS.build(postprocessor)
 
     def forward(self,
                 inputs: torch.Tensor,
@@ -90,7 +97,7 @@ class HFLayoutLMv3ForTokenClassificationWrapper(BaseModel):
             dict[str, Tensor]: A dictionary of loss components.
         """
         outputs: TokenClassifierOutput = self.model(**inputs)
-        return outputs
+        return outputs['loss']
 
     def predict(self, inputs: torch.Tensor,
                 data_samples: SERSampleList) -> SERSampleList:
@@ -119,8 +126,9 @@ class HFLayoutLMv3ForTokenClassificationWrapper(BaseModel):
                     Each element represents the polygon of the
                     instance, in (xn, yn) order.
         """
-        x = self.extract_feat(inputs)
-        return self.det_head.predict(x, data_samples)
+        outputs: TokenClassifierOutput = self.model(**inputs)
+        logits = outputs['logits']
+        return self.postprocessor(logits, data_samples)
 
     def _forward(self,
                  inputs: torch.Tensor,
