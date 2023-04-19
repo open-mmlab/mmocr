@@ -71,9 +71,6 @@ class HFLayoutLMv3ForTokenClassificationWrapper(BaseModel):
             - If ``mode="predict"``, return a list of :obj:`SERDataSample`.
             - If ``mode="loss"``, return a dict of tensor.
         """
-        # copying inputs data to the target device
-        inputs = self.data_preprocessor(inputs)
-
         if mode == 'loss':
             return self.loss(inputs, data_samples)
         elif mode == 'predict':
@@ -97,7 +94,7 @@ class HFLayoutLMv3ForTokenClassificationWrapper(BaseModel):
             dict[str, Tensor]: A dictionary of loss components.
         """
         outputs: TokenClassifierOutput = self.model(**inputs)
-        return outputs['loss']
+        return {'ce_loss': outputs['loss']}
 
     def predict(self, inputs: torch.Tensor,
                 data_samples: SERSampleList) -> SERSampleList:
