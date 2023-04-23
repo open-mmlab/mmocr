@@ -1,0 +1,31 @@
+Name: 'DETEXT'
+Paper:
+  Title: A Database for Evaluating Text Extraction from Biomedical Literature Figures
+  URL: http://cs-chan.com/doc/ESWA_2014A.pdf
+  Venue: ESWA
+  Year: '2015'
+  BibTeX: '@article{article,
+  author = {Yin, Xu-Cheng and Yang, Chun and Pei, Wei-Yi and Man, Haixia and Zhang, Jun and Learned-Miller, Erik and Yu, Hong},
+  year = {2015},
+  month = {05},
+  pages = {e0126200},
+  title = {DeTEXT: A Database for Evaluating Text Extraction from Biomedical Literature Figures},
+  volume = {10},
+  journal = {PloS one},
+  doi = {10.1371/journal.pone.0126200}}'
+Data:
+  Website: https://rrc.cvc.uab.es/?ch=9
+  Language:
+    - English
+  Scene:
+    - biomedical
+  Granularity:
+    - Word
+  Tasks:
+    - textrecog
+    - textdet
+    - textspotting
+  License:
+    Type: CC BY 1.0
+    Link: https://creativecommons.org/licenses/by/1.0/
+  Format: .txt
