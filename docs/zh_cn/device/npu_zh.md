@@ -17,9 +17,9 @@ python tools/train.py configs/textrecog/crnn/crnn_academic_dataset.py
 
 ## 经过验证的模型
 
-|  Model   | mean_word_acc_ignore_case | mean_word_acc_ignore_case_symbol | Config                                                                                                                           | Download                                                                                                                   |
-|:--------:|:-------------------------:|:--------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------| :------------------------------------------------------------------------------------------------------------------------- |
-| [CRNN](<>) |           68.4            |               68.7               | [config](https://github.com/open-mmlab/mmocr/blob/0.x/configs/textrecog/crnn/crnn_academic_dataset.py) | [log](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_20230406_103202.log.json)     |
+|   Model    | mean_word_acc_ignore_case | mean_word_acc_ignore_case_symbol | Config                                                            | Download                                                             |
+| :--------: | :-----------------------: | :------------------------------: | :---------------------------------------------------------------- | :------------------------------------------------------------------- |
+| [CRNN](<>) |           68.4            |               68.7               | [config](https://github.com/open-mmlab/mmocr/blob/0.x/configs/textrecog/crnn/crnn_academic_dataset.py) | [log](https://download.openmmlab.com/mmocr/textrecog/crnn/crnn_20230406_103202.log.json) |
 
 **注意:**
 
