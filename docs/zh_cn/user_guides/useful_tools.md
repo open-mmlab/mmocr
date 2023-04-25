@@ -118,7 +118,7 @@ python tools/visualizations/vis_scheduler.py \
 - **`-s, --save-path`**: 保存的可视化图片的路径，默认不保存。
 - `--title`: 可视化图片的标题，默认为配置文件名。
 - `--style`: 可视化图片的风格，默认为 `whitegrid`。
-- `--window-size`: 可视化窗口大小，如果没有指定，默认为 `12*7`。如果需要指定，按照格式 `W*H'。
+- `--window-size`: 可视化窗口大小，如果没有指定，默认为 `12*7`。如果需要指定，按照格式 \`W\*H'。
 - `--cfg-options`: 对配置文件的修改，参考[学习配置文件](../user_guides/config.md)。
 
 ```{note}
@@ -130,7 +130,7 @@ python tools/visualizations/vis_scheduler.py \
 你可以使用如下命令来绘制配置文件 `configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py` 将会使用的变化率曲线：
 
 ```bash
-python tools/visualizations/vis_scheduler.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
+python tools/visualizations/vis_scheduler.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -d 100
 ```
 
 <div align=center><img src="https://user-images.githubusercontent.com/43344034/232755081-cad8fe62-349d-400a-bc38-7f5d17824011.png" style=" width: auto; height: 40%; "></div>

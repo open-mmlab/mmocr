@@ -25,11 +25,11 @@ python tools/visualizations/browse_dataset.py \
 | config              | str                                   | (required) Path to the config.                                                                                                                   |
 | -o, --output-dir    | str                                   | If GUI is not available, specifying an output path to save the visualization results.                                                            |
 | -p, --phase         | str                                   | Phase of dataset to visualize. Use "train", "test" or "val" if you just want to visualize the default split. It's also possible to be a dataset variable name, which might be useful when a dataset split has multiple variants in the config. |
-| -m, --mode          | `original`, `transformed`, `pipeline` | Display mode: display original pictures or transformed pictures or comparison pictures. `original` only visualizes the original dataset & annotations; `transformed` shows the resulting images processed through all the transforms; `pipeline` shows all the intermediate images. Defaults to "transformed". |
+| -m, --mode          | `original`, `transformed`, `pipeline` | Display mode: display original pictures or transformed pictures or comparison pictures.`original` only visualizes the original dataset & annotations; `transformed` shows the resulting images processed through all the transforms; `pipeline` shows all the intermediate images. Defaults to "transformed". |
 | -t, --task          | `auto`, `textdet`, `textrecog`        | Specify the task type of the dataset. If `auto`, the task type will be inferred from the config. If the script is unable to infer the task type, you need to specify it manually. Defaults to `auto`. |
 | -n, --show-number   | int                                   | The number of samples to visualized. If not specified, display all images in the dataset.                                                        |
 | -i, --show-interval | float                                 | Interval of visualization (s), defaults to 2.                                                                                                    |
-| --cfg-options       | float                                 | Override configs. [Example](./config.md#command-line-modification)                                                                               |
+| --cfg-options       | float                                 | Override configs.[Example](./config.md#command-line-modification)                                                                                |
 
 #### Examples
 
@@ -130,7 +130,7 @@ Loading annotations maybe consume much time, you can directly specify the size o
 You can use the following command to plot the step learning rate schedule used in the config `configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py`:
 
 ```bash
-python tools/visualizations/vis_scheduler.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
+python tools/visualizations/vis_scheduler.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -d 100
 ```
 
 <div align=center><img src="https://user-images.githubusercontent.com/43344034/232757392-b29b8e3a-77af-451c-8786-d3b4259ab388.png" style=" width: auto; height: 40%; "></div>
@@ -157,11 +157,11 @@ python tools/analysis_tools/offline_eval.py configs/textdet/psenet/psenet_r50_fp
 
 In addition, based on this tool, users can also convert predictions obtained from other libraries into MMOCR-supported formats, then use MMOCR's built-in metrics to evaluate them.
 
-| ARGS          | Type  | Description                                                        |
-| ------------- | ----- | ------------------------------------------------------------------ |
-| config        | str   | (required) Path to the config.                                     |
-| pkl_results   | str   | (required) The saved predictions.                                  |
-| --cfg-options | float | Override configs. [Example](./config.md#command-line-modification) |
+| ARGS          | Type  | Description                                                       |
+| ------------- | ----- | ----------------------------------------------------------------- |
+| config        | str   | (required) Path to the config.                                    |
+| pkl_results   | str   | (required) The saved predictions.                                 |
+| --cfg-options | float | Override configs.[Example](./config.md#command-line-modification) |
 
 ### Calculate FLOPs and the Number of Parameters
 
