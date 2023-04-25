@@ -127,24 +127,6 @@ html_theme_options = {
                 },
             ]
         },
-        {
-            'name':
-            'Version',
-            'children': [
-                {
-                    'name': 'MMOCR 0.x',
-                    'url': 'https://mmocr.readthedocs.io/en/latest/',
-                    'description': 'Main branch'
-                },
-                {
-                    'name': 'MMOCR 1.x',
-                    'url': 'https://mmocr.readthedocs.io/en/dev-1.x/',
-                    'description': '1.x branch'
-                },
-            ],
-            'active':
-            True,
-        },
     ],
     # Specify the language of shared menu
     'menu_lang':
