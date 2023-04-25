@@ -92,7 +92,7 @@ python tools/visualizations/browse_dataset.py configs/textrecog/_base_/datasets/
 
 ### 优化器参数策略可视化工具
 
-MMOCR提供了优化器参数可视化工具tools/visualizations/vis_scheduler.py以辅助用户排查优化器的超参数调度器（无需训练），支持学习率（learning rate）和动量（momentum）。
+MMOCR提供了优化器参数可视化工具 `tools/visualizations/vis_scheduler.py` 以辅助用户排查优化器的超参数调度器（无需训练），支持学习率（learning rate）和动量（momentum）。
 
 #### 工具简介
 
