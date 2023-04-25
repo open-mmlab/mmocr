@@ -92,7 +92,7 @@ Based on this tool, users can easily verify if the annotation of a custom datase
 
 ### Hyper-parameter Scheduler Visualization
 
-This tool aims to help the user to check the hyper-parameter scheduler of the optimizer(without training), which support the "learning rate" or "momentum"
+This tool aims to help the user to check the hyper-parameter scheduler of the optimizer (without training), which support the "learning rate" or "momentum"
 
 #### Introduce the scheduler visualization tool
 
