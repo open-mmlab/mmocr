@@ -764,13 +764,14 @@ class MMOCR:
                     ann=ann_info,
                     return_data=True,
                     batch_mode=self.args.batch_mode)
-                # visualize KIE results
-                self.visualize_kie_output(
-                    kie_model,
-                    data,
-                    kie_result,
-                    out_file=out_file,
-                    show=self.args.imshow)
+                # visualize KIE results if argument output is True
+                if self.args.output:
+                    self.visualize_kie_output(
+                        kie_model,
+                        data,
+                        kie_result,
+                        out_file=out_file,
+                        show=self.args.imshow)
                 gt_bboxes = data['gt_bboxes'].data.numpy().tolist()
                 labels = self.generate_kie_labels(kie_result, gt_bboxes,
                                                   kie_model.class_list)
