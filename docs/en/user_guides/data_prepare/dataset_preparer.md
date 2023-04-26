@@ -82,7 +82,7 @@ For example, if we want to change the training set of `configs/textrecog/crnn/cr
 
 ## Design
 
-There are many OCR datasets with different languages, annotation formats, and scenarios. There are generally two ways to use these datasets: to quickly understand the relevant information about the dataset, or to use it to train models. To meet these two usage scenarios, MMOCR provides dataset automation preparation scripts. The dataset automation preparation script uses modular design, which greatly enhances scalability, and allows users to easily configure other public or private datasets. The configuration files for the dataset automation preparation script are uniformly stored in the `dataset_zoo/` directory. Users can find all the configuration files for the dataset preparation scripts officially supported by MMOCR in this directory. The directory structure of this folder is as follows:
+There are many OCR datasets with different languages, annotation formats, and scenarios. There are generally two ways to use these datasets: to quickly understand the relevant information about the dataset, or to use it to train models. To meet these two usage scenarios, MMOCR provides dataset automatic preparation scripts. The dataset automatic preparation script uses modular design, which greatly enhances scalability, and allows users to easily configure other public or private datasets. The configuration files for the dataset automatic preparation script are uniformly stored in the `dataset_zoo/` directory. Users can find all the configuration files for the dataset preparation scripts officially supported by MMOCR in this directory. The directory structure of this folder is as follows:
 
 ```text
 dataset_zoo/
@@ -181,7 +181,7 @@ After decades of development, the OCR field has seen a series of related dataset
 The figure shows that when running the Dataset Preparer, the following operations will be performed in sequence:
 
 1. For the training set, validation set, and test set, the preparers will perform:
-   1. [Data set download, extraction, and movement (Obtainer)](#Dataset-download-extraction-and-movement-obtainer)
+   1. [Dataset download, extraction, and movement (Obtainer)](#Dataset-download-extraction-and-movement-obtainer)
    2. [Matching annotations with images (Gatherer)](#dataset-collection-gatherer)
    3. [Parsing original annotations (Parser)](#dataset-parsing-parser)
    4. [Packing annotations into a unified format (Packer)](#dataset-conversion-packer)
@@ -374,22 +374,21 @@ MMOCR has also made conventions on the return value of `Gatherer`. `Gatherer` re
 
 The interface of `BaseParser` is defined as follows:
 
-class BaseParser:
-
 ```python
-def __call__(self, img_paths, ann_paths):
-    return self.parse_files(img_paths, ann_paths)
+class BaseParser:
+    def __call__(self, img_paths, ann_paths):
+    	return self.parse_files(img_paths, ann_paths)
 
-def parse_files(self, img_paths: Union[List[str], str],
-                ann_paths: Union[List[str], str]) -> List[Tuple]:
-    samples = track_parallel_progress_multi_args(
-        self.parse_file, (img_paths, ann_paths), nproc=self.nproc)
-    return samples
+    def parse_files(self, img_paths: Union[List[str], str],
+                    ann_paths: Union[List[str], str]) -> List[Tuple]:
+        samples = track_parallel_progress_multi_args(
+            self.parse_file, (img_paths, ann_paths), nproc=self.nproc)
+        return samples
 
-@abstractmethod
-def parse_file(self, img_path: str, ann_path: str) -> Tuple:
+    @abstractmethod
+    def parse_file(self, img_path: str, ann_path: str) -> Tuple:
 
-    raise NotImplementedError
+        raise NotImplementedError
 ```
 
 In order to ensure the uniformity of subsequent modules, MMOCR has made conventions for the return values of `parse_files` and `parse_file`. The return value of `parse_file` is a tuple, the first element of which is the image path, and the second element is the annotation information. The annotation information is a list, each element of which is a dictionary with the fields `poly`, `text`, and `ignore`, as shown below:
