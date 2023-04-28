@@ -1,10 +1,10 @@
 # 常用工具
 
-## 分析工具
+## 可视化工具
 
 ### 数据集可视化工具
 
-MMOCR 提供了数据集可视化工具 `tools/analysis_tools/browse_datasets.py` 以辅助用户排查可能遇到的数据集相关的问题。用户只需要指定所使用的训练配置文件（通常存放在如 `configs/textdet/dbnet/xxx.py` 文件中）或数据集配置（通常存放在 `configs/textdet/_base_/datasets/xxx.py` 文件中）路径。该工具将依据输入的配置文件类型自动将经过数据流水线（data pipeline）处理过的图像及其对应的标签，或原始图片及其对应的标签绘制出来。
+MMOCR 提供了数据集可视化工具 `tools/visualizations/browse_datasets.py` 以辅助用户排查可能遇到的数据集相关的问题。用户只需要指定所使用的训练配置文件（通常存放在如 `configs/textdet/dbnet/xxx.py` 文件中）或数据集配置（通常存放在 `configs/textdet/_base_/datasets/xxx.py` 文件中）路径。该工具将依据输入的配置文件类型自动将经过数据流水线（data pipeline）处理过的图像及其对应的标签，或原始图片及其对应的标签绘制出来。
 
 #### 支持参数
 
@@ -37,7 +37,7 @@ python tools/visualizations/browse_dataset.py \
 
 ```Bash
 # 使用默认参数可视化 "dbnet_r50dcn_v2_fpnc_1200e_icadr2015" 模型的训练数据
-python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
+python tools/visualizations/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
 ```
 
 默认情况下，可视化模式为 "transformed"，您将看到经由数据流水线变换过后的图像和标注：
@@ -49,7 +49,7 @@ python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet
 如果您只想可视化原始数据集，只需将模式设置为 "original"：
 
 ```Bash
-python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -m original
+python tools/visualizations/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -m original
 ```
 
 <div align=center><img src="https://user-images.githubusercontent.com/22607038/206646570-382d0f26-908a-4ab4-b1a7-5cc31fa70c5f.jpg" style=" width: auto; height: 40%; "></div>
@@ -57,7 +57,7 @@ python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet
 或者，您也可以使用 "pipeline" 模式来可视化整个数据流水线的中间结果：
 
 ```Bash
-python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -m pipeline
+python tools/visualizations/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -m pipeline
 ```
 
 <div align=center><img src="https://user-images.githubusercontent.com/22607038/206637571-287640c0-1f55-453f-a2fc-9f9734b9593f.jpg" style=" width: auto; height: 40%; "></div>
@@ -65,7 +65,7 @@ python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet
 另外，用户还可以通过指定数据集配置文件的路径来可视化数据集的原始图像及其对应的标注，例如：
 
 ```Bash
-python tools/analysis_tools/browse_dataset.py configs/textrecog/_base_/datasets/icdar2015.py
+python tools/visualizations/browse_dataset.py configs/textrecog/_base_/datasets/icdar2015.py
 ```
 
 部分数据集可能有多个变体。例如，`icdar2015` 文本识别数据集的[配置文件](/configs/textrecog/_base_/datasets/icdar2015.py)中包含两个测试集变体，分别为 `icdar2015_textrecog_test` 和 `icdar2015_1811_textrecog_test`，如下所示：
@@ -85,10 +85,57 @@ icdar2015_1811_textrecog_test = dict(
 在这种情况下，用户可以通过指定 `-p` 参数来可视化不同的变体，例如，使用以下命令可视化 `icdar2015_1811_textrecog_test` 变体：
 
 ```Bash
-python tools/analysis_tools/browse_dataset.py configs/textrecog/_base_/datasets/icdar2015.py -p icdar2015_1811_textrecog_test
+python tools/visualizations/browse_dataset.py configs/textrecog/_base_/datasets/icdar2015.py -p icdar2015_1811_textrecog_test
 ```
 
 基于该工具，用户可以轻松地查看数据集的原始图像及其对应的标注，以便于检查数据集的标注是否正确。
+
+### 优化器参数策略可视化工具
+
+MMOCR提供了优化器参数可视化工具 `tools/visualizations/vis_scheduler.py` 以辅助用户排查优化器的超参数调度器（无需训练），支持学习率（learning rate）和动量（momentum）。
+
+#### 工具简介
+
+```bash
+python tools/visualizations/vis_scheduler.py \
+    ${CONFIG_FILE} \
+    [-p, --parameter ${PARAMETER_NAME}] \
+    [-d, --dataset-size ${DATASET_SIZE}] \
+    [-n, --ngpus ${NUM_GPUs}] \
+    [-s, --save-path ${SAVE_PATH}] \
+    [--title ${TITLE}] \
+    [--style ${STYLE}] \
+    [--window-size ${WINDOW_SIZE}] \
+    [--cfg-options]
+```
+
+**所有参数的说明**：
+
+- `config` : 模型配置文件的路径。
+- **`-p, parameter`**: 可视化参数名，只能为 `["lr", "momentum"]` 之一， 默认为 `"lr"`.
+- **`-d, --dataset-size`**: 数据集的大小。如果指定，`build_dataset` 将被跳过并使用这个大小作为数据集大小，默认使用 `build_dataset` 所得数据集的大小。
+- **`-n, --ngpus`**: 使用 GPU 的数量, 默认为1。
+- **`-s, --save-path`**: 保存的可视化图片的路径，默认不保存。
+- `--title`: 可视化图片的标题，默认为配置文件名。
+- `--style`: 可视化图片的风格，默认为 `whitegrid`。
+- `--window-size`: 可视化窗口大小，如果没有指定，默认为 `12*7`。如果需要指定，按照格式 \`W\*H'。
+- `--cfg-options`: 对配置文件的修改，参考[学习配置文件](../user_guides/config.md)。
+
+```{note}
+部分数据集在解析标注阶段比较耗时，可直接将 `-d, dataset-size` 指定数据集的大小，以节约时间。
+```
+
+#### 如何在开始训练前可视化学习率曲线
+
+你可以使用如下命令来绘制配置文件 `configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py` 将会使用的变化率曲线：
+
+```bash
+python tools/visualizations/vis_scheduler.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -d 100
+```
+
+<div align=center><img src="https://user-images.githubusercontent.com/43344034/232755081-cad8fe62-349d-400a-bc38-7f5d17824011.png" style=" width: auto; height: 40%; "></div>
+
+## 分析工具
 
 ### 离线评测工具
 

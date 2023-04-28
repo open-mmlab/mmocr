@@ -154,9 +154,9 @@ def generate_ann(root_path, split, image_infos, preserve_vertical):
     dst_image_root = osp.join(root_path, 'crops', split)
     ignore_image_root = osp.join(root_path, 'ignores', split)
     if split == 'training':
-        dst_label_file = osp.join(root_path, f'train_label.{format}')
+        dst_label_file = osp.join(root_path, 'train_label.json')
     elif split == 'val':
-        dst_label_file = osp.join(root_path, f'val_label.{format}')
+        dst_label_file = osp.join(root_path, 'val_label.json')
     mmengine.mkdir_or_exist(dst_image_root)
     mmengine.mkdir_or_exist(ignore_image_root)
 

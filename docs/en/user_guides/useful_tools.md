@@ -1,10 +1,10 @@
 # Useful Tools
 
-## Analysis Tools
+## Visualization Tools
 
 ### Dataset Visualization Tool
 
-MMOCR provides a dataset visualization tool `tools/analysis_tools/browse_datasets.py` to help users troubleshoot possible dataset-related problems. You just need to specify the path to the training config (usually stored in `configs/textdet/dbnet/xxx.py`) or the dataset config (usually stored in `configs/textdet/_base_/datasets/xxx.py`), and the tool will automatically plots the transformed (or original) images and labels.
+MMOCR provides a dataset visualization tool `tools/visualizations/browse_datasets.py` to help users troubleshoot possible dataset-related problems. You just need to specify the path to the training config (usually stored in `configs/textdet/dbnet/xxx.py`) or the dataset config (usually stored in `configs/textdet/_base_/datasets/xxx.py`), and the tool will automatically plots the transformed (or original) images and labels.
 
 #### Usage
 
@@ -25,11 +25,11 @@ python tools/visualizations/browse_dataset.py \
 | config              | str                                   | (required) Path to the config.                                                                                                                   |
 | -o, --output-dir    | str                                   | If GUI is not available, specifying an output path to save the visualization results.                                                            |
 | -p, --phase         | str                                   | Phase of dataset to visualize. Use "train", "test" or "val" if you just want to visualize the default split. It's also possible to be a dataset variable name, which might be useful when a dataset split has multiple variants in the config. |
-| -m, --mode          | `original`, `transformed`, `pipeline` | Display mode: display original pictures or transformed pictures or comparison pictures. `original` only visualizes the original dataset & annotations; `transformed` shows the resulting images processed through all the transforms; `pipeline` shows all the intermediate images. Defaults to "transformed". |
+| -m, --mode          | `original`, `transformed`, `pipeline` | Display mode: display original pictures or transformed pictures or comparison pictures.`original` only visualizes the original dataset & annotations; `transformed` shows the resulting images processed through all the transforms; `pipeline` shows all the intermediate images. Defaults to "transformed". |
 | -t, --task          | `auto`, `textdet`, `textrecog`        | Specify the task type of the dataset. If `auto`, the task type will be inferred from the config. If the script is unable to infer the task type, you need to specify it manually. Defaults to `auto`. |
 | -n, --show-number   | int                                   | The number of samples to visualized. If not specified, display all images in the dataset.                                                        |
 | -i, --show-interval | float                                 | Interval of visualization (s), defaults to 2.                                                                                                    |
-| --cfg-options       | float                                 | Override configs. [Example](./config.md#command-line-modification)                                                                               |
+| --cfg-options       | float                                 | Override configs.[Example](./config.md#command-line-modification)                                                                                |
 
 #### Examples
 
@@ -37,7 +37,7 @@ The following example demonstrates how to use the tool to visualize the training
 
 ```Bash
 # Example: Visualizing the training data used by dbnet_r50dcn_v2_fpnc_1200e_icadr2015 model
-python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
+python tools/visualizations/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py
 ```
 
 By default, the visualization mode is "transformed", and you will see the images & annotations being transformed by the pipeline:
@@ -49,7 +49,7 @@ By default, the visualization mode is "transformed", and you will see the images
 If you just want to visualize the original dataset, simply set the mode to "original":
 
 ```Bash
-python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -m original
+python tools/visualizations/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -m original
 ```
 
 <div align=center><img src="https://user-images.githubusercontent.com/22607038/206646570-382d0f26-908a-4ab4-b1a7-5cc31fa70c5f.jpg" style=" width: auto; height: 40%; "></div>
@@ -57,7 +57,7 @@ python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet
 Or, to visualize the entire pipeline:
 
 ```Bash
-python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -m pipeline
+python tools/visualizations/browse_dataset.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -m pipeline
 ```
 
 <div align=center><img src="https://user-images.githubusercontent.com/22607038/206637571-287640c0-1f55-453f-a2fc-9f9734b9593f.jpg" style=" width: auto; height: 40%; "></div>
@@ -65,7 +65,7 @@ python tools/analysis_tools/browse_dataset.py configs/textdet/dbnet/dbnet_resnet
 In addition, users can also visualize the original images and their corresponding labels of the dataset by specifying the path to the dataset config file, for example:
 
 ```Bash
-python tools/analysis_tools/browse_dataset.py configs/textrecog/_base_/datasets/icdar2015.py
+python tools/visualizations/browse_dataset.py configs/textrecog/_base_/datasets/icdar2015.py
 ```
 
 Some datasets might have multiple variants. For example, the test split of `icdar2015` textrecog dataset has two variants, which the [base dataset config](/configs/textrecog/_base_/datasets/icdar2015.py) defines as follows:
@@ -85,10 +85,57 @@ icdar2015_1811_textrecog_test = dict(
 In this case, you can specify the variant name to visualize the corresponding dataset:
 
 ```Bash
-python tools/analysis_tools/browse_dataset.py configs/textrecog/_base_/datasets/icdar2015.py -p icdar2015_1811_textrecog_test
+python tools/visualizations/browse_dataset.py configs/textrecog/_base_/datasets/icdar2015.py -p icdar2015_1811_textrecog_test
 ```
 
 Based on this tool, users can easily verify if the annotation of a custom dataset is correct.
+
+### Hyper-parameter Scheduler Visualization
+
+This tool aims to help the user to check the hyper-parameter scheduler of the optimizer (without training), which support the "learning rate" or "momentum"
+
+#### Introduce the scheduler visualization tool
+
+```bash
+python tools/visualizations/vis_scheduler.py \
+    ${CONFIG_FILE} \
+    [-p, --parameter ${PARAMETER_NAME}] \
+    [-d, --dataset-size ${DATASET_SIZE}] \
+    [-n, --ngpus ${NUM_GPUs}] \
+    [-s, --save-path ${SAVE_PATH}] \
+    [--title ${TITLE}] \
+    [--style ${STYLE}] \
+    [--window-size ${WINDOW_SIZE}] \
+    [--cfg-options]
+```
+
+**Description of all arguments**：
+
+- `config`: The path of a model config file.
+- **`-p, --parameter`**: The param to visualize its change curve, choose from "lr" and "momentum". Default to use "lr".
+- **`-d, --dataset-size`**: The size of the datasets. If set，`build_dataset` will be skipped and `${DATASET_SIZE}` will be used as the size. Default to use the function `build_dataset`.
+- **`-n, --ngpus`**: The number of GPUs used in training, default to be 1.
+- **`-s, --save-path`**: The learning rate curve plot save path, default not to save.
+- `--title`: Title of figure. If not set, default to be config file name.
+- `--style`: Style of plt. If not set, default to be `whitegrid`.
+- `--window-size`: The shape of the display window. If not specified, it will be set to `12*7`. If used, it must be in the format `'W*H'`.
+- `--cfg-options`: Modifications to the configuration file, refer to [Learn about Configs](../user_guides/config.md).
+
+```{note}
+Loading annotations maybe consume much time, you can directly specify the size of the dataset with `-d, dataset-size` to save time.
+```
+
+#### How to plot the learning rate curve without training
+
+You can use the following command to plot the step learning rate schedule used in the config `configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py`:
+
+```bash
+python tools/visualizations/vis_scheduler.py configs/textdet/dbnet/dbnet_resnet50-dcnv2_fpnc_1200e_icdar2015.py -d 100
+```
+
+<div align=center><img src="https://user-images.githubusercontent.com/43344034/232757392-b29b8e3a-77af-451c-8786-d3b4259ab388.png" style=" width: auto; height: 40%; "></div>
+
+## Analysis Tools
 
 ### Offline Evaluation Tool
 
@@ -110,11 +157,11 @@ python tools/analysis_tools/offline_eval.py configs/textdet/psenet/psenet_r50_fp
 
 In addition, based on this tool, users can also convert predictions obtained from other libraries into MMOCR-supported formats, then use MMOCR's built-in metrics to evaluate them.
 
-| ARGS          | Type  | Description                                                        |
-| ------------- | ----- | ------------------------------------------------------------------ |
-| config        | str   | (required) Path to the config.                                     |
-| pkl_results   | str   | (required) The saved predictions.                                  |
-| --cfg-options | float | Override configs. [Example](./config.md#command-line-modification) |
+| ARGS          | Type  | Description                                                       |
+| ------------- | ----- | ----------------------------------------------------------------- |
+| config        | str   | (required) Path to the config.                                    |
+| pkl_results   | str   | (required) The saved predictions.                                 |
+| --cfg-options | float | Override configs.[Example](./config.md#command-line-modification) |
 
 ### Calculate FLOPs and the Number of Parameters
 
