@@ -8,9 +8,9 @@ randomness = dict(seed=None)
 
 default_hooks = dict(
     timer=dict(type='IterTimerHook'),
-    logger=dict(type='LoggerHook', interval=5),
+    logger=dict(type='LoggerHook', interval=5, log_metric_by_epoch=False),
     param_scheduler=dict(type='ParamSchedulerHook'),
-    checkpoint=dict(type='CheckpointHook', interval=20),
+    checkpoint=dict(type='CheckpointHook', interval=20, by_epoch=False),
     sampler_seed=dict(type='DistSamplerSeedHook'),
     sync_buffer=dict(type='SyncBuffersHook'),
     visualization=dict(
@@ -24,18 +24,16 @@ default_hooks = dict(
 
 # Logging
 log_level = 'INFO'
-log_processor = dict(type='LogProcessor', window_size=10, by_epoch=True)
+log_processor = dict(type='LogProcessor', window_size=10, by_epoch=False)
 
 load_from = None
 resume = False
 
 # Evaluation
-val_evaluator = dict(type='HmeanIOUMetric')
+val_evaluator = dict(type='SeqevalMetric')
 test_evaluator = val_evaluator
 
 # Visualization
 vis_backends = [dict(type='LocalVisBackend')]
 visualizer = dict(
-    type='TextDetLocalVisualizer',
-    name='visualizer',
-    vis_backends=vis_backends)
+    type='SERLocalVisualizer', name='visualizer', vis_backends=vis_backends)
