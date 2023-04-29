@@ -1,3 +1,4 @@
+boto3
 imgaug
 lmdb
 matplotlib

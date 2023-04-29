@@ -53,7 +53,7 @@ def is_archive(file_path: str) -> bool:
         bool: Whether the file is an archive.
     """
 
-    suffixes = ['zip', 'tar', 'tar.gz']
+    suffixes = ['zip', 'tar', 'tar.gz', 'tgz']
 
     for suffix in suffixes:
         if file_path.endswith(suffix):
