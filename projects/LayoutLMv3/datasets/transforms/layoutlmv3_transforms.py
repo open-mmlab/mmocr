@@ -1,9 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Dict, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from mmcv.transforms.base import BaseTransform
 
 from mmocr.registry import TRANSFORMS
+from projects.LayoutLMv3.utils.bio_label_utils import \
+    find_other_label_name_of_biolabel
 from transformers import LayoutLMv3ImageProcessor, LayoutXLMTokenizerFast
 from transformers.file_utils import PaddingStrategy
 from transformers.image_processing_utils import BatchFeature
@@ -123,7 +125,8 @@ class ProcessTokenForLayoutLMv3(BaseTransform):
     - input_ids
     - attention_mask
     - bbox
-    - word_ids
+    - truncation_number
+    - truncation_word_ids
 
     Args:
         Refer to the parameters of the corresponding tokenizer
@@ -140,6 +143,20 @@ class ProcessTokenForLayoutLMv3(BaseTransform):
         self.truncation = truncation
         self.pad_to_multiple_of = pad_to_multiple_of
 
+    def box_norm(self, box, width, height) -> List:
+
+        def clip(min_num, num, max_num):
+            return min(max(num, min_num), max_num)
+
+        x0, y0, x1, y1 = box
+        x0 = clip(0, int((x0 / width) * 1000), 1000)
+        y0 = clip(0, int((y0 / height) * 1000), 1000)
+        x1 = clip(0, int((x1 / width) * 1000), 1000)
+        y1 = clip(0, int((y1 / height) * 1000), 1000)
+        assert x1 >= x0
+        assert y1 >= y0
+        return [x0, y0, x1, y1]
+
     def _tokenize(self, results: dict) -> None:
         tokenizer = results['tokenizer']
 
@@ -147,9 +164,14 @@ class ProcessTokenForLayoutLMv3(BaseTransform):
         texts = instances['texts']
         boxes = instances['boxes']
 
+        # norm boxes
+        width = results['width']
+        height = results['height']
+        norm_boxes = [self.box_norm(box, width, height) for box in boxes]
+
         tokenized_inputs: BatchEncoding = tokenizer(
             text=texts,
-            boxes=boxes,
+            boxes=norm_boxes,
             padding=self.padding,
             max_length=self.max_length,
             truncation=self.truncation,
@@ -157,45 +179,20 @@ class ProcessTokenForLayoutLMv3(BaseTransform):
             add_special_tokens=True,
             return_tensors='np',
             return_attention_mask=True,
-            return_offsets_mapping=True)
+            return_overflowing_tokens=True)
 
-        # By default, the pipeline processes one sample
-        # at a time, so set batch_index = 0.
-        batch_index = 0
+        truncation_number = tokenized_inputs['input_ids'].shape[0]
+        results['truncation_number'] = truncation_number
         # record input_ids/attention_mask/bbox
         for k in ['input_ids', 'attention_mask', 'bbox']:
-            results[k] = tokenized_inputs[k][batch_index]
-        # record word_ids
-        results['word_ids'] = tokenized_inputs.encodings[batch_index].word_ids
-
-    def _norm_boxes(self, results: dict) -> None:
-
-        def box_norm(box, width, height):
-
-            def clip(min_num, num, max_num):
-                return min(max(num, min_num), max_num)
-
-            x0, y0, x1, y1 = box
-            x0 = clip(0, int((x0 / width) * 1000), 1000)
-            y0 = clip(0, int((y0 / height) * 1000), 1000)
-            x1 = clip(0, int((x1 / width) * 1000), 1000)
-            y1 = clip(0, int((y1 / height) * 1000), 1000)
-            assert x1 >= x0
-            assert y1 >= y0
-            return [x0, y0, x1, y1]
-
-        instances = results['instances']
-        boxes = instances['boxes']
-
-        # norm boxes
-        width = results['width']
-        height = results['height']
-        norm_boxes = [box_norm(box, width, height) for box in boxes]
-
-        results['instances']['boxes'] = norm_boxes
+            results[k] = tokenized_inputs[k]
+        # record truncation_word_ids
+        results['truncation_word_ids'] = [
+            tokenized_inputs.encodings[batch_index].word_ids
+            for batch_index in range(truncation_number)
+        ]
 
     def transform(self, results: dict) -> Dict:
-        self._norm_boxes(results)
         self._tokenize(results)
         return results
 
@@ -207,7 +204,7 @@ class ConvertBIOLabelForSER(BaseTransform):
     Required Keys:
 
     - tokenizer
-    - word_ids
+    - truncation_word_ids
     - instances
         - labels
 
@@ -225,15 +222,15 @@ class ConvertBIOLabelForSER(BaseTransform):
                  classes: Union[tuple, list],
                  only_label_first_subword: bool = False) -> None:
         super().__init__()
+        self.other_label_name = find_other_label_name_of_biolabel(classes)
         self.biolabel2id = self._generate_biolabel2id_map(classes)
         self.only_label_first_subword = only_label_first_subword
 
     def _generate_biolabel2id_map(self, classes: Union[tuple, list]) -> Dict:
         bio_label_list = []
-        classes = sorted([c.upper() for c in classes])
-        for c in classes:
-            if c == 'OTHER':
-                bio_label_list.insert(0, c)
+        for c in sorted(classes):
+            if c == self.other_label_name:
+                bio_label_list.insert(0, 'O')
             else:
                 bio_label_list.append(f'B-{c}')
                 bio_label_list.append(f'I-{c}')
@@ -247,29 +244,33 @@ class ConvertBIOLabelForSER(BaseTransform):
         tokenizer = results['tokenizer']
 
         instances = results['instances']
-        labels = [label.upper() for label in instances['labels']]
-        word_ids = results['word_ids']
+        labels = [label for label in instances['labels']]
 
-        biolabel_ids = []
-        pre_word_id = None
-        for cur_word_id in word_ids:
-            if cur_word_id is not None:
-                if cur_word_id != pre_word_id:
-                    biolabel_name = f'B-{labels[cur_word_id]}' \
-                        if labels[cur_word_id] != 'OTHER' else 'OTHER'
-                elif self.only_label_first_subword:
-                    biolabel_name = 'OTHER'
+        batch_biolabel_ids = []
+        for truncation_word_ids in results['truncation_word_ids']:
+            biolabel_ids = []
+            pre_word_id = None
+            for cur_word_id in truncation_word_ids:
+                if cur_word_id is not None:
+                    if cur_word_id != pre_word_id:
+                        biolabel_name = f'B-{labels[cur_word_id]}' \
+                            if labels[cur_word_id] != \
+                            self.other_label_name else 'O'
+                    elif self.only_label_first_subword:
+                        biolabel_name = 'O'
+                    else:
+                        biolabel_name = f'I-{labels[cur_word_id]}' \
+                            if labels[cur_word_id] != \
+                            self.other_label_name else 'O'
+                    # convert biolabel to id
+                    biolabel_ids.append(self.biolabel2id[biolabel_name])
                 else:
-                    biolabel_name = f'I-{labels[cur_word_id]}' \
-                        if labels[cur_word_id] != 'OTHER' else 'OTHER'
-                # convert biolabel to id
-                biolabel_ids.append(self.biolabel2id[biolabel_name])
-            else:
-                biolabel_ids.append(tokenizer.pad_token_label)
-            pre_word_id = cur_word_id
+                    biolabel_ids.append(tokenizer.pad_token_label)
+                pre_word_id = cur_word_id
+            batch_biolabel_ids.append(biolabel_ids)
 
-        # record biolabel_ids
-        results['labels'] = biolabel_ids
+        # record batch_biolabel_ids
+        results['labels'] = batch_biolabel_ids
 
     def transform(self, results: dict) -> Dict:
         self._convert(results)

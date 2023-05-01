@@ -6,7 +6,7 @@ from mmengine.model import BaseModel
 
 from mmocr.registry import MODELS
 from mmocr.utils.typing_utils import OptSERSampleList, SERSampleList
-from transformers import AutoModelForTokenClassification
+from transformers import LayoutLMv3ForTokenClassification
 from transformers.modeling_outputs import TokenClassifierOutput
 
 ForwardResults = Union[Dict[str, torch.Tensor], SERSampleList,
@@ -19,6 +19,7 @@ class HFLayoutLMv3ForTokenClassificationWrapper(BaseModel):
     def __init__(self,
                  layoutlmv3_token_classifier: dict = dict(
                      pretrained_model_name_or_path=None),
+                 loss_processor: Optional[Dict] = None,
                  data_preprocessor: Optional[Dict] = None,
                  postprocessor: Optional[Dict] = None,
                  init_cfg: Optional[Dict] = None):
@@ -27,12 +28,16 @@ class HFLayoutLMv3ForTokenClassificationWrapper(BaseModel):
         if isinstance(layoutlmv3_token_classifier, dict) and \
                 layoutlmv3_token_classifier.get(
                     'pretrained_model_name_or_path', None):
-            self.model = AutoModelForTokenClassification.from_pretrained(
+            self.model = LayoutLMv3ForTokenClassification.from_pretrained(
                 **layoutlmv3_token_classifier)
         else:
             raise TypeError(
                 'layoutlmv3_token_classifier cfg should be a `dict` and a key '
                 '`pretrained_model_name_or_path` must be specified')
+
+        if loss_processor is not None:
+            assert isinstance(loss_processor, dict)
+            self.loss_processor = MODELS.build(loss_processor)
 
         if postprocessor is not None:
             assert isinstance(postprocessor, dict)
@@ -93,8 +98,9 @@ class HFLayoutLMv3ForTokenClassificationWrapper(BaseModel):
         Returns:
             dict[str, Tensor]: A dictionary of loss components.
         """
+        labels = inputs.pop('labels')
         outputs: TokenClassifierOutput = self.model(**inputs)
-        return {'ce_loss': outputs['loss']}
+        return self.loss_processor(outputs, labels)
 
     def predict(self, inputs: torch.Tensor,
                 data_samples: SERSampleList) -> SERSampleList:
@@ -124,8 +130,7 @@ class HFLayoutLMv3ForTokenClassificationWrapper(BaseModel):
                     instance, in (xn, yn) order.
         """
         outputs: TokenClassifierOutput = self.model(**inputs)
-        logits = outputs['logits']
-        return self.postprocessor(logits, data_samples)
+        return self.postprocessor(outputs['logits'], data_samples)
 
     def _forward(self,
                  inputs: torch.Tensor,
@@ -144,5 +149,4 @@ class HFLayoutLMv3ForTokenClassificationWrapper(BaseModel):
             Tensor or tuple[Tensor]: A tuple of features from ``det_head``
             forward.
         """
-        x = self.extract_feat(inputs)
-        return self.det_head(x, data_samples)
+        return self.model(**inputs)

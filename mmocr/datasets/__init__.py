@@ -7,9 +7,8 @@ from .recog_text_dataset import RecogTextDataset
 from .samplers import *  # NOQA
 from .transforms import *  # NOQA
 from .wildreceipt_dataset import WildReceiptDataset
-from .xfund_dataset import XFUNDDataset
 
 __all__ = [
     'IcdarDataset', 'OCRDataset', 'RecogLMDBDataset', 'RecogTextDataset',
-    'WildReceiptDataset', 'ConcatDataset', 'XFUNDDataset'
+    'WildReceiptDataset', 'ConcatDataset'
 ]

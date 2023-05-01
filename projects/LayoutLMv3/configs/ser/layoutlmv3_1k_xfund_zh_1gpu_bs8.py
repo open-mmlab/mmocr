@@ -11,7 +11,7 @@ class_name = ('answer', 'header', 'question', 'other')
 max_iters = 1000
 val_interval = 100
 lr = 7e-5
-train_batch_size_per_gpu = 8
+train_batch_size_per_gpu = 2
 train_num_workers = 8
 test_batch_size_per_gpu = 1  # can't batch inference now
 test_num_workers = 8
@@ -115,7 +115,7 @@ val_evaluator = dict(type='SeqevalMetric', prefix=dataset_name)
 test_evaluator = val_evaluator
 # ====================================================================
 # ======================= Visualization ==============================
-vis_backends = [dict(type='TensorboardVisBackend')]
+vis_backends = [dict(type='LocalVisBackend')]
 visualizer = dict(
     type='SERLocalVisualizer', name='visualizer', vis_backends=vis_backends)
 # ====================================================================
