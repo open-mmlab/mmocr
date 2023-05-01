@@ -8,8 +8,8 @@ from mmdet.visualization.palette import _get_adaptive_scales
 from mmengine.structures import LabelData
 
 from mmocr.registry import VISUALIZERS
-from mmocr.structures import SERDataSample
 from mmocr.visualization.base_visualizer import BaseLocalVisualizer
+from projects.LayoutLMv3.structures import SERDataSample
 
 
 @VISUALIZERS.register_module()

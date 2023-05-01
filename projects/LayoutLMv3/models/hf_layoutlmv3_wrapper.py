@@ -5,7 +5,8 @@ import torch
 from mmengine.model import BaseModel
 
 from mmocr.registry import MODELS
-from mmocr.utils.typing_utils import OptSERSampleList, SERSampleList
+from projects.LayoutLMv3.utils.typing_utils import (OptSERSampleList,
+                                                    SERSampleList)
 from transformers import LayoutLMv3ForTokenClassification
 from transformers.modeling_outputs import TokenClassifierOutput
 

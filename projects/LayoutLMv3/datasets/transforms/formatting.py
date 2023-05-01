@@ -6,7 +6,7 @@ from mmcv.transforms.base import BaseTransform
 from mmengine.structures import LabelData
 
 from mmocr.registry import TRANSFORMS
-from mmocr.structures import SERDataSample
+from projects.LayoutLMv3.structures import SERDataSample
 
 
 @TRANSFORMS.register_module()

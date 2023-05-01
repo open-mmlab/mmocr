@@ -28,9 +28,8 @@ from .typing_utils import (ColorType, ConfigType, DetSampleList,
                            LabelList, MultiConfig, OptConfigType,
                            OptDetSampleList, OptInitConfigType,
                            OptInstanceList, OptKIESampleList, OptLabelList,
-                           OptMultiConfig, OptRecSampleList, OptSERSampleList,
-                           OptTensor, RangeType, RecForwardResults,
-                           RecSampleList, SERSampleList)
+                           OptMultiConfig, OptRecSampleList, OptTensor,
+                           RangeType, RecForwardResults, RecSampleList)
 
 __all__ = [
     'collect_env', 'is_3dlist', 'is_type_list', 'is_none_or_type', 'equal_len',
@@ -51,5 +50,5 @@ __all__ = [
     'is_archive', 'check_integrity', 'list_files', 'get_md5', 'InstanceList',
     'LabelList', 'OptInstanceList', 'OptLabelList', 'RangeType',
     'remove_pipeline_elements', 'bezier2poly', 'poly2bezier',
-    'track_parallel_progress_multi_args', 'SERSampleList', 'OptSERSampleList'
+    'track_parallel_progress_multi_args'
 ]

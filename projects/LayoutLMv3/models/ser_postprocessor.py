@@ -7,7 +7,7 @@ import torch.nn as nn
 from mmengine.structures import LabelData
 
 from mmocr.registry import MODELS
-from mmocr.structures import SERDataSample
+from projects.LayoutLMv3.structures import SERDataSample
 from projects.LayoutLMv3.utils.bio_label_utils import \
     find_other_label_name_of_biolabel
 
