@@ -20,8 +20,8 @@ class SERLocalVisualizer(BaseLocalVisualizer):
         name (str): Name of the instance. Defaults to 'visualizer'.
         image (np.ndarray, optional): The origin image to draw. The format
             should be RGB. Defaults to None.
-        with_poly (bool): Whether to draw polygons. Defaults to True.
-        with_bbox (bool): Whether to draw bboxes. Defaults to False.
+        with_poly (bool): Whether to draw polygons. Defaults to False.
+        with_bbox (bool): Whether to draw bboxes. Defaults to True.
         vis_backends (list, optional): Visual backend config list.
             Defaults to None.
         save_dir (str, optional): Save file dir for all storage backends.
@@ -45,8 +45,8 @@ class SERLocalVisualizer(BaseLocalVisualizer):
     def __init__(self,
                  name: str = 'visualizer',
                  image: Optional[np.ndarray] = None,
-                 with_poly: bool = True,
-                 with_bbox: bool = False,
+                 with_poly: bool = False,
+                 with_bbox: bool = True,
                  vis_backends: Optional[Dict] = None,
                  save_dir: Optional[str] = None,
                  bbox_color: Union[str, Tuple, List[str], List[Tuple]] = 'b',
@@ -67,19 +67,21 @@ class SERLocalVisualizer(BaseLocalVisualizer):
 
     def _draw_instances(self, image: np.ndarray, bboxes: Union[np.ndarray,
                                                                torch.Tensor],
-                        word_ids: List[int], gt_labels: Optional[LabelData],
+                        word_ids: Optional[List[int]],
+                        gt_labels: Optional[LabelData],
                         pred_labels: Optional[LabelData]) -> np.ndarray:
         """Draw bboxes and polygons on image.
 
         Args:
             image (np.ndarray): The origin image to draw.
             bboxes (Union[np.ndarray, torch.Tensor]): The bboxes to draw.
-            word_ids (List[int]): The word id of tokens.
+            word_ids (Optional[List[int]]): The word id of tokens.
             gt_labels (Optional[LabelData]): The gt LabelData.
             pred_labels (Optional[LabelData]): The pred LabelData.
         Returns:
             np.ndarray: The image with bboxes and gt/pred labels drawn.
         """
+        self.set_image(image)
         # draw bboxes
         if bboxes is not None and self.with_bbox:
             image = self.get_bboxes_image(
@@ -123,9 +125,8 @@ class SERLocalVisualizer(BaseLocalVisualizer):
             areas = (bboxes[:, 3] - bboxes[:, 1]) * (
                 bboxes[:, 2] - bboxes[:, 0])
             scales = _get_adaptive_scales(areas)
-            positions = bboxes[:, :2] - self.line_width
+            positions = (bboxes[:, :2] + bboxes[:, 2:]) // 2
 
-            self.set_image(image)
             for i, (pos, gt, pred) in enumerate(
                     zip(positions, gt_words_label, pred_words_label)):
                 if pred_words_label_score is not None:
@@ -137,8 +138,10 @@ class SERLocalVisualizer(BaseLocalVisualizer):
                 self.draw_texts(
                     label_text,
                     pos,
-                    color=self.label_color if gt == pred else 'r',
-                    font_sizes=int(13 * scales[i]))
+                    colors=self.label_color if gt == pred else 'r',
+                    font_sizes=int(13 * scales[i]),
+                    vertical_alignments='center',
+                    horizontal_alignments='center')
 
         return self.get_image()
 
@@ -193,9 +196,22 @@ class SERLocalVisualizer(BaseLocalVisualizer):
                 draw_gt and 'gt_label' in data_sample else None
             pred_label = data_sample.pred_label if \
                 draw_pred and 'pred_label' in data_sample else None
-            draw_img = self._draw_instances(image.copy(), bboxes, word_ids,
-                                            gt_label, pred_label)
-            cat_images.append(draw_img)
+            # draw original image with bboxes
+            orig_img_with_bboxes = self._draw_instances(
+                image=image.copy(),
+                bboxes=bboxes,
+                word_ids=None,
+                gt_labels=None,
+                pred_labels=None)
+            cat_images.append(orig_img_with_bboxes)
+            empty_img = np.full_like(image, 255)
+            empty_img_with_label = self._draw_instances(
+                image=empty_img,
+                bboxes=bboxes,
+                word_ids=word_ids,
+                gt_labels=gt_label,
+                pred_labels=pred_label)
+            cat_images.append(empty_img_with_label)
         cat_images = self._cat_image(cat_images, axis=1)
         if cat_images is None:
             cat_images = image
