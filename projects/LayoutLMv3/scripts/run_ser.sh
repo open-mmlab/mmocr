@@ -4,5 +4,5 @@ export TOKENIZERS_PARALLELISM=false
 export OMP_NUM_THREADS=1
 export PYTHONPATH='/Users/wangnu/Documents/GitHub/mmocr'
 
-python ./tools/train.py \
+python tools/train.py \
 ${config} \

@@ -136,3 +136,11 @@ default_hooks = dict(
         draw_pred=True),
 )
 # ====================================================================
+# ========================= Custom imports ===========================
+custom_imports = dict(
+    imports=[
+        'projects.LayoutLMv3.datasets', 'projects.LayoutLMv3.evaluation',
+        'projects.LayoutLMv3.models', 'projects.LayoutLMv3.visualization'
+    ],
+    allow_failed_imports=False)
+# ====================================================================
