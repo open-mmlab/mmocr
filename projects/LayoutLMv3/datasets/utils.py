@@ -16,7 +16,7 @@ def long_text_data_collate(data_batch: Sequence, training: bool = True) -> Any:
         return data_batch
     elif isinstance(data_item, tuple) and hasattr(data_item, '_fields'):
         # named_tuple
-        return data_item_type(*(long_text_data_collate(samples)
+        return data_item_type(*(long_text_data_collate(samples, training)
                                 for samples in zip(*data_batch)))
     elif isinstance(data_item, list):
         flattened_data_batch = [
@@ -37,22 +37,26 @@ def long_text_data_collate(data_batch: Sequence, training: bool = True) -> Any:
         transposed = list(zip(*data_batch))
 
         if isinstance(data_item, tuple):
-            return [long_text_data_collate(samples)
-                    for samples in transposed]  # Compat with Pytorch.
+            return [
+                long_text_data_collate(samples, training)
+                for samples in transposed
+            ]  # Compat with Pytorch.
         else:
             try:
                 return data_item_type([
-                    long_text_data_collate(samples) for samples in transposed
+                    long_text_data_collate(samples, training)
+                    for samples in transposed
                 ])
             except TypeError:
                 # The sequence type may not support `__init__(iterable)`
                 # (e.g., `range`).
                 return [
-                    long_text_data_collate(samples) for samples in transposed
+                    long_text_data_collate(samples, training)
+                    for samples in transposed
                 ]
     elif isinstance(data_item, Mapping):
         return data_item_type({
-            key: long_text_data_collate([d[key] for d in data_batch])
+            key: long_text_data_collate([d[key] for d in data_batch], training)
             for key in data_item
         })
     else:
