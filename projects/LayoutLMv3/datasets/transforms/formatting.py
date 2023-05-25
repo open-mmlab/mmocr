@@ -98,8 +98,7 @@ class PackSERInputs(BaseTransform):
         for key in self.ser_keys:
             if key not in results:
                 continue
-            value = to_tensor(results[key])
-            inputs[key] = value
+            inputs[key] = to_tensor(results[key])
         packed_results['inputs'] = inputs
 
         # pack `data_samples`
@@ -107,13 +106,15 @@ class PackSERInputs(BaseTransform):
         for truncation_idx in range(truncation_number):
             data_sample = SERDataSample()
             gt_label = LabelData()
-            assert 'labels' in results, 'key `labels` not in results.'
-            value = to_tensor(results['labels'][truncation_idx])
-            gt_label.item = value
+            if results.get('labels', None):
+                gt_label.item = to_tensor(results['labels'][truncation_idx])
             data_sample.gt_label = gt_label
             meta = {}
             for key in self.meta_keys:
-                meta[key] = results[key]
+                if key == 'truncation_word_ids':
+                    meta[key] = results[key][truncation_idx]
+                else:
+                    meta[key] = results[key]
             data_sample.set_metainfo(meta)
             data_samples.append(data_sample)
         packed_results['data_samples'] = data_samples

@@ -91,19 +91,13 @@ class SERLocalVisualizer(BaseLocalVisualizer):
                 line_width=self.line_width,
                 alpha=self.alpha)
 
-        # draw gt/pred labels
-        if gt_labels is not None and pred_labels is not None:
+        areas = (bboxes[:, 3] - bboxes[:, 1]) * (bboxes[:, 2] - bboxes[:, 0])
+        scales = _get_adaptive_scales(areas)
+        positions = (bboxes[:, :2] + bboxes[:, 2:]) // 2
+
+        if gt_labels is not None:
             gt_tokens_biolabel = gt_labels.item
             gt_words_label = []
-            pred_tokens_biolabel = pred_labels.item
-            pred_words_label = []
-
-            if 'score' in pred_labels:
-                pred_tokens_biolabel_score = pred_labels.score
-                pred_words_label_score = []
-            else:
-                pred_tokens_biolabel_score = None
-                pred_words_label_score = None
 
             pre_word_id = None
             for idx, cur_word_id in enumerate(word_ids):
@@ -112,33 +106,57 @@ class SERLocalVisualizer(BaseLocalVisualizer):
                         gt_words_label_name = gt_tokens_biolabel[idx][2:] \
                             if gt_tokens_biolabel[idx] != 'O' else 'other'
                         gt_words_label.append(gt_words_label_name)
+                pre_word_id = cur_word_id
+            assert len(gt_words_label) == len(bboxes)
+        if pred_labels is not None:
+            pred_tokens_biolabel = pred_labels.item
+            pred_words_label = []
+            pred_tokens_biolabel_score = pred_labels.score
+            pred_words_label_score = []
+
+            pre_word_id = None
+            for idx, cur_word_id in enumerate(word_ids):
+                if cur_word_id is not None:
+                    if cur_word_id != pre_word_id:
                         pred_words_label_name = pred_tokens_biolabel[idx][2:] \
                             if pred_tokens_biolabel[idx] != 'O' else 'other'
                         pred_words_label.append(pred_words_label_name)
-                        if pred_tokens_biolabel_score is not None:
-                            pred_words_label_score.append(
-                                pred_tokens_biolabel_score[idx])
+                        pred_words_label_score.append(
+                            pred_tokens_biolabel_score[idx])
                 pre_word_id = cur_word_id
-            assert len(gt_words_label) == len(bboxes)
             assert len(pred_words_label) == len(bboxes)
 
-            areas = (bboxes[:, 3] - bboxes[:, 1]) * (
-                bboxes[:, 2] - bboxes[:, 0])
-            scales = _get_adaptive_scales(areas)
-            positions = (bboxes[:, :2] + bboxes[:, 2:]) // 2
-
+        # draw gt or pred labels
+        if gt_labels is not None and pred_labels is not None:
             for i, (pos, gt, pred) in enumerate(
                     zip(positions, gt_words_label, pred_words_label)):
-                if pred_words_label_score is not None:
-                    score = round(float(pred_words_label_score[i]) * 100, 1)
-                    label_text = f'{gt} | {pred}({score})'
-                else:
-                    label_text = f'{gt} | {pred}'
-
+                score = round(float(pred_words_label_score[i]) * 100, 1)
+                label_text = f'{gt} | {pred}({score})'
                 self.draw_texts(
                     label_text,
                     pos,
                     colors=self.label_color if gt == pred else 'r',
+                    font_sizes=int(13 * scales[i]),
+                    vertical_alignments='center',
+                    horizontal_alignments='center')
+        elif pred_labels is not None:
+            for i, (pos, pred) in enumerate(zip(positions, pred_words_label)):
+                score = round(float(pred_words_label_score[i]) * 100, 1)
+                label_text = f'Pred: {pred}({score})'
+                self.draw_texts(
+                    label_text,
+                    pos,
+                    colors=self.label_color,
+                    font_sizes=int(13 * scales[i]),
+                    vertical_alignments='center',
+                    horizontal_alignments='center')
+        elif gt_labels is not None:
+            for i, (pos, gt) in enumerate(zip(positions, gt_words_label)):
+                label_text = f'GT: {gt}'
+                self.draw_texts(
+                    label_text,
+                    pos,
+                    colors=self.label_color,
                     font_sizes=int(13 * scales[i]),
                     vertical_alignments='center',
                     horizontal_alignments='center')
