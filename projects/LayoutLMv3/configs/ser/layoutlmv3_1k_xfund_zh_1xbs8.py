@@ -13,7 +13,7 @@ val_interval = 100
 lr = 7e-5
 train_batch_size_per_gpu = 2
 train_num_workers = 8
-test_batch_size_per_gpu = 1  # can't batch inference now
+test_batch_size_per_gpu = 1  # can't batch infer now
 test_num_workers = 8
 only_label_first_subword = True  # select label process strategy
 # ====================================================================
@@ -89,7 +89,7 @@ train_dataloader = dict(
     pin_memory=True,
     persistent_workers=True,
     sampler=dict(type='InfiniteSampler', shuffle=True),
-    collate_fn=dict(type='long_text_data_collate', training=True),
+    collate_fn=dict(type='ser_collate', training=True),
     dataset=train_dataset)
 val_dataloader = dict(
     batch_size=test_batch_size_per_gpu,
@@ -97,7 +97,7 @@ val_dataloader = dict(
     pin_memory=True,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    collate_fn=dict(type='long_text_data_collate', training=False),
+    collate_fn=dict(type='ser_collate', training=False),
     dataset=test_dataset)
 test_dataloader = val_dataloader
 # ====================================================================
