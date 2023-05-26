@@ -125,8 +125,8 @@ show_dir/
 *.pth
 
 # demo
-!tests/data
-tests/results
+# !tests/data
+# tests/results
 
 #temp files
 .DS_Store
@@ -143,4 +143,4 @@ mmocr/.mim
 workdirs/
 .history/
 .dev/
-data/
+# data/
