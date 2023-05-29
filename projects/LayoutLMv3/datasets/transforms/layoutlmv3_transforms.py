@@ -220,10 +220,12 @@ class ConvertBIOLabelForSER(BaseTransform):
 
     def __init__(self,
                  classes: Union[tuple, list],
-                 only_label_first_subword: bool = False) -> None:
+                 only_label_first_subword: bool = True) -> None:
         super().__init__()
         self.other_label_name = find_other_label_name_of_biolabel(classes)
         self.biolabel2id = self._generate_biolabel2id_map(classes)
+        assert only_label_first_subword is True, \
+            'Only support `only_label_first_subword=True` now.'
         self.only_label_first_subword = only_label_first_subword
 
     def _generate_biolabel2id_map(self, classes: Union[tuple, list]) -> Dict:

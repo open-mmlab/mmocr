@@ -108,7 +108,10 @@ model = dict(
         pretrained_model_name_or_path=hf_pretrained_model,
         num_labels=len(class_name) * 2 - 1),
     loss_processor=dict(type='ComputeLossAfterLabelSmooth'),
-    postprocessor=dict(type='SERPostprocessor', classes=class_name))
+    postprocessor=dict(
+        type='SERPostprocessor',
+        classes=class_name,
+        only_label_first_subword=only_label_first_subword))
 # ====================================================================
 # ========================= Evaluation ===============================
 val_evaluator = dict(type='SeqevalMetric', prefix=dataset_name)

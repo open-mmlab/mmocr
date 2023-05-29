@@ -65,11 +65,11 @@ class SERLocalVisualizer(BaseLocalVisualizer):
         self.line_width = line_width
         self.alpha = alpha
 
-    def _draw_instances(self, image: np.ndarray, bboxes: Union[np.ndarray,
-                                                               torch.Tensor],
-                        word_ids: Optional[List[int]],
-                        gt_labels: Optional[LabelData],
-                        pred_labels: Optional[LabelData]) -> np.ndarray:
+    def _draw_instances(self,
+                        image: np.ndarray,
+                        bboxes: Union[np.ndarray, torch.Tensor],
+                        gt_labels: Optional[LabelData] = None,
+                        pred_labels: Optional[LabelData] = None) -> np.ndarray:
         """Draw bboxes and polygons on image.
 
         Args:
@@ -97,33 +97,19 @@ class SERLocalVisualizer(BaseLocalVisualizer):
 
         if gt_labels is not None:
             gt_tokens_biolabel = gt_labels.item
-            gt_words_label = []
-
-            pre_word_id = None
-            for idx, cur_word_id in enumerate(word_ids):
-                if cur_word_id is not None:
-                    if cur_word_id != pre_word_id:
-                        gt_words_label_name = gt_tokens_biolabel[idx][2:] \
-                            if gt_tokens_biolabel[idx] != 'O' else 'other'
-                        gt_words_label.append(gt_words_label_name)
-                pre_word_id = cur_word_id
+            gt_words_label = [
+                token_biolabel[2:] if token_biolabel != 'O' else 'other'
+                for token_biolabel in gt_tokens_biolabel
+            ]
             assert len(gt_words_label) == len(bboxes)
+
         if pred_labels is not None:
             pred_tokens_biolabel = pred_labels.item
-            pred_words_label = []
-            pred_tokens_biolabel_score = pred_labels.score
-            pred_words_label_score = []
-
-            pre_word_id = None
-            for idx, cur_word_id in enumerate(word_ids):
-                if cur_word_id is not None:
-                    if cur_word_id != pre_word_id:
-                        pred_words_label_name = pred_tokens_biolabel[idx][2:] \
-                            if pred_tokens_biolabel[idx] != 'O' else 'other'
-                        pred_words_label.append(pred_words_label_name)
-                        pred_words_label_score.append(
-                            pred_tokens_biolabel_score[idx])
-                pre_word_id = cur_word_id
+            pred_words_label = [
+                token_biolabel[2:] if token_biolabel != 'O' else 'other'
+                for token_biolabel in pred_tokens_biolabel
+            ]
+            pred_words_label_score = pred_labels.score
             assert len(pred_words_label) == len(bboxes)
 
         # draw gt or pred labels
@@ -205,11 +191,6 @@ class SERLocalVisualizer(BaseLocalVisualizer):
         cat_images = []
         if data_sample is not None:
             bboxes = np.array(data_sample.instances.get('boxes', None))
-            # here need to flatten truncation_word_ids
-            word_ids = [
-                word_id for word_ids in data_sample.truncation_word_ids
-                for word_id in word_ids[1:-1]
-            ]
             gt_label = data_sample.gt_label if \
                 draw_gt and 'gt_label' in data_sample else None
             pred_label = data_sample.pred_label if \
@@ -218,7 +199,6 @@ class SERLocalVisualizer(BaseLocalVisualizer):
             orig_img_with_bboxes = self._draw_instances(
                 image=image.copy(),
                 bboxes=bboxes,
-                word_ids=None,
                 gt_labels=None,
                 pred_labels=None)
             cat_images.append(orig_img_with_bboxes)
@@ -226,7 +206,6 @@ class SERLocalVisualizer(BaseLocalVisualizer):
             empty_img_with_label = self._draw_instances(
                 image=empty_img,
                 bboxes=bboxes,
-                word_ids=word_ids,
                 gt_labels=gt_label,
                 pred_labels=pred_label)
             cat_images.append(empty_img_with_label)
