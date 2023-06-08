@@ -6,7 +6,6 @@ from typing import Dict, List, Optional
 from mmengine import mkdir_or_exist
 
 from mmocr.registry import DATA_OBTAINERS
-from mmocr.utils import check_integrity
 from .naive_data_obtainer import NaiveDataObtainer
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -49,24 +48,6 @@ class AWSS3Obtainer(NaiveDataObtainer):
         mkdir_or_exist(osp.join(self.data_root, f'{task}_imgs'))
         mkdir_or_exist(osp.join(self.data_root, 'annotations'))
         mkdir_or_exist(self.cache_path)
-
-    def __call__(self):
-        for file in self.files:
-            save_name = file.get('save_name', None)
-            url = file.get('url', None)
-            md5 = file.get('md5', None)
-            download_path = osp.join(
-                self.cache_path,
-                osp.basename(url) if save_name is None else save_name)
-            # Download required files
-            if not check_integrity(download_path, md5):
-                self.download(url=url, dst_path=download_path)
-            # Extract downloaded zip files to data root
-            self.extract(src_path=download_path, dst_path=self.data_root)
-            # Move & Rename dataset files
-            if 'mapping' in file:
-                self.move(mapping=file['mapping'])
-        self.clean()
 
     def find_bucket_key(self, s3_path: str):
         """This is a helper function that given an s3 path such that the path
