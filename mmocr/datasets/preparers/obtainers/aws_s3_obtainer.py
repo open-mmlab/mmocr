@@ -1,24 +1,19 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-import glob
-import os
 import os.path as osp
-import shutil
 import ssl
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
-import boto3
-from botocore import UNSIGNED
-from botocore.config import Config
 from mmengine import mkdir_or_exist
 
 from mmocr.registry import DATA_OBTAINERS
-from mmocr.utils import check_integrity, is_archive
+from mmocr.utils import check_integrity
+from .naive_data_obtainer import NaiveDataObtainer
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
 @DATA_OBTAINERS.register_module()
-class AWSS3Obtainer:
+class AWSS3Obtainer(NaiveDataObtainer):
     """A AWS S3 obtainer.
 
     download -> extract -> move
@@ -36,6 +31,13 @@ class AWSS3Obtainer:
 
     def __init__(self, files: List[Dict], cache_path: str, data_root: str,
                  task: str) -> None:
+        try:
+            import boto3
+            from botocore import UNSIGNED
+            from botocore.config import Config
+        except ImportError:
+            raise ImportError(
+                'Please install boto3 to download hiertext dataset.')
         self.files = files
         self.cache_path = cache_path
         self.data_root = data_root
@@ -132,106 +134,8 @@ class AWSS3Obtainer:
               'run the script again.')
         if url.startswith('s3://'):
             url = url[5:]
-        bucket, key = self.find_bucket_key(url)
-        self.s3_download(bucket, key, osp.abspath(dst_path))
+            bucket, key = self.find_bucket_key(url)
+            self.s3_download(bucket, key, osp.abspath(dst_path))
+        elif url.startswith('https://') or url.startswith('http://'):
+            super().download(url, dst_path)
         print('')
-
-    def extract(self,
-                src_path: str,
-                dst_path: str,
-                delete: bool = False) -> None:
-        """Extract zip/tar.gz files.
-
-        Args:
-            src_path (str): Path to the zip file.
-            dst_path (str): Path to the destination folder.
-            delete (bool, optional): Whether to delete the zip file. Defaults
-                to False.
-        """
-        if not is_archive(src_path):
-            # Copy the file to the destination folder if it is not a zip
-            if osp.isfile(src_path):
-                shutil.copy(src_path, dst_path)
-            else:
-                shutil.copytree(src_path, dst_path)
-            return
-
-        zip_name = osp.basename(src_path).split('.')[0]
-        if dst_path is None:
-            dst_path = osp.join(osp.dirname(src_path), zip_name)
-        else:
-            dst_path = osp.join(dst_path, zip_name)
-
-        extracted = False
-        if osp.exists(dst_path):
-            name = set(os.listdir(dst_path))
-            if '.finish' in name:
-                extracted = True
-            elif '.finish' not in name and len(name) > 0:
-                while True:
-                    c = input(f'{dst_path} already exists when extracting '
-                              '{zip_name}, unzip again? (y/N) ') or 'N'
-                    if c.lower() in ['y', 'n']:
-                        extracted = c == 'n'
-                        break
-        if extracted:
-            open(osp.join(dst_path, '.finish'), 'w').close()
-            print(f'{zip_name} has been extracted. Skip')
-            return
-        mkdir_or_exist(dst_path)
-        print(f'Extracting: {osp.basename(src_path)}')
-        if src_path.endswith('.zip'):
-            try:
-                import zipfile
-            except ImportError:
-                raise ImportError(
-                    'Please install zipfile by running "pip install zipfile".')
-            with zipfile.ZipFile(src_path, 'r') as zip_ref:
-                zip_ref.extractall(dst_path)
-        elif src_path.endswith('.tar.gz') or src_path.endswith(
-                '.tar') or src_path.endswith('.tgz'):
-            if src_path.endswith('.tar.gz'):
-                mode = 'r:gz'
-            elif src_path.endswith('.tar'):
-                mode = 'r:'
-            elif src_path.endswith('tgz'):
-                mode = 'r:gz'
-            try:
-                import tarfile
-            except ImportError:
-                raise ImportError(
-                    'Please install tarfile by running "pip install tarfile".')
-            with tarfile.open(src_path, mode) as tar_ref:
-                tar_ref.extractall(dst_path)
-
-        open(osp.join(dst_path, '.finish'), 'w').close()
-        if delete:
-            os.remove(src_path)
-
-    def move(self, mapping: List[Tuple[str, str]]) -> None:
-        """Rename and move dataset files one by one.
-
-        Args:
-            mapping (List[Tuple[str, str]]): A list of tuples, each
-            tuple contains the source file name and the destination file name.
-        """
-        for src, dst in mapping:
-            src = osp.join(self.data_root, src)
-            dst = osp.join(self.data_root, dst)
-
-            if '*' in src:
-                mkdir_or_exist(dst)
-                for f in glob.glob(src):
-                    if not osp.exists(
-                            osp.join(dst, osp.relpath(f, self.data_root))):
-                        shutil.move(f, dst)
-
-            elif osp.exists(src) and not osp.exists(dst):
-                mkdir_or_exist(osp.dirname(dst))
-                shutil.move(src, dst)
-
-    def clean(self) -> None:
-        """Remove empty dirs."""
-        for root, dirs, files in os.walk(self.data_root, topdown=False):
-            if not files and not dirs:
-                os.rmdir(root)
