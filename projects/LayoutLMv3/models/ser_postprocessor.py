@@ -86,6 +86,7 @@ class SERPostprocessor(nn.Module):
                                        pred_label_scores[idx]))
             else:
                 pred_words_biolabels.append(word_biolabels)
+                word_biolabels = []
                 break
             pre_word_id = cur_word_id
         if word_biolabels:
@@ -126,6 +127,7 @@ class SERPostprocessor(nn.Module):
                     word_biolabels.append(self.id2biolabel[gt_label_ids[idx]])
                 else:
                     gt_words_biolabels.append(word_biolabels)
+                    word_biolabels = []
                     break
                 pre_word_id = cur_word_id
             if word_biolabels:
