@@ -88,6 +88,8 @@ class SERPostprocessor(nn.Module):
                 pred_words_biolabels.append(word_biolabels)
                 break
             pre_word_id = cur_word_id
+        if word_biolabels:
+            pred_words_biolabels.append(word_biolabels)
         # record pred_label
         if self.only_label_first_subword:
             pred_label = LabelData()
@@ -126,6 +128,8 @@ class SERPostprocessor(nn.Module):
                     gt_words_biolabels.append(word_biolabels)
                     break
                 pre_word_id = cur_word_id
+            if word_biolabels:
+                gt_words_biolabels.append(word_biolabels)
             # update merged gt_label
             if self.only_label_first_subword:
                 merged_data_sample.gt_label.item = [
