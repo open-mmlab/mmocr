@@ -80,7 +80,9 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                         type='TextSpottingLocalVisualizer',
                         name=f'inferencer{ts}',
                         font_families=self.textrec_inferencer.visualizer.
-                        font_families))
+                        font_families,
+                        font_properties=self.textrec_inferencer.visualizer.
+                        font_properties))
             else:
                 self.mode = 'rec'
         if kie is not None:
@@ -398,7 +400,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                 pred_name = osp.splitext(osp.basename(img_path))[0]
                 pred_name = f'{pred_name}.json'
                 pred_out_file = osp.join(pred_out_dir, pred_name)
-                mmengine.dump(pred_result, pred_out_file)
+                mmengine.dump(pred_result, pred_out_file, ensure_ascii=False)
 
         result_dict['predictions'] = pred_results
         if print_result:
