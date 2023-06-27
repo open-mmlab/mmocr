@@ -4,8 +4,7 @@ _base_ = [
 ]
 
 # ================== Frequently modified parameters ==================
-hf_pretrained_model = '/Users/wangnu/Documents/GitHub' \
-    '/mmocr/data/layoutlmv3-base-chinese'
+hf_pretrained_model = 'data/layoutlmv3-base-chinese'
 dataset_name = 'xfund_zh'
 class_name = ('answer', 'header', 'question', 'other')
 max_iters = 1000

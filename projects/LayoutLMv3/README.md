@@ -1,84 +1,90 @@
-# Dummy ResNet Wrapper
+# LayoutLMv3: Pre-training for Document AI with Unified Text and Image Masking
 
-> This is a README template for community `projects/`.
-
-> All the fields in this README are **mandatory** for others to understand what you have achieved in this implementation. If you still feel unclear about the requirements, please read our [contribution guide](https://mmocr.readthedocs.io/en/dev-1.x/notes/contribution_guide.html), [projects FAQ](../faq.md), or approach us in [Discussions](https://github.com/open-mmlab/mmocr/discussions).
+<div>
+<a href="https://arxiv.org/abs/2204.08387">[arXiv paper]</a>
+</div>
 
 ## Description
 
-> Share any information you would like others to know. For example:
->
-> Author: @xxx.
->
-> This is an implementation of \[XXX\].
+This is an implementation of [LayoutLMv3](https://github.com/microsoft/unilm/tree/master/layoutlmv3) based on [MMOCR](https://github.com/open-mmlab/mmocr/tree/dev-1.x), [MMCV](https://github.com/open-mmlab/mmcv), [MMEngine](https://github.com/open-mmlab/mmengine) and [Transformers](https://github.com/huggingface/transformers).
 
-This project implements a dummy ResNet wrapper, which literally does nothing new but prints "hello world" during initialization.
+**LayoutLMv3**  Self-supervised pre-training techniques have achieved remarkable progress in Document AI. Most multimodal pre-trained models use a masked language modeling objective to learn bidirectional representations on the text modality, but they differ in pre-training objectives for the image modality. This discrepancy adds difficulty to multimodal representation learning. In this paper, we propose LayoutLMv3 to pre-train multimodal Transformers for Document AI with unified text and image masking. Additionally, LayoutLMv3 is pre-trained with a word-patch alignment objective to learn cross-modal alignment by predicting whether the corresponding image patch of a text word is masked. The simple unified architecture and training objectives make LayoutLMv3 a general-purpose pre-trained model for both text-centric and image-centric Document AI tasks. Experimental results show that LayoutLMv3 achieves state-of-the-art performance not only in text-centric tasks, including form understanding, receipt understanding, and document visual question answering, but also in image-centric tasks such as document image classification and document layout analysis.The code and models are publicly available at https://aka.ms/layoutlmv3.
+
+<center>
+<img src="https://user-images.githubusercontent.com/34083603/249024787-fc7b3ea2-2ee8-465c-8cd0-ce0d606f3a87.png">
+</center>
 
 ## Usage
 
-> For a typical model, this section should contain the commands for training and testing. You are also suggested to dump your environment specification to env.yml by `conda env export > env.yml`.
+<!-- > For a typical model, this section should contain the commands for training and testing. You are also suggested to dump your environment specification to env.yml by `conda env export > env.yml`. -->
 
 ### Prerequisites
 
 - Python 3.7
 - PyTorch 1.6 or higher
+- [Transformers](https://github.com/huggingface/transformers) 4.31.0.dev0 or higher
 - [MIM](https://github.com/open-mmlab/mim)
 - [MMOCR](https://github.com/open-mmlab/mmocr)
 
-All the commands below rely on the correct configuration of `PYTHONPATH`, which should point to the project's directory so that Python can locate the module files. In `example_project/` root directory, run the following line to add the current directory to `PYTHONPATH`:
+### Preparing xfund dataset
+
+In MMOCR's root directory, run the following command to prepare xfund dataset:
 
 ```shell
-# Linux
-export PYTHONPATH=`pwd`:$PYTHONPATH
-# Windows PowerShell
-$env:PYTHONPATH=Get-Location
+sh projects/LayoutLMv3/scripts/prepare_dataset.sh
 ```
 
+### Downloading Pre-training LayoutLMv3 model
+
+Download the [LayoutLMv3 Chinese pre-trained model](https://huggingface.co/microsoft/layoutlmv3-base-chinese) from huggingface.
+
 ### Training commands
+
+Modify the path of the parameter `hf_pretrained_model` in the config file(`projects/LayoutLMv3/configs/ser/layoutlmv3_1k_xfund_zh_1xbs8.py`)
 
 In MMOCR's root directory, run the following command to train the model:
 
 ```bash
-mim train mmocr configs/dbnet_dummy-resnet_fpnc_1200e_icdar2015.py --work-dir work_dirs/dummy_mae/
+export TOKENIZERS_PARALLELISM=false
+export OMP_NUM_THREADS=1
+mim train mmocr projects/LayoutLMv3/configs/ser/layoutlmv3_1k_xfund_zh_1xbs8.py --work-dir work_dirs/
 ```
 
-To train on multiple GPUs, e.g. 8 GPUs, run the following command:
+<!-- To train on multiple GPUs, e.g. 8 GPUs, run the following command:
 
 ```bash
 mim train mmocr configs/dbnet_dummy-resnet_fpnc_1200e_icdar2015.py --work-dir work_dirs/dummy_mae/ --launcher pytorch --gpus 8
-```
+``` -->
 
 ### Testing commands
 
 In MMOCR's root directory, run the following command to test the model:
 
 ```bash
-mim test mmocr configs/dbnet_dummy-resnet_fpnc_1200e_icdar2015.py --work-dir work_dirs/dummy_mae/ --checkpoint ${CHECKPOINT_PATH}
+mim test mmocr projects/LayoutLMv3/configs/ser/layoutlmv3_1k_xfund_zh_1xbs8.py --work-dir work_dirs/ --checkpoint ${CHECKPOINT_PATH}
 ```
 
 ## Results
 
-> List the results as usually done in other model's README. [Example](https://github.com/open-mmlab/mmocr/blob/1.x/configs/textdet/dbnet/README.md#results-and-models)
+<!-- >> List the results as usually done in other model's README. [Example](https://github.com/open-mmlab/mmocr/blob/1.x/configs/textdet/dbnet/README.md#results-and-models)
 >
 > You should claim whether this is based on the pre-trained weights, which are converted from the official release; or it's a reproduced result obtained from retraining the model in this project.
 
 |                              Method                               |  Backbone   | Pretrained Model |  Training set   |    Test set    | #epoch | Test size | Precision | Recall | Hmean  |         Download         |
 | :---------------------------------------------------------------: | :---------: | :--------------: | :-------------: | :------------: | :----: | :-------: | :-------: | :----: | :----: | :----------------------: |
-| [DBNet_dummy](configs/dbnet_dummy-resnet_fpnc_1200e_icdar2015.py) | DummyResNet |        -         | ICDAR2015 Train | ICDAR2015 Test |  1200  |    736    |  0.8853   | 0.7583 | 0.8169 | [model](<>) \| [log](<>) |
+| [DBNet_dummy](configs/dbnet_dummy-resnet_fpnc_1200e_icdar2015.py) | DummyResNet |        -         | ICDAR2015 Train | ICDAR2015 Test |  1200  |    736    |  0.8853   | 0.7583 | 0.8169 | [model](<>) \| [log](<>) | -->
 
 ## Citation
 
-> You may remove this section if not applicable.
+If you find LayoutLMv3 useful in your research or applications, please cite LayoutLMv3 with the following BibTeX entry.
 
 ```bibtex
-@software{MMOCR_Contributors_OpenMMLab_Text_Detection_2020,
-author = {{MMOCR Contributors}},
-license = {Apache-2.0},
-month = {8},
-title = {{OpenMMLab Text Detection, Recognition and Understanding Toolbox}},
-url = {https://github.com/open-mmlab/mmocr},
-version = {0.3.0},
-year = {2020}
+@inproceedings{huang2022layoutlmv3,
+  title={Layoutlmv3: Pre-training for document ai with unified text and image masking},
+  author={Huang, Yupan and Lv, Tengchao and Cui, Lei and Lu, Yutong and Wei, Furu},
+  booktitle={Proceedings of the 30th ACM International Conference on Multimedia},
+  pages={4083--4091},
+  year={2022}
 }
 ```
 
@@ -96,7 +102,7 @@ Here is a checklist illustrating a usual development workflow of a successful pr
 
 - [ ] Milestone 1: PR-ready, and acceptable to be one of the `projects/`.
 
-  - [ ] Finish the code
+  - [x] Finish the code
 
     > The code's design shall follow existing interfaces and convention. For example, each model component should be registered into `mmocr.registry.MODELS` and configurable via a config file.
 
