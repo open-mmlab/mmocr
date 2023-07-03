@@ -13,11 +13,11 @@ except ImportError:
 from .version import __version__, short_version
 
 mmcv_minimum_version = '2.0.0rc4'
-mmcv_maximum_version = '2.1.0'
+mmcv_maximum_version = '2.2.0'
 mmcv_version = digit_version(mmcv.__version__)
 if mmengine is not None:
     mmengine_minimum_version = '0.7.1'
-    mmengine_maximum_version = '1.0.0'
+    mmengine_maximum_version = '1.1.0'
     mmengine_version = digit_version(mmengine.__version__)
 
 if not mmengine or mmcv_version < digit_version('2.0.0rc0') or digit_version(
@@ -43,7 +43,7 @@ assert (mmengine_version >= digit_version(mmengine_minimum_version)
     f'<{mmengine_maximum_version}.'
 
 mmdet_minimum_version = '3.0.0rc5'
-mmdet_maximum_version = '3.1.0'
+mmdet_maximum_version = '3.2.0'
 mmdet_version = digit_version(mmdet.__version__)
 
 assert (mmdet_version >= digit_version(mmdet_minimum_version)
