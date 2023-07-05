@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 
 import math
+from collections import OrderedDict
 from typing import Dict, List, Optional
 from unittest import TestCase
 
@@ -75,7 +76,7 @@ def generate_test_results(size, batch_size, pred, label):
         predictions = [
             BaseDataElement(pred=pred, label=label) for _ in range(bs)
         ]
-        yield (data_batch, predictions)
+        yield data_batch, predictions
 
 
 class TestMultiDatasetsEvaluator(TestCase):
@@ -126,3 +127,22 @@ class TestMultiDatasetsEvaluator(TestCase):
         metrics = evaluator.evaluate(size=size)
         self.assertIn('Fake/Toy/accuracy', metrics)
         self.assertIn('Fake/accuracy', metrics)
+
+        metrics_results = OrderedDict({
+            'dataset1/metric1/accuracy': 0.9,
+            'dataset1/metric2/f1_score': 0.8,
+            'dataset2/metric1/accuracy': 0.85,
+            'dataset2/metric2/f1_score': 0.75
+        })
+
+        evaluator = MultiDatasetsEvaluator([], [])
+        averaged_results = evaluator.average_results(metrics_results)
+
+        expected_averaged_results = {
+            'dataset1/metric1/accuracy': 0.9,
+            'dataset1/metric2/f1_score': 0.8,
+            'dataset2/metric1/accuracy': 0.85,
+            'dataset2/metric2/f1_score': 0.75
+        }
+
+        self.assertEqual(averaged_results, expected_averaged_results)
