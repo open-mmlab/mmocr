@@ -150,6 +150,13 @@ class TestMMOCRInferencer(TestCase):
                     osp.join(tmp_dir, 'preds', pred_dir))
                 self.assert_predictions_equal(res['predictions'][i],
                                               dumped_res)
+            # test different batch sizes
+            img_dir = 'tests/data/rec_toy_dataset/imgs'
+            res_bs3 = inferencer(img_dir, batch_size=3, return_vis=True)
+            self.assertIn('visualization', res_bs3)
+            self.assertIn('predictions', res_bs3)
+            self.assertEqual(
+                len(res_bs3['predictions']), len(res_bs3['visualization']))
 
     @mock.patch('mmengine.infer.infer._load_checkpoint')
     def test_det_rec(self, mock_load):
