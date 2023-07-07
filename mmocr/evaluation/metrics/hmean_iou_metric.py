@@ -44,7 +44,7 @@ class HmeanIOUMetric(BaseMetric):
         ignore_precision_thr (float): Precision threshold when prediction and\
             gt ignored polygons are matched. Defaults to 0.5.
         pred_score_thrs (dict): Best prediction score threshold searching
-            space. Defaults to dict(start=0.3, stop=0.9 step=0.1).
+            space. Defaults to dict(start=0.3, stop=0.9, step=0.1).
         strategy (str): Polygon matching strategy. Options are 'max_matching'
             and 'vanilla'. 'max_matching' refers to the optimum strategy that
             maximizes the number of matches. Vanilla strategy matches gt and
