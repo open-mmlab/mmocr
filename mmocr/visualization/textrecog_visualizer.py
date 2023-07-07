@@ -4,6 +4,7 @@ from typing import Dict, Optional, Tuple, Union
 import cv2
 import mmcv
 import numpy as np
+from mmengine.utils.manager import _accquire_lock, _release_lock
 
 from mmocr.registry import VISUALIZERS
 from mmocr.structures import TextRecogDataSample
@@ -112,6 +113,7 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
             pred_score_thr (float): Threshold of prediction score. It's not
                 used in this function. Defaults to None.
         """
+        _accquire_lock()
         height, width = image.shape[:2]
         resize_height = 64
         resize_width = int(1.0 * width / height * resize_height)
@@ -141,4 +143,7 @@ class TextRecogLocalVisualizer(BaseLocalVisualizer):
             mmcv.imwrite(cat_images[..., ::-1], out_file)
 
         self.set_image(cat_images)
-        return self.get_image()
+        drawn_rgb_image = self.get_image()
+        _release_lock()
+
+        return drawn_rgb_image
