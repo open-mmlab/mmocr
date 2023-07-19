@@ -5,13 +5,13 @@ from .base import BaseRecognizer
 from .crnn import CRNN
 from .encoder_decoder_recognizer import EncoderDecoderRecognizer
 from .encoder_decoder_recognizer_tta import EncoderDecoderRecognizerTTAModel
+from .maerec import MAERec
 from .master import MASTER
 from .nrtr import NRTR
 from .robust_scanner import RobustScanner
 from .sar import SARNet
 from .satrn import SATRN
 from .svtr import SVTR
-from .maerec import MAERec
 
 __all__ = [
     'BaseRecognizer', 'EncoderDecoderRecognizer', 'CRNN', 'SARNet', 'NRTR',

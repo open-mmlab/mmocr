@@ -68,7 +68,6 @@ val_dataset = dict(
 test_dataset = dict(
     type='ConcatDataset', datasets=test_list, pipeline=_base_.test_pipeline)
 
-
 train_dataloader = dict(
     batch_size=64,
     num_workers=12,
@@ -86,7 +85,6 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=val_dataset)
 
-
 test_dataloader = dict(
     batch_size=128,
     num_workers=4,
@@ -95,7 +93,6 @@ test_dataloader = dict(
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=val_dataset)
-
 
 val_evaluator = dict(
     dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])

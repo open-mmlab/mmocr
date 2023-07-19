@@ -16,59 +16,59 @@ This paper aims to re-assess scene text recognition (STR) from a data-oriented p
 
 ### Train Dataset
 
-| trainset | instance_num | repeat_num | source |
-| :------: | :----------: | :--------: | :----: |
+|                             trainset                             | instance_num | repeat_num | source |
+| :--------------------------------------------------------------: | :----------: | :--------: | :----: |
 | [Union14M](https://github.com/Mountchicken/Union14M#34-download) |   3230742    |     1      |  real  |
 
 ### Test Dataset
+
 - On six common benchmarks
 
-    | testset | instance_num |   type    |
-    | :-----: | :----------: | :-------: |
-    | IIIT5K  |     3000     |  regular  |
-    |   SVT   |     647      |  regular  |
-    |  IC13   |     1015     |  regular  |
-    |  IC15   |     2077     | irregular |
-    |  SVTP   |     645      | irregular |
-    |  CT80   |     288      | irregular |
+  | testset | instance_num |   type    |
+  | :-----: | :----------: | :-------: |
+  | IIIT5K  |     3000     |  regular  |
+  |   SVT   |     647      |  regular  |
+  |  IC13   |     1015     |  regular  |
+  |  IC15   |     2077     | irregular |
+  |  SVTP   |     645      | irregular |
+  |  CT80   |     288      | irregular |
 
 - On Union14M-Benchmark
 
-    |    testset     | instance_num |         type         |
-    | :------------: | :----------: | :------------------: |
-    |    Artistic    |     900      |  Unsolved Challenge  |
-    |     Curve      |     2426     |  Unsolved Challenge  |
-    | Multi-Oriented |     1369     |  Unsolved Challenge  |
-    |  Contextless   |     779      | Additional Challenge |
-    |  Multi-Words   |     829      | Additional Challenge |
-    |    Salient     |     1585     | Additional Challenge |
-    |   Incomplete   |     1495     | Additional Challenge |
-    |    General     |   400,000    |          -           |
-
+  |    testset     | instance_num |         type         |
+  | :------------: | :----------: | :------------------: |
+  |    Artistic    |     900      |  Unsolved Challenge  |
+  |     Curve      |     2426     |  Unsolved Challenge  |
+  | Multi-Oriented |     1369     |  Unsolved Challenge  |
+  |  Contextless   |     779      | Additional Challenge |
+  |  Multi-Words   |     829      | Additional Challenge |
+  |    Salient     |     1585     | Additional Challenge |
+  |   Incomplete   |     1495     | Additional Challenge |
+  |    General     |   400,000    |          -           |
 
 ## Results and Models
 
 - Evaluated on six common benchmarks
 
-    |                          Methods                          |   Backbone    |        | Regular Text |           |       |           | Irregular Text |        |                                                                                                                                download                                                                                                                                |
-    | :-------------------------------------------------------: | :-----------: | :----: | :----------: | :-------: | :---: | :-------: | :------------: | :----: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-    |                                                           |               | IIIT5K |     SVT      | IC13-1015 |       | IC15-2077 |      SVTP      |  CT80  |                                                                                                                                                                                                                                                                        |
-    | [MAERec-S](configs/textrecog/maerec/maerec_s_union14m.py) | [ViT-Small (Pretrained on Union14M-U)](https://github.com/Mountchicken/Union14M#51-pre-training) | 98.0 |    97.6    |  96.8   |       |  87.1   |     93.2     | 97.9 | [model](https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_s_union14m-a9a157e5.pth) |
-    | [MAERec-B](configs/textrecog/maerec/maerec_b_union14m.py) | [ViT-Base (Pretrained on Union14M-U)](https://github.com/Mountchicken/Union14M#51-pre-training)| 98.5 |    98.1    |  97.8   |       |  89.5   |     94.4     | 98.6 |       [model](https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_b_union14m-4b98d1b4.pth)                                                                                                                                                                                                                                                                  |
+  |                     Methods                     |                     Backbone                     |        | Regular Text |           |     |           | Irregular Text |      |                     download                     |
+  | :---------------------------------------------: | :----------------------------------------------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :--: | :----------------------------------------------: |
+  |                                                 |                                                  | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      | CT80 |                                                  |
+  | [MAERec-S](configs/textrecog/maerec/maerec_s_union14m.py) | [ViT-Small (Pretrained on Union14M-U)](https://github.com/Mountchicken/Union14M#51-pre-training) |  98.0  |     97.6     |   96.8    |     |   87.1    |      93.2      | 97.9 | [model](https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_s_union14m-a9a157e5.pth) |
+  | [MAERec-B](configs/textrecog/maerec/maerec_b_union14m.py) | [ViT-Base (Pretrained on Union14M-U)](https://github.com/Mountchicken/Union14M#51-pre-training) |  98.5  |     98.1     |   97.8    |     |   89.5    |      94.4      | 98.6 | [model](https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_b_union14m-4b98d1b4.pth) |
 
 - Evaluated on Union14M-Benchmark
 
-    |Methods|Backbone||Unsolved Challenges|||||Additional Challenges||General|download|
-    |----|----|----|----|----|----|----|----|----|----|----|----|
-    |||Curve|Multi-Oriented|Artistic|Contextless||Salient|Multi-Words|Incomplete|General|
-    |[MAERec-S](configs/textrecog/maerec/maerec_s_union14m.py)|[ViT-Small (Pretrained on Union14M-U)](https://github.com/Mountchicken/Union14M#51-pre-training)|81.4|71.4|72.0|82.0||78.5|82.4|2.7|82.5|[model](https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_s_union14m-a9a157e5.pth)|
-    |[MAERec-B](configs/textrecog/maerec/maerec_b_union14m.py)|[ViT-Base (Pretrained on Union14M-U)](https://github.com/Mountchicken/Union14M#51-pre-training)|88.8|83.9|80.0|85.5||84.9|87.5|2.6|85.8|[model](https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_b_union14m-4b98d1b4.pth)         |
+  | Methods                             | Backbone                              |       | Unsolved Challenges |          |             |     |         | Additional Challenges |            | General | download                              |
+  | ----------------------------------- | ------------------------------------- | ----- | ------------------- | -------- | ----------- | --- | ------- | --------------------- | ---------- | ------- | ------------------------------------- |
+  |                                     |                                       | Curve | Multi-Oriented      | Artistic | Contextless |     | Salient | Multi-Words           | Incomplete | General |                                       |
+  | [MAERec-S](configs/textrecog/maerec/maerec_s_union14m.py) | [ViT-Small (Pretrained on Union14M-U)](https://github.com/Mountchicken/Union14M#51-pre-training) | 81.4  | 71.4                | 72.0     | 82.0        |     | 78.5    | 82.4                  | 2.7        | 82.5    | [model](https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_s_union14m-a9a157e5.pth) |
+  | [MAERec-B](configs/textrecog/maerec/maerec_b_union14m.py) | [ViT-Base (Pretrained on Union14M-U)](https://github.com/Mountchicken/Union14M#51-pre-training) | 88.8  | 83.9                | 80.0     | 85.5        |     | 84.9    | 87.5                  | 2.6        | 85.8    | [model](https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_b_union14m-4b98d1b4.pth) |
 
 ## Citation
 
 ```bibtex
 @misc{jiang2023revisiting,
-      title={Revisiting Scene Text Recognition: A Data Perspective}, 
+      title={Revisiting Scene Text Recognition: A Data Perspective},
       author={Qing Jiang and Jiapeng Wang and Dezhi Peng and Chongyu Liu and Lianwen Jin},
       year={2023},
       eprint={2307.08723},

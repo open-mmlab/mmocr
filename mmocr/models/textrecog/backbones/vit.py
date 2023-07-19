@@ -6,6 +6,7 @@
 
 from functools import partial
 from typing import Tuple
+
 import timm.models.vision_transformer
 import torch
 import torch.nn as nn
@@ -15,7 +16,7 @@ from mmocr.registry import MODELS
 
 @MODELS.register_module()
 class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
-    """Vision Transformer migrated from timm
+    """Vision Transformer migrated from timm.
 
     Args:
         global_pool (bool): If True, apply global pooling to the output
@@ -70,13 +71,13 @@ class VisionTransformer(timm.models.vision_transformer.VisionTransformer):
         if pretrained:
             checkpoint = torch.load(pretrained, map_location='cpu')
 
-            print("Load pre-trained checkpoint from: %s" % pretrained)
+            print('Load pre-trained checkpoint from: %s' % pretrained)
             checkpoint_model = checkpoint['model']
             state_dict = self.state_dict()
             for k in ['head.weight', 'head.bias']:
                 if k in checkpoint_model and checkpoint_model[
                         k].shape != state_dict[k].shape:
-                    print(f"Removing key {k} from pretrained checkpoint")
+                    print(f'Removing key {k} from pretrained checkpoint')
                     del checkpoint_model[k]
             # remove key with decoder
             for k in list(checkpoint_model.keys()):

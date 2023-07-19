@@ -64,7 +64,6 @@ val_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=val_dataset)
 
-
 test_dataloader = dict(
     batch_size=128,
     num_workers=4,
