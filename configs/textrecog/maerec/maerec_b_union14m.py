@@ -39,6 +39,12 @@ train_list = [
     _base_.union14m_normal, _base_.union14m_easy
 ]
 
+val_list = [
+    _base_.cute80_textrecog_test, _base_.iiit5k_textrecog_test,
+    _base_.svt_textrecog_test, _base_.svtp_textrecog_test,
+    _base_.icdar2013_textrecog_test, _base_.icdar2015_textrecog_test
+]
+
 test_list = [
     _base_.union14m_benchmark_artistic,
     _base_.union14m_benchmark_multi_oriented,
@@ -57,6 +63,8 @@ auto_scale_lr = dict(base_batch_size=64)
 
 train_dataset = dict(
     type='ConcatDataset', datasets=train_list, pipeline=_base_.train_pipeline)
+val_dataset = dict(
+    type='ConcatDataset', datasets=val_list, pipeline=_base_.test_pipeline)
 test_dataset = dict(
     type='ConcatDataset', datasets=test_list, pipeline=_base_.test_pipeline)
 
@@ -69,6 +77,16 @@ train_dataloader = dict(
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=train_dataset)
 
+val_dataloader = dict(
+    batch_size=128,
+    num_workers=4,
+    persistent_workers=True,
+    pin_memory=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
+    dataset=val_dataset)
+
+
 test_dataloader = dict(
     batch_size=128,
     num_workers=4,
@@ -76,15 +94,14 @@ test_dataloader = dict(
     pin_memory=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=test_dataset)
-
-val_dataloader = test_dataloader
+    dataset=val_dataset)
 
 
 val_evaluator = dict(
     dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
 
-test_evaluator = dict(dataset_prefixes=[
-    'artistic', 'multi-oriented', 'contextless', 'curve', 'incomplete',
-    'incomplete-ori', 'multi-words', 'salient', 'general'
-])
+# test_evaluator = dict(dataset_prefixes=[
+#     'artistic', 'multi-oriented', 'contextless', 'curve', 'incomplete',
+#     'incomplete-ori', 'multi-words', 'salient', 'general'
+# ])
+test_evaluator = val_evaluator

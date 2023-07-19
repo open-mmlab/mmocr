@@ -1,0 +1,79 @@
+Collections:
+  - Name: MAERec
+    Metadata:
+      Training Data: OCRDataset
+      Training Techniques:
+        - AdamW
+      Epochs: 10
+      Batch Size: 256
+      Training Resources: 4x NVIDIA A6000
+      Architecture:
+        - ViT
+        - MARecDecoder
+    Paper:
+      URL: https://arxiv.org/pdf/2307.08723.pdf
+      Title: "Rethinking Scene Text Recognition: A Data Perspective"
+    README: configs/textrecog/maerec/README.md
+
+Models:
+  - Name: maerec_b_union14m
+    Alias: MAERec
+    In Collection: MAERec
+    Config: configs/textrecog/maerec/maerec_b_union14m.py
+    Metadata:
+      Training Data:
+        - Union14M
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 0.985
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 0.978
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 0.981
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 0.895
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 0.944
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 0.986
+      - Task: Text Recognition
+        Dataset: Union14M-Curve
+        Metrics:
+          word_acc: 0.888
+      - Task: Text Recognition
+        Dataset: Union14M-Multi-Oriented
+        Metrics:
+          word_acc: 0.839
+      - Task: Text Recognition
+        Dataset: Union14M-Artistic
+        Metrics:
+          word_acc: 0.800
+      - Task: Text Recognition
+        Dataset: Union14M-Contextless
+        Metrics:
+          word_acc: 0.855
+      - Task: Text Recognition
+        Dataset: Union14M-Salient
+        Metrics:
+          word_acc: 0.849
+      - Task: Text Recognition
+        Dataset: Union14M-Multi-Words
+        Metrics:
+          word_acc: 0.875
+      - Task: Text Recognition
+        Dataset: Union14M-General
+        Metrics:
+          word_acc: 0.858
+    Weights: https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_b_union14m-4b98d1b4.pth
