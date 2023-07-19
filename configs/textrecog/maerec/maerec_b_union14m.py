@@ -2,8 +2,14 @@ _base_ = [
     '_base_marec_vit_s.py',
     '../_base_/datasets/union14m_train.py',
     '../_base_/datasets/union14m_benchmark.py',
+    '../_base_/datasets/cute80.py',
+    '../_base_/datasets/iiit5k.py',
+    '../_base_/datasets/svt.py',
+    '../_base_/datasets/svtp.py',
+    '../_base_/datasets/icdar2013.py',
+    '../_base_/datasets/icdar2015.py',
     '../_base_/default_runtime.py',
-    '../_base_/schedules/schedule_adamw_cos_6e.py',
+    '../_base_/schedules/schedule_adamw_cos_10e.py',
 ]
 
 model = dict(
@@ -75,9 +81,10 @@ test_dataloader = dict(
 val_dataloader = test_dataloader
 
 
-val_evaluator = dict(dataset_prefixes=[
+val_evaluator = dict(
+    dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
+
+test_evaluator = dict(dataset_prefixes=[
     'artistic', 'multi-oriented', 'contextless', 'curve', 'incomplete',
     'incomplete-ori', 'multi-words', 'salient', 'general'
 ])
-
-test_evaluator = val_evaluator
