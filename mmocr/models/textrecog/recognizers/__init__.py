@@ -11,9 +11,10 @@ from .robust_scanner import RobustScanner
 from .sar import SARNet
 from .satrn import SATRN
 from .svtr import SVTR
+from .maerec import MAERec
 
 __all__ = [
     'BaseRecognizer', 'EncoderDecoderRecognizer', 'CRNN', 'SARNet', 'NRTR',
     'RobustScanner', 'SATRN', 'ABINet', 'MASTER', 'SVTR', 'ASTER',
-    'EncoderDecoderRecognizerTTAModel'
+    'EncoderDecoderRecognizerTTAModel', 'MAERec'
 ]
