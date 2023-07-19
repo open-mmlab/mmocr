@@ -92,13 +92,12 @@ test_dataloader = dict(
     pin_memory=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
-    dataset=val_dataset)
+    dataset=test_dataset)
 
 val_evaluator = dict(
     dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
 
-# test_evaluator = dict(dataset_prefixes=[
-#     'artistic', 'multi-oriented', 'contextless', 'curve', 'incomplete',
-#     'incomplete-ori', 'multi-words', 'salient', 'general'
-# ])
-test_evaluator = val_evaluator
+test_evaluator = dict(dataset_prefixes=[
+    'artistic', 'multi-oriented', 'contextless', 'curve', 'incomplete',
+    'incomplete-ori', 'multi-words', 'salient', 'general'
+])

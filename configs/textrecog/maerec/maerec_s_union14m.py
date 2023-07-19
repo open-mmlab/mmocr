@@ -76,8 +76,7 @@ test_dataloader = dict(
 val_evaluator = dict(
     dataset_prefixes=['CUTE80', 'IIIT5K', 'SVT', 'SVTP', 'IC13', 'IC15'])
 
-# test_evaluator = dict(dataset_prefixes=[
-#     'artistic', 'multi-oriented', 'contextless', 'curve', 'incomplete',
-#     'incomplete-ori', 'multi-words', 'salient', 'general'
-# ])
-test_evaluator = val_evaluator
+test_evaluator = dict(dataset_prefixes=[
+    'artistic', 'multi-oriented', 'contextless', 'curve', 'incomplete',
+    'incomplete-ori', 'multi-words', 'salient', 'general'
+])
