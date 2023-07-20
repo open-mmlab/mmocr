@@ -48,10 +48,10 @@ We also provide NRTR trained on [Union14M](https://github.com/Mountchicken/Union
 
 - Evaluated on six common benchmarks
 
-  |                              Methods                               |  Backbone   |         | Regular Text |           |        | Irregular Text |                                                                                                       | download |
-  | :----------------------------------------------------------------: | :---------: | :--------: | :----: | :----------: | :-------: | :----: | :------------: | :---------------------------------------------------------------------------------------------------: | :------- |
-  |                                                                    |             |   IIIT5K   |  SVT   |  IC13-1015   | IC15-2077 |  SVTP  |      CT80      |                                                                                                       |
-  | [NRTR](configs/textrecog/nrtr/nrtr_resnet31-1by8-1by4_union14m.py) | R31-1/8-1/4 |   0.9673   | 0.9320 |    0.9557    |  0.8074   | 0.8357 |     0.9201     | [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_union14m/nrtr_union14m-606b6cba.pth) |
+  |                             Methods                              |  Backbone   |        | Regular Text |           |     |           | Irregular Text |        | download                                                           |
+  | :--------------------------------------------------------------: | :---------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :----------------------------------------------------------------- |
+  |                                                                  |             | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                    |
+  | [NRTR](configs/textrecog/nrtr/nrtr_resnet31-1by8-1by4_union14m.py) | R31-1/8-1/4 | 0.9673 |    0.9320    |  0.9557   |     |  0.8074   |     0.8357     | 0.9201 | [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_union14m/nrtr_union14m-606b6cba.pth) |
 
 - Evaluated on [Union14M-Benchmark](https://github.com/Mountchicken/Union14M)
 

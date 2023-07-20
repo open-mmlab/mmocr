@@ -44,10 +44,10 @@ We also provide ASTER trained on [Union14M](https://github.com/Mountchicken/Unio
 
 - Evaluated on six common benchmarks
 
-|                            Methods                             | pretrained |        | Regular Text |           |           | Irregular Text |        | download                                                                 |
-| :------------------------------------------------------------: | :--------: | :----: | :----------: | :-------: | :-------: | :------------: | :----: | :----------------------------------------------------------------------- |
-|                                                                |            | IIIT5K |     SVT      | IC13-1015 | IC15-2077 |      SVTP      |  CT80  |                                                                          |
-| [ASTER](configs/textrecog/aster/aster_resnet45_6e_union14m.py) |     -      | 0.9437 |    0.8903    |  0.9360   |  0.7857   |     0.8093     | 0.9097 | [model](https://download.openmmlab.com/mmocr/textrecog/aster/aster_union14m/aster_union14m-230eb471.pth) |
+  |                            Methods                             | pretrained |        | Regular Text |           |     |           | Irregular Text |        | download                                                              |
+  | :------------------------------------------------------------: | :--------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :-------------------------------------------------------------------- |
+  |                                                                |            | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                       |
+  | [ASTER](configs/textrecog/aster/aster_resnet45_6e_union14m.py) |     -      | 0.9437 |    0.8903    |  0.9360   |     |  0.7857   |     0.8093     | 0.9097 | [model](https://download.openmmlab.com/mmocr/textrecog/aster/aster_union14m/aster_union14m-230eb471.pth) |
 
 - Evaluated on [Union14M-Benchmark](https://github.com/Mountchicken/Union14M)
 

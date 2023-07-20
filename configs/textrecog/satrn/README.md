@@ -46,10 +46,10 @@ We also provide SATRN trained on [Union14M](https://github.com/Mountchicken/Unio
 
 - Evaluated on six common benchmarks
 
-|                            Methods                            |        | Regular Text |           |           | Irregular Text |        | download                                                                            |
-| :-----------------------------------------------------------: | :----: | :----------: | :-------: | :-------: | :------------: | :----: | :---------------------------------------------------------------------------------- |
-|                                                               | IIIT5K |     SVT      | IC13-1015 | IC15-2077 |      SVTP      |  CT80  |                                                                                     |
-| [SATRN](configs/textrecog/satrn/satrn_shallow_5e_union14m.py) | 0.9727 |    0.9536    |  0.9685   |  0.8714   |     0.9039     | 0.9618 | [model](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_union14m/satrn_union14m-6ac4114e.pth) |
+|                            Methods                            |        | Regular Text |           |     |           | Irregular Text |        | download                                                                         |
+| :-----------------------------------------------------------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :------------------------------------------------------------------------------- |
+|                                                               | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                                  |
+| [SATRN](configs/textrecog/satrn/satrn_shallow_5e_union14m.py) | 0.9727 |    0.9536    |  0.9685   |     |  0.8714   |     0.9039     | 0.9618 | [model](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_union14m/satrn_union14m-6ac4114e.pth) |
 
 - Evaluated on [Union14M-Benchmark](https://github.com/Mountchicken/Union14M)
 
