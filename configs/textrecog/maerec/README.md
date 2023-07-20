@@ -64,6 +64,8 @@ This paper aims to re-assess scene text recognition (STR) from a data-oriented p
   | [MAERec-S](configs/textrecog/maerec/maerec_s_union14m.py) | [ViT-Small (Pretrained on Union14M-U)](https://github.com/Mountchicken/Union14M#51-pre-training) | 81.4  | 71.4                | 72.0     | 82.0        |     | 78.5    | 82.4                  | 2.7        | 82.5    | [model](https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_s_union14m-a9a157e5.pth) |
   | [MAERec-B](configs/textrecog/maerec/maerec_b_union14m.py) | [ViT-Base (Pretrained on Union14M-U)](https://github.com/Mountchicken/Union14M#51-pre-training) | 88.8  | 83.9                | 80.0     | 85.5        |     | 84.9    | 87.5                  | 2.6        | 85.8    | [model](https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_b_union14m-4b98d1b4.pth) |
 
+- **To train with MAERec, you need to download pretrained ViT weight and load it in the config file. Check [here](https://github.com/Mountchicken/Union14M/blob/main/docs/finetune.md) for instructions**
+
 ## Citation
 
 ```bibtex
