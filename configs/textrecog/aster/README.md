@@ -40,6 +40,22 @@ A challenging aspect of scene text recognition is to handle text with distortion
 |   [ASTER](/configs/textrecog/aster/aster_resnet45_6e_st_mj.py)   | ResNet45 | 0.9357 |    0.8949    |  0.9281   |     |  0.7665   |     0.8062     | 0.8507 | [model](https://download.openmmlab.com/mmocr/textrecog/aster/aster_resnet45_6e_st_mj/aster_resnet45_6e_st_mj-cc56eca4.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/aster/aster_resnet45_6e_st_mj/20221214_232605.log) |
 | [ASTER-TTA](/configs/textrecog/aster/aster_resnet45_6e_st_mj.py) | ResNet45 | 0.9337 |    0.8949    |  0.9251   |     |  0.7925   |     0.8109     | 0.8507 |                                                                       |
 
+We also provide ASTER trained on [Union14M](https://github.com/Mountchicken/Union14M)
+
+- Evaluated on six common benchmarks
+
+|                            methods                             | pretrained |        | Regular Text |           |           | Irregular Text |        | download                                                                 |
+| :------------------------------------------------------------: | :--------: | :----: | :----------: | :-------: | :-------: | :------------: | :----: | :----------------------------------------------------------------------- |
+|                                                                |            | IIIT5K |     SVT      | IC13-1015 | IC15-2077 |      SVTP      |  CT80  |                                                                          |
+| [ASTER](configs/textrecog/aster/aster_resnet45_6e_union14m.py) |     -      | 0.9437 |    0.8903    |  0.9360   |  0.7857   |     0.8093     | 0.9097 | [model](https://download.openmmlab.com/mmocr/textrecog/aster/aster_union14m/aster_union14m-230eb471.pth) |
+
+- Evaluated on [Union14M-Benchmark](https://github.com/Mountchicken/Union14M)
+
+  | Methods                                                |       | Unsolved Challenges |          |             |     |         | Additional Challenges |            | General | download                                                |
+  | ------------------------------------------------------ | ----- | ------------------- | -------- | ----------- | --- | ------- | --------------------- | ---------- | ------- | ------------------------------------------------------- |
+  |                                                        | Curve | Multi-Oriented      | Artistic | Contextless |     | Salient | Multi-Words           | Incomplete | General |                                                         |
+  | [ASTER](configs/textrecog/aster/aster_resnet45_6e_union14m.py) | 0.384 | 0.130               | 0.418    | 0.529       |     | 0.319   | 0.498                 | 0.013      | 0.667   | [model](https://download.openmmlab.com/mmocr/textrecog/aster/aster_union14m/aster_union14m-230eb471.pth) |
+
 ## Citation
 
 ```bibtex
