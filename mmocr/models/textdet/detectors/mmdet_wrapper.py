@@ -138,6 +138,7 @@ class MMDetWrapper(BaseModel):
                 # convert by text_repr_type
                 if self.text_repr_type == 'quad':
                     for j, poly in enumerate(filterd_polygons):
+                        poly = poly.reshape(-1, 2)
                         rect = cv2.minAreaRect(poly)
                         vertices = cv2.boxPoints(rect)
                         poly = vertices.flatten()
