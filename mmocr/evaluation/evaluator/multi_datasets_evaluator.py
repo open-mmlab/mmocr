@@ -92,15 +92,18 @@ class MultiDatasetsEvaluator(Evaluator):
                     metrics_results.update(metric_results)
             metric.results.clear()
         if is_main_process():
-            averaged_results = self.average_results(metrics_results)
+            averaged_results = [self.average_results(metrics_results)]
         else:
-            averaged_results = None
+            averaged_results = [None]
 
         metrics_results = [metrics_results]
         broadcast_object_list(metrics_results)
         broadcast_object_list([averaged_results])
-
-        return metrics_results[0], averaged_results
+        results = {
+            'metric_results': metrics_results[0],
+            'averaged_results': averaged_results
+        }
+        return results
 
     def average_results(self, metrics_results):
         """Compute the average of metric results across all datasets.
