@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 
 import math
+from collections import OrderedDict
 from typing import Dict, List, Optional
 from unittest import TestCase
 
@@ -75,7 +76,7 @@ def generate_test_results(size, batch_size, pred, label):
         predictions = [
             BaseDataElement(pred=pred, label=label) for _ in range(bs)
         ]
-        yield (data_batch, predictions)
+        yield data_batch, predictions
 
 
 class TestMultiDatasetsEvaluator(TestCase):
@@ -96,11 +97,11 @@ class TestMultiDatasetsEvaluator(TestCase):
                 size, batch_size, pred=1, label=1):
             evaluator.process(predictions, data_samples)
 
-        metrics = evaluator.evaluate(size=size)
+        metrics_results, averaged_results = evaluator.evaluate(size=size)
 
-        self.assertAlmostEqual(metrics['Fake/Toy/accuracy'], 1.0)
-        self.assertAlmostEqual(metrics['Fake/Toy/mAP'], 0.0)
-        self.assertEqual(metrics['Fake/Toy/size'], size)
+        self.assertAlmostEqual(metrics_results['Fake/Toy/accuracy'], 1.0)
+        self.assertAlmostEqual(metrics_results['Fake/Toy/mAP'], 0.0)
+        self.assertEqual(metrics_results['Fake/Toy/size'], size)
         with self.assertWarns(Warning):
             evaluator.evaluate(size=0)
 
@@ -123,6 +124,25 @@ class TestMultiDatasetsEvaluator(TestCase):
         for data_samples, predictions in generate_test_results(
                 size, batch_size, pred=1, label=1):
             evaluator.process(predictions, data_samples)
-        metrics = evaluator.evaluate(size=size)
-        self.assertIn('Fake/Toy/accuracy', metrics)
-        self.assertIn('Fake/accuracy', metrics)
+        metrics_results, averaged_results = evaluator.evaluate(size=size)
+        self.assertIn('Fake/Toy/accuracy', metrics_results)
+        self.assertIn('Fake/accuracy', metrics_results)
+
+        metrics_results = OrderedDict({
+            'dataset1/metric1/accuracy': 0.9,
+            'dataset1/metric2/f1_score': 0.8,
+            'dataset2/metric1/accuracy': 0.85,
+            'dataset2/metric2/f1_score': 0.75
+        })
+
+        evaluator = MultiDatasetsEvaluator(cfg, dataset_prefixes=['Fake'])
+        averaged_results = evaluator.average_results(metrics_results)
+
+        expected_averaged_results = {
+            'dataset1/metric1/accuracy': 0.9,
+            'dataset1/metric2/f1_score': 0.8,
+            'dataset2/metric1/accuracy': 0.85,
+            'dataset2/metric2/f1_score': 0.75
+        }
+
+        self.assertEqual(averaged_results, expected_averaged_results)
