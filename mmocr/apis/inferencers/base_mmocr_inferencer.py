@@ -295,7 +295,7 @@ class BaseMMOCRInferencer(BaseInferencer):
             img_name = osp.splitext(osp.basename(pred.img_path))[0]
 
             if save_vis and img_out_dir:
-                out_file = osp.splitext(img_name)[0]
+                out_file = img_name
                 out_file = f'{out_file}.jpg'
                 out_file = osp.join(img_out_dir, out_file)
             else:
