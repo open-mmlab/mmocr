@@ -47,6 +47,22 @@ Linguistic knowledge is of great benefit to scene text recognition. However, how
 2. Facts about the pretrained model: MMOCR does not have a systematic pipeline to pretrain the language model (LM) yet, thus the weights of LM are converted from [the official pretrained model](https://github.com/FangShancheng/ABINet). The weights of ABINet-Vision are directly used as the vision model of ABINet.
 ```
 
+We also provide ABINet trained on [Union14M](https://github.com/Mountchicken/Union14M)
+
+- Evaluated on six common benchmarks
+
+  |                              methods                              | pretrained |        | Regular Text |           |     |           | Irregular Text |        | download                                                           |
+  | :---------------------------------------------------------------: | :--------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :----------------------------------------------------------------- |
+  |                                                                   |            | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                    |
+  | [ABINet-Vision](configs/textrecog/abinet/abinet-vision_10e_union14m.py) |     -      | 0.9730 |    0.9645    |  0.9552   |     |  0.8536   |     0.8977     | 0.9479 | [model](https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_union14m-cbf19742.pth) |
+
+- Evaluated on [Union14M-Benchmark](https://github.com/Mountchicken/Union14M)
+
+  | Methods                                                |       | Unsolved Challenges |          |             |     |         | Additional Challenges |            | General | download                                                |
+  | ------------------------------------------------------ | ----- | ------------------- | -------- | ----------- | --- | ------- | --------------------- | ---------- | ------- | ------------------------------------------------------- |
+  |                                                        | Curve | Multi-Oriented      | Artistic | Contextless |     | Salient | Multi-Words           | Incomplete | General |                                                         |
+  | [ABINet-Vision](configs/textrecog/abinet/abinet-vision_10e_union14m.py) | 0.750 | 0.615               | 0.653    | 0.711       |     | 0.729   | 0.591                 | 0.026      | 0.794   | [model](https://download.openmmlab.com/mmocr/textrecog/abinet/abinet_union14m-cbf19742.pth) |
+
 ## Citation
 
 ```bibtex
