@@ -10,6 +10,7 @@ Import:
   - configs/textrecog/abinet/metafile.yml
   - configs/textrecog/aster/metafile.yml
   - configs/textrecog/crnn/metafile.yml
+  - configs/textrecog/maerec/metafile.yml
   - configs/textrecog/master/metafile.yml
   - configs/textrecog/nrtr/metafile.yml
   - configs/textrecog/svtr/metafile.yml
