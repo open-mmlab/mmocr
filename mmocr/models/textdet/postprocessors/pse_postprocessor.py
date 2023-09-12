@@ -93,7 +93,7 @@ class PSEPostprocessor(PANPostprocessor):
             area = points.shape[0]
             score_instance = np.mean(score[labels == i])
             if not (area >= self.min_text_area
-                    or score_instance > self.score_threshold):
+                    and score_instance > self.score_threshold):
                 continue
 
             polygon = self._points2boundary(points)
