@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from typing import Tuple
+from typing import Optional, Sequence, Tuple
 
 from mmengine.structures import LabelData
 from torch import Tensor
@@ -15,14 +15,19 @@ class RecRoIHead(BaseRoIHead):
     """Simplest base roi head including one bbox head and one mask head."""
 
     def __init__(self,
-                 neck=None,
+                 inputs_indices: Optional[Sequence] = None,
+                 neck: OptMultiConfig = None,
+                 assigner: OptMultiConfig = None,
                  sampler: OptMultiConfig = None,
                  roi_extractor: OptMultiConfig = None,
                  rec_head: OptMultiConfig = None,
                  init_cfg=None):
         super().__init__(init_cfg)
-        if sampler is not None:
-            self.sampler = TASK_UTILS.build(sampler)
+        self.inputs_indices = inputs_indices
+        self.assigner = assigner
+        if assigner is not None:
+            self.assigner = TASK_UTILS.build(assigner)
+        self.sampler = TASK_UTILS.build(sampler)
         if neck is not None:
             self.neck = MODELS.build(neck)
         self.roi_extractor = MODELS.build(roi_extractor)
@@ -43,11 +48,39 @@ class RecRoIHead(BaseRoIHead):
         Returns:
             dict[str, Tensor]: A dictionary of loss components
         """
-        proposals = [
-            ds.gt_instances[~ds.gt_instances.ignored] for ds in data_samples
-        ]
+
+        if self.inputs_indices is not None:
+            inputs = [inputs[i] for i in self.inputs_indices]
+        # proposals = [
+        #     ds.gt_instances[~ds.gt_instances.ignored] for ds in data_samples
+        # ]
+        proposals = list()
+        for ds in data_samples:
+            pred_instances = ds.pred_instances
+            gt_instances = ds.gt_instances
+            # # assign
+            # gt_beziers = gt_instances.beziers
+            # pred_beziers = pred_instances.beziers
+            # assign_index = [
+            #     int(
+            #         torch.argmin(
+            #             torch.abs(gt_beziers - pred_beziers[i]).sum(dim=1)))
+            #     for i in range(len(pred_beziers))
+            # ]
+            # proposal = InstanceData()
+            # proposal.texts = gt_instances.texts + gt_instances[
+            #     assign_index].texts
+            # proposal.beziers = torch.cat(
+            #     [gt_instances.beziers, pred_instances.beziers], dim=0)
+            if self.assigner:
+                gt_instances, pred_instances = self.assigner.assign(
+                    gt_instances, pred_instances)
+            proposal = self.sampler.sample(gt_instances, pred_instances)
+            proposals.append(proposal)
 
         proposals = [p for p in proposals if len(p) > 0]
+        if hasattr(self, 'neck') and self.neck is not None:
+            inputs = self.neck(inputs)
         bbox_feats = self.roi_extractor(inputs, proposals)
         rec_data_samples = [
             TextRecogDataSample(gt_text=LabelData(item=text))
@@ -57,6 +90,7 @@ class RecRoIHead(BaseRoIHead):
 
     def predict(self, inputs: Tuple[Tensor],
                 data_samples: DetSampleList) -> RecSampleList:
+        inputs = inputs[:3]
         if hasattr(self, 'neck') and self.neck is not None:
             inputs = self.neck(inputs)
         pred_instances = [ds.pred_instances for ds in data_samples]

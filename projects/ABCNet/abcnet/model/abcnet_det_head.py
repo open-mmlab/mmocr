@@ -14,7 +14,7 @@ class ABCNetDetHead(BaseTextDetHead):
 
     def __init__(self,
                  in_channels,
-                 module_loss=dict(type='ABCNetLoss'),
+                 module_loss=dict(type='ABCNetDetModuleLoss'),
                  postprocessor=dict(type='ABCNetDetPostprocessor'),
                  num_classes=1,
                  strides=(4, 8, 16, 32, 64),
@@ -181,8 +181,8 @@ class ABCNetDetHead(BaseTextDetHead):
         # float to avoid overflow when enabling FP16
         if self.use_scale:
             bbox_pred = scale(bbox_pred).float()
-        else:
-            bbox_pred = bbox_pred.float()
+        # else:
+        #     bbox_pred = bbox_pred.float()
         if self.norm_on_bbox:
             # bbox_pred needed for gradient computation has been modified
             # by F.relu(bbox_pred) when run with PyTorch 1.10. So replace

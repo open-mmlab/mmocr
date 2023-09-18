@@ -2,6 +2,7 @@
 from typing import Dict, List, Tuple
 
 import torch
+import torch.nn.functional as F
 from mmdet.models.task_modules.prior_generators import MlvlPointGenerator
 from mmdet.models.utils import multi_apply
 from mmdet.utils import reduce_mean
@@ -149,11 +150,17 @@ class ABCNetDetModuleLoss(BaseTextDetModuleLoss):
                 avg_factor=centerness_denorm)
             loss_centerness = self.loss_centerness(
                 pos_centerness, pos_centerness_targets, avg_factor=num_pos)
-            loss_bezier = self.loss_bezier(
-                pos_bezier_preds,
-                pos_bezier_targets,
-                weight=pos_centerness_targets[:, None],
-                avg_factor=centerness_denorm)
+            # loss_bezier = self.loss_bezier(
+            #     pos_bezier_preds,
+            #     pos_bezier_targets,
+            #     weight=pos_centerness_targets[:, None],
+            #     avg_factor=centerness_denorm)
+
+            loss_bezier = F.smooth_l1_loss(
+                pos_bezier_preds, pos_bezier_targets, reduction='none')
+            loss_bezier = (
+                (loss_bezier.mean(dim=-1) * pos_centerness_targets).sum() /
+                centerness_denorm)
         else:
             loss_bbox = pos_bbox_preds.sum()
             loss_centerness = pos_centerness.sum()
@@ -250,6 +257,7 @@ class ABCNetDetModuleLoss(BaseTextDetModuleLoss):
         polygons = gt_instances.polygons
         beziers = gt_bboxes.new([poly2bezier(poly) for poly in polygons])
         gt_instances.beziers = beziers
+        # beziers = gt_instances.beziers
         if num_gts == 0:
             return gt_labels.new_full((num_points,), self.num_classes), \
                    gt_bboxes.new_zeros((num_points, 4)), \

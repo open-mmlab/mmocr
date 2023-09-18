@@ -12,6 +12,7 @@ from .bezier_roi_extractor import BezierRoIExtractor
 from .bifpn import BiFPN
 from .coordinate_head import CoordinateHead
 from .rec_roi_head import RecRoIHead
+from .task_utils import *  # noqa: F401,F403
 
 __all__ = [
     'ABCNetDetHead', 'ABCNetDetPostprocessor', 'ABCNetRecBackbone',

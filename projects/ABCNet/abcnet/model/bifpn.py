@@ -170,10 +170,12 @@ class BiFPNLayer(BaseModule):
         self.bifpn_convs = nn.ModuleList()
         # weighted
         self.weight_two_nodes = nn.Parameter(
-            torch.Tensor(2, levels).fill_(init))
+            torch.Tensor(2, levels).fill_(init), requires_grad=True)
+
         self.weight_three_nodes = nn.Parameter(
-            torch.Tensor(3, levels - 2).fill_(init))
-        self.relu = nn.ReLU()
+            torch.Tensor(3, levels - 2).fill_(init), requires_grad=True)
+
+        # self.relu = nn.ReLU(inplace=False)
         for _ in range(2):
             for _ in range(self.levels - 1):  # 1,2,3
                 fpn_conv = nn.Sequential(
@@ -193,9 +195,10 @@ class BiFPNLayer(BaseModule):
         # build top-down and down-top path with stack
         levels = self.levels
         # w relu
-        w1 = self.relu(self.weight_two_nodes)
-        w1 /= torch.sum(w1, dim=0) + self.eps  # normalize
-        w2 = self.relu(self.weight_three_nodes)
+
+        _w1 = F.relu(self.weight_two_nodes)
+        w1 = _w1 / (torch.sum(_w1, dim=0) + self.eps)  # normalize
+        w2 = F.relu(self.weight_three_nodes)
         # w2 /= torch.sum(w2, dim=0) + self.eps  # normalize
         # build top-down
         idx_bifpn = 0
