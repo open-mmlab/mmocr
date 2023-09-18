@@ -16,15 +16,15 @@ Scene text detection, an important step of scene text reading systems, has witne
 
 ### CTW1500
 
-|                            Method                            | Pretrained Model | Training set  |   Test set   | #epochs | Test size | Precision | Recall | Hmean  |                            Download                            |
-| :----------------------------------------------------------: | :--------------: | :-----------: | :----------: | :-----: | :-------: | :-------: | :----: | :----: | :------------------------------------------------------------: |
-| [PANet](/configs/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500.py) |     ImageNet     | CTW1500 Train | CTW1500 Test |   600   |    640    |  0.8208   | 0.7376 | 0.7770 | [model](https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500/panet_resnet18_fpem-ffm_600e_ctw1500_20220826_144818-980f32d0.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500/20220826_144818.log) |
+|                         Method                          | Pretrained Model | Training set  |   Test set   | #epochs | Test size | Precision | Recall | Hmean  |                         Download                          | Batch Size |
+| :-----------------------------------------------------: | :--------------: | :-----------: | :----------: | :-----: | :-------: | :-------: | :----: | :----: | :-------------------------------------------------------: | :--------: |
+| [PANet](/configs/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500.py) |     ImageNet     | CTW1500 Train | CTW1500 Test |   600   |    640    |  0.8208   | 0.7376 | 0.7770 | [model](https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500/panet_resnet18_fpem-ffm_600e_ctw1500_20220826_144818-980f32d0.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_ctw1500/20220826_144818.log) |   1xb16    |
 
 ### ICDAR2015
 
-|                           Method                           | Pretrained Model |  Training set   |    Test set    | #epochs | Test size | Precision | Recall | Hmean  |                           Download                           |
-| :--------------------------------------------------------: | :--------------: | :-------------: | :------------: | :-----: | :-------: | :-------: | :----: | :----: | :----------------------------------------------------------: |
-| [PANet](/configs/textdet/panet/panet_resnet18_fpem-ffm_600e_icdar2015.py) |     ImageNet     | ICDAR2015 Train | ICDAR2015 Test |   600   |    736    |  0.8455   | 0.7323 | 0.7848 | [model](https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_icdar2015/panet_resnet18_fpem-ffm_600e_icdar2015_20220826_144817-be2acdb4.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_icdar2015/20220826_144817.log) |
+|                        Method                         | Pretrained Model |  Training set   |    Test set    | #epochs | Test size | Precision | Recall | Hmean  |                        Download                         | Batch Size |
+| :---------------------------------------------------: | :--------------: | :-------------: | :------------: | :-----: | :-------: | :-------: | :----: | :----: | :-----------------------------------------------------: | :--------: |
+| [PANet](/configs/textdet/panet/panet_resnet18_fpem-ffm_600e_icdar2015.py) |     ImageNet     | ICDAR2015 Train | ICDAR2015 Test |   600   |    736    |  0.8455   | 0.7323 | 0.7848 | [model](https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_icdar2015/panet_resnet18_fpem-ffm_600e_icdar2015_20220826_144817-be2acdb4.pth) \| [log](https://download.openmmlab.com/mmocr/textdet/panet/panet_resnet18_fpem-ffm_600e_icdar2015/20220826_144817.log) |   1xb16    |
 
 ## Citation
 
