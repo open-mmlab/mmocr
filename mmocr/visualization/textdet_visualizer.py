@@ -4,6 +4,7 @@ from typing import Dict, List, Optional, Sequence, Tuple, Union
 import mmcv
 import numpy as np
 import torch
+from mmengine.utils.manager import _accquire_lock, _release_lock
 
 from mmocr.registry import VISUALIZERS
 from mmocr.structures import TextDetDataSample
@@ -147,6 +148,7 @@ class TextDetLocalVisualizer(BaseLocalVisualizer):
                 and masks. Defaults to 0.3.
             step (int): Global step value to record. Defaults to 0.
         """
+        _accquire_lock()
         cat_images = []
         if data_sample is not None:
             if draw_gt and 'gt_instances' in data_sample:
@@ -191,4 +193,7 @@ class TextDetLocalVisualizer(BaseLocalVisualizer):
             mmcv.imwrite(cat_images[..., ::-1], out_file)
 
         self.set_image(cat_images)
-        return self.get_image()
+        drawn_rgb_image = self.get_image()
+        _release_lock()
+
+        return drawn_rgb_image

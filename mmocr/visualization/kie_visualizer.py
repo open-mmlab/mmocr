@@ -7,6 +7,7 @@ import numpy as np
 import torch
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import FancyArrow
+from mmengine.utils.manager import _accquire_lock, _release_lock
 from mmengine.visualization import Visualizer
 from mmengine.visualization.utils import (check_type, check_type_and_length,
                                           color_val_matplotlib, tensor2ndarray,
@@ -233,6 +234,7 @@ class KIELocalVisualizer(BaseLocalVisualizer):
             out_file (str): Path to output file. Defaults to None.
             step (int): Global step value to record. Defaults to 0.
         """
+        _accquire_lock()
         cat_images = list()
 
         if draw_gt:
@@ -274,7 +276,10 @@ class KIELocalVisualizer(BaseLocalVisualizer):
             mmcv.imwrite(cat_images[..., ::-1], out_file)
 
         self.set_image(cat_images)
-        return self.get_image()
+        drawn_rgb_image = self.get_image()
+        _release_lock()
+
+        return drawn_rgb_image
 
     def draw_arrows(self,
                     x_data: Union[np.ndarray, torch.Tensor],
