@@ -1,0 +1,46 @@
+Title: N/A
+Venue: ICCV/arXiv/ECCV/...
+Year: N/A
+Lab/Company: N/A
+URL:
+  Venue: N/A
+  Arxiv: N/A
+Bibtex: N/A
+Code: N/A
+# If same network have different results on same dataset
+# select the best one
+Experiment:
+  Name: N/A
+  Metadata:
+    Device: N/A
+    FLOPs: N/A
+    Params: N/A
+  Results:
+    - Test Data: ICDAR2015
+      Pre-taining Data: N/A
+      Metrics:
+        Hmean: N/A
+        Precision: N/A
+        Recall: N/A
+      FPS: N/A
+    - Test Data: CTW1500
+      Metrics:
+        Hmean: N/A
+        Precision: N/A
+        Recall: N/A
+      FPS: N/A
+    - Test Data: TotalText
+      Metrics:
+        Hmean: N/A
+        Precision: N/A
+        Recall: N/A
+      FPS: N/A
+
+Abstract:
+Network Structure: # URL
+
+# Optional
+Method:
+  - SegmentationBase
+  - RegressionBase
+  - Hybrid

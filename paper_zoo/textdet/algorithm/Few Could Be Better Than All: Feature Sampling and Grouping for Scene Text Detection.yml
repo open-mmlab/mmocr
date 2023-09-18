@@ -1,0 +1,71 @@
+Title: 'Few Could Be Better Than All: Feature Sampling and Grouping for Scene Text Detection'
+Abbreviation: 'FSGNet'
+Venue: CVPR
+Year: 2022
+Lab/Company:
+  - NetEase
+  - Huazhong University of Science and Technology
+URL:
+  Venue: 'https://openaccess.thecvf.com/content/CVPR2022/papers/Tang_Few_Could_Be_Better_Than_All_Feature_Sampling_and_Grouping_CVPR_2022_paper.pdf'
+  Arxiv: 'https://arxiv.org/abs/2203.15221'
+Bibtex: '@InProceedings{Tang_2022_CVPR,
+    author    = {Tang, Jingqun and Zhang, Wenqing and Liu, Hongye and Yang, MingKun and Jiang, Bo and Hu, Guanglong and Bai, Xiang},
+    title     = {Few Could Be Better Than All: Feature Sampling and Grouping for Scene Text Detection},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2022},
+    pages     = {4563-4572}
+}'
+Code: N/A
+
+Experiments:
+  Name: FSGNet
+  Metadata:
+    Device: N/A
+    FLOPs: 35.9
+    Params: 38.3
+  Results:
+    - Training Data: ICDAR2015
+      Test Data: ICDAR2015
+      Metrics:
+        Hmean: 0.891
+        Precision: 0.909
+        Recall: 0.873
+      FPS: 12.9
+    - Training Data: CTW1500
+      Test Data: CTW1500
+      Metrics:
+        Hmean: 0.852
+        Precision: 0.881
+        Recall: 0.824
+      FPS: N/A
+    - Training Data: TotalText
+      Test Data: TotalText
+      Metrics:
+        Hmean: 0.881
+        Precision: 0.907
+        Recall: 0.857
+      FPS: N/A
+
+
+Abstract: 'Recently, transformer-based methods have achieved promising
+progresses in object detection, as they can eliminate the post-processes like
+NMS and enrich the deep representations. However, these methods cannot well
+cope with scene text due to its extreme variance of scales and aspect ratios.
+In this paper, we present a simple yet effective transformer-based architecture
+for scene text detection. Different from previous approaches that learn robust
+deep representations of scene text in a holistic manner, our method performs
+scene text detection based on a few representative features, which avoids the
+disturbance by background and reduces the computational cost. Specifically, we
+first select a few representative features at all scales that are highly
+relevant to foreground text. Then, we adopt a transformer for modeling the
+relationship of the sampled features, which effectively divides them into
+reasonable groups. As each feature group corresponds to a text instance, its
+bounding box can be easily obtained without any post-processing operation.
+Using the basic feature pyramid network for feature extraction, our method
+consistently achieves state-of-the-art results on several popular datasets for
+scene text detection.'
+Network Structure: 'https://user-images.githubusercontent.com/24622904/226288868-d0798fc9-f9a5-4b60-b4da-bed071dc21f9.png'
+
+# Optional
+Method: RegressionBased

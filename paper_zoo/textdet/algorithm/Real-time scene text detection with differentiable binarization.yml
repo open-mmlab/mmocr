@@ -1,0 +1,78 @@
+Title: 'Real-time scene text detection with differentiable binarization'
+Abbreviation: 'DBNet'
+Venue: AAAI
+Year: 2020
+Lab/Company:
+  - Huazhong University of Science and Technology
+  - Megvii
+  - Shanghai Jiao Tong University
+  - Onlyou Tech.
+URL:
+  Venue: https://ojs.aaai.org/index.php/AAAI/article/view/6812/6666
+  Arxiv: https://arxiv.org/abs/1911.08947
+Bibtex: '@inproceedings{liao2020real,
+  title={Real-time scene text detection with differentiable binarization},
+  author={Liao, Minghui and Wan, Zhaoyi and Yao, Cong and Chen, Kai and Bai, Xiang},
+  booktitle={Proceedings of the AAAI conference on artificial intelligence},
+  volume={34},
+  number={07},
+  pages={11474--11481},
+  year={2020}
+}'
+Code: https://github.com/open-mmlab/mmocr
+
+Experiments:
+  Name: DBNet-ResNet50
+  Metadata:
+    Device: N/A
+    Params: N/A
+    FLOPs: N/A
+  Results:
+    - Training Data: ICDAR2015
+      Test Data: ICDAR2015
+      Metrics:
+        Hmean: 0.873
+        Precision: 0.918
+        Recall: 0.832
+      FPS: 12
+    - Training Data: CTW1500
+      Test Data: CTW1500
+      Metrics:
+        Hmean: 0.834
+        Precision: 0.869
+        Recall: 0.802
+      FPS: 22
+    - Training Data: TotalText
+      Test Data: TotalText
+      Metrics:
+        Hmean: 0.847
+        Precision: 0.871
+        Recall: 0.825
+      FPS: 22
+Abstract: 'Recently, segmentation-based methods are quite popular in
+scene text detection, as the segmentation results can more ac-
+curately describe scene text of various shapes such as curve
+text. However, the post-processing of binarization is essen-
+tial for segmentation-based detection, which converts proba-
+bility maps produced by a segmentation method into bound-
+ing boxes/regions of text. In this paper, we propose a mod-
+ule named Differentiable Binarization (DB), which can per-
+form the binarization process in a segmentation network. Op-
+timized along with a DB module, a segmentation network can
+adaptively set the thresholds for binarization, which not only
+simplifies the post-processing but also enhances the perfor-
+mance of text detection. Based on a simple segmentation net-
+work, we validate the performance improvements of DB on
+five benchmark datasets, which consistently achieves state-
+of-the-art results, in terms of both detection accuracy and
+speed. In particular, with a light-weight backbone, the per-
+formance improvements by DB are significant so that we
+can look for an ideal tradeoff between detection accuracy
+and efficiency. Specifically, with a backbone of ResNet-18,
+our detector achieves an F-measure of 82.8, running at 62
+FPS, on the MSRA-TD500 dataset. Code is available at:
+https://github.com/MhLiao/DB.'
+Network Structure: # URL
+
+# Optional
+Method: SegmentationBase

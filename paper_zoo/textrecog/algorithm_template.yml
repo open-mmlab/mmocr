@@ -1,0 +1,56 @@
+Title: N/A
+Venue: ICCV/arXiv/ECCV/...
+Year: N/A
+Lab/Company: N/A
+URL:
+  Venue: N/A
+  Arxiv: N/A
+Bibtex: N/A
+Code: N/A
+# If same network have different results on same dataset
+# select the best one
+Experiments:
+  Name: N/A
+  Metadata:
+    Device: N/A
+    FLOPs: N/A
+    Parameters: N/A
+    InferenceTime: N/A
+    Training Data: MJ\ST\SA\Real
+  Results:
+    - Test Data: IIIT5K
+      Metrics:
+        WAICS: N/A
+    - Test Data: SVT
+      Metrics:
+        WAICS: N/A
+    - Test Data: IC13
+      Metrics:
+        WAICS: N/A
+    - Test Data: IC15
+      Metrics:
+        WAICS: N/A
+    - Test Data: SVTP
+      Metrics:
+        WAICS: N/A
+    - Test Data: CUTE
+      Metrics:
+        WAICS: N/A
+
+Abstract:
+Network Structure: # URL
+
+# Optional
+Architecture:
+  - CTC
+  - Attention
+  - Transformer
+Learning Method:
+  - Self-Supervised
+  - Semi-Supervised
+  - Contrastive
+  - Supervised
+Language Modality:
+  - Implicit Language Model
+  - Explicit Language Model
+  - Language Free Model
