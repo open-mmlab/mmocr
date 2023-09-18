@@ -1,0 +1,74 @@
+Title: 'GTC: Guided Training of CTC towards Efficient and Accurate Scene Text Recognition'
+Abbreviation: GTC
+Tasks:
+ - TextRecog
+Venue: AAAI
+Year: 2020
+Lab/Company:
+ - Nanyang Technological University
+ - SenseTime Group Ltd.
+URL:
+  Venue: 'https://ojs.aaai.org/index.php/AAAI/article/view/6735'
+  Arxiv: 'https://arxiv.org/abs/2002.01276'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Connectionist Temporal Classification (CTC) and attention mechanism
+are two main approaches used in recent scene text recognition works. Compared
+with attention-based methods, CTC decoder has a much shorter inference time,
+yet a lower accuracy. To design an efficient and effective model, we propose
+the guided training of CTC (GTC), where CTC model learns a better alignment and
+feature representations from a more powerful attentional guidance. With the
+benefit of guided training, CTC model achieves robust and accurate prediction
+for both regular and irregular scene text while maintaining a fast inference
+speed. Moreover, to further leverage the potential of CTC decoder, a graph
+convolutional network (GCN) is proposed to learn the local correlations of
+extracted features. Extensive experiments on standard benchmarks demonstrate
+that our end-to-end model achieves a new state-of-the-art for regular and
+irregular scene text recognition and needs 6 times shorter inference time than
+attentionbased methods.'
+MODELS:
+ Architecture:
+  - CTC
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/212222112-fc9f3490-003d-409c-874a-551aab414329.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 90.6
+     IIIT5K:
+       WAICS: 95.5
+     SVT:
+       WAICS: 92.9
+     IC13:
+       WAICS: 94.3
+     IC15:
+       WAICS: 82.5
+     SVTP:
+       WAICS: 86.2
+     CUTE:
+       WAICS: 92.3
+Bibtex: '@inproceedings{hu2020gtc,
+  title={Gtc: Guided training of ctc towards efficient and accurate scene text recognition},
+  author={Hu, Wenyang and Cai, Xiaocong and Hou, Jun and Yi, Shuai and Lin, Zhiping},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={34},
+  number={07},
+  pages={11005--11012},
+  year={2020}
+}'

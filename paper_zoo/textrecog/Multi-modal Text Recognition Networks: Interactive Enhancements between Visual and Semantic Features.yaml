@@ -1,0 +1,75 @@
+Title: 'Multi-modal Text Recognition Networks: Interactive Enhancements between Visual and Semantic Features'
+Abbreviation: MATRN
+Tasks:
+ - TextRecog
+Venue: ECCV
+Year: 2022
+Lab/Company:
+ - KAIST
+ - Clova AI Research
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_26'
+  Arxiv: 'https://ui.adsabs.harvard.edu/abs/2021arXiv211115263N/abstract'
+Paper Reading URL: N/A
+Code: 'https://github.com/byeonghu-na/MATRN'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Linguistic knowledge has brought great benefits to scene text
+recognition by providing semantics to refine character sequences. However, since
+linguistic knowledge has been applied individually on the output sequence,
+previous methods have not fully utilized the semantics to understand visual
+clues for text recognition. This paper introduces a novel method, called
+Multi-modAl Text Recognition Network (MATRN), that enables interactions between
+visual and semantic features for better recognition performances. Specifically,
+MATRN identifies visual and semantic feature pairs and encodes spatial
+information into semantic features. Based on the spatial encoding, visual
+and semantic features are enhanced by referring to related features in the
+other modality. Furthermore, MATRN stimulates combining semantic features into
+visual features by hiding visual clues related to the character in the training
+phase. Our experiments demonstrate that MATRN achieves state-of-theart performances
+on seven benchmarks with large margins, while naive combinations of two
+modalities show marginal improvements. Further ablative studies prove the
+effectiveness of our proposed components. Our implementation will be publicly
+available.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Explicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/212087554-54ef9393-611e-4107-b40c-0d09568c0bbb.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 92.5
+     IIIT5K:
+       WAICS: 96.7
+     SVT:
+       WAICS: 94.9
+     IC13:
+       WAICS: 95.8
+     IC15:
+       WAICS: 82.9
+     SVTP:
+       WAICS: 90.5
+     CUTE:
+       WAICS: 94.1
+Bibtex: '@inproceedings{na2022multi,
+  title={Multi-modal text recognition networks: Interactive enhancements between visual and semantic features},
+  author={Na, Byeonghu and Kim, Yoonsik and Park, Sungrae},
+  booktitle={European Conference on Computer Vision},
+  pages={446--463},
+  year={2022},
+  organization={Springer}
+}'

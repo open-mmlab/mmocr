@@ -1,0 +1,77 @@
+Title: 'PIMNet: A Parallel, Iterative and Mimicking Network for Scene Text Recognition'
+Abbreviation: PIMNet
+Tasks:
+ - TextRecog
+Venue: ACMMM
+Year: 2021
+Lab/Company:
+ - Institute of Information Engineering, Chinese Academy of Sciences, Beijing, China
+URL:
+  Venue: 'https://dl.acm.org/doi/abs/10.1145/3474085.3475238'
+  Arxiv: 'https://arxiv.org/abs/2109.04145'
+Paper Reading URL: N/A
+Code: 'https://dl.acm.org/action/downloadSupplement?doi=10.1145%2F3474085.3475238&file=mfp0430aux.zip'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Nowadays, scene text recognition has attracted more and more attention
+due to its various applications. Most state-of-the-art methods adopt an
+encoder-decoder framework with attention mechanism, which generates text
+autoregressively from left to right. Despite the convincing performance, the
+speed is limited because of the one-by-one decoding strategy. As opposed to
+autoregressive models, non-autoregressive models predict the results in parallel
+with a much shorter inference time, but the accuracy falls behind the
+autoregressive counterpart considerably. In this paper, we propose a Parallel,
+Iterative and Mimicking Network (PIMNet) to balance accuracy and efficiency.
+Specifically, PIMNet adopts a parallel attention mechanism to predict the text
+faster and an iterative generation mechanism to make the predictions more
+accurate. In each iteration, the context information is fully explored. To
+improve learning of the hidden layer, we exploit the mimicking learning in the
+training phase, where an additional autoregressive decoder is adopted and the
+parallel decoder mimics the autoregressive decoder with fitting outputs of the
+hidden layer. With the shared backbone between the two decoders, the proposed
+PIMNet can be trained end-to-end without pre-training. During inference, the
+branch of the autoregressive decoder is removed for a faster speed. Extensive
+experiments on public benchmarks demonstrate the effectiveness and efficiency
+of PIMNet. Our code is available in the supplementary material.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/212088808-8aaee96d-1505-4ed5-8326-314f36073488.png'
+ FPS:
+   DEVICE: 'NVIDIA M40'
+   ITEM: 35.2
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+     - Real
+   Test DataSets:
+     Avg.: 93.8
+     IIIT5K:
+       WAICS: 96.7
+     SVT:
+       WAICS: 94.7
+     IC13:
+       WAICS: 95.4
+     IC15:
+       WAICS: 85.9
+     SVTP:
+       WAICS: 88.2
+     CUTE:
+       WAICS: 92.7
+Bibtex: '@inproceedings{qiao2021pimnet,
+  title={PIMNet: a parallel, iterative and mimicking network for scene text recognition},
+  author={Qiao, Zhi and Zhou, Yu and Wei, Jin and Wang, Wei and Zhang, Yuan and Jiang, Ning and Wang, Hongbin and Wang, Weiping},
+  booktitle={Proceedings of the 29th ACM International Conference on Multimedia},
+  pages={2046--2055},
+  year={2021}
+}'
