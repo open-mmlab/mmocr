@@ -232,7 +232,8 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                                          **kwargs)
             else:
                 return self.textrec_inferencer.visualize(
-                    self.rec_inputs, preds['rec'][0], **kwargs)
+                    self.rec_inputs, [pred[0] for pred in preds['rec']],
+                    **kwargs)
         else:
             return self.textdet_inferencer.visualize(inputs, preds['det'],
                                                      **kwargs)
