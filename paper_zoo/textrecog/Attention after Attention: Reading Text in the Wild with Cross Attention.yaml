@@ -1,0 +1,74 @@
+Title: 'Attention after Attention: Reading Text in the Wild with Cross Attention'
+Abbreviation: Huang et al.
+Tasks:
+ - TextRecog
+Venue: ICDAR
+Year: 2019
+Lab/Company:
+ - School of Electronic and Information Engineering, South China University of Technology, Guangzhou 510641, China
+URL:
+  Venue: 'https://ieeexplore.ieee.org/abstract/document/8977967/'
+  Arxiv: N/A
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Recent methods mostly regarded scene text recognition as a
+sequence-to-sequence problem. These methods roughly transform the image into a
+feature sequence and use the algorithms for sequence-to-sequence problem like
+CTC or attention to decode the characters. However, text in images is distributed
+in a two-dimensional (2D) space and roughly converting the features of text
+into a feature sequence may introduce extra noise, especially if the text is
+irregular. In this paper, we propose a novel framework named cross attention
+network, which learns to attend to local features of a 2D feature map
+corresponding to individual characters. The network contains two 1D attention
+networks, which operates harmoniously in two directions. Thus, one of the
+attention modules vertically attends to the features corresponding to the whole
+text of 2D features and the other horizontal module selects the local features
+to decode individual characters. Extensive experiments are performed on various
+regular benchmarks, including SVT, ICDAR2003, ICDAR2013, and IIIT5K-Words,
+which demonstrate that the proposed model either outperforms or is comparable
+to all previous methods. Moreover, the model is evaluated on irregular benchmarks
+including SVTPerspective, CUTE80 and ICDAR 2015. The performance on irregular
+benchmarks shows the robustness of our model.'
+MODELS:
+ Architecture:
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/213172663-4c3c5ea1-84b8-40e5-8453-e389c7ee5595.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 86.4
+     IIIT5K:
+       WAICS: 94.5
+     SVT:
+       WAICS: 90.0
+     IC13:
+       WAICS: 94.2
+     IC15:
+       WAICS: 75.3
+     SVTP:
+       WAICS: 79.8
+     CUTE:
+       WAICS: 84.7
+Bibtex: '@inproceedings{fang2021read,
+  title={Read like humans: Autonomous, bidirectional and iterative language modeling for scene text recognition},
+  author={Fang, Shancheng and Xie, Hongtao and Wang, Yuxin and Mao, Zhendong and Zhang, Yongdong},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={7098--7107},
+  year={2021}
+}'

@@ -1,0 +1,76 @@
+Title: 'An End-to-End Trainable Neural Network for Image-based Sequence Recognition and Its Application to Scene Text Recognition'
+Abbreviation: TPAMI
+Tasks:
+ - TextRecog
+Venue: TPAMI
+Year: 2016
+Lab/Company:
+ - School of Electronic Information and Communications Huazhong University of Science and Technology, Wuhan, China
+URL:
+  Venue: 'https://ieeexplore.ieee.org/abstract/document/7801919/'
+  Arxiv: 'https://arxiv.org/abs/1507.05717'
+Paper Reading URL: N/A
+Code: 'https://github.com/bgshih/crnn'
+Supported In MMOCR: 'https://github.com/open-mmlab/mmocr/tree/1.x/configs/textrecog/crnn'
+PaperType:
+ - Algorithm
+Abstract: 'Image-based sequence recognition has been a longstanding research
+topic in computer vision. In this paper, we investigate the problem of scene
+text recognition, which is among the most important and challenging tasks in
+image-based sequence recognition. A novel neural network architecture, which
+integrates feature extraction, sequence modeling and transcription into a unified
+framework, is proposed. Compared with previous systems for scene text recognition,
+the proposed architecture possesses four distinctive properties: (1) It is
+end-to-end trainable, in contrast to most of the existing algorithms whose
+components are separately trained and tuned. (2) It naturally handles sequences
+in arbitrary lengths, involving no character segmentation or horizontal scale
+ normalization. (3) It is not confined to any predefined lexicon and achieves
+ remarkable performances in both lexicon-free and lexicon-based scene text
+ recognition tasks. (4) It generates an effective yet much smaller model,
+ which is more practical for real-world application scenarios. The experiments
+ on standard benchmarks, including the IIIT-5K, Street View Text and ICDAR
+ datasets, demonstrate the superiority of the proposed algorithm over the prior
+ arts. Moreover, the proposed algorithm performs well in the task of image-based
+ music score recognition, which evidently verifies the generality of it.'
+MODELS:
+ Architecture:
+  - CTC
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/213174579-e89dbd14-8ace-4f16-9cb6-4b882dbd4e27.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  8.3M
+ Experiment:
+   Training DataSets:
+     - MJ
+   Test DataSets:
+     Avg.: 81.9
+     IIIT5K:
+       WAICS: 78.2
+     SVT:
+       WAICS: 80.8
+     IC13:
+       WAICS: 86.7
+     IC15:
+       WAICS: N/A
+     SVTP:
+       WAICS: N/A
+     CUTE:
+       WAICS: N/A
+Bibtex: '@article{shi2016end,
+  title={An end-to-end trainable neural network for image-based sequence recognition and its application to scene text recognition},
+  author={Shi, Baoguang and Bai, Xiang and Yao, Cong},
+  journal={IEEE transactions on pattern analysis and machine intelligence},
+  volume={39},
+  number={11},
+  pages={2298--2304},
+  year={2016},
+  publisher={IEEE}
+}'

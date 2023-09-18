@@ -1,0 +1,71 @@
+Title: 'What Is Wrong With Scene Text Recognition Model Comparisons? Dataset and Model Analysis'
+Abbreviation: Baek et al
+Tasks:
+ - TextRecog
+Venue: ICCV
+Year: 2019
+Lab/Company:
+ - Clova AI Research, NAVER/LINE Corp.
+URL:
+  Venue: 'http://openaccess.thecvf.com/content_ICCV_2019/html/Baek_What_Is_Wrong_With_Scene_Text_Recognition_Model_Comparisons_Dataset_ICCV_2019_paper.html'
+  Arxiv: 'https://arxiv.org/abs/1904.01906'
+Paper Reading URL: N/A
+Code: 'https://github.com/clovaai/deep-text-recognition-benchmark'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Many new proposals for scene text recognition (STR) models have been
+introduced in recent years. While each claim to have pushed the boundary of the
+technology, a holistic and fair comparison has been largely missing in the field
+due to the inconsistent choices of training and evaluation datasets. This paper
+addresses this difficulty with three major contributions. First, we examine the
+inconsistencies of training and evaluation datasets, and the performance gap
+results from inconsistencies. Second, we introduce a unified four-stage STR
+framework that most existing STR models fit into. Using this framework allows
+for the extensive evaluation of previously proposed STR modules and the
+discovery of previously unexplored module combinations. Third, we analyze
+the module-wise contributions to performance in terms of accuracy, speed,
+and memory demand, under one consistent set of training and evaluation datasets.
+Such analyses clean up the hindrance on the current comparisons to understand
+the performance gain of the existing modules. Our code is publicly available.'
+MODELS:
+ Architecture:
+  - Attention
+  - CTC
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/213169752-33203ec5-5602-44f0-8524-4ce77091dda8.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: 35.3
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  49.6M
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 82.1
+     IIIT5K:
+       WAICS: 87.9
+     SVT:
+       WAICS: 87.5
+     IC13:
+       WAICS: 92.3
+     IC15:
+       WAICS: 71.8
+     SVTP:
+       WAICS: 79.2
+     CUTE:
+       WAICS: 74.0
+Bibtex: '@inproceedings{baek2019wrong,
+  title={What is wrong with scene text recognition model comparisons? dataset and model analysis},
+  author={Baek, Jeonghun and Kim, Geewook and Lee, Junyeop and Park, Sungrae and Han, Dongyoon and Yun, Sangdoo and Oh, Seong Joon and Lee, Hwalsuk},
+  booktitle={Proceedings of the IEEE/CVF international conference on computer vision},
+  pages={4715--4723},
+  year={2019}
+}'

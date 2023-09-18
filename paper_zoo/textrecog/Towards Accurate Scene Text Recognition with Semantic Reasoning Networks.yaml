@@ -1,0 +1,74 @@
+Title: 'Towards Accurate Scene Text Recognition with Semantic Reasoning Networks'
+Abbreviation: SRN
+Tasks:
+ - TextRecog
+Venue: CVPR
+Year: 2020
+Lab/Company:
+ - School of Artificial Intelligence, University of Chinese Academy of Sciences
+ - Department of Computer Vision Technology(VIS), Baidu Inc.
+URL:
+  Venue: 'http://openaccess.thecvf.com/content_CVPR_2020/html/Yu_Towards_Accurate_Scene_Text_Recognition_With_Semantic_Reasoning_Networks_CVPR_2020_paper.html'
+  Arxiv: 'https://arxiv.org/abs/2003.12294'
+Paper Reading URL: N/A
+Code: 'https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/configs/rec/rec_r50_fpn_srn.yml'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Scene text image contains two levels of contents: visual texture and
+semantic information. Although the previous scene text recognition methods have
+made great progress over the past few years, the research on mining semantic
+information to assist text recognition attracts less attention, only RNN-like
+structures are explored to implicitly model semantic information. However, we
+observe that RNN based methods have some obvious shortcomings, such as
+time-dependent decoding manner and one-way serial transmission of semantic
+context, which greatly limit the help of semantic information and the
+computation efficiency. To mitigate these limitations, we propose a novel
+end-to-end trainable framework named semantic reasoning network (SRN) for
+accurate scene text recognition, where a global semantic reasoning module (GSRM)
+is introduced to capture global semantic context through multi-way parallel
+transmission. The state-of-the-art results on 7 public benchmarks, including
+regular text, irregular text and non-Latin long text, verify the effectiveness
+and robustness of the proposed method. In addition, the speed of SRN has
+significant advantages over the RNN based methods, demonstrating its value
+in practical use.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Explicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/213168893-7c600e03-c1f0-464a-8236-40ae26fbff89.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 90.9
+     IIIT5K:
+       WAICS: 94.8
+     SVT:
+       WAICS: 91.5
+     IC13:
+       WAICS: 95.5
+     IC15:
+       WAICS: 82.7
+     SVTP:
+       WAICS: 85.1
+     CUTE:
+       WAICS: 87.8
+Bibtex: '@inproceedings{yu2020towards,
+  title={Towards accurate scene text recognition with semantic reasoning networks},
+  author={Yu, Deli and Li, Xuan and Zhang, Chengquan and Liu, Tao and Han, Junyu and Liu, Jingtuo and Ding, Errui},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={12113--12122},
+  year={2020}
+}'
