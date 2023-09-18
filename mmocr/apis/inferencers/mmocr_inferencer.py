@@ -381,6 +381,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                 pred_results[i].update(
                     dict(
                         det_polygons=det_dict_res['polygons'],
+                        det_bboxes=det_dict_res['bboxes'],
                         det_scores=det_dict_res['scores']))
         if 'kie' in self.mode:
             for i, kie_pred in enumerate(preds['kie']):
