@@ -38,6 +38,7 @@ def main():
     cfg = Config.fromfile(args.config)
     init_default_scope(cfg.get('default_scope', 'mmocr'))
     model = MODELS.build(cfg.model)
+    model.eval()
 
     flops = FlopCountAnalysis(model, torch.ones(input_shape))
 
