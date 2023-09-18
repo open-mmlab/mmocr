@@ -240,7 +240,7 @@ class DBModuleLoss(SegBasedModuleLoss):
             if self._is_poly_invalid(polygon):
                 ignore_flags[idx] = True
         gt_shrink, ignore_flags = self._generate_kernels(
-            data_sample.img_shape,
+            data_sample.batch_input_shape,
             gt_instances.polygons,
             self.shrink_ratio,
             ignore_flags=ignore_flags)
@@ -249,9 +249,10 @@ class DBModuleLoss(SegBasedModuleLoss):
         gt_shrink = gt_shrink > 0
 
         gt_shrink_mask = self._generate_effective_mask(
-            data_sample.img_shape, gt_instances[ignore_flags].polygons)
+            data_sample.batch_input_shape, gt_instances[ignore_flags].polygons)
         gt_thr, gt_thr_mask = self._generate_thr_map(
-            data_sample.img_shape, gt_instances[~ignore_flags].polygons)
+            data_sample.batch_input_shape,
+            gt_instances[~ignore_flags].polygons)
 
         # to_tensor
         gt_shrink = torch.from_numpy(gt_shrink).unsqueeze(0).float()

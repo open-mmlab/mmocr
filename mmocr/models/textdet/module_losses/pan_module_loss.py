@@ -157,14 +157,14 @@ class PANModuleLoss(SegBasedModuleLoss):
         for ratio in self.shrink_ratio:
             # TODO pass `gt_ignored` to `_generate_kernels`
             gt_kernel, _ = self._generate_kernels(
-                data_sample.img_shape,
+                data_sample.batch_input_shape,
                 gt_polygons,
                 ratio,
                 ignore_flags=None,
                 max_shrink_dist=self.max_shrink_dist)
             gt_kernels.append(gt_kernel)
         gt_polygons_ignored = data_sample.gt_instances[gt_ignored].polygons
-        gt_mask = self._generate_effective_mask(data_sample.img_shape,
+        gt_mask = self._generate_effective_mask(data_sample.batch_input_shape,
                                                 gt_polygons_ignored)
 
         gt_kernels = np.stack(gt_kernels, axis=0)

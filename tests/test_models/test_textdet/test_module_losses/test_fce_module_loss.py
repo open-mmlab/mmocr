@@ -15,7 +15,8 @@ class TestFCEModuleLoss(TestCase):
         self.fce_loss = FCEModuleLoss(fourier_degree=5, num_sample=400)
         self.data_samples = [
             TextDetDataSample(
-                metainfo=dict(img_shape=(320, 320)),
+                metainfo=dict(
+                    img_shape=(320, 320), batch_input_shape=(320, 320)),
                 gt_instances=InstanceData(
                     polygons=np.array([
                         [0, 0, 10, 0, 10, 10, 0, 10],
