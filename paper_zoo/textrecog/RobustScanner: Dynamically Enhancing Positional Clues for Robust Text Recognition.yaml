@@ -1,0 +1,82 @@
+Title: 'RobustScanner: Dynamically Enhancing Positional Clues for Robust Text Recognition'
+Abbreviation: RobustScanner
+Tasks:
+ - TextRecog
+Venue: ECCV
+Year: 2020
+Lab/Company:
+ - SenseTime Research, Hong Kong, China
+ - School of Cyber Science and Engineering, Xi’an Jiaotong University, Xi’an, China
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-030-58529-7_9'
+  Arxiv: 'https://arxiv.org/abs/2007.07542'
+Paper Reading URL: N/A
+Code: 'https://github.com/open-mmlab/mmocr/tree/1.x/configs/textrecog/robust_scanner'
+Supported In MMOCR: 'https://github.com/open-mmlab/mmocr/tree/1.x/configs/textrecog/robust_scanner'
+PaperType:
+ - Algorithm
+Abstract: 'The attention-based encoder-decoder framework has recently achieved
+impressive results for scene text recognition, and many variants have emerged
+with improvements in recognition quality. However, it performs poorly on
+contextless texts (e.g., random character sequences) which is unacceptable in
+most of real application scenarios. In this paper, we first deeply investigate
+the decoding process of the decoder. We empirically find that a representative
+character-level sequence decoder utilizes not only context information but also
+positional information. Contextual information, which the existing approaches
+heavily rely on, causes the problem of attention drift. To suppress such
+side-effect, we propose a novel position enhancement branch, and dynamically
+fuse its outputs with those of the decoder attention module for scene text
+recognition. Specifically, it contains a position aware module to enable the
+encoder to output feature vectors encoding their own spatial positions, and an
+attention module to estimate glimpses using the positional clue (i.e., the
+current decoding time step) only. The dynamic fusion is conducted for more
+robust feature via an element-wise gate mechanism. Theoretically, our proposed
+method, dubbed RobustScanner, decodes individual characters with dynamic ratio
+between context and positional clues, and utilizes more positional ones when
+the decoding sequences with scarce context, and thus is robust and practical.
+Empirically, it has achieved new state-of-the-art results on popular regular
+and irregular text recognition benchmarks while without much performance drop
+on contextless benchmarks, validating its robustness in both contextual and
+contextless application scenarios.'
+MODELS:
+ Architecture:
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/211147345-0515c292-00d1-458f-b5c7-b3a940a0c12c.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+     - Real
+   Test DataSets:
+     Avg.: 88.9
+     IIIT5K:
+       WAICS: 95.4
+     SVT:
+       WAICS: 89.3
+     IC13:
+       WAICS: 94.1
+     IC15:
+       WAICS: 79.2
+     SVTP:
+       WAICS: 82.9
+     CUTE:
+       WAICS: 92.4
+Bibtex: '@inproceedings{yue2020robustscanner,
+  title={Robustscanner: Dynamically enhancing positional clues for robust text recognition},
+  author={Yue, Xiaoyu and Kuang, Zhanghui and Lin, Chenhao and Sun, Hongbin and Zhang, Wayne},
+  booktitle={European Conference on Computer Vision},
+  pages={135--151},
+  year={2020},
+  organization={Springer}
+}'

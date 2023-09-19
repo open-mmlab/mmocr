@@ -1,0 +1,74 @@
+Title: 'SVTR: Scene Text Recognition with a Single Visual Model'
+Abbreviation: SVTP
+Tasks:
+ - TextRecog
+Venue: IJCAI
+Year: 2022
+Lab/Company:
+ - School of Computer and Information Technology, Beijing Jiaotong University, China
+ - Shanghai Collaborative Innovation Center of Intelligent Visual Computing, School of Computer Science, Fudan University, China
+ - Baidu Inc., China
+URL:
+  Venue: 'https://www.ijcai.org/proceedings/2022/0124.pdf'
+  Arxiv: 'https://arxiv.org/abs/2205.00159'
+Paper Reading URL: 'https://mp.weixin.qq.com/s/kR2CwHwE78STJiSfwlv9QA'
+Code: 'https://github.com/baudm/parseq'
+Supported In MMOCR: 'https://github.com/open-mmlab/mmocr/tree/1.x/configs/textrecog/svtr'
+PaperType:
+ - Algorithm
+Abstract: 'Dominant scene text recognition models commonly contain two building blocks,
+a visual model for feature extraction and a sequence model for text transcription.
+This hybrid architecture, although accurate, is complex and less efficient. In
+this study, we propose a Single Visual model for Scene Text recognition within
+the patch-wise image tokenization framework, which dispenses with the sequential
+modeling entirely. The method, termed SVTR, firstly decomposes an image text
+into small patches named character components. Afterward, hierarchical stages
+are recurrently carried out by component-level mixing, merging and/or combining.
+Global and local mixing blocks are devised to perceive the inter-character and
+intra-character patterns, leading to a multi-grained character component
+perception. Thus, characters are recognized by a simple linear prediction.
+Experimental results on both English and Chinese scene text recognition tasks
+demonstrate the effectiveness of SVTR. SVTR-L (Large) achieves highly
+competitive accuracy in English and outperforms existing methods by a large
+margin in Chinese, while running faster. In addition, SVTR-T (Tiny) is an
+effective and much smaller model, which shows appealing speed at inference.
+The code is publicly available at https://github.com/PaddlePaddle/PaddleOCR.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/211143670-0913ccd8-1f5d-407b-8b64-e782f0cb037e.png'
+ FPS:
+   DEVICE: 'NVIDIA 1080Ti'
+   ITEM: 55.5
+ FLOPS:
+   DEVICE: 'NVIDIA 1080Ti'
+   ITEM: 6.07G
+ PARAMS: 38.81M
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 92.6
+     IIIT5K:
+       WAICS: 96.3
+     SVT:
+       WAICS: 91.7
+     IC13:
+       WAICS: 97.2
+     IC15:
+       WAICS: 86.6
+     SVTP:
+       WAICS: 88.4
+     CUTE:
+       WAICS: 95.1
+Bibtex: '@article{du2022svtr,
+  title={SVTR: Scene Text Recognition with a Single Visual Model},
+  author={Du, Yongkun and Chen, Zhineng and Jia, Caiyan and Yin, Xiaoting and Zheng, Tianlun and Li, Chenxia and Du, Yuning and Jiang, Yu-Gang},
+  journal={arXiv preprint arXiv:2205.00159},
+  year={2022}
+}'
