@@ -1,0 +1,72 @@
+Title: 'Levenshtein OCR'
+Abbreviation: Lev-OCR
+Tasks:
+ - TextRecog
+Venue: ECCV
+Year: 2022
+Lab/Company:
+ - Alibaba DAMO Academy, Beijing, China
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_19'
+  Arxiv: 'https://arxiv.org/abs/2209.03594'
+Paper Reading URL: 'https://mp.weixin.qq.com/s/Nuc8j3V5YeaXpY64SsIeCw'
+Code: 'https://github.com/AlibabaResearch/AdvancedLiterateMachinery/tree/main/OCR/LevOCR'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'A novel scene text recognizer based on Vision-Language Transformer
+(VLT) is presented. Inspired by Levenshtein Transformer in the area of NLP, the
+proposed method (named Levenshtein OCR, and LevOCR for short) explores an
+alternative way for automatically transcribing textual content from cropped
+natural images. Specifically, we cast the problem of scene text recognition as
+an iterative sequence refinement process. The initial prediction sequence
+produced by a pure vision model is encoded and fed into a cross-modal
+transformer to interact and fuse with the visual features, to progressively
+approximate the ground truth. The refinement process is accomplished via two
+basic characterlevel operations: deletion and insertion, which are learned with
+imitation learning and allow for parallel decoding, dynamic length change and
+good interpretability. The quantitative experiments clearly demonstrate that
+LevOCR achieves state-of-the-art performances on standard benchmarks and the
+qualitative analyses verify the effectiveness and advantage of the proposed
+LevOCR algorithm. Code will be released soon.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Explicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/210163468-bb6c14ba-134a-4dd5-881e-a7adb4058dcd.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+   Test DataSets:
+     Avg.: 92.1
+     IIIT5K:
+       WAICS: 96.6
+     SVT:
+       WAICS: 92.9
+     IC13:
+       WAICS: 96.9
+     IC15:
+       WAICS: 86.4
+     SVTP:
+       WAICS: 88.1
+     CUTE:
+       WAICS: 91.7
+Bibtex: '@inproceedings{wang2022multi,
+  title={Multi-granularity Prediction for Scene Text Recognition},
+  author={Wang, Peng and Da, Cheng and Yao, Cong},
+  booktitle={European Conference on Computer Vision},
+  pages={339--355},
+  year={2022},
+  organization={Springer}
+}'

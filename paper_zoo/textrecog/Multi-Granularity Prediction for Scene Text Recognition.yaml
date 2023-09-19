@@ -1,0 +1,74 @@
+Title: 'Multi-Granularity Prediction for Scene Text Recognition'
+Abbreviation: MGP-STR
+Tasks:
+ - TextRecog
+Venue: ECCV
+Year: 2022
+Lab/Company:
+ - Alibaba DAMO Academy, Beijing, China
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_20'
+  Arxiv: 'https://arxiv.org/abs/2209.03592'
+Paper Reading URL: N/A
+Code: 'https://github.com/AlibabaResearch/AdvancedLiterateMachinery/tree/main/OCR/MGP-STR'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Scene text recognition (STR) has been an active research topic in
+computer vision for years. To tackle this challenging problem, numerous
+innovative methods have been successively proposed and incorporating linguistic
+knowledge into STR models has recently become a prominent trend. In this work,
+we first draw inspiration from the recent progress in Vision Transformer (ViT)
+to construct a conceptually simple yet powerful vision STR model, which is built
+upon ViT and outperforms previous state-of-the-art models for scene text
+recognition, including both pure vision models and language-augmented methods.
+To integrate linguistic knowledge, we further propose a Multi-Granularity
+Prediction strategy to inject information from the language modality into the
+model in an implicit way, i.e. , subword representations (BPE and WordPiece)
+widely-used in NLP are introduced into the output space, in addition to the
+conventional character level representation, while no independent language model
+(LM) is adopted. The resultant algorithm (termed MGP-STR) is able to push the
+performance envelop of STR to an even higher level. Specifically, it achieves
+an average recognition accuracy of 93.35% on standard benchmarks. Code will be
+released soon.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Explicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/210163378-fc11a79b-fb7d-4a3f-947e-a8f6dfd14dd2.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+   Test DataSets:
+     Avg.: 92.8
+     IIIT5K:
+       WAICS: 96.4
+     SVT:
+       WAICS: 94.7
+     IC13:
+       WAICS: 97.3
+     IC15:
+       WAICS: 87.2
+     SVTP:
+       WAICS: 91.0
+     CUTE:
+       WAICS: 90.3
+Bibtex: '@inproceedings{wang2022multi,
+  title={Multi-granularity Prediction for Scene Text Recognition},
+  author={Wang, Peng and Da, Cheng and Yao, Cong},
+  booktitle={European Conference on Computer Vision},
+  pages={339--355},
+  year={2022},
+  organization={Springer}
+}'

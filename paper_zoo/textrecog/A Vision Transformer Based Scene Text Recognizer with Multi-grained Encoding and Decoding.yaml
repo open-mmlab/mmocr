@@ -1,0 +1,79 @@
+Title: 'A Vision Transformer Based Scene Text Recognizer with Multi-grained Encoding and Decoding'
+Abbreviation: Qiao et al
+Tasks:
+ - TextRecog
+Venue: ICFHR
+Year: 2022
+Lab/Company:
+ - Tomorrow Advancing Life, Beijing, China
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-031-21648-0_14'
+  Arxiv: 'https://books.google.fr/books?hl=zh-CN&lr=&id=hvmdEAAAQBAJ&oi=fnd&pg=PA198&ots=Gg_BaAnXLm&sig=gpJ2h9NjKz1PjLWSfwDpyd8eLZE&redir_esc=y#v=onepage&q&f=false'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Recently, vision Transformer (ViT) has attracted more and more attention,
+many works introduce the ViT into concrete vision tasks and achieve impressive
+performance. However, there are only a few works focused on the applications of
+the ViT for scene text recognition. This paper takes a further step and proposes
+a strong scene text recognizer with a fully ViT-based architecture.
+Specifically, we introduce multi-grained features into both the encoder and
+decoder. For the encoder, we adopt a two-stage ViT with different grained
+patches, where the first stage extracts extent visual features with 2D
+ine-grained patches and the second stage aims at the sequence of contextual
+features with 1D coarse-grained patches. The decoder integrates Connectionist
+Temporal Classification (CTC)-based and attention-based decoding, where the
+two decoding schemes introduce different grained features into the decoder and
+benefit from each other with a deep interaction. To improve the extraction of
+fine-grained features, we additionally explore self-supervised learning for
+text recognition with masked autoencoders. Furthermore, a focusing mechanism is
+proposed to let the model target the pixel reconstruction of the text area. Our
+proposed method achieves state-of-the-art or comparable accuracies on benchmarks
+of scene text recognition with a faster inference speed and nearly 50% reduction
+of parameters compared with other recent works.'
+MODELS:
+ Architecture:
+  - CTC
+  - Attention
+  - Transformer
+ Learning Method:
+  - Self-Supervised
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/210053998-385587ef-2b0e-4c9b-a8b8-d6171261c621.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+   Test DataSets:
+     Avg.: 90.5
+     IIIT5K:
+       WAICS: 96.1
+     SVT:
+       WAICS: 92.3
+     IC13:
+       WAICS: 95.0
+     IC15:
+       WAICS: 86.0
+     SVTP:
+       WAICS: 87.0
+     CUTE:
+       WAICS: 86.8
+Bibtex: '@inproceedings{qiao2022vision,
+  title={A Vision Transformer Based Scene Text Recognizer with Multi-grained Encoding and Decoding},
+  author={Qiao, Zhi and Ji, Zhilong and Yuan, Ye and Bai, Jinfeng},
+  booktitle={International Conference on Frontiers in Handwriting Recognition},
+  pages={198--212},
+  year={2022},
+  organization={Springer}
+}'

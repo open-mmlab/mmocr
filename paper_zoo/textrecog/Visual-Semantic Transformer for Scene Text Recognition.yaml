@@ -1,0 +1,78 @@
+Title: 'Visual-Semantic Transformer for Scene Text Recognition'
+Abbreviation: VST
+Tasks:
+ - TextRecog
+Venue: BMVC
+Year: 2022
+Lab/Company:
+ - Visual Computing Group, Ping An Property & Casualty Insurance Company, Shenzhen, China
+ - Ping An Technology (Shenzhen) Co. Ltd.
+ - School of Information and Telecommunication Engineering, Guangzhou Maritime University, Guangzhou, China
+URL:
+  Venue: 'https://bmvc2022.mpi-inf.mpg.de/0772.pdf'
+  Arxiv: 'https://arxiv.org/abs/2112.00948'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Semantic information plays an important role in scene text recognition
+(STR) as well as visual information. Although state-of-the-art models have
+achieved great improvement in STR, they usually rely on extra external language
+models to refine the semantic features through context information, and the
+separate utilization of semantic and visual information leads to biased
+results, which limits the performance of those models. In this paper, we
+propose a novel model called Visual-Semantic Transformer (VST) for text
+recognition. VST consists of several key modules, including a ConvNet, a visual
+module, two visual-semantic modules, a visual-semantic feature interaction
+module and a semantic module. VST is a conceptually much simpler model.
+Different from existing STR models, VST can efficiently extract semantic
+features without using external language models and it also allows visual
+features and semantic features to interact with each other parallel so that
+global information from two domains can be fully exploited and more powerful
+representations can be learned. The working mechanism of VST is highly similar
+to our cognitive system, where the visual information is first captured by our
+sensory organ, and is simultaneously transformed to semantic information by our
+brain. Extensive experiments on seven public benchmarks including regular/
+irregular text recognition datasets verify the effectiveness of VST, it
+outperformed other 14 popular models on four out of seven benchmark datasets
+and yielded competitive performance on the other three datasets.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Explicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/210052231-22092115-0eba-4c2c-9050-b8fc9aff38ca.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+   Test DataSets:
+     Avg.: 92.9
+     IIIT5K:
+       WAICS: 96.7
+     SVT:
+       WAICS: 94.0
+     IC13:
+       WAICS: 96.7
+     IC15:
+       WAICS: 85.4
+     SVTP:
+       WAICS: 89.0
+     CUTE:
+       WAICS: 95.5
+Bibtex: '@article{tang2021visual,
+  title={Visual-semantic transformer for scene text recognition},
+  author={Tang, Xin and Lai, Yongquan and Liu, Ying and Fu, Yuanyuan and Fang, Rui},
+  journal={arXiv preprint arXiv:2112.00948},
+  year={2021}
+}'
