@@ -6,8 +6,7 @@ _base_ = [
 data_root = 'datasets/cord-v2'
 task_name='cord-v2'
 
-custom_imports = dict(
-    imports=['projects.Donut.donut'], allow_failed_imports=False)
+custom_imports = dict(imports=['donut'], allow_failed_imports=False)
 
 # dictionary = dict(
 #     type='Dictionary',

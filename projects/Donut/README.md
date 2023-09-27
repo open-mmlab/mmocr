@@ -39,6 +39,7 @@ mim train mmocr configs/donut_cord_30e.py --work-dir work_dirs/donut_cord_30e/ -
 
 ### Testing commands
 
+Before test, you need change tokenizer_cfg in config. The checkpoint shuold be the model save dir, like `work_dirs/donut_cord_30e/`.
 In the current directory, run the following command to test the model:
 
 ```bash
