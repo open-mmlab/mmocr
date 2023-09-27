@@ -3,7 +3,7 @@ _base_ = [
     '_base_/schedules/schedule_adam_fp16.py',
 ]
 
-data_root = 'datasets/cord-v2/data'
+data_root = 'datasets/cord-v2'
 task_name='cord-v2'
 
 custom_imports = dict(
