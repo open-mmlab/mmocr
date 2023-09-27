@@ -1,12 +1,15 @@
-from typing import Dict, List, Optional, Sequence, Union
 from numbers import Number
+from typing import Dict, List, Optional, Sequence, Union
+
 import torch.nn as nn
 from mmengine.model import ImgDataPreprocessor
+
 from mmocr.registry import MODELS
 
 
 @MODELS.register_module()
 class DonutDataPreprocessor(ImgDataPreprocessor):
+
     def __init__(self,
                  mean: Sequence[Number] = None,
                  std: Sequence[Number] = None,

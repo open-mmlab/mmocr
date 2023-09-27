@@ -1,15 +1,14 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import json
 import os.path as osp
 from typing import Any, Callable, List, Optional, Sequence, Union
-import json
-from datasets import load_dataset
-from transformers import XLMRobertaTokenizer
+
 from mmengine.dataset import BaseDataset
-from mmengine.fileio import list_from_file
 
 from mmocr.registry import DATASETS, TASK_UTILS
 
 SPECIAL_TOKENS = []
+
 
 @DATASETS.register_module()
 class CORDDataset(BaseDataset):
@@ -28,15 +27,6 @@ class CORDDataset(BaseDataset):
         ann_file (str): Annotation file path. Defaults to ''.
         backend_args (dict, optional): Arguments to instantiate the
             prefix of uri corresponding backend. Defaults to None.
-        parse_cfg (dict, optional): Config of parser for parsing annotations.
-            Use ``LineJsonParser`` when the annotation file is in jsonl format
-            with keys of ``filename`` and ``text``. The keys in parse_cfg
-            should be consistent with the keys in jsonl annotations. The first
-            key in parse_cfg should be the key of the path in jsonl
-            annotations. The second key in parse_cfg should be the key of the
-            text in jsonl Use ``LineStrParser`` when the annotation file is in
-            txt format. Defaults to
-            ``dict(type='LineJsonParser', keys=['file_name', 'ground_truth'])``.
         metainfo (dict, optional): Meta information for dataset, such as class
             information. Defaults to None.
         data_root (str): The root directory for ``data_prefix`` and
@@ -44,8 +34,8 @@ class CORDDataset(BaseDataset):
         data_prefix (dict): Prefix for training data. Defaults to
             ``dict(img_path='')``.
         filter_cfg (dict, optional): Config for filter data. Defaults to None.
-        indices (int or Sequence[int], optional): Support using first few
-            data in annotation file to facilitate training/testing on a smaller
+        indices (int or Sequence[int], optional): Support using first few data
+            in annotation file to facilitate training/testing on a smaller
             dataset. Defaults to None which means using all ``data_infos``.
         serialize_data (bool, optional): Whether to hold memory using
             serialized objects, when enabled, data loader workers can use
@@ -69,7 +59,8 @@ class CORDDataset(BaseDataset):
                  split_name: str = '',
                  backend_args=None,
                  parser_cfg: Optional[dict] = dict(
-                     type='LineJsonParser', keys=['file_name', 'ground_truth']),
+                     type='LineJsonParser', keys=['file_name',
+                                                  'ground_truth']),
                  metainfo: Optional[dict] = None,
                  data_root: Optional[str] = '',
                  data_prefix: dict = dict(img_path=''),
@@ -84,7 +75,6 @@ class CORDDataset(BaseDataset):
         self.parser = TASK_UTILS.build(parser_cfg)
         self.backend_args = backend_args
         self.split_name = split_name
-        # self.tokenizer = XLMRobertaTokenizer.from_pretrained("hyunwoongko/asian-bart-ecjk")
 
         super().__init__(
             ann_file='',
@@ -107,13 +97,15 @@ class CORDDataset(BaseDataset):
         """
         data_list = []
         # dataset = load_dataset(self.data_root, split=self.split_name)
-        metadata_path = osp.join(self.data_root, self.split_name, 'metadata.jsonl')
+        metadata_path = osp.join(self.data_root, self.split_name,
+                                 'metadata.jsonl')
         assert osp.exists(metadata_path), metadata_path
         with open(metadata_path) as f:
             metadata = f.read().strip().split('\n')
         for sample_data in metadata:
             sample = json.loads(sample_data)
-            img_path = osp.join(self.data_root, self.split_name, sample['file_name'])
+            img_path = osp.join(self.data_root, self.split_name,
+                                sample['file_name'])
             gt = json.loads(sample['ground_truth'])
 
             if 'gt_parse' in gt:
@@ -134,12 +126,10 @@ class CORDDataset(BaseDataset):
         return data_list
 
     def search_special_tokens(self, obj: Any, sort_json_key: bool = True):
-        """
-        Convert an ordered JSON object into a token sequence
-        """
+        """Convert an ordered JSON object into a token sequence."""
         special_tokens = []
         if type(obj) == dict:
-            if len(obj) == 1 and "text_sequence" in obj:
+            if len(obj) == 1 and 'text_sequence' in obj:
                 pass
             else:
                 if sort_json_key:
@@ -147,9 +137,10 @@ class CORDDataset(BaseDataset):
                 else:
                     keys = obj.keys()
                 for k in keys:
-                    special_tokens += [fr"<s_{k}>", fr"</s_{k}>"]
+                    special_tokens += [fr'<s_{k}>', fr'</s_{k}>']
                     special_tokens += self.search_special_tokens(obj[k])
         elif type(obj) == list:
             for item in obj:
-                special_tokens += self.search_special_tokens(item, sort_json_key)
+                special_tokens += self.search_special_tokens(
+                    item, sort_json_key)
         return special_tokens

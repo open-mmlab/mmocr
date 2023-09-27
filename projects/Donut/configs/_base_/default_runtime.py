@@ -29,7 +29,10 @@ log_processor = dict(type='LogProcessor', window_size=10, by_epoch=True)
 load_from = None
 resume = False
 
-vis_backends = [dict(type='LocalVisBackend'), dict(type='TensorboardVisBackend')]
+vis_backends = [
+    dict(type='LocalVisBackend'),
+    dict(type='TensorboardVisBackend')
+]
 visualizer = dict(
     type='KIELocalVisualizer',
     name='visualizer',

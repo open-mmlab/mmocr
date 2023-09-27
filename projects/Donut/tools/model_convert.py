@@ -1,7 +1,8 @@
+import argparse
 import os
 from collections import OrderedDict
+
 import torch
-import argparse
 
 
 def get_args():
@@ -16,11 +17,12 @@ def main():
     args = get_args()
     print(args)
 
-    # load model using git clone --branch official https://huggingface.co/naver-clova-ix/donut-base
+    # get model using:
+    # git clone --branch official \
+    #     https://huggingface.co/naver-clova-ix/donut-base
     assert os.path.exists(args.model), args.model
     assert args.model[-4:] == '.bin', 'the model name is pytorch_model.bin'
     model_state_dict = torch.load(args.model)
-
 
     # extract weights
     encoder_state_dict = OrderedDict()
@@ -30,9 +32,6 @@ def main():
             new_k = k[len('encoder.'):]
             encoder_state_dict[new_k] = v
         elif k.startswith('decoder.'):
-            #if k.startswith('decoder.model.'):
-            #    new_k = k[len('decoder.model.'):]
-            #else:
             new_k = k[len('decoder.'):]
             decoder_state_dict[new_k] = v
 
@@ -40,8 +39,10 @@ def main():
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
 
-    torch.save(encoder_state_dict, os.path.join(args.save_dir, 'donut_base_encoder.pth'))
-    torch.save(decoder_state_dict, os.path.join(args.save_dir, 'donut_base_decoder.pth'))
+    torch.save(encoder_state_dict,
+               os.path.join(args.save_dir, 'donut_base_encoder.pth'))
+    torch.save(decoder_state_dict,
+               os.path.join(args.save_dir, 'donut_base_decoder.pth'))
 
 
 if __name__ == '__main__':

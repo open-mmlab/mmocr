@@ -1,8 +1,9 @@
-from typing import Optional, Sequence, Dict
 import re
+from typing import Dict, Optional, Sequence
+
 import numpy as np
-from nltk import edit_distance
 from mmengine.evaluator import BaseMetric
+from nltk import edit_distance
 
 from mmocr.registry import METRICS
 
@@ -10,6 +11,7 @@ from mmocr.registry import METRICS
 @METRICS.register_module()
 class DonutValEvaluator(BaseMetric):
     default_prefix: Optional[str] = ''
+
     def __init__(self,
                  key: str = 'parses',
                  collect_device: str = 'cpu',
@@ -31,9 +33,7 @@ class DonutValEvaluator(BaseMetric):
             pred_parses = data_sample.get('pred_instances').get(self.key)[0]
             gt_parses = data_sample.get('gt_instances').get(self.key)[0]
 
-            result = dict(
-                pred_labels=pred_parses,
-                gt_labels=gt_parses)
+            result = dict(pred_labels=pred_parses, gt_labels=gt_parses)
             self.results.append(result)
 
     def compute_metrics(self, results: Sequence[Dict]) -> Dict:
@@ -51,7 +51,7 @@ class DonutValEvaluator(BaseMetric):
         scores = []
         for result in results:
             pred = result['pred_labels']
-            pred = re.sub(r"(?:(?<=>) | (?=</s_))", "", pred)
+            pred = re.sub(r'(?:(?<=>) | (?=</s_))', '', pred)
             gt = result['gt_labels']
             scores.append(edit_distance(pred, gt) / max(len(pred), len(gt)))
 

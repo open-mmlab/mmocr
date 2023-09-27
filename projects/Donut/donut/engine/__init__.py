@@ -1,1 +1,1 @@
-from .hooks import *
+from .hooks import *  # NOQA

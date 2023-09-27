@@ -52,24 +52,26 @@ mim test mmocr configs/donut_cord_30e.py --work-dir work_dirs/donut_cord_30e/ --
 >
 > You should claim whether this is based on the pre-trained weights, which are converted from the official release; or it's a reproduced result obtained from retraining the model in this project.
 
-|                  Method                 | Pretrained Model |  Training set   |    Test set    | #epoch | Test size | TED Acc | F1 |         Download         |
-| :-------------------------------------: | :--------------: | :-------------: | :------------: | :----: | :-------: | :-------: | :----: | :----------------------: |
-| [Donut_CORD](configs/donut_cord_30e.py) | naver-clova-ix/donut-base | cord-v2 Train | cord-v2 Test | 30 |    736   |  0.8977   | 0.8279 | [model](<>) \| [log](<>) |
+|                 Method                  |     Pretrained Model      | Training set  |   Test set   | #epoch | Test size | TED Acc |   F1   |         Download         |
+| :-------------------------------------: | :-----------------------: | :-----------: | :----------: | :----: | :-------: | :-----: | :----: | :----------------------: |
+| [Donut_CORD](configs/donut_cord_30e.py) | naver-clova-ix/donut-base | cord-v2 Train | cord-v2 Test |   30   |    736    | 0.8977  | 0.8279 | [model](<>) \| [log](<>) |
 
 ## Citation
 
-> You may remove this section if not applicable.
+<!--- cslint:disable -->
 
 ```bibtex
-@article{Kim_Hong_Yim_Nam_Park_Yim_Hwang_Yun_Han_Park_2021,  
-title={OCR-free Document Understanding Transformer}, 
-DOI={10.48550/arxiv.2111.15664}, 
-author={Kim, Geewook and Hong, Teakgyu and Yim, Moonbin and Nam, Jeongyeon and Park, Jinyoung and Yim, Jinyeong and Hwang, Wonseok and Yun, Sangdoo and Han, Dongyoon and Park, Seunghyun}, 
-year={2021}, 
-month={Nov}, 
-language={en-US} 
+@article{Kim_Hong_Yim_Nam_Park_Yim_Hwang_Yun_Han_Park_2021,
+title={OCR-free Document Understanding Transformer},
+DOI={10.48550/arxiv.2111.15664},
+author={Kim, Geewook and Hong, Teakgyu and Yim, Moonbin and Nam, Jeongyeon and Park, Jinyoung and Yim, Jinyeong and Hwang, Wonseok and Yun, Sangdoo and Han, Dongyoon and Park, Seunghyun},
+year={2021},
+month={Nov},
+language={en-US}
 }
 ```
+
+<!--- cslint:enable -->
 
 ## Checklist
 

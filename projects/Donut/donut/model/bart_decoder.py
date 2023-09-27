@@ -1,37 +1,33 @@
-from typing import Any, List, Optional, Union
-import os
 from collections import OrderedDict
-import pickle
+from typing import List, Optional
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from mmengine.model import BaseModel
 from transformers import MBartConfig, MBartForCausalLM, XLMRobertaTokenizer
 from transformers.file_utils import ModelOutput
-from mmengine.model import BaseModel
+
 from mmocr.registry import MODELS
 
 
 @MODELS.register_module()
 class BARTDecoder(BaseModel):
-    """
-    Donut Decoder based on Multilingual BART
-    Set the initial weights and configuration with a pretrained multilingual BART model,
-    and modify the detailed configurations as a Donut decoder
+    """Donut Decoder based on Multilingual BART Set the initial weights and
+    configuration with a pretrained multilingual BART model, and modify the
+    detailed configurations as a Donut decoder.
 
     Args:
         decoder_layer:
             Number of layers of BARTDecoder
         max_position_embeddings:
             The maximum sequence length to be trained
-        name_or_path:
-            Name of a pretrained model name either registered in huggingface.co. or saved in local,
-            otherwise, `hyunwoongko/asian-bart-ecjk` will be set (using `transformers`)
     """
 
     def __init__(self,
                  decoder_layer: int,
                  max_position_embeddings: int,
-                 task_start_token="<s>",
+                 task_start_token='<s>',
                  prompt_end_token=None,
                  tokenizer_cfg=dict(
                      type='XLMRobertaTokenizer',
@@ -41,7 +37,10 @@ class BARTDecoder(BaseModel):
         self.decoder_layer = decoder_layer
         self.max_position_embeddings = max_position_embeddings
         self.task_start_token = task_start_token
-        self.prompt_end_token = prompt_end_token if prompt_end_token else task_start_token
+        if prompt_end_token:
+            self.prompt_end_token = prompt_end_token
+        else:
+            self.prompt_end_token = task_start_token
 
         self.tokenizer_cfg = tokenizer_cfg
         if tokenizer_cfg['type'] == 'XLMRobertaTokenizer' and tokenizer_cfg[
@@ -60,18 +59,21 @@ class BARTDecoder(BaseModel):
                 scale_embedding=True,
                 add_final_layer_norm=True,
             ))
-        self.model.forward = self.forward  #  to get cross attentions and utilize `generate` function
-
-        self.model.config.is_encoder_decoder = True  # to get cross-attention
-        self.add_special_tokens(
-            ["<sep/>"])  # <sep/> is used for representing a list in a JSON
-        self.model.model.decoder.embed_tokens.padding_idx = self.tokenizer.pad_token_id
-        self.model.prepare_inputs_for_generation = self.prepare_inputs_for_inference
+        # to get cross attentions and utilize `generate` function
+        self.model.forward = self.forward
+        # to get cross-attention
+        self.model.config.is_encoder_decoder = True
+        # <sep/> is used for representing a list in a JSON
+        self.add_special_tokens(['<sep/>'])
+        pad_token_id = self.tokenizer.pad_token_id
+        self.model.model.decoder.embed_tokens.padding_idx = pad_token_id
+        prepare_inputs = self.prepare_inputs_for_inference
+        self.model.prepare_inputs_for_generation = prepare_inputs
 
     @property
     def tokenizer(self):
         return self._tokenizer
-    
+
     @property
     def prompt_end_token_id(self):
         return self.tokenizer.convert_tokens_to_ids(self.prompt_end_token)
@@ -83,7 +85,7 @@ class BARTDecoder(BaseModel):
         if not (isinstance(self.init_cfg, dict)
                 and self.init_cfg['type'] == 'Pretrained'):
             bart_state_dict = MBartForCausalLM.from_pretrained(
-                "hyunwoongko/asian-bart-ecjk").state_dict()
+                'hyunwoongko/asian-bart-ecjk').state_dict()
         else:
             bart_state_dict = OrderedDict()
             model_state_dict = torch.load(self.init_cfg['checkpoint'])
@@ -93,16 +95,15 @@ class BARTDecoder(BaseModel):
 
         new_bart_state_dict = self.model.state_dict()
         for x in new_bart_state_dict:
-            if x.endswith("embed_positions.weight"
+            if x.endswith('embed_positions.weight'
                           ) and self.max_position_embeddings != 1024:
                 new_bart_state_dict[x] = torch.nn.Parameter(
                     self.resize_bart_abs_pos_emb(
                         bart_state_dict[x],
-                        self.max_position_embeddings +
-                        2,  # https://github.com/huggingface/transformers/blob/v4.11.3/src/transformers/models/mbart/modeling_mbart.py#L118-L119
+                        self.max_position_embeddings + 2,
                     ))
-            elif x.endswith("embed_tokens.weight") or x.endswith(
-                    "lm_head.weight"):
+            elif x.endswith('embed_tokens.weight') or x.endswith(
+                    'lm_head.weight'):
                 new_bart_state_dict[x] = bart_state_dict[x][:len(self.tokenizer
                                                                  ), :]
             else:
@@ -110,11 +111,9 @@ class BARTDecoder(BaseModel):
         self.model.load_state_dict(new_bart_state_dict)
 
     def add_special_tokens(self, list_of_tokens: List[str]):
-        """
-        Add special tokens to tokenizer and resize the token embeddings
-        """
+        """Add special tokens to tokenizer and resize the token embeddings."""
         newly_added_num = self.tokenizer.add_special_tokens(
-            {"additional_special_tokens": sorted(set(list_of_tokens))})
+            {'additional_special_tokens': sorted(set(list_of_tokens))})
         if newly_added_num > 0:
             self.model.resize_token_embeddings(len(self.tokenizer))
 
@@ -140,11 +139,11 @@ class BARTDecoder(BaseModel):
         if past_key_values is not None:
             input_ids = input_ids[:, -1:]
         output = {
-            "input_ids": input_ids,
-            "attention_mask": attention_mask,
-            "past_key_values": past_key_values,
-            "use_cache": use_cache,
-            "encoder_hidden_states": encoder_outputs.last_hidden_state,
+            'input_ids': input_ids,
+            'attention_mask': attention_mask,
+            'past_key_values': past_key_values,
+            'use_cache': use_cache,
+            'encoder_hidden_states': encoder_outputs.last_hidden_state,
         }
         return output
 
@@ -158,13 +157,14 @@ class BARTDecoder(BaseModel):
                      output_hidden_states: Optional[torch.Tensor] = None,
                      return_dict: bool = True,
                      data_samples=None):
-        """
-        """
-        output_attentions = output_attentions if output_attentions is not None else self.model.config.output_attentions
+        """"""
+        if output_attentions is None:
+            output_attentions = self.model.config.output_attentions
         output_hidden_states = (
             output_hidden_states if output_hidden_states is not None else
             self.model.config.output_hidden_states)
-        return_dict = return_dict if return_dict is not None else self.model.config.use_return_dict
+        if return_dict is None:
+            return_dict = self.model.config.use_return_dict
 
         outputs = self.model.model.decoder(
             input_ids=input_ids,
@@ -191,8 +191,8 @@ class BARTDecoder(BaseModel):
              output_attentions: Optional[torch.Tensor] = None,
              output_hidden_states: Optional[torch.Tensor] = None,
              data_samples=None):
-        """
-        A forward fucntion to get cross attentions and utilize `generate` function
+        """A forward function to get cross attentions and utilize `generate`
+        function.
 
         Source:
         https://github.com/huggingface/transformers/blob/v4.11.3/src/transformers/models/mbart/modeling_mbart.py#L1669-L1810
@@ -206,13 +206,20 @@ class BARTDecoder(BaseModel):
             loss: (1, )
             logits: (batch_size, sequence_length, hidden_dim)
             hidden_states: (batch_size, sequence_length, hidden_size)
-            decoder_attentions: (batch_size, num_heads, sequence_length, sequence_length)
-            cross_attentions: (batch_size, num_heads, sequence_length, sequence_length)
+            decoder_attentions: (batch_size, num_heads, sequence_length,
+                                 sequence_length)
+            cross_attentions: (batch_size, num_heads, sequence_length,
+                               sequence_length)
         """
-        outputs = self.extract_feat(input_ids, encoder_hidden_states,
-                                    attention_mask, past_key_values, use_cache,
-                                    output_attentions, output_hidden_states,
-                                    data_samples=data_samples)
+        outputs = self.extract_feat(
+            input_ids,
+            encoder_hidden_states,
+            attention_mask,
+            past_key_values,
+            use_cache,
+            output_attentions,
+            output_hidden_states,
+            data_samples=data_samples)
         logits = outputs['logits']
 
         loss = None
@@ -232,8 +239,8 @@ class BARTDecoder(BaseModel):
                 output_hidden_states: Optional[torch.Tensor] = None,
                 return_dict=None,
                 data_samples=None):
-        """
-        A forward fucntion to get cross attentions and utilize `generate` function
+        """A forward function to get cross attentions and utilize `generate`
+        function.
 
         Source:
         https://github.com/huggingface/transformers/blob/v4.11.3/src/transformers/models/mbart/modeling_mbart.py#L1669-L1810
@@ -247,13 +254,20 @@ class BARTDecoder(BaseModel):
             loss: (1, )
             logits: (batch_size, sequence_length, hidden_dim)
             hidden_states: (batch_size, sequence_length, hidden_size)
-            decoder_attentions: (batch_size, num_heads, sequence_length, sequence_length)
-            cross_attentions: (batch_size, num_heads, sequence_length, sequence_length)
+            decoder_attentions: (batch_size, num_heads,
+                                 sequence_length, sequence_length)
+            cross_attentions: (batch_size, num_heads,
+                               sequence_length, sequence_length)
         """
-        outputs = self.extract_feat(input_ids, encoder_hidden_states,
-                                    attention_mask, past_key_values, use_cache,
-                                    output_attentions, output_hidden_states,
-                                    data_samples=data_samples)
+        outputs = self.extract_feat(
+            input_ids,
+            encoder_hidden_states,
+            attention_mask,
+            past_key_values,
+            use_cache,
+            output_attentions,
+            output_hidden_states,
+            data_samples=data_samples)
 
         return ModelOutput(
             loss=None,
@@ -267,11 +281,9 @@ class BARTDecoder(BaseModel):
     @staticmethod
     def resize_bart_abs_pos_emb(weight: torch.Tensor,
                                 max_length: int) -> torch.Tensor:
-        """
-        Resize position embeddings
-        Truncate if sequence length of Bart backbone is greater than given max_length,
-        else interpolate to max_length
-        """
+        """Resize position embeddings Truncate if sequence length of Bart
+        backbone is greater than given max_length, else interpolate to
+        max_length."""
         if weight.shape[0] > max_length:
             weight = weight[:max_length, ...]
         else:
@@ -279,7 +291,7 @@ class BARTDecoder(BaseModel):
                 F.interpolate(
                     weight.permute(1, 0).unsqueeze(0),
                     size=max_length,
-                    mode="linear",
+                    mode='linear',
                     align_corners=False,
                 ).squeeze(0).permute(1, 0))
         return weight

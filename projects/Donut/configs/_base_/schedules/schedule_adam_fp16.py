@@ -1,6 +1,8 @@
 # optimizer
 optim_wrapper = dict(
-    type='AmpOptimWrapper', dtype='float16', optimizer=dict(type='Adam', lr=3e-5, weight_decay=0.0001))
+    type='AmpOptimWrapper',
+    dtype='float16',
+    optimizer=dict(type='Adam', lr=3e-5, weight_decay=0.0001))
 train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=30, val_interval=1)
 val_cfg = dict(type='ValLoop', fp16=True)
 test_cfg = dict(type='TestLoop', fp16=True)

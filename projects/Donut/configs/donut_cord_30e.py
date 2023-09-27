@@ -4,7 +4,7 @@ _base_ = [
 ]
 
 data_root = 'datasets/cord-v2'
-task_name='cord-v2'
+task_name = 'cord-v2'
 
 custom_imports = dict(imports=['donut'], allow_failed_imports=False)
 
@@ -29,18 +29,21 @@ model = dict(
         align_long_axis=False,
         window_size=10,
         encoder_layer=[2, 2, 14, 2],
-        init_cfg=dict(type='Pretrained', checkpoint='data/donut_base_encoder.pth')
-        ),
+        init_cfg=dict(
+            type='Pretrained', checkpoint='data/donut_base_encoder.pth')),
     decoder=dict(
         type='BARTDecoder',
         max_position_embeddings=None,
-        task_start_token=f"<s_{task_name}>",
-        prompt_end_token=f"<s_{task_name}>",
+        task_start_token=f'<s_{task_name}>',
+        prompt_end_token=f'<s_{task_name}>',
         decoder_layer=4,
-        tokenizer_cfg=dict(type='XLMRobertaTokenizer', checkpoint='naver-clova-ix/donut-base'),
-        init_cfg=dict(type='Pretrained', checkpoint='data/donut_base_decoder.pth')),
-    sort_json_key = False,
-    )
+        tokenizer_cfg=dict(
+            type='XLMRobertaTokenizer',
+            checkpoint='naver-clova-ix/donut-base'),
+        init_cfg=dict(
+            type='Pretrained', checkpoint='data/donut_base_decoder.pth')),
+    sort_json_key=False,
+)
 
 train_pipeline = [
     dict(type='LoadImageFromFile', ignore_empty=True, min_size=2),
@@ -98,12 +101,8 @@ test_dataloader = dict(
 
 val_dataloader = test_dataloader
 
-val_evaluator = dict(
-    type='DonutValEvaluator',
-    key='parses')
-test_evaluator = dict(
-    type='JSONParseEvaluator',
-    key='parses_json')
+val_evaluator = dict(type='DonutValEvaluator', key='parses')
+test_evaluator = dict(type='JSONParseEvaluator', key='parses_json')
 
 randomness = dict(seed=2022)
 find_unused_parameters = True

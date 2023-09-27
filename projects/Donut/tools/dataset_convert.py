@@ -1,10 +1,11 @@
-import os
-import json
 import argparse
-from datasets import load_dataset
+import json
+import os
 from io import BytesIO
-from PIL import Image
+
 import tqdm
+from datasets import load_dataset
+from PIL import Image
 
 
 def get_args():
@@ -41,7 +42,13 @@ def main():
             image.save(os.path.join(split_image_dir, f'{img_id}.jpg'))
             image_name = f'images/{img_id}.jpg'
             ground_truth = sample['ground_truth']
-            metadata.append(json.dumps({'file_name': image_name, 'ground_truth': ground_truth}, ensure_ascii=False))
+            metadata.append(
+                json.dumps(
+                    {
+                        'file_name': image_name,
+                        'ground_truth': ground_truth
+                    },
+                    ensure_ascii=False))
             img_id += 1
 
         with open(split_meta_save_path, 'w') as f:

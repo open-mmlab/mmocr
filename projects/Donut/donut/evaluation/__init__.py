@@ -1,1 +1,1 @@
-from .metrics import *
+from .metrics import *  # NOQA

@@ -1,4 +1,5 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
+
 import mmcv
 import numpy as np
 from mmcv.transforms.base import BaseTransform
@@ -32,7 +33,11 @@ class RandomPad(BaseTransform):
             ``Pad`` for detail. Defaults to ``dict(type='Pad')``.
     """
 
-    def __init__(self, input_size: List[int], random_padding: bool = True, fill=0, pad_cfg: dict = dict(type='Pad')) -> None:
+    def __init__(self,
+                 input_size: List[int],
+                 random_padding: bool = True,
+                 fill=0,
+                 pad_cfg: dict = dict(type='Pad')) -> None:
         super().__init__()
         height, width = input_size
         assert isinstance(width, int)
@@ -71,7 +76,11 @@ class RandomPad(BaseTransform):
             delta_height - pad_height,
         )
 
-        results['img'] = mmcv.impad(results['img'], padding=padding, pad_val=self.fill, padding_mode='constant')
+        results['img'] = mmcv.impad(
+            results['img'],
+            padding=padding,
+            pad_val=self.fill,
+            padding_mode='constant')
         return results
 
     def __repr__(self) -> str:
