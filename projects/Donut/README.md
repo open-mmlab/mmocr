@@ -12,6 +12,7 @@ This is an reimplementation of Donut official repo https://github.com/clovaai/do
 - PyTorch 1.6 or higher
 - [MIM](https://github.com/open-mmlab/mim)
 - [MMOCR](https://github.com/open-mmlab/mmocr)
+- transformers 4.25.1
 
 All the commands below rely on the correct configuration of `PYTHONPATH`, which should point to the project's directory so that Python can locate the module files. In `Donut/` root directory, run the following line to add the current directory to `PYTHONPATH`:
 
@@ -50,9 +51,9 @@ mim test mmocr configs/donut_cord_30e.py --work-dir work_dirs/donut_cord_30e/ --
 >
 > You should claim whether this is based on the pre-trained weights, which are converted from the official release; or it's a reproduced result obtained from retraining the model in this project.
 
-|                  Method                 | Pretrained Model |  Training set   |    Test set    | #epoch | Test size | Precision | Recall | Hmean  |         Download         |
-| :-------------------------------------: | :--------------: | :-------------: | :------------: | :----: | :-------: | :-------: | :----: | :----: | :----------------------: |
-| [Donut_CORD](configs/donut_cord_30e.py) | naver-clova-ix/donut-base | cord-v2 Train      | cord-v2 Test      | 30     |    736    |  0.8853   | 0.7583 | 0.8169 | [model](<>) \| [log](<>) |
+|                  Method                 | Pretrained Model |  Training set   |    Test set    | #epoch | Test size | TED Acc | F1 |         Download         |
+| :-------------------------------------: | :--------------: | :-------------: | :------------: | :----: | :-------: | :-------: | :----: | :----------------------: |
+| [Donut_CORD](configs/donut_cord_30e.py) | naver-clova-ix/donut-base | cord-v2 Train | cord-v2 Test | 30 |    736   |  0.8977   | 0.8279 | [model](<>) \| [log](<>) |
 
 ## Citation
 
@@ -83,11 +84,11 @@ Here is a checklist illustrating a usual development workflow of a successful pr
 
 - [ ] Milestone 1: PR-ready, and acceptable to be one of the `projects/`.
 
-  - [ ] Finish the code
+  - [x] Finish the code
 
     > The code's design shall follow existing interfaces and convention. For example, each model component should be registered into `mmocr.registry.MODELS` and configurable via a config file.
 
-  - [ ] Basic docstrings & proper citation
+  - [x] Basic docstrings & proper citation
 
     > Each major object should contain a docstring, describing its functionality and arguments. If you have adapted the code from other open-source projects, don't forget to cite the source project in docstring and make sure your behavior is not against its license. Typically, we do not accept any code snippet under GPL license. [A Short Guide to Open Source Licenses](https://medium.com/nationwide-technology/a-short-guide-to-open-source-licenses-cf5b1c329edd)
 
@@ -95,13 +96,13 @@ Here is a checklist illustrating a usual development workflow of a successful pr
 
     > If you are reproducing the result from a paper, make sure your model's inference-time performance matches that in the original paper. The weights usually could be obtained by simply renaming the keys in the official pre-trained weights. This test could be skipped though, if you are able to prove the training-time correctness and check the second milestone.
 
-  - [ ] A full README
+  - [x] A full README
 
     > As this template does.
 
-- [ ] Milestone 2: Indicates a successful model implementation.
+- [x] Milestone 2: Indicates a successful model implementation.
 
-  - [ ] Training-time correctness
+  - [x] Training-time correctness
 
     > If you are reproducing the result from a paper, checking this item means that you should have trained your model from scratch based on the original paper's specification and verified that the final result matches the report within a minor error range.
 
