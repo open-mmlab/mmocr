@@ -1,5 +1,6 @@
-from mmocr.registry import MODELS
 from transformers.trainer_pt_utils import LabelSmoother
+
+from mmocr.registry import MODELS
 
 
 @MODELS.register_module()

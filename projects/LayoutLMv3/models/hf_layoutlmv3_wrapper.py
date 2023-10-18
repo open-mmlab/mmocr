@@ -3,12 +3,12 @@ from typing import Dict, Optional, Tuple, Union
 
 import torch
 from mmengine.model import BaseModel
+from transformers import LayoutLMv3ForTokenClassification
+from transformers.modeling_outputs import TokenClassifierOutput
 
 from mmocr.registry import MODELS
 from projects.LayoutLMv3.utils.typing_utils import (OptSERSampleList,
                                                     SERSampleList)
-from transformers import LayoutLMv3ForTokenClassification
-from transformers.modeling_outputs import TokenClassifierOutput
 
 ForwardResults = Union[Dict[str, torch.Tensor], SERSampleList,
                        Tuple[torch.Tensor], torch.Tensor]

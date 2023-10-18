@@ -2,16 +2,16 @@
 from typing import Dict, List, Optional, Union
 
 from mmcv.transforms.base import BaseTransform
-
-from mmocr.registry import TRANSFORMS
-from projects.LayoutLMv3.utils.bio_label_utils import \
-    find_other_label_name_of_biolabel
 from transformers import LayoutLMv3ImageProcessor, LayoutXLMTokenizerFast
 from transformers.file_utils import PaddingStrategy
 from transformers.image_processing_utils import BatchFeature
 from transformers.image_utils import ChannelDimension
 from transformers.tokenization_utils_base import (BatchEncoding,
                                                   TruncationStrategy)
+
+from mmocr.registry import TRANSFORMS
+from projects.LayoutLMv3.utils.bio_label_utils import \
+    find_other_label_name_of_biolabel
 
 
 @TRANSFORMS.register_module()
