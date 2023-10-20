@@ -44,6 +44,22 @@ Scene text recognition has attracted a great many researches due to its importan
 | [NRTR](/configs/textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj.py) |     R31-1/16-1/8      | 0.9470 |    0.8918    |  0.9399   |     |  0.7376   |     0.7969     | 0.8854 | [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj/nrtr_resnet31-1by16-1by8_6e_st_mj_20220920_143358-43767036.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj/20220920_143358.log) |
 | [NRTR-TTA](/configs/textrecog/nrtr/nrtr_resnet31-1by16-1by8_6e_st_mj.py) |     R31-1/16-1/8      | 0.9423 |    0.8903    |  0.9360   |     |  0.7641   |     0.8016     | 0.8854 |                                                               |
 
+We also provide NRTR trained on [Union14M](https://github.com/Mountchicken/Union14M)
+
+- Evaluated on six common benchmarks
+
+  |                             Methods                              |  Backbone   |        | Regular Text |           |     |           | Irregular Text |        | download                                                           |
+  | :--------------------------------------------------------------: | :---------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :----------------------------------------------------------------- |
+  |                                                                  |             | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                    |
+  | [NRTR](configs/textrecog/nrtr/nrtr_resnet31-1by8-1by4_union14m.py) | R31-1/8-1/4 | 0.9673 |    0.9320    |  0.9557   |     |  0.8074   |     0.8357     | 0.9201 | [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_union14m/nrtr_union14m-606b6cba.pth) |
+
+- Evaluated on [Union14M-Benchmark](https://github.com/Mountchicken/Union14M)
+
+  | Methods                                          |  Backbone   |       | Unsolved Challenges |          |             |     |         | Additional Challenges |            | General | download                                           |
+  | ------------------------------------------------ | :---------: | ----- | ------------------- | -------- | ----------- | --- | ------- | --------------------- | ---------- | ------- | -------------------------------------------------- |
+  |                                                  |             | Curve | Multi-Oriented      | Artistic | Contextless |     | Salient | Multi-Words           | Incomplete | General |                                                    |
+  | [NRTR](configs/textrecog/aster/aster_resnet45_6e_union14m.py) | R31-1/8-1/4 | 0.493 | 0.406               | 0.543    | 0.696       |     | 0.429   | 0.755                 | 0.015      | 0.752   | [model](https://download.openmmlab.com/mmocr/textrecog/nrtr/nrtr_union14m/nrtr_union14m-606b6cba.pth) |
+
 ## Citation
 
 ```bibtex

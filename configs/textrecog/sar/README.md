@@ -48,6 +48,22 @@ Recognizing irregular text in natural scene images is challenging due to the lar
 | [SAR](/configs/textrecog/sar/sar_r31_sequential_decoder_academic.py) | R31-1/8-1/4 | SequentialSARDecoder | 0.9553 |    0.9073    |  0.9409   |     |  0.7761   |     0.8093     | 0.8958 | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real/sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real_20220915_185451-1fd6b1fc.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/sar/sar_resnet31_sequential-decoder_5e_st-sub_mj-sub_sa_real/20220915_185451.log) |
 | [SAR-TTA](/configs/textrecog/sar/sar_r31_sequential_decoder_academic.py) | R31-1/8-1/4 | SequentialSARDecoder | 0.9530 |    0.9073    |  0.9389   |     |  0.8002   |     0.8124     | 0.9028 |                                                          |
 
+We also provide ASTER trained on [Union14M](https://github.com/Mountchicken/Union14M)
+
+- Evaluated on six common benchmarks
+
+  |                        Methods                         |  Backbone   |       Decoder        |        | Regular Text |           |     |           | Irregular Text |        | download                                                 |
+  | :----------------------------------------------------: | :---------: | :------------------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :------------------------------------------------------- |
+  |                                                        |             |                      | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                          |
+  | [SAR](configs/textrecog/sar/sar_resnet31_sequential-decoder_5e_union14m.py) | R31-1/8-1/4 | SequentialSARDecoder | 0.9707 |    0.9366    |  0.9576   |     |  0.8219   |     0.8698     | 0.9201 | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_union14m/sar_union14m-a7ad75a6.pth) |
+
+- Evaluated on [Union14M-Benchmark](https://github.com/Mountchicken/Union14M)
+
+  | Methods                             | Backbone    | Decoder              |       |                | Unsolved Challenges |             |     |         | Additional Challenges |            | General | download                              |
+  | ----------------------------------- | ----------- | -------------------- | ----- | -------------- | ------------------- | ----------- | --- | ------- | --------------------- | ---------- | ------- | ------------------------------------- |
+  |                                     |             |                      | Curve | Multi-Oriented | Artistic            | Contextless |     | Salient | Multi-Words           | Incomplete | General |                                       |
+  | [SAR](configs/textrecog/sar/sar_resnet31_sequential-decoder_5e_union14m.py) | R31-1/8-1/4 | SequentialSARDecoder | 0.689 | 0.569          | 0.606               | 0.733       |     | 0.601   | 0.746                 | 0.021      | 0.760   | [model](https://download.openmmlab.com/mmocr/textrecog/sar/sar_union14m/sar_union14m-a7ad75a6.pth) |
+
 ## Citation
 
 ```bibtex

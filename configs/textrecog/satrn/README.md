@@ -42,6 +42,22 @@ Scene text recognition (STR) is the task of recognizing character sequences in n
 | [Satrn_small](/configs/textrecog/satrn/satrn_shallow-small_5e_st_mj.py) | 0.9423 |    0.9011    |  0.9567   |     |  0.7886   |     0.8574     | 0.8472 | [model](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow-small_5e_st_mj/satrn_shallow-small_5e_st_mj_20220915_152442-5591bf27.pth) \| [log](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_shallow-small_5e_st_mj/20220915_152442.log) |
 | [Satrn_small-TTA](/configs/textrecog/satrn/satrn_shallow-small_5e_st_mj.py) | 0.9380 |    0.8995    |  0.9488   |     |  0.8122   |     0.8620     | 0.8507 |                                                                         |
 
+We also provide SATRN trained on [Union14M](https://github.com/Mountchicken/Union14M)
+
+- Evaluated on six common benchmarks
+
+|                            Methods                            |        | Regular Text |           |     |           | Irregular Text |        | download                                                                         |
+| :-----------------------------------------------------------: | :----: | :----------: | :-------: | :-: | :-------: | :------------: | :----: | :------------------------------------------------------------------------------- |
+|                                                               | IIIT5K |     SVT      | IC13-1015 |     | IC15-2077 |      SVTP      |  CT80  |                                                                                  |
+| [SATRN](configs/textrecog/satrn/satrn_shallow_5e_union14m.py) | 0.9727 |    0.9536    |  0.9685   |     |  0.8714   |     0.9039     | 0.9618 | [model](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_union14m/satrn_union14m-6ac4114e.pth) |
+
+- Evaluated on [Union14M-Benchmark](https://github.com/Mountchicken/Union14M)
+
+  | Methods                                                |       | Unsolved Challenges |          |             |     |         | Additional Challenges |            | General | download                                                |
+  | ------------------------------------------------------ | ----- | ------------------- | -------- | ----------- | --- | ------- | --------------------- | ---------- | ------- | ------------------------------------------------------- |
+  |                                                        | Curve | Multi-Oriented      | Artistic | Contextless |     | Salient | Multi-Words           | Incomplete | General |                                                         |
+  | [SATRN](configs/textrecog/satrn/satrn_shallow_5e_union14m.py) | 0.748 | 0.647               | 0.671    | 0.761       |     | 0.722   | 0.741                 | 0.009      | 0.758   | [model](https://download.openmmlab.com/mmocr/textrecog/satrn/satrn_union14m/satrn_union14m-6ac4114e.pth) |
+
 ## Citation
 
 ```bibtex
