@@ -168,7 +168,7 @@ class E2EHmeanIOUMetric(BaseMetric):
             for i, pred_score_thr in enumerate(self.pred_score_thrs):
                 pred_ignore_flags = pred_scores < pred_score_thr
                 # get the number of matched boxes
-                pred_texts = [
+                filtered_pred_texts = [
                     pred_texts[j]
                     for j in self._true_indexes(~pred_ignore_flags)
                 ]
@@ -192,11 +192,11 @@ class E2EHmeanIOUMetric(BaseMetric):
                         matched_gt_indexes.add(gt_idx)
                         matched_pred_indexes.add(pred_idx)
                         if self.word_spotting:
-                            if gt_texts[gt_idx] == pred_texts[pred_idx]:
+                            if gt_texts[gt_idx] == filtered_pred_texts[pred_idx]:
                                 matched_e2e_gt_indexes.add(gt_idx)
                         else:
                             if self.text_match(gt_texts[gt_idx].upper(),
-                                               pred_texts[pred_idx].upper()):
+                                               filtered_pred_texts[pred_idx].upper()):
                                 matched_e2e_gt_indexes.add(gt_idx)
                     dataset_hit_num[i] += len(matched_e2e_gt_indexes)
                 dataset_pred_num[i] += np.sum(~pred_ignore_flags)
