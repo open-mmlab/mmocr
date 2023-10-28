@@ -47,7 +47,7 @@ mmdet_maximum_version = '3.2.0'
 mmdet_version = digit_version(mmdet.__version__)
 
 assert (mmdet_version >= digit_version(mmdet_minimum_version)
-        and mmdet_version < digit_version(mmdet_maximum_version)), \
+        and mmdet_version <= digit_version(mmdet_maximum_version)), \
     f'MMDetection {mmdet.__version__} is incompatible ' \
     f'with MMOCR {__version__}. ' \
     f'Please use MMDetection >= {mmdet_minimum_version}, ' \
