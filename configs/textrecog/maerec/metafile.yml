@@ -31,11 +31,11 @@ Models:
       - Task: Text Recognition
         Dataset: SVT
         Metrics:
-          word_acc: 0.978
+          word_acc: 0.981
       - Task: Text Recognition
         Dataset: ICDAR2013
         Metrics:
-          word_acc: 0.981
+          word_acc: 0.978
       - Task: Text Recognition
         Dataset: ICDAR2015
         Metrics:
@@ -77,3 +77,65 @@ Models:
         Metrics:
           word_acc: 0.858
     Weights: https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_b_union14m-4b98d1b4.pth
+
+  - Name: maerec_s_union14m
+    Alias: MAERec
+    In Collection: MAERec
+    Config: configs/textrecog/maerec/maerec_s_union14m.py
+    Metadata:
+      Training Data:
+        - Union14M
+    Results:
+      - Task: Text Recognition
+        Dataset: IIIT5K
+        Metrics:
+          word_acc: 0.980
+      - Task: Text Recognition
+        Dataset: SVT
+        Metrics:
+          word_acc: 0.976
+      - Task: Text Recognition
+        Dataset: ICDAR2013
+        Metrics:
+          word_acc: 0.968
+      - Task: Text Recognition
+        Dataset: ICDAR2015
+        Metrics:
+          word_acc: 0.871
+      - Task: Text Recognition
+        Dataset: SVTP
+        Metrics:
+          word_acc: 0.932
+      - Task: Text Recognition
+        Dataset: CT80
+        Metrics:
+          word_acc: 0.979
+      - Task: Text Recognition
+        Dataset: Union14M-Curve
+        Metrics:
+          word_acc: 0.814
+      - Task: Text Recognition
+        Dataset: Union14M-Multi-Oriented
+        Metrics:
+          word_acc: 0.714
+      - Task: Text Recognition
+        Dataset: Union14M-Artistic
+        Metrics:
+          word_acc: 0.720
+      - Task: Text Recognition
+        Dataset: Union14M-Contextless
+        Metrics:
+          word_acc: 0.820
+      - Task: Text Recognition
+        Dataset: Union14M-Salient
+        Metrics:
+          word_acc: 0.785
+      - Task: Text Recognition
+        Dataset: Union14M-Multi-Words
+        Metrics:
+          word_acc: 0.824
+      - Task: Text Recognition
+        Dataset: Union14M-General
+        Metrics:
+          word_acc: 0.825
+    Weights: https://download.openmmlab.com/mmocr/textrecog/mae/mae_union14m/maerec_s_union14m-a9a157e5.pth
