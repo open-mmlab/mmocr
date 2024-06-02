@@ -121,6 +121,11 @@ def main():
         if isinstance(cfg.test_evaluator, (list, tuple)):
             cfg.test_evaluator = list(cfg.test_evaluator)
             cfg.test_evaluator.append(dump_metric)
+        elif isinstance(cfg.test_evaluator, dict):
+            if 'metrics' in cfg.test_evaluator:
+                cfg.test_evaluator['metrics'].append(dump_metric)
+            else:
+                cfg.test_evaluator['metrics'] = [dump_metric]
         else:
             cfg.test_evaluator = [cfg.test_evaluator, dump_metric]
 
