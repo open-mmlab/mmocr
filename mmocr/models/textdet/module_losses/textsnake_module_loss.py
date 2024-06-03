@@ -203,14 +203,14 @@ class TextSnakeModuleLoss(SegBasedModuleLoss):
         polygons = gt_instances[~ignore_flags].polygons
         ignored_polygons = gt_instances[ignore_flags].polygons
 
-        gt_text_mask = self._generate_text_region_mask(data_sample.img_shape,
-                                                       polygons)
-        gt_mask = self._generate_effective_mask(data_sample.img_shape,
+        gt_text_mask = self._generate_text_region_mask(
+            data_sample.batch_input_shape, polygons)
+        gt_mask = self._generate_effective_mask(data_sample.batch_input_shape,
                                                 ignored_polygons)
 
         (gt_center_region_mask, gt_radius_map, gt_sin_map,
          gt_cos_map) = self._generate_center_mask_attrib_maps(
-             data_sample.img_shape, polygons)
+             data_sample.batch_input_shape, polygons)
 
         return (gt_text_mask, gt_mask, gt_center_region_mask, gt_radius_map,
                 gt_sin_map, gt_cos_map)

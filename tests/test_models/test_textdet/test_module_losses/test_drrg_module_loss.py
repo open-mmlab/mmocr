@@ -18,7 +18,7 @@ class TestDRRGModuleLoss(TestCase):
         self.preds = (preds_maps, gcn_pred, gt_labels)
         self.data_samples = [
             TextDetDataSample(
-                metainfo=dict(img_shape=(64, 64)),
+                metainfo=dict(img_shape=(64, 64), batch_input_shape=(64, 64)),
                 gt_instances=InstanceData(
                     polygons=[
                         np.array([4, 2, 30, 2, 30, 10, 4, 10]),
@@ -55,7 +55,7 @@ class TestDRRGModuleLoss(TestCase):
         # test generate_targets with blank polygon masks
         blank_data_samples = [
             TextDetDataSample(
-                metainfo=dict(img_shape=(20, 20)),
+                metainfo=dict(img_shape=(20, 20), batch_input_shape=(20, 20)),
                 gt_instances=InstanceData(
                     polygons=[], ignored=torch.BoolTensor([])))
         ]
@@ -77,7 +77,7 @@ class TestDRRGModuleLoss(TestCase):
         # test generate_targets with one proposed text component
         data_samples = [
             TextDetDataSample(
-                metainfo=dict(img_shape=(20, 30)),
+                metainfo=dict(img_shape=(20, 30), batch_input_shape=(20, 30)),
                 gt_instances=InstanceData(
                     polygons=[np.array([13, 6, 17, 6, 17, 14, 13, 14])],
                     ignored=torch.BoolTensor([False])))

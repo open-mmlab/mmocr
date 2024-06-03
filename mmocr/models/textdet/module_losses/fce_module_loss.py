@@ -211,7 +211,7 @@ class FCEModuleLoss(TextSnakeModuleLoss):
             tuple[Tensor]: A tuple of three tensors from three different
             feature level as the targets of one prediction.
         """
-        img_size = data_sample.img_shape[:2]
+        img_size = data_sample.batch_input_shape[:2]
         text_polys = data_sample.gt_instances.polygons
         ignore_flags = data_sample.gt_instances.ignored
 
