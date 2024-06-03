@@ -143,9 +143,8 @@ class MMOCRInferencer(BaseMMOCRInferencer):
             kie_batch_size = batch_size
         if self.mode == 'rec':
             # The extra list wrapper here is for the ease of postprocessing
-            self.rec_inputs = inputs
             predictions = self.textrec_inferencer(
-                self.rec_inputs,
+                inputs,
                 return_datasamples=True,
                 batch_size=rec_batch_size,
                 **forward_kwargs)['predictions']
@@ -161,20 +160,20 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                 for img, det_data_sample in zip(
                         self._inputs2ndarrray(inputs), result['det']):
                     det_pred = det_data_sample.pred_instances
-                    self.rec_inputs = []
+                    rec_inputs = []
                     for polygon in det_pred['polygons']:
                         # Roughly convert the polygon to a quadangle with
                         # 4 points
                         quad = bbox2poly(poly2bbox(polygon)).tolist()
-                        self.rec_inputs.append(crop_img(img, quad))
+                        rec_inputs.append(crop_img(img, quad))
                     result['rec'].append(
                         self.textrec_inferencer(
-                            self.rec_inputs,
+                            rec_inputs,
                             return_datasamples=True,
                             batch_size=rec_batch_size,
                             **forward_kwargs)['predictions'])
                 if self.mode == 'det_rec_kie':
-                    self.kie_inputs = []
+                    kie_inputs = []
                     # TODO: when the det output is empty, kie will fail
                     # as no gt-instances can be provided. It's a known
                     # issue but cannot be solved elegantly since we support
@@ -190,9 +189,9 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                                 dict(
                                     bbox=poly2bbox(polygon),
                                     text=rec_data_sample.pred_text.item))
-                        self.kie_inputs.append(kie_input)
+                        kie_inputs.append(kie_input)
                     result['kie'] = self.kie_inferencer(
-                        self.kie_inputs,
+                        kie_inputs,
                         return_datasamples=True,
                         batch_size=kie_batch_size,
                         **forward_kwargs)['predictions']
@@ -223,7 +222,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
         """
 
         if 'kie' in self.mode:
-            return self.kie_inferencer.visualize(self.kie_inputs, preds['kie'],
+            return self.kie_inferencer.visualize(inputs, preds['kie'],
                                                  **kwargs)
         elif 'rec' in self.mode:
             if 'det' in self.mode:
@@ -232,7 +231,7 @@ class MMOCRInferencer(BaseMMOCRInferencer):
                                          **kwargs)
             else:
                 return self.textrec_inferencer.visualize(
-                    self.rec_inputs, preds['rec'][0], **kwargs)
+                    inputs, preds['rec'][0], **kwargs)
         else:
             return self.textdet_inferencer.visualize(inputs, preds['det'],
                                                      **kwargs)
