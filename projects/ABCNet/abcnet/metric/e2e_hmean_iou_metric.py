@@ -75,7 +75,13 @@ class E2EHmeanIOUMetric(BaseMetric):
         super().__init__(collect_device=collect_device, prefix=prefix)
         self.match_iou_thr = match_iou_thr
         self.ignore_precision_thr = ignore_precision_thr
-        self.pred_score_thrs = np.arange(**pred_score_thrs)
+        self.pred_score_thrs = np.linspace(
+            pred_score_thrs['start'],
+            pred_score_thrs['stop'],
+            int(
+                np.round((pred_score_thrs['stop'] - pred_score_thrs['start']) /
+                         pred_score_thrs['step'])) + 1,
+            endpoint=True)
         self.word_spotting = word_spotting
         self.min_length_case_word = min_length_case_word
         self.special_characters = special_characters

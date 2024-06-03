@@ -58,7 +58,13 @@ class E2EPointMetric(BaseMetric):
                  collect_device: str = 'cpu',
                  prefix: Optional[str] = None) -> None:
         super().__init__(collect_device=collect_device, prefix=prefix)
-        self.text_score_thrs = np.arange(**text_score_thrs)
+        self.text_score_thrs = np.linspace(
+            text_score_thrs['start'],
+            text_score_thrs['stop'],
+            int(
+                np.round((text_score_thrs['stop'] - text_score_thrs['start']) /
+                         text_score_thrs['step'])) + 1,
+            endpoint=True)
         self.word_spotting = word_spotting
         self.match_dist_thr = match_dist_thr
         if lexicon_path:
