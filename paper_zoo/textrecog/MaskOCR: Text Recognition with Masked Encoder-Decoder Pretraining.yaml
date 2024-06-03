@@ -1,0 +1,73 @@
+Title: 'MaskOCR: Text Recognition with Masked Encoder-Decoder Pretraining'
+Abbreviation: MaskOCR
+Tasks:
+ - TextRecog
+Venue: arXiv
+Year: 2022
+Lab/Company:
+ - Department of Computer Vision Technology (VIS), Baidu Inc.
+URL:
+  Venue: N/A
+  Arxiv: 'https://arxiv.org/abs/2206.00311'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+ - Dataset
+Abstract: 'In this paper, we present a model pretraining technique, named
+MaskOCR, for text recognition. Our text recognition architecture is an
+encoder-decoder transformer: the encoder extracts the patch-level
+representations, and the decoder recognizes the text from the representations.
+Our approach pretrains both the encoder and the decoder in a sequential manner.
+(i) We pretrain the encoder in a self-supervised manner over a large set of
+unlabeled real text images. We adopt the masked image modeling approach, which
+shows the effectiveness for general images, expecting that the representations
+take on semantics. (ii) We pretrain the decoder over a large set of synthesized
+text images in a supervised manner and enhance the language modeling capability
+of the decoder by randomly masking some text image patches occupied by
+characters input to the encoder and accordingly the representations input to
+the decoder. Experiments show that the proposed MaskOCR approach achieves
+superior results on the benchmark datasets, including Chinese and English text
+images.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Self-Supervised
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/209494710-489fe94b-d550-4c5e-bdab-24590a3c3fe2.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: 315M
+ Experiment:
+   Training DataSets:
+     - ST
+     - MJ
+     - Real
+   Test DataSets:
+     Avg.: 93.8
+     IIIT5K:
+       WAICS: 96.5
+     SVT:
+       WAICS: 94.1
+     IC13:
+       WAICS: 97.8
+     IC15:
+       WAICS: 88.7
+     SVTP:
+       WAICS: 90.2
+     CUTE:
+       WAICS: 92.7
+Bibtex: '@article{lyu2022maskocr,
+  title={MaskOCR: Text Recognition with Masked Encoder-Decoder Pretraining},
+  author={Lyu, Pengyuan and Zhang, Chengquan and Liu, Shanshan and Qiao, Meina and Xu, Yangliu and Wu, Liang and Yao, Kun and Han, Junyu and Ding, Errui and Wang, Jingdong},
+  journal={arXiv preprint arXiv:2206.00311},
+  year={2022}
+}'
