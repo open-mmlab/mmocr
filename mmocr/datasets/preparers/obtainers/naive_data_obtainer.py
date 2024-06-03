@@ -177,22 +177,32 @@ class NaiveDataObtainer:
 
         Args:
             mapping (List[Tuple[str, str]]): A list of tuples, each
-            tuple contains the source file name and the destination file name.
+                tuple contains the source file name and the destination file
+                name.
         """
         for src, dst in mapping:
             src = osp.join(self.data_root, src)
             dst = osp.join(self.data_root, dst)
 
             if '*' in src:
+                # dst must be a directory
                 mkdir_or_exist(dst)
                 for f in glob.glob(src):
-                    if not osp.exists(
-                            osp.join(dst, osp.relpath(f, self.data_root))):
+                    tgt = osp.join(dst, osp.basename(osp.normpath(f)))
+                    if not osp.exists(tgt):
                         shutil.move(f, dst)
-
-            elif osp.exists(src) and not osp.exists(dst):
-                mkdir_or_exist(osp.dirname(dst))
-                shutil.move(src, dst)
+                    else:
+                        print(f'Skipping moving {f} to {dst} since'
+                              f' {f} does not exist or {tgt} already exists')
+            # If no wildcard in src, dst must match the src type
+            # That is, we can only move a file to a file, or a dir to a dir
+            else:
+                if osp.exists(src) and not osp.exists(dst):
+                    mkdir_or_exist(osp.dirname(dst))
+                    shutil.move(src, dst)
+                else:
+                    print(f'Skipping moving {src} to {dst} since'
+                          f' {src} does not exist or {dst} already exists')
 
     def clean(self) -> None:
         """Remove empty dirs."""

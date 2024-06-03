@@ -1,0 +1,39 @@
+Name: 'MLT 2017 (ICDAR 2017)'
+Paper:
+  Title: ICDAR2017 Robust Reading Challenge on Multi-Lingual Scene Text Detection and Script Identification - RRC-MLT
+  URL: https://ieeexplore.ieee.org/document/8270168
+  Venue: ICDAR
+  Year: '2017'
+  BibTeX: '@INPROCEEDINGS{8270168,
+  author={Nayef, Nibal and Yin, Fei and Bizid, Imen and Choi, Hyunsoo and Feng, Yuan and Karatzas, Dimosthenis and Luo, Zhenbo and Pal, Umapada and Rigaud, Christophe and Chazalon, Joseph and Khlif, Wafa and Luqman, Muhammad Muzzamil and Burie, Jean-Christophe and Liu, Cheng-lin and Ogier, Jean-Marc},
+  booktitle={2017 14th IAPR International Conference on Document Analysis and Recognition (ICDAR)},
+  title={ICDAR2017 Robust Reading Challenge on Multi-Lingual Scene Text Detection and Script Identification - RRC-MLT},
+  year={2017},
+  volume={01},
+  number={},
+  pages={1454-1459},
+  doi={10.1109/ICDAR.2017.237}}'
+Data:
+  Website: https://rrc.cvc.uab.es/?ch=8
+  Language:
+    - Arabic
+    - English
+    - Chinese
+    - Japanese
+    - Korean
+    - Italian
+    - German
+    - Indian
+    - French
+  Scene:
+    - Natural Scene
+  Granularity:
+    - Word
+  Tasks:
+    - textdet
+    - textrecog
+    - textspotting
+  License:
+    Type: CC BY 4.0
+    Link: https://creativecommons.org/licenses/by/4.0/
+  Format: .txt

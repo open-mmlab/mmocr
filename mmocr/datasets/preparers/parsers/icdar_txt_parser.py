@@ -20,7 +20,8 @@ class ICDARTxtTextDetAnnParser(BaseParser):
             to ','.
         ignore (str): The text to be ignored. Defaults to '###'.
         format (str): The format of the annotation. Defaults to
-            'x1,y1,x2,y2,x3,y3,x4,trans'.
+            'x1,y1,x2,y2,x3,y3,x4,trans'. An additional keyword "lang" can be
+            recognized here to specify the language of the transcription.
         encoding (str): The encoding of the annotation file. Defaults to
             'utf-8-sig'.
         nproc (int): The number of processes to parse the annotation. Defaults
@@ -52,6 +53,8 @@ class ICDARTxtTextDetAnnParser(BaseParser):
         instances = list()
         for anno in self.loader(ann_path, self.sep, self.format,
                                 self.encoding):
+            if 'lang' in anno:
+                del anno['lang']
             anno = list(anno.values())
             if self.remove_strs is not None:
                 for strs in self.remove_strs:
@@ -82,6 +85,8 @@ class ICDARTxtTextRecogAnnParser(BaseParser):
             to ','.
         ignore (str): The text to be ignored. Defaults to '#'.
         format (str): The format of the annotation. Defaults to 'img, text'.
+            An additional keyword "lang" can be recognized here to specify the
+            language of the transcription.
         encoding (str): The encoding of the annotation file. Defaults to
             'utf-8-sig'.
         nproc (int): The number of processes to parse the annotation. Defaults
