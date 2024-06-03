@@ -12,11 +12,12 @@ from .svt_parser import SVTTextDetAnnParser
 from .synthtext_parser import SynthTextAnnParser
 from .totaltext_parser import TotaltextTextDetAnnParser
 from .wildreceipt_parser import WildreceiptKIEAnnParser
+from .xfund_parser import XFUNDAnnParser
 
 __all__ = [
     'BaseParser', 'ICDARTxtTextDetAnnParser', 'ICDARTxtTextRecogAnnParser',
     'TotaltextTextDetAnnParser', 'WildreceiptKIEAnnParser',
     'COCOTextDetAnnParser', 'SVTTextDetAnnParser', 'FUNSDTextDetAnnParser',
     'SROIETextDetAnnParser', 'NAFAnnParser', 'CTW1500AnnParser',
-    'SynthTextAnnParser', 'MJSynthAnnParser'
+    'SynthTextAnnParser', 'MJSynthAnnParser', 'XFUNDAnnParser'
 ]
