@@ -3,10 +3,8 @@ import warnings
 from collections import OrderedDict
 from typing import Sequence, Union
 
-from mmengine.dist import (broadcast_object_list, collect_results,
-                           is_main_process)
+from mmengine.dist import broadcast_object_list, is_main_process
 from mmengine.evaluator import BaseMetric, Evaluator
-from mmengine.evaluator.metric import _to_cpu
 
 from mmocr.registry import EVALUATOR
 from mmocr.utils.typing_utils import ConfigType
@@ -52,31 +50,32 @@ class MultiDatasetsEvaluator(Evaluator):
         dataset_slices = self.dataset_meta.get('cumulative_sizes', [size])
         assert len(dataset_slices) == len(self.dataset_prefixes)
         for metric in self.metrics:
-            if len(metric.results) == 0:
+            if len(metric._results) == 0:
                 warnings.warn(
                     f'{metric.__class__.__name__} got empty `self.results`.'
                     'Please ensure that the processed results are properly '
                     'added into `self.results` in `process` method.')
 
-            results = collect_results(metric.results, size,
-                                      metric.collect_device)
-
+            global_results = metric.dist_comm.all_gather_object(
+                metric._results)
+            if metric.dist_collect_mode == 'cat':
+                # use `sum` to concatenate list
+                # e.g. sum([[1, 3], [2, 4]], []) = [1, 3, 2, 4]
+                collected_results = sum(global_results, [])
+            else:
+                collected_results = []
+                for partial_result in zip(*global_results):
+                    collected_results.extend(list(partial_result))
             if is_main_process():
-                # cast all tensors in results list to cpu
-                results = _to_cpu(results)
                 for start, end, dataset_prefix in zip([0] +
                                                       dataset_slices[:-1],
                                                       dataset_slices,
                                                       self.dataset_prefixes):
-                    metric_results = metric.compute_metrics(
-                        results[start:end])  # type: ignore
+                    metric_results = metric.compute_metric(
+                        collected_results[start:end])  # type: ignore
                     # Add prefix to metric names
 
-                    if metric.prefix:
-                        final_prefix = '/'.join(
-                            (dataset_prefix, metric.prefix))
-                    else:
-                        final_prefix = dataset_prefix
+                    final_prefix = '/'.join((dataset_prefix, metric.name))
                     metric_results = {
                         '/'.join((final_prefix, k)): v
                         for k, v in metric_results.items()
@@ -90,7 +89,7 @@ class MultiDatasetsEvaluator(Evaluator):
                                 f'the same metric name {name}. Please make '
                                 'sure all metrics have different prefixes.')
                     metrics_results.update(metric_results)
-            metric.results.clear()
+            metric.reset()
         if is_main_process():
             metrics_results = [metrics_results]
         else:
