@@ -1,0 +1,76 @@
+Title: 'MORAN: A Multi-Object Rectified Attention Network for Scene Text Recognition'
+Abbreviation: MORAN
+Tasks:
+ - TextRecog
+Venue: PR
+Year: 2019
+Lab/Company:
+ - School of Electronic and Information Engineering, South China University of Technology
+ - SCUT-Zhuhai Institute of Modern Industrial Innovation
+URL:
+  Venue: 'https://www.sciencedirect.com/science/article/pii/S0031320319300263'
+  Arxiv: 'https://ui.adsabs.harvard.edu/abs/2019PatRe..90..109L/abstract'
+Paper Reading URL: N/A
+Code: 'https://github.com/Canjie-Luo/MORAN_v2'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Irregular text is widely used. However, it is considerably difficult
+to recognize because of its various shapes and distorted patterns. In this
+paper, we thus propose a multi-object rectified attention network (MORAN) for
+general scene text recognition. The MORAN consists of a multi-object
+rectification network and an attention-based sequence recognition network. The
+multi-object rectification network is designed for rectifying images that
+contain irregular text. It decreases the difficulty of recognition and enables
+the attention-based sequence recognition network to more easily read irregular
+text. It is trained in a weak supervision way, thus requiring only images and
+corresponding text labels. The attentionbased sequence recognition network
+focuses on target characters and sequentially outputs the predictions. Moreover,
+to improve the sensitivity of the attentionbased sequence recognition network,
+a fractional pickup method is proposed for an attention-based decoder in the
+training phase. With the rectification mechanism, the MORAN can read both
+regular and irregular scene text. Extensive experiments on various benchmarks
+are conducted, which show that the MORAN achieves state-of-the-art performance.
+The source code is available1.'
+MODELS:
+ Architecture:
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/212230805-3d927214-c184-4d3d-818d-7072aac8f830.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 82.4
+     IIIT5K:
+       WAICS: 91.2
+     SVT:
+       WAICS: 88.3
+     IC13:
+       WAICS: 92.4
+     IC15:
+       WAICS: 68.8
+     SVTP:
+       WAICS: 76.1
+     CUTE:
+       WAICS: 77.4
+Bibtex: '@article{luo2019moran,
+  title={Moran: A multi-object rectified attention network for scene text recognition},
+  author={Luo, Canjie and Jin, Lianwen and Sun, Zenghui},
+  journal={Pattern Recognition},
+  volume={90},
+  pages={109--118},
+  year={2019},
+  publisher={Elsevier}
+}'

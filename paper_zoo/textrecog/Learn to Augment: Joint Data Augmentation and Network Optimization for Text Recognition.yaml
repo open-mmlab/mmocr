@@ -1,0 +1,76 @@
+Title: 'Learn to Augment: Joint Data Augmentation and Network Optimization for Text Recognition'
+Abbreviation: Luo et al.
+Tasks:
+ - TextRecog
+Venue: CVPR
+Year: 2020
+Lab/Company:
+ - South China University of Technology
+ - Alibaba Group
+URL:
+  Venue: 'http://openaccess.thecvf.com/content_CVPR_2020/html/Luo_Learn_to_Augment_Joint_Data_Augmentation_and_Network_Optimization_for_CVPR_2020_paper.html'
+  Arxiv: 'https://arxiv.org/abs/2003.06606'
+Paper Reading URL: N/A
+Code: 'https://github.com/Canjie-Luo/Text-Image-Augmentation'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Handwritten text and scene text suffer from various shapes and
+distorted patterns. Thus training a robust recognition model requires a large
+amount of data to cover diversity as much as possible. In contrast to data
+collection and annotation, data augmentation is a low cost way. In this paper,
+we propose a new method for text image augmentation. Different from traditional
+augmentation methods such as rotation, scaling and perspective transformation,
+our proposed augmentation method is designed to learn proper and efficient data
+augmentation which is more effective and specific for training a robust
+recognizer. By using a set of custom fiducial points, the proposed augmentation
+method is flexible and controllable. Furthermore, we bridge the gap between the
+isolated processes of data augmentation and network optimization by joint
+learning. An agent network learns from the output of the recognition network
+and controls the fiducial points to generate more proper training samples for
+the recognition network. Extensive experiments on various benchmarks, including
+regular scene text, irregular scene text and handwritten text, show that the
+proposed augmentation and the joint learning methods significantly boost the
+performance of the recognition networks. A general toolkit for geometric
+augmentation is available1.'
+MODELS:
+ Architecture:
+  - CTC
+  - Attention
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/212230430-9b55473b-5cf8-4923-b977-fa14afe820c1.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: N/A
+     IIIT5K:
+       WAICS: N/A
+     SVT:
+       WAICS: N/A
+     IC13:
+       WAICS: N/A
+     IC15:
+       WAICS: N/A
+     SVTP:
+       WAICS: N/A
+     CUTE:
+       WAICS: N/A
+Bibtex: '@@inproceedings{luo2020learn,
+  title={Learn to augment: Joint data augmentation and network optimization for text recognition},
+  author={Luo, Canjie and Zhu, Yuanzhi and Jin, Lianwen and Wang, Yongpan},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={13746--13755},
+  year={2020}
+}'
