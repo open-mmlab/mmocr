@@ -1,0 +1,68 @@
+Title: 'Aggregation Cross-Entropy for Sequence Recognition'
+Abbreviation: ACE
+Tasks:
+ - TextRecog
+Venue: CVPR
+Year: 2019
+Lab/Company:
+ - South China University of Technology
+URL:
+  Venue: 'http://openaccess.thecvf.com/content_CVPR_2019/html/Xie_Aggregation_Cross-Entropy_for_Sequence_Recognition_CVPR_2019_paper.html'
+  Arxiv: 'https://arxiv.org/abs/1904.08364'
+Paper Reading URL: N/A
+Code: 'https://github.com/summerlvsong/Aggregation-CrossEntropy'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'In this paper, we propose a novel method, aggregation cross-entropy
+(ACE), for sequence recognition from a brand new perspective. The ACE loss
+function exhibits competitive performance to CTC and the attention mechanism,
+with much quicker implementation (as it involves only four fundamental
+formulas), faster inference\back-propagation (approximately O(1) in parallel),
+less storage requirement (no parameter and negligible runtime memory), and
+convenient employment (by replacing CTC with ACE). Furthermore, the proposed
+ACE loss function exhibits two noteworthy properties: (1) it can be directly
+applied for 2D prediction by flattening the 2D prediction into 1D prediction
+as the input and (2) it requires only characters and their numbers in the
+sequence annotation for supervision, which allows it to advance beyond sequence
+recognition, e.g., counting problem.'
+MODELS:
+ Architecture:
+  - CTC
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/213173571-fdf09df3-9769-4d52-bf44-6f58c9b5453d.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS:  N/A
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 79.4
+     IIIT5K:
+       WAICS: 82.3
+     SVT:
+       WAICS: 82.6
+     IC13:
+       WAICS: 89.7
+     IC15:
+       WAICS: 68.9
+     SVTP:
+       WAICS: 70.1
+     CUTE:
+       WAICS: 82.6
+Bibtex: '@inproceedings{xie2019aggregation,
+  title={Aggregation cross-entropy for sequence recognition},
+  author={Xie, Zecheng and Huang, Yaoxiong and Zhu, Yuanzhi and Jin, Lianwen and Liu, Yuliang and Xie, Lele},
+  booktitle={Proceedings of the IEEE/CVF conference on computer vision and pattern recognition},
+  pages={6538--6547},
+  year={2019}
+}'
