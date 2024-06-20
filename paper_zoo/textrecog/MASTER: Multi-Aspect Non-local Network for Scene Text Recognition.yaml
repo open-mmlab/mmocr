@@ -1,0 +1,76 @@
+Title: 'MASTER: Multi-Aspect Non-local Network for Scene Text Recognition'
+Abbreviation: MASTER
+Tasks:
+ - TextRecog
+Venue: PR
+Year: 2021
+Lab/Company:
+ - School of Computer and Information Technology, Beijing Jiaotong University, China
+ - Shanghai Collaborative Innovation Center of Intelligent Visual Computing, School of Computer Science, Fudan University, China
+ - Baidu Inc., China
+URL:
+  Venue: 'https://www.sciencedirect.com/science/article/pii/S0031320321001679'
+  Arxiv: 'https://arxiv.org/abs/1910.02562'
+Paper Reading URL: N/A
+Code: 'https://github.com/wenwenyu/MASTER-pytorch'
+Supported In MMOCR: 'https://github.com/open-mmlab/mmocr/tree/1.x/configs/textrecog/master'
+PaperType:
+ - Algorithm
+Abstract: 'Attention-based scene text recognizers have gained huge success, which
+leverages a more compact intermediate representation to learn 1d- or 2d- attention
+by a RNN-based encoder-decoder architecture. However, such methods suffer
+from attention-drift problem because high similarity among encoded features
+leads to attention confusion under the RNN-based local attention mechanism.
+Moreover, RNN-based methods have low efficiency due to poor parallelization.
+To overcome these problems, we propose the MASTER, a self-attention based scene
+text recognizer that (1) not only encodes the input-output attention but also
+learns self-attention which encodes feature-feature and target-target relationships
+inside the encoder and decoder and (2) learns a more powerful and robust
+intermediate representation to spatial distortion, and (3) owns a great training
+efficiency because of high training parallelization and a high-speed inference
+because of an efficient memory-cache mechanism. Extensive experiments on various
+benchmarks demonstrate the superior performance of our MASTER on both regular
+and irregular scene text. Pytorch code can be found at https://github.com/wenwenyu/MASTER-pytorch,
+and Tensorflow code can be found at https://github.com/jiangxiluning/MASTER-TF.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/211144560-9732023f-fb02-415e-abfe-0b0ff0ab8425.png'
+ FPS:
+   DEVICE: 'NVIDIA 1080Ti'
+   ITEM: 55.5
+ FLOPS:
+   DEVICE: 'NVIDIA 1080Ti'
+   ITEM: 6.07G
+ PARAMS: 38.81M
+ Experiment:
+   Training DataSets:
+     - MJ
+     - ST
+   Test DataSets:
+     Avg.: 88.7
+     IIIT5K:
+       WAICS: 95.0
+     SVT:
+       WAICS: 90.6
+     IC13:
+       WAICS: 95.3
+     IC15:
+       WAICS: 79.4
+     SVTP:
+       WAICS: 84.5
+     CUTE:
+       WAICS: 87.5
+Bibtex: '@article{lu2021master,
+  title={Master: Multi-aspect non-local network for scene text recognition},
+  author={Lu, Ning and Yu, Wenwen and Qi, Xianbiao and Chen, Yihao and Gong, Ping and Xiao, Rong and Bai, Xiang},
+  journal={Pattern Recognition},
+  volume={117},
+  pages={107980},
+  year={2021},
+  publisher={Elsevier}
+}'

@@ -1,0 +1,71 @@
+Title: 'Scene Text Recognition with Permuted Autoregressive Sequence Models'
+Abbreviation: PARSeq
+Tasks:
+ - TextRecog
+Venue: ECCV
+Year: 2022
+Lab/Company:
+ - Electrical and Electronics Engineering Institute, University of the Philippines, Diliman
+URL:
+  Venue: 'https://link.springer.com/chapter/10.1007/978-3-031-19815-1_11'
+  Arxiv: 'https://arxiv.org/abs/2207.06966'
+Paper Reading URL: N/A
+Code: 'https://github.com/baudm/parseq'
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Context-aware STR methods typically use internal autoregressive (AR)
+language models (LM). Inherent limitations of AR models motivated two-stage
+methods which employ an external LM. The conditional independence of the external
+LM on the input image may cause it to erroneously rectify correct predictions,
+leading to significant inefficiencies. Our method, PARSeq, learns an ensemble
+of internal AR LMs with shared weights using Permutation Language Modeling. It
+unifies context-free non-AR and context-aware AR inference, and iterative
+refinement using bidirectional context. Using synthetic training data, PARSeq
+achieves state-of-the-art (SOTA) results in STR benchmarks (91.9% accuracy)
+and more challenging datasets. It establishes new SOTA results (96.0% accuracy)
+when trained on real data. PARSeq is optimal on accuracy vs parameter count,
+FLOPS, and latency because of its simple, unified structure and parallel token
+processing. Due to its extensive use of attention, it is robust on
+arbitrarily-oriented text which is common in real-world images. Code, pretrained
+weights, and data are available at: https://github.com/baudm/parseq.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Explicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/211143463-0d347e44-4ea9-4b17-857f-99f6e34378c2.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: N/A
+ Experiment:
+   Training DataSets:
+     - Real
+   Test DataSets:
+     Avg.: 96.5
+     IIIT5K:
+       WAICS: 99.1
+     SVT:
+       WAICS: 97.9
+     IC13:
+       WAICS: 98.4
+     IC15:
+       WAICS: 89.6
+     SVTP:
+       WAICS: 95.7
+     CUTE:
+       WAICS: 98.3
+Bibtex: '@inproceedings{bautista2022scene,
+  title={Scene Text Recognition with Permuted Autoregressive Sequence Models},
+  author={Bautista, Darwin and Atienza, Rowel},
+  booktitle={European Conference on Computer Vision},
+  pages={178--196},
+  year={2022},
+  organization={Springer}
+}'

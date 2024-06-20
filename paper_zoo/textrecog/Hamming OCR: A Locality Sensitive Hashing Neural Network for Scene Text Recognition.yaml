@@ -1,0 +1,75 @@
+Title: 'Hamming OCR: A Locality Sensitive Hashing Neural Network for Scene Text Recognition'
+Abbreviation: HammingOCR
+Tasks:
+ - TextRecog
+Venue: arXiv
+Year: 2020
+Lab/Company:
+ - School of Computer and Information Technology, Beijing Jiaotong University, China
+ - Shanghai Collaborative Innovation Center of Intelligent Visual Computing, School of Computer Science, Fudan University, China
+ - Baidu Inc., China
+URL:
+  Venue: N/A
+  Arxiv: 'https://arxiv.org/abs/2009.10874'
+Paper Reading URL: N/A
+Code: N/A
+Supported In MMOCR: N/S
+PaperType:
+ - Algorithm
+Abstract: 'Recently, inspired by Transformer, self-attention-based scene text
+recognition approaches have achieved outstanding performance. However, we find
+that the size of model expands rapidly with the lexicon increasing. Specifically,
+the number of parameters for softmax classification layer and output embedding
+layer are proportional to the vocabulary size. It hinders the development of a
+lightweight text recognition model especially applied for Chinese and multiple
+languages. Thus, we propose a lightweight scene text recognition model named
+Hamming OCR. In this model, a novel Hamming classifier, which adopts locality
+sensitive hashing (LSH) algorithm to encode each character, is proposed to
+replace the softmax regression and the generated LSH code is directly employed
+to replace the output embedding. We also present a simplified transformer
+decoder to reduce the number of parameters by removing the feed-forward network
+and using cross-layer parameter sharing technique. Compared with traditional
+methods, the number of parameters in both classification and embedding layers
+is independent on the size of vocabulary, which significantly reduces the
+storage requirement without loss of accuracy. Experimental results on several
+datasets, including four public benchmaks and a Chinese text dataset synthesized
+by SynthText with more than 20,000 characters, shows that Hamming OCR achieves
+competitive results.'
+MODELS:
+ Architecture:
+  - Transformer
+ Learning Method:
+  - Supervised
+ Language Modality:
+  - Implicit Language Model
+ Network Structure: 'https://user-images.githubusercontent.com/65173622/211144293-2f94c36f-a3ec-44ac-a70c-4854ccfa90af.png'
+ FPS:
+   DEVICE: N/A
+   ITEM: N/A
+ FLOPS:
+   DEVICE: N/A
+   ITEM: N/A
+ PARAMS: 6.6M
+ Experiment:
+   Training DataSets:
+     - MJ
+   Test DataSets:
+     Avg.: 74.0
+     IIIT5K:
+       WAICS: 82.6
+     SVT:
+       WAICS: 83.3
+     IC13:
+       WAICS: N/A
+     IC15:
+       WAICS: N/A
+     SVTP:
+       WAICS: 68.8
+     CUTE:
+       WAICS: 61.1
+Bibtex: '@article{li2020hamming,
+  title={Hamming ocr: A locality sensitive hashing neural network for scene text recognition},
+  author={Li, Bingcong and Tang, Xin and Qi, Xianbiao and Chen, Yihao and Xiao, Rong},
+  journal={arXiv preprint arXiv:2009.10874},
+  year={2020}
+}'
