@@ -216,8 +216,8 @@ class ABCNetDetPostprocessor(BaseTextDetPostProcessor):
         Returns:
             list[TextDetDataSample]: Batch of post-processed datasamples.
         """
-        if training:
-            return data_samples
+        # if training:
+        #     return data_samples
         cfg = self.train_cfg if training else self.test_cfg
         if cfg is None:
             cfg = {}
