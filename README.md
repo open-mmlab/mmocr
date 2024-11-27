@@ -196,11 +196,11 @@ We hope the toolbox and benchmark could serve the growing research community by 
 If you find this project useful in your research, please consider cite:
 
 ```bibtex
-@article{mmocr2021,
+@article{mmocr2022,
     title={MMOCR:  A Comprehensive Toolbox for Text Detection, Recognition and Understanding},
-    author={Kuang, Zhanghui and Sun, Hongbin and Li, Zhizhong and Yue, Xiaoyu and Lin, Tsui Hin and Chen, Jianyong and Wei, Huaqiang and Zhu, Yiqin and Gao, Tong and Zhang, Wenwei and Chen, Kai and Zhang, Wayne and Lin, Dahua},
-    journal= {arXiv preprint arXiv:2108.06543},
-    year={2021}
+    author={MMOCR Developer Team},
+    howpublished = {\url{https://github.com/open-mmlab/mmocr}},
+    year={2022}
 }
 ```
 
